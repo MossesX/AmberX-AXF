@@ -9,6 +9,17 @@ export interface ApprovalItem {
   args: string;
   /** The summary fits on one line, so a row shows the complete call and may carry Approve. */
   whole: boolean;
+  /** What is being approved: the caller's one-line title, else "Run <tool>" (axHub decision #98). */
+  title: string;
+  /** True when the title and description are the caller's own words (a claim: the code below is what runs). */
+  reasonGiven: boolean;
+  /** What it does and why, in the caller's words. */
+  description?: string;
+  /** The tool's own description, from the hub. */
+  toolDescription?: string;
+  effect: 'destructive' | 'read-only' | 'changes';
+  /** The exact call: arguments pretty-printed (printable characters only), and the shell command when there is one. */
+  code: { service: string; tool: string; qualified: string; arguments: string; command?: string };
   status: string;
   statusLabel: string;
   reviewRequired: boolean;
@@ -57,6 +68,9 @@ export interface ActionReply { ok: true; result: string; message: string; item: 
 export const ACTION_LABELS: Record<ApprovalAction, string> = {
   approve: 'Approve', decline: 'Decline', postpone: 'Postpone…', ignore: 'Ignore', revoke: 'Revoke', reopen: 'Reopen',
 };
+
+export const EFFECT_LABEL: Record<ApprovalItem['effect'], string> = { destructive: 'Can delete or break things', 'read-only': 'Only reads', changes: 'Changes things' };
+export const EFFECT_TONE: Record<ApprovalItem['effect'], 'danger' | 'success' | 'warning'> = { destructive: 'danger', 'read-only': 'success', changes: 'warning' };
 
 export const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
   pending: 'accent', approved: 'success', consumed: 'success', rejected: 'danger', revoked: 'danger', postponed: 'warning', ignored: undefined, expired: undefined,

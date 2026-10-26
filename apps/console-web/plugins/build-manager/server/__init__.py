@@ -167,7 +167,8 @@ def _hub_call() -> Callable[..., dict[str, Any]]:
     return _call_hub
 
 
-def _call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 120) -> dict[str, Any]:
+def _call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 120,
+              reason: dict[str, str] | None = None) -> dict[str, Any]:
     from axf_server import http as axf_http
     url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/").removesuffix("/mcp")
     tok = os.environ.get("AXHUB_TOKEN", "")
@@ -201,6 +202,8 @@ def _call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None 
     args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
     if confirmation_id:
         args["confirmation_id"] = confirmation_id
+    if reason:  # axHub decision #98: what Brett is approving, shown first on the approval page
+        args["reason"] = reason
     res = rpc("tools/call", {"name": "call", "arguments": args})
     text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
     if res.get("isError"):
@@ -256,8 +259,15 @@ class Jobs:
     def _run(self, key: str, command: str, change_id: str) -> None:
         call = self.call or _hub_call()
         args = {"command": command, "timeout_seconds": 120}
+        with self.lock:
+            plan = dict(self.jobs.get(key, {}).get("plan") or {})
+        why = {"title": f"Start build {key} on the VPS"[:120],
+               "description": (f"Starts headless Claude Code ({plan.get('model') or 'model from the item'}) on the VPS in its own worktree"
+                               f"{' on branch ' + str(plan['branch']) if plan.get('branch') else ''} to build {key}, from the console's "
+                               "Build manager (Start build now). It never merges or pushes to main.")[:1000]}
+        kw: dict[str, Any] = {"reason": why} if self.call is None else {}
         try:
-            r = call("vps.run", args)
+            r = call("vps.run", args, **kw)
             if "confirm" in r:
                 conf = r["confirm"]
                 link = f"{HUB_APPROVALS}/{conf}" if re.match(r"^[0-9A-Za-z-]{8,64}$", conf or "") else HUB_APPROVALS
@@ -268,7 +278,7 @@ class Jobs:
                     self.sleep(d)
                     self._set(key, attempts=i + 1)
                     try:
-                        r = call("vps.run", args, conf)
+                        r = call("vps.run", args, conf, **kw)
                     except Exception as e:  # noqa: BLE001
                         m = str(e).lower()
                         state = "rejected" if "reject" in m else "expired" if "expired" in m else "failed"

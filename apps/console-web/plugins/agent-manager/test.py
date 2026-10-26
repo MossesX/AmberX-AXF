@@ -432,9 +432,13 @@ bundle = json.loads((PLUGINS / "agent-manager" / "addons" / "coder" / "addon.jso
 check(bundle["version"] == "2.1.0" and any(t["config"].get("builtin") == "axhub_call" for t in bundle["provides"]["tools"])
       and "coder.vps" in next(a for a in bundle["provides"]["agents"] if a["id"] == "coder")["skillIds"], "Mosses 2.1 carries axhub_call through his VPS skill")
 seen = []
+hub_reasons = []
+
+
 def hub(states):
-    def f(tool, arguments, conf=None, timeout=None):
+    def f(tool, arguments, conf=None, timeout=None, reason=None):
         seen.append((tool, arguments, conf))
+        hub_reasons.append(reason)
         st_ = states.pop(0)
         if st_ == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
         if st_ == "reject": raise ht.HubError("The user rejected this call.")
@@ -542,6 +546,15 @@ def vhub(answers):
         if a == "reject": raise ht.HubError("The user rejected this call.")
         return {"ok": a}
     return f
+# axHub decision #98: the reason goes to the hub as {title, description}; a plain line gets a description built
+hub_reasons.clear()
+ht.run({"tool": "vps.run", "arguments": {"command": "uptime"}, "reason": "Check the VPS load", "description": "Shows uptime and load.", "wait": False}, {}, call=hub(["ok"]))
+ht.run({"tool": "vps.run", "arguments": {"command": "uptime"}, "reason": "Check  the\nload", "wait": False}, {}, call=hub(["ok"]))
+check(hub_reasons[0] == {"title": "Check the VPS load", "description": "Shows uptime and load."}, "a model's reason + description reach axHub as {title, description}")
+check(hub_reasons[1]["title"] == "Check the load" and "vps.run" in hub_reasons[1]["description"], "a one-line reason gets a description naming the tool")
+check(ht.hub_reason("") is None and ht.hub_reason({"title": "T", "description": "D"}) == {"title": "T", "description": "D"}, "no title = no reason; an object passes through")
+check("reason" in ht.SPEC["parameters"]["required"], "the model must give a reason")
+
 R = vn.Runner(call=vhub(["confirm", "$ uptime\nexit 0 · 3 ms"]), delays=lambda: [0], sleep=lambda s: None, persist=False)
 run_ = R.start({"id": "health", "name": "Health", "kind": "vps", "command": "uptime"}, "test", wait=True)
 check(run_["state"] == "done" and run_["exit"] == 0 and calls_[1][2] == "11111111-2222-3333-4444-555555555555", "a run asks axHub, waits for the approval, retries with its id, done")

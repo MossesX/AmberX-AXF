@@ -21,6 +21,12 @@
             "view": "home"
           },
           {
+            "id": "go-pass",
+            "label": "Go pass",
+            "icon": "check",
+            "view": "go-pass"
+          },
+          {
             "id": "approvals-log",
             "label": "Approvals log",
             "icon": "list",

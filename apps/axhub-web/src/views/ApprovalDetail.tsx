@@ -11,7 +11,8 @@ import { localToUtcMinute, relTime } from '../hub/core';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, STATUS_TONE, type ApprovalAction, type ApprovalItem, type AutoState, type PostponeOptions } from '../hub/types';
 import { act } from './Approvals';
-import { CopyButton, HubGate, useHubJson, when } from './hubPage';
+import { HubGate, useHubJson, when } from './hubPage';
+import { CodeSection, WhatItDoes } from './ApprovalParts';
 
 export function ApprovalDetail() {
   return <HubGate admin what="approvals">{() => <Detail />}</HubGate>;
@@ -41,7 +42,7 @@ function Detail() {
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Approval request</p>
-          <h1>{item ? item.tool : 'Request'}</h1>
+          <h1>{item ? item.title : 'Request'}</h1>
           {item && <p className="fx-muted">Asked {when(item.createdAt)} by {item.callerId}{item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}</p>}
         </div>
         <div className="fx-row fx-row--wrap">
@@ -56,11 +57,10 @@ function Detail() {
 
       {item && (
         <>
-          <Container title="The complete call" icon="code" actions={<Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>}>
+          <Container title="What it does" icon="info" actions={<Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>} collapsible defaultOpen>
             <div className="fx-stack">
-              <pre className="fx-mono axp-axhub-call">{item.summary}</pre>
+              <WhatItDoes item={item} />
               <div className="fx-row fx-row--wrap">
-                <CopyButton text={item.summary} label="Copy the call" />
                 {item.actions.map((a) => (
                   <Button key={a} disabled={busy} tone={a === 'approve' ? 'success' : a === 'decline' || a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
                     {ACTION_LABELS[a]}
@@ -71,6 +71,8 @@ function Detail() {
               {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
             </div>
           </Container>
+
+          <CodeSection item={item} />
 
           {postponing && item.actions.includes('postpone') && (
             <PostponePanel item={item} onCancel={() => setPostponing(false)} onDone={(next) => { setPostponing(false); res.setData({ item: next, auto: res.data!.auto }); checkHubNow(); }} />

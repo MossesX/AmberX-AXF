@@ -150,6 +150,16 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const RUN = '20261022-143005-ab12';
   eq(parseRoute(''), { view: 'home', params: {} }, 'no hash is the approvals page');
   eq(parseRoute('#/approvals'), { view: 'home', params: {} }, '#/approvals is home');
+  eq(parseRoute('#/go-pass'), { view: 'go-pass', params: {} }, '#/go-pass opens the Go pass page (axHub decision #98)');
+  const readText = (await import('node:fs')).readFileSync;
+  ok(readText(new URL('./src/assets/nav-menu/axhub-web.json', import.meta.url), 'utf8').includes('"view": "go-pass"'), 'the nav menu reaches the Go pass page');
+  {
+    const parts = readText(new URL('./src/views/ApprovalParts.tsx', import.meta.url), 'utf8');
+    ok(/title="The code that runs"[^>]*collapsible/.test(parts), 'the code that runs has its own collapsible section');
+    ok(parts.includes("Claude's words"), "the caller's description is labelled as theirs");
+    const row = readText(new URL('./src/views/Approvals.tsx', import.meta.url), 'utf8');
+    ok(/title=\{item\.title\}/.test(row), 'a collapsed row leads with what is being approved');
+  }
   eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
   eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');
   eq(parseRoute('#/approvals?status=all'), { view: 'home', params: {} }, '"all" is no filter');
