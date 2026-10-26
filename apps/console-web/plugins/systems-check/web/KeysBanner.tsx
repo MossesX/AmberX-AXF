@@ -23,7 +23,7 @@ export function KeysBanner() {
         <div className="axp-systems-check-banner__row">
           <BannerIcon icon="key" working={s.loading} size={20} />
           <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={false} onClick={() => setOpen(true)}>
-            {count}<Icon name="chevron-down" size={16} />
+            <span className="axp-systems-check-banner__words">{count}</span><Icon name="chevron-down" size={16} />
           </button>
         </div>
       </div>
@@ -34,7 +34,7 @@ export function KeysBanner() {
       <div className="axp-systems-check-banner__row">
         <BannerIcon icon="key" working={s.loading} size={20} />
         <button type="button" data-fx-row className="axp-systems-check-banner__text" onClick={() => rt.openDialog('keys-needed', {})}>
-          {count}: {names}
+          <span className="axp-systems-check-banner__words">{count}: {names}</span>
         </button>
         <Button tone="primary" icon="key" onClick={() => rt.openDialog('keys-needed', {})}>Add {need.length === 1 ? 'it' : 'them'}</Button>
         <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>

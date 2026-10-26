@@ -261,6 +261,27 @@ export function useBannerLaunchOpen(): [boolean, (v: boolean) => void] {
   return useState(launch === 'expanded');
 }
 
+/**
+ * One line per banner title and entry (Brett, Oct 26 2026): banner plugins cut long text with an ellipsis. Hovering text
+ * that was cut shows it whole: the frame gives the cut element a `title` with its full text (only when it has none of
+ * its own, and only while it is cut). Tapping an entry opens its details, as before.
+ */
+function fullTextTip(e: { target: EventTarget | null; currentTarget: EventTarget }): void {
+  let el = e.target instanceof HTMLElement ? e.target : null;
+  const stop = e.currentTarget as HTMLElement;
+  while (el && el !== stop) {
+    if (el.scrollWidth > el.clientWidth + 1) {
+      if (!el.title || el.dataset.fxTip === '1') {
+        const text = (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+        if (text) { el.title = text; el.dataset.fxTip = '1'; }
+      }
+      return;
+    }
+    if (el.dataset.fxTip === '1') { el.removeAttribute('title'); delete el.dataset.fxTip; }
+    el = el.parentElement;
+  }
+}
+
 function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
   const rt = useRuntime();
   useBannerPrefsTick();
@@ -306,6 +327,7 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
     <div
       ref={ref}
       className="fx-banner-frame"
+      onMouseOver={fullTextTip}
       hidden={asleep || hiddenNow}
       data-fx-banner-hidden={hiddenNow ? 'on' : undefined}
       data-fx-ctx-target={BANNER_CTX_TARGET}
