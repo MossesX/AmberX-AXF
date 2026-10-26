@@ -4041,6 +4041,61 @@
       "source": "chat"
     },
     {
+      "id": "approval-reasons-go-pass",
+      "title": "Approvals say what they're for + Go pass for sessions that can't reach axHub",
+      "detail": "axHub decision #99 + AXHub web app + console callers. Rule: a session that can't load the rules and THREADS.md from axHub does nothing until Brett gives a go on axHub (Go pass, written to the go-pass branch). Approval page: what is being approved first, what it does when expanded, the code in its own collapsible section; calls needing approval must carry a reason.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Built Oct 26 2026 on Opus: axHub branch claude/approval-reasons (on top of #9), AXF branch claude/approval-reasons (on top of #102).",
+          "at": "2026-10-26T13:28:08.552Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "axHub: Call/Confirmation reason, MCP call requires it, approvals JSON layers",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": ""
+        },
+        {
+          "text": "axHub: Go pass (go-pass branch, routes, tests, decision #98, docs)",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": ""
+        },
+        {
+          "text": "AXHub web app: approval row + detail layers, Go pass page",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": ""
+        },
+        {
+          "text": "Console callers send reasons (hubtools, build manager), rules + Project instructions",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": ""
+        },
+        {
+          "text": "Tests, logs, PRs",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": ""
+        }
+      ],
+      "createdAt": "2026-10-26T13:28:08.552Z",
+      "builtAt": "2026-10-26T13:28:08.552Z",
+      "updatedAt": "2026-10-26T13:28:08.552Z",
+      "estimate": "2.5 h",
+      "source": "chat"
+    },
+    {
       "id": "no-login-questions-headless-terminal",
       "title": "No questions at login + headless Claude Code sessions shown in the console Terminal",
       "detail": "claude-pick starts on the Claude plan + Opus without menus (claude-pick --ask for them); session check-in asks nothing unless its config says ask: true; every headless launch (systems check, push banner, Build manager Start build now) runs through deploy/claude-headless.sh in a tmux session axf-…, and the console Terminal opens each new one in a VPS tab attached to it and brings the window to the front (setting showHeadless). tmux host check + Auto fix.",

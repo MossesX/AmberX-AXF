@@ -1,0 +1,62 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261026-c878bcc294",
+  "createdAt": "2026-10-26T13:28:19.830Z",
+  "updatedAt": "2026-10-26T13:28:19.883Z",
+  "kind": "build",
+  "title": "Approvals say what they're for + Go pass (axHub #98)",
+  "asked": "If chat can't reach hub and get all rules and updated threads then refuse to do anything until an approval on axhub. Change approval page: show what the approval is approving, when expanded what it's doing and a description, then a separate collapsible section with the code being executed",
+  "repos": [
+    "MossesX/axHub",
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "axHub: reason required on calls needing approval, page layers, Go pass to the go-pass branch (400 tests). AXHub web app: approval title/what it does/collapsible code, Go pass page (174 checks). Console callers send reasons; shared rule + Project instructions.",
+    "branch": "claude/approval-reasons",
+    "commits": [],
+    "tests": {
+      "axhub pnpm test": {
+        "before": "394",
+        "after": "400"
+      },
+      "axhub-web test.mjs": {
+        "before": "169",
+        "after": "174"
+      },
+      "agent-manager test.py": {
+        "state": "pass"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "approval-reasons-go-pass"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-26T13:28:19.830Z",
+  "finishedAt": "2026-10-26T13:28:19.883Z",
+  "lastSeenAt": "2026-10-26T13:28:19.830Z",
+  "estimate": {
+    "minutes": 150,
+    "costUsd": 21
+  },
+  "costEstimated": true,
+  "branch": "claude/approval-reasons",
+  "areas": [
+    "apps/axhub-web",
+    "apps/console-web/plugins",
+    "_claude"
+  ],
+  "progress": 1
+}
