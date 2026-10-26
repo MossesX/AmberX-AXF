@@ -45,6 +45,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | Result | Updated |
 |---|---|---|
+| axHub OAuth 2.1 sign-in (axHub #9, AXF #102) | merged; redeploy axHub on Coolify | 2026-10-26 |
+| Approval reasons + Go pass (axHub #10 as decision #99, AXF #103) | merged; redeploy axHub on Coolify | 2026-10-26 |
+| Fix systems check banner: console re-bake + one-chat-per-task rule (#108) | merged | 2026-10-26 |
 | Write install instructions and install steps | merged (#104) | 2026-10-26 |
 | axHub connector: OAuth client registration (decision #98) | merged (axHub #11); redeploy axHub, then re-add the connector | 2026-10-26 |
 | Add changes and features grid plugin | merged | 2026-10-25 |
