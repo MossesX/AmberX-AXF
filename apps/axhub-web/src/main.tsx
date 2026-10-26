@@ -5,6 +5,8 @@ import { AxfProvider, HubAppearanceSource } from './axf/react';
 import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { App } from './App';
+import { installRouter } from './hub/route';
+import './hub.css';
 import './axf/ui/axf.css';
 
 // Every JSON file under src/assets is registered as a hot-swappable asset.
@@ -15,6 +17,8 @@ const axf = createAxf({
   assets: Object.values(assetModules),
 });
 registerActions(axf);
+// The address bar follows the page (the hub sends its old links here as #/<route>).
+installRouter(axf);
 
 // Developer app (manifest `developer: { hub }`, `axf init --developer`): its look and settings come from axHub's data
 // server; it waits for the hub instead of running without it. Ordinary apps have no `developer` and skip this.

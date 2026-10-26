@@ -1,0 +1,2 @@
+/* The hub's pages in this app: layout only (colours, borders and type come from the framework's tokens). */
+.axp-axhub-call { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 60vh; overflow: auto; }

@@ -125,7 +125,7 @@ export interface TextFieldProps {
   disabled?: boolean;
   /** More than one row: a textarea. */
   rows?: number;
-  type?: 'text' | 'password' | 'email' | 'url' | 'number' | 'search';
+  type?: 'text' | 'password' | 'email' | 'url' | 'number' | 'search' | 'date' | 'time' | 'datetime-local';
   autoFocus?: boolean;
   /** `autoComplete` for the input (default off). */
   autoComplete?: string;

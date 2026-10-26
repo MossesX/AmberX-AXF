@@ -57,8 +57,15 @@ public class HubRulesTest {
         assertFalse(HubRules.autoApproves(false, true, "", "vps.run"));
         assertTrue(HubRules.autoApproves(true, false, "vps.run", "vps.run"));
         assertFalse(HubRules.autoApproves(false, false, "*", "github.pr"));
-        assertTrue(HubRules.approvedReply(303, "/auth/admin/approvals/x?ok=approved"));
-        assertFalse(HubRules.approvedReply(303, "/x?ok=approved&err=1"));
-        assertEquals("tok", HubRules.csrfFromPage("<input name=\"csrf\" value=\"tok\">"));
+        assertTrue(HubRules.approvedReply(200, "{\"ok\":true,\"result\":\"approved\",\"message\":\"Approved.\"}"));
+        assertFalse(HubRules.approvedReply(200, "{\"ok\":true,\"result\":\"rejected\"}"));
+        assertFalse(HubRules.approvedReply(409, "{\"error\":{\"code\":\"decided\"}}"));
+        assertFalse(HubRules.approvedReply(303, "/auth/admin/approvals/x?ok=approved"));
+        assertEquals("abcdefgh1234", HubRules.csrfFromSession("{\"signedIn\":true,\"csrf\":\"abcdefgh1234\"}"));
+        assertNull(HubRules.csrfFromSession("{\"signedIn\":false}"));
+        assertNull(HubRules.csrfFromSession("{\"signedIn\":true,\"csrf\":\"<script>\"}"));
+        assertEquals("https://axhub.amberxai.com/auth/api/approvals/0123abcd-0123-4567-89ab-0123456789ab",
+            HubRules.approvalApiUrl("https://axhub.amberxai.com", "0123abcd-0123-4567-89ab-0123456789ab"));
+        assertNull(HubRules.approvalApiUrl("https://axhub.amberxai.com", "../x"));
     }
 }
