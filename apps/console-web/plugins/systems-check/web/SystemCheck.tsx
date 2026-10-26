@@ -343,7 +343,7 @@ export function SystemBanner() {
       <div className="axp-systems-check-banner__row">
         <BannerIcon icon="alert" working={s.loading || s.fixing || Object.values(s.run).includes('working')} size={20} />
         <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
-          {openCount ? <>{openCount} setup issue{openCount === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured</> : <>All fixed</>}
+          <span className="axp-systems-check-banner__words">{openCount ? <>{openCount} setup issue{openCount === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured</> : <>All fixed</>}</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>

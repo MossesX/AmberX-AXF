@@ -14,3 +14,12 @@ button.axp-approvals-banner__item { all: unset; box-sizing: border-box; width: 1
 .axp-approvals-banner__when { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: nowrap }
 @media (max-width: 720px) { .axp-approvals-banner__when { display: none } }
 .axp-approvals-review__frame { width: 100%; height: min(70vh, calc(var(--fx-row-h) * 24)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+
+/* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an
+   ellipsis (hover shows it whole, tap opens the details). Expanded details stay multi-line. Layout only. */
+.axp-approvals-banner__row { flex-wrap: nowrap; min-width: 0 }
+button.axp-approvals-banner__text { flex-wrap: nowrap; white-space: nowrap; overflow: hidden }
+.axp-approvals-banner__text > * { flex-shrink: 0 }
+.axp-approvals-banner__text > .axp-approvals-banner__sum { flex: 1 1 0; min-width: 0 }
+button.axp-approvals-banner__item { flex-wrap: nowrap; white-space: nowrap; overflow: hidden }
+.axp-approvals-banner__tool { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis }

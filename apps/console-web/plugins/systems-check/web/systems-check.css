@@ -95,3 +95,16 @@
 .axp-systems-check-keyfix { gap: calc(var(--fx-space) * 0.5) }
 .axp-systems-check-keyfix__steps { margin: 0; padding-left: calc(var(--fx-space) * 1.5) }
 .axp-systems-check-banner__li .axp-systems-check-run { font-size: calc(var(--fx-font-size) * 11 / 14); padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6) }
+
+/* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an
+   ellipsis (hover shows it whole, tap opens the details). Expanded details stay multi-line. Layout only. */
+.axp-systems-check-banner__row, .axp-systems-check-banner > .axp-systems-check-banner__text, .axp-systems-check-banner.is-warn:not(:has(.axp-systems-check-banner__row)) { flex-wrap: nowrap; min-width: 0 }
+.axp-systems-check-banner__text { white-space: nowrap; overflow: hidden; flex-wrap: nowrap }
+.axp-systems-check-banner__text > * { flex-shrink: 0 }
+.axp-systems-check-banner__item { flex-wrap: nowrap; white-space: nowrap; overflow: hidden }
+.axp-systems-check-banner__item > * { flex-shrink: 0 }
+.axp-systems-check-banner__item > .axp-systems-check-banner__sum { flex: 1 1 0; flex-shrink: 1 }
+.axp-systems-check-banner__title { flex: 0 1 auto; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis }
+.axp-systems-check-banner__li { flex-wrap: nowrap; min-width: 0 }
+span.axp-systems-check-banner__text { display: block; text-overflow: ellipsis }
+.axp-systems-check-banner__words { flex: 1 1 auto; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

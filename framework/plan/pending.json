@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-26T23:13:52.182Z",
+ "updatedAt": "2026-10-26T23:31:24.530Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4169,6 +4169,45 @@
    "builtAt": "2026-10-26T23:13:52.182Z",
    "updatedAt": "2026-10-26T23:13:52.182Z",
    "estimate": "20 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-one-line",
+   "title": "Banner text on one line: every banner title and entry, full text on hover",
+   "detail": "Seven console banner plugins (activity, approvals, build manager, Claude handoff, codebase changes, push, systems check) keep their title line and every entry on one line, long text cut with an ellipsis; the shared BannerFrame shows cut text whole on hover. Branch claude/banner-one-line. Built on Opus (override of the Go pass rule, Brett).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-26T23:31:24.422Z",
+   "builtAt": "2026-10-26T23:31:24.422Z",
+   "updatedAt": "2026-10-26T23:31:24.422Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-one-line-fable",
+   "title": "Banner text on one line (Fable rebuild)",
+   "detail": "Fable offered, Opus chosen. Replace the Opus build (branch claude/banner-one-line): per-plugin one-line CSS + the BannerFrame full-text tooltip. Consider one framework banner-row primitive every banner plugin uses, so one-line text is enforced in one place.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Framework banner row/entry primitive with one-line text + tooltip; replace the per-plugin CSS",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Move the 7 banner plugins onto it, re-bake apps, before/after shots, differences report",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-26T23:31:24.530Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-26T23:31:24.530Z",
+   "estimate": "1 h",
    "source": "chat"
   }
  ]
