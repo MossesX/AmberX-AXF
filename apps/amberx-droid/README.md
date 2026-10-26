@@ -10,7 +10,15 @@ npm run dev                      # the web app in a browser (Web Speech fallback
 npm run build && npx cap sync android
 cd android && ./gradlew :app:assembleDebug   # needs JDK 21 + Android SDK 36 (CI job "amberx" builds it)
 npx -y tsx test.mjs              # hub, voice and monitoring rules
+sudo bash deploy/install.sh      # on the VPS: serve it at https://amberx.amberxai.com (--remove rolls back)
 ```
+
+**Hosted, not bundled (Oct 26 2026):** the shell loads `https://amberx.amberxai.com` (`capacitor.config.json`
+`server.url`; `allowNavigation` = that host + the hub only; `public/offline.html` when unreachable). The site is under the
+hub's cookie domain, behind axHub's sign-in wall, so you sign in once inside the app and the same session reaches the
+hub's feeds and data server (the bundled `https://localhost` copy sent sign-in to an outside browser, so it never
+signed in). Hub calls from the hosted page go straight from the WebView; only a bundled copy routes them natively
+(`src/hosted.ts`). The site updates itself from `main` every 5 minutes, so web changes reach the phone without a new APK.
 
 | Path | What |
 | --- | --- |

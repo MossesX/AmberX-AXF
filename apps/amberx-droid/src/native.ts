@@ -10,6 +10,7 @@
  * Plugins never import Capacitor themselves: they call `native`.
  */
 import { registerPlugin, Capacitor, type PluginListenerHandle } from '@capacitor/core';
+import { sharesHubSite } from './hosted';
 
 export interface MonitorConfig {
   hub: string;
@@ -154,6 +155,14 @@ export const native: NativeApi = isNative() ? registerPlugin<NativeApi>('AmberxN
 export function routeHubFetch(hub: string): void {
   if (!isNative()) return;
   const origin = new URL(hub).origin;
+  // The shell normally loads the hosted app (capacitor.config.json `server.url` = https://amberx.amberxai.com), which
+  // sits under the hub's cookie domain: the WebView sends the hub session itself (fetch and the live SSE feed), so
+  // only a bundled copy (https://localhost) needs its hub reads routed natively.
+  if (!sharesHubSite(location.href, hub)) routeFetch(origin);
+  routeOpen(origin);
+}
+
+function routeFetch(origin: string): void {
   const plain = globalThis.fetch.bind(globalThis);
   globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
@@ -174,6 +183,9 @@ export function routeHubFetch(hub: string): void {
     if (etag) headers.ETag = etag;
     return new Response(status === 204 || status === 304 ? null : body, { status: status || 502, headers });
   };
+}
+
+function routeOpen(origin: string): void {
   // Hub pages (Review, sign in, the hub's own pages) open in the native hub view, where the session lives, not in an
   // outside browser that has none.
   const open = window.open.bind(window);
