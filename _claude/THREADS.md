@@ -27,9 +27,10 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Banner settings Apply to all + keys re-checked while open | review | `claude/banner-apply-all-keys-recheck` | (this PR) | Merge; console updates in 5 min. Fable rebuild parked (`banner-apply-all-fable`) | 2026-10-26 |
 | No login questions + headless sessions in the console Terminal | review | `claude/no-login-questions-terminal-launches` | #105 | Merge; the VPS picks it up on the 5-minute update. Install tmux there (systems check Auto fix) | 2026-10-26 |
 | Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
-| Fix AmberX app sign-in and hosting | review | `claude/project-thread-kxgzso` | #99 | Merge, then re-run the installer on main; new APK from CI | 2026-10-26 |
+| Fix AmberX app sign-in and hosting | deploy | `claude/project-thread-kxgzso` | #99 (merged) | Run `sudo bash /opt/axf/apps/amberx-droid/deploy/install.sh` on the VPS + A record `amberx` → 31.97.13.252; the app shows offline until the site answers | 2026-10-26 |
 | Track threads and builds in the repo | review | `claude/project-thread-usdp87` | (this PR) | Merge | 2026-10-25 |
 | Require access and refresh Claude tokens | review | `claude/project-thread-i70ntv` | #97 | Review + merge | 2026-10-25 |
 | Fix banner rows not expanding | review | `claude/project-thread-jjbcw6` | #96 | Review + merge | 2026-10-25 |
