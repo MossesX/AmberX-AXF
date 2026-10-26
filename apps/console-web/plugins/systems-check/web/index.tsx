@@ -25,7 +25,21 @@ function startOnce() {
   };
   setTimeout(go, 400);
   globalThis.addEventListener(api.TOKEN_CHANGED, () => { void loadSystemCheck(true); void loadWhatsNew(); });
+  // Keys are re-tested while the console stays open, not only when it loads (Brett, Oct 26 2026): when the tab comes
+  // back into view or focus (at most once a minute) and every 5 minutes while it's visible. `keys=1` tests the keys and
+  // tokens live; a refused or missing one brings the Keys needed banner up.
+  let last = Date.now();
+  const recheck = (minMs: number) => {
+    if (document.visibilityState !== 'visible' || Date.now() - last < minMs) return;
+    last = Date.now();
+    void loadSystemCheck();
+  };
+  document.addEventListener('visibilitychange', () => recheck(KEY_RECHECK_FOCUS_MS));
+  globalThis.addEventListener('focus', () => recheck(KEY_RECHECK_FOCUS_MS));
+  setInterval(() => recheck(KEY_RECHECK_EVERY_MS - 1000), KEY_RECHECK_EVERY_MS);
 }
+const KEY_RECHECK_FOCUS_MS = 60_000;
+const KEY_RECHECK_EVERY_MS = 5 * 60_000;
 
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.systems-check',

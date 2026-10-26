@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-26T23:45:55.448Z",
+ "updatedAt": "2026-10-26T23:46:27.339Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4222,6 +4222,45 @@
    "builtAt": "2026-10-26T23:45:55.448Z",
    "updatedAt": "2026-10-26T23:45:55.448Z",
    "estimate": "15 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-apply-all-keys",
+   "title": "Banner settings Apply to all pane + keys re-checked while the console is open",
+   "detail": "Apply to all tick box (axf.banners.applyAll) in the shared BannerSettings: ticked opens every setting once (set on every banner, Mixed when they differ) with each banner's own settings wrapped and named, and folds the per-banner tabs into one Each banner wrapper. Systems check re-tests keys on focus (once a minute) and every 5 min while visible. Built on Opus, branch claude/banner-apply-all-keys-recheck.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-26T22:28:29.520Z",
+   "builtAt": "2026-10-26T22:28:29.520Z",
+   "updatedAt": "2026-10-26T22:28:29.520Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-apply-all-fable",
+   "title": "Banner settings Apply to all (Fable rebuild)",
+   "detail": "Fable suggested, Opus chosen. Rebuild the Apply to all pane in framework/react/components/BannerSettings.tsx (Opus build: branch claude/banner-apply-all-keys-recheck). Replace the Opus version first; move the shared-value/Mixed rules into a pure engine with a fixture.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Replace the Opus Apply to all pane; pure engine for shared values + Mixed with a fixture",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Re-bake every app, before/after shots, differences report",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-26T22:28:29.624Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-26T22:28:29.624Z",
+   "estimate": "1 h",
    "source": "chat"
   }
  ]
