@@ -14,23 +14,27 @@ States: `working`, `queued` (waiting for Brett's go), `blocked` (needs Brett), `
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
-| Fix AmberX app sign-in and hosting | review | `claude/project-thread-kxgzso` | #99 | Merge, then re-run the installer on main; new APK from CI | 2026-10-26 |
-| Track threads and builds in the repo | review | `claude/project-thread-usdp87` | (this PR) | Merge | 2026-10-25 |
-| Require access and refresh Claude tokens | review | `claude/project-thread-i70ntv` | #97 | Review + merge | 2026-10-25 |
-| Fix banner rows not expanding | review | `claude/project-thread-jjbcw6` | #96 | Review + merge | 2026-10-25 |
-| Give axHub the console's settings interface | review | `claude/project-thread-74063i` | #95 | Review + merge | 2026-10-25 |
-| Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
-| Add assets appearance editing section | review | `claude/project-thread-qwqfp4` | #93 | Review + merge | 2026-10-25 |
+| axHub OAuth 2.1 sign-in for the claude.ai connector | working | axHub `claude/axhub-oauth` | – | Building (Opus, pending `axhub-oauth`, change `chg-20261026-120d016a22`) | 2026-10-26 |
+| Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 (draft) | Needs Brett's answer in the thread. 24 commits behind main, conflicts in `framework/plan/pending.json` + `framework/spec/PORTING.md` (small) | 2026-10-26 |
+| Add icon picker dialog for status plugins | blocked | `claude/project-thread-4s5igq` (+ `claude/project-thread-v1id7r`) | – | Needs Brett's answer in the thread; unmerged work on both branches, no PR | 2026-10-26 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
-| Add icon picker dialog for status plugins | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
 | Add Push banner action log | on hold | – | – | Held by Brett | 2026-10-25 |
 | Store project rules in repo | queued | – | – | Rules file `_claude/rules/PROJECT-RULES.md` | 2026-10-25 |
+| Move axHub to console-style pages: deploy | queued | – | AXF #100, axHub #8 (both merged) | Redeploy axHub on Coolify (can't reach Coolify from claude.ai/code) | 2026-10-26 |
+| Fix AmberX app sign-in and hosting: rollout | queued | – | #99, #101 (merged) | Re-run `apps/amberx-droid/deploy/install.sh` on the VPS; new APK from CI | 2026-10-26 |
 
 ## Done (recent)
 
 | Thread | Result | Updated |
 |---|---|---|
+| Move axHub to console-style pages (AXF #100 + axHub #8) | merged | 2026-10-26 |
+| Codebase changes banner blank-console fix (#101) | merged | 2026-10-26 |
+| Fix AmberX app sign-in and hosting (#99) | merged | 2026-10-26 |
+| Track threads and builds in the repo (#98) | merged | 2026-10-26 |
+| Give axHub the console's settings interface (#95) | merged | 2026-10-26 |
+| Require access and refresh Claude tokens (#97) | merged | 2026-10-25 |
+| Fix banner rows not expanding (#96) | merged | 2026-10-25 |
+| Add assets appearance editing section (#93) | merged | 2026-10-25 |
 | Add changes and features grid plugin | merged | 2026-10-25 |
 | Edit each Appearance asset individually | merged | 2026-10-25 |
 | Build context menu designer plugin | merged | 2026-10-25 |

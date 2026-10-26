@@ -1,0 +1,63 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261026-120d016a22",
+  "createdAt": "2026-10-26T12:47:08.942Z",
+  "updatedAt": "2026-10-26T12:47:08.942Z",
+  "kind": "build",
+  "title": "axHub: OAuth 2.1 sign-in on /mcp (claude.ai custom connector)",
+  "asked": "Make axHub read the OAuth client id/secret from Coolify so the claude.ai custom connector can sign in",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Storage: oauth_tokens repository",
+      "state": "queued"
+    },
+    {
+      "text": "Config + discovery + 401",
+      "state": "queued"
+    },
+    {
+      "text": "Authorize + consent",
+      "state": "queued"
+    },
+    {
+      "text": "Token + revoke + bearer",
+      "state": "queued"
+    },
+    {
+      "text": "Tests, CLI, docs, PR",
+      "state": "queued"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "pending",
+    "id": "axhub-oauth"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-26T12:47:08.942Z",
+  "lastSeenAt": "2026-10-26T12:47:08.942Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "branch": "claude/axhub-oauth",
+  "areas": [
+    "packages/server",
+    "packages/core",
+    "packages/storage-sqlite",
+    "docs",
+    "project/initialization"
+  ]
+}
