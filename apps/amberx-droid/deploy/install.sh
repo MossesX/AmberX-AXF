@@ -76,7 +76,9 @@ COMMON=(-d --name "$NAME" --restart unless-stopped)
 
 if axf_coolify_proxy_running; then
   NET="$(axf_coolify_network)"
-  R="${ROUTER:-$(printf '%s' "$NAME" | tr -cd 'a-z0-9')}"
+  # Its own router name: "amberxweb" (from amberx-web) is also used by the older amberx-app's web container, and
+  # Traefik drops a router defined twice with different settings, so neither site was reachable (Oct 26 2026).
+  R="${ROUTER:-amberxdroid}"
   # ---- 3. the wall (axHub sign-in): hub admins only; the app has no server to trust signed headers ----
   WALLF="$STATE/wall"
   axf_save_choice "$WALLF" "${APP_WALL:-}"
