@@ -74,8 +74,8 @@ log. When a step says "copy it", paste it straight into its destination or into 
 | --- | --- | --- | --- | --- |
 | `AXHUB_MCP_TOKEN` | Bearer token for axHub's `/mcp` | `openssl rand -base64 48` | Coolify → axHub env; password manager | Claude Code, claude-sync, the console (`AXHUB_TOKEN`) |
 | `AXHUB_VAULT_KEY` | Master key that encrypts axHub's vault | `openssl rand -base64 32` | Coolify → axHub env; password manager (separate from backups) | axHub only |
-| `AXHUB_OAUTH_CLIENT_ID` | Name of the one OAuth client axHub accepts | You pick, e.g. `claude-ai` | Coolify → axHub env; claude.ai connector | claude.ai connector sign-in |
-| `AXHUB_OAUTH_CLIENT_SECRET` | Password of that OAuth client | `openssl rand -hex 32` | Coolify → axHub env; claude.ai connector | claude.ai connector sign-in |
+| `AXHUB_OAUTH_CLIENT_ID` | Optional fixed OAuth client (not needed: claude.ai registers itself) | You pick, e.g. `claude-ai` | Coolify → axHub env; connector's Advanced settings | claude.ai connector sign-in |
+| `AXHUB_OAUTH_CLIENT_SECRET` | Password of that optional client | `openssl rand -hex 32` | Coolify → axHub env; connector's Advanced settings | claude.ai connector sign-in |
 | `AXHUB_ADMIN_PASSWORD` | First admin's temporary password | You pick | Coolify → axHub env, **removed after first start** | First sign-in only |
 | `AXHUB_WALL_SECRET` | Signs who's signed in, for walled apps | Console installer | Coolify → axHub env = `/opt/axf/.axf-console/wall-secret` | axHub ↔ console |
 | `AXF_TOKEN` | Dev Console API + `/mcp` token | Console installer | `/opt/axf/.axf-console/env` (0600) | console panel, `.mcp.json`, scripts |
@@ -204,12 +204,14 @@ First start only (delete after you sign in):
 | `AXHUB_ADMIN_PASSWORD` | a temporary password | Creates the first admin (`admin`). You pick a new password at the first sign-in, within 3 days. |
 | `AXHUB_SEED_USERS` | JSON list, optional | Extra accounts, also with temporary passwords. |
 
-For the claude.ai connector (OAuth, decision #97):
+For the claude.ai connector (OAuth, decisions #97 and #98). **Nothing is required:** with `AXHUB_PUBLIC_URL` and
+`AXHUB_MCP_TOKEN` set, OAuth is on and claude.ai registers itself when you tap Connect.
 
 | Variable | Value | Why |
 | --- | --- | --- |
-| `AXHUB_OAUTH_CLIENT_ID` | a name, e.g. `claude-ai` | Turns OAuth on. While it's unset, axHub has no sign-in pages and claude.ai can't connect. |
-| `AXHUB_OAUTH_CLIENT_SECRET` | `openssl rand -hex 32` (32+ characters) | Proves the request comes from claude.ai's server. It's sent only when tokens are issued, never in a browser. |
+| `AXHUB_OAUTH_REGISTRATION` | optional; `on` (default) or `off` | Lets a connector added with no Client ID register itself. `off` = only the fixed client below. |
+| `AXHUB_OAUTH_CLIENT_ID` | optional; a name, e.g. `claude-ai` | A fixed client, for clients that can't register themselves. You'd type the same value in the connector's Advanced settings. |
+| `AXHUB_OAUTH_CLIENT_SECRET` | optional; `openssl rand -hex 32` (32+ characters) | That fixed client's secret. |
 | `AXHUB_OAUTH_REDIRECT_URIS` | optional; default allows `https://claude.ai/api/mcp/auth_callback` and `https://claude.com/api/mcp/auth_callback` | Where axHub may send you back after sign-in. Set it only if Anthropic changes the address. |
 | `AXHUB_OAUTH_ACCESS_HOURS` / `AXHUB_OAUTH_REFRESH_DAYS` | optional; default 1 hour / 30 days | How long the connector's tokens last. claude.ai renews the access token by itself; after 30 days unused you tap Connect again. |
 
@@ -222,36 +224,35 @@ inside image layers. Every change needs a **Redeploy** (or Restart) to take effe
 
 ### 5b. What OAuth does and why it's set up this way
 
-When you tap **Connect** on the claude.ai connector:
+It's still a normal Claude connector. When you tap **Connect**:
 
 1. claude.ai reads axHub's discovery documents (`/.well-known/oauth-protected-resource`,
-   `/.well-known/oauth-authorization-server`) to find the sign-in and token addresses.
-2. It sends your browser to `/oauth/authorize` with the client ID and a one-time **PKCE** challenge.
-3. You sign in to axHub as an admin and tap **Allow**.
-4. axHub sends your browser back to claude.ai with a one-use code.
-5. claude.ai's server swaps that code for tokens at `/oauth/token`, sending the **client secret** and the PKCE
-   proof. axHub checks both.
-6. claude.ai gets an access token (short-lived) and a refresh token (renewed on each use; reusing an old one
-   ends the whole sign-in).
+   `/.well-known/oauth-authorization-server`) to find the sign-in, token and **registration** addresses.
+2. With no Client ID typed in, it **registers itself** at `/oauth/register`. axHub hands back a client ID that only
+   works with claude.ai's own return address, carries no secret, and is sealed so it can't be edited or forged.
+3. It sends your browser to `/oauth/authorize` with that client ID and a one-time **PKCE** challenge.
+4. You sign in to axHub as an admin and tap **Allow**.
+5. axHub sends your browser back to claude.ai with a one-use code.
+6. claude.ai's server swaps that code, plus the PKCE proof, for tokens at `/oauth/token`.
+7. claude.ai gets an access token (1 hour) and a refresh token (renewed on each use; reusing an old one ends the
+   whole sign-in).
 
-**Why a secret and PKCE:** the hub can run root commands on the VPS. The secret proves the token request comes
-from claude.ai's server. PKCE proves it comes from the same sign-in that started in your browser. Either one
-alone leaves a gap. axHub stores only hashes of the tokens, and the connector's calls still need your approval
-for anything risky, exactly like the MCP token.
+**Why this is safe with no secret:** a code only ever goes to claude.ai's own return address, and it's useless
+without the PKCE proof held by whoever started that sign-in. Only a hub admin who signs in and taps Allow can
+connect anything. axHub stores only hashes of the tokens, and every risky call still waits for your approval,
+exactly like the MCP token.
 
 ### 5c. Add the connector in claude.ai
 
-1. Make sure 5a's two OAuth variables are set and axHub has been redeployed. Check that
-   `https://axhub.amberxai.com/.well-known/oauth-authorization-server` shows JSON, not "Not found".
-2. On claude.ai in a **browser** (the phone app may hide the form; use **Desktop site** in Chrome if needed):
-   **Settings → Connectors → Add custom connector**.
-3. **Name** `axHub`, **URL** `https://axhub.amberxai.com/mcp`.
-4. Open **Advanced settings** and enter the **OAuth Client ID** and **OAuth Client Secret** from 5a.
-5. **Add**, then **Connect**. Sign in on axHub's page and tap **Allow**.
-6. In a chat, tap **+ → Connectors** and make sure axHub is on. Ask: "Use axHub's list_services."
+1. Make sure axHub runs the current version (decision #98 or later). Check that
+   `https://axhub.amberxai.com/.well-known/oauth-authorization-server` shows JSON with a `registration_endpoint`.
+2. On claude.ai (app or browser): **Settings → Connectors → Add custom connector**.
+3. **Name** `axHub`, **URL** `https://axhub.amberxai.com/mcp`. Leave **Advanced settings** empty.
+4. **Add**, then **Connect**. Sign in on axHub's page and tap **Allow**.
+5. In a chat, tap **+ → Connectors** and make sure axHub is on. Ask: "Use axHub's list_services."
 
-If you remove and re-add the connector, enter the ID and secret again. To end a connection: in the hub's
-terminal run `axhub oauth list`, then `axhub oauth revoke <id>` (or `--all`).
+To end a connection: in the hub's terminal run `axhub oauth list`, then `axhub oauth revoke <id>` (or `--all`).
+If a connector was added before decision #98, remove it and add it again, so it registers.
 
 ### 5d. Claude Code sessions (bearer token instead of OAuth)
 
@@ -361,23 +362,23 @@ Because the check renews the pair, the copy you pasted from stops working on the
 
 ## 8. Several Claude accounts
 
-Each Claude account (yours, a second Max plan, Conrad's) is one saved pair in **AI keys**, with a label.
+Each Claude account (yours, a second Max plan, Conrad's) is one saved pair in **AI keys**, with a label. One account
+is active at a time, and it drives **both** the console and the VPS.
 
-- **Switch the account the assistant and the VPS use:** AI keys → the account's row → **Use this one**. The
-  console's assistant uses it at once. The VPS's Claude Code gets it at the next write (seconds, or tap **Write
-  to the VPS now**). Only one subscription pair is active at a time, so that one account drives both.
-- **Use a different account for the assistant than for VPS Claude Code:** give the assistant an **API key**
-  profile (AI keys → active `Anthropic` key, then pick that profile in Settings → Plugins → AI assistant →
-  Providers). The active subscription pair keeps driving Claude Code on the VPS.
-- **The console Terminal's Claude Code tab** uses its own token (Settings → Plugins → Terminal), so it can be a
-  third account.
-- **Commands on the VPS through axHub** (Vinny, Auto fix, `vps.run`) don't use any Claude account. They run as
-  root over axHub's SSH service after your approval. Only the Claude Code that a command *starts* (Start build now,
-  Claude-on-failure) uses the active subscription.
+- **Switch accounts:** console → long-press → **AI keys** → the account's row → **Use this one**. The console's
+  assistant switches at once, and the console logs the VPS's Claude Code into the same account by writing that pair
+  to `/root/.claude/.credentials.json` (directly, or through Vinny with your approval on axHub; **Write to the VPS
+  now** forces it). Every new Claude Code session on the VPS, and every headless session the console or axHub starts,
+  then runs on that account.
+- **Add an account:** sign in to it once with `/login` in Claude Code anywhere, copy `~/.claude/.credentials.json`,
+  and paste it into AI keys → Add → **Credentials file** ([section 6](#6-claude-subscription-tokens)).
+- **Commands on the VPS through axHub** (Vinny, Auto fix, `vps.run`) don't use a Claude account: they run as root
+  over axHub's SSH service after your approval. Only the Claude Code a command *starts* uses the active account.
 - **See which account is live:** the **Claude badge** on the banner (green = working, amber = out of credits).
-  Vinny's "retrieve email address" skill shows the VPS account's email.
-- **Out of credits:** the systems check's `claude-credits` check tests the default provider and, when it's out,
-  makes the first saved key that answers active, then opens AI keys so you can see or change the pick.
+  Vinny's "retrieve email address" skill shows the email the VPS is signed in with.
+- **Out of credits:** the systems check's `claude-credits` check tests the active account and, when it's out, makes
+  the first saved account that answers active (console and VPS together), then opens AI keys so you can see or
+  change the pick.
 
 ---
 
@@ -387,7 +388,7 @@ Every Claude account, on every surface, needs to start from the same rules. Here
 
 | Surface | How it reads the rules | Set-up |
 | --- | --- | --- |
-| Claude Code (VPS, computers) | Loads `CLAUDE.md`, which imports `_claude/shared/rules/RULES.md` and `_claude/rules/RULES.md`. The claude-sync SessionStart hook pulls the latest `_claude/` from the hub first. | `bash deploy/claude-pick.sh --install` once per machine, then `claude-sync login` (axHub token) |
+| Claude Code (VPS, computers) | Loads `CLAUDE.md`, which imports `_claude/shared/rules/RULES.md` and `_claude/rules/RULES.md`. The claude-sync SessionStart hook pulls the latest `_claude/` from the hub first. | `bash deploy/claude-pick.sh --install` once per machine (`claude` then starts on your plan with Opus, no questions), then `claude-sync login` (axHub token) |
 | Claude Code cloud (claude.ai/code) | Loads the repo's `CLAUDE.md` when the session starts in the repo. | Give the Claude GitHub app access to the repo; start sessions **in** `MossesX/AmberX-AXF`, never a fork |
 | claude.ai Project (chats) | Project instructions + knowledge files. It can't read the repo by itself. | Paste `_claude/handoff/INSTRUCTIONS.md` (below its line) into the Project's **Instructions**; upload `_claude/handoff/context/*` as knowledge; refresh them after rule changes |
 | Console assistant / Mosses | The plugin's own settings and add-ons | nothing extra |
@@ -558,8 +559,8 @@ use `AXF_TOKEN` on `/api` and `/mcp`. If the hub is down and you're locked out, 
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| claude.ai connector "connect incomplete" / "Couldn't register" | axHub has no OAuth (not redeployed, or `AXHUB_OAUTH_CLIENT_ID` unset) | Set both OAuth vars, redeploy, check the discovery URL in 5c |
-| Connector form has no Advanced settings | Phone app layout | claude.ai in a browser, Desktop site |
+| claude.ai connector "connect incomplete" / "Couldn't register" | axHub older than decision #98, or `AXHUB_OAUTH_REGISTRATION=off` | Redeploy axHub (or remove that variable), check `registration_endpoint` in 5c, remove and re-add the connector |
+| Sign-in page says "isn't registered" | The connector registered with an older MCP token | Remove and re-add the connector |
 | Sign-in page says redirect not allowed | Redirect address changed | Set `AXHUB_OAUTH_REDIRECT_URIS` to the address claude.ai uses |
 | `/mcp` answers 401 | Missing/wrong token or missing `Bearer ` | Re-enter the token |
 | Traefik "no available server" for axHub | `PORT` not set to 8080 | Add `PORT=8080`, redeploy |

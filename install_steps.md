@@ -110,7 +110,6 @@ In Coolify → **Servers → localhost → Terminal**, run each one and save the
 ```bash
 openssl rand -base64 48   # AXHUB_MCP_TOKEN
 openssl rand -base64 32   # AXHUB_VAULT_KEY  (keep this one extra safe)
-openssl rand -hex 32      # AXHUB_OAUTH_CLIENT_SECRET
 ```
 
 Pick a temporary admin password too.
@@ -131,8 +130,6 @@ Coolify → **Projects → + Add** (name it `amberx`) → **+ New → Resource �
    | `AXHUB_PUBLIC_URL` | `https://axhub.<domain>` |
    | `AXHUB_ALLOWED_ORIGINS` | `https://axhub.<domain>` |
    | `AXHUB_COOKIE_DOMAIN` | `.<domain>` |
-   | `AXHUB_OAUTH_CLIENT_ID` | `claude-ai` |
-   | `AXHUB_OAUTH_CLIENT_SECRET` | from step 9 |
    | `AXHUB_ADMIN_PASSWORD` | the temporary admin password |
    | `AXHUB_LOG_LEVEL` | `info` |
    | `PORT` | `8080` |
@@ -254,12 +251,12 @@ Then open the **systems check** and press **Fix all**. Approve the VPS fixes on 
 
 ```bash
 npm install -g @anthropic-ai/claude-code
-bash /opt/axf/deploy/claude-pick.sh --install    # `claude` asks plan or API key + model; installs claude-sync and the hooks
+bash /opt/axf/deploy/claude-pick.sh --install    # `claude` starts on your plan + Opus; installs claude-sync and the hooks
 exec bash -l
 node /root/axHub/clients/claude-code/claude-sync.mjs install
 CLAUDE_SYNC_OWNERS=<you> claude-sync login          # paste AXHUB_MCP_TOKEN (stored 0600)
 node /opt/axf/apps/console-web/plugins/codebase-changes/changes.mjs hooks install
-cd /opt/axf && claude                               # pick "Claude plan", then /login and sign in to your account
+cd /opt/axf && claude                               # starts on your Claude plan with Opus (no questions); /login once
 ```
 
 ### Step 20. Make your subscription the active one
@@ -280,9 +277,8 @@ cd /opt/axf && claude                               # pick "Claude plan", then /
 On claude.ai in a browser → **Settings → Connectors**:
 
 1. **GitHub:** connect as `<you>`. On GitHub, give the **Claude** app access to `AmberX-AXF` and `axHub`.
-2. **axHub:** **Add custom connector** → name `axHub`, URL `https://axhub.<domain>/mcp` → **Advanced
-   settings**: OAuth Client ID `claude-ai`, OAuth Client Secret from step 9 → Add → **Connect** → sign in to
-   axHub → **Allow**.
+2. **axHub:** **Add custom connector** → name `axHub`, URL `https://axhub.<domain>/mcp`, Advanced settings left
+   empty → Add → **Connect** → sign in to axHub → **Allow**. (claude.ai registers itself with the hub.)
 3. **Hostinger:** add it from the connector list and sign in with the Hostinger token.
 
 ### Step 22. The project
