@@ -50,7 +50,17 @@ GIT=(git)
 if [ -d "$DIR/.git" ]; then
   say "Updating $DIR"; "${GIT[@]}" -C "$DIR" fetch -q origin "$BRANCH" && git -C "$DIR" reset -q --hard "origin/$BRANCH"
 else
-  say "Cloning into $DIR"; "${GIT[@]}" clone -q --branch "$BRANCH" "$REPO" "$DIR"
+  say "Cloning into $DIR"
+  if ! "${GIT[@]}" clone -q --branch "$BRANCH" "$REPO" "$DIR"; then
+    # No token found here: start from the console's checkout, which already reaches GitHub, and keep
+    # fetching through it (the console's own 5-minute update keeps its main current).
+    say "GitHub refused the clone; using the console's checkout $AXF_DIR instead"
+    rm -rf "$DIR"
+    git -C "$AXF_DIR" fetch -q origin "$BRANCH:refs/remotes/origin/$BRANCH"
+    git clone -q --no-checkout "$AXF_DIR" "$DIR"
+    git -C "$DIR" fetch -q origin "refs/remotes/origin/$BRANCH:refs/remotes/origin/$BRANCH"
+    git -C "$DIR" checkout -q -B "$BRANCH" "origin/$BRANCH"
+  fi
 fi
 mkdir -p "$STATE"; chmod 700 "$STATE"
 APP="$DIR/$SUB"
