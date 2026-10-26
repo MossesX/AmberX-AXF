@@ -50,13 +50,14 @@ export function ChangesBanner() {
   // Launches expanded; the "_" under the entries' ✕ column folds it back to its summary (Brett, Oct 21 2026).
   const [open, setOpen] = useBannerLaunchOpen();
   const now = useTick(s.open.some(isActive));
+  // Tapping an entry expands its details in the banner (Brett, Oct 25 2026); "Open in the log" is inside it.
+  // Every hook stays above the early return: a hook after it crashed the whole console (React error 310) once entries arrived.
+  const [shown, setShown] = useState<string | null>(null);
   if (!bannerOn() || !s.open.length) return null;
   const n = s.openTotal;
   const running = s.open.filter((e) => e.state === 'running').length;
   const failed = s.open.filter((e) => e.state === 'failed').length;
   const go = (id: string) => rt.dispatch(`codebase-changes.open:${encodeURIComponent(id)}`);
-  // Tapping an entry expands its details in the banner (Brett, Oct 25 2026); "Open in the log" is inside it.
-  const [shown, setShown] = useState<string | null>(null);
   return (
     <div className={`axp-codebase-changes-banner${failed ? ' is-failed' : ''}`} role="status" aria-live="polite">
       <div className="axp-codebase-changes-banner__row">
