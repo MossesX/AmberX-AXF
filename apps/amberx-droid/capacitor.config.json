@@ -7,6 +7,9 @@
     "webContentsDebuggingEnabled": false
   },
   "server": {
-    "androidScheme": "https"
+    "url": "https://amberx.amberxai.com",
+    "androidScheme": "https",
+    "allowNavigation": ["amberx.amberxai.com", "axhub.amberxai.com"],
+    "errorPath": "offline.html"
   }
 }

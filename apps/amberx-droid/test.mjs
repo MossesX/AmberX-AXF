@@ -8,6 +8,8 @@
  */
 import * as voice from './src/plugins/voice/web/core.ts';
 import * as mon from './src/plugins/monitor/web/core.ts';
+import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
+import { readFileSync } from 'node:fs';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
@@ -189,6 +191,22 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq(c.wakePhrases, [], 'background listening off = no wake phrases sent');
   eq(c.lang, 'en-US', 'language default');
   eq(c.autoApprove, { on: true, all: false, tools: 'github.*' }, 'auto-approval config');
+}
+
+{
+  ok(sharesHubSite(`${HOSTED_URL}/`, HUB), 'the hosted app shares the hub site');
+  ok(sharesHubSite('https://amberxai.com/x', HUB), 'the parent domain itself counts');
+  ok(!sharesHubSite('https://localhost/', HUB), 'a bundled copy (https://localhost) does not');
+  ok(!sharesHubSite('http://amberx.amberxai.com/', HUB), 'plain http never does');
+  ok(!sharesHubSite('https://evilamberxai.com/', HUB), 'a look-alike domain does not');
+  ok(!sharesHubSite('https://amberxai.com.evil.io/', HUB), 'a suffix trick does not');
+  ok(!sharesHubSite('not a url', HUB), 'garbage does not');
+  const cap = JSON.parse(readFileSync(new URL('./capacitor.config.json', import.meta.url), 'utf8'));
+  eq(cap.server?.url, HOSTED_URL, 'the shell loads the hosted app');
+  ok((cap.server?.allowNavigation ?? []).includes(new URL(HUB).host), 'hub sign-in stays inside the app');
+  eq((cap.server?.allowNavigation ?? []).length, 2, 'only the app and the hub may load in the shell');
+  eq(cap.server?.errorPath, 'offline.html', 'offline page when the server is unreachable');
+  ok(readFileSync(new URL('./public/offline.html', import.meta.url), 'utf8').includes(HOSTED_URL), 'the offline page retries the hosted app');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
