@@ -51,7 +51,7 @@ export function ChangesBanner() {
   const [open, setOpen] = useBannerLaunchOpen();
   const now = useTick(s.open.some(isActive));
   // Tapping an entry expands its details in the banner (Brett, Oct 25 2026); "Open in the log" is inside it.
-  // Every hook stays above the early return: a hook after it crashed the whole console (React #310) once entries arrived.
+  // Every hook stays above the early return: a hook after it crashed the whole console (React error 310) once entries arrived.
   const [shown, setShown] = useState<string | null>(null);
   if (!bannerOn() || !s.open.length) return null;
   const n = s.openTotal;
