@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261026-120d016a22",
   "createdAt": "2026-10-26T12:47:08.942Z",
-  "updatedAt": "2026-10-26T12:47:08.942Z",
+  "updatedAt": "2026-10-26T12:56:05.331Z",
   "kind": "build",
   "title": "axHub: OAuth 2.1 sign-in on /mcp (claude.ai custom connector)",
   "asked": "Make axHub read the OAuth client id/secret from Coolify so the claude.ai custom connector can sign in",
@@ -16,37 +16,71 @@
   },
   "steps": [
     {
-      "text": "Storage: oauth_tokens repository",
-      "state": "queued"
+      "text": "x",
+      "state": "done",
+      "startedAt": "2026-10-26T12:56:05.102Z",
+      "finishedAt": "2026-10-26T12:56:05.102Z"
     },
     {
-      "text": "Config + discovery + 401",
-      "state": "queued"
+      "text": "x",
+      "state": "done",
+      "startedAt": "2026-10-26T12:56:05.155Z",
+      "finishedAt": "2026-10-26T12:56:05.155Z"
     },
     {
-      "text": "Authorize + consent",
-      "state": "queued"
+      "text": "x",
+      "state": "done",
+      "startedAt": "2026-10-26T12:56:05.219Z",
+      "finishedAt": "2026-10-26T12:56:05.219Z"
     },
     {
-      "text": "Token + revoke + bearer",
-      "state": "queued"
+      "text": "x",
+      "state": "done",
+      "startedAt": "2026-10-26T12:56:05.272Z",
+      "finishedAt": "2026-10-26T12:56:05.272Z"
     },
     {
       "text": "Tests, CLI, docs, PR",
       "state": "queued"
+    },
+    {
+      "text": "x",
+      "state": "done",
+      "startedAt": "2026-10-26T12:56:05.045Z",
+      "finishedAt": "2026-10-26T12:56:05.045Z"
     }
   ],
-  "result": null,
+  "result": {
+    "state": "done",
+    "summary": "OAuth 2.1 on axHub /mcp: pre-registered client from Coolify env, discovery, admin consent, PKCE S256, rotating refresh tokens, revoke + CLI. 394 tests.",
+    "branch": "claude/axhub-oauth",
+    "commits": [
+      {
+        "sha": "695072e"
+      }
+    ],
+    "filesChanged": 20,
+    "tests": {
+      "axhub pnpm test": {
+        "before": "380",
+        "after": "394"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/axHub/pull/9"
+    }
+  },
   "closed": null,
-  "state": "running",
-  "status": "running",
+  "state": "done",
+  "status": "done",
   "buildRef": {
     "kind": "pending",
     "id": "axhub-oauth"
   },
   "surface": "claude-ai",
   "startedAt": "2026-10-26T12:47:08.942Z",
-  "lastSeenAt": "2026-10-26T12:47:08.942Z",
+  "finishedAt": "2026-10-26T12:56:05.331Z",
+  "lastSeenAt": "2026-10-26T12:56:05.272Z",
   "estimate": {
     "minutes": 120,
     "costUsd": 16.8
@@ -59,5 +93,6 @@
     "packages/storage-sqlite",
     "docs",
     "project/initialization"
-  ]
+  ],
+  "progress": 1
 }

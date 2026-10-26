@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-26T12:46:58.923Z",
+ "updatedAt": "2026-10-26T12:56:04.974Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3990,38 +3990,53 @@
    "title": "axHub: OAuth 2.1 sign-in on /mcp so claude.ai custom connectors connect",
    "detail": "Repo MossesX/axHub. Pre-registered client from AXHUB_OAUTH_CLIENT_ID / AXHUB_OAUTH_CLIENT_SECRET (Coolify), discovery (RFC 9728 + RFC 8414), /oauth/authorize with hub admin sign-in + consent, /oauth/token (authorization_code + PKCE S256 required, client secret, refresh rotation with reuse detection), /oauth/revoke, hashed tokens in storage (migration 5, contract tests), tokens act as the owner with the same approval rules, AXHUB_MCP_TOKEN keeps working. Branch + PR, not merged.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Oct 26 2026 on Opus: axHub branch claude/axhub-oauth, PR MossesX/axHub#9 (not merged). 394 tests. Then redeploy on Coolify and connect claude.ai with the client id + secret.",
+     "at": "2026-10-26T12:56:04.974Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Storage: oauth_tokens repository (memory + SQLite, migration 5, contract test, prune)",
      "at": "",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-26T12:56:04.974Z"
     },
     {
      "text": "Config + discovery endpoints + /mcp 401 with resource_metadata",
      "at": "",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-26T12:56:04.974Z"
     },
     {
      "text": "Authorize: admin sign-in, consent page, codes with PKCE",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T12:56:04.974Z"
     },
     {
      "text": "Token + revoke endpoints, refresh rotation, bearer auth accepts OAuth tokens",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T12:56:04.974Z"
     },
     {
      "text": "Tests, CLI list/revoke, docs + decision log, PR",
      "at": "",
-     "estimate": "15 min"
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-26T12:56:04.974Z"
     }
    ],
    "createdAt": "2026-10-26T12:46:58.923Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-26T12:46:58.923Z",
+   "builtAt": "2026-10-26T12:56:04.974Z",
+   "updatedAt": "2026-10-26T12:56:04.974Z",
    "estimate": "2 h",
    "source": "chat"
   }

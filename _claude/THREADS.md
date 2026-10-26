@@ -14,7 +14,7 @@ States: `working`, `queued` (waiting for Brett's go), `blocked` (needs Brett), `
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| axHub OAuth 2.1 sign-in for the claude.ai connector | working | axHub `claude/axhub-oauth` | – | Building (Opus, pending `axhub-oauth`, change `chg-20261026-120d016a22`) | 2026-10-26 |
+| axHub OAuth 2.1 sign-in for the claude.ai connector | review | axHub `claude/axhub-oauth` | axHub #9 | Built (Opus, 394 tests). Merge axHub #9, redeploy on Coolify, then connect claude.ai with the client id + secret | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 (draft) | Needs Brett's answer in the thread. 24 commits behind main, conflicts in `framework/plan/pending.json` + `framework/spec/PORTING.md` (small) | 2026-10-26 |
 | Add icon picker dialog for status plugins | blocked | `claude/project-thread-4s5igq` (+ `claude/project-thread-v1id7r`) | – | Needs Brett's answer in the thread; unmerged work on both branches, no PR | 2026-10-26 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
