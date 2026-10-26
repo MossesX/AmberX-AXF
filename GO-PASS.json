@@ -1,0 +1,11 @@
+{
+  "$axhub": "go-pass@1",
+  "issuedAt": "2026-10-26T23:42:01.768Z",
+  "by": "admin",
+  "note": "",
+  "hub": "https://axhub.amberxai.com",
+  "readme": "Written by axHub when Brett said go. A Claude session that can't reach axHub to load the rules and THREADS.md may start work only while state is \"go\" and expiresAt is in the future. Never edit by hand.",
+  "state": "go",
+  "hours": 1,
+  "expiresAt": "2026-10-27T00:42:01.768Z"
+}
