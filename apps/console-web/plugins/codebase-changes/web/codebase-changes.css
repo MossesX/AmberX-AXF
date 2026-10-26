@@ -86,3 +86,17 @@ button.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 1
 /* timers on active entries; stuck ones (no word / 30+ min) in the warning colour with a trash can */
 .axp-codebase-changes__timer { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap }
 .axp-codebase-changes__timer.is-stuck { color: var(--fx-warning) }
+
+/* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an
+   ellipsis (hover shows it whole, tap opens the details). Expanded details stay multi-line. Layout only. */
+button.axp-codebase-changes-banner__main { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.5); white-space: nowrap; overflow: hidden }
+.axp-codebase-changes-banner__top { flex: 0 1 auto; min-width: 0; flex-wrap: nowrap; overflow: hidden }
+.axp-codebase-changes-banner__lead { flex: 1 1 0 }
+button.axp-codebase-changes-banner__entry { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.5); white-space: nowrap; overflow: hidden }
+.axp-codebase-changes-banner__line { flex-wrap: nowrap }
+.axp-codebase-changes-banner__entry > .axp-codebase-changes-banner__line:first-child { flex: 0 1 auto; min-width: 0; max-width: 65% }
+.axp-codebase-changes-banner__entry > .axp-codebase-changes-banner__line + .axp-codebase-changes-banner__line { flex: 0 0 auto }
+.axp-codebase-changes-banner__entry > .axp-codebase-changes-banner__sub { flex: 1 1 0; min-width: 0 }
+.axp-codebase-changes-banner__item { align-items: center; flex-wrap: wrap }
+.axp-codebase-changes-banner__top > * { flex-shrink: 0 }
+.axp-codebase-changes-banner__top > strong { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

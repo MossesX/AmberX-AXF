@@ -56,3 +56,17 @@ button.axp-activity__more { all: unset; cursor: pointer; display: inline-flex; a
 .axp-activity__actions { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); padding: calc(var(--fx-space) / 2) 0 0 calc(var(--fx-space) * 3); }
 .axp-activity__group { margin: var(--fx-space) 0 calc(var(--fx-space) / 2); font-weight: 600; }
 .axp-activity__item--held .axp-activity__time { color: var(--fx-muted); }
+
+/* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an
+   ellipsis (hover shows it whole, tap opens the details). Expanded details stay multi-line. Layout only. */
+button.axp-activity__summary { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.5); white-space: nowrap; overflow: hidden }
+.axp-activity__top { flex: 0 1 auto; min-width: 0; flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
+.axp-activity__lead { flex: 1 1 0 }
+.axp-activity__title { flex-direction: row; align-items: baseline; gap: calc(var(--fx-space) * 0.5); overflow: hidden; white-space: nowrap }
+.axp-activity__title > span:first-child { flex: 0 1 auto; min-width: 0 }
+.axp-activity__title > .axp-activity__sub { flex: 1 1 0; min-width: 0 }
+button.axp-activity__head { flex-wrap: nowrap; white-space: nowrap }
+.axp-activity__head > * { flex-shrink: 0 }
+.axp-activity__head > .axp-activity__title { flex-shrink: 1 }
+.axp-activity__top > * { flex-shrink: 0 }
+.axp-activity__top > strong { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

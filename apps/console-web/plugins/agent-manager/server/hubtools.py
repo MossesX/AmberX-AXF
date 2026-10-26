@@ -129,7 +129,22 @@ def follow_job(rpc: Callable[..., tuple[dict[str, Any], str | None]], sid: str |
         time.sleep(poll_s)
 
 
-def call_once(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 600) -> dict[str, Any]:
+def hub_reason(title: Any, description: Any = None, tool: str = "") -> dict[str, str] | None:
+    """What axHub shows first on the approval page (axHub decision #99): {title, description}, or None when no title.
+
+    A call that needs approval without one is refused by the hub, so every caller says what it is for."""
+    if isinstance(title, dict):
+        description = title.get("description") if description is None else description
+        title = title.get("title")
+    t = " ".join(str(title or "").split())[:120]
+    if not t:
+        return None
+    d = str(description or "").strip()[:1000] or f"{t}. Runs {tool or 'the hub tool'} with the arguments shown in the code section."
+    return {"title": t, "description": d}
+
+
+def call_once(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 600,
+              reason: dict[str, str] | None = None) -> dict[str, Any]:
     """One `call` through the hub: {"ok": text} | {"confirm": id}; HubError otherwise."""
     url, tok = _hub()
 
@@ -143,6 +158,8 @@ def call_once(tool: str, arguments: dict[str, Any], confirmation_id: str | None 
     args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
     if confirmation_id:
         args["confirmation_id"] = confirmation_id
+    if reason:
+        args["reason"] = reason
     res, _ = rpc(sid, "tools/call", {"name": "call", "arguments": args}, timeout + 30)
     text = "\n".join(_texts(res))
     jid = started_job(res, text)
@@ -230,8 +247,10 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
     timeout = float(arguments.get("timeout_seconds") or 600) if isinstance(arguments.get("timeout_seconds"), (int, float)) else 600.0
     wait = args.get("wait") is not False
     approved = conf if isinstance(conf, str) else ""
+    why = hub_reason(args.get("reason"), args.get("description"), tool)
+    extra: dict[str, Any] = {"reason": why} if why else {}
     try:
-        r = call(tool, arguments, conf, timeout)
+        r = call(tool, arguments, conf, timeout, **extra)
         if "confirm" in r and wait:
             cid = r["confirm"]
             approved = cid
@@ -242,7 +261,7 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
                     return json.dumps({"status": "error", "message": "The approval expired."})
                 sleep(next(waits, 60.0))
                 try:
-                    r = call(tool, arguments, cid, timeout)
+                    r = call(tool, arguments, cid, timeout, **extra)
                 except HubError as e:
                     m = str(e).lower()
                     return json.dumps({"status": "error", "message": "Rejected on the hub." if "reject" in m else "The approval expired." if "expired" in m else str(e)})
@@ -251,7 +270,7 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
         out = str(r.get("ok", ""))
         if approved and shell_tool(tool):  # an approved shell command ran: the terminal shows it (axf.hub-runs@1)
             try:
-                record_run(tool, arguments, out, str(args.get("reason") or ""), str((ctx.get("agent") or {}).get("name") or ""), approved)
+                record_run(tool, arguments, out, (why or {}).get("title", ""), str((ctx.get("agent") or {}).get("name") or ""), approved)
             except Exception:  # noqa: BLE001 — the log never breaks the call
                 pass
         return json.dumps({"status": "ok", "output": out[-40_000:]})
@@ -262,14 +281,17 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
 SPEC = {
     "description": ("Run a tool on Brett's connector hub axHub (e.g. vps.run = a shell command on the VPS as root, vps.check, "
                     "vps.logs, github.*). axHub asks Brett to approve anything risky (every vps.run): this call waits for his "
-                    "decision (up to 30 min) and returns the result. Give `reason` in one line. Never put secrets in commands."),
+                    "decision (up to 30 min) and returns the result. Always give `reason` (what Brett is approving, one plain "
+                    "line) and `description` (what it does and why): the approval page shows them first, then the code. "
+                    "Never put secrets in commands."),
     "parameters": {"type": "object", "properties": {
         "tool": {"type": "string", "description": "service.tool, e.g. vps.run"},
         "arguments": {"type": "object", "description": "The hub tool's arguments, e.g. {command, timeout_seconds} for vps.run"},
-        "reason": {"type": "string", "description": "One line: why (for the log)"},
+        "reason": {"type": "string", "description": "What Brett is approving, one plain line, e.g. \"Restart the console container\""},
+        "description": {"type": "string", "description": "What it does and why, in plain words (shown when he opens the request)"},
         "confirmation_id": {"type": "string", "description": "Only when retrying a call Brett approved"},
         "wait": {"type": "boolean", "description": "Default true: wait for Brett's approval"}},
-        "required": ["tool", "arguments"]},
+        "required": ["tool", "arguments", "reason"]},
 }
 
 toolkit.register_builtin(TOOL, SPEC, lambda a, ctx: run(a, ctx), dangerous=True)
