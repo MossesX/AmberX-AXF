@@ -13,7 +13,7 @@ Throughout, replace:
 
 Keep a password manager open. Every secret you make goes straight into it and into its destination, nowhere else.
 
-**Time:** about 2–3 hours. Most of it is waiting for builds.
+**Time:** about 2.5–3.5 hours. Most of it is waiting for builds.
 
 ---
 
@@ -172,7 +172,7 @@ From here on, use an SSH session: Hostinger's browser terminal for now, Moshi af
 ### Step 13. Base tools and GitHub access
 
 ```bash
-apt-get update && apt-get install -y git mosh jq curl
+apt-get update && apt-get install -y git mosh jq curl tmux
 ufw allow 60000:61000/udp || true
 # Node 22 (Claude Code, claude-sync, the CLIs)
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs
@@ -200,6 +200,55 @@ This lets axHub's `vps` service run commands on the host, each one approved by y
 3. In Moshi, add a host: `<vps-ip>`, user `root`, port 22, that key, mosh on. Connect.
 
 ([install_instructions §13](install_instructions.md#13-moshi))
+
+### Step 15a. tmux
+
+tmux was installed in step 13. From now on start Claude Code inside it, so it keeps running when Moshi drops:
+
+```bash
+tmux new -s claude     # later: tmux attach -t claude   (detach: Ctrl-b d)
+```
+
+axHub's `vps` service already speaks tmux: `vps.check tmux_sessions` lists sessions without asking, and the
+`vps.tmux` tool (start, type into, rename, kill a session) asks for your approval each time
+([install_instructions §17a](install_instructions.md#17a-tmux)).
+
+### Step 15b. ntfy
+
+1. Install the **ntfy** app on your phone.
+2. Make a topic: `openssl rand -hex 16`. Save it in your password manager (anyone with the name can read it).
+3. In the ntfy app → **+** → subscribe to that topic (server `ntfy.sh`, or your own).
+4. Coolify → axHub → Environment Variables: `AXHUB_PUSH_NTFY_TOPIC=<topic>` → Redeploy. Approvals now ping you.
+5. Coolify → axHub → Terminal, so Claude and the console can send too:
+
+```bash
+axhub services add --json '{"namespace":"ntfy","type":"plugin","displayName":"ntfy","address":"https://ntfy.sh","config":{"kind":"ntfy","topics":["<topic>"]}}'
+```
+
+([install_instructions §17b](install_instructions.md#17b-ntfy))
+
+### Step 15c. Tailscale
+
+1. Sign up at **tailscale.com**; install the Tailscale app on your phone and sign in.
+2. Admin console → Settings → **Keys** → **Generate auth key** (one-off). On the VPS:
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up --auth-key=<tskey-auth-…> --ssh --hostname=vps
+tailscale ip -4      # the VPS's 100.x address
+```
+
+3. Admin console → Settings → Keys → **Generate access token**. Coolify → axHub → Terminal:
+
+```bash
+axhub vault set tailscale-token      # paste the tskey-api-… token
+axhub services add --json '{"namespace":"tailscale","type":"plugin","displayName":"Tailscale","address":"https://api.tailscale.com","credentialRef":"tailscale-token","config":{"kind":"tailscale","tailnet":"-"}}'
+```
+
+4. Optional: in Moshi switch the host to `vps` (the tailnet name). Only after that works, close TCP 22 and UDP
+   60000-61000 in hPanel → VPS → Firewall.
+
+([install_instructions §17c](install_instructions.md#17c-tailscale))
 
 ---
 
@@ -316,7 +365,11 @@ On claude.ai in a browser → **Settings → Connectors**:
 | Check | Expect |
 | --- | --- |
 | `https://axhub.<domain>/healthz` | `"status":"ok"` |
-| claude.ai chat: "Use axHub's list_services" | `axhub`, `vps`, `github`, `hostinger` |
+| claude.ai chat: "Use axHub's list_services" | `axhub`, `vps`, `github`, `hostinger`, `ntfy`, `tailscale` |
+| claude.ai chat: "Call vps.check tmux_sessions" | your `claude` session |
+| claude.ai chat: "Call ntfy.publish with message test" | a push on your phone |
+| claude.ai chat: "Call tailscale.devices" | the VPS and your phone |
+| Console → Plugins → **Connections** | every service listed, the configured ones green |
 | claude.ai chat: "Call axhub.ping" | `pong: true` |
 | Console banner | Claude badge green, no Keys needed banner |
 | Systems check | all green, or only items you chose to skip |

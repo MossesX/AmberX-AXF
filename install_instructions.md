@@ -30,7 +30,8 @@ log. When a step says "copy it", paste it straight into its destination or into 
 14. [Hostinger and the VPS](#14-hostinger-and-the-vps)
 15. [The Dev Console's own tokens and the sign-in wall](#15-the-dev-console)
 16. [Vinny, Mosses and axHub's VPS shell](#16-vinny-mosses-and-the-vps-shell)
-17. [Troubleshooting](#17-troubleshooting)
+17. [tmux, ntfy and Tailscale](#17-tmux-ntfy-and-tailscale)
+18. [Troubleshooting](#18-troubleshooting)
 
 ---
 
@@ -45,6 +46,9 @@ log. When a step says "copy it", paste it straight into its destination or into 
         │                                      │     ├─ vault (GitHub token, Hostinger token, …)
         │                                      │     ├─ vps    (root shell, every command approved by you)
         │                                      │     ├─ github (REST, writes approved)
+        │                                      │     ├─ tmux   (sessions on the VPS, through vps; changes approved)
+        │                                      │     ├─ ntfy   (push to your phone, listed topics only)
+        │                                      │     ├─ tailscale (devices, routes, DNS; changes approved)
         │                                      │     └─ /projects (rules, memory, shared data for every project)
         │                                      │
         └─ browser ────────────────────────────┼─► Dev Console https://console.amberxai.com (behind axHub's sign-in)
@@ -63,6 +67,10 @@ log. When a step says "copy it", paste it straight into its destination or into 
   shell and the projects tree for it. The credentials stay in axHub's vault, and every risky call waits for
   your approval.
 - **The Dev Console** is the framework's control app: credentials, AI keys, build manager, terminal, handoff.
+  Its **Connections** plugin lists every app and service wired through axHub (and the ones you could add).
+- **tmux** keeps Claude Code and long jobs running on the VPS when Moshi drops or the phone sleeps. **ntfy**
+  pushes approvals, build results and alerts to your phone. **Tailscale** puts the VPS, your phone and your
+  computers on one private network, so SSH, mosh and the console can stay off the public internet.
 - **Claude** shows up in four places: claude.ai and the Claude app (chats and Projects), Claude Code on the VPS,
   Claude Code cloud sessions (claude.ai/code), and the console's AI assistant. Each one signs in on its own.
 
@@ -86,6 +94,11 @@ log. When a step says "copy it", paste it straight into its destination or into 
 | Claude refresh token `sk-ant-ort…` | Gets new access tokens without signing in again | same file | console AI keys (paired) | console renews the pair |
 | Claude long-lived token `sk-ant-oat01…` | One-year Claude Code token | `claude setup-token` | console Terminal settings; cloud env `CLAUDE_CODE_OAUTH_TOKEN` | headless / terminal Claude Code |
 | `ANTHROPIC_API_KEY` `sk-ant-api…` | Pay-per-use API key | console.anthropic.com → API keys | console AI keys or credentials; `~/.anthropic-key` | API-key features, claude-pick API mode |
+| `AXHUB_PUSH_NTFY_TOPIC` | Long random ntfy topic for axHub's approval pushes (works like a password) | `openssl rand -hex 16` | Coolify → axHub env; the ntfy app on your phone | axHub approval push |
+| `AXHUB_PUSH_NTFY_TOKEN` | ntfy access token (only for a protected ntfy server) | `ntfy token add <user>` on that server | Coolify → axHub env | axHub approval push |
+| ntfy access token `tk_…` | Same token for the `ntfy` service (optional) | as above | axHub vault `ntfy-token`; console Settings → Alerts → ntfy | `ntfy.publish` / `poll`, console alerts |
+| `TAILSCALE_API_TOKEN` `tskey-api-…` | Tailscale API access token (90 days max) | Tailscale admin → Settings → Keys | axHub vault `tailscale-token`; console credentials | `tailscale` service, Connections plugin |
+| Tailscale auth key `tskey-auth-…` | Joins a machine to your tailnet once | Tailscale admin → Settings → Keys | typed once on the VPS (`tailscale up --auth-key`), then deleted | VPS joining the tailnet |
 | `MOSHI_SSH_PUBKEY` | Moshi's **public** key (not secret) | Moshi app → Keys | console credentials → VPS `authorized_keys` | Moshi sign-in |
 | `ANDROID_DEBUG_KEYSTORE` | Stable signing key for app APKs (base64) | `keytool` | GitHub Actions secret | `android.yml` |
 
@@ -273,6 +286,8 @@ at a hidden prompt, never as arguments.
 ```bash
 axhub vault set github-token        # paste the GitHub token (section 12)
 axhub vault set hostinger-token     # paste the Hostinger API token (section 14)
+axhub vault set tailscale-token     # paste the Tailscale API token (section 17)
+axhub vault set ntfy-token          # only for a protected ntfy server (section 17)
 axhub confirmations approve <id>    # approve a waiting call from the terminal
 axhub users passwd admin            # reset the admin password
 ```
@@ -554,7 +569,80 @@ use `AXF_TOKEN` on `/api` and `/mcp`. If the hub is down and you're locked out, 
 
 ---
 
-## 17. Troubleshooting
+## 17. tmux, ntfy and Tailscale
+
+All three are wired through axHub (decision #99 in the axHub repo), so Claude, the console and Vinny reach them
+the same way they reach GitHub: one approval screen, credentials only in the vault. The console's **Connections**
+plugin shows each one with its state, keys and a Configure button.
+
+### 17a. tmux
+
+**What:** a terminal multiplexer on the VPS. A Claude Code session started in tmux keeps running when Moshi
+disconnects, and any device can attach to it later.
+
+1. **Install:** `apt-get install -y tmux` (the systems check flags it if missing; its Auto fix sends that exact
+   command to axHub's `vps.run` for your approval).
+2. **Use it from Moshi:** `tmux new -s claude` then `claude`; detach with `Ctrl-b d`; come back with
+   `tmux attach -t claude`. `tmux ls` lists sessions.
+3. **Through axHub (no setup, it rides the `vps` service):**
+   - `vps.check tmux_sessions` / `tmux_windows` list sessions and panes with no approval.
+   - `vps.logs tmux_capture` reads what a pane shows (asks first: panes can show secrets).
+   - `vps.tmux` starts (`new_session`), types into (`send_keys`), renames or kills a session. Every call
+     waits for your approval and the approval shows the exact session and keys.
+- **Why:** sessions survive the phone sleeping, and Claude can check on a long build in a pane without you
+  re-opening Moshi.
+
+### 17b. ntfy
+
+**What:** push notifications to the ntfy app on your phone. The hub uses it two ways:
+
+1. **Approval pushes (built in, decision #89).** Pick a long random topic (`openssl rand -hex 16`). In Coolify →
+   axHub → Environment Variables set `AXHUB_PUSH_NTFY_TOPIC=<topic>` (and `AXHUB_PUSH_NTFY_URL` +
+   `AXHUB_PUSH_NTFY_TOKEN` only for your own ntfy server), then redeploy. In the ntfy app → **+** → subscribe to
+   that topic. Every approval request now pings your phone; tapping opens it.
+2. **The `ntfy` service (for Claude, Vinny and the console).** In Coolify → axHub → Terminal:
+   ```bash
+   axhub vault set ntfy-token     # only for a protected server
+   axhub services add --json '{"namespace":"ntfy","type":"plugin","displayName":"ntfy","address":"https://ntfy.sh","credentialRef":"ntfy-token","config":{"kind":"ntfy","topics":["<topic>"]}}'
+   ```
+   Tools: `ntfy.publish`, `ntfy.poll`, `ntfy.health`, only to the topics listed in `config.topics`.
+3. **Console alerts:** Settings → **Alerts** → ntfy: same server and topic (and token), then **Test**.
+
+- **Why:** you hear about approvals, failed builds and finished jobs wherever you are, without keeping the
+  console open. A topic on ntfy.sh is readable by anyone who knows its name, so treat it like a password.
+
+### 17c. Tailscale
+
+**What:** a private network (tailnet) between the VPS, your phone and your computers.
+
+1. **Account:** sign up at tailscale.com (GitHub sign-in works). Install the Tailscale app on your phone and
+   sign in.
+2. **Join the VPS:** Tailscale admin → Settings → **Keys** → **Generate auth key** (one-off, 1 day). On the VPS:
+   ```bash
+   curl -fsSL https://tailscale.com/install.sh | sh
+   tailscale up --auth-key=<tskey-auth-…> --ssh --hostname=vps
+   ```
+   The key is used once; don't save it anywhere. `tailscale ip -4` shows the VPS's 100.x address.
+3. **API token for axHub:** Tailscale admin → Settings → Keys → **Generate access token** (90 days). In Coolify →
+   axHub → Terminal:
+   ```bash
+   axhub vault set tailscale-token
+   axhub services add --json '{"namespace":"tailscale","type":"plugin","displayName":"Tailscale","address":"https://api.tailscale.com","credentialRef":"tailscale-token","config":{"kind":"tailscale","tailnet":"-"}}'
+   ```
+   Reads run directly (`tailscale.devices`, `device`, `device_routes`, `keys`, `dns`, `acl`); changes
+   (`authorize_device`, `set_device_tags`, `set_device_routes`, `delete_device`) always ask. Put the same token in
+   the console's systems check as `TAILSCALE_API_TOKEN` so the Connections plugin can show its state.
+4. **Moshi over the tailnet (optional):** in Moshi, edit the host to `vps` (MagicDNS) or its 100.x address. Once
+   that works you can close port 22 and UDP 60000-61000 on the public firewall (hPanel → VPS → Firewall); keep
+   80/443 open for Coolify. Do this only after Moshi connects over Tailscale, or you lock yourself out (Hostinger's
+   browser terminal still works).
+- **Why:** SSH and mosh off the public internet, and every device you own can reach the VPS by name.
+- **Renewing:** the API token lasts 90 days. When it expires the systems check flags it and Keys needed asks for a
+  new one; set it again with `axhub vault set tailscale-token`.
+
+---
+
+## 18. Troubleshooting
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
@@ -568,3 +656,8 @@ use `AXF_TOKEN` on `/api` and `/mcp`. If the hub is down and you're locked out, 
 | Merged but nothing changed live | No auto deploy | [Section 4](#4-make-coolify-actions-reachable) |
 | Locked out of the console | Hub down, wall on | `AXF_WALL=off bash /opt/axf/deploy/install-console.sh` |
 | claude-sync holds a file | Changed in two places | Pick a copy: `claude-sync resolve <id> --keep local\|hub` |
+| `tmux_sessions` says "no server running" | No tmux session yet | `tmux new -s claude` in Moshi, or `vps.tmux new_session` |
+| `ntfy.publish` denied | Topic not in `config.topics` | Re-add the service with that topic listed |
+| No approval pushes | `AXHUB_PUSH_NTFY_TOPIC` unset, or phone not subscribed | Set it (16-64 letters/digits), redeploy, subscribe in the ntfy app |
+| `tailscale.*` answers denied | API token expired (90 days) | New access token → `axhub vault set tailscale-token` |
+| Moshi can't connect after closing port 22 | Moshi still uses the public IP | Hostinger browser terminal → `ufw allow 22`; switch Moshi to the tailnet name |
