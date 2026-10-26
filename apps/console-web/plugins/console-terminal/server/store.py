@@ -27,7 +27,7 @@ def _write(p: Path, data: Any) -> None:
 
 
 DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "moshKeepMinutes": 30, "fontSize": 14, "copyOnSelect": False,
-                            "pasteWarn": True, "mouseDefault": False, "moshDefault": False, "user": "", "showHubRuns": True,
+                            "pasteWarn": True, "mouseDefault": False, "moshDefault": False, "user": "", "showHubRuns": True, "showHeadless": True,
                             "vps": {"host": os.environ.get("AXF_VPS_HOST", ""), "port": 22, "user": "root"}}
 
 
@@ -50,7 +50,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k, lo, hi in (("idleMinutes", 5, 24 * 60), ("moshKeepMinutes", 1, 24 * 60), ("fontSize", 9, 28)):
             if k in patch:
                 s[k] = max(lo, min(int(patch[k]), hi))
-        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns"):
+        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless"):
             if k in patch:
                 s[k] = bool(patch[k])
         if "user" in patch:

@@ -177,7 +177,7 @@ check(fake.calls[0][0] == "vps.run" and fake.calls[1][2] == "11111111-2222-3333-
 check(sleeps[:2] == [15.0, 15.0] and mod.retry_delays()[9] == 15.0 and mod.retry_delays()[10] == 60.0, "retries: every 15 s ten times, then every minute (Brett's rule)")
 check(alerts and alerts[0]["link"].endswith("/approvals/11111111-2222-3333-4444-555555555555"), "an alert carries the one-tap approval link")
 cmd = fake.calls[0][1]["command"]
-check("base64 -d" in cmd and "worktree add" in cmd and "claude -p --model" in cmd and "AXF_ADOPT_CHANGE=chg-" in cmd and "git push" not in cmd and "merge" not in cmd, "the command: brief as base64, own worktree, headless Claude Code adopting the entry, no push/merge")
+check("base64 -d" in cmd and "worktree add" in cmd and "set -- --model" in cmd and "claude-headless.sh' --name 'build-" in cmd and "claude -p \"$@\"" in cmd and "AXF_ADOPT_CHANGE=chg-" in cmd and "git push" not in cmd and "merge" not in cmd, "the command: brief as base64, own worktree, headless Claude Code adopting the entry, no push/merge")
 ent = svc.get(j["changeId"])
 check(ent["surface"] == "console-launch" and ent["status"] == "running" and ent["buildRef"]["id"] == open_item["id"] and ent["model"] == open_item["model"].lower(), "the entry shows running in Live (surface console-launch, its buildRef + model)")
 check(c.get("/p/jobs").json()["items"][0]["state"] == "launched", "jobs lists it")
