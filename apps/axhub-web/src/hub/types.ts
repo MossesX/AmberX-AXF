@@ -9,7 +9,7 @@ export interface ApprovalItem {
   args: string;
   /** The summary fits on one line, so a row shows the complete call and may carry Approve. */
   whole: boolean;
-  /** What is being approved: the caller's one-line title, else "Run <tool>" (axHub decision #98). */
+  /** What is being approved: the caller's one-line title, else "Run <tool>" (axHub decision #99). */
   title: string;
   /** True when the title and description are the caller's own words (a claim: the code below is what runs). */
   reasonGiven: boolean;

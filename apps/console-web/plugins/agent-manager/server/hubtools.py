@@ -130,7 +130,7 @@ def follow_job(rpc: Callable[..., tuple[dict[str, Any], str | None]], sid: str |
 
 
 def hub_reason(title: Any, description: Any = None, tool: str = "") -> dict[str, str] | None:
-    """What axHub shows first on the approval page (axHub decision #98): {title, description}, or None when no title.
+    """What axHub shows first on the approval page (axHub decision #99): {title, description}, or None when no title.
 
     A call that needs approval without one is refused by the hub, so every caller says what it is for."""
     if isinstance(title, dict):

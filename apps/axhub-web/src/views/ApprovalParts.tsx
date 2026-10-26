@@ -1,5 +1,5 @@
 /**
- * The three layers of an approval (axHub decision #98): what is being approved (the title), what it does (the
+ * The three layers of an approval (axHub decision #99): what is being approved (the title), what it does (the
  * caller's description + the tool's own), and the exact code that runs, in its own collapsible section. The title and
  * description are the caller's claim; the code is what the approval binds to, so it is always one tap away.
  */

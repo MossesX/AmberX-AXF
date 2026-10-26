@@ -150,7 +150,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const RUN = '20261022-143005-ab12';
   eq(parseRoute(''), { view: 'home', params: {} }, 'no hash is the approvals page');
   eq(parseRoute('#/approvals'), { view: 'home', params: {} }, '#/approvals is home');
-  eq(parseRoute('#/go-pass'), { view: 'go-pass', params: {} }, '#/go-pass opens the Go pass page (axHub decision #98)');
+  eq(parseRoute('#/go-pass'), { view: 'go-pass', params: {} }, '#/go-pass opens the Go pass page (axHub decision #99)');
   const readText = (await import('node:fs')).readFileSync;
   ok(readText(new URL('./src/assets/nav-menu/axhub-web.json', import.meta.url), 'utf8').includes('"view": "go-pass"'), 'the nav menu reaches the Go pass page');
   {

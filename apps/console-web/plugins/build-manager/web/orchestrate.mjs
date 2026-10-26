@@ -196,6 +196,15 @@ export const sq = (s) => `'${str(s).replace(/'/g, `'\\''`)}'`;
  * clone on the build's branch, the brief in a file, headless Claude Code with the model, reporting env set. The brief
  * is passed base64 so no quoting can break out. Never pushes to main and never merges.
  */
+/** Headless Claude Code in a tmux session the console's Terminal opens and brings to the front (Oct 26 2026); the old
+ * nohup launch when the console's checkout doesn't have the helper yet. */
+export function headless(name, log, args, repoDir = '/opt/axf') {
+  const helper = `${repoDir}/deploy/claude-headless.sh`;
+  const n = String(name).replace(/[^A-Za-z0-9._-]/g, '-').slice(0, 48);
+  return `set -- ${args}; if [ -f ${sq(helper)} ]; then bash ${sq(helper)} --name ${sq(n)} --brief .axf-brief.md --log ${log} -- "$@"; `
+    + `else nohup claude -p "$@" "$(cat .axf-brief.md)" > ${log} 2>&1 & echo "started pid $! in $(pwd)"; fi`;
+}
+
 export function launchCommand({ brief, branch, model, changeId, repoDir = '/opt/axf', workRoot = '/root/axf-builds' }) {
   const safeBranch = /^[A-Za-z0-9._/-]{1,120}$/.test(branch) && !branch.includes('..') ? branch : 'build/unnamed';
   const dir = `${workRoot}/${safeBranch.replace(/[^A-Za-z0-9._-]/g, '-')}`;
@@ -210,7 +219,6 @@ export function launchCommand({ brief, branch, model, changeId, repoDir = '/opt/
     `cd ${sq(dir)}`,
     `echo ${sq(b64)} | base64 -d > .axf-brief.md`,
     `export AXF_SURFACE=console-launch AXF_MODEL=${m}${id ? ` AXF_ADOPT_CHANGE=${id}` : ''} AXF_CLAUDE_AUTH=\${AXF_CLAUDE_AUTH:-plan}`,
-    `nohup claude -p --model ${m} --permission-mode acceptEdits "$(cat .axf-brief.md)" > .axf-build.log 2>&1 &`,
-    'echo "started pid $! in $(pwd)"',
+    headless(`build-${safeBranch}`, '.axf-build.log', `--model ${m} --permission-mode acceptEdits`, repoDir),
   ].join('; ');
 }

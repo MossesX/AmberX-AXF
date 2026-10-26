@@ -202,7 +202,7 @@ def _call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None 
     args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
     if confirmation_id:
         args["confirmation_id"] = confirmation_id
-    if reason:  # axHub decision #98: what Brett is approving, shown first on the approval page
+    if reason:  # axHub decision #99: what Brett is approving, shown first on the approval page
         args["reason"] = reason
     res = rpc("tools/call", {"name": "call", "arguments": args})
     text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))

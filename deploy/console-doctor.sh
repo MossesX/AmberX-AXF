@@ -34,6 +34,9 @@ check_all() {
   # mosh
   if have mosh-server; then put host-mosh ok "mosh-server $(mosh-server --version 2>/dev/null | head -1 | awk '{print $2}') installed"
   else put host-mosh error "mosh-server is not installed"; fi
+  # headless Claude Code runs in tmux so the console's Terminal can show it (deploy/claude-headless.sh, Oct 26 2026)
+  if have tmux; then put host-tmux ok "tmux $(tmux -V 2>/dev/null | awk '{print $2}') installed"
+  else put host-tmux warn "tmux isn't installed: headless Claude Code sessions can't show in the console's Terminal"; fi
   # firewall: mosh needs UDP 60000-61000
   if have ufw && ufw status 2>/dev/null | grep -q "Status: active"; then
     if ufw status 2>/dev/null | grep -Eq '60000:61000/udp.*ALLOW'; then put host-mosh-ports ok "ufw allows UDP 60000-61000"
@@ -55,12 +58,13 @@ check_all() {
   # claude-pick --install puts the launcher in ~/.local/bin and an alias in ~/.bashrc / ~/.zshrc. Cron and vps.run are
   # non-interactive shells that never load aliases, so `command -v claude` alone always finds the real binary here.
   if [ -x "$USER_HOME/.local/bin/claude-pick" ] && { grep -qs "alias claude='claude-pick'" "$USER_HOME/.bashrc" "$USER_HOME/.zshrc" \
-       || grep -qs "claude-pick" "$(command -v claude 2>/dev/null)"; }; then put host-claude-pick ok "claude asks for model + sign-in at launch"
+       || grep -qs "claude-pick" "$(command -v claude 2>/dev/null)"; }; then put host-claude-pick ok "claude starts on the Claude plan + Opus, no questions"
   elif [ -x "$USER_HOME/.local/bin/claude-pick" ]; then put host-claude-pick warn "claude-pick is installed but no shell alias points claude at it"
   else put host-claude-pick warn "claude-pick isn't installed: launches don't ask for the model"; fi
   if have claude-sync; then put host-claude-sync ok "claude-sync installed"; else put host-claude-sync warn "claude-sync isn't installed: rules and memory don't sync from the hub"; fi
-  if grep -qs "session-checkin/checkin.mjs" "$USER_HOME/.claude/settings.json" "$DIR/.claude/settings.json" "$DIR/.claude/settings.local.json"; then put host-session-checkin ok "session check-in hook installed"
-  else put host-session-checkin warn "session check-in isn't installed for VPS sessions"; fi
+  # Session check-in asks nothing at login (Oct 26 2026, Brett): installed or not is fine, the hook stays silent.
+  if grep -qs "session-checkin/checkin.mjs" "$USER_HOME/.claude/settings.json" "$DIR/.claude/settings.json" "$DIR/.claude/settings.local.json"; then put host-session-checkin ok "session check-in hook installed, silent (no questions at login)"
+  else put host-session-checkin ok "session check-in off (no questions at login)"; fi
   if [ -f "$USER_HOME/.anthropic-key" ]; then
     m=$(stat -c %a "$USER_HOME/.anthropic-key" 2>/dev/null); [ "$m" = "600" ] && put host-anthropic-keyfile ok "~/.anthropic-key is owner-only" || put host-anthropic-keyfile error "~/.anthropic-key is mode $m (should be 600)"
   else put host-anthropic-keyfile info "no ~/.anthropic-key (only needed for API-key sign-in)"; fi
@@ -81,6 +85,7 @@ fix() {
   [ "${ST[$id]:-ok}" = "ok" ] || [ "${ST[$id]:-}" = "info" ] && [ -z "$ONLY" ] && return 0
   echo; echo "✗ $id: ${SUM[$id]:-}"
   case "$id" in
+    host-tmux) ask "Install tmux (apt-get install -y tmux)?" && { apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq tmux; } ;;
     host-mosh) ask "Install mosh (apt-get install -y mosh)?" && { apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq mosh; } ;;
     host-mosh-ports) ask "Allow UDP 60000-61000 in ufw (mosh)?" && ufw allow 60000:61000/udp; echo "  If Hostinger's firewall is on: hPanel → VPS → Firewall → allow UDP 60000-61000." ;;
     host-docker|host-update-cron) ask "Re-run the console installer (bash $DIR/deploy/install-console.sh)?" && bash "$DIR/deploy/install-console.sh" ;;
@@ -89,8 +94,7 @@ fix() {
     host-claude-pick) ask "Install claude-pick as the claude launcher?" && bash "$DIR/deploy/claude-pick.sh" --install ;;
     host-claude-sync) if [ -f "$USER_HOME/axHub/clients/claude-code/claude-sync.mjs" ]; then ask "Install claude-sync from ~/axHub?" && node "$USER_HOME/axHub/clients/claude-code/claude-sync.mjs" install
                       else echo "  git clone https://github.com/MossesX/axHub ~/axHub && node ~/axHub/clients/claude-code/claude-sync.mjs install"; fi ;;
-    host-session-checkin) if have node; then ask "Run the session check-in installer now (asks a few questions)?" && node "$DIR/apps/console-web/plugins/session-checkin/install.mjs"
-                          else echo "  Install Node 22, then: node $DIR/apps/console-web/plugins/session-checkin/install.mjs"; fi ;;
+    host-session-checkin) echo "  Nothing to do: the session check-in asks no questions at login (its config's ask: true turns them back on)." ;;
     host-anthropic-keyfile) ask "Make ~/.anthropic-key owner-only (chmod 600)?" && chmod 600 "$USER_HOME/.anthropic-key" ;;
     host-git-auth) echo "  Store GitHub access for the clone: gh auth login   (or a token in git's credential helper), then: git -C $DIR fetch" ;;
     host-moshi-key)

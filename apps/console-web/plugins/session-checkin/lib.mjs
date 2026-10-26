@@ -35,6 +35,8 @@ export const MODELS = {
 export function defaultConfig() {
   return {
     $axf: 'session-checkin-config@1',
+    // Off by default (Oct 26 2026, Brett: no questions at login). true = the old start-of-session question rounds.
+    ask: false,
     questions: Object.fromEntries(QUESTIONS.map((q) => [q.id, true])),
     sources: ['startup'],
     allowSkip: true,
@@ -60,7 +62,7 @@ export function normaliseConfig(c = {}) {
   if (archive !== 'auto' && !archive.startsWith('/')) throw new Error('archive must be "auto" or an absolute folder path');
   const dirs = Array.isArray(c.memoryDirs) ? c.memoryDirs.filter((x) => typeof x === 'string' && x && !x.includes('..')).slice(0, 8) : d.memoryDirs;
   return {
-    $axf: d.$axf, questions: q, sources: sources.length ? sources : ['startup'],
+    $axf: d.$axf, ask: c.ask === true, questions: q, sources: sources.length ? sources : ['startup'],
     allowSkip: c.allowSkip !== false, allowSameAsLast: c.allowSameAsLast !== false,
     unattended: c.unattended === 'off' ? 'off' : 'log',
     expected: { repo: str(c.expected?.repo, d.expected.repo), project: str(c.expected?.project, d.expected.project), vpsContainer: str(c.expected?.vpsContainer, d.expected.vpsContainer) },

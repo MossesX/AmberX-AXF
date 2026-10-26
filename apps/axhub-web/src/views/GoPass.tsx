@@ -1,5 +1,5 @@
 /**
- * Go pass (axHub decision #98): a Claude session that can't reach axHub to load the rules and THREADS.md does nothing
+ * Go pass (axHub decision #99): a Claude session that can't reach axHub to load the rules and THREADS.md does nothing
  * until Brett says go here. The hub writes the pass to the `go-pass` branch of each watched repo (never the default
  * branch), where such a session can read it; it ends by itself after the hours picked, or now with End.
  */

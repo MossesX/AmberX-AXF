@@ -5,6 +5,7 @@ import { openFromContext } from './open';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalTab } from './TerminalTab';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
+import { watchHeadless } from './headless';
 import './terminal.css';
 import { appMenu } from './menu';
 
@@ -15,18 +16,21 @@ import { appMenu } from './menu';
  *    folder the console marks (data-fx-ctx-target axf-container / axf-container-path) it opens right there
  *  - actions terminal.open[:<target>:<payload>], terminal.new
  *  - approved VPS / shell commands (axf.hub-runs@1) open in a read-only output tab once they've run (RunOutputTab.tsx)
+ *  - headless Claude Code sessions on the VPS (tmux axf-…, deploy/claude-headless.sh) open in a VPS tab attached to
+ *    them, with the terminal window restored, focused and brought to the front (headless.ts)
  *  - Settings → Plugins → Terminal
  */
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Terminal',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   provides: ['axf.terminal'],
   register(rt) {
     rt.actions.register('terminal.open', ([target, payload]) => openFromContext(rt, target, payload), { label: 'Open terminal', params: true });
     rt.actions.register('terminal.new', () => openFromContext(rt), { label: 'Open a terminal' });
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
+    watchHeadless(rt); // headless Claude Code sessions on the VPS open here, window to the front (setting showHeadless)
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);
   },
   tabs: { terminal: (t) => <TerminalTab tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },

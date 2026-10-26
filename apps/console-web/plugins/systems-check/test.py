@@ -254,7 +254,7 @@ check(c.post("/p/claude/host-mosh", json={}).status_code == 409, "the route refu
 check(c.get("/p/claude").json()["on"] is False, "GET claude reports the setting")
 # Every check gets a fix (Oct 23 2026): fixed commands for what can run unattended, Mosses for the rest
 cmds = c.get("/p/autofix").json()["commands"]
-check("host-report" in cmds and "host-session-checkin" in cmds and "--json" in cmds["host-session-checkin"], "host report + session check-in have fixed VPS commands")
+check("host-report" in cmds and "host-session-checkin" not in cmds, "host report has a fixed VPS command; session check-in has none (no questions at login)")
 ms_ = sys.modules.get(spec.name + ".mosses")
 done = []
 tk = ms_.Tasks(lambda cid: done.append(cid), run=lambda aid, prompt: {"text": "Ran claude-sync install.\nFixed.", "tools": [{"name": "axhub_call"}]})
@@ -493,7 +493,7 @@ check(dv._enable(["container-access"])() == "switched on container-access" and f
 cx.set_plugin_enabled = _old_set
 check(hf.command("host-claude-sync") and "git clone -q https://github.com/MossesX/axHub" in hf.command("host-claude-sync") and "claude-sync.mjs install" in hf.command("host-claude-sync"),
       "claude-sync gets a VPS Auto fix (clone or update ~/axHub, then install)")
-check('"onDevice\\":true' in hf.command("host-session-checkin") or '"onDevice":true' in hf.command("host-session-checkin").replace("\\", ""), "session check-in Auto fix installs for the VPS user on the device")
+check(not hf.command("host-session-checkin"), "session check-in is never installed by Auto fix (no questions at login)")
 r = c.post("/p/fix/plugin:nope")
 check(r.status_code == 400, "fix: an unknown codebase check has no Auto fix")
 # ---- one row per app whose baked framework is behind (Oct 23 2026)

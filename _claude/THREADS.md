@@ -3,39 +3,50 @@
 Every Claude session reads this file when it loads the project and keeps it current, so work can be picked up from
 any session, account or machine. The repo is the source of truth; chat history is not.
 
-**How to update:** when a thread starts, changes state, opens or merges a PR, or queues an item, edit its row (add one
-for a new thread), set *Updated*, commit and push with your branch. Move rows to *Done* once their PR is merged or
-the work is dropped. Queued items stay queued until Brett says to run them (project rule). Open PRs: check GitHub,
-not this file, before acting on one.
+**Read it before doing anything.** Then update it (edit the thread's row, or add one), set *Updated*, commit and push
+with your branch, whenever:
 
-States: `working`, `queued` (waiting for Brett's go), `blocked` (needs Brett), `review` (PR open), `on hold`, `done`.
+- a thread is made, or a session starts something (a build, edit, fix, test run, push, pull or merge);
+- a build completes, or anything fails;
+- tests start, pass, fail, or stop part way (say where);
+- a push or pull is needed, completes or fails;
+- a PR is opened, needs merging, is merged, or the merge fails;
+- a deploy is needed;
+- the session runs out of credits or hits a usage limit (state `stopped`, the step it was on, how to resume);
+- it needs Brett (state `blocked`, the exact question), or an item is queued.
+
+Move rows to *Done* once their PR is merged or the work is dropped. Queued items stay queued until Brett says to run
+them (project rule). Open PRs: check GitHub, not this file, before acting on one. If a session can't push, it says
+so in its reply and puts the row in its change-log entry so the next session can add it.
+
+States: `working`, `testing`, `review` (PR open / needs merge), `deploy` (merged, needs a deploy), `queued` (waiting
+for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of credits, usage limit, session ended),
+`on hold`, `done`.
 
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Approvals say what they're for + Go pass (load rules from axHub or stop) | review | axHub `claude/approval-reasons`, AXF `claude/approval-reasons` | axHub #10, AXF #103 | Built (Opus). Merge axHub #9 then this axHub PR, AXF #102 then this AXF PR; redeploy axHub + the AXHub web app | 2026-10-26 |
-| axHub OAuth 2.1 sign-in for the claude.ai connector | review | axHub `claude/axhub-oauth` (+ AXF `claude/axhub-oauth-thread`) | axHub #9, AXF #102 (log) | Built (Opus, 394 tests). Merge axHub #9, redeploy on Coolify, then connect claude.ai with the client id + secret | 2026-10-26 |
-| Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 (draft) | Needs Brett's answer in the thread. 24 commits behind main, conflicts in `framework/plan/pending.json` + `framework/spec/PORTING.md` (small) | 2026-10-26 |
-| Add icon picker dialog for status plugins | blocked | `claude/project-thread-4s5igq` (+ `claude/project-thread-v1id7r`) | – | Needs Brett's answer in the thread; unmerged work on both branches, no PR | 2026-10-26 |
+| No login questions + headless sessions in the console Terminal | review | `claude/no-login-questions-terminal-launches` | #105 | Merge; the VPS picks it up on the 5-minute update. Install tmux there (systems check Auto fix) | 2026-10-26 |
+| Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
+| Fix AmberX app sign-in and hosting | review | `claude/project-thread-kxgzso` | #99 | Merge, then re-run the installer on main; new APK from CI | 2026-10-26 |
+| Track threads and builds in the repo | review | `claude/project-thread-usdp87` | (this PR) | Merge | 2026-10-25 |
+| Require access and refresh Claude tokens | review | `claude/project-thread-i70ntv` | #97 | Review + merge | 2026-10-25 |
+| Fix banner rows not expanding | review | `claude/project-thread-jjbcw6` | #96 | Review + merge | 2026-10-25 |
+| Give axHub the console's settings interface | review | `claude/project-thread-74063i` | #95 | Review + merge | 2026-10-25 |
+| Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
+| Add assets appearance editing section | review | `claude/project-thread-qwqfp4` | #93 | Review + merge | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
+| Add icon picker dialog for status plugins | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
 | Add Push banner action log | on hold | – | – | Held by Brett | 2026-10-25 |
 | Store project rules in repo | queued | – | – | Rules file `_claude/rules/PROJECT-RULES.md` | 2026-10-25 |
-| Move axHub to console-style pages: deploy | queued | – | AXF #100, axHub #8 (both merged) | Redeploy axHub on Coolify (can't reach Coolify from claude.ai/code) | 2026-10-26 |
-| Fix AmberX app sign-in and hosting: rollout | queued | – | #99, #101 (merged) | Re-run `apps/amberx-droid/deploy/install.sh` on the VPS; new APK from CI | 2026-10-26 |
 
 ## Done (recent)
 
 | Thread | Result | Updated |
 |---|---|---|
-| Move axHub to console-style pages (AXF #100 + axHub #8) | merged | 2026-10-26 |
-| Codebase changes banner blank-console fix (#101) | merged | 2026-10-26 |
-| Fix AmberX app sign-in and hosting (#99) | merged | 2026-10-26 |
-| Track threads and builds in the repo (#98) | merged | 2026-10-26 |
-| Give axHub the console's settings interface (#95) | merged | 2026-10-26 |
-| Require access and refresh Claude tokens (#97) | merged | 2026-10-25 |
-| Fix banner rows not expanding (#96) | merged | 2026-10-25 |
-| Add assets appearance editing section (#93) | merged | 2026-10-25 |
+| Write install instructions and install steps | merged (#104) | 2026-10-26 |
+| axHub connector: OAuth client registration (decision #98) | merged (axHub #11); redeploy axHub, then re-add the connector | 2026-10-26 |
 | Add changes and features grid plugin | merged | 2026-10-25 |
 | Edit each Appearance asset individually | merged | 2026-10-25 |
 | Build context menu designer plugin | merged | 2026-10-25 |

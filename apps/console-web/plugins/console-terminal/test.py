@@ -207,6 +207,36 @@ v = c.post("/p/sessions", json={"kind": "vps", "cwd": "/root"}).json()
 check(v["badge"] == "HOST ROOT" and v["target"] == "127.0.0.1", "VPS tab opens over ssh with the HOST ROOT badge")
 c.delete(f"/p/sessions/{v['id']}")
 
+# headless Claude Code sessions (Oct 26 2026): tmux axf-… on the VPS, listed by one ssh tmux ls, attached in a VPS tab
+S = mod.sessions
+for bad in ("bash", "axf-x;rm -rf /", "axf-", "AXF-x", "axf-" + "a" * 70):
+    check(c.post("/p/sessions", json={"kind": "vps", "attach": bad}).status_code == 400, f"attach refuses {bad[:20]!r}")
+a = c.post("/p/sessions", json={"kind": "vps", "attach": "axf-fix-host-mosh"}).json()
+check(a["title"] == "Claude: fix-host-mosh" and a["badge"] == "HOST ROOT", "attach opens a VPS tab titled after the session")
+c.delete(f"/p/sessions/{a['id']}")
+seen_argv = []
+class R:
+    def __init__(self, out, code=0): self.stdout, self.stderr, self.returncode = out, "boom" if code else "", code
+def fake_run(argv, **kw):
+    seen_argv.append(argv)
+    return R("axf-fix-host-mosh 1761480000\nmy-own-session 1761480001\naxf-pr-feature-x 1761480002\n")
+S.RUNNER = fake_run
+S._headless_cache.update(at=0.0, value=None)
+h = c.get("/p/headless").json()
+check(h["on"] and h["ready"] and [x["name"] for x in h["items"]] == ["axf-fix-host-mosh", "axf-pr-feature-x"], "only axf-… tmux sessions are listed")
+check(h["items"][0]["createdAt"] == 1761480000000, "created time in ms")
+check("-T" in seen_argv[0] and "BatchMode=yes" in seen_argv[0] and seen_argv[0][-1].startswith("tmux ls"), "one non-interactive ssh runs tmux ls")
+c.get("/p/headless")
+check(len(seen_argv) == 1, "cached: a second ask within 8 s doesn't ssh again")
+S._headless_cache.update(at=0.0, value=None)
+S.RUNNER = lambda argv, **kw: R("", 255)
+h = c.get("/p/headless").json()
+check(h["ready"] is False and h["items"] == [] and h["why"], "ssh failure: not ready, says why, nothing breaks")
+c.put("/p/settings", json={"showHeadless": False})
+check(c.get("/p/headless").json()["on"] is False and c.get("/p/settings").json()["showHeadless"] is False, "switched off in Settings: nothing opens")
+c.put("/p/settings", json={"showHeadless": True})
+S.RUNNER = __import__("subprocess").run
+
 # Claude Code tab with a fake CLI
 fake = Path(tempfile.mkdtemp()) / "claude"
 fake.write_text("#!/bin/sh\necho CLAUDE-TAB token=${CLAUDE_CODE_OAUTH_TOKEN:+set} key=${ANTHROPIC_API_KEY:-none} pwd=$(pwd)\nsleep 2\n")
