@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T20:59:28.940Z",
+ "updatedAt": "2026-10-26T01:41:31.653Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3893,6 +3893,96 @@
    "builtAt": "2026-10-25T19:43:10.874Z",
    "updatedAt": "2026-10-25T19:43:11.171Z",
    "estimate": "50 min",
+   "source": "chat"
+  },
+  {
+   "id": "axhub-pages-console-style",
+   "title": "Move axHub to console-style pages",
+   "detail": "From a chat prompt (Gizmo, Oct 26 2026): every route on axhub.amberxai.com goes to the console-style AXHub web app (apps/axhub-web); the hub's plain HTML pages (approvals grid, one approval, postpone, auto-approve, approvals log, users, account, handoff, apps, sign out) are removed and redirect to the new pages; /auth/admin/approvals/<id> links keep working. Cross-repo: axHub (JSON API + redirects) and AmberX-AXF (new views). Branch claude/project-thread-139zmj.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built (Opus): AmberX-AXF PR #100 (claude/project-thread-139zmj) + axHub PR #8 (claude/axhub-console-pages). Merge AXF first, then axHub + Coolify redeploy.",
+     "at": "2026-10-26T02:14:34.638Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "axHub: session JSON API for approvals (list, one, actions incl. postpone, auto-approve window, log)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:35.557Z"
+    },
+    {
+     "text": "axHub: JSON API for account, users admin, handoff runs; CSRF via /auth/me",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:35.875Z"
+    },
+    {
+     "text": "axHub: redirect old pages to the web app, delete old HTML, restyle sign-in; tests",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:36.257Z"
+    },
+    {
+     "text": "axhub-web: hub API client + deep links (hash routes)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:36.659Z"
+    },
+    {
+     "text": "axhub-web: Approvals grid with actions + auto-approve card",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:36.961Z"
+    },
+    {
+     "text": "axhub-web: approval detail + postpone + approvals log",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:37.268Z"
+    },
+    {
+     "text": "axhub-web: Users + Account views",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:37.610Z"
+    },
+    {
+     "text": "axhub-web: Handoff runs + run detail",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:37.968Z"
+    },
+    {
+     "text": "Tests, docs, CLAUDE.md status, PRs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:38.299Z"
+    },
+    {
+     "text": "Deploy both and verify live",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-26T02:14:38.680Z"
+    }
+   ],
+   "createdAt": "2026-10-26T01:41:38.088Z",
+   "builtAt": "2026-10-26T02:14:35.189Z",
+   "updatedAt": "2026-10-26T02:14:38.680Z",
+   "estimate": "7 h",
    "source": "chat"
   }
  ]

@@ -3,8 +3,8 @@
   "type": "nav-menu",
   "id": "axhub-web",
   "name": "AXHub navigation",
-  "version": "0.1.0",
-  "description": "AXHub: approvals, the hub, app downloads, planned hub areas, settings.",
+  "version": "0.2.0",
+  "description": "AXHub: approvals, the hub, app downloads, users, handoff, your account, planned hub areas, settings.",
   "author": "AmberX AXF",
   "tags": [],
   "data": {
@@ -21,6 +21,12 @@
             "view": "home"
           },
           {
+            "id": "approvals-log",
+            "label": "Approvals log",
+            "icon": "list",
+            "view": "approvals-log"
+          },
+          {
             "id": "hub",
             "label": "Hub",
             "icon": "external",
@@ -35,7 +41,30 @@
         ]
       },
       {
-        "label": "Manage",
+        "label": "Hub",
+        "items": [
+          {
+            "id": "users",
+            "label": "Users",
+            "icon": "user",
+            "view": "users"
+          },
+          {
+            "id": "handoff",
+            "label": "Handoff",
+            "icon": "package",
+            "view": "handoff"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "key",
+            "view": "account"
+          }
+        ]
+      },
+      {
+        "label": "Coming",
         "items": [
           {
             "id": "services",
@@ -60,12 +89,6 @@
             "label": "Vault",
             "icon": "lock",
             "view": "vault"
-          },
-          {
-            "id": "users",
-            "label": "Users",
-            "icon": "user",
-            "view": "users"
           },
           {
             "id": "projects",

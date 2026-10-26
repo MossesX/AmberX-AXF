@@ -17,10 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * A hub page (sign-in, an approval) in a web view locked to the hub's origin, like the AXHub app's LockedWebView: no
- * JavaScript, no file access, any link off the hub is refused, the window is never captured (FLAG_SECURE). Deciding an
- * approval happens here, on the hub's own page, under its Origin and CSRF checks. The session cookie it gets lands in
- * Android's cookie store, which the watcher and `hubGet` read.
+ * A hub page (sign-in, an approval) in a web view locked to the hub's origin: no file or content access, any link off
+ * the hub is refused, the window is never captured (FLAG_SECURE). Since axHub decision #96 the hub's pages are the
+ * AXHub web app on the hub's own address (an approval link lands on `/#/approvals/<id>`), so JavaScript and DOM storage
+ * are on — still only for the hub's origin. Deciding an approval happens there, through the hub's JSON API under its
+ * Origin and CSRF checks. The session cookie it gets lands in Android's cookie store, which the watcher and `hubGet` read.
  */
 public class HubWebActivity extends Activity {
     static final String EXTRA_URL = "url";
@@ -51,10 +52,12 @@ public class HubWebActivity extends Activity {
 
         web = new WebView(this);
         WebSettings s = web.getSettings();
-        s.setJavaScriptEnabled(false);
+        s.setJavaScriptEnabled(true); // the hub's pages are a web app now; navigation stays locked to the hub below
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setDomStorageEnabled(false);
+        s.setDomStorageEnabled(true);
+        s.setJavaScriptCanOpenWindowsAutomatically(false);
+        s.setSupportMultipleWindows(false);
         CookieManager.getInstance().setAcceptCookie(true);
         web.setWebViewClient(new WebViewClient() {
             @Override

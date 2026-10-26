@@ -173,9 +173,9 @@ function ReviewDialog({ id }: { id: string }) {
   return (
     <div className="fx-stack axp-approvals-review">
       {decided && <p className="fx-small" role="status" style={{ margin: 0 }}><Icon name="check" size={14} /> Decided. Closing…</p>}
-      <iframe className="axp-approvals-review__frame" title="Approval on axHub" src={url} sandbox="allow-forms allow-same-origin" referrerPolicy="no-referrer" />
+      <iframe className="axp-approvals-review__frame" title="Approval on axHub" src={url} sandbox="allow-scripts allow-forms allow-same-origin" referrerPolicy="no-referrer" />
       <p className="fx-small fx-muted" style={{ margin: 0 }}>
-        This is axHub's own page: Approve or Reject runs there. Blank? <a href={url} target="_blank" rel="noopener noreferrer">Open it on the hub <Icon name="external" size={12} /></a>
+        This is axHub's own page (the AXHub web app on the hub's address): Approve or Decline runs there. Blank? <a href={url} target="_blank" rel="noopener noreferrer">Open it on the hub <Icon name="external" size={12} /></a>
       </p>
     </div>
   );

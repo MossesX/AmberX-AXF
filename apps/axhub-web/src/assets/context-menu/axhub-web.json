@@ -19,7 +19,7 @@
         { "id": "s1", "separator": true },
         { "id": "check", "label": "Check the hub now", "icon": "refresh", "action": "axhub.check" },
         { "id": "search", "label": "Search everything", "icon": "search", "action": "axhub.search", "shortcut": "Ctrl+K" },
-        { "id": "open-approvals", "label": "Approvals on the hub", "icon": "external", "action": "hub.open:approvals" },
+        { "id": "account", "label": "Your hub account", "icon": "key", "action": "nav:account" },
         { "id": "s2", "separator": true },
         { "id": "copy", "label": "Copy", "icon": "copy", "action": "edit.copy" },
         { "id": "next-color", "label": "Next color theme", "icon": "palette", "action": "swap:color-theme:next", "requires": "assets.swap" },

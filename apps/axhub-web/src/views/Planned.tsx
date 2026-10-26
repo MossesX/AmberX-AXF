@@ -1,6 +1,5 @@
 /**
- * The hub areas this app doesn't manage yet (services, jobs, audit, vault names, users, projects,
- * devices). Each is a real route with a plain note and a link to the hub's own page where one
+ * The hub areas this app doesn't manage yet (services, jobs, audit, vault names, projects, devices). Each is a real route with a plain note and a link to the hub's own page where one
  * exists, so the navigation matches the AXHub phone app and the screens land one at a time.
  *
  * They wait on the hub's admin API (its roadmap step 4) reaching this browser: a signed-in session
@@ -50,14 +49,6 @@ export const PLANNED: PlannedArea[] = [
     waits: "the hub's admin API (step 4)",
   },
   {
-    id: 'users',
-    title: 'Users',
-    icon: 'user',
-    what: 'Accounts, roles and per-user permissions.',
-    hubPath: '/auth/admin/users',
-    waits: "the hub's admin API (step 4); the hub's own page does this today",
-  },
-  {
     id: 'projects',
     title: 'Projects',
     icon: 'folder',
@@ -95,7 +86,7 @@ export function Planned({ area }: { area: PlannedArea }) {
             </div>
           )}
           <Note tone="info" icon="info">
-            Approvals and app downloads work now. The rest of the hub is reachable on its own pages meanwhile.
+            Approvals, users, your account, handoff results and app downloads work now. The rest waits on the hub's admin API.
           </Note>
         </div>
       </Container>

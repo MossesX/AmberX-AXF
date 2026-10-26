@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -33,7 +32,10 @@ final class HubRules {
     static final String FEED_PATH = "/auth/admin/approvals.json";
     static final String APPROVALS_PATH = "/auth/admin/approvals";
     private static final Pattern APPROVAL_ID = Pattern.compile("^[0-9a-f-]{36}$");
-    private static final Pattern CSRF = Pattern.compile("name=\"csrf\" value=\"([^\"]+)\"");
+    /** The hub's JSON API for its own pages (axHub decision #96): the session (with its CSRF value) and one request. */
+    static final String SESSION_PATH = "/auth/api/session";
+    static final String API_APPROVALS_PATH = "/auth/api/approvals";
+    private static final Pattern CSRF = Pattern.compile("\"csrf\"\\s*:\\s*\"([A-Za-z0-9_\\-]{8,200})\"");
     /** "Approve everything" never covers a root shell on the VPS (Brett, Oct 22 2026). */
     static final Set<String> NOT_IN_ALL = Set.of("vps.run");
 
@@ -60,9 +62,15 @@ final class HubRules {
         return id != null && APPROVAL_ID.matcher(id).matches() ? hub + APPROVALS_PATH + "/" + id : null;
     }
 
-    static String csrfFromPage(String html) {
-        if (html == null) return null;
-        Matcher m = CSRF.matcher(html);
+    /** Where [id] is decided: the hub's JSON route, or null for anything that isn't a request id. */
+    static String approvalApiUrl(String hub, String id) {
+        return id != null && APPROVAL_ID.matcher(id).matches() ? hub + API_APPROVALS_PATH + "/" + id : null;
+    }
+
+    /** The CSRF value from the hub's `/auth/api/session` answer (signed in), or null. */
+    static String csrfFromSession(String json) {
+        if (json == null || !json.contains("\"signedIn\":true")) return null;
+        Matcher m = CSRF.matcher(json);
         return m.find() ? m.group(1) : null;
     }
 
@@ -129,9 +137,9 @@ final class HubRules {
         return (all && !tool.isEmpty() && !NOT_IN_ALL.contains(tool)) || (on && matches(patterns(raw), tool));
     }
 
-    /** The hub answers a successful decision with 303 back to the approval page and ok=approved. */
-    static boolean approvedReply(int code, String location) {
-        return code == 303 && location != null && location.contains("ok=approved") && !location.contains("err=");
+    /** The hub answers a successful decision with 200 and `{"ok":true,"result":"approved",…}`. */
+    static boolean approvedReply(int code, String body) {
+        return code == 200 && body != null && body.contains("\"ok\":true") && body.contains("\"result\":\"approved\"");
     }
 
     /* ---------------------------------------------------------------- HTTP (cookie from Android's store) */
@@ -190,13 +198,16 @@ final class HubRules {
         }
     }
 
-    /** Approves [id] on the hub's own form (page CSRF, hub as Origin). True only on the hub's "approved" answer. */
+    /**
+     * Approves [id] through the hub's JSON API with the hub session (CSRF value from `/auth/api/session`, hub as Origin,
+     * no redirects), the same route the hub's own pages use. True only on the hub's "approved" answer.
+     */
     static boolean approve(String hub, String id, String cookie) {
-        String url = approvalUrl(hub, id);
-        if (url == null || cookie == null) return false;
+        String url = approvalApiUrl(hub, id);
+        if (url == null || cookie == null || !isHub(HUB, hub)) return false;
         try {
-            Reply page = get(url, cookie);
-            String csrf = page.status == 200 ? csrfFromPage(page.body) : null;
+            Reply session = get(hub + SESSION_PATH, cookie);
+            String csrf = session.status == 200 ? csrfFromSession(session.body) : null;
             if (csrf == null) return false;
             HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
             try {
@@ -205,9 +216,13 @@ final class HubRules {
                 c.setRequestMethod("POST"); c.setDoOutput(true);
                 c.setRequestProperty("Cookie", cookie);
                 c.setRequestProperty("Origin", hub);
-                c.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                c.getOutputStream().write(("csrf=" + URLEncoder.encode(csrf, "UTF-8") + "&decision=approved").getBytes(StandardCharsets.UTF_8));
-                return approvedReply(c.getResponseCode(), c.getHeaderField("Location"));
+                c.setRequestProperty("Content-Type", "application/json");
+                c.setRequestProperty("Accept", "application/json");
+                c.setRequestProperty("X-AxHub-CSRF", csrf);
+                c.getOutputStream().write("{\"action\":\"approve\"}".getBytes(StandardCharsets.UTF_8));
+                int code = c.getResponseCode();
+                InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
+                return approvedReply(code, in == null ? "" : readLimited(in, FEED_MAX_BYTES));
             } finally {
                 c.disconnect();
             }

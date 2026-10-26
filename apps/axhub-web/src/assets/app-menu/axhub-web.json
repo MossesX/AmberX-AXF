@@ -3,7 +3,7 @@
   "type": "app-menu",
   "id": "axhub-web",
   "name": "AXHub menu",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "AXHub, laid out like the Dev Console's application menu: the hub and its pages, approvals and apps as live lists, the planned admin areas, the look, help.",
   "author": "AmberX AXF",
   "tags": [
@@ -31,7 +31,7 @@
           },
           {
             "id": "search",
-            "label": "Search everything…",
+            "label": "Search everything\u2026",
             "icon": "search",
             "action": "axhub.search",
             "shortcut": "Ctrl+K"
@@ -71,13 +71,19 @@
           {
             "id": "hub-pages",
             "label": "Hub pages",
-            "icon": "external",
+            "icon": "shield",
             "items": [
               {
                 "id": "open-approvals",
                 "label": "Approvals",
                 "icon": "shield",
                 "action": "hub.open:approvals"
+              },
+              {
+                "id": "open-log",
+                "label": "Approvals log",
+                "icon": "list",
+                "action": "hub.open:log"
               },
               {
                 "id": "open-apps",
@@ -92,10 +98,22 @@
                 "action": "hub.open:users"
               },
               {
+                "id": "open-handoff",
+                "label": "Handoff results",
+                "icon": "package",
+                "action": "hub.open:handoff"
+              },
+              {
                 "id": "open-account",
                 "label": "Your hub account",
                 "icon": "key",
                 "action": "hub.open:account"
+              },
+              {
+                "id": "hub-signout",
+                "label": "Sign out of axHub",
+                "icon": "logout",
+                "action": "axhub.signout"
               }
             ]
           },

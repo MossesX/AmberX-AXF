@@ -1,22 +1,26 @@
 /**
- * Hub — where this app is pointed, whether the browser is signed in, and one-tap links to the hub's
- * own pages. Also says plainly where the look comes from, since this is a developer app: the shared
+ * Hub — where this app is pointed, whether the browser is signed in, and one tap to each of the hub's pages (they
+ * are this app's pages since axHub decision #96). Also says plainly where the look comes from, since this is a developer app: the shared
  * appearance document on the hub's data server, the same one the Dev Console, Build Pilot and
  * Patches follow.
  */
-import { Button, Chip, Container, Note } from '../axf/react';
-import { accountUrl, appsUrl, approvalsUrl, loginUrl, logoutUrl } from '../axf/libs/hub';
-import { HUB, useApprovals } from '../hub/useHub';
+import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { formatWhen } from '../axf/libs/hub';
+import { signInUrl } from '../hub/core';
+import { go } from '../hub/route';
+import { HUB, useApprovals } from '../hub/useHub';
 
-const LINKS: { label: string; path: string; icon: string; note: string }[] = [
-  { label: 'Approvals', path: '/auth/admin/approvals', icon: 'shield', note: 'Decide what is waiting' },
-  { label: 'Apps', path: '/apps', icon: 'download', note: 'The catalog, on the hub' },
-  { label: 'Users', path: '/auth/admin/users', icon: 'user', note: 'Accounts and permissions (admins)' },
-  { label: 'Your account', path: '/auth/account', icon: 'key', note: 'Password and signed-in browsers' },
+const LINKS: { label: string; view: string; icon: string; note: string }[] = [
+  { label: 'Approvals', view: 'home', icon: 'shield', note: 'Decide what is waiting' },
+  { label: 'Approvals log', view: 'approvals-log', icon: 'list', note: 'Every request and how it ended' },
+  { label: 'Apps', view: 'apps', icon: 'download', note: 'The app catalog' },
+  { label: 'Users', view: 'users', icon: 'user', note: 'Accounts and permissions (admins)' },
+  { label: 'Handoff', view: 'handoff', icon: 'package', note: 'Claude handoff results (admins)' },
+  { label: 'Your account', view: 'account', icon: 'key', note: 'Password and signed-in browsers' },
 ];
 
 export function HubView() {
+  const rt = useRuntime();
   const { state, refresh } = useApprovals();
   const signedIn = state.status === 'ok' || state.status === 'not-admin';
 
@@ -27,16 +31,16 @@ export function HubView() {
           <p className="fx-eyebrow">Connector hub</p>
           <h1>{HUB.replace(/^https:\/\//, '')}</h1>
           <p className="fx-muted">
-            This app reads the hub with your browser's own hub session. It holds no token, and nothing here can approve a
-            call — that happens on the hub's own pages.
+            These are the hub's own pages, on the hub's address, with your browser's hub session. They hold no token:
+            approving needs your signed-in admin session, so nothing an AI client holds can approve its own call.
           </p>
         </div>
         <div className="fx-row fx-row--wrap">
           <Button icon="refresh" onClick={refresh}>Check</Button>
           {signedIn ? (
-            <Button icon="logout" onClick={() => window.open(logoutUrl(HUB), '_blank', 'noopener,noreferrer')}>Sign out</Button>
+            <Button icon="logout" onClick={() => rt.dispatch('axhub.signout')}>Sign out</Button>
           ) : (
-            <Button tone="primary" icon="shield" onClick={() => window.open(loginUrl(HUB), '_blank', 'noopener,noreferrer')}>Sign in</Button>
+            <Button tone="primary" icon="shield" onClick={() => { location.href = signInUrl(HUB, location.href); }}>Sign in</Button>
           )}
         </div>
       </header>
@@ -68,11 +72,11 @@ export function HubView() {
           {state.status === 'unreachable' && state.error && <Note tone="danger" icon="alert">{state.error}</Note>}
         </Container>
 
-        <Container title="On the hub" icon="external">
+        <Container title="The hub's pages" icon="shield">
           <div className="fx-stack">
             {LINKS.map((l) => (
-              <div key={l.path} className="fx-row fx-row--wrap">
-                <Button icon={l.icon} onClick={() => window.open(`${HUB}${l.path}`, '_blank', 'noopener,noreferrer')}>{l.label}</Button>
+              <div key={l.view} className="fx-row fx-row--wrap">
+                <Button icon={l.icon} onClick={() => go(rt, l.view)}>{l.label}</Button>
                 <span className="fx-muted">{l.note}</span>
               </div>
             ))}
@@ -91,14 +95,6 @@ export function HubView() {
           </div>
         </Container>
 
-        <Container title="Quick links" icon="list">
-          <div className="fx-row fx-row--wrap">
-            <a href={approvalsUrl(HUB)} target="_blank" rel="noopener noreferrer">Approvals</a>
-            <a href={appsUrl(HUB)} target="_blank" rel="noopener noreferrer">Apps</a>
-            <a href={accountUrl(HUB)} target="_blank" rel="noopener noreferrer">Account</a>
-            <a href={HUB} target="_blank" rel="noopener noreferrer">Hub home</a>
-          </div>
-        </Container>
       </div>
     </div>
   );
