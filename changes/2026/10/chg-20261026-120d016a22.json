@@ -16,35 +16,31 @@
   },
   "steps": [
     {
-      "text": "x",
+      "text": "Storage: oauth_tokens repository",
       "state": "done",
       "startedAt": "2026-10-26T12:56:05.102Z",
       "finishedAt": "2026-10-26T12:56:05.102Z"
     },
     {
-      "text": "x",
+      "text": "Config + discovery + 401",
       "state": "done",
       "startedAt": "2026-10-26T12:56:05.155Z",
       "finishedAt": "2026-10-26T12:56:05.155Z"
     },
     {
-      "text": "x",
+      "text": "Authorize + consent",
       "state": "done",
       "startedAt": "2026-10-26T12:56:05.219Z",
       "finishedAt": "2026-10-26T12:56:05.219Z"
     },
     {
-      "text": "x",
+      "text": "Token + revoke + bearer",
       "state": "done",
       "startedAt": "2026-10-26T12:56:05.272Z",
       "finishedAt": "2026-10-26T12:56:05.272Z"
     },
     {
       "text": "Tests, CLI, docs, PR",
-      "state": "queued"
-    },
-    {
-      "text": "x",
       "state": "done",
       "startedAt": "2026-10-26T12:56:05.045Z",
       "finishedAt": "2026-10-26T12:56:05.045Z"
