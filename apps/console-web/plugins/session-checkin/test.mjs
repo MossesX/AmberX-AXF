@@ -45,8 +45,12 @@ try {
   run([join(L.PLUGIN_DIR, 'checkin.mjs'), 'end'], JSON.stringify({ session_id: 's-1', reason: 'exit' }));
   assert.ok(JSON.parse(run([join(L.PLUGIN_DIR, 'checkin.mjs'), 'get', 'test-1', '--json']).stdout).end?.at, 'end hook stamps the record');
 
-  // detect prints the check-in; resume is ignored with the default config
-  const out = run([join(L.PLUGIN_DIR, 'checkin.mjs'), 'detect', '--no-fetch'], JSON.stringify({ session_id: 'x', source: 'startup' })).stdout;
+  // no questions at login by default (Oct 26 2026): detect is silent unless the config says ask: true
+  assert.equal(run([join(L.PLUGIN_DIR, 'checkin.mjs'), 'detect', '--no-fetch'], JSON.stringify({ session_id: 'x', source: 'startup' })).stdout, '', 'silent by default');
+  assert.equal(L.defaultConfig().ask, false); assert.equal(L.normaliseConfig({ ask: 'yes' }).ask, false); assert.equal(L.normaliseConfig({ ask: true }).ask, true);
+  const askCfg = join(dir, 'ask.json'); writeFileSync(askCfg, JSON.stringify({ ask: true }));
+  // with ask: true detect prints the check-in; resume is ignored with the default sources
+  const out = run([join(L.PLUGIN_DIR, 'checkin.mjs'), 'detect', '--no-fetch', '--config', askCfg], JSON.stringify({ session_id: 'x', source: 'startup' })).stdout;
   assert.match(out, /SESSION CHECK-IN/); assert.match(out, /Round 1:/); assert.match(out, /1\. Location/);
   assert.equal(run([join(L.PLUGIN_DIR, 'checkin.mjs'), 'detect', '--no-fetch'], JSON.stringify({ source: 'resume' })).stdout, '');
   // memory files open read-only and never outside the memory folders

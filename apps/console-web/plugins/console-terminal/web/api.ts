@@ -11,10 +11,10 @@ export const FOLDER = 'console-terminal';
 export const ID = 'ai.amberx.axf.console.terminal';
 
 export type Kind = 'console' | 'container' | 'vps' | 'claude';
-export interface Open { kind: Kind; container?: string; cwd?: string; confirmProtected?: boolean; title?: string }
+export interface Open { kind: Kind; container?: string; cwd?: string; confirmProtected?: boolean; title?: string; attach?: string }
 export interface SessionInfo { id: string; kind: Kind; title: string; target: string; cwd: string; mosh: boolean; badge: string | null; protected: boolean; createdAt: number; attached: number; closed: boolean }
 export interface Settings {
-  idleMinutes: number; moshKeepMinutes: number; fontSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; user: string;
+  idleMinutes: number; moshKeepMinutes: number; fontSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; showHeadless: boolean; user: string;
   vps: { host: string; port: number; user: string }; sshKey: boolean; claudeToken: boolean; publicKey?: string;
 }
 export interface Status { containers: boolean; claude: boolean; ssh: boolean; vps: { ready: boolean; host: string }; settings: Settings; sessions: SessionInfo[] }

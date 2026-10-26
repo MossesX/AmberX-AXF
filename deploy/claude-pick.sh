@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# claude-pick — asks how to sign in (Claude plan or Anthropic API key) and which model, then starts Claude Code.
+# claude-pick — starts Claude Code on the Claude plan with Opus, no questions (Oct 26 2026). `claude-pick --ask` shows the
+#   old sign-in + model menus once; AXF_CLAUDE_AUTH / AXF_CLAUDE_MODEL change the defaults.
 #   bash deploy/claude-pick.sh [claude args…]
 #   bash deploy/claude-pick.sh --install      # put it in ~/.local/bin, alias `claude` to it, add the rules to ~/.claude/CLAUDE.md
 #   claude-pick --set-key                     # save or replace the API key (pasted hidden) in ~/.anthropic-key (0600)
 #   claude-pick --remove-key                  # delete the saved key
 #   claude-pick --key-status                  # is a key saved? (shows only its last 4 characters)
 #   claude-pick --auth-check                  # where an API key is still set (values hidden) + `claude auth status` on the plan
-# Skips the menus when you pass --model, run non-interactively (-p/--print), or stdin isn't a terminal.
 # AXF_CLAUDE_AUTH=plan|api picks the sign-in without asking (also for -p runs). ANTHROPIC_KEY_FILE moves the key file.
 # The key never goes in a repo: it lives only in the key file and is exported for the one claude process it starts.
 set -euo pipefail
@@ -85,7 +85,7 @@ if [[ "${1:-}" == "--install" ]]; then
   [[ -f "$HOME/.bashrc" || -f "$HOME/.zshrc" ]] || touch "$HOME/.bashrc"  # no rc file yet: the alias still needs a home
   for rc in "$HOME/.bashrc" "$HOME/.zshrc"; do
     [[ -f "$rc" ]] || continue
-    grep -q "alias claude='claude-pick'" "$rc" || printf "\n# AXF: ask how to sign in and which model before starting Claude Code\nalias claude='claude-pick'\n" >> "$rc"
+    grep -q "alias claude='claude-pick'" "$rc" || printf "\n# AXF: start Claude Code on the Claude plan + Opus, no questions (claude-pick --ask for the menus)\nalias claude='claude-pick'\n" >> "$rc"
   done
   # claude-project: make any folder a Claude project (shell command + /claude-project in every Claude Code session).
   AXF_ROOT="$(cd "$HERE/.." && pwd)"
@@ -111,11 +111,23 @@ if [[ "${1:-}" == "--install" ]]; then
   CHG="$AXF_ROOT/apps/console-web/plugins/codebase-changes/changes.mjs"  # <!-- axf-plugin:codebase-changes -->
   if [[ -f "$CHG" ]] && command -v node >/dev/null; then node "$CHG" hooks install || echo "Build reporting hooks: run node $CHG hooks install"; fi
   echo "Installed. Open a new shell (or: source ~/.bashrc), then run: claude"
-  echo "Save an API key with: claude-pick --set-key   ·   bypass the menus with: command claude …"
+  echo "claude now starts on your Claude plan with Opus, no questions. Menus once: claude-pick --ask · API key: claude-pick --set-key + AXF_CLAUDE_AUTH=api"
   exit 0
 fi
 
-# Non-interactive or model already chosen: no menus; only AXF_CLAUDE_AUTH applies.
+# No questions at launch (Oct 26 2026, Brett): sign in with the Claude plan and start on Opus.
+#   AXF_CLAUDE_AUTH=plan|api   picks the sign-in (default plan; api = the key in ~/.anthropic-key)
+#   AXF_CLAUDE_MODEL=fable|opus|sonnet|default   picks the model (default opus; "default" = Claude Code's own)
+#   claude-pick --ask          the old menus, once
+if [[ "${1:-}" != "--ask" ]]; then
+  for a in "$@"; do case "$a" in --model|--model=*|-p|--print) apply_auth_env; exec claude "$@";; esac; done
+  if [[ -n "${AXF_CLAUDE_AUTH:-}" ]]; then apply_auth_env; else use_plan; fi
+  m="${AXF_CLAUDE_MODEL:-opus}"
+  case "$m" in fable|opus|sonnet) exec claude --model "$m" "$@" ;; *) exec claude "$@" ;; esac
+fi
+shift
+
+# claude-pick --ask: the menus. Non-interactive or model already chosen: no menus; only AXF_CLAUDE_AUTH applies.
 for a in "$@"; do case "$a" in --model|--model=*|-p|--print) apply_auth_env; exec claude "$@";; esac; done
 [[ -t 0 && -t 1 ]] || { apply_auth_env; exec claude "$@"; }
 

@@ -30,6 +30,15 @@ CHANGES = "axf.changes@1"
 COOLDOWN_S = 6 * 3600
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
 REPO_DIR = "/opt/axf"
+HELPER = f"{REPO_DIR}/deploy/claude-headless.sh"
+
+
+def headless(name: str, log: str, args: str) -> str:
+    """Start headless Claude Code in a tmux session the console's Terminal opens and brings to the front (Oct 26 2026);
+    the old nohup launch when the console's checkout doesn't have the helper yet."""
+    n = re.sub(r"[^A-Za-z0-9._-]", "-", name)[:48]
+    return (f"set -- {args}; if [ -f {HELPER} ]; then bash {HELPER} --name {sq(n)} --brief .axf-brief.md --log {log} -- \"$@\"; "
+            f'else nohup claude -p "$@" "$(cat .axf-brief.md)" > {log} 2>&1 & echo "started pid $! in $(pwd)"; fi')
 WORK_ROOT = "/root/axf-fixes"
 _ID = re.compile(r"^[a-z0-9][a-z0-9:._-]{0,80}$")
 _CHG = re.compile(r"^chg-\d{8}-[0-9a-f]{6,16}$")
@@ -92,8 +101,7 @@ def launch_command(text: str, cid: str, change_id: str, shell: bool, model: str 
         f"cd {sq(work)}",
         f"echo {sq(b64)} | base64 -d > .axf-brief.md",
         f"export AXF_SURFACE=console-launch AXF_MODEL={m}{adopt} AXF_CLAUDE_AUTH=${{AXF_CLAUDE_AUTH:-plan}}",
-        f'nohup claude -p --model {m} {perms} "$(cat .axf-brief.md)" > .axf-fix.log 2>&1 &',
-        'echo "started pid $! in $(pwd)"',
+        headless(f"fix-{cid}", ".axf-fix.log", f"--model {m} {perms}"),
     ])
 
 

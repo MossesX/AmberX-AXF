@@ -6,7 +6,8 @@ console's own container), VPS (root on the host over SSH with a dedicated key, r
 interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode survives dropped connections.
 
   GET  status | targets | sessions | log
-  POST sessions {kind, container?, cwd?, confirmProtected?, mosh?, cols, rows}
+  POST sessions {kind, container?, cwd?, attach?, confirmProtected?, mosh?, cols, rows}   (attach = an axf-… tmux session, kind vps)
+  GET  headless                        headless Claude Code sessions on the VPS (tmux axf-…)
   POST sessions/{id}/mosh {on}       DELETE sessions/{id}
   WS   sessions/{id}/ws?ticket=…&have=<offset>
   GET/PUT settings      POST ssh/keygen {replace?}
@@ -153,6 +154,15 @@ def hub_runs(since: int = 0) -> dict[str, Any]:
     on = bool(store.settings().get("showHubRuns", True))
     items = svc.runs(max(0, int(since))) if svc and on else []
     return {"available": svc is not None, "on": on, "items": items[-20:], "now": int(time.time() * 1000)}
+
+
+@router.get("/headless")
+def headless() -> dict[str, Any]:
+    """Headless Claude Code sessions running on the VPS in tmux (deploy/claude-headless.sh, Oct 26 2026): the browser
+    opens each new one in a VPS tab attached to it and brings the terminal window to the front."""
+    on = bool(store.settings().get("showHeadless", True))
+    out = sessions.headless_sessions() if on else {"ready": False, "items": [], "why": "switched off"}
+    return {**out, "on": on, "now": int(time.time() * 1000)}
 
 
 @router.get("/settings")

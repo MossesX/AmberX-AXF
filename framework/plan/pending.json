@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-26T01:41:31.653Z",
+ "updatedAt": "2026-10-26T14:39:17.269Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3983,6 +3983,54 @@
    "builtAt": "2026-10-26T02:14:35.189Z",
    "updatedAt": "2026-10-26T02:14:38.680Z",
    "estimate": "7 h",
+   "source": "chat"
+  },
+  {
+   "id": "no-login-questions-headless-terminal",
+   "title": "No questions at login + headless Claude Code sessions shown in the console Terminal",
+   "detail": "claude-pick starts on the Claude plan + Opus without menus (claude-pick --ask for them); session check-in asks nothing unless its config says ask: true; every headless launch (systems check, push banner, Build manager Start build now) runs through deploy/claude-headless.sh in a tmux session axf-…, and the console Terminal opens each new one in a VPS tab attached to it and brings the window to the front (setting showHeadless). tmux host check + Auto fix.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/no-login-questions-terminal-launches (PR to follow)",
+     "at": ""
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "claude-pick: no menus, plan + Opus defaults",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "session check-in silent by default; doctor + systems check stop installing it",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "claude-headless.sh + claude-stream.mjs; three launch sites use them",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Terminal: GET headless, attach tabs, bring window to front; tests",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": ""
+    }
+   ],
+   "createdAt": "2026-10-26T14:39:17.269Z",
+   "builtAt": "2026-10-26T14:39:17.269Z",
+   "updatedAt": "2026-10-26T14:39:17.269Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]
