@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T21:02:58.144Z",
+ "updatedAt": "2026-10-27T21:05:09.672Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T21:02:58.144Z",
+   "updatedAt": "2026-10-27T21:05:09.671Z",
    "builtAt": "",
    "notes": [
     {
@@ -1688,6 +1688,10 @@
     {
      "text": "s8 done e22e817: lib-speech 0.1.0 (Android TTS + web SpeechSynthesis), lib-voice 0.3.1 now depends on lib-speech (Speaker runs on AndroidTtsProvider). Catalog/libraries.json/tracker regen left for s21.",
      "at": "2026-10-27T21:02:37.083Z"
+    },
+    {
+     "text": "s10 done 3794425: lib-ai (HubAiSessionClient over the console ai-assistant routes behind axHub, AiService, UAC gating; 21 tests pass locally). Epic x.lib.ai fulfilled. Hub follow-ups: model list from hub, aiModes in /me, needsApproval on plugin side; axhub_session cookie on console domain untested.",
+     "at": "2026-10-27T21:05:09.671Z"
     }
    ],
    "approvals": [
@@ -1855,8 +1859,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:05:09.599Z",
      "note": ""
     },
     {
