@@ -33,13 +33,10 @@ Validate conformance at any time: `node ../../framework/cli/axf.mjs validate .`
 | `app/src/main/assets/axnotes/triggers.json` | Voice phrases as data (`axnotes-triggers@1`), same set as `NoteTriggers.DEFAULTS`. |
 | `views/` | Notes, Note editor, Speak, Lists, List, To-do item. |
 
-## Plugins (build `ax-notes`, steps s14 / s16 / s23)
+## Plugins
 
-Plugins live in `plugins/<folder>/` (plugin@1 `plugin.json`, `src/main/kotlin`, `assets`, `src/test/kotlin`, `install.mjs`, `uninstall.mjs`). The installed set is `app/src/main/assets/axnotes/plugins.json` (`axnotes-plugins@1`): Gradle compiles only the plugins listed there, and the app's plugin host (`pluginhost/`) creates their entry modules from it. Each plugin has its own sub-tab under Settings → Plugins, hooks into the application menu and the nav menu, and lists its dependencies for the Plugin Manager. With no plugins installed the app builds and runs the same.
+Each plugin is a Gradle module in `plugins/<folder>/` (plugin@1 `plugin.json`, `build.gradle.kts`, `lifecycle.mjs`, `install.mjs`, `uninstall.mjs`, `src/main`, `src/test`). `install.mjs` adds the marked `include` to `settings.gradle.kts`, the marked `implementation(project(...))` to `app/build.gradle.kts` and an entry in `app/src/main/assets/axnotes/plugins.json`; `uninstall.mjs [--all]` removes all of it and checks nothing else names the plugin. Plugins import no app classes: they use kernel contracts and the app's JSON host actions (see each `plugin.json` → `x.android.hostActions`). Each has its own sub-tab under Settings → Plugins and hooks into the application menu and the nav menu.
 
 | Path | What |
 | --- | --- |
-| `pluginhost/` | `PluginHost` (loads plugins.json), `PluginKit` (store, AI through the kernel ai-modes@1 contract, own data folder, settings, menus, triggers@1, purge), `PluginHostModule` (records each plugin's footprint; purges a removed plugin's data, settings, generated lists and triggers on the next launch), `AiAsk` (one question → one answer over `AiSessionClient`), `ReplyJson`. Tests: `app/src/test/.../pluginhost`. |
-| `plugins/manage.mjs` | `list`, `install <folder>`, `uninstall <folder> [--all]`, `check <folder> [--after-uninstall]`, `check --all`. |
-| `plugins/note-sorter/` | Note sorter: AI sorting (category, tags, title, summary, action items → to-dos), learning from re-categorizations, daily / weekly digest. <!-- axf-plugin:note-sorter --> |
-| `plugins/ai-codebase-reader/` | AI codebase reader: read-only repos via axHub (mode ai.read-codebase) → notes with code links, per-repo TODO/FIXME lists, voice "note on <file>" / "ask about <file>". <!-- axf-plugin:ai-codebase-reader --> |
+| `pluginhost/` | `PluginLoader` creates every listed plugin's entry module by class name (a plugin that fails is skipped and logged); `PluginHostModule` deletes a removed plugin's data on the phone at the next launch (KV keys and generated lists under its `<folder>.` prefix). `PluginList` is the pure part (tests in `app/src/test/.../pluginhost`). |

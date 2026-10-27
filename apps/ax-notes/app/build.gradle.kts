@@ -13,22 +13,6 @@ android {
     }
 }
 
-// AX Notes plugins (axnotes-plugins@1): every plugin listed in src/main/assets/axnotes/plugins.json is compiled in from
-// ../plugins/<folder>/ (src/main/kotlin, assets, src/test/kotlin). Only install.mjs / uninstall.mjs edit that list, so
-// removing a plugin removes its code from the build; with the list empty the app builds exactly as without plugins.
-val axnotesPlugins: List<String> = run {
-    val list = file("src/main/assets/axnotes/plugins.json")
-    if (!list.exists()) emptyList()
-    else Regex("\"folder\"\\s*:\\s*\"([a-z0-9][a-z0-9-]{0,63})\"").findAll(list.readText()).map { it.groupValues[1] }
-        .filter { file("../plugins/$it/plugin.json").exists() }.distinct().toList()
-}
-android {
-    sourceSets {
-        getByName("main") { for (p in axnotesPlugins) { java.srcDir("../plugins/$p/src/main/kotlin"); assets.srcDir("../plugins/$p/assets") } }
-        getByName("test") { for (p in axnotesPlugins) java.srcDir("../plugins/$p/src/test/kotlin") }
-    }
-}
-
 // Every AXF app gets the framework; libraries are added per app (the Dev Console's library picker edits this list).
 // AmberX build rule: no project is compiled without a validated manifest (project.manifest.json, project-manifest@1).
 // The framework's build engine checks it before every build (needs Node 22, like `axf`); the rules are
@@ -61,4 +45,6 @@ dependencies {
     // TODO(lib-voice / lib-speech / lib-triggers / lib-ai / lib-overlay, build ax-notes s4–s10): added when the parent
     // session wires the app-local interfaces in capture/Interfaces.kt to those libraries.
     // axf:modules [\"ai.amberx.axf.data\",\"ai.amberx.axf.settings\"]
+    implementation(project(":plugins:note-sorter")) // axf-plugin:note-sorter
+    implementation(project(":plugins:ai-codebase-reader")) // axf-plugin:ai-codebase-reader
 }
