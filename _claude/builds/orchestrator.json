@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:40:45.025Z",
+ "updatedAt": "2026-10-27T20:48:18.751Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:40:45.024Z",
+   "updatedAt": "2026-10-27T20:48:18.750Z",
    "builtAt": "",
    "notes": [
     {
@@ -1668,6 +1668,10 @@
     {
      "text": "Oct 27 16:40 Brett approved the Fable → Opus switch early ('run more sub agents' → approve +3 Opus): s6, s9, s11+s12+s22 run on Opus in parallel with the Fable phase; 5 agents total.",
      "at": "2026-10-27T20:40:45.024Z"
+    },
+    {
+     "text": "s6 done (e6dfb0c): lib-voice 0.3.0 VoiceEngine/Vosk/dictation/arming. Follow-ups: ax-notes fetches the Vosk model; Voice Vault now carries Vosk+JNA native libs (APK size) — fix in s23 (move Vosk to an optional lib-voice-vosk or keep).",
+     "at": "2026-10-27T20:48:18.749Z"
     }
    ],
    "approvals": [
@@ -1771,8 +1775,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:48:18.663Z",
      "note": ""
     },
     {
