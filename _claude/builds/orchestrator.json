@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:31:42.369Z",
+ "updatedAt": "2026-10-27T20:34:14.845Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -556,7 +556,7 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T20:31:42.369Z",
+   "updatedAt": "2026-10-27T20:34:14.844Z",
    "builtAt": "",
    "notes": [
     {
@@ -951,8 +951,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.770Z",
      "note": ""
     },
     {
@@ -967,8 +967,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.844Z",
      "note": ""
     },
     {

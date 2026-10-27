@@ -132,6 +132,89 @@ const LAYOUT = [
   { id: 'kiosk', name: 'Kiosk', tags: ['kiosk', 'focus'], description: 'No chrome at all: a single full-screen surface for kiosks, wall displays and embedded views.', data: { ...L('top', 0, false, false, 'top', false, 'none', 0, 0), slots: { menubar: [], toolbar: [], nav: [] } } },
 ];
 
+/* ───────────────────────── seeds: style themes (s15) ───────────────────────── */
+
+const SANS = (f) => `'${f}', system-ui, -apple-system, 'Segoe UI', sans-serif`;
+const MONO = (f) => `'${f}', ui-monospace, 'SFMono-Regular', Menlo, monospace`;
+const shadow = (k) => ({
+  none: { sm: 'none', md: '0 0 0 1px var(--fx-border)', lg: '0 0 0 1px var(--fx-border)' },
+  hair: { sm: '0 1px 2px var(--fx-shadow)', md: '0 4px 12px var(--fx-shadow)', lg: '0 12px 32px var(--fx-shadow)' },
+  soft: { sm: '0 1px 3px var(--fx-shadow)', md: '0 8px 24px var(--fx-shadow)', lg: '0 20px 56px var(--fx-shadow)' },
+  deep: { sm: '0 2px 6px var(--fx-shadow)', md: '0 14px 36px var(--fx-shadow)', lg: '0 32px 88px var(--fx-shadow)' },
+}[k]);
+/** fontSize, space, radii, density, motion, blur, heading weight, tracking, shadow kind, glass opacity. */
+const S = (font, display, mono, fontSize, space, [sm, md, lg], density, motion, blur, headingWeight, tracking, sh, glass = 0.7, borderWidth = 1) => ({
+  fontFamily: SANS(font), fontDisplay: SANS(display), fontMono: MONO(mono), fontSize,
+  radius: { sm, md, lg }, space, borderWidth, shadow: shadow(sh), density, motion, blur, headingWeight, tracking,
+  opacityDisabled: 0.4, opacityMuted: 0.62, opacityHover: 0.08, opacityTint: 0.14, opacityScrim: 0.5, opacityGlass: glass,
+  wrapGroups: false,
+});
+const STYLE = [
+  { id: 'enterprise', name: 'Enterprise', tags: ['enterprise', 'balanced'], description: 'Inter at 14 px, an 8 px rhythm, modest radii and hairline shadows: the dependable business default.', data: S('Inter', 'Inter', 'JetBrains Mono', 14, 8, [4, 8, 12], 'comfortable', 160, 12, 650, -0.01, 'hair') },
+  { id: 'executive', name: 'Executive', tags: ['enterprise', 'spacious'], description: 'Generous spacing, IBM Plex type and soft depth for dashboards that get presented upstairs.', data: S('IBM Plex Sans', 'IBM Plex Sans', 'IBM Plex Mono', 15, 10, [6, 10, 16], 'spacious', 200, 16, 600, -0.015, 'soft') },
+  { id: 'dense-grid', name: 'Dense Grid', tags: ['compact', 'data'], description: '13 px type on a 6 px rhythm with square corners: the most rows on screen for data-heavy tools.', data: S('Inter', 'Inter', 'JetBrains Mono', 13, 6, [2, 3, 4], 'compact', 100, 0, 600, 0, 'none', 0.9) },
+  { id: 'soft-touch', name: 'Soft Touch', tags: ['touch', 'friendly'], description: 'Rounded 12–24 px corners, roomy targets and gentle motion for tablets and touch screens.', data: S('Nunito Sans', 'Nunito Sans', 'Fira Code', 16, 11, [12, 18, 24], 'spacious', 240, 18, 700, -0.01, 'soft') },
+  { id: 'swiss', name: 'Swiss', tags: ['editorial', 'flat'], description: 'Grid-true Swiss typography: flat surfaces, hard edges, outlines instead of shadows and bold headings.', data: S('Helvetica Neue', 'Helvetica Neue', 'IBM Plex Mono', 14, 8, [0, 0, 2], 'comfortable', 120, 0, 800, -0.02, 'none', 0.95, 1) },
+  { id: 'glass-pro', name: 'Glass Pro', tags: ['glass', 'modern'], description: 'Frosted glass panels with 22 px blur, deep floating shadows and Sora headings for a premium modern feel.', data: S('Manrope', 'Sora', 'Fira Code', 14, 9, [8, 14, 20], 'comfortable', 220, 22, 700, -0.025, 'deep', 0.58) },
+  { id: 'terminal-pro', name: 'Terminal Pro', tags: ['developer', 'mono'], description: 'Monospace headings, tight corners and fast motion for developer consoles and log-heavy tools.', data: S('IBM Plex Sans', 'JetBrains Mono', 'JetBrains Mono', 13, 7, [2, 4, 6], 'compact', 90, 0, 600, 0, 'hair', 0.92) },
+  { id: 'humanist', name: 'Humanist', tags: ['reading', 'warm'], description: 'Source Sans text with Source Serif headings, relaxed rhythm and soft corners for reading-heavy apps.', data: S('Source Sans 3', 'Source Serif 4', 'Source Code Pro', 15, 9, [6, 10, 14], 'comfortable', 200, 10, 600, 0, 'soft') },
+  { id: 'geometric', name: 'Geometric', tags: ['brand', 'modern'], description: 'Outfit display over DM Sans with pill-like 10–20 px radii: confident, product-marketing polish.', data: S('DM Sans', 'Outfit', 'DM Mono', 14, 8, [10, 14, 20], 'comfortable', 180, 14, 700, -0.02, 'soft') },
+  { id: 'industrial', name: 'Industrial', tags: ['ops', 'rugged'], description: 'Condensed Barlow headings, 2 px borders and square corners built for control rooms and field tablets.', data: S('Barlow', 'Barlow Semi Condensed', 'Roboto Mono', 15, 8, [2, 3, 4], 'comfortable', 120, 0, 700, 0.01, 'hair', 0.9, 2) },
+];
+
+/* ───────────────────────── seeds: context menus (s16) ───────────────────────── */
+
+/** Item shorthand: [id, label, icon, action, shortcut?, requires?] or '-' for a separator. */
+const items = (list) => {
+  let n = 0;
+  return list.map((x) => {
+    if (x === '-') { n += 1; return { id: `s${n}`, separator: true }; }
+    const [id, label, icon, action, shortcut, requires] = x;
+    return { id, label, icon, action, ...(shortcut ? { shortcut } : {}), ...(requires ? { requires } : {}) };
+  });
+};
+const I = {
+  undo: ['undo', 'Undo', 'undo', 'edit.undo', 'Ctrl+Z'], redo: ['redo', 'Redo', 'redo', 'edit.redo', 'Ctrl+Shift+Z'],
+  cut: ['cut', 'Cut', 'cut', 'edit.cut', 'Ctrl+X'], copy: ['copy', 'Copy', 'copy', 'edit.copy', 'Ctrl+C'],
+  paste: ['paste', 'Paste', 'paste', 'edit.paste', 'Ctrl+V'], del: ['delete', 'Delete', 'trash', 'edit.delete', 'Del'],
+  save: ['save', 'Save', 'save', 'file.save', 'Ctrl+S'], exp: ['export', 'Export…', 'download', 'file.export'],
+  settings: ['settings', 'Settings', 'settings', 'app.settings', 'Ctrl+,'], keys: ['shortcuts', 'Keyboard shortcuts', 'keyboard', 'view.shortcuts', 'Alt+K'],
+  docs: ['docs', 'Documentation', 'help', 'help.docs', 'F1'], about: ['about', 'About', 'info', 'help.about'],
+  color: ['next-color', 'Next colour theme', 'palette', 'swap:color-theme:next', 'Alt+C', 'assets.swap'],
+  style: ['next-style', 'Next style theme', 'type', 'swap:style-theme:next', 'Alt+S', 'assets.swap'],
+  layout: ['next-layout', 'Next layout', 'layout', 'swap:layout:next', 'Alt+L', 'assets.swap'],
+  pkg: ['next-package', 'Next design package', 'package', 'design.package:next', 'Alt+P', 'assets.swap'],
+  random: ['random', 'Randomize the look', 'shuffle', 'assets.random', 'Alt+R', 'assets.swap'],
+  reset: ['reset', 'Reset the look', 'refresh', 'assets.reset', null, 'assets.swap'],
+  tight: ['spacing-tight', 'Super tight spacing', 'minimize', 'spacing:tight', null, 'assets.swap'],
+  compact: ['spacing-compact', 'Compact spacing', 'list', 'spacing:compact', null, 'assets.swap'],
+  regular: ['spacing-regular', 'Regular spacing', 'grid', 'spacing:regular', null, 'assets.swap'],
+  appearance: ['appearance', 'Appearance settings…', 'sliders', 'settings.open:appearance'],
+  build: ['build', 'Build', 'hammer', 'run.build', 'Ctrl+B'], deploy: ['deploy', 'Deploy', 'rocket', 'run.deploy'],
+  devtools: ['devtools', 'Developer tools', 'code', 'dev.tools', 'F12'], console: ['console', 'Dev console', 'terminal', 'dev.console', 'Ctrl+`'],
+  toolbar: ['toggle-toolbar', 'Show or hide the toolbar', 'menu', 'slot.hide:toolbar:toggle'],
+  nav: ['toggle-nav', 'Show or hide navigation', 'list', 'slot.hide:nav-menu:toggle'],
+  nextNav: ['next-nav', 'Next navigation menu', 'grid', 'swap:nav-menu:next', null, 'assets.swap'],
+  open: ['open', 'Open', 'chevron-right', 'nav:{payload}'], home: ['home', 'Go home', 'home', 'nav:home'],
+  activate: ['activate', 'Use this', 'zap', 'swap:{payload}', null, 'assets.swap'],
+  json: ['json', 'View JSON', 'code', 'asset.json:{payload}'], copyJson: ['copy-json', 'Copy JSON', 'copy', 'asset.copy:{payload}'],
+  import: ['import', 'Import asset…', 'upload', 'dialog:import-asset', null, 'assets.import'],
+};
+const assetCard = items([I.activate, '-', I.json, I.copyJson, '-', I.import]);
+const navItem = items([I.open, '-', I.nextNav, I.layout, '-', I.nav]);
+const CM = [
+  { id: 'enterprise-standard', name: 'Enterprise Standard', tags: ['desktop', 'enterprise'], description: 'The complete desktop menu: edit commands with shortcuts, settings and help, grouped by intent.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.undo, I.redo, '-', I.cut, I.copy, I.paste, I.del, '-', I.settings, I.keys, I.docs]), 'asset-card': assetCard, 'nav-item': navItem } } },
+  { id: 'editor-pro', name: 'Editor Pro', tags: ['desktop', 'editing'], description: 'Built for editors: clipboard first, then save and export, with every shortcut shown.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.cut, I.copy, I.paste, I.del, '-', I.undo, I.redo, '-', I.save, I.exp]), 'asset-card': assetCard } } },
+  { id: 'appearance-quick', name: 'Appearance Quick', tags: ['appearance', 'designer'], description: 'Restyle from anywhere: step colour, style, layout and design package, pick spacing, randomize or reset.', data: { variant: 'glass', showIcons: true, showShortcuts: true, targets: { default: items([I.pkg, I.color, I.style, I.layout, '-', I.tight, I.compact, I.regular, '-', I.random, I.reset, I.appearance]), 'asset-card': assetCard, 'nav-item': navItem } } },
+  { id: 'touch-large', name: 'Touch Large', tags: ['touch', 'tablet'], description: 'Roomy rows for fingers, no shortcut hints, only the commands people reach for on a tablet.', data: { variant: 'roomy', showIcons: true, showShortcuts: false, targets: { default: items([I.copy, I.paste, '-', I.home, I.settings, '-', I.docs]), 'nav-item': items([I.open, I.home]) } } },
+  { id: 'glass-flyout', name: 'Glass Flyout', tags: ['glass', 'modern'], description: 'Frosted glass flyout with icons only where they help: clipboard, look and settings.', data: { variant: 'glass', showIcons: true, showShortcuts: false, targets: { default: items([I.cut, I.copy, I.paste, '-', I.color, I.layout, '-', I.settings]), 'asset-card': assetCard } } },
+  { id: 'developer-tools', name: 'Developer Tools', tags: ['developer'], description: 'Build, deploy and inspect from a right-click, with the dev console and tools one step away.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.build, I.deploy, '-', I.console, I.devtools, '-', I.copy, I.paste, '-', I.keys, I.docs]), 'asset-card': assetCard, 'nav-item': navItem } } },
+  { id: 'reader-minimal', name: 'Reader Minimal', tags: ['reading', 'minimal'], description: 'Copy, spacing and help: a quiet menu for reading apps that stays out of the way.', data: { variant: 'roomy', showIcons: false, showShortcuts: false, targets: { default: items([I.copy, '-', I.compact, I.regular, '-', I.docs]) } } },
+  { id: 'asset-manager', name: 'Asset Manager', tags: ['designer', 'assets'], description: 'For asset browsers: use, inspect, copy and import assets, plus stepping through the look.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.import, '-', I.pkg, I.color, I.style, I.layout, '-', I.random, I.reset]), 'asset-card': items([I.activate, '-', I.json, I.copyJson, '-', I.import, I.pkg]) } } },
+  { id: 'navigator', name: 'Navigator', tags: ['navigation'], description: 'Navigation first: open, go home, switch navigation menus and show or hide the bars.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.home, '-', I.nav, I.toolbar, I.nextNav, I.layout, '-', I.settings]), 'nav-item': navItem } } },
+  { id: 'locked-down', name: 'Locked Down', tags: ['kiosk', 'secure'], description: 'Kiosk and shared-screen menu: copy and help only, and no plugin or everywhere items join it.', data: { variant: 'roomy', showIcons: true, showShortcuts: false, contributions: false, targets: { default: items([I.copy, '-', I.about]) } } },
+];
+
 const env = (type, s, data, extra = {}) => ({
   $axf: 'asset@1', type, id: s.id, name: s.name, version: '1.0.0', description: s.description, author: AUTHOR,
   tags: s.tags ?? [], ...extra, data,
@@ -140,6 +223,8 @@ const env = (type, s, data, extra = {}) => ({
 const BUILD = {
   'color-theme': () => COLOR.map((s) => env('color-theme', s, { scheme: s.scheme, tokens: deriveColor(s) })),
   layout: () => LAYOUT.map((s) => env('layout', s, s.data)),
+  'style-theme': () => STYLE.map((s) => env('style-theme', s, s.data)),
+  'context-menu': () => CM.map((s) => env('context-menu', s, s.data)),
 };
 
 /* ───────────────────────── runner ───────────────────────── */

@@ -1878,7 +1878,19 @@ export class AxfRuntime {
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
-    a.register('design.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package', requires: 'assets.swap', params: true });
+    // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
+    // (swap:design-package:next would only move the slot, never apply the package's themes).
+    a.register('design.package', ([id]) => {
+      if (!id) return;
+      if (id === 'next' || id === 'prev' || id === 'random') {
+        const list = this.registry.list(DESIGN_PACKAGE_TYPE as AssetType);
+        if (!list.length) return;
+        const cur = list.findIndex((p) => p.id === this.state.active[DESIGN_PACKAGE_TYPE as AssetType]);
+        const step = id === 'random' ? 1 + Math.floor(Math.random() * Math.max(1, list.length - 1)) : id === 'next' ? 1 : -1;
+        id = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length].id;
+      }
+      this.applyDesignPackage(id);
+    }, { label: 'Apply a design package (id, next, prev or random)', requires: 'assets.swap', params: true });
     a.register('appearance.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package (old name)', requires: 'assets.swap', params: true, searchable: false });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).

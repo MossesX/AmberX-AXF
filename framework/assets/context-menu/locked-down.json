@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "locked-down",
+  "name": "Locked Down",
+  "version": "1.0.0",
+  "description": "Kiosk and shared-screen menu: copy and help only, and no plugin or everywhere items join it.",
+  "author": "AmberX AXF",
+  "tags": [
+    "kiosk",
+    "secure"
+  ],
+  "data": {
+    "variant": "roomy",
+    "showIcons": true,
+    "showShortcuts": false,
+    "contributions": false,
+    "targets": {
+      "default": [
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "about",
+          "label": "About",
+          "icon": "info",
+          "action": "help.about"
+        }
+      ]
+    }
+  }
+}
