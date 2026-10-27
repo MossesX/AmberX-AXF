@@ -40,6 +40,7 @@ include(":lib-hub")
 include(":lib-notifications")
 include(":lib-work")
 include(":lib-onboarding")
+include(":lib-triggers")
 // Tooling
 include(":axf-devtools")
 include(":axf-testing")
