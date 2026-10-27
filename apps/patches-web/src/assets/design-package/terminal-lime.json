@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "terminal-lime",
+  "name": "Terminal Lime",
+  "version": "1.0.0",
+  "description": "Sharp Terminal style on Graphite Lime, classic IDE layout, snappy feedback. A dense, keyboard-first dark look. Keeps this app's own layout. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "dense"
+  ],
+  "data": {
+    "style-theme": "sharp-terminal",
+    "color-theme": "graphite-lime",
+    "layout": "patches-tabs",
+    "behavior-theme": "snappy"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "neon-night",
+  "name": "Neon Night",
+  "version": "1.0.0",
+  "description": "Glass Orbit on Neon Tide, docked studio layout, snappy motion. A vivid dark look. Keeps this app's own layout. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "vivid"
+  ],
+  "data": {
+    "style-theme": "glass-orbit",
+    "color-theme": "neon-tide",
+    "layout": "patches-tabs",
+    "behavior-theme": "snappy"
+  }
+}
