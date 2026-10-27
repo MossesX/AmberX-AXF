@@ -39,10 +39,15 @@ import org.json.JSONObject;
  * - **Approvals:** reads the hub's approvals feed with the phone's hub session every `intervalSec` (15–300 s; 5 min
  *   while signed out), raises one alert per new approval (tap = its page on the hub, in [HubWebActivity]) and, when
  *   auto-approval is on and the tool matches, approves it on the hub's own form ([HubRules#approve]).
- * - **Wake phrase:** while the app isn't on screen and phrases are set, the on-device recognizer listens for them only;
- *   when one is heard it opens AmberX to talk (a full-screen alert where Android allows it).
+ * - **Hands-free listening (Oct 27 2026):** its own switch (Voice control → Hands-free, on by default), independent of
+ *   watching axHub. The on-device recognizer listens on screen and in the background for the wake phrases, or for
+ *   everything when "always armed" is on. On screen a hit goes straight to the web side; with the app closed it opens
+ *   AmberX (a full-screen alert where Android allows it). It pauses while the Speak button is listening.
+ * - **Detection overlay:** [DetectionOverlay], a floating window over other apps with the input level, dB, what was heard
+ *   and quick settings (needs "Display over other apps").
  *
- * Its config is the JSON the web side sends (`monitorStart`), kept in prefs so a reboot restarts the watch.
+ * The watch config is the JSON the web side sends (`monitorStart`), the voice config what it sends with `voiceSet`; both
+ * are kept in prefs so a reboot restarts them.
  */
 public class WatchService extends Service {
     static final String PREFS = "amberx_watch";
@@ -54,8 +59,12 @@ public class WatchService extends Service {
     /** Last status, read by the plugin; [listener] gets every change. */
     static volatile JSONObject status = idle();
     static volatile StatusListener listener;
-    /** True while MainActivity is on screen (the web side listens itself then). */
+    /** True while MainActivity is on screen: hits go straight to the web side then. */
     static volatile boolean inApp;
+    /** True while the Speak button's one-shot recognizer runs: hands-free pauses so they don't fight over the mic. */
+    static volatile boolean appListening;
+    /** The running service, for the plugin's live calls (overlay permission granted, …). */
+    static volatile WatchService running;
 
     interface StatusListener { void changed(JSONObject status); }
 
@@ -64,6 +73,8 @@ public class WatchService extends Service {
     private final Handler main = new Handler(Looper.getMainLooper());
     private SpeechRecognizer recognizer;
     private boolean listening;
+    private DetectionOverlay overlay;
+    private long lastLevelEvent;
 
     static JSONObject idle() {
         JSONObject o = new JSONObject();
@@ -84,7 +95,39 @@ public class WatchService extends Service {
 
     static void stop(Context c) {
         prefs(c).edit().putBoolean("on", false).apply();
-        c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
+        if (handsFree(c)) refresh(c); // hands-free keeps the service (and the microphone) running on its own
+        else c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
+    }
+
+    /* ---------------------------------------------------------------- voice config (hands-free + overlay) */
+
+    static JSONObject voice(Context c) {
+        try { return new JSONObject(prefs(c).getString("voice", "{}")); } catch (Exception e) { return new JSONObject(); }
+    }
+
+    /** Hands-free is on by default: a missing config means on. */
+    static boolean handsFree(Context c) { return voice(c).optBoolean("handsFree", true); }
+
+    /** Saves the voice config from the web side and starts or stops the service to match. */
+    static void setVoice(Context c, JSONObject cfg) {
+        prefs(c).edit().putString("voice", cfg.toString()).apply();
+        refresh(c);
+    }
+
+    /** One quick-setting change made on the overlay (handsFree / alwaysArmed / overlay). */
+    static void setVoiceFlag(Context c, String key, boolean value) {
+        JSONObject v = voice(c);
+        try { v.put(key, value); } catch (Exception ignored) {}
+        setVoice(c, v);
+        AmberxNativePlugin.voiceChanged(v);
+    }
+
+    /** Starts the service when watching or hands-free wants it, else stops it. */
+    static void refresh(Context c) {
+        boolean want = prefs(c).getBoolean("on", false) || handsFree(c);
+        if (want) {
+            try { ContextCompat.startForegroundService(c, new Intent(c, WatchService.class)); } catch (Exception ignored) { /* background start refused */ }
+        } else c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
     }
 
     @Override public IBinder onBind(Intent intent) { return null; }
@@ -92,6 +135,7 @@ public class WatchService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        running = this;
         channels(this);
         thread = new HandlerThread("amberx-watch");
         thread.start();
@@ -102,13 +146,15 @@ public class WatchService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && ACTION_STOP.equals(intent.getAction())) {
             stopListening();
+            hideOverlay();
             ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
             setStatus(idle());
             stopSelf();
             return START_NOT_STICKY;
         }
-        if (!prefs(this).getBoolean("on", false)) { stopSelf(); return START_NOT_STICKY; }
-        boolean wantMic = !phrases().isEmpty() && micGranted();
+        boolean watching = prefs(this).getBoolean("on", false);
+        if (!watching && !handsFree(this)) { stopListening(); hideOverlay(); stopSelf(); return START_NOT_STICKY; }
+        boolean wantMic = wantsMic() && micGranted();
         int type = ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE | (wantMic ? ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE : 0);
         try {
             ServiceCompat.startForeground(this, ID_ONGOING, ongoing(wantMic), Build.VERSION.SDK_INT >= 29 ? type : 0);
@@ -119,21 +165,33 @@ public class WatchService extends Service {
             catch (Exception again) { stopSelf(); return START_NOT_STICKY; }
         }
         work.removeCallbacksAndMessages(null);
-        work.post(this::check);
+        if (watching) work.post(this::check);
+        else setStatus(listeningOnly());
+        main.removeCallbacksAndMessages(null);
         if (wantMic) main.post(this::listenLoop); else stopListening();
+        main.post(this::syncOverlay);
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        if (running == this) running = null;
         stopListening();
+        hideOverlay();
         if (thread != null) thread.quitSafely();
         super.onDestroy();
     }
 
     /* ---------------------------------------------------------------- approvals */
 
+    private JSONObject listeningOnly() {
+        JSONObject s = new JSONObject();
+        try { s.put("running", false).put("listening", listening).put("lastCheck", JSONObject.NULL).put("status", "off").put("waiting", 0); } catch (Exception ignored) {}
+        return s;
+    }
+
     private void check() {
+        if (!prefs(this).getBoolean("on", false)) return;
         JSONObject cfg = config(this);
         String hub = HubRules.isHub(HubRules.HUB, cfg.optString("hub", "")) ? HubRules.HUB : null;
         int every = Math.max(15, Math.min(300, cfg.optInt("intervalSec", 30)));
@@ -178,11 +236,14 @@ public class WatchService extends Service {
         p.edit().putStringSet("seen", now).apply();
     }
 
-    /* ---------------------------------------------------------------- wake phrase */
+    /* ---------------------------------------------------------------- hands-free listening */
 
+    /** Hands-free: the voice config's phrases; else (hands-free off) the watch's own, as before. */
     private List<String> phrases() {
+        JSONArray a = handsFree(this) ? voice(this).optJSONArray("wakePhrases") : null;
+        if (a == null && prefs(this).getBoolean("on", false)) a = config(this).optJSONArray("wakePhrases");
+        if (a == null && handsFree(this) && !voice(this).has("wakePhrases")) a = new JSONArray().put("hey amberx").put("okay amberx");
         List<String> out = new ArrayList<>();
-        JSONArray a = config(this).optJSONArray("wakePhrases");
         for (int i = 0; a != null && i < a.length() && out.size() < 20; i++) {
             String s = a.optString(i, "").trim().toLowerCase(Locale.ROOT);
             if (!s.isEmpty()) out.add(s);
@@ -190,66 +251,130 @@ public class WatchService extends Service {
         return out;
     }
 
+    /** Paused from the overlay's quick settings (not saved: a restart listens again). */
+    private boolean paused;
+
+    void togglePause() {
+        paused = !paused;
+        main.removeCallbacksAndMessages(null);
+        if (paused) pauseListening(); else main.post(this::listenLoop);
+        AmberxNativePlugin.paused(paused);
+    }
+
+    private boolean alwaysArmed() { return handsFree(this) && voice(this).optBoolean("alwaysArmed", false); }
+
+    private boolean wantsMic() { return !phrases().isEmpty() || alwaysArmed(); }
+
+    private String lang() {
+        String l = voice(this).optString("lang", "");
+        return l.isEmpty() ? config(this).optString("lang", "en-US") : l;
+    }
+
     private boolean micGranted() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void listenLoop() {
-        if (!prefs(this).getBoolean("on", false) || phrases().isEmpty() || !micGranted()) { stopListening(); return; }
-        if (inApp) { stopListening(); main.postDelayed(this::listenLoop, 3_000); return; } // the app listens itself on screen
+        boolean on = prefs(this).getBoolean("on", false) || handsFree(this);
+        if (!on || !wantsMic() || !micGranted()) { stopListening(); return; }
+        if (appListening) { pauseListening(); main.postDelayed(this::listenLoop, 1_000); return; } // the Speak button has the mic
+        if (paused) { pauseListening(); return; } // paused from the overlay; togglePause() starts it again
         if (!SpeechRecognizer.isRecognitionAvailable(this)) { stopListening(); return; }
         if (recognizer == null) {
             recognizer = Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
                 ? SpeechRecognizer.createOnDeviceSpeechRecognizer(this) : SpeechRecognizer.createSpeechRecognizer(this);
             recognizer.setRecognitionListener(new Listener());
         }
-        listening = true;
+        setListening(true);
         Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            .putExtra(RecognizerIntent.EXTRA_LANGUAGE, config(this).optString("lang", "en-US"))
+            .putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang())
             .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             .putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
         try { recognizer.startListening(i); } catch (Exception e) { main.postDelayed(this::listenLoop, 5_000); }
     }
 
+    /** Lets go of the microphone for a moment (the Speak button) without tearing the overlay down. */
+    private void pauseListening() {
+        if (recognizer != null) { try { recognizer.cancel(); } catch (Exception ignored) {} }
+        setListening(false);
+    }
+
     private void stopListening() {
-        listening = false;
+        setListening(false);
         if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; }
     }
 
+    private void setListening(boolean on) {
+        if (listening == on) return;
+        listening = on;
+        if (overlay != null) overlay.setListening(on, alwaysArmed());
+        try { JSONObject s = new JSONObject(status.toString()); s.put("listening", on); setStatus(s); } catch (Exception ignored) {}
+    }
+
     private class Listener implements RecognitionListener {
-        private boolean heard(Bundle b) {
+        /** A wake phrase in what was heard: true when handled. Final results also run "always armed". */
+        private boolean heard(Bundle b, boolean last) {
             ArrayList<String> said = b == null ? null : b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            if (said == null) return false;
+            if (said == null || said.isEmpty()) return false;
+            if (overlay != null) overlay.setHeard(said.get(0), last);
+            AmberxNativePlugin.heard(said.get(0), last);
             for (String s : said) {
                 String t = s.toLowerCase(Locale.ROOT);
                 for (String p : phrases()) if (t.contains(p)) { woke(p, s); return true; }
             }
+            if (last && alwaysArmed() && !said.get(0).trim().isEmpty()) { woke("", said.get(0)); return true; }
             return false;
         }
-        @Override public void onPartialResults(Bundle b) { if (heard(b) && recognizer != null) recognizer.cancel(); }
-        @Override public void onResults(Bundle b) { heard(b); main.postDelayed(WatchService.this::listenLoop, 400); }
+        @Override public void onPartialResults(Bundle b) { if (heard(b, false) && recognizer != null) recognizer.cancel(); }
+        @Override public void onResults(Bundle b) { heard(b, true); main.postDelayed(WatchService.this::listenLoop, 400); }
         @Override public void onError(int error) { main.postDelayed(WatchService.this::listenLoop, error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ? 3_000 : 800); }
         @Override public void onReadyForSpeech(Bundle b) {}
         @Override public void onBeginningOfSpeech() {}
-        @Override public void onRmsChanged(float v) {}
+        @Override public void onRmsChanged(float db) {
+            if (overlay != null) overlay.pushLevel(db);
+            long now = System.currentTimeMillis();
+            if (now - lastLevelEvent >= 100) { lastLevelEvent = now; AmberxNativePlugin.level(db); }
+        }
         @Override public void onBufferReceived(byte[] b) {}
         @Override public void onEndOfSpeech() {}
         @Override public void onEvent(int t, Bundle b) {}
     }
 
     private void woke(String phrase, String text) {
+        if (overlay != null) overlay.flashWake();
+        // On screen: straight to the web side, no alert, no activity start.
+        if (inApp && AmberxNativePlugin.wakeInApp(phrase, text)) return;
         Intent open = new Intent(this, MainActivity.class)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .putExtra(MainActivity.EXTRA_WAKE, phrase).putExtra(MainActivity.EXTRA_WAKE_TEXT, text);
         PendingIntent pi = PendingIntent.getActivity(this, 2, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        String what = phrase.isEmpty() ? "Heard \"" + text + "\". Tap to run it." : "Heard \"" + phrase + "\". Tap to talk.";
         Notification n = new NotificationCompat.Builder(this, CH_WAKE)
-            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX is listening").setContentText("Heard \"" + phrase + "\". Tap to talk.")
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX is listening").setContentText(what)
             .setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_CALL)
             .setContentIntent(pi).setFullScreenIntent(pi, true).setAutoCancel(true).setTimeoutAfter(30_000)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE).build();
         getSystemService(NotificationManager.class).notify(ID_WAKE, n);
         try { startActivity(open); } catch (Exception ignored) { /* background start refused: the alert opens it */ }
+    }
+
+    /* ---------------------------------------------------------------- detection overlay */
+
+    /** Shows or hides the overlay to match the voice config (hands-free on, overlay on, permission granted). */
+    void syncOverlay() {
+        boolean want = handsFree(this) && voice(this).optBoolean("overlay", true) && DetectionOverlay.canDraw(this);
+        if (want) {
+            if (overlay == null) overlay = new DetectionOverlay(this);
+            overlay.setColors(voice(this).optJSONObject("colors"));
+            overlay.setListening(listening, alwaysArmed());
+            overlay.setArmed(alwaysArmed());
+            overlay.show();
+        } else hideOverlay();
+    }
+
+    private void hideOverlay() {
+        if (overlay != null) { overlay.hide(); overlay = null; }
     }
 
     /* ---------------------------------------------------------------- notifications */
@@ -265,7 +390,9 @@ public class WatchService extends Service {
     private Notification ongoing(boolean mic) {
         PendingIntent open = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
         PendingIntent stop = PendingIntent.getService(this, 1, new Intent(this, WatchService.class).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE);
-        String what = mic ? "Watching axHub and listening for " + String.join(" / ", phrases()) : "Watching axHub for approvals";
+        boolean watching = prefs(this).getBoolean("on", false);
+        String hearing = alwaysArmed() ? "listening (always armed)" : "listening for " + String.join(" / ", phrases());
+        String what = watching ? (mic ? "Watching axHub and " + hearing : "Watching axHub for approvals") : (mic ? "Hands-free: " + hearing : "Hands-free is waiting for the microphone");
         return new NotificationCompat.Builder(this, CH_WATCH)
             .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX").setContentText(what)
             .setOngoing(true).setContentIntent(open).addAction(0, "Stop", stop).build();
