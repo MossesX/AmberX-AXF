@@ -32,5 +32,6 @@
   "divider": "rule",
   "badge": "new",
   "settings": "standard",
+  "interface": "fresh",
   "uac-policy": "standard"
 }

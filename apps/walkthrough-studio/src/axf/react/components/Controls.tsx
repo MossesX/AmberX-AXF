@@ -1,6 +1,7 @@
-import { useId, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
-import { useAsset, useGate } from '../AxfProvider';
+import { useEffect, useId, useState, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
+import { useAsset, useGate, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './Brand';
 import { containerCollapsible } from '../../core';
 
 /* ---------------- Button (styled by the active `button` asset) ---------------- */
@@ -12,21 +13,37 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: string;
   /** UAC permission required to use this button */
   requires?: string;
+  /**
+   * A destructive action: the behaviour theme decides whether to ask first (`feedback.confirmDelete`: always / risky /
+   * never). `confirm` is the question; `undoable` says the action can be brought back (so `risky` doesn't ask).
+   */
+  confirm?: string;
+  undoable?: boolean;
+  /** Work in flight: the button is disabled and the app shows the busy cursor while true (behaviour theme feedback.busyCursor). */
+  busy?: boolean;
 }
 
-export function Button({ tone = 'neutral', size = 'md', icon, requires, children, className, disabled, ...rest }: ButtonProps) {
+export function Button({ tone = 'neutral', size = 'md', icon, requires, confirm, undoable, busy, children, className, disabled, onClick, ...rest }: ButtonProps) {
   const gate = useGate(requires);
+  const rt = useRuntime();
+  useEffect(() => { if (!busy) return; rt.setBusy(true); return () => rt.setBusy(false); }, [busy, rt]);
   if (gate === 'hide') return null;
   const locked = gate === 'disable';
+  const click = (e: MouseEvent<HTMLButtonElement>) => {
+    if (confirm && rt.confirmDelete(undoable) && !globalThis.confirm?.(confirm)) return;
+    onClick?.(e);
+  };
   return (
     <button
       type="button"
-      className={`fx-btn fx-btn--${tone}${size === 'sm' ? ' fx-btn--sm' : ''} ${className ?? ''}`}
-      disabled={disabled || locked}
+      className={`fx-btn fx-btn--${tone}${size === 'sm' ? ' fx-btn--sm' : ''}${busy ? ' is-busy' : ''} ${className ?? ''}`}
+      disabled={disabled || locked || busy}
+      aria-busy={busy || undefined}
       title={locked ? `Requires ${requires}` : rest.title}
+      onClick={click}
       {...rest}
     >
-      {locked ? <Icon name="lock" size={size === 'sm' ? 11 : 14} /> : icon && <Icon name={icon} size={size === 'sm' ? 11 : 15} />}
+      {locked ? <Icon name="lock" size={size === 'sm' ? 11 : 14} /> : busy ? <Icon name="refresh" size={size === 'sm' ? 11 : 15} className="fx-spin" /> : icon && <Icon name={icon} size={size === 'sm' ? 11 : 15} />}
       {children && <span>{children}</span>}
     </button>
   );
@@ -132,10 +149,13 @@ export function Container({ title, icon, actions, children, className, ctx, ctxP
   const [open, setOpen] = useState(defaultOpen);
   const bodyId = useId();
   const shown = open || !collapsible;
+  const brand = useBrandPlace('container', 14);
+  const brandHost = brandHostProps(brand);
   return (
-    <section className={`fx-card ${className ?? ''}`} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload}>
+    <section className={`fx-card ${className ?? ''} ${brandHost.className}`.trim()} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       {title && (
         <header className="fx-card__head">
+          {brand?.svg && title && <BrandMark slot="container" height={14} className="fx-card__brand" />}
           {icon && <Icon name={icon} size={16} />}
           <h3>{title}</h3>
           <div className="fx-card__actions">
@@ -156,6 +176,7 @@ export function Container({ title, icon, actions, children, className, ctx, ctxP
         </header>
       )}
       {shown && <div className="fx-card__body" id={bodyId}>{children}</div>}
+      {shown && <BrandWatermark slot="container" />}
     </section>
   );
 }

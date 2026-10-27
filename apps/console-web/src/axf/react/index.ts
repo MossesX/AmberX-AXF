@@ -12,6 +12,7 @@ export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { ArrangeBar, arrangedSide, useArrange, type ArrangeApi } from './components/Arrange';
 export { Gauge, Meter, type GaugeProps, type MeterProps } from './components/Meters';
 export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
+export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';

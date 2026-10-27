@@ -29,6 +29,8 @@ export interface WindowSpec {
   closable: boolean; z: number;
   /** content view mode the window's toolbar can toggle (`tree` | `grid` | app-defined) */
   mode: string;
+  /** the interface scope it was opened from ('' / absent = the app itself); each scope's host draws only its own */
+  scope?: string;
 }
 export const isFloating = (w: WindowSpec) => w.type === 'floating' || w.type === 'dock' || w.type === 'element';
 export const forcesToolbar = (w: WindowSpec) => isFloating(w) && w.type !== 'element';
@@ -143,8 +145,10 @@ export class WindowManager {
   subscribe(fn: Listener) { this.listeners.add(fn); return () => { this.listeners.delete(fn); }; }
   private set(f: (s: WindowState) => WindowState) { const n = f(this._state); if (n !== this._state) { this._state = n; this.listeners.forEach((l) => l(n)); } }
   private nextId(prefix: string) { return `${prefix}-${++this.seq}-${(Date.now() & 0xffff).toString(36)}`; }
+  /** the interface scope new windows are stamped with (the runtime sets it on `enterScope`) */
+  scopeHint = '';
   private spec(id: string, type: WindowType, title: string, o: Partial<WindowSpec> = {}): WindowSpec {
-    return { id, type, title, toolbarsAllowed: true, toolbarEnabled: type !== 'main', origin: null, settings: this.windowDefaults(type), x: 40, y: 80, width: 360, height: 420, minimized: null, minimizedAtX: 0, minimizedAtY: 0, closable: true, z: 0, mode: 'tree', ...o };
+    return { id, type, title, scope: this.scopeHint, toolbarsAllowed: true, toolbarEnabled: type !== 'main', origin: null, settings: this.windowDefaults(type), x: 40, y: 80, width: 360, height: 420, minimized: null, minimizedAtX: 0, minimizedAtY: 0, closable: true, z: 0, mode: 'tree', ...o };
   }
   private topZ(s: WindowState) { return Math.max(0, ...s.windows.map((w) => w.z)) + 1; }
 

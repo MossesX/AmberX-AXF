@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
+import { useScopeId } from './InterfaceScope';
 import { MenuList } from './MenuList';
 
 export interface DialogDef {
@@ -21,13 +22,16 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const state = useAxfState();
   const d = useAsset('dialog').data;
   const panelRef = useRef<HTMLDivElement>(null);
-  const def = state.dialog ? dialogs[state.dialog.id] : undefined;
+  const scope = useScopeId();
+  // a dialog belongs to the interface scope it was opened in; every other scope's host leaves it alone
+  const mine = !state.dialog || (state.dialog.scope ?? '') === scope;
+  const def = state.dialog && mine ? dialogs[state.dialog.id] : undefined;
 
   useEffect(() => {
     if (def) panelRef.current?.focus();
   }, [def]);
 
-  if (!state.dialog) return null;
+  if (!state.dialog || !mine) return null;
   if (!def) {
     queueMicrotask(() => {
       rt.closeDialog();
@@ -63,9 +67,10 @@ export function ToastHost() {
   const rt = useRuntime();
   const state = useAxfState();
   const p = useAsset('popup').data;
+  const scope = useScopeId();
   return (
     <div className="fx-toasts" aria-live="polite">
-      {state.toasts.map((t) => (
+      {state.toasts.filter((t) => (t.scope ?? '') === scope).map((t) => (
         <div key={t.id} className={`fx-toast fx-toast--${t.kind}`} role="status">
           {p.showIcon && <Icon name={TOAST_ICON[t.kind]} size={18} className="fx-toast__icon" />}
           <div className="fx-toast__text">
@@ -89,9 +94,12 @@ export function ContextMenuHost() {
   const cm = useAsset('context-menu').data;
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const scope = useScopeId();
 
   useEffect(() => {
     const open = (target: Element | null, x: number, y: number) => {
+      // one host per interface scope: only the host of the scope the pointer is in opens the menu
+      if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       const el = target?.closest('[data-fx-ctx-target]');
       const name = el?.getAttribute('data-fx-ctx-target') ?? 'default';
       rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined);
@@ -146,7 +154,7 @@ export function ContextMenuHost() {
       document.removeEventListener('scroll', cancel, true);
       document.removeEventListener('pointerdown', onAway, true);
     };
-  }, [rt]);
+  }, [rt, scope]);
 
   // Clamp inside the viewport once measured
   useLayoutEffect(() => {
@@ -157,7 +165,7 @@ export function ContextMenuHost() {
     setPos({ x: Math.max(8, x), y: Math.max(8, y) });
   }, [state.context]);
 
-  if (!state.context) return null;
+  if (!state.context || (state.context.scope ?? '') !== scope) return null;
   const ctx = state.context;
   // `contributions: false`: a target the asset defines shows only the asset's own items (e.g. context-menu/amber)
   const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));

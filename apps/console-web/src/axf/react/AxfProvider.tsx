@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 
-const AxfContext = createContext<AxfRuntime | null>(null);
+export const AxfContext = createContext<AxfRuntime | null>(null);
 
 export function useRuntime(): AxfRuntime {
   const rt = useContext(AxfContext);
@@ -112,7 +112,11 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
       }
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    // interface scopes (components/InterfaceScope.tsx): a pointer / key outside every scope puts the app back in its own scope
+    const leave = (e: Event) => { if (!(e.target as Element | null)?.closest?.('[data-fx-scope]')) runtime.enterScope(''); };
+    document.addEventListener('pointerdown', leave, true);
+    document.addEventListener('keydown', leave, true);
+    return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', leave, true); document.removeEventListener('keydown', leave, true); };
   }, [runtime]);
 
   return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;

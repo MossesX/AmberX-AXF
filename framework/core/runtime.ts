@@ -25,6 +25,7 @@ import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProvide
 import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
+import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -1363,7 +1364,7 @@ export class AxfRuntime {
 
   openDialog(id: string, props?: Record<string, unknown>) {
     if (this.openPlaced(`dialog:${id}`, props)) return;
-    this.set({ dialog: { id, props }, context: null });
+    this.set({ dialog: { id, props, scope: this.uiScope }, context: null });
   }
 
   closeDialog() {
@@ -1372,7 +1373,7 @@ export class AxfRuntime {
 
   toast(message: string, kind: Toast['kind'] = 'info', title?: string) {
     const popup = this.asset('popup').data;
-    const t: Toast = { id: ++this.toastSeq, kind, title, message };
+    const t: Toast = { id: ++this.toastSeq, kind, title, message, scope: this.uiScope };
     const toasts = [...this.state.toasts, t].slice(-popup.maxVisible);
     this.set({ toasts });
     // the behaviour theme's toast time wins when it sets one (0 = the pop-up asset's); 0 on the asset = stay until closed
@@ -1389,7 +1390,7 @@ export class AxfRuntime {
 
   openContext(x: number, y: number, target: string, payload?: string) {
     if (this.slotHidden('context-menu')) return;
-    this.set({ context: { x, y, target, payload } });
+    this.set({ context: { x, y, target, payload, scope: this.uiScope } });
   }
 
   closeContext() {
@@ -1643,6 +1644,124 @@ export class AxfRuntime {
       Object.assign(attrs, p.attrs);
     }
     return { vars, attrs };
+  }
+
+  /* ---------------- interfaces + scopes (core/engines/interface.ts) ---------------- */
+
+  private readonly scopes = new Map<string, AxfRuntime>();
+
+  /** The interface scope the user is working in ('' = the app itself); dialogs, context menus, toasts and new windows are stamped with it. */
+  uiScope = '';
+
+  /** Called by a scope's root (pointer / focus / key, capture phase) and by scoped views before they open anything. */
+  enterScope(id: string): void {
+    const next = isScopeId(id) ? id : '';
+    this.uiScope = next;
+    this.windows.scopeHint = next;
+  }
+
+  /** The registry view the interface engine resolves against. */
+  private interfaceRegistry() {
+    return { has: (t: string, id: string) => this.registry.has(t as AssetType, id), designPackage: (id: string) => this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id)?.data };
+  }
+
+  /** An interface asset resolved against what this app ships (null when there is no such interface). */
+  resolveInterface(id: string): ResolvedInterface | null {
+    const a = this.registry.get(INTERFACE_TYPE as AssetType, id);
+    return a ? resolveInterface(a.data, this.interfaceRegistry()) : null;
+  }
+
+  /** The current look as an interface over the applied design package (for the roller and Save as interface). */
+  captureInterface(tab?: { label: string; icon: string }): InterfaceData {
+    const hidden: Record<string, boolean> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
+    return captureInterface({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues(), design: this.appliedDesignPackage() ?? '' }, tab);
+  }
+
+  /** The interface applied to the whole app, if any. */
+  appliedInterface(): string | undefined {
+    const v = this.settings.get(INTERFACE_SETTING_KEY);
+    return typeof v === 'string' && this.registry.has(INTERFACE_TYPE as AssetType, v) ? v : undefined;
+  }
+
+  /** Apply interface `id` to the whole app: its design package (whole look), then its own slots, spacing, hidden chrome, settings and branding. */
+  applyInterface(id: string): boolean {
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    const a = this.registry.get(INTERFACE_TYPE as AssetType, id);
+    if (!a) { this.toast(`No interface "${id}".`, 'warning', 'Interface'); return false; }
+    const r = resolveInterface(a.data, this.interfaceRegistry());
+    if (r.design && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, r.design)) this.applyDesignPackage(r.design);
+    for (const [k, v] of Object.entries(r.settings)) this.settings.set(k, v as SettingValue);
+    for (const [t, want] of Object.entries(r.hidden)) if (hideable(t as AssetType) && !this.slotOwnedByHost(t as AssetType)) this.setSlotHidden(t as AssetType, want);
+    this.setSpacing(r.spacing as Spacing);
+    const slots: Record<string, string> = {};
+    for (const [t, sid] of Object.entries(r.active)) if (t !== DESIGN_PACKAGE_TYPE) slots[t] = sid;
+    this.swapAll({ ...(slots as Partial<ActiveAssets>), [INTERFACE_TYPE]: id } as Partial<ActiveAssets>);
+    this.settings.set(INTERFACE_SETTING_KEY, id);
+    for (const m of r.missing) this.terminal.warn('hot-swap', `interface ${id}: ${m} isn't in this app, kept the current one`);
+    this.terminal.ok('hot-swap', `interface ${id} applied (${Object.keys(r.active).length} slots)`);
+    this.toast(`${a.name} applied.`, 'success', 'Interface');
+    return true;
+  }
+
+  /**
+   * A scoped view of this runtime: the same app, drawn under interface `interfaceId` inside the element that
+   * carries `data-fx-scope="<scopeId>"`. Reads of the look (active assets, spacing, hidden chrome, appearance
+   * settings, compiled styles) come from the interface; everything else (actions, windows, dialogs, settings
+   * writes, swaps) is the shared runtime, so a swap inside a scope changes the app, never the scope's interface.
+   * Views are cached per scope id; `dropScope` forgets one. Refused (null) for a bad scope id or unknown interface.
+   */
+  scoped(scopeId: string, interfaceId: string): AxfRuntime | null {
+    if (!isScopeId(scopeId) || !this.registry.has(INTERFACE_TYPE as AssetType, interfaceId)) return null;
+    const cached = this.scopes.get(scopeId);
+    if (cached && (cached as unknown as { scopeInterface: string }).scopeInterface === interfaceId) return cached;
+    const base = this;
+    let memo: { rev: number; r: ResolvedInterface } | null = null;
+    const resolved = (): ResolvedInterface => {
+      const rev = base.state.rev;
+      if (!memo || memo.rev !== rev) memo = { rev, r: base.resolveInterface(interfaceId)! };
+      return memo.r;
+    };
+    const view = Object.create(base) as AxfRuntime & { scopeId: string; scopeInterface: string };
+    const settings = Object.create(base.settings) as SettingsRegistry;
+    Object.defineProperty(settings, 'get', { value: (key: string) => (key in resolved().settings ? (resolved().settings[key] as SettingValue) : key === SPACING_KEY ? resolved().spacing : base.settings.get(key)) });
+    Object.defineProperties(view, {
+      scopeId: { value: scopeId },
+      scopeInterface: { value: interfaceId },
+      settings: { value: settings },
+      state: { get: () => ({ ...base.state, active: { ...base.state.active, ...resolved().active, [INTERFACE_TYPE]: interfaceId } }), set: () => { /* writes go through set(), which the base owns */ } },
+      getState: { value: () => view.state },
+      set: { value: (patch: Partial<AxfState>, persist = false) => (base as unknown as { set(p: Partial<AxfState>, persist?: boolean): void }).set(patch, persist) },
+      hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), base.embedHiddenSlots()) as AssetType[] },
+      slotHidden: { value: (type: AssetType) => hideable(type) && view.hiddenSlots().includes(type) },
+      spacing: { value: () => spacingOf(resolved().spacing) },
+      appliedInterface: { value: () => interfaceId },
+      scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
+      // anything opened through the scoped view belongs to the scope (its own hosts draw it)
+      openDialog: { value: (did: string, props?: Record<string, unknown>) => { base.enterScope(scopeId); base.openDialog(did, props); } },
+      openContext: { value: (x: number, y: number, target: string, payload?: string) => { base.enterScope(scopeId); base.openContext(x, y, target, payload); } },
+      toast: { value: (message: string, kind?: Toast['kind'], title?: string) => { base.enterScope(scopeId); base.toast(message, kind, title); } },
+    });
+    this.scopes.set(scopeId, view);
+    return view;
+  }
+
+  /** Forget a scoped view (its element left the page). */
+  dropScope(scopeId: string): void { this.scopes.delete(scopeId); }
+
+  /** The CSS a scope's root needs: its compiled vars under its selector, plus the engine sheets re-rooted there. */
+  scopeCss(): string {
+    const id = (this as unknown as { scopeId?: string }).scopeId;
+    if (!id) return '';
+    const { vars } = this.compileStyles();
+    return [scopeVarsCss(id, vars), scopeSheet(this.customSheet(), id)].filter(Boolean).join('\n');
+  }
+
+  /** The attributes a scope's root element carries. */
+  scopeRootAttrs(): Record<string, string> {
+    const id = (this as unknown as { scopeId?: string; scopeInterface?: string }).scopeId;
+    if (!id) return {};
+    return scopeAttrs(id, (this as unknown as { scopeInterface: string }).scopeInterface, this.compileStyles().attrs);
   }
 
   /* ---------------- branding (core/engines/brand.ts) ---------------- */

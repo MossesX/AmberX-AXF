@@ -10,6 +10,7 @@ import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, 
 import type { BadgeData, ClockData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
+import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { Icon } from './Icon';
 import { WidgetView } from './Widgets';
 
@@ -67,18 +68,32 @@ function Attached({ a }: { a: PlacedAttachment }) {
   );
 }
 
+/** The mark height the banner's brand slot draws at: 55% of the banner (same as the built-in mark's CSS size). */
+function bannerMarkPx(data: { height?: number }): number {
+  return Math.round(((data.height ?? 24) * 0.55));
+}
+
 export function Banner() {
   const rt = useRuntime();
   useAxfState();
   const { data, placed } = rt.banner();
   const arrange = useArrange('banner', placed);
+  // branding@1: the banner's brand slot replaces the built-in mark (lockup by default); accent-edge / watermark mark the host
+  const brand = useBrandPlace('banner');
+  const host = brandHostProps(brand);
   if (!data) return null;
+  const drawsMark = !!brand?.svg;
+  // a lockup / wordmark already carries the brand name, so the asset's own logo text is only shown next to a plain mark
+  const showText = data.logo?.text && (!drawsMark || brand?.mode === 'mark' || brand?.mode === 'animated');
   return (
-    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''}`} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner">
+    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''} ${host.className}`.trim()} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner" data-fx-brand-mode={host['data-fx-brand-mode']}>
       {BANNER_SIDES.map((side) => (
         <div key={side} className={`fx-banner__side is-${side}`} {...arrange.sideProps(side)}>
           {side === 'left' && data.logo?.show !== false && (
-            <span className="fx-banner__logo"><span className="fx-brand__mark" aria-hidden="true" />{data.logo?.text && <span className="fx-banner__name">{data.logo.text}</span>}</span>
+            <span className="fx-banner__logo">
+              {drawsMark ? <BrandMark slot="banner" height={bannerMarkPx(data)} /> : <span className="fx-brand__mark" aria-hidden="true" />}
+              {showText && <span className="fx-banner__name">{data.logo?.text}</span>}
+            </span>
           )}
           {arrangedSide(arrange, side, placed[side], (a, i) => arrange.item(a, i, 'fx-banner__item', { 'data-axf-banner-item': a.key, 'data-axf-origin': a.origin }, <Attached a={a} />))}
         </div>

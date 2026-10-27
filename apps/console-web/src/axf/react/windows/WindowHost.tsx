@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
+import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, CORNERS } from '../../core/engines/windows';
 
@@ -123,11 +124,14 @@ export function FloatingWindowsHost() {
     report(); window.addEventListener('resize', report);
     return () => window.removeEventListener('resize', report);
   }, [wm]);
+  // one host per interface scope: each draws the windows opened in its scope ('' = the app itself)
+  const scope = useScopeId();
+  const own = (w: WindowSpec) => (w.scope ?? '') === scope;
   return (
     <>
-      {s.windows.filter((w) => isFloating(w) && !w.minimized).sort((a, b) => a.z - b.z).map((w) => <FloatingWindow key={w.id} w={w} />)}
-      {CORNERS.map((c) => <MinimizedCorner key={c} corner={c} windows={wm.minimizedAt(c)} />)}
-      {s.windows.filter((w) => w.minimized === 'floating-toolbar').map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
+      {s.windows.filter((w) => isFloating(w) && !w.minimized && own(w)).sort((a, b) => a.z - b.z).map((w) => <FloatingWindow key={w.id} w={w} />)}
+      {CORNERS.map((c) => <MinimizedCorner key={c} corner={c} windows={wm.minimizedAt(c).filter(own)} />)}
+      {s.windows.filter((w) => w.minimized === 'floating-toolbar' && own(w)).map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
       {s.drag && <div className="fx-dragghost" style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
     </>
   );

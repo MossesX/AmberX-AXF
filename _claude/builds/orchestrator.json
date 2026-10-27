@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T18:51:49.155Z",
+ "updatedAt": "2026-10-27T19:11:51.157Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -556,7 +556,7 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T18:51:49.154Z",
+   "updatedAt": "2026-10-27T19:11:51.156Z",
    "builtAt": "",
    "notes": [
     {
@@ -590,6 +590,10 @@
     {
      "text": "Plugin scope read live Oct 27 2026 (approval 72afb5a6): no plugins.json on the console, so every installed plugin is on — all 32 are in scope (list in DESIGN-LANGUAGE.md §13).",
      "at": "2026-10-27T18:51:49.154Z"
+    },
+    {
+     "text": "Fable phase 1 done Oct 27 2026 (PR #128). Waiting on Brett's approval of the Fable → Opus switch.",
+     "at": "2026-10-27T19:11:51.156Z"
     }
    ],
    "approvals": [],
@@ -1357,14 +1361,14 @@
    "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
-   "status": "pending",
+   "status": "waiting",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/interface-roller",
    "pr": "",
    "createdAt": "2026-10-27T17:11:59.344Z",
-   "updatedAt": "2026-10-27T17:17:17.313Z",
+   "updatedAt": "2026-10-27T19:11:51.096Z",
    "builtAt": "",
    "notes": [
     {
@@ -1374,6 +1378,10 @@
     {
      "text": "Brett, Oct 27 2026 (cards): the three interface tabs go in the GizmoX console (Main = today's look). Order: enterprise-branding phase 1 first, then this build's Fable phase in the same Fable session, then one switch to Opus.",
      "at": "2026-10-27T17:17:17.307Z"
+    },
+    {
+     "text": "Fable phase 1 done Oct 27 2026 (PR #129, stacked on #128). Next on Opus after the switch is approved.",
+     "at": "2026-10-27T19:11:51.096Z"
     }
    ],
    "approvals": [],
@@ -1390,8 +1398,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:58:54.888Z",
      "note": ""
     },
     {
@@ -1406,8 +1414,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:58:54.951Z",
      "note": ""
     },
     {
@@ -1422,8 +1430,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:03:25.215Z",
      "note": ""
     },
     {
@@ -1438,8 +1446,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:08:35.374Z",
      "note": ""
     },
     {
@@ -1454,8 +1462,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:08:35.445Z",
      "note": ""
     },
     {
