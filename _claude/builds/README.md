@@ -12,11 +12,11 @@ Build → **category** (`category`) → **phases** (step `phase` label; a new ph
 ## Carry a build on
 
 ```bash
-node apps/console-web/plugins/build-orchestrator/orchestrator.mjs              # every build, steps, time left, what's next
-node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next         # the next step (or the approval it waits on)
-node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>   # paste-ready brief: the current phase only
-node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step <id> <stepId> [undo]
-node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act approve <id> <phase>   # only after Brett approves (card)
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs              # every build, steps, time left, what's next # axf-plugin:build-orchestrator
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next         # the next step (or the approval it waits on) # axf-plugin:build-orchestrator
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>   # paste-ready brief: the current phase only # axf-plugin:build-orchestrator
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step <id> <stepId> [undo] # axf-plugin:build-orchestrator
+node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act approve <id> <phase>   # only after Brett approves (card) # axf-plugin:build-orchestrator
 ```
 
 Commit `orchestrator.json` with the work after every step. Console: **Builds → Build orchestrator** (tabs Builds,
