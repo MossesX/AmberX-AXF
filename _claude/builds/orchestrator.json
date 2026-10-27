@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T19:46:34.469Z",
+ "updatedAt": "2026-10-27T20:01:41.486Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1498,17 +1498,24 @@
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
    "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "waiting",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "claude/builds-one-page",
    "pr": "",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-10-27T19:46:34.469Z",
+   "updatedAt": "2026-10-27T20:01:41.486Z",
    "builtAt": "",
    "notes": [],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T20:01:41.480Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
