@@ -84,3 +84,14 @@ read-aloud. CI: `:lib-ai:testDebugUnitTest`.
   so either one plugs in.
 - Model list from the hub (pass `models` to `AiModule` meanwhile; empty = the hub's default model).
 - Compose chat UI (apps build theirs on `replies`).
+
+## Hub follow-ups (found while wiring ax-notes, Oct 27 2026)
+
+No code change in lib-ai; these need axHub (and the console) first:
+
+- **Model list from the hub**: an endpoint listing the models the signed-in user may pick, so `AiModule` stops taking a
+  hard-coded `models` list.
+- **`aiModes` in `/me`**: the hub's `/me` should return the user's allowed AI modes (ai-modes@1), so apps gate modes from
+  the hub instead of local permissions.
+- **Honour `needsApproval` in the console ai-assistant plugin**: requests flagged `needsApproval` must wait for the
+  user's approval in the console instead of running straight away.
