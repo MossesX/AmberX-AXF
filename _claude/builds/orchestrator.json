@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:22:44.210Z",
+ "updatedAt": "2026-10-27T20:40:45.025Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:22:44.208Z",
+   "updatedAt": "2026-10-27T20:40:45.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -1664,9 +1664,20 @@
     {
      "text": "Resumed by Brett Oct 27 16:19 (claude.ai): added speaking (lib-speech, shared speak+listen incl. web), multiple sorted note lists + to-do lists with notes and categories, codebase integration step. Profile refactor; Fable/Opus split with approval at the switch; up to 3 sub-agents; Android exception confirmed again.",
      "at": "2026-10-27T20:22:32.091Z"
+    },
+    {
+     "text": "Oct 27 16:40 Brett approved the Fable → Opus switch early ('run more sub agents' → approve +3 Opus): s6, s9, s11+s12+s22 run on Opus in parallel with the Fable phase; 5 agents total.",
+     "at": "2026-10-27T20:40:45.024Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T20:40:44.959Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
