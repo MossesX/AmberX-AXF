@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, Slot, useRuntime } from '../axf/react';
+import { AttachedToolbars, Button, Icon, Slot, useAttachTarget, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
@@ -11,14 +11,16 @@ const usdFor = (model: string, minutes: number | null | undefined) => (minutes ?
 /*
  * Pending builds: work parked until its model (usually Fable) is available. The list lives in
  * framework/plan/pending.json (pending@1) and mirrors the claude.ai "AXF Pending Builds" page field for field.
- * Every row shows its date: when it was added, or when it was built once complete. Sort by status or either date.
+ * Every row shows its date: when it was added, or when it was built once complete. Sort by status or either date
+ * (ezgrid) and filter by status (ezfilter): toolbar assets attached to the list (toolbar-binding@1).
  * All list logic is framework/plan/pending-core.mjs, shared with the API, the CLI and the MCP tools.
  */
 
 const LOCAL_KEY = 'pending';
+/** The element id toolbars attach to (ezfilter, ezgrid: apps/console-web/src/assets/toolbar). */
+const PENDING_LIST = 'console.pending-list';
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
-const SORT_LABEL: Record<PendingSort, string> = { status: 'Status', added: 'Date added', built: 'Date built' };
 type Mode = 'note' | 'sub' | 'confirm' | 'edit' | null;
 
 export function Pending() {
@@ -64,9 +66,27 @@ export function Pending() {
     const all = state?.items ?? [];
     return core.sortItems(filter ? all.filter((i) => i.status === filter) : all, sort, dir);
   }, [state, sort, dir, filter]);
-  if (!state) return <div className="fx-empty">Loading pending builds…</div>;
-  const counts = core.counts(state.items);
+  const counts = core.counts(state?.items ?? []);
   const pickSort = (k: PendingSort) => { if (k === sort) setDir((d) => (d === 'asc' ? 'desc' : 'asc')); else { setSort(k); setDir(k === 'status' ? 'asc' : 'desc'); } };
+  // toolbar-binding@1: the list is an element toolbars attach to (ezfilter = status tiles, ezgrid = sort chips).
+  // Any toolbar asset with attach.target "console.pending-list" shows above it and acts on it.
+  useAttachTarget(PENDING_LIST, {
+    kind: 'list',
+    label: 'Pending builds',
+    run: (c) => {
+      if (c.kind === 'sort' && (core.SORTS as string[]).includes(c.value ?? '')) { pickSort(c.value as PendingSort); return true; }
+      if (c.kind === 'filter' && (core.STATUSES as string[]).includes(c.value ?? '')) { setFilter((f) => (f === c.value ? '' : (c.value as PendingStatus))); return true; }
+      if (c.kind === 'filter' && !c.value) { setFilter(''); return true; }
+      return false;
+    },
+    state: (c) => {
+      if (c.kind === 'sort') return sort === c.value ? { active: true, dir } : { active: false };
+      if (c.kind === 'filter') return { active: !!c.value && filter === c.value, count: (counts as Record<string, number>)[c.value ?? ''] ?? 0 };
+      return undefined;
+    },
+  });
+  useEffect(() => { rt.attachTargetChanged(PENDING_LIST); }, [rt, sort, dir, filter, state]);
+  if (!state) return <div className="fx-empty">Loading pending builds…</div>;
 
   return (
     <div className="fx-stack fx-stack--lg">
@@ -84,23 +104,9 @@ export function Pending() {
 
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
 
-      <div className="pd-strip" role="group" aria-label="Filter by status">
-        {core.STATUSES.map((s) => (
-          <button key={s} className={`pd-count is-${s}`} aria-pressed={filter === s} onClick={() => setFilter((f) => (f === s ? '' : s))}>
-            <b>{counts[s]}</b><span>{core.STATUS_LABEL[s]}</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="pd-sortbar" role="group" aria-label="Sort">
-        <span className="fx-small fx-muted">Sort by</span>
-        {core.SORTS.map((k) => (
-          <button key={k} className="pd-sort" aria-pressed={sort === k} onClick={() => pickSort(k)} title={sort === k ? 'Click again to reverse' : undefined}>
-            {SORT_LABEL[k]}{sort === k && <Icon name={dir === 'asc' ? 'chevron-up' : 'chevron-down'} size={13} />}
-          </button>
-        ))}
-        {filter && <button className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{core.STATUS_LABEL[filter]} only</button>}
-      </div>
+      {/* ezfilter (status tiles with counts) + ezgrid (sort): toolbar assets attached to this list */}
+      <AttachedToolbars target={PENDING_LIST} className="pd-toolbars" />
+      {filter && <p className="fx-small fx-muted">Showing {core.STATUS_LABEL[filter].toLowerCase()} builds only. Tap the {core.STATUS_LABEL[filter]} tile again to show all.</p>}
 
       <div className="pd-list" role="list">
         {items.length === 0

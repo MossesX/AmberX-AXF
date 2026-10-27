@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "ezgrid",
+  "name": "EZ grid",
+  "version": "1.0.0",
+  "description": "Sort controls for a list or grid: sort by status, date added or date built; tap the active one again to reverse. Attached to the Pending builds list (toolbar-binding@1).",
+  "author": "AmberX AXF",
+  "tags": ["sort", "grid", "attached"],
+  "roll": false,
+  "data": {
+    "variant": "labels",
+    "align": "start",
+    "density": "compact",
+    "surface": "flat",
+    "showSearch": false,
+    "itemStyle": "chip",
+    "label": "Sort by",
+    "attach": { "target": "console.pending-list", "kind": "list", "at": "top", "order": 2 },
+    "owner": { "kind": "app", "app": "axf-console-web" },
+    "groups": [
+      {
+        "id": "sort",
+        "items": [
+          { "id": "status", "icon": "list", "label": "Status", "action": "pending.sort:status", "kind": "sort", "value": "status" },
+          { "id": "added", "icon": "clock", "label": "Date added", "action": "pending.sort:added", "kind": "sort", "value": "added" },
+          { "id": "built", "icon": "hammer", "label": "Date built", "action": "pending.sort:built", "kind": "sort", "value": "built" }
+        ]
+      }
+    ]
+  }
+}

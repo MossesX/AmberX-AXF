@@ -5,6 +5,8 @@ replays the same fixture in framework/spec/fixtures (run `python3 framework/pyth
 
   assistant   assistant@1          framework/core/assistant.ts  = ai.amberx.axf.kernel.assistant  = spec/fixtures/assistant.json
   agents      agent-definition@1   framework/core/agents.ts     = ai.amberx.axf.kernel.agents     = spec/fixtures/agents.json
+  toolbar     toolbar-binding@1 + asset@1 with Pydantic (needs pydantic v2)   framework/core/engines/toolbar.ts +
+              core/validate.ts = Kotlin deferred (PORTING.md) = spec/fixtures/toolbar-binding.json
 
 Hosts import them (`from axf.contracts import assistant, agents`): the console's ai-assistant and agent-manager plugins,
 Build Pilot's server (which bakes copies with scripts/bake-contracts.mjs). A new contract = one module here + the

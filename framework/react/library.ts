@@ -6,6 +6,8 @@
 import type { AppMenuProvider, AxfRuntime, InstalledLibrary, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
 import type { AppMenuContribution } from '../core/engines/appmenu';
 import { embedSkipReason } from '../core/engines/embed';
+import { toolbarSettingKey } from '../core/engines/toolbar';
+import { assetTypeSpecs } from '../core/validate';
 import { isPlacement, placementKey, placementOptions, PLACEMENT_LABELS, primaryUi, type Placement } from '../core/engines/placement';
 import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
@@ -157,6 +159,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
     placeLibrary(rt, l);
+    toolbarSettings(rt, l);
     if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push(installedLibraryRecord(l));
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
@@ -165,6 +168,34 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   for (const list of Object.values(slots)) list.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   return { views, dialogs, tabs, banners, slots, missing };
+}
+
+/**
+ * toolbar-binding@1 (Brett, Oct 27 2026): a plugin's toolbars (owner.kind "plugin", owner.plugin = its id) get their look
+ * settings in that plugin's settings tab (`owner.settingsTab`, else its first tab): shown or hidden, buttons, item style,
+ * density, surface. Per device (`axf.toolbar.<id>.<field>`); AssetToolbar reads them over the asset.
+ */
+function toolbarSettings(rt: AxfRuntime, l: AxfWebLibrary) {
+  const list = rt.pluginToolbars(l.id);
+  if (!list.length) return;
+  const spec = assetTypeSpecs.toolbar as unknown as { enums: Record<string, string[]> };
+  const opts = (k: string, labels: Record<string, string> = {}) => [{ value: '', label: 'As designed' }, ...(spec.enums[k] ?? []).map((v) => ({ value: v, label: labels[v] ?? v.charAt(0).toUpperCase() + v.slice(1).replace(/-/g, ' + ') }))];
+  for (const t of list) {
+    const tab = t.data.owner?.settingsTab ?? l.settingsTabs?.[0]?.id;
+    if (!tab) { rt.terminal.warn('libraries', `${l.label}: toolbar ${t.id} has no settings tab to show its settings in`); continue; }
+    const target = t.data.attach ? ` Controls ${t.data.attach.kind} ${t.data.attach.target}.` : '';
+    rt.settings.addGroup({
+      id: `${l.id}.toolbar.${t.id}`, label: `Toolbar: ${t.name}`, icon: 'sliders', module: l.id, order: 2, tab,
+      description: `${t.description ?? 'A toolbar this plugin ships.'}${target}`,
+      settings: [
+        { key: toolbarSettingKey(t.id, 'hidden'), label: 'Hide this toolbar', kind: 'toggle', default: false },
+        { key: toolbarSettingKey(t.id, 'variant'), label: 'Buttons', kind: 'choice', default: '', options: opts('variant', { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }) },
+        { key: toolbarSettingKey(t.id, 'itemStyle'), label: 'Item style', kind: 'choice', default: '', options: opts('itemStyle') },
+        { key: toolbarSettingKey(t.id, 'density'), label: 'Density', kind: 'choice', default: '', options: opts('density') },
+        { key: toolbarSettingKey(t.id, 'surface'), label: 'Surface', kind: 'choice', default: '', options: opts('surface') },
+      ],
+    });
+  }
 }
 
 /**

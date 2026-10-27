@@ -12,10 +12,34 @@ import { fileURLToPath } from 'node:url';
 import { dataPath } from './persist.mjs';
 import { applyDefaults } from './build-defaults.mjs';
 import { instanceClashes } from './plugin-instances.mjs';
+import { validateAsset } from './build-engine.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const INDEX = 'framework/catalog/plugins.json';
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
+
+/**
+ * toolbar-binding@1 (Brett, Oct 27 2026): every toolbar asset file a plugin ships (any *.json under its folder with
+ * "type": "toolbar") must be a plugin toolbar of that plugin (owner.kind "plugin", owner.plugin = its id) and name the
+ * element it controls (attach), or the plugin doesn't validate. Toolbars registered from code are checked at runtime
+ * (AssetRegistry.registerPluginAsset).
+ */
+export function pluginToolbarProblems(p, root = ROOT) {
+  const out = [];
+  const walk = (d) => (existsSync(d) ? readdirSync(d, { withFileTypes: true }).flatMap((e) => {
+    if (e.name === 'node_modules' || e.name === 'dist' || e.name.startsWith('.')) return [];
+    const f = join(d, e.name);
+    return e.isDirectory() ? walk(f) : e.name.endsWith('.json') && e.name !== 'plugin.json' ? [f] : [];
+  }) : []);
+  for (const f of walk(join(root, p.folder))) {
+    let raw;
+    try { raw = JSON.parse(readFileSync(f, 'utf8')); } catch { continue; }
+    if (raw?.$axf !== 'asset@1' || raw.type !== 'toolbar') continue;
+    const r = validateAsset(raw, { plugin: p.id });
+    for (const e of r.errors) out.push(`${f.slice(root.length + 1)}: ${e}`);
+  }
+  return out;
+}
 
 export function builtPlugins(root = ROOT) {
   const out = [];
@@ -166,6 +190,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       for (const x of r.problems) problems.push(`${p.folder}/plugin.json: ${x.message} (${x.rule})`);
       for (const f of r.filled) problems.push(`${p.folder}/plugin.json: "${f.field}" is missing; the build engine's default is ${JSON.stringify(f.value)} (${f.rule}; node framework/cli/build-defaults.mjs apply --write)`);
     }
+    // toolbar-binding@1 (Brett, Oct 27 2026): a toolbar asset a plugin ships must be a plugin toolbar of that plugin
+    for (const p of builtPlugins()) for (const x of pluginToolbarProblems(p)) problems.push(x);
     // one instance per plugin (Brett, Oct 23 2026): never two folders with one plugin, whatever model built them
     for (const c of instanceClashes(builtPlugins().map((p) => ({ folder: p.folder, manifest: p.manifest })))) problems.push(c.message);
     if (problems.length) { for (const p of problems) console.error(`✗ ${p}`); process.exit(1); }

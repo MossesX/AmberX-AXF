@@ -26,8 +26,16 @@ export class AssetRegistry {
     for (const t of ASSET_TYPES) this.store.set(t, new Map());
   }
 
-  register(raw: unknown, source: AssetSource = 'builtin', origin?: string): ValidationResult & { asset?: AssetEnvelope } {
-    const result = validateAsset(raw);
+  /**
+   * A plugin's own asset (toolbar-binding@1): validated as shipped by `plugin`, so a toolbar must be a plugin toolbar of
+   * that plugin (owner.kind "plugin", owner.plugin = its id, attach = the element it controls) or it is refused.
+   */
+  registerPluginAsset(raw: unknown, plugin: string, source: AssetSource = 'app'): ValidationResult & { asset?: AssetEnvelope } {
+    return this.register(raw, source, plugin, plugin);
+  }
+
+  register(raw: unknown, source: AssetSource = 'builtin', origin?: string, plugin?: string): ValidationResult & { asset?: AssetEnvelope } {
+    const result = validateAsset(raw, plugin !== undefined ? { plugin } : {});
     if (!result.ok) return result;
     const asset = Object.freeze({ ...(raw as AssetEnvelope), __source: source, ...(origin ? { __origin: origin } : {}) }) as RegisteredAsset;
     const prev = this.store.get(asset.type)!.get(asset.id);

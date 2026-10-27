@@ -42,7 +42,9 @@ const menuAsset = assetFile('app-menu', manifest.defaults['app-menu']);
 const navAsset = assetFile('nav-menu', manifest.defaults['nav-menu']);
 const toolbarAsset = assetFile('toolbar', manifest.defaults.toolbar);
 /** Every toolbar the console ships (any can be picked in Settings → Appearance). */
-const toolbars = readdirSync(join(app, 'src/assets/toolbar')).map((f) => JSON.parse(readFileSync(join(app, 'src/assets/toolbar', f), 'utf8')));
+// toolbars attached to an element (toolbar-binding@1: ezgrid, ezfilter) sit on that page next to it, are never the app's
+// toolbar slot (Settings → Appearance leaves them out) and act on that element, so the menu needn't reach them.
+const toolbars = readdirSync(join(app, 'src/assets/toolbar')).map((f) => JSON.parse(readFileSync(join(app, 'src/assets/toolbar', f), 'utf8'))).filter((t) => !t.data.attach);
 /** Framework stand-ins the console gives no handler (they only say "no handler yet"): reached through the toolbar live list. */
 const consoleActions = readText('src/actions.ts') + readText('src/menuLibrary.tsx');
 const stubs = new Set(Object.keys(STANDARD_ACTIONS).filter((a) => !consoleActions.includes(`'${a}'`)));

@@ -172,6 +172,12 @@ export interface ToolbarItem {
   requires?: string;
   /** name of a runtime counter to show as a badge on the button (e.g. `alerts.unread`); hidden at 0 */
   badge?: string;
+  /** toolbar-binding@1: what it does to the attached element (default action) */
+  kind?: 'action' | 'toggle' | 'sort' | 'filter';
+  /** the value it sets on the attached element (sort key, filter value …) */
+  value?: string;
+  /** a count the attached element supplies, shown as the corner badge */
+  count?: string;
 }
 
 export interface ToolbarData {
@@ -190,6 +196,14 @@ export interface ToolbarData {
   widgets?: ToolbarWidget[];
   /** a chevron at the end folds the toolbar to a thin handle and back (default false); remembered per device */
   collapsible?: boolean;
+  /** toolbar-binding@1: text before the items (e.g. "Sort by") */
+  label?: string;
+  /** toolbar-binding@1: button (default) | tile (icon over text, corner count) | chip */
+  itemStyle?: 'button' | 'tile' | 'chip';
+  /** toolbar-binding@1: the element this toolbar controls (engines/toolbar.ts) */
+  attach?: import('./engines/toolbar').ToolbarAttach;
+  /** toolbar-binding@1: who ships it; a plugin toolbar names its plugin */
+  owner?: import('./engines/toolbar').ToolbarOwner;
 }
 
 /** Toolbar search behaviour. Results come from the runtime's search index (engines/search.ts). */

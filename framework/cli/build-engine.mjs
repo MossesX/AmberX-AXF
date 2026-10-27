@@ -66,7 +66,7 @@ const BAKED = ['core', 'react', 'ui', 'schemas'];
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
-export function validateAsset(raw) {
+export function validateAsset(raw, ctx = {}) {
   const errors = [];
   if (!isObj(raw)) return { ok: false, errors: ['Asset must be a JSON object'] };
   for (const k of spec.envelope.required) if (!(k in raw)) errors.push(`Missing envelope field "${k}"`);
@@ -103,6 +103,8 @@ export function validateAsset(raw) {
     }
     if ('spacing' in raw.data && !['tight', 'compact', 'regular'].includes(raw.data.spacing)) errors.push('data.spacing must be tight, compact or regular');
   }
+  // toolbar-binding@1 — mirrors validateToolbarBinding in core/engines/toolbar.ts (ctx.plugin: a plugin ships it)
+  if (raw.type === 'toolbar') errors.push(...validateToolbarBinding(raw.data, ctx));
   const host = hostSpec(raw.type);
   if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
@@ -150,6 +152,57 @@ export function validateMenuItems(items, path, depth = 0) {
       if (depth + 1 >= MENU_SPEC.maxDepth) errors.push(`${p}.items is deeper than ${MENU_SPEC.maxDepth} levels`);
       else errors.push(...validateMenuItems(o.items, `${p}.items`, depth + 1));
     }
+  });
+  return errors;
+}
+
+/* toolbar-binding@1 — mirrors core/engines/toolbar.ts (same rules, same messages; fixture spec/fixtures/toolbar-binding.json). */
+export function validateToolbarBinding(data, ctx = {}) {
+  const b = spec.types.toolbar.binding;
+  const errors = [];
+  const re = (p) => new RegExp(p);
+  const attach = data.attach;
+  const owner = data.owner;
+  if ('attach' in data) {
+    if (!isObj(attach)) errors.push('data.attach must be an object');
+    else {
+      if (typeof attach.target !== 'string' || !re(b.targetPattern).test(attach.target)) errors.push(`data.attach.target must match ${b.targetPattern}`);
+      if (typeof attach.kind !== 'string' || !re(b.kindPattern).test(attach.kind)) errors.push(`data.attach.kind must match ${b.kindPattern} (known: ${b.attachKinds.join(', ')})`);
+      if ('at' in attach && !b.attachAt.includes(attach.at)) errors.push(`data.attach.at must be one of: ${b.attachAt.join(', ')}`);
+      if ('order' in attach && (typeof attach.order !== 'number' || !Number.isFinite(attach.order))) errors.push('data.attach.order must be a number');
+    }
+  }
+  let ownerKind = 'app';
+  if ('owner' in data) {
+    if (!isObj(owner)) errors.push('data.owner must be an object');
+    else {
+      ownerKind = typeof owner.kind === 'string' ? owner.kind : '';
+      if (!b.owners.includes(ownerKind)) errors.push(`data.owner.kind must be one of: ${b.owners.join(', ')}`);
+      if (ownerKind === 'plugin') {
+        if (typeof owner.plugin !== 'string' || !re(b.pluginPattern).test(owner.plugin)) errors.push('a plugin toolbar must name its plugin: data.owner.plugin');
+        if (!isObj(attach)) errors.push('a plugin toolbar must name the element it controls: data.attach');
+      } else if ('plugin' in owner) errors.push('data.owner.plugin is only for plugin toolbars (owner.kind "plugin")');
+      if ('settingsTab' in owner && (typeof owner.settingsTab !== 'string' || !owner.settingsTab)) errors.push('data.owner.settingsTab must be a settings tab id');
+      if ('app' in owner && (typeof owner.app !== 'string' || !owner.app)) errors.push('data.owner.app must be a string');
+    }
+  }
+  if (ctx.plugin !== undefined) {
+    if (ownerKind !== 'plugin' || !isObj(owner)) errors.push(`toolbar shipped by plugin "${ctx.plugin}" must be a plugin toolbar: data.owner.kind "plugin"`);
+    else if (owner.plugin !== ctx.plugin) errors.push(`data.owner.plugin must be "${ctx.plugin}", the plugin that ships it`);
+  }
+  const groups = Array.isArray(data.groups) ? data.groups : [];
+  groups.forEach((g, gi) => {
+    const items = isObj(g) && Array.isArray(g.items) ? g.items : [];
+    items.forEach((it, ii) => {
+      if (!isObj(it)) return;
+      const at = `data.groups[${gi}].items[${ii}]`;
+      const kind = 'kind' in it ? it.kind : 'action';
+      if (!b.itemKinds.includes(kind)) errors.push(`${at}.kind must be one of: ${b.itemKinds.join(', ')}`);
+      if ('value' in it && typeof it.value !== 'string') errors.push(`${at}.value must be a string`);
+      if ('count' in it && (typeof it.count !== 'string' || !re(b.countPattern).test(it.count))) errors.push(`${at}.count must match ${b.countPattern}`);
+      const needsTarget = kind !== 'action' || 'count' in it;
+      if (needsTarget && !isObj(attach)) errors.push(`${at} acts on the attached element (kind ${String(kind)}${'count' in it ? ', count' : ''}): data.attach is required`);
+    });
   });
   return errors;
 }

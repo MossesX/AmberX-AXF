@@ -1,0 +1,33 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "ezfilter",
+  "name": "EZ filter",
+  "version": "1.0.0",
+  "description": "Filter tiles for a list or grid: one tile per status with an icon, its name and a small count badge on the corner; tap to show only that status, tap again for all. Attached to the Pending builds list (toolbar-binding@1).",
+  "author": "AmberX AXF",
+  "tags": ["filter", "grid", "attached"],
+  "roll": false,
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "density": "regular",
+    "surface": "flat",
+    "showSearch": false,
+    "itemStyle": "tile",
+    "attach": { "target": "console.pending-list", "kind": "list", "at": "top", "order": 1 },
+    "owner": { "kind": "app", "app": "axf-console-web" },
+    "groups": [
+      {
+        "id": "status",
+        "items": [
+          { "id": "pending", "icon": "clock", "label": "Pending", "action": "pending.filter:pending", "kind": "filter", "value": "pending", "count": "pending" },
+          { "id": "unsafe", "icon": "alert", "label": "Unsafe", "action": "pending.filter:unsafe", "kind": "filter", "value": "unsafe", "count": "unsafe" },
+          { "id": "broken", "icon": "zap", "label": "Broken", "action": "pending.filter:broken", "kind": "filter", "value": "broken", "count": "broken" },
+          { "id": "failed", "icon": "x-circle", "label": "Failed", "action": "pending.filter:failed", "kind": "filter", "value": "failed", "count": "failed" },
+          { "id": "complete", "icon": "check-circle", "label": "Complete", "action": "pending.filter:complete", "kind": "filter", "value": "complete", "count": "complete" }
+        ]
+      }
+    ]
+  }
+}

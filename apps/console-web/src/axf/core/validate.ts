@@ -3,6 +3,7 @@ import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
 import { hostSpec, validateHostAttachments } from './engines/widgets';
 import { validateMenuItems } from './engines/appmenu';
 import { packageErrors } from './engines/appearancepackage';
+import { validateToolbarBinding, type BindingContext } from './engines/toolbar';
 
 export interface ValidationResult {
   ok: boolean;
@@ -38,7 +39,7 @@ const isObj = (v: unknown): v is Record<string, unknown> =>
  * The same spec drives the CLI build engine, so an asset that passes here
  * passes `axf validate` and vice versa.
  */
-export function validateAsset(raw: unknown): ValidationResult {
+export function validateAsset(raw: unknown, ctx: BindingContext = {}): ValidationResult {
   const errors: string[] = [];
   if (!isObj(raw)) return { ok: false, errors: ['Asset must be a JSON object'] };
 
@@ -87,7 +88,8 @@ export function validateAsset(raw: unknown): ValidationResult {
     for (const [t, items] of Object.entries(data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
   if (raw.type === 'appearance-package') errors.push(...packageErrors(data));
-  // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
+  // toolbar-binding@1: attach to an element, bind to a plugin (a plugin's toolbar must say so: ctx.plugin)
+  if (raw.type === 'toolbar') errors.push(...validateToolbarBinding(data, ctx));  // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);
   if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {

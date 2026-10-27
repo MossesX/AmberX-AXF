@@ -377,6 +377,35 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   border-radius: 999px; background: var(--fx-accent); color: var(--fx-accent-text);
   font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; pointer-events: none;
 }
+/* attached toolbars (toolbar-binding@1): a toolbar asset attached to an element, drawn next to it */
+.fx-attached { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); }
+.fx-attached .fx-toolbar { background: transparent; padding: 0; overflow-x: visible; flex-wrap: wrap; row-gap: calc(var(--fx-space) * 0.5); }
+.fx-toolbar[data-surface='raised'] { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); padding: calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius); }
+.fx-toolbar[data-surface='glass'] {
+  background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent);
+  backdrop-filter: blur(var(--fx-blur)); -webkit-backdrop-filter: blur(var(--fx-blur));
+  padding: calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius);
+}
+.fx-attached .fx-toolbar__group { flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); border-right: 0; padding-right: 0; }
+.fx-toolbar__label { color: var(--fx-muted); font-size: 0.88em; white-space: nowrap; }
+.fx-toolbar[data-density='compact'] .fx-toolbtn { height: calc(var(--fx-row-h) - 8px); }
+.fx-toolbar[data-density='roomy'] .fx-toolbtn { height: calc(var(--fx-row-h) + 2px); padding: 0 12px; }
+.fx-toolbtn.is-active, .fx-toolbtn[aria-pressed='true'] { background: var(--fx-accent); color: var(--fx-accent-text); }
+.fx-toolbtn.is-active:hover:not(:disabled) { background: var(--fx-accent); color: var(--fx-accent-text); }
+/* item styles (toolbar itemStyle): chip = pill, tile = icon over text with the count on the corner */
+.fx-toolbtn--chip { border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface); }
+.fx-toolbtn--tile {
+  flex-direction: column; gap: 2px; height: auto; min-height: calc(var(--fx-row-h) * 1.6); min-width: calc(var(--fx-row-h) * 2.6);
+  padding: calc(var(--fx-space) * 0.6) var(--fx-space); border-radius: var(--fx-radius);
+  border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text);
+}
+.fx-toolbtn--tile .fx-toolbtn__label { font-size: 0.82em; }
+.fx-toolbtn--tile .fx-toolbtn__badge { top: -6px; right: -6px; min-width: 18px; height: 18px; line-height: 18px; box-shadow: 0 0 0 2px var(--fx-surface2); }
+.fx-toolbtn--tile.is-active { border-color: var(--fx-accent); }
+/* an element's count at zero (items[].count): still shown, quietly */
+.fx-toolbtn__badge.is-zero { background: var(--fx-surface3); color: var(--fx-muted); }
+.fx-toolbar--items-tile .fx-toolbar__group { padding-top: 6px; padding-right: 6px; flex: 1 1 auto; }
+.fx-attached .fx-toolbtn--tile { flex: 1 1 calc(var(--fx-row-h) * 2.6); }
 .fx-search {
   display: flex; align-items: center; gap: 6px; margin-left: auto; flex: 0 1 260px; min-width: 150px;
   background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border);

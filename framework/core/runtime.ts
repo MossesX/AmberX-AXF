@@ -21,6 +21,7 @@ import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, typ
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
+import { pluginToolbars, toolbarSettingKey, toolbarsAttachedTo, type AttachTarget, type ToolbarItemCall, type ToolbarItemState } from './engines/toolbar';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { PACKAGE_APPLIED_KEY, capturePackage, isAppearanceSetting, normalizePackage, packageSettingsPlan } from './engines/appearancepackage';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
@@ -409,6 +410,66 @@ export class AxfRuntime {
     if ((this.badgeCounts.get(name) ?? 0) === n) return;
     this.badgeCounts.set(name, n);
     this.set({});
+  }
+
+  /* ---------------- attached toolbars (toolbar-binding@1, engines/toolbar.ts) ---------------- */
+
+  private readonly attachTargets = new Map<string, AttachTarget>();
+  private attachRev = 0;
+
+  /**
+   * An element toolbars can attach to (`data.attach.target` = `id`): the page that draws it registers what it does
+   * with picked items and how they look. Returns the remover. Re-registering the same id replaces it.
+   */
+  registerAttachTarget(id: string, target: AttachTarget): () => void {
+    this.attachTargets.set(id, target);
+    this.attachRev++;
+    this.set({});
+    return () => {
+      if (this.attachTargets.get(id) !== target) return;
+      this.attachTargets.delete(id);
+      this.attachRev++;
+      this.set({});
+    };
+  }
+
+  /** The element registered under `id`, if it is on screen. */
+  attachTarget(id: string): AttachTarget | undefined { return this.attachTargets.get(id); }
+
+  /** Ask the attached element to redraw its toolbars (its state changed: counts, active sort …). */
+  attachTargetChanged(_id?: string): void { this.attachRev++; this.set({}); }
+
+  /** Every registered toolbar attached to `target` (optionally at one side), in order. */
+  toolbarsFor(target: string, at?: string) {
+    return toolbarsAttachedTo(this.registry.list('toolbar'), target, at);
+  }
+
+  /** Toolbars a plugin ships (owner.kind plugin): their look settings go in that plugin's settings tab. */
+  pluginToolbars(plugin: string) {
+    return pluginToolbars(this.registry.list('toolbar'), plugin);
+  }
+
+  /** A toolbar's per-device look override (variant, itemStyle, density, surface, hidden), or undefined. */
+  toolbarSetting(id: string, field: string): SettingValue | undefined {
+    const v = this.settings.get(toolbarSettingKey(id, field));
+    return v === null || v === '' ? undefined : v;
+  }
+
+  /** How an item looks now, from the element its toolbar is attached to (nothing when that element isn't on screen). */
+  toolbarItemState(target: string | undefined, call: ToolbarItemCall): ToolbarItemState | undefined {
+    if (!target) return undefined;
+    return this.attachTargets.get(target)?.state?.(call);
+  }
+
+  /**
+   * Run a toolbar item: the attached element first (when it is on screen and handles it), else the action bus with the
+   * target as payload, so an action handler can still act on that element.
+   */
+  runToolbarItem(target: string | undefined, call: ToolbarItemCall): boolean {
+    const t = target ? this.attachTargets.get(target) : undefined;
+    if (t && t.run(call) !== false) return true;
+    if (!call.action) return false;
+    return this.dispatch(call.action, target ? { payload: target } : {});
   }
 
   /* ---------------- contributed navigation ---------------- */

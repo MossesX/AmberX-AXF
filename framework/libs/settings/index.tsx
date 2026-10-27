@@ -170,7 +170,8 @@ const HIDDEN = '__axf-hidden';
 function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }) {
   const rt = useRuntime();
   const state = useAxfState();
-  const options = rt.registry.list(type);
+  // a toolbar attached to an element (toolbar-binding@1) lives next to that element, never in the app's toolbar slot
+  const options = rt.registry.list(type).filter((a) => type !== 'toolbar' || !(a.data as { attach?: unknown }).attach || a.id === state.active[type]);
   const canHide = hideable(type);
   // The app's own choice (a host app's chrome never shows here: those rows are left out, see SettingRow).
   const hidden = rt.slotHiddenOwn(type);

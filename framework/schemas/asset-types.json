@@ -223,6 +223,11 @@
           "flat",
           "raised",
           "glass"
+        ],
+        "itemStyle": [
+          "button",
+          "tile",
+          "chip"
         ]
       },
       "optional_fields": {
@@ -233,7 +238,14 @@
         "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
         "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
         "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
-        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)"
+        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
+        "label": "string — short text before the items, e.g. `Sort by`",
+        "itemStyle": "button (default) | tile (icon over text, count badge on the corner) | chip (pill) — how every item is drawn",
+        "attach": "object — toolbar-binding@1: the element this toolbar controls { target: element id the page registers (rt.registerAttachTarget), kind: open registry (list, grid, table, chart, image, media, text, canvas, map, tree, form, view, window, any …), at?: top|bottom|start|end|overlay (default top), order?: number }. Item actions run against that element first; when it isn't on screen they dispatch on the action bus with the target as payload. Pages draw every toolbar attached to an element with <AttachedToolbars target=…/>.",
+        "owner": "object — toolbar-binding@1: who ships it { kind: app|plugin|library|framework (default app), plugin?: plugin id (required for plugin), app?: string, settingsTab?: settings tab id }. A plugin toolbar must say kind plugin, which plugin and attach (the element it controls) or it doesn't validate; its look settings then appear in that plugin's settings tab.",
+        "groups[].items[].kind": "action (default) | toggle | sort | filter — what the item does to the attached element (needs data.attach unless action)",
+        "groups[].items[].value": "string — the value the item sets on the attached element (sort key, filter value …)",
+        "groups[].items[].count": "string — name of a count the attached element supplies (AttachTarget.state → count), shown as the corner badge; needs data.attach"
       },
       "hideable": true,
       "widgets": {
@@ -241,6 +253,56 @@
         "sides": [
           "start",
           "end"
+        ]
+      },
+      "binding": {
+        "_doc": "toolbar-binding@1 (Oct 27 2026): attach a toolbar to any element and bind it to a plugin. One definition for the TS engine (core/engines/toolbar.ts), the CLI validator, the Pydantic model (framework/python/axf/contracts/toolbar.py) and the fixture spec/fixtures/toolbar-binding.json. Kinds and attach kinds are open registries: listed ones are known, any short lowercase word is accepted.",
+        "owners": [
+          "app",
+          "plugin",
+          "library",
+          "framework"
+        ],
+        "attachKinds": [
+          "list",
+          "grid",
+          "table",
+          "chart",
+          "image",
+          "media",
+          "text",
+          "canvas",
+          "map",
+          "tree",
+          "form",
+          "view",
+          "window",
+          "any"
+        ],
+        "attachAt": [
+          "top",
+          "bottom",
+          "start",
+          "end",
+          "overlay"
+        ],
+        "itemKinds": [
+          "action",
+          "toggle",
+          "sort",
+          "filter"
+        ],
+        "kindPattern": "^[a-z][a-z0-9-]{0,31}$",
+        "targetPattern": "^[a-z0-9][a-z0-9._:-]{1,95}$",
+        "pluginPattern": "^[a-z0-9][a-z0-9._-]{1,127}$",
+        "countPattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,63}$",
+        "settingsKey": "axf.toolbar.<id>.<field>",
+        "settingsFields": [
+          "variant",
+          "itemStyle",
+          "density",
+          "surface",
+          "hidden"
         ]
       }
     },
