@@ -391,6 +391,28 @@ function navAssets() {
   return out;
 }
 
+/* ───────────────────────── seeds: design packages (s23) ───────────────────────── */
+
+// [id, name, style, colour, layout, behaviour, extras slots, spacing?, tags, description]
+const DP = [
+  ['enterprise-day', 'Enterprise Day', 'enterprise', 'porcelain', 'enterprise-shell', 'steady', { 'style-package': 'enterprise-crisp', toolbar: 'enterprise-command', 'context-menu': 'enterprise-standard' }, null, ['light', 'enterprise'], 'The dependable business look by day: Inter on porcelain, the full enterprise frame, crisp controls and steady behaviour.'],
+  ['enterprise-night', 'Enterprise Night', 'enterprise', 'obsidian', 'enterprise-shell', 'steady', { 'style-package': 'enterprise-crisp', toolbar: 'enterprise-command', 'context-menu': 'enterprise-standard' }, null, ['dark', 'enterprise'], 'The same enterprise frame and controls on Obsidian for long evenings.'],
+  ['executive-suite', 'Executive Suite', 'executive', 'harbor', 'portal-top', 'executive', { 'style-package': 'executive-soft', toolbar: 'brand-bar', 'nav-menu': 'executive-overview' }, 'regular', ['light', 'presentation'], 'IBM Plex on harbour navy, a centred portal page, soft controls and unhurried motion for presenting.'],
+  ['data-desk', 'Data Desk', 'dense-grid', 'slate-steel', 'data-grid', 'precise', { 'style-package': 'data-pro', toolbar: 'data-grid-tools' }, 'tight', ['dark', 'data'], 'Dense 13 px type on brushed steel, every pixel for grids, precise controls and quick, exact motion.'],
+  ['ops-center', 'Ops Center', 'industrial', 'graphite-mint', 'command-center', 'alert', { 'style-package': 'command-deck', toolbar: 'ops-monitor', 'nav-menu': 'ops-monitor' }, null, ['dark', 'ops'], 'Condensed industrial type, mint on graphite, a command-center frame and attention-getting notices.'],
+  ['swiss-editorial', 'Swiss Editorial', 'swiss', 'mono-paper', 'document-reader', 'quiet', { 'style-package': 'swiss-grid', toolbar: 'reader-bar', 'nav-menu': 'text-only' }, 'regular', ['light', 'editorial'], 'Swiss typography on near-monochrome paper in a reading column, with quiet text-only navigation.'],
+  ['glass-studio', 'Glass Studio', 'glass-pro', 'aurora-night', 'canvas-studio', 'fluid', { 'style-package': 'glass-air', toolbar: 'appearance-studio' }, null, ['dark', 'glass', 'creative'], 'Frosted glass panels under an aurora sky, a design-tool frame and fluid, springy motion.'],
+  ['touch-tablet', 'Touch Tablet', 'soft-touch', 'meadow', 'right-handed', 'touch', { 'style-package': 'touch-friendly', toolbar: 'touch-dock', 'nav-menu': 'roomy-touch', 'context-menu': 'touch-large' }, 'regular', ['light', 'touch'], 'Rounded, roomy and thumb-friendly on soft sage, with navigation on the right and haptic feedback.'],
+  ['humanist-reader', 'Humanist Reader', 'humanist', 'linen-slate', 'document-reader', 'gentle', { 'style-package': 'calm-reader', 'nav-menu': 'text-only', 'context-menu': 'reader-minimal' }, 'regular', ['light', 'reading'], 'Serif headings on warm linen in a focused reading column; gentle motion and a minimal menu.'],
+  ['creative-plum', 'Creative Plum', 'geometric', 'plum-noir', 'canvas-studio', 'cinematic', { 'style-package': 'gradient-pop', toolbar: 'appearance-studio', 'context-menu': 'appearance-quick' }, null, ['dark', 'creative'], 'Geometric type on plum-black, gradient controls and cinematic motion for creative suites.'],
+  ['kiosk-display', 'Kiosk Display', 'soft-touch', 'saffron-day', 'kiosk', 'kiosk', { 'style-package': 'kiosk-bold', toolbar: 'kiosk-lite', 'context-menu': 'locked-down' }, 'regular', ['light', 'kiosk'], 'Chrome-free, big-target and forgiving: for kiosks, wall displays and shared screens.'],
+  ['amberx-signature-day', 'AmberX Signature Day', 'geometric', 'saffron-day', 'studio-dock', 'amber', { 'style-package': 'amber-signature', toolbar: 'amberx-signature', 'nav-menu': 'amber-signature' }, null, ['light', 'brand', 'amber'], 'The AmberX house look by day: gold on cream, signature controls, the AmberX toolbar and behaviour.'],
+  ['amberx-signature-night', 'AmberX Signature Night', 'geometric', 'carbon-amber', 'studio-dock', 'amber', { 'style-package': 'amber-signature', toolbar: 'amberx-signature', 'nav-menu': 'amber-signature' }, null, ['dark', 'brand', 'amber'], 'The AmberX house look after dark: molten gold on carbon, with the same signature set.'],
+  ['gizmox-console', 'GizmoX Console', 'terminal-pro', 'obsidian', 'console-pro', 'gizmo', { 'style-package': 'gizmo-console', toolbar: 'developer-ops', 'nav-menu': 'gizmo-console', 'context-menu': 'developer-tools' }, 'tight', ['dark', 'brand', 'developer'], 'The GizmoX development console: monospace headings on Obsidian, the console frame, developer toolbar and menus.'],
+];
+const designPackageAssets = () => DP.map(([id, name, style, color, layout, behavior, slots, spacing, tags, description]) => env('design-package', { id, name, tags, description },
+  { 'style-theme': style, 'color-theme': color, layout, 'behavior-theme': behavior, extras: { slots, ...(spacing ? { spacing } : {}) } }));
+
 function toolbarDoc() {
   const PROVIDERS = { views: 'every page the app registers (`nav:<view>`)', nav: 'the active navigation menu’s items', settings: 'every settings tab, plugins’ included (`settings.open:<tab>`)', windows: 'every open floating window (`windows.restore:<id>`)', dialogs: 'every registered dialog (`dialog:<id>`)', chrome: 'show/hide toggles for every bar and menu, drawn pressed while shown' };
   const lines = [
@@ -453,6 +475,7 @@ const BUILD = {
   toolbar: () => TOOLBAR.map((s) => env('toolbar', s, s.data)),
   'style-package': () => stylePackageAssets(),
   'nav-menu': () => navAssets(),
+  'design-package': () => designPackageAssets(),
 };
 
 /* ───────────────────────── runner ───────────────────────── */

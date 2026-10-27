@@ -96,5 +96,23 @@ for (const p of packages) {
   ok(rt.rollSlotIncluded('style-package' as never) === false, 'style packages are not rolled');
 }
 
+// design-package library (s23): every theme and extras slot a package names ships, and applying one with a style
+// package brings that package's controls
+{
+  const dps = read('design-package');
+  ok(dps.length >= 25, `≥ 25 design packages (${dps.length})`);
+  for (const d of dps) {
+    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(existsSync(join(root, 'assets', t, `${d.data[t]}.json`)), `${d.id}: ${t}/${d.data[t]} ships`);
+    for (const [t, id] of Object.entries((d.data.extras?.slots ?? {}) as Record<string, string>)) ok(existsSync(join(root, 'assets', t, `${id}.json`)), `${d.id}: extras ${t}/${id} ships`);
+  }
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => read(t));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:dp-lib' });
+  ok(rt.applyDesignPackage('gizmox-console'), 'gizmox-console applies');
+  const act = rt.state.active as Record<string, string>;
+  eq([act['style-theme'], act['color-theme'], act.layout, act['behavior-theme']], ['terminal-pro', 'obsidian', 'console-pro', 'gizmo'], 'its four themes');
+  eq([act.button, act.dialog, act['tab-group'], act.toolbar, act['nav-menu']], ['gizmo-console', 'gizmo-console', 'gizmo-console', 'developer-ops', 'gizmo-console'], 'its style package + chrome');
+}
+
 if (failures.length) { for (const f of failures) console.error(`✗ ${f}`); console.error(`check-style-packages: ${failures.length} of ${n + failures.length} checks failed`); process.exit(1); }
 console.log(`check-style-packages: ${n} checks passed`);
