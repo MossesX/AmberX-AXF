@@ -12,7 +12,7 @@
   ],
   "install": {
     "gradle": "implementation(\"ai.amberx.axf:lib-overlay:$axf\")",
-    "module": "OverlayModule(this, OverlayNotification(R.drawable.ic_notification, \"Overlay\", \"Showing the overlay\"))",
+    "module": "OverlayModule(this, ai.amberx.axf.overlay.OverlayNotification(android.R.drawable.ic_dialog_info))",
     "import": "ai.amberx.axf.overlay.OverlayModule",
     "routes": []
   },

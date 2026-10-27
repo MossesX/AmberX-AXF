@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "amberx-thin",
+  "name": "AmberX thin",
+  "version": "1.0.0",
+  "description": "Thin permanent bar across the top: the AmberX logo on the left, a clock on the right, search in the middle. Plugins attach badges to it.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "thin"
+  ],
+  "data": {
+    "height": 24,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center"
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right"
+      }
+    ],
+    "divider": true
+  }
+}

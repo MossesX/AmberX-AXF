@@ -10,7 +10,7 @@
   "params": [],
   "install": {
     "gradle": "implementation(\"ai.amberx.axf:lib-onboarding:$axf\")",
-    "module": "OnboardingModule(spec)",
+    "module": "OnboardingModule(ai.amberx.axf.onboarding.OnboardingSpec(packageName, applicationInfo.loadLabel(packageManager).toString(), listOf(ai.amberx.axf.onboarding.PermissionRequest.notifications(\"To show alerts\", required = false))))",
     "import": "ai.amberx.axf.onboarding.OnboardingModule",
     "routes": ["onboarding-status"]
   },

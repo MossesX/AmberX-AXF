@@ -359,6 +359,9 @@ export function tokenEscaper(file) {
   return (v) => v;
 }
 
+/** Tokens the engine builds itself (never user text) that land in comments, e.g. `// axf:modules ["…"]`: written as is. */
+const RAW_TOKENS = new Set(['AXF_MODULES']);
+
 const ktStr = (v) => tokenEscaper('x.kt')(String(v ?? ''));
 
 function copyTemplate(src, dest, tokens) {
@@ -370,7 +373,7 @@ function copyTemplate(src, dest, tokens) {
     if (TEXT.test(file) || basename(file).startsWith('_')) {
       let text = readFileSync(file, 'utf8');
       const esc = tokenEscaper(file);
-      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, esc(String(v)));
+      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, RAW_TOKENS.has(k) ? String(v) : esc(String(v)));
       writeFileSync(target, text);
     } else cpSync(file, target);
   }
