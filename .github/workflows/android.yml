@@ -128,6 +128,7 @@ jobs:
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
             npx -y tsx framework/spec/check-style-packages.mts         # style-package@1: validators agree, 25 starter sets ship + are distinct, runtime apply paths
+            node framework/cli/brand-gen.mjs library --check                # brand library: 250 logos + 250 animated + 100 icon packs, valid, in sync, within the size budget
             npx -y tsx framework/spec/check-interface.mts              # interface@1 + scopes: rules, resolution, scoped sheets, runtime scoped view
             npx -y tsx framework/spec/check-roller.mts                 # interface roller: every rolled asset validates, structure kept, reproducible
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists

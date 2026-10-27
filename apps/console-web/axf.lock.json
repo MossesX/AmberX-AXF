@@ -15,7 +15,7 @@
     "src/axf/core/engines/behavior.ts": "58e3059578ca9982",
     "src/axf/core/engines/brand-rules.d.mts": "82a08577d246d5d4",
     "src/axf/core/engines/brand-rules.mjs": "2fa4e6035ea966dd",
-    "src/axf/core/engines/brand.ts": "f562b0e96d415d3b",
+    "src/axf/core/engines/brand.ts": "e37e411476fd99b0",
     "src/axf/core/engines/brandgen.d.mts": "db08b55384ff1b27",
     "src/axf/core/engines/brandgen.mjs": "54432263bf2cb0e8",
     "src/axf/core/engines/components.ts": "4ae0d40fbfe8b701",

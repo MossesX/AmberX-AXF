@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-103",
+  "name": "AmberX mark · pill slash",
+  "version": "1.0.0",
+  "description": "Generated mark: a pill slash motif in a seeded bright palette (seed 108).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "pill",
+    "slash",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#04a47c",
+      "brand2": "#003d1f",
+      "brand3": "#8aead7"
+    },
+    "paths": [
+      {
+        "d": "M8 5h8a7 7 0 0 1 0 14H8A7 7 0 0 1 8 5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M15 6l-6 12",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": true
+      },
+      {
+        "d": "M9 6h2M13 18h2",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-083",
+  "name": "GizmoX mark · circle chevron",
+  "version": "1.0.0",
+  "description": "Generated mark: a circle chevron motif in a seeded bright palette (seed 1088).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "circle",
+    "chevron",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#38a037",
+      "brand2": "#294f17",
+      "brand3": "#c7dcc6"
+    },
+    "paths": [
+      {
+        "d": "M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M8 7l5 5-5 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      },
+      {
+        "d": "M13 7l4 5-4 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

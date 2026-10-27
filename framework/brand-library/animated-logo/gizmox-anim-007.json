@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "gizmox-anim-007",
+  "name": "gizmox-logo-070 · spin",
+  "version": "1.0.0",
+  "description": "Generated animation: spin over 3800 ms, on hover (seed 1007).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "spin",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "gizmox-logo-070",
+    "preset": "spin",
+    "durationMs": 3800,
+    "delayMs": 0,
+    "loop": "hover",
+    "intensity": 0.5
+  }
+}

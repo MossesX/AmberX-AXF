@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-088",
+  "name": "AmberX mark · squircle slash",
+  "version": "1.0.0",
+  "description": "Generated mark: a squircle slash motif in a seeded rich palette (seed 92).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "squircle",
+    "slash",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#57811d",
+      "brand2": "#23330a",
+      "brand3": "#b9d199"
+    },
+    "paths": [
+      {
+        "d": "M12 2c7.5 0 10 2.5 10 10s-2.5 10-10 10S2 19.5 2 12 4.5 2 12 2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M15 6l-6 12",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": true
+      },
+      {
+        "d": "M9 6h2M13 18h2",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

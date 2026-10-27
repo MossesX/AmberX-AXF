@@ -10,7 +10,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import {
-  BRAND_SLOTS, BRAND_TYPES, animatedLogoErrors, animationFor, brandAssetErrors, brandSlots, brandingErrors, brandingVars, decorationFor, glyphFor, glyphSvg, iconPackErrors, markBox, markColor, markErrors, markSvg, normalizeBranding, normalizeIconPack, normalizeMark, registerBrandSlot, resolveBranding,
+  BRAND_SLOTS, BRAND_TYPES, animatedLogoErrors, animationFor, brandAssetErrors, brandSlots, brandingErrors, brandingVars, decorationFor, glyphFor, glyphSvg, splitGlyph, iconPackErrors, markBox, markColor, markErrors, markSvg, normalizeBranding, normalizeIconPack, normalizeMark, registerBrandSlot, resolveBranding,
 } from '../core/engines/brand';
 import * as engine from '../cli/build-engine.mjs';
 import { AxfRuntime } from '../core/runtime';
@@ -71,6 +71,11 @@ eq(animationFor({ mark: 'a', preset: 'none' }), null, 'preset none');
 eq(animationFor({ mark: 'a', preset: 'pulse', durationMs: 2000 })?.iteration, 'infinite', 'loop by default');
 const pack = { style: 'outline', grid: 24, stroke: 2, glyphs: { home: 'M0 0h1', solid: { d: 'M0 0h2', fill: true }, duo: { d: 'M0 0h3', secondary: 'M1 1h1' } } };
 eq(glyphFor(pack, 'home')?.d, 'M0 0h1', 'glyph lookup');
+// filled packs: closed sub-paths fill, open ones stay stroked (s25)
+eq(splitGlyph('M3 3h4v4h-4zM10 10l4 4'), { closed: 'M3 3h4v4h-4z', open: 'M10 10l4 4' }, 'split closed / open sub-paths');
+eq(splitGlyph('M1 1h2m3 3h1'), { closed: '', open: 'M1 1h2m3 3h1' }, 'relative m keeps the path whole (open)');
+{ const f = glyphSvg({ style: 'filled', grid: 24, stroke: 2, glyphs: { mix: 'M3 3h4v4h-4zM10 10l4 4' } }, 'mix')!; ok(f.includes('fill="currentColor"') && f.includes('stroke="currentColor"'), 'filled pack: shape filled, line stroked'); }
+
 eq(glyphFor(pack, 'nope'), null, 'unknown glyph = framework fallback');
 ok(glyphSvg(pack, 'home', 20)!.includes('stroke-width="2"') && glyphSvg(pack, 'solid')!.includes('fill="currentColor"') && glyphSvg(pack, 'duo')!.includes('opacity="var(--fx-opacity-tint'), 'glyph svg per style');
 eq(glyphSvg(pack, 'nope'), null, 'no svg for unknown');

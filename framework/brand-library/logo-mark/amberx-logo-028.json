@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-028",
+  "name": "AmberX mark · diamond bars",
+  "version": "1.0.0",
+  "description": "Generated mark: a diamond bars motif in a seeded rich palette (seed 29).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "diamond",
+    "bars",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#854423",
+      "brand2": "#32190b",
+      "brand3": "#d1b1a3"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M7 16V12M12 16V8M17 16V5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": false
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

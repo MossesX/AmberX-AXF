@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-003",
+  "name": "GizmoX mark · shield wave",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield wave motif in a seeded rich palette (seed 1003).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "wave",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#267e5d",
+      "brand2": "#0d311d",
+      "brand3": "#a3ccbc"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 14c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      },
+      {
+        "d": "M5 10c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true,
+        "opacity": 0.5
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

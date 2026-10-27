@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-087",
+  "name": "AmberX wordmark · open hex",
+  "version": "1.0.0",
+  "description": "Generated wordmark: an open hex motif in a seeded rich palette (seed 91).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "open",
+    "hex",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a947b8",
+      "brand2": "#5a246a",
+      "brand3": "#e9e0eb"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 600,
+      "tracking": 0.08,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

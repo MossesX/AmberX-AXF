@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-023",
+  "name": "AmberX mark · rounded-square bars",
+  "version": "1.0.0",
+  "description": "Generated mark: a rounded-square bars motif in a seeded rich palette (seed 24).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "rounded-square",
+    "bars",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a03522",
+      "brand2": "#45250c",
+      "brand3": "#ddb6b0"
+    },
+    "paths": [
+      {
+        "d": "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M7 16V12M12 16V8M17 16V5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

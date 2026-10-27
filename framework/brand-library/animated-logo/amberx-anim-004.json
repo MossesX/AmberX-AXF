@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "amberx-anim-004",
+  "name": "amberx-logo-118 · shimmer",
+  "version": "1.0.0",
+  "description": "Generated animation: shimmer over 2100 ms, looping (seed 4).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "shimmer",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "amberx-logo-118",
+    "preset": "shimmer",
+    "durationMs": 2100,
+    "delayMs": 200,
+    "loop": true,
+    "intensity": 0.9
+  }
+}

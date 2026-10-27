@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-014",
+  "name": "AmberX mark · diamond stack",
+  "version": "1.0.0",
+  "description": "Generated mark: a diamond stack motif in a seeded bright palette (seed 14).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "diamond",
+    "stack",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#38a432",
+      "brand2": "#1d5115",
+      "brand3": "#c6dec4"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 6l6 3-6 3-6-3z",
+        "fill": "bg"
+      },
+      {
+        "d": "M6 13l6 3 6-3M6 16.5l6 3 6-3",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": false
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}
