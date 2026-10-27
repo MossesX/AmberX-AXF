@@ -34,6 +34,10 @@
     {
      "text": "Merged into enterprise-branding (Oct 27 2026). Archived here; build it there.",
      "at": "2026-10-27T16:56:46.245Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [],
@@ -216,7 +220,12 @@
    "createdAt": "2026-10-27T16:36:55.356Z",
    "updatedAt": "2026-10-27T16:36:55.356Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -594,6 +603,10 @@
     {
      "text": "Fable phase 1 done Oct 27 2026 (PR #128). Waiting on Brett's approval of the Fable → Opus switch.",
      "at": "2026-10-27T19:11:51.156Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [
@@ -1389,6 +1402,10 @@
     {
      "text": "Fable phase 1 done Oct 27 2026 (PR #129, stacked on #128). Next on Opus after the switch is approved.",
      "at": "2026-10-27T19:11:51.096Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [

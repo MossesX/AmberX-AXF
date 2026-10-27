@@ -16,6 +16,10 @@ permissions:
   pull-requests: write
   packages: write
 
+# CI checks the framework's own data (catalog, plan, pending list): the base build profile, whatever profile is saved.
+env:
+  AXF_BUILD_PROFILE: main-framework
+
 jobs:
   engine:
     name: Build engine sweep (Node)
@@ -160,6 +164,7 @@ jobs:
             python apps/console-web/server/test_app_ci.py
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
+            python apps/console-web/server/test_build_profiles.py
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue
         if: failure()
