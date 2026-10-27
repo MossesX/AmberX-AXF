@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Every framework module contributes its own manifest pieces; this file holds only the app's identity. -->
+    <!-- Every framework module contributes its own manifest pieces (lib-voice: RECORD_AUDIO; lib-notifications:
+         POST_NOTIFICATIONS; lib-overlay: SYSTEM_ALERT_WINDOW + FOREGROUND_SERVICE(_SPECIAL_USE)). This file adds what the
+         app itself runs: the microphone foreground service and the battery-exemption request lib-onboarding asks for. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -25,5 +31,27 @@
                 <data android:scheme="axf" android:host="${axfAppId}" />
             </intent-filter>
         </activity>
+
+        <!-- lib-overlay's service, repeated with the Play-required special-use subtype (what the overlay is for). -->
+        <service
+            android:name="ai.amberx.axf.overlay.OverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Floating AX Notes pill the user turns on: shows what was heard, the last note and a mic button over other apps" />
+        </service>
+
+        <!-- AX Notes' microphone service: keeps the voice engine listening while the app is in the background
+             (hands-free voice notes the user turned on, or a dictation in progress). The property documents the use
+             for review alongside the overlay's. -->
+        <service
+            android:name=".service.MicService"
+            android:exported="false"
+            android:foregroundServiceType="microphone">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hands-free voice notes: listens for the user's note commands and dictation while AX Notes is in the background, only after the user turns listening on" />
+        </service>
     </application>
 </manifest>

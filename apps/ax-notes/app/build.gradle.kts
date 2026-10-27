@@ -26,6 +26,33 @@ val axfCheckProject = tasks.register<Exec>("axfCheckProject") {
 }
 tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(axfCheckProject) }
 
+// lib-voice's Vosk engine needs a speech model in assets (≈40 MB, never committed: .gitignore has it). Fetched once
+// before the first build, as lib-voice's README describes; without it voice input is off and the typed box still works.
+val voskModelDir = layout.projectDirectory.dir("src/main/assets/model-en-us")
+val fetchVoskModel by tasks.registering {
+    group = "axf"
+    description = "Downloads the small English Vosk model into src/main/assets/model-en-us (once)"
+    val dir = voskModelDir.asFile
+    outputs.dir(dir)
+    onlyIf { !File(dir, "uuid").exists() && System.getenv("AXF_SKIP_VOSK_MODEL") == null }
+    doLast {
+        val name = "vosk-model-small-en-us-0.15"
+        val zip = File(temporaryDir, "$name.zip")
+        java.net.URL("https://alphacephei.com/vosk/models/$name.zip").openStream().use { i -> zip.outputStream().use { o -> i.copyTo(o) } }
+        dir.deleteRecursively(); dir.mkdirs()
+        java.util.zip.ZipInputStream(zip.inputStream()).use { zin ->
+            generateSequence { zin.nextEntry }.forEach { e ->
+                val rel = e.name.removePrefix("$name/")
+                if (rel.isBlank()) return@forEach
+                val out = File(dir, rel)
+                if (e.isDirectory) out.mkdirs() else { out.parentFile.mkdirs(); out.outputStream().use { zin.copyTo(it) } }
+            }
+        }
+        File(dir, "uuid").writeText(java.util.UUID.randomUUID().toString())
+    }
+}
+tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(fetchVoskModel) }
+
 val axf = libs.versions.axf.get()
 dependencies {
     implementation("ai.amberx.axf:axf-kernel:$axf")
@@ -42,7 +69,18 @@ dependencies {
     // Records are JSON (kotlinx JsonElement, no serialization plugin); pure model logic is unit-tested on the JVM.
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
-    // TODO(lib-voice / lib-speech / lib-triggers / lib-ai / lib-overlay, build ax-notes s4–s10): added when the parent
-    // session wires the app-local interfaces in capture/Interfaces.kt to those libraries.
-    // axf:modules [\"ai.amberx.axf.data\",\"ai.amberx.axf.settings\"]
+    // Libraries behind the app-local seams (build ax-notes s13; `axf install <lib>` added these lines).
+    // axf:modules ["ai.amberx.axf.data","ai.amberx.axf.settings","ai.amberx.axf.notifications","ai.amberx.axf.voice","ai.amberx.axf.speech","ai.amberx.axf.triggers","ai.amberx.axf.ai","ai.amberx.axf.onboarding","ai.amberx.axf.overlay"]
+    implementation("ai.amberx.axf:lib-notifications:$axf")
+    implementation("ai.amberx.axf:lib-voice:$axf")
+    implementation("ai.amberx.axf:lib-speech:$axf")
+    implementation("ai.amberx.axf:lib-triggers:$axf")
+    implementation("ai.amberx.axf:lib-ai:$axf")
+    implementation("ai.amberx.axf:lib-onboarding:$axf")
+    implementation("ai.amberx.axf:lib-overlay:$axf")
+    // Plugins (apps/ax-notes/plugins/<folder>) add `implementation(project(":plugins:<folder>"))` lines below with their
+    // install.mjs (marker `axf-plugin:<folder>`) and list themselves in assets/axnotes/plugins.json. Keep this block last.
+    implementation(project(":plugins:ai-chat")) // axf-plugin:ai-chat
+    implementation(project(":plugins:ai-build-bridge")) // axf-plugin:ai-build-bridge
+    implementation(project(":plugins:ai-automations")) // axf-plugin:ai-automations
 }

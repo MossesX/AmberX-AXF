@@ -1,0 +1,78 @@
+{
+  "$axf": "asset@1",
+  "type": "overlay",
+  "id": "ax-notes",
+  "name": "AX Notes pill",
+  "version": "1.0.0",
+  "description": "AX Notes' pill: ARMED / MIC / AI chips, the quick action starts and stops dictating a note, the tappable log of what was heard (tap a line to tune that trigger's threshold), and the mini screen with the live transcript, your last note, the AI reply and a mic button (plugins add their own mini-screen tabs).",
+  "author": "AmberX AXF",
+  "tags": [
+    "overlay",
+    "notes",
+    "voice"
+  ],
+  "data": {
+    "pill": {
+      "title": "AX Notes",
+      "chips": [
+        {
+          "id": "armed",
+          "label": "Armed",
+          "offLabel": "Idle",
+          "tone": "success",
+          "offTone": "muted"
+        },
+        {
+          "id": "mic",
+          "label": "Mic",
+          "offLabel": "Mic off",
+          "tone": "info",
+          "offTone": "muted",
+          "icon": "mic"
+        },
+        {
+          "id": "ai",
+          "label": "AI",
+          "offLabel": "AI off",
+          "tone": "accent",
+          "offTone": "muted",
+          "icon": "sparkles"
+        }
+      ],
+      "quickAction": "axnotes.dictation"
+    },
+    "log": {
+      "show": true,
+      "maxLines": 5,
+      "showConfidence": true
+    },
+    "strip": {
+      "show": true,
+      "maxLines": 3,
+      "lineMs": 3000
+    },
+    "mini": {
+      "defaultOpen": true,
+      "width": {
+        "min": 160,
+        "max": 480,
+        "default": 240
+      },
+      "height": {
+        "min": 160,
+        "max": 640,
+        "default": 300
+      }
+    },
+    "opacity": 0.95,
+    "positionLock": false,
+    "size": {
+      "minWidth": 120,
+      "maxWidth": 480,
+      "minHeight": 160,
+      "maxHeight": 640,
+      "maxScreenWidthPct": 90,
+      "maxScreenHeightPct": 80
+    }
+  }
+}

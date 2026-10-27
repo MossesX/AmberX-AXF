@@ -49,7 +49,8 @@
     "badge": "new",
     "settings": "standard",
     "interface": "fresh",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "overlay": "ax-notes"
   },
   "hidden": [
     "toolbar"
@@ -137,9 +138,47 @@
     "scheme": "axf",
     "modules": [
       "ai.amberx.axf.data",
-      "ai.amberx.axf.settings"
+      "ai.amberx.axf.settings",
+      "ai.amberx.axf.notifications",
+      "ai.amberx.axf.voice",
+      "ai.amberx.axf.speech",
+      "ai.amberx.axf.triggers",
+      "ai.amberx.axf.hub",
+      "ai.amberx.axf.ai",
+      "ai.amberx.axf.onboarding",
+      "ai.amberx.axf.overlay"
     ],
     "minSdk": 26,
     "targetSdk": 35
+  },
+  "libraries": {
+    "notifications": {},
+    "$installed": [
+      "ai.amberx.axf.notifications",
+      "ai.amberx.axf.voice",
+      "ai.amberx.axf.speech",
+      "ai.amberx.axf.triggers",
+      "ai.amberx.axf.ai",
+      "ai.amberx.axf.onboarding",
+      "ai.amberx.axf.overlay"
+    ],
+    "voice": {
+      "speakPrompts": true,
+      "preferOffline": true,
+      "engine": "vosk"
+    },
+    "speech": {
+      "readAloud": true,
+      "rate": 1
+    },
+    "triggers": {},
+    "ai": {
+      "assistant": "https://console.amberxai.com",
+      "prefix": "/api/plugins/ai-assistant"
+    },
+    "onboarding": {},
+    "overlay": {
+      "showOnStart": false
+    }
   }
 }

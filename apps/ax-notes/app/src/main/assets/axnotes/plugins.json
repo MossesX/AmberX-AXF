@@ -1,0 +1,27 @@
+{
+  "$axf": "axnotes-plugins@1",
+  "description": "Android plugins the app loads by entry class (each entry is added and removed by that plugin's install.mjs / uninstall.mjs).",
+  "plugins": [
+    {
+      "id": "ai.amberx.axf.axnotes.ai-chat",
+      "folder": "ai-chat",
+      "entry": "ai.amberx.axf.axnotes.plugins.aichat.AiChatPlugin",
+      "dataPrefix": "ai-chat.",
+      "version": "0.1.0"
+    },
+    {
+      "id": "ai.amberx.axf.axnotes.ai-build-bridge",
+      "folder": "ai-build-bridge",
+      "entry": "ai.amberx.axf.axnotes.plugins.buildbridge.BuildBridgePlugin",
+      "dataPrefix": "ai-build-bridge.",
+      "version": "0.1.0"
+    },
+    {
+      "id": "ai.amberx.axf.axnotes.ai-automations",
+      "folder": "ai-automations",
+      "entry": "ai.amberx.axf.axnotes.plugins.automations.AutomationsPlugin",
+      "dataPrefix": "ai-automations.",
+      "version": "0.1.0"
+    }
+  ]
+}

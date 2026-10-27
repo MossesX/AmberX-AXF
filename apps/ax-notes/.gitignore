@@ -8,3 +8,6 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# lib-voice Vosk model: fetched by the fetchVoskModel task, never committed (~40 MB)
+/app/src/main/assets/model-en-us

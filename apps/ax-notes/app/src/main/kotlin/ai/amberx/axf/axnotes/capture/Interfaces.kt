@@ -8,16 +8,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /*
- * App-local seams. AX Notes codes against these small interfaces only; the parent build session wires each one to the
- * framework library being built alongside (ax-notes steps s4–s10). Until then the placeholders below keep the app
- * fully usable by hand (typed "what you'd say" box, notes on screen instead of spoken).
+ * App-local seams. AX Notes codes against these small interfaces only. Since build step s13 each one runs on its library
+ * when that library's module is installed (AppModule picks): NoteCapture → VoiceLoop (lib-voice), Speaker → SpeechSpeaker
+ * (lib-speech), TriggerSink → StoreTriggerSink (lib-triggers + the kernel TriggerRegistry), NoteAi → HubNoteAi (lib-ai).
+ * The stand-ins below stay as the fallbacks: without a library the app is still fully usable by hand (typed "what
+ * you'd say" box, notes on screen instead of spoken).
  */
 
 /**
  * Speech to text, continuous: [start] keeps listening and hands every final chunk to `onFinal` until [stop].
  *
- * TODO(lib-voice, step s6: VoiceEngine + Vosk default + dictation stream): back this with lib-voice's dictation stream
- * (sensitivity, echo cancellation, arming phrase); [partial] = its live partial results.
+ * Library-backed: VoiceLoop (lib-voice engine + dictate stream, MicService for the background).
  */
 interface NoteCapture {
     val available: StateFlow<Boolean>
@@ -31,8 +32,7 @@ interface NoteCapture {
 /**
  * Text to speech for read-backs and confirmations.
  *
- * TODO(lib-speech, step s8: SpeechProvider + Android TTS default, speech@1): back this with lib-speech's playback queue
- * (pause / skip / faster / slower / repeat become triggers there).
+ * Library-backed: SpeechSpeaker (lib-speech's reading queue; pause / skip / faster … are speech@1 triggers).
  */
 interface Speaker {
     /** The last thing said (screens show it, so the placeholder is still useful). */
@@ -45,8 +45,8 @@ interface Speaker {
  * Where the app's voice triggers are registered so they're heard outside the capture screen too (background,
  * overlay). The app passes its trigger data in; a hit comes back through `onHit`.
  *
- * TODO(lib-triggers + kernel triggers@1, steps s4/s7): register these as triggers@1 records (permanent, phrases
- * user-replaceable, per-trigger threshold, works-in context) through the shared registry; lib-overlay (s2/s3) shows hits.
+ * Library-backed: StoreTriggerSink (permanent triggers@1 records in lib-triggers' store, matched by its voice bridge;
+ * the log goes to lib-overlay's pill).
  */
 interface TriggerSink {
     fun register(defs: List<TriggerDef>, onHit: (TriggerHit) -> Unit)
@@ -56,15 +56,15 @@ interface TriggerSink {
 /**
  * AI help: "summarize <category>" (and later note-sorter). Null answer = use the local fallback.
  *
- * TODO(lib-ai, steps s5/s10: mode registry + always-live axHub client on assistant@1 / live-session@1, UAC gating):
- * back this with a lib-ai mode; plugin note-sorter (s14) adds categorize / title / action items.
+ * Library-backed: HubNoteAi (lib-ai, mode ai.chat in a live session on axHub); plugin note-sorter adds categorize /
+ * title / action items through its own hooks.
  */
 interface NoteAi {
     val available: Boolean
     suspend fun summarize(label: String, notes: List<Note>): String?
 }
 
-// ---------------------------------------------------------------- placeholders (until the libraries are wired)
+// ---------------------------------------------------------------- stand-ins (used when a library isn't installed)
 
 /** No speech engine yet: the capture screen offers a typed box that goes through the same flow. */
 class NoCapture : NoteCapture {

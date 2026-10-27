@@ -51,6 +51,9 @@ class CaptureController(
     private val _log = MutableStateFlow<List<String>>(emptyList())
     val log: StateFlow<List<String>> = _log.asStateFlow()
 
+    /** The phrases that end a dictation (trigger `notes.end`); the voice loop adds them to lib-voice's stop phrases. */
+    val endPhrases: List<String> get() = NoteTriggers.phrasesOf(NoteTriggers.NOTE_END, triggers)
+
     fun start() { sink.register(triggers) { onTrigger(it) } }
 
     fun listen() { capture.start { heard(it) } }

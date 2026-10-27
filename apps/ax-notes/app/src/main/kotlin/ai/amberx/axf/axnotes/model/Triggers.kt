@@ -7,9 +7,9 @@ package ai.amberx.axf.axnotes.model
  * Phrase syntax: plain words, plus at most one slot at the end: `{name}` needs words after the phrase,
  * `{name?}` may be empty. "note {text}" matches "note buy milk" (text = "buy milk").
  *
- * TODO(lib-triggers, kernel triggers@1 — build steps s4/s7): these become triggers@1 records registered through the
- * shared trigger registry (permanent triggers, user-replaceable phrases, per-trigger threshold). Until then the app
- * matches transcripts itself ([match]) through the app-local TriggerSink (capture/Interfaces.kt).
+ * With lib-triggers installed they are registered as permanent triggers@1 records (capture/TriggerData.kt converts
+ * ids and phrases; the user changes threshold, context and on/off in Settings → Triggers). [match] is still what the
+ * typed box and the no-library fallback use.
  */
 data class TriggerDef(
     val id: String,

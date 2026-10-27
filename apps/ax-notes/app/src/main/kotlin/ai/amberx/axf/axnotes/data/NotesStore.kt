@@ -66,6 +66,8 @@ class NotesStore(
     val pending: StateFlow<Int> = _pending.asStateFlow()
     private val _syncNote = MutableStateFlow<String?>(null)
     val syncNote: StateFlow<String?> = _syncNote.asStateFlow()
+    /** Called after every new note (the app announces it to plugins as `axnotes.notes.saved`). */
+    @Volatile var onCreated: ((Note) -> Unit)? = null
 
     fun load() {
         scope.launch(Dispatchers.IO) {
@@ -101,6 +103,7 @@ class NotesStore(
         val n = Note(Ids.next("note", now), title?.takeIf { it.isNotBlank() } ?: Text.titleFrom(text), text.trim(), cat, cleanTags(tags), now, now,
             listIds.filter { id -> id == INBOX || _lists.value.any { it.id == id && it.kind == ListKind.NOTES } }, source = source, priority = priority)
         saveNote(n, touch = false)
+        runCatching { onCreated?.invoke(n) }
         return n
     }
 

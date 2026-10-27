@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import ai.amberx.axf.axnotes.capture.CaptureController
 import ai.amberx.axf.axnotes.capture.CaptureState
+import ai.amberx.axf.axnotes.capture.VoiceLoop
 import ai.amberx.axf.ui.LocalAxfRuntime
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
@@ -46,6 +47,7 @@ fun CaptureView() {
     val partial by c.capture.partial.collectAsState()
     val said by c.speaker.said.collectAsState()
     val log by c.log.collectAsState()
+    val loop = rememberService<VoiceLoop>()
     var typed by remember { mutableStateOf("") }
 
     Column(Modifier.verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two)) {
@@ -54,9 +56,16 @@ fun CaptureView() {
         AxfCard(Modifier.fillMaxWidth(), title = "Microphone", icon = "mic") {
             if (!available) AxfText("No speech engine is connected yet. Type below what you would say; it runs exactly the same way.", muted = true)
             else if (listening) { AxfText("Listening…", color = Axf.colors.accent); if (partial.isNotBlank()) AxfText(partial) }
+            if (loop != null) {
+                val problem by loop.problem.collectAsState()
+                val holders by loop.holders.collectAsState()
+                problem?.let { AxfText(it, color = Axf.colors.warning) }
+                if (VoiceLoop.HOLD_HANDS_FREE in holders) AxfText("Hands-free listening is on: say “hey notes”, then a command (Settings → Voice listening).", muted = true)
+            }
             FlowRow(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
                 if (listening) AxfButton("Stop listening", { c.stopListening() }, icon = "pause")
                 else AxfButton("Listen", { c.listen() }, tone = ButtonTone.PRIMARY, icon = "mic", enabled = available)
+                if (loop != null) AxfButton(if (loop.handsFree) "Hands-free off" else "Hands-free on", { loop.setHandsFree(!loop.handsFree) }, tone = ButtonTone.GHOST, icon = "zap")
             }
             AxfTextField(typed, { typed = it }, Modifier.fillMaxWidth(), label = "Say it by typing", placeholder = "take a note", leadingIcon = "keyboard")
             AxfButton("Send", { c.heard(typed); typed = "" }, icon = "send", enabled = typed.isNotBlank())
