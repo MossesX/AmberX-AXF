@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:56:14.705Z",
+ "updatedAt": "2026-10-27T20:57:11.353Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:56:14.703Z",
+   "updatedAt": "2026-10-27T20:57:11.352Z",
    "builtAt": "",
    "notes": [
     {
@@ -1680,6 +1680,10 @@
     {
      "text": "s11/s12/s22 done (6b33aee, 6a51d36, daa0674): app init + notes/lists/to-dos; app-local interfaces NoteCapture/Speaker/TriggerSink/NoteAi/NotesHubSync to wire in s13; follow-ups: drag reorder, date picker, check-off disambiguation listen.",
      "at": "2026-10-27T20:56:14.703Z"
+    },
+    {
+     "text": "s1-s3 done (fc64516, 789f85a): overlay@1 + lib-overlay; kernel + lib-overlay pure parts compiled locally (OverlayConformanceTest 11/11, OverlayControllerTest 12/12). Apps add PROPERTY_SPECIAL_USE_FGS_SUBTYPE on the service.",
+     "at": "2026-10-27T20:57:11.352Z"
     }
    ],
    "approvals": [
@@ -1703,8 +1707,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:57:11.128Z",
      "note": ""
     },
     {
@@ -1719,8 +1723,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:57:11.195Z",
      "note": ""
     },
     {
@@ -1735,8 +1739,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:57:11.263Z",
      "note": ""
     },
     {
