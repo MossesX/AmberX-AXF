@@ -83,4 +83,6 @@ dependencies {
     implementation(project(":plugins:ai-chat")) // axf-plugin:ai-chat
     implementation(project(":plugins:ai-build-bridge")) // axf-plugin:ai-build-bridge
     implementation(project(":plugins:ai-automations")) // axf-plugin:ai-automations
+    implementation(project(":plugins:note-sorter")) // axf-plugin:note-sorter
+    implementation(project(":plugins:ai-codebase-reader")) // axf-plugin:ai-codebase-reader
 }

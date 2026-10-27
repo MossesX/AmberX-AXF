@@ -22,6 +22,20 @@
       "entry": "ai.amberx.axf.axnotes.plugins.automations.AutomationsPlugin",
       "dataPrefix": "ai-automations.",
       "version": "0.1.0"
+    },
+    {
+      "id": "ai.amberx.axf.axnotes.note-sorter",
+      "folder": "note-sorter",
+      "entry": "ai.amberx.axf.axnotes.plugins.notesorter.NoteSorterPlugin",
+      "dataPrefix": "note-sorter.",
+      "version": "0.1.0"
+    },
+    {
+      "id": "ai.amberx.axf.axnotes.ai-codebase-reader",
+      "folder": "ai-codebase-reader",
+      "entry": "ai.amberx.axf.axnotes.plugins.codebase.CodebaseReaderPlugin",
+      "dataPrefix": "ai-codebase-reader.",
+      "version": "0.1.0"
     }
   ]
 }

@@ -16,3 +16,5 @@ include(":app")
 include(":plugins:ai-chat") // axf-plugin:ai-chat
 include(":plugins:ai-build-bridge") // axf-plugin:ai-build-bridge
 include(":plugins:ai-automations") // axf-plugin:ai-automations
+include(":plugins:note-sorter") // axf-plugin:note-sorter
+include(":plugins:ai-codebase-reader") // axf-plugin:ai-codebase-reader
