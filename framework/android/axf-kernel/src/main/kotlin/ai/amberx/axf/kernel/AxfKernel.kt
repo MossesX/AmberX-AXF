@@ -139,6 +139,14 @@ public class AxfKernel private constructor(
         services.declarePlaceholder(ai.amberx.axf.kernel.live.LIVE_SESSIONS_CAPABILITY)
         // Agents (agent-definition@1): the data model, validator and prompt composer are kernel-owned; a runtime (an agent manager module) is a placeholder until one registers.
         services.declarePlaceholder(ai.amberx.axf.kernel.agents.AGENTS_CAPABILITY)
+        // Triggers (triggers@1): the registry and matcher are kernel-owned; gesture + face detectors are placeholders until a module registers (voice = lib-voice).
+        services.register(ai.amberx.axf.kernel.triggers.TriggerRegistry::class, ai.amberx.axf.kernel.triggers.TriggerRegistry(), "axf.triggers.registry")
+        for (cap in ai.amberx.axf.kernel.triggers.TriggerPlaceholders.ALL) services.declarePlaceholder(cap)
+        // AI modes (ai-modes@1): the mode registry is kernel-owned; the session host (axHub) is a placeholder until wired.
+        services.register(ai.amberx.axf.kernel.ai.AiModeRegistry::class, ai.amberx.axf.kernel.ai.AiModeRegistry(), "axf.ai.modes")
+        services.declarePlaceholder(ai.amberx.axf.kernel.ai.AI_SESSION_CAPABILITY)
+        // Speech (speech@1): the speaking side; a provider (lib-voice's Speaker) registers under axf.speech, placeholder until then.
+        services.declarePlaceholder(ai.amberx.axf.kernel.speech.SPEECH_CAPABILITY)
         services.register(ai.amberx.axf.kernel.contract.WindowManager::class, ai.amberx.axf.kernel.contract.WindowManager(), "axf.windows")
         services.register(ai.amberx.axf.kernel.data.QueryClient::class, ai.amberx.axf.kernel.data.QueryClient(scope, platform.clock), "axf.queries")
         for (p in ExtensionPoints.ALL) extensions.declare(p)

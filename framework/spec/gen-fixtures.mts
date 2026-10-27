@@ -32,6 +32,9 @@ import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES,
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
+import { ANY_CONTEXT, DEFAULT_COOLDOWN_MS, DEFAULT_THRESHOLD, SETTINGS_SET_ACTION, SETTINGS_TOGGLE_ACTION, SLOT_TYPES, THRESHOLD_MAX, THRESHOLD_MIN, TRIGGERS_CAPABILITY, TRIGGERS_CONTRACT, TRIGGER_ARMINGS, TRIGGER_OUTCOMES, TRIGGER_PLACEHOLDERS, TRIGGER_SOURCES, TriggerRegistry, VOICE_COMMAND_THRESHOLD, bindingTriggers, clampThreshold, contextsOverlap, isNamespacedId, matchPhrase, matchTriggers, parsePattern, parseSpokenNumber, parseSpokenSeconds, patternErrors, patternWords, settingChangeFor, triggerKinds, validateTrigger, voiceCommandTrigger, type Observation, type SettingVoiceBinding, type Trigger, type TriggerDiagnostic } from '../core/triggers';
+import { AI_MODES_CONTRACT, AI_SESSION_CAPABILITY, AI_SESSION_HOST, AiModeRegistry, BUILTIN_AI_MODES, DEFAULT_ALLOWED_MODES, DEFAULT_MODE, MODEL_TIERS, allowedModes, buildRequest, chooseModel, resolveMode, type AiMode, type AiModePolicy, type ModelOption } from '../core/ai-modes';
+import { RATE_DEFAULT, RATE_MAX, RATE_MIN, RATE_STEPS, REPEAT_MODES, SPEECH_CAPABILITY, SPEECH_CONTRACT, SPEECH_QUEUE_EVENTS, clampRate, replaySpeechQueue, stepRate, type RepeatMode, type SpeechQueueEvent } from '../core/speech';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -1310,5 +1313,177 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     conditions: flagsCases.map((flags) => ({ flags, unmet: unmetConditions(A, flags), restart: shouldRestart(A, flags), restartNoBoot: shouldRestart(D, flags) })),
     delays: delays.map((d) => ({ ...d, ms: delayFor(d.rule, d.intervalMs, d.streak) })),
     scenarios: scenarios.map((s) => ({ name: s.name, spec: s.spec.id, intervalMs: s.intervalMs ?? null, initial: initialJobState(s.spec, s.intervalMs), steps: replayJob(s.spec, s.events, s.intervalMs).map((step, i) => ({ event: s.events[i].event, flags: s.events[i].flags ?? {}, state: step.state, effects: step.effects })) })),
+  });
+}
+
+// Triggers (triggers@1): kinds (voice built, gesture + face placeholders), validation, phrase patterns with argument
+// capture, spoken numbers / times, the pure matcher over one trigger set (threshold, context, arming, cooldown, mute,
+// best-of-many), the module-scoped registry's conflicts, lib-voice commands hosted as triggers, settings bindings.
+{
+  const t = (id: string, phrases: string[], action: string, extra: Partial<Trigger> = {}): Trigger => ({
+    id, kind: 'voice', source: 'permanent', module: 'ai.amberx.axf.notes', label: id, phrases, action, threshold: DEFAULT_THRESHOLD, worksIn: [], arming: 'always', enabled: true, cooldownMs: DEFAULT_COOLDOWN_MS, mutedUntil: 0, ...extra,
+  });
+  const set: Trigger[] = [
+    t('notes.add', ['note <text>', 'take a note <text>'], 'notes.add'),
+    t('todo.add', ['add to do <text>', 'add todo <text>'], 'todo.add', { worksIn: ['todo', 'notes.list'] }),
+    t('todo.check', ['check off <text>', 'tick <text>'], 'todo.check', { worksIn: ['todo'] }),
+    t('notes.read', ['read my list <name>', 'read list <name>'], 'notes.read', { args: { voice: true } }),
+    t('player.jump', ['jump to <time:time>'], 'player.jump', { worksIn: ['player'], threshold: 60 }),
+    t('notes.sort', ['sort by <field>'], 'notes.sort', { enabled: false }),
+    t('app.next', ['next', 'next one'], 'app.next', { cooldownMs: 2000 }),
+    t('app.next-page', ['next page'], 'app.page', { args: { dir: 1 } }),
+    t('app.quiet', ['be quiet'], 'speech.stop', { mutedUntil: 5000 }),
+    t('notes.add-long', ['note <text>', 'make a note <text>'], 'notes.add-long'),
+    t('cam.like', ['thumbs_up'], 'media.like', { kind: 'gesture', arming: 'required', threshold: 75 }),
+    t('cam.next', ['index_swipe_right'], 'app.next', { kind: 'gesture', arming: 'always', threshold: 75, worksIn: [ANY_CONTEXT] }),
+    t('face.nod', ['nod_down'], 'app.confirm', { kind: 'face', arming: 'required' }),
+  ];
+  const invalid: [string, unknown][] = [
+    ['not-object', 'x'], ['bad-id', { ...set[0], id: 'Notes Add' }], ['unknown-kind', { ...set[0], kind: 'telepathy' }], ['bad-source', { ...set[0], source: 'shipped' }],
+    ['no-phrases', { ...set[0], phrases: [] }], ['bad-slot', { ...set[0], phrases: ['note <text', 'x <a> <b>'] }], ['bad-action', { ...set[0], action: 'add' }],
+    ['bad-arming', { ...set[0], arming: 'sometimes' }], ['defaults', { id: 'a.b', kind: 'gesture', source: 'custom', module: 'm', label: ' Wave ', phrases: ['wave'], action: 'a.wave', threshold: 150 }],
+    ['threshold-low', { ...set[0], threshold: 0 }], ['threshold-nan', { ...set[0], threshold: 'high' }], ['args-list', { ...set[0], args: [1] }],
+  ];
+  const patterns = ['note <text>', 'read my list <name>', 'jump to <time:time>', 'set volume to <n:number>', '<text>', 'a <x> <y>', 'a <x> b <x>', 'note <text', 'Hello, World!', ''];
+  const phrases: [string, string][] = [
+    ['note buy milk', 'note <text>'], ['Note: buy milk, eggs', 'note <text>'], ['ok amber note buy milk', 'note <text>'], ['note', 'note <text>'], ['buy milk', 'note <text>'],
+    ['read my list groceries', 'read my list <name>'], ['read my list', 'read my list <name>'], ['read my shopping list', 'read my list <name>'],
+    ['jump to one minute thirty eight seconds', 'jump to <time:time>'], ['jump to 2:15', 'jump to <time:time>'], ['jump to the end', 'jump to <time:time>'],
+    ['set volume to forty five', 'set volume to <n:number>'], ['set volume to max', 'set volume to <n:number>'],
+    ['next', 'next'], ['next one please', 'next one'], ['nest', 'next'], ['nex', 'next'], ['something else', 'next'], ['', 'next'],
+    ['add to do call mum', 'add to do <text>'], ['add todo call mum', 'add to do <text>'],
+  ];
+  const numbers = ['forty five', '3 items', 'one hundred five', 'twenty', 'one thirty eight', 'nothing', 'two minutes', 'ninety seconds', '12'];
+  const times = ['one minute thirty-eight seconds', 'one thirty eight', '2:15', 'ninety seconds', 'ninety', 'two minutes', 'one hundred twenty', 'the end', 'ten minutes and five seconds', '1:5'];
+  const obs = (kind: string, at: number, heard?: string[], signature?: string, confidence?: number): Observation => ({ kind, at, ...(heard ? { heard } : {}), ...(signature ? { signature } : {}), ...(confidence !== undefined ? { confidence } : {}) });
+  const cases = [
+    { name: 'note with text', obs: obs('voice', 1000, ['note buy milk']), env: { context: 'notes.list' } },
+    { name: 'alternatives, second one matches', obs: obs('voice', 1000, ['no buy milk', 'note buy milk']), env: { context: 'notes.list' } },
+    { name: 'todo in a listed context', obs: obs('voice', 1000, ['add to do call mum']), env: { context: 'notes.list' } },
+    { name: 'todo in the wrong context (check off)', obs: obs('voice', 1000, ['check off call mum']), env: { context: 'notes.list' } },
+    { name: 'todo in its context', obs: obs('voice', 1000, ['check off call mum']), env: { context: 'todo' } },
+    { name: 'fixed args merge under captured', obs: obs('voice', 1000, ['read my list groceries']), env: { context: 'home' } },
+    { name: 'time slot parsed', obs: obs('voice', 1000, ['jump to one thirty eight']), env: { context: 'player' } },
+    { name: 'low detector confidence', obs: obs('voice', 1000, ['jump to one thirty eight'], undefined, 50), env: { context: 'player' } },
+    { name: 'disabled trigger', obs: obs('voice', 1000, ['sort by date']), env: { context: 'notes.list' } },
+    { name: 'mishearing below threshold', obs: obs('voice', 1000, ['nest']), env: { context: 'home' } },
+    { name: 'exact beats contained', obs: obs('voice', 1000, ['next page']), env: { context: 'home' } },
+    { name: 'longer phrase wins a tie', obs: obs('voice', 1000, ['make a note call mum']), env: { context: 'home' } },
+    { name: 'first registered wins an equal tie', obs: obs('voice', 1000, ['note call mum']), env: { context: 'home' } },
+    { name: 'cooldown', obs: obs('voice', 1500, ['next']), env: { context: 'home', lastFired: { 'app.next': 1000 } } },
+    { name: 'cooldown over', obs: obs('voice', 3001, ['next']), env: { context: 'home', lastFired: { 'app.next': 1000 } } },
+    { name: 'muted', obs: obs('voice', 4000, ['be quiet']), env: { context: 'home' } },
+    { name: 'mute over', obs: obs('voice', 5000, ['be quiet']), env: { context: 'home' } },
+    { name: 'voice switched off', obs: obs('voice', 1000, ['next']), env: { context: 'home', kindsOff: ['voice'] } },
+    { name: 'gesture not armed', obs: obs('gesture', 1000, undefined, 'thumbs_up', 90), env: { context: 'home' } },
+    { name: 'gesture armed', obs: obs('gesture', 1000, undefined, 'thumbs_up', 90), env: { context: 'home', armed: ['gesture'] } },
+    { name: 'gesture below threshold', obs: obs('gesture', 1000, undefined, 'thumbs_up', 74.99), env: { context: 'home', armed: ['gesture'] } },
+    { name: 'always-armed gesture', obs: obs('gesture', 1000, undefined, 'index_swipe_right'), env: { context: 'todo' } },
+    { name: 'unknown signature', obs: obs('gesture', 1000, undefined, 'wave'), env: { context: 'home', armed: ['gesture'] } },
+    { name: 'face armed', obs: obs('face', 1000, undefined, 'nod_down', 80), env: { context: 'home', armed: ['face', 'gesture'] } },
+    { name: 'nothing heard', obs: obs('voice', 1000, []), env: { context: 'home' } },
+  ];
+  const reg = new TriggerRegistry();
+  const d1 = reg.register('ai.amberx.axf.notes', set.slice(0, 10));
+  const d2 = reg.register('ai.amberx.axf.player', [t('player.next', ['next'], 'player.next', { module: 'ai.amberx.axf.player' }), t('player.rewind', ['back'], 'player.back', { module: 'ai.amberx.axf.player', worksIn: ['player'] })]);
+  const d3 = reg.register('ai.amberx.axf.other', [t('notes.add', ['note <text>'], 'other.add', { module: 'ai.amberx.axf.other' }), t('other.tick', ['tick <text>'], 'other.tick', { module: 'ai.amberx.axf.other', worksIn: ['todo'] })]);
+  const d4 = reg.register('ai.amberx.axf.cam', set.slice(10));
+  const afterRegister = reg.list().map((x) => [x.id, x.module]);
+  const removed = { permanent: reg.remove('todo.add'), missing: reg.remove('nope.x'), custom: (reg.register('ai.amberx.axf.notes', [t('notes.mine', ['remind me <text>'], 'notes.add', { source: 'custom' })]), reg.remove('notes.mine')) };
+  const updated = { bad: reg.update('todo.check', { phrases: [] }), ok: reg.update('todo.check', { phrases: ['check off <text>', 'done with <text>'], threshold: 120 }), missing: reg.update('nope.x', { enabled: false }) };
+  const unregistered = reg.unregister('ai.amberx.axf.player');
+  const lists = { all: reg.list().map((x) => x.id), voice: reg.list({ kind: 'voice' }).map((x) => x.id), todo: reg.list({ context: 'todo' }).map((x) => x.id), cam: reg.list({ module: 'ai.amberx.axf.cam' }).map((x) => x.id), owner: reg.owner('voice', 'Next!')?.id ?? null, noOwner: reg.owner('voice', 'nothing')?.id ?? null };
+  const voiceCommands = [
+    { id: 'vault.store', label: 'Store password', defaults: ['store password', 'save password'], module: 'ai.amberx.axf.voicevault' },
+    { id: 'confirm', label: 'Confirm', defaults: ['confirm', 'yes', 'copy it'], module: 'ai.amberx.axf.voicevault' },
+    { id: 'wake', label: 'Global trigger', defaults: ['hey vault'] },
+  ];
+  const binding: SettingVoiceBinding = { key: 'axf.voice.sensitivity', module: 'ai.amberx.axf.voice', label: 'Voice sensitivity', phrases: [
+    { pattern: 'set voice sensitivity to <value:number>' }, { pattern: 'voice sensitivity high', value: 90 }, { pattern: 'toggle voice', toggle: true },
+  ] };
+  const bound = bindingTriggers(binding);
+  const boundCommands = [['set voice sensitivity to sixty', 'home'], ['voice sensitivity high', 'home'], ['toggle voice', 'home'], ['voice', 'home']].map(([h, c]) => matchTriggers(bound, obs('voice', 1000, [h!]), { context: c! }).fired);
+  write('triggers.json', {
+    contract: TRIGGERS_CONTRACT, capability: TRIGGERS_CAPABILITY, placeholders: TRIGGER_PLACEHOLDERS, kinds: triggerKinds(), sources: TRIGGER_SOURCES, armings: TRIGGER_ARMINGS, outcomes: TRIGGER_OUTCOMES, slotTypes: SLOT_TYPES,
+    threshold: { min: THRESHOLD_MIN, max: THRESHOLD_MAX, default: DEFAULT_THRESHOLD, cooldownMs: DEFAULT_COOLDOWN_MS, anyContext: ANY_CONTEXT, voiceCommand: VOICE_COMMAND_THRESHOLD, clamp: [0, 0.001, 0.005, 0.01, 50, 99.99, 99.995, 100, 150, -1, 'NaN', 33.333].map((n) => ({ n, clamped: clampThreshold(n === 'NaN' ? Number.NaN : (n as number)) })) },
+    ids: ['notes.add', 'ai.amberx.axf.notes', 'a.b-c.d9', 'Notes.add', 'notes', 'notes..add', '.x', '1a.b', 'a.-b'].map((id) => ({ id, ok: isNamespacedId(id) })),
+    triggers: set,
+    validate: [...set.map((x, i) => ['valid-' + i, x] as [string, unknown]), ...invalid].map(([name, raw]) => ({ name, raw: raw === undefined ? null : raw, result: validateTrigger(raw) })),
+    patterns: patterns.map((p) => ({ pattern: p, parts: parsePattern(p), error: patternErrors(p), words: patternWords(p) })),
+    phrases: phrases.map(([heard, pattern]) => ({ heard, pattern, match: matchPhrase(heard, pattern) })),
+    numbers: numbers.map((p) => ({ phrase: p, value: parseSpokenNumber(p) })),
+    times: times.map((p) => ({ phrase: p, seconds: parseSpokenSeconds(p) })),
+    overlap: [[[], []], [['a'], []], [['a'], ['b']], [['a', 'b'], ['b']], [[ANY_CONTEXT], ['z']]].map(([a, b]) => ({ a, b, overlap: contextsOverlap(a!, b!) })),
+    matches: cases.map((c) => ({ ...c, result: matchTriggers(set, c.obs, c.env) })),
+    registry: { diagnostics: [d1, d2, d3, d4] as TriggerDiagnostic[][], afterRegister, removed, updated, unregistered, lists },
+    voiceCommands: voiceCommands.map((c) => ({ command: c, trigger: voiceCommandTrigger(c) })),
+    binding: { input: binding, triggers: bound, setAction: SETTINGS_SET_ACTION, toggleAction: SETTINGS_TOGGLE_ACTION, commands: boundCommands.map((cmd) => ({ command: cmd, change: cmd ? settingChangeFor(cmd) : null })) },
+  });
+}
+
+// AI modes (ai-modes@1): the built-in modes, the registry's conflict + built-in rules, UAC gating per policy, mode
+// resolution (override > requested > default > fallback > denied), model choice by tier, and whole requests.
+{
+  const custom: AiMode = { id: 'notes.summarize', label: 'Summarize notes', requiresPermission: 'notes.ai', readOnly: true, needsApproval: false, sessionKind: 'assistant.chat', tier: 'fast', module: 'ai.amberx.axf.notes' };
+  const reg = new AiModeRegistry();
+  const d1 = reg.register(custom);
+  const d2 = reg.register({ ...custom, module: 'ai.amberx.axf.other', label: 'Other' });
+  const d3 = reg.register({ ...BUILTIN_AI_MODES[0]!, module: 'ai.amberx.axf.plugin', label: 'Plugin chat' });
+  const removed = { builtin: reg.unregister('ai.chat'), custom: reg.unregister('notes.summarize'), missing: reg.unregister('x.y') };
+  const modes = [...BUILTIN_AI_MODES, custom];
+  const policies: Record<string, AiModePolicy> = {
+    admin: { admin: true, perms: [] },
+    anonymous: { admin: false, perms: [] },
+    chatOnly: { admin: false, perms: ['ai.chat'] },
+    wildcard: { admin: false, perms: ['ai.*'] },
+    allowedNoPerm: { admin: false, perms: ['ai.chat'], allowedModes: ['ai.chat', 'ai.build-request'] },
+    allowedWithPerm: { admin: false, perms: ['ai.chat', 'ai.build', 'notes.ai'], allowedModes: ['ai.chat', 'ai.build-request', 'notes.summarize'] },
+    noChat: { admin: false, perms: ['ai.read'], allowedModes: ['ai.read-codebase'] },
+    nothing: { admin: false, perms: ['*'], allowedModes: [] },
+    models: { admin: false, perms: ['ai.chat', 'assistant.models'] },
+  };
+  const picks = [{}, { requested: 'ai.read-codebase' }, { override: 'ai.build-request' }, { override: 'ai.build-request', requested: 'ai.read-codebase' }, { requested: 'nope.mode' }, { override: 'notes.summarize' }, { defaultMode: 'ai.read-codebase' }, { requested: 'ai.chat', defaultMode: 'nope.mode' }];
+  const options: ModelOption[] = [{ id: 'claude-haiku', tier: 'fast' }, { id: 'claude-sonnet', tier: 'balanced' }, { id: 'claude-opus', tier: 'deep' }];
+  const optionSets: Record<string, ModelOption[]> = { all: options, noDeep: options.slice(0, 2), onlyFast: options.slice(0, 1), onlyDeep: options.slice(2), none: [] };
+  const choices = Object.entries(optionSets).flatMap(([setName, opts]) => modes.map((m) => ({ options: setName, mode: m.id, choice: chooseModel(m, opts, policies.anonymous!) })));
+  const userPicks = ['anonymous', 'models', 'admin'].flatMap((p) => ['claude-opus', 'nope'].map((pick) => ({ policy: p, pick, choice: chooseModel(BUILTIN_AI_MODES[0]!, options, policies[p]!, pick) })));
+  const requests = [
+    { policy: 'chatOnly', input: { prompt: '  what is   on my list today?  ' } },
+    { policy: 'allowedWithPerm', input: { prompt: 'build me a notes app', requested: 'ai.build-request', triggerId: 'notes.build', context: { view: 'notes' } } },
+    { policy: 'allowedWithPerm', input: { prompt: 'read this repo', override: 'ai.read-codebase', title: 'Repo notes' } },
+    { policy: 'chatOnly', input: { prompt: 'build it', requested: 'ai.build-request' } },
+    { policy: 'nothing', input: { prompt: 'hello' } },
+    { policy: 'models', input: { prompt: 'x'.repeat(80), model: 'claude-opus' } },
+    { policy: 'anonymous', input: { prompt: '', model: 'claude-opus' } },
+  ];
+  write('ai-modes.json', {
+    contract: AI_MODES_CONTRACT, capability: AI_SESSION_CAPABILITY, host: AI_SESSION_HOST, tiers: MODEL_TIERS, defaultMode: DEFAULT_MODE, defaultAllowed: DEFAULT_ALLOWED_MODES, builtins: BUILTIN_AI_MODES,
+    registry: { diagnostics: [d1, d2, d3], removed, list: reg.list().map((m) => [m.id, m.module, m.label]) },
+    policies,
+    allowed: Object.entries(policies).map(([name, p]) => ({ policy: name, modes: allowedModes(modes, p).map((m) => m.id) })),
+    resolve: Object.keys(policies).flatMap((name) => picks.map((pick) => ({ policy: name, pick, result: resolveMode(modes, policies[name]!, pick) }))),
+    options: optionSets, choices, userPicks,
+    requests: requests.map((r) => ({ ...r, result: buildRequest(modes, policies[r.policy]!, options, r.input) })),
+  });
+}
+
+// Speech (speech@1): rate clamping + steps, and the queue reducer replayed over scripted sessions (enqueue while
+// idle / speaking / paused, done, skip, back, pause / resume, repeat one / all, again, rate changes, clear).
+{
+  const item = (id: string, text: string) => ({ type: 'enqueue' as const, item: { id, text } });
+  const sessions: { name: string; rate?: number; repeat?: RepeatMode; events: SpeechQueueEvent[] }[] = [
+    { name: 'read a list', events: [item('a', 'Milk'), { type: 'started' }, item('b', 'Eggs'), item('c', 'Bread'), { type: 'done', outcome: 'done' }, { type: 'started' }, { type: 'done', outcome: 'done' }, { type: 'started' }, { type: 'done', outcome: 'done' }, item('d', 'Butter'), { type: 'started' }, { type: 'done', outcome: 'done' }] },
+    { name: 'pause and resume', events: [item('a', 'One'), item('b', 'Two'), { type: 'started' }, { type: 'pause' }, { type: 'pause' }, item('c', 'Three'), { type: 'resume' }, { type: 'resume' }, { type: 'started' }, { type: 'done', outcome: 'done' }] },
+    { name: 'skip and back', events: [item('a', 'One'), item('b', 'Two'), item('c', 'Three'), { type: 'started' }, { type: 'skip' }, { type: 'started' }, { type: 'back' }, { type: 'started' }, { type: 'skip' }, { type: 'skip' }, { type: 'skip' }, { type: 'back' }] },
+    { name: 'repeat one then all', repeat: 'one', events: [item('a', 'One'), item('b', 'Two'), { type: 'started' }, { type: 'done', outcome: 'done' }, { type: 'repeat', mode: 'all' }, { type: 'started' }, { type: 'done', outcome: 'done' }, { type: 'started' }, { type: 'done', outcome: 'done' }, { type: 'repeat', mode: 'none' }, { type: 'started' }, { type: 'done', outcome: 'done' }, { type: 'started' }, { type: 'done', outcome: 'done' }, { type: 'again' }] },
+    { name: 'rate while speaking', rate: 1.6, events: [item('a', 'Slowly now'), { type: 'started' }, { type: 'faster' }, { type: 'started' }, { type: 'faster' }, { type: 'started' }, { type: 'faster' }, { type: 'slower' }, { type: 'started' }, { type: 'rate', rate: 0.1 }, { type: 'started' }, { type: 'rate', rate: 0.5 }, { type: 'rate', rate: 3 }] },
+    { name: 'interrupt next and clear', events: [item('a', 'One'), item('b', 'Two'), { type: 'started' }, { type: 'enqueue', item: { id: 'x', text: 'Urgent' }, next: true }, { type: 'done', outcome: 'done' }, { type: 'started' }, { type: 'done', outcome: 'stopped' }, { type: 'clear' }, { type: 'again' }, { type: 'done', outcome: 'failed' }] },
+    { name: 'bad repeat mode ignored', events: [{ type: 'repeat', mode: 'twice' as RepeatMode }, item('a', 'One'), { type: 'repeat', mode: 'one' }] },
+  ];
+  write('speech.json', {
+    contract: SPEECH_CONTRACT, capability: SPEECH_CAPABILITY, rate: { min: RATE_MIN, max: RATE_MAX, default: RATE_DEFAULT, steps: RATE_STEPS }, repeatModes: REPEAT_MODES, events: SPEECH_QUEUE_EVENTS,
+    clamp: [0, 0.5, 0.49, 1, 1.333, 2, 2.5, -1, 'NaN'].map((r) => ({ rate: r, clamped: clampRate(r === 'NaN' ? Number.NaN : (r as number)) })),
+    steps: [0.5, 0.6, 1, 1.25, 1.3, 2, 2.5, 0.1].map((r) => ({ rate: r, up: stepRate(r, 1), down: stepRate(r, -1) })),
+    sessions: sessions.map((s) => ({ name: s.name, rate: s.rate ?? RATE_DEFAULT, repeat: s.repeat ?? 'none', steps: replaySpeechQueue(s.events, s.rate, s.repeat).map((st, i) => ({ event: s.events[i], state: st.state, effects: st.effects })) })),
   });
 }
