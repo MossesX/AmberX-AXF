@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "pills",
+  "name": "Pills",
+  "version": "1.0.0",
+  "description": "Rounded pills; the active one is filled with the accent.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "style": "pills",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}
