@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:48:18.751Z",
+ "updatedAt": "2026-10-27T20:49:22.247Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:48:18.750Z",
+   "updatedAt": "2026-10-27T20:49:22.247Z",
    "builtAt": "",
    "notes": [
     {
@@ -1823,8 +1823,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:49:22.246Z",
      "note": ""
     },
     {
