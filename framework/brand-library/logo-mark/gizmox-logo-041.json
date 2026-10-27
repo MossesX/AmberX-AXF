@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-041",
+  "name": "GizmoX lockup · circle bars",
+  "version": "1.0.0",
+  "description": "Generated lockup: a circle bars motif in a seeded bright palette (seed 1044).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "circle",
+    "bars",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#1197d4",
+      "brand2": "#066f6f",
+      "brand3": "#c2e3f0"
+    },
+    "paths": [
+      {
+        "d": "M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M7 16V12M12 16V8M17 16V5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 600,
+      "tracking": 0.08,
+      "font": "ui",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

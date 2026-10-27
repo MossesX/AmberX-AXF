@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "humanist",
+  "name": "Humanist",
+  "version": "1.0.0",
+  "description": "Source Sans text with Source Serif headings, relaxed rhythm and soft corners for reading-heavy apps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "reading",
+    "warm"
+  ],
+  "data": {
+    "fontFamily": "'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Source Serif 4', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'Source Code Pro', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 15,
+    "radius": {
+      "sm": 6,
+      "md": 10,
+      "lg": 14
+    },
+    "space": 9,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 3px var(--fx-shadow)",
+      "md": "0 8px 24px var(--fx-shadow)",
+      "lg": "0 20px 56px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 200,
+    "blur": 10,
+    "headingWeight": 600,
+    "tracking": 0,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.7,
+    "wrapGroups": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "rosewood-light",
+  "name": "Rosewood Light",
+  "version": "1.0.0",
+  "description": "Blush neutrals with a rosewood accent, refined and editorial.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "warm"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f7f5f5",
+      "surface": "#fefefe",
+      "surface2": "#fbf9f9",
+      "surface3": "#efe9ea",
+      "text": "#2a181b",
+      "muted": "#806066",
+      "border": "#e2d9db",
+      "accent": "#c02a50",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(192,42,80,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#c02a50",
+      "shadow": "rgba(50,21,26,0.12)"
+    }
+  }
+}

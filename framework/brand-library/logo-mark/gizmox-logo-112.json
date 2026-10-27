@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-112",
+  "name": "GizmoX mark · squircle arrow",
+  "version": "1.0.0",
+  "description": "Generated mark: a squircle arrow motif in a seeded rich palette (seed 1119).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "squircle",
+    "arrow",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#7f48c7",
+      "brand2": "#5e217d",
+      "brand3": "#ebe8f2"
+    },
+    "paths": [
+      {
+        "d": "M12 2c7.5 0 10 2.5 10 10s-2.5 10-10 10S2 19.5 2 12 4.5 2 12 2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M7 12h10M13 8l4 4-4 4",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

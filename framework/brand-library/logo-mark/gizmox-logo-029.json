@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-029",
+  "name": "GizmoX lockup · hexagon bars",
+  "version": "1.0.0",
+  "description": "Generated lockup: a hexagon bars motif in a seeded rich palette (seed 1029).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "hexagon",
+    "bars",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#b45c1d",
+      "brand2": "#56270b",
+      "brand3": "#e5ccb8"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8.7 5v10L12 22l-8.7-5V7Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M7 16V12M12 16V8M17 16V5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": false
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 800,
+      "tracking": 0,
+      "font": "ui",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-050",
+  "name": "AmberX mark · shield chevron",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield chevron motif in a seeded rich palette (seed 51).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "chevron",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#4e76b7",
+      "brand2": "#273c6d",
+      "brand3": "#e3e8ed"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M8 7l5 5-5 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      },
+      {
+        "d": "M13 7l4 5-4 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

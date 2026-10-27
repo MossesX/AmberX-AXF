@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-098",
+  "name": "GizmoX mark · pill wave",
+  "version": "1.0.0",
+  "description": "Generated mark: a pill wave motif in a seeded rich palette (seed 1104).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "pill",
+    "wave",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#9b5e46",
+      "brand2": "#502820",
+      "brand3": "#ded4ce"
+    },
+    "paths": [
+      {
+        "d": "M8 5h8a7 7 0 0 1 0 14H8A7 7 0 0 1 8 5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 14c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      },
+      {
+        "d": "M5 10c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true,
+        "opacity": 0.5
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

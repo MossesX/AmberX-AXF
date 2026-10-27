@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "secure",
+  "name": "Secure",
+  "version": "1.0.0",
+  "description": "Careful by default: long-press takes longer, windows never minimise, every delete is confirmed.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:security-center"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "darken",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 800,
+      "doubleTapMs": 300,
+      "dragThreshold": 12
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "blur",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "none",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top",
+      "toastMs": 6000,
+      "sound": "subtle",
+      "vibration": "light",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}

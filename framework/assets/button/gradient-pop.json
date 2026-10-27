@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "gradient-pop",
+  "name": "Gradient Pop button",
+  "version": "1.0.0",
+  "description": "Gradient Pop: pill gradient buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "vivid",
+    "vivid"
+  ],
+  "data": {
+    "shape": "pill",
+    "fill": "gradient",
+    "weight": 700,
+    "uppercase": false,
+    "size": "md",
+    "elevation": true
+  }
+}

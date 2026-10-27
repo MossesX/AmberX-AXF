@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T21:36:50.575Z",
+ "updatedAt": "2026-10-27T21:56:06.768Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -34,6 +34,10 @@
     {
      "text": "Merged into enterprise-branding (Oct 27 2026). Archived here; build it there.",
      "at": "2026-10-27T16:56:46.245Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [],
@@ -216,7 +220,12 @@
    "createdAt": "2026-10-27T16:36:55.356Z",
    "updatedAt": "2026-10-27T16:36:55.356Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -556,7 +565,7 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T19:52:28.960Z",
+   "updatedAt": "2026-10-27T21:56:06.768Z",
    "builtAt": "",
    "notes": [
     {
@@ -594,6 +603,10 @@
     {
      "text": "Fable phase 1 done Oct 27 2026 (PR #128). Waiting on Brett's approval of the Fable → Opus switch.",
      "at": "2026-10-27T19:11:51.156Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [
@@ -919,8 +932,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:31:42.318Z",
      "note": ""
     },
     {
@@ -935,8 +948,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:31:42.369Z",
      "note": ""
     },
     {
@@ -951,8 +964,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.770Z",
      "note": ""
     },
     {
@@ -967,8 +980,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.844Z",
      "note": ""
     },
     {
@@ -983,8 +996,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:42:08.861Z",
      "note": ""
     },
     {
@@ -999,8 +1012,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:42:08.934Z",
      "note": ""
     },
     {
@@ -1015,8 +1028,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:47:13.405Z",
      "note": ""
     },
     {
@@ -1031,8 +1044,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:47:13.482Z",
      "note": ""
     },
     {
@@ -1047,8 +1060,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:50:08.047Z",
      "note": ""
     },
     {
@@ -1063,8 +1076,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:50:08.100Z",
      "note": ""
     },
     {
@@ -1079,8 +1092,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:51:10.874Z",
      "note": ""
     },
     {
@@ -1095,8 +1108,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:55:00.852Z",
      "note": ""
     },
     {
@@ -1111,8 +1124,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:55:00.906Z",
      "note": ""
     },
     {
@@ -1127,8 +1140,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:56:06.767Z",
      "note": ""
     },
     {
@@ -1389,6 +1402,10 @@
     {
      "text": "Fable phase 1 done Oct 27 2026 (PR #129, stacked on #128). Next on Opus after the switch is approved.",
      "at": "2026-10-27T19:11:51.096Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [
@@ -1643,438 +1660,78 @@
    ]
   },
   {
-   "id": "ax-notes",
-   "title": "AX Notes: voice AI note-taker + to-do lists app, AmberX speaks (lib-speech), lib-overlay/triggers/ai/onboarding + 5 AI plugins",
-   "category": "AI & voice",
-   "detail": "Brett, Oct 27 2026 (claude.ai, AmberX Framework project): Android app apps/ax-notes, voice-controlled AI note-taker + Claude assistant with an ActiveX-style floating overlay (pill with chips, DETECTIONS-style log, 3-line strip, mini screen). Not a plugin: core hardcoded in the app; reusable parts as framework libraries (lib-overlay NEW, lib-voice EXTEND, lib-triggers NEW, lib-tts NEW, lib-ai NEW = queue epic x.lib.ai, lib-onboarding NEW) and Android plugins (ai-chat, ai-codebase-reader, ai-build-bridge, ai-automations, note-sorter). ActiveX (MossesX/ActiveX) code is COPIED and generalized; ActiveX never named in AXF manifests/hub. Android hold exception granted by Brett for this build only. Build profile: refactor (Brett's pick). Brett allowed up to 3 sub-agents for this build. Folds in queue epic x.lib.ai. overlay@1 joins interface@1 chrome slots and the named-asset rule (namespaced ids).",
-   "status": "running",
+   "id": "style-package-fable",
+   "title": "Style packages — Fable rebuild of style-package@1",
+   "category": "Design & branding",
+   "detail": "Profile: main framework. Fable rebuild of the Opus build of style-package@1 (enterprise-branding s19–s20, branch opus/enterprise-branding). Brett, Oct 27 2026: new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
+   "status": "pending",
    "hidden": false,
-   "source": "chat",
+   "source": "console",
    "pendingId": "",
-   "branch": "fable/ax-notes",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/136",
-   "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T21:36:50.574Z",
+   "branch": "fable/style-package",
+   "pr": "",
+   "createdAt": "2026-10-27T21:47:04.141Z",
+   "updatedAt": "2026-10-27T21:47:04.147Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Build profile: refactor (Brett, card Oct 27 2026). Fable→Opus switch pre-approved by Brett in chat ('do fable and opus', up to 3 sub-agents).",
-     "at": "2026-10-27T20:15:46.000Z"
-    },
-    {
-     "text": "Resumed by Brett Oct 27 16:19 (claude.ai): added speaking (lib-speech, shared speak+listen incl. web), multiple sorted note lists + to-do lists with notes and categories, codebase integration step. Profile refactor; Fable/Opus split with approval at the switch; up to 3 sub-agents; Android exception confirmed again.",
-     "at": "2026-10-27T20:22:32.091Z"
-    },
-    {
-     "text": "Oct 27 16:40 Brett approved the Fable → Opus switch early ('run more sub agents' → approve +3 Opus): s6, s9, s11+s12+s22 run on Opus in parallel with the Fable phase; 5 agents total.",
-     "at": "2026-10-27T20:40:45.024Z"
-    },
-    {
-     "text": "s6 done (e6dfb0c): lib-voice 0.3.0 VoiceEngine/Vosk/dictation/arming. Follow-ups: ax-notes fetches the Vosk model; Voice Vault now carries Vosk+JNA native libs (APK size) — fix in s23 (move Vosk to an optional lib-voice-vosk or keep).",
-     "at": "2026-10-27T20:48:18.749Z"
-    },
-    {
-     "text": "s4+s5(+speech@1 shape) done b00364e: triggers@1, ai-modes@1, speech@1 contracts; TS checks 183/128/105 pass.",
-     "at": "2026-10-27T20:50:10.224Z"
-    },
-    {
-     "text": "s11/s12/s22 done (6b33aee, 6a51d36, daa0674): app init + notes/lists/to-dos; app-local interfaces NoteCapture/Speaker/TriggerSink/NoteAi/NotesHubSync to wire in s13; follow-ups: drag reorder, date picker, check-off disambiguation listen.",
-     "at": "2026-10-27T20:56:14.703Z"
-    },
-    {
-     "text": "s1-s3 done (fc64516, 789f85a): overlay@1 + lib-overlay; kernel + lib-overlay pure parts compiled locally (OverlayConformanceTest 11/11, OverlayControllerTest 12/12). Apps add PROPERTY_SPECIAL_USE_FGS_SUBTYPE on the service.",
-     "at": "2026-10-27T20:57:11.352Z"
-    },
-    {
-     "text": "s8 done e22e817: lib-speech 0.1.0 (Android TTS + web SpeechSynthesis), lib-voice 0.3.1 now depends on lib-speech (Speaker runs on AndroidTtsProvider). Catalog/libraries.json/tracker regen left for s21.",
-     "at": "2026-10-27T21:02:37.083Z"
-    },
-    {
-     "text": "s10 done 3794425: lib-ai (HubAiSessionClient over the console ai-assistant routes behind axHub, AiService, UAC gating; 21 tests pass locally). Epic x.lib.ai fulfilled. Hub follow-ups: model list from hub, aiModes in /me, needsApproval on plugin side; axhub_session cookie on console domain untested.",
-     "at": "2026-10-27T21:05:09.671Z"
-    },
-    {
-     "text": "s19/s20 done: apps/demo-{overlay,voice,triggers,speech,onboarding} (validate ok). lib-ai demo still to add in s21. Bugs for s21: axf install writes broken install code for lib-overlay (OverlayNotification import, missing ic_notification) and lib-onboarding (bare spec); axf new-demo escapes quotes in // axf:modules.",
-     "at": "2026-10-27T21:11:47.164Z"
-    },
-    {
-     "text": "s15/s17/s18 done (110db1a, 015a03e, c486e96, b398bf3): plugins ai-chat, ai-build-bridge, ai-automations under apps/ax-notes/plugins/<id> with lifecycle.mjs + plugins.json loader contract. Event names for approval/finished-build to verify against axHub in s21.",
-     "at": "2026-10-27T21:19:31.351Z"
-    },
-    {
-     "text": "s13 done 812f44e: app wired to 7 libs + generic PluginHost. Gaps: lib-triggers voiceBridge ignores registry-only triggers; lib-ai settings tab 'connections' missing on Android; PreferenceStore can't remove keys; dictate() stops the shared engine; AutomationsWorker needs a kernel worker contract; no lib-hub data client (sync off).",
-     "at": "2026-10-27T21:22:48.601Z"
-    }
-   ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-10-27T20:40:44.959Z"
-    }
-   ],
+   "notes": [],
+   "approvals": [],
    "steps": [
     {
      "id": "s1",
-     "text": "overlay@1 asset type in asset-types.json (+ JSON schema regen, validators, interface@1 chrome slot, starter assets axf.overlay.*), engine rules (size/opacity/strip/log limits) as pure Kotlin + TS reference + fixture spec/fixtures/overlay.json",
+     "text": "Review the Opus style-package@1 contract (members registry, slots, tone) against design-package@1 and interface@1; decide what changes; write the decision into framework/spec (STYLE-PACKAGES.md).",
      "model": "Fable",
-     "why": "new asset type / cross-app chrome",
-     "phase": "Phase 1 · Contracts + overlay",
-     "group": "lib-overlay",
-     "estimate": "30 min",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Contract",
+     "estimate": "25 min",
      "files": [],
      "checks": [],
      "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:57:11.128Z",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
      "note": ""
     },
     {
      "id": "s2",
-     "text": "framework/android/lib-overlay core: foreground service + system overlay window, draggable/resizable pill with status chips + quick-action button, tokens only (ported from ActiveX)",
+     "text": "Rebuild the engine + runtime apply paths (swap, swapAll, design-package extras, interfaces, roller): pure fixture spec/fixtures/style-package.json replayed by check-style-packages.mts.",
      "model": "Fable",
-     "why": "changes how GUIs work across apps",
-     "phase": "Phase 1 · Contracts + overlay",
-     "group": "lib-overlay",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Engine",
      "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:57:11.195Z",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
      "note": ""
     },
     {
      "id": "s3",
-     "text": "lib-overlay: scrolling log panel (tap line callback), collapsed 3-line/3 s strip, expandable mini-screen host API any app fills",
+     "text": "Re-tune the 25 starter control sets against DESIGN-LANGUAGE.md (distinct, coherent with the colour/style themes they pair with) and regenerate fixtures.",
      "model": "Fable",
-     "why": "changes how GUIs work across apps",
-     "phase": "Phase 1 · Contracts + overlay",
-     "group": "lib-overlay",
-     "estimate": "30 min",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Assets",
+     "estimate": "25 min",
      "files": [],
      "checks": [],
      "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:57:11.263Z",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
      "note": ""
     },
     {
      "id": "s4",
-     "text": "triggers@1 contract: unified trigger model (voice built; gesture/face typed placeholders), registry, permanent vs custom, per-trigger threshold + works-in context, settings voice binding; kernel Kotlin + TS reference + fixture",
+     "text": "Differences report _claude/memory/docs/rebuilds/style-package-fable.md + LOG.md line; re-bake the five web apps; checks green.",
      "model": "Fable",
-     "why": "cross-port contract",
-     "phase": "Phase 1 · Contracts + overlay",
-     "group": "Contracts",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:50:10.107Z",
-     "note": ""
-    },
-    {
-     "id": "s5",
-     "text": "lib-ai contract (x.lib.ai): mode registry (plugins register modes), axHub live-session client interface on assistant@1/live-session@1, UAC gating (non-admin = chat), model choice",
-     "model": "Fable",
-     "why": "cross-port contract",
-     "phase": "Phase 1 · Contracts + overlay",
-     "group": "Contracts",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:50:10.168Z",
-     "note": ""
-    },
-    {
-     "id": "s6",
-     "text": "Extend lib-voice: VoiceEngine interface + Vosk default (placeholders for others), sensitivity, echo cancellation, arming phrase + always armed, dictation stream (ported from ActiveX)",
-     "model": "Opus",
      "why": "",
-     "phase": "Phase 2 · Libraries",
-     "group": "Voice + triggers",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:48:18.663Z",
-     "note": ""
-    },
-    {
-     "id": "s7",
-     "text": "lib-triggers impl: registry persistence, dense single-column picker with pinned live-filter search, voice-controllable settings binding",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Libraries",
-     "group": "Voice + triggers",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:02:58.143Z",
-     "note": ""
-    },
-    {
-     "id": "s8",
-     "text": "lib-speech (Brett: one shared speak+listen library, builds on lib-voice without breaking Voice Vault): SpeechProvider + Android TTS default + HQ placeholder, playback queue (pause/skip/faster/slower/repeat as triggers), settings voice/speed/pitch; speech@1 TS contract + web SpeechSynthesis provider in framework/core so AmberX web apps speak too (the pending narrated-walkthrough build reuses it later)",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Libraries",
-     "group": "Speech + onboarding",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:02:36.985Z",
-     "note": ""
-    },
-    {
-     "id": "s9",
-     "text": "lib-onboarding: first-run permissions flow (mic, overlay, accessibility, notifications, battery) + service-killed error state (ported from ActiveX)",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Libraries",
-     "group": "Speech + onboarding",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:49:22.246Z",
-     "note": ""
-    },
-    {
-     "id": "s10",
-     "text": "lib-ai impl: always-live axHub client, Android side of the shared assistant code; keep the console ai-assistant plugin working",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Libraries",
-     "group": "AI",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:05:09.599Z",
-     "note": ""
-    },
-    {
-     "id": "s11",
-     "text": "axf init apps/ax-notes (android-compose, manifest), notes model + offline store (axf-data) + axHub _data sync",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · App",
-     "group": "AX Notes app",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:56:14.451Z",
-     "note": ""
-    },
-    {
-     "id": "s12",
-     "text": "Capture flow, dictation until 'end note', note triggers (note/take a note/read back/summarize/open notes), category/tag/date views + search",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · App",
-     "group": "AX Notes app",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:56:14.533Z",
-     "note": ""
-    },
-    {
-     "id": "s22",
-     "text": "Lists (Brett Oct 27): multiple note lists, each with its own sort (date/category/priority/manual) plus smart lists by filter; to-do lists whose items can hold notes, due date and priority; categories shared across notes and to-dos; voice: \"add to-do …\", \"check off …\", \"read my list [name]\", \"new list …\"",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · App",
-     "group": "AX Notes app",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T20:56:14.620Z",
-     "note": ""
-    },
-    {
-     "id": "s13",
-     "text": "Mini-screen content (transcript, last note, AI reply, mic) + in-app settings host for libraries and plugin sub-tabs; app runs with every plugin removed",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · App",
-     "group": "AX Notes app",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:22:48.539Z",
-     "note": ""
-    },
-    {
-     "id": "s14",
-     "text": "Plugin note-sorter: category/tags/title/summary/action items, files notes into the right lists, turns action items into to-dos, learns from re-categorizing, daily/weekly digest read aloud",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Plugins",
-     "group": "Plugins",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:35:52.225Z",
-     "note": ""
-    },
-    {
-     "id": "s15",
-     "text": "Plugin ai-chat: voice/text chat in the mini screen, optional read-aloud",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Plugins",
-     "group": "Plugins",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:19:31.099Z",
-     "note": ""
-    },
-    {
-     "id": "s16",
-     "text": "Plugin ai-codebase-reader: read-only repos via axHub → structured notes (architecture, TODOs, changes since last read); notes and to-dos carry code links (repo, path, line range, commit) that open on GitHub",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Plugins",
-     "group": "Plugins",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:35:52.301Z",
-     "note": ""
-    },
-    {
-     "id": "s17",
-     "text": "Plugin ai-build-bridge: note/voice → Build Orchestrator request, AXHub approval + push, never builds directly",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Plugins",
-     "group": "Plugins",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:19:31.188Z",
-     "note": ""
-    },
-    {
-     "id": "s23",
-     "text": "Codebase integration (Brett Oct 27): harvest TODO/FIXME from watched repos into a per-repo to-do list (deduped, closed when the line disappears), attach notes to a file/line by voice (\"note on <file>\"), ask Claude about the code with the note as context; all through axHub read-only",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Plugins",
-     "group": "Plugins",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:35:52.376Z",
-     "note": ""
-    },
-    {
-     "id": "s18",
-     "text": "Plugin ai-automations: voice phrase, schedule, git push on watched repo, #build/#ask tags, orchestrator-finished read-back",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Plugins",
-     "group": "Plugins",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:19:31.281Z",
-     "note": ""
-    },
-    {
-     "id": "s19",
-     "text": "Library demo apps part 1 (overlay, voice, triggers)",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Ship",
-     "group": "Demos",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:11:46.991Z",
-     "note": ""
-    },
-    {
-     "id": "s20",
-     "text": "Library demo apps part 2 (tts, ai, onboarding)",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Ship",
-     "group": "Demos",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": true,
-     "done": true,
-     "doneAt": "2026-10-27T21:11:47.087Z",
-     "note": ""
-    },
-    {
-     "id": "s21",
-     "text": "libraries.json, catalog, tracker, PORTING.md, CI gradle tasks, verify, rebuild log, PR + merge approval card",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 2 · Ship",
+     "phase": "Fable rebuild",
      "group": "Ship",
-     "estimate": "30 min",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",

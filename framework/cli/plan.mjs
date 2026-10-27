@@ -16,7 +16,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
-import { dataPath } from './persist.mjs';
+import { activeProfile, dataPath } from './persist.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PLAN_DIR = join(FRAMEWORK_DIR, 'plan');
@@ -86,8 +86,11 @@ function fromCatalog() {
 export function buildPlan() {
   const prev = readJson(PLAN, { features: [] });
   const prevById = new Map(prev.features.map((f) => [f.id, f]));
-  const seed = readJson(join(PLAN_DIR, 'seed.json'), { features: [] }).features;
-  const generated = [...seed, ...fromCatalog()];
+  // A build profile that doesn't take the framework's sources (a fresh profile, e.g. "refactor") keeps only what was
+  // added to its own plan; the base profile imports seed.json + the catalog as before.
+  const sources = activeProfile().catalog !== false;
+  const seed = sources ? readJson(join(PLAN_DIR, 'seed.json'), { features: [] }).features : [];
+  const generated = sources ? [...seed, ...fromCatalog()] : [];
   // link catalog features to the epic that lists them
   const epicOf = new Map();
   for (const e of seed) for (const c of e.catalog ?? []) epicOf.set(c, e.id);

@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-023",
+  "name": "GizmoX · Signature 23",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · circle arrow, signature placement, icon pack pack-089.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "signature"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-026",
+      "wordmark": "gizmox-logo-125",
+      "lockup": "gizmox-logo-119",
+      "animated": "gizmox-anim-012"
+    },
+    "iconPack": "pack-089",
+    "palette": {
+      "brand1": "#959004",
+      "brand2": "#3d2a00",
+      "brand3": "#e8e67d"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "lockup",
+      "window": "accent-edge",
+      "floating-window": "accent-edge",
+      "dialog": "accent-edge",
+      "container": "none",
+      "tab-group": "accent-edge",
+      "toolbar": "mark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-096",
+  "name": "GizmoX mark · open slash",
+  "version": "1.0.0",
+  "description": "Generated mark: an open slash motif in a seeded rich palette (seed 1102).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "open",
+    "slash",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#435fa3",
+      "brand2": "#1f3b56",
+      "brand3": "#d1d8e0"
+    },
+    "paths": [
+      {
+        "d": "M15 6l-6 12",
+        "fill": "none",
+        "stroke": "brand1",
+        "strokeWidth": 3,
+        "round": true
+      },
+      {
+        "d": "M9 6h2M13 18h2",
+        "fill": "none",
+        "stroke": "brand1",
+        "strokeWidth": 3,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

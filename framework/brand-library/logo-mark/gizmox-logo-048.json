@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-048",
+  "name": "GizmoX mark · shield hex",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield hex motif in a seeded rich palette (seed 1051).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "hex",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a53188",
+      "brand2": "#4e1551",
+      "brand3": "#dec4da"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 7l4.3 2.5v5L12 17l-4.3-2.5v-5z",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

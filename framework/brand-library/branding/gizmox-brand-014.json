@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-014",
+  "name": "GizmoX · Showcase 14",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · shield leaf, showcase placement, icon pack pack-053.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "showcase"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-016",
+      "wordmark": "gizmox-logo-075",
+      "lockup": "gizmox-logo-089",
+      "animated": "gizmox-anim-014"
+    },
+    "iconPack": "pack-053",
+    "palette": {
+      "brand1": "#be0af0",
+      "brand2": "#6d0288",
+      "brand3": "#eed0f6"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "animated",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "wordmark",
+      "container": "watermark",
+      "tab-group": "mark",
+      "toolbar": "wordmark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "animated"
+    }
+  }
+}

@@ -1,7 +1,66 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-27T18:38:43.152Z",
+  "generatedAt": "2026-10-27T22:41:08.000Z",
   "items": [
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.ai",
+      "module": "lib-ai",
+      "name": "AI sessions on axHub (ai-modes@1)",
+      "description": "AI for any AXF app, always live on axHub: sessions run on the hub side (the assistant behind axHub's sign-in wall) and never end because the app closed — only an explicit close ends one. HubAiSessionClient implements the kernel's AiSessionClient (start/attach/send/stream/stop/close/list), follows sessions across dropped connections (resumes from the last seq, replay/gap/reset), streams replies as a Flow, and replaces the axf.ai.session placeholder. AiService: the kernel's mode registry, mode resolution with per-trigger overrides (triggers@1 args.mode), UAC gating (the hub account's answer from GET /me when known, else the runtime role + principal; non-admins get plain chat), model choice and per-device resume cursors. Settings group: mode, model, read replies aloud (a flag; speaking is speech@1 / lib-speech).",
+      "features": [
+        "m.ai",
+        "w.ai"
+      ],
+      "dependsOn": [
+        "ai.amberx.axf.hub"
+      ],
+      "manifestKey": "libraries.ai",
+      "params": [
+        {
+          "key": "assistant",
+          "label": "Assistant address",
+          "type": "string",
+          "default": "https://console.amberxai.com",
+          "help": "https, host only: where the AI assistant runs behind axHub's wall"
+        },
+        {
+          "key": "plugin",
+          "label": "Assistant plugin",
+          "type": "string",
+          "default": "ai-assistant",
+          "help": "the console plugin that hosts the assistant; its routes are /api/plugins/<plugin>"
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-ai:$axf\")",
+        "module": "AiModule()",
+        "import": "ai.amberx.axf.ai.AiModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-ai",
+          "note": "core + tests compiled and run with a local kotlinc (21 tests); the OkHttp transport and the module glue are compiled by CI (:lib-ai:testDebugUnitTest)"
+        },
+        "web": {
+          "status": "compiled",
+          "dir": "core/ai-modes.ts",
+          "note": "contract only (PlaceholderAiSessionClient); the console's ai-assistant plugin is the host"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.hub.axpp",
+          "note": "Sessions go over the assistant's HTTP + SSE routes behind the wall; AXPP (typed hub calls/events) replaces the transport later without changing AiSessionClient."
+        },
+        {
+          "capability": "axf.live-host@1:axhub",
+          "note": "axHub's own session workers. Today the live host is the console's assistant (reached through the hub); when the hub runs workers only the address/prefix change."
+        }
+      ]
+    },
     {
       "$axf": "library@1",
       "id": "ai.amberx.axf.browser",
@@ -309,10 +368,204 @@
     },
     {
       "$axf": "library@1",
+      "id": "ai.amberx.axf.onboarding",
+      "module": "lib-onboarding",
+      "name": "Onboarding (first-run permissions + recovery)",
+      "description": "Reusable first-run permissions flow: welcome/why → checklist of what the app declares (microphone, camera, overlay, an accessibility service by class, notifications, battery-optimisation exemption), each row live and re-checked on resume, with runtime dialogs, settings hand-offs and a guided accessibility step. RecoveryState + RecoveryBanner + RecoveryScreen for a revoked permission or a stopped service (ServiceHeartbeat). \"Onboarding done\" persisted per app and spec version in the KV store. Ported from ActiveX's onboarding. Library API level 1, version 0.1.0.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.onboarding",
+      "params": [],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-onboarding:$axf\")",
+        "module": "OnboardingModule(ai.amberx.axf.onboarding.OnboardingSpec(packageName, applicationInfo.loadLabel(packageManager).toString(), listOf(ai.amberx.axf.onboarding.PermissionRequest.notifications(\"To show alerts\", required = false))))",
+        "import": "ai.amberx.axf.onboarding.OnboardingModule",
+        "routes": [
+          "onboarding-status"
+        ]
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-onboarding",
+          "note": "written without a compiler; CI should compile and run :lib-onboarding:testDebugUnitTest"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.onboarding.special",
+          "note": "Exact alarms, usage access, notification listener, all-files access."
+        },
+        {
+          "capability": "axf.onboarding.web",
+          "note": "Web twin (browser camera/mic/notification permissions)."
+        },
+        {
+          "capability": "axf.onboarding.watchdog",
+          "note": "Notify when a required service stops while the app is closed."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.overlay",
+      "module": "lib-overlay",
+      "name": "Overlay (floating pill over other apps)",
+      "description": "The overlay@1 asset on Android: a foreground service (special use) owns a TYPE_APPLICATION_OVERLAY window with a draggable, resizable Compose pill drawn from the app's theme tokens — status chips any module switches (OverlayHost.setChips / setChip), one quick action, a tappable log panel (OverlayLog.add(line, confidence, tag) + tap-line callback, e.g. to tune a trigger threshold), a collapsed strip of the last lines while the pill is hidden (expiry from the engine rules), a mini-screen host any app fills with its own Compose content (OverlayHost.setMiniContent), and a card slot under the pill. Position and size persist in the KV store; Settings → Overlay holds opacity, position lock, panel / strip toggles, mini size and the draw-over-apps permission. Pure rules in the kernel's OverlayEngine (= core/engines/overlay.ts, fixture overlay.json).",
+      "features": [
+        "dv.overlay",
+        "lib.overlay"
+      ],
+      "dependsOn": [
+        "ai.amberx.axf.notifications"
+      ],
+      "manifestKey": "libraries.overlay",
+      "params": [
+        {
+          "key": "showOnStart",
+          "label": "Show the overlay when the app starts",
+          "type": "bool",
+          "default": false
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-overlay:$axf\")",
+        "module": "OverlayModule(this, ai.amberx.axf.overlay.OverlayNotification(android.R.drawable.ic_dialog_info))",
+        "import": "ai.amberx.axf.overlay.OverlayModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-overlay",
+          "note": "written without a compiler; CI compiles and runs :lib-overlay:testDebugUnitTest"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.overlay.web",
+          "note": "The web port's corner pill inside the page (same asset, same engine)."
+        },
+        {
+          "capability": "axf.overlay.bubbles",
+          "note": "Android Bubbles (notification bubbles) as an alternative host for the pill."
+        },
+        {
+          "capability": "axf.overlay.pip",
+          "note": "Picture-in-picture activity as the mini-screen host."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.speech",
+      "module": "lib-speech",
+      "name": "Speech (AmberX speaks: text-to-speech, reading queue, spoken controls)",
+      "description": "The speaking side of speech@1 (listening stays in lib-voice). Registers Android TextToSpeech as the kernel's axf.speech provider (AndroidTtsProvider: voices, rate, pitch, language, utterance callbacks as queue events), one SpeechPlayer per app that runs the kernel SpeechQueue reducer (enqueue, pause, resume, skip, faster, slower, repeat, stop) with audio focus and ducking, a Speech settings group (read aloud, voice, speed, pitch, language, ducking) and the reader's spoken controls as actions + permanent voice triggers in the kernel TriggerRegistry (\"pause\", \"resume\", \"skip\", \"faster\", \"slower\", \"repeat\", \"stop reading\"). lib-voice's Speaker runs on it. Web twin: framework/core/speech-web.ts (WebSpeechProvider + SpeechPlayer).",
+      "features": [
+        "c.voice",
+        "dv.audio"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.speech",
+      "params": [
+        {
+          "key": "readAloud",
+          "label": "Read aloud by default",
+          "type": "bool",
+          "default": true
+        },
+        {
+          "key": "rate",
+          "label": "Default speed",
+          "type": "number",
+          "default": 1,
+          "min": 0.5,
+          "max": 2
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-speech:$axf\")",
+        "module": "SpeechModule(this)",
+        "import": "ai.amberx.axf.speech.SpeechModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-speech",
+          "note": "written without a compiler; CI compiles and runs :lib-speech:testDebugUnitTest"
+        },
+        "web": {
+          "status": "compiled",
+          "dir": "core/speech-web.ts"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.speech.hq",
+          "note": "High-quality (neural / cloud) voices — HqSpeechProvider is a typed placeholder; not built."
+        }
+      ],
+      "version": "0.1.0"
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.triggers",
+      "module": "lib-triggers",
+      "name": "Triggers (custom triggers, voice bridge, settings by voice)",
+      "description": "The user-facing side of the kernel's triggers@1. TriggerStore keeps custom triggers and per-trigger overrides (enabled, threshold, worksIn) as one trigger-store@1 JSON value in the KV store; permanent triggers come from modules at runtime, can't be deleted and can be switched off only where their module allows it; every change is mirrored into the kernel TriggerRegistry. VoiceTriggerBridge feeds lib-voice VoiceResults through the sensitivity floor and arming into TriggerMatcher with the current context, emits fired TriggerCommands on a flow and hands every decision (per-trigger confidence + outcome) to a plain log callback. SettingsVoiceBindings registers TriggerHosting.bindingTriggers and writes TriggerHosting.settingChange through lib-settings (or the kernel Config), coercing spoken values to the setting's kind. Screens: dense single-column trigger list, add-trigger flow (kind → phrases → action → details), action picker with a pinned search bar filtering live across all tabs, threshold editor.",
+      "features": [
+        "lib.triggers",
+        "c.voice"
+      ],
+      "dependsOn": [
+        "ai.amberx.axf.voice",
+        "ai.amberx.axf.settings"
+      ],
+      "manifestKey": "libraries.triggers",
+      "params": [],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-triggers:$axf\")",
+        "module": "TriggersModule()",
+        "import": "ai.amberx.axf.triggers.TriggersModule",
+        "routes": [
+          "triggers"
+        ]
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-triggers",
+          "note": "written without a compiler; CI compiles and runs :lib-triggers:testDebugUnitTest"
+        }
+      },
+      "contracts": {
+        "triggers": "triggers@1",
+        "store": "trigger-store@1"
+      },
+      "placeholders": [
+        {
+          "capability": "axf.triggers.sync",
+          "note": "Sync custom triggers + overrides across devices / axHub (TriggerSync; PlaceholderTriggerSync answers NotImplemented)."
+        },
+        {
+          "capability": "axf.triggers.gesture",
+          "note": "Hand-gesture detector (kernel placeholder kind); the add flow already lets you pick the kind and type signature ids."
+        },
+        {
+          "capability": "axf.triggers.face",
+          "note": "Face-gesture detector (kernel placeholder kind)."
+        }
+      ],
+      "version": "0.1.1"
+    },
+    {
+      "$axf": "library@1",
       "id": "ai.amberx.axf.voice",
       "module": "lib-voice",
-      "name": "Voice (speech in, prompts out, voice commands)",
-      "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) and SpokenText normalisers (\"gmail dot com\" → gmail.com, spoken codes as plain words) so other ports can mirror them.",
+      "name": "Voice (speech in, prompts out, voice commands, continuous listening)",
+      "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) and SpokenText normalisers (\"gmail dot com\" → gmail.com, spoken codes as plain words) so other ports can mirror them. Continuous listening (0.3.0): a VoiceEngine contract (start/stop, results flow with text + confidence + partial/final) with Vosk as the on-device default, a dictation stream that runs until a stop phrase (\"end note\"), a sensitivity slider mapped to a confidence floor, platform echo cancellation + noise suppression, and an arming phrase or always-armed mode with a timeout. Pure-Kotlin VoiceSensitivity, VoiceArming and EndPhrases/DictationAssembler for other ports to mirror.",
       "features": [
         "c.voice",
         "dv.audio"
@@ -332,6 +585,18 @@
           "type": "bool",
           "default": true,
           "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one."
+        },
+        {
+          "key": "engine",
+          "label": "Listening engine",
+          "type": "choice",
+          "choices": [
+            "vosk",
+            "android",
+            "cloud"
+          ],
+          "default": "vosk",
+          "help": "Only vosk is built; the app ships the Vosk model in assets/model-en-us (see the module README)."
         }
       ],
       "install": {
@@ -350,8 +615,17 @@
         {
           "capability": "axf.voice.speaker-id",
           "note": "Recognise the owner's voice (not built)."
+        },
+        {
+          "capability": "axf.voice.engine.android",
+          "note": "Continuous listening on the phone's SpeechRecognizer restarted in a loop (AndroidRecognizerVoiceEngine; not built)."
+        },
+        {
+          "capability": "axf.voice.engine.cloud",
+          "note": "Streaming cloud speech-to-text (CloudVoiceEngine; not built)."
         }
-      ]
+      ],
+      "version": "0.3.2"
     },
     {
       "$axf": "library@1",
@@ -400,7 +674,8 @@
           "capability": "axf.work.chain",
           "note": "Jobs that run after each other."
         }
-      ]
+      ],
+      "version": "0.1.1"
     },
     {
       "$axf": "library@1",

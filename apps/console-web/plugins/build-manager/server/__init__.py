@@ -336,15 +336,12 @@ def _finish_change(cid: str, state: str, summary: str) -> None:
 
 def _inputs() -> dict[str, Any]:
     """What the planner needs: the plan, the queue, the pending list (same data the console reads) and the running entries."""
-    root = Path(cx.persist_root() or cx.ROOT)
-
     def rd(rel: str, d: Any) -> Any:
-        for base in (root, Path(cx.ROOT)):
-            try:
-                return json.loads((base / rel).read_text())
-            except (OSError, ValueError):
-                continue
-        return d
+        """The active build profile's copy (cx.data_path); a profile file not written yet = empty."""
+        try:
+            return json.loads(Path(cx.data_path(rel)).read_text())
+        except (OSError, ValueError):
+            return d
 
     svc = _changes_svc()
     summaries = svc.summaries() if svc else []

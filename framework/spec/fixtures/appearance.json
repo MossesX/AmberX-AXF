@@ -34,6 +34,7 @@
     "settings",
     "behavior-theme",
     "design-package",
+    "style-package",
     "interface",
     "logo-mark",
     "animated-logo",
@@ -228,6 +229,28 @@
       "ok": "#1a8f5a",
       "scheme": "light"
     },
+    "aurora-night": {
+      "bg": "#0e0c15",
+      "fg": "#e4e2ee",
+      "muted": "#948fae",
+      "card": "#14121f",
+      "line": "#2e2a47",
+      "accent": "#50e2b1",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
+    },
+    "carbon-amber": {
+      "bg": "#121110",
+      "fg": "#e9e8e7",
+      "muted": "#a49e98",
+      "card": "#1a1817",
+      "line": "#33302e",
+      "accent": "#fbad37",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
+    },
     "coral-studio": {
       "bg": "#f7f4f3",
       "fg": "#261b1a",
@@ -238,6 +261,39 @@
       "danger": "#c22d47",
       "ok": "#2b8a5e",
       "scheme": "light"
+    },
+    "crimson-dusk": {
+      "bg": "#130e0f",
+      "fg": "#ebe5e6",
+      "muted": "#ac9195",
+      "card": "#1c1516",
+      "line": "#3a2c2e",
+      "accent": "#f2697b",
+      "danger": "#f66751",
+      "ok": "#3ecc89",
+      "scheme": "dark"
+    },
+    "deep-ocean": {
+      "bg": "#0a1218",
+      "fg": "#e2e9ee",
+      "muted": "#8fa1ae",
+      "card": "#0e1a22",
+      "line": "#1c3445",
+      "accent": "#43deef",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
+    },
+    "forest-night": {
+      "bg": "#0d1411",
+      "fg": "#e3ede8",
+      "muted": "#8fae9e",
+      "card": "#131e18",
+      "line": "#263b30",
+      "accent": "#60d286",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
     },
     "fresh-dark": {
       "bg": "#0e0f12",
@@ -261,6 +317,17 @@
       "ok": "#12875a",
       "scheme": "light"
     },
+    "glacier": {
+      "bg": "#f4f7f8",
+      "fg": "#16272d",
+      "muted": "#5a7781",
+      "card": "#fdfefe",
+      "line": "#d5e2e6",
+      "accent": "#087e9b",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
     "graphite-lime": {
       "bg": "#141516",
       "fg": "#ecefe9",
@@ -272,6 +339,50 @@
       "ok": "#5fd38a",
       "scheme": "dark"
     },
+    "graphite-mint": {
+      "bg": "#101112",
+      "fg": "#e7e9e9",
+      "muted": "#98a0a4",
+      "card": "#17191a",
+      "line": "#2f3335",
+      "accent": "#58dabc",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
+    },
+    "harbor": {
+      "bg": "#f4f6f8",
+      "fg": "#16212d",
+      "muted": "#5c7084",
+      "card": "#fdfefe",
+      "line": "#d7dee4",
+      "accent": "#2670c5",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
+    "linen-slate": {
+      "bg": "#f8f6f4",
+      "fg": "#2d2316",
+      "muted": "#81725a",
+      "card": "#fefefd",
+      "line": "#e4dfd8",
+      "accent": "#2779b4",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
+    "meadow": {
+      "bg": "#f5f7f5",
+      "fg": "#1b281b",
+      "muted": "#637963",
+      "card": "#fefefe",
+      "line": "#dbe1db",
+      "accent": "#178250",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
     "midnight-ink": {
       "bg": "#0b1220",
       "fg": "#e4ebf7",
@@ -281,6 +392,28 @@
       "accent": "#38c3e8",
       "danger": "#f2667a",
       "ok": "#3fcf8e",
+      "scheme": "dark"
+    },
+    "mono-paper": {
+      "bg": "#f6f6f6",
+      "fg": "#1f2023",
+      "muted": "#6d6f74",
+      "card": "#fefefe",
+      "line": "#dddedf",
+      "accent": "#6c727f",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
+    "nebula": {
+      "bg": "#0f0b16",
+      "fg": "#e7e2ee",
+      "muted": "#9a8fae",
+      "card": "#161020",
+      "line": "#34264d",
+      "accent": "#ed5ac1",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
       "scheme": "dark"
     },
     "neon-tide": {
@@ -294,6 +427,72 @@
       "ok": "#3ee6a0",
       "scheme": "dark"
     },
+    "obsidian": {
+      "bg": "#0e0f14",
+      "fg": "#e4e6ec",
+      "muted": "#8f95ae",
+      "card": "#14161d",
+      "line": "#2b2f3e",
+      "accent": "#6c92f9",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
+    },
+    "orchid-mist": {
+      "bg": "#f6f4f8",
+      "fg": "#21162d",
+      "muted": "#705c84",
+      "card": "#fefdfe",
+      "line": "#ded8e4",
+      "accent": "#702dbe",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
+    "plum-noir": {
+      "bg": "#120d14",
+      "fg": "#ebe3ed",
+      "muted": "#a68fae",
+      "card": "#1b131e",
+      "line": "#3a2940",
+      "accent": "#d56ce5",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
+    },
+    "porcelain": {
+      "bg": "#f5f6f7",
+      "fg": "#181e2a",
+      "muted": "#606b80",
+      "card": "#fefefe",
+      "line": "#d9dce2",
+      "accent": "#1452d7",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
+    "rosewood-light": {
+      "bg": "#f7f5f5",
+      "fg": "#2a181b",
+      "muted": "#806066",
+      "card": "#fefefe",
+      "line": "#e2d9db",
+      "accent": "#c02a50",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
+    "saffron-day": {
+      "bg": "#f9f7f3",
+      "fg": "#2d2716",
+      "muted": "#7b7156",
+      "card": "#fefefd",
+      "line": "#e6e0d1",
+      "accent": "#b06107",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
     "sage-paper": {
       "bg": "#f3f4ef",
       "fg": "#1d2a22",
@@ -304,6 +503,28 @@
       "danger": "#c2413b",
       "ok": "#2f8a4f",
       "scheme": "light"
+    },
+    "sandstone": {
+      "bg": "#f8f6f4",
+      "fg": "#2d2116",
+      "muted": "#84705c",
+      "card": "#fefefd",
+      "line": "#e5ded7",
+      "accent": "#c54c20",
+      "danger": "#ce2732",
+      "ok": "#218c5a",
+      "scheme": "light"
+    },
+    "slate-steel": {
+      "bg": "#0f1012",
+      "fg": "#e6e8ea",
+      "muted": "#949ca8",
+      "card": "#16181b",
+      "line": "#2d3137",
+      "accent": "#6aa1c8",
+      "danger": "#ef6174",
+      "ok": "#3ecc89",
+      "scheme": "dark"
     }
   },
   "retryMs": {

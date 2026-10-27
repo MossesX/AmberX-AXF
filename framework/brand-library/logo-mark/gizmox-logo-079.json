@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-079",
+  "name": "GizmoX mark · diamond cross",
+  "version": "1.0.0",
+  "description": "Generated mark: a diamond cross motif in a seeded rich palette (seed 1084).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "diamond",
+    "cross",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#953790",
+      "brand2": "#401645",
+      "brand3": "#d7c1d2"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 6v12M6 12h12",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": false
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "brand-bar",
+  "name": "Brand Bar",
+  "version": "1.0.0",
+  "description": "Logo mark, the app version label and the day and night switch around a centred search.",
+  "author": "AmberX AXF",
+  "tags": [
+    "brand"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "center",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search…",
+      "maxResults": 10
+    },
+    "groups": [],
+    "widgets": [
+      {
+        "type": "logo",
+        "id": "mark",
+        "at": "start",
+        "order": 0
+      },
+      {
+        "type": "label",
+        "id": "version",
+        "at": "start",
+        "order": 10
+      },
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "end",
+        "order": 10
+      }
+    ],
+    "surface": "raised",
+    "divider": false
+  }
+}

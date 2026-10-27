@@ -1,4 +1,51 @@
 {
+  "canvas-studio": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "nav",
+        "inspector",
+        "toolbar",
+        "status"
+      ],
+      "areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
+      "columns": "64px minmax(0, 1fr) 280px",
+      "rows": "auto minmax(0, 1fr) auto auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
+      "--fx-grid-cols": "64px minmax(0, 1fr) 280px",
+      "--fx-grid-rows": "auto minmax(0, 1fr) auto auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
   "classic-ide": {
     "compiled": {
       "regions": [
@@ -46,6 +93,235 @@
       "--fx-content-max": "1080px"
     }
   },
+  "command-center": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "toolbar",
+        "nav",
+        "inspector",
+        "status"
+      ],
+      "areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "columns": "72px minmax(0, 1fr) 320px",
+      "rows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "--fx-grid-cols": "72px minmax(0, 1fr) 320px",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
+  "console-pro": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "toolbar",
+        "nav",
+        "inspector",
+        "status"
+      ],
+      "areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav inspector main\" \"status status status\"",
+      "columns": "200px 260px minmax(0, 1fr)",
+      "rows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav inspector main\" \"status status status\"",
+      "--fx-grid-cols": "200px 260px minmax(0, 1fr)",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
+  "data-grid": {
+    "compiled": {
+      "regions": [
+        "main",
+        "toolbar",
+        "nav",
+        "status"
+      ],
+      "areas": "\"toolbar toolbar\" \"nav main\" \"status status\"",
+      "columns": "64px minmax(0, 1fr)",
+      "rows": "auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"toolbar toolbar\" \"nav main\" \"status status\"",
+      "--fx-grid-cols": "64px minmax(0, 1fr)",
+      "--fx-grid-rows": "auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
+  "document-reader": {
+    "compiled": {
+      "regions": [
+        "main",
+        "nav"
+      ],
+      "areas": "\"nav\" \"main\"",
+      "columns": "minmax(0, 1fr)",
+      "rows": "auto minmax(0, 1fr)",
+      "mobileAreas": "\"main\" \"nav\"",
+      "mobileRows": "minmax(0, 1fr) auto",
+      "navOrientation": "horizontal",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"nav\" \"main\"",
+      "--fx-grid-cols": "minmax(0, 1fr)",
+      "--fx-grid-rows": "auto minmax(0, 1fr)",
+      "--fx-grid-areas-m": "\"main\" \"nav\"",
+      "--fx-grid-rows-m": "minmax(0, 1fr) auto",
+      "--fx-content-max": "760px"
+    }
+  },
+  "enterprise-shell": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "toolbar",
+        "nav",
+        "inspector",
+        "status"
+      ],
+      "areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "columns": "248px minmax(0, 1fr) 300px",
+      "rows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "--fx-grid-cols": "248px minmax(0, 1fr) 300px",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
   "focus-top": {
     "compiled": {
       "regions": [
@@ -88,6 +364,175 @@
       "--fx-grid-areas-m": "\"menubar\" \"main\" \"nav\"",
       "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
       "--fx-content-max": "920px"
+    }
+  },
+  "kiosk": {
+    "compiled": {
+      "regions": [
+        "main"
+      ],
+      "areas": "\"main\"",
+      "columns": "minmax(0, 1fr)",
+      "rows": "minmax(0, 1fr)",
+      "mobileAreas": "\"main\"",
+      "mobileRows": "minmax(0, 1fr)",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [],
+        "toolbar": [],
+        "nav": [],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"main\"",
+      "--fx-grid-cols": "minmax(0, 1fr)",
+      "--fx-grid-rows": "minmax(0, 1fr)",
+      "--fx-grid-areas-m": "\"main\"",
+      "--fx-grid-rows-m": "minmax(0, 1fr)",
+      "--fx-content-max": "none"
+    }
+  },
+  "portal-top": {
+    "compiled": {
+      "regions": [
+        "main",
+        "nav",
+        "toolbar"
+      ],
+      "areas": "\"nav\" \"toolbar\" \"main\"",
+      "columns": "minmax(0, 1fr)",
+      "rows": "auto auto minmax(0, 1fr)",
+      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "horizontal",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"nav\" \"toolbar\" \"main\"",
+      "--fx-grid-cols": "minmax(0, 1fr)",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr)",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "1200px"
+    }
+  },
+  "right-handed": {
+    "compiled": {
+      "regions": [
+        "main",
+        "nav",
+        "toolbar"
+      ],
+      "areas": "\"main nav\" \"toolbar toolbar\"",
+      "columns": "minmax(0, 1fr) 220px",
+      "rows": "minmax(0, 1fr) auto",
+      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"main nav\" \"toolbar toolbar\"",
+      "--fx-grid-cols": "minmax(0, 1fr) 220px",
+      "--fx-grid-rows": "minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
+  "split-review": {
+    "compiled": {
+      "regions": [
+        "main",
+        "toolbar",
+        "nav",
+        "inspector"
+      ],
+      "areas": "\"toolbar toolbar toolbar\" \"nav main inspector\"",
+      "columns": "220px minmax(0, 1fr) 420px",
+      "rows": "auto minmax(0, 1fr)",
+      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"toolbar toolbar toolbar\" \"nav main inspector\"",
+      "--fx-grid-cols": "220px minmax(0, 1fr) 420px",
+      "--fx-grid-rows": "auto minmax(0, 1fr)",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
     }
   },
   "studio-dock": {

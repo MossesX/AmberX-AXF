@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "amberx-anim-099",
+  "name": "amberx-logo-075 · float",
+  "version": "1.0.0",
+  "description": "Generated animation: float over 1500 ms, looping (seed 99).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "float",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "amberx-logo-075",
+    "preset": "float",
+    "durationMs": 1500,
+    "delayMs": 400,
+    "loop": true,
+    "intensity": 1
+  }
+}

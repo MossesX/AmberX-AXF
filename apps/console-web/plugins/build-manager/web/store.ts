@@ -144,8 +144,11 @@ export async function loadLive(): Promise<void> {
 
 let changesInflight = false;
 let stamp = '';
+let changesAgain = false;
 export async function loadChanges(force = false): Promise<void> {
-  if (changesInflight) return;
+  // A forced load (after the trash or a verify) is never dropped: it runs again once the check in flight is back, which
+  // may have been sent before the change (Oct 27 2026: a trashed build stayed on the banner).
+  if (changesInflight) { if (force) changesAgain = true; return; }
   changesInflight = true;
   try {
     const r = await pluginFetch(FOLDER, `changes${stamp && !force ? `?since=${encodeURIComponent(stamp)}` : ''}`);
@@ -155,7 +158,7 @@ export async function loadChanges(force = false): Promise<void> {
     stamp = j.stamp ?? '';
     set({ changes: j.items ?? [], changesAvailable: j.available !== false, changesError: j.error ?? '', changesLoaded: true, now: Date.now() });
   } catch (e) { set({ changesAvailable: false, changesError: (e as Error).message, changesLoaded: true }); }
-  finally { changesInflight = false; }
+  finally { changesInflight = false; if (changesAgain) { changesAgain = false; void loadChanges(true); } }
 }
 
 /** Real time: the server's event stream says when any session anywhere wrote to the build log; fall back to polling. */

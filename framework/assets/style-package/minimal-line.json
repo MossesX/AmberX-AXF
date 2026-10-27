@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "minimal-line",
+  "name": "Minimal Line",
+  "version": "1.0.0",
+  "description": "The least ink: thin outlines, no backdrop, minimal pop-ups and an underline row.",
+  "author": "AmberX AXF",
+  "tags": [
+    "minimal",
+    "minimal"
+  ],
+  "data": {
+    "slots": {
+      "button": "minimal-line",
+      "container": "minimal-line",
+      "slider": "minimal-line",
+      "dialog": "minimal-line",
+      "popup": "minimal-line",
+      "tab-group": "minimal-line",
+      "gauge": "tick-arc",
+      "meter": "hairline"
+    },
+    "tone": "minimal"
+  }
+}

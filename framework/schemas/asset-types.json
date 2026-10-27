@@ -233,7 +233,11 @@
         "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
         "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
         "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
-        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)"
+        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
+        "groups[].provider": "string — live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
+        "groups[].max": "number 1–24, default 8 — cap on provider buttons",
+        "groups[].label": "string — group name for screen readers",
+        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)"
       },
       "hideable": true,
       "widgets": {
@@ -1169,6 +1173,33 @@
       ],
       "optional_fields": {
         "extras": "{ slots: asset type → asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
+    "style-package": {
+      "label": "Style package",
+      "group": "Themes",
+      "icon": "package",
+      "description": "A Style Package (style-package@1, engine core/engines/stylepackage.ts) is one matched set of control assets — buttons, containers, sliders, dialogs, pop-ups, tab groups, gauges and meters — applied in one go. The style theme sets the shared tokens; the style package decides how each kind of control is built on them. Picking one swaps every control it names.",
+      "required": [
+        "slots"
+      ],
+      "members": [
+        "button",
+        "container",
+        "slider",
+        "dialog",
+        "popup",
+        "tab-group",
+        "gauge",
+        "meter"
+      ],
+      "optional_fields": {
+        "tone": "one lowercase word describing the package's character (crisp, soft, glass, …) for pickers and the interface roller"
       },
       "roll": {
         "slot": false,

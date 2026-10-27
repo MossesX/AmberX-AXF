@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "dense-ops",
+  "name": "Dense Ops tabs",
+  "version": "1.0.0",
+  "description": "Dense Ops: segmented tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "dense",
+    "compact",
+    "data"
+  ],
+  "data": {
+    "style": "segmented",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "scroll",
+    "showIcons": false,
+    "divider": true
+  }
+}

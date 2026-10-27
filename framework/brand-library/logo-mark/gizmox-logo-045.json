@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-045",
+  "name": "GizmoX mark · pill stack",
+  "version": "1.0.0",
+  "description": "Generated mark: a pill stack motif in a seeded rich palette (seed 1048).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "pill",
+    "stack",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#b44f1d",
+      "brand2": "#56220b",
+      "brand3": "#e5ceb8"
+    },
+    "paths": [
+      {
+        "d": "M8 5h8a7 7 0 0 1 0 14H8A7 7 0 0 1 8 5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 6l6 3-6 3-6-3z",
+        "fill": "bg"
+      },
+      {
+        "d": "M6 13l6 3 6-3M6 16.5l6 3 6-3",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

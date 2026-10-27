@@ -44,6 +44,7 @@ export const ASSET_TYPES = [
   'settings',
   'behavior-theme',
   'design-package',
+  'style-package',
   'interface',
   'logo-mark',
   'animated-logo',
@@ -53,7 +54,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'overlay', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'overlay', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -182,12 +183,26 @@ export interface ToolbarItem {
   requires?: string;
   /** name of a runtime counter to show as a badge on the button (e.g. `alerts.unread`); hidden at 0 */
   badge?: string;
+  /** toggle state, same bindings as app-menu `checked`: `setting:<key>` · `counter:<name>` · `slot:<type>` · `hidden:<type>`; drawn pressed when true */
+  checked?: string;
+}
+
+/** A toolbar group: fixed `items`, or a live list from a registered provider (`rt.registerAppMenuProvider`, the same registry the application menu uses). */
+export interface ToolbarGroup {
+  id: string;
+  items: ToolbarItem[];
+  /** live list id (built in: views, nav, toolbar, settings, windows, dialogs, chrome; apps and plugins add more); its items follow `items` */
+  provider?: string;
+  /** cap on provider items (default 8); the rest stay reachable from the provider's More… entry when it has one */
+  max?: number;
+  /** optional label for screen readers (and labels variants) */
+  label?: string;
 }
 
 export interface ToolbarData {
   variant: 'icons' | 'icons-labels' | 'labels';
   align: 'start' | 'center' | 'spread';
-  groups: { id: string; items: ToolbarItem[] }[];
+  groups: ToolbarGroup[];
   showSearch: boolean;
   window?: string;
   density?: ChromeDensity;
@@ -471,6 +486,7 @@ export interface AssetDataMap {
   settings: SettingsData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
+  'style-package': import('./engines/stylepackage').StylePackageData;
   interface: InterfaceData;
   'logo-mark': MarkData;
   'animated-logo': AnimatedLogoData;
@@ -483,7 +499,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'overlay' | 'settings' | 'behavior-theme' | 'design-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface';
 
 export interface AxfManifest {
   $axf: 'manifest@1';
