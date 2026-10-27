@@ -34,7 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| AmberX as an empty shell for building and testing plugins | review | `claude/amberx-empty-shell` | – | Built on Opus; PR open, needs merging. See *To carry on* | 2026-10-26 |
+| AmberX as an empty shell for building and testing plugins | review | `claude/amberx-empty-shell` | #118 | Built on Opus; PR #118 needs merging. See *To carry on* | 2026-10-26 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -75,7 +75,7 @@ VPS). The session reads the rules and this file first, as usual.
   `android/app/src/main/java/ai/amberx/droid/WatchService.java`.
 - **Status (Oct 26 2026, Opus, claude.ai):** built on `claude/amberx-empty-shell`: steps 1–4 done (Hub/Apps/Manage
   views, Asset studio, Account view and demo dialogs removed; nav/app/toolbar/context menu trimmed; README plugin
-  how-to; test.mjs 157 ✓, tsc ✓, vite build ✓, `axf validate` 83 assets ✓). Left: merge the PR (CI builds the APK);
+  how-to; test.mjs 157 ✓, tsc ✓, vite build ✓, `axf validate` 83 assets ✓). Left: merge PR #118 (CI builds the APK);
   the hosted site picks it up on its 5-minute update. Change log `chg-20261027-a7b3e5c1d2`, pending `amberx-empty-shell`.
 - **First message:** "Start the thread *AmberX as an empty shell for building and testing plugins* from
   `_claude/THREADS.md` → To carry on. Model Opus. Keep voice, the Approvals page and all of Monitoring; strip the rest
