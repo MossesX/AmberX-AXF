@@ -1,53 +1,42 @@
 {
   "$axf": "plugin@1",
-  "id": "ai.amberx.axf.axnotes.plugins.note-sorter",
+  "id": "ai.amberx.axf.axnotes.note-sorter",
   "name": "Note sorter",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Sorts new and edited notes with AI (mode ai.chat, one short JSON reply): category, tags, title, short summary and action items. Files notes into matching lists, turns action items into to-dos on a chosen to-do list, learns from your re-categorizations (kept as examples in the prompt, and used by local rules when AI is unavailable), and writes a daily or weekly digest note meant to be read aloud. Settings: categories, auto-sort, summary length, target to-do list, digest.",
-  "entry": "ai.amberx.axf.axnotes.plugins.notesorter.NoteSorterModule",
+  "description": "Sorts new and edited notes with AI (mode ai.chat, one short JSON reply): category, tags, title, short summary and action items. Files notes into matching lists, turns action items into to-dos on a chosen to-do list, learns from your re-categorizations (examples in the prompt, and local rules when AI is unavailable), and writes a daily or weekly digest note meant to be read aloud. Settings: categories, auto-sort, summary length, target to-do list, digest.",
+  "entry": "ai.amberx.axf.axnotes.plugins.notesorter.NoteSorterPlugin",
   "targets": ["ax-notes"],
-  "provides": [
-    "service:axnotes.sorter@1",
-    "settings-tab:note-sorter",
-    "action:notesorter.sort-all",
-    "action:notesorter.digest",
-    "action:notesorter.forget",
-    "action:notesorter.purge",
-    "menu:app-menu",
-    "menu:nav-menu",
-    "trigger:notesorter.digest-daily",
-    "trigger:notesorter.digest-weekly",
-    "trigger:notesorter.sort-all"
-  ],
-  "requires": [
-    "plugin:ai.amberx.axf.axnotes",
-    "plugin:ai.amberx.axf.axnotes.pluginhost",
-    "plugin:ai.amberx.axf.data"
-  ],
-  "optional": [
-    "service:axf.ai.session",
-    "service:axf.triggers",
-    "service:axf.speech"
-  ],
-  "scopes": ["actions", "settings", "menu_items"],
-  "menus": { "application": true, "nav": true },
+  "provides": ["service:axnotes.note-sorter", "settings-tab:note-sorter", "action:note-sorter.sort-all", "action:note-sorter.digest", "action:note-sorter.forget", "action:note-sorter.purge", "menu:app-menu", "menu:nav-menu", "trigger:note-sorter.digest-daily", "trigger:note-sorter.digest-weekly", "trigger:note-sorter.sort-all"],
+  "requires": ["service:axf.runtime", "service:axf.kv", "action:axnotes.notes.saved", "action:axnotes.notes.save"],
+  "optional": ["service:axf.ai.session", "service:axf.triggers.registry", "service:axf.ai.modes", "action:axnotes.todos.add", "action:axnotes.notes.announce"],
+  "scopes": ["actions", "settings", "menu_items", "network"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins" },
-  "tabable": false,
   "banner": false,
+  "tabable": false,
   "opens": false,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins" },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
-    "dataDir": "ai.amberx.axf.axnotes.plugin.note-sorter",
-    "settings": ["app.notesorter.autoSort", "app.notesorter.categories", "app.notesorter.summaryLength", "app.notesorter.todoList", "app.notesorter.digest"],
-    "install": "node apps/ax-notes/plugins/note-sorter/install.mjs",
-    "uninstall": "node apps/ax-notes/plugins/note-sorter/uninstall.mjs [--all]",
-    "mentions": ["apps/ax-notes/README.md"],
-    "keeps": [
-      "Notes, categories, tags, list memberships and to-dos it made: they are your content and stay after uninstall (digest notes carry the tag digest)."
-    ]
+    "dataDir": "device-kv:note-sorter.",
+    "mentions": ["apps/ax-notes/settings.gradle.kts", "apps/ax-notes/app/build.gradle.kts", "apps/ax-notes/app/src/main/assets/axnotes/plugins.json", "apps/ax-notes/README.md"],
+    "keeps": ["Notes, categories, tags and to-dos it made stay yours after uninstall (digest notes carry the tag digest)."]
+  },
+  "x": {
+    "android": {
+      "module": ":plugins:note-sorter",
+      "package": "ai.amberx.axf.axnotes.plugins.notesorter",
+      "dataPrefix": "note-sorter.",
+      "settingsTab": { "id": "note-sorter", "parent": "plugins" },
+      "menus": { "application": true, "nav": true },
+      "hostActions": {
+        "axnotes.notes.saved": "watched: the app dispatches it after saving a note (payload = the note JSON); new or edited notes get sorted",
+        "axnotes.notes.save": "the app saves a note from payload {id?, title, text, tags[], source, category?, fileInto[]?}: with id it updates that note; category is a name (resolved or created); fileInto names note lists to add the note to when one by that name exists",
+        "axnotes.todos.add": "the app adds a to-do from payload {list, text, noteId?, category?, createList?} (list = to-do list name; skip when an open item with the same text is on it); without it action items are not turned into to-dos",
+        "axnotes.notes.announce": "optional: the app dispatches axnotes.notes.saved again for every note (Sort all notes now covers older notes)"
+      }
+    }
   }
 }

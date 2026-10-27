@@ -1,18 +1,5 @@
 package ai.amberx.axf.axnotes.plugins.notesorter
 
-import ai.amberx.axf.axnotes.model.Categories
-import ai.amberx.axf.axnotes.model.Category
-import ai.amberx.axf.axnotes.model.Fuzzy
-import ai.amberx.axf.axnotes.model.ListKind
-import ai.amberx.axf.axnotes.model.Note
-import ai.amberx.axf.axnotes.model.NoteList
-import ai.amberx.axf.axnotes.model.NoteSource
-import ai.amberx.axf.axnotes.model.Priority
-import ai.amberx.axf.axnotes.model.Text
-import ai.amberx.axf.axnotes.model.TodoItem
-import ai.amberx.axf.axnotes.pluginhost.Hashes
-import ai.amberx.axf.axnotes.pluginhost.J
-import ai.amberx.axf.axnotes.pluginhost.ReplyJson
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -25,36 +12,52 @@ import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
 /*
- * Note sorter (plugin ai.amberx.axf.axnotes.plugins.note-sorter) — pure logic, unit-tested on the JVM:
- * the AI prompt + JSON reply, the local rule fallback, learning from re-categorizations, filing into lists, action
- * items → to-dos, and the daily / weekly digest text (plain sentences, ready to be read aloud by lib-speech).
+ * Note sorter (plugin ai.amberx.axf.axnotes.note-sorter) — pure logic, unit-tested on the JVM: the AI prompt and its
+ * JSON reply, the local rule fallback, learning from re-categorizations, the save / to-do payloads for the app's host
+ * actions, and the daily / weekly digest text (plain sentences, for lib-speech to read aloud).
  */
 
-/** What sorting decided for one note. [category] is a name ("" = leave as is). */
-data class SortResult(
+/** A note as the app announces it (`axnotes.notes.saved`, the app's note JSON). [category] is a category id (slug). */
+data class NoteView(
+    val id: String,
+    val title: String,
+    val text: String,
     val category: String,
     val tags: List<String>,
-    val title: String,
-    val summary: String,
-    val actions: List<String>,
-    val fromAi: Boolean,
-)
+    val source: String,
+    val createdAt: Long,
+    val updatedAt: Long,
+) {
+    companion object {
+        fun parse(o: JsonObject?): NoteView? {
+            val id = J.str(o, "id")?.takeIf { it.isNotBlank() } ?: return null
+            return NoteView(id, J.text(o, "title", 300), J.text(o, "text", 100_000), J.str(o, "category") ?: "", J.strings(o?.get("tags"), 30),
+                J.str(o, "source") ?: "typed", J.long(o, "createdAt") ?: 0L, J.long(o, "updatedAt") ?: 0L)
+        }
+    }
+}
+
+/** What sorting decided for one note. [category] is a name ("" = leave as is). */
+data class SortResult(val category: String, val tags: List<String>, val title: String, val summary: String, val actions: List<String>, val fromAi: Boolean)
 
 /** The user moved a note the sorter had filed under [from] to [to]; [sample] is the start of its text. */
 data class Correction(val sample: String, val from: String, val to: String, val at: Long)
 
-/** What the sorter last did to a note: re-sorts only when the text changes; a category change with the same text = a correction. */
+/** What the sorter knows about a note: re-sorts only when the text changes; a category change with the same text = a correction. */
 data class SortRecord(
     val noteId: String,
     val textHash: String,
-    /** category id the note had after sorting (or after the last correction) */
+    /** category id the note has after sorting (or after the user's correction) */
     val category: String,
+    val title: String,
     val summary: String,
-    /** action items already turned into to-dos for this note */
+    /** action items already sent as to-dos for this note */
     val actions: List<String>,
+    val createdAt: Long,
     val at: Long,
-    /** the user picked this note's category by hand: sorting never changes it again */
+    /** the user picked the category by hand: sorting never changes it again */
     val userSet: Boolean = false,
+    val digest: Boolean = false,
 )
 
 enum class SummaryLength(val wire: String, val words: Int, val label: String) {
@@ -73,45 +76,69 @@ object Sorter {
     const val MAX_TEXT = 4000
     const val MAX_TAGS = 5
     const val MAX_ACTIONS = 10
+    const val DIGEST_TAG = "digest"
 
-    fun textHash(n: Note): String = Hashes.fnv64(n.text.trim())
+    fun textHash(n: NoteView): String = Hashes.fnv64(n.text.trim())
 
-    /** Notes the sorter looks at: typed or spoken, with text. Its own digests and other AI notes are never sorted. */
-    fun sortable(n: Note): Boolean = n.source != NoteSource.AI && n.text.isNotBlank()
+    fun isDigest(n: NoteView): Boolean = n.source == "ai" && n.tags.any { it.equals(DIGEST_TAG, true) }
 
-    /**
-     * Notes to sort now: sortable, changed since enabled ([since]), and new to the sorter or with new text.
-     * [records] by note id.
-     */
-    fun pending(notes: List<Note>, records: Map<String, SortRecord>, since: Long): List<Note> =
-        notes.filter { sortable(it) && it.updatedAt >= since && records[it.id]?.textHash != textHash(it) }.sortedBy { it.updatedAt }
+    /** Sort this note now? Typed or spoken notes with text, changed since the plugin was enabled, with new text. */
+    fun needsSort(n: NoteView, rec: SortRecord?, since: Long): Boolean =
+        n.source != "ai" && n.text.isNotBlank() && n.updatedAt >= since && rec?.textHash != textHash(n)
 
-    /** Re-categorizations by hand: same text as when sorted, other category. */
-    fun corrections(notes: List<Note>, records: Map<String, SortRecord>, categories: List<Category>, now: Long): List<Pair<SortRecord, Correction>> =
-        notes.mapNotNull { n ->
-            val r = records[n.id] ?: return@mapNotNull null
-            if (r.textHash != textHash(n) || r.category == n.category || n.category.isBlank()) return@mapNotNull null
-            r.copy(category = n.category, at = now, userSet = true) to Correction(sample(n.text), Categories.nameOf(r.category, categories), Categories.nameOf(n.category, categories), now)
-        }
+    /** A re-categorization by hand (same text as when sorted, other category): the updated record and what was learned. */
+    fun correction(n: NoteView, rec: SortRecord?, now: Long): Pair<SortRecord, Correction>? {
+        if (rec == null || rec.textHash != textHash(n) || rec.category == n.category || n.category.isBlank()) return null
+        return rec.copy(category = n.category, at = now, userSet = true) to Correction(sample(n.text), Txt.nameOfSlug(rec.category), Txt.nameOfSlug(n.category), now)
+    }
+
+    /** The category stays: the user chose it when writing the note, or by hand after it was sorted. */
+    fun userCategory(n: NoteView, rec: SortRecord?): Boolean = n.category.isNotBlank() && (rec == null || rec.userSet || n.category != rec.category)
+
+    /** Keeps a title the user wrote; replaces only an automatic one (first words of the text) or a blank one. */
+    fun keepsTitle(n: NoteView): Boolean = n.title.isNotBlank() && n.title != Txt.titleFrom(n.text) && n.title != "Untitled note"
 
     fun sample(text: String): String = text.replace(Regex("\\s+"), " ").trim().take(160)
 
-    /** Keeps the title the user wrote; replaces only an automatic one (first words of the text) or a blank one. */
-    /** The category stays as it is: the user chose it when writing the note, or by hand at any time. */
-    fun userCategory(current: Note, prev: SortRecord?): Boolean =
-        current.category.isNotBlank() && (prev == null || prev.userSet || current.category != prev.category)
-
-    fun keepsTitle(n: Note): Boolean = n.title.isNotBlank() && n.title != Text.titleFrom(n.text) && n.title != "Untitled note"
-
     fun mergeTags(old: List<String>, new: List<String>): List<String> =
-        (old + new).map { it.trim().removePrefix("#").trim() }.filter { it.isNotEmpty() }.distinctBy { Text.normalize(it) }.take(30)
+        (old + new).map { it.trim().removePrefix("#").trim() }.filter { it.isNotEmpty() }.distinctBy { Txt.normalize(it) }.take(30)
 
-    fun cleanTag(s: String): String = Text.normalize(s.removePrefix("#")).replace(' ', '-').take(30)
+    fun cleanTag(s: String): String = Txt.normalize(s.removePrefix("#")).replace(' ', '-').take(30)
 
     fun words(s: String, max: Int): String {
         val w = s.replace(Regex("\\s+"), " ").trim().split(' ').filter { it.isNotEmpty() }
         return if (w.size <= max) w.joinToString(" ") else w.take(max).joinToString(" ").trimEnd('.', ',', ';', ':') + "…"
     }
+
+    /** Category id the note ends up with after [updatePayload] (for the record). */
+    fun categoryAfter(n: NoteView, res: SortResult, keepCategory: Boolean): String =
+        if (keepCategory || res.category.isBlank()) n.category else Txt.slug(res.category)
+
+    /**
+     * The app's `axnotes.notes.save` payload that applies [res] to [n] (null = nothing to change). `category` is a name
+     * (the app resolves or creates it); `fileInto` names note lists the app adds the note to when one by that name exists.
+     */
+    fun updatePayload(n: NoteView, res: SortResult, keepCategory: Boolean): JsonObject? {
+        val category = if (keepCategory || res.category.isBlank()) null else res.category
+        val tags = mergeTags(n.tags, res.tags)
+        val title = if (keepsTitle(n) || res.title.isBlank()) n.title else res.title
+        val catName = category ?: if (n.category.isBlank()) "" else Txt.nameOfSlug(n.category)
+        val fileInto = (listOf(catName) + res.tags).filter { it.isNotBlank() }.distinctBy { Txt.normalize(it) }
+        val changed = (category != null && Txt.slug(category) != n.category) || tags != n.tags || title != n.title || fileInto.isNotEmpty()
+        if (!changed) return null
+        return JsonObject(buildMap {
+            put("id", JsonPrimitive(n.id)); put("title", JsonPrimitive(title)); put("text", JsonPrimitive(n.text)); put("tags", J.arr(tags))
+            put("source", JsonPrimitive(n.source))
+            if (category != null) put("category", JsonPrimitive(category))
+            if (fileInto.isNotEmpty()) put("fileInto", J.arr(fileInto))
+        })
+    }
+
+    /** The app's `axnotes.todos.add` payload for one action item. */
+    fun todoPayload(list: String, text: String, noteId: String, categoryName: String?): JsonObject = JsonObject(buildMap {
+        put("list", JsonPrimitive(list)); put("text", JsonPrimitive(text)); put("noteId", JsonPrimitive(noteId)); put("createList", JsonPrimitive(true))
+        if (!categoryName.isNullOrBlank()) put("category", JsonPrimitive(categoryName))
+    })
 }
 
 object SorterPrompt {
@@ -152,44 +179,36 @@ object SorterReply {
         raw.map { it.replace(Regex("\\s+"), " ").trim().removePrefix("- ").removePrefix("[ ]").trim().trimEnd('.').take(200) }
             .filter { it.length >= 2 }
             .map { it.replaceFirstChar { c -> c.uppercase() } }
-            .distinctBy { Text.normalize(it) }
+            .distinctBy { Txt.normalize(it) }
             .take(Sorter.MAX_ACTIONS)
 }
 
 /** Sorting without AI: learned corrections first, then category names found in the text, then simple hints. */
 object LocalSorter {
-    /** Hint words for common category names; used only when a category with that name exists. */
     private val HINTS: Map<String, Set<String>> = mapOf(
         "work" to setOf("meeting", "client", "deadline", "project", "email", "boss", "office", "report", "invoice", "sprint", "standup"),
-        "home" to setOf("rent", "clean", "laundry", "kitchen", "garden", "repair", "bills", "house"),
-        "shopping" to setOf("buy", "milk", "groceries", "grocery", "store", "order", "shop"),
-        "ideas" to setOf("idea", "maybe", "what if", "could", "concept", "brainstorm"),
-        "health" to setOf("doctor", "gym", "medicine", "appointment", "workout", "run", "dentist"),
-        "family" to setOf("mom", "dad", "wife", "husband", "kids", "son", "daughter", "cousin"),
+        "home" to setOf("rent", "clean", "laundry", "kitchen", "garden", "repair", "bill", "house"),
+        "shopping" to setOf("buy", "milk", "grocery", "store", "order", "shop"),
+        "idea" to setOf("idea", "maybe", "concept", "brainstorm"),
+        "health" to setOf("doctor", "gym", "medicine", "appointment", "workout", "dentist"),
+        "family" to setOf("mom", "dad", "wife", "husband", "kid", "son", "daughter", "cousin"),
         "code" to setOf("bug", "commit", "repo", "build", "deploy", "kotlin", "function", "refactor"),
     )
     private val HASHTAG = Regex("(?<![\\p{L}\\p{N}_])#([\\p{L}\\p{N}_-]{2,30})")
+    private val STOP = setOf("the", "a", "an", "and", "or", "to", "of", "in", "on", "for", "is", "it", "i", "my", "me", "at", "with", "this", "that", "be", "about", "we", "you")
 
     fun sort(text: String, categories: List<String>, corrections: List<Correction>, summaryWords: Int): SortResult {
-        val category = category(text, categories, corrections)
         val tags = HASHTAG.findAll(text).map { Sorter.cleanTag(it.groupValues[1]) }.filter { it.isNotEmpty() }.distinct().take(Sorter.MAX_TAGS).toList()
-        val summary = Sorter.words(firstSentences(text, summaryWords), summaryWords)
-        return SortResult(category, tags, Text.titleFrom(text), summary, ActionItems.extract(text), fromAi = false)
+        return SortResult(category(text, categories, corrections), tags, Txt.titleFrom(text), Sorter.words(firstSentences(text, summaryWords), summaryWords), ActionItems.extract(text), fromAi = false)
     }
 
     fun category(text: String, categories: List<String>, corrections: List<Correction>): String {
         nearest(text, corrections)?.let { return it.to }
-        val words = Text.tokens(text).map { Fuzzy.stem(it) }.toSet()
+        val words = Txt.tokens(text).map { Txt.stem(it) }.toSet()
         if (words.isEmpty()) return ""
-        // A category whose name is in the text ("work on the deck" → Work).
-        categories.firstOrNull { c -> val t = Text.tokens(c).map { Fuzzy.stem(it) }; t.isNotEmpty() && t.all { it in words } }?.let { return it }
-        // Hint words for a category the user has.
-        val norm = " " + Text.normalize(text) + " "
-        val scored = categories.map { c ->
-            val hints = HINTS[Fuzzy.stem(Text.normalize(c))] ?: HINTS[Text.normalize(c)] ?: emptySet()
-            c to hints.count { h -> norm.contains(" $h ") || (" " + words.joinToString(" ") + " ").contains(" ${Fuzzy.stem(h)} ") }
-        }.filter { it.second > 0 }.sortedByDescending { it.second }
-        return scored.firstOrNull()?.first ?: ""
+        categories.firstOrNull { c -> val t = Txt.tokens(c).map { Txt.stem(it) }; t.isNotEmpty() && t.all { it in words } }?.let { return it }
+        return categories.map { c -> c to (HINTS[Txt.stem(Txt.normalize(c))] ?: emptySet()).count { it in words } }
+            .filter { it.second > 0 }.maxByOrNull { it.second }?.first ?: ""
     }
 
     /** The learned correction whose sample is most like [text] (word overlap ≥ 0.35), newest first on ties. */
@@ -201,20 +220,17 @@ object LocalSorter {
         for (c in corrections.sortedByDescending { it.at }) {
             val b = meaningful(c.sample)
             if (b.isEmpty()) continue
-            val inter = a.intersect(b).size.toDouble()
-            val score = inter / (a.union(b).size)
+            val score = a.intersect(b).size.toDouble() / a.union(b).size
             if (score > bestScore) { bestScore = score; best = c }
         }
         return if (bestScore >= 0.35) best else null
     }
 
-    private val STOP = setOf("the", "a", "an", "and", "or", "to", "of", "in", "on", "for", "is", "it", "i", "my", "me", "at", "with", "this", "that", "be", "about", "we", "you")
-    private fun meaningful(s: String): Set<String> = Text.tokens(s.take(Sorter.MAX_TEXT)).filter { it !in STOP && it.length > 1 }.map { Fuzzy.stem(it) }.toSet()
+    private fun meaningful(s: String): Set<String> = Txt.tokens(s.take(Sorter.MAX_TEXT)).filter { it !in STOP && it.length > 1 }.map { Txt.stem(it) }.toSet()
 
     private fun firstSentences(text: String, maxWords: Int): String {
-        val parts = text.trim().split(Regex("(?<=[.!?])\\s+|\\n+")).map { it.trim() }.filter { it.isNotEmpty() }
         val out = StringBuilder()
-        for (p in parts) {
+        for (p in text.trim().split(Regex("(?<=[.!?])\\s+|\\n+")).map { it.trim() }.filter { it.isNotEmpty() }) {
             val next = if (out.isEmpty()) p else "$out $p"
             if (next.split(' ').size > maxWords && out.isNotEmpty()) break
             out.clear(); out.append(next)
@@ -223,7 +239,7 @@ object LocalSorter {
     }
 }
 
-/** Action items in a note, and which of them still need a to-do. */
+/** Action items in a note, and which still need a to-do. */
 object ActionItems {
     private val LINE = Regex("^\\s*(?:[-*]\\s*)?(?:\\[\\s?]|todo\\s*[:\\-]|to-do\\s*[:\\-]|to do\\s*[:\\-]|action\\s*[:\\-])\\s*(.+)$", RegexOption.IGNORE_CASE)
     private val PHRASE = Regex("\\b(?:i |we )?(?:need to|have to|must|remember to|don't forget to|dont forget to|should)\\s+([^.!?\\n;]{2,160})", RegexOption.IGNORE_CASE)
@@ -238,38 +254,28 @@ object ActionItems {
         return SorterReply.cleanActions(out)
     }
 
-    /** Actions that aren't on the list yet (open items, fuzzy) and weren't already made for this note. */
-    fun newOnes(actions: List<String>, existing: List<TodoItem>, already: List<String>): List<String> {
-        val done = already.map { Text.normalize(it) }.toSet()
-        val open = existing.filter { !it.done }.map { Text.normalize(it.text) }
-        return actions.filter { a ->
-            val n = Text.normalize(a)
-            n.isNotEmpty() && n !in done && open.none { it == n || Fuzzy.ratio(it, n) >= 0.9 }
-        }.distinctBy { Text.normalize(it) }
+    /** Actions not yet sent for this note (the app also skips an item already open on the list). */
+    fun newOnes(actions: List<String>, already: List<String>): List<String> {
+        val sent = already.map { Txt.normalize(it) }
+        return actions.filter { a -> val n = Txt.normalize(a); n.isNotEmpty() && sent.none { it == n || Txt.ratio(it, n) >= 0.9 } }.distinctBy { Txt.normalize(it) }
     }
 }
 
-/** Filing: the note lists whose name matches the note's category or one of its tags. */
-object Filing {
-    fun listsFor(categoryName: String, tags: List<String>, lists: List<NoteList>, current: List<String>): List<String> {
-        val keys = (listOf(categoryName) + tags).map { Fuzzy.stem(Text.normalize(it.replace('-', ' '))) }.filter { it.isNotEmpty() }
-        if (keys.isEmpty()) return emptyList()
-        return lists.filter { l ->
-            l.kind == ListKind.NOTES && l.id !in current &&
-                Fuzzy.stem(Text.normalize(l.name)).let { name -> keys.any { k -> k == name || (k.length >= 4 && Fuzzy.ratio(k, name) >= 0.85) } }
-        }.map { it.id }
-    }
+object Learning {
+    const val MAX = 50
+
+    /** Adds [c]; an older correction of the same text is replaced; keeps the newest [MAX]. */
+    fun add(list: List<Correction>, c: Correction): List<Correction> =
+        (list.filterNot { Txt.normalize(it.sample) == Txt.normalize(c.sample) } + c).sortedByDescending { it.at }.take(MAX)
 }
 
-/** Daily / weekly digest note: plain sentences for reading aloud (lib-speech reads it; no markup, no bullets). */
+/** Daily / weekly digest from the notes the sorter has seen: plain sentences for reading aloud. */
 object Digest {
     data class Range(val from: Long, val to: Long, val label: String)
     data class Output(val title: String, val text: String)
 
     private val DAY = DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.ENGLISH)
     private val SHORT = DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH)
-    const val TAG = "digest"
-    const val CATEGORY = "Digest"
 
     private fun day(at: Long, zone: ZoneId): LocalDate = Instant.ofEpochMilli(at).atZone(zone).toLocalDate()
     private fun weekStart(d: LocalDate): LocalDate = d.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
@@ -287,56 +293,50 @@ object Digest {
         val today = day(now, zone)
         return if (period == DigestPeriod.WEEKLY) {
             val start = weekStart(today).minusWeeks(if (previous) 1 else 0)
-            val end = if (previous) startOf(start.plusWeeks(1), zone) - 1 else now
-            Range(startOf(start, zone), end, "the week of ${start.format(SHORT)}")
+            Range(startOf(start, zone), if (previous) startOf(start.plusWeeks(1), zone) - 1 else now, "the week of ${start.format(SHORT)}")
         } else {
             val d = if (previous) today.minusDays(1) else today
             Range(startOf(d, zone), if (previous) startOf(d.plusDays(1), zone) - 1 else now, d.format(DAY))
         }
     }
 
-    fun isDigest(n: Note): Boolean = n.tags.any { it.equals(TAG, ignoreCase = true) } && n.source == NoteSource.AI
-
-    /** The digest for [range]; null when nothing happened in it. [summaries] by note id (from the sorter's records). */
-    fun build(period: DigestPeriod, range: Range, notes: List<Note>, summaries: Map<String, String>, lists: List<NoteList>, categories: List<Category>): Output? {
-        val inRange = notes.filter { !isDigest(it) && it.createdAt in range.from..range.to }.sortedBy { it.createdAt }
-        val items = lists.filter { it.kind == ListKind.TODO }.flatMap { it.items }
-        val added = items.count { it.createdAt in range.from..range.to }
-        val done = items.count { it.doneAt != null && it.doneAt in range.from..range.to }
-        val open = items.filter { !it.done }
-        if (inRange.isEmpty() && added == 0 && done == 0) return null
+    /** The digest for [range] from the sorter's records; null when nothing happened in it. */
+    fun build(period: DigestPeriod, range: Range, records: List<SortRecord>): Output? {
+        val notes = records.filter { !it.digest && it.createdAt in range.from..range.to }.sortedBy { it.createdAt }
+        val actions = records.filter { !it.digest && it.at in range.from..range.to }.sumOf { it.actions.size }
+        if (notes.isEmpty() && actions == 0) return null
         val kind = if (period == DigestPeriod.WEEKLY) "Weekly" else "Daily"
-        val title = "$kind digest, ${range.label}"
-        val out = StringBuilder()
-        out.append("$kind digest for ${range.label}. ")
-        out.append(when (inRange.size) { 0 -> "You wrote no notes."; 1 -> "You wrote one note."; else -> "You wrote ${inRange.size} notes." })
-        val groups = inRange.groupBy { it.category }.entries.sortedWith(compareBy<Map.Entry<String, List<Note>>> { it.key.isBlank() }.thenByDescending { it.value.size })
-        for ((cat, ns) in groups) {
-            out.append("\n\n").append(Categories.nameOf(cat, categories)).append(", ").append(if (ns.size == 1) "one note" else "${ns.size} notes").append(". ")
-            out.append(ns.take(8).joinToString(" ") { sentence(summaries[it.id]?.takeIf { s -> s.isNotBlank() } ?: it.title) })
-            if (ns.size > 8) out.append(" And ${ns.size - 8} more.")
+        val out = StringBuilder("$kind digest for ${range.label}. ")
+        out.append(when (notes.size) { 0 -> "You wrote no new notes."; 1 -> "You wrote one note."; else -> "You wrote ${notes.size} notes." })
+        val groups = notes.groupBy { it.category }.entries.sortedWith(compareBy<Map.Entry<String, List<SortRecord>>> { it.key.isBlank() }.thenByDescending { it.value.size })
+        for ((cat, rs) in groups) {
+            out.append("\n\n").append(Txt.nameOfSlug(cat)).append(", ").append(if (rs.size == 1) "one note" else "${rs.size} notes").append(". ")
+            out.append(rs.take(8).joinToString(" ") { sentence(it.summary.ifBlank { it.title }) })
+            if (rs.size > 8) out.append(" And ${rs.size - 8} more.")
         }
-        out.append("\n\nTo-dos: ")
-        out.append(listOf(count(added, "added"), count(done, "done"), count(open.size, "still open")).joinToString(", ")).append('.')
-        val top = open.sortedWith(compareByDescending<TodoItem> { it.priority.rank }.thenBy { it.dueAt ?: Long.MAX_VALUE }.thenBy { it.createdAt }).take(3)
-        if (top.isNotEmpty() && (top[0].priority != Priority.NONE || top[0].dueAt != null)) out.append(" Most urgent: ").append(top.joinToString(", ") { it.text.trimEnd('.') }).append('.')
-        return Output(title, out.toString())
+        if (actions > 0) out.append("\n\n").append(if (actions == 1) "One action item became a to-do." else "$actions action items became to-dos.")
+        return Output("$kind digest, ${range.label}", out.toString())
     }
 
-    private fun count(n: Int, what: String) = if (n == 1) "one $what" else "$n $what"
-    private fun sentence(s: String): String { val t = s.trim().trimEnd('…'); return if (t.endsWith('.') || t.endsWith('!') || t.endsWith('?')) t else "$t." }
+    private fun sentence(s: String): String { val t = s.trim().trimEnd('…'); return if (t.isEmpty() || t.endsWith('.') || t.endsWith('!') || t.endsWith('?')) t else "$t." }
+
+    /** The app's `axnotes.notes.save` payload for a digest note. */
+    fun payload(o: Output): JsonObject = JsonObject(mapOf("title" to JsonPrimitive(o.title), "text" to JsonPrimitive(o.text),
+        "tags" to J.arr(listOf(Sorter.DIGEST_TAG)), "source" to JsonPrimitive("ai"), "category" to JsonPrimitive("Digest")))
 }
 
-/** JSON for the sorter's own data (records, corrections, state). */
+/** JSON for the sorter's own data (KV values). */
 object SorterCodec {
     fun record(r: SortRecord): JsonObject = JsonObject(linkedMapOf(
-        "noteId" to JsonPrimitive(r.noteId), "textHash" to JsonPrimitive(r.textHash), "category" to JsonPrimitive(r.category),
-        "summary" to JsonPrimitive(r.summary), "actions" to J.arr(r.actions), "at" to JsonPrimitive(r.at), "userSet" to JsonPrimitive(r.userSet),
+        "noteId" to JsonPrimitive(r.noteId), "textHash" to JsonPrimitive(r.textHash), "category" to JsonPrimitive(r.category), "title" to JsonPrimitive(r.title),
+        "summary" to JsonPrimitive(r.summary), "actions" to J.arr(r.actions), "createdAt" to JsonPrimitive(r.createdAt), "at" to JsonPrimitive(r.at),
+        "userSet" to JsonPrimitive(r.userSet), "digest" to JsonPrimitive(r.digest),
     ))
 
-    fun record(o: JsonObject): SortRecord? {
+    fun record(o: JsonObject?): SortRecord? {
         val id = J.str(o, "noteId") ?: return null
-        return SortRecord(id, J.str(o, "textHash") ?: "", J.str(o, "category") ?: "", J.text(o, "summary", 2000), J.strings(o["actions"], 50), J.long(o, "at") ?: 0L, J.bool(o, "userSet") ?: false)
+        return SortRecord(id, J.str(o, "textHash") ?: "", J.str(o, "category") ?: "", J.text(o, "title", 300), J.text(o, "summary", 2000), J.strings(o?.get("actions"), 50),
+            J.long(o, "createdAt") ?: 0L, J.long(o, "at") ?: 0L, J.bool(o, "userSet") ?: false, J.bool(o, "digest") ?: false)
     }
 
     fun corrections(list: List<Correction>): JsonObject = JsonObject(mapOf("items" to JsonArray(list.map {
@@ -347,12 +347,4 @@ object SorterCodec {
         val to = J.str(it, "to") ?: return@mapNotNull null
         Correction(J.text(it, "sample", 200), J.str(it, "from") ?: "", to, J.long(it, "at") ?: 0L)
     }
-}
-
-object Learning {
-    const val MAX = 50
-
-    /** Adds [c]; an older correction of nearly the same text is replaced; keeps the newest [MAX]. */
-    fun add(list: List<Correction>, c: Correction): List<Correction> =
-        (list.filterNot { Text.normalize(it.sample) == Text.normalize(c.sample) } + c).sortedByDescending { it.at }.take(MAX)
 }
