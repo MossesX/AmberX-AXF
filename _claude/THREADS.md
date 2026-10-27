@@ -38,6 +38,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Build orchestrator plugin + repo build tracker (categories, phases, groups, steps; grid) | review | `claude/build-orchestrator` | #122 | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
 | Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | queued | – | – | Orchestrator build `enterprise-branding` (40 steps, ~20 h): Fable s1-s12 → (approve switch) → Opus s13-s40. Decided: console renamed GizmoX (visible only), assets for both brands, scope (Brett 13:05) = console + AmberX app + plugins installed and switched on in Plugin switches + banner plugins. Next: run phase 1 on Fable. See *To carry on* | 2026-10-27 |
 | Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
+| Three interfaces in GizmoX tabs + interface roller for every app | queued | – | – | Orchestrator build `interface-roller` (15 steps, ~7.4 h): Fable s1-s5 right after enterprise-branding phase 1, then Opus s6-s15 | 2026-10-27 |
 | Pending builds grid view (attachment) | queued | – | – | Orchestrator build `pending-grid-view`: Opus only, 6 steps | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
@@ -55,6 +56,12 @@ VPS). The session reads the rules and this file first, as usual.
 ### Build orchestrator (how every build below is carried on)
 - Tracker: `_claude/builds/orchestrator.json` (orchestrator@1; how-to `_claude/builds/README.md`). `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next` says what to do; `brief <id>` gives the current phase only. At a Fable ↔ Opus switch, stop and ask Brett (card), then `act approve <id> <phase>`.
 - **First message (any build):** "Run `orchestrator.mjs next` and continue that build from `_claude/builds/orchestrator.json` on the model its next phase names."
+
+### Three interfaces + interface roller
+- **Asked (Brett, Oct 27 2026 13:10):** "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc."
+- **Decided (cards):** the tabs go in the GizmoX console; runs after enterprise-branding phase 1, in the same Fable session.
+- **Plan:** orchestrator build `interface-roller` (category Design & branding; also pending `interface-roller`). Branch `fable/interface-roller`.
+- **First message:** "Continue orchestrator build `enterprise-branding` phase 1, then `interface-roller` phase 1 (`orchestrator.mjs brief <id>`). Run on Fable."
 
 ### Architecture foundation
 - **Asked (Brett, Oct 27 2026, attachment):** the 5 deliverables (TS contracts for layout tree / theme / plugin manifest; Pydantic v2 models + before-validator migrator + ingestion namespacing; React error boundary + pub/sub lifecycle broker; project spec; developer docs: new plugin, harvesting, live sync). Built on the existing asset@1 / plugin@1 / appearance@1 contracts; CLAUDE.md stays the project spec (no second .claude.md). Steps: orchestrator build `arch-foundation` (also pending `arch-foundation`).

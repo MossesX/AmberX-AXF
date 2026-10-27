@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T16:57:15.500Z",
+ "updatedAt": "2026-10-27T17:17:17.473Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4817,6 +4817,95 @@
    "createdAt": "2026-10-27T16:57:15.399Z",
    "builtAt": "",
    "updatedAt": "2026-10-27T16:57:15.399Z",
+   "source": "chat"
+  },
+  {
+   "id": "interface-roller",
+   "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+   "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred. Tracked in the Build orchestrator.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] interface@1: one asset that names a whole interface: design package (style, colour, layout, behaviour), branding (logos, animated logos, icon pack), every chrome asset (banner, app menu, toolbar, nav, context menus, tab group, settings interface, dialog/window/container styles). Open slot list, so new chrome joins by itself.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] Scoped runtime: the same app drawn under several interfaces at once (one asset scope + CSS scope per interface, nothing leaks between them). Engine part + fixture.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] React layer: <InterfaceScope id> wraps a subtree; AppShell, menus, context menus, dialogs, floating windows and portals honour the scope.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] Interface roller engine 1/2: seeded, coherent roll of every slot (palette harmony + contrast, type pairing, radii/density/elevation, motion, layout) with a lock per part; reproducible; fixture.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] Roller 2/2: rolls structure too: app menu / toolbar / nav / context-menu arrangements built from the app's own actions (never drops one), plus a new logo, animated logo and icon pack through the brand generators.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Interface 2 part 1: an entirely different look, feel and behaviour (design package, branding, chrome assets).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Interface 2 part 2: menus, context menus, dialogs, windows and containers worked out and checked on every page.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Interface 3 part 1: a third, entirely different look, feel and behaviour.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Interface 3 part 2: menus, context menus, dialogs, windows and containers worked out and checked on every page.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] The GizmoX console's main window becomes a tab group: Main (today's look, unchanged) · Interface 2 · Interface 3, each tab the full app under its own interface scope.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Interface roller console plugin 1/2: Roll, lock parts, roll again, preview in a new tab, undo.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Roller 2/2: save as an interface@1 asset, apply to one tab or the whole app, export / import, settings tab + lifecycle.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Harvest it as framework library lib-interface-roller so every AXF web app can install it (console, AmberX, axHub web, Patches web, Walkthrough Studio); library@1 parts.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Install the library in the AmberX app and the other web apps; check each one builds and rolls.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Tests for every checker, before/after shots of the three tabs, rebuild report, PORTING.md (Android deferred), CLAUDE.md, THREADS.md.",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-27T17:17:17.473Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T17:17:17.473Z",
    "source": "chat"
   }
  ]
