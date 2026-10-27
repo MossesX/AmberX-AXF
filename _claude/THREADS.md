@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| AmberX as an empty shell for building and testing plugins | queued | – | – | New thread, Opus. See *To carry on* | 2026-10-26 |
 | Banner look Apply to all with Simple/Basic/Pro/Advanced + settings levels + sliders | working | `claude/apply-all-levels` | – | Building (Opus; Fable rebuild to park). See *To carry on* | 2026-10-26 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
@@ -84,6 +85,31 @@ VPS). The session reads the rules and this file first, as usual.
 - **First message:** "Carry on the thread *Banner look Apply to all + Simple/Basic/Pro/Advanced + settings levels +
   sliders* from `_claude/THREADS.md` → To carry on, on branch `claude/apply-all-levels`, model Opus. Check what's
   already committed on the branch, then do the steps that are left."
+
+### AmberX as an empty shell for building and testing plugins
+- **Asked (Brett, Oct 26 2026, 23:24):** "The amberx app is supposed to be an empty shell with voice commands only with
+  banner, toolbar, nav menu and application menu and context menu, minimal everything, just the basic settings asset,
+  theme, layout stuff, basic context menu, that's it. It's for building and testing plugins."
+- **Answers (cards, same time):** build it in a **new thread**; model **Opus**; of what AmberX has now, **keep the
+  Approvals page** (and its alerts); remove the rest.
+- **App:** `apps/amberx-droid` (AmberX, react-ts + Capacitor shell, hosted at amberx.amberxai.com; Android work allowed
+  for this app). Today it has Approvals, Hub, Apps and Manage pages (from axhub-web through lib-hub), plugins `voice`
+  and `monitor` in `src/plugins/`, and a native `WatchService` (approvals feed + auto-approve + wake phrase).
+- **Steps:**
+  1. Keep: banner, toolbar, nav menu, application menu, a basic context menu, the settings interface (shared
+     `settings/console`), theme / layout / style assets, the `voice` plugin, the Approvals page + its alerts.
+  2. Remove: Hub, Apps and Manage pages and their menu entries; the `monitor` plugin; the native service's
+     auto-approve (keep only what the Approvals alerts need, and the wake phrase if voice uses it); trim nav, app menu,
+     toolbar and context menu assets to the minimum.
+  3. Make it a clean host for building and testing plugins: plugin folder + catalog kind `amberx` stay; a short note
+     in Settings or the README on how to drop a plugin in.
+  4. Update `apps/amberx-droid/test.mjs`, README, CLAUDE.md status; `npx -y tsx apps/amberx-droid/test.mjs`,
+     `npx tsc --noEmit -p apps/amberx-droid`, `npx vite build`; CI builds the APK.
+  5. Pending list item (source chat, Opus), change-log entry, PR, THREADS.
+- **Read first:** `apps/amberx-droid/README.md`, `apps/amberx-droid/src/App.tsx`, `src/plugins/*`, `src/assets/*`,
+  `android/app/src/main/java/ai/amberx/droid/WatchService.java`.
+- **First message:** "Start the thread *AmberX as an empty shell for building and testing plugins* from
+  `_claude/THREADS.md` → To carry on. Model Opus. Keep the Approvals page; strip the rest as listed."
 
 ### Connections plugin (every connected app, 7 layouts)
 - **Asked (Brett, Oct 26 2026, in the "Repo thread status review" chat; cut off, never started):** "Add tmux, ntfy,
