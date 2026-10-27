@@ -34,8 +34,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), deploying | 2026-10-27 |
-| AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), deploying; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
+| 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
+| AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker (categories, phases, groups, steps; grid) | review | `claude/build-orchestrator` | #122 | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
 | Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | queued | – | – | Orchestrator build `enterprise-branding` (46 steps, 5 done, ~20 h): Fable phase 1 (s1, s5r1-s5r6, s6-s12) → (approve switch) → Opus s13-s40. Decided: console renamed GizmoX (visible only), assets for both brands, scope (Brett 13:05) = console + AmberX app + plugins installed and switched on in Plugin switches + banner plugins. Next: run phase 1 on Fable. See *To carry on* | 2026-10-27 |
