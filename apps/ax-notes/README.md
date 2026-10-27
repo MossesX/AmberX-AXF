@@ -75,8 +75,21 @@ runs as plain voice notes with every plugin removed. Hooks a plugin can use (no 
 - kernel extension points (routes, views, actions, menus, settings groups with their own `tab` → a sub-tab under
   Settings → Plugins, triggers in the kernel `TriggerRegistry`);
 - `axnotes.mini-screens` (`PluginHost.MINI_SCREENS`): a `ViewContribution` for the overlay's mini screen;
-- action `axnotes.notes.save` (payload `{title?, text, tags?, category?, source?}`) and `axnotes.notes.saved` (dispatched
-  after every new note with the note JSON);
+- host actions on the action bus (payloads and rules in `model/HostRequests.kt`, unit-tested in `HostRequestsTest`):
+  - `axnotes.notes.save` `{id?, title?, text, tags?, category?, source?, priority?, fileInto[]?, codeLinks[]?}`: with an
+    `id` that exists the note is updated (fields not given are kept), with an unknown `id` it is created with that id,
+    without one a new note goes to the Inbox. `category` is a name (resolved, or a new shared category); `fileInto`
+    names note lists by id or name (only lists that exist); `codeLinks` = `{repo, path, lineStart?, lineEnd?, commit?}`.
+  - `axnotes.notes.saved`: dispatched after **every** create and edit (editor saves, re-categorizations, list moves,
+    plugin saves) with the note JSON plus `change` = `created` | `updated` | `announce`.
+  - `axnotes.notes.announce` `{by?}`: `axnotes.notes.saved` again for every note, oldest first (note-sorter's “Sort all”).
+  - `axnotes.todos.add` `{list, text, noteId?, category?, createList?}`: onto the to-do list with that name (or id),
+    made when missing and `createList`; skipped when an open item with the same text is there; `noteId` is attached.
+  - `axnotes.todos.sync` `{list: {id, name, kind?}, owner, add[], update[], close[], reopen[]}` (items = to-do JSON,
+    close / reopen = item ids): keeps a generated list in step with a set of stable ids (TODO / FIXME harvest). The list
+    is made when missing; new ids are added with `owner`; only items with that owner are ever updated, closed or
+    reopened (the user's own items have no owner and are never touched; an update keeps done state, notes, category).
+  - `axnotes.lists.delete` `{id}`: deletes that list (never the seeded Inbox / To-do).
 - free speech: `<context>.say` with `{text}` when nothing matched.
 
 Data: a plugin keeps its device data under its `dataPrefix`. On start the app clears KV keys and saved settings under the

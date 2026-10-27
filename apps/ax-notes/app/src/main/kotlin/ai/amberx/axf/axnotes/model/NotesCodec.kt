@@ -81,14 +81,14 @@ object NotesCodec {
         return TodoItem(
             id = id, text = o.str("text", 2000), done = o.bool("done"), dueAt = o.long("dueAt"), priority = Priority.of(o.str("priority")),
             noteIds = o.strings("noteIds"), category = o.str("category"), createdAt = created, updatedAt = o.long("updatedAt") ?: created,
-            doneAt = o.long("doneAt"), codeLinks = o.objects("codeLinks", 200).mapNotNull { codeLink(it) },
+            doneAt = o.long("doneAt"), codeLinks = o.objects("codeLinks", 200).mapNotNull { codeLink(it) }, owner = o.str("owner"),
         )
     }
 
     fun todoJson(t: TodoItem): JsonObject = JsonObject(linkedMapOf(
         "id" to p(t.id), "text" to p(t.text), "done" to JsonPrimitive(t.done), "dueAt" to p(t.dueAt), "priority" to p(t.priority.wire),
         "noteIds" to arr(t.noteIds), "category" to p(t.category), "createdAt" to p(t.createdAt), "updatedAt" to p(t.updatedAt), "doneAt" to p(t.doneAt),
-        "codeLinks" to JsonArray(t.codeLinks.map { codeLinkJson(it) }),
+        "codeLinks" to JsonArray(t.codeLinks.map { codeLinkJson(it) }), "owner" to p(t.owner),
     ))
 
     fun filter(o: JsonObject?): SmartFilter? {

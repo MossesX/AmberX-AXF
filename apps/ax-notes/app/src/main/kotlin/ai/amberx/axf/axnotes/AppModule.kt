@@ -23,8 +23,8 @@ import ai.amberx.axf.axnotes.data.HubEndpoint
 import ai.amberx.axf.axnotes.data.NotesStore
 import ai.amberx.axf.axnotes.data.UnwiredHubSync
 import ai.amberx.axf.axnotes.host.PluginHost
+import ai.amberx.axf.axnotes.model.HostRequests
 import ai.amberx.axf.axnotes.model.Note
-import ai.amberx.axf.axnotes.model.NoteSource
 import ai.amberx.axf.axnotes.model.NoteTriggers
 import ai.amberx.axf.axnotes.model.NotesCodec
 import ai.amberx.axf.axnotes.model.TriggerDef
@@ -75,7 +75,6 @@ import ai.amberx.axf.voice.VoiceResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
@@ -270,23 +269,36 @@ class AppModule(private val context: Context, private val scope: CoroutineScope,
             val args = parseObject(p) ?: return@action
             storeSink?.deliver(TriggerCommand("", TriggerData.ACTION, args))
         }
-        // Plugin host actions (PluginHost): save a note for a plugin; the announcement plugins watch.
+        // Plugin host actions (PluginHost; payloads + rules in model/HostRequests.kt). No plugin is named here.
         action(PluginHost.ACTION_SAVE_NOTE, "Save a note (from a plugin)", params = true) { p ->
-            val o = parseObject(p) ?: return@action
-            val text = str(o, "text")
-            if (text.isBlank()) return@action
-            val source = when (str(o, "source").lowercase()) { "voice" -> NoteSource.VOICE; "typed" -> NoteSource.TYPED; else -> NoteSource.AI }
-            val tags = (o["tags"] as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.content } ?: emptyList()
-            store.createNote(text, title = str(o, "title").ifBlank { null }, categoryName = str(o, "category").ifBlank { null }, tags = tags, source = source)
+            HostRequests.saveRequest(parseObject(p))?.let { store.saveFromHost(it) }
         }
         action(PluginHost.ACTION_NOTE_SAVED, "A note was saved (plugins watch this)", params = true) { }
-        store.onCreated = { n -> announce(n) }
+        action(PluginHost.ACTION_ANNOUNCE, "Announce every note again (for plugins)", params = true) {
+            val all = store.notes.value.sortedBy { it.createdAt }
+            val rt = runtime ?: return@action
+            scope.launch { for (n in all) runCatching { rt.dispatch(PluginHost.ACTION_NOTE_SAVED, HostRequests.savedPayload(n, HostRequests.CHANGE_ANNOUNCE).toString()) } }
+        }
+        action(PluginHost.ACTION_ADD_TODO, "Add a to-do (from a plugin)", params = true) { p ->
+            HostRequests.todoAddRequest(parseObject(p))?.let { store.addTodoFromHost(it) }
+        }
+        action(PluginHost.ACTION_SYNC_TODOS, "Sync a generated to-do list (from a plugin)", params = true) { p ->
+            HostRequests.todoSyncRequest(parseObject(p))?.let { store.syncTodos(it) }
+        }
+        action(PluginHost.ACTION_DELETE_LIST, "Delete a list (from a plugin)", params = true) { p ->
+            val listId = HostRequests.listId(parseObject(p)) ?: return@action
+            // The seeded Inbox and To-do lists are the user's; a plugin removes only lists it made.
+            if (listId != NotesStore.INBOX && listId != NotesStore.TODO) store.deleteList(listId)
+        }
+        store.onSaved = { n, created -> announce(n, created) }
     }
 
-    private fun announce(n: Note) {
+    /** `axnotes.notes.saved` after every new note and every edit (the note JSON + `change`). */
+    private fun announce(n: Note, created: Boolean) {
         val rt = runtime ?: return
-        scope.launch { runCatching { rt.dispatch(PluginHost.ACTION_NOTE_SAVED, NotesCodec.noteJson(n).toString()) } }
-        notesOverlay?.note("Saved: ${n.title}", "note")
+        val payload = HostRequests.savedPayload(n, if (created) HostRequests.CHANGE_CREATED else HostRequests.CHANGE_UPDATED).toString()
+        scope.launch { runCatching { rt.dispatch(PluginHost.ACTION_NOTE_SAVED, payload) } }
+        if (created) notesOverlay?.note("Saved: ${n.title}", "note")
     }
 
     // ---------------------------------------------------------------- settings
@@ -312,7 +324,6 @@ class AppModule(private val context: Context, private val scope: CoroutineScope,
         runCatching { context.assets.open(TRIGGERS_ASSET).bufferedReader().use { it.readText() } }.getOrNull()?.let { NotesCodec.triggers(it) } ?: NoteTriggers.DEFAULTS
 
     private fun parseObject(s: String?): JsonObject? = s?.let { runCatching { json.parseToJsonElement(it) as? JsonObject }.getOrNull() }
-    private fun str(o: JsonObject, k: String): String = (o[k] as? JsonPrimitive)?.takeIf { it.isString }?.content.orEmpty()
 
     companion object {
         const val TRIGGERS_ASSET = "axnotes/triggers.json"

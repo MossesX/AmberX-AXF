@@ -2,18 +2,23 @@ package ai.amberx.axf.axnotes.data
 
 import ai.amberx.axf.axnotes.model.Categories
 import ai.amberx.axf.axnotes.model.Category
+import ai.amberx.axf.axnotes.model.HostRequests
 import ai.amberx.axf.axnotes.model.Ids
 import ai.amberx.axf.axnotes.model.ListKind
 import ai.amberx.axf.axnotes.model.ListRules
 import ai.amberx.axf.axnotes.model.ListSort
 import ai.amberx.axf.axnotes.model.Note
 import ai.amberx.axf.axnotes.model.NoteList
+import ai.amberx.axf.axnotes.model.NoteSaveRequest
 import ai.amberx.axf.axnotes.model.NoteSource
 import ai.amberx.axf.axnotes.model.NotesCodec
 import ai.amberx.axf.axnotes.model.Priority
 import ai.amberx.axf.axnotes.model.SmartFilter
+import ai.amberx.axf.axnotes.model.SyncOutcome
 import ai.amberx.axf.axnotes.model.Text
+import ai.amberx.axf.axnotes.model.TodoAddRequest
 import ai.amberx.axf.axnotes.model.TodoItem
+import ai.amberx.axf.axnotes.model.TodoSyncRequest
 import ai.amberx.axf.data.JsonDocumentStore
 import ai.amberx.axf.data.OfflineFirstRepository
 import ai.amberx.axf.data.OutboxEntry
@@ -66,8 +71,11 @@ class NotesStore(
     val pending: StateFlow<Int> = _pending.asStateFlow()
     private val _syncNote = MutableStateFlow<String?>(null)
     val syncNote: StateFlow<String?> = _syncNote.asStateFlow()
-    /** Called after every new note (the app announces it to plugins as `axnotes.notes.saved`). */
-    @Volatile var onCreated: ((Note) -> Unit)? = null
+    /**
+     * Called after every new note and every edit (created = true for a new one); the app announces it to plugins as
+     * `axnotes.notes.saved`. Internal bookkeeping (a deleted list leaving a note) passes `announce = false`.
+     */
+    @Volatile var onSaved: ((Note, Boolean) -> Unit)? = null
 
     fun load() {
         scope.launch(Dispatchers.IO) {
@@ -103,14 +111,30 @@ class NotesStore(
         val n = Note(Ids.next("note", now), title?.takeIf { it.isNotBlank() } ?: Text.titleFrom(text), text.trim(), cat, cleanTags(tags), now, now,
             listIds.filter { id -> id == INBOX || _lists.value.any { it.id == id && it.kind == ListKind.NOTES } }, source = source, priority = priority)
         saveNote(n, touch = false)
-        runCatching { onCreated?.invoke(n) }
         return n
     }
 
-    fun saveNote(n: Note, touch: Boolean = true) {
+    fun saveNote(n: Note, touch: Boolean = true, announce: Boolean = true) {
         val saved = if (touch) n.copy(updatedAt = clock(), tags = cleanTags(n.tags)) else n
+        val created = _notes.value.none { it.id == saved.id }
         _notes.update { l -> l.filterNot { it.id == saved.id } + saved }
         write(notesRepo, saved.id, NotesCodec.noteJson(saved))
+        if (announce) runCatching { onSaved?.invoke(saved, created) }
+    }
+
+    /**
+     * A plugin's `axnotes.notes.save`: with an id that exists → update it, with an unknown id → a new note with that id,
+     * without → a new note (in the Inbox). Category by name (created when missing), `fileInto` = note lists by id or name.
+     */
+    fun saveFromHost(r: NoteSaveRequest): Note? {
+        val existing = r.id?.let { note(it) }
+        val now = clock()
+        val cat = r.category?.let { if (it.isBlank()) "" else ensureCategory(it).id }
+        val into = HostRequests.resolveLists(r.fileInto, _lists.value)
+        val inbox = if (_lists.value.any { it.id == INBOX } || _lists.value.isEmpty()) listOf(INBOX) else emptyList()
+        val n = HostRequests.applySave(existing, r, cat, into, now, Ids.next("note", now), inbox) ?: return null
+        saveNote(n, touch = false)
+        return n
     }
 
     fun deleteNote(id: String) {
@@ -138,8 +162,7 @@ class NotesStore(
         if (listId in n.listIds) saveNote(n.copy(listIds = n.listIds - listId))
     }
 
-    private fun cleanTags(tags: List<String>): List<String> =
-        tags.map { it.trim().removePrefix("#").trim() }.filter { it.isNotEmpty() }.distinctBy { Text.normalize(it) }.take(30)
+    private fun cleanTags(tags: List<String>): List<String> = HostRequests.cleanTags(tags)
 
     // ---------------------------------------------------------------- categories (shared by notes and to-dos)
 
@@ -181,7 +204,7 @@ class NotesStore(
     fun deleteList(id: String) {
         _lists.update { l -> l.filterNot { it.id == id } }
         remove(listsRepo, id)
-        for (n in _notes.value.filter { id in it.listIds }) saveNote(n.copy(listIds = n.listIds - id))
+        for (n in _notes.value.filter { id in it.listIds }) saveNote(n.copy(listIds = n.listIds - id), announce = false)
     }
 
     fun setSort(listId: String, sort: ListSort, descending: Boolean) {
@@ -197,11 +220,12 @@ class NotesStore(
 
     // ---------------------------------------------------------------- to-dos
 
-    fun addTodo(listId: String, text: String, dueAt: Long? = null, priority: Priority = Priority.NONE, categoryName: String? = null): TodoItem? {
+    fun addTodo(listId: String, text: String, dueAt: Long? = null, priority: Priority = Priority.NONE, categoryName: String? = null, noteIds: List<String> = emptyList()): TodoItem? {
         val l = list(listId)?.takeIf { it.kind == ListKind.TODO } ?: return null
         val now = clock()
         val cat = categoryName?.takeIf { it.isNotBlank() }?.let { ensureCategory(it).id } ?: ""
-        val item = TodoItem(Ids.next("todo", now), text.trim().replaceFirstChar { it.uppercase() }, dueAt = dueAt, priority = priority, category = cat, createdAt = now, updatedAt = now)
+        val item = TodoItem(Ids.next("todo", now), text.trim().replaceFirstChar { it.uppercase() }, dueAt = dueAt, priority = priority, noteIds = noteIds,
+            category = cat, createdAt = now, updatedAt = now)
         saveList(l.copy(items = l.items + item, order = if (l.sort == ListSort.MANUAL) l.order + item.id else l.order))
         return item
     }
@@ -232,6 +256,31 @@ class NotesStore(
     fun detachNote(listId: String, itemId: String, noteId: String) {
         val i = list(listId)?.items?.firstOrNull { it.id == itemId } ?: return
         if (noteId in i.noteIds) updateTodo(listId, i.copy(noteIds = i.noteIds - noteId))
+    }
+
+    /**
+     * A plugin's `axnotes.todos.add`: onto the to-do list named `list` (made when missing and `createList`), skipped
+     * when an open item with the same text is already there. Null when nothing was added.
+     */
+    fun addTodoFromHost(r: TodoAddRequest): TodoItem? {
+        val l = HostRequests.findTodoList(r.list, _lists.value) ?: (if (r.createList) createList(r.list, ListKind.TODO) else return null)
+        if (HostRequests.hasOpen(l, r.text)) return null
+        val notes = listOfNotNull(r.noteId?.takeIf { note(it) != null })
+        return addTodo(l.id, r.text, categoryName = r.category, noteIds = notes)
+    }
+
+    /**
+     * A plugin's `axnotes.todos.sync` on its generated to-do list (made with the given id and name when missing). Only
+     * items the same owner made are changed. Null when the id belongs to a list that isn't a to-do list.
+     */
+    fun syncTodos(r: TodoSyncRequest): SyncOutcome? {
+        val now = clock()
+        val l = list(r.listId) ?: NoteList(r.listId, r.listName, ListKind.TODO, ListSort.PRIORITY, createdAt = now, updatedAt = now)
+        if (l.kind != ListKind.TODO) return null
+        val out = HostRequests.applySync(l.items, r, now)
+        val isNew = list(r.listId) == null
+        if (out.changed || isNew) saveList(l.copy(items = out.items, order = if (l.sort == ListSort.MANUAL) l.order + out.added else l.order))
+        return out
     }
 
     /** Recategorize a to-do item by hand (same shared categories as notes). */
