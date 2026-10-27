@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T21:19:31.352Z",
+ "updatedAt": "2026-10-27T21:22:48.603Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T21:19:31.351Z",
+   "updatedAt": "2026-10-27T21:22:48.602Z",
    "builtAt": "",
    "notes": [
     {
@@ -1700,6 +1700,10 @@
     {
      "text": "s15/s17/s18 done (110db1a, 015a03e, c486e96, b398bf3): plugins ai-chat, ai-build-bridge, ai-automations under apps/ax-notes/plugins/<id> with lifecycle.mjs + plugins.json loader contract. Event names for approval/finished-build to verify against axHub in s21.",
      "at": "2026-10-27T21:19:31.351Z"
+    },
+    {
+     "text": "s13 done 812f44e: app wired to 7 libs + generic PluginHost. Gaps: lib-triggers voiceBridge ignores registry-only triggers; lib-ai settings tab 'connections' missing on Android; PreferenceStore can't remove keys; dictate() stops the shared engine; AutomationsWorker needs a kernel worker contract; no lib-hub data client (sync off).",
+     "at": "2026-10-27T21:22:48.601Z"
     }
    ],
    "approvals": [
@@ -1931,8 +1935,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:22:48.539Z",
      "note": ""
     },
     {
