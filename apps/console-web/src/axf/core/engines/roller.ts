@@ -18,7 +18,7 @@ import { contrast, generateAnimated, generateIconPack, generateMark, hslToHex, s
 import { BRAND_SLOTS, BRAND_SLOT_MODES } from './brand-rules.mjs';
 import type { AssetEnvelope } from '../types';
 
-export type RollerAsset = AssetEnvelope<Record<string, unknown>> & { type: string };
+export type RollerAsset = Omit<AssetEnvelope<Record<string, unknown>>, 'type'> & { type: string };
 
 export interface RollerEnv {
   /** the app's id + name (brand name of the rolled branding) */
