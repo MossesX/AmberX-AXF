@@ -191,7 +191,7 @@ const I = {
   regular: ['spacing-regular', 'Regular spacing', 'grid', 'spacing:regular', null, 'assets.swap'],
   appearance: ['appearance', 'Appearance settings…', 'sliders', 'settings.open:appearance'],
   build: ['build', 'Build', 'hammer', 'run.build', 'Ctrl+B'], deploy: ['deploy', 'Deploy', 'rocket', 'run.deploy'],
-  devtools: ['devtools', 'Developer tools', 'code', 'dev.tools', 'F12'], console: ['console', 'Dev console', 'terminal', 'dev.console', 'Ctrl+`'],
+  console: ['console', 'Dev console', 'terminal', 'dev.console', 'Ctrl+`'],
   toolbar: ['toggle-toolbar', 'Show or hide the toolbar', 'menu', 'slot.hide:toolbar:toggle'],
   nav: ['toggle-nav', 'Show or hide navigation', 'list', 'slot.hide:nav-menu:toggle'],
   nextNav: ['next-nav', 'Next navigation menu', 'grid', 'swap:nav-menu:next', null, 'assets.swap'],
@@ -208,12 +208,110 @@ const CM = [
   { id: 'appearance-quick', name: 'Appearance Quick', tags: ['appearance', 'designer'], description: 'Restyle from anywhere: step colour, style, layout and design package, pick spacing, randomize or reset.', data: { variant: 'glass', showIcons: true, showShortcuts: true, targets: { default: items([I.pkg, I.color, I.style, I.layout, '-', I.tight, I.compact, I.regular, '-', I.random, I.reset, I.appearance]), 'asset-card': assetCard, 'nav-item': navItem } } },
   { id: 'touch-large', name: 'Touch Large', tags: ['touch', 'tablet'], description: 'Roomy rows for fingers, no shortcut hints, only the commands people reach for on a tablet.', data: { variant: 'roomy', showIcons: true, showShortcuts: false, targets: { default: items([I.copy, I.paste, '-', I.home, I.settings, '-', I.docs]), 'nav-item': items([I.open, I.home]) } } },
   { id: 'glass-flyout', name: 'Glass Flyout', tags: ['glass', 'modern'], description: 'Frosted glass flyout with icons only where they help: clipboard, look and settings.', data: { variant: 'glass', showIcons: true, showShortcuts: false, targets: { default: items([I.cut, I.copy, I.paste, '-', I.color, I.layout, '-', I.settings]), 'asset-card': assetCard } } },
-  { id: 'developer-tools', name: 'Developer Tools', tags: ['developer'], description: 'Build, deploy and inspect from a right-click, with the dev console and tools one step away.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.build, I.deploy, '-', I.console, I.devtools, '-', I.copy, I.paste, '-', I.keys, I.docs]), 'asset-card': assetCard, 'nav-item': navItem } } },
+  { id: 'developer-tools', name: 'Developer Tools', tags: ['developer'], description: 'Build, deploy and inspect from a right-click, with the dev console one step away.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.build, I.deploy, '-', I.console, '-', I.copy, I.paste, '-', I.keys, I.docs]), 'asset-card': assetCard, 'nav-item': navItem } } },
   { id: 'reader-minimal', name: 'Reader Minimal', tags: ['reading', 'minimal'], description: 'Copy, spacing and help: a quiet menu for reading apps that stays out of the way.', data: { variant: 'roomy', showIcons: false, showShortcuts: false, targets: { default: items([I.copy, '-', I.compact, I.regular, '-', I.docs]) } } },
   { id: 'asset-manager', name: 'Asset Manager', tags: ['designer', 'assets'], description: 'For asset browsers: use, inspect, copy and import assets, plus stepping through the look.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.import, '-', I.pkg, I.color, I.style, I.layout, '-', I.random, I.reset]), 'asset-card': items([I.activate, '-', I.json, I.copyJson, '-', I.import, I.pkg]) } } },
   { id: 'navigator', name: 'Navigator', tags: ['navigation'], description: 'Navigation first: open, go home, switch navigation menus and show or hide the bars.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.home, '-', I.nav, I.toolbar, I.nextNav, I.layout, '-', I.settings]), 'nav-item': navItem } } },
   { id: 'locked-down', name: 'Locked Down', tags: ['kiosk', 'secure'], description: 'Kiosk and shared-screen menu: copy and help only, and no plugin or everywhere items join it.', data: { variant: 'roomy', showIcons: true, showShortcuts: false, contributions: false, targets: { default: items([I.copy, '-', I.about]) } } },
 ];
+
+/* ───────────────────────── seeds: toolbars (s17, s18) ───────────────────────── */
+
+const tbItem = (x, extra = {}) => { const [id, label, icon, action, , requires] = x; return { id, icon, label, action, ...(requires ? { requires } : {}), ...extra }; };
+const T = {
+  ...Object.fromEntries(Object.entries(I).map(([k, v]) => [k, tbItem(v)])),
+  new: tbItem(['new', 'New', 'plus', 'file.new']), openFile: tbItem(['open-file', 'Open', 'folder', 'file.open']),
+  alerts: tbItem(['alerts', 'Alerts', 'bell', 'alerts.open'], { badge: 'alerts.unread' }),
+  navOn: tbItem(I.nav, { checked: 'slot:nav-menu' }), bannerOn: tbItem(['toggle-banner', 'Show or hide the banner', 'monitor', 'slot.hide:banner:toggle'], { checked: 'slot:banner' }),
+  menubarOn: tbItem(['toggle-menubar', 'Show or hide the menu bar', 'list', 'slot.hide:app-menu:toggle'], { checked: 'slot:app-menu' }),
+};
+const G = (id, items, more = {}) => ({ id, items, ...more });
+const W = (type, id, at, order) => ({ type, id, at, ...(order != null ? { order } : {}) });
+/** variant, align, groups, options (search, widgets, density, surface, divider, collapsible) + docs (providers, counters). */
+const TB = (variant, align, groups, o = {}) => ({
+  variant, align, showSearch: !!o.search, ...(o.search ? { search: o.search } : {}), groups,
+  ...(o.widgets ? { widgets: o.widgets } : {}), ...(o.density ? { density: o.density } : {}), ...(o.surface ? { surface: o.surface } : {}),
+  ...(o.divider === false ? { divider: false } : {}), ...(o.collapsible ? { collapsible: true } : {}),
+});
+const live = (placeholder, maxResults = 12, kinds) => ({ live: true, placeholder, maxResults, ...(kinds ? { kinds } : {}) });
+const TOOLBAR = [
+  // s17
+  { id: 'enterprise-command', name: 'Enterprise Command', use: 'Line-of-business desktops', tags: ['enterprise', 'desktop'], description: 'File, edit and look commands with labels, a live search and the account and connection status at the end.', data: TB('icons-labels', 'start', [G('file', [T.new, T.openFile, T.save, T.exp]), G('edit', [T.undo, T.redo]), G('app', [T.alerts, T.settings])], { search: live('Search…  (Ctrl K)'), widgets: [W('status', 'online', 'end', 10), W('avatar', 'account', 'end', 20)], surface: 'raised', collapsible: true }) },
+  { id: 'live-pages', name: 'Live Pages', use: 'Apps with many pages', tags: ['live', 'navigation'], description: 'Every page of the app as a button, straight from the views provider, so new pages appear by themselves.', data: TB('icons', 'start', [G('pages', [T.home], { provider: 'views', max: 10, label: 'Pages' })], { search: live('Find a page…', 10, ['view']) }) },
+  { id: 'navigator-strip', name: 'Navigator Strip', use: 'Replacing the side navigation', tags: ['live', 'navigation'], description: 'The active navigation menu drawn as a labelled strip; swapping the nav menu changes the strip too.', data: TB('labels', 'start', [G('nav', [], { provider: 'nav', max: 12, label: 'Navigation' })], { density: 'compact', divider: false }) },
+  { id: 'window-switcher', name: 'Window Switcher', use: 'Multi-window desktops', tags: ['live', 'windows'], description: 'One button per open floating window to bring it back, beside the window and layout commands.', data: TB('icons-labels', 'start', [G('windows', [], { provider: 'windows', max: 8, label: 'Open windows' }), G('layout', [T.layout, T.navOn])]) },
+  { id: 'chrome-toggles', name: 'Chrome Toggles', use: 'Focus and presentation modes', tags: ['live', 'appearance'], description: 'Pressed-state toggles for every bar and menu (chrome provider), plus the spacing choices.', data: TB('icons', 'center', [G('chrome', [], { provider: 'chrome', max: 8, label: 'Bars and menus' }), G('spacing', [T.tight, T.compact, T.regular])], { surface: 'glass' }) },
+  { id: 'settings-jump', name: 'Settings Jump', use: 'Settings and admin pages', tags: ['live', 'settings'], description: 'A tab for every settings page, from the settings provider; plugin settings join as they install.', data: TB('labels', 'start', [G('settings', [], { provider: 'settings', max: 10, label: 'Settings pages' })], { search: live('Search settings…', 12, ['setting', 'settings-tab']), density: 'compact' }) },
+  { id: 'dialog-launcher', name: 'Dialog Launcher', use: 'Tool-heavy apps', tags: ['live', 'dialogs'], description: 'Every dialog the app and its plugins register, one tap away, with a search limited to dialogs and actions.', data: TB('icons-labels', 'start', [G('dialogs', [], { provider: 'dialogs', max: 8, label: 'Dialogs' })], { search: live('Open a dialog…', 10, ['dialog', 'action']) }) },
+  { id: 'developer-ops', name: 'Developer Ops', use: 'Developer consoles', tags: ['developer'], description: 'Build, deploy and the dev console with the alerts badge, a build progress bar, AI status and a 24 h clock.', data: TB('icons', 'start', [G('run', [T.build, T.deploy]), G('tools', [T.console, T.alerts])], { widgets: [W('progress', 'build', 'end', 10), W('status', 'ai', 'end', 20), W('clock', 'digital-24h', 'end', 30)], density: 'compact' }) },
+  { id: 'ops-monitor', name: 'Ops Monitor', use: 'Monitoring dashboards', tags: ['ops', 'widgets'], description: 'A status board: connection, unread alerts, build progress and the clock, with settings and help at the start.', data: TB('icons', 'spread', [G('app', [T.settings, T.docs])], { widgets: [W('status', 'online', 'end', 10), W('counter', 'alerts', 'end', 20), W('progress', 'build', 'end', 30), W('clock', 'digital-24h', 'end', 40)], surface: 'raised' }) },
+  { id: 'editor-classic', name: 'Editor Classic', use: 'Document and form editors', tags: ['editing'], description: 'The classic editing row: new, open, save, export, undo, redo and the clipboard.', data: TB('icons', 'start', [G('file', [T.new, T.openFile, T.save, T.exp]), G('history', [T.undo, T.redo]), G('clipboard', [T.cut, T.copy, T.paste, T.del])], { density: 'compact' }) },
+  { id: 'appearance-studio', name: 'Appearance Studio', use: 'Theme and brand work', tags: ['appearance', 'designer'], description: 'Step design packages and every theme, roll or reset the look, with the day and night switch at the end.', data: TB('icons-labels', 'start', [G('package', [T.pkg]), G('themes', [T.color, T.style, T.layout]), G('roll', [T.random, T.reset, T.appearance])], { widgets: [W('theme-switch', 'day-night', 'end', 10)], surface: 'glass', collapsible: true }) },
+  { id: 'minimal-glass', name: 'Minimal Glass', use: 'Consumer and marketing apps', tags: ['glass', 'minimal'], description: 'A centred frosted strip with search, alerts and settings only.', data: TB('icons', 'center', [G('app', [T.alerts, T.settings])], { search: live('Search', 8), surface: 'glass', divider: false }) },
+  { id: 'touch-dock', name: 'Touch Dock', use: 'Tablets and phones', tags: ['touch'], description: 'Roomy labelled buttons spread across the width, sized for thumbs: home, pages, alerts and settings.', data: TB('icons-labels', 'spread', [G('go', [T.home]), G('pages', [], { provider: 'views', max: 3, label: 'Pages' }), G('app', [T.alerts, T.settings])], { density: 'roomy', divider: false }) },
+  // s18
+  { id: 'reader-bar', name: 'Reader Bar', use: 'Reading and documentation', tags: ['reading', 'minimal'], description: 'Quiet labels for reading apps: spacing choices and the documentation link.', data: TB('labels', 'spread', [G('spacing', [T.compact, T.regular]), G('help', [T.docs])], { density: 'compact', divider: false }) },
+  { id: 'portal-header', name: 'Portal Header', use: 'Portals and admin sites', tags: ['portal', 'brand', 'live'], description: 'Wordmark at the start, the navigation as labels, and the account avatar at the end.', data: TB('labels', 'start', [G('nav', [], { provider: 'nav', max: 6, label: 'Navigation' })], { widgets: [W('logo', 'wordmark', 'start', 0), W('spacer', 'push', 'end', 0), W('avatar', 'account', 'end', 10)], surface: 'raised', divider: false }) },
+  { id: 'approvals-desk', name: 'Approvals Desk', use: 'Review and approval queues', tags: ['review', 'widgets'], description: 'Waiting approvals and unread alerts as counters, with undo, redo and save for the reviewer.', data: TB('icons-labels', 'start', [G('review', [T.undo, T.redo, T.save]), G('inbox', [T.alerts])], { widgets: [W('counter', 'approvals', 'end', 10), W('counter', 'alerts', 'end', 20)] }) },
+  { id: 'data-grid-tools', name: 'Data Grid Tools', use: 'Tables and grids', tags: ['data', 'compact'], description: 'Flat, dense tools for grids: new row, copy, delete, export, and the pages provider for quick jumps.', data: TB('icons', 'start', [G('rows', [T.new, T.copy, T.del, T.exp]), G('pages', [], { provider: 'views', max: 6, label: 'Pages' })], { density: 'compact', surface: 'flat' }) },
+  { id: 'brand-bar', name: 'Brand Bar', use: 'Branded app frames', tags: ['brand'], description: 'Logo mark, the app version label and the day and night switch around a centred search.', data: TB('icons', 'center', [], { search: live('Search…', 10), widgets: [W('logo', 'mark', 'start', 0), W('label', 'version', 'start', 10), W('theme-switch', 'day-night', 'end', 10)], surface: 'raised', divider: false }) },
+  { id: 'kiosk-lite', name: 'Kiosk Lite', use: 'Kiosks and wall displays', tags: ['kiosk', 'minimal'], description: 'A clock and a single help button; nothing that changes the app.', data: TB('icons', 'spread', [G('help', [T.docs])], { widgets: [W('clock', 'digital-12h', 'start', 0)], density: 'roomy', divider: false }) },
+  { id: 'search-first', name: 'Search First', use: 'Command-palette workflows', tags: ['search'], description: 'A wide search-bar widget up front that finds anything, with the chrome toggles beside it.', data: TB('icons', 'start', [G('chrome', [], { provider: 'chrome', max: 4, label: 'Bars and menus' })], { widgets: [W('search-bar', 'everything', 'start', 0)] }) },
+  { id: 'quick-create', name: 'Quick Create', use: 'Creation-first apps', tags: ['live', 'create'], description: 'New and open, followed by the first four dialogs the app registers (wizards, importers…).', data: TB('icons-labels', 'start', [G('file', [T.new, T.openFile]), G('dialogs', [], { provider: 'dialogs', max: 4, label: 'Create' })]) },
+  { id: 'status-strip', name: 'Status Strip', use: 'A status bar on top', tags: ['widgets', 'status'], description: 'Widgets only: AI and connection status, build progress, unread alerts and the clock.', data: TB('icons', 'spread', [], { widgets: [W('status', 'ai', 'start', 0), W('status', 'online', 'start', 10), W('progress', 'build', 'end', 10), W('counter', 'alerts', 'end', 20), W('clock', 'digital-24h', 'end', 30)], density: 'compact', surface: 'flat' }) },
+  { id: 'power-user', name: 'Power User', use: 'Experts who want everything', tags: ['dense', 'live'], description: 'Eleven icon commands, the pages provider and the bar toggles, folding away when not needed.', data: TB('icons', 'start', [G('file', [T.new, T.openFile, T.save]), G('edit', [T.undo, T.redo, T.cut, T.copy, T.paste]), G('app', [T.alerts, T.settings, T.keys]), G('pages', [], { provider: 'views', max: 6, label: 'Pages' }), G('chrome', [], { provider: 'chrome', max: 4, label: 'Bars' })], { density: 'compact', collapsible: true }) },
+  { id: 'review-flow', name: 'Review Flow', use: 'Side-by-side review', tags: ['review', 'live'], description: 'Undo, redo and save with the open windows provider so reviewers jump between compared items.', data: TB('icons-labels', 'start', [G('history', [T.undo, T.redo, T.save]), G('windows', [], { provider: 'windows', max: 6, label: 'Open windows' }), G('inbox', [T.alerts])]) },
+  { id: 'amberx-signature', name: 'AmberX Signature', use: 'The AmberX brand frame', tags: ['brand', 'amber', 'glass'], description: 'The AmberX house toolbar: wordmark, live pages, a live search, the day and night switch and the account, on glass.', data: TB('icons', 'start', [G('pages', [T.home], { provider: 'views', max: 6, label: 'Pages' }), G('app', [T.alerts, T.settings])], { search: live('Search AmberX…  (Ctrl K)'), widgets: [W('logo', 'wordmark', 'start', 0), W('theme-switch', 'day-night', 'end', 10), W('avatar', 'account', 'end', 20)], surface: 'glass', collapsible: true }) },
+];
+
+function toolbarDoc() {
+  const PROVIDERS = { views: 'every page the app registers (`nav:<view>`)', nav: 'the active navigation menu’s items', settings: 'every settings tab, plugins’ included (`settings.open:<tab>`)', windows: 'every open floating window (`windows.restore:<id>`)', dialogs: 'every registered dialog (`dialog:<id>`)', chrome: 'show/hide toggles for every bar and menu, drawn pressed while shown' };
+  const lines = [
+    '# Toolbar library', '',
+    'Generated by `node framework/cli/asset-library.mjs` from its toolbar seeds — edit the seeds, not this file',
+    '(`--check` in CI fails when they drift). 25 starter toolbars in `framework/assets/toolbar/`; any app picks one in',
+    'Settings → Appearance → Toolbar, a design package or an interface.', '',
+    '## What makes a toolbar dynamic', '',
+    '- **Live groups** — a group with `provider: "<id>"` gets its buttons from the application menu’s provider registry',
+    '  (`rt.registerAppMenuProvider`), after any fixed items, capped by `max` (1–24, default 8) and reloaded shortly',
+    '  after the app’s state changes. Built-in providers:', '',
+    ...Object.entries(PROVIDERS).map(([k, v]) => `  - \`${k}\` — ${v}`), '',
+    '  Apps and plugins register more (the console adds `console.pending`, `console.plugins`, …); a group whose provider',
+    '  isn’t registered and has no fixed items isn’t drawn.',
+    '- **Badges** — `items[].badge: "<counter>"` shows a runtime counter (`rt.setBadge`) on the button, hidden at 0.',
+    '- **Toggles** — `items[].checked: "setting:<key>" | "counter:<name>" | "slot:<type>" | "hidden:<type>"` draws the',
+    '  button pressed (`aria-pressed`) while the binding is on (same bindings as the application menu).',
+    '- **Widgets** — `widgets: [{type, id, at: start|end, order}]` places clock, status, counter, progress, logo,',
+    '  label, avatar, theme switch, spacer, divider, search bar … widgets; status/counter/progress follow runtime counters.',
+    '- **Live search** — `search: { live: true, placeholder, maxResults, kinds }` finds pages, actions, settings,',
+    '  dialogs, assets, windows and words as you type (Ctrl/Cmd+K or /).',
+    '- **Look** — `density` compact/regular/roomy, `surface` flat/raised/glass, `divider`, `collapsible` (fold, per device).', '',
+    'Every button is gated by UAC (`requires`), and a host app (embed@1) can take or lock an action. Android twin of',
+    'live groups and toggles: deferred (port on hold, `framework/spec/PORTING.md`).', '',
+    '## The toolbars', '',
+    '| Toolbar | For | Look | Live groups | Counters & toggles | Widgets |', '| --- | --- | --- | --- | --- | --- |',
+  ];
+  for (const s of TOOLBAR) {
+    const d = s.data;
+    const provs = d.groups.filter((g) => g.provider).map((g) => `\`${g.provider}\` ×${g.max ?? 8}`).join(', ') || '—';
+    const items = d.groups.flatMap((g) => g.items);
+    const ct = [...new Set(items.flatMap((it) => [it.badge && `badge \`${it.badge}\``, it.checked && `\`${it.checked}\``]).filter(Boolean))].join(', ') || '—';
+    const wid = (d.widgets ?? []).map((w) => `${w.type}/${w.id} (${w.at})`).join(', ') || (d.search?.live ? 'live search' : '—');
+    const look = [d.variant, d.align, d.density ?? 'regular', d.surface ?? 'flat', d.collapsible ? 'folds' : ''].filter(Boolean).join(' · ');
+    lines.push(`| **${s.name}** \`${s.id}\` | ${s.use} | ${look} | ${provs} | ${ct} | ${wid}${d.search?.live && d.widgets ? ', live search' : ''} |`);
+  }
+  lines.push('', '## Each toolbar', '');
+  for (const s of TOOLBAR) {
+    lines.push(`### ${s.name} (\`${s.id}\`)`, '', s.description, '');
+    for (const g of s.data.groups) {
+      const fixed = g.items.map((it) => `${it.label} (\`${it.action}\`${it.badge ? `, badge ${it.badge}` : ''}${it.checked ? `, ${it.checked}` : ''})`).join('; ');
+      lines.push(`- **${g.label ?? g.id}**: ${[fixed, g.provider ? `live \`${g.provider}\` up to ${g.max ?? 8}` : ''].filter(Boolean).join(' + ')}`);
+    }
+    if (!s.data.groups.length) lines.push('- No buttons: widgets only.');
+    lines.push('');
+  }
+  return lines.join('\n');
+}
 
 const env = (type, s, data, extra = {}) => ({
   $axf: 'asset@1', type, id: s.id, name: s.name, version: '1.0.0', description: s.description, author: AUTHOR,
@@ -225,6 +323,7 @@ const BUILD = {
   layout: () => LAYOUT.map((s) => env('layout', s, s.data)),
   'style-theme': () => STYLE.map((s) => env('style-theme', s, s.data)),
   'context-menu': () => CM.map((s) => env('context-menu', s, s.data)),
+  toolbar: () => TOOLBAR.map((s) => env('toolbar', s, s.data)),
 };
 
 /* ───────────────────────── runner ───────────────────────── */
@@ -248,6 +347,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (check) { if (!existsSync(file) || readFileSync(file, 'utf8') !== text) drift.push(`${a.type}/${a.id}`); continue; }
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, text);
+  }
+  // documents generated from the same seeds
+  const docs = types.includes('toolbar') ? [[join(ROOT, '..', 'spec', 'TOOLBARS.md'), toolbarDoc() + '\n']] : [];
+  for (const [file, text] of docs) {
+    if (check) { if (!existsSync(file) || readFileSync(file, 'utf8') !== text) drift.push(file.split('/').slice(-2).join('/')); }
+    else writeFileSync(file, text);
   }
   const counts = assets.reduce((m, a) => ({ ...m, [a.type]: (m[a.type] ?? 0) + 1 }), {});
   if (args.includes('--json')) console.log(JSON.stringify({ counts, drift }));

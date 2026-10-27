@@ -233,7 +233,11 @@
         "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
         "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
         "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
-        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)"
+        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
+        "groups[].provider": "string — live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
+        "groups[].max": "number 1–24, default 8 — cap on provider buttons",
+        "groups[].label": "string — group name for screen readers",
+        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)"
       },
       "hideable": true,
       "widgets": {

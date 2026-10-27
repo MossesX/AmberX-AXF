@@ -1,0 +1,93 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "appearance-studio",
+  "name": "Appearance Studio",
+  "version": "1.0.0",
+  "description": "Step design packages and every theme, roll or reset the look, with the day and night switch at the end.",
+  "author": "AmberX AXF",
+  "tags": [
+    "appearance",
+    "designer"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "package",
+        "items": [
+          {
+            "id": "next-package",
+            "icon": "package",
+            "label": "Next design package",
+            "action": "design.package:next",
+            "requires": "assets.swap"
+          }
+        ]
+      },
+      {
+        "id": "themes",
+        "items": [
+          {
+            "id": "next-color",
+            "icon": "palette",
+            "label": "Next colour theme",
+            "action": "swap:color-theme:next",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "next-style",
+            "icon": "type",
+            "label": "Next style theme",
+            "action": "swap:style-theme:next",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "next-layout",
+            "icon": "layout",
+            "label": "Next layout",
+            "action": "swap:layout:next",
+            "requires": "assets.swap"
+          }
+        ]
+      },
+      {
+        "id": "roll",
+        "items": [
+          {
+            "id": "random",
+            "icon": "shuffle",
+            "label": "Randomize the look",
+            "action": "assets.random",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "reset",
+            "icon": "refresh",
+            "label": "Reset the look",
+            "action": "assets.reset",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "appearance",
+            "icon": "sliders",
+            "label": "Appearance settings…",
+            "action": "settings.open:appearance"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "end",
+        "order": 10
+      }
+    ],
+    "surface": "glass",
+    "collapsible": true
+  }
+}

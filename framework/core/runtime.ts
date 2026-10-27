@@ -21,7 +21,7 @@ import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, typ
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
-import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
@@ -567,6 +567,17 @@ export class AxfRuntime {
     const items = await p.items();
     return compileProviderItems(items, this.appMenuEnv(), { id, max: p.max, moreAction: p.moreAction, moreLabel: p.moreLabel, ...opts });
   }
+
+  /**
+   * A toolbar group's live list (`groups[].provider`): the same providers the application menu uses, compiled the
+   * same way (gating, badges, check marks), capped at `max` (1–24, default 8) with the provider's More… entry.
+   */
+  loadToolbarProvider(id: string, max = 8): Promise<CompiledMenuItem[]> {
+    return this.loadAppMenuProvider(id, { max: Math.min(24, Math.max(1, Math.floor(max))) });
+  }
+
+  /** A toolbar item's `checked` binding (setting: / counter: / slot: / hidden:), null when it doesn't resolve. */
+  toolbarChecked(binding: string | undefined): boolean | null { return resolveChecked(binding, this.appMenuEnv()); }
 
   /** Contributed menu items with an action, for the search index (kind `menu`). */
   appMenuSearchEntries(): MenuSearchEntry[] {
@@ -1887,7 +1898,7 @@ export class AxfRuntime {
         if (!list.length) return;
         const cur = list.findIndex((p) => p.id === this.state.active[DESIGN_PACKAGE_TYPE as AssetType]);
         const step = id === 'random' ? 1 + Math.floor(Math.random() * Math.max(1, list.length - 1)) : id === 'next' ? 1 : -1;
-        id = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length].id;
+        id = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length]?.id ?? id;
       }
       this.applyDesignPackage(id);
     }, { label: 'Apply a design package (id, next, prev or random)', requires: 'assets.swap', params: true });

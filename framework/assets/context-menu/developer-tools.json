@@ -4,7 +4,7 @@
   "id": "developer-tools",
   "name": "Developer Tools",
   "version": "1.0.0",
-  "description": "Build, deploy and inspect from a right-click, with the dev console and tools one step away.",
+  "description": "Build, deploy and inspect from a right-click, with the dev console one step away.",
   "author": "AmberX AXF",
   "tags": [
     "developer"
@@ -38,13 +38,6 @@
           "icon": "terminal",
           "action": "dev.console",
           "shortcut": "Ctrl+`"
-        },
-        {
-          "id": "devtools",
-          "label": "Developer tools",
-          "icon": "code",
-          "action": "dev.tools",
-          "shortcut": "F12"
         },
         {
           "id": "s2",

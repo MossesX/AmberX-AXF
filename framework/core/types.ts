@@ -180,12 +180,26 @@ export interface ToolbarItem {
   requires?: string;
   /** name of a runtime counter to show as a badge on the button (e.g. `alerts.unread`); hidden at 0 */
   badge?: string;
+  /** toggle state, same bindings as app-menu `checked`: `setting:<key>` · `counter:<name>` · `slot:<type>` · `hidden:<type>`; drawn pressed when true */
+  checked?: string;
+}
+
+/** A toolbar group: fixed `items`, or a live list from a registered provider (`rt.registerAppMenuProvider`, the same registry the application menu uses). */
+export interface ToolbarGroup {
+  id: string;
+  items: ToolbarItem[];
+  /** live list id (built in: views, nav, toolbar, settings, windows, dialogs, chrome; apps and plugins add more); its items follow `items` */
+  provider?: string;
+  /** cap on provider items (default 8); the rest stay reachable from the provider's More… entry when it has one */
+  max?: number;
+  /** optional label for screen readers (and labels variants) */
+  label?: string;
 }
 
 export interface ToolbarData {
   variant: 'icons' | 'icons-labels' | 'labels';
   align: 'start' | 'center' | 'spread';
-  groups: { id: string; items: ToolbarItem[] }[];
+  groups: ToolbarGroup[];
   showSearch: boolean;
   window?: string;
   density?: ChromeDensity;
