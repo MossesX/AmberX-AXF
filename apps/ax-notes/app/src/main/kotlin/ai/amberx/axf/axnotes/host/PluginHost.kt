@@ -21,10 +21,11 @@ import kotlinx.serialization.json.JsonPrimitive
  *    is that plugin's sub-tab under Settings → Plugins), triggers in the kernel TriggerRegistry (the app's voice
  *    host matches them, context = the current route);
  *  - [MINI_SCREENS]: composables for the overlay's mini screen (one tab each);
- *  - host actions on the action bus: [ACTION_SAVE_NOTE] (payload `{title?, text, tags?, category?, source?}`) and
- *    [ACTION_NOTE_SAVED] (dispatched after every new note with the note as JSON; plugins watch it with a
- *    non-consuming interceptor), and free speech: when nothing matched and the current route `<r>` has an action
- *    `<r>.say`, the heard text goes there as `{text}` (e.g. ai-chat's chat mode).
+ *  - host actions on the action bus (payloads and rules: model/HostRequests.kt): [ACTION_SAVE_NOTE] (create or update,
+ *    category by name, `fileInto` lists, `codeLinks`), [ACTION_NOTE_SAVED] (dispatched after every new note and every
+ *    edit with the note JSON + `change`; plugins watch it with a non-consuming interceptor), [ACTION_ANNOUNCE],
+ *    [ACTION_ADD_TODO], [ACTION_SYNC_TODOS], [ACTION_DELETE_LIST]; and free speech: when nothing matched and the current
+ *    route `<r>` has an action `<r>.say`, the heard text goes there as `{text}` (e.g. ai-chat's chat mode).
  * A plugin keeps its device data under KV keys (and saved settings) starting with its `dataPrefix`; [purgeRemoved]
  * clears them for plugins that are no longer listed.
  */
@@ -86,6 +87,10 @@ class PluginHost(private val context: Context) {
         const val KEY_KNOWN: String = "axnotes.plugins.known"
         const val ACTION_SAVE_NOTE: String = "axnotes.notes.save"
         const val ACTION_NOTE_SAVED: String = "axnotes.notes.saved"
+        const val ACTION_ANNOUNCE: String = "axnotes.notes.announce"
+        const val ACTION_ADD_TODO: String = "axnotes.todos.add"
+        const val ACTION_SYNC_TODOS: String = "axnotes.todos.sync"
+        const val ACTION_DELETE_LIST: String = "axnotes.lists.delete"
         /** Free speech goes to `<route>.say` when the current route has one. */
         const val SAY_SUFFIX: String = ".say"
         /** A prefix shorter than this ("a.") is never purged: too likely to hit someone else's keys. */

@@ -74,8 +74,9 @@ fun EditorView() {
             val n = store.createNote(text, title, categoryName(), tagList, listIds = noteLists, priority = priority)
             selection.editNote(n.id)
         } else {
-            store.saveNote(note.copy(title = title.ifBlank { note.title }, text = text, tags = tagList, priority = priority, listIds = noteLists))
-            store.recategorize(note.id, categoryName())
+            // One save (one `axnotes.notes.saved`), category included: note-sorter learns from re-categorizations.
+            val cat = categoryName().let { if (it.isBlank()) "" else store.ensureCategory(it).id }
+            store.saveNote(note.copy(title = title.ifBlank { note.title }, text = text, tags = tagList, priority = priority, listIds = noteLists, category = cat))
         }
         runtime.navigate(Selection.ROUTE_HOME)
     }

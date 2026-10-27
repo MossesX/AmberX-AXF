@@ -96,6 +96,8 @@ data class TodoItem(
     val updatedAt: Long,
     val doneAt: Long? = null,
     val codeLinks: List<CodeLink> = emptyList(),
+    /** Who made this item: "" = the user; a plugin id for items a plugin keeps in sync (`axnotes.todos.sync`). */
+    val owner: String = "",
 )
 
 /** NOTES = notes picked by hand, TODO = to-do items, SMART = every note matching [NoteList.filter]. */
