@@ -11,6 +11,7 @@ import { HandoffList, HandoffRun } from './views/Handoff';
 import { HubAccount } from './views/HubAccount';
 import { Users } from './views/Users';
 import { Apps } from './views/Apps';
+import { PluginInstall, Plugins } from './views/Plugins';
 import { HubView } from './views/HubView';
 import { PLANNED, Planned } from './views/Planned';
 import { useHubBannerCount } from './axf/libs/hub/react';
@@ -31,6 +32,8 @@ const views: ViewMap = {
   'go-pass': { title: 'Go pass', icon: 'check', keywords: ['go', 'pass', 'session', 'rules', 'threads'], render: () => <GoPass /> },
   'approvals-log': { title: 'Approvals log', icon: 'list', keywords: ['log', 'history', 'auto-approve'], render: () => <ApprovalLog /> },
   apps: { title: 'Apps', icon: 'download', keywords: ['apk', 'download', 'catalog'], render: () => <Apps /> },
+  plugins: { title: 'Plugins', icon: 'package', keywords: ['plugin', 'install', 'catalog', 'amberx'], render: () => <Plugins /> },
+  'plugin-install': { title: 'Install a plugin', icon: 'package', render: () => <PluginInstall /> },
   users: { title: 'Users', icon: 'user', keywords: ['accounts', 'permissions', 'roles'], render: () => <Users /> },
   handoff: { title: 'Handoff', icon: 'package', keywords: ['claude', 'handoff', 'new account'], render: () => <HandoffList /> },
   'handoff-run': { title: 'Handoff run', icon: 'package', render: () => <HandoffRun /> },

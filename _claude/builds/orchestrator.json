@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T18:30:33.814Z",
+ "updatedAt": "2026-10-27T18:38:51.274Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1613,14 +1613,14 @@
    "title": "AmberX installs plugins from axHub (no console)",
    "category": "Apps",
    "detail": "Brett (Oct 27 2026): 'Build plugin for amberx app to install plugins from axhub', install through axHub, not the console. axHub reads the plugin catalog (/projects/_shared/_data/plugin-catalog) and commits a picked package into the app's plugins folder with the vault's GitHub token, only from a signed-in admin on the hub's own page (Origin + CSRF). axhub-web gets the confirm page; AmberX gets a 'Plugins from axHub' plugin that lists the catalog and opens that page. The site rebuilds in ~5 min. Hub core stays AXF-agnostic: kinds and target repo/folder are config.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "amberx-plugin-installer",
    "branch": "claude/amberx-plugin-installer",
    "pr": "",
    "createdAt": "2026-10-27T18:30:33.806Z",
-   "updatedAt": "2026-10-27T18:30:33.814Z",
+   "updatedAt": "2026-10-27T18:38:51.274Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -1640,8 +1640,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:38:51.182Z",
      "note": ""
     },
     {
@@ -1656,8 +1656,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:38:51.230Z",
      "note": ""
     },
     {
@@ -1672,8 +1672,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:38:51.274Z",
      "note": ""
     },
     {

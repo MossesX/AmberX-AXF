@@ -3,7 +3,7 @@
   "type": "nav-menu",
   "id": "axhub-web",
   "name": "AXHub navigation",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "AXHub: approvals, the hub, app downloads, users, handoff, your account, planned hub areas, settings.",
   "author": "AmberX AXF",
   "tags": [],
@@ -43,6 +43,12 @@
             "label": "Apps",
             "icon": "download",
             "view": "apps"
+          },
+          {
+            "id": "plugins",
+            "label": "Plugins",
+            "icon": "package",
+            "view": "plugins"
           }
         ]
       },

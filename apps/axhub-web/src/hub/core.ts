@@ -13,6 +13,9 @@ export const APPROVAL_ID_RE = /^[0-9a-f-]{36}$/;
 export const RUN_ID_RE = /^\d{8}-\d{6}-[a-z0-9]{4}$/;
 /** A view name the shell knows, for routes that aren't one of the hub's own. */
 const VIEW_RE = /^[a-z][a-z0-9-]{0,40}$/;
+/** Plugin kinds and folders as the plugin catalog writes them (axHub decision #101). */
+export const PLUGIN_KIND_RE = /^[a-z][a-z0-9-]{0,31}$/;
+export const PLUGIN_FOLDER_RE = /^[a-z0-9][a-z0-9-]{1,47}$/;
 /** Grid filters the hub knows (`APPROVAL_FILTERS` there). */
 export const APPROVAL_FILTERS = ['all', 'pending', 'postponed', 'approved', 'declined', 'ignored', 'revoked', 'used', 'expired'] as const;
 
@@ -38,6 +41,14 @@ export function parseRoute(hash: string): Route {
   }
   if (a === 'approvals' && b === 'log' && parts.length === 2) return { view: 'approvals-log', params: {} };
   if (a === 'approvals' && b && APPROVAL_ID_RE.test(b) && parts.length === 2) return { view: 'approval', params: { id: b } };
+  if (a === 'plugins' && !b) {
+    const kind = query.get('kind') ?? '';
+    return { view: 'plugins', params: PLUGIN_KIND_RE.test(kind) ? { kind } : {} };
+  }
+  if (a === 'plugins' && b === 'install' && parts.length === 4 && PLUGIN_KIND_RE.test(parts[2] ?? '') && PLUGIN_FOLDER_RE.test(parts[3] ?? '')) {
+    const version = query.get('version') ?? '';
+    return { view: 'plugin-install', params: { kind: parts[2]!, folder: parts[3]!, ...(/^\d{1,6}\.\d{1,6}\.\d{1,6}([-+][0-9A-Za-z.-]{1,40})?$/.test(version) ? { version } : {}) } };
+  }
   if (a === 'handoff' && !b) return { view: 'handoff', params: {} };
   if (a === 'handoff' && b && RUN_ID_RE.test(b) && parts.length === 2) {
     const file = query.get('file') ?? '';
@@ -56,6 +67,11 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
       return '#/approvals/log';
     case 'approval':
       return APPROVAL_ID_RE.test(params.id ?? '') ? `#/approvals/${params.id}` : '#/approvals';
+    case 'plugins':
+      return PLUGIN_KIND_RE.test(params.kind ?? '') ? `#/plugins?kind=${params.kind}` : '#/plugins';
+    case 'plugin-install':
+      if (!PLUGIN_KIND_RE.test(params.kind ?? '') || !PLUGIN_FOLDER_RE.test(params.folder ?? '')) return '#/plugins';
+      return `#/plugins/install/${params.kind}/${params.folder}${params.version ? `?version=${encodeURIComponent(params.version)}` : ''}`;
     case 'handoff-run':
       if (!RUN_ID_RE.test(params.id ?? '')) return '#/handoff';
       return params.file && safeFilePath(params.file) ? `#/handoff/${params.id}?file=${encodeURIComponent(params.file)}` : `#/handoff/${params.id}`;

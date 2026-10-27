@@ -160,6 +160,25 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     const row = readText(new URL('./src/views/Approvals.tsx', import.meta.url), 'utf8');
     ok(/title=\{item\.title\}/.test(row), 'a collapsed row leads with what is being approved');
   }
+  // Plugin installs from the catalog (axHub decision #101)
+  eq(parseRoute('#/plugins'), { view: 'plugins', params: {} }, '#/plugins opens the plugin catalog');
+  eq(parseRoute('#/plugins?kind=amberx'), { view: 'plugins', params: { kind: 'amberx' } }, 'the catalog keeps a kind filter');
+  eq(parseRoute('#/plugins?kind=Bad Kind'), { view: 'plugins', params: {} }, 'a bad kind is dropped');
+  eq(parseRoute('#/plugins/install/amberx/notes'), { view: 'plugin-install', params: { kind: 'amberx', folder: 'notes' } }, 'an app opens the confirm page for one plugin');
+  eq(parseRoute('#/plugins/install/amberx/notes?version=1.2.0'), { view: 'plugin-install', params: { kind: 'amberx', folder: 'notes', version: '1.2.0' } }, 'a version is kept');
+  eq(parseRoute('#/plugins/install/amberx/notes?version=../x'), { view: 'plugin-install', params: { kind: 'amberx', folder: 'notes' } }, 'a bad version is dropped');
+  eq(parseRoute('#/plugins/install/amberx/..%2Fetc'), { view: 'home', params: {} }, 'a folder that leaves is never a route');
+  eq(parseRoute('#/plugins/install/amberx'), { view: 'home', params: {} }, 'an incomplete install link is home');
+  eq(routeHash('plugin-install', { kind: 'amberx', folder: 'notes' }), '#/plugins/install/amberx/notes', 'the confirm page round-trips');
+  eq(routeHash('plugin-install', { kind: 'amberx', folder: '../x' }), '#/plugins', 'a bad folder never makes a link');
+  eq(routeHash('plugins', { kind: 'amberx' }), '#/plugins?kind=amberx', 'the filtered catalog round-trips');
+  ok(readText(new URL('./src/assets/nav-menu/axhub-web.json', import.meta.url), 'utf8').includes('"view": "plugins"'), 'the nav menu reaches the plugin catalog');
+  {
+    const pg = readText(new URL('./src/views/Plugins.tsx', import.meta.url), 'utf8');
+    ok(pg.includes("hubPost<{ ok: boolean; result: InstallResult }>(`/auth/api/plugins/${route}`"), 'installs go through the hub JSON API (session + CSRF)');
+    ok(!/token|Bearer/i.test(pg.replace(/Nothing here holds a token/, '')), 'the page holds no token');
+    ok(pg.includes('confirm !== folder'), 'uninstall needs the folder name typed');
+  }
   eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
   eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');
   eq(parseRoute('#/approvals?status=all'), { view: 'home', params: {} }, '"all" is no filter');
