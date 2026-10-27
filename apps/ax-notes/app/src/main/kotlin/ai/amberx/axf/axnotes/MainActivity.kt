@@ -16,7 +16,13 @@ class MainActivity : AxfActivity() {
     @Composable
     override fun Content() {
         AppShell(
-            views = mapOf("home" to { HomeView() }, "plugin-manager" to { PluginManagerScreen() }),
+            views = mapOf(
+                Selection.ROUTE_HOME to { HomeView() },
+                Selection.ROUTE_EDITOR to { EditorView() },
+                Selection.ROUTE_CAPTURE to { CaptureView() },
+                "todos" to { TodosView() },
+                "plugin-manager" to { PluginManagerScreen() },
+            ),
             viewTitles = mapOf("plugin-manager" to "Plugin Manager"),
         )
     }

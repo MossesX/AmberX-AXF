@@ -2,16 +2,16 @@
   "$axf": "asset@1",
   "type": "nav-menu",
   "id": "notes-nav",
-  "name": "Notes & Todo navigation",
+  "name": "AX Notes navigation",
   "version": "0.1.0",
-  "description": "Generated from the notes boilerplate.",
+  "description": "Notes, Speak (voice capture), Lists, Settings.",
   "author": "AmberX AXF build engine",
   "tags": [
     "boilerplate"
   ],
   "data": {
     "style": "list",
-    "header": "Notes & Todo",
+    "header": "AX Notes",
     "sections": [
       {
         "label": null,
@@ -19,14 +19,14 @@
           {
             "id": "home",
             "label": "Notes",
-            "icon": "list",
+            "icon": "edit",
             "view": "home"
           },
           {
-            "id": "editor",
-            "label": "Editor",
-            "icon": "edit",
-            "view": "editor"
+            "id": "capture",
+            "label": "Speak",
+            "icon": "mic",
+            "view": "capture"
           },
           {
             "id": "todos",
