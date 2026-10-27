@@ -36,19 +36,21 @@
       "type": "object",
       "required": [
         "style",
-        "icons"
+        "grid",
+        "glyphs"
       ],
       "properties": {
         "style": {
           "enum": [
-            "outlined",
-            "rounded",
-            "sharp",
+            "outline",
             "filled",
-            "custom"
+            "duotone",
+            "sharp",
+            "rounded"
           ]
         },
-        "icons": {}
+        "grid": {},
+        "glyphs": {}
       }
     }
   }

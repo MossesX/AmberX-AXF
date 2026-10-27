@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-045",
+  "name": "AmberX mark · soft-square bolt",
+  "version": "1.0.0",
+  "description": "Generated mark: a soft-square bolt motif in a seeded rich palette (seed 46).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "soft-square",
+    "bolt",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#317524",
+      "brand2": "#0f300d",
+      "brand3": "#a8c89d"
+    },
+    "paths": [
+      {
+        "d": "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M13 4L7 13h5l-1 7 6-9h-5z",
+        "fill": "bg"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

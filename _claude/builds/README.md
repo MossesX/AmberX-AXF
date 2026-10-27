@@ -11,6 +11,13 @@ or Claude account, can pick a build up where the last one stopped. <!-- axf-plug
 
 Build → **category** (`category`) → **phases** (step `phase` label; a new phase starts where the label or the model changes) → **groups** (step `group` label, consecutive steps) → **steps**. Only a model change between phases needs Brett's approval. In the console, Builds shows a Grid (one row per build, sortable, expands to the card) or a List, filtered by category. <!-- axf-plugin:build-orchestrator -->
 
+## Build profiles
+
+Each build profile (build-profiles@1, `framework/cli/profiles.mjs`) has its own tracker: **Main framework** (base) =
+`_claude/builds/orchestrator.json`, any other profile = `_claude/builds/profiles/<id>/orchestrator.json` (Refactor:
+`profiles/refactor/`). `orchestrator.mjs` reads the active profile's; check it with `node framework/cli/profiles.mjs current`
+(or run one command on another profile with `AXF_BUILD_PROFILE=<id>`). Console: banner chip / **Build profiles** dialog.
+
 ## Carry a build on
 
 ```bash

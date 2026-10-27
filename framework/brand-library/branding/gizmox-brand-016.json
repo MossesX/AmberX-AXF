@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-016",
+  "name": "GizmoX · Classic 16",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · pill wave, classic placement, icon pack pack-061.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "classic"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-018",
+      "wordmark": "gizmox-logo-088",
+      "lockup": "gizmox-logo-101",
+      "animated": "gizmox-anim-039"
+    },
+    "iconPack": "pack-061",
+    "palette": {
+      "brand1": "#a5274d",
+      "brand2": "#4d0f19",
+      "brand3": "#dfb9c9"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "lockup",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "mark",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

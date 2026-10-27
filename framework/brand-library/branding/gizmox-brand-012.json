@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-012",
+  "name": "GizmoX · Quiet 12",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · squircle ring, quiet placement, icon pack pack-045.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "quiet"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-013",
+      "wordmark": "gizmox-logo-067",
+      "lockup": "gizmox-logo-072",
+      "animated": "gizmox-anim-012"
+    },
+    "iconPack": "pack-045",
+    "palette": {
+      "brand1": "#b017cf",
+      "brand2": "#61096d",
+      "brand3": "#ecc4ee"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "mark",
+      "window": "none",
+      "floating-window": "none",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "mark",
+      "favicon": "mark",
+      "empty-state": "none"
+    }
+  }
+}

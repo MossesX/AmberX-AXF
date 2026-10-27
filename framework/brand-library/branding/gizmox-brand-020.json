@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-020",
+  "name": "GizmoX · Wordmark 20",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · hexagon orbit, wordmark placement, icon pack pack-077.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "wordmark"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-022",
+      "wordmark": "gizmox-logo-113",
+      "lockup": "gizmox-logo-110",
+      "animated": "gizmox-anim-056"
+    },
+    "iconPack": "pack-077",
+    "palette": {
+      "brand1": "#609d1b",
+      "brand2": "#1f3f09",
+      "brand3": "#cbdea6"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "wordmark",
+      "window": "none",
+      "floating-window": "mark",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "wordmark",
+      "splash": "lockup",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

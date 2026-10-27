@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-108",
+  "name": "GizmoX lockup · pill cross",
+  "version": "1.0.0",
+  "description": "Generated lockup: a pill cross motif in a seeded rich palette (seed 1115).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "pill",
+    "cross",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#1f6c7a",
+      "brand2": "#0b3032",
+      "brand3": "#98c7cd"
+    },
+    "paths": [
+      {
+        "d": "M8 5h8a7 7 0 0 1 0 14H8A7 7 0 0 1 8 5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 6v12M6 12h12",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 600,
+      "tracking": 0.08,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "minimal-line",
+  "name": "Minimal Line button",
+  "version": "1.0.0",
+  "description": "Minimal Line: rounded outline buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "minimal",
+    "minimal"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "outline",
+    "weight": 500,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

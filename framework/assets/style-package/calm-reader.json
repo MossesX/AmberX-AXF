@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "calm-reader",
+  "name": "Calm Reader",
+  "version": "1.0.0",
+  "description": "Quiet soft buttons, outlined cards and fading modals that never compete with the text.",
+  "author": "AmberX AXF",
+  "tags": [
+    "calm",
+    "reading"
+  ],
+  "data": {
+    "slots": {
+      "button": "calm-reader",
+      "container": "calm-reader",
+      "slider": "calm-reader",
+      "dialog": "calm-reader",
+      "popup": "calm-reader",
+      "tab-group": "calm-reader",
+      "gauge": "level-bar",
+      "meter": "hairline"
+    },
+    "tone": "calm"
+  }
+}

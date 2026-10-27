@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-012",
+  "name": "AmberX lockup · squircle hex",
+  "version": "1.0.0",
+  "description": "Generated lockup: a squircle hex motif in a seeded bright palette (seed 12).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "squircle",
+    "hex",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#339986",
+      "brand2": "#154740",
+      "brand3": "#bfd9d1"
+    },
+    "paths": [
+      {
+        "d": "M12 2c7.5 0 10 2.5 10 10s-2.5 10-10 10S2 19.5 2 12 4.5 2 12 2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 7l4.3 2.5v5L12 17l-4.3-2.5v-5z",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 700,
+      "tracking": 0,
+      "font": "ui",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

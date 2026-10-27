@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-003",
+  "name": "AmberX lockup · diamond hex",
+  "version": "1.0.0",
+  "description": "Generated lockup: a diamond hex motif in a seeded bright palette (seed 3).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "diamond",
+    "hex",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#c27e0a",
+      "brand2": "#5a3a02",
+      "brand3": "#edd5ab"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 7l4.3 2.5v5L12 17l-4.3-2.5v-5z",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": false
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 800,
+      "tracking": -0.02,
+      "font": "mono",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

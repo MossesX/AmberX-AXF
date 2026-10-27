@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "amberx-anim-053",
+  "name": "amberx-logo-055 · orbit",
+  "version": "1.0.0",
+  "description": "Generated animation: orbit over 1400 ms, looping (seed 53).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "orbit",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "amberx-logo-055",
+    "preset": "orbit",
+    "durationMs": 1400,
+    "delayMs": 400,
+    "loop": true,
+    "intensity": 0.8
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-115",
+  "name": "AmberX lockup · shield bolt",
+  "version": "1.0.0",
+  "description": "Generated lockup: a shield bolt motif in a seeded bright palette (seed 121).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "shield",
+    "bolt",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#78a13a",
+      "brand2": "#45511a",
+      "brand3": "#d8ddca"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M13 4L7 13h5l-1 7 6-9h-5z",
+        "fill": "bg"
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 800,
+      "tracking": 0.04,
+      "font": "mono",
+      "fill": "brand1"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

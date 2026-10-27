@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "crimson-dusk",
+  "name": "Crimson Dusk",
+  "version": "1.0.0",
+  "description": "Smoky dusk with a crimson accent; status colours tuned to stay distinct from it.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "warm"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#130e0f",
+      "surface": "#1c1516",
+      "surface2": "#241b1d",
+      "surface3": "#302426",
+      "text": "#ebe5e6",
+      "muted": "#ac9195",
+      "border": "#3a2c2e",
+      "accent": "#f2697b",
+      "accentText": "#25090d",
+      "accentSoft": "rgba(242,105,123,0.14)",
+      "danger": "#f66751",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#f2697b",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

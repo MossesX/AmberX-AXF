@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-021",
+  "name": "GizmoX · Classic 21",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · squircle bolt, classic placement, icon pack pack-081.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "classic"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-023",
+      "wordmark": "gizmox-logo-114",
+      "lockup": "gizmox-logo-111",
+      "animated": "gizmox-anim-078"
+    },
+    "iconPack": "pack-081",
+    "palette": {
+      "brand1": "#2f9d31",
+      "brand2": "#214913",
+      "brand3": "#c1dbbd"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "lockup",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "mark",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-022",
+  "name": "GizmoX mark · hexagon orbit",
+  "version": "1.0.0",
+  "description": "Generated mark: a hexagon orbit motif in a seeded bright palette (seed 1022).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "hexagon",
+    "orbit",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#609d1b",
+      "brand2": "#1f3f09",
+      "brand3": "#cbdea6"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8.7 5v10L12 22l-8.7-5V7Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": false
+      },
+      {
+        "d": "M4.5 14.5c2-4 13-9 15-5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.6,
+        "round": false,
+        "opacity": 0.8
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

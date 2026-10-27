@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-016",
+  "name": "GizmoX mark · shield leaf",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield leaf motif in a seeded rich palette (seed 1016).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "leaf",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#be0af0",
+      "brand2": "#6d0288",
+      "brand3": "#eed0f6"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M17 7c-6 0-10 4-10 10 6 0 10-4 10-10zM7 17l6-6",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.8,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

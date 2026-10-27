@@ -1,4 +1,4 @@
-export { AxfProvider, useRuntime, useAxfState, useAsset, useGate, useShortcutMap } from './AxfProvider';
+export { AxfProvider, useRuntime, useAxfState, useAsset, useGate, useShortcutMap, useOptionalRuntime } from './AxfProvider';
 export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppShell';
 export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type ButtonProps, type SegmentedOption, type SliderProps, type ContainerProps } from './components/Controls';
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
@@ -11,6 +11,8 @@ export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY } from '
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { ArrangeBar, arrangedSide, useArrange, type ArrangeApi } from './components/Arrange';
 export { Gauge, Meter, type GaugeProps, type MeterProps } from './components/Meters';
+export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
+export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';

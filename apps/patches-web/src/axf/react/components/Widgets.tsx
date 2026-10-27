@@ -142,7 +142,7 @@ export function ThemeSwitchWidget({ data }: WidgetRenderProps<ThemeSwitchData>) 
   const next = themeSwitchNext(active, data.light, data.dark);
   const label = dark ? (data.lightLabel ?? 'Light') : (data.darkLabel ?? 'Dark');
   return (
-    <button type="button" className={`fx-widget-theme is-${data.show}`} title={data.tooltip ?? `Switch to ${label.toLowerCase()} theme`} aria-label={`Switch to ${label} theme`} aria-pressed={dark} onClick={() => rt.swap('color-theme', next)}>
+    <button type="button" className={`fx-widget-theme is-${data.show}`} title={data.tooltip ?? `Switch to ${label.toLowerCase()} theme`} aria-label={`Switch to ${label} theme`} aria-pressed={dark} disabled={rt.lockedByAppearance('assets.swap')} onClick={() => rt.swap('color-theme', next)}>
       {data.show !== 'label' && <Icon name={dark ? 'sun' : 'moon'} size={14} />}
       {data.show !== 'icon' && <span>{label}</span>}
     </button>

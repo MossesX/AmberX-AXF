@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-029",
+  "name": "AmberX mark · hexagon hex",
+  "version": "1.0.0",
+  "description": "Generated mark: a hexagon hex motif in a seeded bright palette (seed 30).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "hexagon",
+    "hex",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#05a84f",
+      "brand2": "#003d08",
+      "brand3": "#8feaad"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8.7 5v10L12 22l-8.7-5V7Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 7l4.3 2.5v5L12 17l-4.3-2.5v-5z",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": false
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

@@ -2,7 +2,7 @@
 /**
  * Build orchestrator CLI. The tracker is a repo file, `_claude/builds/orchestrator.json` (orchestrator@1), so any
  * session on any machine or account reads it and carries the build on (it syncs with the hub through claude-sync).
- * AXF_ORCH_FILE overrides the path.
+ * Each build profile (build-profiles@1, framework/cli/profiles.mjs) has its own tracker; AXF_ORCH_FILE overrides the path.
  *
  *   node apps/console-web/plugins/build-orchestrator/orchestrator.mjs            list (one line per build)
  *   … next [id]                       what to do next (default: the first build with work left)
@@ -18,10 +18,12 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
 import { isMigrated, readOrchestratorState, writeOrchestratorState } from '../../../../framework/cli/builds.mjs';
+import { orchestratorPath } from '../../../../framework/cli/persist.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
-export const trackerFile = () => process.env.AXF_ORCH_FILE || join(ROOT, '_claude', 'builds', 'orchestrator.json');
+/** The active build profile's tracker (main framework = _claude/builds/orchestrator.json; others under _claude/builds/profiles/<id>/). */
+export const trackerFile = () => process.env.AXF_ORCH_FILE || orchestratorPath();
 
 /** builds@1 (Oct 27 2026): once plan.json carries the dataset the tracker is a view of it (orchestrator.json is then a generated export); before that, the tracker file as before. */
 export function load() {

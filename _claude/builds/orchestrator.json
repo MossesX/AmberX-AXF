@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:01:41.486Z",
+ "updatedAt": "2026-10-27T21:56:06.768Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -34,6 +34,10 @@
     {
      "text": "Merged into enterprise-branding (Oct 27 2026). Archived here; build it there.",
      "at": "2026-10-27T16:56:46.245Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [],
@@ -216,7 +220,12 @@
    "createdAt": "2026-10-27T16:36:55.356Z",
    "updatedAt": "2026-10-27T16:36:55.356Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -437,7 +446,7 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T19:11:22.033Z",
+   "updatedAt": "2026-10-27T21:56:06.768Z",
    "builtAt": "",
    "notes": [
     {
@@ -461,11 +470,38 @@
      "at": "2026-10-27T18:08:21.998Z"
     },
     {
+     "text": "s1: DESIGN-LANGUAGE.md written; the live plugin list is still waiting on axHub approval 29f6dae0 (retrying). s5r1-s5r5 done: window placement rules (stack cascade/center/remember, snap grid, minimize cursor/dock/none) wired into the WindowManager + WindowHost; Button busy/confirm props + rt.busy()/withBusy() + data-fx-busy cursor; 36 new checks in check-design-package (575).",
+     "at": "2026-10-27T18:28:33.506Z"
+    },
+    {
+     "text": "s5r6: fixtures regenerated (roll/appearance gained the brand types); the re-bake of amberx-droid, axhub-web, patches-web, walkthrough-studio and the console lock lands once at the end of the Fable phase (s12) so the React layer (s10-s11) is baked in one go.",
+     "at": "2026-10-27T18:39:55.650Z"
+    },
+    {
+     "text": "Plugin scope read live Oct 27 2026 (approval 72afb5a6): no plugins.json on the console, so every installed plugin is on — all 32 are in scope (list in DESIGN-LANGUAGE.md §13).",
+     "at": "2026-10-27T18:51:49.154Z"
+    },
+    {
+     "text": "Fable phase 1 done Oct 27 2026 (PR #128). Waiting on Brett's approval of the Fable → Opus switch.",
+     "at": "2026-10-27T19:11:51.156Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
+    },
+    {
      "text": "Oct 27 2026: new build trim-asset lets a design package reference a trim (layout + colour). Its s1-s2 (Fable) touch the design-package contract; run them in the same Fable session as the design-package rebuild group (s5r1-s5r6) or right after, so the contract changes once.",
      "at": "2026-10-27T19:11:22.033Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T19:52:28.958Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -483,8 +519,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.097Z",
      "note": ""
     },
     {
@@ -569,8 +605,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.166Z",
      "note": ""
     },
     {
@@ -585,8 +621,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.238Z",
      "note": ""
     },
     {
@@ -601,8 +637,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.306Z",
      "note": ""
     },
     {
@@ -617,8 +653,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.375Z",
      "note": ""
     },
     {
@@ -633,8 +669,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.433Z",
      "note": ""
     },
     {
@@ -649,8 +685,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:55.597Z",
      "note": ""
     },
     {
@@ -665,8 +701,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.047Z",
      "note": ""
     },
     {
@@ -681,8 +717,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.101Z",
      "note": ""
     },
     {
@@ -697,8 +733,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.151Z",
      "note": ""
     },
     {
@@ -713,8 +749,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.205Z",
      "note": ""
     },
     {
@@ -731,8 +767,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:44:28.329Z",
      "note": ""
     },
     {
@@ -749,8 +785,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:46:52.502Z",
      "note": ""
     },
     {
@@ -765,8 +801,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:51:14.262Z",
      "note": ""
     },
     {
@@ -781,8 +817,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:31:42.318Z",
      "note": ""
     },
     {
@@ -797,8 +833,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:31:42.369Z",
      "note": ""
     },
     {
@@ -813,8 +849,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.770Z",
      "note": ""
     },
     {
@@ -829,8 +865,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.844Z",
      "note": ""
     },
     {
@@ -845,8 +881,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:42:08.861Z",
      "note": ""
     },
     {
@@ -861,8 +897,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:42:08.934Z",
      "note": ""
     },
     {
@@ -877,8 +913,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:47:13.405Z",
      "note": ""
     },
     {
@@ -893,8 +929,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:47:13.482Z",
      "note": ""
     },
     {
@@ -909,8 +945,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:50:08.047Z",
      "note": ""
     },
     {
@@ -925,8 +961,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:50:08.100Z",
      "note": ""
     },
     {
@@ -941,8 +977,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:51:10.874Z",
      "note": ""
     },
     {
@@ -957,8 +993,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:55:00.852Z",
      "note": ""
     },
     {
@@ -973,8 +1009,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:55:00.906Z",
      "note": ""
     },
     {
@@ -989,8 +1025,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:56:06.767Z",
      "note": ""
     },
     {
@@ -1230,14 +1266,14 @@
    "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/interface-roller",
    "pr": "",
    "createdAt": "2026-10-27T17:11:59.344Z",
-   "updatedAt": "2026-10-27T17:17:17.313Z",
+   "updatedAt": "2026-10-27T19:52:29.038Z",
    "builtAt": "",
    "notes": [
     {
@@ -1247,9 +1283,24 @@
     {
      "text": "Brett, Oct 27 2026 (cards): the three interface tabs go in the GizmoX console (Main = today's look). Order: enterprise-branding phase 1 first, then this build's Fable phase in the same Fable session, then one switch to Opus.",
      "at": "2026-10-27T17:17:17.307Z"
+    },
+    {
+     "text": "Fable phase 1 done Oct 27 2026 (PR #129, stacked on #128). Next on Opus after the switch is approved.",
+     "at": "2026-10-27T19:11:51.096Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T19:52:29.038Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -1263,8 +1314,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:58:54.888Z",
      "note": ""
     },
     {
@@ -1279,8 +1330,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:58:54.951Z",
      "note": ""
     },
     {
@@ -1295,8 +1346,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:03:25.215Z",
      "note": ""
     },
     {
@@ -1311,8 +1362,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:08:35.374Z",
      "note": ""
     },
     {
@@ -1327,8 +1378,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:08:35.445Z",
      "note": ""
     },
     {
@@ -1483,6 +1534,89 @@
      "phase": "Phase 4 · Ship",
      "group": "Checks",
      "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "style-package-fable",
+   "title": "Style packages — Fable rebuild of style-package@1",
+   "category": "Design & branding",
+   "detail": "Profile: main framework. Fable rebuild of the Opus build of style-package@1 (enterprise-branding s19–s20, branch opus/enterprise-branding). Brett, Oct 27 2026: new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "fable/style-package",
+   "pr": "",
+   "createdAt": "2026-10-27T21:47:04.141Z",
+   "updatedAt": "2026-10-27T21:47:04.147Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Review the Opus style-package@1 contract (members registry, slots, tone) against design-package@1 and interface@1; decide what changes; write the decision into framework/spec (STYLE-PACKAGES.md).",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Contract",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Rebuild the engine + runtime apply paths (swap, swapAll, design-package extras, interfaces, roller): pure fixture spec/fixtures/style-package.json replayed by check-style-packages.mts.",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Engine",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Re-tune the 25 starter control sets against DESIGN-LANGUAGE.md (distinct, coherent with the colour/style themes they pair with) and regenerate fixtures.",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Assets",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Differences report _claude/memory/docs/rebuilds/style-package-fable.md + LOG.md line; re-bake the five web apps; checks green.",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Ship",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",

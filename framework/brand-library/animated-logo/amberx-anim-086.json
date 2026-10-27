@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "amberx-anim-086",
+  "name": "amberx-logo-007 · wink",
+  "version": "1.0.0",
+  "description": "Generated animation: wink over 2300 ms, looping (seed 86).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wink",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "amberx-logo-007",
+    "preset": "wink",
+    "durationMs": 2300,
+    "delayMs": 400,
+    "loop": true,
+    "intensity": 0.7
+  }
+}

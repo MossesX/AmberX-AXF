@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "amberx-anim-091",
+  "name": "amberx-logo-079 · spin",
+  "version": "1.0.0",
+  "description": "Generated animation: spin over 3700 ms, once (seed 91).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "spin",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "amberx-logo-079",
+    "preset": "spin",
+    "durationMs": 3700,
+    "delayMs": 0,
+    "loop": false,
+    "intensity": 0.9
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "swiss-grid",
+  "name": "Swiss Grid",
+  "version": "1.0.0",
+  "description": "Hard-edged uppercase buttons, outlined panels and plain tabs on a strict grid.",
+  "author": "AmberX AXF",
+  "tags": [
+    "editorial",
+    "editorial",
+    "flat"
+  ],
+  "data": {
+    "slots": {
+      "button": "swiss-grid",
+      "container": "swiss-grid",
+      "slider": "swiss-grid",
+      "dialog": "swiss-grid",
+      "popup": "swiss-grid",
+      "tab-group": "swiss-grid",
+      "gauge": "level-bar",
+      "meter": "hairline"
+    },
+    "tone": "editorial"
+  }
+}

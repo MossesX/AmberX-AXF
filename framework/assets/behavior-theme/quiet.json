@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "quiet",
+  "name": "Quiet",
+  "version": "1.0.0",
+  "description": "Quiet text: underline on hover, linear fades, no page entrance or sound.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:text-only"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "linear",
+      "reduced": "system",
+      "entrance": "none"
+    },
+    "interaction": {
+      "hover": "underline",
+      "press": "none",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 600,
+      "doubleTapMs": 300,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "dim",
+      "popupOpen": "fade",
+      "drawerOpen": "fade",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 4000,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}
