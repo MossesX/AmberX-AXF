@@ -1,0 +1,26 @@
+/* Build orchestrator: layout only plus model chips; every control is a framework control (fx-*, pd-* from the console). */
+.oc-model { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: 0 calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); font: inherit; font-size: calc(var(--fx-font-size) * 0.85); line-height: 1.6; color: var(--fx-text); background: transparent }
+button.oc-model { cursor: pointer }
+.oc-model.is-fable { color: var(--fx-accent); border-color: var(--fx-accent) }
+.oc-model.is-opus { color: var(--fx-info); border-color: var(--fx-info) }
+.oc-badge.is-running { color: var(--fx-accent) }
+.oc-badge.is-waiting, .oc-badge.is-blocked { color: var(--fx-warning) }
+.oc-badge.is-archived { color: var(--fx-muted) }
+.oc-count { margin-left: calc(var(--fx-space) * 0.5); padding: 0 calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-lg); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-accent); font-size: calc(var(--fx-font-size) * 0.8) }
+.oc-gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
+.oc-flag { font-size: calc(var(--fx-font-size) * 0.8); color: var(--fx-muted) }
+.oc-steptools { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); margin-left: auto }
+.pd-entry:has(.oc-steptools) { align-items: center }
+.oc-group { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.oc-group__head { margin: calc(var(--fx-space) * 0.5) 0 0; font-size: calc(var(--fx-font-size) * 0.9); font-weight: 600 }
+.oc-grid { display: flex; flex-direction: column; gap: var(--fx-space) }
+.oc-grid__item { display: flex; flex-direction: column; gap: var(--fx-space) }
+.oc-grid__row { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1.4fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1fr); align-items: center; gap: var(--fx-space); text-align: left; width: 100% }
+.oc-grid__head { padding: 0 calc(var(--fx-space) * 2) }
+.oc-grid__title { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.oc-grid__title b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+@media (max-width: 720px) {
+  .oc-grid__row { grid-template-columns: minmax(0, 1fr) auto; }
+  .oc-grid__row > :nth-child(n+4) { display: none }
+  .oc-grid__row > :nth-child(2) { display: none }
+}

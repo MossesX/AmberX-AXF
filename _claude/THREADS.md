@@ -37,7 +37,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), deploying | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), deploying; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
-| AmberX Design Package (Fable rebuild of the Opus build) | queued | – | – | Fable, pending `design-package-fable`; starts by replacing the Opus build (PR on `rebuild/design-package-opus`). See *To carry on* | 2026-10-27 |
+| Build orchestrator plugin + repo build tracker (categories, phases, groups, steps; grid) | review | `claude/build-orchestrator` | #122 | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
+| Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | queued | – | – | Orchestrator build `enterprise-branding` (46 steps, 5 done, ~20 h): Fable phase 1 (s1, s5r1-s5r6, s6-s12) → (approve switch) → Opus s13-s40. Decided: console renamed GizmoX (visible only), assets for both brands, scope (Brett 13:05) = console + AmberX app + plugins installed and switched on in Plugin switches + banner plugins. Next: run phase 1 on Fable. See *To carry on* | 2026-10-27 |
+| Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
+| Three interfaces in GizmoX tabs + interface roller for every app | queued | – | – | Orchestrator build `interface-roller` (15 steps, ~7.4 h): Fable s1-s5 right after enterprise-branding phase 1, then Opus s6-s15 | 2026-10-27 |
+| Pending builds grid view (attachment) | queued | – | – | Orchestrator build `pending-grid-view`: Opus only, 6 steps | 2026-10-27 |
+| AmberX Design Package (Fable rebuild of the Opus build) | queued | – | – | Folded into orchestrator build `enterprise-branding` phase 1, group *Design package (Fable rebuild)* (s5r1-s5r6) | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -51,6 +56,55 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
 
+### Build orchestrator (how every build below is carried on)
+- Tracker: `_claude/builds/orchestrator.json` (orchestrator@1; how-to `_claude/builds/README.md`). `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next` says what to do; `brief <id>` gives the current phase only. At a Fable ↔ Opus switch, stop and ask Brett (card), then `act approve <id> <phase>`. <!-- axf-plugin:build-orchestrator -->
+- **First message (any build):** "Run `orchestrator.mjs next` and continue that build from `_claude/builds/orchestrator.json` on the model its next phase names."
+
+### Three interfaces + interface roller
+- **Asked (Brett, Oct 27 2026 13:10):** "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc."
+- **Decided (cards):** the tabs go in the GizmoX console; runs after enterprise-branding phase 1, in the same Fable session.
+- **Plan:** orchestrator build `interface-roller` (category Design & branding; also pending `interface-roller`). Branch `fable/interface-roller`.
+- **First message:** "Continue orchestrator build `enterprise-branding` phase 1, then `interface-roller` phase 1 (`orchestrator.mjs brief <id>`). Run on Fable."
+
+### Architecture foundation
+- **Asked (Brett, Oct 27 2026, attachment):** the 5 deliverables (TS contracts for layout tree / theme / plugin manifest; Pydantic v2 models + before-validator migrator + ingestion namespacing; React error boundary + pub/sub lifecycle broker; project spec; developer docs: new plugin, harvesting, live sync). Built on the existing asset@1 / plugin@1 / appearance@1 contracts; CLAUDE.md stays the project spec (no second .claude.md). Steps: orchestrator build `arch-foundation` (also pending `arch-foundation`).
+- **First message:** "Continue orchestrator build `arch-foundation` (`orchestrator.mjs brief arch-foundation`). Run on Fable."
+
+### Pending builds grid view
+- **Asked (Brett, Oct 27 2026, attachment):** grid next to Reload in Pending builds: 1-line summary, date added, total time estimate, cost estimate, sortable columns; rows expand to today's card; toolbar archive / delete / hide / unhide (greyed when none selected) / open in (tooltip dialog: Build manager, Build queue, Plan); select hook: hover tooltip "activate multi select with double click", double-click flashes the top item's hover style 3 times, tooltip "select items", then single clicks select more. Steps: orchestrator build `pending-grid-view` (Opus only).
+- **First message:** "Continue orchestrator build `pending-grid-view` (`orchestrator.mjs brief pending-grid-view`). Run on Opus."
+
+### Enterprise design + branding engine
+- **Asked (Brett, Oct 27 2026, orchestrator chat):** "Only refactor Amberx, the app at amberx.amberxai.com. Refactor console and the active plugins switched on only plus all the banner plugins. Make the framework and app really really nice professional enterprise level quality … must not look amateur. Needs ten light 10 dark themes 10 layout themes 10 style themes, 10 context menu assets, 25 dynamically driven toolbar assets with documentation, 25 style package assets, 25 amberx design packages. 25 navigation menus and behavior. Pepper the app, windows, dialogs, banners, toolbars, and containers with logos, animated logos, icons from a branding package which is new asset type that contains an extendable and scalable template of UI assets for full rebranding of the entire package. Create 250 logos, 250 animated logos, 100 icon packs which are a new asset type, create console plugin to browse them. All to be generated for the AmberX Framework. GizmoX development console. Make custom branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows, etc. Create an entirely hot swappable branding package and branding engine."
+- **Plan:** orchestrator build `enterprise-branding` (40 steps; also pending `enterprise-branding`). Includes the Design Package build (archived in the orchestrator). Branch `fable/enterprise-branding`. Web only; Android twins deferred.
+- **Decided (cards, Oct 27 2026):** the Dev Console is renamed **GizmoX** in everything visible (banner, title, menus) through its branding package, with code ids and URLs unchanged; logos and animated logos are made for both **AmberX Framework** and **GizmoX**; plugins in scope (Brett, 13:05) = only the plugins currently installed and switched on in Plugin switches, plus every banner plugin (s1 reads that list live through axHub).
+- **Waiting on:** a Fable session for phase 1 (s1-s12).
+- **First message:** "Continue orchestrator build `enterprise-branding` (`orchestrator.mjs brief enterprise-branding`). Run on Fable."
+
+### AmberX Design Package + Behaviour theme (merged into enterprise-branding)
+- **Orchestrator (Oct 27 2026):** build `design-package`, Fable s1-s5 then Opus s6-s9 (one switch).
+- **Asked (Brett, Oct 27 2026, in the "Repo thread status review" chat):** "Make new AmberX Design Package asset type
+  that wraps style theme, color theme, layout theme, and behavior theme. Add behavior theme asset type too. Apply
+  option to select one in appearance section of settings. Wrap the rest of interface in collapsible container."
+- **His answers (cards):** the Design Package **replaces** the Appearance package (`appearance-package`); a behaviour
+  theme holds **everything**: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus
+  feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and
+  feedback (toasts, sounds, vibration, confirm-before-delete); "the rest" = the rest of **Settings → Appearance** in
+  one collapsible container under the Design Package picker; model **Fable**.
+- **Model:** Fable (new cross-app asset types + engines). Web first; Android twin goes in `framework/spec/PORTING.md`.
+- **Plan:** pending item `design-package` (9 steps, 4.5 h; `node framework/cli/pending.mjs --steps`). Branch
+  `fable/design-package`. Read first: `framework/schemas/asset-types.json`, `framework/core/engines/appearancepackage.ts`
+  (what is being replaced), `framework/core/engines/looktokens.ts` (behaviour fallbacks), `framework/libs/settings`
+  (Appearance tab), `framework/assets/appearance-package/`.
+- **Overlaps:** `settings-asset-fable`, `appearance-asset-tokens-fable`, `apply-all-levels-fable`, `asset-templates`
+  (all Fable, all touch Settings → Appearance or the asset types): say which to build together before starting.
+- **Waiting on:** Brett, before step 6, on where the Appearance package's extra settings go (spacing, shown/hidden
+  chrome, the other slot picks, customize tokens) once it is retired.
+- **Checks:** `node framework/cli/axf.mjs validate --framework`, `npx -y tsx framework/spec/gen-fixtures.mts`, the new
+  `check-behavior.mts` / `check-design-package.mts`, `check-appearance-package.mts` (replaced), `check-settings-ui.mts`,
+  each re-baked app's typecheck + build, `node framework/cli/check-theme.mjs`, `check-controls.mjs`.
+- **First message:** "Start the thread *AmberX Design Package + Behaviour theme* from `_claude/THREADS.md` → To carry
+  on (pending item `design-package`). Run on Fable."
 ### AmberX Design Package (Fable rebuild)
 - **Built on Opus (Oct 27 2026, Brett: "Do in opus"):** branch `rebuild/design-package-opus`. New types `design-package`
   (style + colour theme + layout + behaviour theme, optional `extras` = what the appearance package held) and
