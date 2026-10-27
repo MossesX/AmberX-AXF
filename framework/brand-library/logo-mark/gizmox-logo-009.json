@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-009",
+  "name": "GizmoX mark · diamond spark",
+  "version": "1.0.0",
+  "description": "Generated mark: a diamond spark motif in a seeded bright palette (seed 1009).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "diamond",
+    "spark",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a3794d",
+      "brand2": "#5a3b26",
+      "brand3": "#e4dfd7"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 5l1.8 5.2L19 12l-5.2 1.8L12 19l-1.8-5.2L5 12l5.2-1.8z",
+        "fill": "bg"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

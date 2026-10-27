@@ -375,6 +375,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-toolbtn:hover:not(:disabled) { background: var(--fx-surface3); color: var(--fx-text); }
 .fx-toolbtn:disabled { opacity: max(var(--fx-opacity-disabled), 0.4); }
+.fx-toolbtn.is-on { background: var(--fx-accent-soft); color: var(--fx-accent); }
+.fx-toolbtn.is-on:hover:not(:disabled) { background: var(--fx-accent-soft); color: var(--fx-accent); }
 .fx-toolbtn { position: relative; }
 /* unread counter (toolbar item `badge`) */
 .fx-toolbtn__badge {

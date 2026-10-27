@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-084",
+  "name": "AmberX lockup · squircle stack",
+  "version": "1.0.0",
+  "description": "Generated lockup: a squircle stack motif in a seeded rich palette (seed 88).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "squircle",
+    "stack",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#53789d",
+      "brand2": "#294a57",
+      "brand3": "#d7dde4"
+    },
+    "paths": [
+      {
+        "d": "M12 2c7.5 0 10 2.5 10 10s-2.5 10-10 10S2 19.5 2 12 4.5 2 12 2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 6l6 3-6 3-6-3z",
+        "fill": "bg"
+      },
+      {
+        "d": "M6 13l6 3 6-3M6 16.5l6 3 6-3",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 800,
+      "tracking": 0.04,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

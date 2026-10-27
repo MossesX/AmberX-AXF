@@ -10,6 +10,7 @@ import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
+import type { CompiledMenuItem } from '../../core/engines/appmenu';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -127,11 +128,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
-      {tb.data.groups.map((g) => (
-        <div key={g.id} className="fx-toolbar__group">
-          {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={tb.data.variant} />)}
-        </div>
-      ))}
+      {tb.data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={tb.data.variant} />)}
       {(arrange.on || widgets.end.length > 0) && <span className="fx-toolbar__widgets is-end" {...arrange.sideProps('end')}>{arrangedSide(arrange, 'end', widgets.end, drawWidget)}</span>}
       {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
       {tb.data.showSearch && !tb.data.search?.live && (
@@ -146,23 +143,56 @@ export function Toolbar({ views }: { views: ViewMap }) {
 }
 
 
-type ToolbarItem = { id: string; icon: string; label: string; action: string; requires?: string; badge?: string };
+type ToolbarItem = { id: string; icon: string; label: string; action: string; requires?: string; badge?: string; checked?: string };
+type ToolbarGroup = { id: string; items: ToolbarItem[]; provider?: string; max?: number; label?: string };
 
-/** One toolbar item: gated by UAC, left out when the host app does it, greyed when the host locks it. */
-function ToolbarButton({ item: it, variant }: { item: ToolbarItem; variant: string }) {
+/**
+ * One toolbar group: its fixed items, then (when it names a `provider`) the live list from the app menu's provider
+ * registry, reloaded shortly after the app's state changes so the buttons follow what's open, enabled or counted.
+ */
+function ToolbarGroupView({ group: g, variant }: { group: ToolbarGroup; variant: string }) {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const [live, setLive] = useState<CompiledMenuItem[]>([]);
+  useEffect(() => {
+    if (!g.provider) return undefined;
+    let gone = false;
+    const t = setTimeout(() => {
+      rt.loadToolbarProvider(g.provider!, g.max ?? 8).then((items) => { if (!gone) setLive(items); }).catch(() => { if (!gone) setLive([]); });
+    }, live.length ? 400 : 0);
+    return () => { gone = true; clearTimeout(t); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [g.provider, g.max, state.rev]);
+  const fromProvider = live.filter((it) => !it.separator && it.action);
+  if (!g.items.length && !fromProvider.length) return null;
+  return (
+    <div className="fx-toolbar__group" role="group" aria-label={g.label} data-axf-provider={g.provider}>
+      {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={variant} />)}
+      {fromProvider.map((it) => (
+        <ToolbarButton key={`p:${it.id}`} variant={variant} lockedNote={it.locked ? 'not available' : undefined}
+          item={{ id: it.id, icon: it.icon ?? 'chevron-right', label: it.label, action: it.action!, badge: it.badge, checked: it.checked }} />
+      ))}
+    </div>
+  );
+}
+
+/** One toolbar item: gated by UAC, left out when the host app does it, greyed when the host locks it, pressed when its `checked` binding is on. */
+function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; variant: string; lockedNote?: string }) {
   const rt = useRuntime();
   const gate = rt.gate(it.requires);
   if (gate === 'hide') return null;
   if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
   const count = it.badge ? rt.badge(it.badge) : 0;
+  const pressed = it.checked ? rt.toolbarChecked(it.checked) : null;
   // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
-  const hostLock = rt.lockedByHost({ action: it.action });
+  const hostLock = rt.lockedByHost({ action: it.action }) ?? lockedNote;
   const off = gate === 'disable' || !!hostLock;
   return (
     <button
       type="button"
-      className="fx-toolbtn"
+      className={`fx-toolbtn${pressed ? ' is-on' : ''}`}
       disabled={off}
+      aria-pressed={pressed === null ? undefined : pressed}
       title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
       aria-label={count ? `${it.label} (${count} new)` : it.label}
       onClick={() => rt.dispatch(it.action)}
@@ -184,14 +214,10 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
-  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: { id: string; items: ToolbarItem[] }[] };
+  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
   return (
     <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
-      {data.groups.map((g) => (
-        <div key={g.id} className="fx-toolbar__group">
-          {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={data.variant} />)}
-        </div>
-      ))}
+      {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
       {data.showSearch && search}
     </div>
   );

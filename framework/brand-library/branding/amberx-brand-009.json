@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "amberx-brand-009",
+  "name": "AmberX · Showcase 9",
+  "version": "1.0.0",
+  "description": "AmberX branding: AmberX mark · circle notch, showcase placement, icon pack pack-033.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "brand-library",
+    "showcase"
+  ],
+  "data": {
+    "brand": {
+      "name": "AmberX",
+      "tagline": "One framework, every port."
+    },
+    "marks": {
+      "mark": "amberx-logo-015",
+      "wordmark": "amberx-logo-042",
+      "lockup": "amberx-logo-033",
+      "animated": "amberx-anim-010"
+    },
+    "iconPack": "pack-033",
+    "palette": {
+      "brand1": "#8d5b34",
+      "brand2": "#3e2314",
+      "brand3": "#d3c2bb"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "animated",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "wordmark",
+      "container": "watermark",
+      "tab-group": "mark",
+      "toolbar": "wordmark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "animated"
+    }
+  }
+}

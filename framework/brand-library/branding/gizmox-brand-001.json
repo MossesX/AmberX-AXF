@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-001",
+  "name": "GizmoX · Classic 1",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · hexagon pulse, classic placement, icon pack pack-001.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "classic"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-001",
+      "wordmark": "gizmox-logo-002",
+      "lockup": "gizmox-logo-028",
+      "animated": "gizmox-anim-001"
+    },
+    "iconPack": "pack-001",
+    "palette": {
+      "brand1": "#478a5a",
+      "brand2": "#1f4222",
+      "brand3": "#c5d8ca"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "lockup",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "mark",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

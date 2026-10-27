@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T19:52:29.038Z",
+ "updatedAt": "2026-10-27T21:56:06.768Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -565,7 +565,7 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T19:52:28.960Z",
+   "updatedAt": "2026-10-27T21:56:06.768Z",
    "builtAt": "",
    "notes": [
     {
@@ -932,8 +932,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:31:42.318Z",
      "note": ""
     },
     {
@@ -948,8 +948,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:31:42.369Z",
      "note": ""
     },
     {
@@ -964,8 +964,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.770Z",
      "note": ""
     },
     {
@@ -980,8 +980,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:34:14.844Z",
      "note": ""
     },
     {
@@ -996,8 +996,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:42:08.861Z",
      "note": ""
     },
     {
@@ -1012,8 +1012,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:42:08.934Z",
      "note": ""
     },
     {
@@ -1028,8 +1028,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:47:13.405Z",
      "note": ""
     },
     {
@@ -1044,8 +1044,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:47:13.482Z",
      "note": ""
     },
     {
@@ -1060,8 +1060,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:50:08.047Z",
      "note": ""
     },
     {
@@ -1076,8 +1076,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:50:08.100Z",
      "note": ""
     },
     {
@@ -1092,8 +1092,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:51:10.874Z",
      "note": ""
     },
     {
@@ -1108,8 +1108,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:55:00.852Z",
      "note": ""
     },
     {
@@ -1124,8 +1124,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:55:00.906Z",
      "note": ""
     },
     {
@@ -1140,8 +1140,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:56:06.767Z",
      "note": ""
     },
     {
@@ -1649,6 +1649,89 @@
      "phase": "Phase 4 · Ship",
      "group": "Checks",
      "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "style-package-fable",
+   "title": "Style packages — Fable rebuild of style-package@1",
+   "category": "Design & branding",
+   "detail": "Profile: main framework. Fable rebuild of the Opus build of style-package@1 (enterprise-branding s19–s20, branch opus/enterprise-branding). Brett, Oct 27 2026: new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "fable/style-package",
+   "pr": "",
+   "createdAt": "2026-10-27T21:47:04.141Z",
+   "updatedAt": "2026-10-27T21:47:04.147Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Review the Opus style-package@1 contract (members registry, slots, tone) against design-package@1 and interface@1; decide what changes; write the decision into framework/spec (STYLE-PACKAGES.md).",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Contract",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Rebuild the engine + runtime apply paths (swap, swapAll, design-package extras, interfaces, roller): pure fixture spec/fixtures/style-package.json replayed by check-style-packages.mts.",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Engine",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Re-tune the 25 starter control sets against DESIGN-LANGUAGE.md (distinct, coherent with the colour/style themes they pair with) and regenerate fixtures.",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Assets",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Differences report _claude/memory/docs/rebuilds/style-package-fable.md + LOG.md line; re-bake the five web apps; checks green.",
+     "model": "Fable",
+     "why": "",
+     "phase": "Fable rebuild",
+     "group": "Ship",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",

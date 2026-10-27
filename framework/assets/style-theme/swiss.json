@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "swiss",
+  "name": "Swiss",
+  "version": "1.0.0",
+  "description": "Grid-true Swiss typography: flat surfaces, hard edges, outlines instead of shadows and bold headings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "editorial",
+    "flat"
+  ],
+  "data": {
+    "fontFamily": "'Helvetica Neue', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Helvetica Neue', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 0,
+      "md": 0,
+      "lg": 2
+    },
+    "space": 8,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "none",
+      "md": "0 0 0 1px var(--fx-border)",
+      "lg": "0 0 0 1px var(--fx-border)"
+    },
+    "density": "comfortable",
+    "motion": 120,
+    "blur": 0,
+    "headingWeight": 800,
+    "tracking": -0.02,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.95,
+    "wrapGroups": false
+  }
+}

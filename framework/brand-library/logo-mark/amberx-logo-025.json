@@ -1,0 +1,62 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-025",
+  "name": "AmberX lockup · hexagon wave",
+  "version": "1.0.0",
+  "description": "Generated lockup: a hexagon wave motif in a seeded rich palette (seed 26).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "hexagon",
+    "wave",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#1b7963",
+      "brand2": "#0a2f33",
+      "brand3": "#92cec7"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8.7 5v10L12 22l-8.7-5V7Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 14c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": false
+      },
+      {
+        "d": "M5 10c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": false,
+        "opacity": 0.5
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 800,
+      "tracking": 0,
+      "font": "ui",
+      "fill": "brand1"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

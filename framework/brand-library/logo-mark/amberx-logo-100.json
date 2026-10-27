@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-100",
+  "name": "AmberX mark · soft-square notch",
+  "version": "1.0.0",
+  "description": "Generated mark: a soft-square notch motif in a seeded rich palette (seed 105).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "soft-square",
+    "notch",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#b84281",
+      "brand2": "#692146",
+      "brand3": "#e9dde3"
+    },
+    "paths": [
+      {
+        "d": "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M11 2h2v3h-2zM11 19h2v3h-2zM2 11h3v2H2zM19 11h3v2h-3z",
+        "fill": "brand2"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

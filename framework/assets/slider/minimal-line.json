@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "minimal-line",
+  "name": "Minimal Line slider",
+  "version": "1.0.0",
+  "description": "Minimal Line: circle thumb on a 2 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "minimal",
+    "minimal"
+  ],
+  "data": {
+    "track": 2,
+    "thumb": "circle",
+    "thumbSize": 12,
+    "fill": "solid",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

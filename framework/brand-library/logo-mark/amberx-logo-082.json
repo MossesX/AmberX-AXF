@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-082",
+  "name": "AmberX mark · squircle orbit",
+  "version": "1.0.0",
+  "description": "Generated mark: a squircle orbit motif in a seeded bright palette (seed 86).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "squircle",
+    "orbit",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#4e9f14",
+      "brand2": "#1c3d06",
+      "brand3": "#b7e19d"
+    },
+    "paths": [
+      {
+        "d": "M12 2c7.5 0 10 2.5 10 10s-2.5 10-10 10S2 19.5 2 12 4.5 2 12 2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      },
+      {
+        "d": "M4.5 14.5c2-4 13-9 15-5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.6,
+        "round": true,
+        "opacity": 0.8
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

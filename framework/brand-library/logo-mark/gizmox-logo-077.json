@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-077",
+  "name": "GizmoX mark · diamond slash",
+  "version": "1.0.0",
+  "description": "Generated mark: a diamond slash motif in a seeded bright palette (seed 1082).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "diamond",
+    "slash",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#d77d0f",
+      "brand2": "#713e05",
+      "brand3": "#f0d9c1"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M15 6l-6 12",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": false
+      },
+      {
+        "d": "M9 6h2M13 18h2",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": false,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

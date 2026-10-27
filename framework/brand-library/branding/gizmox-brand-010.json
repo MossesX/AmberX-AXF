@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-010",
+  "name": "GizmoX · Wordmark 10",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · circle cross, wordmark placement, icon pack pack-037.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "wordmark"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-011",
+      "wordmark": "gizmox-logo-062",
+      "lockup": "gizmox-logo-064",
+      "animated": "gizmox-anim-043"
+    },
+    "iconPack": "pack-037",
+    "palette": {
+      "brand1": "#b5805a",
+      "brand2": "#71502d",
+      "brand3": "#f1edea"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "wordmark",
+      "window": "none",
+      "floating-window": "mark",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "wordmark",
+      "splash": "lockup",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}
