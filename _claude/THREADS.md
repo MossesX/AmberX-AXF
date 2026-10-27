@@ -34,7 +34,6 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -90,6 +89,7 @@ VPS). The session reads the rules and this file first, as usual.
 
 | Thread | Result | Updated |
 |---|---|---|
+| Fresh look: new default style theme + `fresh` appearance package | merged (#119); switching the shared look on axHub to Fresh after the deploy | 2026-10-27 |
 | AmberX as an empty shell for building and testing plugins | merged (#118); the hosted app updates in 5 min, CI builds the APK | 2026-10-26 |
 | Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders | merged (#115); console updates in 5 min, other apps on their next deploy. Fable rebuild parked (`apply-all-levels-fable`) | 2026-10-26 |
 | No login questions + headless sessions in the console Terminal | merged (#105) | 2026-10-26 |
