@@ -1671,7 +1671,7 @@
      "files": [
       "framework/plan/pending-core.mjs",
       "framework/plan/build-queue-core.mjs",
-      "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+      "build-orchestrator plugin: web/orchestrator-core.mjs",
       "framework/cli/plan.mjs"
      ],
      "checks": [],
@@ -1890,8 +1890,8 @@
      "estimate": "20 min",
      "files": [
       "framework/plan/builds-core.mjs",
-      "apps/console-web/plugins/build-manager/web/merge.mjs",
-      "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs"
+      "build-manager plugin: web/merge.mjs",
+      "build-orchestrator plugin: web/orchestrator-core.mjs"
      ],
      "checks": [
       "test: a step tick moves its build to the top in every view",
