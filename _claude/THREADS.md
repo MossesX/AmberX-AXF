@@ -34,7 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Banner look Apply to all with Simple/Basic/Pro/Advanced + settings levels + sliders | review | `claude/apply-all-levels` | (this PR) | Built (Opus). Merge; the console updates in 5 min, other apps on their next deploy. Fable rebuild parked (`apply-all-levels-fable`). Not screenshot-checked | 2026-10-26 |
+| Banner look Apply to all with Simple/Basic/Pro/Advanced + settings levels + sliders | review | `claude/apply-all-levels` | #115 | Built (Opus). Merge; the console updates in 5 min, other apps on their next deploy. Fable rebuild parked (`apply-all-levels-fable`). Not screenshot-checked | 2026-10-26 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
