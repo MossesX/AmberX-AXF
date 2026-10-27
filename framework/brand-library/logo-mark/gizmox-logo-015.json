@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-015",
+  "name": "GizmoX wordmark · circle hex",
+  "version": "1.0.0",
+  "description": "Generated wordmark: a circle hex motif in a seeded rich palette (seed 1015).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "circle",
+    "hex",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#7d41a4",
+      "brand2": "#331e57",
+      "brand3": "#d8d1e0"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 600,
+      "tracking": 0,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

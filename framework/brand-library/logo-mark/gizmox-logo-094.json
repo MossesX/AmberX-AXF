@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-094",
+  "name": "GizmoX mark · soft-square hex",
+  "version": "1.0.0",
+  "description": "Generated mark: a soft-square hex motif in a seeded bright palette (seed 1100).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "soft-square",
+    "hex",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a0872c",
+      "brand2": "#464a11",
+      "brand3": "#dcd5bc"
+    },
+    "paths": [
+      {
+        "d": "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 7l4.3 2.5v5L12 17l-4.3-2.5v-5z",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

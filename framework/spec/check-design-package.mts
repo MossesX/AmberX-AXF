@@ -15,6 +15,7 @@ import {
 } from '../core/engines/designpackage';
 import { BEHAVIOR_ENUMS, BEHAVIOR_RANGES, BEHAVIOR_SWITCHES, DEFAULT_BEHAVIOR, behaviorErrors, behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from '../core/engines/behavior';
 import * as engine from '../cli/build-engine.mjs';
+import { DEFAULT_WINDOW_PLACEMENT, WindowManager, minimizeTargetFor, placeNewWindow, snapCoord } from '../core/engines/windows';
 
 let n = 0;
 const ok = (c: unknown, m: string) => { assert.ok(c, m); n++; };
@@ -103,6 +104,45 @@ eq([confirmBeforeDelete(DEFAULT_BEHAVIOR, false), confirmBeforeDelete(DEFAULT_BE
 eq([vibrationPattern(DEFAULT_BEHAVIOR), vibrationPattern({ feedback: { vibration: 'light' } }), vibrationPattern({ feedback: { vibration: 'strong' } }, 'success')], [[], [12], [30, 40, 30]], 'vibration');
 for (const id of ['standard', 'calm', 'snappy', 'minimal-motion', 'playful']) eq(behaviorErrors(read(`framework/assets/behavior-theme/${id}.json`).data), [], `starter ${id} ok`);
 eq(behaviorStyle(read('framework/assets/behavior-theme/minimal-motion.json').data).attrs['data-fx-motion'], 'reduced', 'minimal-motion is reduced always');
+
+/* ---- windows: the behaviour theme's `windows` group drives the window manager (Fable rebuild s5r4) ---- */
+eq(DEFAULT_WINDOW_PLACEMENT, { stack: DEFAULT_BEHAVIOR.windows.stack, snap: DEFAULT_BEHAVIOR.windows.snap, snapGrid: DEFAULT_BEHAVIOR.windows.snapGrid, minimize: DEFAULT_BEHAVIOR.windows.minimize }, 'window placement defaults = the behaviour defaults');
+const snapOn = { ...DEFAULT_WINDOW_PLACEMENT, snap: true, snapGrid: 8 };
+eq([snapCoord(37, DEFAULT_WINDOW_PLACEMENT), snapCoord(37, snapOn), snapCoord(36, snapOn), snapCoord(37, { ...snapOn, snapGrid: 1 })], [37, 40, 40, 37], 'snap to grid only when on and the grid is > 1');
+const size = { width: 300, height: 200 }; const vp = { width: 1000, height: 800 };
+eq(placeNewWindow(DEFAULT_WINDOW_PLACEMENT, 0, size), { x: 24, y: 72 }, 'first window cascades from the origin (no viewport)');
+eq(placeNewWindow(DEFAULT_WINDOW_PLACEMENT, 2, size), { x: 80, y: 128 }, 'third window two steps on');
+eq(placeNewWindow({ ...DEFAULT_WINDOW_PLACEMENT, stack: 'center' }, 5, size, vp), { x: 350, y: 300 }, 'center ignores the index');
+eq(placeNewWindow({ ...DEFAULT_WINDOW_PLACEMENT, stack: 'remember' }, 5, size, vp, { x: 410, y: 90 }), { x: 410, y: 90 }, 'remember reuses the last place');
+eq(placeNewWindow({ ...DEFAULT_WINDOW_PLACEMENT, stack: 'remember' }, 1, size, vp, null), { x: 52, y: 100 }, 'remember with nothing remembered cascades');
+eq(placeNewWindow({ ...snapOn, stack: 'center' }, 0, { width: 301, height: 201 }, vp), { x: 352, y: 296 }, 'centred then snapped (349.5/8 and 299.5/8 rounded)');
+eq(placeNewWindow(DEFAULT_WINDOW_PLACEMENT, 0, { width: 2000, height: 2000 }, vp), { x: 0, y: 0 }, 'a window bigger than the viewport sits at the origin');
+const far = placeNewWindow(DEFAULT_WINDOW_PLACEMENT, 40, size, vp);
+ok(far.x + size.width <= vp.width && far.y + size.height <= vp.height, 'cascade wraps inside the viewport');
+eq([minimizeTargetFor(DEFAULT_WINDOW_PLACEMENT, 'floating-toolbar'), minimizeTargetFor({ ...DEFAULT_WINDOW_PLACEMENT, minimize: 'dock' }, 'floating-toolbar'), minimizeTargetFor({ ...DEFAULT_WINDOW_PLACEMENT, minimize: 'none' }, 'corner-titlebar')], ['floating-toolbar', 'corner-titlebar', null], 'minimize target per rule');
+{
+  const wm = new WindowManager();
+  wm.viewport = vp;
+  wm.setPlacement({ stack: 'center', snap: true, snapGrid: 10 });
+  const id = wm.openFloating([{ id: 't', title: 'T', kind: 'x' }], 'Win', 'floating', 301, 201);
+  const w = wm.state.windows.find((x) => x.id === id)!;
+  eq([w.x, w.y], [350, 300], 'openFloating places through the rules');
+  wm.moveTo(id, 123, 77); wm.settle(id);
+  const w2 = wm.state.windows.find((x) => x.id === id)!;
+  eq([w2.x, w2.y], [120, 80], 'settle snaps a dragged window');
+  wm.resize(id, 333, 222);
+  eq([wm.state.windows.find((x) => x.id === id)!.width, wm.state.windows.find((x) => x.id === id)!.height], [330, 220], 'resize snaps too');
+  wm.setPlacement({ stack: 'remember' });
+  const id2 = wm.openFloating([{ id: 't2', title: 'T', kind: 'x' }], 'Win', 'floating', 301, 201);
+  eq([wm.state.windows.find((x) => x.id === id2)!.x, wm.state.windows.find((x) => x.id === id2)!.y], [120, 80], 'remember: a window with the same title opens where the last one was left');
+  wm.setPlacement({ minimize: 'none' });
+  ok(!wm.canMinimize, 'minimize none = no minimizing');
+  wm.minimize(id, 'floating-toolbar'); wm.minimizeToNextCorner(id);
+  eq(wm.state.windows.find((x) => x.id === id)!.minimized, null, 'minimize requests are refused under none');
+  wm.setPlacement({ minimize: 'dock' });
+  wm.minimize(id, 'floating-toolbar', 5, 5);
+  eq(wm.state.windows.find((x) => x.id === id)!.minimized, 'corner-titlebar', 'dock turns a cursor minimize into a corner title bar');
+}
 
 /* ---- console Amber menu (carried over from check-appearance-package) ---- */
 const amber = read('apps/console-web/src/assets/context-menu/amber.json').data;

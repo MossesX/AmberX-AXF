@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-097",
+  "name": "GizmoX mark · rounded-square pulse",
+  "version": "1.0.0",
+  "description": "Generated mark: a rounded-square pulse motif in a seeded bright palette (seed 1103).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "rounded-square",
+    "pulse",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#45a18a",
+      "brand2": "#205550",
+      "brand3": "#d1e0df"
+    },
+    "paths": [
+      {
+        "d": "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 12h3l2-4 3 8 2-4h4",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

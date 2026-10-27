@@ -1,0 +1,61 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-123",
+  "name": "AmberX lockup · circle ring",
+  "version": "1.0.0",
+  "description": "Generated lockup: a circle ring motif in a seeded rich palette (seed 129).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "circle",
+    "ring",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#681fe5",
+      "brand2": "#2f0c88",
+      "brand3": "#e1dcf4"
+    },
+    "paths": [
+      {
+        "d": "M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M16.5 12a4.5 4.5 0 1 1-1.3-3.2",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      },
+      {
+        "d": "M12 12h4.5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 600,
+      "tracking": 0.08,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

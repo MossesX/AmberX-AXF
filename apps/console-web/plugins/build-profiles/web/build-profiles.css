@@ -1,0 +1,11 @@
+/* Build profiles. Theme tokens only, axp-build-profiles prefix; controls are framework components (layout only here). */
+.axp-build-profiles { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); width: 100%; min-width: min(calc(var(--fx-font-size) * 28), 86vw); max-height: 74vh; overflow-y: auto; color: var(--fx-text) }
+.axp-build-profiles__list { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-build-profiles__row { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.75) }
+.axp-build-profiles__row + .axp-build-profiles__row { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-profiles__row.is-active { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
+.axp-build-profiles__head { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-build-profiles__name { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); font-weight: 600 }
+.axp-build-profiles__desc, .axp-build-profiles__counts { margin: 0 }
+.axp-build-profiles__counts { color: var(--fx-muted) }
+.axp-build-profiles__new { padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }

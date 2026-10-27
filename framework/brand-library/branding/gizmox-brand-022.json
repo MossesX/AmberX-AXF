@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-022",
+  "name": "GizmoX · Quiet 22",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · open stack, quiet placement, icon pack pack-085.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "quiet"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-024",
+      "wordmark": "gizmox-logo-123",
+      "lockup": "gizmox-logo-116",
+      "animated": "gizmox-anim-046"
+    },
+    "iconPack": "pack-085",
+    "palette": {
+      "brand1": "#389f8c",
+      "brand2": "#184e4d",
+      "brand3": "#c7dcd5"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "mark",
+      "window": "none",
+      "floating-window": "none",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "mark",
+      "favicon": "mark",
+      "empty-state": "none"
+    }
+  }
+}

@@ -5,6 +5,7 @@
  */
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
+import { usePortalRoot } from './InterfaceScope';
 import { SEARCH_KIND_LABELS, type AxfRuntime, type SearchEntry, type SearchHit, type ToolbarSearch } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import type { ViewMap } from '../AppShell';
@@ -154,6 +155,7 @@ function focusEntry(rt: AxfRuntime, entry: SearchEntry, views: ViewMap): boolean
 
 /** The toolbar's live search: results update on every keystroke; Enter or a click focuses the pick. */
 export function LiveSearch({ config }: { config: ToolbarSearch }) {
+  const portalRoot = usePortalRoot();
   const rt = useRuntime();
   const state = useAxfState();
   const [q, setQ] = useState('');
@@ -278,7 +280,7 @@ export function LiveSearch({ config }: { config: ToolbarSearch }) {
             </div>
           ))}
         </div>,
-        document.body,
+        portalRoot,
       )}
     </div>
   );

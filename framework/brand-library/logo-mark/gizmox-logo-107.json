@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-107",
+  "name": "GizmoX wordmark · shield ring",
+  "version": "1.0.0",
+  "description": "Generated wordmark: a shield ring motif in a seeded rich palette (seed 1114).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "shield",
+    "ring",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a36e29",
+      "brand2": "#4c3a10",
+      "brand3": "#deceba"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 700,
+      "tracking": 0.08,
+      "font": "display",
+      "fill": "brand1"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

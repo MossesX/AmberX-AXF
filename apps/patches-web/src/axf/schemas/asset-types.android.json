@@ -30,26 +30,6 @@
         ]
       }
     },
-    "icon-pack": {
-      "label": "Icon pack",
-      "group": "Packs",
-      "icon": "star",
-      "optional": true,
-      "swapTier": "RECOMPOSE",
-      "required": [
-        "style",
-        "icons"
-      ],
-      "enums": {
-        "style": [
-          "outlined",
-          "rounded",
-          "sharp",
-          "filled",
-          "custom"
-        ]
-      }
-    },
     "string-pack": {
       "label": "String pack",
       "group": "Packs",
@@ -189,7 +169,7 @@
           "floating"
         ]
       },
-      "description": "Window schema: how windows of a kind are built \u2014 toolbars allowed/forced, default minimize corner + mode, default size. Floating/dock windows force toolbars on."
+      "description": "Window schema: how windows of a kind are built — toolbars allowed/forced, default minimize corner + mode, default size. Floating/dock windows force toolbars on."
     }
   }
 }

@@ -3,6 +3,9 @@ import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
 import { hostSpec, validateHostAttachments } from './engines/widgets';
 import { validateMenuItems } from './engines/appmenu';
 import { designPackageErrors } from './engines/designpackage';
+import { stylePackageErrors } from './engines/stylepackage';
+import { interfaceErrors } from './engines/interface';
+import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 
 export interface ValidationResult {
@@ -88,7 +91,10 @@ export function validateAsset(raw: unknown): ValidationResult {
     for (const [t, items] of Object.entries(data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
   if (raw.type === 'design-package') errors.push(...designPackageErrors(data));
+  if (raw.type === 'style-package') errors.push(...stylePackageErrors(data));
+  if (raw.type === 'interface') errors.push(...interfaceErrors(data));
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
+  errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);
   if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));

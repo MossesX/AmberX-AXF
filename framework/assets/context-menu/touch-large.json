@@ -1,0 +1,78 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "touch-large",
+  "name": "Touch Large",
+  "version": "1.0.0",
+  "description": "Roomy rows for fingers, no shortcut hints, only the commands people reach for on a tablet.",
+  "author": "AmberX AXF",
+  "tags": [
+    "touch",
+    "tablet"
+  ],
+  "data": {
+    "variant": "roomy",
+    "showIcons": true,
+    "showShortcuts": false,
+    "targets": {
+      "default": [
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "paste",
+          "action": "edit.paste",
+          "shortcut": "Ctrl+V"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "home",
+          "label": "Go home",
+          "icon": "home",
+          "action": "nav:home"
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": "app.settings",
+          "shortcut": "Ctrl+,"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "docs",
+          "label": "Documentation",
+          "icon": "help",
+          "action": "help.docs",
+          "shortcut": "F1"
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}"
+        },
+        {
+          "id": "home",
+          "label": "Go home",
+          "icon": "home",
+          "action": "nav:home"
+        }
+      ]
+    }
+  }
+}

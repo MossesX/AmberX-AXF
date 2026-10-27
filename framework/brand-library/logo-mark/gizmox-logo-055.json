@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-055",
+  "name": "GizmoX mark · diamond orbit",
+  "version": "1.0.0",
+  "description": "Generated mark: a diamond orbit motif in a seeded rich palette (seed 1059).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "diamond",
+    "orbit",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#d61f8d",
+      "brand2": "#770d62",
+      "brand3": "#f0d1e2"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": false
+      },
+      {
+        "d": "M4.5 14.5c2-4 13-9 15-5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.6,
+        "round": false,
+        "opacity": 0.8
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

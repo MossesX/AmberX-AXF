@@ -527,10 +527,50 @@ def _persist_root() -> Path | None:
     return old if old.is_dir() else None
 
 
+# Build profiles (build-profiles@1): which copy of the work data (pending, plan + media, queue, status, tracker) is in force.
+import build_profiles  # noqa: E402
+
+PROFILES = build_profiles.BuildProfiles(ROOT, _persist_root)
+PROFILES_CLI = ROOT / "framework" / "cli" / "profiles.mjs"
+
+
 def _plan_media_dir() -> Path:
-    root = _persist_root()
-    hub = root / "framework" / "plan" / "media" if root else None
-    return (hub if hub and hub.is_dir() else ROOT / "framework" / "plan" / "media").resolve()
+    return PROFILES.data_path("framework/plan/media/").resolve()
+
+
+def _profiles_cli(*args: str) -> dict[str, Any]:
+    proc = subprocess.run(["node", str(PROFILES_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
+@app.get("/api/profiles")
+def profiles_state() -> Any:
+    """Build profiles (build-profiles@1): every profile with its counts, the saved pick (`active`) and the one in force."""
+    return ok_or_500(_profiles_cli("state"))
+
+
+@app.post("/api/profiles", dependencies=[Depends(auth)])
+async def profiles_act(request: Request) -> Any:
+    """One change: {action: select|create|update|remove, ...} — see framework/cli/profiles.mjs."""
+    body = await request.body()
+    if len(body) > 16 * 1024:
+        raise HTTPException(413, "change too large")
+    try:
+        change = json.loads(body or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    if not isinstance(change, dict) or change.get("action") not in ("select", "create", "update", "remove"):
+        raise HTTPException(400, "action must be select, create, update or remove")
+    res = _profiles_cli("act", json.dumps(change))
+    for line in res.get("log", []) if isinstance(res, dict) else []:
+        log("profiles", line)
+    if not res.get("ok"):
+        raise HTTPException(400, res.get("error", "failed"))
+    return res
 
 
 @app.get("/plan-media/{name}")
@@ -1184,6 +1224,7 @@ import credentials  # noqa: E402
 
 credentials.init(ROOT)
 console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
+                            data_path=PROFILES.data_path, build_profile=PROFILES.active,
                             log=log, plugin_enabled=plugin_enabled, set_plugin_enabled=lambda f, on: set_plugin_enabled(f, {"enabled": on}), terminal_lines=lambda: list(_state.get("terminal", [])))
 
 load_plugins()
@@ -1606,9 +1647,7 @@ import alerts as alerts_hub  # noqa: E402
 
 
 def _pending_file() -> Path:
-    root = _persist_root()
-    hub_copy = root / "framework" / "plan" / "pending.json" if root else None
-    return hub_copy if hub_copy and hub_copy.is_file() else ROOT / "framework" / "plan" / "pending.json"
+    return PROFILES.data_path("framework/plan/pending.json")  # the active build profile's list
 
 
 ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, default_repos=[GITHUB_REPO],

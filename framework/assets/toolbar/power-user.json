@@ -1,0 +1,118 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "power-user",
+  "name": "Power User",
+  "version": "1.0.0",
+  "description": "Eleven icon commands, the pages provider and the bar toggles, folding away when not needed.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dense",
+    "live"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "file",
+        "items": [
+          {
+            "id": "new",
+            "icon": "plus",
+            "label": "New",
+            "action": "file.new"
+          },
+          {
+            "id": "open-file",
+            "icon": "folder",
+            "label": "Open",
+            "action": "file.open"
+          },
+          {
+            "id": "save",
+            "icon": "save",
+            "label": "Save",
+            "action": "file.save"
+          }
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          {
+            "id": "undo",
+            "icon": "undo",
+            "label": "Undo",
+            "action": "edit.undo"
+          },
+          {
+            "id": "redo",
+            "icon": "redo",
+            "label": "Redo",
+            "action": "edit.redo"
+          },
+          {
+            "id": "cut",
+            "icon": "cut",
+            "label": "Cut",
+            "action": "edit.cut"
+          },
+          {
+            "id": "copy",
+            "icon": "copy",
+            "label": "Copy",
+            "action": "edit.copy"
+          },
+          {
+            "id": "paste",
+            "icon": "paste",
+            "label": "Paste",
+            "action": "edit.paste"
+          }
+        ]
+      },
+      {
+        "id": "app",
+        "items": [
+          {
+            "id": "alerts",
+            "icon": "bell",
+            "label": "Alerts",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          },
+          {
+            "id": "shortcuts",
+            "icon": "keyboard",
+            "label": "Keyboard shortcuts",
+            "action": "view.shortcuts"
+          }
+        ]
+      },
+      {
+        "id": "pages",
+        "items": [],
+        "provider": "views",
+        "max": 6,
+        "label": "Pages"
+      },
+      {
+        "id": "chrome",
+        "items": [],
+        "provider": "chrome",
+        "max": 4,
+        "label": "Bars"
+      }
+    ],
+    "density": "compact",
+    "collapsible": true
+  }
+}

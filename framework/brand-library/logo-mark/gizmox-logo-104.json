@@ -1,0 +1,62 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-104",
+  "name": "GizmoX lockup · soft-square wave",
+  "version": "1.0.0",
+  "description": "Generated lockup: a soft-square wave motif in a seeded rich palette (seed 1111).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "soft-square",
+    "wave",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#94478b",
+      "brand2": "#45204b",
+      "brand3": "#dccbd9"
+    },
+    "paths": [
+      {
+        "d": "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 14c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      },
+      {
+        "d": "M5 10c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true,
+        "opacity": 0.5
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 600,
+      "tracking": -0.02,
+      "font": "mono",
+      "fill": "brand1"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

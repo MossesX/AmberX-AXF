@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "gizmox-anim-051",
+  "name": "gizmox-logo-055 · shimmer",
+  "version": "1.0.0",
+  "description": "Generated animation: shimmer over 1400 ms, on hover (seed 1051).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "shimmer",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "gizmox-logo-055",
+    "preset": "shimmer",
+    "durationMs": 1400,
+    "delayMs": 200,
+    "loop": "hover",
+    "intensity": 0.7
+  }
+}
