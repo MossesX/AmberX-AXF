@@ -34,7 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| AX Notes: voice AI note-taker app + lib-overlay/voice/triggers/tts/ai/onboarding + 5 AI plugins (Android exception, profile refactor) | stopped | `fable/ax-notes` | – | Orchestrator build `ax-notes` (21 steps): Stopped by Brett at 16:17 before any code was committed (s1 and s4 had just started; nothing kept). Resume only when he says so. Change log chg-20261027-a7c0e5b1d2. See *To carry on* | 2026-10-27 |
+| AX Notes: voice AI note-taker + to-do lists, AmberX speaks (lib-speech), overlay/triggers/ai/onboarding libs + 5 AI plugins (Android exception, profile refactor) | working | `fable/ax-notes` | – | Resumed by Brett Oct 27 16:19 with wider scope (speech, sorted note lists, to-do lists, codebase integration). Orchestrator build `ax-notes` (23 steps): Fable s1-s5 on 2 sub-agents → approval → Opus on up to 3 sub-agents. Change log chg-20261027-a7c0e5b1d2 | 2026-10-27 |
 | AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |

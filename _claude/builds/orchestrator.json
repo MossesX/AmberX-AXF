@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:15:46.001Z",
+ "updatedAt": "2026-10-27T20:22:44.210Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1644,22 +1644,26 @@
   },
   {
    "id": "ax-notes",
-   "title": "AX Notes: voice AI note-taker app + lib-overlay/voice/triggers/tts/ai/onboarding + 5 AI plugins",
+   "title": "AX Notes: voice AI note-taker + to-do lists app, AmberX speaks (lib-speech), lib-overlay/triggers/ai/onboarding + 5 AI plugins",
    "category": "AI & voice",
    "detail": "Brett, Oct 27 2026 (claude.ai, AmberX Framework project): Android app apps/ax-notes, voice-controlled AI note-taker + Claude assistant with an ActiveX-style floating overlay (pill with chips, DETECTIONS-style log, 3-line strip, mini screen). Not a plugin: core hardcoded in the app; reusable parts as framework libraries (lib-overlay NEW, lib-voice EXTEND, lib-triggers NEW, lib-tts NEW, lib-ai NEW = queue epic x.lib.ai, lib-onboarding NEW) and Android plugins (ai-chat, ai-codebase-reader, ai-build-bridge, ai-automations, note-sorter). ActiveX (MossesX/ActiveX) code is COPIED and generalized; ActiveX never named in AXF manifests/hub. Android hold exception granted by Brett for this build only. Build profile: refactor (Brett's pick). Brett allowed up to 3 sub-agents for this build. Folds in queue epic x.lib.ai. overlay@1 joins interface@1 chrome slots and the named-asset rule (namespaced ids).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:15:46.000Z",
+   "updatedAt": "2026-10-27T20:22:44.208Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Build profile: refactor (Brett, card Oct 27 2026). Fable→Opus switch pre-approved by Brett in chat ('do fable and opus', up to 3 sub-agents).",
      "at": "2026-10-27T20:15:46.000Z"
+    },
+    {
+     "text": "Resumed by Brett Oct 27 16:19 (claude.ai): added speaking (lib-speech, shared speak+listen incl. web), multiple sorted note lists + to-do lists with notes and categories, codebase integration step. Profile refactor; Fable/Opus split with approval at the switch; up to 3 sub-agents; Android exception confirmed again.",
+     "at": "2026-10-27T20:22:32.091Z"
     }
    ],
    "approvals": [],
@@ -1778,7 +1782,7 @@
     },
     {
      "id": "s8",
-     "text": "lib-tts: SpeechProvider + Android TTS default + HQ placeholder, playback queue (pause/skip/faster/slower/repeat as triggers), settings voice/speed/pitch",
+     "text": "lib-speech (Brett: one shared speak+listen library, builds on lib-voice without breaking Voice Vault): SpeechProvider + Android TTS default + HQ placeholder, playback queue (pause/skip/faster/slower/repeat as triggers), settings voice/speed/pitch; speech@1 TS contract + web SpeechSynthesis provider in framework/core so AmberX web apps speak too (the pending narrated-walkthrough build reuses it later)",
      "model": "Opus",
      "why": "",
      "phase": "Phase 2 · Libraries",
@@ -1857,6 +1861,22 @@
      "note": ""
     },
     {
+     "id": "s22",
+     "text": "Lists (Brett Oct 27): multiple note lists, each with its own sort (date/category/priority/manual) plus smart lists by filter; to-do lists whose items can hold notes, due date and priority; categories shared across notes and to-dos; voice: \"add to-do …\", \"check off …\", \"read my list [name]\", \"new list …\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 2 · App",
+     "group": "AX Notes app",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": true,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
      "id": "s13",
      "text": "Mini-screen content (transcript, last note, AI reply, mic) + in-app settings host for libraries and plugin sub-tabs; app runs with every plugin removed",
      "model": "Opus",
@@ -1874,7 +1894,7 @@
     },
     {
      "id": "s14",
-     "text": "Plugin note-sorter: category/tags/title/summary/action items, learns from re-categorizing, daily/weekly digest",
+     "text": "Plugin note-sorter: category/tags/title/summary/action items, files notes into the right lists, turns action items into to-dos, learns from re-categorizing, daily/weekly digest read aloud",
      "model": "Opus",
      "why": "",
      "phase": "Phase 2 · Plugins",
@@ -1906,7 +1926,7 @@
     },
     {
      "id": "s16",
-     "text": "Plugin ai-codebase-reader: read-only repos via axHub → structured notes (architecture, TODOs, changes since last read)",
+     "text": "Plugin ai-codebase-reader: read-only repos via axHub → structured notes (architecture, TODOs, changes since last read); notes and to-dos carry code links (repo, path, line range, commit) that open on GitHub",
      "model": "Opus",
      "why": "",
      "phase": "Phase 2 · Plugins",
@@ -1928,6 +1948,22 @@
      "phase": "Phase 2 · Plugins",
      "group": "Plugins",
      "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": true,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s23",
+     "text": "Codebase integration (Brett Oct 27): harvest TODO/FIXME from watched repos into a per-repo to-do list (deduped, closed when the line disappears), attach notes to a file/line by voice (\"note on <file>\"), ask Claude about the code with the note as context; all through axHub read-only",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 2 · Plugins",
+     "group": "Plugins",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
