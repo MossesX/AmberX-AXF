@@ -1,0 +1,52 @@
+{
+  "$axf": "asset@1",
+  "type": "appearance-package",
+  "id": "fresh",
+  "name": "Fresh",
+  "version": "1.0.0",
+  "description": "Fresh: Walkthrough Studio's new default look (Fresh Light + Fresh style, solid rounded buttons, soft cards), super-tight spacing.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default"
+  ],
+  "data": {
+    "slots": {
+      "color-theme": "fresh-light",
+      "style-theme": "fresh",
+      "layout": "walkthrough-studio",
+      "app-menu": "walkthrough-studio",
+      "toolbar": "standard-icons",
+      "nav-menu": "walkthrough-studio",
+      "context-menu": "compact-classic",
+      "tab-group": "underline",
+      "dialog": "centered-modal",
+      "popup": "corner-solid",
+      "button": "rounded-solid",
+      "slider": "classic-round",
+      "container": "soft-card",
+      "gauge": "classic-arc",
+      "meter": "striped-pill",
+      "settings": "console",
+      "banner": "walkthrough-studio",
+      "clock": "digital-12h",
+      "search-bar": "everything",
+      "logo": "wordmark",
+      "action-button": "ws-compile",
+      "label": "ws-length",
+      "status": "ws-recording",
+      "counter": "ws-review",
+      "progress": "ws-built",
+      "avatar": "account",
+      "link": "docs",
+      "theme-switch": "fresh-day-night",
+      "spacer": "gap",
+      "divider": "rule",
+      "badge": "new"
+    },
+    "spacing": "tight",
+    "hidden": {
+      "toolbar": true
+    },
+    "settings": {}
+  }
+}

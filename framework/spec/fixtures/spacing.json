@@ -13,6 +13,35 @@
     "": "tight"
   },
   "vars": {
+    "fresh": {
+      "tight": {
+        "--fx-space": "5.6px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.62",
+        "--fx-radius-sm": "4px",
+        "--fx-radius-md": "6px",
+        "--fx-radius-lg": "8px",
+        "--fx-font-size": "14px"
+      },
+      "compact": {
+        "--fx-space": "7.2px",
+        "--fx-row-h": "27px",
+        "--fx-density-k": "0.8",
+        "--fx-radius-sm": "5px",
+        "--fx-radius-md": "8px",
+        "--fx-radius-lg": "11px",
+        "--fx-font-size": "14px"
+      },
+      "regular": {
+        "--fx-space": "9px",
+        "--fx-row-h": "34px",
+        "--fx-density-k": "1",
+        "--fx-radius-sm": "6px",
+        "--fx-radius-md": "10px",
+        "--fx-radius-lg": "14px",
+        "--fx-font-size": "14px"
+      }
+    },
     "glass-orbit": {
       "tight": {
         "--fx-space": "6.8px",

@@ -1,0 +1,50 @@
+{
+  "$axf": "asset@1",
+  "type": "appearance-package",
+  "id": "fresh",
+  "name": "Fresh",
+  "version": "1.0.0",
+  "description": "Fresh: Patches's new default look (Fresh Light + Fresh style, solid rounded buttons, soft cards), super-tight spacing.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default"
+  ],
+  "data": {
+    "slots": {
+      "color-theme": "fresh-light",
+      "style-theme": "fresh",
+      "layout": "patches-tabs",
+      "app-menu": "patches",
+      "toolbar": "standard-icons",
+      "nav-menu": "patches-tabs",
+      "context-menu": "compact-classic",
+      "tab-group": "underline",
+      "dialog": "centered-modal",
+      "popup": "corner-solid",
+      "button": "rounded-solid",
+      "slider": "classic-round",
+      "container": "soft-card",
+      "banner": "patches",
+      "clock": "digital-12h",
+      "search-bar": "everything",
+      "logo": "wordmark",
+      "action-button": "settings",
+      "label": "version",
+      "status": "online",
+      "counter": "alerts",
+      "progress": "build",
+      "avatar": "account",
+      "link": "docs",
+      "theme-switch": "fresh-day-night",
+      "spacer": "gap",
+      "divider": "rule",
+      "badge": "new",
+      "settings": "console"
+    },
+    "spacing": "tight",
+    "hidden": {
+      "toolbar": true
+    },
+    "settings": {}
+  }
+}

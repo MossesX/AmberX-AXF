@@ -232,6 +232,28 @@
       "ok": "#2b8a5e",
       "scheme": "light"
     },
+    "fresh-dark": {
+      "bg": "#0e0f12",
+      "fg": "#ececf1",
+      "muted": "#9a9ea9",
+      "card": "#16171b",
+      "line": "#2a2c33",
+      "accent": "#8b93ff",
+      "danger": "#f97066",
+      "ok": "#47cd89",
+      "scheme": "dark"
+    },
+    "fresh-light": {
+      "bg": "#f6f7f9",
+      "fg": "#16181d",
+      "muted": "#5f6672",
+      "card": "#ffffff",
+      "line": "#e2e5ea",
+      "accent": "#4f46e5",
+      "danger": "#d92d20",
+      "ok": "#12875a",
+      "scheme": "light"
+    },
     "graphite-lime": {
       "bg": "#141516",
       "fg": "#ecefe9",
