@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "kiosk",
+  "name": "Kiosk",
+  "version": "1.0.0",
+  "description": "No chrome at all: a single full-screen surface for kiosks, wall displays and embedded views.",
+  "author": "AmberX AXF",
+  "tags": [
+    "kiosk",
+    "focus"
+  ],
+  "data": {
+    "nav": "top",
+    "navWidth": 0,
+    "showMenubar": false,
+    "showToolbar": false,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 0,
+    "slots": {
+      "menubar": [],
+      "toolbar": [],
+      "nav": []
+    }
+  }
+}
