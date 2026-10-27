@@ -19,7 +19,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/fable-rebuilds",
     "env": [],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "apps/console-web/plugins/README.md"]
   },
   "opens": "main"
 }

@@ -32,7 +32,7 @@
     "dataDir": ".axf-console/plugins/voice-notes",
     "env": [],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ]
   },
