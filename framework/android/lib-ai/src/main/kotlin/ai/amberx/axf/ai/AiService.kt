@@ -75,7 +75,7 @@ public class AiSettings(private val config: Config?, private val store: KeyValue
         public const val AUTO: String = ""
 
         public fun group(modes: List<AiMode>, module: String): SettingsGroup = SettingsGroup(
-            GROUP, "AI assistant", "sparkles", module, order = 40, tab = "connections",
+            GROUP, "AI assistant", "sparkles", module, order = 40, tab = "general",
             description = "Sessions run on axHub and stay live when you leave; what you may use comes from your hub account.",
             settings = listOf(
                 SettingSpec(MODE, "Mode", SettingKind.CHOICE, "What the assistant does when nothing else says (a trigger may pick its own). Modes your account can't use fall back to chat.",
