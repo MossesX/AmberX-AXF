@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.util.TimeZone
@@ -93,7 +94,7 @@ internal class AutomationsController(
                     .onErr { note("$label: ${it.message}") }
             }
             is RuleAction.BuildRequest -> {
-                val payload = JsonObject(buildMap {
+                val payload = JsonObject(buildMap<String, JsonElement> {
                     put("text", JsonPrimitive(f.vars["text"].orEmpty())); put("source", JsonPrimitive("note"))
                     f.vars["title"]?.takeIf { it.isNotBlank() }?.let { put("title", JsonPrimitive(it)) }
                     f.vars["noteId"]?.takeIf { it.isNotBlank() }?.let { put("noteId", JsonPrimitive(it)) }

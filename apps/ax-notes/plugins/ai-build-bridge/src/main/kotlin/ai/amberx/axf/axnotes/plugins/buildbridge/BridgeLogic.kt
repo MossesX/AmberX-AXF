@@ -234,7 +234,7 @@ object ApprovalEvents {
 object RequestCodec {
     const val MAX_KEPT: Int = 100
 
-    fun toJson(r: BuildRequest): JsonObject = JsonObject(buildMap {
+    fun toJson(r: BuildRequest): JsonObject = JsonObject(buildMap<String, JsonElement> {
         put("id", JsonPrimitive(r.id)); put("title", JsonPrimitive(r.title)); put("body", JsonPrimitive(r.body)); put("source", JsonPrimitive(r.source.wire))
         put("createdAt", JsonPrimitive(r.createdAt)); put("updatedAt", JsonPrimitive(r.updatedAt)); put("status", JsonPrimitive(r.status.wire))
         put("polls", JsonPrimitive(r.polls)); put("lastSeq", JsonPrimitive(r.lastSeq))
@@ -268,7 +268,7 @@ object RequestCodec {
     }
 
     /** The hook payload other plugins (ai-automations) get when the orchestrator finishes a build. */
-    fun finishedHook(r: BuildRequest): JsonObject = JsonObject(buildMap {
+    fun finishedHook(r: BuildRequest): JsonObject = JsonObject(buildMap<String, JsonElement> {
         put("requestId", JsonPrimitive(r.id)); put("title", JsonPrimitive(r.title)); put("status", JsonPrimitive("finished"))
         r.buildId?.let { put("buildId", JsonPrimitive(it)) }
         r.summary?.let { put("summary", JsonPrimitive(it)) }

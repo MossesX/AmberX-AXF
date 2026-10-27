@@ -240,11 +240,11 @@ object RuleCodec {
 
     fun trigger(t: RuleTrigger): JsonObject = JsonObject(when (t) {
         is RuleTrigger.Voice -> mapOf("kind" to p("voice"), "phrase" to p(t.phrase))
-        is RuleTrigger.Schedule -> buildMap {
+        is RuleTrigger.Schedule -> buildMap<String, JsonElement> {
             put("kind", p("schedule")); t.everyMinutes?.let { put("everyMinutes", JsonPrimitive(it)) }; t.dailyAt?.let { put("dailyAt", p(it)) }
             if (t.days.isNotEmpty()) put("days", JsonArray(t.days.sorted().map { JsonPrimitive(it) }))
         }
-        is RuleTrigger.GitPush -> buildMap { put("kind", p("git-push")); put("repo", p(t.repo)); t.branch?.let { put("branch", p(it)) } }
+        is RuleTrigger.GitPush -> buildMap<String, JsonElement> { put("kind", p("git-push")); put("repo", p(t.repo)); t.branch?.let { put("branch", p(it)) } }
         is RuleTrigger.NoteTag -> mapOf("kind" to p("note-tag"), "tag" to p(t.tag))
         is RuleTrigger.BuildFinished -> mapOf("kind" to p("build-finished"))
     })
@@ -291,7 +291,7 @@ object RuleCodec {
     fun rulesJson(rs: List<AutomationRule>): JsonArray = JsonArray(rs.map { rule(it) })
 
     fun memory(m: Map<String, RuleMemory>): JsonObject = JsonObject(m.mapValues { (_, v) ->
-        JsonObject(buildMap {
+        JsonObject(buildMap<String, JsonElement> {
             v.lastFiredAt?.let { put("lastFiredAt", JsonPrimitive(it)) }; v.armedAt?.let { put("armedAt", JsonPrimitive(it)) }
             v.lastSha?.let { put("lastSha", p(it)) }
             if (v.seenNotes.isNotEmpty()) put("seenNotes", JsonArray(v.seenNotes.map { p(it) }))
