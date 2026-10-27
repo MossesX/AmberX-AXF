@@ -23,5 +23,5 @@
     { "capability": "axf.triggers.gesture", "note": "Hand-gesture detector (kernel placeholder kind); the add flow already lets you pick the kind and type signature ids." },
     { "capability": "axf.triggers.face", "note": "Face-gesture detector (kernel placeholder kind)." }
   ],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

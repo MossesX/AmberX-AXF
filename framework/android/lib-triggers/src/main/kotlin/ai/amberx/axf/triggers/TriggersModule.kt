@@ -20,6 +20,7 @@ import ai.amberx.axf.kernel.result.AxfResult
 import ai.amberx.axf.kernel.runtime.AxfRuntime
 import ai.amberx.axf.kernel.triggers.SettingVoiceBinding
 import ai.amberx.axf.kernel.triggers.TRIGGERS_CONTRACT
+import ai.amberx.axf.kernel.triggers.Trigger
 import ai.amberx.axf.kernel.triggers.TriggerCommand
 import ai.amberx.axf.kernel.triggers.TriggerRegistry
 import ai.amberx.axf.settings.SettingsEngine
@@ -62,6 +63,8 @@ public class AxfTriggers internal constructor(
     private val runtime: AxfRuntime?,
     private val settingsGroups: () -> List<SettingsGroup>,
     private val voice: () -> AxfVoice?,
+    /** The kernel registry; its triggers (lib-speech, plugins) are matched by [voiceBridge] alongside the store's. */
+    private val registry: TriggerRegistry? = null,
 ) {
     /** Null when neither lib-settings nor a Config is available. */
     public val bindings: SettingsVoiceBindings? = settingsAccess?.let { SettingsVoiceBindings(store, it) }
@@ -105,14 +108,21 @@ public class AxfTriggers internal constructor(
         return TriggerRun.Action(rt.actions.dispatch(cmd.action, ActionContext(payload = cmd.args.toString(), extras = mapOf("trigger" to cmd))))
     }
 
+    /** Everything a voice bridge matches: the store's triggers (overrides applied) plus registry-only triggers, see [TriggerUnion]. */
+    public fun matchable(): List<Trigger> = TriggerUnion.merge(store.triggers(), registry?.list() ?: emptyList())
+
     /**
-     * A voice bridge on lib-voice's engine and the user's listening settings (arming, sensitivity), matching the store's
-     * triggers in [context]. Null when lib-voice isn't installed. Collect [VoiceTriggerBridge.commands] and pass them to [run].
+     * A voice bridge on lib-voice's engine and the user's listening settings (arming, sensitivity), matching in [context]
+     * the store's triggers plus every trigger registered only in the kernel TriggerRegistry (lib-speech's speech
+     * controls, plugin triggers); for an id in both, the store's copy (with the user's overrides) wins. The list follows
+     * registry changes ([TriggerRegistry.subscribe]); [VoiceTriggerBridge.close] unsubscribes. Null when lib-voice isn't
+     * installed. Collect [VoiceTriggerBridge.commands] and pass them to [run].
      */
     public fun voiceBridge(context: () -> String, log: TriggerLogSink? = null, gate: ArmingGate = ArmingGate.PER_TRIGGER, engine: VoiceEngine? = null): VoiceTriggerBridge? {
         val v = voice() ?: return null
         val e = engine ?: v.engine()
-        return VoiceTriggerBridge(e.results, VoiceArming(v.armingConfig()), store::triggers, context, { v.sensitivity }, log = log, gate = gate)
+        val source = UnionTriggerSource(store, registry)
+        return VoiceTriggerBridge(e.results, VoiceArming(v.armingConfig()), source, context, { v.sensitivity }, log = log, gate = gate, onClose = source::close)
     }
 }
 
@@ -131,14 +141,15 @@ public class TriggersModule : BaseModule(ID, "Triggers") {
 
     override fun register(ctx: ModuleContext) {
         val kv = ctx.service(KeyValueStore::class) ?: MemoryKeyValueStore()
-        val store = TriggerStore(kv, ctx.service(TriggerRegistry::class))
+        val registry = ctx.service(TriggerRegistry::class)
+        val store = TriggerStore(kv, registry)
         val settings = ctx.service(SettingsEngine::class)
         val config = ctx.service(ai.amberx.axf.kernel.config.Config::class)
         val access: SettingsAccess? = settings?.let { SettingsEngineAccess(it) } ?: config?.let { ConfigSettingsAccess(it) }
         val runtime = ctx.service(AxfRuntime::class)
         triggers = AxfTriggers(store, access, runtime,
             settingsGroups = { settings?.groups?.value ?: ctx.extensions.contributions(ExtensionPoints.SETTINGS).map { it.value.group } },
-            voice = { ctx.service(AxfVoice::class) })
+            voice = { ctx.service(AxfVoice::class) }, registry = registry)
         ctx.services.register(AxfTriggers::class, triggers, CAP_STORE)
         ctx.services.register(TriggerStore::class, store, "axf.triggers.store.raw")
         ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(RouteSpec(ROUTE, "Triggers", icon = "zap", module = id)))
@@ -152,8 +163,8 @@ public class TriggersModule : BaseModule(ID, "Triggers") {
     public companion object {
         public const val ID: String = "ai.amberx.axf.triggers"
         public const val ROUTE: String = "triggers"
-        /** lib-triggers semver. 0.1.0: store, voice bridge, settings bindings, screens. */
-        public const val VERSION: String = "0.1.0"
+        /** lib-triggers semver. 0.1.0: store, voice bridge, settings bindings, screens. 0.1.1: the bridge also matches registry-only triggers. */
+        public const val VERSION: String = "0.1.1"
         /** triggers@1 contract level this module is built on (the module's kernel apiLevel stays the kernel default). */
         public const val TRIGGERS_API_LEVEL: Int = 1
         public const val CAP_STORE: String = "axf.triggers.store"
