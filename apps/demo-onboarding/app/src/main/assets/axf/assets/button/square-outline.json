@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "square-outline",
+  "name": "Square Outline",
+  "version": "1.0.0",
+  "description": "Small, square, outlined and uppercase — utilitarian.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "square",
+    "fill": "outline",
+    "weight": 600,
+    "uppercase": true,
+    "size": "sm",
+    "elevation": false
+  }
+}
