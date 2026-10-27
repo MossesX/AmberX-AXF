@@ -1,8 +1,9 @@
 package ai.amberx.axf.axnotes.plugins.codebase
 
-import ai.amberx.axf.axnotes.model.CodeLink
-import ai.amberx.axf.axnotes.model.Fuzzy
-import ai.amberx.axf.axnotes.model.Note
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+
 
 /*
  * Voice on code (build step s23), pure: "note on <file>" attaches a note to a file (and line), "ask about <file>" asks
@@ -45,10 +46,10 @@ object FileResolver {
             val score = when {
                 qJoined == fw.joinToString("") || qJoined == sw.joinToString("") -> 1.0
                 else -> maxOf(
-                    Fuzzy.ratio(qJoined, sw.joinToString("")),
-                    Fuzzy.ratio(qJoined, fw.joinToString("")),
-                    Fuzzy.score(q.joinToString(" "), sw.joinToString(" ")),
-                    0.95 * Fuzzy.ratio(qJoined, tail.joinToString("")),
+                    Txt.ratio(qJoined, sw.joinToString("")),
+                    Txt.ratio(qJoined, fw.joinToString("")),
+                    Txt.ratio(q.map { Txt.stem(it) }.joinToString(""), sw.map { Txt.stem(it) }.joinToString("")),
+                    0.95 * Txt.ratio(qJoined, tail.joinToString("")),
                 )
             }
             val b = best
@@ -61,15 +62,36 @@ object FileResolver {
     fun link(f: ResolvedFile, line: Int?, commit: String?): CodeLink = CodeLink(f.repo, f.path, line?.takeIf { it >= 1 }, line?.takeIf { it >= 1 }, commit?.takeIf { Repos.validSha(it) })
 }
 
+/** A note the app announced that points at code (kept so "ask about <file>" can send it as context). */
+data class LinkedNote(val id: String, val title: String, val text: String, val links: List<CodeLink>, val at: Long) {
+    fun toJson(): JsonObject = JsonObject(linkedMapOf("id" to JsonPrimitive(id), "title" to JsonPrimitive(title), "text" to JsonPrimitive(text),
+        "links" to JsonArray(links.map { it.toJson() }), "at" to JsonPrimitive(at)))
+
+    companion object {
+        /** From the app's note JSON; null when it has no code links. Text is capped to keep the KV small. */
+        fun fromNote(o: JsonObject?): LinkedNote? {
+            val id = J.str(o, "id") ?: return null
+            val links = J.objects(o?.get("codeLinks"), 20).mapNotNull { CodeLink.parse(it) }
+            if (links.isEmpty()) return null
+            return LinkedNote(id, J.text(o, "title", 200), J.text(o, "text", 1500), links, J.long(o, "updatedAt") ?: 0L)
+        }
+
+        fun parse(o: JsonObject?): LinkedNote? {
+            val id = J.str(o, "id") ?: return null
+            return LinkedNote(id, J.text(o, "title", 200), J.text(o, "text", 1500), J.objects(o?.get("links"), 20).mapNotNull { CodeLink.parse(it) }, J.long(o, "at") ?: 0L)
+        }
+    }
+}
+
 object AskPrompt {
     const val MAX_CONTEXT = 3000
 
-    /** Notes already attached to this file (any line), newest first, for the AI's context. */
-    fun notesFor(notes: List<Note>, repo: String, path: String): List<Note> =
-        notes.filter { n -> n.codeLinks.any { it.repo.equals(repo, true) && it.path == path } }.sortedByDescending { it.updatedAt }
+    /** Notes attached to this file (any line), newest first, for the AI's context. */
+    fun notesFor(notes: List<LinkedNote>, repo: String, path: String): List<LinkedNote> =
+        notes.filter { n -> n.links.any { it.repo.equals(repo, true) && it.path == path } }.sortedByDescending { it.at }
 
     /** Read-only question about one file for mode ai.read-codebase. */
-    fun build(link: CodeLink, question: String?, notes: List<Note>): String = buildString {
+    fun build(link: CodeLink, question: String?, notes: List<LinkedNote>): String = buildString {
         append("In the GitHub repository ").append(link.repo).append(" (read-only), look at ").append(link.path)
         if (link.lineStart != null) append(" around line ").append(link.lineStart)
         if (link.commit != null) append(" at commit ").append(link.commit)
@@ -81,4 +103,10 @@ object AskPrompt {
     }
 
     fun noteTitle(link: CodeLink, prefix: String): String = "$prefix ${link.label()}".take(120)
+
+    /** `axnotes.notes.save` payload for a note on a file (voice) or an answer about it. */
+    fun notePayload(title: String, text: String, link: CodeLink, source: String, extraTags: List<String> = emptyList()): JsonObject = JsonObject(linkedMapOf(
+        "title" to JsonPrimitive(title), "text" to JsonPrimitive(text), "tags" to J.arr(listOf(CodebaseNotes.TAG) + extraTags), "source" to JsonPrimitive(source),
+        "category" to JsonPrimitive(CodebaseNotes.CATEGORY), "codeLinks" to JsonArray(listOf(link.toJson())),
+    ))
 }

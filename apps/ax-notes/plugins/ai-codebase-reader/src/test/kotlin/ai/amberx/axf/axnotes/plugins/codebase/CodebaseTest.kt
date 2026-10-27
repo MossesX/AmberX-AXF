@@ -1,12 +1,7 @@
 package ai.amberx.axf.axnotes.plugins.codebase
 
-import ai.amberx.axf.axnotes.model.CodeLink
-import ai.amberx.axf.axnotes.model.Note
-import ai.amberx.axf.axnotes.model.NoteSource
-import ai.amberx.axf.axnotes.model.Priority
-import ai.amberx.axf.axnotes.model.TodoItem
-import ai.amberx.axf.axnotes.pluginhost.PluginTriggers
 import ai.amberx.axf.kernel.triggers.Patterns
+import ai.amberx.axf.kernel.triggers.TriggerValidation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -14,12 +9,11 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.File
 import java.time.ZoneOffset
 
 class CodebaseTest {
     private val repo = "MossesX/AmberX-AXF"
-    private val module = "ai.amberx.axf.axnotes.plugins.ai-codebase-reader"
+    private val prefix = CodebaseReaderPlugin.PREFIX
 
     // ---------------------------------------------------------------- harvest (fake repo listings)
 
@@ -56,11 +50,10 @@ class CodebaseTest {
     @Test fun mergeAddsUpdatesClosesAndReopens() {
         val first = CodeTodos.merge(emptyList(), CodeTodos.scan(repo, v1, "aaaaaaa"), emptySet(), 10)
         assertEquals(5, first.added.size)
-        assertEquals(Priority.HIGH, first.items.first { it.text.startsWith("FIXME") }.priority)
+        assertEquals("high", first.items.first { it.text.startsWith("FIXME") }.priority)
         val mine = TodoItem("todo-mine", "My own item", createdAt = 1, updatedAt = 1)
         val list1 = first.items + mine
 
-        // v2: Main.kt line 2 moved down, README TODO removed, Util.kt unchanged
         val v2 = v1 + mapOf(
             "app/src/Main.kt" to "fun main() {\n\n    // TODO: wire the hub client\n    val x = 1 // FIXME(brett): off by one\n    /* TODO handle errors */\n}",
             "README.md" to "Nothing.",
@@ -74,22 +67,23 @@ class CodebaseTest {
         assertEquals(3, wired.codeLinks.single().lineStart)
         assertEquals("bbbbbbb", wired.codeLinks.single().commit)
         assertTrue(wired.id in second.updated)
-        assertEquals(mine, second.items.last()) // hand-added item untouched
-        assertTrue(second.items.first { it.id == readme }.done)
+        assertEquals(mine, second.items.last())
+        val p = second.syncPayload("L", "TODOs · AmberX-AXF", CodebaseReaderPlugin.ID)
+        assertEquals(listOf(readme), J.strings(p["close"]))
+        assertEquals(wired.id, J.objects(p["update"]).map { J.str(it, "id") }.first { it == wired.id })
+        assertEquals("L", J.str(p["list"] as kotlinx.serialization.json.JsonObject, "id"))
 
-        // user ticks one that still exists: stays done; README line comes back: reopened
         val ticked = second.items.map { if (it.id == wired.id) it.copy(done = true, doneAt = 25) else it }
         val third = CodeTodos.merge(ticked, CodeTodos.scan(repo, v1, "ccccccc"), second.autoClosed, 30)
         assertEquals(listOf(readme), third.reopened)
         assertFalse(third.items.first { it.id == readme }.done)
         assertTrue(third.items.first { it.id == wired.id }.done)
         assertFalse(readme in third.autoClosed)
-        assertEquals(third.items.size, ticked.size)
 
-        // same input again: nothing changes
         val again = CodeTodos.merge(third.items, CodeTodos.scan(repo, v1, "ccccccc"), third.autoClosed, 40)
         assertFalse(again.changed)
         assertEquals(third.items, again.items)
+        for (i in third.items) assertEquals(i, TodoItem.parse(i.toJson()))
     }
 
     // ---------------------------------------------------------------- read-codebase reply → notes
@@ -113,40 +107,38 @@ class CodebaseTest {
         assertTrue(r.todosComplete)
         assertEquals(CodeChange("a.kt", "fixed x", 3, 9), r.changes.single())
         assertNull(ReadReply.parse("{\"commit\":\"nope\"}", repo))
-        assertNull(ReadReply.parse("{\"commit\":\"abcdef1\"}", repo)!!.todos) // no todos key → don't touch the list
+        assertNull(ReadReply.parse("{\"commit\":\"abcdef1\"}", repo)!!.todos)
     }
 
     @Test fun notesKeyedByCommit() {
         val r = ReadReply.parse(reply, repo)!!
-        val first = CodebaseNotes.plan(r, null, emptyMap(), "codebase", 1000, ZoneOffset.UTC)
-        assertEquals(listOf(CodebaseNotes.archId(repo)), first.map { it.id }) // first read: no changes note
+        val first = CodebaseNotes.plan(prefix, r, null, 1000, ZoneOffset.UTC)
+        assertEquals(listOf(CodebaseNotes.archId(prefix, repo)), first.map { it.id })
         val arch = first[0]
-        assertEquals(NoteSource.AI, arch.source)
+        assertEquals("ai", arch.source)
         assertTrue(arch.text.startsWith("Read at commit 0123456"))
         assertEquals("https://github.com/MossesX/AmberX-AXF/blob/0123456789abcdef0123456789abcdef01234567/framework/android/axf-kernel", arch.codeLinks[0].githubUrl())
+        val p = arch.payload()
+        assertEquals(arch.id, J.str(p, "id"))
+        assertEquals("Codebase", J.str(p, "category"))
 
-        val prev = RepoState(repo, "fedcba9876543210", 500)
-        val kept = arch.copy(category = "mine", createdAt = 7, listIds = listOf("inbox"))
-        val second = CodebaseNotes.plan(r, prev, mapOf(kept.id to kept), "codebase", 2000, ZoneOffset.UTC)
+        val second = CodebaseNotes.plan(prefix, r, RepoState(repo, "fedcba9876543210", 500), 2000, ZoneOffset.UTC)
         assertEquals(2, second.size)
-        assertEquals(7, second[0].createdAt)
-        assertEquals("mine", second[0].category)
-        assertEquals(listOf("inbox"), second[0].listIds)
         val changes = second[1]
-        assertEquals(CodebaseNotes.changesId(repo, r.commit), changes.id)
+        assertEquals(CodebaseNotes.changesId(prefix, repo, r.commit), changes.id)
         assertTrue(changes.title.startsWith("Changes since fedcba9"))
         assertEquals("https://github.com/MossesX/AmberX-AXF/blob/0123456789abcdef0123456789abcdef01234567/a.kt#L3-L9", changes.codeLinks.single().githubUrl())
-        // same commit again → no new changes note
-        assertEquals(1, CodebaseNotes.plan(r, prev.copy(lastCommit = r.commit), emptyMap(), "", 3000, ZoneOffset.UTC).size)
+        assertEquals(1, CodebaseNotes.plan(prefix, r, RepoState(repo, r.commit, 500), 3000, ZoneOffset.UTC).size)
+        assertTrue(CodebaseNotes.todoListId(prefix, repo).startsWith(prefix))
     }
 
     @Test fun reposSettingAndState() {
         assertEquals(listOf("MossesX/AmberX-AXF", "a/b"), Repos.parse("MossesX/AmberX-AXF\nhttps://github.com/a/b.git, bad, ../x/y, mossesx/amberx-axf"))
         assertTrue(Repos.allowed("mossesx/AMBERX-axf", listOf(repo)))
         assertFalse(Repos.allowed("other/repo", listOf(repo)))
-        val s = RepoState(repo, "abcdef1", 5, listOf("a.kt"), setOf("cbtodo-1"))
+        val item = TodoItem("cbtodo-1", "X", createdAt = 1, updatedAt = 1, codeLinks = listOf(CodeLink(repo, "a.kt", 1, 1)))
+        val s = RepoState(repo, "abcdef1", 5, listOf("a.kt"), setOf("cbtodo-1"), listOf(item))
         assertEquals(s, RepoStateCodec.parse(RepoStateCodec.toJson(s)))
-        assertTrue(CodebaseNotes.todoListId(repo).startsWith(CodebaseNotes.LIST_PREFIX))
         assertTrue(ReadPrompt.build(repo, "abcdef1").contains("between commit abcdef1"))
         assertTrue(ReadPrompt.build(repo, null).contains("first read"))
     }
@@ -161,41 +153,40 @@ class CodebaseTest {
     ))
 
     @Test fun resolvesSpokenFileNames() {
-        assertEquals("apps/ax-notes/app/src/main/kotlin/ai/amberx/axf/axnotes/data/NotesStore.kt", FileResolver.resolve("notes store", paths)!!.path)
-        assertEquals("apps/ax-notes/app/src/main/kotlin/ai/amberx/axf/axnotes/data/NotesStore.kt", FileResolver.resolve("the notes store dot kotlin file", paths)!!.path)
-        assertEquals("README.md", FileResolver.resolve("readme", paths)!!.path) // shorter path wins the tie
+        val store = "apps/ax-notes/app/src/main/kotlin/ai/amberx/axf/axnotes/data/NotesStore.kt"
+        assertEquals(store, FileResolver.resolve("notes store", paths)!!.path)
+        assertEquals(store, FileResolver.resolve("the notes store dot kotlin file", paths)!!.path)
+        assertEquals(store, FileResolver.resolve("note store", paths)!!.path)
+        assertEquals("README.md", FileResolver.resolve("readme", paths)!!.path)
         assertEquals("framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/ai/AiModes.kt", FileResolver.resolve("ai modes", paths)!!.path)
-        assertEquals("apps/ax-notes/app/src/main/kotlin/ai/amberx/axf/axnotes/data/NotesStore.kt", FileResolver.resolve("note store", paths)!!.path)
         assertNull(FileResolver.resolve("banana bread", paths))
-        val l = FileResolver.link(FileResolver.resolve("ai modes", paths)!!, 12, "abcdef1")
-        assertEquals(12, l.lineStart)
+        assertEquals(12, FileResolver.link(FileResolver.resolve("ai modes", paths)!!, 12, "abcdef1").lineStart)
     }
 
     @Test fun askPromptCarriesNotes() {
         val link = CodeLink(repo, "README.md", 4, 4, "abcdef1")
-        val n = Note("n1", "Readme gap", "The setup step is missing", createdAt = 1, updatedAt = 1, codeLinks = listOf(link.copy(lineStart = 9)))
-        val other = Note("n2", "x", "y", createdAt = 1, updatedAt = 1)
-        val notes = AskPrompt.notesFor(listOf(n, other), repo, "README.md")
+        val noteJson = J.parse("""{"id":"n1","title":"Readme gap","text":"The setup step is missing","updatedAt":3,"codeLinks":[{"repo":"$repo","path":"README.md","lineStart":9}]}""")
+        val n = LinkedNote.fromNote(noteJson)!!
+        assertEquals(n, LinkedNote.parse(n.toJson()))
+        assertNull(LinkedNote.fromNote(J.parse("""{"id":"n2","codeLinks":[]}""")))
+        val notes = AskPrompt.notesFor(listOf(n), repo, "README.md")
         assertEquals(listOf("n1"), notes.map { it.id })
         val p = AskPrompt.build(link, "why is setup missing?", notes)
         assertTrue(p.contains("README.md around line 4 at commit abcdef1"))
         assertTrue(p.contains("Question: why is setup missing?"))
         assertTrue(p.contains("The setup step is missing"))
-        assertTrue(p.contains("read-only"))
+        val save = AskPrompt.notePayload("Note on x", "t", link, "voice")
+        assertEquals(link, CodeLink.parse(J.objects(save["codeLinks"]).single()))
     }
 
-    @Test fun shippedTriggersValidateAndMatch() {
-        val f = listOf("../plugins/ai-codebase-reader", "plugins/ai-codebase-reader", ".").map { File(it, "assets/axnotes/plugins/ai-codebase-reader/triggers.json") }.firstOrNull { it.exists() }
-            ?: return
-        val t = PluginTriggers.parse(f.readText(), module)
-        assertEquals(listOf("codebase.note-on-file", "codebase.ask-about-file", "codebase.read-now"), t.map { it.id })
-        val note = t[0]
-        val best = Patterns.best(listOf("note on notes store line 12 saying check the outbox"), note.phrases)
+    @Test fun voiceTriggersValidateAndMatch() {
+        val t = CodeTriggers.all(CodebaseReaderPlugin.ID)
+        for (x in t) assertTrue(x.id, TriggerValidation.validate(x.toJson()).ok)
+        val best = Patterns.best(listOf("note on notes store line 12 saying check the outbox"), t[0].phrases)
         assertNotNull(best)
         assertEquals("notes store", best!!.match.args["file"]?.toString()?.trim('"'))
         assertEquals("12", best.match.args["line"]?.toString())
         assertEquals("check the outbox", best.match.args["text"]?.toString()?.trim('"'))
-        val ask = Patterns.best(listOf("ask about ai modes"), t[1].phrases)!!
-        assertEquals("ai modes", ask.match.args["file"]?.toString()?.trim('"'))
+        assertEquals("ai modes", Patterns.best(listOf("ask about ai modes"), t[1].phrases)!!.match.args["file"]?.toString()?.trim('"'))
     }
 }

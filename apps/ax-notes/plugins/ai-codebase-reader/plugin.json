@@ -1,55 +1,43 @@
 {
   "$axf": "plugin@1",
-  "id": "ai.amberx.axf.axnotes.plugins.ai-codebase-reader",
+  "id": "ai.amberx.axf.axnotes.ai-codebase-reader",
   "name": "AI codebase reader",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Reads allowed GitHub repos read-only through an AI session on axHub (mode ai.read-codebase; the session reads the repo server-side, the plugin sends the request and parses the JSON reply) into notes: architecture, changes since the last read (keyed by the last commit sha), with CodeLinks {repo, path, lineStart, lineEnd, commit} that open on GitHub. Harvests TODO/FIXME comments into one to-do list per repo (stable ids from repo + path + text, deduped, closed when the line disappears). Voice phrases as triggers@1 data: \"note on <file>\" attaches a note to a file/line, \"ask about <file>\" asks the AI about that code with the file's notes as context. Settings: allowed repos, TODO harvest, schedule (placeholder).",
-  "entry": "ai.amberx.axf.axnotes.plugins.codebase.CodebaseReaderModule",
+  "description": "Reads allowed GitHub repos read-only through an AI session on axHub (mode ai.read-codebase; the session reads the repo server-side, the plugin sends the request and parses the JSON reply) into notes: architecture and changes since the last read (keyed by the last commit sha), with CodeLinks {repo, path, lineStart, lineEnd, commit} that open on GitHub. Harvests TODO/FIXME comments into one to-do list per repo (stable ids from repo + path + text, deduped, closed when the line disappears). Voice phrases as triggers@1 data: \"note on <file>\" attaches a note to a file/line, \"ask about <file>\" asks Claude about that code with the file's notes as context. Settings: allowed repos, TODO harvest, schedule (placeholder).",
+  "entry": "ai.amberx.axf.axnotes.plugins.codebase.CodebaseReaderPlugin",
   "targets": ["ax-notes"],
-  "provides": [
-    "service:axnotes.codebase@1",
-    "service:axnotes.code-todos@1",
-    "settings-tab:ai-codebase-reader",
-    "action:codebase.read-now",
-    "action:codebase.note-on-file",
-    "action:codebase.ask-about-file",
-    "action:codebase.purge",
-    "menu:app-menu",
-    "menu:nav-menu",
-    "trigger:codebase.note-on-file",
-    "trigger:codebase.ask-about-file",
-    "trigger:codebase.read-now"
-  ],
-  "requires": [
-    "plugin:ai.amberx.axf.axnotes",
-    "plugin:ai.amberx.axf.axnotes.pluginhost",
-    "plugin:ai.amberx.axf.data",
-    "service:axf.ai.session"
-  ],
-  "optional": [
-    "service:axf.triggers",
-    "service:axf.speech"
-  ],
+  "provides": ["service:axnotes.ai-codebase-reader", "service:axnotes.code-todos", "settings-tab:ai-codebase-reader", "action:ai-codebase-reader.read-now", "action:ai-codebase-reader.note-on-file", "action:ai-codebase-reader.ask-about-file", "action:ai-codebase-reader.purge", "menu:app-menu", "menu:nav-menu", "trigger:ai-codebase-reader.note-on-file", "trigger:ai-codebase-reader.ask-about-file", "trigger:ai-codebase-reader.read-now"],
+  "requires": ["service:axf.runtime", "service:axf.kv", "service:axf.ai.session", "action:axnotes.notes.save"],
+  "optional": ["service:axf.triggers.registry", "service:axf.ai.modes", "action:axnotes.notes.saved", "action:axnotes.todos.sync", "action:axnotes.lists.delete"],
   "scopes": ["actions", "settings", "menu_items", "network"],
-  "menus": { "application": true, "nav": true },
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins" },
-  "tabable": false,
   "banner": false,
+  "tabable": false,
   "opens": false,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins" },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
-    "dataDir": "ai.amberx.axf.axnotes.plugin.ai-codebase-reader",
-    "settings": ["app.codebase.repos", "app.codebase.harvestTodos", "app.codebase.schedule"],
-    "generatedLists": "cbtodo-list-",
-    "install": "node apps/ax-notes/plugins/ai-codebase-reader/install.mjs",
-    "uninstall": "node apps/ax-notes/plugins/ai-codebase-reader/uninstall.mjs [--all]",
-    "mentions": ["apps/ax-notes/README.md"],
-    "keeps": [
-      "Notes it wrote (architecture, changes, answers, notes on files; category Codebase, tag codebase) stay as your content. Its per-repo TODO lists are generated and removed with it."
-    ]
+    "dataDir": "device-kv:ai-codebase-reader.",
+    "mentions": ["apps/ax-notes/settings.gradle.kts", "apps/ax-notes/app/build.gradle.kts", "apps/ax-notes/app/src/main/assets/axnotes/plugins.json", "apps/ax-notes/README.md"],
+    "keeps": ["Notes it wrote (architecture, changes, answers, notes on files; category Codebase, tag codebase) stay yours. Its per-repo TODO lists (ids starting ai-codebase-reader.) are removed by its Remove plugin data setting."]
+  },
+  "x": {
+    "android": {
+      "module": ":plugins:ai-codebase-reader",
+      "package": "ai.amberx.axf.axnotes.plugins.codebase",
+      "dataPrefix": "ai-codebase-reader.",
+      "settingsTab": { "id": "ai-codebase-reader", "parent": "plugins" },
+      "menus": { "application": true, "nav": true },
+      "placeholders": { "schedule": "repos are read on request until a work@1 job host runs the read on a schedule" },
+      "hostActions": {
+        "axnotes.notes.save": "the app saves a note from payload {id?, title, text, tags[], source, category?, codeLinks[]?}: with id it creates or updates that note (architecture / changes notes keep their id across reads)",
+        "axnotes.notes.saved": "watched: notes with codeLinks are remembered as context for \"ask about <file>\"",
+        "axnotes.todos.sync": "the app applies {list: {id, name, kind}, owner, add[], update[], close[], reopen[]} to a generated to-do list (made when missing); items are the app's to-do JSON; the user's own items are never touched",
+        "axnotes.lists.delete": "the app deletes a list by {id} (Remove plugin data removes its generated TODO lists)"
+      }
+    }
   }
 }

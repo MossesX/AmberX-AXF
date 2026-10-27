@@ -1,14 +1,5 @@
 package ai.amberx.axf.axnotes.plugins.codebase
 
-import ai.amberx.axf.axnotes.model.CodeLink
-import ai.amberx.axf.axnotes.model.ListKind
-import ai.amberx.axf.axnotes.model.ListSort
-import ai.amberx.axf.axnotes.model.Note
-import ai.amberx.axf.axnotes.model.NoteList
-import ai.amberx.axf.axnotes.model.NoteSource
-import ai.amberx.axf.axnotes.pluginhost.Hashes
-import ai.amberx.axf.axnotes.pluginhost.J
-import ai.amberx.axf.axnotes.pluginhost.ReplyJson
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -18,9 +9,10 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /*
- * AI codebase reader (plugin ai.amberx.axf.axnotes.plugins.ai-codebase-reader) — pure part. The plugin never reads
+ * AI codebase reader (plugin ai.amberx.axf.axnotes.ai-codebase-reader) — pure part. The plugin never reads
  * code itself: it asks an AI session in mode ai.read-codebase (read-only; the session reads the repo server-side on
- * axHub) for one JSON reply, and turns that reply into notes with CodeLinks, keyed by the repo's last commit.
+ * axHub) for one JSON reply, and turns that reply into notes with CodeLinks, keyed by the repo's last commit. Notes go
+ * to the app as `axnotes.notes.save` payloads with stable ids, so a re-read updates the same note.
  */
 
 data class ModuleInfo(val path: String, val summary: String)
@@ -46,6 +38,8 @@ data class RepoState(
     val lastReadAt: Long? = null,
     val paths: List<String> = emptyList(),
     val autoClosed: Set<String> = emptySet(),
+    /** the harvested to-dos as last sent to the app (the plugin's own copy, merged against each new read) */
+    val items: List<TodoItem> = emptyList(),
 )
 
 object Repos {
@@ -119,27 +113,32 @@ object ReadReply {
     }
 }
 
+/** A note for the app (`axnotes.notes.save` payload) with a stable id. */
+data class NoteDraft(val id: String, val title: String, val text: String, val tags: List<String>, val source: String, val category: String, val codeLinks: List<CodeLink>) {
+    fun payload(): JsonObject = JsonObject(linkedMapOf(
+        "id" to JsonPrimitive(id), "title" to JsonPrimitive(title), "text" to JsonPrimitive(text), "tags" to J.arr(tags), "source" to JsonPrimitive(source),
+        "category" to JsonPrimitive(category), "codeLinks" to JsonArray(codeLinks.map { it.toJson() }),
+    ))
+}
+
 /** Notes made from a read: one architecture note per repo (updated in place), one "changes since" note per new commit. */
 object CodebaseNotes {
     const val CATEGORY = "Codebase"
     const val TAG = "codebase"
-    const val NOTE_PREFIX = "cbnote-"
-    const val LIST_PREFIX = "cbtodo-list-"
     private val DATE = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
 
-    fun archId(repo: String) = "${NOTE_PREFIX}arch-${Repos.slug(repo)}"
-    fun changesId(repo: String, commit: String) = "${NOTE_PREFIX}changes-${Repos.slug(repo)}-${commit.take(12)}"
-    fun todoListId(repo: String) = LIST_PREFIX + Repos.slug(repo) + "-" + Hashes.fnv64(repo.lowercase()).take(6)
+    /** Ids start with the plugin's data prefix, so they are recognisably its own. */
+    fun archId(prefix: String, repo: String) = "${prefix}arch-${Repos.slug(repo)}"
+    fun changesId(prefix: String, repo: String, commit: String) = "${prefix}changes-${Repos.slug(repo)}-${commit.take(12)}"
+    fun todoListId(prefix: String, repo: String) = "${prefix}todos-" + Repos.slug(repo) + "-" + Hashes.fnv64(repo.lowercase()).take(6)
+    fun todoListName(repo: String) = "TODOs · ${repo.substringAfter('/')}"
 
-    fun todoList(repo: String, now: Long): NoteList =
-        NoteList(todoListId(repo), "TODOs · ${repo.substringAfter('/')}", ListKind.TODO, ListSort.PRIORITY, createdAt = now, updatedAt = now)
-
-    /** The notes to save for [read] ([existing] by id keeps their createdAt, lists and category). */
-    fun plan(read: CodebaseRead, previous: RepoState?, existing: Map<String, Note>, categoryId: String, now: Long, zone: ZoneId): List<Note> {
-        val out = ArrayList<Note>()
+    fun plan(prefix: String, read: CodebaseRead, previous: RepoState?, now: Long, zone: ZoneId): List<NoteDraft> {
+        val out = ArrayList<NoteDraft>()
         val short = read.commit.take(7)
         val date = Instant.ofEpochMilli(now).atZone(zone).toLocalDate().format(DATE)
         val name = read.repo.substringAfter('/')
+        val tags = listOf(TAG, name.lowercase())
         val arch = buildString {
             append("Read at commit ").append(short).append(" on ").append(date).append(".\n\n")
             append(read.architecture.ifBlank { "No architecture summary in the reply." })
@@ -147,9 +146,9 @@ object CodebaseNotes {
                 append("\n\nModules:\n")
                 for (m in read.modules) append("- ").append(m.path).append(if (m.summary.isNotBlank()) " — ${m.summary}" else "").append('\n')
             }
-            read.todos?.let { append("\n").append(it.size).append(" TODO/FIXME comment(s); see the list “TODOs · ").append(name).append("”.") }
+            read.todos?.let { append("\n").append(it.size).append(" TODO/FIXME comment(s); see the list “").append(todoListName(read.repo)).append("”.") }
         }.trimEnd()
-        out += note(archId(read.repo), "Architecture · $name", arch, read.modules.map { CodeLink(read.repo, it.path, commit = read.commit) }, existing, categoryId, now, name)
+        out += NoteDraft(archId(prefix, read.repo), "Architecture · $name", arch, tags, "ai", CATEGORY, read.modules.map { CodeLink(read.repo, it.path, commit = read.commit) }.take(60))
 
         val since = previous?.lastCommit
         if (since != null && since != read.commit && read.changes.isNotEmpty()) {
@@ -162,17 +161,10 @@ object CodebaseNotes {
                     append('\n')
                 }
             }.trimEnd()
-            out += note(changesId(read.repo, read.commit), "Changes since ${since.take(7)} · $name", text,
-                read.changes.map { CodeLink(read.repo, it.path, it.lineStart, it.lineEnd, read.commit) }, existing, categoryId, now, name)
+            out += NoteDraft(changesId(prefix, read.repo, read.commit), "Changes since ${since.take(7)} · $name", text, tags, "ai", CATEGORY,
+                read.changes.map { CodeLink(read.repo, it.path, it.lineStart, it.lineEnd, read.commit) }.take(60))
         }
         return out
-    }
-
-    private fun note(id: String, title: String, text: String, links: List<CodeLink>, existing: Map<String, Note>, categoryId: String, now: Long, repoName: String): Note {
-        val old = existing[id]
-        val tags = ((old?.tags ?: emptyList()) + listOf(TAG, repoName.lowercase())).distinct()
-        return Note(id, title, text, old?.category?.takeIf { it.isNotBlank() } ?: categoryId, tags, old?.createdAt ?: now, now,
-            old?.listIds ?: emptyList(), links.distinct().take(60), NoteSource.AI, old?.priority ?: ai.amberx.axf.axnotes.model.Priority.NONE)
     }
 
     /** Paths worth remembering for voice ("note on <file>"): modules, TODO files, changed files. */
@@ -185,11 +177,12 @@ object RepoStateCodec {
         put("repo", JsonPrimitive(s.repo))
         if (s.lastCommit != null) put("lastCommit", JsonPrimitive(s.lastCommit))
         if (s.lastReadAt != null) put("lastReadAt", JsonPrimitive(s.lastReadAt))
-        put("paths", J.arr(s.paths)); put("autoClosed", J.arr(s.autoClosed.sorted()))
+        put("paths", J.arr(s.paths)); put("autoClosed", J.arr(s.autoClosed.sorted())); put("items", JsonArray(s.items.map { it.toJson() }))
     })
 
     fun parse(o: JsonObject?): RepoState? {
         val repo = J.str(o, "repo")?.takeIf { Repos.valid(it) } ?: return null
-        return RepoState(repo, J.str(o, "lastCommit")?.takeIf { Repos.validSha(it) }, J.long(o, "lastReadAt"), J.strings(o?.get("paths"), 2000), J.strings(o?.get("autoClosed"), 5000).toSet())
+        return RepoState(repo, J.str(o, "lastCommit")?.takeIf { Repos.validSha(it) }, J.long(o, "lastReadAt"), J.strings(o?.get("paths"), 2000), J.strings(o?.get("autoClosed"), 5000).toSet(),
+            J.objects(o?.get("items"), CodeTodos.MAX_HITS).mapNotNull { TodoItem.parse(it) })
     }
 }
