@@ -139,6 +139,8 @@ public class VoiceTriggerBridge(
     private val log: TriggerLogSink? = null,
     gate: ArmingGate = ArmingGate.PER_TRIGGER,
     private val clock: () -> Long = { System.currentTimeMillis() },
+    /** Run once by [close] (e.g. unsubscribing a [UnionTriggerSource] from the registry). */
+    private val onClose: () -> Unit = {},
 ) {
     public val decider: VoiceTriggerDecider = VoiceTriggerDecider(arming, gate)
     private val _commands = MutableSharedFlow<TriggerCommand>(extraBufferCapacity = 16, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -163,6 +165,16 @@ public class VoiceTriggerBridge(
     }
 
     public fun stop() { job?.cancel(); job = null }
+
+    private var closed = false
+
+    /** Stops and releases what the bridge was given to watch (the registry subscription of [AxfTriggers.voiceBridge]). */
+    public fun close() {
+        stop()
+        if (closed) return
+        closed = true
+        onClose()
+    }
 
     public val running: Boolean get() = job?.isActive == true
 }

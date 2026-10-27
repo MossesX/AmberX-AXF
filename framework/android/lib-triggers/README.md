@@ -1,4 +1,4 @@
-# lib-triggers (0.1.0, triggers@1 level 1)
+# lib-triggers (0.1.1, triggers@1 level 1)
 
 The user-facing side of the kernel's **triggers@1** contract (`axf-kernel/.../triggers/Triggers.kt`). The kernel owns the
 data model, validation, the registry and the pure `TriggerMatcher`; this module adds persistence, the lib-voice bridge,
@@ -48,6 +48,10 @@ voice.engine().start(voice.engineOptions())
   `AxfTriggers.registerActions`), `search(query)` filters live across every tab and each hit carries its tab label.
 - **AxfTriggers** (`axf.triggers.store` service): `store`, `bindings`, `contexts`, `catalog()`, `run(cmd)` (settings
   actions through the settings API, the rest on the action bus with the args JSON as payload), `voiceBridge(...)`.
+  The bridge matches `matchable()` = `TriggerUnion.merge(store, registry)`: the store's triggers (user overrides applied)
+  plus triggers registered only in the kernel `TriggerRegistry` (lib-speech's speech controls, plugin triggers); for an id
+  in both the store's copy wins, nothing twice. `UnionTriggerSource` caches the union and rebuilds it on
+  `TriggerRegistry.subscribe` / store changes; `VoiceTriggerBridge.close()` unsubscribes (0.1.1).
 - **Screens** (route `triggers`, action `triggers.open`, Settings → Triggers link): `TriggersScreen` = dense single-column
   `TriggerList` (permanent then custom, switch per row, "edited"/"locked" badges), `TriggerEditor` (enabled, threshold,
   works in, reset / delete), `AddTriggerFlow` (kind → phrases, typed or recorded with lib-voice → action → details),

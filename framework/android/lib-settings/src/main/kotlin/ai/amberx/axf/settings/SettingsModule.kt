@@ -158,6 +158,36 @@ public class SettingsEngine {
         c.service(AxfKernel::class)?.events?.emit(SettingChanged(key, text))
     }
 
+    /**
+     * Deletes a saved value (DataStore, or the SecureStore for a SECRET setting, and the kernel Config user layer) so the
+     * setting reads its default again. Listeners are not called (nothing was set).
+     */
+    public suspend fun remove(key: String) {
+        val c = ctx ?: return
+        if (spec(key)?.kind == SettingKind.SECRET) c.service(SecureStore::class)?.remove(key) else c.service(PreferenceStore::class)?.removeRaw(key)
+        c.service(Config::class)?.remove(key, ConfigLayer.USER)
+        _values.update { it - key }
+    }
+
+    /**
+     * Deletes every saved value whose key starts with [prefix], e.g. an uninstalled plugin's settings: all DataStore keys
+     * under it, the SECRET settings under it that are still known (their group is registered) or loaded, the kernel Config
+     * user layer and the loaded values. A blank prefix deletes nothing. Returns how many DataStore keys were removed.
+     */
+    public suspend fun removePrefix(prefix: String): Int {
+        if (prefix.isBlank()) return 0
+        val c = ctx ?: return 0
+        val n = c.service(PreferenceStore::class)?.removePrefix(prefix) ?: 0
+        val secure = c.service(SecureStore::class)
+        if (secure != null) {
+            val secrets = _groups.value.flatMap { it.settings }.filter { it.kind == SettingKind.SECRET && it.key.startsWith(prefix) }.map { it.key }
+            for (k in secrets.distinct()) secure.remove(k)
+        }
+        c.service(Config::class)?.removePrefix(prefix, ConfigLayer.USER)
+        _values.update { v -> v.filterKeys { !it.startsWith(prefix) } }
+        return n
+    }
+
     /** Portable export of non-secret values (import = set each). */
     public fun export(): Map<String, String> = _values.value.filterKeys { spec(it)?.kind != SettingKind.SECRET }.mapValues { (it.value as? JsonPrimitive)?.content ?: it.value.toString() }
 }

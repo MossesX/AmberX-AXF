@@ -15,13 +15,17 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.JsonObject
 import java.io.File
 
@@ -39,7 +43,7 @@ public class DataModule(private val context: Context) : BaseModule(ID, "Data") {
         ctx.services.register(QueryPersistence::class, DocumentQueryPersistence(docs), "axf.queries.persistence")
         ctx.services.register(DbRegistry::class, DbRegistry(context), "axf.db")
     }
-    public companion object { public const val ID: String = "ai.amberx.axf.data" }
+public companion object { public const val ID: String = "ai.amberx.axf.data" }
 }
 
 /** A typed preference key. Scope decides which store namespace it lives in (device vs user vs app). */
@@ -58,7 +62,47 @@ public class PreferenceStore(private val store: DataStore<Preferences>) {
     public suspend fun <T> remove(k: PrefKey<T>) { store.edit { it.remove(prefKey(k)) } }
     public suspend fun raw(name: String): String? = store.data.first()[stringPreferencesKey(name)]
     public suspend fun setRaw(name: String, value: String) { store.edit { it[stringPreferencesKey(name)] = value } }
+    /** Deletes the value stored under the full key [name] (any value type: DataStore keys compare by name). True when one was there. */
+    public suspend fun removeRaw(name: String): Boolean {
+        var found = false
+        store.edit { p -> val k = stringPreferencesKey(name); if (p.contains(k)) { found = true; p.remove(k) } }
+        return found
+    }
+    /**
+     * Deletes every value whose full key starts with [prefix] (e.g. an uninstalled plugin's `plugin.notes-sorter.`), in one
+     * edit. A blank prefix deletes nothing (use [PrefKeys.underPrefix] semantics). Returns how many keys were removed.
+     */
+    public suspend fun removePrefix(prefix: String): Int {
+        var n = 0
+        store.edit { p ->
+            val gone = PrefKeys.underPrefix(p.asMap().keys.map { it.name }, prefix)
+            for (name in gone) p.remove(stringPreferencesKey(name))
+            n = gone.size
+        }
+        return n
+    }
     public suspend fun snapshot(): Map<String, Any> = store.data.first().asMap().mapKeys { it.key.name }
+
+    public companion object {
+        /** A store kept in memory only (tests, previews, a host without disk). Same behaviour as the DataStore-backed one. */
+        public fun inMemory(): PreferenceStore = PreferenceStore(MemoryPreferencesDataStore())
+    }
+}
+
+/** Pure key rules for [PreferenceStore.removePrefix] (unit-tested without DataStore). */
+public object PrefKeys {
+    /** The names under [prefix]; a blank prefix matches nothing, so a bad call can't wipe every preference. */
+    public fun underPrefix(names: Collection<String>, prefix: String): List<String> =
+        if (prefix.isBlank()) emptyList() else names.filter { it.startsWith(prefix) }.distinct()
+}
+
+/** In-memory [DataStore] of [Preferences]: edits are serialized like the real store's. Backs [PreferenceStore.inMemory]. */
+public class MemoryPreferencesDataStore(initial: Preferences = emptyPreferences()) : DataStore<Preferences> {
+    private val state = MutableStateFlow(initial)
+    private val lock = Mutex()
+    override val data: Flow<Preferences> get() = state
+    override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences =
+        lock.withLock { val next = transform(state.value).toPreferences(); state.value = next; next }
 }
 
 /** JSON documents in the schema-driven file layout: `<data>/<module>/documents/<collection>/<id>.json`. */

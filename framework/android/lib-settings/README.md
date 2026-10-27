@@ -7,3 +7,8 @@ Oct 20 2026: `SettingsScreen` has tabs (Appearance, General, Plugins, About — 
 Oct 21 2026: lib-settings registers the `settings` view itself (`AxfUiPoints.VIEWS` → `SettingsScreen()`; `AppShell` merges module
 views under the app's), so apps no longer register their own, and a default `help.about` toast built from the manifest
 (`<name> <version> on AmberX AXF <framework>.` plus `app.about` when set); an app's own `help.about` replaces it.
+
+Oct 27 2026: `SettingsEngine.remove(key)` and `SettingsEngine.removePrefix(prefix)` delete saved values (DataStore via
+`PreferenceStore.removeRaw` / `removePrefix`, SECRET settings in the secure store, the kernel Config user layer through
+`Config.remove` / `Config.removePrefix`, and the loaded values), so an uninstalled plugin's settings are deleted rather
+than blanked. A blank prefix deletes nothing; secrets under the prefix are found from the still-registered groups.
