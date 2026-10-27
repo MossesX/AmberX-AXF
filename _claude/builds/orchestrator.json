@@ -1,0 +1,487 @@
+{
+ "$axf": "orchestrator@1",
+ "updatedAt": "2026-10-27T16:43:28.587Z",
+ "rules": {
+  "sameSession": true,
+  "subAgents": false,
+  "approveModelSwitch": true,
+  "maxStepMinutes": 30
+ },
+ "builds": [
+  {
+   "id": "design-package",
+   "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
+   "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
+   "status": "pending",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "design-package",
+   "branch": "fable/design-package",
+   "pr": "",
+   "createdAt": "2026-10-27T16:36:55.356Z",
+   "updatedAt": "2026-10-27T16:43:28.586Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Asked again Oct 27 2026 12:35 in the orchestrator chat. Overlaps to decide before starting: settings-asset-fable, appearance-asset-tokens-fable, apply-all-levels-fable, asset-templates.",
+     "at": "2026-10-27T16:36:55.356Z"
+    },
+    {
+     "text": "Orchestrator order needs one switch: Fable s1-s5, then Opus s6-s9.",
+     "at": "2026-10-27T16:43:28.584Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "behavior-theme asset type: asset-types.json entry (group Themes, rolled), JSON schema regen, all three validators accept it",
+     "model": "Fable",
+     "why": "new cross-app asset type",
+     "estimate": "20 min",
+     "files": [
+      "framework/schemas/asset-types.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Behaviour engine core/engines/behavior.ts: normalise + compile to --fx-* vars/attrs for motion, interaction, windows/dialogs, feedback; fixture spec/fixtures/behavior.json + check-behavior.mts",
+     "model": "Fable",
+     "why": "engine + fixture (cross-port contract)",
+     "estimate": "30 min",
+     "files": [
+      "framework/core/engines/looktokens.ts"
+     ],
+     "checks": [
+      "npx -y tsx framework/spec/check-behavior.mts"
+     ],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Wire behaviour into the React layer + runtime: motion vars, long-press and double-tap times, dialog/window open-close-snap-stack, toasts, sound, vibration, confirm-before-delete (behaviour tokens are the fallbacks the look tokens already reference)",
+     "model": "Fable",
+     "why": "changes how GUIs behave across apps",
+     "estimate": "30 min",
+     "files": [
+      "framework/react"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme ids; apply = 4 swaps; capture from the current look; fixture + check",
+     "model": "Fable",
+     "why": "new asset type + engine",
+     "estimate": "30 min",
+     "files": [
+      "framework/core/engines/appearancepackage.ts"
+     ],
+     "checks": [
+      "npx -y tsx framework/spec/check-design-package.mts"
+     ],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s5",
+     "text": "Retire appearance-package: migrate existing packages and the axf.appearance.package setting to design packages; ask Brett where the extra look settings (spacing, hidden chrome, other slot picks) go before dropping them (waits on Brett: where the extra look settings go)",
+     "model": "Fable",
+     "why": "migration design",
+     "estimate": "30 min",
+     "files": [
+      "framework/assets/appearance-package/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s6",
+     "text": "Starter behaviour themes (4: calm, snappy, minimal-motion, playful) + framework default",
+     "model": "Opus",
+     "why": "asset data on an existing type",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s7",
+     "text": "Settings -> Appearance: Design Package picker (with Apply) on top; the rest of the Appearance section in one collapsible container",
+     "model": "Opus",
+     "why": "settings UI built on the framework",
+     "estimate": "30 min",
+     "files": [
+      "framework/libs/settings"
+     ],
+     "checks": [
+      "npx -y tsx framework/spec/check-settings-ui.mts"
+     ],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s8",
+     "text": "Defaults + every web app's manifest names a design package and behaviour theme; re-bake console-web, axhub-web, patches-web, amberx-droid, walkthrough-studio",
+     "model": "Opus",
+     "why": "wiring + re-bakes",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s9",
+     "text": "PORTING.md deferred Kotlin twin, CLAUDE.md status, rebuild report + before/after web shots, THREADS.md, tests in CI",
+     "model": "Opus",
+     "why": "docs + CI",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "arch-foundation",
+   "title": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrator + namespacing, plugin boundary + lifecycle broker, docs",
+   "detail": "From Brett's attachment (Oct 27 2026): 5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred.",
+   "status": "pending",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "arch-foundation",
+   "branch": "fable/arch-foundation",
+   "pr": "",
+   "createdAt": "2026-10-27T16:36:55.356Z",
+   "updatedAt": "2026-10-27T16:36:55.356Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Gap audit: map attachment items 1-3 onto what exists (asset@1 layout, color/style themes, plugin@1, AxfWebLibrary, settings, embed); write _claude/memory/docs/arch-foundation.md listing only what is new. Do not duplicate existing contracts.",
+     "model": "Fable",
+     "why": "decides the contract shape",
+     "estimate": "20 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/plugin.schema.json",
+      "framework/core/engines/layout.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Layout & component tree contract (TS): page → widget/plugin nodes with unique ids, dimensions, bounding boxes, asset dependencies; additive to layout@ assets; fixture + checker.",
+     "model": "Fable",
+     "why": "cross-port contract",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Theme contract additions: component-specific overrides on top of color/style themes (tokens only); fixture.",
+     "model": "Fable",
+     "why": "theme engine internals",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "plugin@1 manifest additions: declared assets, default settings, layout entry points (optional fields, old manifests still valid); schema + validators.",
+     "model": "Fable",
+     "why": "cross-app contract",
+     "estimate": "25 min",
+     "files": [
+      "framework/schemas/plugin.schema.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s5",
+     "text": "Pydantic v2 models mirroring items 1-3 + migration engine (@model_validator(mode=\"before\")): up-cast legacy versions, fill missing fields, sanitise; never crash old apps. framework/python/axf/contracts/.",
+     "model": "Fable",
+     "why": "schema + migration design",
+     "estimate": "30 min",
+     "files": [
+      "framework/python/axf/contracts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s6",
+     "text": "Ingestion namespace engine: prefix every harvested plugin key as plugin_id:property (state + assets), idempotent, collision report; same rules in TS + Python, one fixture.",
+     "model": "Fable",
+     "why": "cross-port contract",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s7",
+     "text": "Lifecycle event broker (TS): onInit / onStateChange / onThemeUpdate / onContextMenuOpen / onDestroy, typed message passing, plugins never touch global state; fixture.",
+     "model": "Fable",
+     "why": "runtime contract",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s8",
+     "text": "React PluginBoundary: error boundary around every mounted plugin (layout + context-menu hooks), isolate the widget, themed fallback stub, report to rt.diagnostics.",
+     "model": "Opus",
+     "why": "React wiring on the contract",
+     "estimate": "25 min",
+     "files": [
+      "framework/react"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s9",
+     "text": "Architecture spec: add the new contracts to CLAUDE.md status + a reference layout tree in framework/spec/ARCH-FOUNDATION.md (no second .claude.md: CLAUDE.md is the project file).",
+     "model": "Opus",
+     "why": "docs",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s10",
+     "text": "Developer guide part 1: build a new plugin (manifest, layout/theme hooks, lifecycle hooks) in apps/console-web/plugins/README.md.",
+     "model": "Opus",
+     "why": "docs",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s11",
+     "text": "Developer guide part 2: how harvesting works + how live sync works (hub appearance@1, migrations) in framework/spec/.",
+     "model": "Opus",
+     "why": "docs",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s12",
+     "text": "Tests in CI for the new checkers + Python test; THREADS.md + PORTING.md (Android twins deferred).",
+     "model": "Opus",
+     "why": "wiring",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [
+      "python3 framework/python/axf/contracts/test.py"
+     ],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "pending-grid-view",
+   "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
+   "detail": "From Brett's attachment (Oct 27 2026). Grid next to Reload; columns 1-line summary, date added, total time estimate, cost estimate; rows expand to today's card; toolbar archive/delete/hide/unhide/open in (Build manager, Build queue, Plan); select hook with double-click multi-select. All Opus (console UI).",
+   "status": "pending",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "pending-grid-view",
+   "branch": "claude/pending-grid-view",
+   "pr": "",
+   "createdAt": "2026-10-27T16:36:55.356Z",
+   "updatedAt": "2026-10-27T16:36:55.356Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "pending@1: optional hidden + archived fields in pending-core (apply actions hide/unhide/archive, sorts); API + MCP accept them; artifact mapping unchanged except the new fields.",
+     "model": "Opus",
+     "why": "data shape, small",
+     "estimate": "25 min",
+     "files": [
+      "framework/plan/pending-core.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Grid view toggle next to Reload in Pending builds: rows with 1-line summary, date added, total time estimate, cost estimate; every column sortable (framework DataGrid).",
+     "model": "Opus",
+     "why": "console UI",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/src/views/Pending.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Rows expand to the full card content they show today (steps, notes, actions).",
+     "model": "Opus",
+     "why": "console UI",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Toolbar: Archive, Delete, Hide, Unhide (greyed when nothing selected), Open in (tooltip dialog: Build manager, Build queue, Plan), all in focus where they open.",
+     "model": "Opus",
+     "why": "console UI",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s5",
+     "text": "Select hook: hover tooltip \"activate multi select with double click\"; double-click flashes the top item's hover style 3 times, tooltip \"select items\", then single clicks add to the selection; checkbox column shows.",
+     "model": "Opus",
+     "why": "console UI",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s6",
+     "text": "Tests (pending-core cases + view build), screenshots, THREADS.md.",
+     "model": "Opus",
+     "why": "checks",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    }
+   ]
+  }
+ ]
+}

@@ -35,7 +35,10 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
-| AmberX Design Package + Behaviour theme (replaces Appearance package) | queued | – | – | Fable, 4.5 h in 9 steps (pending `design-package`). See *To carry on* | 2026-10-27 |
+| Build orchestrator plugin + repo build tracker | review | `claude/build-orchestrator` | see GitHub | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
+| AmberX Design Package + Behaviour theme (replaces Appearance package) | queued | – | – | Asked again Oct 27. Orchestrator build `design-package`: Fable s1-s5 → (approve switch) → Opus s6-s9. See *To carry on* | 2026-10-27 |
+| Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
+| Pending builds grid view (attachment) | queued | – | – | Orchestrator build `pending-grid-view`: Opus only, 6 steps | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -49,7 +52,20 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
 
+### Build orchestrator (how every build below is carried on)
+- Tracker: `_claude/builds/orchestrator.json` (orchestrator@1; how-to `_claude/builds/README.md`). `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next` says what to do; `brief <id>` gives the current phase only. At a Fable ↔ Opus switch, stop and ask Brett (card), then `act approve <id> <phase>`.
+- **First message (any build):** "Run `orchestrator.mjs next` and continue that build from `_claude/builds/orchestrator.json` on the model its next phase names."
+
+### Architecture foundation
+- **Asked (Brett, Oct 27 2026, attachment):** the 5 deliverables (TS contracts for layout tree / theme / plugin manifest; Pydantic v2 models + before-validator migrator + ingestion namespacing; React error boundary + pub/sub lifecycle broker; project spec; developer docs: new plugin, harvesting, live sync). Built on the existing asset@1 / plugin@1 / appearance@1 contracts; CLAUDE.md stays the project spec (no second .claude.md). Steps: orchestrator build `arch-foundation` (also pending `arch-foundation`).
+- **First message:** "Continue orchestrator build `arch-foundation` (`orchestrator.mjs brief arch-foundation`). Run on Fable."
+
+### Pending builds grid view
+- **Asked (Brett, Oct 27 2026, attachment):** grid next to Reload in Pending builds: 1-line summary, date added, total time estimate, cost estimate, sortable columns; rows expand to today's card; toolbar archive / delete / hide / unhide (greyed when none selected) / open in (tooltip dialog: Build manager, Build queue, Plan); select hook: hover tooltip "activate multi select with double click", double-click flashes the top item's hover style 3 times, tooltip "select items", then single clicks select more. Steps: orchestrator build `pending-grid-view` (Opus only).
+- **First message:** "Continue orchestrator build `pending-grid-view` (`orchestrator.mjs brief pending-grid-view`). Run on Opus."
+
 ### AmberX Design Package + Behaviour theme
+- **Orchestrator (Oct 27 2026):** build `design-package`, Fable s1-s5 then Opus s6-s9 (one switch).
 - **Asked (Brett, Oct 27 2026, in the "Repo thread status review" chat):** "Make new AmberX Design Package asset type
   that wraps style theme, color theme, layout theme, and behavior theme. Add behavior theme asset type too. Apply
   option to select one in appearance section of settings. Wrap the rest of interface in collapsible container."

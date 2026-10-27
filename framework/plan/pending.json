@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T16:19:48.729Z",
+ "updatedAt": "2026-10-27T16:39:39.821Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4461,6 +4461,138 @@
    "builtAt": "",
    "updatedAt": "2026-10-27T16:19:48.729Z",
    "estimate": "4.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "build-orchestrator",
+   "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
+   "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-27T16:39:39.618Z",
+   "builtAt": "2026-10-27T16:39:39.618Z",
+   "updatedAt": "2026-10-27T16:39:39.618Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "arch-foundation",
+   "title": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrator + namespacing, plugin boundary + lifecycle broker, docs",
+   "detail": "From Brett's attachment (Oct 27 2026): 5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred. Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, mixed Fable/Opus steps).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Gap audit: map attachment items 1-3 onto what exists (asset@1 layout, color/style themes, plugin@1, AxfWebLibrary, settings, embed); write _claude/memory/docs/arch-foundation.md listing only what is new. Do not duplicate existing contracts.",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Fable] Layout & component tree contract (TS): page → widget/plugin nodes with unique ids, dimensions, bounding boxes, asset dependencies; additive to layout@ assets; fixture + checker.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] Theme contract additions: component-specific overrides on top of color/style themes (tokens only); fixture.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Fable] plugin@1 manifest additions: declared assets, default settings, layout entry points (optional fields, old manifests still valid); schema + validators.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Fable] Pydantic v2 models mirroring items 1-3 + migration engine (@model_validator(mode=\"before\")): up-cast legacy versions, fill missing fields, sanitise; never crash old apps. framework/python/axf/contracts/.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] Ingestion namespace engine: prefix every harvested plugin key as plugin_id:property (state + assets), idempotent, collision report; same rules in TS + Python, one fixture.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] Lifecycle event broker (TS): onInit / onStateChange / onThemeUpdate / onContextMenuOpen / onDestroy, typed message passing, plugins never touch global state; fixture.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] React PluginBoundary: error boundary around every mounted plugin (layout + context-menu hooks), isolate the widget, themed fallback stub, report to rt.diagnostics.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Architecture spec: add the new contracts to CLAUDE.md status + a reference layout tree in framework/spec/ARCH-FOUNDATION.md (no second .claude.md: CLAUDE.md is the project file).",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Developer guide part 1: build a new plugin (manifest, layout/theme hooks, lifecycle hooks) in apps/console-web/plugins/README.md.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Developer guide part 2: how harvesting works + how live sync works (hub appearance@1, migrations) in framework/spec/.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Tests in CI for the new checkers + Python test; THREADS.md + PORTING.md (Android twins deferred).",
+     "at": "",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-10-27T16:39:39.721Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T16:39:39.721Z",
+   "source": "chat"
+  },
+  {
+   "id": "pending-grid-view",
+   "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
+   "detail": "From Brett's attachment (Oct 27 2026). Grid next to Reload; columns 1-line summary, date added, total time estimate, cost estimate; rows expand to today's card; toolbar archive/delete/hide/unhide/open in (Build manager, Build queue, Plan); select hook with double-click multi-select. All Opus (console UI). Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, mixed Fable/Opus steps).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] pending@1: optional hidden + archived fields in pending-core (apply actions hide/unhide/archive, sorts); API + MCP accept them; artifact mapping unchanged except the new fields.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Grid view toggle next to Reload in Pending builds: rows with 1-line summary, date added, total time estimate, cost estimate; every column sortable (framework DataGrid).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Rows expand to the full card content they show today (steps, notes, actions).",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Toolbar: Archive, Delete, Hide, Unhide (greyed when nothing selected), Open in (tooltip dialog: Build manager, Build queue, Plan), all in focus where they open.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Select hook: hover tooltip \"activate multi select with double click\"; double-click flashes the top item's hover style 3 times, tooltip \"select items\", then single clicks add to the selection; checkbox column shows.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Tests (pending-core cases + view build), screenshots, THREADS.md.",
+     "at": "",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-10-27T16:39:39.821Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T16:39:39.821Z",
    "source": "chat"
   }
  ]

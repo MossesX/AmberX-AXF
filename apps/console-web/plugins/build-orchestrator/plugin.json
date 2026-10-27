@@ -1,0 +1,25 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.build-orchestrator",
+  "name": "Build orchestrator",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus. Consecutive same-model steps form a phase; a phase that switches model waits for Brett's approval. Token rules on every build: one session, no sub-agents unless a step allows it, briefs carry only the current phase. Page = tab group (Builds, Approvals, Rules); the Builds tab looks and behaves like Pending builds, with more options (per-step model, phases, approve switch, next-phase brief, hide, archive, import from Pending, move/edit/remove steps). Tracker is a repo file, _claude/builds/orchestrator.json, so any session or account continues the build (orchestrator.mjs next | brief | act).",
+  "targets": ["axf-console"],
+  "provides": ["view:build-orchestrator", "settings-tab:build-orchestrator"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": { "view": "build-orchestrator", "label": "Orchestrator", "icon": "layers" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/build-orchestrator",
+    "env": [],
+    "mentions": ["CLAUDE.md", "_claude/THREADS.md", "_claude/builds/README.md"]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27" },
+  "opens": "main"
+}
