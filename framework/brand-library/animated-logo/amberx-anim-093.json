@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "amberx-anim-093",
+  "name": "amberx-logo-106 · pulse",
+  "version": "1.0.0",
+  "description": "Generated animation: pulse over 3100 ms, once (seed 93).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "pulse",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "amberx-logo-106",
+    "preset": "pulse",
+    "durationMs": 3100,
+    "delayMs": 200,
+    "loop": false,
+    "intensity": 0.9
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "enterprise-night",
+  "name": "Enterprise Night",
+  "version": "1.0.0",
+  "description": "The same enterprise frame and controls on Obsidian for long evenings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "enterprise"
+  ],
+  "data": {
+    "style-theme": "enterprise",
+    "color-theme": "obsidian",
+    "layout": "enterprise-shell",
+    "behavior-theme": "steady",
+    "extras": {
+      "slots": {
+        "style-package": "enterprise-crisp",
+        "toolbar": "enterprise-command",
+        "context-menu": "enterprise-standard"
+      }
+    }
+  }
+}

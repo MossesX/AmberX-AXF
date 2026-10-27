@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "amberx-brand-008",
+  "name": "AmberX · Signature 8",
+  "version": "1.0.0",
+  "description": "AmberX branding: AmberX mark · diamond stack, signature placement, icon pack pack-029.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "brand-library",
+    "signature"
+  ],
+  "data": {
+    "brand": {
+      "name": "AmberX",
+      "tagline": "One framework, every port."
+    },
+    "marks": {
+      "mark": "amberx-logo-014",
+      "wordmark": "amberx-logo-041",
+      "lockup": "amberx-logo-031",
+      "animated": "amberx-anim-008"
+    },
+    "iconPack": "pack-029",
+    "palette": {
+      "brand1": "#38a432",
+      "brand2": "#1d5115",
+      "brand3": "#c6dec4"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "lockup",
+      "window": "accent-edge",
+      "floating-window": "accent-edge",
+      "dialog": "accent-edge",
+      "container": "none",
+      "tab-group": "accent-edge",
+      "toolbar": "mark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

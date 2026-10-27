@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-036",
+  "name": "GizmoX wordmark · hexagon dots",
+  "version": "1.0.0",
+  "description": "Generated wordmark: a hexagon dots motif in a seeded rich palette (seed 1038).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "hexagon",
+    "dots",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#9540a0",
+      "brand2": "#3e1d53",
+      "brand3": "#dacede"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 700,
+      "tracking": 0,
+      "font": "mono",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

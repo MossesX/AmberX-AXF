@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-018",
+  "name": "GizmoX · Signature 18",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · soft-square orbit, signature placement, icon pack pack-069.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "signature"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-020",
+      "wordmark": "gizmox-logo-095",
+      "lockup": "gizmox-logo-104",
+      "animated": "gizmox-anim-102"
+    },
+    "iconPack": "pack-069",
+    "palette": {
+      "brand1": "#b69007",
+      "brand2": "#4c3501",
+      "brand3": "#ece49c"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "lockup",
+      "window": "accent-edge",
+      "floating-window": "accent-edge",
+      "dialog": "accent-edge",
+      "container": "none",
+      "tab-group": "accent-edge",
+      "toolbar": "mark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

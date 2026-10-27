@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "data-pro",
+  "name": "Data Pro slider",
+  "version": "1.0.0",
+  "description": "Data Pro: bar thumb on a 3 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "analytical",
+    "data"
+  ],
+  "data": {
+    "track": 3,
+    "thumb": "bar",
+    "thumbSize": 12,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": true
+  }
+}

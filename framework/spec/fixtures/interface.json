@@ -1,0 +1,53 @@
+{
+  "resolved": {
+    "active": {
+      "toolbar": "tb-b",
+      "nav-menu": "nav-a",
+      "style-theme": "fresh",
+      "color-theme": "light",
+      "layout": "classic",
+      "behavior-theme": "standard",
+      "design-package": "fresh",
+      "banner": "thin",
+      "branding": "amberx"
+    },
+    "spacing": "compact",
+    "hidden": {
+      "toolbar": true,
+      "nav-menu": true
+    },
+    "settings": {
+      "axf.toolbar.collapsed": true,
+      "axf.banners.look": {
+        "x": 1
+      }
+    },
+    "branding": "amberx",
+    "design": "fresh",
+    "missing": [
+      "banner/gone"
+    ]
+  },
+  "capture": {
+    "design": "fresh",
+    "branding": "amberx",
+    "slots": {
+      "toolbar": "tb-b"
+    },
+    "spacing": "tight",
+    "hidden": {
+      "toolbar": true
+    },
+    "settings": {
+      "axf.custom.toolbar": {
+        "a": 1
+      }
+    },
+    "tab": {
+      "label": "Mine",
+      "icon": "star"
+    }
+  },
+  "scoped": "[data-fx-scope=\"t1\"] { --x: 1; }\n[data-fx-scope=\"t1\"] .fx-btn, [data-fx-scope=\"t1\"] .fx-chip:hover { color: red; }\n@media (max-width: 480px) {[data-fx-scope=\"t1\"] .fx-a { gap: 0 }\n[data-fx-scope=\"t1\"] { margin: 0 }}\n@keyframes spin { to { transform: rotate(1turn) } }\n[data-fx-scope=\"t1\"][data-fx-scheme='dark'] .x { y: 1 }",
+  "vars": "[data-fx-scope=\"t1\"] { --fx-a: 1; }"
+}

@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-002",
+  "name": "AmberX lockup · open slash",
+  "version": "1.0.0",
+  "description": "Generated lockup: an open slash motif in a seeded rich palette (seed 2).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "open",
+    "slash",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#266960",
+      "brand2": "#0f2f24",
+      "brand3": "#9bbfbb"
+    },
+    "paths": [
+      {
+        "d": "M15 6l-6 12",
+        "fill": "none",
+        "stroke": "brand1",
+        "strokeWidth": 3,
+        "round": true
+      },
+      {
+        "d": "M9 6h2M13 18h2",
+        "fill": "none",
+        "stroke": "brand1",
+        "strokeWidth": 3,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 800,
+      "tracking": -0.02,
+      "font": "ui",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

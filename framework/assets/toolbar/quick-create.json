@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "quick-create",
+  "name": "Quick Create",
+  "version": "1.0.0",
+  "description": "New and open, followed by the first four dialogs the app registers (wizards, importers…).",
+  "author": "AmberX AXF",
+  "tags": [
+    "live",
+    "create"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "file",
+        "items": [
+          {
+            "id": "new",
+            "icon": "plus",
+            "label": "New",
+            "action": "file.new"
+          },
+          {
+            "id": "open-file",
+            "icon": "folder",
+            "label": "Open",
+            "action": "file.open"
+          }
+        ]
+      },
+      {
+        "id": "dialogs",
+        "items": [],
+        "provider": "dialogs",
+        "max": 4,
+        "label": "Create"
+      }
+    ]
+  }
+}

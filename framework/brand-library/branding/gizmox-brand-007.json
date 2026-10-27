@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-007",
+  "name": "GizmoX · Quiet 7",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · circle bars, quiet placement, icon pack pack-025.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "quiet"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-008",
+      "wordmark": "gizmox-logo-043",
+      "lockup": "gizmox-logo-047",
+      "animated": "gizmox-anim-106"
+    },
+    "iconPack": "pack-025",
+    "palette": {
+      "brand1": "#672dd2",
+      "brand2": "#231579",
+      "brand3": "#e1dbf0"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "mark",
+      "window": "none",
+      "floating-window": "none",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "mark",
+      "favicon": "mark",
+      "empty-state": "none"
+    }
+  }
+}

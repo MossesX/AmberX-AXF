@@ -1,0 +1,5217 @@
+{
+  "$axf": "brand-library@1",
+  "generatedBy": "node framework/cli/brand-gen.mjs library",
+  "counts": {
+    "logo-mark": 250,
+    "animated-logo": 250,
+    "branding": 50,
+    "icon-pack": 100
+  },
+  "totalBytes": 644308,
+  "budget": {
+    "perAssetBytes": 4096,
+    "totalBytes": 2000000
+  },
+  "items": [
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-001",
+      "name": "AmberX mark · pill arrow",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-002",
+      "name": "AmberX lockup · open slash",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1111
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-003",
+      "name": "AmberX lockup · diamond hex",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1047
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-004",
+      "name": "AmberX mark · soft-square ring",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1104
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-005",
+      "name": "AmberX wordmark · open ring",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 899
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-006",
+      "name": "AmberX mark · diamond chevron",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1064
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-007",
+      "name": "AmberX mark · diamond notch",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 857
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-008",
+      "name": "AmberX lockup · circle wave",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1234
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-009",
+      "name": "AmberX mark · pill arrow",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-010",
+      "name": "AmberX wordmark · diamond leaf",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 906
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-011",
+      "name": "AmberX mark · soft-square bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 881
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-012",
+      "name": "AmberX lockup · squircle hex",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1083
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-013",
+      "name": "AmberX mark · squircle pulse",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 941
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-014",
+      "name": "AmberX mark · diamond stack",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 978
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-015",
+      "name": "AmberX mark · circle notch",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 870
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-016",
+      "name": "AmberX wordmark · rounded-square chevron",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 927
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-017",
+      "name": "AmberX lockup · squircle wave",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1270
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-018",
+      "name": "AmberX mark · shield bars",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 921
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-019",
+      "name": "AmberX wordmark · open slash",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 898
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-020",
+      "name": "AmberX lockup · open ring",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1112
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-021",
+      "name": "AmberX wordmark · squircle orbit",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 911
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-022",
+      "name": "AmberX wordmark · circle dots",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 896
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-023",
+      "name": "AmberX mark · rounded-square bars",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 966
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-024",
+      "name": "AmberX mark · shield dots",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 979
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-025",
+      "name": "AmberX lockup · hexagon wave",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1227
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-026",
+      "name": "AmberX mark · diamond stack",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 978
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-027",
+      "name": "AmberX mark · soft-square arrow",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 959
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-028",
+      "name": "AmberX mark · diamond bars",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 898
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-029",
+      "name": "AmberX mark · hexagon hex",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 912
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-030",
+      "name": "AmberX mark · shield notch",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 878
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-031",
+      "name": "AmberX lockup · hexagon bars",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1042
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-032",
+      "name": "AmberX mark · shield leaf",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 941
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-033",
+      "name": "AmberX lockup · diamond slash",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1205
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-034",
+      "name": "AmberX mark · circle cross",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 908
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-035",
+      "name": "AmberX mark · rounded-square dots",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1028
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-036",
+      "name": "AmberX mark · squircle hex",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 944
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-037",
+      "name": "AmberX mark · hexagon arrow",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 907
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-038",
+      "name": "AmberX wordmark · squircle hex",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-039",
+      "name": "AmberX lockup · circle dots",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1120
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-040",
+      "name": "AmberX mark · rounded-square wave",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1148
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-041",
+      "name": "AmberX wordmark · pill cross",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-042",
+      "name": "AmberX wordmark · circle orbit",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 897
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-043",
+      "name": "AmberX mark · hexagon stack",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 983
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-044",
+      "name": "AmberX lockup · squircle chevron",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1250
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-045",
+      "name": "AmberX mark · soft-square bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 881
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-046",
+      "name": "AmberX mark · shield arrow",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 919
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-047",
+      "name": "AmberX mark · circle dots",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 973
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-048",
+      "name": "AmberX lockup · shield bolt",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 984
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-049",
+      "name": "AmberX wordmark · hexagon dots",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 901
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-050",
+      "name": "AmberX mark · shield chevron",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1085
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-051",
+      "name": "AmberX mark · diamond spark",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 858
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-052",
+      "name": "AmberX mark · circle spark",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 870
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-053",
+      "name": "AmberX mark · squircle wave",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1121
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-054",
+      "name": "AmberX wordmark · circle spark",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 904
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-055",
+      "name": "AmberX lockup · shield orbit",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1263
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-056",
+      "name": "AmberX mark · shield bars",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 919
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-057",
+      "name": "AmberX lockup · circle pulse",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1055
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-058",
+      "name": "AmberX mark · squircle chevron",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1107
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-059",
+      "name": "AmberX wordmark · soft-square leaf",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 916
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-060",
+      "name": "AmberX mark · shield orbit",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1116
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-061",
+      "name": "AmberX wordmark · pill orbit",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 901
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-062",
+      "name": "AmberX mark · squircle bars",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 941
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-063",
+      "name": "AmberX mark · circle slash",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1071
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-064",
+      "name": "AmberX wordmark · soft-square bars",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 917
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-065",
+      "name": "AmberX lockup · soft-square arrow",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1106
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-066",
+      "name": "AmberX mark · hexagon cross",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 900
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-067",
+      "name": "AmberX mark · open stack",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 895
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-068",
+      "name": "AmberX mark · pill hex",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 908
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-069",
+      "name": "AmberX lockup · circle arrow",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1058
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-070",
+      "name": "AmberX wordmark · shield dots",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 896
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-071",
+      "name": "AmberX mark · shield pulse",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 919
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-072",
+      "name": "AmberX lockup · soft-square bars",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1099
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-073",
+      "name": "AmberX mark · open stack",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 897
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-074",
+      "name": "AmberX mark · shield pulse",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 919
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-075",
+      "name": "AmberX mark · pill leaf",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 927
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-076",
+      "name": "AmberX mark · circle hex",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 918
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-077",
+      "name": "AmberX mark · soft-square bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 881
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-078",
+      "name": "AmberX wordmark · diamond notch",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 907
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-079",
+      "name": "AmberX mark · soft-square notch",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 916
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-080",
+      "name": "AmberX wordmark · squircle pulse",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 911
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-081",
+      "name": "AmberX mark · pill bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 827
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-082",
+      "name": "AmberX mark · squircle orbit",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1136
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-083",
+      "name": "AmberX mark · pill bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 827
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-084",
+      "name": "AmberX lockup · squircle stack",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1162
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-085",
+      "name": "AmberX lockup · shield slash",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1218
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-086",
+      "name": "AmberX lockup · hexagon notch",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1008
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-087",
+      "name": "AmberX wordmark · open hex",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 894
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-088",
+      "name": "AmberX mark · squircle slash",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1099
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-089",
+      "name": "AmberX mark · hexagon ring",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1056
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-090",
+      "name": "AmberX wordmark · pill stack",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 900
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-091",
+      "name": "AmberX mark · open ring",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 965
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-092",
+      "name": "AmberX mark · hexagon ring",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1054
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-093",
+      "name": "AmberX mark · shield pulse",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 921
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-094",
+      "name": "AmberX wordmark · rounded-square arrow",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 928
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-095",
+      "name": "AmberX lockup · soft-square cross",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1096
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-096",
+      "name": "AmberX mark · soft-square stack",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1038
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-097",
+      "name": "AmberX mark · pill arrow",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 904
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-098",
+      "name": "AmberX mark · diamond slash",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1062
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-099",
+      "name": "AmberX wordmark · diamond notch",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 909
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-100",
+      "name": "AmberX mark · soft-square notch",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 917
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-101",
+      "name": "AmberX mark · pill pulse",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 904
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-102",
+      "name": "AmberX lockup · soft-square bars",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1101
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-103",
+      "name": "AmberX mark · pill slash",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1066
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-104",
+      "name": "AmberX wordmark · circle notch",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 910
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-105",
+      "name": "AmberX wordmark · open orbit",
+      "brand": "AmberX",
+      "form": "wordmark",
+      "bytes": 898
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-106",
+      "name": "AmberX lockup · soft-square leaf",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1119
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-107",
+      "name": "AmberX lockup · hexagon leaf",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1078
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-108",
+      "name": "AmberX mark · pill arrow",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 906
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-109",
+      "name": "AmberX mark · rounded-square spark",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 926
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-110",
+      "name": "AmberX mark · pill cross",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 899
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-111",
+      "name": "AmberX mark · pill bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 828
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-112",
+      "name": "AmberX lockup · rounded-square orbit",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1307
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-113",
+      "name": "AmberX mark · hexagon bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 831
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-114",
+      "name": "AmberX mark · squircle bars",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 940
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-115",
+      "name": "AmberX lockup · shield bolt",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 990
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-116",
+      "name": "AmberX lockup · soft-square slash",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1263
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-117",
+      "name": "AmberX mark · pill orbit",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 1101
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-118",
+      "name": "AmberX lockup · diamond bars",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1041
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-119",
+      "name": "AmberX mark · shield bolt",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 844
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-120",
+      "name": "AmberX mark · soft-square cross",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 953
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-121",
+      "name": "AmberX mark · soft-square spark",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 917
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-122",
+      "name": "AmberX lockup · shield orbit",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1258
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-123",
+      "name": "AmberX lockup · circle ring",
+      "brand": "AmberX",
+      "form": "lockup",
+      "bytes": 1205
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-124",
+      "name": "AmberX mark · pill notch",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 863
+    },
+    {
+      "type": "logo-mark",
+      "id": "amberx-logo-125",
+      "name": "AmberX mark · soft-square notch",
+      "brand": "AmberX",
+      "form": "mark",
+      "bytes": 917
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-001",
+      "name": "amberx-logo-026 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-026",
+      "preset": "float",
+      "bytes": 490
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-002",
+      "name": "amberx-logo-097 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-097",
+      "preset": "spin",
+      "bytes": 482
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-003",
+      "name": "amberx-logo-056 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-056",
+      "preset": "float",
+      "bytes": 490
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-004",
+      "name": "amberx-logo-118 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-118",
+      "preset": "shimmer",
+      "bytes": 496
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-005",
+      "name": "amberx-logo-112 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-112",
+      "preset": "float",
+      "bytes": 484
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-006",
+      "name": "amberx-logo-060 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-060",
+      "preset": "shimmer",
+      "bytes": 492
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-007",
+      "name": "amberx-logo-045 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-045",
+      "preset": "float",
+      "bytes": 490
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-008",
+      "name": "amberx-logo-018 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-018",
+      "preset": "spin",
+      "bytes": 486
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-009",
+      "name": "amberx-logo-037 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-037",
+      "preset": "wink",
+      "bytes": 484
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-010",
+      "name": "amberx-logo-015 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-015",
+      "preset": "spin",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-011",
+      "name": "amberx-logo-111 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-111",
+      "preset": "shimmer",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-012",
+      "name": "amberx-logo-056 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-056",
+      "preset": "orbit",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-013",
+      "name": "amberx-logo-114 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-114",
+      "preset": "shimmer",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-014",
+      "name": "amberx-logo-032 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-032",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-015",
+      "name": "amberx-logo-066 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-066",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-016",
+      "name": "amberx-logo-108 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-108",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-017",
+      "name": "amberx-logo-034 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-034",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-018",
+      "name": "amberx-logo-058 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-058",
+      "preset": "pulse",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-019",
+      "name": "amberx-logo-084 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-084",
+      "preset": "float",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-020",
+      "name": "amberx-logo-116 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-116",
+      "preset": "spin",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-021",
+      "name": "amberx-logo-125 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-125",
+      "preset": "draw",
+      "bytes": 481
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-022",
+      "name": "amberx-logo-007 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-007",
+      "preset": "orbit",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-023",
+      "name": "amberx-logo-034 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-034",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-024",
+      "name": "amberx-logo-106 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-106",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-025",
+      "name": "amberx-logo-034 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-034",
+      "preset": "pulse",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-026",
+      "name": "amberx-logo-037 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-037",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-027",
+      "name": "amberx-logo-073 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-073",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-028",
+      "name": "amberx-logo-089 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-089",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-029",
+      "name": "amberx-logo-110 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-110",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-030",
+      "name": "amberx-logo-109 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-109",
+      "preset": "wink",
+      "bytes": 479
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-031",
+      "name": "amberx-logo-108 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-108",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-032",
+      "name": "amberx-logo-069 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-069",
+      "preset": "float",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-033",
+      "name": "amberx-logo-084 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-084",
+      "preset": "float",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-034",
+      "name": "amberx-logo-110 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-110",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-035",
+      "name": "amberx-logo-075 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-075",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-036",
+      "name": "amberx-logo-067 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-067",
+      "preset": "float",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-037",
+      "name": "amberx-logo-109 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-109",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-038",
+      "name": "amberx-logo-052 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-052",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-039",
+      "name": "amberx-logo-006 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-006",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-040",
+      "name": "amberx-logo-125 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-125",
+      "preset": "draw",
+      "bytes": 481
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-041",
+      "name": "amberx-logo-039 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-039",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-042",
+      "name": "amberx-logo-046 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-046",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-043",
+      "name": "amberx-logo-052 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-052",
+      "preset": "float",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-044",
+      "name": "amberx-logo-089 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-089",
+      "preset": "spin",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-045",
+      "name": "amberx-logo-095 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-095",
+      "preset": "float",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-046",
+      "name": "amberx-logo-100 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-100",
+      "preset": "orbit",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-047",
+      "name": "amberx-logo-083 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-083",
+      "preset": "pulse",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-048",
+      "name": "amberx-logo-045 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-045",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-049",
+      "name": "amberx-logo-011 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-011",
+      "preset": "shimmer",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-050",
+      "name": "amberx-logo-047 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-047",
+      "preset": "float",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-051",
+      "name": "amberx-logo-001 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-001",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-052",
+      "name": "amberx-logo-048 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-048",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-053",
+      "name": "amberx-logo-055 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-055",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-054",
+      "name": "amberx-logo-122 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-122",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-055",
+      "name": "amberx-logo-072 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-072",
+      "preset": "spin",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-056",
+      "name": "amberx-logo-098 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-098",
+      "preset": "shimmer",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-057",
+      "name": "amberx-logo-002 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-002",
+      "preset": "pulse",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-058",
+      "name": "amberx-logo-121 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-121",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-059",
+      "name": "amberx-logo-076 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-076",
+      "preset": "draw",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-060",
+      "name": "amberx-logo-036 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-036",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-061",
+      "name": "amberx-logo-086 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-086",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-062",
+      "name": "amberx-logo-030 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-030",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-063",
+      "name": "amberx-logo-113 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-113",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-064",
+      "name": "amberx-logo-043 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-043",
+      "preset": "draw",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-065",
+      "name": "amberx-logo-079 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-079",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-066",
+      "name": "amberx-logo-076 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-076",
+      "preset": "draw",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-067",
+      "name": "amberx-logo-039 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-039",
+      "preset": "shimmer",
+      "bytes": 499
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-068",
+      "name": "amberx-logo-081 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-081",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-069",
+      "name": "amberx-logo-093 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-093",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-070",
+      "name": "amberx-logo-060 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-060",
+      "preset": "shimmer",
+      "bytes": 497
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-071",
+      "name": "amberx-logo-103 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-103",
+      "preset": "float",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-072",
+      "name": "amberx-logo-086 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-086",
+      "preset": "orbit",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-073",
+      "name": "amberx-logo-119 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-119",
+      "preset": "draw",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-074",
+      "name": "amberx-logo-039 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-039",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-075",
+      "name": "amberx-logo-032 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-032",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-076",
+      "name": "amberx-logo-110 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-110",
+      "preset": "draw",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-077",
+      "name": "amberx-logo-119 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-119",
+      "preset": "spin",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-078",
+      "name": "amberx-logo-052 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-052",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-079",
+      "name": "amberx-logo-092 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-092",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-080",
+      "name": "amberx-logo-047 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-047",
+      "preset": "draw",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-081",
+      "name": "amberx-logo-007 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-007",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-082",
+      "name": "amberx-logo-034 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-034",
+      "preset": "pulse",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-083",
+      "name": "amberx-logo-023 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-023",
+      "preset": "float",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-084",
+      "name": "amberx-logo-018 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-018",
+      "preset": "float",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-085",
+      "name": "amberx-logo-107 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-107",
+      "preset": "pulse",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-086",
+      "name": "amberx-logo-007 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-007",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-087",
+      "name": "amberx-logo-057 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-057",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-088",
+      "name": "amberx-logo-046 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-046",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-089",
+      "name": "amberx-logo-033 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-033",
+      "preset": "float",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-090",
+      "name": "amberx-logo-119 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-119",
+      "preset": "float",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-091",
+      "name": "amberx-logo-079 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-079",
+      "preset": "spin",
+      "bytes": 481
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-092",
+      "name": "amberx-logo-118 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-118",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-093",
+      "name": "amberx-logo-106 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-106",
+      "preset": "pulse",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-094",
+      "name": "amberx-logo-096 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-096",
+      "preset": "float",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-095",
+      "name": "amberx-logo-025 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-025",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-096",
+      "name": "amberx-logo-029 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-029",
+      "preset": "pulse",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-097",
+      "name": "amberx-logo-011 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-011",
+      "preset": "float",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-098",
+      "name": "amberx-logo-095 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-095",
+      "preset": "pulse",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-099",
+      "name": "amberx-logo-075 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-075",
+      "preset": "float",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-100",
+      "name": "amberx-logo-071 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-071",
+      "preset": "pulse",
+      "bytes": 486
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-101",
+      "name": "amberx-logo-106 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-106",
+      "preset": "orbit",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-102",
+      "name": "amberx-logo-082 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-082",
+      "preset": "wink",
+      "bytes": 484
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-103",
+      "name": "amberx-logo-012 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-012",
+      "preset": "float",
+      "bytes": 494
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-104",
+      "name": "amberx-logo-092 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-092",
+      "preset": "draw",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-105",
+      "name": "amberx-logo-073 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-073",
+      "preset": "draw",
+      "bytes": 484
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-106",
+      "name": "amberx-logo-035 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-035",
+      "preset": "float",
+      "bytes": 486
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-107",
+      "name": "amberx-logo-003 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-003",
+      "preset": "pulse",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-108",
+      "name": "amberx-logo-121 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-121",
+      "preset": "float",
+      "bytes": 494
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-109",
+      "name": "amberx-logo-055 · shimmer",
+      "brand": "AmberX",
+      "mark": "amberx-logo-055",
+      "preset": "shimmer",
+      "bytes": 502
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-110",
+      "name": "amberx-logo-075 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-075",
+      "preset": "pulse",
+      "bytes": 492
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-111",
+      "name": "amberx-logo-114 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-114",
+      "preset": "draw",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-112",
+      "name": "amberx-logo-100 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-100",
+      "preset": "wink",
+      "bytes": 490
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-113",
+      "name": "amberx-logo-037 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-037",
+      "preset": "wink",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-114",
+      "name": "amberx-logo-079 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-079",
+      "preset": "spin",
+      "bytes": 484
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-115",
+      "name": "amberx-logo-029 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-029",
+      "preset": "orbit",
+      "bytes": 492
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-116",
+      "name": "amberx-logo-023 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-023",
+      "preset": "pulse",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-117",
+      "name": "amberx-logo-044 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-044",
+      "preset": "wink",
+      "bytes": 490
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-118",
+      "name": "amberx-logo-109 · spin",
+      "brand": "AmberX",
+      "mark": "amberx-logo-109",
+      "preset": "spin",
+      "bytes": 486
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-119",
+      "name": "amberx-logo-050 · wink",
+      "brand": "AmberX",
+      "mark": "amberx-logo-050",
+      "preset": "wink",
+      "bytes": 486
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-120",
+      "name": "amberx-logo-112 · draw",
+      "brand": "AmberX",
+      "mark": "amberx-logo-112",
+      "preset": "draw",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-121",
+      "name": "amberx-logo-114 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-114",
+      "preset": "pulse",
+      "bytes": 494
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-122",
+      "name": "amberx-logo-083 · orbit",
+      "brand": "AmberX",
+      "mark": "amberx-logo-083",
+      "preset": "orbit",
+      "bytes": 494
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-123",
+      "name": "amberx-logo-097 · pulse",
+      "brand": "AmberX",
+      "mark": "amberx-logo-097",
+      "preset": "pulse",
+      "bytes": 488
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-124",
+      "name": "amberx-logo-044 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-044",
+      "preset": "float",
+      "bytes": 486
+    },
+    {
+      "type": "animated-logo",
+      "id": "amberx-anim-125",
+      "name": "amberx-logo-029 · float",
+      "brand": "AmberX",
+      "mark": "amberx-logo-029",
+      "preset": "float",
+      "bytes": 494
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-001",
+      "name": "GizmoX mark · hexagon pulse",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 909
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-002",
+      "name": "GizmoX wordmark · shield arrow",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 904
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-003",
+      "name": "GizmoX mark · shield wave",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1103
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-004",
+      "name": "GizmoX mark · diamond leaf",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 922
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-005",
+      "name": "GizmoX mark · pill pulse",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 907
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-006",
+      "name": "GizmoX mark · soft-square notch",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 920
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-007",
+      "name": "GizmoX mark · soft-square slash",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1121
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-008",
+      "name": "GizmoX mark · circle bars",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 913
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-009",
+      "name": "GizmoX mark · diamond spark",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 860
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-010",
+      "name": "GizmoX mark · open ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 967
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-011",
+      "name": "GizmoX mark · circle cross",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 910
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-012",
+      "name": "GizmoX mark · soft-square ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1107
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-013",
+      "name": "GizmoX mark · squircle ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1089
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-014",
+      "name": "GizmoX mark · hexagon spark",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 865
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-015",
+      "name": "GizmoX wordmark · circle hex",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 898
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-016",
+      "name": "GizmoX mark · shield leaf",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 943
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-017",
+      "name": "GizmoX mark · pill spark",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 866
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-018",
+      "name": "GizmoX mark · pill wave",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1087
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-019",
+      "name": "GizmoX mark · soft-square cross",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 954
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-020",
+      "name": "GizmoX mark · soft-square orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1156
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-021",
+      "name": "GizmoX mark · diamond bars",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-022",
+      "name": "GizmoX mark · hexagon orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1105
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-023",
+      "name": "GizmoX mark · squircle bolt",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 867
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-024",
+      "name": "GizmoX mark · open stack",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 899
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-025",
+      "name": "GizmoX wordmark · soft-square wave",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 915
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-026",
+      "name": "GizmoX mark · circle arrow",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 915
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-027",
+      "name": "GizmoX mark · circle notch",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 874
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-028",
+      "name": "GizmoX lockup · hexagon bars",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1055
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-029",
+      "name": "GizmoX lockup · hexagon bars",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1044
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-030",
+      "name": "GizmoX mark · hexagon cross",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-031",
+      "name": "GizmoX mark · circle dots",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 975
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-032",
+      "name": "GizmoX mark · open stack",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 899
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-033",
+      "name": "GizmoX mark · open stack",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 899
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-034",
+      "name": "GizmoX wordmark · soft-square hex",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 919
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-035",
+      "name": "GizmoX lockup · squircle stack",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1163
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-036",
+      "name": "GizmoX wordmark · hexagon dots",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 901
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-037",
+      "name": "GizmoX mark · squircle bolt",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 867
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-038",
+      "name": "GizmoX mark · squircle spark",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-039",
+      "name": "GizmoX mark · hexagon cross",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-040",
+      "name": "GizmoX wordmark · pill dots",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 899
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-041",
+      "name": "GizmoX lockup · circle bars",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1055
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-042",
+      "name": "GizmoX lockup · hexagon stack",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1130
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-043",
+      "name": "GizmoX wordmark · soft-square slash",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 918
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-044",
+      "name": "GizmoX mark · open ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 965
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-045",
+      "name": "GizmoX mark · pill stack",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 983
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-046",
+      "name": "GizmoX lockup · diamond chevron",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1209
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-047",
+      "name": "GizmoX lockup · circle dots",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1120
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-048",
+      "name": "GizmoX mark · shield hex",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 926
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-049",
+      "name": "GizmoX wordmark · squircle pulse",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 910
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-050",
+      "name": "GizmoX mark · open wave",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 999
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-051",
+      "name": "GizmoX mark · soft-square orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1156
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-052",
+      "name": "GizmoX lockup · rounded-square stack",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1188
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-053",
+      "name": "GizmoX mark · circle notch",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 874
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-054",
+      "name": "GizmoX mark · rounded-square ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1118
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-055",
+      "name": "GizmoX mark · diamond orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1096
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-056",
+      "name": "GizmoX lockup · diamond orbit",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1239
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-057",
+      "name": "GizmoX wordmark · open slash",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 897
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-058",
+      "name": "GizmoX mark · hexagon notch",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 867
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-059",
+      "name": "GizmoX mark · shield orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1116
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-060",
+      "name": "GizmoX mark · soft-square wave",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1143
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-061",
+      "name": "GizmoX mark · squircle ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1091
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-062",
+      "name": "GizmoX wordmark · diamond orbit",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 907
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-063",
+      "name": "GizmoX wordmark · open orbit",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 899
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-064",
+      "name": "GizmoX lockup · shield cross",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1061
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-065",
+      "name": "GizmoX mark · circle arrow",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 913
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-066",
+      "name": "GizmoX mark · shield orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1116
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-067",
+      "name": "GizmoX wordmark · pill notch",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 898
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-068",
+      "name": "GizmoX mark · shield cross",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 916
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-069",
+      "name": "GizmoX mark · rounded-square spark",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 927
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-070",
+      "name": "GizmoX mark · diamond chevron",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1069
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-071",
+      "name": "GizmoX lockup · squircle pulse",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1088
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-072",
+      "name": "GizmoX lockup · shield arrow",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1063
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-073",
+      "name": "GizmoX wordmark · hexagon bars",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 906
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-074",
+      "name": "GizmoX mark · hexagon pulse",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 907
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-075",
+      "name": "GizmoX wordmark · soft-square bars",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 917
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-076",
+      "name": "GizmoX mark · pill wave",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1087
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-077",
+      "name": "GizmoX mark · diamond slash",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1063
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-078",
+      "name": "GizmoX wordmark · hexagon leaf",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 907
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-079",
+      "name": "GizmoX mark · diamond cross",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 895
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-080",
+      "name": "GizmoX lockup · shield arrow",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1060
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-081",
+      "name": "GizmoX mark · shield bolt",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 847
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-082",
+      "name": "GizmoX mark · hexagon notch",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 865
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-083",
+      "name": "GizmoX mark · circle chevron",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1081
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-084",
+      "name": "GizmoX mark · diamond chevron",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1067
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-085",
+      "name": "GizmoX mark · diamond bars",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-086",
+      "name": "GizmoX mark · hexagon dots",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 969
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-087",
+      "name": "GizmoX mark · diamond slash",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1063
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-088",
+      "name": "GizmoX wordmark · soft-square notch",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 917
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-089",
+      "name": "GizmoX lockup · hexagon bolt",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 975
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-090",
+      "name": "GizmoX mark · pill ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1053
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-091",
+      "name": "GizmoX wordmark · pill cross",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 906
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-092",
+      "name": "GizmoX mark · soft-square dots",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1019
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-093",
+      "name": "GizmoX mark · shield notch",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 882
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-094",
+      "name": "GizmoX mark · soft-square hex",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 966
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-095",
+      "name": "GizmoX wordmark · pill notch",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 903
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-096",
+      "name": "GizmoX mark · open slash",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 973
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-097",
+      "name": "GizmoX mark · rounded-square pulse",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 970
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-098",
+      "name": "GizmoX mark · pill wave",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1087
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-099",
+      "name": "GizmoX mark · soft-square slash",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1119
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-100",
+      "name": "GizmoX lockup · hexagon leaf",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1068
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-101",
+      "name": "GizmoX lockup · circle stack",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1136
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-102",
+      "name": "GizmoX lockup · circle stack",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1138
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-103",
+      "name": "GizmoX mark · shield orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1116
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-104",
+      "name": "GizmoX lockup · soft-square wave",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1286
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-105",
+      "name": "GizmoX mark · pill hex",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 910
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-106",
+      "name": "GizmoX mark · soft-square chevron",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1127
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-107",
+      "name": "GizmoX wordmark · shield ring",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 906
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-108",
+      "name": "GizmoX lockup · pill cross",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1045
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-109",
+      "name": "GizmoX mark · circle arrow",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 913
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-110",
+      "name": "GizmoX lockup · circle bolt",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 982
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-111",
+      "name": "GizmoX lockup · pill leaf",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1074
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-112",
+      "name": "GizmoX mark · squircle arrow",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 941
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-113",
+      "name": "GizmoX wordmark · diamond chevron",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 912
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-114",
+      "name": "GizmoX wordmark · circle dots",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 900
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-115",
+      "name": "GizmoX mark · shield arrow",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 923
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-116",
+      "name": "GizmoX lockup · circle notch",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1018
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-117",
+      "name": "GizmoX mark · hexagon ring",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1056
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-118",
+      "name": "GizmoX mark · squircle spark",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 900
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-119",
+      "name": "GizmoX lockup · pill dots",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 1110
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-120",
+      "name": "GizmoX mark · squircle spark",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 902
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-121",
+      "name": "GizmoX mark · circle stack",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 991
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-122",
+      "name": "GizmoX mark · soft-square orbit",
+      "brand": "GizmoX",
+      "form": "mark",
+      "bytes": 1156
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-123",
+      "name": "GizmoX wordmark · pill arrow",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 900
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-124",
+      "name": "GizmoX lockup · diamond bolt",
+      "brand": "GizmoX",
+      "form": "lockup",
+      "bytes": 962
+    },
+    {
+      "type": "logo-mark",
+      "id": "gizmox-logo-125",
+      "name": "GizmoX wordmark · open hex",
+      "brand": "GizmoX",
+      "form": "wordmark",
+      "bytes": 888
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-001",
+      "name": "gizmox-logo-106 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-106",
+      "preset": "pulse",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-002",
+      "name": "gizmox-logo-029 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-029",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-003",
+      "name": "gizmox-logo-051 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-051",
+      "preset": "pulse",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-004",
+      "name": "gizmox-logo-120 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-120",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-005",
+      "name": "gizmox-logo-077 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-077",
+      "preset": "pulse",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-006",
+      "name": "gizmox-logo-064 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-064",
+      "preset": "orbit",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-007",
+      "name": "gizmox-logo-070 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-070",
+      "preset": "spin",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-008",
+      "name": "gizmox-logo-111 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-111",
+      "preset": "orbit",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-009",
+      "name": "gizmox-logo-118 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-118",
+      "preset": "draw",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-010",
+      "name": "gizmox-logo-021 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-021",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-011",
+      "name": "gizmox-logo-102 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-102",
+      "preset": "draw",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-012",
+      "name": "gizmox-logo-026 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-026",
+      "preset": "orbit",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-013",
+      "name": "gizmox-logo-041 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-041",
+      "preset": "draw",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-014",
+      "name": "gizmox-logo-102 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-102",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-015",
+      "name": "gizmox-logo-118 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-118",
+      "preset": "spin",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-016",
+      "name": "gizmox-logo-109 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-109",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-017",
+      "name": "gizmox-logo-110 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-110",
+      "preset": "spin",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-018",
+      "name": "gizmox-logo-085 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-085",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-019",
+      "name": "gizmox-logo-046 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-046",
+      "preset": "pulse",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-020",
+      "name": "gizmox-logo-030 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-030",
+      "preset": "draw",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-021",
+      "name": "gizmox-logo-021 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-021",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-022",
+      "name": "gizmox-logo-085 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-085",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-023",
+      "name": "gizmox-logo-077 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-077",
+      "preset": "pulse",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-024",
+      "name": "gizmox-logo-120 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-120",
+      "preset": "shimmer",
+      "bytes": 499
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-025",
+      "name": "gizmox-logo-083 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-083",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-026",
+      "name": "gizmox-logo-059 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-059",
+      "preset": "float",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-027",
+      "name": "gizmox-logo-010 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-010",
+      "preset": "draw",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-028",
+      "name": "gizmox-logo-121 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-121",
+      "preset": "pulse",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-029",
+      "name": "gizmox-logo-081 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-081",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-030",
+      "name": "gizmox-logo-059 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-059",
+      "preset": "shimmer",
+      "bytes": 499
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-031",
+      "name": "gizmox-logo-029 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-029",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-032",
+      "name": "gizmox-logo-065 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-065",
+      "preset": "spin",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-033",
+      "name": "gizmox-logo-006 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-006",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-034",
+      "name": "gizmox-logo-089 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-089",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-035",
+      "name": "gizmox-logo-083 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-083",
+      "preset": "orbit",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-036",
+      "name": "gizmox-logo-055 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-055",
+      "preset": "wink",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-037",
+      "name": "gizmox-logo-038 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-038",
+      "preset": "pulse",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-038",
+      "name": "gizmox-logo-109 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-109",
+      "preset": "orbit",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-039",
+      "name": "gizmox-logo-018 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-018",
+      "preset": "pulse",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-040",
+      "name": "gizmox-logo-110 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-110",
+      "preset": "float",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-041",
+      "name": "gizmox-logo-119 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-119",
+      "preset": "draw",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-042",
+      "name": "gizmox-logo-115 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-115",
+      "preset": "wink",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-043",
+      "name": "gizmox-logo-011 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-011",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-044",
+      "name": "gizmox-logo-054 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-054",
+      "preset": "shimmer",
+      "bytes": 497
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-045",
+      "name": "gizmox-logo-048 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-048",
+      "preset": "float",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-046",
+      "name": "gizmox-logo-024 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-024",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-047",
+      "name": "gizmox-logo-032 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-032",
+      "preset": "float",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-048",
+      "name": "gizmox-logo-084 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-084",
+      "preset": "float",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-049",
+      "name": "gizmox-logo-096 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-096",
+      "preset": "pulse",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-050",
+      "name": "gizmox-logo-124 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-124",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-051",
+      "name": "gizmox-logo-055 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-055",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-052",
+      "name": "gizmox-logo-050 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-050",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-053",
+      "name": "gizmox-logo-121 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-121",
+      "preset": "draw",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-054",
+      "name": "gizmox-logo-044 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-044",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-055",
+      "name": "gizmox-logo-076 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-076",
+      "preset": "draw",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-056",
+      "name": "gizmox-logo-022 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-022",
+      "preset": "orbit",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-057",
+      "name": "gizmox-logo-024 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-024",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-058",
+      "name": "gizmox-logo-093 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-093",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-059",
+      "name": "gizmox-logo-094 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-094",
+      "preset": "spin",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-060",
+      "name": "gizmox-logo-111 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-111",
+      "preset": "orbit",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-061",
+      "name": "gizmox-logo-080 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-080",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-062",
+      "name": "gizmox-logo-104 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-104",
+      "preset": "draw",
+      "bytes": 481
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-063",
+      "name": "gizmox-logo-119 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-119",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-064",
+      "name": "gizmox-logo-092 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-092",
+      "preset": "float",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-065",
+      "name": "gizmox-logo-079 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-079",
+      "preset": "orbit",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-066",
+      "name": "gizmox-logo-061 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-061",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-067",
+      "name": "gizmox-logo-039 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-039",
+      "preset": "orbit",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-068",
+      "name": "gizmox-logo-048 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-048",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-069",
+      "name": "gizmox-logo-024 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-024",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-070",
+      "name": "gizmox-logo-017 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-017",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-071",
+      "name": "gizmox-logo-098 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-098",
+      "preset": "draw",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-072",
+      "name": "gizmox-logo-007 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-007",
+      "preset": "spin",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-073",
+      "name": "gizmox-logo-028 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-028",
+      "preset": "wink",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-074",
+      "name": "gizmox-logo-038 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-038",
+      "preset": "pulse",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-075",
+      "name": "gizmox-logo-005 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-005",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-076",
+      "name": "gizmox-logo-010 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-010",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-077",
+      "name": "gizmox-logo-085 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-085",
+      "preset": "float",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-078",
+      "name": "gizmox-logo-023 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-023",
+      "preset": "pulse",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-079",
+      "name": "gizmox-logo-072 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-072",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-080",
+      "name": "gizmox-logo-010 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-010",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-081",
+      "name": "gizmox-logo-012 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-012",
+      "preset": "shimmer",
+      "bytes": 499
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-082",
+      "name": "gizmox-logo-087 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-087",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-083",
+      "name": "gizmox-logo-122 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-122",
+      "preset": "shimmer",
+      "bytes": 497
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-084",
+      "name": "gizmox-logo-119 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-119",
+      "preset": "wink",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-085",
+      "name": "gizmox-logo-060 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-060",
+      "preset": "shimmer",
+      "bytes": 497
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-086",
+      "name": "gizmox-logo-044 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-044",
+      "preset": "orbit",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-087",
+      "name": "gizmox-logo-024 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-024",
+      "preset": "orbit",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-088",
+      "name": "gizmox-logo-009 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-009",
+      "preset": "pulse",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-089",
+      "name": "gizmox-logo-023 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-023",
+      "preset": "float",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-090",
+      "name": "gizmox-logo-039 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-039",
+      "preset": "spin",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-091",
+      "name": "gizmox-logo-061 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-061",
+      "preset": "float",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-092",
+      "name": "gizmox-logo-048 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-048",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-093",
+      "name": "gizmox-logo-120 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-120",
+      "preset": "wink",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-094",
+      "name": "gizmox-logo-102 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-102",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-095",
+      "name": "gizmox-logo-101 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-101",
+      "preset": "orbit",
+      "bytes": 487
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-096",
+      "name": "gizmox-logo-087 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-087",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-097",
+      "name": "gizmox-logo-045 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-045",
+      "preset": "wink",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-098",
+      "name": "gizmox-logo-024 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-024",
+      "preset": "spin",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-099",
+      "name": "gizmox-logo-082 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-082",
+      "preset": "pulse",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-100",
+      "name": "gizmox-logo-105 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-105",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-101",
+      "name": "gizmox-logo-071 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-071",
+      "preset": "shimmer",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-102",
+      "name": "gizmox-logo-020 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-020",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-103",
+      "name": "gizmox-logo-012 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-012",
+      "preset": "spin",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-104",
+      "name": "gizmox-logo-044 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-044",
+      "preset": "wink",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-105",
+      "name": "gizmox-logo-085 · orbit",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-085",
+      "preset": "orbit",
+      "bytes": 495
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-106",
+      "name": "gizmox-logo-008 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-008",
+      "preset": "draw",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-107",
+      "name": "gizmox-logo-033 · draw",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-033",
+      "preset": "draw",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-108",
+      "name": "gizmox-logo-087 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-087",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-109",
+      "name": "gizmox-logo-118 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-118",
+      "preset": "float",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-110",
+      "name": "gizmox-logo-102 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-102",
+      "preset": "wink",
+      "bytes": 483
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-111",
+      "name": "gizmox-logo-003 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-003",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-112",
+      "name": "gizmox-logo-030 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-030",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-113",
+      "name": "gizmox-logo-039 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-039",
+      "preset": "spin",
+      "bytes": 491
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-114",
+      "name": "gizmox-logo-035 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-035",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-115",
+      "name": "gizmox-logo-051 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-051",
+      "preset": "wink",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-116",
+      "name": "gizmox-logo-019 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-019",
+      "preset": "shimmer",
+      "bytes": 497
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-117",
+      "name": "gizmox-logo-064 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-064",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-118",
+      "name": "gizmox-logo-082 · pulse",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-082",
+      "preset": "pulse",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-119",
+      "name": "gizmox-logo-109 · spin",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-109",
+      "preset": "spin",
+      "bytes": 485
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-120",
+      "name": "gizmox-logo-044 · float",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-044",
+      "preset": "float",
+      "bytes": 493
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-121",
+      "name": "gizmox-logo-041 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-041",
+      "preset": "shimmer",
+      "bytes": 499
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-122",
+      "name": "gizmox-logo-094 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-094",
+      "preset": "shimmer",
+      "bytes": 503
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-123",
+      "name": "gizmox-logo-096 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-096",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-124",
+      "name": "gizmox-logo-007 · wink",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-007",
+      "preset": "wink",
+      "bytes": 489
+    },
+    {
+      "type": "animated-logo",
+      "id": "gizmox-anim-125",
+      "name": "gizmox-logo-023 · shimmer",
+      "brand": "GizmoX",
+      "mark": "gizmox-logo-023",
+      "preset": "shimmer",
+      "bytes": 501
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-001",
+      "name": "AmberX · Classic 1",
+      "brand": "AmberX",
+      "bytes": 1057
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-002",
+      "name": "AmberX · Quiet 2",
+      "brand": "AmberX",
+      "bytes": 1046
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-003",
+      "name": "AmberX · Signature 3",
+      "brand": "AmberX",
+      "bytes": 1095
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-004",
+      "name": "AmberX · Showcase 4",
+      "brand": "AmberX",
+      "bytes": 1076
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-005",
+      "name": "AmberX · Wordmark 5",
+      "brand": "AmberX",
+      "bytes": 1064
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-006",
+      "name": "AmberX · Classic 6",
+      "brand": "AmberX",
+      "bytes": 1063
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-007",
+      "name": "AmberX · Quiet 7",
+      "brand": "AmberX",
+      "bytes": 1044
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-008",
+      "name": "AmberX · Signature 8",
+      "brand": "AmberX",
+      "bytes": 1093
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-009",
+      "name": "AmberX · Showcase 9",
+      "brand": "AmberX",
+      "bytes": 1075
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-010",
+      "name": "AmberX · Wordmark 10",
+      "brand": "AmberX",
+      "bytes": 1066
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-011",
+      "name": "AmberX · Classic 11",
+      "brand": "AmberX",
+      "bytes": 1067
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-012",
+      "name": "AmberX · Quiet 12",
+      "brand": "AmberX",
+      "bytes": 1042
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-013",
+      "name": "AmberX · Signature 13",
+      "brand": "AmberX",
+      "bytes": 1094
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-014",
+      "name": "AmberX · Showcase 14",
+      "brand": "AmberX",
+      "bytes": 1081
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-015",
+      "name": "AmberX · Wordmark 15",
+      "brand": "AmberX",
+      "bytes": 1067
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-016",
+      "name": "AmberX · Classic 16",
+      "brand": "AmberX",
+      "bytes": 1059
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-017",
+      "name": "AmberX · Quiet 17",
+      "brand": "AmberX",
+      "bytes": 1043
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-018",
+      "name": "AmberX · Signature 18",
+      "brand": "AmberX",
+      "bytes": 1092
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-019",
+      "name": "AmberX · Showcase 19",
+      "brand": "AmberX",
+      "bytes": 1076
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-020",
+      "name": "AmberX · Wordmark 20",
+      "brand": "AmberX",
+      "bytes": 1074
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-021",
+      "name": "AmberX · Classic 21",
+      "brand": "AmberX",
+      "bytes": 1060
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-022",
+      "name": "AmberX · Quiet 22",
+      "brand": "AmberX",
+      "bytes": 1044
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-023",
+      "name": "AmberX · Signature 23",
+      "brand": "AmberX",
+      "bytes": 1100
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-024",
+      "name": "AmberX · Showcase 24",
+      "brand": "AmberX",
+      "bytes": 1077
+    },
+    {
+      "type": "branding",
+      "id": "amberx-brand-025",
+      "name": "AmberX · Wordmark 25",
+      "brand": "AmberX",
+      "bytes": 1071
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-001",
+      "name": "GizmoX · Classic 1",
+      "brand": "GizmoX",
+      "bytes": 1065
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-002",
+      "name": "GizmoX · Quiet 2",
+      "brand": "GizmoX",
+      "bytes": 1046
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-003",
+      "name": "GizmoX · Signature 3",
+      "brand": "GizmoX",
+      "bytes": 1097
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-004",
+      "name": "GizmoX · Showcase 4",
+      "brand": "GizmoX",
+      "bytes": 1078
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-005",
+      "name": "GizmoX · Wordmark 5",
+      "brand": "GizmoX",
+      "bytes": 1076
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-006",
+      "name": "GizmoX · Classic 6",
+      "brand": "GizmoX",
+      "bytes": 1069
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-007",
+      "name": "GizmoX · Quiet 7",
+      "brand": "GizmoX",
+      "bytes": 1046
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-008",
+      "name": "GizmoX · Signature 8",
+      "brand": "GizmoX",
+      "bytes": 1098
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-009",
+      "name": "GizmoX · Showcase 9",
+      "brand": "GizmoX",
+      "bytes": 1077
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-010",
+      "name": "GizmoX · Wordmark 10",
+      "brand": "GizmoX",
+      "bytes": 1072
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-011",
+      "name": "GizmoX · Classic 11",
+      "brand": "GizmoX",
+      "bytes": 1069
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-012",
+      "name": "GizmoX · Quiet 12",
+      "brand": "GizmoX",
+      "bytes": 1049
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-013",
+      "name": "GizmoX · Signature 13",
+      "brand": "GizmoX",
+      "bytes": 1099
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-014",
+      "name": "GizmoX · Showcase 14",
+      "brand": "GizmoX",
+      "bytes": 1080
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-015",
+      "name": "GizmoX · Wordmark 15",
+      "brand": "GizmoX",
+      "bytes": 1070
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-016",
+      "name": "GizmoX · Classic 16",
+      "brand": "GizmoX",
+      "bytes": 1062
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-017",
+      "name": "GizmoX · Quiet 17",
+      "brand": "GizmoX",
+      "bytes": 1053
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-018",
+      "name": "GizmoX · Signature 18",
+      "brand": "GizmoX",
+      "bytes": 1103
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-019",
+      "name": "GizmoX · Showcase 19",
+      "brand": "GizmoX",
+      "bytes": 1081
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-020",
+      "name": "GizmoX · Wordmark 20",
+      "brand": "GizmoX",
+      "bytes": 1073
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-021",
+      "name": "GizmoX · Classic 21",
+      "brand": "GizmoX",
+      "bytes": 1066
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-022",
+      "name": "GizmoX · Quiet 22",
+      "brand": "GizmoX",
+      "bytes": 1046
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-023",
+      "name": "GizmoX · Signature 23",
+      "brand": "GizmoX",
+      "bytes": 1098
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-024",
+      "name": "GizmoX · Showcase 24",
+      "brand": "GizmoX",
+      "bytes": 1081
+    },
+    {
+      "type": "branding",
+      "id": "gizmox-brand-025",
+      "name": "GizmoX · Wordmark 25",
+      "brand": "GizmoX",
+      "bytes": 1073
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-001",
+      "name": "sharp 1.75 butt (12)",
+      "bytes": 1850
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-002",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1858
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-003",
+      "name": "outline 2 square (12)",
+      "bytes": 1855
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-004",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1861
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-005",
+      "name": "duotone 1.75 round (12)",
+      "bytes": 2917
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-006",
+      "name": "outline 1.5 square (12)",
+      "bytes": 1861
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-007",
+      "name": "duotone 2.25 square (12)",
+      "bytes": 3292
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-008",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1858
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-009",
+      "name": "filled solid (12)",
+      "bytes": 2372
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-010",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-011",
+      "name": "outline 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-012",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-013",
+      "name": "rounded 1.75 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-014",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-015",
+      "name": "outline 1.75 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-016",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-017",
+      "name": "filled solid (12)",
+      "bytes": 2373
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-018",
+      "name": "outline 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-019",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-020",
+      "name": "outline 2 round (12)",
+      "bytes": 1853
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-021",
+      "name": "duotone 2.25 square (12)",
+      "bytes": 2921
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-022",
+      "name": "duotone 1.75 square (12)",
+      "bytes": 3293
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-023",
+      "name": "filled solid (12)",
+      "bytes": 2373
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-024",
+      "name": "filled solid (12)",
+      "bytes": 2374
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-025",
+      "name": "outline 2.25 butt (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-026",
+      "name": "duotone 2.25 square (12)",
+      "bytes": 3293
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-027",
+      "name": "duotone 2.25 round (12)",
+      "bytes": 2918
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-028",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-029",
+      "name": "duotone 1.5 round (12)",
+      "bytes": 2915
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-030",
+      "name": "duotone 1.5 butt (12)",
+      "bytes": 3284
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-031",
+      "name": "rounded 2 round (12)",
+      "bytes": 1853
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-032",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-033",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-034",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-035",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-036",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-037",
+      "name": "duotone 2 round (12)",
+      "bytes": 3281
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-038",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-039",
+      "name": "outline 2 square (12)",
+      "bytes": 1856
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-040",
+      "name": "filled solid (12)",
+      "bytes": 2373
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-041",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-042",
+      "name": "outline 2.25 butt (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-043",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-044",
+      "name": "filled solid (12)",
+      "bytes": 2374
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-045",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-046",
+      "name": "duotone 1.5 butt (12)",
+      "bytes": 3284
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-047",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-048",
+      "name": "duotone 2 square (12)",
+      "bytes": 3284
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-049",
+      "name": "duotone 1.5 square (12)",
+      "bytes": 3290
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-050",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-051",
+      "name": "filled solid (12)",
+      "bytes": 2374
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-052",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-053",
+      "name": "sharp 2 butt (12)",
+      "bytes": 1842
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-054",
+      "name": "sharp 2.25 butt (12)",
+      "bytes": 1851
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-055",
+      "name": "outline 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-056",
+      "name": "sharp 1.75 butt (12)",
+      "bytes": 1851
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-057",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-058",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-059",
+      "name": "sharp 2.25 butt (12)",
+      "bytes": 1851
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-060",
+      "name": "duotone 1.5 butt (12)",
+      "bytes": 2912
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-061",
+      "name": "filled solid (12)",
+      "bytes": 2374
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-062",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-063",
+      "name": "duotone 1.5 square (12)",
+      "bytes": 3290
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-064",
+      "name": "duotone 2 butt (12)",
+      "bytes": 2906
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-065",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-066",
+      "name": "sharp 1.75 butt (12)",
+      "bytes": 1851
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-067",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-068",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-069",
+      "name": "rounded 1.5 round (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-070",
+      "name": "duotone 1.5 square (12)",
+      "bytes": 3290
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-071",
+      "name": "filled solid (12)",
+      "bytes": 2374
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-072",
+      "name": "sharp 2 butt (12)",
+      "bytes": 1842
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-073",
+      "name": "sharp 1.75 butt (12)",
+      "bytes": 1851
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-074",
+      "name": "sharp 2 butt (12)",
+      "bytes": 1842
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-075",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-076",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-077",
+      "name": "outline 1.5 square (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-078",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-079",
+      "name": "outline 2 square (12)",
+      "bytes": 1856
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-080",
+      "name": "outline 1.75 butt (12)",
+      "bytes": 1859
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-081",
+      "name": "rounded 2 round (12)",
+      "bytes": 1853
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-082",
+      "name": "outline 1.5 butt (12)",
+      "bytes": 1856
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-083",
+      "name": "duotone 1.5 butt (12)",
+      "bytes": 2912
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-084",
+      "name": "duotone 1.5 square (12)",
+      "bytes": 2918
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-085",
+      "name": "filled solid (12)",
+      "bytes": 2374
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-086",
+      "name": "outline 1.75 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-087",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1848
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-088",
+      "name": "duotone 1.5 round (12)",
+      "bytes": 3287
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-089",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-090",
+      "name": "filled solid (12)",
+      "bytes": 2375
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-091",
+      "name": "filled solid (12)",
+      "bytes": 2374
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-092",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-093",
+      "name": "duotone 1.5 square (12)",
+      "bytes": 2918
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-094",
+      "name": "rounded 1.75 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-095",
+      "name": "filled solid (12)",
+      "bytes": 2373
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-096",
+      "name": "rounded 2.25 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-097",
+      "name": "sharp 1.75 butt (12)",
+      "bytes": 1851
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-098",
+      "name": "rounded 1.75 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-099",
+      "name": "outline 1.75 round (12)",
+      "bytes": 1862
+    },
+    {
+      "type": "icon-pack",
+      "id": "pack-100",
+      "name": "sharp 1.5 butt (12)",
+      "bytes": 1849
+    }
+  ]
+}

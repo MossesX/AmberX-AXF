@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T19:23:01.225Z",
+ "updatedAt": "2026-10-27T19:30:00.000Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4312,7 +4312,12 @@
    "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "look@1 fixture + reference engine review, replace the Opus engine",
@@ -4337,7 +4342,7 @@
    ],
    "createdAt": "2026-10-27T03:19:49.693Z",
    "builtAt": "",
-   "updatedAt": "2026-10-27T03:19:49.693Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
    "estimate": "2 h",
    "source": "chat"
   },
@@ -4500,6 +4505,10 @@
     {
      "text": "Folded into orchestrator build enterprise-branding, phase 1, group \"Design package (Fable rebuild)\" (Oct 27 2026). Build it there.",
      "at": "2026-10-27T18:08:22.147Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
     }
    ],
    "subPrompts": [
@@ -4546,7 +4555,7 @@
    ],
    "createdAt": "2026-10-27T17:16:22.917Z",
    "builtAt": "",
-   "updatedAt": "2026-10-27T18:08:22.147Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
    "source": "chat"
   },
   {
@@ -4592,7 +4601,12 @@
    "detail": "From Brett's attachment (Oct 27 2026): 5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred. Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, mixed Fable/Opus steps).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] Gap audit: map attachment items 1-3 onto what exists (asset@1 layout, color/style themes, plugin@1, AxfWebLibrary, settings, embed); write _claude/memory/docs/arch-foundation.md listing only what is new. Do not duplicate existing contracts.",
@@ -4657,7 +4671,7 @@
    ],
    "createdAt": "2026-10-27T16:39:39.721Z",
    "builtAt": "",
-   "updatedAt": "2026-10-27T16:39:39.721Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
    "source": "chat"
   },
   {
@@ -4710,7 +4724,12 @@
    "detail": "Brett, Oct 27 2026: only refactor AmberX (amberx.amberxai.com) and the console (active plugins + every banner plugin) to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold). Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] Design language brief: audit the console + AmberX (amberx.amberxai.com) chrome; write the enterprise quality bar (type ramp, spacing scale, elevation, radii, motion, density, iconography, logo placement rules) in framework/spec/DESIGN-LANGUAGE.md. Everything later is held to it.",
@@ -4915,7 +4934,7 @@
    ],
    "createdAt": "2026-10-27T16:57:15.399Z",
    "builtAt": "",
-   "updatedAt": "2026-10-27T16:57:15.399Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
    "source": "chat"
   },
   {
@@ -4924,7 +4943,12 @@
    "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred. Tracked in the Build orchestrator.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] interface@1: one asset that names a whole interface: design package (style, colour, layout, behaviour), branding (logos, animated logos, icon pack), every chrome asset (banner, app menu, toolbar, nav, context menus, tab group, settings interface, dialog/window/container styles). Open slot list, so new chrome joins by itself.",
@@ -5004,7 +5028,51 @@
    ],
    "createdAt": "2026-10-27T17:17:17.473Z",
    "builtAt": "",
-   "updatedAt": "2026-10-27T17:17:17.473Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "source": "chat"
+  },
+  {
+   "id": "build-profiles",
+   "title": "Build profiles + Build profiles console plugin",
+   "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/build-profiles, PR #127.",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Core registry + persist profile layer + orchestrator per profile",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Python mirror + server routes",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Console plugin",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Tests, docs, PR",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    }
+   ],
+   "createdAt": "2026-10-27T19:00:00.000Z",
+   "builtAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "estimate": "2 h",
    "source": "chat"
   },
   {

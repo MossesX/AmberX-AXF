@@ -1,4 +1,12 @@
-/** Built-in icon set (24px grid, stroke-based). Assets reference icons by name. */
+/**
+ * Built-in icon set (24px grid, stroke-based). Assets reference icons by name. When the app's branding package names
+ * an icon pack (icon-pack@1) that has a glyph of that name, the pack's glyph is drawn instead, in the pack's own
+ * style (stroke / fill / duotone); names the pack lacks keep the framework icon, so a partial pack is fine.
+ */
+import { useSyncExternalStore } from 'react';
+import { useOptionalRuntime } from '../AxfProvider';
+import { glyphSvg } from '../../core/engines/brand';
+
 const PATHS: Record<string, string> = {
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
   grid: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
@@ -78,8 +86,17 @@ const PATHS: Record<string, string> = {
 
 export const ICON_NAMES = Object.keys(PATHS);
 
+const noStore = { subscribe: () => () => {}, get: () => null };
+
 export function Icon({ name, size = 16, className }: { name?: string; size?: number; className?: string }) {
+  const rt = useOptionalRuntime();
+  useSyncExternalStore(rt ? rt.subscribe : noStore.subscribe, rt ? rt.getState : noStore.get, rt ? rt.getState : noStore.get);
   if (!name) return null;
+  const packed = rt?.brandGlyph(name);
+  if (packed) {
+    const svg = glyphSvg(packed.pack, name, size);
+    if (svg) return <span className={`fx-icon fx-icon--pack ${className ?? ''}`} style={{ width: size, height: size }} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+  }
   const d = PATHS[name] ?? PATHS.box;
   return (
     <svg

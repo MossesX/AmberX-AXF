@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-058",
+  "name": "GizmoX mark · hexagon notch",
+  "version": "1.0.0",
+  "description": "Generated mark: a hexagon notch motif in a seeded bright palette (seed 1062).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "hexagon",
+    "notch",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a89057",
+      "brand2": "#62412d",
+      "brand3": "#ebe8e0"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8.7 5v10L12 22l-8.7-5V7Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M11 2h2v3h-2zM11 19h2v3h-2zM2 11h3v2H2zM19 11h3v2h-3z",
+        "fill": "brand2"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

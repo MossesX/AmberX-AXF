@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "amberx-signature-day",
+  "name": "AmberX Signature Day",
+  "version": "1.0.0",
+  "description": "The AmberX house look by day: gold on cream, signature controls, the AmberX toolbar and behaviour.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "brand",
+    "amber"
+  ],
+  "data": {
+    "style-theme": "geometric",
+    "color-theme": "saffron-day",
+    "layout": "studio-dock",
+    "behavior-theme": "amber",
+    "extras": {
+      "slots": {
+        "style-package": "amber-signature",
+        "toolbar": "amberx-signature",
+        "nav-menu": "amber-signature"
+      }
+    }
+  }
+}

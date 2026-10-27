@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-024",
+  "name": "GizmoX · Showcase 24",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · circle notch, showcase placement, icon pack pack-093.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "showcase"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-027",
+      "wordmark": "gizmox-logo-002",
+      "lockup": "gizmox-logo-124",
+      "animated": "gizmox-anim-024"
+    },
+    "iconPack": "pack-093",
+    "palette": {
+      "brand1": "#5b9d10",
+      "brand2": "#1e3904",
+      "brand3": "#b7e298"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "animated",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "wordmark",
+      "container": "watermark",
+      "tab-group": "mark",
+      "toolbar": "wordmark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "animated"
+    }
+  }
+}

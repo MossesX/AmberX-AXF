@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "gizmox-anim-102",
+  "name": "gizmox-logo-020 · wink",
+  "version": "1.0.0",
+  "description": "Generated animation: wink over 2100 ms, on hover (seed 1102).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wink",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "gizmox-logo-020",
+    "preset": "wink",
+    "durationMs": 2100,
+    "delayMs": 0,
+    "loop": "hover",
+    "intensity": 0.6
+  }
+}

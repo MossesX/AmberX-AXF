@@ -1,0 +1,62 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-122",
+  "name": "AmberX lockup · shield orbit",
+  "version": "1.0.0",
+  "description": "Generated lockup: a shield orbit motif in a seeded rich palette (seed 128).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "shield",
+    "orbit",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#953276",
+      "brand2": "#431435",
+      "brand3": "#d7bcce"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      },
+      {
+        "d": "M4.5 14.5c2-4 13-9 15-5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.6,
+        "round": true,
+        "opacity": 0.8
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 800,
+      "tracking": -0.02,
+      "font": "mono",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

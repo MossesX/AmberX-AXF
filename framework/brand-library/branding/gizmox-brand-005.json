@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-005",
+  "name": "GizmoX · Wordmark 5",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · soft-square notch, wordmark placement, icon pack pack-017.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "wordmark"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-006",
+      "wordmark": "gizmox-logo-036",
+      "lockup": "gizmox-logo-042",
+      "animated": "gizmox-anim-033"
+    },
+    "iconPack": "pack-017",
+    "palette": {
+      "brand1": "#08a1c4",
+      "brand2": "#01525a",
+      "brand3": "#aae3ee"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "wordmark",
+      "window": "none",
+      "floating-window": "mark",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "wordmark",
+      "splash": "lockup",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

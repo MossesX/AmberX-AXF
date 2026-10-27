@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-105",
+  "name": "AmberX wordmark · open orbit",
+  "version": "1.0.0",
+  "description": "Generated wordmark: an open orbit motif in a seeded rich palette (seed 110).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "open",
+    "orbit",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#c31be4",
+      "brand2": "#570b83",
+      "brand3": "#edd8f3"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 700,
+      "tracking": 0,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

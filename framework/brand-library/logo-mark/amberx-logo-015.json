@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-015",
+  "name": "AmberX mark · circle notch",
+  "version": "1.0.0",
+  "description": "Generated mark: a circle notch motif in a seeded rich palette (seed 15).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "circle",
+    "notch",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#8d5b34",
+      "brand2": "#3e2314",
+      "brand3": "#d3c2bb"
+    },
+    "paths": [
+      {
+        "d": "M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M11 2h2v3h-2zM11 19h2v3h-2zM2 11h3v2H2zM19 11h3v2h-3z",
+        "fill": "brand2"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}
