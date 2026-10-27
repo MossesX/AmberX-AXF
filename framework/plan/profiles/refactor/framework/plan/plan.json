@@ -1,0 +1,14 @@
+{
+ "$axf": "plan@1",
+ "generatedAt": "2026-10-27T19:02:12.359Z",
+ "statuses": [
+  "built",
+  "partial",
+  "in-progress",
+  "placeholder",
+  "planned",
+  "blocked",
+  "dropped"
+ ],
+ "features": []
+}

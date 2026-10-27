@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Build profiles + Build profiles plugin (Main framework, Refactor) | review | `claude/build-profiles` | see GitHub | Merge after CI; then the console shows the profile chip. Main framework stays the saved pick until Brett switches | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
@@ -55,6 +56,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
+
+### Build profiles + plugin
+- Asked (Brett, Oct 27 2026): "Create multiple build profiles and a console plugin to select and save one. Each build profile holds plans, build queue, pending builds, tracking, and all work stuff. Name current one main framework and then start new one called refactor."
+- Model Opus. Branch `claude/build-profiles`, all 4 orchestrator steps done (orchestrator build `build-profiles`, pending `build-profiles`).
+- Left: CI green → merge → console redeploys itself. Checks: `python3 apps/console-web/server/test_build_profiles.py`, `node framework/cli/profiles.mjs`.
+- First message: "Carry on thread Build profiles: check PR for branch claude/build-profiles, merge when CI is green, then confirm the console shows the profile chip."
 
 ### Build orchestrator (how every build below is carried on)
 - Tracker: `_claude/builds/orchestrator.json` (orchestrator@1; how-to `_claude/builds/README.md`). `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next` says what to do; `brief <id>` gives the current phase only. At a Fable ↔ Opus switch, stop and ask Brett (card), then `act approve <id> <phase>`. <!-- axf-plugin:build-orchestrator -->

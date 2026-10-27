@@ -1,0 +1,21 @@
+{
+ "$axf": "build-profiles@1",
+ "updatedAt": "2026-10-27T19:02:21.879Z",
+ "active": "main-framework",
+ "profiles": [
+  {
+   "id": "main-framework",
+   "name": "Main framework",
+   "description": "The framework's own work: everything planned, queued, pending and tracked before profiles existed.",
+   "updatedAt": "2026-10-27T19:02:21.878Z"
+  },
+  {
+   "id": "refactor",
+   "name": "Refactor",
+   "description": "Fresh build profile for the refactor: its own plan, build queue, pending builds, tracking and orchestrator builds.",
+   "createdAt": "2026-10-27T19:02:12.357Z",
+   "updatedAt": "2026-10-27T19:02:12.358Z",
+   "catalog": false
+  }
+ ]
+}

@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T18:08:21.998Z",
+ "updatedAt": "2026-10-27T19:07:43.436Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -677,6 +677,8 @@
      "text": "Read the Opus design-package report (_claude/memory/docs/rebuilds/design-package.md) + code; list keep / change / wire in.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "20 min",
      "files": [],
      "checks": [],
@@ -684,15 +686,15 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "note": ""
     },
     {
      "id": "s5r2",
      "text": "Review design-package engine + runtime apply / capture / migration (core/engines/designpackage.ts); fix gaps; same type names, data format and setting keys unless the report says why.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "30 min",
      "files": [],
      "checks": [],
@@ -700,15 +702,15 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "note": ""
     },
     {
      "id": "s5r3",
      "text": "Review behaviour engine + CSS (core/engines/behavior.ts); refine motion / interaction mappings.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "30 min",
      "files": [],
      "checks": [],
@@ -716,15 +718,15 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "note": ""
     },
     {
      "id": "s5r4",
      "text": "Wire windows.stack / minimize / snap + snapGrid into the window manager.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "30 min",
      "files": [],
      "checks": [],
@@ -732,15 +734,15 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "note": ""
     },
     {
      "id": "s5r5",
      "text": "Wire feedback.busyCursor + confirmDelete into framework controls.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "25 min",
      "files": [],
      "checks": [],
@@ -748,15 +750,15 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "note": ""
     },
     {
      "id": "s5r6",
      "text": "Extend check-design-package.mts; regenerate fixtures; re-bake apps. (Picker + Everything else polish, shots and the differences report fold into the Ship phase.)",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "25 min",
      "files": [],
      "checks": [],
@@ -764,9 +766,7 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "note": ""
     },
     {
      "id": "s6",
@@ -1604,6 +1604,89 @@
      "agent": false,
      "done": false,
      "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "build-profiles",
+   "title": "Build profiles + Build profiles console plugin (main framework, refactor)",
+   "category": "Builds",
+   "detail": "Brett, Oct 27 2026: \"Create multiple build profiles and a console plugin to select and save one. Each build profile holds plans, build queue, pending builds, tracking, and all work stuff. Name current one main framework and then start new one called refactor.\" Web/CLI/Python only.",
+   "status": "complete",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "build-profiles",
+   "branch": "claude/build-profiles",
+   "pr": "",
+   "createdAt": "2026-10-27T18:59:57.223Z",
+   "updatedAt": "2026-10-27T19:07:43.435Z",
+   "builtAt": "2026-10-27T19:07:43.435Z",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "build-profiles@1 registry + framework/cli/profiles.mjs (list/select/create/rename/remove), persist.mjs dataPath profile layer, orchestrator tracker per profile, manifest data.shared; seed main-framework + refactor",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 1 · Profiles",
+     "group": "Core",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-27T19:02:22.045Z",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Python mirror (console server data paths) + /api/profiles routes; main.py pending/media, build-manager and activity plugins read through it",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 1 · Profiles",
+     "group": "Server",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-27T19:03:43.012Z",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Console plugin build-profiles: picker dialog, settings sub-tab, app-menu + banner chip, lifecycle install/uninstall",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 1 · Profiles",
+     "group": "Plugin",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-27T19:07:02.572Z",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Tests (node + python), docs (CLAUDE.md, RULES, THREADS, README), PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "Phase 1 · Profiles",
+     "group": "Finish",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-27T19:07:43.377Z",
      "note": ""
     }
    ]

@@ -21,11 +21,14 @@
  * A file missing there is seeded from the repo copy the first time it is read, so nothing is lost on switch-over.
  * The repo copies stay as the seed and as committed snapshots (claude-sync sync, or `pull` here, then commit).
  *
+ * Build profiles (build-profiles@1): the work data (pending, plan + media, queue, catalog status, tracker) belongs to
+ * the active build profile; see the section below and framework/cli/profiles.mjs.
+ *
  *   node framework/cli/persist.mjs            where each shared file is read from
  *   node framework/cli/persist.mjs push       copy repo → hub for files the hub doesn't have yet (--force: overwrite)
  *   node framework/cli/persist.mjs pull       copy hub → repo, to commit a snapshot
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -68,10 +71,10 @@ export function persistRoot() {
 }
 
 /**
- * Absolute path to read/write one live data file (`rel` relative to the repo root).
- * On the hub, a missing file is seeded from the repo copy; parent folders are created so writes succeed.
+ * Absolute path to read/write one shared file at its plain location, ignoring build profiles (the profile registry
+ * itself and data no profile owns). On the hub, a missing file is seeded from the repo copy.
  */
-export function dataPath(rel) {
+export function baseDataPath(rel) {
   const repoPath = join(REPO_ROOT, rel);
   const root = persistRoot();
   if (!root) return repoPath;
@@ -81,6 +84,101 @@ export function dataPath(rel) {
     if (existsSync(repoPath)) cpSync(repoPath, p, { recursive: true });
   }
   return p;
+}
+
+// ------------------------------------------------------------------ build profiles (build-profiles@1)
+/*
+ * A build profile is one complete set of work data: pending builds, plan + media, build queue, catalog status,
+ * tracker, and the Build orchestrator's tracker. Brett picks one (console → Build profiles, or
+ * `node framework/cli/profiles.mjs select <id>`); every CLI, the console server and the plugins then read and write
+ * that profile's copy. The base profile ("main-framework") keeps the original paths, so nothing moved when profiles
+ * arrived; every other profile lives under framework/plan/profiles/<id>/<same path>.
+ *
+ * Registry: framework/plan/profiles.json (shared data, on the hub), never profiled itself. Per-session override:
+ * AXF_BUILD_PROFILE=<id> (a session working on one profile while the console shows another).
+ */
+export const PROFILES_REL = 'framework/plan/profiles.json';
+export const PROFILES_DIR_REL = 'framework/plan/profiles/';
+export const BASE_PROFILE = 'main-framework';
+/** Shared data a profile owns (paths relative to the repo root; folders end with '/'). Open list: add here. */
+export const PROFILED = [
+  'framework/plan/pending.json',
+  'framework/plan/plan.json',
+  'framework/plan/build-queue.json',
+  'framework/plan/media/',
+  'framework/catalog/status.json',
+  'tracker.json',
+];
+/** The orchestrator tracker is a repo file (synced by claude-sync, committed), profiled the same way. */
+export const ORCHESTRATOR_REL = '_claude/builds/orchestrator.json';
+export const PROFILE_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
+
+export function readProfiles() {
+  const f = baseDataPath(PROFILES_REL);
+  let reg = null;
+  try { reg = JSON.parse(readFileSync(f, 'utf8')); } catch { /* missing or damaged → defaults */ }
+  const list = Array.isArray(reg?.profiles) ? reg.profiles.filter((p) => p && PROFILE_ID.test(p.id)) : [];
+  if (!list.some((p) => p.id === BASE_PROFILE)) list.unshift({ id: BASE_PROFILE, name: 'Main framework', base: true });
+  for (const p of list) p.base = p.id === BASE_PROFILE;
+  const active = list.some((p) => p.id === reg?.active) ? reg.active : BASE_PROFILE;
+  return { $axf: 'build-profiles@1', updatedAt: reg?.updatedAt ?? '', active, profiles: list };
+}
+
+/** The profile in force: AXF_BUILD_PROFILE (when it names a known profile), else the saved pick. */
+export function activeProfile() {
+  const reg = readProfiles();
+  const env = process.env.AXF_BUILD_PROFILE;
+  const id = env && reg.profiles.some((p) => p.id === env) ? env : reg.active;
+  return reg.profiles.find((p) => p.id === id);
+}
+
+/** Which PROFILED entry `rel` belongs to (exact file or inside a profiled folder), or null. */
+export function profiledEntry(rel) {
+  return PROFILED.find((p) => (p.endsWith('/') ? rel === p || rel.startsWith(p) : rel === p)) ?? null;
+}
+
+/** Path of `rel` inside profile `id` (relative to the data root / repo). The base profile = `rel` itself. */
+export function profileRel(id, rel) {
+  return id === BASE_PROFILE ? rel : `${PROFILES_DIR_REL}${id}/${rel}`;
+}
+
+/** Empty starting content for a profiled file (null = nothing to write; folders are just created). */
+export function emptyProfileFile(rel, now = new Date().toISOString()) {
+  switch (rel) {
+    case 'framework/plan/pending.json': return { $axf: 'pending@1', updatedAt: now, artifact: '', items: [] };
+    case 'framework/plan/plan.json': return { $axf: 'plan@1', generatedAt: now, statuses: ['built', 'partial', 'in-progress', 'placeholder', 'planned', 'blocked', 'dropped'], features: [] };
+    case 'framework/plan/build-queue.json': return { $axf: 'build-queue@1', order: [], steps: {}, dirty: false, updatedAt: now, history: [] };
+    case 'framework/catalog/status.json': return {};
+    case 'tracker.json': return { $axf: 'tracker@1', frameworkVersion: '', generatedAt: now, summary: {}, items: [] };
+    default: return null;
+  }
+}
+
+/**
+ * Absolute path to read/write one live data file (`rel` relative to the repo root), in the active build profile.
+ * Files a profile owns resolve inside that profile; a missing one is seeded from the profile's repo snapshot, else
+ * started empty (never from another profile). Everything else: baseDataPath.
+ */
+export function dataPath(rel) {
+  const entry = profiledEntry(rel);
+  if (!entry) return baseDataPath(rel);
+  const prof = activeProfile();
+  if (prof.base) return baseDataPath(rel);
+  const prel = profileRel(prof.id, rel);
+  const root = persistRoot();
+  const p = join(root ?? REPO_ROOT, prel);
+  if (!existsSync(p)) {
+    const snapshot = join(REPO_ROOT, prel);
+    mkdirSync(rel.endsWith('/') ? p : dirname(p), { recursive: true });
+    if (root && existsSync(snapshot)) cpSync(snapshot, p, { recursive: true });
+    else if (!rel.endsWith('/')) { const empty = emptyProfileFile(rel); if (empty) writeFileSync(p, JSON.stringify(empty, null, 1) + '\n'); }
+  }
+  return p;
+}
+
+/** The orchestrator tracker of the active profile (a repo file). */
+export function orchestratorPath(id = activeProfile().id) {
+  return join(REPO_ROOT, id === BASE_PROFILE ? ORCHESTRATOR_REL : `_claude/builds/profiles/${id}/orchestrator.json`);
 }
 
 function copy(from, to, force) {

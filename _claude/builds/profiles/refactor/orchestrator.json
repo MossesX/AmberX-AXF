@@ -1,0 +1,11 @@
+{
+ "$axf": "orchestrator@1",
+ "updatedAt": "2026-10-27T19:02:12.360Z",
+ "rules": {
+  "sameSession": true,
+  "subAgents": false,
+  "approveModelSwitch": true,
+  "maxStepMinutes": 30
+ },
+ "builds": []
+}
