@@ -323,6 +323,74 @@ function stylePackageAssets() {
   return out;
 }
 
+/* ───────────────────────── seeds: navigation menus + paired behaviour themes (s21, s22) ───────────────────────── */
+
+// Pages every web app on the framework may have; a nav menu lists a set and each app draws only the pages it has
+// (NavMenu drops items whose view isn't registered), so one menu serves the console, axHub, Patches, AmberX ….
+const P = {
+  home: ['home', 'Home', 'home'], settings: ['settings', 'Settings', 'settings'], account: ['account', 'Account', 'user'],
+  assets: ['assets', 'Assets', 'layers'], components: ['components', 'Components', 'grid'], demos: ['demos', 'Demos', 'play'],
+  plan: ['plan', 'Plan', 'list'], pending: ['pending', 'Pending builds', 'clock'], build: ['build', 'Build queue', 'hammer'], tracker: ['tracker', 'Tracker', 'chart'],
+  catalog: ['catalog', 'Features', 'check-circle'], libraries: ['libraries', 'Libraries', 'package'], modules: ['modules', 'Modules', 'box'], boilerplates: ['boilerplates', 'Boilerplates', 'file'],
+  projects: ['standards-projects', 'Projects', 'folder'], rules: ['standards-rules', 'Manifest rules', 'shield'],
+  hub: ['hub', 'Hub', 'cloud'], approvals: ['approvals-log', 'Approvals', 'check'], services: ['services', 'Services', 'zap'], jobs: ['jobs', 'Jobs', 'refresh'],
+  audit: ['audit', 'Audit', 'eye'], vault: ['vault', 'Vault', 'key'], users: ['users', 'Users', 'user'], hubProjects: ['projects', 'Hub projects', 'folder'],
+  devices: ['devices', 'Devices', 'smartphone'], apps: ['apps', 'Apps', 'download'], goPass: ['go-pass', 'Go pass', 'rocket'], handoff: ['handoff', 'Handoff', 'external'],
+  console: ['console', 'Console', 'terminal'], pilot: ['pilot', 'Pilot', 'sparkles'], axhub: ['axhub', 'axHub', 'cloud'],
+};
+const navItems = (keys) => keys.map((k) => { const [view, label, icon] = P[k]; return { id: view, label, icon, view }; });
+const NS = (label, keys) => ({ ...(label ? { label } : {}), items: navItems(keys) });
+const NAV = (style, sections, o = {}) => ({ style, ...(o.header ? { header: o.header } : {}), sections, ...(o.density ? { density: o.density } : {}), ...(o.indicator ? { indicator: o.indicator } : {}), ...(o.showIcons === false ? { showIcons: false } : {}) });
+const DEV = [NS('Overview', ['home']), NS('Build', ['plan', 'pending', 'build', 'tracker']), NS('Framework', ['catalog', 'libraries', 'modules', 'boilerplates', 'components', 'assets']), NS('Standards', ['projects', 'rules']), NS('You', ['account', 'settings'])];
+const HUB = [NS('Hub', ['home', 'hub', 'approvals', 'handoff', 'goPass']), NS('Manage', ['services', 'jobs', 'audit', 'vault', 'users', 'hubProjects', 'devices']), NS('Get', ['apps']), NS(null, ['account', 'settings'])];
+
+/** Behaviour theme shorthand: motion [speed easing entrance], interaction [hover press longPressMs doubleTapMs drag],
+ *  windows [dialogOpen backdrop popupOpen drawerOpen snap snapGrid stack minimize], feedback [toastPosition toastMs sound vibration confirmDelete]. */
+const BH = ([speed, easing, entrance], [hover, press, longPressMs, doubleTapMs, dragThreshold], [dialogOpen, backdrop, popupOpen, drawerOpen, snap, snapGrid, stack, minimize], [toastPosition, toastMs, sound, vibration, confirmDelete]) => ({
+  motion: { speed, easing, reduced: 'system', entrance },
+  interaction: { hover, press, focusRing: 'auto', cursor: 'pointer', longPressMs, doubleTapMs, dragThreshold },
+  windows: { dialogOpen, backdrop, popupOpen, drawerOpen, snap, snapGrid, stack, minimize, closeOnBackdrop: true, closeOnEscape: true },
+  feedback: { toastPosition, toastMs, sound, vibration, confirmDelete, busyCursor: true },
+});
+// [nav id, nav name, nav data, paired behaviour id, behaviour (null = an existing starter), behaviour name, use, behaviour description]
+const NAVS = [
+  // s21
+  ['essentials-list', 'Essentials List', NAV('list', [NS(null, ['home', 'settings', 'account'])]), 'standard', null, null, 'small apps', ''],
+  ['essentials-rail', 'Essentials Rail', NAV('rail', [NS(null, ['home']), NS(null, ['settings', 'account'])], { density: 'compact' }), 'snappy', null, null, 'small apps, desktop', ''],
+  ['essentials-pills', 'Essentials Pills', NAV('pills', [NS(null, ['home', 'settings', 'account'])], { indicator: 'fill' }), 'calm', null, null, 'small apps, top bar', ''],
+  ['developer-console', 'Developer Console', NAV('list', DEV, { header: 'Develop' }), 'precise', BH(['fast', 'standard', 'fade'], ['tint', 'darken', 500, 280, 6], ['fade', 'dim', 'fade', 'slide', true, 8, 'remember', 'dock'], ['bottom-right', 3500, 'off', 'off', 'risky']), 'Precise', 'developer consoles', 'Fast, exact and quiet: short fades, tinted hovers, snapping windows that remember where they were, minimise to a dock, confirm only risky deletes.'],
+  ['developer-rail', 'Developer Rail', NAV('rail', DEV, { density: 'compact', indicator: 'bar' }), 'swift', BH(['fast', 'emphasized', 'none'], ['tint', 'shrink', 450, 250, 6], ['scale', 'none', 'fade', 'slide', true, 8, 'cascade', 'cursor'], ['top-right', 3000, 'off', 'off', 'risky']), 'Swift', 'developer consoles, rail', 'Swift and direct: no page entrance, quick scale-in dialogs without a backdrop, shrink on press.'],
+  ['hub-admin', 'Hub Admin', NAV('list', HUB, { header: 'axHub' }), 'steady', BH(['normal', 'standard', 'fade'], ['tint', 'darken', 600, 300, 10], ['fade', 'dim', 'fade', 'slide', false, 8, 'center', 'dock'], ['top-right', 6000, 'subtle', 'off', 'always']), 'Steady', 'admin consoles', 'Calm, deliberate administration: centred windows, long readable toasts with a subtle sound, always confirm deletes.'],
+  ['hub-rail', 'Hub Rail', NAV('rail', HUB, { density: 'compact' }), 'brisk', BH(['fast', 'standard', 'fade'], ['lift', 'shrink', 500, 260, 8], ['slide-up', 'dim', 'slide', 'slide', true, 8, 'cascade', 'dock'], ['top-right', 4000, 'off', 'light', 'risky']), 'Brisk', 'admin consoles, rail', 'Brisk admin work: dialogs slide up, buttons lift and shrink, light haptics on phones.'],
+  ['wrapper-tabs', 'Wrapper Tabs', NAV('pills', [NS(null, ['console', 'pilot', 'axhub', 'settings'])], { indicator: 'fill', density: 'compact' }), 'fluid', BH(['normal', 'spring', 'scale'], ['lift', 'shrink', 500, 280, 8], ['scale', 'blur', 'scale', 'slide', false, 8, 'cascade', 'cursor'], ['top', 4000, 'off', 'light', 'risky']), 'Fluid', 'app wrappers with tabs', 'Fluid and springy: pages scale in, frosted dialogs, toasts at the top.'],
+  ['design-studio', 'Design Studio', NAV('list', [NS('Design', ['home', 'components', 'assets', 'demos']), NS(null, ['settings'])], { indicator: 'fill' }), 'playful', null, null, 'design tools', ''],
+  ['build-tracker', 'Build Tracker', NAV('list', [NS('Builds', ['plan', 'pending', 'build', 'tracker']), NS(null, ['home', 'settings'])], { density: 'compact' }), 'focused', BH(['fast', 'standard', 'none'], ['tint', 'darken', 550, 300, 8], ['fade', 'dim', 'fade', 'slide', true, 8, 'remember', 'dock'], ['bottom-right', 4000, 'off', 'off', 'risky']), 'Focused', 'build and task tracking', 'Nothing moves that doesn\'t need to: no page entrance, quick fades, toasts in the corner.'],
+  ['framework-browser', 'Framework Browser', NAV('list', [NS('Browse', ['catalog', 'libraries', 'modules', 'boilerplates']), NS('Look', ['components', 'assets'])]), 'gentle', BH(['slow', 'standard', 'rise'], ['tint', 'none', 650, 320, 10], ['fade', 'dim', 'fade', 'slide', false, 8, 'center', 'cursor'], ['bottom', 5000, 'off', 'off', 'risky']), 'Gentle', 'catalog browsing', 'Gentle browsing: pages rise in slowly, soft fades, nothing jumps.'],
+  ['compact-rail-all', 'Compact Rail (every page)', NAV('rail', [NS(null, ['home', 'plan', 'pending', 'build', 'catalog', 'libraries', 'hub', 'approvals', 'apps', 'console', 'pilot', 'axhub', 'components', 'assets']), NS(null, ['account', 'settings'])], { density: 'compact', indicator: 'bar' }), 'minimal-motion', null, null, 'any app: every page it has', ''],
+  ['roomy-touch', 'Roomy Touch', NAV('list', [NS(null, ['home', 'apps', 'approvals', 'settings', 'account'])], { density: 'roomy', indicator: 'fill' }), 'touch', BH(['normal', 'standard', 'rise'], ['none', 'ripple', 400, 300, 14], ['slide-up', 'dim', 'slide', 'slide', false, 8, 'center', 'none'], ['bottom', 4000, 'off', 'light', 'risky']), 'Touch', 'phones and tablets', 'Made for fingers: no hover, ripple on press, dialogs slide up from the bottom, light haptics.'],
+  // s22
+  ['text-only', 'Text Only', NAV('list', [NS(null, ['home', 'plan', 'pending', 'catalog', 'components', 'assets', 'settings'])], { showIcons: false, indicator: 'bar' }), 'quiet', BH(['normal', 'linear', 'none'], ['underline', 'none', 600, 300, 10], ['fade', 'dim', 'fade', 'fade', false, 8, 'center', 'cursor'], ['bottom', 4000, 'off', 'off', 'risky']), 'Quiet', 'reading-first apps', 'Quiet text: underline on hover, linear fades, no page entrance or sound.'],
+  ['executive-overview', 'Executive Overview', NAV('list', [NS('Overview', ['home', 'tracker', 'plan']), NS('Detail', ['pending', 'build', 'catalog']), NS(null, ['settings'])], { header: 'Overview', density: 'roomy' }), 'executive', BH(['slow', 'standard', 'fade'], ['lift', 'none', 650, 320, 10], ['fade', 'blur', 'fade', 'slide', false, 8, 'center', 'dock'], ['top-right', 7000, 'subtle', 'off', 'always']), 'Executive', 'reporting and dashboards', 'Unhurried and polished: slow fades, lifted cards, frosted dialogs, long toasts.'],
+  ['ops-monitor', 'Ops Monitor', NAV('rail', [NS(null, ['home', 'jobs', 'services', 'audit', 'devices']), NS(null, ['settings'])], { density: 'compact', indicator: 'fill' }), 'alert', BH(['fast', 'emphasized', 'none'], ['tint', 'darken', 500, 260, 8], ['scale', 'dim', 'slide', 'slide', true, 8, 'cascade', 'dock'], ['top-right', 8000, 'full', 'strong', 'always']), 'Alert', 'monitoring and on-call', 'Built to get attention: full sound and strong haptics on notices, long-lived toasts, always confirm.'],
+  ['security-center', 'Security Center', NAV('list', [NS('Security', ['vault', 'users', 'audit', 'goPass']), NS(null, ['account', 'settings'])], { header: 'Security' }), 'secure', BH(['normal', 'standard', 'fade'], ['tint', 'darken', 800, 300, 12], ['fade', 'blur', 'fade', 'slide', false, 8, 'center', 'none'], ['top', 6000, 'subtle', 'light', 'always']), 'Secure', 'security and access screens', 'Careful by default: long-press takes longer, windows never minimise, every delete is confirmed.'],
+  ['approvals-flow', 'Approvals Flow', NAV('pills', [NS(null, ['home', 'approvals', 'handoff', 'apps'])], { indicator: 'fill' }), 'review', BH(['normal', 'standard', 'fade'], ['tint', 'darken', 600, 300, 10], ['slide-up', 'dim', 'slide', 'slide', false, 8, 'center', 'dock'], ['bottom', 5000, 'subtle', 'light', 'always']), 'Review', 'approval queues', 'For reviewers: dialogs slide up centred, a subtle sound on each result, always confirm.'],
+  ['project-hub', 'Project Hub', NAV('list', [NS('Projects', ['projects', 'hubProjects', 'rules']), NS('Plan', ['plan', 'tracker'])]), 'organized', BH(['normal', 'standard', 'rise'], ['tint', 'darken', 550, 300, 8], ['scale', 'dim', 'fade', 'slide', true, 12, 'remember', 'dock'], ['top-right', 5000, 'off', 'off', 'risky']), 'Organized', 'project management', 'Tidy: a 12 px snap grid, windows that remember their places, a dock for minimised ones.'],
+  ['kiosk-strip', 'Kiosk Strip', NAV('pills', [NS(null, ['home', 'apps'])], { density: 'roomy', indicator: 'fill' }), 'kiosk', BH(['slow', 'standard', 'fade'], ['none', 'darken', 900, 400, 20], ['fade', 'dim', 'fade', 'fade', false, 0, 'center', 'none'], ['bottom', 6000, 'off', 'off', 'always']), 'Kiosk', 'kiosks and shared screens', 'Forgiving for strangers: no hover, slow long-press, large drag threshold, nothing minimises.'],
+  ['learning-path', 'Learning Path', NAV('list', [NS('Start', ['home', 'demos']), NS('Learn', ['components', 'catalog', 'libraries'])], { density: 'roomy' }), 'guided', BH(['slow', 'spring', 'rise'], ['glow', 'shrink', 600, 320, 10], ['scale', 'blur', 'scale', 'slide', false, 8, 'center', 'cursor'], ['top', 6000, 'subtle', 'light', 'risky']), 'Guided', 'onboarding and learning', 'Encouraging and clear: springy pages rise in, glowing hovers, a subtle sound on success.'],
+  ['power-rail', 'Power Rail', NAV('rail', [NS(null, ['home', 'plan', 'pending', 'build', 'tracker', 'catalog', 'libraries', 'modules', 'components', 'assets']), NS(null, ['settings'])], { density: 'compact', indicator: 'fill', showIcons: true }), 'instant', BH(['instant', 'linear', 'none'], ['tint', 'none', 400, 220, 4], ['none', 'none', 'none', 'none', true, 4, 'remember', 'dock'], ['bottom-right', 2500, 'off', 'off', 'never']), 'Instant', 'power users', 'No animation at all, short toasts, a 4 px snap, and no delete confirmations: for people who know what they\'re doing.'],
+  ['cinematic', 'Cinematic', NAV('list', [NS(null, ['home', 'demos', 'assets', 'components'])], { density: 'roomy', indicator: 'none' }), 'cinematic', BH(['relaxed', 'spring', 'scale'], ['glow', 'shrink', 650, 320, 10], ['scale', 'blur', 'scale', 'slide', false, 8, 'center', 'cursor'], ['bottom', 5000, 'subtle', 'light', 'risky']), 'Cinematic', 'showcases and demos', 'Showcase motion: relaxed spring scaling, glow on hover, frosted backdrops.'],
+  ['amber-signature', 'AmberX Signature', NAV('list', [NS(null, ['home', 'approvals', 'apps']), NS('Make', ['components', 'assets', 'demos']), NS(null, ['settings'])], { header: 'AmberX', indicator: 'fill' }), 'amber', BH(['normal', 'emphasized', 'rise'], ['lift', 'shrink', 500, 280, 8], ['scale', 'blur', 'scale', 'slide', true, 8, 'cascade', 'cursor'], ['top-right', 4500, 'subtle', 'light', 'risky']), 'AmberX', 'the AmberX house behaviour', 'The AmberX house feel: emphasized motion, lifting hovers, frosted dialogs, a subtle sound.'],
+  ['gizmo-console', 'GizmoX Console', NAV('list', DEV, { header: 'GizmoX', density: 'compact', indicator: 'bar' }), 'gizmo', BH(['fast', 'emphasized', 'fade'], ['tint', 'darken', 500, 260, 6], ['fade', 'dim', 'fade', 'slide', true, 8, 'remember', 'dock'], ['bottom-right', 3500, 'off', 'off', 'risky']), 'GizmoX', 'the GizmoX development console', 'The GizmoX console feel: fast emphasized fades, docked windows that remember their places, quiet notices.'],
+];
+function navAssets() {
+  const out = [];
+  for (const [id, name, data, bid, bdata, bname, use, bdesc] of NAVS) {
+    out.push(env('nav-menu', { id, name, tags: ['pairs:' + bid], description: `${name}: ${use}. Lists the pages it can; each app shows the ones it has. Pairs with the ${bname ?? bid} behaviour theme.` }, data));
+    if (bdata) out.push(env('behavior-theme', { id: bid, name: bname, tags: ['pairs:' + id], description: bdesc }, bdata));
+  }
+  return out;
+}
+
 function toolbarDoc() {
   const PROVIDERS = { views: 'every page the app registers (`nav:<view>`)', nav: 'the active navigation menu’s items', settings: 'every settings tab, plugins’ included (`settings.open:<tab>`)', windows: 'every open floating window (`windows.restore:<id>`)', dialogs: 'every registered dialog (`dialog:<id>`)', chrome: 'show/hide toggles for every bar and menu, drawn pressed while shown' };
   const lines = [
@@ -384,6 +452,7 @@ const BUILD = {
   'context-menu': () => CM.map((s) => env('context-menu', s, s.data)),
   toolbar: () => TOOLBAR.map((s) => env('toolbar', s, s.data)),
   'style-package': () => stylePackageAssets(),
+  'nav-menu': () => navAssets(),
 };
 
 /* ───────────────────────── runner ───────────────────────── */

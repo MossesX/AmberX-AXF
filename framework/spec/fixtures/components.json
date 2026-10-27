@@ -1924,6 +1924,166 @@
     }
   },
   "nav-menu": {
+    "amber-signature": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "approvals-flow": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "pills",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "build-tracker": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "cinematic": {
+      "vars": {
+        "--fx-nav-item-py": "10px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "none",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "compact-rail-all": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "rail",
+        "data-fx-nav-indicator": "bar",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "design-studio": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "developer-console": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "developer-rail": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "rail",
+        "data-fx-nav-indicator": "bar",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "essentials-list": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "essentials-pills": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "pills",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "essentials-rail": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "rail",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "executive-overview": {
+      "vars": {
+        "--fx-nav-item-py": "10px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "framework-browser": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "gizmo-console": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "bar",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "hub-admin": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "hub-rail": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "rail",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
     "icon-rail": {
       "vars": {
         "--fx-nav-item-py": "7px"
@@ -1931,6 +2091,36 @@
       "attrs": {
         "data-fx-nav": "rail",
         "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "kiosk-strip": {
+      "vars": {
+        "--fx-nav-item-py": "10px"
+      },
+      "attrs": {
+        "data-fx-nav": "pills",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "learning-path": {
+      "vars": {
+        "--fx-nav-item-py": "10px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "ops-monitor": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "rail",
+        "data-fx-nav-indicator": "fill",
         "data-fx-nav-icons": "on"
       }
     },
@@ -1944,6 +2134,46 @@
         "data-fx-nav-icons": "on"
       }
     },
+    "power-rail": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "rail",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "project-hub": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "roomy-touch": {
+      "vars": {
+        "--fx-nav-item-py": "10px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "security-center": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
     "sidebar-list": {
       "vars": {
         "--fx-nav-item-py": "7px"
@@ -1951,6 +2181,26 @@
       "attrs": {
         "data-fx-nav": "list",
         "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "text-only": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "bar",
+        "data-fx-nav-icons": "off"
+      }
+    },
+    "wrapper-tabs": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "pills",
+        "data-fx-nav-indicator": "fill",
         "data-fx-nav-icons": "on"
       }
     }

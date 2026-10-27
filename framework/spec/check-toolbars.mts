@@ -1,5 +1,5 @@
 /**
- * Toolbar library check (enterprise-branding s17–s18): every starter toolbar validates, keeps the design-language
+ * Toolbar + navigation library check (enterprise-branding s17–s18, s21–s22): every starter toolbar validates, keeps the design-language
  * limits, names only known actions, providers, counters-or-bindings and widget starters, and the runtime side of
  * dynamic toolbars works: provider groups load through the application menu's provider registry (capped by `max`,
  * More… past it), `checked` bindings resolve, and TOOLBARS.md is in sync with the generator seeds.
@@ -76,6 +76,29 @@ for (const a of toolbars) {
   ok(rt.toolbarChecked('counter:alerts.unread') === true, 'counter: binding on above zero');
   rt.dispatch('swap:toolbar:live-pages');
   ok(rt.state.active.toolbar === 'live-pages', 'a library toolbar swaps in');
+}
+
+// navigation library (s21–s22): every page a nav menu lists is a page of at least one web app, and each nav menu
+// is paired with a behaviour theme that points back
+{
+  const appsDir = join(root, '..', 'apps');
+  const views = new Set<string>();
+  for (const app of readdirSync(appsDir)) {
+    const d = join(appsDir, app, 'src', 'assets', 'nav-menu');
+    if (existsSync(d)) for (const f of readdirSync(d)) for (const sec of JSON.parse(readFileSync(join(d, f), 'utf8')).data.sections ?? []) for (const it of sec.items ?? []) views.add(it.view);
+  }
+  const behaviours = new Map(read('behavior-theme').map((b) => [b.id, b]));
+  const navs = read('nav-menu').filter((a) => (a.tags ?? []).some((t: string) => t.startsWith('pairs:')));
+  ok(navs.length >= 25, `≥ 25 library nav menus (${navs.length})`);
+  for (const a of navs) {
+    ok(validateAsset(a).ok, `${a.id}: nav menu validates`);
+    for (const sec of a.data.sections) for (const it of sec.items) ok(views.has(it.view), `${a.id}: page "${it.view}" is a page of some web app`);
+    const bid = (a.tags as string[]).find((t) => t.startsWith('pairs:'))!.slice(6);
+    ok(behaviours.has(bid), `${a.id}: paired behaviour ${bid} ships`);
+    const back = behaviours.get(bid)?.tags as string[] | undefined;
+    if (back?.some((t) => t.startsWith('pairs:'))) ok(back.includes(`pairs:${a.id}`), `${bid}: pairs back with ${a.id}`);
+  }
+  ok(behaviours.size >= 25, `≥ 25 behaviour themes (${behaviours.size})`);
 }
 
 // docs in sync with the seeds
