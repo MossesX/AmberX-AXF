@@ -21,7 +21,7 @@ if not m:
     sys.exit("no console token in /axf/.axf-console/env")
 port = os.environ.get("PORT", "7090")
 req = urllib.request.Request(
-    f"http://127.0.0.1:{port}/api/plugins/push-banner/merge",  # axf-plugin:push-banner
+    f"http://127.0.0.1:{port}/api/plugins/push-banner/merge",
     json.dumps({"repo": repo, "number": num, "confirm": f"{repo}#{num}"}).encode(),
     {"Authorization": "Bearer " + m.group(1).strip(), "Content-Type": "application/json"},
 )
