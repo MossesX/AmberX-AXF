@@ -43,6 +43,44 @@ export type Pane =
   | { kind: 'split'; vertical: boolean; children: Pane[]; weights: number[] }
   | { kind: 'grid'; rows: number; cols: number; cells: Pane[] };
 
+/* ---------- placement rules (behaviour theme → windows) ---------- */
+
+/** The `windows` group of the behaviour theme the window manager honours: how new windows stack, whether they snap, how they minimize. */
+export interface WindowPlacementRules { stack: 'cascade' | 'center' | 'remember' | string; snap: boolean; snapGrid: number; minimize: 'cursor' | 'dock' | 'none' | string }
+export const DEFAULT_WINDOW_PLACEMENT: WindowPlacementRules = { stack: 'cascade', snap: false, snapGrid: 8, minimize: 'cursor' };
+export const CASCADE_ORIGIN = { x: 24, y: 72 } as const;
+export const CASCADE_STEP = 28;
+
+/** A coordinate snapped to the grid when snapping is on (grid ≤ 1 = no snapping). */
+export function snapCoord(v: number, rules: WindowPlacementRules): number {
+  const g = rules.snap ? Math.max(0, Math.floor(rules.snapGrid)) : 0;
+  return g > 1 ? Math.round(v / g) * g : Math.round(v);
+}
+
+/**
+ * Where the n-th floating window opens. `cascade` steps down-right from the origin (wrapping inside the viewport),
+ * `center` centres it, `remember` reuses the last position a window with the same key had (else cascades). Snapping applies after.
+ */
+export function placeNewWindow(rules: WindowPlacementRules, index: number, size: { width: number; height: number }, viewport?: { width: number; height: number } | null, remembered?: { x: number; y: number } | null): { x: number; y: number } {
+  let x: number; let y: number;
+  if (rules.stack === 'center' && viewport) { x = Math.max(0, (viewport.width - size.width) / 2); y = Math.max(0, (viewport.height - size.height) / 2); }
+  else if (rules.stack === 'remember' && remembered) { x = remembered.x; y = remembered.y; }
+  else {
+    const steps = viewport ? Math.max(1, Math.floor(Math.max(0, Math.min(viewport.width - size.width, viewport.height - size.height) - CASCADE_ORIGIN.y) / CASCADE_STEP) + 1) : Number.MAX_SAFE_INTEGER;
+    const i = steps === Number.MAX_SAFE_INTEGER ? index : index % steps;
+    x = CASCADE_ORIGIN.x + CASCADE_STEP * i; y = CASCADE_ORIGIN.y + CASCADE_STEP * i;
+  }
+  if (viewport) { x = Math.max(0, Math.min(x, Math.max(0, viewport.width - size.width))); y = Math.max(0, Math.min(y, Math.max(0, viewport.height - size.height))); }
+  return { x: snapCoord(x, rules), y: snapCoord(y, rules) };
+}
+
+/** What a minimize request becomes under the rules: `cursor` = as asked, `dock` = always a corner title bar, `none` = refused (null). */
+export function minimizeTargetFor(rules: WindowPlacementRules, requested: MinimizeTarget): MinimizeTarget | null {
+  if (rules.minimize === 'none') return null;
+  if (rules.minimize === 'dock') return 'corner-titlebar';
+  return requested;
+}
+
 export const paneGroups = (p: Pane): string[] => p.kind === 'leaf' ? [p.groupId] : p.kind === 'split' ? p.children.flatMap(paneGroups) : p.cells.flatMap(paneGroups);
 export function paneReplace(p: Pane, groupId: string, w: Pane): Pane {
   if (p.kind === 'leaf') return p.groupId === groupId ? w : p;
@@ -89,6 +127,14 @@ export class WindowManager {
   /** Group bounds in root coordinates, reported by the UI for drop targeting: groupId → [left, top, right, bottom]. */
   readonly groupBounds = new Map<string, [number, number, number, number]>();
   windowDefaults: (type: WindowType) => WindowSettings = () => defaultSettings();
+  /** From the active behaviour theme (`windows` group); the runtime sets it on every swap. */
+  placement: WindowPlacementRules = { ...DEFAULT_WINDOW_PLACEMENT };
+  /** The viewport the UI reports (for `center` stacking and keeping windows on screen); null = unknown. */
+  viewport: { width: number; height: number } | null = null;
+  /** Last position per remember-key (title or origin) for `stack: remember`. */
+  private readonly remembered = new Map<string, { x: number; y: number }>();
+  setPlacement(rules: Partial<WindowPlacementRules>) { this.placement = { ...DEFAULT_WINDOW_PLACEMENT, ...rules }; }
+  private rememberKey(w: WindowSpec) { return w.origin ?? w.title; }
 
   constructor(readonly mainWindowId = 'main') {
     this._state = { windows: [this.spec(mainWindowId, 'main', 'Main', { toolbarEnabled: false, closable: false })], groups: {}, layouts: {}, focused: mainWindowId, drag: null };
@@ -119,7 +165,8 @@ export class WindowManager {
   openFloating(tabs: TabSpec[], title: string, type: WindowType = 'floating', width = 380, height = 460, x?: number, y?: number): string {
     const wid = this.nextId('win');
     const count = this._state.windows.filter(isFloating).length;
-    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', x: x ?? 24 + 28 * count, y: y ?? 72 + 28 * count, width, height, z: this.topZ(s) })], focused: wid }));
+    const at = placeNewWindow(this.placement, count, { width, height }, this.viewport, this.remembered.get(title) ?? null);
+    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', x: x ?? at.x, y: y ?? at.y, width, height, z: this.topZ(s) })], focused: wid }));
     this.openGroup(tabs, wid);
     return wid;
   }
@@ -223,7 +270,8 @@ export class WindowManager {
     const wid = this.nextId('win');
     this.set((s) => {
       let out = this.removeGroup(s, groupId, true);
-      const w = this.spec(wid, 'dock', title ?? activeTab(g)?.title ?? 'Tabs', { toolbarEnabled: true, origin: groupId, x: 32, y: 96, z: this.topZ(s) });
+      const at = placeNewWindow(this.placement, s.windows.filter(isFloating).length, { width: 360, height: 420 }, this.viewport, this.remembered.get(groupId) ?? null);
+      const w = this.spec(wid, 'dock', title ?? activeTab(g)?.title ?? 'Tabs', { toolbarEnabled: true, origin: groupId, x: at.x + 8, y: at.y + 24, z: this.topZ(s) });
       out = { ...out, windows: [...out.windows, w], groups: { ...out.groups, [groupId]: { ...g, windowId: wid } }, layouts: { ...out.layouts, [wid]: { kind: 'leaf', groupId } }, focused: wid };
       return out;
     });
@@ -246,19 +294,24 @@ export class WindowManager {
     this.set((s) => { const gids = new Set(s.layouts[windowId] ? paneGroups(s.layouts[windowId]) : []); const groups = { ...s.groups }; gids.forEach((g) => delete groups[g]); const layouts = { ...s.layouts }; delete layouts[windowId]; return { ...s, windows: s.windows.filter((x) => x.id !== windowId), groups, layouts, focused: this.mainWindowId }; });
   }
   focus(windowId: string) { this.set((s) => { const top = this.topZ(s); return { ...s, windows: s.windows.map((w) => (w.id === windowId ? { ...w, z: top } : w)), focused: windowId }; }); }
-  move(windowId: string, dx: number, dy: number) { this.update(windowId, (w) => ({ ...w, x: w.x + dx, y: w.y + dy })); }
-  moveTo(windowId: string, x: number, y: number) { this.update(windowId, (w) => ({ ...w, x, y })); }
-  resize(windowId: string, width: number, height: number) { this.update(windowId, (w) => ({ ...w, width: Math.max(200, width), height: Math.max(160, height) })); }
+  move(windowId: string, dx: number, dy: number) { this.update(windowId, (w) => this.remember({ ...w, x: w.x + dx, y: w.y + dy })); }
+  moveTo(windowId: string, x: number, y: number) { this.update(windowId, (w) => this.remember({ ...w, x, y })); }
+  /** Called when a drag ends: snaps the window to the grid under the behaviour theme's rules and remembers where it is. */
+  settle(windowId: string) { this.update(windowId, (w) => this.remember({ ...w, x: snapCoord(w.x, this.placement), y: snapCoord(w.y, this.placement) })); }
+  resize(windowId: string, width: number, height: number) { this.update(windowId, (w) => ({ ...w, width: Math.max(200, snapCoord(width, this.placement)), height: Math.max(160, snapCoord(height, this.placement)) })); }
+  private remember(w: WindowSpec): WindowSpec { this.remembered.set(this.rememberKey(w), { x: w.x, y: w.y }); return w; }
   setSettings(windowId: string, settings: WindowSettings) { this.update(windowId, (w) => ({ ...w, settings })); }
   setMode(windowId: string, mode: string) { this.update(windowId, (w) => ({ ...w, mode })); }
   setToolbar(windowId: string, enabled: boolean) { this.update(windowId, (w) => (!w.toolbarsAllowed ? w : { ...w, toolbarEnabled: enabled || forcesToolbar(w) })); }
 
   /* ---------- minimize ---------- */
 
-  minimize(windowId: string, target: MinimizeTarget, atX = 0, atY = 0) { this.update(windowId, (w) => ({ ...w, minimized: target, minimizedAtX: atX, minimizedAtY: atY })); }
+  /** Can windows minimize at all under the current rules? (`minimize: none` hides the buttons.) */
+  get canMinimize() { return this.placement.minimize !== 'none'; }
+  minimize(windowId: string, target: MinimizeTarget, atX = 0, atY = 0) { const t = minimizeTargetFor(this.placement, target); if (!t) return; this.update(windowId, (w) => ({ ...w, minimized: t, minimizedAtX: atX, minimizedAtY: atY })); }
   restore(windowId: string) { this.update(windowId, (w) => ({ ...w, minimized: null })); this.focus(windowId); }
   /** "Minimize to title bar at screen location which cycles through all corners": each call moves the window's corner on. */
-  minimizeToNextCorner(windowId: string) { this.update(windowId, (w) => ({ ...w, minimized: 'corner-titlebar', settings: { ...w.settings, corner: w.minimized === 'corner-titlebar' ? nextCorner(w.settings.corner) : w.settings.corner } })); }
+  minimizeToNextCorner(windowId: string) { if (!this.canMinimize) return; this.update(windowId, (w) => ({ ...w, minimized: 'corner-titlebar', settings: { ...w.settings, corner: w.minimized === 'corner-titlebar' ? nextCorner(w.settings.corner) : w.settings.corner } })); }
   minimizedAt(corner: Corner) { return this._state.windows.filter((w) => w.minimized === 'corner-titlebar' && w.settings.corner === corner); }
 
   private update(windowId: string, f: (w: WindowSpec) => WindowSpec) { this.set((s) => ({ ...s, windows: s.windows.map((w) => (w.id === windowId ? f(w) : w)) })); }

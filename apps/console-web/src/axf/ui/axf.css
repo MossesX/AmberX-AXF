@@ -319,6 +319,9 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   animation: fx-spin calc(var(--fx-motion) * 4) linear infinite;
 }
 @keyframes fx-spin { to { transform: rotate(360deg); } }
+/* a busy button's icon (Button busy) turns; still under reduced motion */
+.fx-btn.is-busy .fx-spin { animation: fx-spin calc(var(--fx-motion) * 4) linear infinite; }
+[data-fx-motion='reduced'] .fx-btn.is-busy .fx-spin { animation: none; }
 .fx-menu__back {
   width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; border: 0; background: transparent;
   padding: 6px 8px; margin-bottom: 4px; font-size: 0.93em; font-weight: 600; color: var(--fx-text);
@@ -1032,6 +1035,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* focus ring and cursor */
 [data-fx-focus='always'] :focus { outline: 2px solid var(--fx-focus); outline-offset: 2px; }
 [data-fx-focus='never'] :focus-visible { outline: none; }
+/* busy cursor (behaviour theme feedback.busyCursor; the runtime sets data-fx-busy while work runs) */
+[data-fx-busy='1'], [data-fx-busy='1'] .fx-btn, [data-fx-busy='1'] .fx-iconbtn, [data-fx-busy='1'] .fx-menu__item { cursor: progress; }
 [data-fx-cursor='auto'] .fx-btn, [data-fx-cursor='auto'] .fx-iconbtn, [data-fx-cursor='auto'] .fx-chip, [data-fx-cursor='auto'] .fx-menu__item { cursor: default; }
 
 /* dialogs (overrides the dialog asset's animation when the behaviour theme picks one) */

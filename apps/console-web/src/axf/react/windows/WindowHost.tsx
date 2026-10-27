@@ -114,6 +114,11 @@ export function FloatingWindowsHost() {
   const rt = useRuntime();
   const wm = rt.windows;
   const s = useWindowState();
+  useEffect(() => {
+    const report = () => { wm.viewport = { width: window.innerWidth, height: window.innerHeight }; };
+    report(); window.addEventListener('resize', report);
+    return () => window.removeEventListener('resize', report);
+  }, [wm]);
   return (
     <>
       {s.windows.filter((w) => isFloating(w) && !w.minimized).sort((a, b) => a.z - b.z).map((w) => <FloatingWindow key={w.id} w={w} />)}
@@ -133,7 +138,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
     e.preventDefault(); wm.focus(w.id);
     let lx = e.clientX, ly = e.clientY;
     const move = (ev: PointerEvent) => { const dx = ev.clientX - lx, dy = ev.clientY - ly; lx = ev.clientX; ly = ev.clientY; if (kind === 'move') wm.move(w.id, dx, dy); else wm.resize(w.id, w.width + (ev.clientX - e.clientX), w.height + (ev.clientY - e.clientY)); };
-    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
+    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); wm.settle(w.id); };
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
   };
   return (
@@ -143,7 +148,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
           <span className="fx-window__name">{w.title}</span>
           <span className="fx-window__badge">{w.type}</span>
           {w.toolbarsAllowed && !forcesToolbar(w) && <label className="fx-window__switch" onPointerDown={(e) => e.stopPropagation()}><input type="checkbox" checked={w.toolbarEnabled} onChange={(e) => wm.setToolbar(w.id, e.target.checked)} /> toolbar</label>}
-          <button className="fx-iconbtn" title="Minimize to corner" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minus" /></button>
+          {wm.canMinimize && <button className="fx-iconbtn" title="Minimize to corner" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minus" /></button>}
           {w.closable && <button className="fx-iconbtn" title="Close" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.close(w.id)}><Icon name="x" /></button>}
         </div>
         {effectiveToolbar(w) && <WindowToolbar w={w} />}
@@ -162,8 +167,8 @@ export function WindowToolbar({ w }: { w: WindowSpec }) {
     <div className="fx-window__toolbar">
       <button className="fx-iconbtn" title="Window settings" onClick={() => rt.openDialog('window-settings', { arg: w.id })}><Icon name="settings" /></button>
       <button className="fx-iconbtn" title="Redock" onClick={() => wm.redock(w.id)}><Icon name="download" /></button>
-      <button className="fx-iconbtn" title="Minimize to corner title bar (cycles corners)" onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minus" /></button>
-      <button className="fx-iconbtn" title="Minimize to floating toolbar at cursor" onClick={(e) => wm.minimize(w.id, 'floating-toolbar', e.clientX, e.clientY)}><Icon name="external" /></button>
+      {wm.canMinimize && <button className="fx-iconbtn" title="Minimize to corner title bar (cycles corners)" onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minus" /></button>}
+      {wm.canMinimize && wm.placement.minimize !== 'dock' && <button className="fx-iconbtn" title="Minimize to floating toolbar at cursor" onClick={(e) => wm.minimize(w.id, 'floating-toolbar', e.clientX, e.clientY)}><Icon name="external" /></button>}
       <span className="fx-tabgroup__spacer" />
       <button className={`fx-iconbtn ${w.mode === 'grid' ? 'is-active' : ''}`} title={w.mode === 'grid' ? 'View as tree' : 'View as grid'} onClick={() => wm.setMode(w.id, w.mode === 'grid' ? 'tree' : 'grid')}><Icon name={w.mode === 'grid' ? 'list' : 'grid'} /></button>
     </div>

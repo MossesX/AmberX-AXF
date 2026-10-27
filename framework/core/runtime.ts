@@ -1120,6 +1120,23 @@ export class AxfRuntime {
     return confirmBeforeDelete(this.behavior(), undoable);
   }
 
+  /** How many pieces of work hold the app busy right now (`busy()` / `withBusy()`). */
+  private busyCount = 0;
+  /** While anything is busy and the behaviour theme says `feedback.busyCursor`, the root carries `data-fx-busy` (the stylesheet shows a progress cursor). */
+  busy(): boolean { return this.busyCount > 0; }
+  /** Mark work started (`true`) or finished (`false`); balanced calls, never below zero. */
+  setBusy(on: boolean): void {
+    const n = Math.max(0, this.busyCount + (on ? 1 : -1));
+    if (n === this.busyCount) return;
+    this.busyCount = n;
+    this.set({});
+  }
+  /** Run a promise with the busy cursor on until it settles. */
+  async withBusy<T>(work: Promise<T> | (() => Promise<T>)): Promise<T> {
+    this.setBusy(true);
+    try { return await (typeof work === 'function' ? work() : work); } finally { this.setBusy(false); }
+  }
+
   /** Haptic + sound feedback for an event, as the behaviour theme says (no-op where the browser can't). */
   feedback(kind: 'tap' | 'success' | 'warning' | 'error' = 'tap'): void {
     const b = this.behavior();
@@ -1529,8 +1546,12 @@ export class AxfRuntime {
     };
     // behaviour last among the theme vars: its motion speed (when not "theme") wins over the style theme's
     const reducedMotion = typeof globalThis.matchMedia === 'function' && globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    parts.push(behaviorStyle(this.assetOrNull('behavior-theme' as AssetType)?.data, reducedMotion));
+    const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
+    parts.push(behaviorStyle(behavior, reducedMotion));
+    // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
+    this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
+    if (this.busyCount > 0 && normalizeBehavior(behavior).feedback.busyCursor) attrs['data-fx-busy'] = '1';
     for (const p of parts) {
       Object.assign(vars, p.vars);
       Object.assign(attrs, p.attrs);

@@ -1,5 +1,5 @@
-import { useId, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
-import { useAsset, useGate } from '../AxfProvider';
+import { useEffect, useId, useState, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
+import { useAsset, useGate, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { containerCollapsible } from '../../core';
 
@@ -12,21 +12,37 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: string;
   /** UAC permission required to use this button */
   requires?: string;
+  /**
+   * A destructive action: the behaviour theme decides whether to ask first (`feedback.confirmDelete`: always / risky /
+   * never). `confirm` is the question; `undoable` says the action can be brought back (so `risky` doesn't ask).
+   */
+  confirm?: string;
+  undoable?: boolean;
+  /** Work in flight: the button is disabled and the app shows the busy cursor while true (behaviour theme feedback.busyCursor). */
+  busy?: boolean;
 }
 
-export function Button({ tone = 'neutral', size = 'md', icon, requires, children, className, disabled, ...rest }: ButtonProps) {
+export function Button({ tone = 'neutral', size = 'md', icon, requires, confirm, undoable, busy, children, className, disabled, onClick, ...rest }: ButtonProps) {
   const gate = useGate(requires);
+  const rt = useRuntime();
+  useEffect(() => { if (!busy) return; rt.setBusy(true); return () => rt.setBusy(false); }, [busy, rt]);
   if (gate === 'hide') return null;
   const locked = gate === 'disable';
+  const click = (e: MouseEvent<HTMLButtonElement>) => {
+    if (confirm && rt.confirmDelete(undoable) && !globalThis.confirm?.(confirm)) return;
+    onClick?.(e);
+  };
   return (
     <button
       type="button"
-      className={`fx-btn fx-btn--${tone}${size === 'sm' ? ' fx-btn--sm' : ''} ${className ?? ''}`}
-      disabled={disabled || locked}
+      className={`fx-btn fx-btn--${tone}${size === 'sm' ? ' fx-btn--sm' : ''}${busy ? ' is-busy' : ''} ${className ?? ''}`}
+      disabled={disabled || locked || busy}
+      aria-busy={busy || undefined}
       title={locked ? `Requires ${requires}` : rest.title}
+      onClick={click}
       {...rest}
     >
-      {locked ? <Icon name="lock" size={size === 'sm' ? 11 : 14} /> : icon && <Icon name={icon} size={size === 'sm' ? 11 : 15} />}
+      {locked ? <Icon name="lock" size={size === 'sm' ? 11 : 14} /> : busy ? <Icon name="refresh" size={size === 'sm' ? 11 : 15} className="fx-spin" /> : icon && <Icon name={icon} size={size === 'sm' ? 11 : 15} />}
       {children && <span>{children}</span>}
     </button>
   );
