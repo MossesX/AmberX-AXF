@@ -1,6 +1,6 @@
 {
-  "color-theme": "arctic-daylight",
-  "style-theme": "glass-orbit",
+  "color-theme": "fresh-light",
+  "style-theme": "fresh",
   "layout": "classic-ide",
   "app-menu": "standard-desktop",
   "toolbar": "standard-icons",
@@ -25,7 +25,7 @@
   "progress": "build",
   "avatar": "account",
   "link": "docs",
-  "theme-switch": "day-night",
+  "theme-switch": "fresh-day-night",
   "spacer": "gap",
   "divider": "rule",
   "badge": "new",

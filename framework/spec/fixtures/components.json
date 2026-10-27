@@ -201,6 +201,18 @@
         "data-fx-toolbar-collapsible": "off"
       }
     },
+    "settings-page": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.35)",
+        "--fx-toolbtn-h": "calc(var(--fx-row-h) - 8px)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "icons-labels",
+        "data-fx-toolbar-surface": "flat",
+        "data-fx-toolbar-divider": "on",
+        "data-fx-toolbar-collapsible": "off"
+      }
+    },
     "standard-icons": {
       "vars": {
         "--fx-toolbar-py": "calc(var(--fx-space) * 0.6)",

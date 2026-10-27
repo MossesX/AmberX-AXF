@@ -42,12 +42,15 @@
           "amber-ember",
           "arctic-daylight",
           "coral-studio",
+          "fresh-dark",
+          "fresh-light",
           "graphite-lime",
           "midnight-ink",
           "neon-tide",
           "sage-paper"
         ],
         "style-theme": [
+          "fresh",
           "glass-orbit",
           "sharp-terminal",
           "soft-studio"
@@ -135,12 +138,15 @@
           "amber-ember",
           "arctic-daylight",
           "coral-studio",
+          "fresh-dark",
+          "fresh-light",
           "graphite-lime",
           "midnight-ink",
           "neon-tide",
           "sage-paper"
         ],
         "style-theme": [
+          "fresh",
           "glass-orbit",
           "sharp-terminal",
           "soft-studio"
@@ -231,12 +237,15 @@
           "amber-ember",
           "arctic-daylight",
           "coral-studio",
+          "fresh-dark",
+          "fresh-light",
           "graphite-lime",
           "midnight-ink",
           "neon-tide",
           "sage-paper"
         ],
         "style-theme": [
+          "fresh",
           "glass-orbit",
           "sharp-terminal",
           "soft-studio"
@@ -327,12 +336,15 @@
           "amber-ember",
           "arctic-daylight",
           "coral-studio",
+          "fresh-dark",
+          "fresh-light",
           "graphite-lime",
           "midnight-ink",
           "neon-tide",
           "sage-paper"
         ],
         "style-theme": [
+          "fresh",
           "glass-orbit",
           "sharp-terminal",
           "soft-studio"
@@ -422,12 +434,15 @@
         "color-theme": [
           "arctic-daylight",
           "coral-studio",
+          "fresh-dark",
+          "fresh-light",
           "graphite-lime",
           "midnight-ink",
           "neon-tide",
           "sage-paper"
         ],
         "style-theme": [
+          "fresh",
           "glass-orbit",
           "sharp-terminal",
           "soft-studio"
@@ -510,12 +525,15 @@
           "amber-ember",
           "arctic-daylight",
           "coral-studio",
+          "fresh-dark",
+          "fresh-light",
           "graphite-lime",
           "midnight-ink",
           "neon-tide",
           "sage-paper"
         ],
         "style-theme": [
+          "fresh",
           "glass-orbit",
           "sharp-terminal",
           "soft-studio"
