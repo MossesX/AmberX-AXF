@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T04:05:32.031Z",
+ "updatedAt": "2026-10-27T16:19:48.729Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4401,6 +4401,66 @@
    "builtAt": "2026-10-27T04:05:32.031Z",
    "updatedAt": "2026-10-27T04:05:32.031Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "design-package",
+   "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
+   "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "behavior-theme asset type: asset-types.json entry (group Themes, rolled), JSON schema regen, all three validators accept it",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Behaviour engine core/engines/behavior.ts: normalise + compile to --fx-* vars/attrs for motion, interaction, windows/dialogs, feedback; fixture spec/fixtures/behavior.json + check-behavior.mts",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Wire behaviour into the React layer + runtime: motion vars, long-press and double-tap times, dialog/window open-close-snap-stack, toasts, sound, vibration, confirm-before-delete (behaviour tokens are the fallbacks the look tokens already reference)",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Starter behaviour themes (4: calm, snappy, minimal-motion, playful) + framework default",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme ids; apply = 4 swaps; capture from the current look; fixture + check",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Retire appearance-package: migrate existing packages and the axf.appearance.package setting to design packages; ask Brett where the extra look settings (spacing, hidden chrome, other slot picks) go before dropping them",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Settings -> Appearance: Design Package picker (with Apply) on top; the rest of the Appearance section in one collapsible container",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Defaults + every web app's manifest names a design package and behaviour theme; re-bake console-web, axhub-web, patches-web, amberx-droid, walkthrough-studio",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "PORTING.md deferred Kotlin twin, CLAUDE.md status, rebuild report + before/after web shots, THREADS.md, tests in CI",
+     "at": "2026-10-27T16:19:48.729Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-27T16:19:41.652Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T16:19:48.729Z",
+   "estimate": "4.5 h",
    "source": "chat"
   }
  ]
