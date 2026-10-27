@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:49:22.247Z",
+ "updatedAt": "2026-10-27T20:50:10.225Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:49:22.247Z",
+   "updatedAt": "2026-10-27T20:50:10.224Z",
    "builtAt": "",
    "notes": [
     {
@@ -1672,6 +1672,10 @@
     {
      "text": "s6 done (e6dfb0c): lib-voice 0.3.0 VoiceEngine/Vosk/dictation/arming. Follow-ups: ax-notes fetches the Vosk model; Voice Vault now carries Vosk+JNA native libs (APK size) — fix in s23 (move Vosk to an optional lib-voice-vosk or keep).",
      "at": "2026-10-27T20:48:18.749Z"
+    },
+    {
+     "text": "s4+s5(+speech@1 shape) done b00364e: triggers@1, ai-modes@1, speech@1 contracts; TS checks 183/128/105 pass.",
+     "at": "2026-10-27T20:50:10.224Z"
     }
    ],
    "approvals": [
@@ -1743,8 +1747,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:50:10.107Z",
      "note": ""
     },
     {
@@ -1759,8 +1763,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:50:10.168Z",
      "note": ""
     },
     {
