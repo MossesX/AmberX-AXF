@@ -19,7 +19,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/console-terminal",
     "env": ["AXF_TERMINAL_DIR", "AXF_VPS_HOST", "CLAUDE_BIN"],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "apps/console-web/plugins/README.md"]
   },
   "opens": false
 }

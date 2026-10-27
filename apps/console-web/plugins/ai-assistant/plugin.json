@@ -58,7 +58,7 @@
       "CLAUDE_BIN"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "framework/spec/LIVE-SESSIONS.md",
       "framework/spec/ASSISTANT.md"

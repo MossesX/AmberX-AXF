@@ -28,7 +28,7 @@
     "dataDir": ".axf-console/plugins/build-profiles",
     "env": [],
     "mentions": [
-      "CLAUDE.md"
+      "CLAUDE.md", "_claude/memory/STATUS.md"
     ]
   },
   "opens": "main"

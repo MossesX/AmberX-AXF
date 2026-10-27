@@ -212,9 +212,11 @@ def digest(existing: list[Check]) -> str:
             pass
     parts.append("# Environment variables the console server reads\n" + ", ".join(sorted(env_reads)))
     try:
-        claude = (cx.ROOT / "CLAUDE.md").read_text("utf-8", "ignore")
-        i = claude.find("## Status")
-        parts.append("# Status notes (CLAUDE.md)\n" + claude[i:i + 14000])
+        status_file = cx.ROOT / "_claude" / "memory" / "STATUS.md"
+        src = status_file if status_file.is_file() else cx.ROOT / "CLAUDE.md"
+        claude = src.read_text("utf-8", "ignore")
+        i = max(claude.find("## Status"), 0)
+        parts.append(f"# Status notes ({src.name})\n" + claude[i:i + 14000])
     except OSError:
         pass
     parts.append("# Checks that already exist (don't repeat them)\n" + ", ".join(sorted(c["id"] for c in existing)))
