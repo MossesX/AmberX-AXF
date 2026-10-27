@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T19:30:00.000Z",
+ "updatedAt": "2026-10-27T19:47:17.145Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4680,7 +4680,12 @@
    "detail": "From Brett's attachment (Oct 27 2026). Grid next to Reload; columns 1-line summary, date added, total time estimate, cost estimate; rows expand to today's card; toolbar archive/delete/hide/unhide/open in (Build manager, Build queue, Plan); select hook with double-click multi-select. All Opus (console UI). Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, mixed Fable/Opus steps).",
    "model": "Opus",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 27 2026: folded into builds-one-page (step s10); taken off the orchestrator. Mark complete when that lands.",
+     "at": "2026-10-27T19:11:22.034Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] pending@1: optional hidden + archived fields in pending-core (apply actions hide/unhide/archive, sorts); API + MCP accept them; artifact mapping unchanged except the new fields.",
@@ -4715,7 +4720,7 @@
    ],
    "createdAt": "2026-10-27T16:39:39.821Z",
    "builtAt": "",
-   "updatedAt": "2026-10-27T16:39:39.821Z",
+   "updatedAt": "2026-10-27T19:11:22.034Z",
    "source": "chat"
   },
   {
@@ -5092,6 +5097,129 @@
    "builtAt": "2026-10-27T19:23:01.118Z",
    "updatedAt": "2026-10-27T19:23:01.225Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "builds-one-page",
+   "title": "Builds: one dataset, one page with selectable views",
+   "detail": "Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, build builds-one-page: Fable s1-s4, then Opus s5-s13). Folds in pending-grid-view.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] s1: Design the one builds dataset in plan.json: queue order/steps/rework, parked model + notes + sub prompts, orchestrator phases/approvals, hidden/archived; status mapping pending ↔ plan; spec framework/spec/BUILDS.md",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.082Z"
+    },
+    {
+     "text": "[Fable] s2: builds-core.mjs (pure): every view (plan, tracker, queue, pending, orchestrator) is a filter/sort over one list, with nested info per row (steps, notes, deps, linked features, phases)",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.104Z"
+    },
+    {
+     "text": "[Fable] s3: Shims: pending-core, build-queue-core and orchestrator-core read/write through builds-core (same APIs); tracker.json generated from it; fixture spec/fixtures/builds.json + checker",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.126Z"
+    },
+    {
+     "text": "[Fable] s4: Migration: pending.json (9 planId items attach, 91 become entries), build-queue.json, orchestrator.json → plan.json; dry-run report; persist + manifest data.shared updated",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.145Z"
+    },
+    {
+     "text": "[Opus] s5: Run the migration (repo + hub _data), keep the old files as read-only exports for one release",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] s6: GET/POST /api/builds, engine-rpc and MCP; pending_list/pending_change, build-queue and orchestrator routes keep working through the shims",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s7: Builds page: one nav entry, view toolbar (Plan · Tracker · Queue · Pending · Orchestrator), shared filters, ?view= in the URL; old pages redirect to their view",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s8: Table look (framework DataGrid) as every view's default, rows expand to the Pending card; Orchestrator view = same table with phases and steps nested",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s9: Nested info per view: tracker → group + suggested features; queue → linked features, deps, rework; plan → acceptance, ports, deps; pending → steps, notes",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s10: Grid columns (summary, date added, time, cost), toolbar Archive/Delete/Hide/Unhide/Open in, double-click multi-select (pending-grid-view s1-s6)",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s11: View switching everywhere: app menu Builds ▸ View, context menu Open in view…, shortcuts 1–5, banners open a filtered view, axf://builds?view=…, search provider",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] s12: claude.ai Pending page maps to the new data; Build manager merge simplified (no de-dup needed)",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] s13: Tests, before/after screenshots, report + rebuild LOG, CLAUDE.md status, THREADS.md",
+     "at": "2026-10-27T19:11:26.473Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-27T19:11:22.034Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T19:47:17.145Z",
+   "estimate": "6 h",
+   "source": "chat"
+  },
+  {
+   "id": "trim-asset",
+   "title": "New asset type: trim (layout + colour theme)",
+   "detail": "Tracked in the Build orchestrator (build trim-asset: Fable s1-s2, then Opus s3-s4).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] s1: `trim` in asset-types.json + JSON schema ({layout, colorTheme}: id or inline); design-package accepts `trim` in place of layout + colour; validators (ts + mjs), PORTING.md gap",
+     "at": "2026-10-27T19:11:26.492Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable] s2: core/engines/trim.ts: resolve a trim into layout + colour swaps; rt trim slot; design-package engine resolves trim refs; roll/hide rules; fixtures spec/fixtures/trim.json + checker",
+     "at": "2026-10-27T19:11:26.492Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s3: Settings → Appearance Trim picker, theme manager Save as trim, 6 starter trims from existing layouts + colour themes, defaults.json",
+     "at": "2026-10-27T19:11:26.492Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s4: Tests, screenshots, docs, CLAUDE.md status, THREADS.md",
+     "at": "2026-10-27T19:11:26.492Z",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-10-27T19:11:22.034Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T19:11:26.492Z",
+   "estimate": "1.8 h",
    "source": "chat"
   }
  ]

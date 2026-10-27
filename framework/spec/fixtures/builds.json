@@ -1,0 +1,1287 @@
+{
+ "$axf": "builds@1-fixture",
+ "now": "2026-10-27T20:00:00.000Z",
+ "report": {
+  "attached": 5,
+  "created": [
+   "kernel-docs",
+   "patches-fix",
+   "old-build"
+  ],
+  "statusChanges": [
+   {
+    "id": "patches-fix",
+    "from": "unsafe",
+    "to": "in-progress",
+    "by": "orchestrator build patches-fix (running)"
+   }
+  ],
+  "stepsMerged": [
+   {
+    "id": "patches-fix",
+    "from": "orchestrator",
+    "had": 1,
+    "orchestrator": 2,
+    "kept": "orchestrator"
+   }
+  ],
+  "titles": [
+   {
+    "id": "x.assets.designer",
+    "plan": "Asset designer",
+    "pending": "Asset Designer plugin (no-code)"
+   },
+   {
+    "id": "x.kernel",
+    "plan": "Kernel",
+    "pending": "Kernel: Fable rebuild"
+   }
+  ],
+  "orphans": [
+   {
+    "from": "pending",
+    "id": "kernel-docs",
+    "why": "planId x.docs.missing is not in the plan; kept on the entry"
+   }
+  ],
+  "catalogFilled": 0,
+  "counts": {
+   "features": 8,
+   "plan": 8,
+   "tracker": 2,
+   "queue": 2,
+   "pending": 4,
+   "orchestrator": 2
+  }
+ },
+ "plan": {
+  "$axf": "plan@1",
+  "generatedAt": "2026-10-26T00:00:00.000Z",
+  "statuses": [
+   "built",
+   "partial",
+   "in-progress",
+   "placeholder",
+   "planned",
+   "unsafe",
+   "blocked",
+   "failed",
+   "broken",
+   "dropped"
+  ],
+  "features": [
+   {
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [],
+    "catalog": [
+     "k.pure"
+    ],
+    "modules": [],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [],
+    "notes": "",
+    "history": [
+     {
+      "at": "2026-10-01",
+      "text": "Added"
+     }
+    ],
+    "id": "x.kernel",
+    "title": "Kernel",
+    "area": "Kernel",
+    "kind": "epic",
+    "status": "built",
+    "priority": "P0",
+    "wave": 1,
+    "effort": "XL",
+    "summary": "The core",
+    "model": "fable",
+    "modelReason": "core",
+    "source": "seed",
+    "build": {
+     "parked": {
+      "pendingId": "kernel-rebuild",
+      "source": "fable-rebuilds",
+      "createdAt": "2026-10-16T00:00:00.000Z",
+      "updatedAt": "2026-10-17T00:00:00.000Z",
+      "builtAt": "2026-10-17T00:00:00.000Z"
+     },
+     "record": {
+      "completedAt": "1970-01-01T00:00:00.000Z",
+      "completedBy": "baseline",
+      "deps": []
+     }
+    }
+   },
+   {
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [
+     "x.kernel"
+    ],
+    "catalog": [
+     "c.designer"
+    ],
+    "modules": [],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [],
+    "notes": "",
+    "history": [
+     {
+      "at": "2026-10-01",
+      "text": "Added"
+     }
+    ],
+    "id": "x.assets.designer",
+    "title": "Asset designer",
+    "area": "Assets",
+    "kind": "epic",
+    "status": "planned",
+    "priority": "P1",
+    "wave": 2,
+    "effort": "L",
+    "summary": "No-code designer",
+    "model": "fable",
+    "modelReason": "contract",
+    "source": "seed",
+    "build": {
+     "parked": {
+      "pendingId": "asset-designer",
+      "source": "plan",
+      "createdAt": "2026-10-17T00:00:00.000Z",
+      "updatedAt": "2026-10-20T00:00:00.000Z"
+     },
+     "detail": "Design every asset without code.",
+     "estimate": "1 h",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "Designer core",
+       "estimate": "30 min",
+       "at": "2026-10-20T00:00:00.000Z"
+      },
+      {
+       "id": "s2",
+       "text": "Designer UI",
+       "estimate": "30 min",
+       "at": "2026-10-20T00:00:00.000Z"
+      }
+     ],
+     "notes": [
+      {
+       "text": "Waits on Fable credits",
+       "at": "2026-10-20T00:00:00.000Z"
+      }
+     ]
+    }
+   },
+   {
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [],
+    "catalog": [
+     "k.pure"
+    ],
+    "modules": [
+     "axf-kernel"
+    ],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [
+     "kernel",
+     "lock"
+    ],
+    "notes": "",
+    "history": [
+     {
+      "at": "2026-10-01",
+      "text": "Added"
+     }
+    ],
+    "id": "k.pure",
+    "title": "Kernel is pure Kotlin",
+    "area": "Kernel",
+    "group": "Kernel shape",
+    "tab": "kernel",
+    "groupId": "kernel-shape",
+    "tag": "lock",
+    "kind": "feature",
+    "status": "built",
+    "priority": "P1",
+    "wave": 1,
+    "effort": "",
+    "summary": "",
+    "model": "opus",
+    "source": "catalog",
+    "epic": "x.kernel"
+   },
+   {
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [],
+    "catalog": [
+     "c.designer"
+    ],
+    "modules": [],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [
+     "console",
+     "feature"
+    ],
+    "notes": "",
+    "history": [
+     {
+      "at": "2026-10-01",
+      "text": "Added"
+     }
+    ],
+    "id": "c.designer",
+    "title": "Designer view",
+    "area": "Console",
+    "group": "Views",
+    "tab": "console",
+    "groupId": "views",
+    "tag": "feature",
+    "kind": "feature",
+    "status": "planned",
+    "priority": "P3",
+    "wave": 3,
+    "effort": "",
+    "summary": "",
+    "model": "opus",
+    "source": "catalog",
+    "epic": "x.assets.designer"
+   },
+   {
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [],
+    "catalog": [],
+    "modules": [],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [],
+    "notes": "",
+    "history": [
+     {
+      "at": "2026-10-01",
+      "text": "Added"
+     }
+    ],
+    "id": "u.alerts",
+    "title": "Alerts on the phone",
+    "area": "Console",
+    "kind": "feature",
+    "status": "in-progress",
+    "priority": "P2",
+    "wave": 2,
+    "effort": "M",
+    "summary": "ntfy",
+    "model": "opus",
+    "source": "user",
+    "edited": true
+   },
+   {
+    "id": "kernel-docs",
+    "title": "Kernel docs",
+    "area": "Builds",
+    "kind": "build",
+    "status": "built",
+    "priority": "P2",
+    "wave": 2,
+    "effort": "",
+    "summary": "",
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [],
+    "catalog": [],
+    "modules": [],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [
+     "build"
+    ],
+    "notes": "",
+    "model": "sonnet",
+    "modelReason": "Set when the build was added",
+    "modelEdited": true,
+    "source": "chat",
+    "edited": true,
+    "history": [
+     {
+      "at": "2026-10-27T20:00:00.000Z",
+      "text": "Added from the chat list"
+     }
+    ],
+    "build": {
+     "parked": {
+      "source": "chat",
+      "planId": "x.docs.missing",
+      "createdAt": "2026-10-18T00:00:00.000Z",
+      "updatedAt": "2026-10-19T00:00:00.000Z",
+      "builtAt": "2026-10-19T00:00:00.000Z"
+     },
+     "detail": "Write the kernel docs."
+    }
+   },
+   {
+    "id": "patches-fix",
+    "title": "Patches: fix the tab bar",
+    "area": "Builds",
+    "kind": "build",
+    "status": "in-progress",
+    "priority": "P2",
+    "wave": 2,
+    "effort": "",
+    "summary": "",
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [],
+    "catalog": [],
+    "modules": [],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [
+     "build"
+    ],
+    "notes": "",
+    "model": "opus",
+    "modelReason": "Set when the build was added",
+    "modelEdited": true,
+    "source": "console",
+    "edited": true,
+    "history": [
+     {
+      "at": "2026-10-27T20:00:00.000Z",
+      "text": "Added from the console list"
+     },
+     {
+      "at": "2026-10-27T20:00:00.000Z",
+      "text": "Builds migration: orchestrator said running (was unsafe)"
+     }
+    ],
+    "statusEdited": true,
+    "build": {
+     "parked": {
+      "source": "console",
+      "createdAt": "2026-10-21T00:00:00.000Z",
+      "updatedAt": "2026-10-21T01:00:00.000Z"
+     },
+     "detail": "The tab bar overlaps the banner (orchestrated).",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "Find the overlap",
+       "estimate": "20 min",
+       "model": "fable",
+       "why": "layout engine",
+       "phase": "Phase 1",
+       "group": "Engine",
+       "files": [
+        "framework/core/engines/layout.ts"
+       ],
+       "done": true,
+       "doneAt": "2026-10-22T01:00:00.000Z",
+       "at": "2026-10-21T00:00:00.000Z"
+      },
+      {
+       "id": "s2",
+       "text": "Fix the CSS",
+       "estimate": "15 min",
+       "model": "opus",
+       "why": "console UI",
+       "phase": "Phase 2",
+       "group": "UI",
+       "checks": [
+        "npm run build"
+       ]
+      }
+     ],
+     "notes": [
+      {
+       "text": "Started",
+       "at": "2026-10-22T00:00:00.000Z"
+      }
+     ],
+     "orchestration": {
+      "category": "Console UI",
+      "branch": "claude/patches-fix",
+      "source": "chat",
+      "status": "running",
+      "createdAt": "2026-10-22T00:00:00.000Z",
+      "updatedAt": "2026-10-22T02:00:00.000Z"
+     }
+    }
+   },
+   {
+    "id": "old-build",
+    "title": "An archived build",
+    "area": "Archive",
+    "kind": "build",
+    "status": "built",
+    "priority": "P2",
+    "wave": 2,
+    "effort": "",
+    "summary": "",
+    "ports": {},
+    "capabilities": [],
+    "dependsOn": [],
+    "catalog": [],
+    "modules": [],
+    "files": [],
+    "acceptance": [],
+    "warnings": [],
+    "recommendations": [],
+    "previews": [],
+    "screenshots": [],
+    "links": [],
+    "tags": [
+     "build"
+    ],
+    "notes": "",
+    "model": "fable",
+    "modelReason": "Set when the build was added",
+    "modelEdited": true,
+    "source": "console",
+    "edited": true,
+    "history": [
+     {
+      "at": "2026-10-27T20:00:00.000Z",
+      "text": "Added from the console list"
+     }
+    ],
+    "build": {
+     "detail": "Done long ago.",
+     "steps": [
+      {
+       "id": "s1",
+       "text": "Step one",
+       "estimate": "10 min",
+       "model": "fable",
+       "done": true,
+       "doneAt": "2026-10-10T10:00:00.000Z"
+      },
+      {
+       "id": "s2",
+       "text": "Step two",
+       "estimate": "10 min",
+       "model": "opus",
+       "done": true,
+       "doneAt": "2026-10-11T00:00:00.000Z"
+      }
+     ],
+     "orchestration": {
+      "category": "Archive",
+      "pr": "#1",
+      "source": "console",
+      "approvals": [
+       {
+        "phase": 1,
+        "from": "Fable",
+        "to": "Opus",
+        "at": "2026-10-10T12:00:00.000Z"
+       }
+      ],
+      "createdAt": "2026-10-10T00:00:00.000Z",
+      "updatedAt": "2026-10-11T00:00:00.000Z",
+      "builtAt": "2026-10-11T00:00:00.000Z"
+     },
+     "hidden": true,
+     "archived": true
+    }
+   }
+  ],
+  "builds": {
+   "$axf": "builds@1",
+   "updatedAt": "2026-10-27T20:00:00.000Z",
+   "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+   "queue": {
+    "order": [
+     "x.kernel",
+     "x.assets.designer"
+    ],
+    "dirty": false,
+    "updatedAt": "2026-10-26T00:00:00.000Z",
+    "history": [
+     {
+      "at": "2026-10-26T00:00:00.000Z",
+      "by": "console:init",
+      "text": "Build queue created from the plan"
+     }
+    ]
+   },
+   "rules": {
+    "sameSession": true,
+    "subAgents": false,
+    "approveModelSwitch": true,
+    "maxStepMinutes": 30
+   },
+   "migratedAt": "2026-10-27T20:00:00.000Z",
+   "migratedFrom": {
+    "pending": 4,
+    "queue": 2,
+    "orchestrator": 2
+   }
+  }
+ },
+ "pending": {
+  "$axf": "pending@1",
+  "updatedAt": "2026-10-27T20:00:00.000Z",
+  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+  "items": [
+   {
+    "id": "kernel-rebuild",
+    "title": "Kernel",
+    "model": "Fable",
+    "status": "complete",
+    "createdAt": "2026-10-16T00:00:00.000Z",
+    "builtAt": "2026-10-17T00:00:00.000Z",
+    "updatedAt": "2026-10-17T00:00:00.000Z",
+    "planId": "x.kernel",
+    "source": "fable-rebuilds"
+   },
+   {
+    "id": "asset-designer",
+    "title": "Asset designer",
+    "detail": "Design every asset without code.",
+    "model": "Fable",
+    "status": "pending",
+    "notes": [
+     {
+      "text": "Waits on Fable credits",
+      "at": "2026-10-20T00:00:00.000Z"
+     }
+    ],
+    "subPrompts": [
+     {
+      "text": "Designer core",
+      "at": "2026-10-20T00:00:00.000Z",
+      "estimate": "30 min"
+     },
+     {
+      "text": "Designer UI",
+      "at": "2026-10-20T00:00:00.000Z",
+      "estimate": "30 min"
+     }
+    ],
+    "createdAt": "2026-10-17T00:00:00.000Z",
+    "updatedAt": "2026-10-20T00:00:00.000Z",
+    "planId": "x.assets.designer",
+    "estimate": "1 h",
+    "source": "plan"
+   },
+   {
+    "id": "kernel-docs",
+    "title": "Kernel docs",
+    "detail": "Write the kernel docs.",
+    "model": "Sonnet",
+    "status": "complete",
+    "createdAt": "2026-10-18T00:00:00.000Z",
+    "builtAt": "2026-10-19T00:00:00.000Z",
+    "updatedAt": "2026-10-19T00:00:00.000Z",
+    "planId": "x.docs.missing",
+    "source": "chat"
+   },
+   {
+    "id": "patches-fix",
+    "title": "Patches: fix the tab bar",
+    "detail": "The tab bar overlaps the banner (orchestrated).",
+    "model": "Opus",
+    "status": "pending",
+    "notes": [
+     {
+      "text": "Started",
+      "at": "2026-10-22T00:00:00.000Z"
+     }
+    ],
+    "subPrompts": [
+     {
+      "text": "Find the overlap",
+      "at": "2026-10-21T00:00:00.000Z",
+      "estimate": "20 min",
+      "done": true,
+      "doneAt": "2026-10-22T01:00:00.000Z"
+     },
+     {
+      "text": "Fix the CSS",
+      "estimate": "15 min"
+     }
+    ],
+    "createdAt": "2026-10-21T00:00:00.000Z",
+    "updatedAt": "2026-10-21T01:00:00.000Z",
+    "source": "console"
+   }
+  ]
+ },
+ "queue": {
+  "$axf": "build-queue@1",
+  "order": [
+   "x.kernel",
+   "x.assets.designer"
+  ],
+  "steps": {
+   "x.kernel": {
+    "completedAt": "1970-01-01T00:00:00.000Z",
+    "completedBy": "baseline",
+    "deps": []
+   },
+   "x.assets.designer": {
+    "estimate": "1 h",
+    "steps": [
+     {
+      "text": "Designer core",
+      "estimate": "30 min"
+     },
+     {
+      "text": "Designer UI",
+      "estimate": "30 min"
+     }
+    ]
+   }
+  },
+  "dirty": false,
+  "updatedAt": "2026-10-26T00:00:00.000Z",
+  "history": [
+   {
+    "at": "2026-10-26T00:00:00.000Z",
+    "by": "console:init",
+    "text": "Build queue created from the plan"
+   }
+  ]
+ },
+ "orchestrator": {
+  "$axf": "orchestrator@1",
+  "updatedAt": "2026-10-27T20:00:00.000Z",
+  "rules": {
+   "sameSession": true,
+   "subAgents": false,
+   "approveModelSwitch": true,
+   "maxStepMinutes": 30
+  },
+  "builds": [
+   {
+    "id": "patches-fix",
+    "title": "Patches: fix the tab bar",
+    "category": "Console UI",
+    "detail": "The tab bar overlaps the banner (orchestrated).",
+    "status": "running",
+    "hidden": false,
+    "source": "chat",
+    "pendingId": "patches-fix",
+    "branch": "claude/patches-fix",
+    "pr": "",
+    "createdAt": "2026-10-22T00:00:00.000Z",
+    "updatedAt": "2026-10-22T02:00:00.000Z",
+    "builtAt": "",
+    "notes": [
+     {
+      "text": "Started",
+      "at": "2026-10-22T00:00:00.000Z"
+     }
+    ],
+    "approvals": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "Find the overlap",
+      "model": "Fable",
+      "why": "layout engine",
+      "phase": "Phase 1",
+      "group": "Engine",
+      "estimate": "20 min",
+      "files": [
+       "framework/core/engines/layout.ts"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "done": true,
+      "doneAt": "2026-10-22T01:00:00.000Z",
+      "note": ""
+     },
+     {
+      "id": "s2",
+      "text": "Fix the CSS",
+      "model": "Opus",
+      "why": "console UI",
+      "phase": "Phase 2",
+      "group": "UI",
+      "estimate": "15 min",
+      "files": [],
+      "checks": [
+       "npm run build"
+      ],
+      "session": "same",
+      "agent": false,
+      "done": false,
+      "doneAt": "",
+      "note": ""
+     }
+    ]
+   },
+   {
+    "id": "old-build",
+    "title": "An archived build",
+    "category": "Archive",
+    "detail": "Done long ago.",
+    "status": "archived",
+    "hidden": true,
+    "source": "console",
+    "pendingId": "",
+    "branch": "",
+    "pr": "#1",
+    "createdAt": "2026-10-10T00:00:00.000Z",
+    "updatedAt": "2026-10-11T00:00:00.000Z",
+    "builtAt": "2026-10-11T00:00:00.000Z",
+    "notes": [],
+    "approvals": [
+     {
+      "phase": 1,
+      "from": "Fable",
+      "to": "Opus",
+      "at": "2026-10-10T12:00:00.000Z"
+     }
+    ],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "Step one",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "done": true,
+      "doneAt": "2026-10-10T10:00:00.000Z",
+      "note": ""
+     },
+     {
+      "id": "s2",
+      "text": "Step two",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "done": true,
+      "doneAt": "2026-10-11T00:00:00.000Z",
+      "note": ""
+     }
+    ]
+   }
+  ]
+ },
+ "tracker": {
+  "$axf": "tracker@1",
+  "frameworkVersion": "0.2.0",
+  "generatedAt": "2026-10-27T20:00:00.000Z",
+  "summary": {
+   "kernel": {
+    "built": 1,
+    "partial": 0,
+    "placeholder": 0,
+    "planned": 0,
+    "total": 1,
+    "coverage": 100
+   },
+   "console": {
+    "built": 0,
+    "partial": 0,
+    "placeholder": 0,
+    "planned": 1,
+    "total": 1,
+    "coverage": 0
+   }
+  },
+  "items": [
+   {
+    "id": "k.pure",
+    "tab": "kernel",
+    "group": "kernel-shape",
+    "title": "Kernel is pure Kotlin",
+    "tag": "lock",
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": ""
+   },
+   {
+    "id": "c.designer",
+    "tab": "console",
+    "group": "views",
+    "title": "Designer view",
+    "tag": "feature",
+    "status": "planned",
+    "wave": 3,
+    "module": null,
+    "notes": ""
+   }
+  ]
+ },
+ "status": {
+  "k.pure": {
+   "status": "built",
+   "wave": 1,
+   "module": "axf-kernel"
+  },
+  "c.designer": {
+   "status": "planned",
+   "wave": 3
+  }
+ },
+ "rows": {
+  "plan": [
+   {
+    "id": "x.kernel",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "complete",
+    "model": "fable",
+    "views": [
+     "plan",
+     "queue",
+     "pending"
+    ],
+    "position": 1,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": [
+     "k.pure"
+    ]
+   },
+   {
+    "id": "x.assets.designer",
+    "status": "planned",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "pending",
+    "model": "fable",
+    "views": [
+     "plan",
+     "queue",
+     "pending"
+    ],
+    "position": 2,
+    "steps": "0/2",
+    "minutesLeft": 60,
+    "phases": [
+     "fable:2"
+    ],
+    "deps": [
+     "x.kernel"
+    ],
+    "linked": [
+     "c.designer"
+    ]
+   },
+   {
+    "id": "k.pure",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "complete",
+    "model": "opus",
+    "views": [
+     "plan",
+     "tracker"
+    ],
+    "position": null,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "c.designer",
+    "status": "planned",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "pending",
+    "model": "opus",
+    "views": [
+     "plan",
+     "tracker"
+    ],
+    "position": null,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "u.alerts",
+    "status": "in-progress",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "running",
+    "model": "opus",
+    "views": [
+     "plan"
+    ],
+    "position": null,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "kernel-docs",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "complete",
+    "model": "sonnet",
+    "views": [
+     "plan",
+     "pending"
+    ],
+    "position": null,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "patches-fix",
+    "status": "in-progress",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "running",
+    "model": "opus",
+    "views": [
+     "plan",
+     "pending",
+     "orchestrator"
+    ],
+    "position": null,
+    "steps": "1/2",
+    "minutesLeft": 15,
+    "phases": [
+     "fable:1",
+     "opus:1:gate"
+    ],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "old-build",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "archived",
+    "model": "fable",
+    "views": [
+     "plan",
+     "orchestrator"
+    ],
+    "position": null,
+    "steps": "2/2",
+    "minutesLeft": 0,
+    "phases": [
+     "fable:1",
+     "opus:1:gate"
+    ],
+    "deps": [],
+    "linked": []
+   }
+  ],
+  "tracker": [
+   {
+    "id": "k.pure",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "complete",
+    "model": "opus",
+    "views": [
+     "plan",
+     "tracker"
+    ],
+    "position": null,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "c.designer",
+    "status": "planned",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "pending",
+    "model": "opus",
+    "views": [
+     "plan",
+     "tracker"
+    ],
+    "position": null,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": []
+   }
+  ],
+  "queue": [
+   {
+    "id": "x.kernel",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "complete",
+    "model": "fable",
+    "views": [
+     "plan",
+     "queue",
+     "pending"
+    ],
+    "position": 1,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": [
+     "k.pure"
+    ]
+   },
+   {
+    "id": "x.assets.designer",
+    "status": "planned",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "pending",
+    "model": "fable",
+    "views": [
+     "plan",
+     "queue",
+     "pending"
+    ],
+    "position": 2,
+    "steps": "0/2",
+    "minutesLeft": 60,
+    "phases": [
+     "fable:2"
+    ],
+    "deps": [
+     "x.kernel"
+    ],
+    "linked": [
+     "c.designer"
+    ]
+   }
+  ],
+  "pending": [
+   {
+    "id": "x.kernel",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "complete",
+    "model": "fable",
+    "views": [
+     "plan",
+     "queue",
+     "pending"
+    ],
+    "position": 1,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": [
+     "k.pure"
+    ]
+   },
+   {
+    "id": "x.assets.designer",
+    "status": "planned",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "pending",
+    "model": "fable",
+    "views": [
+     "plan",
+     "queue",
+     "pending"
+    ],
+    "position": 2,
+    "steps": "0/2",
+    "minutesLeft": 60,
+    "phases": [
+     "fable:2"
+    ],
+    "deps": [
+     "x.kernel"
+    ],
+    "linked": [
+     "c.designer"
+    ]
+   },
+   {
+    "id": "kernel-docs",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "complete",
+    "model": "sonnet",
+    "views": [
+     "plan",
+     "pending"
+    ],
+    "position": null,
+    "steps": "0/0",
+    "minutesLeft": null,
+    "phases": [],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "patches-fix",
+    "status": "in-progress",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "running",
+    "model": "opus",
+    "views": [
+     "plan",
+     "pending",
+     "orchestrator"
+    ],
+    "position": null,
+    "steps": "1/2",
+    "minutesLeft": 15,
+    "phases": [
+     "fable:1",
+     "opus:1:gate"
+    ],
+    "deps": [],
+    "linked": []
+   }
+  ],
+  "orchestrator": [
+   {
+    "id": "patches-fix",
+    "status": "in-progress",
+    "pendingStatus": "pending",
+    "orchestratorStatus": "running",
+    "model": "opus",
+    "views": [
+     "plan",
+     "pending",
+     "orchestrator"
+    ],
+    "position": null,
+    "steps": "1/2",
+    "minutesLeft": 15,
+    "phases": [
+     "fable:1",
+     "opus:1:gate"
+    ],
+    "deps": [],
+    "linked": []
+   },
+   {
+    "id": "old-build",
+    "status": "built",
+    "pendingStatus": "complete",
+    "orchestratorStatus": "archived",
+    "model": "fable",
+    "views": [
+     "plan",
+     "orchestrator"
+    ],
+    "position": null,
+    "steps": "2/2",
+    "minutesLeft": 0,
+    "phases": [
+     "fable:1",
+     "opus:1:gate"
+    ],
+    "deps": [],
+    "linked": []
+   }
+  ]
+ },
+ "after": {
+  "pendingComplete": {
+   "planStatus": "built",
+   "queueDone": "done",
+   "orch": 2
+  },
+  "pendingAdd": {
+   "id": "born-on-the-list",
+   "kind": "build",
+   "status": "planned",
+   "model": "opus",
+   "source": "chat",
+   "inViews": [
+    "plan",
+    "pending"
+   ]
+  },
+  "pendingRemove": {
+   "gone": true
+  },
+  "queueTick": {
+   "pendingStepDone": true,
+   "orchStepDone": false
+  },
+  "orchComplete": {
+   "planStatus": "built",
+   "pendingStatus": "complete",
+   "pendingDone": [
+    true,
+    true
+   ]
+  },
+  "orchAdd": {
+   "kind": "build",
+   "status": "planned",
+   "model": "fable",
+   "area": "Assets",
+   "inViews": [
+    "plan",
+    "orchestrator"
+   ]
+  }
+ }
+}

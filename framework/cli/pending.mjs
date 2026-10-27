@@ -14,6 +14,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/pending-core.mjs';
 import { dataPath } from './persist.mjs';
+import { isMigrated, readPendingState, writePendingState } from './builds.mjs';
 import { loadPricing } from './model-pricing.mjs';
 
 const PRICING = loadPricing();
@@ -22,8 +23,9 @@ const usd = (model, min) => (min ? core.formatUsd(core.costForMinutes(model, min
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const PENDING = dataPath('framework/plan/pending.json');
 
-export function loadPending() { return core.normalizeState(existsSync(PENDING) ? JSON.parse(readFileSync(PENDING, 'utf8')) : core.emptyPending()); }
-export function savePending(s) { writeFileSync(PENDING, JSON.stringify(s, null, 1) + '\n'); }
+/** builds@1 (Oct 27 2026): once plan.json is migrated the list is a view of it; before that, pending.json as before. */
+export function loadPending() { return core.normalizeState(isMigrated() ? readPendingState() : existsSync(PENDING) ? JSON.parse(readFileSync(PENDING, 'utf8')) : core.emptyPending()); }
+export function savePending(s) { if (isMigrated()) writePendingState(s); else writeFileSync(PENDING, JSON.stringify(s, null, 1) + '\n'); }
 
 /** Apply one action (see pending-core apply) and save. */
 export function actPending(action, now = new Date().toISOString()) {

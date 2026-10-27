@@ -4,7 +4,9 @@
  *
  * Shared data is what the repo's project manifest (project.manifest.json) lists under data.shared: the pending
  * build list, the plan + its media, the build queue, catalog status + libraries index, the project rules,
- * tracker.json. On the VPS it is read and written in the hub's projects tree, in the project's _data folder,
+ * tracker.json. Since builds@1 (Oct 27 2026, framework/spec/BUILDS.md) plan.json is the one builds dataset and
+ * pending.json / build-queue.json / tracker.json are exports regenerated from it (framework/cli/builds.mjs);
+ * they stay in data.shared so every reader of the export files sees the same copy. On the VPS it is read and written in the hub's projects tree, in the project's _data folder,
  * at the same path as in the repo (axhub-projects@1):
  *
  *   /projects/<manifest name>/_data/<same path as in the repo>

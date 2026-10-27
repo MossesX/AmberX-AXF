@@ -43,6 +43,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
 | Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | in progress | `opus/enterprise-branding` | (PR below) | Orchestrator build `enterprise-branding` (46 steps, 33 done): Fable phase 1 merged (#128); **Opus phase 2 done Oct 27** (s13–s26: asset library, style-package@1, brand library). Next: phase 3 s27–s40 (Brand library plugin, GizmoX/AmberX refactor, ship). See *To carry on* | 2026-10-27 |
 | Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
+| Three interfaces in GizmoX tabs + interface roller for every app | queued | – | – | Orchestrator build `interface-roller` (15 steps, ~7.4 h): Fable s1-s5 right after enterprise-branding phase 1, then Opus s6-s15 | 2026-10-27 |
+| Pending builds grid view (attachment) | queued | – | – | Folded into `builds-one-page` (step s10); off the orchestrator | 2026-10-27 |
 | Three interfaces in GizmoX tabs + interface roller for every app | queued | `fable/interface-roller` | [#129](https://github.com/MossesX/AmberX-AXF/pull/129) merged | Orchestrator build `interface-roller` (15 steps, 5 done): Fable phase 1 merged; switch to Opus approved. **Next: an Opus thread runs s6-s15** (interfaces 2/3, GizmoX main-window tab group, roller plugin, lib-interface-roller, ship) from `orchestrator.mjs brief interface-roller`, after enterprise-branding phase 2 | 2026-10-27 |
 | Build orchestrator: Builds grid like Pending builds, step subgrids | PR open | `opus/orchestrator-grid` | – | Grid view = framework DataGrid grouped by category (Build + one-line summary, Status, Next, Steps, Time, Cost, Added; Left hideable); each row expands to a steps subgrid per phase (tick, model chip, group, time, cost, move/remove, approve switch) + the build card actions | 2026-10-27 |
 | Pending builds grid view (attachment) | queued | – | – | Orchestrator build `pending-grid-view`: Opus only, 6 steps | 2026-10-27 |
@@ -53,6 +55,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Add icon picker dialog for status plugins | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
 | Add Push banner action log | on hold | – | – | Held by Brett | 2026-10-25 |
 | Store project rules in repo | queued | – | – | Rules file `_claude/rules/PROJECT-RULES.md` | 2026-10-25 |
+| Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator) | queued | `claude/builds-one-page` | #134 | Fable phase 1 (s1-s4) done + merged into the branch; Brett approved the Fable → Opus switch (phase 2). Next: Opus s5-s13 on this branch, new chat on Opus. See *To carry on* | 2026-10-27 |
+| New asset type `trim` (layout + colour theme) | queued | `claude/trim-asset` | – | Orchestrator build `trim-asset` (4 steps, ~1.8 h): Fable s1-s2 → (approve switch) → Opus s3-s4. Coordinate s1-s2 with enterprise-branding's design-package group | 2026-10-27 |
 
 
 ## To carry on
@@ -70,6 +74,20 @@ VPS). The session reads the rules and this file first, as usual.
 - Tracker: `_claude/builds/orchestrator.json` (orchestrator@1; how-to `_claude/builds/README.md`). `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next` says what to do; `brief <id>` gives the current phase only. At a Fable ↔ Opus switch, stop and ask Brett (card), then `act approve <id> <phase>`. <!-- axf-plugin:build-orchestrator -->
 - **First message (any build):** "Run `orchestrator.mjs next` and continue that build from `_claude/builds/orchestrator.json` on the model its next phase names."
 
+### Builds: one dataset, one page (builds-one-page)
+- Asked (Brett, Oct 27 2026): Plans, Tracker, Build queue and Pending builds are separate files that drift; merge them (and the Build orchestrator's tracker) into one dataset, shown on **one page with multiple views selectable from a toolbar and anywhere else that fits**. Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in `pending-grid-view`.
+- Done (Fable, s1-s4, PR #134 on `claude/builds-one-page`): `framework/spec/BUILDS.md`, `framework/plan/builds-core.mjs` (views + lossless write-backs + rows + migrate), `framework/cli/builds.mjs` (IO, exports, `migrate [--write]`, `tracker` check), pending.mjs / build-queue.mjs / orchestrator.mjs read and write through the plan once migrated, plan.mjs keeps build blocks, fixture `spec/fixtures/builds.json` + `spec/check-builds.mjs` (CI), dry-run report `_claude/memory/docs/builds-migration.md`. Nothing migrated yet: all three lists still run on their own files until `builds.mjs migrate --write`.
+- Switch approved (Brett, Oct 27 2026): `orchestrator.mjs act approve builds-one-page 1` recorded. Nothing waits on him.
+- Next (Opus s5-s13): run the migration on the hub copy + repo snapshot (s5), API/MCP (s6), the Builds page with the view toolbar (s7-s9), pending-grid-view features (s10), switchers (s11), claude.ai page + Build manager merge (s12), tests/shots/docs (s13). Read first: `framework/spec/BUILDS.md`, `_claude/memory/docs/builds-migration.md`, `framework/cli/builds.mjs`.
+- Checks: `node framework/spec/check-builds.mjs`, `node framework/spec/check-build-steps.mjs`, `node apps/console-web/plugins/build-orchestrator/test.mjs`, `node apps/console-web/plugins/build-manager/test.mjs`, `node framework/cli/builds.mjs migrate` (dry run), `node framework/cli/builds.mjs tracker`.
+- First message (on Opus, after the approval): `Continue orchestrator build builds-one-page on branch claude/builds-one-page: run node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief builds-one-page and do the Opus phase.`
+
+### New asset type trim (trim-asset)
+- Asked (Brett, Oct 27 2026): a new asset type `trim` = a layout asset and a colour theme asset combined. Decided: trim is its own swappable asset; a design package may reference a trim instead of its own layout + colour theme (both stay valid).
+- Model: Fable s1-s2 (contract, engine, fixtures), then Opus s3-s4 (Appearance picker, theme manager, starters, tests). Run s1-s2 next to enterprise-branding's design-package group (s5r1-s5r6) so that contract changes once.
+- Branch `claude/trim-asset` (not created yet). Kotlin twin goes in `framework/spec/PORTING.md` as a deferred gap.
+- First message: `Continue orchestrator build trim-asset: run node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief trim-asset and do the Fable phase.` (on Fable)
+
 ### Three interfaces + interface roller
 - **Asked (Brett, Oct 27 2026 13:10):** "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc."
 - **Decided (cards):** the tabs go in the GizmoX console; runs after enterprise-branding phase 1, in the same Fable session.
@@ -85,6 +103,7 @@ VPS). The session reads the rules and this file first, as usual.
 - **First message:** "Continue orchestrator build `arch-foundation` (`orchestrator.mjs brief arch-foundation`). Run on Fable."
 
 ### Pending builds grid view
+- Folded into builds-one-page (s10) on Oct 27 2026.
 - **Asked (Brett, Oct 27 2026, attachment):** grid next to Reload in Pending builds: 1-line summary, date added, total time estimate, cost estimate, sortable columns; rows expand to today's card; toolbar archive / delete / hide / unhide (greyed when none selected) / open in (tooltip dialog: Build manager, Build queue, Plan); select hook: hover tooltip "activate multi select with double click", double-click flashes the top item's hover style 3 times, tooltip "select items", then single clicks select more. Steps: orchestrator build `pending-grid-view` (Opus only).
 - **First message:** "Continue orchestrator build `pending-grid-view` (`orchestrator.mjs brief pending-grid-view`). Run on Opus."
 

@@ -23,12 +23,14 @@ import { loadPricing } from './model-pricing.mjs';
 const PRICING = loadPricing();
 const usd = (model, min) => (min ? formatUsd(costForMinutes(model, min, PRICING)) : '');
 import { dataPath } from './persist.mjs';
+import { isMigrated, readQueueState, writeQueueState } from './builds.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const QUEUE = dataPath('framework/plan/build-queue.json');
 
-export const loadQueueState = () => (existsSync(QUEUE) ? JSON.parse(readFileSync(QUEUE, 'utf8')) : null);
-const saveQueueState = (q) => writeFileSync(QUEUE, JSON.stringify(q, null, 1) + '\n');
+/** builds@1 (Oct 27 2026): once plan.json is migrated the queue state is a view of it; before that, build-queue.json as before. */
+export const loadQueueState = () => (isMigrated() ? readQueueState() : existsSync(QUEUE) ? JSON.parse(readFileSync(QUEUE, 'utf8')) : null);
+const saveQueueState = (q) => { if (isMigrated()) writeQueueState(q); else writeFileSync(QUEUE, JSON.stringify(q, null, 1) + '\n'); };
 
 /** Write plan status changes, then re-sync (completions recorded, rework flagged) and save. */
 function commit(changes, q, by, log) {

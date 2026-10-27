@@ -1,5 +1,7 @@
 # Build tracker (orchestrator@1)
 
+> **builds@1 (Oct 27 2026):** once `framework/plan/plan.json` carries the one builds dataset (`node framework/cli/builds.mjs migrate --write`), this file is a **generated export** of it: every build here is a plan entry with a `build.orchestration` block, `orchestrator.mjs` reads and writes the plan, and this file is rewritten on every save (never edit it by hand after that). Spec: `framework/spec/BUILDS.md`. <!-- axf-plugin:build-orchestrator -->
+
 `orchestrator.json` is the build orchestrator's tracker: every build broken into steps of 30 minutes or less, each
 pinned to **Fable** or **Opus**. Consecutive same-model steps are a *phase*; a phase that switches model waits for
 Brett's approval. It lives in the repo (and syncs with the hub through `claude-sync`) so any session, on any machine
