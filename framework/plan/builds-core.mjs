@@ -114,7 +114,7 @@ export function normalizePlan(plan) {
   return {
     ...p, $axf: 'plan@1', statuses: PLAN_STATUSES, features,
     builds: {
-      $axf: SCHEMA, updatedAt: iso(b.updatedAt), artifact: str(b.artifact) || ARTIFACT_URL,
+      ...(b.$axf === SCHEMA ? { $axf: SCHEMA } : {}), updatedAt: iso(b.updatedAt), artifact: str(b.artifact) || ARTIFACT_URL,
       queue: { order: list(q.order).map(str), dirty: q.dirty === true, updatedAt: iso(q.updatedAt), history: list(q.history).map((h) => ({ at: iso(h?.at), by: str(h?.by), text: str(h?.text) })) },
       rules: { ...DEFAULT_RULES, ...(b.rules && typeof b.rules === 'object' ? b.rules : {}) },
       ...(b.migratedAt ? { migratedAt: iso(b.migratedAt), migratedFrom: b.migratedFrom ?? {} } : {}),
@@ -418,14 +418,24 @@ export function countsByView(plan) {
  * otherwise lists are concatenated and reported. Statuses: a list that knows more than the plan (complete, failed,
  * broken, unsafe, running) updates the plan and is reported, so the drift this build fixes is visible once.
  */
-export function migrate({ plan, pending, queue, orchestrator, now = new Date().toISOString() }) {
-  const report = { attached: [], created: [], statusChanges: [], stepsMerged: [], titles: [], orphans: [], counts: {} };
+export function migrate({ plan, pending, queue, orchestrator, status, now = new Date().toISOString() }) {
+  const report = { attached: [], created: [], statusChanges: [], stepsMerged: [], titles: [], orphans: [], catalogFilled: 0, counts: {} };
   let p = normalizePlan(plan);
+  // 0. catalog features edited in the console may lack what status.json knows (module, wave, notes): fill the gaps, never overwrite
+  if (status && typeof status === 'object') p = { ...p, features: p.features.map((f) => {
+    if (f.source !== 'catalog' || !status[f.id]) return f;
+    const st = status[f.id]; let g = f; let filled = false;
+    if (!list(f.modules).length && st.module) { g = { ...g, modules: [str(st.module)] }; filled = true; }
+    if ((f.wave == null) && st.wave != null) { g = { ...g, wave: st.wave }; filled = true; }
+    if (!str(f.notes) && str(st.notes)) { g = { ...g, notes: str(st.notes) }; filled = true; }
+    if (filled) report.catalogFilled += 1;
+    return g;
+  }) };
   const q = queue && typeof queue === 'object' ? queue : {};
   const pend = pending && typeof pending === 'object' ? pending : {};
   const orch = orchestrator && typeof orchestrator === 'object' ? orchestrator : {};
   // 1. file-level state
-  p = { ...p, builds: { ...p.builds, artifact: str(pend.artifact) || p.builds.artifact, queue: { order: list(q.order).map(str), dirty: q.dirty === true, updatedAt: iso(q.updatedAt), history: list(q.history).map((h) => ({ at: iso(h?.at), by: str(h?.by), text: str(h?.text) })) }, rules: { ...DEFAULT_RULES, ...(orch.rules ?? {}) }, migratedAt: now, migratedFrom: { pending: list(pend.items).length, queue: Object.keys(q.steps ?? {}).length, orchestrator: list(orch.builds).length } } };
+  p = { ...p, builds: { ...p.builds, $axf: SCHEMA, artifact: str(pend.artifact) || p.builds.artifact, queue: { order: list(q.order).map(str), dirty: q.dirty === true, updatedAt: iso(q.updatedAt), history: list(q.history).map((h) => ({ at: iso(h?.at), by: str(h?.by), text: str(h?.text) })) }, rules: { ...DEFAULT_RULES, ...(orch.rules ?? {}) }, migratedAt: now, migratedFrom: { pending: list(pend.items).length, queue: Object.keys(q.steps ?? {}).length, orchestrator: list(orch.builds).length } } };
   // 2. queue records → epics
   for (const [id, r] of Object.entries(q.steps ?? {})) {
     const f = p.features.find((x) => x.id === id);

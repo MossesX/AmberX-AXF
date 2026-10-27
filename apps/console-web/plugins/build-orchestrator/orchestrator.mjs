@@ -17,16 +17,20 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
+import { isMigrated, readOrchestratorState, writeOrchestratorState } from '../../../../framework/cli/builds.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
 export const trackerFile = () => process.env.AXF_ORCH_FILE || join(ROOT, '_claude', 'builds', 'orchestrator.json');
 
+/** builds@1 (Oct 27 2026): once plan.json carries the dataset the tracker is a view of it (orchestrator.json is then a generated export); before that, the tracker file as before. */
 export function load() {
+  if (isMigrated()) return core.normalizeState(readOrchestratorState());
   const f = trackerFile();
   return core.normalizeState(existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : core.emptyState());
 }
 export function save(state) {
+  if (isMigrated()) { writeOrchestratorState(state); return; }
   const f = trackerFile(); mkdirSync(dirname(f), { recursive: true });
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(state, null, 1)}\n`); renameSync(tmp, f);
 }

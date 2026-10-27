@@ -17,13 +17,15 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { dataPath } from './persist.mjs';
+import { PLAN_STATUSES, normBuild } from '../plan/builds-core.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PLAN_DIR = join(FRAMEWORK_DIR, 'plan');
 const PLAN = dataPath('framework/plan/plan.json');
 const readJson = (f, d) => (existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : d);
 const today = () => new Date().toISOString().slice(0, 10);
-export const STATUSES = ['built', 'partial', 'in-progress', 'placeholder', 'planned', 'blocked', 'dropped'];
+/** plan@1 statuses (builds@1 added unsafe / failed / broken so the pending and orchestrator lists lose nothing, Oct 27 2026). */
+export const STATUSES = PLAN_STATUSES;
 
 /*
  * Suggested model per feature — only the top three: Fable 5.1 where the work needs the strongest reasoning,
@@ -64,7 +66,7 @@ function fromCatalog() {
     const mod = s.module ?? null;
     const port = mod && /^(axf|lib|kit)-/.test(mod) ? { android: { status: s.status ?? 'planned', where: mod } } : {};
     out.push({
-      id: it.id, title: it.title, area: tab.label, group: g.label, kind: 'feature', status: s.status ?? 'planned',
+      id: it.id, title: it.title, area: tab.label, group: g.label, tab: tab.id, groupId: g.id, tag: it.tag ?? '', kind: 'feature', status: s.status ?? 'planned',
       priority: it.recommended ? 'P1' : 'P3', wave: s.wave ?? (it.recommended ? 1 : 3), effort: '', summary: it.note || '',
       ports: port, capabilities: [], dependsOn: [], catalog: [it.id], modules: mod ? [mod] : [], files: [], acceptance: [], warnings: [],
       recommendations: (it.suggests ?? []).map((x) => `Bundle with: ${x.title} (${x.id})`), previews: [], screenshots: [], links: [],
@@ -73,7 +75,7 @@ function fromCatalog() {
     for (const sg of it.suggests ?? []) {
       const ss = status[sg.id] ?? {};
       out.push({
-        id: sg.id, title: sg.title, area: tab.label, group: g.label, kind: 'task', parent: it.id, status: ss.status ?? 'planned', priority: 'P3', wave: ss.wave ?? 3, effort: '',
+        id: sg.id, title: sg.title, area: tab.label, group: g.label, tab: tab.id, groupId: g.id, tag: 'suggested', kind: 'task', parent: it.id, status: ss.status ?? 'planned', priority: 'P3', wave: ss.wave ?? 3, effort: '',
         summary: `Suggested together with ${it.title}.`, ports: {}, capabilities: [], dependsOn: [it.id], catalog: [sg.id], modules: [], files: [], acceptance: [], warnings: [],
         recommendations: [], previews: [], screenshots: [], links: [], tags: [tab.id, 'suggested'], notes: ss.notes ?? '', source: 'catalog', history: [{ at: today(), text: 'Imported from the feature catalog (suggestion)' }],
       });
@@ -98,12 +100,15 @@ export function buildPlan() {
     seen.add(f.id);
     if (epicOf.has(f.id) && f.source === 'catalog') f.epic = epicOf.get(f.id);
     const old = prevById.get(f.id);
-    if (old?.edited) { features.push(withModel(f.source === 'catalog' && !old.statusEdited ? { ...old, status: f.status } : old)); continue; }
+    // builds@1: a feature's `build` block (pending / queue / orchestrator state) always survives a rebuild
+    const keepBuild = (x) => (old?.build && normBuild(old.build) ? { ...x, build: normBuild(old.build) } : x);
+    if (old?.edited) { features.push(withModel(keepBuild(f.source === 'catalog' && !old.statusEdited ? { ...old, status: f.status } : old))); continue; }
     if (old) f.history = old.history?.length ? old.history : f.history;
-    features.push(withModel(f));
+    features.push(withModel(keepBuild(f)));
   }
-  for (const old of prev.features) if (!seen.has(old.id) && old.source === 'user') features.push(withModel(old));
-  const plan = { $axf: 'plan@1', generatedAt: new Date().toISOString(), statuses: STATUSES, features };
+  // every feature that didn't come from the seed or the catalog (added in the console, born on a list) stays
+  for (const old of prev.features) if (!seen.has(old.id) && old.source && !['seed', 'catalog'].includes(old.source)) features.push(withModel(old));
+  const plan = { $axf: 'plan@1', generatedAt: new Date().toISOString(), statuses: STATUSES, features, ...(prev.builds ? { builds: prev.builds } : {}) };
   mkdirSync(PLAN_DIR, { recursive: true });
   writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
   return plan;
