@@ -328,8 +328,8 @@ jobs:
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
           {
-            echo "### App build failures — ${{ github.sha }}"; echo; echo '```'
-            grep -hE "^== |^e: |FAILED|What went wrong|Could not|error:" /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||; s|file://||' | awk '!seen[$0]++' | head -400
+            echo "### Android build / library test failures — ${{ github.sha }}"; echo; echo '```'
+            grep -hE "^== |^e: |FAILED|What went wrong|Could not|error:|Exception|expected:<|AssertionError" /tmp/build-framework.log /tmp/test-libs.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||; s|file://||' | awk '!seen[$0]++' | head -400
             echo '```'
           } > /tmp/apps-report.md
           if [ "${{ github.event_name }}" = "pull_request" ]; then gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/apps-report.md || true; fi
