@@ -610,6 +610,48 @@
         "height": "number — px, 16 to 48 (thin = 24)"
       }
     },
+    "overlay": {
+      "label": "Overlay",
+      "group": "Chrome",
+      "icon": "layers",
+      "description": "A floating pill drawn over other apps (Android: a TYPE_APPLICATION_OVERLAY window owned by a foreground service, lib-overlay; web: a corner pill inside the page). The pill shows status chips and one quick action; under it a tappable log panel (lines with a confidence and a tag; tap a line to tune what produced it), a collapsed strip of the last few lines while the overlay is hidden, and a mini-screen host any app fills with its own content. Engine core/engines/overlay.ts = Kotlin OverlayEngine (overlay@1); interface@1 takes it as a chrome slot like any other.",
+      "required": [
+        "pill",
+        "log",
+        "strip",
+        "mini"
+      ],
+      "nested": {
+        "pill": [
+          "chips"
+        ],
+        "log": [
+          "show"
+        ],
+        "strip": [
+          "show"
+        ],
+        "mini": [
+          "defaultOpen"
+        ]
+      },
+      "optional": true,
+      "hideable": true,
+      "optional_fields": {
+        "pill.title": "string — short title on the pill (≤ 40)",
+        "pill.chips": "[{id, label, offLabel?, tone?, offTone?, icon?, on?}] — up to 6 status chips; tone/offTone: neutral | success | warning | danger | accent | muted | info (default success / muted); the runtime drives `on`",
+        "pill.quickAction": "string — action spec run when the pill's action button is tapped (e.g. overlay.mini)",
+        "log.maxLines": "number — 1 to 50 lines kept in the log panel (default 5)",
+        "log.showConfidence": "boolean — show each line's confidence as a percentage (default true)",
+        "strip.maxLines": "number — 1 to 6 lines in the collapsed strip (default 3)",
+        "strip.lineMs": "number — how long a strip line stays, 500 to 30000 ms (default 3000)",
+        "mini.width": "{min, max, default} dp — the mini screen's width range (inside size)",
+        "mini.height": "{min, max, default} dp — the mini screen's height range (inside size)",
+        "opacity": "number — 0.2 to 1 (default 0.92)",
+        "positionLock": "boolean — the pill can't be dragged (default false)",
+        "size": "{minWidth, maxWidth, minHeight, maxHeight, maxScreenWidthPct, maxScreenHeightPct} — hard limits for the window: dp (48–1200 wide, 32–1600 high) and a share of the screen (20–100 %); defaults 120/480/48/640/90/80"
+      }
+    },
     "clock": {
       "label": "Clock",
       "group": "Widgets",

@@ -1,0 +1,27 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.overlay",
+  "module": "lib-overlay",
+  "name": "Overlay (floating pill over other apps)",
+  "description": "The overlay@1 asset on Android: a foreground service (special use) owns a TYPE_APPLICATION_OVERLAY window with a draggable, resizable Compose pill drawn from the app's theme tokens — status chips any module switches (OverlayHost.setChips / setChip), one quick action, a tappable log panel (OverlayLog.add(line, confidence, tag) + tap-line callback, e.g. to tune a trigger threshold), a collapsed strip of the last lines while the pill is hidden (expiry from the engine rules), a mini-screen host any app fills with its own Compose content (OverlayHost.setMiniContent), and a card slot under the pill. Position and size persist in the KV store; Settings → Overlay holds opacity, position lock, panel / strip toggles, mini size and the draw-over-apps permission. Pure rules in the kernel's OverlayEngine (= core/engines/overlay.ts, fixture overlay.json).",
+  "features": ["dv.overlay", "lib.overlay"],
+  "dependsOn": ["ai.amberx.axf.notifications"],
+  "manifestKey": "libraries.overlay",
+  "params": [
+    { "key": "showOnStart", "label": "Show the overlay when the app starts", "type": "bool", "default": false }
+  ],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-overlay:$axf\")",
+    "module": "OverlayModule(this, OverlayNotification(R.drawable.ic_notification, \"Overlay\", \"Showing the overlay\"))",
+    "import": "ai.amberx.axf.overlay.OverlayModule",
+    "routes": []
+  },
+  "ports": {
+    "android": { "status": "scaffolded", "dir": "android/lib-overlay", "note": "written without a compiler; CI compiles and runs :lib-overlay:testDebugUnitTest" }
+  },
+  "placeholders": [
+    { "capability": "axf.overlay.web", "note": "The web port's corner pill inside the page (same asset, same engine)." },
+    { "capability": "axf.overlay.bubbles", "note": "Android Bubbles (notification bubbles) as an alternative host for the pill." },
+    { "capability": "axf.overlay.pip", "note": "Picture-in-picture activity as the mini-screen host." }
+  ]
+}

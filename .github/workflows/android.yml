@@ -141,6 +141,7 @@ jobs:
             npx -y tsx framework/spec/check-triggers.mts               # triggers@1: triggers.json replay (same file as TriggersConformanceTest) + a host with Voice Vault's commands
             npx -y tsx framework/spec/check-ai-modes.mts               # ai-modes@1: ai-modes.json replay (same file as AiModesConformanceTest) + trigger → mode → UAC → model → session
             npx -y tsx framework/spec/check-speech.mts                 # speech@1: speech.json replay (same file as SpeechConformanceTest) + a host over the queue reducer
+            npx -y tsx framework/spec/check-overlay.mts                # overlay@1: overlay.json replay (same file as the kernel's OverlayConformanceTest), starters, validator = CLI
             npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
             npx -y tsx apps/amberx-droid/test.mjs                      # AmberX: hub rules + voice command matching + monitoring / auto-approval rules
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
@@ -298,9 +299,9 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
-      - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
+      - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work, lib-overlay)
         working-directory: framework/android
-        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest :lib-onboarding:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
+        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest :lib-onboarding:testDebugUnitTest :lib-overlay:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
       - name: Build Voice Vault (apps/voicevault) + its unit tests (voice notes rules)
         working-directory: apps/voicevault
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}

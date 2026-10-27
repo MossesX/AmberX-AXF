@@ -4,6 +4,7 @@ import { hostSpec, validateHostAttachments } from './engines/widgets';
 import { validateMenuItems } from './engines/appmenu';
 import { designPackageErrors } from './engines/designpackage';
 import { interfaceErrors } from './engines/interface';
+import { overlayErrors } from './engines/overlay';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 
@@ -91,6 +92,7 @@ export function validateAsset(raw: unknown): ValidationResult {
   }
   if (raw.type === 'design-package') errors.push(...designPackageErrors(data));
   if (raw.type === 'interface') errors.push(...interfaceErrors(data));
+  if (raw.type === 'overlay') errors.push(...overlayErrors(data));
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.

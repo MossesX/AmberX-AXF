@@ -5,6 +5,7 @@
  */
 import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
+import { overlayErrors } from '../core/engines/overlay-rules.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
@@ -131,6 +132,8 @@ export function validateAsset(raw) {
     if (d.settings !== undefined && !isObj(d.settings)) errors.push('data.settings must be an object');
     if (d.tab !== undefined && (!isObj(d.tab) || typeof d.tab.label !== 'string')) errors.push('data.tab must be { label, icon? }');
   }
+  // overlay@1 — ONE validator shared with core (core/engines/overlay-rules.mjs)
+  if (raw.type === 'overlay') errors.push(...overlayErrors(raw.data));
   // behavior-theme@1 — mirrors behaviorErrors in core/engines/behavior.ts (check-design-package.mts keeps the lists equal)
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)

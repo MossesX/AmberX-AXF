@@ -16,6 +16,7 @@
   "gauge": "classic-arc",
   "meter": "striped-pill",
   "banner": "amberx-thin",
+  "overlay": "pill-compact",
   "branding": "amberx",
   "clock": "digital-12h",
   "search-bar": "everything",

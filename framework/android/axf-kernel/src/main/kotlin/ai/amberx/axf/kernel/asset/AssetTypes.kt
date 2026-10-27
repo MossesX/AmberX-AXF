@@ -20,6 +20,8 @@ public object AssetTypes {
     public const val UAC_POLICY: String = "uac-policy"
     /** Optional chrome types every port shares: the banner, and the attachable types it hosts (widgets and badges; web OPTIONAL_TYPES). */
     public const val BANNER: String = "banner"
+    /** The floating pill over other apps (overlay@1, OverlayEngine; Android host: lib-overlay). */
+    public const val OVERLAY: String = "overlay"
     public const val CLOCK: String = "clock"
     public const val SEARCH_BAR: String = "search-bar"
     public const val BADGE: String = "badge"
@@ -27,7 +29,7 @@ public object AssetTypes {
     public val WIDGET_KINDS: List<String> = listOf("action-button", "logo", "label", "status", "counter", "progress", "avatar", "link", "theme-switch", "spacer", "divider")
     /** Brand types (brand-rules.mjs on the web; Kotlin twin deferred, PORTING.md): optional, never rolled except the branding package. */
     public val BRAND: List<String> = listOf("logo-mark", "animated-logo", ICON_PACK, "branding")
-    public val OPTIONAL_SHARED: List<String> = listOf(BANNER, CLOCK, SEARCH_BAR) + WIDGET_KINDS + BADGE
+    public val OPTIONAL_SHARED: List<String> = listOf(BANNER, OVERLAY, CLOCK, SEARCH_BAR) + WIDGET_KINDS + BADGE
 
     /** Android-port asset types (framework/schemas/asset-types.android.json). Optional slots: an app may have none. */
     public const val SCREEN_TEMPLATE: String = "screen-template"

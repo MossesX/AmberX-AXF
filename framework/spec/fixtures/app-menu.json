@@ -4106,7 +4106,8 @@
       "nav-menu",
       "context-menu",
       "tab-group",
-      "banner"
+      "banner",
+      "overlay"
     ],
     "all": [
       "app-menu",
@@ -4114,7 +4115,8 @@
       "nav-menu",
       "context-menu",
       "tab-group",
-      "banner"
+      "banner",
+      "overlay"
     ],
     "items": [
       {
@@ -4155,6 +4157,14 @@
         "icon": "menu",
         "action": "slot.hide:banner:toggle",
         "checked": "slot:banner",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "chrome.overlay",
+        "label": "Overlay",
+        "icon": "layers",
+        "action": "slot.hide:overlay:toggle",
+        "checked": "slot:overlay",
         "requires": "assets.swap"
       }
     ],

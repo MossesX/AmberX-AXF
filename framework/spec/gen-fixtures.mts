@@ -24,6 +24,7 @@ import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
+import { CHIP_TONES, CHIP_TONE_TOKEN, OVERLAY_LIMITS, OVERLAY_SETTINGS, OVERLAY_TYPE, addLogLine, canDrag, clampPosition, clampSize, confidenceText, logLine, logLineFade, logLineText, maxSize, miniSize, nextStripExpiry, normalizeOverlay, overlayErrors, overlayWithSettings, parsePosition, parseSize, resolveChips, serializePosition, serializeSize, setChip, stripLines, trimLog } from '../core/engines/overlay';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
@@ -1485,5 +1486,99 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     clamp: [0, 0.5, 0.49, 1, 1.333, 2, 2.5, -1, 'NaN'].map((r) => ({ rate: r, clamped: clampRate(r === 'NaN' ? Number.NaN : (r as number)) })),
     steps: [0.5, 0.6, 1, 1.25, 1.3, 2, 2.5, 0.1].map((r) => ({ rate: r, up: stepRate(r, 1), down: stepRate(r, -1) })),
     sessions: sessions.map((s) => ({ name: s.name, rate: s.rate ?? RATE_DEFAULT, repeat: s.repeat ?? 'none', steps: replaySpeechQueue(s.events, s.rate, s.repeat).map((st, i) => ({ event: s.events[i], state: st.state, effects: st.effects })) })),
+  });
+}
+
+// overlay@1 (core/engines/overlay.ts = Kotlin OverlayEngine): starters normalised, lenient normalising, strict errors, geometry
+// clamps, log trimming + texts, strip expiry, chip state, user settings over the asset. Replayed by check-overlay.mts and
+// OverlayConformanceTest.
+{
+  const starters = Object.fromEntries(load('overlay').map((a) => [a.id, normalizeOverlay(a.data)]));
+  const compact = starters['pill-compact']!;
+  const detector = starters['detector-panel']!;
+  const quiet = starters['quiet-strip']!;
+  const normalizeCases: Record<string, unknown> = {
+    empty: {},
+    junk: { pill: 'x', log: [], strip: 5, mini: null, opacity: 'high', positionLock: 'yes', size: 3 },
+    clamped: { pill: { title: 'A very long title that goes past forty characters for sure', chips: [{ id: 'a', label: 'label longer than twenty-four chars', tone: 'pink' }, { id: 'a', label: 'repeat' }, { id: 'Bad Id' }, { id: 'b', on: true, offLabel: 'off', offTone: 'danger', icon: 'mic' }], quickAction: 'overlay.mini' }, log: { show: 'no', maxLines: 500, showConfidence: 0 }, strip: { maxLines: 0, lineMs: 100000 }, mini: { defaultOpen: 1, width: { min: 400, max: 100, default: 9999 }, height: { min: 10, max: 5000, default: -3 } }, opacity: 7, positionLock: true, size: { minWidth: 900, maxWidth: 200, minHeight: 2000, maxHeight: 1, maxScreenWidthPct: 5, maxScreenHeightPct: 500 } },
+    'too-many-chips': { pill: { chips: Array.from({ length: 9 }, (_, i) => ({ id: `c${i}` })) }, log: {}, strip: {}, mini: {} },
+    'mini-outside-size': { pill: { chips: [] }, log: {}, strip: {}, mini: { width: { min: 10, max: 2000, default: 1000 }, height: { min: 10, max: 2000, default: 1000 } }, size: { minWidth: 100, maxWidth: 300, minHeight: 100, maxHeight: 200 } },
+    'opacity-rounds': { pill: { chips: [] }, log: {}, strip: {}, mini: {}, opacity: 0.56789 },
+  };
+  const errorCases: Record<string, unknown> = {
+    'not-object': 'x',
+    'missing-all': {},
+    starter: load('overlay').find((a) => a.id === 'pill-compact')!.data,
+    'bad-chips': { pill: { chips: [{ id: 'Bad' }, { id: 'ok', tone: 'pink', offTone: 'mauve', label: 3 }, { id: 'ok' }], quickAction: 4 }, log: { show: 'yes', maxLines: 0, showConfidence: 'no' }, strip: { show: 1, maxLines: 7, lineMs: 100 }, mini: { defaultOpen: 'open', width: 'wide', height: { min: 500, max: 100, default: 2000 } }, opacity: 2, positionLock: 'locked', size: 'big' },
+    'size-fields': { pill: { chips: [] }, log: {}, strip: {}, mini: {}, size: { minWidth: 1, maxWidth: 5000, minHeight: 0, maxHeight: 9000, maxScreenWidthPct: 5, maxScreenHeightPct: 101 } },
+    'chips-not-list': { pill: { chips: 'none' }, log: {}, strip: {}, mini: {} },
+    'too-many-chips': { pill: { chips: Array.from({ length: 7 }, (_, i) => ({ id: `c${i}` })) }, log: {}, strip: {}, mini: {} },
+  };
+  const phone = { width: 412, height: 915 };
+  const small = { width: 200, height: 180 };
+  const geometry = [
+    { name: 'defaults-on-phone', data: 'pill-compact', screen: phone, wanted: null, position: null },
+    { name: 'junk-size', data: 'pill-compact', screen: phone, wanted: { width: 0, height: -5 }, position: { x: -50, y: 99999 } },
+    { name: 'too-big', data: 'detector-panel', screen: phone, wanted: { width: 5000, height: 5000 }, position: { x: 300, y: 800 } },
+    { name: 'too-small', data: 'detector-panel', screen: phone, wanted: { width: 10, height: 10 }, position: { x: 10.6, y: 20.4 } },
+    { name: 'tiny-screen', data: 'detector-panel', screen: small, wanted: { width: 300, height: 300 }, position: { x: 100, y: 100 } },
+    { name: 'quiet-limits', data: 'quiet-strip', screen: phone, wanted: { width: 350, height: 350 }, position: { x: 0, y: 0 } },
+  ].map((g) => {
+    const d = starters[g.data]!;
+    const size = clampSize(d, g.wanted, g.screen);
+    const mini = miniSize(d, g.wanted, g.screen);
+    return { ...g, max: maxSize(d, g.screen), size, mini, position: clampPosition(g.position, size, g.screen), positionIn: g.position };
+  });
+  const t0 = 1_700_000_000_000;
+  const lines = [
+    logLine('swipe up', 0.91234, 'fired', t0, 'trig.swipe-up'),
+    logLine('say next', 0.42, 'below', t0 + 500),
+    logLine('wave', null, '', t0 + 1200, 'trig.wave'),
+    logLine('x'.repeat(300), 1.7, 'tag that is far too long to keep whole', t0 + 2000),
+    logLine('nod', -2, 'cooldown', t0 + 3100),
+    logLine('blink', 0.5, 'muted', t0 + 3200),
+  ];
+  const strip = { maxLines: 3, lineMs: 3000 };
+  const chipStates: Record<string, Record<string, boolean | undefined>> = { none: {}, 'armed-on': { armed: true }, 'mic-off-armed-on': { armed: true, mic: false, unknown: true }, 'mic-on': { mic: true } };
+  const settingsCases: Record<string, Record<string, string | undefined>> = {
+    none: {},
+    all: { [OVERLAY_SETTINGS.size]: '300,200', [OVERLAY_SETTINGS.opacity]: '0.5', [OVERLAY_SETTINGS.positionLock]: 'true', [OVERLAY_SETTINGS.log]: 'true', [OVERLAY_SETTINGS.strip]: 'false', [OVERLAY_SETTINGS.mini]: 'true' },
+    junk: { [OVERLAY_SETTINGS.size]: 'big', [OVERLAY_SETTINGS.opacity]: 'dark', [OVERLAY_SETTINGS.positionLock]: 'maybe', [OVERLAY_SETTINGS.log]: '1', [OVERLAY_SETTINGS.strip]: '', [OVERLAY_SETTINGS.mini]: 'no' },
+    clamped: { [OVERLAY_SETTINGS.size]: '9999,1', [OVERLAY_SETTINGS.opacity]: '5' },
+  };
+  write('overlay.json', {
+    type: OVERLAY_TYPE,
+    settings: OVERLAY_SETTINGS,
+    limits: OVERLAY_LIMITS,
+    tones: CHIP_TONES,
+    toneToken: CHIP_TONE_TOKEN,
+    starters,
+    normalize: Object.fromEntries(Object.entries(normalizeCases).map(([k, raw]) => [k, { raw, out: normalizeOverlay(raw) }])),
+    errors: Object.fromEntries(Object.entries(errorCases).map(([k, raw]) => [k, { raw, errors: overlayErrors(raw) }])),
+    geometry,
+    canDrag: [
+      { data: 'pill-compact', setting: null, out: canDrag(compact, null) },
+      { data: 'pill-compact', setting: 'true', out: canDrag(compact, 'true') },
+      { data: 'quiet-strip', setting: null, out: canDrag(quiet, null) },
+      { data: 'quiet-strip', setting: 'false', out: canDrag(quiet, 'false') },
+      { data: 'quiet-strip', setting: 'junk', out: canDrag(quiet, 'junk') },
+    ],
+    log: {
+      lines,
+      texts: lines.map((l) => ({ shown: logLineText(l, true), hidden: logLineText(l, false), confidence: confidenceText(l.confidence) })),
+      trim: [1, 3, 5, 0, 999].map((n) => ({ maxLines: n, out: trimLog(lines, n).map((l) => l.text.slice(0, 8)) })),
+      add: { maxLines: detector.log.maxLines, out: lines.reduce<ReturnType<typeof addLogLine>>((acc, l) => addLogLine(acc, l, detector.log.maxLines), []).map((l) => l.at) },
+      fade: [1, 3, 5, 8].map((n) => ({ count: n, out: Array.from({ length: n }, (_, i) => logLineFade(i, n)) })),
+    },
+    strip: [t0 - 1, t0, t0 + 1000, t0 + 2999, t0 + 3000, t0 + 3500, t0 + 5000, t0 + 6199, t0 + 6200, t0 + 9000].map((now) => ({ now, out: stripLines(lines, now, strip).map((l) => l.at), next: nextStripExpiry(lines, now, strip) })),
+    stripOne: { strip: { maxLines: 1, lineMs: 500 }, now: t0 + 3300, out: stripLines(lines, t0 + 3300, { maxLines: 1, lineMs: 500 }).map((l) => l.at), next: nextStripExpiry(lines, t0 + 3300, { maxLines: 1, lineMs: 500 }) },
+    chips: Object.fromEntries(Object.entries(chipStates).map(([k, states]) => [k, { states, out: resolveChips(detector.pill.chips, states) }])),
+    setChip: [{ states: {}, id: 'armed', on: true }, { states: { armed: true, mic: undefined }, id: 'armed', on: false }].map((c) => ({ ...c, out: setChip(c.states, c.id, c.on) })),
+    withSettings: Object.fromEntries(Object.entries(settingsCases).map(([k, values]) => [k, { data: 'pill-compact', values, out: overlayWithSettings(compact, values) }])),
+    parse: {
+      size: ['300,200', ' 10.5 , 20 ', '0,10', 'x', '', '1,2,3', '-5,5'].map((raw) => ({ raw, out: parseSize(raw) })),
+      position: ['300,200', ' -10.5 , 20 ', 'x', '', '1,2,3'].map((raw) => ({ raw, out: parsePosition(raw) })),
+      serialize: { size: serializeSize({ width: 10.4, height: 20.6 }), position: serializePosition({ x: -3.5, y: 2.49 }) },
+    },
   });
 }
