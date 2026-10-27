@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:50:10.225Z",
+ "updatedAt": "2026-10-27T20:56:14.705Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:50:10.224Z",
+   "updatedAt": "2026-10-27T20:56:14.703Z",
    "builtAt": "",
    "notes": [
     {
@@ -1676,6 +1676,10 @@
     {
      "text": "s4+s5(+speech@1 shape) done b00364e: triggers@1, ai-modes@1, speech@1 contracts; TS checks 183/128/105 pass.",
      "at": "2026-10-27T20:50:10.224Z"
+    },
+    {
+     "text": "s11/s12/s22 done (6b33aee, 6a51d36, daa0674): app init + notes/lists/to-dos; app-local interfaces NoteCapture/Speaker/TriggerSink/NoteAi/NotesHubSync to wire in s13; follow-ups: drag reorder, date picker, check-off disambiguation listen.",
+     "at": "2026-10-27T20:56:14.703Z"
     }
    ],
    "approvals": [
@@ -1859,8 +1863,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:56:14.451Z",
      "note": ""
     },
     {
@@ -1875,8 +1879,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:56:14.533Z",
      "note": ""
     },
     {
@@ -1891,8 +1895,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:56:14.620Z",
      "note": ""
     },
     {
