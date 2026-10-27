@@ -28,7 +28,8 @@ internal fun Project.configureAndroid(ext: CommonExtension<*, *, *, *, *, *>) {
 internal fun Project.configureKotlin() {
     extensions.configure(KotlinProjectExtension::class.java) {
         // Explicit API mode: every public symbol of the framework is a deliberate contract.
-        if (!path.startsWith(":app") && !path.endsWith("-testing")) explicitApi()
+        // App code and an app's own plugin modules (`:plugins:<id>`, apps/<app>/plugins) are not framework contracts.
+        if (!path.startsWith(":app") && !path.startsWith(":plugins:") && !path.endsWith("-testing")) explicitApi()
     }
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
         compilerOptions.configureCommon()
