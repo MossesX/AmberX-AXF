@@ -35,7 +35,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
-| Build orchestrator plugin + repo build tracker | review | `claude/build-orchestrator` | see GitHub | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
+| Build orchestrator plugin + repo build tracker | review | `claude/build-orchestrator` | #122 | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | queued | – | – | Asked again Oct 27. Orchestrator build `design-package`: Fable s1-s5 → (approve switch) → Opus s6-s9. See *To carry on* | 2026-10-27 |
 | Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
 | Pending builds grid view (attachment) | queued | – | – | Orchestrator build `pending-grid-view`: Opus only, 6 steps | 2026-10-27 |
