@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T21:56:06.768Z",
+ "updatedAt": "2026-10-27T22:23:44.302Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1639,9 +1639,14 @@
    "branch": "claude/builds-one-page",
    "pr": "",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-10-27T20:01:41.486Z",
+   "updatedAt": "2026-10-27T22:23:44.300Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 27 18:15 Brett: folded in 'date + time on every entry, newest (last updated) first in every grid regardless of filter' as two Opus steps before tests (asked for Refactor profile; folded here since this build owns the one dataset).",
+     "at": "2026-10-27T22:23:44.299Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -1842,6 +1847,52 @@
      "estimate": "25 min",
      "files": [],
      "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s14",
+     "text": "Every build entry carries hidden date/time fields: createdAt (set once) and updatedAt (any change: status, step tick, note, sub prompt, model, edit) on the feature build block and every step/note (at/doneAt). builds-core stamps them in apply(); the migration backfills missing ones from pending/queue/orchestrator/history dates (never blank). Kept in plan.json and every export (pending.json, build-queue.json, orchestrator.json, tracker.json, hub _data) and in the claude.ai Pending page data. Hidden: not shown as columns, only in row details / tooltip.",
+     "model": "Opus",
+     "why": "Brett Oct 27 18:15: date and time in hidden fields of all entries everywhere data is stored",
+     "phase": "",
+     "group": "Dates + sort",
+     "estimate": "25 min",
+     "files": [
+      "framework/plan/builds-core.mjs",
+      "framework/spec/BUILDS.md",
+      "framework/cli/builds.mjs"
+     ],
+     "checks": [
+      "no entry without createdAt/updatedAt after migration",
+      "check-builds.mjs passes"
+     ],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s15",
+     "text": "Newest first, always: every view (Plan, Tracker, Queue, Pending, Orchestrator, Remaining/Live/Built/Sessions, banners, Build manager, claude.ai Pending page) sorts by updatedAt descending regardless of filters, chips or search; the old order/status/left sorts become a secondary key or an explicit per-click column sort that resets to newest-first on reload. Steps inside a build keep their own order.",
+     "model": "Opus",
+     "why": "Brett Oct 27 18:15: regardless of filter always sort by recent at top (picked last updated)",
+     "phase": "",
+     "group": "Dates + sort",
+     "estimate": "20 min",
+     "files": [
+      "framework/plan/builds-core.mjs",
+      "apps/console-web/plugins/build-manager/web/merge.mjs",
+      "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs"
+     ],
+     "checks": [
+      "test: a step tick moves its build to the top in every view",
+      "filters never change the sort"
+     ],
      "session": "same",
      "agent": false,
      "done": false,
