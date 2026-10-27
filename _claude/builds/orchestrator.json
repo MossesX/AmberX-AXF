@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T19:11:51.157Z",
+ "updatedAt": "2026-10-27T19:52:29.038Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -549,14 +549,14 @@
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "waiting",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T19:11:51.156Z",
+   "updatedAt": "2026-10-27T19:52:28.960Z",
    "builtAt": "",
    "notes": [
     {
@@ -596,7 +596,14 @@
      "at": "2026-10-27T19:11:51.156Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T19:52:28.958Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -1361,14 +1368,14 @@
    "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
-   "status": "waiting",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/interface-roller",
    "pr": "",
    "createdAt": "2026-10-27T17:11:59.344Z",
-   "updatedAt": "2026-10-27T19:11:51.096Z",
+   "updatedAt": "2026-10-27T19:52:29.038Z",
    "builtAt": "",
    "notes": [
     {
@@ -1384,7 +1391,14 @@
      "at": "2026-10-27T19:11:51.096Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T19:52:29.038Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
