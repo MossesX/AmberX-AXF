@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-101",
+  "name": "AmberX mark · pill pulse",
+  "version": "1.0.0",
+  "description": "Generated mark: a pill pulse motif in a seeded rich palette (seed 106).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "pill",
+    "pulse",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#4a49bc",
+      "brand2": "#272470",
+      "brand3": "#e5e3ed"
+    },
+    "paths": [
+      {
+        "d": "M8 5h8a7 7 0 0 1 0 14H8A7 7 0 0 1 8 5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 12h3l2-4 3 8 2-4h4",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

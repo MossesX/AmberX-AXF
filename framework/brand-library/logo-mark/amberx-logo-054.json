@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-054",
+  "name": "AmberX wordmark · circle spark",
+  "version": "1.0.0",
+  "description": "Generated wordmark: a circle spark motif in a seeded bright palette (seed 56).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "circle",
+    "spark",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#6aa24e",
+      "brand2": "#355926",
+      "brand3": "#dbe4d7"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 700,
+      "tracking": 0.04,
+      "font": "mono",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-102",
+  "name": "AmberX lockup · soft-square bars",
+  "version": "1.0.0",
+  "description": "Generated lockup: a soft-square bars motif in a seeded bright palette (seed 107).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "soft-square",
+    "bars",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#17968e",
+      "brand2": "#07362f",
+      "brand3": "#9dddd6"
+    },
+    "paths": [
+      {
+        "d": "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M7 16V12M12 16V8M17 16V5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 700,
+      "tracking": -0.02,
+      "font": "ui",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

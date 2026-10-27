@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "fresh",
+  "name": "Fresh",
+  "version": "2.0.0",
+  "description": "Fresh: AmberX's new default look (Fresh Light + Fresh style, solid rounded buttons, soft cards), super-tight spacing. An AmberX Design Package: its style, colour, layout and behaviour themes, with the rest of the look as extras (was an appearance package).",
+  "author": "AmberX AXF",
+  "tags": [
+    "default"
+  ],
+  "data": {
+    "style-theme": "fresh",
+    "color-theme": "fresh-light",
+    "layout": "axhub-console",
+    "behavior-theme": "standard",
+    "extras": {
+      "slots": {
+        "app-menu": "amberx-droid",
+        "toolbar": "amberx-droid",
+        "nav-menu": "amberx-droid",
+        "context-menu": "amberx-droid",
+        "tab-group": "underline",
+        "dialog": "centered-modal",
+        "popup": "corner-solid",
+        "button": "rounded-solid",
+        "slider": "classic-round",
+        "container": "soft-card",
+        "banner": "amberx-thin",
+        "clock": "digital-12h",
+        "search-bar": "everything",
+        "logo": "wordmark",
+        "action-button": "settings",
+        "label": "version",
+        "status": "online",
+        "counter": "alerts",
+        "progress": "build",
+        "avatar": "account",
+        "link": "docs",
+        "theme-switch": "fresh-day-night",
+        "spacer": "gap",
+        "divider": "rule",
+        "badge": "new",
+        "gauge": "classic-arc",
+        "meter": "striped-pill",
+        "settings": "console"
+      },
+      "spacing": "tight",
+      "hidden": {},
+      "settings": {}
+    }
+  }
+}

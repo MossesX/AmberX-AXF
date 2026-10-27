@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A dialog that keeps several Anthropic keys (API keys sk-ant-api… and Claude subscription tokens sk-ant-oat… from `claude setup-token`) and picks the active one of each kind for the AI assistant. Every key is tested before it is saved (an invalid one is refused) and can be re-tested; keys are stored 0600 on the console server and never sent back to a browser (only the last 4 characters). The active key replaces the assistant profile's own key for that kind (Anthropic / Claude Code subscription). Open it from the right-click menu, the application menu (Plugins › AI keys), action ai-keys.open, search or Settings → Plugins → AI keys; reachable through axHub's sign-in wall and inside Patches like the rest of the console.",
+  "description": "A dialog that keeps several Anthropic keys (API keys sk-ant-api\u2026 and Claude subscription tokens sk-ant-oat\u2026 from `claude setup-token`) and picks the active one of each kind for the AI assistant. Every key is tested before it is saved (an invalid one is refused) and can be re-tested; keys are stored 0600 on the console server and never sent back to a browser (only the last 4 characters). The active key replaces the assistant profile's own key for that kind (Anthropic / Claude Code subscription). Open it from the right-click menu, the application menu (Plugins \u203a AI keys), action ai-keys.open, search or Settings \u2192 Plugins \u2192 AI keys; reachable through axHub's sign-in wall and inside Patches like the rest of the console.",
   "targets": [
     "axf-console"
   ],
@@ -42,7 +42,8 @@
     ],
     "mentions": [
       "CLAUDE.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "install_instructions.md"
     ]
   },
   "opens": "main"

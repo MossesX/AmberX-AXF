@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "coral-play",
+  "name": "Coral Play",
+  "version": "1.0.0",
+  "description": "Fresh shapes in Coral Studio, focus layout, playful motion. A bright, friendly light look. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "bright"
+  ],
+  "data": {
+    "style-theme": "fresh",
+    "color-theme": "coral-studio",
+    "layout": "focus-top",
+    "behavior-theme": "playful"
+  }
+}

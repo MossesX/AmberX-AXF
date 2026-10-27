@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-111",
+  "name": "GizmoX lockup · pill leaf",
+  "version": "1.0.0",
+  "description": "Generated lockup: a pill leaf motif in a seeded bright palette (seed 1118).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "pill",
+    "leaf",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a0904b",
+      "brand2": "#505624",
+      "brand3": "#e2e0d4"
+    },
+    "paths": [
+      {
+        "d": "M8 5h8a7 7 0 0 1 0 14H8A7 7 0 0 1 8 5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M17 7c-6 0-10 4-10 10 6 0 10-4 10-10zM7 17l6-6",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.8,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 600,
+      "tracking": 0.08,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

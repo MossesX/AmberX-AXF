@@ -18,6 +18,7 @@
     "color-theme": "fresh-light",
     "style-theme": "fresh",
     "layout": "walkthrough-studio",
+    "behavior-theme": "standard",
     "app-menu": "walkthrough-studio",
     "toolbar": "standard-icons",
     "nav-menu": "walkthrough-studio",

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "amberx-anim-120",
+  "name": "amberx-logo-112 · draw",
+  "version": "1.0.0",
+  "description": "Generated animation: draw over 800 ms, on hover (seed 120).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "draw",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "amberx-logo-112",
+    "preset": "draw",
+    "durationMs": 800,
+    "delayMs": 400,
+    "loop": "hover",
+    "intensity": 0.9
+  }
+}

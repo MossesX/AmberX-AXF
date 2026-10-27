@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "midnight-pro",
+  "name": "Midnight Pro",
+  "version": "1.0.0",
+  "description": "Glass Orbit shapes on deep Midnight Ink, docked studio layout, calm motion. A dark look for long sessions. Keeps this app's own layout. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark"
+  ],
+  "data": {
+    "style-theme": "glass-orbit",
+    "color-theme": "midnight-ink",
+    "layout": "walkthrough-studio",
+    "behavior-theme": "calm"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-106",
+  "name": "GizmoX mark · soft-square chevron",
+  "version": "1.0.0",
+  "description": "Generated mark: a soft-square chevron motif in a seeded bright palette (seed 1113).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "soft-square",
+    "chevron",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#6a8c4a",
+      "brand2": "#3e4521",
+      "brand3": "#d2dac8"
+    },
+    "paths": [
+      {
+        "d": "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M8 7l5 5-5 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      },
+      {
+        "d": "M13 7l4 5-4 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

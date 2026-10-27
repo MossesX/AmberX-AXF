@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "gizmox-anim-088",
+  "name": "gizmox-logo-009 · pulse",
+  "version": "1.0.0",
+  "description": "Generated animation: pulse over 1500 ms, on hover (seed 1088).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "pulse",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "gizmox-logo-009",
+    "preset": "pulse",
+    "durationMs": 1500,
+    "delayMs": 200,
+    "loop": "hover",
+    "intensity": 0.6
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "gizmox-anim-045",
+  "name": "gizmox-logo-048 · float",
+  "version": "1.0.0",
+  "description": "Generated animation: float over 2900 ms, on hover (seed 1045).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "float",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "gizmox-logo-048",
+    "preset": "float",
+    "durationMs": 2900,
+    "delayMs": 200,
+    "loop": "hover",
+    "intensity": 0.8
+  }
+}

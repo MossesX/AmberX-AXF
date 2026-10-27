@@ -1,0 +1,101 @@
+{
+  "svg": {
+    "amberx": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" role=\"img\" aria-label=\"AmberX\"><title>AmberX</title><path d=\"M12 2.5 20.2 7.2 V16.8 L12 21.5 3.8 16.8 V7.2 Z\" fill=\"var(--fx-brand-1, #f59e0b)\"/><path d=\"M12 2.5 20.2 7.2 12 12 3.8 7.2 Z\" fill=\"var(--fx-brand-3, #fde68a)\" opacity=\"0.55\"/><path d=\"M8.2 8.6 15.8 15.4 M15.8 8.6 8.2 15.4\" fill=\"none\" stroke=\"var(--fx-bg)\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+    "gizmoxLockup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 116.39999999999999 24\" width=\"116\" height=\"24\" role=\"img\" aria-label=\"GizmoX\"><title>GizmoX</title><path d=\"M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z\" fill=\"var(--fx-brand-1, #4f46e5)\"/><path d=\"M11 2h2v3h-2zM11 19h2v3h-2zM2 11h3v2H2zM19 11h3v2h-3z\" fill=\"var(--fx-brand-2, #312e81)\"/><path d=\"M16.5 12a4.5 4.5 0 1 1-1.3-3.2\" fill=\"none\" stroke=\"var(--fx-bg)\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M12 12h4.5\" fill=\"none\" stroke=\"var(--fx-bg)\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><text x=\"30\" y=\"17.28\" font-family=\"var(--fx-font-display)\" font-size=\"16.32\" font-weight=\"700\" letter-spacing=\"-0.33\" fill=\"var(--fx-text)\">GizmoX</text></svg>"
+  },
+  "glyph": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+  "resolved": {
+    "name": "AmberX",
+    "tagline": "One framework, every port.",
+    "mark": "amberx",
+    "wordmark": "amberx-wordmark",
+    "lockup": "amberx-lockup",
+    "animated": "amberx-pulse",
+    "iconPack": "amberx-outline",
+    "places": {
+      "banner": {
+        "mode": "lockup",
+        "asset": "amberx-lockup",
+        "type": "logo-mark"
+      },
+      "window": {
+        "mode": "mark",
+        "asset": "amberx",
+        "type": "logo-mark"
+      },
+      "floating-window": {
+        "mode": "mark",
+        "asset": "amberx",
+        "type": "logo-mark"
+      },
+      "dialog": {
+        "mode": "mark",
+        "asset": "amberx",
+        "type": "logo-mark"
+      },
+      "container": {
+        "mode": "none",
+        "asset": "",
+        "type": ""
+      },
+      "tab-group": {
+        "mode": "none",
+        "asset": "",
+        "type": ""
+      },
+      "toolbar": {
+        "mode": "none",
+        "asset": "",
+        "type": ""
+      },
+      "nav-menu": {
+        "mode": "none",
+        "asset": "",
+        "type": ""
+      },
+      "app-menu": {
+        "mode": "none",
+        "asset": "",
+        "type": ""
+      },
+      "context-menu": {
+        "mode": "none",
+        "asset": "",
+        "type": ""
+      },
+      "splash": {
+        "mode": "animated",
+        "asset": "amberx-pulse",
+        "type": "animated-logo"
+      },
+      "favicon": {
+        "mode": "mark",
+        "asset": "amberx",
+        "type": "logo-mark"
+      },
+      "empty-state": {
+        "mode": "watermark",
+        "asset": "amberx",
+        "type": "logo-mark"
+      },
+      "my-panel": {
+        "mode": "none",
+        "asset": "",
+        "type": ""
+      }
+    },
+    "missing": []
+  },
+  "animation": {
+    "name": "fx-brand-spin",
+    "durationMs": 1800,
+    "delayMs": 0,
+    "iteration": "1",
+    "vars": {
+      "--fx-brand-anim-ms": "1800ms",
+      "--fx-brand-anim-delay": "0ms",
+      "--fx-brand-anim-k": "0.6"
+    },
+    "className": "fx-brand-anim fx-brand-anim--spin fx-brand-anim--hover"
+  }
+}

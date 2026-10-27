@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-052",
+  "name": "GizmoX lockup · rounded-square stack",
+  "version": "1.0.0",
+  "description": "Generated lockup: a rounded-square stack motif in a seeded rich palette (seed 1056).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "rounded-square",
+    "stack",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#952d7b",
+      "brand2": "#411140",
+      "brand3": "#d7b7cb"
+    },
+    "paths": [
+      {
+        "d": "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 6l6 3-6 3-6-3z",
+        "fill": "bg"
+      },
+      {
+        "d": "M6 13l6 3 6-3M6 16.5l6 3 6-3",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 800,
+      "tracking": 0,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

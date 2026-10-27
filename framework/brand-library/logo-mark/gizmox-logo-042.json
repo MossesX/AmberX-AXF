@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-042",
+  "name": "GizmoX lockup · hexagon stack",
+  "version": "1.0.0",
+  "description": "Generated lockup: a hexagon stack motif in a seeded bright palette (seed 1045).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "hexagon",
+    "stack",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#3a9c78",
+      "brand2": "#194d35",
+      "brand3": "#c7dbd4"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8.7 5v10L12 22l-8.7-5V7Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 6l6 3-6 3-6-3z",
+        "fill": "bg"
+      },
+      {
+        "d": "M6 13l6 3 6-3M6 16.5l6 3 6-3",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2,
+        "round": false
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 600,
+      "tracking": -0.02,
+      "font": "mono",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

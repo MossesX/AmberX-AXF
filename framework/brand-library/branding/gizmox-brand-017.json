@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-017",
+  "name": "GizmoX · Quiet 17",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · soft-square cross, quiet placement, icon pack pack-065.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "quiet"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-019",
+      "wordmark": "gizmox-logo-091",
+      "lockup": "gizmox-logo-102",
+      "animated": "gizmox-anim-116"
+    },
+    "iconPack": "pack-065",
+    "palette": {
+      "brand1": "#bd34df",
+      "brand2": "#781291",
+      "brand3": "#f3e8f7"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "mark",
+      "window": "none",
+      "floating-window": "none",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "mark",
+      "favicon": "mark",
+      "empty-state": "none"
+    }
+  }
+}

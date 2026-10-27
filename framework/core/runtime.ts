@@ -21,8 +21,12 @@ import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, typ
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
-import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { PACKAGE_APPLIED_KEY, capturePackage, isAppearanceSetting, normalizePackage, packageSettingsPlan } from './engines/appearancepackage';
+import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
+import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
+import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
+import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
+import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -31,6 +35,8 @@ import {
   OPTIONAL_TYPES,
   type ActiveAssets,
   type AppearancePackageData,
+  type BehaviorThemeData,
+  type DesignPackageData,
   type Asset,
   type AssetType,
   type AxfManifest,
@@ -79,6 +85,15 @@ export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
 export const SPACING_KEY = 'axf.appearance.spacing';
+/**
+ * Appearance lock (setting, true = on): every control that changes the look is greyed out (the permissions in
+ * LOCKED_APPEARANCE_PERMS gate as `disable`) and this device's own look tweaks (Sliders, per-asset tokens) are set
+ * aside, not deleted. The look from axHub still applies. Not an appearance setting itself, so Restore keeps it.
+ */
+export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
+export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
+/** Developer apps: false = stop reading (and writing) the look on axHub; the app keeps its own saved look. */
+export const APPEARANCE_FOLLOW_KEY = 'axf.hub.appearance.follow';
 
 /** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
 type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
@@ -180,6 +195,9 @@ export interface AppearanceSource {
   /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
   save(change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }): void;
 }
+
+/** What `rt.brandPlace(slot)` gives a UI piece to draw. */
+export interface BrandPlace { mode: string; name: string; asset: string; svg: string; animation: MarkAnimation | null }
 
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
@@ -302,20 +320,55 @@ export class AxfRuntime {
     this.detachAppearanceSource();
     this.appearanceSource = source;
     this.appearanceOff = source.subscribe((ev) => {
+      if (!this.appearanceFollowing()) return;
       if ('state' in ev) { this.set({ appearance: ev.state }); return; }
       this.applyAppearance(ev.doc);
     });
-    this.set({ appearance: source.state() });
-    source.start();
+    this.followOff = this.settings.onChange(APPEARANCE_FOLLOW_KEY, () => this.syncAppearanceFollow());
+    this.appearanceRunning = false;
+    this.syncAppearanceFollow();
   }
 
   detachAppearanceSource(): void {
     this.appearanceOff?.();
-    this.appearanceSource?.stop();
+    this.followOff?.();
+    if (this.appearanceRunning) this.appearanceSource?.stop();
     this.appearanceOff = null;
+    this.followOff = null;
+    this.appearanceRunning = false;
     this.appearanceSource = null;
     this.lastAppearance = null;
     this.set({ appearance: null });
+  }
+
+  private followOff: (() => void) | null = null;
+  private appearanceRunning = false;
+
+  /** Is the look read from axHub right now? (A developer app with the follow switch on; true without a source too.) */
+  appearanceFollowing(): boolean { return this.settings.get(APPEARANCE_FOLLOW_KEY) !== false; }
+
+  /** Turn reading the look from axHub on or off (developer apps). Off = the app runs on its own saved look, no waiting. */
+  setAppearanceFollowing(on: boolean): void {
+    if (!this.mayChangeLook()) return this.toast('Your role cannot change where the look comes from.', 'danger', 'Permission denied');
+    if (on) this.settings.clear(APPEARANCE_FOLLOW_KEY); else this.settings.set(APPEARANCE_FOLLOW_KEY, false);
+  }
+
+  /** Start or stop the source to match the follow switch. */
+  private syncAppearanceFollow(): void {
+    const src = this.appearanceSource;
+    if (!src) return;
+    const want = this.appearanceFollowing();
+    if (want === this.appearanceRunning) return;
+    this.appearanceRunning = want;
+    if (want) {
+      this.set({ appearance: src.state() });
+      src.start();
+      this.terminal.ok('appearance', 'reading the look from axHub again');
+    } else {
+      src.stop();
+      this.set({ appearance: null });
+      this.terminal.ok('appearance', 'not reading the look from axHub: this app keeps its own saved look');
+    }
   }
 
   /** Is a source attached (developer app)? */
@@ -328,7 +381,7 @@ export class AxfRuntime {
   appearanceState(): AppearanceSourceState | null { return this.state.appearance ?? null; }
 
   /** The developer app runs only while its source is ready (or it has none). The React layer shows the waiting screen otherwise. */
-  appearanceReady(): boolean { return !this.appearanceSource || this.state.appearance?.status === 'ready'; }
+  appearanceReady(): boolean { return !this.appearanceSource || !this.appearanceRunning || this.state.appearance?.status === 'ready'; }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
   appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
@@ -371,7 +424,7 @@ export class AxfRuntime {
 
   /** Push a local change to the source (no-op without one, or while applying a pushed document). */
   private pushAppearance(change: Parameters<AppearanceSource['save']>[0]): void {
-    if (!this.appearanceSource || this.applyingAppearance) return;
+    if (!this.appearanceSource || !this.appearanceRunning || this.applyingAppearance) return;
     this.appearanceSource.save(change);
   }
 
@@ -515,6 +568,17 @@ export class AxfRuntime {
     const items = await p.items();
     return compileProviderItems(items, this.appMenuEnv(), { id, max: p.max, moreAction: p.moreAction, moreLabel: p.moreLabel, ...opts });
   }
+
+  /**
+   * A toolbar group's live list (`groups[].provider`): the same providers the application menu uses, compiled the
+   * same way (gating, badges, check marks), capped at `max` (1–24, default 8) with the provider's More… entry.
+   */
+  loadToolbarProvider(id: string, max = 8): Promise<CompiledMenuItem[]> {
+    return this.loadAppMenuProvider(id, { max: Math.min(24, Math.max(1, Math.floor(max))) });
+  }
+
+  /** A toolbar item's `checked` binding (setting: / counter: / slot: / hidden:), null when it doesn't resolve. */
+  toolbarChecked(binding: string | undefined): boolean | null { return resolveChecked(binding, this.appMenuEnv()); }
 
   /** Contributed menu items with an action, for the search index (kind `menu`). */
   appMenuSearchEntries(): MenuSearchEntry[] {
@@ -824,6 +888,7 @@ export class AxfRuntime {
       return false;
     }
     const need = type === 'uac-policy' ? 'uac.manage' : 'assets.swap';
+    if (this.lockedByAppearance(need)) { this.lockedToast(); return false; }
     if (!this.can(need)) {
       this.toast(`Your role needs "${need}" to change the ${assetTypeSpecs[type].label.toLowerCase()}.`, 'danger', 'Permission denied');
       return false;
@@ -843,8 +908,10 @@ export class AxfRuntime {
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
-    if (next === this.state.active[type]) return true;
+    if (next === this.state.active[type] && type !== STYLE_PACKAGE_TYPE) return true;
     this.terminal.ok('hot-swap', `${type}: ${this.state.active[type]} → ${next}`);
+    // a style package is a set of controls: picking one swaps every member it names (engines/stylepackage.ts)
+    if (type === STYLE_PACKAGE_TYPE) { this.swapAll({ [type]: next } as Partial<ActiveAssets>); return true; }
 
     const active = { ...this.state.active, [type]: next };
     const patch: Partial<AxfState> = { active, swaps: this.state.swaps + 1 };
@@ -862,6 +929,16 @@ export class AxfRuntime {
   }
 
   swapAll(targets: Partial<ActiveAssets>) {
+    // a style package among the targets brings its member controls; slots named explicitly win over them
+    const sp = (targets as Record<string, string | undefined>)[STYLE_PACKAGE_TYPE];
+    if (sp) {
+      const pkg = this.registry.get(STYLE_PACKAGE_TYPE as AssetType, sp);
+      if (pkg) {
+        const members = stylePackageSlots(pkg.data as StylePackageData);
+        for (const [t, id] of Object.entries(members)) if (!this.registry.has(t as AssetType, id)) { this.terminal.warn('hot-swap', `style package ${sp}: no ${t} "${id}" in this app, kept the current one`); delete members[t]; }
+        targets = { ...members, ...targets } as Partial<ActiveAssets>;
+      }
+    }
     const active = { ...this.state.active };
     const pushed: Record<string, string> = {};
     for (const [t, id] of Object.entries(targets) as [AssetType, string][]) {
@@ -1036,54 +1113,125 @@ export class AxfRuntime {
     this.pushAppearance({ slots, hidden, palette: this.appearancePalette() });
   }
 
-  /* ---------------- appearance packages (engines/appearancepackage.ts) ---------------- */
+  /* ---------------- design packages (engines/designpackage.ts) ---------------- */
 
-  /** The current look (every appearance slot and setting) as appearance-package data. */
-  captureAppearancePackage(): AppearancePackageData {
+  /** The current look as a design package: the four themes, plus every other appearance slot and setting as extras. */
+  captureDesignPackage(withExtras = true): DesignPackageData {
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return capturePackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() });
+    return captureDesignPackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() }, withExtras);
   }
 
-  /** The package last applied in this app, if any (Restore default appearance forgets it). */
-  appliedAppearancePackage(): string | undefined {
-    const v = this.settings.get(PACKAGE_APPLIED_KEY);
-    return typeof v === 'string' && this.registry.has('appearance-package', v) ? v : undefined;
+  /** The design package last applied in this app, if any (Restore default appearance forgets it). */
+  appliedDesignPackage(): string | undefined {
+    let v = this.settings.get(DESIGN_APPLIED_KEY);
+    if (typeof v !== 'string') {
+      // the retired appearance package's pick: the shipped packages kept their ids, so move it over once
+      const old = this.settings.get(PACKAGE_APPLIED_KEY);
+      if (typeof old === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, old)) { this.settings.set(DESIGN_APPLIED_KEY, old); this.settings.clear(PACKAGE_APPLIED_KEY); v = old; }
+    }
+    return typeof v === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, v) ? v : undefined;
   }
 
-  /** Apply every setting of package `id`: slots, spacing, shown / hidden chrome and the other appearance settings. */
-  applyAppearancePackage(id: string): boolean {
+  /**
+   * Apply design package `id`: its style, colour, layout and behaviour themes; and when it carries extras, the other
+   * slots, spacing, shown / hidden chrome and the other appearance settings too (the whole look).
+   */
+  applyDesignPackage(id: string): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
-    const a = this.registry.get('appearance-package', id);
-    if (!a) { this.toast(`No appearance package "${id}".`, 'warning', 'Appearance package'); return false; }
-    const pkg = normalizePackage(a.data);
+    const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
+    if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
+    const pkg = normalizeDesignPackage(a.data);
     const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
     for (const k of plan.clear) this.settings.clear(k);
     for (const [k, v] of Object.entries(plan.set)) this.settings.set(k, v as SettingValue);
     const hidden: Record<string, boolean | null> = {};
-    for (const t of ASSET_TYPES) {
+    if (pkg.extras) for (const t of ASSET_TYPES) {
       if (!hideable(t) || this.slotOwnedByHost(t)) continue;
-      const want = pkg.hidden?.[t];
+      const want = pkg.extras.hidden?.[t];
       if (typeof want !== 'boolean' || want === this.defaultHiddenSlots().includes(t)) { if (this.settings.get(HIDE_KEY(t)) !== null) this.settings.clear(HIDE_KEY(t)); hidden[t] = null; }
       else { this.settings.set(HIDE_KEY(t), want); hidden[t] = want; }
     }
-    if (pkg.spacing) this.setSpacing(pkg.spacing as Spacing);
-    this.swapAll({ ...(pkg.slots as Partial<ActiveAssets>), 'appearance-package': id });
-    this.pushAppearance({ hidden });
-    this.settings.set(PACKAGE_APPLIED_KEY, id);
-    this.terminal.ok('hot-swap', `appearance package ${id} applied (${Object.keys(pkg.slots).length} slots, ${Object.keys(plan.set).length} settings)`);
-    this.toast(`${a.name} applied.`, 'success', 'Appearance package');
+    if (pkg.extras?.spacing) this.setSpacing(pkg.extras.spacing as Spacing);
+    const slots = designPackageSlots(pkg);
+    // a theme the package names but this app doesn't ship is skipped (warned), never a broken look
+    for (const [t, sid] of Object.entries(slots)) if (!this.registry.has(t as AssetType, sid)) { this.terminal.warn('hot-swap', `design package ${id}: no ${t} "${sid}" in this app, kept the current one`); delete slots[t]; }
+    this.swapAll({ ...(slots as Partial<ActiveAssets>), [DESIGN_PACKAGE_TYPE]: id } as Partial<ActiveAssets>);
+    if (pkg.extras) this.pushAppearance({ hidden });
+    this.settings.set(DESIGN_APPLIED_KEY, id);
+    if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
+    this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
+    this.toast(`${a.name} applied.`, 'success', 'Design package');
     return true;
   }
 
+  /** @deprecated the appearance package became the design package (Oct 27 2026). */
+  captureAppearancePackage(): AppearancePackageData { const p = this.captureDesignPackage(); return { ...(p.extras ?? {}), slots: designPackageSlots(p) }; }
+  /** @deprecated use appliedDesignPackage */
+  appliedAppearancePackage(): string | undefined { return this.appliedDesignPackage(); }
+  /** @deprecated use applyDesignPackage */
+  applyAppearancePackage(id: string): boolean { return this.applyDesignPackage(id); }
+
   /** Back to the app's default look: default assets, spacing, chrome and every other appearance setting cleared. */
   restoreDefaultAppearance(): void {
+    if (this.lockedByAppearance('assets.swap')) return this.lockedToast();
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the look.', 'danger', 'Permission denied');
-    for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY) this.settings.clear(k);
+    for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
     this.reset();
     this.pushAppearance({ spacing: this.spacing() });
     this.terminal.ok('hot-swap', 'default appearance restored');
     this.toast('Default appearance restored.', 'success', 'Appearance');
+  }
+
+  /* ---------------- behaviour (engines/behavior.ts) ---------------- */
+
+  /** The active behaviour theme, every field filled (the framework default when the app ships none). */
+  behavior(): BehaviorThemeData {
+    return normalizeBehavior(this.assetOrNull('behavior-theme' as AssetType)?.data);
+  }
+
+  /** Should deleting something ask first? (`undoable` = it can be brought back.) */
+  confirmDelete(undoable = false): boolean {
+    return confirmBeforeDelete(this.behavior(), undoable);
+  }
+
+  /** How many pieces of work hold the app busy right now (`busy()` / `withBusy()`). */
+  private busyCount = 0;
+  /** While anything is busy and the behaviour theme says `feedback.busyCursor`, the root carries `data-fx-busy` (the stylesheet shows a progress cursor). */
+  busy(): boolean { return this.busyCount > 0; }
+  /** Mark work started (`true`) or finished (`false`); balanced calls, never below zero. */
+  setBusy(on: boolean): void {
+    const n = Math.max(0, this.busyCount + (on ? 1 : -1));
+    if (n === this.busyCount) return;
+    this.busyCount = n;
+    this.set({});
+  }
+  /** Run a promise with the busy cursor on until it settles. */
+  async withBusy<T>(work: Promise<T> | (() => Promise<T>)): Promise<T> {
+    this.setBusy(true);
+    try { return await (typeof work === 'function' ? work() : work); } finally { this.setBusy(false); }
+  }
+
+  /** Haptic + sound feedback for an event, as the behaviour theme says (no-op where the browser can't). */
+  feedback(kind: 'tap' | 'success' | 'warning' | 'error' = 'tap'): void {
+    const b = this.behavior();
+    const pattern = vibrationPattern(b, kind);
+    const nav = (globalThis as { navigator?: { vibrate?: (p: number[]) => boolean } }).navigator;
+    try { if (pattern.length && nav?.vibrate) nav.vibrate(pattern); } catch { /* not allowed here */ }
+    if (b.feedback.sound === 'off') return;
+    try {
+      const Ctx = (globalThis as { AudioContext?: new () => AudioContext }).AudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = kind === 'error' ? 220 : kind === 'warning' ? 330 : kind === 'success' ? 660 : 520;
+      gain.gain.value = b.feedback.sound === 'full' ? 0.12 : 0.04;
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + (kind === 'tap' ? 0.03 : 0.09));
+      osc.onended = () => { void ctx.close(); };
+    } catch { /* no audio here */ }
   }
 
   importAsset(raw: unknown, activate = true, origin?: string): ValidationResult {
@@ -1113,11 +1261,43 @@ export class AxfRuntime {
   }
 
   can(perm?: string): boolean {
+    if (this.lockedByAppearance(perm)) return false;
     return hasPermission(this.permissions(), perm);
   }
 
   gate(requires?: string): Gate {
+    if (this.lockedByAppearance(requires)) return 'disable';
     return gateFor(this.asset('uac-policy').data, this.permissions(), requires);
+  }
+
+  /* ---------------- appearance lock ---------------- */
+
+  /** Is the look locked (every look control greyed, this device's own tweaks set aside)? */
+  appearanceLocked(): boolean { return this.settings.get(APPEARANCE_LOCK_KEY) === true; }
+
+  /** Does the lock (not the role) stop this permission right now? */
+  lockedByAppearance(perm?: string): boolean {
+    return !!perm && LOCKED_APPEARANCE_PERMS.includes(perm) && this.appearanceLocked();
+  }
+
+  /** May this role change the look at all (the lock aside)? */
+  mayChangeLook(): boolean { return hasPermission(this.permissions(), 'assets.swap'); }
+
+  /** Lock or unlock the look. Only a role that may change the look may lock or unlock it. */
+  setAppearanceLocked(on: boolean): boolean {
+    if (!this.mayChangeLook()) {
+      this.toast('Your role cannot change the look, so it cannot lock or unlock it either.', 'danger', 'Permission denied');
+      return false;
+    }
+    if (on === this.appearanceLocked()) return true;
+    if (on) this.settings.set(APPEARANCE_LOCK_KEY, true); else this.settings.clear(APPEARANCE_LOCK_KEY);
+    this.terminal.ok('appearance', on ? 'look locked' : 'look unlocked');
+    this.toast(on ? 'Look locked: nothing can change it here until you unlock it.' : 'Look unlocked.', 'info', 'Appearance');
+    return true;
+  }
+
+  private lockedToast(): void {
+    this.toast('The look is locked. Unlock it in Settings → Appearance to change it.', 'info', 'Appearance locked');
   }
 
   setRole(id: string) {
@@ -1208,7 +1388,7 @@ export class AxfRuntime {
 
   openDialog(id: string, props?: Record<string, unknown>) {
     if (this.openPlaced(`dialog:${id}`, props)) return;
-    this.set({ dialog: { id, props }, context: null });
+    this.set({ dialog: { id, props, scope: this.uiScope }, context: null });
   }
 
   closeDialog() {
@@ -1217,10 +1397,14 @@ export class AxfRuntime {
 
   toast(message: string, kind: Toast['kind'] = 'info', title?: string) {
     const popup = this.asset('popup').data;
-    const t: Toast = { id: ++this.toastSeq, kind, title, message };
+    const t: Toast = { id: ++this.toastSeq, kind, title, message, scope: this.uiScope };
     const toasts = [...this.state.toasts, t].slice(-popup.maxVisible);
     this.set({ toasts });
-    if (popup.duration > 0) setTimeout(() => this.dismissToast(t.id), popup.duration);
+    // the behaviour theme's toast time wins when it sets one (0 = the pop-up asset's); 0 on the asset = stay until closed
+    const b = this.behavior().feedback;
+    const ms = popup.duration > 0 && b.toastMs > 0 ? b.toastMs : popup.duration;
+    if (ms > 0) setTimeout(() => this.dismissToast(t.id), ms);
+    if (kind === 'danger') this.feedback('error'); else if (kind === 'warning') this.feedback('warning');
   }
 
   dismissToast(id: number) {
@@ -1230,7 +1414,7 @@ export class AxfRuntime {
 
   openContext(x: number, y: number, target: string, payload?: string) {
     if (this.slotHidden('context-menu')) return;
-    this.set({ context: { x, y, target, payload } });
+    this.set({ context: { x, y, target, payload, scope: this.uiScope } });
   }
 
   closeContext() {
@@ -1466,13 +1650,190 @@ export class AxfRuntime {
       ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
       ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
+      // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
+      ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
     };
+    // behaviour last among the theme vars: its motion speed (when not "theme") wins over the style theme's
+    const reducedMotion = this.prefersReducedMotion();
+    const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
+    parts.push(behaviorStyle(behavior, reducedMotion));
+    // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
+    this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
+    const brandId = this.state.active['branding' as AssetType];
+    if (brandId) attrs['data-fx-brand'] = brandId;
+    if (this.busyCount > 0 && normalizeBehavior(behavior).feedback.busyCursor) attrs['data-fx-busy'] = '1';
     for (const p of parts) {
       Object.assign(vars, p.vars);
       Object.assign(attrs, p.attrs);
     }
     return { vars, attrs };
+  }
+
+  /* ---------------- interfaces + scopes (core/engines/interface.ts) ---------------- */
+
+  private readonly scopes = new Map<string, AxfRuntime>();
+
+  /** The interface scope the user is working in ('' = the app itself); dialogs, context menus, toasts and new windows are stamped with it. */
+  uiScope = '';
+
+  /** Called by a scope's root (pointer / focus / key, capture phase) and by scoped views before they open anything. */
+  enterScope(id: string): void {
+    const next = isScopeId(id) ? id : '';
+    this.uiScope = next;
+    this.windows.scopeHint = next;
+  }
+
+  /** The registry view the interface engine resolves against. */
+  private interfaceRegistry() {
+    return { has: (t: string, id: string) => this.registry.has(t as AssetType, id), designPackage: (id: string) => this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id)?.data };
+  }
+
+  /** An interface asset resolved against what this app ships (null when there is no such interface). */
+  resolveInterface(id: string): ResolvedInterface | null {
+    const a = this.registry.get(INTERFACE_TYPE as AssetType, id);
+    return a ? resolveInterface(a.data, this.interfaceRegistry()) : null;
+  }
+
+  /** The current look as an interface over the applied design package (for the roller and Save as interface). */
+  captureInterface(tab?: { label: string; icon: string }): InterfaceData {
+    const hidden: Record<string, boolean> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
+    return captureInterface({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues(), design: this.appliedDesignPackage() ?? '' }, tab);
+  }
+
+  /** The interface applied to the whole app, if any. */
+  appliedInterface(): string | undefined {
+    const v = this.settings.get(INTERFACE_SETTING_KEY);
+    return typeof v === 'string' && this.registry.has(INTERFACE_TYPE as AssetType, v) ? v : undefined;
+  }
+
+  /** Apply interface `id` to the whole app: its design package (whole look), then its own slots, spacing, hidden chrome, settings and branding. */
+  applyInterface(id: string): boolean {
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    const a = this.registry.get(INTERFACE_TYPE as AssetType, id);
+    if (!a) { this.toast(`No interface "${id}".`, 'warning', 'Interface'); return false; }
+    const r = resolveInterface(a.data, this.interfaceRegistry());
+    if (r.design && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, r.design)) this.applyDesignPackage(r.design);
+    for (const [k, v] of Object.entries(r.settings)) this.settings.set(k, v as SettingValue);
+    for (const [t, want] of Object.entries(r.hidden)) if (hideable(t as AssetType) && !this.slotOwnedByHost(t as AssetType)) this.setSlotHidden(t as AssetType, want);
+    this.setSpacing(r.spacing as Spacing);
+    const slots: Record<string, string> = {};
+    for (const [t, sid] of Object.entries(r.active)) if (t !== DESIGN_PACKAGE_TYPE) slots[t] = sid;
+    this.swapAll({ ...(slots as Partial<ActiveAssets>), [INTERFACE_TYPE]: id } as Partial<ActiveAssets>);
+    this.settings.set(INTERFACE_SETTING_KEY, id);
+    for (const m of r.missing) this.terminal.warn('hot-swap', `interface ${id}: ${m} isn't in this app, kept the current one`);
+    this.terminal.ok('hot-swap', `interface ${id} applied (${Object.keys(r.active).length} slots)`);
+    this.toast(`${a.name} applied.`, 'success', 'Interface');
+    return true;
+  }
+
+  /**
+   * A scoped view of this runtime: the same app, drawn under interface `interfaceId` inside the element that
+   * carries `data-fx-scope="<scopeId>"`. Reads of the look (active assets, spacing, hidden chrome, appearance
+   * settings, compiled styles) come from the interface; everything else (actions, windows, dialogs, settings
+   * writes, swaps) is the shared runtime, so a swap inside a scope changes the app, never the scope's interface.
+   * Views are cached per scope id; `dropScope` forgets one. Refused (null) for a bad scope id or unknown interface.
+   */
+  scoped(scopeId: string, interfaceId: string): AxfRuntime | null {
+    if (!isScopeId(scopeId) || !this.registry.has(INTERFACE_TYPE as AssetType, interfaceId)) return null;
+    const cached = this.scopes.get(scopeId);
+    if (cached && (cached as unknown as { scopeInterface: string }).scopeInterface === interfaceId) return cached;
+    const base = this;
+    let memo: { rev: number; r: ResolvedInterface } | null = null;
+    const resolved = (): ResolvedInterface => {
+      const rev = base.state.rev;
+      if (!memo || memo.rev !== rev) memo = { rev, r: base.resolveInterface(interfaceId)! };
+      return memo.r;
+    };
+    const view = Object.create(base) as AxfRuntime & { scopeId: string; scopeInterface: string };
+    const settings = Object.create(base.settings) as SettingsRegistry;
+    Object.defineProperty(settings, 'get', { value: (key: string) => (key in resolved().settings ? (resolved().settings[key] as SettingValue) : key === SPACING_KEY ? resolved().spacing : base.settings.get(key)) });
+    Object.defineProperties(view, {
+      scopeId: { value: scopeId },
+      scopeInterface: { value: interfaceId },
+      settings: { value: settings },
+      state: { get: () => ({ ...base.state, active: { ...base.state.active, ...resolved().active, [INTERFACE_TYPE]: interfaceId } }), set: () => { /* writes go through set(), which the base owns */ } },
+      getState: { value: () => view.state },
+      set: { value: (patch: Partial<AxfState>, persist = false) => (base as unknown as { set(p: Partial<AxfState>, persist?: boolean): void }).set(patch, persist) },
+      hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), base.embedHiddenSlots()) as AssetType[] },
+      slotHidden: { value: (type: AssetType) => hideable(type) && view.hiddenSlots().includes(type) },
+      spacing: { value: () => spacingOf(resolved().spacing) },
+      appliedInterface: { value: () => interfaceId },
+      scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
+      // anything opened through the scoped view belongs to the scope (its own hosts draw it)
+      openDialog: { value: (did: string, props?: Record<string, unknown>) => { base.enterScope(scopeId); base.openDialog(did, props); } },
+      openContext: { value: (x: number, y: number, target: string, payload?: string) => { base.enterScope(scopeId); base.openContext(x, y, target, payload); } },
+      toast: { value: (message: string, kind?: Toast['kind'], title?: string) => { base.enterScope(scopeId); base.toast(message, kind, title); } },
+    });
+    this.scopes.set(scopeId, view);
+    return view;
+  }
+
+  /** Forget a scoped view (its element left the page). */
+  dropScope(scopeId: string): void { this.scopes.delete(scopeId); }
+
+  /** The CSS a scope's root needs: its compiled vars under its selector, plus the engine sheets re-rooted there. */
+  scopeCss(): string {
+    const id = (this as unknown as { scopeId?: string }).scopeId;
+    if (!id) return '';
+    const { vars } = this.compileStyles();
+    return [scopeVarsCss(id, vars), scopeSheet(this.customSheet(), id)].filter(Boolean).join('\n');
+  }
+
+  /** The attributes a scope's root element carries. */
+  scopeRootAttrs(): Record<string, string> {
+    const id = (this as unknown as { scopeId?: string; scopeInterface?: string }).scopeId;
+    if (!id) return {};
+    return scopeAttrs(id, (this as unknown as { scopeInterface: string }).scopeInterface, this.compileStyles().attrs);
+  }
+
+  /* ---------------- branding (core/engines/brand.ts) ---------------- */
+
+  /** The active branding package resolved against the registry, or null when the app has none. */
+  branding(): ResolvedBrand | null {
+    const b = this.assetOrNull('branding' as AssetType);
+    return b ? resolveBranding(b.data, this.registry) : null;
+  }
+
+  /**
+   * What a UI piece draws at a brand slot: the mode (`mark`, `wordmark`, `lockup`, `animated`, `accent-edge`,
+   * `watermark`), the resolved asset's data, the inline SVG at `height` (sanitised by the engine: path data + one text
+   * node, colours as tokens) and, for an animated mark, its CSS animation (null under reduced motion). `null` when the
+   * slot draws nothing (no branding package, mode `none`, or the asset is missing).
+   */
+  brandPlace(slot: string, height = 20): BrandPlace | null {
+    const b = this.branding();
+    const p = b?.places[slot];
+    if (!b || !p || p.mode === 'none') return null;
+    if (p.mode === 'accent-edge') return { mode: p.mode, name: b.name, asset: '', svg: '', animation: null };
+    if (!p.asset || !p.type) return null;
+    let markId = p.asset;
+    let animation: MarkAnimation | null = null;
+    if (p.type === 'animated-logo') {
+      const anim = this.registry.get('animated-logo' as AssetType, p.asset);
+      if (!anim) return null;
+      const a = anim.data as { mark?: string };
+      markId = a.mark ?? '';
+      animation = animationFor(anim.data, this.prefersReducedMotion());
+    }
+    const mark = this.registry.get('logo-mark' as AssetType, markId);
+    if (!mark) return null;
+    return { mode: p.mode, name: b.name, asset: p.asset, svg: markSvg(mark.data, { height, text: p.mode !== 'mark' && p.mode !== 'watermark', title: b.name }), animation };
+  }
+
+  /** The glyph an icon name resolves to in the active icon pack, or null = the framework's own icon. */
+  brandGlyph(name: string): { glyph: Glyph; pack: unknown } | null {
+    const b = this.branding();
+    if (!b?.iconPack) return null;
+    const pack = this.registry.get('icon-pack' as AssetType, b.iconPack);
+    if (!pack) return null;
+    const glyph = glyphFor(pack.data, name);
+    return glyph ? { glyph, pack: pack.data } : null;
+  }
+
+  private prefersReducedMotion(): boolean {
+    return typeof globalThis.matchMedia === 'function' && globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   /** The saved extra tokens of a slot (Settings → Appearance → Assets; engines/customize.ts). */
@@ -1489,6 +1850,7 @@ export class AxfRuntime {
 
   /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
   customSheet(): string {
+    if (this.appearanceLocked()) return '';
     const per: Record<string, CustomValues> = {};
     for (const t of customizableTypes()) {
       const id = (this.getState().active as Record<string, string | undefined>)[t];
@@ -1540,8 +1902,35 @@ export class AxfRuntime {
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
-    a.register('appearance.package', ([id]) => { if (id) this.applyAppearancePackage(id); }, { label: 'Apply an appearance package', requires: 'assets.swap', params: true });
+    // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
+    // (swap:design-package:next would only move the slot, never apply the package's themes).
+    a.register('design.package', ([id]) => {
+      if (!id) return;
+      if (id === 'next' || id === 'prev' || id === 'random') {
+        const list = this.registry.list(DESIGN_PACKAGE_TYPE as AssetType);
+        if (!list.length) return;
+        const cur = list.findIndex((p) => p.id === this.state.active[DESIGN_PACKAGE_TYPE as AssetType]);
+        const step = id === 'random' ? 1 + Math.floor(Math.random() * Math.max(1, list.length - 1)) : id === 'next' ? 1 : -1;
+        id = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length]?.id ?? id;
+      }
+      this.applyDesignPackage(id);
+    }, { label: 'Apply a design package (id, next, prev or random)', requires: 'assets.swap', params: true });
+    // style.package:<id> · style.package:next|prev|random — a matched set of controls in one go
+    a.register('style.package', ([id]) => {
+      if (!id) return;
+      const ids = this.registry.list(STYLE_PACKAGE_TYPE as AssetType).map((p) => p.id);
+      const pick = id === 'next' || id === 'prev' || id === 'random' ? stepPackage(ids, this.state.active[STYLE_PACKAGE_TYPE as AssetType], id) : id;
+      if (pick && this.swap(STYLE_PACKAGE_TYPE as AssetType, pick)) {
+        const a = this.registry.get(STYLE_PACKAGE_TYPE as AssetType, pick);
+        if (a) this.toast(`${a.name} applied.`, 'success', 'Style package');
+      }
+    }, { label: 'Apply a style package (id, next, prev or random)', requires: 'assets.swap', params: true });
+    a.register('appearance.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package (old name)', requires: 'assets.swap', params: true, searchable: false });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
+    // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
+    const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
+    a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.appearanceLocked())); }, { label: 'Lock the look', params: true });
+    a.register('appearance.hub', ([v]) => { this.setAppearanceFollowing(turn(v, this.appearanceFollowing())); }, { label: 'Read the look from axHub', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
       const json = type && id ? this.exportAsset(type as AssetType, id) : '';

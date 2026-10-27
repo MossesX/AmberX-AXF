@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "amberx",
+  "name": "AmberX",
+  "version": "2.0.0",
+  "description": "AmberX: the console's light glass look (Arctic Daylight + Glass Orbit), super-tight spacing, top toolbar and side navigation hidden, the Amber right-click menu. An AmberX Design Package: its style, colour, layout and behaviour themes, with the rest of the look as extras (was an appearance package).",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "style-theme": "glass-orbit",
+    "color-theme": "arctic-daylight",
+    "layout": "focus-top",
+    "behavior-theme": "standard",
+    "extras": {
+      "slots": {
+        "app-menu": "console",
+        "toolbar": "standard-icons",
+        "nav-menu": "console-nav",
+        "context-menu": "amber",
+        "tab-group": "underline",
+        "dialog": "centered-modal",
+        "popup": "corner-solid",
+        "button": "pill-gradient",
+        "slider": "precision-bar",
+        "container": "frosted-glass",
+        "gauge": "classic-arc",
+        "meter": "striped-pill",
+        "settings": "console",
+        "banner": "amberx-thin",
+        "clock": "digital-12h",
+        "search-bar": "everything",
+        "logo": "wordmark",
+        "action-button": "settings",
+        "label": "version",
+        "status": "online",
+        "counter": "alerts",
+        "progress": "build",
+        "avatar": "account",
+        "link": "docs",
+        "theme-switch": "day-night",
+        "spacer": "gap",
+        "divider": "rule",
+        "badge": "new"
+      },
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": true,
+        "nav-menu": true
+      },
+      "settings": {}
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-099",
+  "name": "GizmoX mark · soft-square slash",
+  "version": "1.0.0",
+  "description": "Generated mark: a soft-square slash motif in a seeded rich palette (seed 1105).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "soft-square",
+    "slash",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a22559",
+      "brand2": "#490e32",
+      "brand3": "#deb5c6"
+    },
+    "paths": [
+      {
+        "d": "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M15 6l-6 12",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": true
+      },
+      {
+        "d": "M9 6h2M13 18h2",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": true,
+        "opacity": 0.6
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

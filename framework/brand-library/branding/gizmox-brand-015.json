@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-015",
+  "name": "GizmoX · Wordmark 15",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · pill spark, wordmark placement, icon pack pack-057.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "wordmark"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-017",
+      "wordmark": "gizmox-logo-078",
+      "lockup": "gizmox-logo-100",
+      "animated": "gizmox-anim-070"
+    },
+    "iconPack": "pack-057",
+    "palette": {
+      "brand1": "#637eb0",
+      "brand2": "#333d71",
+      "brand3": "#edeff3"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "wordmark",
+      "window": "none",
+      "floating-window": "mark",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "wordmark",
+      "splash": "lockup",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

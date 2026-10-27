@@ -164,7 +164,8 @@ export class SettingsRegistry {
       const fresh = readValues(this.storageKey);
       const same = Object.hasOwn(fresh, key) && Object.hasOwn(this.values, key)
         && JSON.stringify(fresh[key]) === JSON.stringify(value) && JSON.stringify(this.values[key]) === JSON.stringify(value);
-      this.values = { ...fresh, [key]: value };
+      // (in-memory values stay under what storage holds, so a session without storage keeps its settings too)
+      this.values = { ...this.values, ...fresh, [key]: value };
       // Nothing changed: no write, no re-render (a component that saves on every render can't loop).
       if (same) return;
       writeValues(this.storageKey, this.values);

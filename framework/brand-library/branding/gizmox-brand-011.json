@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-011",
+  "name": "GizmoX · Classic 11",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · soft-square ring, classic placement, icon pack pack-041.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "classic"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-012",
+      "wordmark": "gizmox-logo-063",
+      "lockup": "gizmox-logo-071",
+      "animated": "gizmox-anim-081"
+    },
+    "iconPack": "pack-041",
+    "palette": {
+      "brand1": "#384abc",
+      "brand2": "#1b3d69",
+      "brand3": "#d8dae9"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "lockup",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "mark",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

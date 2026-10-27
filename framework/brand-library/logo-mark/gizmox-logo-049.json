@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-049",
+  "name": "GizmoX wordmark · squircle pulse",
+  "version": "1.0.0",
+  "description": "Generated wordmark: a squircle pulse motif in a seeded rich palette (seed 1052).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "squircle",
+    "pulse",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#9b1c79",
+      "brand2": "#3e0920",
+      "brand3": "#dda7cd"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 700,
+      "tracking": 0,
+      "font": "display",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

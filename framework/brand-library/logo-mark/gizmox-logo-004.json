@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-004",
+  "name": "GizmoX mark · diamond leaf",
+  "version": "1.0.0",
+  "description": "Generated mark: a diamond leaf motif in a seeded rich palette (seed 1004).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "diamond",
+    "leaf",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a03b65",
+      "brand2": "#511a20",
+      "brand3": "#ddcbd2"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M17 7c-6 0-10 4-10 10 6 0 10-4 10-10zM7 17l6-6",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.8,
+        "round": false
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

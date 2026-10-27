@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-113",
+  "name": "AmberX mark · hexagon bolt",
+  "version": "1.0.0",
+  "description": "Generated mark: a hexagon bolt motif in a seeded bright palette (seed 118).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "hexagon",
+    "bolt",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#858d3a",
+      "brand2": "#403e17",
+      "brand3": "#d1d4bf"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8.7 5v10L12 22l-8.7-5V7Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M13 4L7 13h5l-1 7 6-9h-5z",
+        "fill": "bg"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-031",
+  "name": "GizmoX mark · circle dots",
+  "version": "1.0.0",
+  "description": "Generated mark: a circle dots motif in a seeded bright palette (seed 1031).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "circle",
+    "dots",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#758c31",
+      "brand2": "#263b12",
+      "brand3": "#cbd2b7"
+    },
+    "paths": [
+      {
+        "d": "M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M8 8h.01M12 8h.01M16 8h.01M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.6,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

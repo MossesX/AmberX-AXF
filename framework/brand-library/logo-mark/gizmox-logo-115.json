@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-115",
+  "name": "GizmoX mark · shield arrow",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield arrow motif in a seeded bright palette (seed 1122).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "arrow",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#329095",
+      "brand2": "#144339",
+      "brand3": "#bcd5d7"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M7 12h10M13 8l4 4-4 4",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

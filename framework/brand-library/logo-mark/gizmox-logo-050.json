@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-050",
+  "name": "GizmoX mark · open wave",
+  "version": "1.0.0",
+  "description": "Generated mark: an open wave motif in a seeded rich palette (seed 1053).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "open",
+    "wave",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#6a39c6",
+      "brand2": "#271d72",
+      "brand3": "#e4deed"
+    },
+    "paths": [
+      {
+        "d": "M5 14c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "brand1",
+        "strokeWidth": 2.6,
+        "round": true
+      },
+      {
+        "d": "M5 10c2-4 4-4 6 0s4 4 6 0",
+        "fill": "none",
+        "stroke": "brand1",
+        "strokeWidth": 2.6,
+        "round": true,
+        "opacity": 0.5
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

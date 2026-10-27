@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-002",
+  "name": "GizmoX · Quiet 2",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · shield wave, quiet placement, icon pack pack-005.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "quiet"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-003",
+      "wordmark": "gizmox-logo-015",
+      "lockup": "gizmox-logo-029",
+      "animated": "gizmox-anim-111"
+    },
+    "iconPack": "pack-005",
+    "palette": {
+      "brand1": "#267e5d",
+      "brand2": "#0d311d",
+      "brand3": "#a3ccbc"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "mark",
+      "window": "none",
+      "floating-window": "none",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "mark",
+      "favicon": "mark",
+      "empty-state": "none"
+    }
+  }
+}

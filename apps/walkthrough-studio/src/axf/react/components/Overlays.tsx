@@ -2,6 +2,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
+import { useScopeId } from './InterfaceScope';
 import { MenuList } from './MenuList';
 
 export interface DialogDef {
@@ -20,13 +22,16 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const state = useAxfState();
   const d = useAsset('dialog').data;
   const panelRef = useRef<HTMLDivElement>(null);
-  const def = state.dialog ? dialogs[state.dialog.id] : undefined;
+  const scope = useScopeId();
+  // a dialog belongs to the interface scope it was opened in; every other scope's host leaves it alone
+  const mine = !state.dialog || (state.dialog.scope ?? '') === scope;
+  const def = state.dialog && mine ? dialogs[state.dialog.id] : undefined;
 
   useEffect(() => {
     if (def) panelRef.current?.focus();
   }, [def]);
 
-  if (!state.dialog) return null;
+  if (!state.dialog || !mine) return null;
   if (!def) {
     queueMicrotask(() => {
       rt.closeDialog();
@@ -35,17 +40,20 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
     return null;
   }
   const close = () => rt.closeDialog();
+  const brand = rt.brandPlace('dialog', 16);
+  const brandHost = brandHostProps(brand);
   return (
-    <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && e.target === e.currentTarget && close()}>
-      <div className="fx-dialog" role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef}>
+    <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
+      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
         <header className="fx-dialog__head">
+          {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
           <h2>{def.title}</h2>
           <button type="button" className="fx-iconbtn" onClick={close} aria-label="Close dialog">
             <Icon name="x" size={16} />
           </button>
         </header>
-        <div className="fx-dialog__body">{def.render(state.dialog.props ?? {}, close)}</div>
+        <div className="fx-dialog__body">{def.render(state.dialog.props ?? {}, close)}<BrandWatermark slot="dialog" /></div>
       </div>
     </div>
   );
@@ -59,9 +67,10 @@ export function ToastHost() {
   const rt = useRuntime();
   const state = useAxfState();
   const p = useAsset('popup').data;
+  const scope = useScopeId();
   return (
     <div className="fx-toasts" aria-live="polite">
-      {state.toasts.map((t) => (
+      {state.toasts.filter((t) => (t.scope ?? '') === scope).map((t) => (
         <div key={t.id} className={`fx-toast fx-toast--${t.kind}`} role="status">
           {p.showIcon && <Icon name={TOAST_ICON[t.kind]} size={18} className="fx-toast__icon" />}
           <div className="fx-toast__text">
@@ -85,9 +94,12 @@ export function ContextMenuHost() {
   const cm = useAsset('context-menu').data;
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const scope = useScopeId();
 
   useEffect(() => {
     const open = (target: Element | null, x: number, y: number) => {
+      // one host per interface scope: only the host of the scope the pointer is in opens the menu
+      if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       const el = target?.closest('[data-fx-ctx-target]');
       const name = el?.getAttribute('data-fx-ctx-target') ?? 'default';
       rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined);
@@ -113,11 +125,11 @@ export function ContextMenuHost() {
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;
       start = { x: e.clientX, y: e.clientY };
-      timer = setTimeout(() => open(t, e.clientX, e.clientY), 550);
+      timer = setTimeout(() => open(t, e.clientX, e.clientY), rt.behavior().interaction.longPressMs); // behaviour theme (was 550 ms)
     };
     const cancel = (e: Event) => {
       const p = e as PointerEvent;
-      if (start && e.type === 'pointermove' && Math.hypot(p.clientX - start.x, p.clientY - start.y) < 10) return;
+      if (start && e.type === 'pointermove' && Math.hypot(p.clientX - start.x, p.clientY - start.y) < Math.max(1, rt.behavior().interaction.dragThreshold)) return;
       clearTimeout(timer);
       start = null;
     };
@@ -142,7 +154,7 @@ export function ContextMenuHost() {
       document.removeEventListener('scroll', cancel, true);
       document.removeEventListener('pointerdown', onAway, true);
     };
-  }, [rt]);
+  }, [rt, scope]);
 
   // Clamp inside the viewport once measured
   useLayoutEffect(() => {
@@ -153,7 +165,7 @@ export function ContextMenuHost() {
     setPos({ x: Math.max(8, x), y: Math.max(8, y) });
   }, [state.context]);
 
-  if (!state.context) return null;
+  if (!state.context || (state.context.scope ?? '') !== scope) return null;
   const ctx = state.context;
   // `contributions: false`: a target the asset defines shows only the asset's own items (e.g. context-menu/amber)
   const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));
