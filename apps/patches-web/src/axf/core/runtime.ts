@@ -84,6 +84,15 @@ export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
 export const SPACING_KEY = 'axf.appearance.spacing';
+/**
+ * Appearance lock (setting, true = on): every control that changes the look is greyed out (the permissions in
+ * LOCKED_APPEARANCE_PERMS gate as `disable`) and this device's own look tweaks (Sliders, per-asset tokens) are set
+ * aside, not deleted. The look from axHub still applies. Not an appearance setting itself, so Restore keeps it.
+ */
+export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
+export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
+/** Developer apps: false = stop reading (and writing) the look on axHub; the app keeps its own saved look. */
+export const APPEARANCE_FOLLOW_KEY = 'axf.hub.appearance.follow';
 
 /** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
 type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
@@ -310,20 +319,55 @@ export class AxfRuntime {
     this.detachAppearanceSource();
     this.appearanceSource = source;
     this.appearanceOff = source.subscribe((ev) => {
+      if (!this.appearanceFollowing()) return;
       if ('state' in ev) { this.set({ appearance: ev.state }); return; }
       this.applyAppearance(ev.doc);
     });
-    this.set({ appearance: source.state() });
-    source.start();
+    this.followOff = this.settings.onChange(APPEARANCE_FOLLOW_KEY, () => this.syncAppearanceFollow());
+    this.appearanceRunning = false;
+    this.syncAppearanceFollow();
   }
 
   detachAppearanceSource(): void {
     this.appearanceOff?.();
-    this.appearanceSource?.stop();
+    this.followOff?.();
+    if (this.appearanceRunning) this.appearanceSource?.stop();
     this.appearanceOff = null;
+    this.followOff = null;
+    this.appearanceRunning = false;
     this.appearanceSource = null;
     this.lastAppearance = null;
     this.set({ appearance: null });
+  }
+
+  private followOff: (() => void) | null = null;
+  private appearanceRunning = false;
+
+  /** Is the look read from axHub right now? (A developer app with the follow switch on; true without a source too.) */
+  appearanceFollowing(): boolean { return this.settings.get(APPEARANCE_FOLLOW_KEY) !== false; }
+
+  /** Turn reading the look from axHub on or off (developer apps). Off = the app runs on its own saved look, no waiting. */
+  setAppearanceFollowing(on: boolean): void {
+    if (!this.mayChangeLook()) return this.toast('Your role cannot change where the look comes from.', 'danger', 'Permission denied');
+    if (on) this.settings.clear(APPEARANCE_FOLLOW_KEY); else this.settings.set(APPEARANCE_FOLLOW_KEY, false);
+  }
+
+  /** Start or stop the source to match the follow switch. */
+  private syncAppearanceFollow(): void {
+    const src = this.appearanceSource;
+    if (!src) return;
+    const want = this.appearanceFollowing();
+    if (want === this.appearanceRunning) return;
+    this.appearanceRunning = want;
+    if (want) {
+      this.set({ appearance: src.state() });
+      src.start();
+      this.terminal.ok('appearance', 'reading the look from axHub again');
+    } else {
+      src.stop();
+      this.set({ appearance: null });
+      this.terminal.ok('appearance', 'not reading the look from axHub: this app keeps its own saved look');
+    }
   }
 
   /** Is a source attached (developer app)? */
@@ -336,7 +380,7 @@ export class AxfRuntime {
   appearanceState(): AppearanceSourceState | null { return this.state.appearance ?? null; }
 
   /** The developer app runs only while its source is ready (or it has none). The React layer shows the waiting screen otherwise. */
-  appearanceReady(): boolean { return !this.appearanceSource || this.state.appearance?.status === 'ready'; }
+  appearanceReady(): boolean { return !this.appearanceSource || !this.appearanceRunning || this.state.appearance?.status === 'ready'; }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
   appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
@@ -379,7 +423,7 @@ export class AxfRuntime {
 
   /** Push a local change to the source (no-op without one, or while applying a pushed document). */
   private pushAppearance(change: Parameters<AppearanceSource['save']>[0]): void {
-    if (!this.appearanceSource || this.applyingAppearance) return;
+    if (!this.appearanceSource || !this.appearanceRunning || this.applyingAppearance) return;
     this.appearanceSource.save(change);
   }
 
@@ -832,6 +876,7 @@ export class AxfRuntime {
       return false;
     }
     const need = type === 'uac-policy' ? 'uac.manage' : 'assets.swap';
+    if (this.lockedByAppearance(need)) { this.lockedToast(); return false; }
     if (!this.can(need)) {
       this.toast(`Your role needs "${need}" to change the ${assetTypeSpecs[type].label.toLowerCase()}.`, 'danger', 'Permission denied');
       return false;
@@ -1105,6 +1150,7 @@ export class AxfRuntime {
 
   /** Back to the app's default look: default assets, spacing, chrome and every other appearance setting cleared. */
   restoreDefaultAppearance(): void {
+    if (this.lockedByAppearance('assets.swap')) return this.lockedToast();
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the look.', 'danger', 'Permission denied');
     for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
     this.reset();
@@ -1191,11 +1237,43 @@ export class AxfRuntime {
   }
 
   can(perm?: string): boolean {
+    if (this.lockedByAppearance(perm)) return false;
     return hasPermission(this.permissions(), perm);
   }
 
   gate(requires?: string): Gate {
+    if (this.lockedByAppearance(requires)) return 'disable';
     return gateFor(this.asset('uac-policy').data, this.permissions(), requires);
+  }
+
+  /* ---------------- appearance lock ---------------- */
+
+  /** Is the look locked (every look control greyed, this device's own tweaks set aside)? */
+  appearanceLocked(): boolean { return this.settings.get(APPEARANCE_LOCK_KEY) === true; }
+
+  /** Does the lock (not the role) stop this permission right now? */
+  lockedByAppearance(perm?: string): boolean {
+    return !!perm && LOCKED_APPEARANCE_PERMS.includes(perm) && this.appearanceLocked();
+  }
+
+  /** May this role change the look at all (the lock aside)? */
+  mayChangeLook(): boolean { return hasPermission(this.permissions(), 'assets.swap'); }
+
+  /** Lock or unlock the look. Only a role that may change the look may lock or unlock it. */
+  setAppearanceLocked(on: boolean): boolean {
+    if (!this.mayChangeLook()) {
+      this.toast('Your role cannot change the look, so it cannot lock or unlock it either.', 'danger', 'Permission denied');
+      return false;
+    }
+    if (on === this.appearanceLocked()) return true;
+    if (on) this.settings.set(APPEARANCE_LOCK_KEY, true); else this.settings.clear(APPEARANCE_LOCK_KEY);
+    this.terminal.ok('appearance', on ? 'look locked' : 'look unlocked');
+    this.toast(on ? 'Look locked: nothing can change it here until you unlock it.' : 'Look unlocked.', 'info', 'Appearance');
+    return true;
+  }
+
+  private lockedToast(): void {
+    this.toast('The look is locked. Unlock it in Settings → Appearance to change it.', 'info', 'Appearance locked');
   }
 
   setRole(id: string) {
@@ -1748,6 +1826,7 @@ export class AxfRuntime {
 
   /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
   customSheet(): string {
+    if (this.appearanceLocked()) return '';
     const per: Record<string, CustomValues> = {};
     for (const t of customizableTypes()) {
       const id = (this.getState().active as Record<string, string | undefined>)[t];
@@ -1802,6 +1881,10 @@ export class AxfRuntime {
     a.register('design.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package', requires: 'assets.swap', params: true });
     a.register('appearance.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package (old name)', requires: 'assets.swap', params: true, searchable: false });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
+    // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
+    const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
+    a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.appearanceLocked())); }, { label: 'Lock the look', params: true });
+    a.register('appearance.hub', ([v]) => { this.setAppearanceFollowing(turn(v, this.appearanceFollowing())); }, { label: 'Read the look from axHub', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
       const json = type && id ? this.exportAsset(type as AssetType, id) : '';

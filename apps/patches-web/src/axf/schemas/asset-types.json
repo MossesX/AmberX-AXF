@@ -1157,23 +1157,6 @@
       },
       "optional": true
     },
-    "uac-policy": {
-      "label": "User account control",
-      "group": "System",
-      "icon": "shield",
-      "required": [
-        "defaultRole",
-        "gating",
-        "roles",
-        "permissions"
-      ],
-      "enums": {
-        "gating": [
-          "hide",
-          "disable"
-        ]
-      }
-    },
     "logo-mark": {
       "label": "Logo mark",
       "group": "Brand",
@@ -1287,6 +1270,23 @@
         "decorations": "{ <brand slot>: none | mark | wordmark | lockup | animated | accent-edge | watermark }",
         "palette": "{ brand1, brand2, brand3 }: #hex",
         "accentFromBrand": "boolean: brand1 becomes the accent (default false)"
+      }
+    },
+    "uac-policy": {
+      "label": "User account control",
+      "group": "System",
+      "icon": "shield",
+      "required": [
+        "defaultRole",
+        "gating",
+        "roles",
+        "permissions"
+      ],
+      "enums": {
+        "gating": [
+          "hide",
+          "disable"
+        ]
       }
     }
   },

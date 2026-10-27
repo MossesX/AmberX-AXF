@@ -34,10 +34,11 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), deploying | 2026-10-27 |
-| AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), deploying; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
+| AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
+| Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
+| 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
+| AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
-| Build orchestrator plugin + repo build tracker (categories, phases, groups, steps; grid) | review | `claude/build-orchestrator` | #122 | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
 | Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | queued | `fable/enterprise-branding` | [#128](https://github.com/MossesX/AmberX-AXF/pull/128) merged | Orchestrator build `enterprise-branding` (46 steps, 18 done): Fable phase 1 merged; the Fable → Opus switch approved (card). **Next: an Opus thread runs s13-s40** (asset library, Brand library plugin, GizmoX/AmberX refactor) from `orchestrator.mjs brief enterprise-branding`. See *To carry on* | 2026-10-27 |
 | Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
 | Three interfaces in GizmoX tabs + interface roller for every app | review | `fable/interface-roller` | [#129](https://github.com/MossesX/AmberX-AXF/pull/129) → main | Orchestrator build `interface-roller` (15 steps, 5 done): Fable phase 1 done (interface@1, scoped runtime + `<InterfaceScope>`, roller engine); switch to Opus approved. Merge #129 once CI is green, then an Opus thread runs s6-s15 (interfaces 2/3, GizmoX main-window tab group, roller plugin, lib-interface-roller, ship) | 2026-10-27 |

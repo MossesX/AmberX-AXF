@@ -44,6 +44,7 @@ const PREFIXES: string[] = [
   'axf.placement.',       // where each plugin's UI opens
   'axf.appearance.',      // the Appearance tab's own settings (spacing is written to its field too)
   'axf.widgets.',         // where widgets sit on banners and toolbars (rt.moveHostItem, arrange mode)
+  'axf.look',             // Settings → Appearance → Sliders (one key, `axf.look`; Restore used to leave it behind)
 ];
 export const APPEARANCE_SETTING_PREFIXES: readonly string[] = PREFIXES;
 

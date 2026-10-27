@@ -30,6 +30,7 @@
  */
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../core';
+import { APPEARANCE_LOCK_KEY } from '../../core/runtime';
 import type { BannerDef, SlotDef } from '../library';
 import type { MenuEntry } from '../../core/engines/windows';
 import { FRAMEWORK_MODULE } from '../../core/engines/actions';
@@ -192,6 +193,7 @@ function install(rt: AxfRuntime): void {
   rt.actions.withModule(FRAMEWORK_MODULE, () => installActions(rt));
   applyBannerLook(rt);
   rt.settings.onChange(BANNER_LOOK_KEY, () => applyBannerLook(rt));
+  rt.settings.onChange(APPEARANCE_LOCK_KEY, () => applyBannerLook(rt));
 }
 
 /** Apply to all's look tokens → one stylesheet over every banner frame (empty = nothing, the theme as is). The theme's
@@ -200,7 +202,8 @@ function applyBannerLook(rt: AxfRuntime): void {
   const doc = globalThis.document;
   if (!doc) return;
   let el = doc.getElementById('axf-banner-look') as HTMLStyleElement | null;
-  const css = lookCss(rt.settings.get(BANNER_LOOK_KEY), { scope: '.fx-banner-frame', base: 'body', p: 'fxb', for: 'banner' });
+  // locked look: this device's banner look tweaks are set aside (kept, not applied)
+  const css = rt.appearanceLocked() ? '' : lookCss(rt.settings.get(BANNER_LOOK_KEY), { scope: '.fx-banner-frame', base: 'body', p: 'fxb', for: 'banner' });
   if (!css) { el?.remove(); return; }
   if (!el) { el = doc.createElement('style'); el.id = 'axf-banner-look'; doc.head.appendChild(el); }
   if (el.textContent !== css) el.textContent = css;
@@ -489,12 +492,14 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
             <HideControls id={b.id} label={bannerLabel(b)} list={list} hide={hide} />
           </Section>
           <Section title="Look">
+            <fieldset disabled={rt.lockedByAppearance('assets.swap')} aria-disabled={rt.lockedByAppearance('assets.swap') || undefined} style={{ border: 0, margin: 0, padding: 0, minWidth: 0, display: 'contents' }}>
             <SelectField label="Colour" value={p.tone} options={TONES.map((t) => ({ value: t, label: TONE_LABEL[t] }))} onChange={(v) => set({ tone: v as BannerTone })} />
             <SelectField label="Density" value={p.density} options={DENSITIES.map((d) => ({ value: d, label: d[0]!.toUpperCase() + d.slice(1) }))} onChange={(v) => set({ density: v as BannerDensity })} />
             <Switch label="Show its icon" checked={p.icon} onChange={(v) => set({ icon: v })} />
             <SelectField label="Icon while working" value={p.workIcon} options={[{ value: '', label: `Its own (${b.workIcon ?? 'refresh'})` }, ...BANNER_WORK_ICONS.map((i) => ({ value: i, label: i[0]!.toUpperCase() + i.slice(1) }))]} onChange={(v) => set({ workIcon: v })} />
             <SelectField label="Working animation" value={p.workAnim} options={[{ value: '', label: `Its own (${WORK_ANIM_LABEL[b.workAnim ?? 'spin']})` }, ...WORK_ANIMS.map((a) => ({ value: a, label: WORK_ANIM_LABEL[a] }))]} onChange={(v) => set({ workAnim: v as BannerWorkAnim | '' })} />
             <SelectField label="Maximum height" value={String(p.maxRows)} options={[0, 4, 6, 8, 12, 18].map((n) => ({ value: String(n), label: n === 0 ? 'Its own' : `${n} rows (scrolls past that)` }))} onChange={(v) => set({ maxRows: Number(v) })} />
+            </fieldset>
           </Section>
           <Section title="Behaviour">
             <SelectField label="When it appears" value={p.launch} options={[{ value: 'expanded', label: 'Open, with its list' }, { value: 'minimized', label: 'Minimized to one line' }]} onChange={(v) => set({ launch: v === 'minimized' ? 'minimized' : 'expanded' })} />
@@ -537,7 +542,7 @@ function ApplyToAllLook() {
   return (
     <Container className="fx-banner-settings__all" title="Apply to all" icon="layers" collapsible defaultOpen={false}
       actions={n > 0 ? <span className="fx-muted fx-small">{n} changed</span> : undefined}>
-      <div className="fx-stack">
+      <fieldset className="fx-stack" disabled={rt.lockedByAppearance('assets.swap')} style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
         <p className="fx-muted fx-small" style={{ margin: 0 }}>Every banner at once. Only what you change here overrides the theme, and a banner’s own tab below still wins.</p>
         <LookLevelSwitch value={level} onChange={(l) => rt.settings.set(BANNER_LOOK_LEVEL_KEY, l)} />
         <LookEditor values={values} onChange={save} scope="banner" level={level} />
@@ -546,7 +551,7 @@ function ApplyToAllLook() {
             {sure ? 'Tap again to reset everything' : 'Reset (back to the theme)'}
           </Button>
         </div>
-      </div>
+      </fieldset>
     </Container>
   );
 }

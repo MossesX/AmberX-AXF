@@ -13,7 +13,7 @@
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, settingsLevel, shownAtLevel, lookCss, lookChanged, normalizeLook, type LookLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, settingsLevel, shownAtLevel, lookCss, lookChanged, normalizeLook, type LookLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, LookEditor, LookLevelSwitch, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
@@ -69,8 +69,10 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
   if ((spec.slot && rt.slotOwnedByHost(spec.slot as AssetType)) || (spec.kind === 'asset_slot' && spec.target && rt.slotOwnedByHost(spec.target as AssetType))) return null;
   // A setting about a slot the user hid is greyed out (and its control disabled) until the slot is shown again.
   const off = !!spec.slot && rt.slotHiddenOwn(spec.slot as AssetType);
+  // the look is locked: every look setting greys out (its control is disabled below through `requires`)
+  const grey = off || (!!spec.requires && rt.lockedByAppearance(spec.requires));
   return (
-    <div data-axf-anchor={`setting:${spec.key}`} className={off ? 'axf-settings__off' : undefined} aria-disabled={off || undefined}>
+    <div data-axf-anchor={`setting:${spec.key}`} className={grey ? 'axf-settings__off' : undefined} aria-disabled={grey || undefined}>
       <SettingControl spec={spec} off={off} />
       {off && <p className="fx-muted axf-settings__hint axf-settings__offnote">{assetTypeSpecs[spec.slot as AssetType]?.label ?? spec.slot} is hidden (Assets above).</p>}
     </div>
@@ -460,7 +462,8 @@ function applyAppLook(rt: AxfRuntime): void {
   const doc = globalThis.document;
   if (!doc) return;
   let el = doc.getElementById('axf-app-look') as HTMLStyleElement | null;
-  const css = lookCss(rt.settings.get(APP_LOOK_KEY), { scope: 'body', base: 'html', p: 'fxa', for: 'app' });
+  // locked: this device's sliders are set aside (kept, not applied) so the look is the theme's own
+  const css = rt.appearanceLocked() ? '' : lookCss(rt.settings.get(APP_LOOK_KEY), { scope: 'body', base: 'html', p: 'fxa', for: 'app' });
   if (!css) { el?.remove(); return; }
   if (!el) { el = doc.createElement('style'); el.id = 'axf-app-look'; doc.head.appendChild(el); }
   if (el.textContent !== css) el.textContent = css;
@@ -752,6 +755,84 @@ function SearchResults({ query, tabs, ui }: { query: string; tabs: SettingsTabLi
 }
 type SettingsTabLike = { id: string; label: string };
 
+const DESIGN_PANEL_ID = 'axf.design-package';
+const LOCK_PANEL_ID = 'axf.appearance.lock';
+
+/**
+ * Settings → Appearance, on top: lock the look (every look control greys out, this device's own tweaks are set aside
+ * but kept) and, in a developer app, whether the look is read from axHub at all. Both switches stay usable while
+ * locked; they need a role that may change the look.
+ */
+function AppearanceLockPanel() {
+  const rt = useRuntime();
+  useAxfState();
+  const locked = rt.appearanceLocked();
+  const may = rt.mayChangeLook();
+  const hub = rt.hasAppearanceSource();
+  const following = rt.appearanceFollowing();
+  return (
+    <div className="fx-stack">
+      <Switch label="Lock the look" checked={locked} disabled={!may} text={locked ? 'Locked' : 'Off'}
+        hint="Greys out everything that changes how the app looks, so nothing can change it by accident. Your own tweaks here (Sliders, asset appearance) are set aside while it's on and come back when you turn it off."
+        onChange={(on) => rt.setAppearanceLocked(on)} />
+      {hub && (
+        <Switch label="Get the look from axHub" checked={following} disabled={!may} text={following ? 'On' : 'Off'}
+          hint={following
+            ? 'On: this app shows the same look as your other developer apps and follows changes made in any of them.'
+            : 'Off: this app stops reading its look from axHub and keeps its own saved look. Changes here aren\'t sent to axHub either.'}
+          onChange={(on) => rt.setAppearanceFollowing(on)} />
+      )}
+      {locked && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{hub && following ? 'The look from axHub still applies.' : 'The app shows its saved look.'}</p>}
+    </div>
+  );
+}
+
+/** Settings → Appearance → AmberX Design Package: pick a package (style + colour theme + layout + behaviour theme,
+ *  plus its extras), save the current look as one, or go back to the app's default look. */
+function DesignPackagePanel() {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  const packages = rt.registry.list('design-package');
+  const applied = rt.appliedDesignPackage();
+  const [confirm, setConfirm] = useState(false);
+  const [name, setName] = useState('');
+  const locked = !rt.can('assets.swap');
+  const label = (t: string, id: string) => (id ? rt.registry.get(t as AssetType, id)?.name ?? id : '—');
+  const save = () => {
+    const title = name.trim() || 'My look';
+    const base = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'my-look';
+    let id = base.length < 2 ? `${base}-look` : base; let n = 2;
+    while (rt.registry.get('design-package', id)) id = `${base}-${n++}`;
+    const r = rt.importAsset({ $axf: 'asset@1', type: 'design-package', id, name: title, version: '1.0.0', description: 'Saved from Settings → Appearance.', data: rt.captureDesignPackage(true) }, false, 'settings');
+    if (r.ok) { rt.applyDesignPackage(id); setName(''); }
+  };
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted">One pick sets the style theme, colour theme, layout and behaviour theme together (and the rest of the look a package carries).</p>
+      {!packages.length && <p className="fx-muted">No design packages in this app yet. Save the current look below.</p>}
+      {packages.map((p) => {
+        const d = p.data as unknown as Record<string, string>;
+        const on = p.id === applied;
+        return (
+          <div key={p.id} className="fx-row" style={{ alignItems: 'center', gap: 'var(--fx-space)', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 14em', minWidth: 0 }}>
+              <strong>{p.name}</strong>{on && <> <Chip>In use</Chip></>}
+              <div className="fx-muted">{label('style-theme', d['style-theme'] ?? '')} · {label('color-theme', d['color-theme'] ?? '')} · {label('layout', d.layout ?? '')} · {label('behavior-theme', d['behavior-theme'] ?? '')}</div>
+            </div>
+            <Button size="sm" tone={on ? 'quiet' : 'primary'} disabled={locked} onClick={() => rt.applyDesignPackage(p.id)}>{on ? 'Apply again' : 'Apply'}</Button>
+          </div>
+        );
+      })}
+      <div className="fx-row" style={{ gap: 'var(--fx-space)', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <div style={{ flex: '1 1 12em' }}><TextField label="Save the current look as" value={name} onChange={setName} placeholder="My look" /></div>
+        <Button size="sm" disabled={locked} onClick={save}>Save</Button>
+        <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); rt.restoreDefaultAppearance(); }}>{confirm ? 'Tap again to restore' : 'Restore default appearance'}</Button>
+      </div>
+    </div>
+  );
+}
+
 /** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings.
  *  What the active settings asset leaves out (group, panel or setting ids) isn't shown. */
 export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
@@ -764,6 +845,21 @@ export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
   const tab = rt.settings.getTab(id);
   const groups = rt.settings.groupsIn(id).map((g) => filterSettingsGroup(g, ui, at)).filter((g): g is SettingsGroup => !!g);
   const panels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id) && (!at || shownAtLevel(ui, p.id, at)));
+  // Settings → Appearance: the AmberX Design Package picker on top, everything else in one collapsible container
+  const design = id === 'appearance' && !all ? panels.find((p) => p.id === DESIGN_PANEL_ID) : undefined;
+  const lock = design ? panels.find((p) => p.id === LOCK_PANEL_ID) : undefined;
+  const rest = design ? panels.filter((p) => p !== design && p !== lock) : panels;
+  const items = [...rest.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'} collapsible={COLLAPSIBLE_PANELS.has(p.id) || undefined}>{p.render() as ReactNode}</Container></div> })),
+    ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
+    .sort((a, b) => a.order - b.order || a.tie - b.tie)
+    .map((x) => <Fragment key={x.key}>{x.node}</Fragment>);
+  if (design) return (
+    <>
+      {lock && <div data-axf-anchor={`settings-panel:${lock.id}`}><Container title={lock.title} icon={lock.icon ?? 'lock'}>{lock.render() as ReactNode}</Container></div>}
+      <div data-axf-anchor={`settings-panel:${design.id}`}><Container title={design.title} icon={design.icon ?? 'palette'}>{design.render() as ReactNode}</Container></div>
+      {items.length > 0 && <div data-axf-anchor="settings-panel:axf.appearance.rest"><Container title="Everything else" icon="sliders" collapsible defaultOpen={false}><div className="fx-stack">{items}</div></Container></div>}
+    </>
+  );
   return (
     <>
       {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'} collapsible={COLLAPSIBLE_PANELS.has(p.id) || undefined}>{p.render() as ReactNode}</Container></div> })),
@@ -898,6 +994,7 @@ export const library: AxfWebLibrary = {
     applyDisplay(rt);
     applyAppLook(rt);
     rt.settings.onChange(APP_LOOK_KEY, () => applyAppLook(rt));
+    rt.settings.onChange(APPEARANCE_LOCK_KEY, () => applyAppLook(rt));
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
     rt.actions.register('app.settings', () => rt.navigate(VIEW), { label: 'Settings' });
@@ -924,14 +1021,16 @@ export const library: AxfWebLibrary = {
       order: 20,
       settings: [
         { key: SPACING_KEY, label: 'Spacing', kind: 'choice', default: SPACING_DEFAULT, requires: 'assets.swap', options: SPACINGS.map((v) => ({ value: v, label: SPACING_LABEL[v] })), description: 'How much room between and around things. Applies to every theme; Regular shows the style theme as designed.' },
-        { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, description: 'Percent of the normal size.' },
-        { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, description: 'Off reduces motion.' },
+        { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, requires: 'assets.swap', description: 'Percent of the normal size.' },
+        { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, requires: 'assets.swap', description: 'Off reduces motion.' },
       ],
     },
   ],
   settingsPanels: [
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
+    { id: LOCK_PANEL_ID, tab: 'appearance', title: 'Lock the look', icon: 'lock', order: -1, render: () => <AppearanceLockPanel /> },
+    { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'AmberX Design Package', icon: 'palette', order: 0, render: () => <DesignPackagePanel /> },
     { id: 'axf.look.sliders', tab: 'appearance', title: 'Sliders', icon: 'sliders', order: 1, render: () => <LookSlidersPanel /> },
     { id: 'axf.settings-ui', tab: 'appearance', title: 'Settings interface', icon: 'settings', order: 5, render: () => <SettingsInterfacePanel /> },
     { id: 'axf.asset-appearance', tab: 'appearance', title: 'Asset appearance', icon: 'sliders', order: 11, render: () => <AssetAppearancePanel /> },
