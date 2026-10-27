@@ -16,7 +16,7 @@ import kotlinx.serialization.json.doubleOrNull
  * without a compiler: CI (:axf-kernel:test) compiles and replays it.
  *
  * Contract shape only (an implementation step follows): a [SpeechProvider] a platform module registers under
- * `axf.speech` (lib-voice's Speaker over TextToSpeech will; the kernel keeps [PlaceholderSpeechProvider] until one
+ * `axf.speech` (lib-speech's AndroidTtsProvider over TextToSpeech does; the kernel keeps [PlaceholderSpeechProvider] until one
  * does), and the pure [SpeechQueue] rules every host runs the same way — enqueue, pause, skip, rate steps 0.5–2.0,
  * repeat. AmberX speaks in any app through this.
  */
@@ -56,7 +56,7 @@ public enum class SpeakOutcome(public val id: String) {
     public companion object { public fun parse(s: String?): SpeakOutcome = entries.firstOrNull { it.id == s } ?: FAILED }
 }
 
-/** What a platform module provides (Android: lib-voice's Speaker over TextToSpeech). */
+/** What a platform module provides (Android: lib-speech's AndroidTtsProvider over TextToSpeech). */
 public interface SpeechProvider {
     public val id: String
     public val label: String
@@ -136,7 +136,7 @@ public sealed class SpeechQueueEvent {
 
         /** An event from its JSON (`{type, …}`); null for an unknown type. */
         public fun parse(o: JsonObject): SpeechQueueEvent? = when (SpeechJson.str(o, "type")) {
-            "enqueue" -> Enqueue(SpeechItem.parse(o["item"] as? JsonObject ?: return null), SpeechJson.bool(o, "next") ?: false)
+            "enqueue" -> (o["item"] as? JsonObject)?.let { Enqueue(SpeechItem.parse(it), SpeechJson.bool(o, "next") ?: false) }
             "started" -> Started
             "done" -> Done(SpeakOutcome.parse(SpeechJson.str(o, "outcome")))
             "pause" -> Pause

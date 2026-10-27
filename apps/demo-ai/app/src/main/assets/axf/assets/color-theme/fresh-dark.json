@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "fresh-dark",
+  "name": "Fresh Dark",
+  "version": "1.0.0",
+  "description": "The Fresh palette for the night: near-black neutrals, soft indigo accent, muted status colours.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "neutral"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0e0f12",
+      "surface": "#16171b",
+      "surface2": "#1b1c21",
+      "surface3": "#24262c",
+      "text": "#ececf1",
+      "muted": "#9a9ea9",
+      "border": "#2a2c33",
+      "accent": "#8b93ff",
+      "accentText": "#0e0f12",
+      "accentSoft": "rgba(139,147,255,0.14)",
+      "danger": "#f97066",
+      "success": "#47cd89",
+      "warning": "#fdb022",
+      "info": "#53b1fd",
+      "focus": "#8b93ff",
+      "shadow": "rgba(0,0,0,0.45)"
+    }
+  }
+}

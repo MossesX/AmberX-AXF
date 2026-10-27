@@ -5,6 +5,7 @@
  */
 import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
+import { overlayErrors } from '../core/engines/overlay-rules.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
@@ -131,6 +132,8 @@ export function validateAsset(raw) {
     if (d.settings !== undefined && !isObj(d.settings)) errors.push('data.settings must be an object');
     if (d.tab !== undefined && (!isObj(d.tab) || typeof d.tab.label !== 'string')) errors.push('data.tab must be { label, icon? }');
   }
+  // overlay@1 — ONE validator shared with core (core/engines/overlay-rules.mjs)
+  if (raw.type === 'overlay') errors.push(...overlayErrors(raw.data));
   // behavior-theme@1 — mirrors behaviorErrors in core/engines/behavior.ts (check-design-package.mts keeps the lists equal)
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
@@ -356,6 +359,9 @@ export function tokenEscaper(file) {
   return (v) => v;
 }
 
+/** Tokens the engine builds itself (never user text) that land in comments, e.g. `// axf:modules ["…"]`: written as is. */
+const RAW_TOKENS = new Set(['AXF_MODULES']);
+
 const ktStr = (v) => tokenEscaper('x.kt')(String(v ?? ''));
 
 function copyTemplate(src, dest, tokens) {
@@ -367,7 +373,7 @@ function copyTemplate(src, dest, tokens) {
     if (TEXT.test(file) || basename(file).startsWith('_')) {
       let text = readFileSync(file, 'utf8');
       const esc = tokenEscaper(file);
-      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, esc(String(v)));
+      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, RAW_TOKENS.has(k) ? String(v) : esc(String(v)));
       writeFileSync(target, text);
     } else cpSync(file, target);
   }

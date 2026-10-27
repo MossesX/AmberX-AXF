@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "fresh-night",
+  "name": "Fresh Night",
+  "version": "1.0.0",
+  "description": "The Fresh style on Fresh Dark, classic IDE layout, standard behaviour. The default look, after dark. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark"
+  ],
+  "data": {
+    "style-theme": "fresh",
+    "color-theme": "fresh-dark",
+    "layout": "classic-ide",
+    "behavior-theme": "standard"
+  }
+}

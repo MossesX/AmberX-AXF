@@ -16,6 +16,7 @@
     "gauge": true,
     "meter": true,
     "banner": true,
+    "overlay": true,
     "clock": false,
     "search-bar": false,
     "action-button": false,
@@ -131,6 +132,11 @@
           "amberx-accent",
           "amberx-thin"
         ],
+        "overlay": [
+          "detector-panel",
+          "pill-compact",
+          "quiet-strip"
+        ],
         "behavior-theme": [
           "calm",
           "minimal-motion",
@@ -237,6 +243,11 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "overlay": [
+          "detector-panel",
+          "pill-compact",
+          "quiet-strip"
         ],
         "behavior-theme": [
           "calm",
@@ -351,6 +362,11 @@
           "amberx-accent",
           "amberx-thin"
         ],
+        "overlay": [
+          "detector-panel",
+          "pill-compact",
+          "quiet-strip"
+        ],
         "behavior-theme": [
           "calm",
           "minimal-motion",
@@ -458,6 +474,11 @@
           "amberx-accent",
           "amberx-thin"
         ],
+        "overlay": [
+          "detector-panel",
+          "pill-compact",
+          "quiet-strip"
+        ],
         "behavior-theme": [
           "calm",
           "minimal-motion",
@@ -561,6 +582,11 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "overlay": [
+          "detector-panel",
+          "pill-compact",
+          "quiet-strip"
         ],
         "behavior-theme": [
           "calm",
@@ -668,6 +694,11 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "overlay": [
+          "detector-panel",
+          "pill-compact",
+          "quiet-strip"
         ],
         "behavior-theme": [
           "calm",

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- lib-overlay contributes the permissions the overlay window and its foreground service need; apps add nothing but
+         the special-use property on the service (below). The user grants SYSTEM_ALERT_WINDOW in system settings
+         (OverlayHost.canDraw / overlay.permission). -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <application>
+        <!-- Owns the overlay windows while the pill is shown. The app's own manifest adds the same <service> with the
+             android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE property saying what the overlay is for (a Play requirement, app-specific). -->
+        <service
+            android:name="ai.amberx.axf.overlay.OverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+    </application>
+</manifest>

@@ -1,0 +1,43 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.axnotes.ai-automations",
+  "name": "AI automations",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Toggleable automation rules: a voice phrase, a schedule (work@1 job), a new git push on a watched repo (polled through the AI/hub session until axHub has a git feed), notes tagged #build or #ask, and \"the orchestrator finished a build\" → a read-back summary note. Actions: ask Claude (reply saved as a note), hand to the AI build bridge, read back, run an action. Pure rule evaluation.",
+  "entry": "ai.amberx.axf.axnotes.plugins.automations.AutomationsPlugin",
+  "targets": ["ax-notes"],
+  "provides": ["view:ai-automations", "settings-tab:ai-automations", "worker:ai-automations.tick", "action:ai-automations.open", "action:ai-automations.fire", "action:ai-automations.check", "trigger:ai-automations.open"],
+  "requires": ["service:axf.runtime", "service:axf.kv"],
+  "optional": ["service:axf.ai.session", "service:axf.speech", "service:axf.triggers.registry", "service:axf.ai.modes", "plugin:ai.amberx.axf.axnotes.ai-build-bridge", "action:axnotes.notes.saved", "action:axnotes.notes.save"],
+  "scopes": ["routes", "actions", "settings", "menu_items", "network", "background"],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "opens": "main",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins2" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": "device-kv:ai-automations.",
+    "mentions": ["apps/ax-notes/settings.gradle.kts", "apps/ax-notes/app/build.gradle.kts", "apps/ax-notes/app/src/main/assets/axnotes/plugins.json"]
+  },
+  "x": {
+    "android": {
+      "module": ":plugins:ai-automations",
+      "package": "ai.amberx.axf.axnotes.plugins.automations",
+      "dataPrefix": "ai-automations.",
+      "settingsTab": { "id": "ai-automations", "parent": "plugins" },
+      "menus": { "application": true, "nav": true },
+      "work": { "job": "ai-automations.tick", "contract": "work@1", "intervalMs": 60000, "gitEveryMs": 900000 },
+      "placeholders": { "git-feed": "latest commit read through an ai.chat turn on the hub session until axHub offers a git head API" },
+      "hostActions": {
+        "axnotes.notes.saved": "the app dispatches it after saving a note (payload = the note JSON)",
+        "axnotes.notes.save": "the app saves a note from payload {title, text, tags[], source}",
+        "ai-build-bridge.finished": "watched: the orchestrator finished a build",
+        "ai-build-bridge.request": "dispatched for #build rules when the bridge is installed"
+      }
+    }
+  }
+}

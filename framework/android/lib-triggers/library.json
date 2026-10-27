@@ -1,0 +1,27 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.triggers",
+  "module": "lib-triggers",
+  "name": "Triggers (custom triggers, voice bridge, settings by voice)",
+  "description": "The user-facing side of the kernel's triggers@1. TriggerStore keeps custom triggers and per-trigger overrides (enabled, threshold, worksIn) as one trigger-store@1 JSON value in the KV store; permanent triggers come from modules at runtime, can't be deleted and can be switched off only where their module allows it; every change is mirrored into the kernel TriggerRegistry. VoiceTriggerBridge feeds lib-voice VoiceResults through the sensitivity floor and arming into TriggerMatcher with the current context, emits fired TriggerCommands on a flow and hands every decision (per-trigger confidence + outcome) to a plain log callback. SettingsVoiceBindings registers TriggerHosting.bindingTriggers and writes TriggerHosting.settingChange through lib-settings (or the kernel Config), coercing spoken values to the setting's kind. Screens: dense single-column trigger list, add-trigger flow (kind → phrases → action → details), action picker with a pinned search bar filtering live across all tabs, threshold editor.",
+  "features": ["lib.triggers", "c.voice"],
+  "dependsOn": ["ai.amberx.axf.voice", "ai.amberx.axf.settings"],
+  "manifestKey": "libraries.triggers",
+  "params": [],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-triggers:$axf\")",
+    "module": "TriggersModule()",
+    "import": "ai.amberx.axf.triggers.TriggersModule",
+    "routes": ["triggers"]
+  },
+  "ports": {
+    "android": { "status": "scaffolded", "dir": "android/lib-triggers", "note": "written without a compiler; CI compiles and runs :lib-triggers:testDebugUnitTest" }
+  },
+  "contracts": { "triggers": "triggers@1", "store": "trigger-store@1" },
+  "placeholders": [
+    { "capability": "axf.triggers.sync", "note": "Sync custom triggers + overrides across devices / axHub (TriggerSync; PlaceholderTriggerSync answers NotImplemented)." },
+    { "capability": "axf.triggers.gesture", "note": "Hand-gesture detector (kernel placeholder kind); the add flow already lets you pick the kind and type signature ids." },
+    { "capability": "axf.triggers.face", "note": "Face-gesture detector (kernel placeholder kind)." }
+  ],
+  "version": "0.1.0"
+}

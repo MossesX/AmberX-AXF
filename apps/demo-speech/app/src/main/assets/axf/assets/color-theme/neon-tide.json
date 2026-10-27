@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "neon-tide",
+  "name": "Neon Tide",
+  "version": "1.0.0",
+  "description": "Deep indigo night with cyan and violet highlights.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "vivid"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0c0a18",
+      "surface": "#14112a",
+      "surface2": "#1a1633",
+      "surface3": "#262045",
+      "text": "#ece9ff",
+      "muted": "#9a93c4",
+      "border": "#2e2852",
+      "accent": "#22d3ee",
+      "accentText": "#04121a",
+      "accentSoft": "rgba(34,211,238,0.14)",
+      "danger": "#ff4d8d",
+      "success": "#3ee6a0",
+      "warning": "#ffd166",
+      "info": "#b46bff",
+      "focus": "#22d3ee",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

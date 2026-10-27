@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "overlay",
+  "id": "quiet-strip",
+  "name": "Quiet strip",
+  "version": "1.0.0",
+  "description": "Nothing but the strip: one locked chip, no log panel, no mini screen; the last two lines show for two seconds each in the corner. For apps that only want to flash what just happened.",
+  "author": "AmberX AXF",
+  "tags": ["overlay", "strip", "minimal"],
+  "data": {
+    "pill": {
+      "title": "",
+      "chips": [ { "id": "active", "label": "Active", "offLabel": "Paused", "tone": "accent", "offTone": "muted" } ],
+      "quickAction": ""
+    },
+    "log": { "show": false, "maxLines": 3, "showConfidence": false },
+    "strip": { "show": true, "maxLines": 2, "lineMs": 2000 },
+    "mini": { "defaultOpen": false, "width": { "min": 120, "max": 320, "default": 180 }, "height": { "min": 80, "max": 320, "default": 160 } },
+    "opacity": 0.85,
+    "positionLock": true,
+    "size": { "minWidth": 100, "maxWidth": 360, "minHeight": 40, "maxHeight": 360, "maxScreenWidthPct": 80, "maxScreenHeightPct": 60 }
+  }
+}

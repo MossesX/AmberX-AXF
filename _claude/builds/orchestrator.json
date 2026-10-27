@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T20:56:14.705Z",
+ "updatedAt": "2026-10-27T21:19:31.352Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T20:56:14.703Z",
+   "updatedAt": "2026-10-27T21:19:31.351Z",
    "builtAt": "",
    "notes": [
     {
@@ -1680,6 +1680,26 @@
     {
      "text": "s11/s12/s22 done (6b33aee, 6a51d36, daa0674): app init + notes/lists/to-dos; app-local interfaces NoteCapture/Speaker/TriggerSink/NoteAi/NotesHubSync to wire in s13; follow-ups: drag reorder, date picker, check-off disambiguation listen.",
      "at": "2026-10-27T20:56:14.703Z"
+    },
+    {
+     "text": "s1-s3 done (fc64516, 789f85a): overlay@1 + lib-overlay; kernel + lib-overlay pure parts compiled locally (OverlayConformanceTest 11/11, OverlayControllerTest 12/12). Apps add PROPERTY_SPECIAL_USE_FGS_SUBTYPE on the service.",
+     "at": "2026-10-27T20:57:11.352Z"
+    },
+    {
+     "text": "s8 done e22e817: lib-speech 0.1.0 (Android TTS + web SpeechSynthesis), lib-voice 0.3.1 now depends on lib-speech (Speaker runs on AndroidTtsProvider). Catalog/libraries.json/tracker regen left for s21.",
+     "at": "2026-10-27T21:02:37.083Z"
+    },
+    {
+     "text": "s10 done 3794425: lib-ai (HubAiSessionClient over the console ai-assistant routes behind axHub, AiService, UAC gating; 21 tests pass locally). Epic x.lib.ai fulfilled. Hub follow-ups: model list from hub, aiModes in /me, needsApproval on plugin side; axhub_session cookie on console domain untested.",
+     "at": "2026-10-27T21:05:09.671Z"
+    },
+    {
+     "text": "s19/s20 done: apps/demo-{overlay,voice,triggers,speech,onboarding} (validate ok). lib-ai demo still to add in s21. Bugs for s21: axf install writes broken install code for lib-overlay (OverlayNotification import, missing ic_notification) and lib-onboarding (bare spec); axf new-demo escapes quotes in // axf:modules.",
+     "at": "2026-10-27T21:11:47.164Z"
+    },
+    {
+     "text": "s15/s17/s18 done (110db1a, 015a03e, c486e96, b398bf3): plugins ai-chat, ai-build-bridge, ai-automations under apps/ax-notes/plugins/<id> with lifecycle.mjs + plugins.json loader contract. Event names for approval/finished-build to verify against axHub in s21.",
+     "at": "2026-10-27T21:19:31.351Z"
     }
    ],
    "approvals": [
@@ -1703,8 +1723,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:57:11.128Z",
      "note": ""
     },
     {
@@ -1719,8 +1739,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:57:11.195Z",
      "note": ""
     },
     {
@@ -1735,8 +1755,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T20:57:11.263Z",
      "note": ""
     },
     {
@@ -1799,8 +1819,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:02:58.143Z",
      "note": ""
     },
     {
@@ -1815,8 +1835,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:02:36.985Z",
      "note": ""
     },
     {
@@ -1847,8 +1867,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:05:09.599Z",
      "note": ""
     },
     {
@@ -1943,8 +1963,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:19:31.099Z",
      "note": ""
     },
     {
@@ -1975,8 +1995,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:19:31.188Z",
      "note": ""
     },
     {
@@ -2007,8 +2027,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:19:31.281Z",
      "note": ""
     },
     {
@@ -2023,8 +2043,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:11:46.991Z",
      "note": ""
     },
     {
@@ -2039,8 +2059,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:11:47.087Z",
      "note": ""
     },
     {

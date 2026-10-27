@@ -150,7 +150,8 @@
           "nav-menu",
           "context-menu",
           "tab-group",
-          "banner"
+          "banner",
+          "overlay"
         ],
         "page": "settings"
       }
@@ -165,7 +166,8 @@
           "nav-menu",
           "context-menu",
           "tab-group",
-          "banner"
+          "banner",
+          "overlay"
         ],
         "takes": [
           "notifications"
@@ -290,7 +292,8 @@
           "nav-menu",
           "context-menu",
           "tab-group",
-          "banner"
+          "banner",
+          "overlay"
         ],
         "takes": [
           "notifications"
@@ -362,7 +365,8 @@
           "nav-menu",
           "context-menu",
           "tab-group",
-          "banner"
+          "banner",
+          "overlay"
         ],
         "takes": [
           "notifications",
@@ -3771,7 +3775,8 @@
           "nav-menu",
           "context-menu",
           "tab-group",
-          "banner"
+          "banner",
+          "overlay"
         ],
         "takes": [
           "settings",

@@ -1,0 +1,36 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "demo-triggers",
+  "displayName": "AXF Demo — triggers",
+  "description": "Demo app for lib-triggers: one or two screens exercising its main features.",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "android"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "android-compose",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "demo-triggers",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/demo-triggers"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-27"
+}

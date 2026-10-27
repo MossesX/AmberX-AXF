@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "developer-apps",
+  "name": "Developer apps",
+  "version": "1.0.0",
+  "description": "One settings interface for Brett's developer apps (Dev Console, Build Pilot, Patches, axHub web): side tabs with search, Plugins before Connections, and the same shared Developer options in every app that loads it.",
+  "author": "AmberX AXF",
+  "tags": ["developer", "shared"],
+  "data": {
+    "layout": "tabs-side",
+    "header": "compact",
+    "search": true,
+    "descriptions": false,
+    "tabs": [
+      { "id": "appearance" },
+      { "id": "plugins" },
+      { "id": "developer", "label": "Developer", "icon": "code", "description": "Options every developer app shares." },
+      { "id": "account" },
+      { "id": "connections" },
+      { "id": "about" }
+    ],
+    "groups": [
+      {
+        "id": "axf.dev.shared",
+        "label": "Developer options",
+        "icon": "code",
+        "tab": "developer",
+        "settings": [
+          { "key": "axf.dev.verboseLogs", "label": "Verbose logs", "kind": "toggle", "default": false, "description": "Write debug lines to the terminal." },
+          { "key": "axf.dev.confirmDestructive", "label": "Confirm destructive actions", "kind": "toggle", "default": true },
+          { "key": "axf.dev.defaultModel", "label": "Default build model", "kind": "choice", "default": "opus", "options": [
+            { "value": "fable", "label": "Fable" },
+            { "value": "opus", "label": "Opus" },
+            { "value": "sonnet", "label": "Sonnet" }
+          ] },
+          { "key": "axf.dev.docs", "label": "Framework docs", "kind": "link", "target": "https://github.com/MossesX/AmberX-AXF" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.speech",
+  "module": "lib-speech",
+  "name": "Speech (AmberX speaks: text-to-speech, reading queue, spoken controls)",
+  "description": "The speaking side of speech@1 (listening stays in lib-voice). Registers Android TextToSpeech as the kernel's axf.speech provider (AndroidTtsProvider: voices, rate, pitch, language, utterance callbacks as queue events), one SpeechPlayer per app that runs the kernel SpeechQueue reducer (enqueue, pause, resume, skip, faster, slower, repeat, stop) with audio focus and ducking, a Speech settings group (read aloud, voice, speed, pitch, language, ducking) and the reader's spoken controls as actions + permanent voice triggers in the kernel TriggerRegistry (\"pause\", \"resume\", \"skip\", \"faster\", \"slower\", \"repeat\", \"stop reading\"). lib-voice's Speaker runs on it. Web twin: framework/core/speech-web.ts (WebSpeechProvider + SpeechPlayer).",
+  "features": ["c.voice", "dv.audio"],
+  "dependsOn": [],
+  "manifestKey": "libraries.speech",
+  "params": [
+    { "key": "readAloud", "label": "Read aloud by default", "type": "bool", "default": true },
+    { "key": "rate", "label": "Default speed", "type": "number", "default": 1, "min": 0.5, "max": 2 }
+  ],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-speech:$axf\")",
+    "module": "SpeechModule(this)",
+    "import": "ai.amberx.axf.speech.SpeechModule",
+    "routes": []
+  },
+  "ports": {
+    "android": { "status": "scaffolded", "dir": "android/lib-speech", "note": "written without a compiler; CI compiles and runs :lib-speech:testDebugUnitTest" },
+    "web": { "status": "compiled", "dir": "core/speech-web.ts" }
+  },
+  "placeholders": [
+    { "capability": "axf.speech.hq", "note": "High-quality (neural / cloud) voices — HqSpeechProvider is a typed placeholder; not built." }
+  ],
+  "version": "0.1.0"
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- lib-ai talks to the assistant behind axHub over HTTPS; the app's own INTERNET permission covers it. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

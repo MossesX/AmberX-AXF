@@ -1,0 +1,41 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.axnotes.ai-build-bridge",
+  "name": "AI build bridge",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Turns a note tagged #build or a spoken \"build …\" into a build request for Brett's Build Orchestrator (mode ai.build-request on the axHub session host). Every request waits for Brett's approval through axHub's approval flow (approval link shown here + push in the AXHub app), polled every 15 s for the first 10 tries, then every minute. Never builds or edits code itself. Admins only (UAC).",
+  "entry": "ai.amberx.axf.axnotes.plugins.buildbridge.BuildBridgePlugin",
+  "targets": ["ax-notes"],
+  "provides": ["view:ai-build-bridge", "settings-tab:ai-build-bridge", "action:ai-build-bridge.open", "action:ai-build-bridge.request", "action:ai-build-bridge.finished", "trigger:ai-build-bridge.request", "trigger:ai-build-bridge.open"],
+  "requires": ["service:axf.runtime", "service:axf.kv", "service:axf.ai.session"],
+  "optional": ["service:axf.triggers.registry", "service:axf.ai.modes", "action:axnotes.notes.saved"],
+  "scopes": ["routes", "actions", "settings", "menu_items", "network", "background"],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "opens": "main",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins2" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": "device-kv:ai-build-bridge.",
+    "mentions": ["apps/ax-notes/settings.gradle.kts", "apps/ax-notes/app/build.gradle.kts", "apps/ax-notes/app/src/main/assets/axnotes/plugins.json"]
+  },
+  "x": {
+    "android": {
+      "module": ":plugins:ai-build-bridge",
+      "package": "ai.amberx.axf.axnotes.plugins.buildbridge",
+      "dataPrefix": "ai-build-bridge.",
+      "settingsTab": { "id": "ai-build-bridge", "parent": "plugins" },
+      "menus": { "application": true, "nav": true },
+      "uac": { "requires": "ai.admin", "mode": "ai.build-request" },
+      "approvalPoll": { "fastMs": 15000, "fastTries": 10, "slowMs": 60000 },
+      "hostActions": {
+        "axnotes.notes.saved": "the app dispatches it after saving a note (payload = the note JSON); notes tagged #build become requests",
+        "ai-build-bridge.finished": "dispatched by this plugin when the orchestrator reports a build done (payload {requestId, title, status, buildId?, summary?})"
+      }
+    }
+  }
+}

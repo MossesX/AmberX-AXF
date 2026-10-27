@@ -1,63 +1,35 @@
 package ai.amberx.axf.voice
 
+import ai.amberx.axf.kernel.speech.SpeakOptions
+import ai.amberx.axf.kernel.speech.SpeakOutcome
+import ai.amberx.axf.kernel.speech.SpeechProvider
+import ai.amberx.axf.speech.AndroidTtsProvider
 import android.content.Context
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.resume
 
 /**
  * Spoken prompts. [say] returns only after the phrase has finished, so a listen that follows never
  * hears the phone's own voice. Starts lazily; [shutdown] frees the engine.
+ *
+ * Since lib-voice 0.3.1 this runs on lib-speech's [AndroidTtsProvider] (speech@1): same API as before; [provider]
+ * gives the speech@1 provider for code that wants the reading queue (lib-speech's SpeechPlayer).
  */
 public class Speaker(private val context: Context) {
-    private var tts: TextToSpeech? = null
-    private var ready: CompletableDeferred<Boolean>? = null
-    private val waiting = ConcurrentHashMap<String, () -> Unit>()
+    private val tts: AndroidTtsProvider = AndroidTtsProvider(context)
 
-    private suspend fun engine(): TextToSpeech? = withContext(Dispatchers.Main) {
-        val d = ready ?: CompletableDeferred<Boolean>().also { d ->
-            ready = d
-            tts = TextToSpeech(context) { status -> d.complete(status == TextToSpeech.SUCCESS) }.apply {
-                setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) {}
-                    override fun onDone(utteranceId: String?) { utteranceId?.let { waiting.remove(it)?.invoke() } }
-                    @Deprecated("Deprecated in Java") override fun onError(utteranceId: String?) { utteranceId?.let { waiting.remove(it)?.invoke() } }
-                    override fun onError(utteranceId: String?, errorCode: Int) { utteranceId?.let { waiting.remove(it)?.invoke() } }
-                    override fun onStop(utteranceId: String?, interrupted: Boolean) { utteranceId?.let { waiting.remove(it)?.invoke() } }
-                })
-            }
-        }
-        if (withTimeoutOrNull(4_000) { d.await() } == true) tts else {
-            // Failed or slow start: forget it so the next prompt tries again.
-            runCatching { tts?.shutdown() }; tts = null; ready = null; null
-        }
-    }
+    /** The speech@1 provider prompts are spoken with. */
+    public val provider: SpeechProvider get() = tts
 
     /** Speaks [text] and waits until it is done (at most [maxMs]). Returns false when TTS isn't available. */
     public suspend fun say(text: String, language: String? = null, maxMs: Long = 12_000): Boolean {
-        val e = engine() ?: return false
-        language?.takeIf { it.isNotBlank() && it != "system" }?.let { tag -> withContext(Dispatchers.Main) { e.language = Locale.forLanguageTag(tag) } }
-        val id = "axf-${System.nanoTime()}"
-        return withTimeoutOrNull(maxMs) {
-            suspendCancellableCoroutine { cont ->
-                waiting[id] = { if (cont.isActive) cont.resume(true) }
-                cont.invokeOnCancellation { waiting.remove(id); runCatching { e.stop() } }
-                if (e.speak(text, TextToSpeech.QUEUE_FLUSH, null, id) != TextToSpeech.SUCCESS) { waiting.remove(id); cont.resume(false) }
-            }
-        } ?: false
+        val opts = SpeakOptions(language = language?.takeIf { it.isNotBlank() && it != "system" })
+        // a timeout cancels the utterance (the provider stops the engine), as before
+        val result = withTimeoutOrNull(maxMs) { tts.speak(text, opts) } ?: return false
+        val outcome = result.getOrNull() ?: return false
+        return outcome != SpeakOutcome.FAILED
     }
 
-    public fun stop() { runCatching { tts?.stop() } }
+    public fun stop() { tts.stopNow() }
 
-    public fun shutdown() {
-        runCatching { tts?.stop(); tts?.shutdown() }
-        tts = null; ready = null; waiting.clear()
-    }
+    public fun shutdown() { tts.shutdown() }
 }

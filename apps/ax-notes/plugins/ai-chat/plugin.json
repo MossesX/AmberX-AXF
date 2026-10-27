@@ -1,0 +1,40 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.axnotes.ai-chat",
+  "name": "AI chat",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Voice or text chat with Claude in the overlay's mini screen and on its own screen: streamed replies, optional read-aloud through speech@1, save any reply as a note. Voice: \"ask Claude …\", \"chat mode\", \"stop\" (triggers@1 data). Runs in mode ai.chat (ai-modes@1) on the axHub session host.",
+  "entry": "ai.amberx.axf.axnotes.plugins.aichat.AiChatPlugin",
+  "targets": ["ax-notes"],
+  "provides": ["view:ai-chat", "mini-screen:ai-chat.mini", "settings-tab:ai-chat", "action:ai-chat.open", "action:ai-chat.ask", "action:ai-chat.say", "action:ai-chat.stop", "action:ai-chat.save", "trigger:ai-chat.ask", "trigger:ai-chat.mode", "trigger:ai-chat.stop"],
+  "requires": ["service:axf.runtime", "service:axf.kv"],
+  "optional": ["service:axf.ai.session", "service:axf.speech", "service:axf.triggers.registry", "service:axf.ai.modes", "action:axnotes.notes.save"],
+  "scopes": ["routes", "actions", "settings", "menu_items", "network"],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "opens": "main",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins2" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": "device-kv:ai-chat.",
+    "mentions": ["apps/ax-notes/settings.gradle.kts", "apps/ax-notes/app/build.gradle.kts", "apps/ax-notes/app/src/main/assets/axnotes/plugins.json"]
+  },
+  "x": {
+    "android": {
+      "module": ":plugins:ai-chat",
+      "package": "ai.amberx.axf.axnotes.plugins.aichat",
+      "dataPrefix": "ai-chat.",
+      "settingsTab": { "id": "ai-chat", "parent": "plugins" },
+      "menus": { "application": true, "nav": true },
+      "miniScreenPoint": "axnotes.mini-screens",
+      "hostActions": {
+        "axnotes.notes.save": "the app saves a note from payload {title, text, tags[], source}; without it Save as note is hidden",
+        "ai-chat.say": "the host sends free speech here (payload {text}) while the trigger context is ai-chat (chat mode)"
+      }
+    }
+  }
+}
