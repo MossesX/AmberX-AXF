@@ -1286,7 +1286,7 @@ export class AxfRuntime {
 
   openDialog(id: string, props?: Record<string, unknown>) {
     if (this.openPlaced(`dialog:${id}`, props)) return;
-    this.set({ dialog: { id, props }, context: null });
+    this.set({ dialog: { id, props, scope: this.uiScope }, context: null });
   }
 
   closeDialog() {
@@ -1295,7 +1295,7 @@ export class AxfRuntime {
 
   toast(message: string, kind: Toast['kind'] = 'info', title?: string) {
     const popup = this.asset('popup').data;
-    const t: Toast = { id: ++this.toastSeq, kind, title, message };
+    const t: Toast = { id: ++this.toastSeq, kind, title, message, scope: this.uiScope };
     const toasts = [...this.state.toasts, t].slice(-popup.maxVisible);
     this.set({ toasts });
     // the behaviour theme's toast time wins when it sets one (0 = the pop-up asset's); 0 on the asset = stay until closed
@@ -1312,7 +1312,7 @@ export class AxfRuntime {
 
   openContext(x: number, y: number, target: string, payload?: string) {
     if (this.slotHidden('context-menu')) return;
-    this.set({ context: { x, y, target, payload } });
+    this.set({ context: { x, y, target, payload, scope: this.uiScope } });
   }
 
   closeContext() {
@@ -1572,6 +1572,16 @@ export class AxfRuntime {
 
   private readonly scopes = new Map<string, AxfRuntime>();
 
+  /** The interface scope the user is working in ('' = the app itself); dialogs, context menus, toasts and new windows are stamped with it. */
+  uiScope = '';
+
+  /** Called by a scope's root (pointer / focus / key, capture phase) and by scoped views before they open anything. */
+  enterScope(id: string): void {
+    const next = isScopeId(id) ? id : '';
+    this.uiScope = next;
+    this.windows.scopeHint = next;
+  }
+
   /** The registry view the interface engine resolves against. */
   private interfaceRegistry() {
     return { has: (t: string, id: string) => this.registry.has(t as AssetType, id), designPackage: (id: string) => this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id)?.data };
@@ -1649,6 +1659,10 @@ export class AxfRuntime {
       spacing: { value: () => spacingOf(resolved().spacing) },
       appliedInterface: { value: () => interfaceId },
       scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
+      // anything opened through the scoped view belongs to the scope (its own hosts draw it)
+      openDialog: { value: (did: string, props?: Record<string, unknown>) => { base.enterScope(scopeId); base.openDialog(did, props); } },
+      openContext: { value: (x: number, y: number, target: string, payload?: string) => { base.enterScope(scopeId); base.openContext(x, y, target, payload); } },
+      toast: { value: (message: string, kind?: Toast['kind'], title?: string) => { base.enterScope(scopeId); base.toast(message, kind, title); } },
     });
     this.scopes.set(scopeId, view);
     return view;

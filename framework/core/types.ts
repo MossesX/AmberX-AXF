@@ -503,6 +503,8 @@ export interface Toast {
   kind: 'info' | 'success' | 'warning' | 'danger';
   title?: string;
   message: string;
+  /** the interface scope it was raised in ('' / absent = the app itself; react/components/InterfaceScope.tsx) */
+  scope?: string;
 }
 
 export interface AxfState {
@@ -511,9 +513,9 @@ export interface AxfState {
   appearance?: import('./engines/appearance').AppearanceSourceState | null;
   role: string;
   view: string;
-  dialog: { id: string; props?: Record<string, unknown> } | null;
+  dialog: { id: string; props?: Record<string, unknown>; scope?: string } | null;
   toasts: Toast[];
-  context: { x: number; y: number; target: string; payload?: string } | null;
+  context: { x: number; y: number; target: string; payload?: string; scope?: string } | null;
   /** increments on every state change */
   rev: number;
   /** increments on every successful hot-swap */
