@@ -1,0 +1,1823 @@
+{
+  "type": "overlay",
+  "settings": {
+    "size": "axf.overlay.size",
+    "position": "axf.overlay.position",
+    "opacity": "axf.overlay.opacity",
+    "positionLock": "axf.overlay.positionLock",
+    "log": "axf.overlay.log",
+    "strip": "axf.overlay.strip",
+    "mini": "axf.overlay.mini"
+  },
+  "limits": {
+    "opacityMin": 0.2,
+    "opacityMax": 1,
+    "opacityDefault": 0.92,
+    "logLinesMin": 1,
+    "logLinesMax": 50,
+    "logLinesDefault": 5,
+    "stripLinesMin": 1,
+    "stripLinesMax": 6,
+    "stripLinesDefault": 3,
+    "stripMsMin": 500,
+    "stripMsMax": 30000,
+    "stripMsDefault": 3000,
+    "widthMin": 48,
+    "widthMax": 1200,
+    "heightMin": 32,
+    "heightMax": 1600,
+    "screenPctMin": 20,
+    "screenPctMax": 100,
+    "chipsMax": 6,
+    "labelMax": 24,
+    "tagMax": 24,
+    "lineTextMax": 200,
+    "logKeepMax": 200
+  },
+  "tones": [
+    "neutral",
+    "success",
+    "warning",
+    "danger",
+    "accent",
+    "muted",
+    "info"
+  ],
+  "toneToken": {
+    "neutral": "text",
+    "success": "success",
+    "warning": "warning",
+    "danger": "danger",
+    "accent": "accent",
+    "muted": "muted",
+    "info": "info"
+  },
+  "starters": {
+    "detector-panel": {
+      "pill": {
+        "title": "Detector",
+        "chips": [
+          {
+            "id": "armed",
+            "label": "Armed",
+            "offLabel": "Idle",
+            "tone": "success",
+            "offTone": "muted",
+            "icon": "",
+            "on": false
+          },
+          {
+            "id": "mic",
+            "label": "Mic",
+            "offLabel": "Mic off",
+            "tone": "info",
+            "offTone": "muted",
+            "icon": "mic",
+            "on": false
+          }
+        ],
+        "quickAction": "overlay.hide"
+      },
+      "log": {
+        "show": true,
+        "maxLines": 5,
+        "showConfidence": true
+      },
+      "strip": {
+        "show": true,
+        "maxLines": 3,
+        "lineMs": 3000
+      },
+      "mini": {
+        "defaultOpen": true,
+        "width": {
+          "min": 160,
+          "max": 480,
+          "default": 240
+        },
+        "height": {
+          "min": 160,
+          "max": 640,
+          "default": 300
+        }
+      },
+      "opacity": 0.95,
+      "positionLock": false,
+      "size": {
+        "minWidth": 120,
+        "maxWidth": 480,
+        "minHeight": 160,
+        "maxHeight": 640,
+        "maxScreenWidthPct": 90,
+        "maxScreenHeightPct": 80
+      }
+    },
+    "pill-compact": {
+      "pill": {
+        "title": "",
+        "chips": [
+          {
+            "id": "armed",
+            "label": "On",
+            "offLabel": "Idle",
+            "tone": "success",
+            "offTone": "muted",
+            "icon": "",
+            "on": false
+          },
+          {
+            "id": "listening",
+            "label": "Listening",
+            "offLabel": "Quiet",
+            "tone": "info",
+            "offTone": "muted",
+            "icon": "mic",
+            "on": false
+          }
+        ],
+        "quickAction": "overlay.mini"
+      },
+      "log": {
+        "show": false,
+        "maxLines": 5,
+        "showConfidence": true
+      },
+      "strip": {
+        "show": true,
+        "maxLines": 3,
+        "lineMs": 3000
+      },
+      "mini": {
+        "defaultOpen": false,
+        "width": {
+          "min": 160,
+          "max": 420,
+          "default": 220
+        },
+        "height": {
+          "min": 120,
+          "max": 520,
+          "default": 240
+        }
+      },
+      "opacity": 0.92,
+      "positionLock": false,
+      "size": {
+        "minWidth": 120,
+        "maxWidth": 480,
+        "minHeight": 48,
+        "maxHeight": 640,
+        "maxScreenWidthPct": 90,
+        "maxScreenHeightPct": 80
+      }
+    },
+    "quiet-strip": {
+      "pill": {
+        "title": "",
+        "chips": [
+          {
+            "id": "active",
+            "label": "Active",
+            "offLabel": "Paused",
+            "tone": "accent",
+            "offTone": "muted",
+            "icon": "",
+            "on": false
+          }
+        ],
+        "quickAction": ""
+      },
+      "log": {
+        "show": false,
+        "maxLines": 3,
+        "showConfidence": false
+      },
+      "strip": {
+        "show": true,
+        "maxLines": 2,
+        "lineMs": 2000
+      },
+      "mini": {
+        "defaultOpen": false,
+        "width": {
+          "min": 120,
+          "max": 320,
+          "default": 180
+        },
+        "height": {
+          "min": 80,
+          "max": 320,
+          "default": 160
+        }
+      },
+      "opacity": 0.85,
+      "positionLock": true,
+      "size": {
+        "minWidth": 100,
+        "maxWidth": 360,
+        "minHeight": 40,
+        "maxHeight": 360,
+        "maxScreenWidthPct": 80,
+        "maxScreenHeightPct": 60
+      }
+    }
+  },
+  "normalize": {
+    "empty": {
+      "raw": {},
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [],
+          "quickAction": ""
+        },
+        "log": {
+          "show": true,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 120,
+            "max": 480,
+            "default": 220
+          },
+          "height": {
+            "min": 48,
+            "max": 640,
+            "default": 260
+          }
+        },
+        "opacity": 0.92,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    },
+    "junk": {
+      "raw": {
+        "pill": "x",
+        "log": [],
+        "strip": 5,
+        "mini": null,
+        "opacity": "high",
+        "positionLock": "yes",
+        "size": 3
+      },
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [],
+          "quickAction": ""
+        },
+        "log": {
+          "show": true,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 120,
+            "max": 480,
+            "default": 220
+          },
+          "height": {
+            "min": 48,
+            "max": 640,
+            "default": 260
+          }
+        },
+        "opacity": 0.92,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    },
+    "clamped": {
+      "raw": {
+        "pill": {
+          "title": "A very long title that goes past forty characters for sure",
+          "chips": [
+            {
+              "id": "a",
+              "label": "label longer than twenty-four chars",
+              "tone": "pink"
+            },
+            {
+              "id": "a",
+              "label": "repeat"
+            },
+            {
+              "id": "Bad Id"
+            },
+            {
+              "id": "b",
+              "on": true,
+              "offLabel": "off",
+              "offTone": "danger",
+              "icon": "mic"
+            }
+          ],
+          "quickAction": "overlay.mini"
+        },
+        "log": {
+          "show": "no",
+          "maxLines": 500,
+          "showConfidence": 0
+        },
+        "strip": {
+          "maxLines": 0,
+          "lineMs": 100000
+        },
+        "mini": {
+          "defaultOpen": 1,
+          "width": {
+            "min": 400,
+            "max": 100,
+            "default": 9999
+          },
+          "height": {
+            "min": 10,
+            "max": 5000,
+            "default": -3
+          }
+        },
+        "opacity": 7,
+        "positionLock": true,
+        "size": {
+          "minWidth": 900,
+          "maxWidth": 200,
+          "minHeight": 2000,
+          "maxHeight": 1,
+          "maxScreenWidthPct": 5,
+          "maxScreenHeightPct": 500
+        }
+      },
+      "out": {
+        "pill": {
+          "title": "A very long title that goes past forty c",
+          "chips": [
+            {
+              "id": "a",
+              "label": "label longer than twenty",
+              "offLabel": "",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "b",
+              "label": "b",
+              "offLabel": "off",
+              "tone": "success",
+              "offTone": "danger",
+              "icon": "mic",
+              "on": true
+            }
+          ],
+          "quickAction": "overlay.mini"
+        },
+        "log": {
+          "show": true,
+          "maxLines": 50,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 1,
+          "lineMs": 30000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 200,
+            "max": 400,
+            "default": 400
+          },
+          "height": {
+            "min": 32,
+            "max": 1600,
+            "default": 32
+          }
+        },
+        "opacity": 1,
+        "positionLock": true,
+        "size": {
+          "minWidth": 200,
+          "maxWidth": 900,
+          "minHeight": 32,
+          "maxHeight": 1600,
+          "maxScreenWidthPct": 20,
+          "maxScreenHeightPct": 100
+        }
+      }
+    },
+    "too-many-chips": {
+      "raw": {
+        "pill": {
+          "chips": [
+            {
+              "id": "c0"
+            },
+            {
+              "id": "c1"
+            },
+            {
+              "id": "c2"
+            },
+            {
+              "id": "c3"
+            },
+            {
+              "id": "c4"
+            },
+            {
+              "id": "c5"
+            },
+            {
+              "id": "c6"
+            },
+            {
+              "id": "c7"
+            },
+            {
+              "id": "c8"
+            }
+          ]
+        },
+        "log": {},
+        "strip": {},
+        "mini": {}
+      },
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [
+            {
+              "id": "c0",
+              "label": "c0",
+              "offLabel": "",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "c1",
+              "label": "c1",
+              "offLabel": "",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "c2",
+              "label": "c2",
+              "offLabel": "",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "c3",
+              "label": "c3",
+              "offLabel": "",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "c4",
+              "label": "c4",
+              "offLabel": "",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "c5",
+              "label": "c5",
+              "offLabel": "",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            }
+          ],
+          "quickAction": ""
+        },
+        "log": {
+          "show": true,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 120,
+            "max": 480,
+            "default": 220
+          },
+          "height": {
+            "min": 48,
+            "max": 640,
+            "default": 260
+          }
+        },
+        "opacity": 0.92,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    },
+    "mini-outside-size": {
+      "raw": {
+        "pill": {
+          "chips": []
+        },
+        "log": {},
+        "strip": {},
+        "mini": {
+          "width": {
+            "min": 10,
+            "max": 2000,
+            "default": 1000
+          },
+          "height": {
+            "min": 10,
+            "max": 2000,
+            "default": 1000
+          }
+        },
+        "size": {
+          "minWidth": 100,
+          "maxWidth": 300,
+          "minHeight": 100,
+          "maxHeight": 200
+        }
+      },
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [],
+          "quickAction": ""
+        },
+        "log": {
+          "show": true,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 100,
+            "max": 300,
+            "default": 300
+          },
+          "height": {
+            "min": 100,
+            "max": 200,
+            "default": 200
+          }
+        },
+        "opacity": 0.92,
+        "positionLock": false,
+        "size": {
+          "minWidth": 100,
+          "maxWidth": 300,
+          "minHeight": 100,
+          "maxHeight": 200,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    },
+    "opacity-rounds": {
+      "raw": {
+        "pill": {
+          "chips": []
+        },
+        "log": {},
+        "strip": {},
+        "mini": {},
+        "opacity": 0.56789
+      },
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [],
+          "quickAction": ""
+        },
+        "log": {
+          "show": true,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 120,
+            "max": 480,
+            "default": 220
+          },
+          "height": {
+            "min": 48,
+            "max": 640,
+            "default": 260
+          }
+        },
+        "opacity": 0.57,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    }
+  },
+  "errors": {
+    "not-object": {
+      "raw": "x",
+      "errors": [
+        "data must be an object"
+      ]
+    },
+    "missing-all": {
+      "raw": {},
+      "errors": [
+        "data.pill must be an object",
+        "data.log must be an object",
+        "data.strip must be an object",
+        "data.mini must be an object"
+      ]
+    },
+    "starter": {
+      "raw": {
+        "pill": {
+          "title": "",
+          "chips": [
+            {
+              "id": "armed",
+              "label": "On",
+              "offLabel": "Idle",
+              "tone": "success",
+              "offTone": "muted"
+            },
+            {
+              "id": "listening",
+              "label": "Listening",
+              "offLabel": "Quiet",
+              "tone": "info",
+              "offTone": "muted",
+              "icon": "mic"
+            }
+          ],
+          "quickAction": "overlay.mini"
+        },
+        "log": {
+          "show": false,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 160,
+            "max": 420,
+            "default": 220
+          },
+          "height": {
+            "min": 120,
+            "max": 520,
+            "default": 240
+          }
+        },
+        "opacity": 0.92,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      },
+      "errors": []
+    },
+    "bad-chips": {
+      "raw": {
+        "pill": {
+          "chips": [
+            {
+              "id": "Bad"
+            },
+            {
+              "id": "ok",
+              "tone": "pink",
+              "offTone": "mauve",
+              "label": 3
+            },
+            {
+              "id": "ok"
+            }
+          ],
+          "quickAction": 4
+        },
+        "log": {
+          "show": "yes",
+          "maxLines": 0,
+          "showConfidence": "no"
+        },
+        "strip": {
+          "show": 1,
+          "maxLines": 7,
+          "lineMs": 100
+        },
+        "mini": {
+          "defaultOpen": "open",
+          "width": "wide",
+          "height": {
+            "min": 500,
+            "max": 100,
+            "default": 2000
+          }
+        },
+        "opacity": 2,
+        "positionLock": "locked",
+        "size": "big"
+      },
+      "errors": [
+        "data.pill.chips[0].id must be an id (lowercase letters, digits, . _ -)",
+        "data.pill.chips[1].tone must be one of: neutral, success, warning, danger, accent, muted, info",
+        "data.pill.chips[1].offTone must be one of: neutral, success, warning, danger, accent, muted, info",
+        "data.pill.chips[1].label must be a string",
+        "data.pill.chips[2].id \"ok\" repeats",
+        "data.pill.quickAction must be an action spec string",
+        "data.log.show must be true or false",
+        "data.log.maxLines must be a number from 1 to 50",
+        "data.log.showConfidence must be true or false",
+        "data.strip.show must be true or false",
+        "data.strip.maxLines must be a number from 1 to 6",
+        "data.strip.lineMs must be a number from 500 to 30000",
+        "data.mini.defaultOpen must be true or false",
+        "data.mini.width must be { min, max, default }",
+        "data.mini.height.default must be a number from 32 to 1600",
+        "data.mini.height.min must not be above max",
+        "data.opacity must be a number from 0.2 to 1",
+        "data.positionLock must be true or false",
+        "data.size must be an object"
+      ]
+    },
+    "size-fields": {
+      "raw": {
+        "pill": {
+          "chips": []
+        },
+        "log": {},
+        "strip": {},
+        "mini": {},
+        "size": {
+          "minWidth": 1,
+          "maxWidth": 5000,
+          "minHeight": 0,
+          "maxHeight": 9000,
+          "maxScreenWidthPct": 5,
+          "maxScreenHeightPct": 101
+        }
+      },
+      "errors": [
+        "data.size.minWidth must be a number from 48 to 1200",
+        "data.size.maxWidth must be a number from 48 to 1200",
+        "data.size.minHeight must be a number from 32 to 1600",
+        "data.size.maxHeight must be a number from 32 to 1600",
+        "data.size.maxScreenWidthPct must be a number from 20 to 100",
+        "data.size.maxScreenHeightPct must be a number from 20 to 100"
+      ]
+    },
+    "chips-not-list": {
+      "raw": {
+        "pill": {
+          "chips": "none"
+        },
+        "log": {},
+        "strip": {},
+        "mini": {}
+      },
+      "errors": [
+        "data.pill.chips must be a list"
+      ]
+    },
+    "too-many-chips": {
+      "raw": {
+        "pill": {
+          "chips": [
+            {
+              "id": "c0"
+            },
+            {
+              "id": "c1"
+            },
+            {
+              "id": "c2"
+            },
+            {
+              "id": "c3"
+            },
+            {
+              "id": "c4"
+            },
+            {
+              "id": "c5"
+            },
+            {
+              "id": "c6"
+            }
+          ]
+        },
+        "log": {},
+        "strip": {},
+        "mini": {}
+      },
+      "errors": [
+        "data.pill.chips: at most 6 chips"
+      ]
+    }
+  },
+  "geometry": [
+    {
+      "name": "defaults-on-phone",
+      "data": "pill-compact",
+      "screen": {
+        "width": 412,
+        "height": 915
+      },
+      "wanted": null,
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "max": {
+        "width": 370,
+        "height": 640
+      },
+      "size": {
+        "width": 220,
+        "height": 240
+      },
+      "mini": {
+        "width": 220,
+        "height": 240
+      },
+      "positionIn": null
+    },
+    {
+      "name": "junk-size",
+      "data": "pill-compact",
+      "screen": {
+        "width": 412,
+        "height": 915
+      },
+      "wanted": {
+        "width": 0,
+        "height": -5
+      },
+      "position": {
+        "x": 0,
+        "y": 675
+      },
+      "max": {
+        "width": 370,
+        "height": 640
+      },
+      "size": {
+        "width": 220,
+        "height": 240
+      },
+      "mini": {
+        "width": 220,
+        "height": 240
+      },
+      "positionIn": {
+        "x": -50,
+        "y": 99999
+      }
+    },
+    {
+      "name": "too-big",
+      "data": "detector-panel",
+      "screen": {
+        "width": 412,
+        "height": 915
+      },
+      "wanted": {
+        "width": 5000,
+        "height": 5000
+      },
+      "position": {
+        "x": 42,
+        "y": 275
+      },
+      "max": {
+        "width": 370,
+        "height": 640
+      },
+      "size": {
+        "width": 370,
+        "height": 640
+      },
+      "mini": {
+        "width": 370,
+        "height": 640
+      },
+      "positionIn": {
+        "x": 300,
+        "y": 800
+      }
+    },
+    {
+      "name": "too-small",
+      "data": "detector-panel",
+      "screen": {
+        "width": 412,
+        "height": 915
+      },
+      "wanted": {
+        "width": 10,
+        "height": 10
+      },
+      "position": {
+        "x": 11,
+        "y": 20
+      },
+      "max": {
+        "width": 370,
+        "height": 640
+      },
+      "size": {
+        "width": 120,
+        "height": 160
+      },
+      "mini": {
+        "width": 160,
+        "height": 160
+      },
+      "positionIn": {
+        "x": 10.6,
+        "y": 20.4
+      }
+    },
+    {
+      "name": "tiny-screen",
+      "data": "detector-panel",
+      "screen": {
+        "width": 200,
+        "height": 180
+      },
+      "wanted": {
+        "width": 300,
+        "height": 300
+      },
+      "position": {
+        "x": 20,
+        "y": 20
+      },
+      "max": {
+        "width": 180,
+        "height": 160
+      },
+      "size": {
+        "width": 180,
+        "height": 160
+      },
+      "mini": {
+        "width": 180,
+        "height": 160
+      },
+      "positionIn": {
+        "x": 100,
+        "y": 100
+      }
+    },
+    {
+      "name": "quiet-limits",
+      "data": "quiet-strip",
+      "screen": {
+        "width": 412,
+        "height": 915
+      },
+      "wanted": {
+        "width": 350,
+        "height": 350
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "max": {
+        "width": 329,
+        "height": 360
+      },
+      "size": {
+        "width": 329,
+        "height": 350
+      },
+      "mini": {
+        "width": 320,
+        "height": 320
+      },
+      "positionIn": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "canDrag": [
+    {
+      "data": "pill-compact",
+      "setting": null,
+      "out": true
+    },
+    {
+      "data": "pill-compact",
+      "setting": "true",
+      "out": false
+    },
+    {
+      "data": "quiet-strip",
+      "setting": null,
+      "out": false
+    },
+    {
+      "data": "quiet-strip",
+      "setting": "false",
+      "out": true
+    },
+    {
+      "data": "quiet-strip",
+      "setting": "junk",
+      "out": false
+    }
+  ],
+  "log": {
+    "lines": [
+      {
+        "text": "swipe up",
+        "confidence": 0.9123,
+        "tag": "fired",
+        "at": 1700000000000,
+        "ref": "trig.swipe-up"
+      },
+      {
+        "text": "say next",
+        "confidence": 0.42,
+        "tag": "below",
+        "at": 1700000000500,
+        "ref": ""
+      },
+      {
+        "text": "wave",
+        "confidence": null,
+        "tag": "",
+        "at": 1700000001200,
+        "ref": "trig.wave"
+      },
+      {
+        "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "confidence": 1,
+        "tag": "tag that is far too long",
+        "at": 1700000002000,
+        "ref": ""
+      },
+      {
+        "text": "nod",
+        "confidence": 0,
+        "tag": "cooldown",
+        "at": 1700000003100,
+        "ref": ""
+      },
+      {
+        "text": "blink",
+        "confidence": 0.5,
+        "tag": "muted",
+        "at": 1700000003200,
+        "ref": ""
+      }
+    ],
+    "texts": [
+      {
+        "shown": "swipe up · 91.2% · fired",
+        "hidden": "swipe up · fired",
+        "confidence": "91.2%"
+      },
+      {
+        "shown": "say next · 42.0% · below",
+        "hidden": "say next · below",
+        "confidence": "42.0%"
+      },
+      {
+        "shown": "wave",
+        "hidden": "wave",
+        "confidence": ""
+      },
+      {
+        "shown": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx · 100.0% · tag that is far too long",
+        "hidden": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx · tag that is far too long",
+        "confidence": "100.0%"
+      },
+      {
+        "shown": "nod · 0.0% · cooldown",
+        "hidden": "nod · cooldown",
+        "confidence": "0.0%"
+      },
+      {
+        "shown": "blink · 50.0% · muted",
+        "hidden": "blink · muted",
+        "confidence": "50.0%"
+      }
+    ],
+    "trim": [
+      {
+        "maxLines": 1,
+        "out": [
+          "blink"
+        ]
+      },
+      {
+        "maxLines": 3,
+        "out": [
+          "xxxxxxxx",
+          "nod",
+          "blink"
+        ]
+      },
+      {
+        "maxLines": 5,
+        "out": [
+          "say next",
+          "wave",
+          "xxxxxxxx",
+          "nod",
+          "blink"
+        ]
+      },
+      {
+        "maxLines": 0,
+        "out": [
+          "blink"
+        ]
+      },
+      {
+        "maxLines": 999,
+        "out": [
+          "swipe up",
+          "say next",
+          "wave",
+          "xxxxxxxx",
+          "nod",
+          "blink"
+        ]
+      }
+    ],
+    "add": {
+      "maxLines": 5,
+      "out": [
+        1700000000500,
+        1700000001200,
+        1700000002000,
+        1700000003100,
+        1700000003200
+      ]
+    },
+    "fade": [
+      {
+        "count": 1,
+        "out": [
+          1
+        ]
+      },
+      {
+        "count": 3,
+        "out": [
+          0.7,
+          0.85,
+          1
+        ]
+      },
+      {
+        "count": 5,
+        "out": [
+          0.4,
+          0.55,
+          0.7,
+          0.85,
+          1
+        ]
+      },
+      {
+        "count": 8,
+        "out": [
+          0.35,
+          0.35,
+          0.35,
+          0.4,
+          0.55,
+          0.7,
+          0.85,
+          1
+        ]
+      }
+    ]
+  },
+  "strip": [
+    {
+      "now": 1699999999999,
+      "out": [],
+      "next": null
+    },
+    {
+      "now": 1700000000000,
+      "out": [
+        1700000000000
+      ],
+      "next": 3000
+    },
+    {
+      "now": 1700000001000,
+      "out": [
+        1700000000000,
+        1700000000500
+      ],
+      "next": 2000
+    },
+    {
+      "now": 1700000002999,
+      "out": [
+        1700000000500,
+        1700000001200,
+        1700000002000
+      ],
+      "next": 501
+    },
+    {
+      "now": 1700000003000,
+      "out": [
+        1700000000500,
+        1700000001200,
+        1700000002000
+      ],
+      "next": 500
+    },
+    {
+      "now": 1700000003500,
+      "out": [
+        1700000002000,
+        1700000003100,
+        1700000003200
+      ],
+      "next": 1500
+    },
+    {
+      "now": 1700000005000,
+      "out": [
+        1700000003100,
+        1700000003200
+      ],
+      "next": 1100
+    },
+    {
+      "now": 1700000006199,
+      "out": [
+        1700000003200
+      ],
+      "next": 16
+    },
+    {
+      "now": 1700000006200,
+      "out": [],
+      "next": null
+    },
+    {
+      "now": 1700000009000,
+      "out": [],
+      "next": null
+    }
+  ],
+  "stripOne": {
+    "strip": {
+      "maxLines": 1,
+      "lineMs": 500
+    },
+    "now": 1700000003300,
+    "out": [
+      1700000003200
+    ],
+    "next": 400
+  },
+  "chips": {
+    "none": {
+      "states": {},
+      "out": [
+        {
+          "id": "armed",
+          "text": "Idle",
+          "tone": "muted",
+          "icon": "",
+          "on": false
+        },
+        {
+          "id": "mic",
+          "text": "Mic off",
+          "tone": "muted",
+          "icon": "mic",
+          "on": false
+        }
+      ]
+    },
+    "armed-on": {
+      "states": {
+        "armed": true
+      },
+      "out": [
+        {
+          "id": "armed",
+          "text": "Armed",
+          "tone": "success",
+          "icon": "",
+          "on": true
+        },
+        {
+          "id": "mic",
+          "text": "Mic off",
+          "tone": "muted",
+          "icon": "mic",
+          "on": false
+        }
+      ]
+    },
+    "mic-off-armed-on": {
+      "states": {
+        "armed": true,
+        "mic": false,
+        "unknown": true
+      },
+      "out": [
+        {
+          "id": "armed",
+          "text": "Armed",
+          "tone": "success",
+          "icon": "",
+          "on": true
+        },
+        {
+          "id": "mic",
+          "text": "Mic off",
+          "tone": "muted",
+          "icon": "mic",
+          "on": false
+        }
+      ]
+    },
+    "mic-on": {
+      "states": {
+        "mic": true
+      },
+      "out": [
+        {
+          "id": "armed",
+          "text": "Idle",
+          "tone": "muted",
+          "icon": "",
+          "on": false
+        },
+        {
+          "id": "mic",
+          "text": "Mic",
+          "tone": "info",
+          "icon": "mic",
+          "on": true
+        }
+      ]
+    }
+  },
+  "setChip": [
+    {
+      "states": {},
+      "id": "armed",
+      "on": true,
+      "out": {
+        "armed": true
+      }
+    },
+    {
+      "states": {
+        "armed": true
+      },
+      "id": "armed",
+      "on": false,
+      "out": {
+        "armed": false
+      }
+    }
+  ],
+  "withSettings": {
+    "none": {
+      "data": "pill-compact",
+      "values": {},
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [
+            {
+              "id": "armed",
+              "label": "On",
+              "offLabel": "Idle",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "listening",
+              "label": "Listening",
+              "offLabel": "Quiet",
+              "tone": "info",
+              "offTone": "muted",
+              "icon": "mic",
+              "on": false
+            }
+          ],
+          "quickAction": "overlay.mini"
+        },
+        "log": {
+          "show": false,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 160,
+            "max": 420,
+            "default": 220
+          },
+          "height": {
+            "min": 120,
+            "max": 520,
+            "default": 240
+          }
+        },
+        "opacity": 0.92,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    },
+    "all": {
+      "data": "pill-compact",
+      "values": {
+        "axf.overlay.size": "300,200",
+        "axf.overlay.opacity": "0.5",
+        "axf.overlay.positionLock": "true",
+        "axf.overlay.log": "true",
+        "axf.overlay.strip": "false",
+        "axf.overlay.mini": "true"
+      },
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [
+            {
+              "id": "armed",
+              "label": "On",
+              "offLabel": "Idle",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "listening",
+              "label": "Listening",
+              "offLabel": "Quiet",
+              "tone": "info",
+              "offTone": "muted",
+              "icon": "mic",
+              "on": false
+            }
+          ],
+          "quickAction": "overlay.mini"
+        },
+        "log": {
+          "show": true,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": false,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": true,
+          "width": {
+            "min": 160,
+            "max": 420,
+            "default": 300
+          },
+          "height": {
+            "min": 120,
+            "max": 520,
+            "default": 200
+          }
+        },
+        "opacity": 0.5,
+        "positionLock": true,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    },
+    "junk": {
+      "data": "pill-compact",
+      "values": {
+        "axf.overlay.size": "big",
+        "axf.overlay.opacity": "dark",
+        "axf.overlay.positionLock": "maybe",
+        "axf.overlay.log": "1",
+        "axf.overlay.strip": "",
+        "axf.overlay.mini": "no"
+      },
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [
+            {
+              "id": "armed",
+              "label": "On",
+              "offLabel": "Idle",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "listening",
+              "label": "Listening",
+              "offLabel": "Quiet",
+              "tone": "info",
+              "offTone": "muted",
+              "icon": "mic",
+              "on": false
+            }
+          ],
+          "quickAction": "overlay.mini"
+        },
+        "log": {
+          "show": false,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 160,
+            "max": 420,
+            "default": 220
+          },
+          "height": {
+            "min": 120,
+            "max": 520,
+            "default": 240
+          }
+        },
+        "opacity": 0.92,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    },
+    "clamped": {
+      "data": "pill-compact",
+      "values": {
+        "axf.overlay.size": "9999,1",
+        "axf.overlay.opacity": "5"
+      },
+      "out": {
+        "pill": {
+          "title": "",
+          "chips": [
+            {
+              "id": "armed",
+              "label": "On",
+              "offLabel": "Idle",
+              "tone": "success",
+              "offTone": "muted",
+              "icon": "",
+              "on": false
+            },
+            {
+              "id": "listening",
+              "label": "Listening",
+              "offLabel": "Quiet",
+              "tone": "info",
+              "offTone": "muted",
+              "icon": "mic",
+              "on": false
+            }
+          ],
+          "quickAction": "overlay.mini"
+        },
+        "log": {
+          "show": false,
+          "maxLines": 5,
+          "showConfidence": true
+        },
+        "strip": {
+          "show": true,
+          "maxLines": 3,
+          "lineMs": 3000
+        },
+        "mini": {
+          "defaultOpen": false,
+          "width": {
+            "min": 160,
+            "max": 420,
+            "default": 420
+          },
+          "height": {
+            "min": 120,
+            "max": 520,
+            "default": 120
+          }
+        },
+        "opacity": 1,
+        "positionLock": false,
+        "size": {
+          "minWidth": 120,
+          "maxWidth": 480,
+          "minHeight": 48,
+          "maxHeight": 640,
+          "maxScreenWidthPct": 90,
+          "maxScreenHeightPct": 80
+        }
+      }
+    }
+  },
+  "parse": {
+    "size": [
+      {
+        "raw": "300,200",
+        "out": {
+          "width": 300,
+          "height": 200
+        }
+      },
+      {
+        "raw": " 10.5 , 20 ",
+        "out": {
+          "width": 10.5,
+          "height": 20
+        }
+      },
+      {
+        "raw": "0,10",
+        "out": null
+      },
+      {
+        "raw": "x",
+        "out": null
+      },
+      {
+        "raw": "",
+        "out": null
+      },
+      {
+        "raw": "1,2,3",
+        "out": null
+      },
+      {
+        "raw": "-5,5",
+        "out": null
+      }
+    ],
+    "position": [
+      {
+        "raw": "300,200",
+        "out": {
+          "x": 300,
+          "y": 200
+        }
+      },
+      {
+        "raw": " -10.5 , 20 ",
+        "out": {
+          "x": -10.5,
+          "y": 20
+        }
+      },
+      {
+        "raw": "x",
+        "out": null
+      },
+      {
+        "raw": "",
+        "out": null
+      },
+      {
+        "raw": "1,2,3",
+        "out": null
+      }
+    ],
+    "serialize": {
+      "size": "10,21",
+      "position": "-3,2"
+    }
+  }
+}

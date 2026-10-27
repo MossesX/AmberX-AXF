@@ -138,6 +138,7 @@ jobs:
             npx -y tsx framework/spec/check-banner-hide.mts            # banner Hide / Hide all / hide timer state + plugin@1 banner check
             npx -y tsx framework/spec/check-looktokens.mts             # look@1 tokens: only-changed storage, compact to no space, theme-token CSS
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
+            npx -y tsx framework/spec/check-overlay.mts                # overlay@1: overlay.json replay (same file as the kernel's OverlayConformanceTest), starters, validator = CLI
             npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
             npx -y tsx apps/amberx-droid/test.mjs                      # AmberX: hub rules + voice command matching + monitoring / auto-approval rules
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
