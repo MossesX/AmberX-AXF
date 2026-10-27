@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "pill-tabs",
+  "name": "Pill Tabs",
+  "version": "1.0.0",
+  "description": "Rounded pills with a filled active state. Great as top tabs.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "style": "pills",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Start",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "assets",
+            "label": "Hot-swap",
+            "icon": "zap",
+            "view": "assets"
+          },
+          {
+            "id": "account",
+            "label": "Roles",
+            "icon": "user",
+            "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ]
+  }
+}
