@@ -1,18 +1,18 @@
 {
   "$axf": "claude-handoff@1",
-  "generatedAt": "2026-10-25T16:58:53.329Z",
+  "generatedAt": "2026-10-27T03:49:59.038Z",
   "project": "amberx-axf",
   "displayName": "AmberX AXF",
   "repo": "MossesX/AmberX-AXF",
   "branch": "main",
-  "commit": "f9dd19dd9c50ed435eab5ec8d70c75d2179e26ee",
-  "fingerprint": "fef28887b79678b3",
+  "commit": "4edceb422a342ece6356efdb4bac1394b8883da5",
+  "fingerprint": "e2cd4054ead32a74",
   "sources": [
     {
       "path": "CLAUDE.md",
       "role": "instructions",
-      "sha": "b6c1e6c12f6f1c93",
-      "bytes": 216617
+      "sha": "b70707303df803ed",
+      "bytes": 237253
     },
     {
       "path": "project.manifest.json",
@@ -39,6 +39,12 @@
       "bytes": 1256
     },
     {
+      "path": "_claude/THREADS.md",
+      "role": "memory",
+      "sha": "f6d39b193210cd4f",
+      "bytes": 12590
+    },
+    {
       "path": "_claude/instructions/README.md",
       "role": "instructions",
       "sha": "eddacad121aef4fd",
@@ -59,8 +65,8 @@
     {
       "path": "_claude/memory/decisions.md",
       "role": "memory",
-      "sha": "f7727f8822b55402",
-      "bytes": 37475
+      "sha": "967c2e7725320ead",
+      "bytes": 38206
     },
     {
       "path": "_claude/memory/docs/Building-baseline.md",
@@ -91,6 +97,12 @@
       "role": "memory",
       "sha": "5ecc0f2fec6b4878",
       "bytes": 6849
+    },
+    {
+      "path": "_claude/memory/docs/axhub-pages.md",
+      "role": "memory",
+      "sha": "a31cd12254b96308",
+      "bytes": 2883
     },
     {
       "path": "_claude/memory/docs/axhub-web.md",
@@ -323,8 +335,8 @@
     {
       "path": "_claude/rules/RULES.md",
       "role": "rules",
-      "sha": "4962b2b6d5a6b786",
-      "bytes": 17693
+      "sha": "0de1c9722780c86f",
+      "bytes": 19218
     },
     {
       "path": "_claude/shared/instructions/README.md",
@@ -383,8 +395,8 @@
     {
       "path": "_claude/shared/rules/RULES.md",
       "role": "rules",
-      "sha": "6ea7550e61532bdf",
-      "bytes": 10980
+      "sha": "3a407ecd5b304141",
+      "bytes": 12772
     },
     {
       "path": "_claude/shared/rules/preferences.md",
@@ -419,8 +431,8 @@
     {
       "path": "framework/spec/PORTING.md",
       "role": "spec",
-      "sha": "0e67e3aecd3e7bc7",
-      "bytes": 16517
+      "sha": "6a78d2f631b6bcca",
+      "bytes": 20481
     },
     {
       "path": "framework/spec/THEMING.md",
@@ -431,14 +443,20 @@
     {
       "path": "apps/console-web/plugins/README.md",
       "role": "spec",
-      "sha": "632bdbb055fc43d4",
-      "bytes": 26655
+      "sha": "a91fb409bb17a99a",
+      "bytes": 28037
     },
     {
       "path": "framework/boilerplates/README.md",
       "role": "spec",
       "sha": "edf57d38a6554d4c",
       "bytes": 2455
+    },
+    {
+      "path": "apps/amberx-droid/project.manifest.json",
+      "role": "manifest",
+      "sha": "20d867c608af3e68",
+      "bytes": 801
     },
     {
       "path": "apps/axhub-android/project.manifest.json",
@@ -570,7 +588,7 @@
   "machines": [
     {
       "host": "console",
-      "collectedAt": "2026-10-25T16:58:11.119Z",
+      "collectedAt": "2026-10-27T03:47:45.072Z",
       "files": 0
     }
   ],
@@ -582,7 +600,7 @@
   "files": [
     {
       "path": "context/CLAUDE.md",
-      "sha": "b6c1e6c12f6f1c93"
+      "sha": "b70707303df803ed"
     },
     {
       "path": "context/claude__README.md",
@@ -590,11 +608,11 @@
     },
     {
       "path": "context/claude__shared__rules__RULES.md",
-      "sha": "6ea7550e61532bdf"
+      "sha": "3a407ecd5b304141"
     },
     {
       "path": "context/claude__rules__RULES.md",
-      "sha": "4962b2b6d5a6b786"
+      "sha": "0de1c9722780c86f"
     },
     {
       "path": "context/claude__instructions__README.md",
@@ -610,7 +628,7 @@
     },
     {
       "path": "context/claude__memory__decisions.md",
-      "sha": "f7727f8822b55402"
+      "sha": "967c2e7725320ead"
     },
     {
       "path": "context/claude__memory__docs__build-reporting.md",
@@ -630,7 +648,7 @@
     },
     {
       "path": "context/framework__spec__PORTING.md",
-      "sha": "0e67e3aecd3e7bc7"
+      "sha": "6a78d2f631b6bcca"
     },
     {
       "path": "context/framework__spec__THEMING.md",
@@ -642,7 +660,7 @@
     },
     {
       "path": "context/apps__console-web__plugins__README.md",
-      "sha": "632bdbb055fc43d4"
+      "sha": "a91fb409bb17a99a"
     },
     {
       "path": "user/console/settings-summary.json",
@@ -654,39 +672,39 @@
     },
     {
       "path": "README.md",
-      "sha": "dc0a905b44c8806a"
+      "sha": "f75d19dbe69ec826"
     },
     {
       "path": "HANDOFF.md",
-      "sha": "e37be6b3e78d4a70"
+      "sha": "41077e62ca16f32c"
     },
     {
       "path": "PROJECT.md",
-      "sha": "665c5828bf529b9a"
+      "sha": "e5655d5af01e1730"
     },
     {
       "path": "INSTRUCTIONS.md",
-      "sha": "658143dbf6bf51a2"
+      "sha": "e5856253723679fb"
     },
     {
       "path": "FILES.md",
-      "sha": "0d6f354bc33f5905"
+      "sha": "57d2527f9f1b9183"
     },
     {
       "path": "USER-SCOPE.md",
-      "sha": "8453782e7f412f0c"
+      "sha": "ebdc43215f2a48cd"
     },
     {
       "path": "CLAUDE-AI.md",
-      "sha": "c0a569bb86aef587"
+      "sha": "ee9338c0540a32b6"
     },
     {
       "path": "SECRETS.md",
-      "sha": "d7d7b0c984d6b27a"
+      "sha": "5ad5d9ad7b596d83"
     },
     {
       "path": "SETUP.md",
-      "sha": "2f75c7d2be7966bc"
+      "sha": "65c7407a629e9e21"
     },
     {
       "path": "ACTIVE-THREADS.md",
@@ -694,7 +712,7 @@
     },
     {
       "path": "PROMPT.md",
-      "sha": "a27f7c9c69c9b0cc"
+      "sha": "3f49847d7bd0c03d"
     },
     {
       "path": "handoff.json",
