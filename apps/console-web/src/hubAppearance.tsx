@@ -8,7 +8,7 @@
  * local dev console against a local hub works too; until the server answers, the default hub is used.
  */
 import { useEffect, useState } from 'react';
-import { Button, Chip, HubAppearanceSource, DEFAULT_HUB, SelectField, useAxfState, useRuntime } from './axf/react';
+import { Chip, HubAppearanceSource, DEFAULT_HUB, useAxfState, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import manifest from '../axf.manifest.json';
 
@@ -71,7 +71,7 @@ function HubLookPanel() {
         {st?.status === 'unauthorized' && <Chip tone="warning">{st.reason}</Chip>}
         {st?.status === 'unreachable' && <Chip tone="danger">unreachable · {st.reason}</Chip>}
       </div>
-      <PackagePicker />
+      <p className="fx-muted">Design packages: Settings → Appearance → AmberX Design Package.</p>
       {skipped.length > 0 && (
         <p className="fx-small fx-muted" style={{ margin: 0 }}>
           Saved on the hub but not in this app (that slot keeps this app's default): {skipped.join(', ')}.
@@ -85,43 +85,6 @@ function HubLookPanel() {
   );
 }
 
-/**
- * Appearance packages (appearance-package@1): pick one of the saved packages to apply every appearance setting it
- * holds, or go back to the console's default look. Both go through the runtime, so the hub document follows.
- */
-function PackagePicker() {
-  const rt = useRuntime();
-  useAxfState();
-  const [confirm, setConfirm] = useState(false);
-  useEffect(() => { if (!confirm) return; const t = setTimeout(() => setConfirm(false), 4000); return () => clearTimeout(t); }, [confirm]);
-  const packages = rt.registry.list('appearance-package');
-  const applied = rt.appliedAppearancePackage() ?? '';
-  const pick = packages.find((p) => p.id === applied);
-  return (
-    <div className="fx-stack">
-      <SelectField
-        label="Appearance package"
-        value={applied}
-        empty={packages.length ? 'None applied (pick one)' : 'No packages saved'}
-        options={packages.map((p) => ({ value: p.id, label: p.name }))}
-        hint={pick?.description ?? 'Applies every appearance setting the package holds: themes, layout, chrome, controls, spacing, shown / hidden bars and the other look settings.'}
-        disabled={!packages.length || !rt.can('assets.swap')}
-        onChange={(id) => { if (id) rt.applyAppearancePackage(id); }}
-      />
-      <div className="fx-row fx-row--wrap">
-        <Button
-          size="sm"
-          tone={confirm ? 'danger' : 'neutral'}
-          icon="undo"
-          requires="assets.swap"
-          onClick={() => { if (!confirm) return setConfirm(true); setConfirm(false); rt.restoreDefaultAppearance(); }}
-        >
-          {confirm ? 'Tap again to restore' : 'Restore default appearance'}
-        </Button>
-      </div>
-    </div>
-  );
-}
 
 export const hubAppearanceLibrary: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.hub-appearance',

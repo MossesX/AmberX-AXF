@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "calm",
+  "name": "Calm",
+  "version": "1.0.0",
+  "description": "Slow, gentle and quiet: relaxed easing, things rise in softly, blurred backdrop, toasts stay longer, a confirm before every delete.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "motion": {
+      "speed": "slow",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "rise"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "none",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 650,
+      "doubleTapMs": 300,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "blur",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 6000,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}
