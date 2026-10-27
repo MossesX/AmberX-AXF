@@ -1,5 +1,6 @@
 package ai.amberx.axf.axnotes.plugins.buildbridge
 
+import ai.amberx.axf.kernel.runtime.ToastKind
 import ai.amberx.axf.kernel.ai.AiModes
 import ai.amberx.axf.kernel.ai.AiRequestInput
 import ai.amberx.axf.kernel.assistant.ChatContext
@@ -91,7 +92,7 @@ internal class BridgeController(private val host: PluginHost, private val scope:
         upsert(cur)
         if (finished) {
             host.dispatchIfHandled(HOOK_FINISHED, RequestCodec.finishedHook(cur))
-            host.runtime?.toast("Build finished: ${cur.title}", ai.amberx.axf.kernel.runtime.ToastKind.SUCCESS)
+            host.runtime?.toast("Build finished: ${cur.title}", ToastKind.SUCCESS)
         }
     }
 

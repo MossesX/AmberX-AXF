@@ -1,5 +1,6 @@
 package ai.amberx.axf.axnotes.views
 
+import ai.amberx.axf.axnotes.model.Categories
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -79,7 +80,7 @@ fun TodoItemView() {
                 Modifier.fillMaxWidth(), empty = "Uncategorized", hint = "Shared with notes")
             if (category == NEW_CATEGORY) {
                 AxfTextField(newCategory, { newCategory = it }, Modifier.fillMaxWidth(), label = "New category")
-                AxfButton("Use it", { if (newCategory.isNotBlank()) { store.recategorizeTodo(list.id, item.id, newCategory); category = ai.amberx.axf.axnotes.model.Categories.slug(newCategory) } }, icon = "check")
+                AxfButton("Use it", { if (newCategory.isNotBlank()) { store.recategorizeTodo(list.id, item.id, newCategory); category = Categories.slug(newCategory) } }, icon = "check")
             }
             AxfButton("Save", {
                 if (text.isNotBlank() && (due.isBlank() || dueAt != null)) {

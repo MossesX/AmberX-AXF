@@ -1,5 +1,6 @@
 package ai.amberx.axf.axnotes
 
+import ai.amberx.axf.ai.AiWire
 import ai.amberx.axf.kernel.module.AxfModule
 import ai.amberx.axf.platform.AxfApplication
 import ai.amberx.axf.overlay.OverlayModule
@@ -46,7 +47,7 @@ class App : AxfApplication() {
         VoiceModule(this),
         SpeechModule(this),
         TriggersModule(),
-        AiModule(assistant = AiSetup.assistant, prefix = ai.amberx.axf.ai.AiWire.prefixFor(AiSetup.plugin)),
+        AiModule(assistant = AiSetup.assistant, prefix = AiWire.prefixFor(AiSetup.plugin)),
         OnboardingModule(AppModule.ONBOARDING),
         OverlayModule(this, OverlayNotification(R.drawable.ic_axnotes_notification, "AX Notes", "The AX Notes pill is on", MainActivity::class.java), showOnStart = OverlaySetup.showOnStart),
         appModule,

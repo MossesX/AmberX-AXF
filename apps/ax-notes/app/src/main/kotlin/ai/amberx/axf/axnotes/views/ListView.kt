@@ -1,5 +1,6 @@
 package ai.amberx.axf.axnotes.views
 
+import ai.amberx.axf.axnotes.model.SmartFilter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -76,7 +77,7 @@ fun ListView() {
 
         if (l.kind == ListKind.SMART) {
             AxfButton(if (editingFilter) "Done" else "Edit filter", { editingFilter = !editingFilter }, tone = ButtonTone.GHOST, icon = "filter")
-            if (editingFilter) FilterFields(l.filter ?: ai.amberx.axf.axnotes.model.SmartFilter(), categories) { store.saveList(l.copy(filter = it)) }
+            if (editingFilter) FilterFields(l.filter ?: SmartFilter(), categories) { store.saveList(l.copy(filter = it)) }
         }
 
         if (l.kind == ListKind.TODO) {
