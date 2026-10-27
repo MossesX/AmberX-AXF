@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T16:56:46.252Z",
+ "updatedAt": "2026-10-27T16:58:56.311Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -498,12 +498,16 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T16:56:46.243Z",
+   "updatedAt": "2026-10-27T16:58:56.311Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged in design-package (its 9 steps are s2-s5, s29 and parts of s38). One model switch: Fable s1-s12, then Opus s13-s40.",
      "at": "2026-10-27T16:56:46.243Z"
+    },
+    {
+     "text": "Brett, Oct 27 2026 (cards): rename the Dev Console to GizmoX in everything visible (banner, title, menus) through its branding package; code ids and URLs unchanged. Logos and animated logos are generated for both AmberX Framework and GizmoX. Plugin scope: every plugin enabled by default + every banner plugin (no preference given, default taken). Start: no preference; phase 1 waits for a Fable session.",
+     "at": "2026-10-27T16:58:56.310Z"
     }
    ],
    "approvals": [],
