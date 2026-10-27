@@ -147,8 +147,8 @@ public class VoiceModule(private val context: Context, private val voskModel: Vo
     public companion object {
         public const val ID: String = "ai.amberx.axf.voice"
         public const val ROUTE: String = "voice-triggers"
-        /** lib-voice semver: 0.3.0 added continuous engines, dictation, sensitivity, echo cancellation and arming; 0.3.1 runs Speaker on lib-speech (speech@1). */
-        public const val VERSION: String = "0.3.1"
+        /** lib-voice semver: 0.3.0 added continuous engines, dictation, sensitivity, echo cancellation and arming; 0.3.1 runs Speaker on lib-speech (speech@1); 0.3.2: dictate leaves an engine it didn't start running. */
+        public const val VERSION: String = "0.3.2"
 
         /** Settings group "Voice listening" (id `voice-listening`): engine, sensitivity, echo, arming, stop phrases. */
         public fun listeningGroup(module: String = ID): SettingsGroup = SettingsGroup("voice-listening", "Voice listening", "mic", module, order = 41, description = "Hands-free listening and dictation.", settings = listOf(

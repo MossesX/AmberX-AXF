@@ -82,22 +82,28 @@ public sealed interface DictationEvent {
     public data class Segment(val text: String, val transcript: String, val confidence: Float) : DictationEvent
     /** A final utterance below the sensitivity floor was dropped. */
     public data class Dropped(val text: String, val confidence: Float) : DictationEvent
-    /** Last event: the dictation is over and the engine is stopped. */
+    /** Last event: the dictation is over; the engine is stopped unless it was already listening before dictate. */
     public data class Ended(val transcript: String, val reason: DictationEndReason, val endPhrase: String? = null, val message: String? = null) : DictationEvent
 }
 
 /**
  * Dictation stream: starts the engine, keeps listening across pauses and emits [DictationEvent]s until
- * a stop phrase ("end note") or until the collector cancels; the engine is stopped either way.
- * Final utterances below the [VoiceEngineOptions.sensitivity] floor are dropped.
+ * a stop phrase ("end note") or until the collector cancels. Final utterances below the
+ * [VoiceEngineOptions.sensitivity] floor are dropped.
+ *
+ * Only what dictate started is stopped: when the shared engine was already listening (or loading) before
+ * dictate was called — hands-free listening — dictate rides on that session (no restart, [options] only
+ * set the sensitivity floor here) and leaves the engine running when the dictation ends; otherwise it
+ * starts the engine and stops it at the end, either way. See [DictationOwnership].
  */
 public fun VoiceEngine.dictate(options: VoiceEngineOptions = VoiceEngineOptions(), endPhrases: List<String> = EndPhrases.DEFAULT): Flow<DictationEvent> = flow {
     val engine = this@dictate
     val assembler = DictationAssembler(endPhrases.ifEmpty { EndPhrases.DEFAULT })
+    val ownsEngine = DictationOwnership.startsEngine(engine.state.value)
     try {
         engine.results
             .onSubscription {
-                if (!engine.start(options)) {
+                if (ownsEngine && !engine.start(options)) {
                     val s = engine.state.value
                     throw VoiceStartFailed(if (s is VoiceEngineState.Failed) s.message else "The ${engine.kind.label} engine didn't start.")
                 }
@@ -118,6 +124,13 @@ public fun VoiceEngine.dictate(options: VoiceEngineOptions = VoiceEngineOptions(
     } catch (e: VoiceStartFailed) {
         emit(DictationEvent.Ended(assembler.transcript, DictationEndReason.FAILED, message = e.message))
     } finally {
-        engine.stop()
+        if (ownsEngine) engine.stop()
     }
+}
+
+/** Whether [dictate] owns the engine session (pure, unit-tested). */
+public object DictationOwnership {
+    /** True when the engine isn't running yet, so dictate starts it and must stop it; false when someone else's session is live. */
+    public fun startsEngine(state: VoiceEngineState): Boolean =
+        state !is VoiceEngineState.Listening && state !is VoiceEngineState.Loading
 }
