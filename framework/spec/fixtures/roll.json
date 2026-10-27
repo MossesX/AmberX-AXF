@@ -33,6 +33,10 @@
     "settings": false,
     "behavior-theme": true,
     "design-package": false,
+    "logo-mark": false,
+    "animated-logo": false,
+    "icon-pack": false,
+    "branding": true,
     "uac-policy": false
   },
   "cases": {
@@ -132,6 +136,10 @@
           "playful",
           "snappy",
           "standard"
+        ],
+        "branding": [
+          "amberx",
+          "gizmox"
         ]
       }
     },
@@ -235,6 +243,10 @@
           "playful",
           "snappy",
           "standard"
+        ],
+        "branding": [
+          "amberx",
+          "gizmox"
         ]
       }
     },
@@ -344,6 +356,10 @@
           "playful",
           "snappy",
           "standard"
+        ],
+        "branding": [
+          "amberx",
+          "gizmox"
         ]
       }
     },
@@ -447,6 +463,10 @@
           "playful",
           "snappy",
           "standard"
+        ],
+        "branding": [
+          "amberx",
+          "gizmox"
         ]
       }
     },
@@ -547,6 +567,10 @@
           "playful",
           "snappy",
           "standard"
+        ],
+        "branding": [
+          "amberx",
+          "gizmox"
         ]
       }
     },
@@ -650,6 +674,10 @@
           "playful",
           "snappy",
           "standard"
+        ],
+        "branding": [
+          "amberx",
+          "gizmox"
         ]
       }
     }
