@@ -5,6 +5,10 @@ pinned to **Fable** or **Opus**. Consecutive same-model steps are a *phase*; a p
 Brett's approval. It lives in the repo (and syncs with the hub through `claude-sync`) so any session, on any machine
 or Claude account, can pick a build up where the last one stopped. <!-- axf-plugin:build-orchestrator -->
 
+## Levels
+
+Build → **category** (`category`) → **phases** (step `phase` label; a new phase starts where the label or the model changes) → **groups** (step `group` label, consecutive steps) → **steps**. Only a model change between phases needs Brett's approval. In the console, Builds shows a Grid (one row per build, sortable, expands to the card) or a List, filtered by category. <!-- axf-plugin:build-orchestrator -->
+
 ## Carry a build on
 
 ```bash

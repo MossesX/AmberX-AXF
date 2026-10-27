@@ -35,6 +35,15 @@ t('hide, archive, move, edit, remove step', () => {
   x = c.apply(x, { action: 'archive', id: 'm' }).state; assert.equal(x.builds[0].status, 'archived');
 });
 t('duplicate id refused', () => assert.throws(() => c.apply(s, { action: 'add', title: 'Demo build' }), /already/));
+t('labelled phases + groups + categories', () => {
+  const st = [{ text: 'a', model: 'Fable', estimate: '10 min', phase: 'P1', group: 'G1' }, { text: 'b', model: 'Fable', estimate: '10 min', phase: 'P1', group: 'G2' }, { text: 'c', model: 'Fable', estimate: '10 min', phase: 'P2', group: 'G3' }, { text: 'd', model: 'Opus', estimate: '10 min', phase: 'P3' }];
+  const x = c.apply(c.emptyState(), { action: 'add', title: 'L', category: 'Cat', steps: st }).state; const ps = c.phases(x.builds[0]);
+  assert.deepEqual(ps.map((p) => p.name), ['P1', 'P2', 'P3']); assert.deepEqual(ps.map((p) => p.gate), [false, false, true]);
+  assert.deepEqual(ps[0].groups.map((g) => g.label), ['G1', 'G2']); assert.equal(x.builds[0].category, 'Cat');
+  const y = c.apply(x, { action: 'add', title: 'Other' }).state; assert.deepEqual(c.categories(y.builds).map((k) => k.name), ['Cat', c.UNCATEGORISED]);
+  assert.match(c.brief(x.builds[0]), /— G1 —/); assert.equal(c.sortBuilds(y.builds, 'title')[0].title, 'L');
+  const z = c.apply(y, { action: 'update', id: 'other', category: 'New' }).state; assert.equal(z.builds[1].category, 'New');
+});
 // CLI round-trip on a scratch tracker
 const dir = mkdtempSync(join(tmpdir(), 'orch-')); process.env.AXF_ORCH_FILE = join(dir, 'o.json');
 const cli = await import('./orchestrator.mjs');

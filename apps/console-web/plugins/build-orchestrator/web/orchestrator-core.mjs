@@ -12,8 +12,9 @@ export const SCHEMA = 'orchestrator@1';
 export const MODELS = ['Fable', 'Opus'];
 export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'complete', 'archived'];
 export const STATUS_LABEL = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', complete: 'Complete', archived: 'Archived' };
-export const SORTS = ['status', 'added', 'built', 'left', 'next'];
-export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model' };
+export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
+export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
+export const UNCATEGORISED = 'Uncategorised';
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
 /** When Fable is worth its price (shown on the page; the session picks a step's model from it). */
 export const MODEL_GUIDE = {
@@ -46,6 +47,8 @@ function normStep(s, i) {
     text: str(o.text, 2000),
     model: MODELS.includes(o.model) ? o.model : 'Opus',
     why: str(o.why, 300),
+    phase: str(o.phase, 80),
+    group: str(o.group, 80),
     estimate: str(o.estimate, 20),
     files: Array.isArray(o.files) ? o.files.map((f) => str(f, 300)).filter(Boolean).slice(0, 30) : [],
     checks: Array.isArray(o.checks) ? o.checks.map((f) => str(f, 300)).filter(Boolean).slice(0, 20) : [],
@@ -65,6 +68,7 @@ function normBuild(b) {
   return {
     id: str(o.id, 80) || slug(o.title),
     title: str(o.title, 300) || 'Untitled build',
+    category: str(o.category, 60),
     detail: str(o.detail, 8000),
     status: STATUSES.includes(o.status) ? o.status : 'pending',
     hidden: o.hidden === true,
@@ -87,20 +91,40 @@ export function normalizeState(s) {
   return { $axf: SCHEMA, updatedAt: str(o.updatedAt, 40) || now(), rules: { ...DEFAULT_RULES, ...(o.rules && typeof o.rules === 'object' ? o.rules : {}) }, builds: (Array.isArray(o.builds) ? o.builds : []).map(normBuild) };
 }
 
-/** Consecutive same-model steps → phases. `gate` = this phase starts with a model switch. */
+/**
+ * Steps → phases → groups. A phase is a run of consecutive steps with the same phase label and model (a step with
+ * no label joins the run before it while the model stays the same). `gate` = this phase starts with a model switch.
+ * Inside a phase, consecutive steps with the same group label form a group.
+ */
 export function phases(build) {
   const out = [];
   build.steps.forEach((s, i) => {
     const last = out[out.length - 1];
-    if (last && last.model === s.model) last.steps.push({ ...s, index: i });
-    else out.push({ index: out.length, model: s.model, steps: [{ ...s, index: i }], gate: !!last, from: last?.model ?? '' });
+    const sameRun = last && last.model === s.model && (!s.phase || s.phase === last.label);
+    if (sameRun) last.steps.push({ ...s, index: i });
+    else out.push({ index: out.length, model: s.model, label: s.phase || '', steps: [{ ...s, index: i }], gate: !!last && last.model !== s.model, from: last?.model ?? '' });
   });
   for (const p of out) {
+    p.name = p.label || `Phase ${p.index + 1}`;
     p.done = p.steps.every((s) => s.done);
     p.approved = !p.gate || build.approvals.some((a) => a.phase === p.index && a.to === p.model);
     p.minutesLeft = p.steps.filter((s) => !s.done).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0);
+    p.groups = [];
+    for (const s of p.steps) {
+      const g = p.groups[p.groups.length - 1];
+      if (g && g.label === s.group) g.steps.push(s);
+      else p.groups.push({ label: s.group, steps: [s] });
+    }
+    for (const g of p.groups) { g.done = g.steps.filter((s) => s.done).length; g.minutesLeft = g.steps.filter((s) => !s.done).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0); }
   }
   return out;
+}
+
+/** Every category in use, sorted, with counts (builds without one count as UNCATEGORISED). */
+export function categories(builds) {
+  const c = new Map();
+  for (const b of builds) { const k = b.category || UNCATEGORISED; c.set(k, (c.get(k) ?? 0) + 1); }
+  return [...c.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([name, count]) => ({ name, count }));
 }
 
 /** What happens next: the first phase with work left, its next step, and whether a switch approval is needed. */
@@ -151,7 +175,7 @@ export function counts(builds) {
 
 const ORDER = Object.fromEntries(STATUSES.map((s, i) => [s, i]));
 export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
-  const k = (b) => sort === 'added' ? b.createdAt : sort === 'built' ? (b.builtAt || '') : sort === 'left' ? progress(b).minutesLeft
+  const k = (b) => sort === 'category' ? (b.category || '~').toLowerCase() : sort === 'title' ? b.title.toLowerCase() : sort === 'added' ? b.createdAt : sort === 'built' ? (b.builtAt || '') : sort === 'left' ? progress(b).minutesLeft
     : sort === 'next' ? (nextUp(b, rules).step?.model ?? 'z') : ORDER[b.status];
   const out = [...list].sort((a, b) => { const x = k(a); const y = k(b); return x < y ? -1 : x > y ? 1 : a.createdAt < b.createdAt ? -1 : 1; });
   return dir === 'desc' ? out.reverse() : out;
@@ -168,12 +192,12 @@ export function brief(build, rules = DEFAULT_RULES) {
   const files = [...new Set(p.steps.filter((s) => !s.done).flatMap((s) => s.files))];
   const checks = [...new Set(p.steps.filter((s) => !s.done).flatMap((s) => s.checks))];
   const lines = [
-    `Continue build "${build.title}" (${build.id}) — phase ${p.index + 1}, model ${p.model}.`,
+    `Continue build "${build.title}" (${build.id})${build.category ? ` [${build.category}]` : ''} — ${p.name}, model ${p.model}.`,
     n.needsApproval ? `STOP: this phase switches ${p.from} → ${p.model}. Ask Brett to approve the switch (card) before any work: orchestrator.mjs act approve ${build.id} ${p.index}.` : '',
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter((s) => !s.done).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
-    ...p.steps.map((s) => `${s.done ? '[x]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
+    ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — then commit _claude/builds/orchestrator.json with your work.`,
@@ -202,7 +226,7 @@ export function apply(state, change) {
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;
     }
-    case 'update': { b = find(); for (const k of ['title', 'detail', 'branch', 'pr']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
+    case 'update': { b = find(); for (const k of ['title', 'detail', 'branch', 'pr', 'category']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'category' ? 60 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
     case 'remove': { b = find(); s.builds = s.builds.filter((x) => x !== b); log.push(`removed ${b.id}`); break; }
     case 'status': { b = find(); if (!STATUSES.includes(c.status)) throw new Error(`unknown status ${c.status}`); b.status = c.status; b.builtAt = c.status === 'complete' ? now() : ''; log.push(`${b.id} → ${c.status}`); break; }
     case 'archive': { b = find(); b.status = 'archived'; log.push(`archived ${b.id}`); break; }

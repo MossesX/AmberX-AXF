@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T16:58:56.311Z",
+ "updatedAt": "2026-10-27T17:09:12.873Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181,7 +181,8 @@
      "doneAt": "",
      "note": ""
     }
-   ]
+   ],
+   "category": "Design & branding"
   },
   {
    "id": "arch-foundation",
@@ -215,7 +216,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts",
+     "group": "Gap audit"
     },
     {
      "id": "s2",
@@ -229,7 +232,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts",
+     "group": "TS contracts"
     },
     {
      "id": "s3",
@@ -243,7 +248,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts",
+     "group": "TS contracts"
     },
     {
      "id": "s4",
@@ -259,7 +266,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts",
+     "group": "TS contracts"
     },
     {
      "id": "s5",
@@ -275,7 +284,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts",
+     "group": "Python validator + namespacing"
     },
     {
      "id": "s6",
@@ -289,7 +300,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts",
+     "group": "Python validator + namespacing"
     },
     {
      "id": "s7",
@@ -303,7 +316,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts",
+     "group": "Lifecycle broker"
     },
     {
      "id": "s8",
@@ -319,7 +334,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Runtime + docs",
+     "group": "Plugin boundary"
     },
     {
      "id": "s9",
@@ -333,7 +350,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Runtime + docs",
+     "group": "Docs"
     },
     {
      "id": "s10",
@@ -347,7 +366,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Runtime + docs",
+     "group": "Docs"
     },
     {
      "id": "s11",
@@ -361,7 +382,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Runtime + docs",
+     "group": "Docs"
     },
     {
      "id": "s12",
@@ -377,9 +400,12 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Runtime + docs",
+     "group": "CI"
     }
-   ]
+   ],
+   "category": "Architecture"
   },
   {
    "id": "pending-grid-view",
@@ -411,7 +437,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Pending grid",
+     "group": "Data"
     },
     {
      "id": "s2",
@@ -427,7 +455,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Pending grid",
+     "group": "Grid"
     },
     {
      "id": "s3",
@@ -441,7 +471,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Pending grid",
+     "group": "Grid"
     },
     {
      "id": "s4",
@@ -455,7 +487,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Pending grid",
+     "group": "Toolbar + selection"
     },
     {
      "id": "s5",
@@ -469,7 +503,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Pending grid",
+     "group": "Toolbar + selection"
     },
     {
      "id": "s6",
@@ -483,14 +519,17 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Pending grid",
+     "group": "Checks"
     }
-   ]
+   ],
+   "category": "Console UI"
   },
   {
    "id": "enterprise-branding",
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
-   "detail": "Brett, Oct 27 2026: only refactor AmberX (amberx.amberxai.com) and the console (active plugins + every banner plugin) to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
+   "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
    "status": "pending",
    "hidden": false,
    "source": "chat",
@@ -508,13 +547,17 @@
     {
      "text": "Brett, Oct 27 2026 (cards): rename the Dev Console to GizmoX in everything visible (banner, title, menus) through its branding package; code ids and URLs unchanged. Logos and animated logos are generated for both AmberX Framework and GizmoX. Plugin scope: every plugin enabled by default + every banner plugin (no preference given, default taken). Start: no preference; phase 1 waits for a Fable session.",
      "at": "2026-10-27T16:58:56.310Z"
+    },
+    {
+     "text": "Brett, Oct 27 2026 13:05: scope = only the console, the AmberX app at amberx.amberxai.com, the plugins currently installed and enabled in Plugin switches, and the banner plugins (replaces the enabled-by-default default). Orchestrator itself first (done: categories, phases, groups, grid).",
+     "at": "2026-10-27T17:09:12.872Z"
     }
    ],
    "approvals": [],
    "steps": [
     {
      "id": "s1",
-     "text": "Design language brief: audit the console + AmberX (amberx.amberxai.com) chrome; write the enterprise quality bar (type ramp, spacing scale, elevation, radii, motion, density, iconography, logo placement rules) in framework/spec/DESIGN-LANGUAGE.md. Everything later is held to it.",
+     "text": "Design language brief: audit the console + AmberX (amberx.amberxai.com) chrome; write the enterprise quality bar (type ramp, spacing scale, elevation, radii, motion, density, iconography, logo placement rules) in framework/spec/DESIGN-LANGUAGE.md. Everything later is held to it. First read, through axHub, which console plugins are installed and switched on in Plugin switches right now: that list, plus every banner plugin, is the plugin scope.",
      "model": "Fable",
      "why": "sets the bar every asset follows",
      "estimate": "30 min",
@@ -528,7 +571,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design language"
     },
     {
      "id": "s2",
@@ -544,7 +589,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Behaviour + design packages"
     },
     {
      "id": "s3",
@@ -560,7 +607,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Behaviour + design packages"
     },
     {
      "id": "s4",
@@ -576,7 +625,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Behaviour + design packages"
     },
     {
      "id": "s5",
@@ -590,7 +641,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Behaviour + design packages"
     },
     {
      "id": "s6",
@@ -604,7 +657,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Branding, logo + icon types"
     },
     {
      "id": "s7",
@@ -618,7 +673,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Branding, logo + icon types"
     },
     {
      "id": "s8",
@@ -632,7 +689,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Branding, logo + icon types"
     },
     {
      "id": "s9",
@@ -646,7 +705,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Branding, logo + icon types"
     },
     {
      "id": "s10",
@@ -662,7 +723,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "React layer"
     },
     {
      "id": "s11",
@@ -678,7 +741,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "React layer"
     },
     {
      "id": "s12",
@@ -692,7 +757,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Generators"
     },
     {
      "id": "s13",
@@ -706,7 +773,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Themes + context menus"
     },
     {
      "id": "s14",
@@ -720,7 +789,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Themes + context menus"
     },
     {
      "id": "s15",
@@ -734,7 +805,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Themes + context menus"
     },
     {
      "id": "s16",
@@ -748,7 +821,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Themes + context menus"
     },
     {
      "id": "s17",
@@ -762,7 +837,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Toolbars, style packages, navigation"
     },
     {
      "id": "s18",
@@ -776,7 +853,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Toolbars, style packages, navigation"
     },
     {
      "id": "s19",
@@ -790,7 +869,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Toolbars, style packages, navigation"
     },
     {
      "id": "s20",
@@ -804,7 +885,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Toolbars, style packages, navigation"
     },
     {
      "id": "s21",
@@ -818,7 +901,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Toolbars, style packages, navigation"
     },
     {
      "id": "s22",
@@ -832,7 +917,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Toolbars, style packages, navigation"
     },
     {
      "id": "s23",
@@ -846,7 +933,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Design packages"
     },
     {
      "id": "s24",
@@ -860,7 +949,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Generated brand assets"
     },
     {
      "id": "s25",
@@ -874,7 +965,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Generated brand assets"
     },
     {
      "id": "s26",
@@ -888,7 +981,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 2 · Asset library",
+     "group": "Generated brand assets"
     },
     {
      "id": "s27",
@@ -902,7 +997,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 3 · Brand library + settings",
+     "group": "Brand library plugin"
     },
     {
      "id": "s28",
@@ -916,7 +1013,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 3 · Brand library + settings",
+     "group": "Brand library plugin"
     },
     {
      "id": "s29",
@@ -930,7 +1029,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 3 · Brand library + settings",
+     "group": "Brand library plugin"
     },
     {
      "id": "s30",
@@ -946,7 +1047,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 3 · Brand library + settings",
+     "group": "Settings → Appearance"
     },
     {
      "id": "s31",
@@ -962,7 +1065,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "AmberX app"
     },
     {
      "id": "s32",
@@ -976,7 +1081,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "AmberX app"
     },
     {
      "id": "s33",
@@ -990,7 +1097,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "AmberX app"
     },
     {
      "id": "s34",
@@ -1006,7 +1115,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "GizmoX console + plugins"
     },
     {
      "id": "s35",
@@ -1020,7 +1131,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "GizmoX console + plugins"
     },
     {
      "id": "s36",
@@ -1034,7 +1147,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "GizmoX console + plugins"
     },
     {
      "id": "s37",
@@ -1048,7 +1163,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "GizmoX console + plugins"
     },
     {
      "id": "s38",
@@ -1062,7 +1179,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 4 · Refactor",
+     "group": "GizmoX console + plugins"
     },
     {
      "id": "s39",
@@ -1076,7 +1195,9 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 5 · Ship",
+     "group": "Re-bake, shots, docs, CI"
     },
     {
      "id": "s40",
@@ -1090,9 +1211,12 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 5 · Ship",
+     "group": "Re-bake, shots, docs, CI"
     }
-   ]
+   ],
+   "category": "Design & branding"
   }
  ]
 }
