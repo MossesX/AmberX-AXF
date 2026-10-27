@@ -145,7 +145,7 @@ public class AxfKernel private constructor(
         // AI modes (ai-modes@1): the mode registry is kernel-owned; the session host (axHub) is a placeholder until wired.
         services.register(ai.amberx.axf.kernel.ai.AiModeRegistry::class, ai.amberx.axf.kernel.ai.AiModeRegistry(), "axf.ai.modes")
         services.declarePlaceholder(ai.amberx.axf.kernel.ai.AI_SESSION_CAPABILITY)
-        // Speech (speech@1): the speaking side; a provider (lib-voice's Speaker) registers under axf.speech, placeholder until then.
+        // Speech (speech@1): the speaking side; a provider (lib-speech's AndroidTtsProvider) registers under axf.speech, placeholder until then.
         services.declarePlaceholder(ai.amberx.axf.kernel.speech.SPEECH_CAPABILITY)
         services.register(ai.amberx.axf.kernel.contract.WindowManager::class, ai.amberx.axf.kernel.contract.WindowManager(), "axf.windows")
         services.register(ai.amberx.axf.kernel.data.QueryClient::class, ai.amberx.axf.kernel.data.QueryClient(scope, platform.clock), "axf.queries")

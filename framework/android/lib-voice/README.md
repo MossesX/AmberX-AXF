@@ -1,4 +1,4 @@
-# lib-voice (0.3.0)
+# lib-voice (0.3.1)
 
 Voice for any AXF Android app: speech in, spoken prompts out, and voice commands whose trigger phrases the user can change.
 
@@ -21,7 +21,7 @@ voice.commands.match(h.alternatives, among = listOf("notes.new"))  // → Comman
 
 - **AxfVoice** (`axf.voice` service): `commands`, `input` (`SpeechInput`), `speaker` (`Speaker`), `ask(prompt, secret)`, `ensureMic()`.
 - **SpeechInput.listen(ListenOptions)**: one utterance, main thread, cancellable. `secret = true` uses the on-device recognizer on API 31+ when present and never asks for partial results.
-- **Speaker.say(text)** returns when speech has finished, so the next listen never hears the phone.
+- **Speaker.say(text)** returns when speech has finished, so the next listen never hears the phone. Since 0.3.1 it runs on lib-speech's `AndroidTtsProvider` (speech@1, `speaker.provider`); reading queues, spoken controls and the Speech settings live in lib-speech.
 - **VoiceCommands**: open registry; user phrases persisted in the kernel KV store (`axf.voice.triggers`). A phrase belongs to one command; a command always keeps one phrase.
 - **SpokenText**: pure Kotlin field normalisers: `site("Gmail dot com")` = `gmail.com` (drops `www.`), `password` (trimmed, kept as heard), `code` (words only, case and punctuation ignored: use it on both save and check of spoken codes).
 - **PhraseMatcher**: pure Kotlin (`normalize`, `triggerScore`, `labelScore`, `best`, `ranked`); "gmail dot com" = "gmail.com" = "gmail".

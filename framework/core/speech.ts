@@ -26,7 +26,7 @@ export interface SpeakOptions {
 
 export type SpeakOutcome = 'done' | 'stopped' | 'failed';
 
-/** What a platform module provides (Android: lib-voice's Speaker over TextToSpeech; web: SpeechSynthesis). */
+/** What a platform module provides (Android: lib-speech's AndroidTtsProvider over TextToSpeech; web: WebSpeechProvider over SpeechSynthesis, core/speech-web.ts). */
 export interface SpeechProvider {
   readonly id: string;
   readonly label: string;

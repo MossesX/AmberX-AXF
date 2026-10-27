@@ -298,9 +298,9 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
-      - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
+      - name: Library unit tests (lib-voice, lib-speech, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
         working-directory: framework/android
-        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest :lib-onboarding:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
+        run: gradle :lib-voice:testDebugUnitTest :lib-speech:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest :lib-onboarding:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
       - name: Build Voice Vault (apps/voicevault) + its unit tests (voice notes rules)
         working-directory: apps/voicevault
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}
