@@ -13,7 +13,7 @@ export const APPROVAL_ID_RE = /^[0-9a-f-]{36}$/;
 export const RUN_ID_RE = /^\d{8}-\d{6}-[a-z0-9]{4}$/;
 /** A view name the shell knows, for routes that aren't one of the hub's own. */
 const VIEW_RE = /^[a-z][a-z0-9-]{0,40}$/;
-/** Plugin kinds and folders as the plugin catalog writes them (axHub decision #101). */
+/** Plugin kinds and folders as the plugin catalog writes them (axHub decision 101). */
 export const PLUGIN_KIND_RE = /^[a-z][a-z0-9-]{0,31}$/;
 export const PLUGIN_FOLDER_RE = /^[a-z0-9][a-z0-9-]{1,47}$/;
 /** Grid filters the hub knows (`APPROVAL_FILTERS` there). */

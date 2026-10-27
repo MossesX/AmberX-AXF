@@ -8,8 +8,9 @@
  */
 import * as voice from './src/plugins/voice/web/core.ts';
 import * as mon from './src/plugins/monitor/web/core.ts';
+import * as store from './src/plugins/plugin-store/web/core.ts';
 import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
-import { readFileSync } from 'node:fs';
+import { existsSync as existsFile, readFileSync } from 'node:fs';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
@@ -161,7 +162,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(existsSync(`${here}src/plugins/_template/plugin.json`), 'the plugin template is kept');
   const plugViews = [];
   for (const p of readdirSync(`${here}src/plugins`).filter((f) => !f.startsWith('_') && existsSync(`${here}src/plugins/${f}/web/index.tsx`))) {
-    plugViews.push(...[...readFileSync(`${here}src/plugins/${p}/web/index.tsx`, 'utf8').matchAll(/views: \{ ([a-z-]+):/g)].map((m) => m[1]));
+    plugViews.push(...[...readFileSync(`${here}src/plugins/${p}/web/index.tsx`, 'utf8').matchAll(/views: \{ '?([a-z-]+)'?:/g)].map((m) => m[1]));
   }
   ok(plugViews.includes('monitor') && plugViews.includes('voice'), 'Monitor and Voice pages come from their plugins');
   const pages = new Set(['home', 'settings', ...plugViews]);
@@ -170,7 +171,9 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     const t = targets(readFileSync(`${here}src/assets/${f}/amberx-droid.json`, 'utf8'));
     for (const v of t) ok(pages.has(v), `${f} points at a page that exists (${v})`);
   }
-  for (const v of targets(readFileSync(`${here}src/plugins/voice/web/index.tsx`, 'utf8'))) ok(pages.has(v), `voice command opens a page that exists (${v})`);
+  for (const p of readdirSync(`${here}src/plugins`).filter((f) => !f.startsWith('_') && existsSync(`${here}src/plugins/${f}/web/index.tsx`))) {
+    for (const v of targets(readFileSync(`${here}src/plugins/${p}/web/index.tsx`, 'utf8'))) ok(pages.has(v), `${p}: menus and voice commands open a page that exists (${v})`);
+  }
   const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/amberx-droid.json`, 'utf8'));
   eq(nav.data.sections.flatMap((s) => s.items.map((i) => i.view)), ['home', 'settings'], 'the nav menu holds Approvals and Settings (plugins add theirs)');
   const menu = JSON.parse(readFileSync(`${here}src/assets/app-menu/amberx-droid.json`, 'utf8'));
@@ -178,6 +181,43 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(!JSON.stringify(menu).includes('hub.apps'), 'no app-catalog list in the menu');
   const dialogs = readFileSync(`${here}src/dialogs.tsx`, 'utf8');
   ok(!dialogs.includes('new-file') && !dialogs.includes('confirm-delete'), 'demo dialogs are gone');
+}
+
+/* ---------------------------------------------------------------- plugins from axHub (plugins/plugin-store/web/core.ts) */
+{
+  const here = new URL('.', import.meta.url).pathname;
+  const HUBX = 'https://axhub.amberxai.com';
+  const item = (over = {}) => ({ kind: 'amberx', folder: 'notes', id: 'ai.amberx.amberx.notes', name: 'Notes', version: '1.2.0', versions: ['1.2.0'], files: 3, bytes: 900, publishedAt: '2026-10-27T10:00:00.000Z', builtWith: { model: 'opus' }, ...over });
+  const body = (items, over = {}) => JSON.stringify({ targets: [{ kind: 'amberx' }], reachable: true, updatedAt: 'x', items, ...over });
+  const f = store.interpretFeed(200, body([item(), item({ folder: 'zed', id: 'ai.amberx.amberx.zed', name: 'Zed' }), item({ kind: 'console', folder: 'other' }), item({ folder: '../evil' }), item({ folder: 'bad', version: 'x' }), item({ id: 'Not An Id', folder: 'odd' }), item()]));
+  eq(f.state, 'ok', 'a catalog reply reads');
+  eq(f.items.map((i) => i.folder), ['notes', 'zed'], 'only AmberX plugins with a safe folder, id and version; one per folder');
+  eq(f.target, true, 'the hub says it installs AmberX plugins');
+  eq(store.interpretFeed(200, body([item()], { targets: [] })).target, false, 'a hub without the AmberX target says so');
+  eq(store.interpretFeed(401, '').state, 'signed-out', '401 = sign in');
+  eq(store.interpretFeed(403, '').state, 'not-admin', '403 = admins only');
+  eq(store.interpretFeed(404, '').state, 'old-hub', '404 = the hub needs updating');
+  eq(store.interpretFeed(0, '').state, 'unreachable', 'no answer = unreachable');
+  eq(store.interpretFeed(200, 'not json').state, 'error', 'an unreadable reply is an error');
+  eq(store.interpretFeed(200, 'x'.repeat(store.MAX_REPLY + 1)).state, 'error', 'an oversized reply is refused');
+  ok(store.interpretFeed(200, body([item({ name: 'A\u0000\u0007b', description: 'x'.repeat(900) })])).items[0].description.length === 400, 'descriptions are capped');
+  const have = new Map([['ai.amberx.amberx.notes', '1.1.0'], ['ai.amberx.amberx.zed', '2.0.0']]);
+  eq(store.markOf(item(), new Map()), 'new', 'not installed');
+  eq(store.markOf(item(), have), 'update', 'an older copy here = update');
+  eq(store.markOf(item({ version: '1.1.0' }), have), 'installed', 'same version = installed');
+  eq(store.markOf(item({ id: 'ai.amberx.amberx.zed', version: '1.9.9' }), have), 'newer-here', 'a newer copy here is never offered as an update');
+  ok(store.newer('1.10.0', '1.9.0') && !store.newer('1.9.0', '1.10.0') && !store.newer('1.0.0', '1.0.0'), 'versions compare as numbers');
+  eq(store.storeOrder(f.items, new Map([['ai.amberx.amberx.zed', '1.0.0']])).map((i) => `${i.folder}:${i.mark}`), ['zed:update', 'notes:new'], 'updates first, then new');
+  eq(store.installUrl(HUBX, 'notes'), 'https://axhub.amberxai.com/#/plugins/install/amberx/notes', "the hub's own confirm page");
+  eq(store.installUrl(HUBX, '../x'), null, 'a folder that leaves never makes a link');
+  eq(store.installUrl('http://axhub.amberxai.com', 'notes'), null, 'only an https hub');
+  eq(store.installUrl('https://u:p@axhub.amberxai.com', 'notes'), null, 'no credentials in the hub address');
+  eq(store.catalogUrl(HUBX), 'https://axhub.amberxai.com/#/plugins?kind=amberx', 'the catalog on the hub');
+  const src = readFileSync(`${here}src/plugins/plugin-store/web/index.tsx`, 'utf8');
+  ok(!/Bearer|Authorization|token:/i.test(src), 'the plugin store holds no token');
+  ok(/redirect: 'error'/.test(src) && /credentials: 'include'/.test(src), 'the catalog is read with the hub session, redirects refused');
+  ok(!/method: 'POST'|method: 'PUT'/.test(src), 'the plugin store never writes: installs are confirmed on axHub');
+  ok(existsFile(`${here}src/plugins/plugin-store/plugin.json`), 'the plugin store ships with AmberX');
 }
 
 /* ---------------------------------------------------------------- voice control (plugins/voice/web/core.ts) */

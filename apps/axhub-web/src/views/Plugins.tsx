@@ -1,5 +1,5 @@
 /**
- * Plugins from the catalog (axHub decision #101): install a plugin into one of your apps straight from the hub, no Dev
+ * Plugins from the catalog (axHub decision 101): install a plugin into one of your apps straight from the hub, no Dev
  * Console. The catalog is what the Dev Console publishes (`plugin-catalog@1`); installing writes the plugin's files
  * into the app's repo as one commit, and the app's site rebuilds with it (AmberX: about 5 minutes).
  *

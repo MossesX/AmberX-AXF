@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.plugin-store",
+  "name": "Plugins from axHub",
+  "version": "0.1.0",
+  "description": "Browse the plugin catalog on axHub and install, update or remove AmberX plugins. You confirm each install on axHub; the app picks it up on its next rebuild (about 5 minutes).",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27" }
+}

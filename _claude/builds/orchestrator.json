@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T18:38:51.274Z",
+ "updatedAt": "2026-10-27T18:41:38.164Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1620,7 +1620,7 @@
    "branch": "claude/amberx-plugin-installer",
    "pr": "",
    "createdAt": "2026-10-27T18:30:33.806Z",
-   "updatedAt": "2026-10-27T18:38:51.274Z",
+   "updatedAt": "2026-10-27T18:41:38.164Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -1688,8 +1688,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:41:38.163Z",
      "note": ""
     },
     {

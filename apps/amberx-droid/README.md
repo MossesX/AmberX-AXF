@@ -25,6 +25,7 @@ signed in). Hub calls from the hosted page go straight from the WebView; only a 
 | --- | --- |
 | `src/plugins/voice` | Voice control: commands (`web/core.ts`), mic, spoken replies, wake event |
 | `src/plugins/monitor` | Background monitoring: watch settings, auto-approval, status |
+| `src/plugins/plugin-store` | Plugins from axHub: browse the catalog, install / update / remove through axHub's confirm page |
 | `src/native.ts` | The one seam to the native side (`AmberxNative`), with a browser fallback |
 | `android/app/src/main/java/ai/amberx/droid` | `WatchService` (foreground service), `AmberxNativePlugin`, `HubWebActivity`, `HubRules` |
 | `src/views/Approvals.tsx`, `src/hub` | Approvals, the only page of its own (home; through lib-hub) |
