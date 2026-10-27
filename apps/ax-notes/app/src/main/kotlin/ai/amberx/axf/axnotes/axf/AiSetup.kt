@@ -8,8 +8,8 @@ public object AiSetup {
     public const val LIBRARY: String = "ai.amberx.axf.ai"
     /** Assistant address — https, host only: where the AI assistant runs behind axHub's wall */
     public val assistant: String = "https://console.amberxai.com"
-    /** Assistant API path */
-    public val prefix: String = "/api/plugins/ai-assistant"
+    /** Assistant plugin — the console plugin that hosts the assistant; its routes are /api/plugins/<plugin> */
+    public val plugin: String = "ai-assistant"
     /** Every parameter by manifest key (handy for diagnostics / re-running the wizard). */
-    public val asMap: Map<String, Any?> = mapOf("assistant" to assistant, "prefix" to prefix)
+    public val asMap: Map<String, Any?> = mapOf("assistant" to assistant, "plugin" to plugin)
 }

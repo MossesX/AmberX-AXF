@@ -65,7 +65,7 @@ class AiModesConformanceTest {
         val d2 = reg.register(custom.copy(module = "ai.amberx.axf.other", label = "Other"))
         val d3 = reg.register(AiModes.BUILTINS[0].copy(module = "ai.amberx.axf.plugin", label = "Plugin chat"))
         assertEquals(r.getValue("diagnostics"), JsonArray(listOf(d1, d2, d3).map { diag(it) }), "diagnostics")
-        assertEquals(listOf(d2, d3), raised, "diagnostics were reported")
+        assertEquals<List<Diagnostic?>>(listOf(d2, d3), raised.toList(), "diagnostics were reported")
         val removed = r.getValue("removed").jsonObject
         assertEquals(AiJson.bool(removed, "builtin"), reg.unregister("ai.chat"))
         assertEquals(AiJson.bool(removed, "custom"), reg.unregister("notes.summarize"))

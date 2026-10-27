@@ -113,7 +113,7 @@
   "libraries": {
     "ai": {
       "assistant": "https://console.amberxai.com",
-      "prefix": "/api/plugins/ai-assistant"
+      "plugin": "ai-assistant"
     },
     "$installed": [
       "ai.amberx.axf.ai"

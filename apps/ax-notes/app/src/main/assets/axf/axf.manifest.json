@@ -174,7 +174,7 @@
     "triggers": {},
     "ai": {
       "assistant": "https://console.amberxai.com",
-      "prefix": "/api/plugins/ai-assistant"
+      "plugin": "ai-assistant"
     },
     "onboarding": {},
     "overlay": {

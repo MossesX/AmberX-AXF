@@ -46,7 +46,7 @@ class App : AxfApplication() {
         VoiceModule(this),
         SpeechModule(this),
         TriggersModule(),
-        AiModule(assistant = AiSetup.assistant, prefix = AiSetup.prefix),
+        AiModule(assistant = AiSetup.assistant, prefix = ai.amberx.axf.ai.AiWire.prefixFor(AiSetup.plugin)),
         OnboardingModule(AppModule.ONBOARDING),
         OverlayModule(this, OverlayNotification(R.drawable.ic_axnotes_notification, "AX Notes", "The AX Notes pill is on", MainActivity::class.java), showOnStart = OverlaySetup.showOnStart),
         appModule,

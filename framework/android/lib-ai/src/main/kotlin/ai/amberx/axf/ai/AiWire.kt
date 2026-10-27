@@ -38,7 +38,11 @@ import kotlinx.serialization.json.longOrNull
  *   POST /sessions/{id}/close                   the only way a session ends
  */
 public object AiWire {
-    public const val DEFAULT_PREFIX: String = "/api/plugins/ai-assistant"
+    /** The console plugin that hosts the assistant (install parameter `plugin`); the routes live under `/api/plugins/<plugin>`. */
+    public const val DEFAULT_PLUGIN: String = "ai-assistant"
+    /** The API path of the assistant hosted by console plugin [plugin]. */
+    public fun prefixFor(plugin: String): String = "/api/plugins/" + plugin.trim().trim('/')
+    public val DEFAULT_PREFIX: String = prefixFor(DEFAULT_PLUGIN)
     /** Where the assistant lives today: the Dev Console, behind axHub's wall. */
     public const val DEFAULT_ASSISTANT: String = "https://console.amberxai.com"
     /** JSON replies larger than this are refused. */

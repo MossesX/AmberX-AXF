@@ -57,7 +57,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ### AX Notes (`ax-notes`)
 - **Asked (Brett, Oct 27 2026, claude.ai):** Android app `apps/ax-notes`: voice-controlled AI note-taker + Claude assistant (chat, read a codebase into notes, build via the orchestrator per settings/triggers), auto sort/categorize/summarize, read back by voice, ActiveX-style floating overlay (pill, chips, detections log, 3-line strip, mini screen). Core hardcoded in the app; reusable parts as libraries (lib-overlay, lib-voice extended, lib-triggers, lib-tts, lib-ai = x.lib.ai, lib-onboarding) and Android plugins (note-sorter, ai-chat, ai-codebase-reader, ai-build-bridge, ai-automations). Port code from MossesX/ActiveX by copying; never name ActiveX in AXF manifests. Android-hold exception for this build only. Profile: refactor. Up to 3 sub-agents allowed.
-- **Model/steps:** `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief ax-notes`.
+- **Model/steps:** the Build orchestrator brief for `ax-notes` (orchestrator CLI `brief ax-notes`).
 - **Branch:** `fable/ax-notes` (sub-branches `fable/ax-notes-*` merged into it).
 - **Checks:** Android CI (no Maven here; Kotlin written without a compiler), `npx -y tsx framework/spec/check-*.mts` for new fixtures.
 - **First message to carry on:** "Carry on build ax-notes from `orchestrator.mjs next ax-notes` on branch fable/ax-notes."

@@ -16,8 +16,8 @@ class AiWireTest {
     private val req = AiSessionRequest("ai.read-codebase", "assistant.read", "read it", "m-fast", true, false, "read it", ChatContext(view = "notes", extra = JsonObject(mapOf("appId" to JsonPrimitive("ax-notes")))), "notes.read")
 
     @Test fun paths() {
-        assertEquals("/api/plugins/ai-assistant/sessions/c1/events?since=7&follow=1", AiWire.events("c1", 7, true))
-        assertEquals("/api/plugins/ai-assistant/sessions/c1/events?since=0&follow=0&limit=2000", AiWire.events("c1", -3, false, 9999))
+        assertEquals(AiWire.DEFAULT_PREFIX + "/sessions/c1/events?since=7&follow=1", AiWire.events("c1", 7, true))
+        assertEquals(AiWire.DEFAULT_PREFIX + "/sessions/c1/events?since=0&follow=0&limit=2000", AiWire.events("c1", -3, false, 9999))
         assertEquals("/x/conversations/c1/messages", AiWire.messages("c1", "/x"))
         assertTrue(AiWire.isSessionId("c_abc-1"))
         assertFalse(AiWire.isSessionId("../etc"))

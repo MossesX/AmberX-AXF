@@ -9,7 +9,7 @@
   "manifestKey": "libraries.ai",
   "params": [
     { "key": "assistant", "label": "Assistant address", "type": "string", "default": "https://console.amberxai.com", "help": "https, host only: where the AI assistant runs behind axHub's wall" },
-    { "key": "prefix", "label": "Assistant API path", "type": "string", "default": "/api/plugins/ai-assistant" }
+    { "key": "plugin", "label": "Assistant plugin", "type": "string", "default": "ai-assistant", "help": "the console plugin that hosts the assistant; its routes are /api/plugins/<plugin>" }
   ],
   "install": {
     "gradle": "implementation(\"ai.amberx.axf:lib-ai:$axf\")",
