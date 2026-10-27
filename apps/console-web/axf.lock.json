@@ -74,7 +74,7 @@
     "src/axf/react/components/ModelBadge.tsx": "c47fb07ddd5584b2",
     "src/axf/react/components/Overlays.tsx": "34559b7c35243ca8",
     "src/axf/react/components/Search.tsx": "dbb8df7fbb7ee827",
-    "src/axf/react/components/Slots.tsx": "f30635dee01de3ee",
+    "src/axf/react/components/Slots.tsx": "bab3b097bda69aa1",
     "src/axf/react/components/Waiting.tsx": "ca0d5d0572d7b5b0",
     "src/axf/react/components/Widgets.tsx": "06ee8d115d1aadbe",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
@@ -153,6 +153,6 @@
     "src/axf/schemas/model-pricing.json": "d8fe01a93138abc8",
     "src/axf/schemas/plugin.schema.json": "166fd652bf021af5",
     "src/axf/schemas/project-rules.json": "be7b7c29a1fd9663",
-    "src/axf/ui/axf.css": "63bb636429792599"
+    "src/axf/ui/axf.css": "1e03678e5c5dfd4f"
   }
 }
