@@ -205,7 +205,7 @@ class AppModule(private val context: Context, private val scope: CoroutineScope,
         notesOverlay?.install()
         val settings = ctx.service(SettingsEngine::class)
         settings?.onChange { key, value -> if (key == KEY_HANDS_FREE) voiceLoop?.setHandsFree((value as? JsonPrimitive)?.content == "true") }
-        if ((settings?.bool(KEY_HANDS_FREE) ?: config?.bool(KEY_HANDS_FREE)) == true) voiceLoop?.setHandsFree(true)
+        if ((settings?.bool(KEY_HANDS_FREE) ?: config?.bool(KEY_HANDS_FREE)) != false) voiceLoop?.setHandsFree(true)
     }
 
     override suspend fun stop(ctx: ModuleContext) {
@@ -306,7 +306,7 @@ class AppModule(private val context: Context, private val scope: CoroutineScope,
     private fun settingsGroup(hasOverlay: Boolean, hasVoice: Boolean): SettingsGroup = SettingsGroup(ID, "AX Notes", "edit", id, order = 25,
         description = "Notes are kept on this phone. Sync with axHub is OFF in this version (no hub data client yet): changes wait on the phone.",
         settings = buildList {
-            if (hasVoice) add(SettingSpec(KEY_HANDS_FREE, "Listen hands-free", SettingKind.TOGGLE, "Keep the microphone on for voice commands, also in the background (a notification shows while it listens)", JsonPrimitive(false), icon = "mic"))
+            if (hasVoice) add(SettingSpec(KEY_HANDS_FREE, "Listen hands-free", SettingKind.TOGGLE, "Keep the microphone on for voice commands, also in the background (a notification shows while it listens). On by default", JsonPrimitive(true), icon = "mic"))
             if (hasOverlay) add(SettingSpec("axnotes.overlay.show", "Show the AX Notes overlay", SettingKind.ACTION, "The pill over other apps: what was heard, your last note, the mic button", target = ACTION_OVERLAY, icon = "layers"))
             add(SettingSpec(KEY_SYNC_STATE, "axHub sync: off", SettingKind.ACTION, "Not wired yet: there is no lib-hub data client. Notes and lists stay on this phone and are queued for later.", target = "axnotes.sync", icon = "cloud"))
             add(SettingSpec(KEY_HUB, "axHub address (for later)", SettingKind.TEXT, "Where notes will sync once sync is wired (project ax-notes data)", JsonPrimitive(HubOrigin.DEFAULT), icon = "cloud"))
