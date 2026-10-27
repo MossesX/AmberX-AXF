@@ -42,6 +42,7 @@ with tempfile.TemporaryDirectory() as tmp:
     data.mkdir()
     env = {**os.environ, "AXF_DATA_DIR": str(data)}
     env.pop("AXF_BUILD_PROFILE", None)
+    os.environ.pop("AXF_BUILD_PROFILE", None)  # CI pins the base profile for its checks; this test picks its own
     prof = bp.BuildProfiles(ROOT, lambda: data)
 
     st = node("state", env=env)
