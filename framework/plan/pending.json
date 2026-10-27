@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T19:11:26.492Z",
+ "updatedAt": "2026-10-27T19:47:17.145Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -5023,22 +5023,30 @@
     {
      "text": "[Fable] s1: Design the one builds dataset in plan.json: queue order/steps/rework, parked model + notes + sub prompts, orchestrator phases/approvals, hidden/archived; status mapping pending ↔ plan; spec framework/spec/BUILDS.md",
      "at": "2026-10-27T19:11:26.473Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.082Z"
     },
     {
      "text": "[Fable] s2: builds-core.mjs (pure): every view (plan, tracker, queue, pending, orchestrator) is a filter/sort over one list, with nested info per row (steps, notes, deps, linked features, phases)",
      "at": "2026-10-27T19:11:26.473Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.104Z"
     },
     {
      "text": "[Fable] s3: Shims: pending-core, build-queue-core and orchestrator-core read/write through builds-core (same APIs); tracker.json generated from it; fixture spec/fixtures/builds.json + checker",
      "at": "2026-10-27T19:11:26.473Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.126Z"
     },
     {
      "text": "[Fable] s4: Migration: pending.json (9 planId items attach, 91 become entries), build-queue.json, orchestrator.json → plan.json; dry-run report; persist + manifest data.shared updated",
      "at": "2026-10-27T19:11:26.473Z",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:47:17.145Z"
     },
     {
      "text": "[Opus] s5: Run the migration (repo + hub _data), keep the old files as read-only exports for one release",
@@ -5088,7 +5096,7 @@
    ],
    "createdAt": "2026-10-27T19:11:22.034Z",
    "builtAt": "",
-   "updatedAt": "2026-10-27T19:11:26.473Z",
+   "updatedAt": "2026-10-27T19:47:17.145Z",
    "estimate": "6 h",
    "source": "chat"
   },

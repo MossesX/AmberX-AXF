@@ -57,5 +57,20 @@
     "pendingBuilds": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
     "kernelChecklist": "https://claude.ai/artifact/DvUPLjKSM3tEVTsL8pPtE2"
   },
-  "notes": "Holds several projects: this one (the framework) plus apps/demo, apps/console-web and apps/console, each with its own manifest. Manifests for projects whose repos aren't here are kept in projects/<name>/."
+  "notes": "Holds several projects: this one (the framework) plus apps/demo, apps/console-web and apps/console, each with its own manifest. Manifests for projects whose repos aren't here are kept in projects/<name>/.",
+  "x": {
+    "builds": {
+      "$axf": "builds@1",
+      "dataset": "framework/plan/plan.json",
+      "exports": [
+        "framework/plan/pending.json",
+        "framework/plan/build-queue.json",
+        "_claude/builds/orchestrator.json",
+        "framework/catalog/status.json",
+        "tracker.json"
+      ],
+      "spec": "framework/spec/BUILDS.md",
+      "note": "One builds dataset (Oct 27 2026): plan.json is the source; the exports are rewritten on every save and never edited by hand."
+    }
+  }
 }

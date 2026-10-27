@@ -49,7 +49,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Add icon picker dialog for status plugins | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
 | Add Push banner action log | on hold | – | – | Held by Brett | 2026-10-25 |
 | Store project rules in repo | queued | – | – | Rules file `_claude/rules/PROJECT-RULES.md` | 2026-10-25 |
-| Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator) | queued | `claude/builds-one-page` | – | Orchestrator build `builds-one-page` (13 steps, ~6.2 h): Fable s1-s4 → (approve switch) → Opus s5-s13. Includes pending-grid-view. See *To carry on* | 2026-10-27 |
+| Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator) | blocked | `claude/builds-one-page` | #131 | Fable phase 1 (s1-s4) done: spec, builds-core, shims + exports, migration dry run. **Needs Brett: approve the Fable → Opus switch** (orchestrator phase 2), then Opus s5-s13 on this branch. See *To carry on* | 2026-10-27 |
 | New asset type `trim` (layout + colour theme) | queued | `claude/trim-asset` | – | Orchestrator build `trim-asset` (4 steps, ~1.8 h): Fable s1-s2 → (approve switch) → Opus s3-s4. Coordinate s1-s2 with enterprise-branding's design-package group | 2026-10-27 |
 
 
@@ -64,10 +64,11 @@ VPS). The session reads the rules and this file first, as usual.
 
 ### Builds: one dataset, one page (builds-one-page)
 - Asked (Brett, Oct 27 2026): Plans, Tracker, Build queue and Pending builds are separate files that drift; merge them (and the Build orchestrator's tracker) into one dataset, shown on **one page with multiple views selectable from a toolbar and anywhere else that fits**. Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in `pending-grid-view`.
-- Model: Fable s1-s4 (data model, core, shims, migration design), then Opus s5-s13 (migration run, API/MCP, page, switchers, tests). Approve the switch with a card.
-- Branch `claude/builds-one-page` (not created yet). Web only (Android hold); `tracker.json` stays as a generated export.
-- Read first: `framework/plan/pending-core.mjs`, `framework/plan/build-queue-core.mjs`, `apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs`, `framework/cli/plan.mjs`, `framework/cli/persist.mjs`.
-- First message: `Continue orchestrator build builds-one-page: run node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief builds-one-page and do the Fable phase.` (on Fable)
+- Done (Fable, s1-s4, PR #131 on `claude/builds-one-page`): `framework/spec/BUILDS.md`, `framework/plan/builds-core.mjs` (views + lossless write-backs + rows + migrate), `framework/cli/builds.mjs` (IO, exports, `migrate [--write]`, `tracker` check), pending.mjs / build-queue.mjs / orchestrator.mjs read and write through the plan once migrated, plan.mjs keeps build blocks, fixture `spec/fixtures/builds.json` + `spec/check-builds.mjs` (CI), dry-run report `_claude/memory/docs/builds-migration.md`. Nothing migrated yet: all three lists still run on their own files until `builds.mjs migrate --write`.
+- Waits on: **Brett approving the model switch Fable → Opus** (phase 2; card asked in the thread). Then `orchestrator.mjs act approve builds-one-page 1`.
+- Next (Opus s5-s13): run the migration on the hub copy + repo snapshot (s5), API/MCP (s6), the Builds page with the view toolbar (s7-s9), pending-grid-view features (s10), switchers (s11), claude.ai page + Build manager merge (s12), tests/shots/docs (s13). Read first: `framework/spec/BUILDS.md`, `_claude/memory/docs/builds-migration.md`, `framework/cli/builds.mjs`.
+- Checks: `node framework/spec/check-builds.mjs`, `node framework/spec/check-build-steps.mjs`, `node apps/console-web/plugins/build-orchestrator/test.mjs`, `node apps/console-web/plugins/build-manager/test.mjs`, `node framework/cli/builds.mjs migrate` (dry run), `node framework/cli/builds.mjs tracker`.
+- First message (on Opus, after the approval): `Continue orchestrator build builds-one-page on branch claude/builds-one-page: run node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief builds-one-page and do the Opus phase.`
 
 ### New asset type trim (trim-asset)
 - Asked (Brett, Oct 27 2026): a new asset type `trim` = a layout asset and a colour theme asset combined. Decided: trim is its own swappable asset; a design package may reference a trim instead of its own layout + colour theme (both stay valid).
