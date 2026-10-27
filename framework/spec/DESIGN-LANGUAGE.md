@@ -68,7 +68,7 @@ has a radius larger than its container's minus the padding.
 - Colour tokens carry meaning: `accent` = the one action that matters on screen, `success` / `warning` / `danger`
   / `info` = status, nothing else is coloured. One accent per screen region; a second accent is a brand decision
   recorded in the branding package, never in a page.
-- Contrast: text on its surface ≥ 4.5:1, large text and icons ≥ 3:1, borders ≥ 1.5:1 against the surface.
+- Contrast: text on its surface ≥ 4.5:1, large text and icons ≥ 3:1, hairline borders ≥ 1.25:1 against the surface (a border that is the only boundary of a control ≥ 3:1).
   The theme checker (`check-design-language.mts`) measures every starter colour theme.
 - Translucency always comes from a transparency token (`--fx-opacity-*`), see THEMING.md.
 - Dark themes are not inverted light themes: surfaces step up in lightness with elevation (bg < surface <

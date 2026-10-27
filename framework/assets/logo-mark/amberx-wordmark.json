@@ -25,6 +25,7 @@
       "tracking": -0.02,
       "font": "display",
       "fill": "text"
-    }
+    },
+    "minSize": 80
   }
 }
