@@ -1,53 +1,4 @@
-import { useState } from 'react';
-import { Button, Slider, useAxfState, useRuntime, type DialogMap } from './axf/react';
-
-function NewFile({ close }: { close: () => void }) {
-  const rt = useRuntime();
-  const [name, setName] = useState('untitled.ts');
-  const [indent, setIndent] = useState(2);
-  return (
-    <form
-      className="fx-stack"
-      onSubmit={(e) => {
-        e.preventDefault();
-        close();
-        rt.toast(`${name} created with ${indent}-space indent.`, 'success', 'File created');
-      }}
-    >
-      <label className="fx-field">
-        File name
-        <input className="fx-input" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-      </label>
-      <Slider label="Indent size" value={indent} min={1} max={8} onChange={setIndent} unit=" sp" />
-      <div className="fx-row fx-row--end">
-        <Button onClick={close}>Cancel</Button>
-        <Button tone="primary" icon="plus" type="submit" disabled={!name.trim()}>Create</Button>
-      </div>
-    </form>
-  );
-}
-
-function ConfirmDelete({ close }: { close: () => void }) {
-  const rt = useRuntime();
-  return (
-    <div className="fx-stack">
-      <p style={{ margin: 0 }}>Delete the selected item? This is a demo, so nothing is actually removed.</p>
-      <div className="fx-row fx-row--end">
-        <Button onClick={close}>Keep it</Button>
-        <Button
-          tone="danger"
-          icon="trash"
-          onClick={() => {
-            close();
-            rt.toast('Item deleted.', 'danger', 'Deleted');
-          }}
-        >
-          Delete
-        </Button>
-      </div>
-    </div>
-  );
-}
+import { useAxfState, useRuntime, type DialogMap } from './axf/react';
 
 function DevConsole() {
   const rt = useRuntime();
@@ -71,8 +22,7 @@ function DevConsole() {
   );
 }
 
+/** The developer console stays: it shows live runtime state, handy while testing a plugin. */
 export const dialogs: DialogMap = {
-  'new-file': { title: 'New file', icon: 'plus', render: (_p, close) => <NewFile close={close} /> },
-  'confirm-delete': { title: 'Delete item', icon: 'trash', render: (_p, close) => <ConfirmDelete close={close} /> },
   'dev-console': { title: 'Developer console', icon: 'terminal', render: () => <DevConsole /> },
 };

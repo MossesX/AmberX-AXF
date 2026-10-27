@@ -11,5 +11,8 @@ through `src/native.ts` (Capacitor bridge, with a browser fallback), never throu
 - **Publish one:** `AXF_TOKEN=… node framework/cli/plugin-catalog.mjs publish apps/amberx-droid/src/plugins/<folder> --kind amberx --console https://console.amberxai.com`
 - **New one:** copy `_template` (folders starting with `_` never load).
 
-Voice commands: a plugin adds phrases with `voiceCommands` (see `voice/web/commands.ts`): each maps trigger phrases to an
-action id the runtime already knows. Monitors: a plugin adds a check with `registerMonitor` (see `monitor/web/monitors.ts`).
+AmberX is an empty shell for building and testing plugins (Oct 26 2026): its only page of its own is Approvals, so
+everything a plugin declares in its library (views + nav, app-menu and context-menu items, settings groups under
+Settings → Plugins, banners, actions) is all there is besides it. Voice commands: a plugin adds phrases with
+`registerVoiceCommands(module, commands)` from `voice/web/index.tsx`; each maps trigger phrases to an action id the
+runtime already knows.
