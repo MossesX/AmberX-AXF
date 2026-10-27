@@ -27,6 +27,8 @@ const GROUP = { id: 'axf.display', label: 'Display', tab: 'appearance', settings
 ] };
 const CASES: { name: string; fn: string; input: unknown }[] = [
   { name: 'nothing = defaults', fn: 'normalize', input: null },
+  { name: 'levels: on, default level, levelOf (bad ids and levels dropped)', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, levels: true, defaultLevel: 'pro', levelOf: { appearance: 'simple', 'axf.look.sliders': 'simple', 'bad id': 'pro', about: 'expert', 'axf.roll': 'advanced' } } },
+  { name: 'levels: bad values fall back', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, levels: 'yes', defaultLevel: 'max', levelOf: [1] } },
   { name: 'toolbar: a toolbar asset id is kept', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'settings-page' } },
   { name: 'toolbar: bad id', fn: 'errors', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'bad id' } },
   { name: 'bad enums fall back', fn: 'normalize', input: { layout: 'grid', header: 7, search: 'yes', descriptions: false } },

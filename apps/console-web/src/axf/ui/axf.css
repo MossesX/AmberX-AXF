@@ -97,7 +97,6 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner-settings__tab:hover { background: var(--fx-surface2); }
 .fx-banner-settings__tab.is-on { color: var(--fx-accent); background: var(--fx-accent-soft); font-weight: 600; }
 .fx-banner-settings__tab:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); }
-.fx-banner-settings__own + .fx-banner-settings__own { margin-top: calc(var(--fx-space) * 0.5); }
 /* developer apps while the hub hasn't answered (react/components/Waiting.tsx): one centred card, nothing else */
 .fx-shell--waiting { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
 /* Kept views (AppShell `keep`): stay mounted while hidden; a kept view fills the main region. */
@@ -986,3 +985,13 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 @keyframes fx-meter-stripes { to { background-position: calc(var(--fx-space) * 1.7) 0 } }
 @keyframes fx-meter-blink { 50% { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), var(--fx-surface3)) } }
 @media (prefers-reduced-motion: reduce) { .fx-meter .fx-meter__fill, .fx-meter .fx-meter__cell { animation: none !important } }
+/* look@1 editor (react/components/LookEditor.tsx): Apply to all in Banner settings, Settings → Sliders. Layout only. */
+.fx-look { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); }
+.fx-look__rows { display: flex; flex-direction: column; gap: var(--fx-space); }
+.fx-look__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: calc(var(--fx-space) * 0.25) var(--fx-space); }
+.fx-look__control { min-width: 0; }
+.fx-look__state { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); }
+.fx-look__inherit { font-size: calc(var(--fx-font-size) * 12 / 14); }
+.fx-look__hint { grid-column: 1 / -1; margin: 0; font-size: calc(var(--fx-font-size) * 12 / 14); }
+.fx-look__levels { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) var(--fx-space); }
+.fx-look__levelhint { font-size: calc(var(--fx-font-size) * 12 / 14); }

@@ -22,10 +22,11 @@
  * back, Unhide) carrying the same menu, so it is unhidden the same way. Actions `banners.hide:<id>:<minutes>`,
  * `banners.unhide:<id>`.
  *
- * Apply to all (Oct 26 2026): a collapsible pane at the top with an Apply to all tick box (`axf.banners.applyAll`). Ticked,
- * it opens and holds every setting any banner has, once: Hide / timer for all, Look and Behaviour set on every banner
- * (a choice they don't share shows Mixed), then each banner's own settings wrapped and named; the per-banner tabs fold
- * into one wrapper, Each banner. Unticked, the pane folds and Each banner opens.
+ * Apply to all (Brett, Oct 26 2026): one collapsible section on top of Banner settings with Simple / Basic / Pro /
+ * Advanced, every look, design, behaviour and tone token (look@1, core/engines/looktokens.ts) in collapsible
+ * categories, and Reset. Stored in one setting, `axf.banners.look`, holding only what was changed: look tokens compile
+ * to one stylesheet over every banner frame on top of the inherited theme; behaviour tokens are the fallback under
+ * each banner's own choices (its tab wins, then Apply to all, then the default).
  */
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../core';
@@ -40,6 +41,8 @@ import {
   setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
+import { LookEditor, LookLevelSwitch } from './LookEditor';
+import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
 
 export type BannerTone = 'own' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
@@ -67,6 +70,9 @@ const WORK_ANIMS: BannerWorkAnim[] = ['spin', 'pulse', 'bounce', 'blink', 'off']
 /** icons offered for "While working" (any Icon name works) */
 export const BANNER_WORK_ICONS = ['refresh', 'zap', 'hammer', 'sparkles', 'rocket', 'branch', 'upload', 'download', 'clock', 'cloud', 'terminal', 'star', 'sun', 'shuffle'];
 export const BANNER_PREFS_KEY = 'axf.banners.prefs';
+/** Apply to all: look@1 values every banner gets (only changed tokens), and the level the section shows. */
+export const BANNER_LOOK_KEY = 'axf.banners.look';
+export const BANNER_LOOK_LEVEL_KEY = 'axf.banners.lookLevel';
 export const BANNER_SETTINGS_DIALOG = 'axf.banners.settings';
 export const BANNER_CTX_TARGET = 'axf-banner';
 export const DEFAULT_BANNER_PREFS: BannerPrefs = { tone: 'own', density: 'regular', icon: true, maxRows: 0, show: true, launch: 'expanded', autoHide: 0, order: null, hideInHost: false, workIcon: '', workAnim: '' };
@@ -80,7 +86,20 @@ function allPrefs(rt: AxfRuntime): Record<string, Partial<BannerPrefs>> {
 
 /** One banner's choices, every field checked (anything odd = the default). */
 export function bannerPrefs(rt: AxfRuntime, id: string): BannerPrefs {
-  const p = allPrefs(rt)[id] ?? {};
+  // A banner's own choice wins; then Apply to all (behaviour tokens of axf.banners.look); then the default.
+  const all = lookPrefs(normalizeLook(rt.settings.get(BANNER_LOOK_KEY)));
+  const g: Partial<BannerPrefs> = {
+    ...(all.tone !== undefined ? { tone: all.tone as BannerTone } : {}),
+    ...(all.density !== undefined ? { density: all.density as BannerDensity } : {}),
+    ...(all.icon !== undefined ? { icon: all.icon as boolean } : {}),
+    ...(all.maxRows !== undefined ? { maxRows: Number(all.maxRows) } : {}),
+    ...(all.launch !== undefined ? { launch: all.launch as BannerPrefs['launch'] } : {}),
+    ...(all.autoHide !== undefined ? { autoHide: Number(all.autoHide) } : {}),
+    ...(all.hideInHost !== undefined ? { hideInHost: all.hideInHost as boolean } : {}),
+    ...(all.workIcon !== undefined ? { workIcon: all.workIcon as string } : {}),
+    ...(all.workAnim !== undefined ? { workAnim: all.workAnim as BannerWorkAnim } : {}),
+  };
+  const p = { ...g, ...(allPrefs(rt)[id] ?? {}) };
   const num = (v: unknown, lo: number, hi: number, d: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v))) : d);
   return {
     tone: TONES.includes(p.tone as BannerTone) ? (p.tone as BannerTone) : 'own',
@@ -110,8 +129,9 @@ export function resetBannerPrefs(rt: AxfRuntime, id: string): void {
 /** Re-renders when any banner's choices change (settings don't go through the runtime state); returns the raw value. */
 export function useBannerPrefsTick(): unknown {
   const rt = useRuntime();
-  const sub = useCallback((fn: () => void) => rt.settings.onChange(BANNER_PREFS_KEY, fn), [rt]);
-  const get = useCallback(() => rt.settings.get(BANNER_PREFS_KEY), [rt]);
+  // Apply to all's behaviour tokens are every banner's fallback, so a change there re-renders the frames too.
+  const sub = useCallback((fn: () => void) => { const a = rt.settings.onChange(BANNER_PREFS_KEY, fn); const b = rt.settings.onChange(BANNER_LOOK_KEY, fn); return () => { a(); b(); }; }, [rt]);
+  const get = useCallback(() => `${JSON.stringify(rt.settings.get(BANNER_PREFS_KEY) ?? null)}|${JSON.stringify(rt.settings.get(BANNER_LOOK_KEY) ?? null)}`, [rt]);
   return useSyncExternalStore(sub, get, get);
 }
 
@@ -170,6 +190,20 @@ function install(rt: AxfRuntime): void {
   if (installed.has(rt)) return;
   installed.add(rt);
   rt.actions.withModule(FRAMEWORK_MODULE, () => installActions(rt));
+  applyBannerLook(rt);
+  rt.settings.onChange(BANNER_LOOK_KEY, () => applyBannerLook(rt));
+}
+
+/** Apply to all's look tokens → one stylesheet over every banner frame (empty = nothing, the theme as is). The theme's
+ *  values are captured on body (under any app-wide look), so the banner layer scales from what the page shows. */
+function applyBannerLook(rt: AxfRuntime): void {
+  const doc = globalThis.document;
+  if (!doc) return;
+  let el = doc.getElementById('axf-banner-look') as HTMLStyleElement | null;
+  const css = lookCss(rt.settings.get(BANNER_LOOK_KEY), { scope: '.fx-banner-frame', base: 'body', p: 'fxb', for: 'banner' });
+  if (!css) { el?.remove(); return; }
+  if (!el) { el = doc.createElement('style'); el.id = 'axf-banner-look'; doc.head.appendChild(el); }
+  if (el.textContent !== css) el.textContent = css;
 }
 
 function installActions(rt: AxfRuntime): void {
@@ -416,191 +450,104 @@ const WORK_ANIM_LABEL: Record<BannerWorkAnim, string> = { spin: 'Spin', pulse: '
 const AUTO_HIDE = [0, 10, 30, 60, 300, 900];
 const autoHideLabel = (s: number) => (s === 0 ? 'Never' : s < 60 ? `After ${s} s with nothing new` : `After ${s / 60} min with nothing new`);
 
-/* ---------------- Apply to all (Brett, Oct 26 2026) ---------------- */
-
-/** One tick box, per browser like every banner choice: on = the Apply to all pane is open and every change there sets
- * every banner; the per-banner tabs fold into one wrapper ("Each banner"). */
-export const BANNER_APPLY_ALL_KEY = 'axf.banners.applyAll';
-export function bannerApplyAll(rt: AxfRuntime): boolean { return rt.settings.get(BANNER_APPLY_ALL_KEY) === true; }
-export function setBannerApplyAll(rt: AxfRuntime, on: boolean): void { rt.settings.set(BANNER_APPLY_ALL_KEY, on as never); }
-function useApplyAll(): boolean {
-  const rt = useRuntime();
-  const sub = useCallback((fn: () => void) => rt.settings.onChange(BANNER_APPLY_ALL_KEY, fn), [rt]);
-  const get = useCallback(() => rt.settings.get(BANNER_APPLY_ALL_KEY) === true, [rt]);
-  return useSyncExternalStore(sub, get, get);
-}
-
-/** Set one look/behaviour choice on every banner at once (one save). Place among the banners stays per banner. */
-export function setAllBannerPrefs(rt: AxfRuntime, ids: string[], patch: Partial<BannerPrefs>): void {
-  const all = allPrefs(rt);
-  const next = { ...all };
-  for (const id of ids) next[id] = { ...all[id], ...patch };
-  rt.settings.set(BANNER_PREFS_KEY, next as never);
-}
-
-/** Every banner back to its own look and behaviour (hide state and order untouched). */
-export function resetAllBannerPrefs(rt: AxfRuntime, ids: string[]): void {
-  const all = allPrefs(rt);
-  const next: Record<string, Partial<BannerPrefs>> = {};
-  for (const [id, p] of Object.entries(all)) if (!ids.includes(id)) next[id] = p;
-  rt.settings.set(BANNER_PREFS_KEY, next as never);
-}
-
-const MIXED = '__mixed';
-/** The value every banner shares for one choice, or MIXED when they differ. */
-export function sharedBannerPref<K extends keyof BannerPrefs>(rt: AxfRuntime, ids: string[], key: K): BannerPrefs[K] | typeof MIXED {
-  const vals = ids.map((id) => bannerPrefs(rt, id)[key]);
-  if (!vals.length) return DEFAULT_BANNER_PREFS[key];
-  return vals.every((v) => v === vals[0]) ? vals[0]! : MIXED;
-}
-const mixedOpt = (v: unknown) => (v === MIXED ? [{ value: MIXED, label: 'Mixed (differs per banner)' }] : []);
-const MIXED_HINT = 'Mixed: banners differ. Switching sets them all.';
-
-/** Every banner's settings: the Apply to all pane, then each banner on its own tab. Dialog, settings tab or page. */
+/** Every banner's settings, one tab each: its look, its behaviour and its plugin's own settings. Dialog, settings tab or page. */
 export function BannerSettingsPanel({ initial }: { initial?: string }) {
   const rt = useRuntime();
   useAxfState();
   useBannerPrefsTick();
   const hide = useBannerHideTick();
   const list = useKnownBanners();
-  const applyAll = useApplyAll();
   const asked = useWantTab();
   const [tab, setTab] = useState(() => (initial && list.some((b) => b.id === initial) ? initial : list[0]?.id ?? ''));
   useEffect(() => { if (asked && list.some((b) => b.id === asked)) setTab(asked); }, [asked]);
   // the list fills in after the plugins load (a page opened straight on Banners)
   useEffect(() => { if (!list.some((b) => b.id === tab) && list[0]) setTab(initial && list.some((b) => b.id === initial) ? initial : list[0].id); }, [list.length]);
+  const b = list.find((x) => x.id === tab);
   if (!list.length) return <p className="fx-muted">This app has no banners.</p>;
-  // `key` remounts each wrapper when the tick box changes, so it opens or folds to match (Container keeps its own fold).
+  const p = bannerPrefs(rt, tab);
+  const set = (patch: Partial<BannerPrefs>) => setBannerPrefs(rt, tab, patch);
+  const shownOrder = [...list].map((x) => ({ id: x.id, order: bannerPrefs(rt, x.id).order ?? x.order ?? 100 })).sort((x, y) => x.order - y.order);
+  const at = shownOrder.findIndex((x) => x.id === tab);
+  const move = (d: -1 | 1) => {
+    const other = shownOrder[at + d];
+    if (!other) return;
+    setBannerPrefs(rt, tab, { order: other.order + d * 0.01 });
+  };
   return (
     <div className="fx-banner-settings">
-      <Container
-        key={applyAll ? 'all-open' : 'all-shut'}
-        className="fx-banner-settings__all"
-        title="Apply to all"
-        icon="layers"
-        collapsible
-        defaultOpen={applyAll}
-        actions={<Checkbox label="Apply to all" checked={applyAll} onChange={(v) => setBannerApplyAll(rt, v)} title="Every change in this pane sets every banner" />}
-      >
-        {applyAll
-          ? <ApplyToAllBody list={list} hide={hide} />
-          : <p className="fx-small fx-muted" style={{ margin: 0 }}>Tick Apply to all to change every banner at once.</p>}
-      </Container>
-      <Container key={applyAll ? 'each-shut' : 'each-open'} className="fx-banner-settings__each" title="Each banner" icon="bell" collapsible defaultOpen={!applyAll}>
-        <div className="fx-banner-settings__tabs" role="tablist" aria-label="Banners">
-          {list.map((x) => (
-            <button key={x.id} type="button" role="tab" aria-selected={x.id === tab} className={`fx-banner-settings__tab${x.id === tab ? ' is-on' : ''}`} onClick={() => setTab(x.id)}>
-              <Icon name={x.icon ?? 'bell'} size={14} />{bannerLabel(x)}
-            </button>
-          ))}
+      <ApplyToAllLook />
+      <div className="fx-banner-settings__tabs" role="tablist" aria-label="Banners">
+        {list.map((x) => (
+          <button key={x.id} type="button" role="tab" aria-selected={x.id === tab} className={`fx-banner-settings__tab${x.id === tab ? ' is-on' : ''}`} onClick={() => setTab(x.id)}>
+            <Icon name={x.icon ?? 'bell'} size={14} />{bannerLabel(x)}
+          </button>
+        ))}
+      </div>
+      {b && (
+        <div className="fx-stack">
+          <Section title="Hide">
+            <HideControls id={b.id} label={bannerLabel(b)} list={list} hide={hide} />
+          </Section>
+          <Section title="Look">
+            <SelectField label="Colour" value={p.tone} options={TONES.map((t) => ({ value: t, label: TONE_LABEL[t] }))} onChange={(v) => set({ tone: v as BannerTone })} />
+            <SelectField label="Density" value={p.density} options={DENSITIES.map((d) => ({ value: d, label: d[0]!.toUpperCase() + d.slice(1) }))} onChange={(v) => set({ density: v as BannerDensity })} />
+            <Switch label="Show its icon" checked={p.icon} onChange={(v) => set({ icon: v })} />
+            <SelectField label="Icon while working" value={p.workIcon} options={[{ value: '', label: `Its own (${b.workIcon ?? 'refresh'})` }, ...BANNER_WORK_ICONS.map((i) => ({ value: i, label: i[0]!.toUpperCase() + i.slice(1) }))]} onChange={(v) => set({ workIcon: v })} />
+            <SelectField label="Working animation" value={p.workAnim} options={[{ value: '', label: `Its own (${WORK_ANIM_LABEL[b.workAnim ?? 'spin']})` }, ...WORK_ANIMS.map((a) => ({ value: a, label: WORK_ANIM_LABEL[a] }))]} onChange={(v) => set({ workAnim: v as BannerWorkAnim | '' })} />
+            <SelectField label="Maximum height" value={String(p.maxRows)} options={[0, 4, 6, 8, 12, 18].map((n) => ({ value: String(n), label: n === 0 ? 'Its own' : `${n} rows (scrolls past that)` }))} onChange={(v) => set({ maxRows: Number(v) })} />
+          </Section>
+          <Section title="Behaviour">
+            <SelectField label="When it appears" value={p.launch} options={[{ value: 'expanded', label: 'Open, with its list' }, { value: 'minimized', label: 'Minimized to one line' }]} onChange={(v) => set({ launch: v === 'minimized' ? 'minimized' : 'expanded' })} />
+            <SelectField label="Hide itself" value={String(p.autoHide)} options={AUTO_HIDE.map((s) => ({ value: String(s), label: autoHideLabel(s) }))} onChange={(v) => set({ autoHide: Number(v) })} />
+            <div className="fx-row fx-row--wrap">
+              <span className="fx-grow">Place among the banners: {at + 1} of {shownOrder.length}</span>
+              <Button tone="ghost" icon="chevron-up" disabled={at <= 0} onClick={() => move(-1)}>Up</Button>
+              <Button tone="ghost" icon="chevron-down" disabled={at >= shownOrder.length - 1} onClick={() => move(1)}>Down</Button>
+            </div>
+            <Switch label="Hide it inside a host app (Patches)" checked={p.hideInHost} onChange={(v) => set({ hideInHost: v })} />
+          </Section>
+          {b.settingsTab && ownSettings && (
+            <Section title={`${bannerLabel(b)} settings`}>{ownSettings(b.settingsTab)}</Section>
+          )}
+          <div className="fx-row fx-row--wrap">
+            <Button tone="ghost" icon="refresh" onClick={() => resetBannerPrefs(rt, tab)}>Look and behaviour back to defaults</Button>
+          </div>
         </div>
-        <OneBanner id={tab} list={list} hide={hide} />
-      </Container>
+      )}
     </div>
   );
 }
 
 /**
- * The open Apply to all pane: every setting any banner has, once. Hide / timer for all; Look and Behaviour set on every
- * banner (a choice they don't share shows Mixed); then each banner's own settings, wrapped and named, for the banners
- * that have some (the others are named in one line).
+ * Apply to all (Oct 26 2026): every banner's look, design, behaviour and tone at once, Simple / Basic / Pro / Advanced,
+ * in collapsible categories, with Reset. Only changed tokens are stored; a banner's own tab still wins.
  */
-function ApplyToAllBody({ list, hide }: { list: BannerDef[]; hide: BannerHideState }) {
+function ApplyToAllLook() {
   const rt = useRuntime();
-  const ids = list.map((x) => x.id);
-  const now = Date.now();
-  const names = list.map(bannerLabel).join(', ');
-  const set = (patch: Partial<BannerPrefs>) => setAllBannerPrefs(rt, ids, patch);
-  const v = <K extends keyof BannerPrefs>(k: K) => sharedBannerPref(rt, ids, k);
-  const tone = v('tone'), density = v('density'), icon = v('icon'), workIcon = v('workIcon'), workAnim = v('workAnim'), maxRows = v('maxRows'),
-    launch = v('launch'), autoHide = v('autoHide'), hideInHost = v('hideInHost');
-  const own = list.filter((x) => x.settingsTab);
-  const none = list.filter((x) => !x.settingsTab);
+  const sub = useCallback((fn: () => void) => { const a = rt.settings.onChange(BANNER_LOOK_KEY, fn); const b = rt.settings.onChange(BANNER_LOOK_LEVEL_KEY, fn); return () => { a(); b(); }; }, [rt]);
+  const get = useCallback(() => `${JSON.stringify(rt.settings.get(BANNER_LOOK_KEY) ?? null)}|${String(rt.settings.get(BANNER_LOOK_LEVEL_KEY) ?? '')}`, [rt]);
+  useSyncExternalStore(sub, get, get);
+  const values: LookValues = normalizeLook(rt.settings.get(BANNER_LOOK_KEY));
+  const stored = rt.settings.get(BANNER_LOOK_LEVEL_KEY);
+  const level: LookLevel = LOOK_LEVELS.includes(stored as LookLevel) ? (stored as LookLevel) : 'simple';
+  const n = lookChanged(values);
+  const [sure, setSure] = useState(false);
+  useEffect(() => { if (!sure) return; const t = setTimeout(() => setSure(false), 4000); return () => clearTimeout(t); }, [sure]);
+  const save = (next: LookValues) => rt.settings.set(BANNER_LOOK_KEY, (Object.keys(next).length ? next : null) as never);
   return (
-    <div className="fx-stack">
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>Each change here sets all {list.length} banners: {names}.</p>
-      <Section title="Hide">
-        <Switch label="Hide all banners" checked={allBannersHidden(hide, ids, now)} onChange={(on) => setAllBannersHide(rt, on)} hint="They keep working and logging their activity; they just aren't shown." />
-        <HideTimer hide={hide} />
+    <Container className="fx-banner-settings__all" title="Apply to all" icon="layers" collapsible defaultOpen={false}
+      actions={n > 0 ? <span className="fx-muted fx-small">{n} changed</span> : undefined}>
+      <div className="fx-stack">
+        <p className="fx-muted fx-small" style={{ margin: 0 }}>Every banner at once. Only what you change here overrides the theme, and a banner’s own tab below still wins.</p>
+        <LookLevelSwitch value={level} onChange={(l) => rt.settings.set(BANNER_LOOK_LEVEL_KEY, l)} />
+        <LookEditor values={values} onChange={save} scope="banner" level={level} />
         <div className="fx-row fx-row--wrap">
-          <Button tone="ghost" icon="eye" disabled={!anyBannerHide(hide, now)} onClick={() => showAllBannersNow(rt)}>Show all banners and reset timers</Button>
+          <Button tone={sure ? 'danger' : 'ghost'} icon="refresh" disabled={n === 0} onClick={() => { if (!sure) { setSure(true); return; } setSure(false); save({}); }}>
+            {sure ? 'Tap again to reset everything' : 'Reset (back to the theme)'}
+          </Button>
         </div>
-      </Section>
-      <Section title="Look">
-        <SelectField label="Colour" value={String(tone)} options={[...mixedOpt(tone), ...TONES.map((t) => ({ value: t, label: TONE_LABEL[t] }))]} onChange={(x) => x !== MIXED && set({ tone: x as BannerTone })} />
-        <SelectField label="Density" value={String(density)} options={[...mixedOpt(density), ...DENSITIES.map((d) => ({ value: d, label: d[0]!.toUpperCase() + d.slice(1) }))]} onChange={(x) => x !== MIXED && set({ density: x as BannerDensity })} />
-        <Switch label="Show their icons" checked={icon === true} onChange={(x) => set({ icon: x })} hint={icon === MIXED ? MIXED_HINT : undefined} />
-        <SelectField label="Icon while working" value={String(workIcon)} options={[...mixedOpt(workIcon), { value: '', label: 'Each banner\'s own' }, ...BANNER_WORK_ICONS.map((i) => ({ value: i, label: i[0]!.toUpperCase() + i.slice(1) }))]} onChange={(x) => x !== MIXED && set({ workIcon: x })} />
-        <SelectField label="Working animation" value={String(workAnim)} options={[...mixedOpt(workAnim), { value: '', label: 'Each banner\'s own' }, ...WORK_ANIMS.map((a) => ({ value: a, label: WORK_ANIM_LABEL[a] }))]} onChange={(x) => x !== MIXED && set({ workAnim: x as BannerWorkAnim | '' })} />
-        <SelectField label="Maximum height" value={String(maxRows)} options={[...mixedOpt(maxRows), ...[0, 4, 6, 8, 12, 18].map((n) => ({ value: String(n), label: n === 0 ? 'Their own' : `${n} rows (scrolls past that)` }))]} onChange={(x) => x !== MIXED && set({ maxRows: Number(x) })} />
-      </Section>
-      <Section title="Behaviour">
-        <SelectField label="When they appear" value={String(launch)} options={[...mixedOpt(launch), { value: 'expanded', label: 'Open, with their list' }, { value: 'minimized', label: 'Minimized to one line' }]} onChange={(x) => x !== MIXED && set({ launch: x === 'minimized' ? 'minimized' : 'expanded' })} />
-        <SelectField label="Hide themselves" value={String(autoHide)} options={[...mixedOpt(autoHide), ...AUTO_HIDE.map((s) => ({ value: String(s), label: autoHideLabel(s) }))]} onChange={(x) => x !== MIXED && set({ autoHide: Number(x) })} />
-        <Switch label="Hide them inside a host app (Patches)" checked={hideInHost === true} onChange={(x) => set({ hideInHost: x })} hint={hideInHost === MIXED ? MIXED_HINT : undefined} />
-        <p className="fx-small fx-muted" style={{ margin: 0 }}>Place among the banners stays per banner (Each banner).</p>
-      </Section>
-      {own.length > 0 && ownSettings && (
-        <Section title="Each banner's own settings">
-          {own.map((x) => (
-            <Container key={x.id} className="fx-banner-settings__own" title={`${bannerLabel(x)} settings`} icon={x.icon ?? 'bell'} collapsible defaultOpen>
-              {ownSettings!(x.settingsTab!)}
-            </Container>
-          ))}
-        </Section>
-      )}
-      {none.length > 0 && <p className="fx-small fx-muted" style={{ margin: 0 }}>No settings of their own: {none.map(bannerLabel).join(', ')}.</p>}
-      <div className="fx-row fx-row--wrap">
-        <Button tone="ghost" icon="refresh" onClick={() => resetAllBannerPrefs(rt, ids)}>Every banner's look and behaviour back to defaults</Button>
       </div>
-    </div>
-  );
-}
-
-/** One banner's tab: its hide, look, behaviour and its plugin's own settings. */
-function OneBanner({ id, list, hide }: { id: string; list: BannerDef[]; hide: BannerHideState }) {
-  const rt = useRuntime();
-  const b = list.find((x) => x.id === id);
-  if (!b) return null;
-  const p = bannerPrefs(rt, id);
-  const set = (patch: Partial<BannerPrefs>) => setBannerPrefs(rt, id, patch);
-  const shownOrder = [...list].map((x) => ({ id: x.id, order: bannerPrefs(rt, x.id).order ?? x.order ?? 100 })).sort((x, y) => x.order - y.order);
-  const at = shownOrder.findIndex((x) => x.id === id);
-  const move = (d: -1 | 1) => {
-    const other = shownOrder[at + d];
-    if (!other) return;
-    setBannerPrefs(rt, id, { order: other.order + d * 0.01 });
-  };
-  return (
-    <div className="fx-stack">
-      <Section title="Hide">
-        <HideControls id={b.id} label={bannerLabel(b)} list={list} hide={hide} />
-      </Section>
-      <Section title="Look">
-        <SelectField label="Colour" value={p.tone} options={TONES.map((t) => ({ value: t, label: TONE_LABEL[t] }))} onChange={(v) => set({ tone: v as BannerTone })} />
-        <SelectField label="Density" value={p.density} options={DENSITIES.map((d) => ({ value: d, label: d[0]!.toUpperCase() + d.slice(1) }))} onChange={(v) => set({ density: v as BannerDensity })} />
-        <Switch label="Show its icon" checked={p.icon} onChange={(v) => set({ icon: v })} />
-        <SelectField label="Icon while working" value={p.workIcon} options={[{ value: '', label: `Its own (${b.workIcon ?? 'refresh'})` }, ...BANNER_WORK_ICONS.map((i) => ({ value: i, label: i[0]!.toUpperCase() + i.slice(1) }))]} onChange={(v) => set({ workIcon: v })} />
-        <SelectField label="Working animation" value={p.workAnim} options={[{ value: '', label: `Its own (${WORK_ANIM_LABEL[b.workAnim ?? 'spin']})` }, ...WORK_ANIMS.map((a) => ({ value: a, label: WORK_ANIM_LABEL[a] }))]} onChange={(v) => set({ workAnim: v as BannerWorkAnim | '' })} />
-        <SelectField label="Maximum height" value={String(p.maxRows)} options={[0, 4, 6, 8, 12, 18].map((n) => ({ value: String(n), label: n === 0 ? 'Its own' : `${n} rows (scrolls past that)` }))} onChange={(v) => set({ maxRows: Number(v) })} />
-      </Section>
-      <Section title="Behaviour">
-        <SelectField label="When it appears" value={p.launch} options={[{ value: 'expanded', label: 'Open, with its list' }, { value: 'minimized', label: 'Minimized to one line' }]} onChange={(v) => set({ launch: v === 'minimized' ? 'minimized' : 'expanded' })} />
-        <SelectField label="Hide itself" value={String(p.autoHide)} options={AUTO_HIDE.map((s) => ({ value: String(s), label: autoHideLabel(s) }))} onChange={(v) => set({ autoHide: Number(v) })} />
-        <div className="fx-row fx-row--wrap">
-          <span className="fx-grow">Place among the banners: {at + 1} of {shownOrder.length}</span>
-          <Button tone="ghost" icon="chevron-up" disabled={at <= 0} onClick={() => move(-1)}>Up</Button>
-          <Button tone="ghost" icon="chevron-down" disabled={at >= shownOrder.length - 1} onClick={() => move(1)}>Down</Button>
-        </div>
-        <Switch label="Hide it inside a host app (Patches)" checked={p.hideInHost} onChange={(v) => set({ hideInHost: v })} />
-      </Section>
-      {b.settingsTab && ownSettings && (
-        <Section title={`${bannerLabel(b)} settings`}>{ownSettings(b.settingsTab)}</Section>
-      )}
-      <div className="fx-row fx-row--wrap">
-        <Button tone="ghost" icon="refresh" onClick={() => resetBannerPrefs(rt, id)}>Look and behaviour back to defaults</Button>
-      </div>
-    </div>
+    </Container>
   );
 }
 
@@ -614,36 +561,28 @@ function HideControls({ id, label, list, hide }: { id: string; label: string; li
   const ids = list.map((x) => x.id);
   const all = allBannersHidden(hide, ids, now);
   const names = list.map(bannerLabel).join(', ');
+  const [text, setText] = useState(String(hide.timer.minutes));
+  useEffect(() => { setText(String(hide.timer.minutes)); }, [hide.timer.minutes]);
+  const commit = () => { const m = minutesFrom(text); if (m !== null && m !== hide.timer.minutes) setBannerHideTimer(rt, { minutes: m }); else setText(String(hide.timer.minutes)); };
   return (
     <>
       <Switch label={`Hide the ${label} banner`} checked={bannerHidden(hide, id, now)} onChange={(v) => setBannerHide(rt, id, v)} hint="It keeps working and logging its activity (terminal, banners); it just isn't shown." />
       <div className="fx-banner-settings__indent">
         <Switch label="Hide all banners" checked={all} onChange={(v) => setAllBannersHide(rt, v)} title={`Hides: ${names}`} hint={`${list.length} banner${list.length === 1 ? '' : 's'}: ${names}`} />
       </div>
-      <HideTimer hide={hide} />
+      <div className="fx-banner-settings__timer">
+        <Checkbox label="Hide for" checked={hide.timer.on} onChange={(v) => setBannerHideTimer(rt, { on: v, minutes: minutesFrom(text) ?? TIMER_DEFAULT })} />
+        <input
+          className="fx-input fx-banner-settings__minutes" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2}
+          aria-label="Minutes" value={text} disabled={!hide.timer.on}
+          onChange={(e) => setText(minutesInput(e.target.value))} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
+        />
+        <span>minutes, then show again</span>
+      </div>
       <div className="fx-row fx-row--wrap">
         <Button tone="ghost" icon="eye" disabled={!anyBannerHide(hide, now)} onClick={() => showAllBannersNow(rt)} title={`Shows: ${names}`}>Show all banners and reset timers</Button>
       </div>
     </>
-  );
-}
-
-/** The hide timer: a tick box enabling two digits of minutes (one state for every interface). */
-function HideTimer({ hide }: { hide: BannerHideState }) {
-  const rt = useRuntime();
-  const [text, setText] = useState(String(hide.timer.minutes));
-  useEffect(() => { setText(String(hide.timer.minutes)); }, [hide.timer.minutes]);
-  const commit = () => { const m = minutesFrom(text); if (m !== null && m !== hide.timer.minutes) setBannerHideTimer(rt, { minutes: m }); else setText(String(hide.timer.minutes)); };
-  return (
-    <div className="fx-banner-settings__timer">
-      <Checkbox label="Hide for" checked={hide.timer.on} onChange={(v) => setBannerHideTimer(rt, { on: v, minutes: minutesFrom(text) ?? TIMER_DEFAULT })} />
-      <input
-        className="fx-input fx-banner-settings__minutes" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2}
-        aria-label="Minutes" value={text} disabled={!hide.timer.on}
-        onChange={(e) => setText(minutesInput(e.target.value))} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
-      />
-      <span>minutes, then show again</span>
-    </div>
   );
 }
 

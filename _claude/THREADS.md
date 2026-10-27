@@ -35,7 +35,6 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
 | AmberX as an empty shell for building and testing plugins | queued | – | – | New thread, Opus. See *To carry on* | 2026-10-26 |
-| Banner look Apply to all with Simple/Basic/Pro/Advanced + settings levels + sliders | working | `claude/apply-all-levels` | – | Building (Opus; Fable rebuild to park). See *To carry on* | 2026-10-26 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -48,43 +47,6 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
-
-### Banner look Apply to all + Simple/Basic/Pro/Advanced + settings levels + sliders
-- **Asked (Brett, Oct 26 2026, 20:16):** "Undo the banner settings changes, just make a collapsible apply to all section
-  for the style and look with simple, basic, pro, and advanced featuring every possible look, design and behavior
-  tone, in collapsible categories. Have a reset button and only changed tokens override the inherited theme. Make
-  sure simple has a slider to compact everything with lowest extremely compact, like no space at all. Do the same
-  simple, pro and advanced tabs in console's settings interface, which is an asset the other apps are all set on. Put
-  a whole collapsible section of sliders in console's simple settings interface."
-- **Model:** Opus (Brett picked it; Fable was recommended), so park a Fable rebuild when done. Built in the session it
-  was asked in (Brett chose "build it here").
-- **Branch:** `claude/apply-all-levels` from main 916f7e6.
-- **Plan / steps:**
-  1. Undo #107's Apply to all pane in `framework/react/components/BannerSettings.tsx` (+ `ui/axf.css` line, copies in
-     every app's `src/axf/`). Keep #107's systems-check key re-check (not part of the undo).
-  2. Look-token engine `framework/core/engines/looktokens.ts`: one registry of look, design, behaviour and tone tokens
-     with level (simple / basic / pro / advanced) and category; values hold only changed tokens; compiles to CSS that
-     layers on the inherited theme (base values captured on an ancestor, e.g. `--fx-space` scaled by the compact
-     slider, 0 = no space at all). Check script `framework/spec/check-looktokens.mts`.
-  3. Banner settings: one collapsible **Apply to all** section on top with level tabs Simple / Basic / Pro / Advanced,
-     collapsible categories, Reset; stored in one setting (`axf.banners.look`); behaviour tokens (tone, launch,
-     auto-hide, density, icons, max height, working icon/animation, hide in host) are the fallback under each
-     banner's own choice. Per-banner tabs as before #107.
-  4. Settings interface asset (settings-ui@1): levels Simple / Basic / Pro / Advanced (`levels`, `levelOf`,
-     `defaultLevel`), a level switch on the settings page, every tab/group/panel/setting shown from its level; the
-     `settings/console` asset (every app uses it) tags its items.
-  5. Simple level: a collapsible **Sliders** section (compact down to no space, text size, row height, corners,
-     border width, icon size …) applied app-wide through the same engine, with Reset.
-  6. Copy framework changes into every app that bakes them (console-web, axhub-web, patches-web, amberx-droid,
-     walkthrough-studio); tsc in console-web, axhub-web, patches-web; check-theme, check-controls.
-  7. Pending list: add `apply-all-levels` (source chat, Opus) + Fable rebuild `apply-all-levels-fable`; PR; THREADS.
-- **Read first:** `framework/react/components/BannerSettings.tsx`, `framework/libs/settings/index.tsx`,
-  `framework/core/engines/settingsui.ts`, `framework/core/engines/customize.ts`, `framework/assets/settings/console.json`.
-- **Checks:** `cd apps/console-web && npx tsc --noEmit -p .`; `node framework/cli/check-theme.mjs`;
-  `node framework/cli/check-controls.mjs`; `npx -y tsx framework/spec/check-settings-ui.mts`.
-- **First message:** "Carry on the thread *Banner look Apply to all + Simple/Basic/Pro/Advanced + settings levels +
-  sliders* from `_claude/THREADS.md` → To carry on, on branch `claude/apply-all-levels`, model Opus. Check what's
-  already committed on the branch, then do the steps that are left."
 
 ### AmberX as an empty shell for building and testing plugins
 - **Asked (Brett, Oct 26 2026, 23:24):** "The amberx app is supposed to be an empty shell with voice commands only with
@@ -157,6 +119,7 @@ VPS). The session reads the rules and this file first, as usual.
 
 | Thread | Result | Updated |
 |---|---|---|
+| Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders | merged (#115); console updates in 5 min, other apps on their next deploy. Fable rebuild parked (`apply-all-levels-fable`) | 2026-10-26 |
 | No login questions + headless sessions in the console Terminal | merged (#105) | 2026-10-26 |
 | Move axHub to console-style pages | AmberX-AXF #100 merged | 2026-10-26 |
 | Fix AmberX app sign-in and hosting | merged (#99); amberx.amberxai.com running on the VPS (amberx-web, DNS in place, 5-minute auto-update) | 2026-10-26 |
