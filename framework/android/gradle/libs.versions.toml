@@ -27,8 +27,12 @@ kotlinTest = "2.0.21"
 turbine = "1.2.0"
 androidxTestExt = "1.2.1"
 espresso = "3.6.1"
+# lib-voice: Vosk on-device speech (+ JNA, which Vosk needs as an AAR)
+vosk = "0.3.47"
+jna = "5.13.0"
 
 [libraries]
+vosk-android = { module = "com.alphacephei:vosk-android", version.ref = "vosk" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }

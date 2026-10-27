@@ -2,23 +2,66 @@
   "$axf": "library@1",
   "id": "ai.amberx.axf.voice",
   "module": "lib-voice",
-  "name": "Voice (speech in, prompts out, voice commands)",
-  "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) and SpokenText normalisers (\"gmail dot com\" → gmail.com, spoken codes as plain words) so other ports can mirror them.",
-  "features": ["c.voice", "dv.audio"],
+  "name": "Voice (speech in, prompts out, voice commands, continuous listening)",
+  "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) and SpokenText normalisers (\"gmail dot com\" → gmail.com, spoken codes as plain words) so other ports can mirror them. Continuous listening (0.3.0): a VoiceEngine contract (start/stop, results flow with text + confidence + partial/final) with Vosk as the on-device default, a dictation stream that runs until a stop phrase (\"end note\"), a sensitivity slider mapped to a confidence floor, platform echo cancellation + noise suppression, and an arming phrase or always-armed mode with a timeout. Pure-Kotlin VoiceSensitivity, VoiceArming and EndPhrases/DictationAssembler for other ports to mirror.",
+  "features": [
+    "c.voice",
+    "dv.audio"
+  ],
   "dependsOn": [],
   "manifestKey": "libraries.voice",
   "params": [
-    { "key": "speakPrompts", "label": "Speak prompts by default", "type": "bool", "default": true },
-    { "key": "preferOffline", "label": "Prefer on-device recognition", "type": "bool", "default": true, "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one." }
+    {
+      "key": "speakPrompts",
+      "label": "Speak prompts by default",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "key": "preferOffline",
+      "label": "Prefer on-device recognition",
+      "type": "bool",
+      "default": true,
+      "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one."
+    },
+    {
+      "key": "engine",
+      "label": "Listening engine",
+      "type": "choice",
+      "choices": [
+        "vosk",
+        "android",
+        "cloud"
+      ],
+      "default": "vosk",
+      "help": "Only vosk is built; the app ships the Vosk model in assets/model-en-us (see the module README)."
+    }
   ],
   "install": {
     "gradle": "implementation(\"ai.amberx.axf:lib-voice:$axf\")",
     "module": "VoiceModule(this)",
     "import": "ai.amberx.axf.voice.VoiceModule",
-    "routes": ["voice-triggers"]
+    "routes": [
+      "voice-triggers"
+    ]
   },
   "placeholders": [
-    { "capability": "axf.voice.wakeword", "note": "Always-on wake word in a foreground service (not built; the app listens only while open)." },
-    { "capability": "axf.voice.speaker-id", "note": "Recognise the owner's voice (not built)." }
-  ]
+    {
+      "capability": "axf.voice.wakeword",
+      "note": "Always-on wake word in a foreground service (not built; the app listens only while open)."
+    },
+    {
+      "capability": "axf.voice.speaker-id",
+      "note": "Recognise the owner's voice (not built)."
+    },
+    {
+      "capability": "axf.voice.engine.android",
+      "note": "Continuous listening on the phone's SpeechRecognizer restarted in a loop (AndroidRecognizerVoiceEngine; not built)."
+    },
+    {
+      "capability": "axf.voice.engine.cloud",
+      "note": "Streaming cloud speech-to-text (CloudVoiceEngine; not built)."
+    }
+  ],
+  "version": "0.3.0"
 }
