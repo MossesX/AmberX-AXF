@@ -34,7 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| AmberX Design Package + Behaviour theme (replaces Appearance package) | built on Opus (`rebuild/design-package-opus`); Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
+| AmberX Design Package + Behaviour theme (replaces Appearance package) | built on Opus (`rebuild/design-package-opus`, PR #123); Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
 | AmberX Design Package (Fable rebuild of the Opus build) | queued | – | – | Fable, pending `design-package-fable`; starts by replacing the Opus build (PR on `rebuild/design-package-opus`). See *To carry on* | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
