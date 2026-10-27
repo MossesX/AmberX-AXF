@@ -1073,6 +1073,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-brand > svg { height: auto; }
 .fx-brand--wordmark, .fx-brand--lockup { font-family: var(--fx-font-display); }
 .fx-toolbar__brand { display: inline-flex; align-items: center; flex: none; padding-inline: calc(var(--fx-space) * 0.5); }
+.fx-window__brand, .fx-dialog__brand, .fx-card__brand { margin-inline-end: calc(var(--fx-space) * 0.5); opacity: var(--fx-opacity-muted); }
+.fx-window.is-focused .fx-window__brand, .fx-dialog .fx-dialog__brand { opacity: 1; }
 .fx-tabgroup__brand { display: inline-flex; align-items: center; flex: none; padding-inline: calc(var(--fx-space) * 0.75); opacity: var(--fx-opacity-muted); }
 .is-brand-edge { position: relative; }
 .is-brand-edge::before {

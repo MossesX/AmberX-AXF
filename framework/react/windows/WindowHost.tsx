@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
-import { BrandMark, brandHostProps, useBrandPlace } from '../components/Brand';
+import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, CORNERS } from '../../core/engines/windows';
 
@@ -145,10 +145,15 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
     const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); wm.settle(w.id); };
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
   };
+  // branding@1: floating windows use the `floating-window` slot, every other window the `window` slot
+  const brandSlot = isFloating(w) ? 'floating-window' : 'window';
+  const brand = useBrandPlace(brandSlot, 14);
+  const brandHost = brandHostProps(brand);
   return (
     <WindowCtx.Provider value={w}>
-      <div className={`fx-window fx-window--${w.type} ${s.focused === w.id ? 'is-focused' : ''}`} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: 60 + w.z, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)}>
+      <div className={`fx-window fx-window--${w.type} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: 60 + w.z, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
         <div className="fx-window__title" onPointerDown={(e) => drag(e, 'move')} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', w.id); }} data-fx-ctx-target="window-title" data-fx-ctx-payload={w.id}>
+          {brand?.svg && <BrandMark slot={brandSlot} height={14} className="fx-window__brand" />}
           <span className="fx-window__name">{w.title}</span>
           <span className="fx-window__badge">{w.type}</span>
           {w.toolbarsAllowed && !forcesToolbar(w) && <label className="fx-window__switch" onPointerDown={(e) => e.stopPropagation()}><input type="checkbox" checked={w.toolbarEnabled} onChange={(e) => wm.setToolbar(w.id, e.target.checked)} /> toolbar</label>}
@@ -156,7 +161,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
           {w.closable && <button className="fx-iconbtn" title="Close" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.close(w.id)}><Icon name="x" /></button>}
         </div>
         {effectiveToolbar(w) && <WindowToolbar w={w} />}
-        <div className="fx-window__body">{layout ? <PaneView pane={layout} /> : <div className="fx-empty">Empty window</div>}</div>
+        <div className="fx-window__body">{layout ? <PaneView pane={layout} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
         <div className="fx-window__resize" onPointerDown={(e) => drag(e, 'resize')} />
       </div>
     </WindowCtx.Provider>

@@ -2,6 +2,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { MenuList } from './MenuList';
 
 export interface DialogDef {
@@ -35,17 +36,20 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
     return null;
   }
   const close = () => rt.closeDialog();
+  const brand = rt.brandPlace('dialog', 16);
+  const brandHost = brandHostProps(brand);
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
-      <div className="fx-dialog" role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef}>
+      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
         <header className="fx-dialog__head">
+          {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
           <h2>{def.title}</h2>
           <button type="button" className="fx-iconbtn" onClick={close} aria-label="Close dialog">
             <Icon name="x" size={16} />
           </button>
         </header>
-        <div className="fx-dialog__body">{def.render(state.dialog.props ?? {}, close)}</div>
+        <div className="fx-dialog__body">{def.render(state.dialog.props ?? {}, close)}<BrandWatermark slot="dialog" /></div>
       </div>
     </div>
   );

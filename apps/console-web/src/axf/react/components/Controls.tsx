@@ -1,6 +1,7 @@
 import { useEffect, useId, useState, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
 import { useAsset, useGate, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './Brand';
 import { containerCollapsible } from '../../core';
 
 /* ---------------- Button (styled by the active `button` asset) ---------------- */
@@ -148,10 +149,13 @@ export function Container({ title, icon, actions, children, className, ctx, ctxP
   const [open, setOpen] = useState(defaultOpen);
   const bodyId = useId();
   const shown = open || !collapsible;
+  const brand = useBrandPlace('container', 14);
+  const brandHost = brandHostProps(brand);
   return (
-    <section className={`fx-card ${className ?? ''}`} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload}>
+    <section className={`fx-card ${className ?? ''} ${brandHost.className}`.trim()} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       {title && (
         <header className="fx-card__head">
+          {brand?.svg && title && <BrandMark slot="container" height={14} className="fx-card__brand" />}
           {icon && <Icon name={icon} size={16} />}
           <h3>{title}</h3>
           <div className="fx-card__actions">
@@ -172,6 +176,7 @@ export function Container({ title, icon, actions, children, className, ctx, ctxP
         </header>
       )}
       {shown && <div className="fx-card__body" id={bodyId}>{children}</div>}
+      {shown && <BrandWatermark slot="container" />}
     </section>
   );
 }
