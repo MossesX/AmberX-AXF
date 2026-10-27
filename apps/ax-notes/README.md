@@ -22,3 +22,13 @@ framework changes are picked up immediately. To depend on a published framework 
 | `lib-settings` + `axf-devtools` (`PluginManagerModule`) | The settings interface every app ships (`settings` view: Appearance, General, **Plugins** with every module's health, About) and the Plugin Manager (`plugin-manager` view, long-press menu). Plugins add settings groups under Settings → Plugins, never a screen of their own |
 
 Validate conformance at any time: `node ../../framework/cli/axf.mjs validate .`
+
+## AX Notes (build `ax-notes`, steps s11 / s12 / s22)
+
+| Path | What |
+| --- | --- |
+| `model/` | Pure Kotlin: notes, shared categories, lists (notes / to-do / smart), to-dos, code links; `ListRules` (sorting, smart filters, grouping, manual moves, fuzzy check-off), `NoteTriggers` + `Dictation` + `ReadBack`; JSON in `NotesCodec`. Unit tests in `app/src/test`. |
+| `data/` | `NotesStore` (offline-first on axf-data, one outbox per collection) and `NotesHubSync` (axHub `_data` for project `ax-notes`; placeholder until a lib-hub data client exists). |
+| `capture/` | `CaptureController` (voice → transcript → note / command) and the app-local seams `NoteCapture`, `Speaker`, `TriggerSink`, `NoteAi` with placeholders (wired to lib-voice, lib-speech, lib-triggers, lib-ai later). |
+| `app/src/main/assets/axnotes/triggers.json` | Voice phrases as data (`axnotes-triggers@1`), same set as `NoteTriggers.DEFAULTS`. |
+| `views/` | Notes, Note editor, Speak, Lists, List, To-do item. |

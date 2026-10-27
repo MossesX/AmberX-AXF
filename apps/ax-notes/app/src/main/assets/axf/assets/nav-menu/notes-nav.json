@@ -29,10 +29,10 @@
             "view": "capture"
           },
           {
-            "id": "todos",
-            "label": "Todos",
-            "icon": "list",
-            "view": "todos"
+            "id": "lists",
+            "label": "Lists",
+            "icon": "check-circle",
+            "view": "lists"
           },
           {
             "id": "settings",

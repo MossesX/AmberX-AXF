@@ -82,6 +82,9 @@ class AppModule(private val context: Context, private val scope: CoroutineScope)
             Triple("home", "Notes", "edit"),
             Triple("editor", "Note", "edit"),
             Triple("capture", "Speak", "mic"),
+            Triple("lists", "Lists", "list"),
+            Triple("list", "List", "list"),
+            Triple("todo-item", "To-do", "check-circle"),
         )
     }
 }

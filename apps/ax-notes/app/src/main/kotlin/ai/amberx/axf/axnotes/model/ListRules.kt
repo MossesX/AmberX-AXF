@@ -127,6 +127,15 @@ object ListRules {
         return start to end
     }
 
+    /** "2026-10-30" → that day's start (or end with [endOfDay]) in [zone]; null when it isn't a date. */
+    fun parseDay(s: String, zone: ZoneId, endOfDay: Boolean = false): Long? {
+        val d = runCatching { LocalDate.parse(s.trim()) }.getOrNull() ?: return null
+        val (from, to) = dayRange(d, zone)
+        return if (endOfDay) to else from
+    }
+
+    fun isoDay(at: Long, zone: ZoneId): String = day(at, zone).toString()
+
     // ---- to-dos ----
 
     sealed interface CheckOff {
