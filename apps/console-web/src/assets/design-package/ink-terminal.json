@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "ink-terminal",
+  "name": "Ink Terminal",
+  "version": "1.0.0",
+  "description": "Sharp Terminal on Midnight Ink, classic IDE layout, minimal motion. A crisp dark look with no animation. Keeps this app's own layout. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "accessible"
+  ],
+  "data": {
+    "style-theme": "sharp-terminal",
+    "color-theme": "midnight-ink",
+    "layout": "focus-top",
+    "behavior-theme": "minimal-motion"
+  }
+}

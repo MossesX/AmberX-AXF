@@ -31,7 +31,8 @@
     "divider": false,
     "badge": false,
     "settings": false,
-    "appearance-package": false,
+    "behavior-theme": true,
+    "design-package": false,
     "uac-policy": false
   },
   "cases": {
@@ -124,6 +125,13 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "behavior-theme": [
+          "calm",
+          "minimal-motion",
+          "playful",
+          "snappy",
+          "standard"
         ]
       }
     },
@@ -220,6 +228,13 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "behavior-theme": [
+          "calm",
+          "minimal-motion",
+          "playful",
+          "snappy",
+          "standard"
         ]
       }
     },
@@ -322,6 +337,13 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "behavior-theme": [
+          "calm",
+          "minimal-motion",
+          "playful",
+          "snappy",
+          "standard"
         ]
       }
     },
@@ -418,6 +440,13 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "behavior-theme": [
+          "calm",
+          "minimal-motion",
+          "playful",
+          "snappy",
+          "standard"
         ]
       }
     },
@@ -511,6 +540,13 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "behavior-theme": [
+          "calm",
+          "minimal-motion",
+          "playful",
+          "snappy",
+          "standard"
         ]
       }
     },
@@ -607,6 +643,13 @@
         "banner": [
           "amberx-accent",
           "amberx-thin"
+        ],
+        "behavior-theme": [
+          "calm",
+          "minimal-motion",
+          "playful",
+          "snappy",
+          "standard"
         ]
       }
     }

@@ -36,7 +36,7 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   }
   const close = () => rt.closeDialog();
   return (
-    <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && e.target === e.currentTarget && close()}>
+    <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
       <div className="fx-dialog" role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef}>
         <header className="fx-dialog__head">
           {def.icon && <Icon name={def.icon} size={18} />}
@@ -113,11 +113,11 @@ export function ContextMenuHost() {
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;
       start = { x: e.clientX, y: e.clientY };
-      timer = setTimeout(() => open(t, e.clientX, e.clientY), 550);
+      timer = setTimeout(() => open(t, e.clientX, e.clientY), rt.behavior().interaction.longPressMs); // behaviour theme (was 550 ms)
     };
     const cancel = (e: Event) => {
       const p = e as PointerEvent;
-      if (start && e.type === 'pointermove' && Math.hypot(p.clientX - start.x, p.clientY - start.y) < 10) return;
+      if (start && e.type === 'pointermove' && Math.hypot(p.clientX - start.x, p.clientY - start.y) < Math.max(1, rt.behavior().interaction.dragThreshold)) return;
       clearTimeout(timer);
       start = null;
     };

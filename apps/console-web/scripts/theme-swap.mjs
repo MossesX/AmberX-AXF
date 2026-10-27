@@ -49,6 +49,10 @@ try {
 
   // Settings → Appearance → Assets puts each slot's picker in its own collapsible card (Oct 24 2026): open the colour
   // and style theme cards and use the picker inside each (the slot's first drop-down), not "the first select on the page".
+  // Settings → Appearance keeps everything under the Design Package picker in one collapsible "Everything else"
+  // container (Oct 27 2026, closed by default): open it first.
+  const rest = page.locator('[data-axf-anchor="settings-panel:axf.appearance.rest"] .fx-card__toggle').first();
+  if ((await rest.count()) && (await rest.getAttribute('aria-expanded')) === 'false') { await rest.click(); await page.waitForTimeout(300); }
   const slotPicker = async (type) => {
     const card = page.locator(`[data-axf-anchor="settings-slot:${type}"]`);
     if (!(await card.count())) return page.locator('select').filter({ has: page.locator(`option[value="${type === 'color-theme' ? 'arctic-daylight' : 'glass-orbit'}"]`) }).first();

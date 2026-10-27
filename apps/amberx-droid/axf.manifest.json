@@ -19,6 +19,7 @@
     "color-theme": "fresh-light",
     "style-theme": "fresh",
     "layout": "axhub-console",
+    "behavior-theme": "standard",
     "app-menu": "amberx-droid",
     "toolbar": "amberx-droid",
     "nav-menu": "amberx-droid",

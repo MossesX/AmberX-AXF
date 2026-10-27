@@ -20,6 +20,7 @@
     "color-theme": "fresh-light",
     "style-theme": "fresh",
     "layout": "patches-tabs",
+    "behavior-theme": "standard",
     "app-menu": "patches",
     "toolbar": "standard-icons",
     "nav-menu": "patches-tabs",
@@ -92,7 +93,7 @@
     },
     {
       "path": "src/dialogs.tsx",
-      "purpose": "The app's dialogs (id \u2192 component)."
+      "purpose": "The app's dialogs (id → component)."
     },
     {
       "path": "src/api.ts",

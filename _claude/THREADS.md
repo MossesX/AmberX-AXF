@@ -34,8 +34,10 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | built on Opus (`claude/design-packages-10`, on top of #123) | 2026-10-27 |
+| AmberX Design Package + Behaviour theme (replaces Appearance package) | built on Opus (`rebuild/design-package-opus`, PR #123); Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
-| AmberX Design Package + Behaviour theme (replaces Appearance package) | queued | – | – | Fable, 4.5 h in 9 steps (pending `design-package`). See *To carry on* | 2026-10-27 |
+| AmberX Design Package (Fable rebuild of the Opus build) | queued | – | – | Fable, pending `design-package-fable`; starts by replacing the Opus build (PR on `rebuild/design-package-opus`). See *To carry on* | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -49,29 +51,18 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
 
-### AmberX Design Package + Behaviour theme
-- **Asked (Brett, Oct 27 2026, in the "Repo thread status review" chat):** "Make new AmberX Design Package asset type
-  that wraps style theme, color theme, layout theme, and behavior theme. Add behavior theme asset type too. Apply
-  option to select one in appearance section of settings. Wrap the rest of interface in collapsible container."
-- **His answers (cards):** the Design Package **replaces** the Appearance package (`appearance-package`); a behaviour
-  theme holds **everything**: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus
-  feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and
-  feedback (toasts, sounds, vibration, confirm-before-delete); "the rest" = the rest of **Settings → Appearance** in
-  one collapsible container under the Design Package picker; model **Fable**.
-- **Model:** Fable (new cross-app asset types + engines). Web first; Android twin goes in `framework/spec/PORTING.md`.
-- **Plan:** pending item `design-package` (9 steps, 4.5 h; `node framework/cli/pending.mjs --steps`). Branch
-  `fable/design-package`. Read first: `framework/schemas/asset-types.json`, `framework/core/engines/appearancepackage.ts`
-  (what is being replaced), `framework/core/engines/looktokens.ts` (behaviour fallbacks), `framework/libs/settings`
-  (Appearance tab), `framework/assets/appearance-package/`.
-- **Overlaps:** `settings-asset-fable`, `appearance-asset-tokens-fable`, `apply-all-levels-fable`, `asset-templates`
-  (all Fable, all touch Settings → Appearance or the asset types): say which to build together before starting.
-- **Waiting on:** Brett, before step 6, on where the Appearance package's extra settings go (spacing, shown/hidden
-  chrome, the other slot picks, customize tokens) once it is retired.
-- **Checks:** `node framework/cli/axf.mjs validate --framework`, `npx -y tsx framework/spec/gen-fixtures.mts`, the new
-  `check-behavior.mts` / `check-design-package.mts`, `check-appearance-package.mts` (replaced), `check-settings-ui.mts`,
-  each re-baked app's typecheck + build, `node framework/cli/check-theme.mjs`, `check-controls.mjs`.
-- **First message:** "Start the thread *AmberX Design Package + Behaviour theme* from `_claude/THREADS.md` → To carry
-  on (pending item `design-package`). Run on Fable."
+### AmberX Design Package (Fable rebuild)
+- **Built on Opus (Oct 27 2026, Brett: "Do in opus"):** branch `rebuild/design-package-opus`. New types `design-package`
+  (style + colour theme + layout + behaviour theme, optional `extras` = what the appearance package held) and
+  `behavior-theme` (motion, interaction, windows, feedback); `appearance-package` retired and migrated. Settings →
+  Appearance: AmberX Design Package picker on top, everything else in one collapsible *Everything else* container.
+  Report `_claude/memory/docs/rebuilds/design-package.md`.
+- **Fable rebuild:** pending item `design-package-fable` (steps in the pending list). Starts by reading the report and
+  replacing the Opus build in place (same type names, data format and setting keys unless it says why).
+- **Checks:** `npx -y tsx framework/spec/check-design-package.mts`, `gen-fixtures.mts`, `axf.mjs validate --framework`,
+  re-baked apps' typecheck + build, `check-theme.mjs`, `check-controls.mjs`.
+- **First message:** "Start the thread *AmberX Design Package (Fable rebuild)* from `_claude/THREADS.md` → To carry on
+  (pending item `design-package-fable`). Run on Fable."
 
 ### Connections plugin (every connected app, 7 layouts)
 - **Asked (Brett, Oct 26 2026, in the "Repo thread status review" chat; cut off, never started):** "Add tmux, ntfy,

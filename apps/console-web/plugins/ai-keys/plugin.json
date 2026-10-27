@@ -42,7 +42,8 @@
     ],
     "mentions": [
       "CLAUDE.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "install_instructions.md"
     ]
   },
   "opens": "main"

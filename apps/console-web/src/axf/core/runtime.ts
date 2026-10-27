@@ -22,7 +22,8 @@ import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, place
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { PACKAGE_APPLIED_KEY, capturePackage, isAppearanceSetting, normalizePackage, packageSettingsPlan } from './engines/appearancepackage';
+import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
+import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -31,6 +32,8 @@ import {
   OPTIONAL_TYPES,
   type ActiveAssets,
   type AppearancePackageData,
+  type BehaviorThemeData,
+  type DesignPackageData,
   type Asset,
   type AssetType,
   type AxfManifest,
@@ -1036,54 +1039,107 @@ export class AxfRuntime {
     this.pushAppearance({ slots, hidden, palette: this.appearancePalette() });
   }
 
-  /* ---------------- appearance packages (engines/appearancepackage.ts) ---------------- */
+  /* ---------------- design packages (engines/designpackage.ts) ---------------- */
 
-  /** The current look (every appearance slot and setting) as appearance-package data. */
-  captureAppearancePackage(): AppearancePackageData {
+  /** The current look as a design package: the four themes, plus every other appearance slot and setting as extras. */
+  captureDesignPackage(withExtras = true): DesignPackageData {
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return capturePackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() });
+    return captureDesignPackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() }, withExtras);
   }
 
-  /** The package last applied in this app, if any (Restore default appearance forgets it). */
-  appliedAppearancePackage(): string | undefined {
-    const v = this.settings.get(PACKAGE_APPLIED_KEY);
-    return typeof v === 'string' && this.registry.has('appearance-package', v) ? v : undefined;
+  /** The design package last applied in this app, if any (Restore default appearance forgets it). */
+  appliedDesignPackage(): string | undefined {
+    let v = this.settings.get(DESIGN_APPLIED_KEY);
+    if (typeof v !== 'string') {
+      // the retired appearance package's pick: the shipped packages kept their ids, so move it over once
+      const old = this.settings.get(PACKAGE_APPLIED_KEY);
+      if (typeof old === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, old)) { this.settings.set(DESIGN_APPLIED_KEY, old); this.settings.clear(PACKAGE_APPLIED_KEY); v = old; }
+    }
+    return typeof v === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, v) ? v : undefined;
   }
 
-  /** Apply every setting of package `id`: slots, spacing, shown / hidden chrome and the other appearance settings. */
-  applyAppearancePackage(id: string): boolean {
+  /**
+   * Apply design package `id`: its style, colour, layout and behaviour themes; and when it carries extras, the other
+   * slots, spacing, shown / hidden chrome and the other appearance settings too (the whole look).
+   */
+  applyDesignPackage(id: string): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
-    const a = this.registry.get('appearance-package', id);
-    if (!a) { this.toast(`No appearance package "${id}".`, 'warning', 'Appearance package'); return false; }
-    const pkg = normalizePackage(a.data);
+    const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
+    if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
+    const pkg = normalizeDesignPackage(a.data);
     const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
     for (const k of plan.clear) this.settings.clear(k);
     for (const [k, v] of Object.entries(plan.set)) this.settings.set(k, v as SettingValue);
     const hidden: Record<string, boolean | null> = {};
-    for (const t of ASSET_TYPES) {
+    if (pkg.extras) for (const t of ASSET_TYPES) {
       if (!hideable(t) || this.slotOwnedByHost(t)) continue;
-      const want = pkg.hidden?.[t];
+      const want = pkg.extras.hidden?.[t];
       if (typeof want !== 'boolean' || want === this.defaultHiddenSlots().includes(t)) { if (this.settings.get(HIDE_KEY(t)) !== null) this.settings.clear(HIDE_KEY(t)); hidden[t] = null; }
       else { this.settings.set(HIDE_KEY(t), want); hidden[t] = want; }
     }
-    if (pkg.spacing) this.setSpacing(pkg.spacing as Spacing);
-    this.swapAll({ ...(pkg.slots as Partial<ActiveAssets>), 'appearance-package': id });
-    this.pushAppearance({ hidden });
-    this.settings.set(PACKAGE_APPLIED_KEY, id);
-    this.terminal.ok('hot-swap', `appearance package ${id} applied (${Object.keys(pkg.slots).length} slots, ${Object.keys(plan.set).length} settings)`);
-    this.toast(`${a.name} applied.`, 'success', 'Appearance package');
+    if (pkg.extras?.spacing) this.setSpacing(pkg.extras.spacing as Spacing);
+    const slots = designPackageSlots(pkg);
+    // a theme the package names but this app doesn't ship is skipped (warned), never a broken look
+    for (const [t, sid] of Object.entries(slots)) if (!this.registry.has(t as AssetType, sid)) { this.terminal.warn('hot-swap', `design package ${id}: no ${t} "${sid}" in this app, kept the current one`); delete slots[t]; }
+    this.swapAll({ ...(slots as Partial<ActiveAssets>), [DESIGN_PACKAGE_TYPE]: id } as Partial<ActiveAssets>);
+    if (pkg.extras) this.pushAppearance({ hidden });
+    this.settings.set(DESIGN_APPLIED_KEY, id);
+    if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
+    this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
+    this.toast(`${a.name} applied.`, 'success', 'Design package');
     return true;
   }
+
+  /** @deprecated the appearance package became the design package (Oct 27 2026). */
+  captureAppearancePackage(): AppearancePackageData { const p = this.captureDesignPackage(); return { ...(p.extras ?? {}), slots: designPackageSlots(p) }; }
+  /** @deprecated use appliedDesignPackage */
+  appliedAppearancePackage(): string | undefined { return this.appliedDesignPackage(); }
+  /** @deprecated use applyDesignPackage */
+  applyAppearancePackage(id: string): boolean { return this.applyDesignPackage(id); }
 
   /** Back to the app's default look: default assets, spacing, chrome and every other appearance setting cleared. */
   restoreDefaultAppearance(): void {
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the look.', 'danger', 'Permission denied');
-    for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY) this.settings.clear(k);
+    for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
     this.reset();
     this.pushAppearance({ spacing: this.spacing() });
     this.terminal.ok('hot-swap', 'default appearance restored');
     this.toast('Default appearance restored.', 'success', 'Appearance');
+  }
+
+  /* ---------------- behaviour (engines/behavior.ts) ---------------- */
+
+  /** The active behaviour theme, every field filled (the framework default when the app ships none). */
+  behavior(): BehaviorThemeData {
+    return normalizeBehavior(this.assetOrNull('behavior-theme' as AssetType)?.data);
+  }
+
+  /** Should deleting something ask first? (`undoable` = it can be brought back.) */
+  confirmDelete(undoable = false): boolean {
+    return confirmBeforeDelete(this.behavior(), undoable);
+  }
+
+  /** Haptic + sound feedback for an event, as the behaviour theme says (no-op where the browser can't). */
+  feedback(kind: 'tap' | 'success' | 'warning' | 'error' = 'tap'): void {
+    const b = this.behavior();
+    const pattern = vibrationPattern(b, kind);
+    const nav = (globalThis as { navigator?: { vibrate?: (p: number[]) => boolean } }).navigator;
+    try { if (pattern.length && nav?.vibrate) nav.vibrate(pattern); } catch { /* not allowed here */ }
+    if (b.feedback.sound === 'off') return;
+    try {
+      const Ctx = (globalThis as { AudioContext?: new () => AudioContext }).AudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = kind === 'error' ? 220 : kind === 'warning' ? 330 : kind === 'success' ? 660 : 520;
+      gain.gain.value = b.feedback.sound === 'full' ? 0.12 : 0.04;
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + (kind === 'tap' ? 0.03 : 0.09));
+      osc.onended = () => { void ctx.close(); };
+    } catch { /* no audio here */ }
   }
 
   importAsset(raw: unknown, activate = true, origin?: string): ValidationResult {
@@ -1220,7 +1276,11 @@ export class AxfRuntime {
     const t: Toast = { id: ++this.toastSeq, kind, title, message };
     const toasts = [...this.state.toasts, t].slice(-popup.maxVisible);
     this.set({ toasts });
-    if (popup.duration > 0) setTimeout(() => this.dismissToast(t.id), popup.duration);
+    // the behaviour theme's toast time wins when it sets one (0 = the pop-up asset's); 0 on the asset = stay until closed
+    const b = this.behavior().feedback;
+    const ms = popup.duration > 0 && b.toastMs > 0 ? b.toastMs : popup.duration;
+    if (ms > 0) setTimeout(() => this.dismissToast(t.id), ms);
+    if (kind === 'danger') this.feedback('error'); else if (kind === 'warning') this.feedback('warning');
   }
 
   dismissToast(id: number) {
@@ -1467,6 +1527,9 @@ export class AxfRuntime {
       ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
     };
+    // behaviour last among the theme vars: its motion speed (when not "theme") wins over the style theme's
+    const reducedMotion = typeof globalThis.matchMedia === 'function' && globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    parts.push(behaviorStyle(this.assetOrNull('behavior-theme' as AssetType)?.data, reducedMotion));
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
     for (const p of parts) {
       Object.assign(vars, p.vars);
@@ -1540,7 +1603,8 @@ export class AxfRuntime {
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
-    a.register('appearance.package', ([id]) => { if (id) this.applyAppearancePackage(id); }, { label: 'Apply an appearance package', requires: 'assets.swap', params: true });
+    a.register('design.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package', requires: 'assets.swap', params: true });
+    a.register('appearance.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package (old name)', requires: 'assets.swap', params: true, searchable: false });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
