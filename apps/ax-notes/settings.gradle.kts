@@ -13,3 +13,4 @@ dependencyResolutionManagement {
 includeBuild("../../framework/android")
 rootProject.name = "ax-notes"
 include(":app")
+include(":plugins:ai-chat") // axf-plugin:ai-chat
