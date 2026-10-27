@@ -1134,6 +1134,29 @@
       },
       "optional": true
     },
+    "interface": {
+      "label": "Interface",
+      "group": "System",
+      "icon": "layout",
+      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a design package (style, colour, layout, behaviour), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance → Assets (Settings → Appearance → Interface applies one).",
+      "required": [
+        "design"
+      ],
+      "optional_fields": {
+        "branding": "a branding asset id",
+        "slots": "asset type → asset id for every other slot (never the themes, the policy or a package)",
+        "spacing": "tight | compact | regular",
+        "hidden": "asset type → true / false",
+        "settings": "appearance settings key → value",
+        "tab": "{ label, icon } for a host showing interfaces as tabs",
+        "tagline": "one line under the tab label"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

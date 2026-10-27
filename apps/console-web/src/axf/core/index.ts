@@ -18,6 +18,7 @@ export * from './engines/spacing';
 export * from './engines/settingsui';
 export * from './engines/designpackage';
 export * from './engines/brand';
+export * from './engines/interface';
 export * from './engines/behavior';
 export * from './engines/appearance';
 export * from './engines/banner';

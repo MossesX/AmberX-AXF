@@ -125,6 +125,7 @@ jobs:
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
+            npx -y tsx framework/spec/check-interface.mts              # interface@1 + scopes: rules, resolution, scoped sheets, runtime scoped view
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server

@@ -33,6 +33,7 @@
     "settings": false,
     "behavior-theme": true,
     "design-package": false,
+    "interface": false,
     "logo-mark": false,
     "animated-logo": false,
     "icon-pack": false,
