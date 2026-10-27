@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T19:30:00.000Z",
+ "updatedAt": "2026-10-27T22:41:47.258Z",
  "artifact": "",
  "items": [
   {
@@ -728,6 +728,228 @@
    "createdAt": "2026-10-27T17:17:17.473Z",
    "builtAt": "",
    "updatedAt": "2026-10-27T19:30:00.000Z",
+   "source": "chat"
+  },
+  {
+   "id": "build-orchestrator",
+   "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
+   "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/build-orchestrator, PR #122.",
+     "at": "2026-10-27T16:44:18.183Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-27T16:39:39.618Z",
+   "builtAt": "2026-10-27T16:39:39.618Z",
+   "updatedAt": "2026-10-27T16:44:18.183Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "pending-grid-view",
+   "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
+   "detail": "From Brett's attachment (Oct 27 2026). Grid next to Reload; columns 1-line summary, date added, total time estimate, cost estimate; rows expand to today's card; toolbar archive/delete/hide/unhide/open in (Build manager, Build queue, Plan); select hook with double-click multi-select. All Opus (console UI). Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, mixed Fable/Opus steps).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] pending@1: optional hidden + archived fields in pending-core (apply actions hide/unhide/archive, sorts); API + MCP accept them; artifact mapping unchanged except the new fields.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Grid view toggle next to Reload in Pending builds: rows with 1-line summary, date added, total time estimate, cost estimate; every column sortable (framework DataGrid).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Rows expand to the full card content they show today (steps, notes, actions).",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Toolbar: Archive, Delete, Hide, Unhide (greyed when nothing selected), Open in (tooltip dialog: Build manager, Build queue, Plan), all in focus where they open.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Select hook: hover tooltip \"activate multi select with double click\"; double-click flashes the top item's hover style 3 times, tooltip \"select items\", then single clicks add to the selection; checkbox column shows.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Tests (pending-core cases + view build), screenshots, THREADS.md.",
+     "at": "",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-10-27T16:39:39.821Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T16:39:39.821Z",
+   "source": "chat"
+  },
+  {
+   "id": "build-profiles",
+   "title": "Build profiles + Build profiles console plugin",
+   "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/build-profiles, PR #127.",
+     "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Core registry + persist profile layer + orchestrator per profile",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Python mirror + server routes",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Console plugin",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Tests, docs, PR",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-27T19:30:00.000Z"
+    }
+   ],
+   "createdAt": "2026-10-27T19:00:00.000Z",
+   "builtAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "estimate": "2 h",
+   "source": "chat"
+  },
+  {
+   "id": "amberx-appearance-lock",
+   "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
+   "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Merged in PR #126 (branch claude/amberx-appearance-lock), Oct 27 2026.",
+     "at": "2026-10-27T19:23:01.225Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-27T19:05:30.186Z",
+   "builtAt": "2026-10-27T19:23:01.118Z",
+   "updatedAt": "2026-10-27T19:23:01.225Z",
+   "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "tools-plugin",
+   "title": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches web",
+   "detail": "Brett, Oct 22 2026: the Tools section is a plugin of its own, and Claude handoff depends on it.\n\n- New plugin `tools` (plugin@1 + lifecycle): it owns the Tools nav section and the top-level `tools` application menu that tool plugins add to; it provides a capability service (e.g. `axf.tools@1`) that tool plugins require.\n- Claude handoff (and any later tool plugin) declares it as a dependency (`requires`) and adds its entries through it instead of creating the section itself.\n- For Patches: the Tools plugin adds a **Tools** tab to Patches web's app tab group (next to Console / Pilot / axHub). Patches itself runs the Tools page; it is not the console page in a frame.\n- Patches web only for now (Android later).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Overlaps claude-handoff (built Oct 22 2026, PR #22: it currently creates the Tools section itself, so this build moves that out). Parked by Brett: \"Hold off on that, add to queue.\"",
+     "at": "2026-10-22T14:05:33.773Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Tools plugin skeleton: plugin@1, lifecycle, install/uninstall, nav section + `tools` app menu, capability service",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Move Claude handoff onto it: `requires` the service, contributes its entries through it, lifecycle check passes both ways",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Patches web: Tools tab in the app tab group (patches-tabs nav-menu + AppTabs), a Tools page run by Patches",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, menu-reach, check-controls/theme, docs (CLAUDE.md status, plugins README)",
+     "at": "",
+     "estimate": "15 min"
+    }
+   ],
+   "createdAt": "2026-10-22T14:05:33.771Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T11:21:08.109Z",
+   "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "amberx-web-host",
+   "title": "AmberX web app at amberx.amberxai.com + sign-in inside the Android app",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Container + installer for amberx.amberxai.com",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Shell loads the hosted app, hub sign-in in the WebView",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "DNS, deploy, verify",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-26T01:05:34.314Z",
+   "builtAt": "2026-10-27T19:25:27.054Z",
+   "updatedAt": "2026-10-27T19:25:27.054Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]
