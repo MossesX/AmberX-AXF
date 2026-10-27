@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "overlay",
+  "id": "detector-panel",
+  "name": "Detector panel",
+  "version": "1.0.0",
+  "description": "The detection-overlay layout: the pill with armed / mic chips, the mini screen open by default (a camera preview, a chart, whatever the app draws), and the tappable log of the last five reads with their confidence. Tap a line to tune what produced it.",
+  "author": "AmberX AXF",
+  "tags": ["overlay", "log", "detector"],
+  "data": {
+    "pill": {
+      "title": "Detector",
+      "chips": [
+        { "id": "armed", "label": "Armed", "offLabel": "Idle", "tone": "success", "offTone": "muted" },
+        { "id": "mic", "label": "Mic", "offLabel": "Mic off", "tone": "info", "offTone": "muted", "icon": "mic" }
+      ],
+      "quickAction": "overlay.hide"
+    },
+    "log": { "show": true, "maxLines": 5, "showConfidence": true },
+    "strip": { "show": true, "maxLines": 3, "lineMs": 3000 },
+    "mini": { "defaultOpen": true, "width": { "min": 160, "max": 480, "default": 240 }, "height": { "min": 160, "max": 640, "default": 300 } },
+    "opacity": 0.95,
+    "positionLock": false,
+    "size": { "minWidth": 120, "maxWidth": 480, "minHeight": 160, "maxHeight": 640, "maxScreenWidthPct": 90, "maxScreenHeightPct": 80 }
+  }
+}
