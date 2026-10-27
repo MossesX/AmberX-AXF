@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Slim CLAUDE.md: Status moved to `_claude/memory/STATUS.md` (CLAUDE.md 242K → 13K chars) | PR open, needs merge | `claude/move-status-out-of-claude-md` | (see below) | Brett to review + merge | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
