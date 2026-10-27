@@ -1085,8 +1085,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
   border-radius: inherit; pointer-events: none;
 }
 .fx-banner.is-brand-edge::before, .fx-toolbar.is-brand-edge::before { inset-inline: 0; inset-block-end: 0; inset-block-start: auto; width: auto; height: calc(var(--fx-border-w) * 2); background: linear-gradient(90deg, var(--fx-brand-1), var(--fx-brand-2) 50%, transparent); }
-.is-brand-watermark { position: relative; }
-.fx-brand-watermark { position: absolute; inset-inline-end: calc(var(--fx-space) * 2); inset-block-end: calc(var(--fx-space) * 2); opacity: calc(var(--fx-opacity-tint) * 0.5); pointer-events: none; color: var(--fx-brand-1); line-height: 0; }
+.is-brand-watermark { position: relative; isolation: isolate; }
+.fx-brand-watermark { position: absolute; z-index: -1; inset-inline-end: calc(var(--fx-space) * 2); inset-block-end: calc(var(--fx-space) * 2); opacity: calc(var(--fx-opacity-tint) * 0.5); pointer-events: none; color: var(--fx-brand-1); line-height: 0; }
 .fx-brand-watermark > svg { display: block; }
 /* animation presets (durations + intensity come from the animated-logo asset as --fx-brand-anim-*) */
 .fx-brand-anim { animation-timing-function: var(--fx-ease, ease-in-out); transform-origin: 50% 50%; will-change: transform, opacity; }
@@ -1103,5 +1103,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 
 /* interface scopes (react/components/InterfaceScope.tsx): a subtree drawn under another interface; vars + attrs on this element */
 .fx-scope { display: contents; }
+/* inherited text properties are resolved once on <body>; a scope re-declares them so its subtree reads the scope's
+   tokens (interface tabs: dark text on a dark interface otherwise) */
+[data-fx-scope] { color: var(--fx-text); font-family: var(--fx-font); font-size: var(--fx-font-size); }
 .fx-scope--block { display: block; position: relative; min-height: 0; height: 100%; }
 .fx-scope > style { display: none; }

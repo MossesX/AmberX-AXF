@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "interface",
+  "id": "fresh",
+  "name": "Fresh",
+  "version": "1.0.0",
+  "description": "The framework's default interface: the Fresh design package with AmberX branding; every other slot comes from the package's extras.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default"
+  ],
+  "data": {
+    "design": "fresh",
+    "branding": "amberx",
+    "slots": {},
+    "spacing": "tight",
+    "tab": {
+      "label": "Fresh",
+      "icon": "layout"
+    },
+    "tagline": "Clean, neutral, indigo accent"
+  }
+}

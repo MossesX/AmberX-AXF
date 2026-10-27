@@ -42,7 +42,7 @@ live groups and toggles: deferred (port on hold, `framework/spec/PORTING.md`).
 | **Chrome Toggles** `chrome-toggles` | Focus and presentation modes | icons · center · regular · glass | `chrome` ×8 | — | — |
 | **Settings Jump** `settings-jump` | Settings and admin pages | labels · start · compact · flat | `settings` ×10 | — | live search |
 | **Dialog Launcher** `dialog-launcher` | Tool-heavy apps | icons-labels · start · regular · flat | `dialogs` ×8 | — | live search |
-| **Developer Ops** `developer-ops` | Developer consoles | icons · start · compact · flat | — | badge `alerts.unread` | progress/build (end), status/ai (end), clock/digital-24h (end) |
+| **Developer Ops** `developer-ops` | Developer consoles | icons · start · compact · flat | — | — | progress/build (end), status/ai (end), clock/digital-24h (end) |
 | **Ops Monitor** `ops-monitor` | Monitoring dashboards | icons · spread · regular · raised | — | — | status/online (end), counter/alerts (end), progress/build (end), clock/digital-24h (end) |
 | **Editor Classic** `editor-classic` | Document and form editors | icons · start · compact · flat | — | — | — |
 | **Appearance Studio** `appearance-studio` | Theme and brand work | icons-labels · start · regular · glass · folds | — | — | theme-switch/day-night (end) |
@@ -59,7 +59,7 @@ live groups and toggles: deferred (port on hold, `framework/spec/PORTING.md`).
 | **Status Strip** `status-strip` | A status bar on top | icons · spread · compact · flat | — | — | status/ai (start), status/online (start), progress/build (end), counter/alerts (end), clock/digital-24h (end) |
 | **Power User** `power-user` | Experts who want everything | icons · start · compact · flat · folds | `views` ×6, `chrome` ×4 | badge `alerts.unread` | — |
 | **Review Flow** `review-flow` | Side-by-side review | icons-labels · start · regular · flat | `windows` ×6 | badge `alerts.unread` | — |
-| **AmberX Signature** `amberx-signature` | The AmberX brand frame | icons · start · regular · glass · folds | `views` ×6 | badge `alerts.unread` | logo/wordmark (start), theme-switch/day-night (end), avatar/account (end), live search |
+| **AmberX Signature** `amberx-signature` | The AmberX brand frame | icons · start · regular · glass · folds | `views` ×6 | — | theme-switch/day-night (end), avatar/account (end), live search |
 
 ## Each toolbar
 
@@ -111,10 +111,10 @@ Every dialog the app and its plugins register, one tap away, with a search limit
 
 ### Developer Ops (`developer-ops`)
 
-Build, deploy and the dev console with the alerts badge, a build progress bar, AI status and a 24 h clock.
+Build, deploy and the dev console with a build progress bar, AI status and a 24 h clock (alerts stay on the banner).
 
 - **run**: Build (`run.build`); Deploy (`run.deploy`)
-- **tools**: Dev console (`dev.console`); Alerts (`alerts.open`, badge alerts.unread)
+- **tools**: Dev console (`dev.console`)
 
 ### Ops Monitor (`ops-monitor`)
 
@@ -230,8 +230,8 @@ Undo, redo and save with the open windows provider so reviewers jump between com
 
 ### AmberX Signature (`amberx-signature`)
 
-The AmberX house toolbar: wordmark, live pages, a live search, the day and night switch and the account, on glass.
+The AmberX house toolbar: live pages, a live search, the day and night switch and the account, on glass; the brand draws its own mark here.
 
 - **Pages**: Go home (`nav:home`) + live `views` up to 6
-- **app**: Alerts (`alerts.open`, badge alerts.unread); Settings (`app.settings`)
+- **app**: Settings (`app.settings`)
 

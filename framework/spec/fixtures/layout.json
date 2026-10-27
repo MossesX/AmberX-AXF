@@ -490,6 +490,53 @@
       "--fx-content-max": "none"
     }
   },
+  "signature-dock": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "nav",
+        "inspector",
+        "toolbar",
+        "status"
+      ],
+      "areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
+      "columns": "216px minmax(0, 1fr) 280px",
+      "rows": "auto minmax(0, 1fr) auto auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
+      "--fx-grid-cols": "216px minmax(0, 1fr) 280px",
+      "--fx-grid-rows": "auto minmax(0, 1fr) auto auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
   "split-review": {
     "compiled": {
       "regions": [

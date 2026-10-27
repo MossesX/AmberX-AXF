@@ -22,6 +22,7 @@
  */
 import { DESIGN_PACKAGE_TYPE, DESIGN_THEMES, designPackageSlots, isAppearanceSetting, normalizeDesignPackage } from './designpackage';
 import { spacingOf } from './spacing';
+import { STYLE_PACKAGE_TYPE, stylePackageSlots, type StylePackageData } from './stylepackage';
 
 export const INTERFACE_TYPE = 'interface';
 export const INTERFACE_SETTING_KEY = 'axf.appearance.interface';
@@ -56,6 +57,8 @@ export interface InterfaceRegistry {
   has(type: string, id: string): boolean;
   /** the raw data of a design package, or undefined */
   designPackage(id: string): unknown;
+  /** the raw data of a style package (style-package@1), or undefined; optional so older hosts keep working */
+  stylePackage?(id: string): unknown;
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -109,8 +112,13 @@ export function resolveInterface(raw: unknown, registry: InterfaceRegistry): Res
   const settings: Record<string, unknown> = {};
   const pkgRaw = i.design ? registry.designPackage(i.design) : undefined;
   if (i.design && pkgRaw === undefined) missing.push(`${DESIGN_PACKAGE_TYPE}/${i.design}`);
-  if (pkgRaw !== undefined) {
-    const pkg = normalizeDesignPackage(pkgRaw);
+  const pkg = pkgRaw !== undefined ? normalizeDesignPackage(pkgRaw) : undefined;
+  // a style package (named by the interface, else by its design package's extras) is the lowest layer: its member
+  // controls first, then the package's own slots, then the interface's (engines/stylepackage.ts)
+  const sp = i.slots[STYLE_PACKAGE_TYPE] ?? (pkg ? designPackageSlots(pkg)[STYLE_PACKAGE_TYPE] : undefined);
+  const spRaw = sp && registry.stylePackage ? registry.stylePackage(sp) : undefined;
+  if (spRaw !== undefined) for (const [t, id] of Object.entries(stylePackageSlots(spRaw as Partial<StylePackageData>))) { if (registry.has(t, id)) active[t] = id; else missing.push(`${t}/${id}`); }
+  if (pkg) {
     for (const [t, id] of Object.entries(designPackageSlots(pkg))) { if (registry.has(t, id)) active[t] = id; else missing.push(`${t}/${id}`); }
     if (pkg.extras?.spacing) spacing = pkg.extras.spacing;
     Object.assign(hidden, pkg.extras?.hidden ?? {});

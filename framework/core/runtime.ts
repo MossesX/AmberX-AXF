@@ -1686,7 +1686,7 @@ export class AxfRuntime {
 
   /** The registry view the interface engine resolves against. */
   private interfaceRegistry() {
-    return { has: (t: string, id: string) => this.registry.has(t as AssetType, id), designPackage: (id: string) => this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id)?.data };
+    return { has: (t: string, id: string) => this.registry.has(t as AssetType, id), designPackage: (id: string) => this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id)?.data, stylePackage: (id: string) => this.registry.get(STYLE_PACKAGE_TYPE as AssetType, id)?.data };
   }
 
   /** An interface asset resolved against what this app ships (null when there is no such interface). */
@@ -1741,6 +1741,7 @@ export class AxfRuntime {
     if (cached && (cached as unknown as { scopeInterface: string }).scopeInterface === interfaceId) return cached;
     const base = this;
     let memo: { rev: number; r: ResolvedInterface } | null = null;
+    let snap: { base: AxfState; value: AxfState } | null = null;
     const resolved = (): ResolvedInterface => {
       const rev = base.state.rev;
       if (!memo || memo.rev !== rev) memo = { rev, r: base.resolveInterface(interfaceId)! };
@@ -1753,7 +1754,13 @@ export class AxfRuntime {
       scopeId: { value: scopeId },
       scopeInterface: { value: interfaceId },
       settings: { value: settings },
-      state: { get: () => ({ ...base.state, active: { ...base.state.active, ...resolved().active, [INTERFACE_TYPE]: interfaceId } }), set: () => { /* writes go through set(), which the base owns */ } },
+      // one snapshot per base state: useSyncExternalStore needs getState to return the same object until something
+      // changes, or React loops (error #185) the moment a whole app shell renders inside a scope
+      state: { get: () => {
+        const bs = base.state;
+        if (!snap || snap.base !== bs) snap = { base: bs, value: { ...bs, active: { ...bs.active, ...resolved().active, [INTERFACE_TYPE]: interfaceId } } };
+        return snap.value;
+      }, set: () => { /* writes go through set(), which the base owns */ } },
       getState: { value: () => view.state },
       set: { value: (patch: Partial<AxfState>, persist = false) => (base as unknown as { set(p: Partial<AxfState>, persist?: boolean): void }).set(patch, persist) },
       hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), base.embedHiddenSlots()) as AssetType[] },
