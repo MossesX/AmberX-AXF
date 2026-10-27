@@ -40,4 +40,5 @@ dependencies {
     implementation("ai.amberx.axf:lib-logging:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
     // axf:modules ["ai.amberx.axf.ai"]
+    implementation("ai.amberx.axf:lib-ai:$axf")
 }

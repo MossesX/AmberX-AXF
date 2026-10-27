@@ -104,9 +104,19 @@
     "applicationId": "ai.amberx.axf.demoai",
     "scheme": "axf",
     "modules": [
-      "ai.amberx.axf.ai"
+      "ai.amberx.axf.ai",
+      "ai.amberx.axf.hub"
     ],
     "minSdk": 26,
     "targetSdk": 35
+  },
+  "libraries": {
+    "ai": {
+      "assistant": "https://console.amberxai.com",
+      "prefix": "/api/plugins/ai-assistant"
+    },
+    "$installed": [
+      "ai.amberx.axf.ai"
+    ]
   }
 }

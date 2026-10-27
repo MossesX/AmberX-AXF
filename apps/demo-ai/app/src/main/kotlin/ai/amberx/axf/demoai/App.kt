@@ -2,6 +2,7 @@ package ai.amberx.axf.demoai
 
 import ai.amberx.axf.kernel.module.AxfModule
 import ai.amberx.axf.platform.AxfApplication
+import ai.amberx.axf.ai.AiModule
 import ai.amberx.axf.devtools.DevtoolsModule
 import ai.amberx.axf.devtools.PluginManagerModule
 import ai.amberx.axf.logging.LoggingModule
@@ -21,6 +22,7 @@ import ai.amberx.axf.hub.cookieCredentials
 class App : AxfApplication() {
     override fun modules(): List<AxfModule> = listOf(
         DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), PluginManagerModule(), WindowsModule(),
+        AiModule(),
         AppModule(),
     ) + developerModules()
 
