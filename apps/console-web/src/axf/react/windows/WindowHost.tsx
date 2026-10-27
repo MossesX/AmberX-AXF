@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
+import { BrandMark, brandHostProps, useBrandPlace } from '../components/Brand';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, CORNERS } from '../../core/engines/windows';
 
@@ -65,9 +66,12 @@ export function TabGroupView({ group }: { group: TabGroup }) {
     window.addEventListener('scroll', report, true);
     return () => { ro.disconnect(); window.removeEventListener('scroll', report, true); wm.groupBounds.delete(group.id); };
   });
+  const brand = useBrandPlace('tab-group');
+  const brandHost = brandHostProps(brand);
   return (
-    <div ref={ref} className="fx-tabgroup" data-fx-ctx-target="tab-group" data-fx-ctx-payload={group.id}>
+    <div ref={ref} className={`fx-tabgroup ${brandHost.className}`.trim()} data-fx-ctx-target="tab-group" data-fx-ctx-payload={group.id} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <div className="fx-tabgroup__bar" onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'tab-group', group.id); }}>
+        {brand?.svg && <span className="fx-tabgroup__brand"><BrandMark slot="tab-group" height={16} /></span>}
         {group.tabs.map((t, i) => <TabChip key={t.id} tab={t} group={group} active={i === group.active} onActivate={() => wm.activate(group.id, i)} />)}
         <span className="fx-tabgroup__spacer" />
         <button className="fx-iconbtn" title="Undock to floating window" onClick={() => wm.undock(group.id)}><Icon name="external" /></button>

@@ -13,6 +13,8 @@ import {
   BRAND_SLOTS, BRAND_TYPES, animatedLogoErrors, animationFor, brandAssetErrors, brandSlots, brandingErrors, brandingVars, decorationFor, glyphFor, glyphSvg, iconPackErrors, markBox, markColor, markErrors, markSvg, normalizeBranding, normalizeIconPack, normalizeMark, registerBrandSlot, resolveBranding,
 } from '../core/engines/brand';
 import * as engine from '../cli/build-engine.mjs';
+import { AxfRuntime } from '../core/runtime';
+import { readdirSync as rd } from 'node:fs';
 
 let n = 0;
 const ok = (c: unknown, m: string) => { assert.ok(c, m); n++; };
@@ -102,6 +104,27 @@ for (const t of BRAND_TYPES) {
 ok(count >= 10, `${count} starter brand assets`);
 const starters = { has: (t: string, id: string) => existsSync(new URL(`framework/assets/${t}/${id}.json`, root)) };
 for (const id of ['amberx', 'gizmox']) { const rb = resolveBranding(read(`framework/assets/branding/${id}.json`).data, starters); eq(rb.missing, [], `branding ${id} resolves every id`); ok(rb.animated && rb.iconPack, `${id} has an animated mark and a pack`); }
+
+/* ---- runtime: brandPlace / brandGlyph / vars with the starter assets ---- */
+{
+  const assetsDir = new URL('framework/assets/', root).pathname;
+  const assets = rd(assetsDir).flatMap((t) => rd(assetsDir + t).filter((n) => n.endsWith('.json')).map((n) => read(`framework/assets/${t}/${n}`)));
+  const defaults = read('framework/defaults.json');
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults: { ...defaults, branding: 'amberx' } } as never, assets, storageKey: 'test:brand' });
+  const b = rt.branding();
+  ok(b && b.name === 'AmberX' && b.missing.length === 0, 'runtime resolves the amberx branding');
+  const banner = rt.brandPlace('banner', 14);
+  ok(banner && banner.mode === 'lockup' && banner.svg.includes('<svg') && banner.svg.includes('height="14"') && banner.animation === null, 'banner place = lockup svg at 14px');
+  eq(rt.brandPlace('tab-group'), null, 'tab-group draws nothing by default');
+  ok(rt.brandGlyph('home') !== null && rt.brandGlyph('no-such-glyph') === null, 'icon pack glyph lookup with framework fallback');
+  const vars = rt.compileStyles().vars;
+  ok(vars['--fx-brand-name'] === '"AmberX"' && /^#/.test(vars['--fx-brand-1'] ?? ''), 'brand vars compiled');
+  eq(rt.compileStyles().attrs['data-fx-brand'], 'amberx', 'root carries the branding id');
+  rt.swap('branding' as never, 'gizmox');
+  ok(rt.branding()?.name === 'GizmoX' && rt.brandPlace('banner')?.svg.includes('GizmoX'), 'hot swap to GizmoX');
+  const splash = rt.brandPlace('splash');
+  ok(splash && splash.mode === 'animated' && splash.animation && splash.animation.name.startsWith('fx-brand-'), 'animated place carries its animation');
+}
 
 /* ---- fixture ---- */
 const fixture = {

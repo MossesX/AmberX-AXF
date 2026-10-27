@@ -24,6 +24,7 @@ import { SearchIndex } from './engines/search';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
+import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -183,6 +184,9 @@ export interface AppearanceSource {
   /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
   save(change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }): void;
 }
+
+/** What `rt.brandPlace(slot)` gives a UI piece to draw. */
+export interface BrandPlace { mode: string; name: string; asset: string; svg: string; animation: MarkAnimation | null }
 
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
@@ -1543,20 +1547,72 @@ export class AxfRuntime {
       ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
       ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
+      // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
+      ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
     };
     // behaviour last among the theme vars: its motion speed (when not "theme") wins over the style theme's
-    const reducedMotion = typeof globalThis.matchMedia === 'function' && globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = this.prefersReducedMotion();
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
     parts.push(behaviorStyle(behavior, reducedMotion));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
+    const brandId = this.state.active['branding' as AssetType];
+    if (brandId) attrs['data-fx-brand'] = brandId;
     if (this.busyCount > 0 && normalizeBehavior(behavior).feedback.busyCursor) attrs['data-fx-busy'] = '1';
     for (const p of parts) {
       Object.assign(vars, p.vars);
       Object.assign(attrs, p.attrs);
     }
     return { vars, attrs };
+  }
+
+  /* ---------------- branding (core/engines/brand.ts) ---------------- */
+
+  /** The active branding package resolved against the registry, or null when the app has none. */
+  branding(): ResolvedBrand | null {
+    const b = this.assetOrNull('branding' as AssetType);
+    return b ? resolveBranding(b.data, this.registry) : null;
+  }
+
+  /**
+   * What a UI piece draws at a brand slot: the mode (`mark`, `wordmark`, `lockup`, `animated`, `accent-edge`,
+   * `watermark`), the resolved asset's data, the inline SVG at `height` (sanitised by the engine: path data + one text
+   * node, colours as tokens) and, for an animated mark, its CSS animation (null under reduced motion). `null` when the
+   * slot draws nothing (no branding package, mode `none`, or the asset is missing).
+   */
+  brandPlace(slot: string, height = 20): BrandPlace | null {
+    const b = this.branding();
+    const p = b?.places[slot];
+    if (!b || !p || p.mode === 'none') return null;
+    if (p.mode === 'accent-edge') return { mode: p.mode, name: b.name, asset: '', svg: '', animation: null };
+    if (!p.asset || !p.type) return null;
+    let markId = p.asset;
+    let animation: MarkAnimation | null = null;
+    if (p.type === 'animated-logo') {
+      const anim = this.registry.get('animated-logo' as AssetType, p.asset);
+      if (!anim) return null;
+      const a = anim.data as { mark?: string };
+      markId = a.mark ?? '';
+      animation = animationFor(anim.data, this.prefersReducedMotion());
+    }
+    const mark = this.registry.get('logo-mark' as AssetType, markId);
+    if (!mark) return null;
+    return { mode: p.mode, name: b.name, asset: p.asset, svg: markSvg(mark.data, { height, text: p.mode !== 'mark' && p.mode !== 'watermark', title: b.name }), animation };
+  }
+
+  /** The glyph an icon name resolves to in the active icon pack, or null = the framework's own icon. */
+  brandGlyph(name: string): { glyph: Glyph; pack: unknown } | null {
+    const b = this.branding();
+    if (!b?.iconPack) return null;
+    const pack = this.registry.get('icon-pack' as AssetType, b.iconPack);
+    if (!pack) return null;
+    const glyph = glyphFor(pack.data, name);
+    return glyph ? { glyph, pack: pack.data } : null;
+  }
+
+  private prefersReducedMotion(): boolean {
+    return typeof globalThis.matchMedia === 'function' && globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   /** The saved extra tokens of a slot (Settings → Appearance → Assets; engines/customize.ts). */
