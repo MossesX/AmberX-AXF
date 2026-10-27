@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-26T23:46:27.339Z",
+ "updatedAt": "2026-10-27T03:19:49.693Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4261,6 +4261,84 @@
    "builtAt": "",
    "updatedAt": "2026-10-26T22:28:29.624Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "apply-all-levels",
+   "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
+   "detail": "Undid #107 Apply to all pane. New look@1 engine (core/engines/looktokens.ts): look, design, behaviour and tone tokens by level and category; only changed tokens stored, CSS over the inherited theme, Compact down to no space. Banner settings: collapsible Apply to all with Simple/Basic/Pro/Advanced, collapsible categories, Reset. settings-ui@1 levels; settings/console 1.3.0 tags its items; Settings → Sliders (Simple, collapsible, Reset) applied app-wide. Branch claude/apply-all-levels.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Undo #107 pane; look@1 engine + check",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Banner Apply to all section + fallback + stylesheet",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "settings-ui@1 levels + level switch + filtering",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Sliders section, asset tags, copies into every app, checks",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    }
+   ],
+   "createdAt": "2026-10-27T03:19:49.625Z",
+   "builtAt": "2026-10-27T03:19:49.625Z",
+   "updatedAt": "2026-10-27T03:19:49.625Z",
+   "estimate": "2 h",
+   "source": "chat"
+  },
+  {
+   "id": "apply-all-levels-fable",
+   "title": "Look tokens + settings levels (Fable rebuild)",
+   "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "look@1 fixture + reference engine review, replace the Opus engine",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Banner Apply to all on the reviewed engine",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "settings-ui@1 levels review + Sliders",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Re-bake every app, before/after shots, differences report",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-27T03:19:49.693Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T03:19:49.693Z",
+   "estimate": "2 h",
    "source": "chat"
   }
  ]

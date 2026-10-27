@@ -129,8 +129,9 @@ export function resetBannerPrefs(rt: AxfRuntime, id: string): void {
 /** Re-renders when any banner's choices change (settings don't go through the runtime state); returns the raw value. */
 export function useBannerPrefsTick(): unknown {
   const rt = useRuntime();
-  const sub = useCallback((fn: () => void) => rt.settings.onChange(BANNER_PREFS_KEY, fn), [rt]);
-  const get = useCallback(() => rt.settings.get(BANNER_PREFS_KEY), [rt]);
+  // Apply to all's behaviour tokens are every banner's fallback, so a change there re-renders the frames too.
+  const sub = useCallback((fn: () => void) => { const a = rt.settings.onChange(BANNER_PREFS_KEY, fn); const b = rt.settings.onChange(BANNER_LOOK_KEY, fn); return () => { a(); b(); }; }, [rt]);
+  const get = useCallback(() => `${JSON.stringify(rt.settings.get(BANNER_PREFS_KEY) ?? null)}|${JSON.stringify(rt.settings.get(BANNER_LOOK_KEY) ?? null)}`, [rt]);
   return useSyncExternalStore(sub, get, get);
 }
 

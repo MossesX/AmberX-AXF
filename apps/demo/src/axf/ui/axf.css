@@ -553,3 +553,13 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-terminal__row { display: flex; gap: 8px; white-space: pre-wrap; }
 .fx-terminal__time, .fx-terminal__chan { color: var(--fx-muted); flex: 0 0 auto; }
 .fx-terminal__row.is-ok .fx-terminal__text { color: var(--fx-success); } .fx-terminal__row.is-warn .fx-terminal__text { color: var(--fx-warning); } .fx-terminal__row.is-error .fx-terminal__text { color: var(--fx-danger); } .fx-terminal__row.is-note .fx-terminal__text { color: var(--fx-info, var(--fx-accent)); }
+/* look@1 editor (react/components/LookEditor.tsx): Apply to all in Banner settings, Settings → Sliders. Layout only. */
+.fx-look { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); }
+.fx-look__rows { display: flex; flex-direction: column; gap: var(--fx-space); }
+.fx-look__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: calc(var(--fx-space) * 0.25) var(--fx-space); }
+.fx-look__control { min-width: 0; }
+.fx-look__state { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); }
+.fx-look__inherit { font-size: calc(var(--fx-font-size) * 12 / 14); }
+.fx-look__hint { grid-column: 1 / -1; margin: 0; font-size: calc(var(--fx-font-size) * 12 / 14); }
+.fx-look__levels { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) var(--fx-space); }
+.fx-look__levelhint { font-size: calc(var(--fx-font-size) * 12 / 14); }

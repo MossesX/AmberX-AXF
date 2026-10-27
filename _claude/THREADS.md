@@ -34,7 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Banner look Apply to all with Simple/Basic/Pro/Advanced + settings levels + sliders | working | `claude/apply-all-levels` | – | Building (Opus; Fable rebuild to park). See *To carry on* | 2026-10-26 |
+| Banner look Apply to all with Simple/Basic/Pro/Advanced + settings levels + sliders | review | `claude/apply-all-levels` | (this PR) | Built (Opus). Merge; the console updates in 5 min, other apps on their next deploy. Fable rebuild parked (`apply-all-levels-fable`). Not screenshot-checked | 2026-10-26 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -57,7 +57,7 @@ VPS). The session reads the rules and this file first, as usual.
   a whole collapsible section of sliders in console's simple settings interface."
 - **Model:** Opus (Brett picked it; Fable was recommended), so park a Fable rebuild when done. Built in the session it
   was asked in (Brett chose "build it here").
-- **Branch:** `claude/apply-all-levels` from main 916f7e6.
+- **Branch:** `claude/apply-all-levels` from main 916f7e6. **Status (Oct 26 2026, 23:30):** steps 1–7 done and pushed; PR open, waiting for Brett to merge. Not screenshot-checked (no browser in the build sandbox). Left: merge, then look at it on the phone.
 - **Plan / steps:**
   1. Undo #107's Apply to all pane in `framework/react/components/BannerSettings.tsx` (+ `ui/axf.css` line, copies in
      every app's `src/axf/`). Keep #107's systems-check key re-check (not part of the undo).

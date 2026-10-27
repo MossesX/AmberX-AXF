@@ -69,7 +69,72 @@
         "descriptions": true,
         "tabs": [],
         "hide": [],
-        "groups": []
+        "groups": [],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {}
+      }
+    },
+    {
+      "name": "levels: on, default level, levelOf (bad ids and levels dropped)",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "levels": true,
+        "defaultLevel": "pro",
+        "levelOf": {
+          "appearance": "simple",
+          "axf.look.sliders": "simple",
+          "bad id": "pro",
+          "about": "expert",
+          "axf.roll": "advanced"
+        }
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [],
+        "levels": true,
+        "defaultLevel": "pro",
+        "levelOf": {
+          "appearance": "simple",
+          "axf.look.sliders": "simple",
+          "axf.roll": "advanced"
+        }
+      }
+    },
+    {
+      "name": "levels: bad values fall back",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "levels": "yes",
+        "defaultLevel": "max",
+        "levelOf": [
+          1
+        ]
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {}
       }
     },
     {
@@ -90,7 +155,10 @@
         "tabs": [],
         "hide": [],
         "groups": [],
-        "toolbar": "settings-page"
+        "toolbar": "settings-page",
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {}
       }
     },
     {
@@ -123,7 +191,10 @@
         "descriptions": false,
         "tabs": [],
         "hide": [],
-        "groups": []
+        "groups": [],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {}
       }
     },
     {
@@ -171,7 +242,10 @@
           }
         ],
         "hide": [],
-        "groups": []
+        "groups": [],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {}
       }
     },
     {
@@ -329,7 +403,10 @@
               }
             ]
           }
-        ]
+        ],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {}
       }
     },
     {
