@@ -11,12 +11,13 @@
  * Kotlin twin deferred (Android on hold, spec/PORTING.md); spec/fixtures/settings-ui.json is what it will replay.
  */
 import type { SettingKind, SettingSpec, SettingsGroup, SettingsTab, SettingValue } from '../settings';
+import { LOOK_LEVELS, lookLevelRank, type LookLevel } from './looktokens';
 
 export type SettingsLayout = 'tabs-top' | 'tabs-side' | 'list';
 export type SettingsHeader = 'full' | 'compact' | 'none';
 
 export interface SettingsUiTab { id: string; label?: string; icon?: string; order?: number; description?: string; parent?: string; hidden?: boolean }
-export interface SettingsUiGroup { id: string; label: string; icon?: string; tab: string; order?: number; description?: string; settings: SettingSpec[] }
+export interface SettingsUiGroup { id: string; label: string; icon?: string; tab: string; order?: number; description?: string; settings: SettingSpec[]; level?: LookLevel; collapsible?: boolean; collapsed?: boolean }
 
 export interface SettingsUi {
   layout: SettingsLayout;
@@ -34,6 +35,13 @@ export interface SettingsUi {
   /** id of a toolbar asset drawn at the top of the settings page (its items, and the search field when it has
    *  `showSearch`); left out = no toolbar */
   toolbar?: string;
+  /** Simple / Basic / Pro / Advanced (Oct 26 2026): a level switch on the settings page; every tab, group, panel and
+   *  setting shows from its level up. Off = everything shows, as before. */
+  levels: boolean;
+  /** level of anything `levelOf` doesn't name */
+  defaultLevel: LookLevel;
+  /** tab, group, panel or setting id → its level */
+  levelOf: Record<string, LookLevel>;
 }
 
 export const SETTINGS_LAYOUTS: readonly SettingsLayout[] = ['tabs-top', 'tabs-side', 'list'];
@@ -42,7 +50,10 @@ export const SETTINGS_HEADERS: readonly SettingsHeader[] = ['full', 'compact', '
 export const ASSET_SETTING_KINDS: readonly SettingKind[] = ['toggle', 'text', 'number', 'slider', 'choice', 'multi_choice', 'color', 'link', 'section'];
 export const SETTINGS_UI_LIMITS = { tabs: 40, hide: 200, groups: 40, settings: 60, options: 50, text: 200, id: 120 } as const;
 
-export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [] };
+export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {} };
+/** The level the settings page shows (per browser, like every setting). */
+export const SETTINGS_LEVEL_KEY = 'axf.settings.level';
+const level = (v: unknown): LookLevel | undefined => (LOOK_LEVELS.includes(v as LookLevel) ? (v as LookLevel) : undefined);
 
 const ID = /^[a-z0-9][a-z0-9._:-]*$/i;
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -119,6 +130,9 @@ function groupOf(raw: unknown): SettingsUiGroup | null {
   const icon = id(raw.icon); if (icon) g.icon = icon;
   const order = num(raw.order); if (order !== undefined) g.order = order;
   const description = text(raw.description); if (description) g.description = description;
+  const lv = level(raw.level); if (lv) g.level = lv;
+  if (raw.collapsible === true) g.collapsible = true;
+  if (raw.collapsed === true) g.collapsed = true;
   return g;
 }
 
@@ -136,7 +150,25 @@ export function normalizeSettingsUi(raw: unknown): SettingsUi {
     hide: uniqueBy((Array.isArray(d.hide) ? d.hide : []).map(id).filter((x): x is string => !!x), (x) => x).slice(0, SETTINGS_UI_LIMITS.hide),
     groups: uniqueBy((Array.isArray(d.groups) ? d.groups : []).map(groupOf).filter((g): g is SettingsUiGroup => !!g), (g) => g.id).slice(0, SETTINGS_UI_LIMITS.groups),
     ...(id(d.toolbar) ? { toolbar: id(d.toolbar)! } : {}),
+    levels: bool(d.levels, SETTINGS_UI_DEFAULTS.levels),
+    defaultLevel: level(d.defaultLevel) ?? SETTINGS_UI_DEFAULTS.defaultLevel,
+    levelOf: Object.fromEntries(Object.entries(isObj(d.levelOf) ? d.levelOf : {}).filter(([k, v]) => id(k) && level(v)).slice(0, SETTINGS_UI_LIMITS.hide)) as Record<string, LookLevel>,
   };
+}
+
+/** The level of a tab, group, panel or setting: what the asset names, a group's own `level`, else the default. */
+export function settingsItemLevel(ui: SettingsUi, itemId: string, own?: LookLevel): LookLevel {
+  return ui.levelOf[itemId] ?? own ?? ui.defaultLevel;
+}
+
+/** Is this item shown at the picked level? (always, when the interface has no levels) */
+export function shownAtLevel(ui: SettingsUi, itemId: string, at: LookLevel, own?: LookLevel): boolean {
+  return !ui.levels || lookLevelRank(settingsItemLevel(ui, itemId, own)) <= lookLevelRank(at);
+}
+
+/** The picked level, checked (falls back to the interface's default level). */
+export function settingsLevel(ui: SettingsUi, stored: unknown): LookLevel {
+  return level(stored) ?? ui.defaultLevel;
 }
 
 /** Problems with a settings asset's data (for validators and editors); empty when every entry survives normalizing. */
@@ -193,9 +225,11 @@ export function arrangeSettingsTabs(tabs: readonly SettingsTab[], ui: SettingsUi
 }
 
 /** A group with the asset's hidden setting keys taken out (null when nothing is left, or the group itself is hidden). */
-export function filterSettingsGroup(group: SettingsGroup, ui: SettingsUi): SettingsGroup | null {
+export function filterSettingsGroup(group: SettingsGroup, ui: SettingsUi, at?: LookLevel): SettingsGroup | null {
   if (!settingsShown(ui, group.id)) return null;
-  const settings = group.settings.filter((s) => settingsShown(ui, s.key));
+  const own = (group as SettingsGroup & { level?: LookLevel }).level;
+  if (at && !shownAtLevel(ui, group.id, at, own)) return null;
+  const settings = group.settings.filter((s) => settingsShown(ui, s.key) && (!at || !ui.levelOf[s.key] || shownAtLevel(ui, s.key, at)));
   return settings.length ? (settings.length === group.settings.length ? group : { ...group, settings }) : null;
 }
 

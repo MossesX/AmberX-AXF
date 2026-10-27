@@ -21,6 +21,12 @@
  * Hide for 1 / 5 / 10 minutes. While hidden that way the banner leaves a one-line note in its place (its name, when it's
  * back, Unhide) carrying the same menu, so it is unhidden the same way. Actions `banners.hide:<id>:<minutes>`,
  * `banners.unhide:<id>`.
+ *
+ * Apply to all (Brett, Oct 26 2026): one collapsible section on top of Banner settings with Simple / Basic / Pro /
+ * Advanced, every look, design, behaviour and tone token (look@1, core/engines/looktokens.ts) in collapsible
+ * categories, and Reset. Stored in one setting, `axf.banners.look`, holding only what was changed: look tokens compile
+ * to one stylesheet over every banner frame on top of the inherited theme; behaviour tokens are the fallback under
+ * each banner's own choices (its tab wins, then Apply to all, then the default).
  */
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../core';
@@ -28,13 +34,15 @@ import type { BannerDef, SlotDef } from '../library';
 import type { MenuEntry } from '../../core/engines/windows';
 import { FRAMEWORK_MODULE } from '../../core/engines/actions';
 import type { DialogMap } from './Overlays';
-import { Button } from './Controls';
+import { Button, Container } from './Controls';
 import { Checkbox, Section, SelectField, Switch } from './Forms';
 import {
   BANNER_HIDE_KEY, QUICK_HIDE_MINUTES, TIMER_DEFAULT, allBannersHidden, hideBannerFor, hideEndsAt, bannerHidden, minutesFrom, minutesInput, nextHideEnd, parseBannerHide,
   setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
+import { LookEditor, LookLevelSwitch } from './LookEditor';
+import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
 
 export type BannerTone = 'own' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
@@ -62,6 +70,9 @@ const WORK_ANIMS: BannerWorkAnim[] = ['spin', 'pulse', 'bounce', 'blink', 'off']
 /** icons offered for "While working" (any Icon name works) */
 export const BANNER_WORK_ICONS = ['refresh', 'zap', 'hammer', 'sparkles', 'rocket', 'branch', 'upload', 'download', 'clock', 'cloud', 'terminal', 'star', 'sun', 'shuffle'];
 export const BANNER_PREFS_KEY = 'axf.banners.prefs';
+/** Apply to all: look@1 values every banner gets (only changed tokens), and the level the section shows. */
+export const BANNER_LOOK_KEY = 'axf.banners.look';
+export const BANNER_LOOK_LEVEL_KEY = 'axf.banners.lookLevel';
 export const BANNER_SETTINGS_DIALOG = 'axf.banners.settings';
 export const BANNER_CTX_TARGET = 'axf-banner';
 export const DEFAULT_BANNER_PREFS: BannerPrefs = { tone: 'own', density: 'regular', icon: true, maxRows: 0, show: true, launch: 'expanded', autoHide: 0, order: null, hideInHost: false, workIcon: '', workAnim: '' };
@@ -75,7 +86,20 @@ function allPrefs(rt: AxfRuntime): Record<string, Partial<BannerPrefs>> {
 
 /** One banner's choices, every field checked (anything odd = the default). */
 export function bannerPrefs(rt: AxfRuntime, id: string): BannerPrefs {
-  const p = allPrefs(rt)[id] ?? {};
+  // A banner's own choice wins; then Apply to all (behaviour tokens of axf.banners.look); then the default.
+  const all = lookPrefs(normalizeLook(rt.settings.get(BANNER_LOOK_KEY)));
+  const g: Partial<BannerPrefs> = {
+    ...(all.tone !== undefined ? { tone: all.tone as BannerTone } : {}),
+    ...(all.density !== undefined ? { density: all.density as BannerDensity } : {}),
+    ...(all.icon !== undefined ? { icon: all.icon as boolean } : {}),
+    ...(all.maxRows !== undefined ? { maxRows: Number(all.maxRows) } : {}),
+    ...(all.launch !== undefined ? { launch: all.launch as BannerPrefs['launch'] } : {}),
+    ...(all.autoHide !== undefined ? { autoHide: Number(all.autoHide) } : {}),
+    ...(all.hideInHost !== undefined ? { hideInHost: all.hideInHost as boolean } : {}),
+    ...(all.workIcon !== undefined ? { workIcon: all.workIcon as string } : {}),
+    ...(all.workAnim !== undefined ? { workAnim: all.workAnim as BannerWorkAnim } : {}),
+  };
+  const p = { ...g, ...(allPrefs(rt)[id] ?? {}) };
   const num = (v: unknown, lo: number, hi: number, d: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v))) : d);
   return {
     tone: TONES.includes(p.tone as BannerTone) ? (p.tone as BannerTone) : 'own',
@@ -165,6 +189,20 @@ function install(rt: AxfRuntime): void {
   if (installed.has(rt)) return;
   installed.add(rt);
   rt.actions.withModule(FRAMEWORK_MODULE, () => installActions(rt));
+  applyBannerLook(rt);
+  rt.settings.onChange(BANNER_LOOK_KEY, () => applyBannerLook(rt));
+}
+
+/** Apply to all's look tokens → one stylesheet over every banner frame (empty = nothing, the theme as is). The theme's
+ *  values are captured on body (under any app-wide look), so the banner layer scales from what the page shows. */
+function applyBannerLook(rt: AxfRuntime): void {
+  const doc = globalThis.document;
+  if (!doc) return;
+  let el = doc.getElementById('axf-banner-look') as HTMLStyleElement | null;
+  const css = lookCss(rt.settings.get(BANNER_LOOK_KEY), { scope: '.fx-banner-frame', base: 'body', p: 'fxb', for: 'banner' });
+  if (!css) { el?.remove(); return; }
+  if (!el) { el = doc.createElement('style'); el.id = 'axf-banner-look'; doc.head.appendChild(el); }
+  if (el.textContent !== css) el.textContent = css;
 }
 
 function installActions(rt: AxfRuntime): void {
@@ -436,6 +474,7 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
   };
   return (
     <div className="fx-banner-settings">
+      <ApplyToAllLook />
       <div className="fx-banner-settings__tabs" role="tablist" aria-label="Banners">
         {list.map((x) => (
           <button key={x.id} type="button" role="tab" aria-selected={x.id === tab} className={`fx-banner-settings__tab${x.id === tab ? ' is-on' : ''}`} onClick={() => setTab(x.id)}>
@@ -475,6 +514,39 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Apply to all (Oct 26 2026): every banner's look, design, behaviour and tone at once, Simple / Basic / Pro / Advanced,
+ * in collapsible categories, with Reset. Only changed tokens are stored; a banner's own tab still wins.
+ */
+function ApplyToAllLook() {
+  const rt = useRuntime();
+  const sub = useCallback((fn: () => void) => { const a = rt.settings.onChange(BANNER_LOOK_KEY, fn); const b = rt.settings.onChange(BANNER_LOOK_LEVEL_KEY, fn); return () => { a(); b(); }; }, [rt]);
+  const get = useCallback(() => `${JSON.stringify(rt.settings.get(BANNER_LOOK_KEY) ?? null)}|${String(rt.settings.get(BANNER_LOOK_LEVEL_KEY) ?? '')}`, [rt]);
+  useSyncExternalStore(sub, get, get);
+  const values: LookValues = normalizeLook(rt.settings.get(BANNER_LOOK_KEY));
+  const stored = rt.settings.get(BANNER_LOOK_LEVEL_KEY);
+  const level: LookLevel = LOOK_LEVELS.includes(stored as LookLevel) ? (stored as LookLevel) : 'simple';
+  const n = lookChanged(values);
+  const [sure, setSure] = useState(false);
+  useEffect(() => { if (!sure) return; const t = setTimeout(() => setSure(false), 4000); return () => clearTimeout(t); }, [sure]);
+  const save = (next: LookValues) => rt.settings.set(BANNER_LOOK_KEY, (Object.keys(next).length ? next : null) as never);
+  return (
+    <Container className="fx-banner-settings__all" title="Apply to all" icon="layers" collapsible defaultOpen={false}
+      actions={n > 0 ? <span className="fx-muted fx-small">{n} changed</span> : undefined}>
+      <div className="fx-stack">
+        <p className="fx-muted fx-small" style={{ margin: 0 }}>Every banner at once. Only what you change here overrides the theme, and a banner’s own tab below still wins.</p>
+        <LookLevelSwitch value={level} onChange={(l) => rt.settings.set(BANNER_LOOK_LEVEL_KEY, l)} />
+        <LookEditor values={values} onChange={save} scope="banner" level={level} />
+        <div className="fx-row fx-row--wrap">
+          <Button tone={sure ? 'danger' : 'ghost'} icon="refresh" disabled={n === 0} onClick={() => { if (!sure) { setSure(true); return; } setSure(false); save({}); }}>
+            {sure ? 'Tap again to reset everything' : 'Reset (back to the theme)'}
+          </Button>
+        </div>
+      </div>
+    </Container>
   );
 }
 

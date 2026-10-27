@@ -13,8 +13,8 @@
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, settingsLevel, shownAtLevel, lookCss, lookChanged, normalizeLook, type LookLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, LookEditor, LookLevelSwitch, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -43,6 +43,14 @@ function useSettingsRevision(rt: AxfRuntime): number {
 function settingsUi(rt: AxfRuntime): SettingsUi {
   return normalizeSettingsUi(rt.assetOrNull('settings')?.data);
 }
+/** The level the settings page shows (Simple / Basic / Pro / Advanced), when the interface has levels. */
+function useSettingsLevel(ui: SettingsUi): LookLevel {
+  const rt = useRuntime();
+  const sub = useMemo(() => (fn: () => void) => rt.settings.onChange(SETTINGS_LEVEL_KEY, fn), [rt]);
+  const raw = useSyncExternalStore(sub, () => rt.settings.get(SETTINGS_LEVEL_KEY), () => rt.settings.get(SETTINGS_LEVEL_KEY));
+  return settingsLevel(ui, raw);
+}
+
 function useSettingsUi(): SettingsUi {
   const rt = useRuntime();
   useAxfState();
@@ -402,14 +410,60 @@ function GroupCard({ group }: { group: SettingsGroup }) {
       </div>
     );
   }
+  const g = group as SettingsGroup & { collapsible?: boolean; collapsed?: boolean };
   return (
     <div data-axf-anchor={`settings-group:${group.id}`}>
-      <Container title={group.label} icon={group.icon ?? 'settings'}>
+      <Container title={group.label} icon={group.icon ?? 'settings'} collapsible={g.collapsible} defaultOpen={!g.collapsed}>
         {group.description && <p className="fx-muted axf-settings__desc" style={{ marginTop: 0 }}>{group.description}</p>}
         <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
       </Container>
     </div>
   );
+}
+
+/* ---------------- Sliders (look@1 for the whole app, Oct 26 2026) ---------------- */
+
+/** One setting: look@1 values for the whole page, only the changed tokens (they override the inherited theme). */
+export const APP_LOOK_KEY = 'axf.look';
+/** Panels drawn as collapsible sections. */
+const COLLAPSIBLE_PANELS = new Set(['axf.look.sliders']);
+
+/** Every slider for the whole app in one collapsible section, with Reset. Simple level in the shared settings interface. */
+function LookSlidersPanel() {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const sub = useMemo(() => (fn: () => void) => rt.settings.onChange(APP_LOOK_KEY, fn), [rt]);
+  useSyncExternalStore(sub, () => JSON.stringify(rt.settings.get(APP_LOOK_KEY) ?? null), () => '');
+  const values: LookValues = normalizeLook(rt.settings.get(APP_LOOK_KEY));
+  const n = lookChanged(values);
+  const [sure, setSure] = useState(false);
+  useEffect(() => { if (!sure) return; const t = setTimeout(() => setSure(false), 4000); return () => clearTimeout(t); }, [sure]);
+  const save = (next: LookValues) => rt.settings.set(APP_LOOK_KEY, (Object.keys(next).length ? next : null) as never);
+  const locked = rt.gate('assets.swap') !== 'allow';
+  return (
+    <div className="fx-stack" aria-disabled={locked || undefined}>
+      <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>Every slider for the whole app. Compact at 0 leaves no space at all. Only what you move overrides the theme.</p>
+      <fieldset className="axf-settings__fieldset" disabled={locked}>
+        <LookEditor values={values} onChange={save} scope="app" level="advanced" only="slider" open />
+      </fieldset>
+      <div className="fx-row fx-row--wrap">
+        <Button tone={sure ? 'danger' : 'ghost'} icon="refresh" disabled={n === 0 || locked} onClick={() => { if (!sure) { setSure(true); return; } setSure(false); save({}); }}>
+          {sure ? 'Tap again to reset every slider' : `Reset sliders${n ? ` (${n} changed)` : ''}`}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/** The app-wide look: one stylesheet on body over the theme captured on html (empty = the theme as is). */
+function applyAppLook(rt: AxfRuntime): void {
+  const doc = globalThis.document;
+  if (!doc) return;
+  let el = doc.getElementById('axf-app-look') as HTMLStyleElement | null;
+  const css = lookCss(rt.settings.get(APP_LOOK_KEY), { scope: 'body', base: 'html', p: 'fxa', for: 'app' });
+  if (!css) { el?.remove(); return; }
+  if (!el) { el = doc.createElement('style'); el.id = 'axf-app-look'; doc.head.appendChild(el); }
+  if (el.textContent !== css) el.textContent = css;
 }
 
 /* ---------------- randomize rolls (core/engines/roll.ts) ---------------- */
@@ -586,7 +640,8 @@ export function SettingsView() {
   // shown: the host installs and switches them. Each plugin's own settings stay, as usual (never greyed out).
   const pluginLock = rt.hostLockNote('plugins');
   // Every tab as the settings asset arranges it (order, labels, left out), then split into top tabs and sub-tabs.
-  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui);
+  const level = useSettingsLevel(ui);
+  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level));
   const byId = new Map(all.map((t) => [t.id, t]));
   const childrenOf = (id: string) => all.filter((t) => t.parent === id);
   const tabs = all.filter((t) => !t.parent || !byId.has(t.parent)).filter((t) => !(pluginLock && t.id === 'plugins' && !childrenOf('plugins').length));
@@ -672,6 +727,7 @@ export function SettingsView() {
           </form>
         } />
       )}
+      {ui.levels && <LookLevelSwitch label="Settings detail" value={level} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} />}
       {ui.search && !toolbarSearch && <TextField label="Search settings" value={query} onChange={setQuery} placeholder="Search every setting" className="axf-settings__search" />}
       {ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
     </div>
@@ -698,21 +754,24 @@ type SettingsTabLike = { id: string; label: string };
 
 /** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings.
  *  What the active settings asset leaves out (group, panel or setting ids) isn't shown. */
-export function TabContent({ id }: { id: string }) {
+export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const ui = useSettingsUi();
+  const level = useSettingsLevel(ui);
+  // `all`: every level (a plugin's own settings inside Banner settings aren't cut by the page's level)
+  const at = all ? undefined : level;
   const tab = rt.settings.getTab(id);
-  const groups = rt.settings.groupsIn(id).map((g) => filterSettingsGroup(g, ui)).filter((g): g is SettingsGroup => !!g);
-  const panels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
+  const groups = rt.settings.groupsIn(id).map((g) => filterSettingsGroup(g, ui, at)).filter((g): g is SettingsGroup => !!g);
+  const panels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id) && (!at || shownAtLevel(ui, p.id, at)));
   return (
     <>
-      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
+      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'} collapsible={COLLAPSIBLE_PANELS.has(p.id) || undefined}>{p.render() as ReactNode}</Container></div> })),
         ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
         .sort((a, b) => a.order - b.order || a.tie - b.tie)
         .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
       {!panels.length && !groups.length && (
-        <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
+        <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : ui.levels && !all ? 'Nothing here at this level. Pick a higher level above for more.' : 'Nothing here yet.'}</p>
       )}
     </>
   );
@@ -832,11 +891,13 @@ export const library: AxfWebLibrary = {
   provides: ['axf.settings'],
   register(rt) {
     injectStyles();
-    setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} />);
+    setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} all />);
     rt.settings.addGroup(appearanceGroup(rt));
     rt.settings.addGroup(rollGroup());
     syncSettingsAsset(rt);
     applyDisplay(rt);
+    applyAppLook(rt);
+    rt.settings.onChange(APP_LOOK_KEY, () => applyAppLook(rt));
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
     rt.actions.register('app.settings', () => rt.navigate(VIEW), { label: 'Settings' });
@@ -871,6 +932,7 @@ export const library: AxfWebLibrary = {
   settingsPanels: [
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
+    { id: 'axf.look.sliders', tab: 'appearance', title: 'Sliders', icon: 'sliders', order: 1, render: () => <LookSlidersPanel /> },
     { id: 'axf.settings-ui', tab: 'appearance', title: 'Settings interface', icon: 'settings', order: 5, render: () => <SettingsInterfacePanel /> },
     { id: 'axf.asset-appearance', tab: 'appearance', title: 'Asset appearance', icon: 'sliders', order: 11, render: () => <AssetAppearancePanel /> },
     { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },

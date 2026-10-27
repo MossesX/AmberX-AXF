@@ -11,6 +11,7 @@ export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY } from '
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { ArrangeBar, arrangedSide, useArrange, type ArrangeApi } from './components/Arrange';
 export { Gauge, Meter, type GaugeProps, type MeterProps } from './components/Meters';
+export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
@@ -23,7 +24,7 @@ export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, T
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
 export { FRAME_BANNERS_SLOT, FrameBanners, Slot, SlotsProvider, useSlotFilled } from './components/Slots';
-export { BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
+export { BANNER_LOOK_KEY, BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';
