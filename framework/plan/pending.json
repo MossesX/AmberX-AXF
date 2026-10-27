@@ -5080,12 +5080,17 @@
    "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
    "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Merged in PR #126 (branch claude/amberx-appearance-lock), Oct 27 2026.",
+     "at": "2026-10-27T19:23:01.225Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-27T19:05:30.186Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-27T19:05:30.186Z",
+   "builtAt": "2026-10-27T19:23:01.118Z",
+   "updatedAt": "2026-10-27T19:23:01.225Z",
    "estimate": "1 h",
    "source": "chat"
   }

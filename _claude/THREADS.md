@@ -34,9 +34,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Merge approvals: ready PRs go to Brett as an axHub approval; Approve on the first screen of the approval page | merged | `claude/merge-approvals` | #131 | Merge through its own merge approval once CI passes | 2026-10-27 |
 | Empty banner strip stays after the last banner item is removed (fix) | review | `fix/banner-strip-collapse` | #133 | Merge after CI; the 5-minute update redeploys the console | 2026-10-27 |
 | Build profiles + Build profiles plugin (Main framework, Refactor) | review | `claude/build-profiles` | see GitHub | Merge after CI; then the console shows the profile chip. Refactor is the saved pick; today's refactor/upgrade work imported into it (pending: arch-foundation, enterprise-branding, interface-roller, design-package-fable, apply-all-levels-fable + 5 done; orchestrator: arch-foundation, enterprise-branding, interface-roller, design-package). Main keeps its copies with a note | 2026-10-27 |
-| AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
@@ -179,6 +179,7 @@ VPS). The session reads the rules and this file first, as usual.
 
 | Thread | Result | Updated |
 |---|---|---|
+| AmberX look fix + Lock the look + Get the look from axHub switches | merged (#126) through Brett's axHub merge approval; amberx.amberxai.com picks it up in the 5-minute update | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | merged (#119), deployed to console, AmberX, axHub web, Patches web; shared look on axHub switched to Fresh | 2026-10-27 |
 | AmberX as an empty shell for building and testing plugins | merged (#118); the hosted app updates in 5 min, CI builds the APK | 2026-10-26 |
 | Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders | merged (#115); console updates in 5 min, other apps on their next deploy. Fable rebuild parked (`apply-all-levels-fable`) | 2026-10-26 |
