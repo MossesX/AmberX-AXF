@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-009",
+  "name": "GizmoX · Showcase 9",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · open ring, showcase placement, icon pack pack-033.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "showcase"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-010",
+      "wordmark": "gizmox-logo-057",
+      "lockup": "gizmox-logo-056",
+      "animated": "gizmox-anim-027"
+    },
+    "iconPack": "pack-033",
+    "palette": {
+      "brand1": "#1e8f7c",
+      "brand2": "#09341f",
+      "brand3": "#a2d7cd"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "animated",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "wordmark",
+      "container": "watermark",
+      "tab-group": "mark",
+      "toolbar": "wordmark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "animated"
+    }
+  }
+}

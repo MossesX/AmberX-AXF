@@ -141,4 +141,18 @@ const fixture = {
 const fx = new URL('fixtures/brand.json', import.meta.url);
 if (process.argv.includes('--write') || !existsSync(fx)) writeFileSync(fx, JSON.stringify(fixture, null, 2) + '\n');
 eq(JSON.parse(readFileSync(fx, 'utf8')), fixture, 'fixture brand.json matches (regenerate with --write when the engine changes on purpose)');
+// brand library (s26): every generated branding package resolves completely once its pieces are registered
+{
+  const lib = new URL('framework/brand-library/', root);
+  const idx = JSON.parse(readFileSync(new URL('index.json', lib), 'utf8'));
+  const have = new Set((idx.items as { type: string; id: string }[]).map((i) => `${i.type}/${i.id}`));
+  const brandings = (idx.items as { type: string; id: string }[]).filter((i) => i.type === 'branding');
+  ok(brandings.length >= 50, `≥ 50 library branding packages (${brandings.length})`);
+  for (const b of brandings) {
+    const a = JSON.parse(readFileSync(new URL(`branding/${b.id}.json`, lib), 'utf8'));
+    const r = resolveBranding(a.data, { has: (t: string, id: string) => have.has(`${t}/${id}`) });
+    eq(r.missing, [], `${b.id}: resolves with nothing missing`);
+    ok(r.mark && r.wordmark && r.lockup && r.animated && r.iconPack, `${b.id}: every piece found`);
+  }
+}
 console.log(`check-brand: ${n} checks passed`);

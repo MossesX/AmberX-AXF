@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-008",
+  "name": "GizmoX · Signature 8",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · diamond spark, signature placement, icon pack pack-029.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "signature"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-009",
+      "wordmark": "gizmox-logo-049",
+      "lockup": "gizmox-logo-052",
+      "animated": "gizmox-anim-088"
+    },
+    "iconPack": "pack-029",
+    "palette": {
+      "brand1": "#a3794d",
+      "brand2": "#5a3b26",
+      "brand3": "#e4dfd7"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "lockup",
+      "window": "accent-edge",
+      "floating-window": "accent-edge",
+      "dialog": "accent-edge",
+      "container": "none",
+      "tab-group": "accent-edge",
+      "toolbar": "mark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

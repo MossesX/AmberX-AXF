@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "amberx-brand-007",
+  "name": "AmberX · Quiet 7",
+  "version": "1.0.0",
+  "description": "AmberX branding: AmberX mark · squircle pulse, quiet placement, icon pack pack-025.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "brand-library",
+    "quiet"
+  ],
+  "data": {
+    "brand": {
+      "name": "AmberX",
+      "tagline": "One framework, every port."
+    },
+    "marks": {
+      "mark": "amberx-logo-013",
+      "wordmark": "amberx-logo-038",
+      "lockup": "amberx-logo-025",
+      "animated": "amberx-anim-007"
+    },
+    "iconPack": "pack-025",
+    "palette": {
+      "brand1": "#509b54",
+      "brand2": "#2a5427",
+      "brand3": "#d4e2d4"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "mark",
+      "window": "none",
+      "floating-window": "none",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "mark",
+      "favicon": "mark",
+      "empty-state": "none"
+    }
+  }
+}

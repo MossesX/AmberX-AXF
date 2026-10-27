@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "amberx-brand-012",
+  "name": "AmberX · Quiet 12",
+  "version": "1.0.0",
+  "description": "AmberX branding: AmberX mark · shield dots, quiet placement, icon pack pack-045.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "brand-library",
+    "quiet"
+  ],
+  "data": {
+    "brand": {
+      "name": "AmberX",
+      "tagline": "One framework, every port."
+    },
+    "marks": {
+      "mark": "amberx-logo-024",
+      "wordmark": "amberx-logo-059",
+      "lockup": "amberx-logo-048",
+      "animated": "amberx-anim-012"
+    },
+    "iconPack": "pack-045",
+    "palette": {
+      "brand1": "#be4182",
+      "brand2": "#6e2154",
+      "brand3": "#ecdfe7"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "mark",
+      "window": "none",
+      "floating-window": "none",
+      "dialog": "none",
+      "container": "none",
+      "tab-group": "none",
+      "toolbar": "none",
+      "splash": "mark",
+      "favicon": "mark",
+      "empty-state": "none"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox-brand-019",
+  "name": "GizmoX · Showcase 19",
+  "version": "1.0.0",
+  "description": "GizmoX branding: GizmoX mark · diamond bars, showcase placement, icon pack pack-073.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox",
+    "brand-library",
+    "showcase"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox-logo-021",
+      "wordmark": "gizmox-logo-107",
+      "lockup": "gizmox-logo-108",
+      "animated": "gizmox-anim-010"
+    },
+    "iconPack": "pack-073",
+    "palette": {
+      "brand1": "#0ea5aa",
+      "brand2": "#043444",
+      "brand3": "#9de7e0"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "animated",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "wordmark",
+      "container": "watermark",
+      "tab-group": "mark",
+      "toolbar": "wordmark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "animated"
+    }
+  }
+}

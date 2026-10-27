@@ -18,7 +18,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { normalizeMark } from '../core/engines/brand-rules.mjs';
+import { brandingErrors, normalizeMark } from '../core/engines/brand-rules.mjs';
 import { assetErrors, contrast, generateAnimated, generateIconPack, generateMark } from '../core/engines/brandgen.mjs';
 export * from '../core/engines/brandgen.mjs';
 
@@ -27,7 +27,10 @@ export * from '../core/engines/brandgen.mjs';
 
 export const LIBRARY = {
   dir: 'framework/brand-library',
-  brands: [{ brand: 'AmberX', slug: 'amberx', seed: 1, marks: 125, animated: 125 }, { brand: 'GizmoX', slug: 'gizmox', seed: 1001, marks: 125, animated: 125 }],
+  brands: [
+    { brand: 'AmberX', slug: 'amberx', seed: 1, marks: 125, animated: 125, brandings: 25, tagline: 'One framework, every port.' },
+    { brand: 'GizmoX', slug: 'gizmox', seed: 1001, marks: 125, animated: 125, brandings: 25, tagline: 'The AmberX development console.' },
+  ],
   icons: { count: 100, seed: 1, base: 'framework/assets/icon-pack/amberx-outline.json' },
   budget: { perAssetBytes: 4096, totalBytes: 2_000_000 },
 };
@@ -55,14 +58,53 @@ export function buildLibrary(repo) {
       out.push(a);
     }
   }
+  // icon packs first (brandings name one)
   const base = JSON.parse(readFileSync(join(repo, LIBRARY.icons.base), 'utf8'));
-  for (let i = 0; i < LIBRARY.icons.count; i++) {
+  const packs = Array.from({ length: LIBRARY.icons.count }, (_, i) => {
     const p = generateIconPack(LIBRARY.icons.seed + i, base, { id: `pack-${String(i + 1).padStart(3, '0')}` });
     p.tags = [...new Set([...(p.tags ?? []), 'brand-library'])];
-    out.push(p);
+    return p;
+  });
+  // branding packages (s26): each names a mark, a wordmark, a lockup and an animation of that mark from its brand,
+  // an icon pack and the mark's palette, with one of the decoration presets — a complete, swappable rebrand
+  for (const b of LIBRARY.brands) {
+    const mine = out.filter((a) => (a.tags ?? []).includes(b.slug));
+    const byForm = (f) => mine.filter((a) => a.type === 'logo-mark' && normalizeMark(a.data).form === f);
+    const marks = byForm('mark'), words = byForm('wordmark'), locks = byForm('lockup');
+    const anims = mine.filter((a) => a.type === 'animated-logo');
+    for (let i = 0; i < b.brandings; i++) {
+      const mark = marks[i % marks.length];
+      const anim = anims.find((a) => a.data.mark === mark.id) ?? anims[i % anims.length];
+      const preset = DECORATION_PRESETS[i % DECORATION_PRESETS.length];
+      out.push({
+        $axf: 'asset@1', type: 'branding', id: `${b.slug}-brand-${String(i + 1).padStart(3, '0')}`,
+        name: `${b.brand} · ${preset.name} ${i + 1}`, version: '1.0.0',
+        description: `${b.brand} branding: ${mark.name}, ${preset.name.toLowerCase()} placement, icon pack ${packs[(i * 4) % packs.length].id}.`,
+        author: 'AmberX AXF', tags: [b.slug, 'brand-library', preset.id],
+        data: {
+          brand: { name: b.brand, tagline: b.tagline },
+          marks: { mark: mark.id, wordmark: words[i % words.length].id, lockup: locks[i % locks.length].id, animated: anim.id },
+          iconPack: packs[(i * 4) % packs.length].id,
+          palette: { ...mark.data.palette },
+          accentFromBrand: preset.accent,
+          decorations: preset.decorations,
+        },
+      });
+    }
   }
+  out.push(...packs);
   return out;
 }
+
+/** Where brand marks show, as presets (DESIGN-LANGUAGE.md logo placement rules). */
+export const DECORATION_PRESETS = [
+  { id: 'classic', name: 'Classic', accent: false, decorations: { banner: 'lockup', window: 'mark', 'floating-window': 'mark', dialog: 'mark', container: 'none', 'tab-group': 'none', toolbar: 'none', splash: 'animated', favicon: 'mark', 'empty-state': 'watermark' } },
+  { id: 'quiet', name: 'Quiet', accent: false, decorations: { banner: 'mark', window: 'none', 'floating-window': 'none', dialog: 'none', container: 'none', 'tab-group': 'none', toolbar: 'none', splash: 'mark', favicon: 'mark', 'empty-state': 'none' } },
+  { id: 'signature', name: 'Signature', accent: true, decorations: { banner: 'lockup', window: 'accent-edge', 'floating-window': 'accent-edge', dialog: 'accent-edge', container: 'none', 'tab-group': 'accent-edge', toolbar: 'mark', splash: 'animated', favicon: 'mark', 'empty-state': 'watermark' } },
+  { id: 'showcase', name: 'Showcase', accent: true, decorations: { banner: 'animated', window: 'mark', 'floating-window': 'mark', dialog: 'wordmark', container: 'watermark', 'tab-group': 'mark', toolbar: 'wordmark', splash: 'animated', favicon: 'mark', 'empty-state': 'animated' } },
+  { id: 'wordmark', name: 'Wordmark', accent: false, decorations: { banner: 'wordmark', window: 'none', 'floating-window': 'mark', dialog: 'none', container: 'none', 'tab-group': 'none', toolbar: 'wordmark', splash: 'lockup', favicon: 'mark', 'empty-state': 'watermark' } },
+];
+
 
 /** The index: counts, bytes, budget and one row per item (what the Brand library plugin lists without opening files). */
 export function libraryIndex(assets) {
@@ -80,7 +122,8 @@ export function libraryIndex(assets) {
 function library(repo, check) {
   const assets = buildLibrary(repo);
   const problems = [];
-  for (const a of assets) { const e = assetErrors(a); if (e.length) problems.push(`${a.id}: ${e.join('; ')}`); }
+  for (const a of assets) { const e = a.type === 'branding' ? brandingErrors(a.data) : assetErrors(a); if (e.length) problems.push(`${a.id}: ${e.join('; ')}`); }
+  for (const a of assets.filter((x) => x.type === 'branding')) for (const [k, ref] of [...Object.entries(a.data.marks).map(([f, id]) => [f === 'animated' ? 'animated-logo' : 'logo-mark', id]), ['icon-pack', a.data.iconPack]]) if (!assets.some((x) => x.type === k && x.id === ref)) problems.push(`${a.id}: ${k} ${ref} isn't in the library`);
   const ids = new Set(); for (const a of assets) { const k = `${a.type}/${a.id}`; if (ids.has(k)) problems.push(`duplicate ${k}`); ids.add(k); }
   const index = libraryIndex(assets);
   for (const it of index.items) if (it.bytes > LIBRARY.budget.perAssetBytes) problems.push(`${it.type}/${it.id}: ${it.bytes} B over the ${LIBRARY.budget.perAssetBytes} B budget`);
