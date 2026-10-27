@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T18:08:22.147Z",
+ "updatedAt": "2026-10-27T18:30:39.442Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -5005,6 +5005,61 @@
    "createdAt": "2026-10-27T17:17:17.473Z",
    "builtAt": "",
    "updatedAt": "2026-10-27T17:17:17.473Z",
+   "source": "chat"
+  },
+  {
+   "id": "amberx-plugin-installer",
+   "title": "AmberX installs plugins from axHub (no console)",
+   "detail": "axHub commits a picked plugin-catalog package into apps/amberx-droid/src/plugins with the vault GitHub token, confirmed by Brett on the hub’s own page; axhub-web confirm page; AmberX plugin-store plugin lists the catalog. Tracker: _claude/builds/orchestrator.json amberx-plugin-installer.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Started Oct 27 2026 on Opus (claude.ai), branch claude/amberx-plugin-installer (AmberX-AXF + axHub).",
+     "at": "2026-10-27T18:30:39.442Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "axHub plugin-install.ts + tests",
+     "at": "",
+     "estimate": "30 min",
+     "done": false,
+     "doneAt": ""
+    },
+    {
+     "text": "axHub routes, wiring, decision #101",
+     "at": "",
+     "estimate": "25 min",
+     "done": false,
+     "doneAt": ""
+    },
+    {
+     "text": "axhub-web confirm pages",
+     "at": "",
+     "estimate": "30 min",
+     "done": false,
+     "doneAt": ""
+    },
+    {
+     "text": "AmberX plugin-store plugin",
+     "at": "",
+     "estimate": "30 min",
+     "done": false,
+     "doneAt": ""
+    },
+    {
+     "text": "Checks, PRs, logs",
+     "at": "",
+     "estimate": "25 min",
+     "done": false,
+     "doneAt": ""
+    }
+   ],
+   "createdAt": "2026-10-27T18:30:39.442Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-27T18:30:39.442Z",
+   "estimate": "2.3 h",
    "source": "chat"
   }
  ]

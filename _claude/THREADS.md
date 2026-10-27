@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| AmberX installs plugins from axHub (no console) | working | `claude/amberx-plugin-installer` (AmberX-AXF + axHub) | – | Orchestrator `amberx-plugin-installer`; see *To carry on* | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
@@ -55,6 +56,23 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
+
+### AmberX installs plugins from axHub (no console)
+- **Asked (Brett, Oct 27 2026, claude.ai):** "Build plugin for amberx app to install plugins from axhub." Then: "Why does
+  it have to run through console why can't it just install" → picked **through axHub** (not the console, not runtime
+  loading). Model Opus (all steps).
+- **Design:** axHub reads the plugin catalog (`/projects/_shared/_data/plugin-catalog`) and, from a signed-in admin on
+  the hub's own page (Origin + CSRF, never a bearer token), commits the package into the target folder with the vault's
+  GitHub token (one git-data commit; targets from config, default `amberx` → `MossesX/AmberX-AXF:apps/amberx-droid/src/plugins`).
+  axhub-web: `#/plugins` + `#/plugins/install/<kind>/<folder>` confirm page. AmberX: `src/plugins/plugin-store` lists
+  the catalog and opens that page (`native.hubOpen`). The site rebuilds in ~5 min.
+- **Branch:** `claude/amberx-plugin-installer` in both repos. **Tracker:** `orchestrator.mjs brief amberx-plugin-installer`.
+- **Change log:** `chg-20261027-a7b3c19d2e` on axHub. **Pending:** `amberx-plugin-installer`.
+- **Checks:** axHub `pnpm test`; `npx -y tsx apps/axhub-web/test.mjs`; `npx -y tsx apps/amberx-droid/test.mjs`; tsc +
+  vite build in both apps; `node framework/cli/check-controls.mjs`; `node framework/cli/check-theme.mjs`.
+- **Deploy after merge:** redeploy axHub on Coolify (new routes); the two web apps update themselves.
+- **First message:** "Carry on the thread *AmberX installs plugins from axHub* from `_claude/THREADS.md` → To carry on
+  (orchestrator `amberx-plugin-installer`). Opus."
 
 ### Build orchestrator (how every build below is carried on)
 - Tracker: `_claude/builds/orchestrator.json` (orchestrator@1; how-to `_claude/builds/README.md`). `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next` says what to do; `brief <id>` gives the current phase only. At a Fable ↔ Opus switch, stop and ask Brett (card), then `act approve <id> <phase>`. <!-- axf-plugin:build-orchestrator -->
