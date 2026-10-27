@@ -1,0 +1,25 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.onboarding",
+  "module": "lib-onboarding",
+  "name": "Onboarding (first-run permissions + recovery)",
+  "description": "Reusable first-run permissions flow: welcome/why → checklist of what the app declares (microphone, camera, overlay, an accessibility service by class, notifications, battery-optimisation exemption), each row live and re-checked on resume, with runtime dialogs, settings hand-offs and a guided accessibility step. RecoveryState + RecoveryBanner + RecoveryScreen for a revoked permission or a stopped service (ServiceHeartbeat). \"Onboarding done\" persisted per app and spec version in the KV store. Ported from ActiveX's onboarding. Library API level 1, version 0.1.0.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.onboarding",
+  "params": [],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-onboarding:$axf\")",
+    "module": "OnboardingModule(spec)",
+    "import": "ai.amberx.axf.onboarding.OnboardingModule",
+    "routes": ["onboarding-status"]
+  },
+  "ports": {
+    "android": { "status": "scaffolded", "dir": "android/lib-onboarding", "note": "written without a compiler; CI should compile and run :lib-onboarding:testDebugUnitTest" }
+  },
+  "placeholders": [
+    { "capability": "axf.onboarding.special", "note": "Exact alarms, usage access, notification listener, all-files access." },
+    { "capability": "axf.onboarding.web", "note": "Web twin (browser camera/mic/notification permissions)." },
+    { "capability": "axf.onboarding.watchdog", "note": "Notify when a required service stops while the app is closed." }
+  ]
+}
