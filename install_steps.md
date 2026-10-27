@@ -255,7 +255,7 @@ bash /opt/axf/deploy/claude-pick.sh --install    # `claude` starts on your plan 
 exec bash -l
 node /root/axHub/clients/claude-code/claude-sync.mjs install
 CLAUDE_SYNC_OWNERS=<you> claude-sync login          # paste AXHUB_MCP_TOKEN (stored 0600)
-node /opt/axf/apps/console-web/plugins/codebase-changes/changes.mjs hooks install
+node /opt/axf/apps/console-web/plugins/codebase-changes/changes.mjs hooks install # axf-plugin:codebase-changes
 cd /opt/axf && claude                               # starts on your Claude plan with Opus (no questions); /login once
 ```
 

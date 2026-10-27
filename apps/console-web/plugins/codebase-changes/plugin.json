@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every time Claude is asked to build, edit, remove or fix something, an entry is opened (by a Claude Code hook) with what was asked, broken into steps that Claude fills in as it works, and the result when it's done (branch, commits, files, tests, links). A Codebase changes banner on every console load lists the entries you haven't closed; closing one clears it on every device. The permanent log lives on axHub (/projects/amberx-axf/_data/changes) and is browsable under Builds → Codebase changes.",
+  "description": "Every time Claude is asked to build, edit, remove or fix something, an entry is opened (by a Claude Code hook) with what was asked, broken into steps that Claude fills in as it works, and the result when it's done (branch, commits, files, tests, links). A Codebase changes banner on every console load lists the entries you haven't closed; closing one clears it on every device. The permanent log lives on axHub (/projects/amberx-axf/_data/changes) and is browsable under Builds \u2192 Codebase changes.",
   "targets": [
     "axf-console"
   ],
@@ -22,8 +22,13 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-21" },
-  "banner": ["codebase-changes"],
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-21"
+  },
+  "banner": [
+    "codebase-changes"
+  ],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -35,12 +40,13 @@
     ],
     "mentions": [
       "CLAUDE.md",
-      "apps/console-web/plugins/README.md",
-      "_claude/rules/RULES.md",
-      "_claude/memory/docs/codebase-changes.md",
       "_claude/memory/docs/build-reporting.md",
+      "_claude/memory/docs/codebase-changes.md",
+      "_claude/rules/RULES.md",
       "_claude/shared/rules/RULES.md",
-      "deploy/claude-pick.sh"
+      "apps/console-web/plugins/README.md",
+      "deploy/claude-pick.sh",
+      "install_steps.md"
     ],
     "keeps": [
       "changes/ in the shared data folder (/projects/amberx-axf/_data/changes on axHub, and the repo's changes/ snapshot): Brett's permanent record, never deleted by uninstall"

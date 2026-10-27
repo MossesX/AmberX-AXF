@@ -523,7 +523,7 @@ networks.
 | `AXF_TOKEN` | `install-console.sh` | `/opt/axf/.axf-console/env` (0600) | Opens the console API, `/mcp` and plugin routes for machines and the panel. Reset: Settings → Account & security → Console token → **Reset token**. |
 | Wall secret | `install-console.sh` | `/opt/axf/.axf-console/wall-secret` | Must equal `AXHUB_WALL_SECRET` on the hub. Lets the console trust who's signed in. |
 | Credentials | you, in the systems check | `/opt/axf/.axf-console/secrets.env` (0600) | `GITHUB_TOKEN`, `ANTHROPIC_API_KEY`, `HOSTINGER_API_TOKEN`, `COOLIFY_URL`, `COOLIFY_TOKEN`, `AXHUB_URL`, `AXHUB_TOKEN`, `MOSHI_SSH_PUBKEY` |
-| AI keys | you, in AI keys | `.axf-console/plugins/ai-keys/keys.json` (0600) | Claude pairs and API keys ([sections 6](#6-claude-subscription-tokens)–[8](#8-several-claude-accounts)) |
+| AI keys | you, in AI keys | `.axf-console/plugins/ai-keys/keys.json` (0600) | Claude pairs and API keys ([sections 6](#6-claude-subscription-tokens)–[8](#8-several-claude-accounts)) | <!-- axf-plugin:ai-keys -->
 
 **Where to type them:** the **Keys needed** banner (or the systems check dialog) asks for exactly the missing or
 refused ones, tests each on save, and never sends a value back to a browser. With Claude connected, **Auto fix**
