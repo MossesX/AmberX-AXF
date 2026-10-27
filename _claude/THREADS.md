@@ -34,14 +34,17 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
+| Merge approvals: ready PRs go to Brett as an axHub approval; Approve on the first screen of the approval page | merged | `claude/merge-approvals` | #131 | Merge through its own merge approval once CI passes | 2026-10-27 |
+| Empty banner strip stays after the last banner item is removed (fix) | review | `fix/banner-strip-collapse` | #133 | Merge after CI; the 5-minute update redeploys the console | 2026-10-27 |
+| Build profiles + Build profiles plugin (Main framework, Refactor) | review | `claude/build-profiles` | see GitHub | Merge after CI; then the console shows the profile chip. Refactor is the saved pick; today's refactor/upgrade work imported into it (pending: arch-foundation, enterprise-branding, interface-roller, design-package-fable, apply-all-levels-fable + 5 done; orchestrator: arch-foundation, enterprise-branding, interface-roller, design-package). Main keeps its copies with a note | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
-| Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | in progress | `opus/enterprise-branding` | [#138](https://github.com/MossesX/AmberX-AXF/pull/138) | Orchestrator build `enterprise-branding` (46 steps, 33 done): Fable phase 1 merged (#128); **Opus phase 2 done Oct 27** (s13–s26: asset library, style-package@1, brand library). **Waits on Brett: merge #138** (CI green; the session's merge approval was blocked by its safety check). Next: phase 3 s27–s40 (Brand library plugin, GizmoX/AmberX refactor, ship). See *To carry on* | 2026-10-27 |
+| Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | in progress | `opus/enterprise-branding` | [#138](https://github.com/MossesX/AmberX-AXF/pull/138) | Orchestrator build `enterprise-branding` (46 steps, 33 done): Fable phase 1 merged (#128); **Opus phase 2 done Oct 27** (s13–s26: asset library, style-package@1, brand library). Opus phase 2 **merged (#138)**. Next: phase 3 s27–s40 (Brand library plugin, GizmoX/AmberX refactor, ship). See *To carry on* | 2026-10-27 |
 | Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
-| Three interfaces in GizmoX tabs + interface roller for every app | in progress | `opus/interface-roller` (stacked on `opus/enterprise-branding`) | [#139](https://github.com/MossesX/AmberX-AXF/pull/139) (base #138) | Orchestrator build `interface-roller` (15 steps, 10 done): Fable phase 1 merged (#129); **Opus phase 2 done Oct 27** (s6–s10: GizmoX Night + AmberX Signature interfaces, console tabs Main · GizmoX Night · AmberX Signature). Next: phase 3 s11–s14 (roller plugin, lib-interface-roller, install in every web app). See *To carry on* | 2026-10-27 |
+| Three interfaces in GizmoX tabs + interface roller for every app | in progress | `opus/interface-roller` (stacked on `opus/enterprise-branding`) | [#139](https://github.com/MossesX/AmberX-AXF/pull/139) | Orchestrator build `interface-roller` (15 steps, 10 done): Fable phase 1 merged (#129); **Opus phase 2 done Oct 27** (s6–s10: GizmoX Night + AmberX Signature interfaces, console tabs Main · GizmoX Night · AmberX Signature). Next: phase 3 s11–s14 (roller plugin, lib-interface-roller, install in every web app). See *To carry on* | 2026-10-27 |
+| Build orchestrator: Builds grid like Pending builds, step subgrids | PR open | `opus/orchestrator-grid` | – | Grid view = framework DataGrid grouped by category (Build + one-line summary, Status, Next, Steps, Time, Cost, Added; Left hideable); each row expands to a steps subgrid per phase (tick, model chip, group, time, cost, move/remove, approve switch) + the build card actions | 2026-10-27 |
 | Pending builds grid view (attachment) | queued | – | – | Orchestrator build `pending-grid-view`: Opus only, 6 steps | 2026-10-27 |
 | AmberX Design Package (Fable rebuild of the Opus build) | queued | – | – | Folded into orchestrator build `enterprise-branding` phase 1, group *Design package (Fable rebuild)* (s5r1-s5r6) | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
@@ -56,6 +59,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
+
+### Build profiles + plugin
+- Asked (Brett, Oct 27 2026): "Create multiple build profiles and a console plugin to select and save one. Each build profile holds plans, build queue, pending builds, tracking, and all work stuff. Name current one main framework and then start new one called refactor."
+- Model Opus. Branch `claude/build-profiles`, all 4 orchestrator steps done (orchestrator build `build-profiles`, pending `build-profiles`).
+- Left: CI green → merge → console redeploys itself. Checks: `python3 apps/console-web/server/test_build_profiles.py`, `node framework/cli/profiles.mjs`.
+- First message: "Carry on thread Build profiles: check PR for branch claude/build-profiles, merge when CI is green, then confirm the console shows the profile chip."
 
 ### Build orchestrator (how every build below is carried on)
 - Tracker: `_claude/builds/orchestrator.json` (orchestrator@1; how-to `_claude/builds/README.md`). `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next` says what to do; `brief <id>` gives the current phase only. At a Fable ↔ Opus switch, stop and ask Brett (card), then `act approve <id> <phase>`. <!-- axf-plugin:build-orchestrator -->
@@ -172,6 +181,8 @@ VPS). The session reads the rules and this file first, as usual.
 
 | Thread | Result | Updated |
 |---|---|---|
+| AmberX look fix + Lock the look + Get the look from axHub switches | merged (#126) through Brett's axHub merge approval; amberx.amberxai.com picks it up in the 5-minute update | 2026-10-27 |
+| Fresh look: new default style theme + `fresh` appearance package | merged (#119), deployed to console, AmberX, axHub web, Patches web; shared look on axHub switched to Fresh | 2026-10-27 |
 | AmberX as an empty shell for building and testing plugins | merged (#118); the hosted app updates in 5 min, CI builds the APK | 2026-10-26 |
 | Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders | merged (#115); console updates in 5 min, other apps on their next deploy. Fable rebuild parked (`apply-all-levels-fable`) | 2026-10-26 |
 | No login questions + headless sessions in the console Terminal | merged (#105) | 2026-10-26 |

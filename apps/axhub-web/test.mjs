@@ -235,6 +235,11 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     ok(src.includes('<HubGate'), `${f} is behind the sign-in gate`);
     ok(!/<button(?![^>]*className=\{?`?["']?fx-chip)/.test(src), `${f} draws no hand-styled buttons`);
   }
+  // Approve on the first screen (Brett, Oct 27 2026): the decision buttons sit in the page head, before What it does + the code.
+  const detail = readFileSync(`${here}src/views/ApprovalDetail.tsx`, 'utf8');
+  const actionsAt = detail.indexOf('approval-actions'), whatAt = detail.indexOf('<WhatItDoes'), codeAt = detail.indexOf('<CodeSection');
+  ok(actionsAt > 0 && actionsAt < detail.indexOf('</header>') && actionsAt < whatAt && actionsAt < codeAt, 'Approve is in the page head, above the description and the code');
+  ok(/orderActions\(item\.actions\)/.test(detail) && /filter\(\(a\) => a === 'approve'\)/.test(detail), 'Approve comes first among the actions');
   const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/axhub-web.json`, 'utf8'));
   const navViews = nav.data.sections.flatMap((x) => x.items.map((i) => i.view));
   for (const v of ['home', 'approvals-log', 'users', 'handoff', 'account', 'apps']) ok(navViews.includes(v), `the nav reaches ${v}`);

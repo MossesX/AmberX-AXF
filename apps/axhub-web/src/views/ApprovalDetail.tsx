@@ -44,6 +44,18 @@ function Detail() {
           <p className="fx-eyebrow">Approval request</p>
           <h1>{item ? item.title : 'Request'}</h1>
           {item && <p className="fx-muted">Asked {when(item.createdAt)} by {item.callerId}{item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}</p>}
+          {/* Brett (Oct 27 2026): the decision buttons are on the first screen, right under the title, before any
+              description or code, so Approve never needs a scroll on a phone. */}
+          {item && <div className="fx-row fx-row--wrap" data-axf-anchor="approval-actions">
+            <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>
+            {orderActions(item.actions).map((a) => (
+              <Button key={a} disabled={busy} icon={a === 'approve' ? 'check' : undefined}
+                tone={a === 'approve' ? 'success' : a === 'decline' || a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
+                {ACTION_LABELS[a]}
+              </Button>
+            ))}
+            {item.actions.length === 0 && <span className="fx-muted">Nothing more to do with this one{item.decidedBy ? ` (decided by ${item.decidedBy})` : ''}.</span>}
+          </div>}
         </div>
         <div className="fx-row fx-row--wrap">
           <Button icon="arrow-left" onClick={() => go(rt, 'home')}>All requests</Button>
@@ -57,19 +69,10 @@ function Detail() {
 
       {item && (
         <>
-          <Container title="What it does" icon="info" actions={<Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>} collapsible defaultOpen>
-            <div className="fx-stack">
-              <WhatItDoes item={item} />
-              <div className="fx-row fx-row--wrap">
-                {item.actions.map((a) => (
-                  <Button key={a} disabled={busy} tone={a === 'approve' ? 'success' : a === 'decline' || a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
-                    {ACTION_LABELS[a]}
-                  </Button>
-                ))}
-              </div>
-              {item.actions.length === 0 && <p className="fx-muted">Nothing more to do with this one{item.decidedBy ? ` (decided by ${item.decidedBy})` : ''}.</p>}
-              {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
-            </div>
+          {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
+
+          <Container title="What it does" icon="info" collapsible defaultOpen>
+            <WhatItDoes item={item} />
           </Container>
 
           <CodeSection item={item} />
@@ -108,6 +111,11 @@ function Detail() {
       )}
     </div>
   );
+}
+
+/** Approve first, then the rest in the hub's order (Approve is the one tapped most). */
+export function orderActions(actions: ApprovalAction[]): ApprovalAction[] {
+  return [...actions.filter((a) => a === 'approve'), ...actions.filter((a) => a !== 'approve')];
 }
 
 type Mode = 'in' | 'until' | 'condition';
