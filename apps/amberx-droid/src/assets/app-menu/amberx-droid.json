@@ -3,13 +3,10 @@
   "type": "app-menu",
   "id": "amberx-droid",
   "name": "AmberX menu",
-  "version": "1.0.0",
-  "description": "AmberX, laid out like the Dev Console's application menu: the hub and its pages, approvals and apps as live lists, the planned admin areas, the look, help.",
+  "version": "2.0.0",
+  "description": "The empty shell's application menu: AmberX (approvals, search, settings, plugins), Approvals, View (bars, look, spacing) and Help. Plugins add their own menus and items at runtime.",
   "author": "AmberX AXF",
-  "tags": [
-    "axhub",
-    "console"
-  ],
+  "tags": [],
   "data": {
     "menus": [
       {
@@ -22,12 +19,6 @@
             "icon": "shield",
             "action": "nav:home",
             "badge": "approvals.waiting"
-          },
-          {
-            "id": "go-hub",
-            "label": "Hub",
-            "icon": "external",
-            "action": "nav:hub"
           },
           {
             "id": "search",
@@ -53,51 +44,10 @@
             "provider": "settings"
           },
           {
-            "id": "account",
-            "label": "Account",
-            "icon": "user",
-            "action": "nav:account"
-          },
-          {
-            "id": "s2",
-            "separator": true
-          },
-          {
-            "id": "check",
-            "label": "Check the hub now",
-            "icon": "refresh",
-            "action": "axhub.check"
-          },
-          {
-            "id": "hub-pages",
-            "label": "Hub pages",
-            "icon": "external",
-            "items": [
-              {
-                "id": "open-approvals",
-                "label": "Approvals",
-                "icon": "shield",
-                "action": "hub.open:approvals"
-              },
-              {
-                "id": "open-apps",
-                "label": "App catalog",
-                "icon": "download",
-                "action": "hub.open:apps"
-              },
-              {
-                "id": "open-users",
-                "label": "Users",
-                "icon": "user",
-                "action": "hub.open:users"
-              },
-              {
-                "id": "open-account",
-                "label": "Your hub account",
-                "icon": "key",
-                "action": "hub.open:account"
-              }
-            ]
+            "id": "plugins",
+            "label": "Plugins",
+            "icon": "package",
+            "action": "settings.open:plugins"
           },
           {
             "id": "s3",
@@ -133,86 +83,16 @@
             "separator": true
           },
           {
+            "id": "check",
+            "label": "Check the hub now",
+            "icon": "refresh",
+            "action": "axhub.check"
+          },
+          {
             "id": "approvals-hub",
             "label": "Approvals on the hub",
             "icon": "external",
             "action": "hub.open:approvals"
-          }
-        ]
-      },
-      {
-        "id": "apps",
-        "label": "Apps",
-        "items": [
-          {
-            "id": "apps-view",
-            "label": "App catalog",
-            "icon": "download",
-            "action": "nav:apps"
-          },
-          {
-            "id": "downloads",
-            "label": "Download the latest",
-            "icon": "download",
-            "provider": "hub.apps"
-          },
-          {
-            "id": "p1",
-            "separator": true
-          },
-          {
-            "id": "apps-hub",
-            "label": "Apps on the hub",
-            "icon": "external",
-            "action": "hub.open:apps"
-          }
-        ]
-      },
-      {
-        "id": "manage",
-        "label": "Manage",
-        "items": [
-          {
-            "id": "m-services",
-            "label": "Services",
-            "icon": "layers",
-            "action": "nav:services"
-          },
-          {
-            "id": "m-jobs",
-            "label": "Jobs",
-            "icon": "clock",
-            "action": "nav:jobs"
-          },
-          {
-            "id": "m-audit",
-            "label": "Audit log",
-            "icon": "list",
-            "action": "nav:audit"
-          },
-          {
-            "id": "m-vault",
-            "label": "Vault",
-            "icon": "lock",
-            "action": "nav:vault"
-          },
-          {
-            "id": "m-users",
-            "label": "Users",
-            "icon": "user",
-            "action": "nav:users"
-          },
-          {
-            "id": "m-projects",
-            "label": "Projects",
-            "icon": "folder",
-            "action": "nav:projects"
-          },
-          {
-            "id": "m-devices",
-            "label": "Devices",
-            "icon": "smartphone",
-            "action": "nav:devices"
           }
         ]
       },
@@ -325,12 +205,6 @@
             "action": "settings.open:appearance"
           },
           {
-            "id": "assets",
-            "label": "Assets",
-            "icon": "layers",
-            "action": "nav:assets"
-          },
-          {
             "id": "v2",
             "separator": true
           },
@@ -339,24 +213,6 @@
             "label": "Every page",
             "icon": "layout",
             "provider": "views"
-          },
-          {
-            "id": "nav-items",
-            "label": "Navigation items",
-            "icon": "menu",
-            "provider": "nav"
-          },
-          {
-            "id": "toolbar-items",
-            "label": "Toolbar items",
-            "icon": "sliders",
-            "provider": "toolbar"
-          },
-          {
-            "id": "windows",
-            "label": "Windows",
-            "icon": "layers",
-            "provider": "windows"
           },
           {
             "id": "dialogs",

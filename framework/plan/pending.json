@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T03:19:49.693Z",
+ "updatedAt": "2026-10-27T03:48:42.596Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -4339,6 +4339,54 @@
    "builtAt": "",
    "updatedAt": "2026-10-27T03:19:49.693Z",
    "estimate": "2 h",
+   "source": "chat"
+  },
+  {
+   "id": "amberx-empty-shell",
+   "title": "AmberX as an empty shell for building and testing plugins",
+   "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Oct 26 2026 on Opus (claude.ai): branch claude/amberx-empty-shell, PR #118. test.mjs 157, tsc, vite build, axf validate 83 assets.",
+     "at": "2026-10-27T03:48:42.596Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Remove Hub, Apps, Manage, Asset studio, Account views and demo dialogs",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Trim nav, app menu, toolbar, context menu assets",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "README plugin how-to, CLAUDE.md status, test.mjs shell checks",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "tsc, vite build, axf validate, PR, THREADS",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    }
+   ],
+   "createdAt": "2026-10-27T03:48:42.596Z",
+   "builtAt": "2026-10-27T03:48:42.596Z",
+   "updatedAt": "2026-10-27T03:48:42.596Z",
+   "estimate": "1 h",
    "source": "chat"
   }
  ]

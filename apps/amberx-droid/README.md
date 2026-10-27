@@ -1,8 +1,9 @@
 # AmberX
 
-Voice-controlled, plugin-driven Android app on the AmberX AXF framework (web app in a Capacitor shell). It takes over
-the AXHub app: approvals with alerts, the hub, app downloads, auto-approval, plus voice control and background
-monitoring with the screen off.
+An **empty shell for building and testing plugins** on the AmberX AXF framework (web app in a Capacitor shell, Oct 26
+2026): banner, toolbar, nav menu, application menu, a basic context menu, the settings interface and the look (theme,
+layout, style assets), voice commands, the **Approvals** page with its alerts and the whole **Monitor** plugin
+(background approvals watch, alerts, auto-approval, wake phrase). Nothing else: every other page comes from a plugin.
 
 ```bash
 npm install
@@ -26,9 +27,20 @@ signed in). Hub calls from the hosted page go straight from the WebView; only a 
 | `src/plugins/monitor` | Background monitoring: watch settings, auto-approval, status |
 | `src/native.ts` | The one seam to the native side (`AmberxNative`), with a browser fallback |
 | `android/app/src/main/java/ai/amberx/droid` | `WatchService` (foreground service), `AmberxNativePlugin`, `HubWebActivity`, `HubRules` |
-| `src/views`, `src/hub` | Approvals, Hub, Apps, Manage (from the axHub web app, through lib-hub) |
+| `src/views/Approvals.tsx`, `src/hub` | Approvals, the only page of its own (home; through lib-hub) |
+| `src/plugins/<folder>` | Your plugins: drop one in and it joins the nav, menus, search and Settings → Plugins |
 | `src/axf/` | Baked framework: don't edit, re-bake |
 
 Security: every native hub call goes only to `https://axhub.amberxai.com` with the phone's hub session, never follows a
 redirect and is capped at 256 KB; approvals are decided on the hub's own page; the lock screen shows only "Approval
 waiting"; the hub session and watch settings are excluded from backups.
+
+## Building and testing a plugin
+
+1. Copy `src/plugins/_template` to `src/plugins/<folder>` (folders starting with `_` never load) and set `id`, `name`,
+   `version` in its `plugin.json` (`amberx-plugin@1`).
+2. Export `library` (an `AxfWebLibrary`) from `web/index.tsx`. Whatever it declares shows up by itself: `views` +
+   `nav` (side navigation), `appMenu` / `contextMenu` items, `settings` groups (a sub-tab of **Settings → Plugins**),
+   `banners`, actions, search entries. Voice phrases: `registerVoiceCommands` from `plugins/voice/web/index.tsx`.
+3. `npm run dev` and try it; `npx -y tsx test.mjs` checks the shell still holds.
+4. Ship it through the plugin catalog (see `src/plugins/README.md`); the hosted app picks it up on its 5-minute update.
