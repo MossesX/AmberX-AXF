@@ -141,6 +141,16 @@ Only: the Dev Console (shown as **GizmoX**), the AmberX app (amberx.amberxai.com
 **installed and switched on in Plugin switches** at the time the refactor phase starts (read live through axHub
 by the session doing it), and every banner plugin. Everything else keeps its current UI until asked.
 
+Read live on Oct 27 2026 (axHub `vps.run`, approval 72afb5a6): the console has no `.axf-console/plugins.json`,
+so nothing has been switched off and every installed plugin runs — all 32 (`activity`, `agent-manager`,
+`ai-assistant`, `ai-keys`, `alerts-bell`, `approvals-banner`, `build-manager`, `build-orchestrator`,
+`changes-grid`, `claude-badge`, `claude-handoff`, `codebase-changes`, `console-terminal`, `container-access`,
+`context-menu-designer`, `fable-rebuilds`, `feature-assist`, `hub-sync`, `main-build-status`, `mcp-client`,
+`plugin-manager`, `plugin-switches`, `plugin-update`, `plugins-menu`, `project-wizard`, `push-banner`,
+`session-checkin`, `snapshot-manager`, `systems-check`, `theme-manager`, `todo-manager`, `voice-notes`) are in
+scope; the seven banner plugins (`activity`, `approvals-banner`, `build-manager`, `claude-handoff`,
+`codebase-changes`, `push-banner`, `systems-check`) are among them.
+
 ## 14. What a checker verifies
 
 `framework/spec/check-design-language.mts` (added with the generators, step s12): every starter colour theme's
