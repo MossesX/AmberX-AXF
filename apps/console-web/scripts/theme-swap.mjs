@@ -67,6 +67,8 @@ try {
     [...document.querySelectorAll('body *')].forEach((e, i) => {
       const cs = getComputedStyle(e);
       if (e.offsetParent === null && cs.position !== 'fixed') return;
+      // brand marks keep their brand colours in every theme (branding@1 palette; DESIGN-LANGUAGE.md §6, §9)
+      if (e.closest('.fx-brand, .fx-brand-watermark, svg[role="img"]')) return;
       const name = `${typeof e.className === 'string' && e.className ? e.className.split(' ')[0] : e.tagName.toLowerCase()}#${i}`;
       const v = { color: cs.color };
       if (cs.backgroundColor !== 'rgba(0, 0, 0, 0)') v.background = cs.backgroundColor;
