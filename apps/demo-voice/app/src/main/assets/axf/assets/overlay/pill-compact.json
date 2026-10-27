@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "overlay",
+  "id": "pill-compact",
+  "name": "Compact pill",
+  "version": "1.0.0",
+  "description": "A small floating pill: two status chips (on / idle, listening) and a quick action that opens the mini screen. Log panel off, three-line strip on while hidden.",
+  "author": "AmberX AXF",
+  "tags": ["overlay", "pill", "default"],
+  "data": {
+    "pill": {
+      "title": "",
+      "chips": [
+        { "id": "armed", "label": "On", "offLabel": "Idle", "tone": "success", "offTone": "muted" },
+        { "id": "listening", "label": "Listening", "offLabel": "Quiet", "tone": "info", "offTone": "muted", "icon": "mic" }
+      ],
+      "quickAction": "overlay.mini"
+    },
+    "log": { "show": false, "maxLines": 5, "showConfidence": true },
+    "strip": { "show": true, "maxLines": 3, "lineMs": 3000 },
+    "mini": { "defaultOpen": false, "width": { "min": 160, "max": 420, "default": 220 }, "height": { "min": 120, "max": 520, "default": 240 } },
+    "opacity": 0.92,
+    "positionLock": false,
+    "size": { "minWidth": 120, "maxWidth": 480, "minHeight": 48, "maxHeight": 640, "maxScreenWidthPct": 90, "maxScreenHeightPct": 80 }
+  }
+}

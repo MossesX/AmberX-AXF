@@ -1,0 +1,118 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "demo-onboarding",
+    "name": "AXF Demo — onboarding",
+    "version": "0.1.0"
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "android-compose"
+  },
+  "initializedAt": "2026-10-27T21:05:01.050Z",
+  "targets": [
+    "android"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "fresh-light",
+    "style-theme": "fresh",
+    "layout": "classic-ide",
+    "behavior-theme": "standard",
+    "app-menu": "standard-desktop",
+    "toolbar": "standard-icons",
+    "nav-menu": "sidebar-list",
+    "context-menu": "compact-classic",
+    "tab-group": "underline",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "gauge": "classic-arc",
+    "meter": "striped-pill",
+    "banner": "amberx-thin",
+    "overlay": "pill-compact",
+    "branding": "amberx",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "fresh-day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "settings": "standard",
+    "interface": "fresh",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar"
+  ],
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version, targets and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Framework version + template the app was initialized from (Android apps depend on published framework modules, nothing is baked)."
+    },
+    {
+      "path": "settings.gradle.kts",
+      "purpose": "Includes the framework as a composite build (framework/android) and shares its version catalog."
+    },
+    {
+      "path": "app/src/main/assets/axf/axf.manifest.json",
+      "purpose": "Copy of the manifest shipped inside the APK; the kernel reads it at startup."
+    },
+    {
+      "path": "app/src/main/assets/axf/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type (same JSON as every other port)."
+    },
+    {
+      "path": "app/src/main/kotlin/app/App.kt",
+      "purpose": "Application class: builds the kernel from the manifest, assets and modules."
+    },
+    {
+      "path": "app/src/main/kotlin/app/MainActivity.kt",
+      "purpose": "The single activity: AxfRoot + AppShell + the app's views."
+    },
+    {
+      "path": "app/src/main/kotlin/app/AppModule.kt",
+      "purpose": "The app's own AxfModule: routes, actions, settings, dialogs."
+    },
+    {
+      "path": "app/src/main/kotlin/app/views",
+      "purpose": "Composable views registered with the shell."
+    }
+  ],
+  "android": {
+    "applicationId": "ai.amberx.axf.demoonboarding",
+    "scheme": "axf",
+    "modules": [
+      "ai.amberx.axf.onboarding"
+    ],
+    "minSdk": 26,
+    "targetSdk": 35
+  },
+  "libraries": {
+    "onboarding": {},
+    "$installed": [
+      "ai.amberx.axf.onboarding"
+    ]
+  }
+}

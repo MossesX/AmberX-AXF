@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "glass-orbit",
+  "name": "Glass Orbit",
+  "version": "1.0.0",
+  "description": "Large radii, spacious rhythm, deep soft shadows and frosted blur.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "fontFamily": "'Manrope', system-ui, sans-serif",
+    "fontDisplay": "'Sora', 'Manrope', sans-serif",
+    "fontMono": "'Fira Code', ui-monospace, monospace",
+    "fontSize": 15,
+    "radius": {
+      "sm": 10,
+      "md": 16,
+      "lg": 24
+    },
+    "space": 9,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 2px 8px var(--fx-shadow)",
+      "md": "0 12px 32px var(--fx-shadow)",
+      "lg": "0 30px 80px var(--fx-shadow)"
+    },
+    "density": "spacious",
+    "motion": 260,
+    "blur": 22,
+    "headingWeight": 700,
+    "tracking": -0.03,
+    "opacityDisabled": 0.38,
+    "opacityMuted": 0.6,
+    "opacityHover": 0.1,
+    "opacityTint": 0.16,
+    "opacityScrim": 0.45,
+    "opacityGlass": 0.6,
+    "wrapGroups": false
+  }
+}

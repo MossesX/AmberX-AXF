@@ -1,0 +1,12 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+# Vosk model fetched by the fetchVoskModel Gradle task (never committed)
+/app/src/main/assets/model-en-us/

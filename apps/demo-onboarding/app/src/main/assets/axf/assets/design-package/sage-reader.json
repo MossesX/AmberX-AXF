@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "sage-reader",
+  "name": "Sage Reader",
+  "version": "1.0.0",
+  "description": "Soft Studio on Sage Paper, focus layout with the bar on top, calm motion. A quiet light look for reading. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "quiet"
+  ],
+  "data": {
+    "style-theme": "soft-studio",
+    "color-theme": "sage-paper",
+    "layout": "focus-top",
+    "behavior-theme": "calm"
+  }
+}
