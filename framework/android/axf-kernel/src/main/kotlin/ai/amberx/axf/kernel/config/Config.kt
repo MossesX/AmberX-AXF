@@ -25,4 +25,14 @@ public class Config {
     public fun source(key: String): ConfigLayer? { for (l in ConfigLayer.entries.reversed()) if (key in layers.getValue(l)) return l; return null }
     public fun keys(): Set<String> = layers.values.flatMap { it.keys }.toSet()
     public fun clear(layer: ConfigLayer): Unit = layers.getValue(layer).clear()
+    /** Drops [key] from one layer (lower layers show through again). */
+    public fun remove(key: String, layer: ConfigLayer = ConfigLayer.USER) { layers.getValue(layer).remove(key) }
+    /** Drops every key starting with [prefix] from one layer; a blank prefix drops nothing. Returns how many went. */
+    public fun removePrefix(prefix: String, layer: ConfigLayer = ConfigLayer.USER): Int {
+        if (prefix.isBlank()) return 0
+        val m = layers.getValue(layer)
+        val gone = m.keys.filter { it.startsWith(prefix) }
+        for (k in gone) m.remove(k)
+        return gone.size
+    }
 }
