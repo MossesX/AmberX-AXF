@@ -27,15 +27,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| No login questions + headless sessions in the console Terminal | review | `claude/no-login-questions-terminal-launches` | #105 | Merge; the VPS picks it up on the 5-minute update. Install tmux there (systems check Auto fix) | 2026-10-26 |
-| Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
-| Fix AmberX app sign-in and hosting | deploy | `claude/project-thread-kxgzso` | #99 (merged) | Run `sudo bash /opt/axf/apps/amberx-droid/deploy/install.sh` on the VPS + A record `amberx` → 31.97.13.252; the app shows offline until the site answers | 2026-10-26 |
-| Track threads and builds in the repo | review | `claude/project-thread-usdp87` | (this PR) | Merge | 2026-10-25 |
-| Require access and refresh Claude tokens | review | `claude/project-thread-i70ntv` | #97 | Review + merge | 2026-10-25 |
-| Fix banner rows not expanding | review | `claude/project-thread-jjbcw6` | #96 | Review + merge | 2026-10-25 |
-| Give axHub the console's settings interface | review | `claude/project-thread-74063i` | #95 | Review + merge | 2026-10-25 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
-| Add assets appearance editing section | review | `claude/project-thread-qwqfp4` | #93 | Review + merge | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
 | Add icon picker dialog for status plugins | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
 | Add Push banner action log | on hold | – | – | Held by Brett | 2026-10-25 |
@@ -45,6 +37,14 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | Result | Updated |
 |---|---|---|
+| No login questions + headless sessions in the console Terminal | merged (#105) | 2026-10-26 |
+| Move axHub to console-style pages | AmberX-AXF #100 merged | 2026-10-26 |
+| Fix AmberX app sign-in and hosting | merged (#99); amberx.amberxai.com running on the VPS (amberx-web, DNS in place, 5-minute auto-update) | 2026-10-26 |
+| Track threads and builds in the repo | merged | 2026-10-26 |
+| Require access and refresh Claude tokens | merged (#97) | 2026-10-26 |
+| Fix banner rows not expanding | merged (#96) | 2026-10-26 |
+| Give axHub the console's settings interface | merged (#95) | 2026-10-26 |
+| Add assets appearance editing section | merged (#93) | 2026-10-26 |
 | Banner settings Apply to all + keys re-checked while open | merged (#107); console updates in 5 min. Fable rebuild parked (`banner-apply-all-fable`) | 2026-10-26 |
 | Fix amberx.amberxai.com + AmberX app (404: Traefik router `amberxweb` clashed with amberx-app; now `amberxdroid`) | merged; the 5-minute update redeploys it | 2026-10-26 |
 | Banner text on one line | merged (#110); console updates in 5 min. Fable rebuild parked (`banner-one-line-fable`) | 2026-10-26 |
