@@ -1,0 +1,8 @@
+{
+  "$axf": "axnotes-plugins@1",
+  "description": "AX Notes plugins installed in this build. Written only by apps/ax-notes/plugins/manage.mjs (each plugin's install.mjs / uninstall.mjs). Gradle compiles the plugins listed here from apps/ax-notes/plugins/<folder>/ and the app loads their entry modules; an empty list = the app without plugins.",
+  "installed": [
+    { "id": "ai.amberx.axf.axnotes.plugins.note-sorter", "folder": "note-sorter", "entry": "ai.amberx.axf.axnotes.plugins.notesorter.NoteSorterModule" },
+    { "id": "ai.amberx.axf.axnotes.plugins.ai-codebase-reader", "folder": "ai-codebase-reader", "entry": "ai.amberx.axf.axnotes.plugins.codebase.CodebaseReaderModule" }
+  ]
+}

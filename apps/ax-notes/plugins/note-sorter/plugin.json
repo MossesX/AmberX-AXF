@@ -1,0 +1,53 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.axnotes.plugins.note-sorter",
+  "name": "Note sorter",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Sorts new and edited notes with AI (mode ai.chat, one short JSON reply): category, tags, title, short summary and action items. Files notes into matching lists, turns action items into to-dos on a chosen to-do list, learns from your re-categorizations (kept as examples in the prompt, and used by local rules when AI is unavailable), and writes a daily or weekly digest note meant to be read aloud. Settings: categories, auto-sort, summary length, target to-do list, digest.",
+  "entry": "ai.amberx.axf.axnotes.plugins.notesorter.NoteSorterModule",
+  "targets": ["ax-notes"],
+  "provides": [
+    "service:axnotes.sorter@1",
+    "settings-tab:note-sorter",
+    "action:notesorter.sort-all",
+    "action:notesorter.digest",
+    "action:notesorter.forget",
+    "action:notesorter.purge",
+    "menu:app-menu",
+    "menu:nav-menu",
+    "trigger:notesorter.digest-daily",
+    "trigger:notesorter.digest-weekly",
+    "trigger:notesorter.sort-all"
+  ],
+  "requires": [
+    "plugin:ai.amberx.axf.axnotes",
+    "plugin:ai.amberx.axf.axnotes.pluginhost",
+    "plugin:ai.amberx.axf.data"
+  ],
+  "optional": [
+    "service:axf.ai.session",
+    "service:axf.triggers",
+    "service:axf.speech"
+  ],
+  "scopes": ["actions", "settings", "menu_items"],
+  "menus": { "application": true, "nav": true },
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27", "branch": "opus/ax-notes-plugins" },
+  "tabable": false,
+  "banner": false,
+  "opens": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": "ai.amberx.axf.axnotes.plugin.note-sorter",
+    "settings": ["app.notesorter.autoSort", "app.notesorter.categories", "app.notesorter.summaryLength", "app.notesorter.todoList", "app.notesorter.digest"],
+    "install": "node apps/ax-notes/plugins/note-sorter/install.mjs",
+    "uninstall": "node apps/ax-notes/plugins/note-sorter/uninstall.mjs [--all]",
+    "mentions": ["apps/ax-notes/README.md"],
+    "keeps": [
+      "Notes, categories, tags, list memberships and to-dos it made: they are your content and stay after uninstall (digest notes carry the tag digest)."
+    ]
+  }
+}
