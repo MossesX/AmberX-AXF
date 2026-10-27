@@ -147,6 +147,39 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(!/plugins\//.test(app), 'no console plugin is imported');
 }
 
+// An empty shell for building and testing plugins (Oct 26 2026): Approvals is its only page; voice, monitor and any
+// installed plugin bring the rest. No menu, toolbar or voice command may point at a page that isn't there.
+{
+  const { readFileSync, readdirSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const app = readFileSync(`${here}src/App.tsx`, 'utf8');
+  const own = [...app.slice(app.indexOf('const views'), app.indexOf('};', app.indexOf('const views'))).matchAll(/^\s{2}([a-z-]+):/gm)].map((m) => m[1]);
+  eq(own, ['home'], 'Approvals (home) is the only page of its own');
+  eq(readdirSync(`${here}src/views`).sort(), ['Approvals.tsx'], 'no other views are left');
+  for (const gone of ['HubView', 'Planned', 'views/Apps', 'AssetStudio', 'AccountView']) ok(!app.includes(gone), `${gone} is gone`);
+  for (const p of ['voice', 'monitor']) ok(existsSync(`${here}src/plugins/${p}/plugin.json`), `the ${p} plugin is kept`);
+  ok(existsSync(`${here}src/plugins/_template/plugin.json`), 'the plugin template is kept');
+  const plugViews = [];
+  for (const p of readdirSync(`${here}src/plugins`).filter((f) => !f.startsWith('_') && existsSync(`${here}src/plugins/${f}/web/index.tsx`))) {
+    plugViews.push(...[...readFileSync(`${here}src/plugins/${p}/web/index.tsx`, 'utf8').matchAll(/views: \{ ([a-z-]+):/g)].map((m) => m[1]));
+  }
+  ok(plugViews.includes('monitor') && plugViews.includes('voice'), 'Monitor and Voice pages come from their plugins');
+  const pages = new Set(['home', 'settings', ...plugViews]);
+  const targets = (text) => [...text.matchAll(/"(?:view|action)": "nav:([a-z-]+)"|"view": "([a-z-]+)"|action: 'nav:([a-z-]+)'/g)].map((m) => m[1] ?? m[2] ?? m[3]);
+  for (const f of ['nav-menu', 'app-menu', 'toolbar', 'context-menu']) {
+    const t = targets(readFileSync(`${here}src/assets/${f}/amberx-droid.json`, 'utf8'));
+    for (const v of t) ok(pages.has(v), `${f} points at a page that exists (${v})`);
+  }
+  for (const v of targets(readFileSync(`${here}src/plugins/voice/web/index.tsx`, 'utf8'))) ok(pages.has(v), `voice command opens a page that exists (${v})`);
+  const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/amberx-droid.json`, 'utf8'));
+  eq(nav.data.sections.flatMap((s) => s.items.map((i) => i.view)), ['home', 'settings'], 'the nav menu holds Approvals and Settings (plugins add theirs)');
+  const menu = JSON.parse(readFileSync(`${here}src/assets/app-menu/amberx-droid.json`, 'utf8'));
+  eq(menu.data.menus.map((m) => m.id), ['axhub', 'approvals', 'view', 'help'], 'application menu: AmberX, Approvals, View, Help');
+  ok(!JSON.stringify(menu).includes('hub.apps'), 'no app-catalog list in the menu');
+  const dialogs = readFileSync(`${here}src/dialogs.tsx`, 'utf8');
+  ok(!dialogs.includes('new-file') && !dialogs.includes('confirm-delete'), 'demo dialogs are gone');
+}
+
 /* ---------------------------------------------------------------- voice control (plugins/voice/web/core.ts) */
 {
   const cmds = [

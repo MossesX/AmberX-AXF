@@ -2,7 +2,7 @@
   "$manifest": "project-manifest@1",
   "name": "amberx-droid",
   "displayName": "AmberX",
-  "description": "AmberX: voice-controlled, plugin-driven Android app that watches axHub in the background and takes over the AXHub app",
+  "description": "AmberX: empty shell for building and testing plugins: voice commands, approvals with alerts and background monitoring of axHub, nothing else built in",
   "kind": "app",
   "status": "active",
   "version": "0.1.0",

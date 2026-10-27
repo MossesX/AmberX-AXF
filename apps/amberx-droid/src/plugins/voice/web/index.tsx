@@ -23,8 +23,6 @@ const BUILT_IN: VoiceCommand[] = [
   { id: 'approvals.count', phrases: ['whats waiting', 'what is waiting', 'how many approvals', 'any approvals', 'anything waiting'], action: 'axhub.check', reply: 'You have {waiting} waiting.' },
   { id: 'approvals.open', phrases: ['open approvals', 'show approvals', 'approvals'], action: 'nav:home', reply: 'Here are your approvals.' },
   { id: 'approvals.review', phrases: ['review the first', 'review first approval', 'open the first approval'], action: 'amberx.review-first' },
-  { id: 'hub.open', phrases: ['open the hub', 'show the hub', 'hub'], action: 'nav:hub' },
-  { id: 'apps.open', phrases: ['open apps', 'show apps', 'downloads'], action: 'nav:apps', reply: 'Here are the apps.' },
   { id: 'monitor.open', phrases: ['open monitor', 'monitoring', 'show monitor'], action: 'nav:monitor' },
   { id: 'monitor.start', phrases: ['start monitoring', 'start watching', 'watch the hub'], action: 'monitor.start', reply: 'Watching the hub.' },
   { id: 'monitor.stop', phrases: ['stop monitoring', 'stop watching'], action: 'monitor.stop', reply: 'Stopped watching.' },

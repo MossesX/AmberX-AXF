@@ -6,7 +6,7 @@
  * (`framework/libs/hub`, harvested from this app Oct 23 2026).
  */
 import { HUB_DEFAULT, normalizeHub } from '../axf/libs/hub';
-import { useHubApprovals, useHubApps } from '../axf/libs/hub/react';
+import { useHubApprovals } from '../axf/libs/hub/react';
 import manifest from '../../axf.manifest.json';
 
 /** The hub this build belongs to. */
@@ -14,6 +14,3 @@ export const HUB: string = normalizeHub((manifest as { developer?: { hub?: strin
 
 /** The approvals feed, polled while the page is visible. One watcher for the whole app. */
 export const useApprovals = () => useHubApprovals(HUB);
-
-/** The app catalog, read when the view opens and on "Check the hub now". */
-export const useApps = () => useHubApps(HUB);
