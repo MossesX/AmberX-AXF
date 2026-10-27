@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T21:11:47.166Z",
+ "updatedAt": "2026-10-27T21:19:31.352Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1654,7 +1654,7 @@
    "branch": "fable/ax-notes",
    "pr": "",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T21:11:47.165Z",
+   "updatedAt": "2026-10-27T21:19:31.351Z",
    "builtAt": "",
    "notes": [
     {
@@ -1696,6 +1696,10 @@
     {
      "text": "s19/s20 done: apps/demo-{overlay,voice,triggers,speech,onboarding} (validate ok). lib-ai demo still to add in s21. Bugs for s21: axf install writes broken install code for lib-overlay (OverlayNotification import, missing ic_notification) and lib-onboarding (bare spec); axf new-demo escapes quotes in // axf:modules.",
      "at": "2026-10-27T21:11:47.164Z"
+    },
+    {
+     "text": "s15/s17/s18 done (110db1a, 015a03e, c486e96, b398bf3): plugins ai-chat, ai-build-bridge, ai-automations under apps/ax-notes/plugins/<id> with lifecycle.mjs + plugins.json loader contract. Event names for approval/finished-build to verify against axHub in s21.",
+     "at": "2026-10-27T21:19:31.351Z"
     }
    ],
    "approvals": [
@@ -1959,8 +1963,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:19:31.099Z",
      "note": ""
     },
     {
@@ -1991,8 +1995,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:19:31.188Z",
      "note": ""
     },
     {
@@ -2023,8 +2027,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T21:19:31.281Z",
      "note": ""
     },
     {
