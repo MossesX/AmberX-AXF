@@ -43,4 +43,5 @@ export * from './engines/work';
 export * from './triggers';
 export * from './ai-modes';
 export * from './speech';
+export * from './speech-web';
 export * from './engines/placement';
