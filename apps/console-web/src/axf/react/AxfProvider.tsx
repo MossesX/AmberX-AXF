@@ -9,6 +9,11 @@ export function useRuntime(): AxfRuntime {
   return rt;
 }
 
+/** The runtime when the component sits inside <AxfProvider>, else null (for pieces that also render standalone). */
+export function useOptionalRuntime(): AxfRuntime | null {
+  return useContext(AxfContext);
+}
+
 /** Subscribes the component to runtime changes and returns the current state. */
 export function useAxfState() {
   const rt = useRuntime();

@@ -25,10 +25,13 @@ public object AssetTypes {
     public const val BADGE: String = "badge"
     /** Widget kinds (Oct 20 2026): logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider. */
     public val WIDGET_KINDS: List<String> = listOf("action-button", "logo", "label", "status", "counter", "progress", "avatar", "link", "theme-switch", "spacer", "divider")
+    /** Brand types (brand-rules.mjs on the web; Kotlin twin deferred, PORTING.md): optional, never rolled except the branding package. */
+    public val BRAND: List<String> = listOf("logo-mark", "animated-logo", ICON_PACK, "branding")
     public val OPTIONAL_SHARED: List<String> = listOf(BANNER, CLOCK, SEARCH_BAR) + WIDGET_KINDS + BADGE
 
     /** Android-port asset types (framework/schemas/asset-types.android.json). Optional slots: an app may have none. */
     public const val SCREEN_TEMPLATE: String = "screen-template"
+    /** `icon-pack` is a shared type since Oct 27 2026 (icon-pack@1, brand types); it lives in the core spec now. */
     public const val ICON_PACK: String = "icon-pack"
     public const val STRING_PACK: String = "string-pack"
     public const val IMAGE_PACK: String = "image-pack"
@@ -45,7 +48,7 @@ public object AssetTypes {
 
     /** The 13 slots every app must fill (defaults.json). */
     public val CORE: List<String> = listOf(COLOR_THEME, STYLE_THEME, LAYOUT, APP_MENU, TOOLBAR, NAV_MENU, CONTEXT_MENU, DIALOG, POPUP, BUTTON, SLIDER, CONTAINER, UAC_POLICY)
-    public val ANDROID: List<String> = listOf(SCREEN_TEMPLATE, ICON_PACK, STRING_PACK, IMAGE_PACK, FONT_PACK, MOTION_PACK, SETTINGS_SCHEMA, NAV_GRAPH, WIDGET, NOTIFICATION_STYLE, UI_KIT, WINDOW)
+    public val ANDROID: List<String> = listOf(SCREEN_TEMPLATE, STRING_PACK, IMAGE_PACK, FONT_PACK, MOTION_PACK, SETTINGS_SCHEMA, NAV_GRAPH, WIDGET, NOTIFICATION_STYLE, UI_KIT, WINDOW)
 }
 
 /** Spec of one asset type, as read from asset-types*.json. Modules may register more at runtime. */

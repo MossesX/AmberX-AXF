@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T18:08:21.998Z",
+ "updatedAt": "2026-10-27T18:51:49.155Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -549,14 +549,14 @@
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "pending",
+   "status": "waiting",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T18:08:21.998Z",
+   "updatedAt": "2026-10-27T18:51:49.154Z",
    "builtAt": "",
    "notes": [
     {
@@ -578,6 +578,18 @@
     {
      "text": "Oct 27 2026 17:40: PRs #123/#124 (another session, Opus) landed design-package + behavior-theme + 10 design packages + the Appearance picker. Steps s2-s5 and s30 ticked; the parked Fable rebuild (pending design-package-fable) is now group \"Design package (Fable rebuild)\" in phase 1 (s5r1-s5r6). s23 reduced to 14 more packages.",
      "at": "2026-10-27T18:08:21.998Z"
+    },
+    {
+     "text": "s1: DESIGN-LANGUAGE.md written; the live plugin list is still waiting on axHub approval 29f6dae0 (retrying). s5r1-s5r5 done: window placement rules (stack cascade/center/remember, snap grid, minimize cursor/dock/none) wired into the WindowManager + WindowHost; Button busy/confirm props + rt.busy()/withBusy() + data-fx-busy cursor; 36 new checks in check-design-package (575).",
+     "at": "2026-10-27T18:28:33.506Z"
+    },
+    {
+     "text": "s5r6: fixtures regenerated (roll/appearance gained the brand types); the re-bake of amberx-droid, axhub-web, patches-web, walkthrough-studio and the console lock lands once at the end of the Fable phase (s12) so the React layer (s10-s11) is baked in one go.",
+     "at": "2026-10-27T18:39:55.650Z"
+    },
+    {
+     "text": "Plugin scope read live Oct 27 2026 (approval 72afb5a6): no plugins.json on the console, so every installed plugin is on — all 32 are in scope (list in DESIGN-LANGUAGE.md §13).",
+     "at": "2026-10-27T18:51:49.154Z"
     }
    ],
    "approvals": [],
@@ -598,8 +610,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.097Z",
      "note": ""
     },
     {
@@ -677,96 +689,96 @@
      "text": "Read the Opus design-package report (_claude/memory/docs/rebuilds/design-package.md) + code; list keep / change / wire in.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.166Z",
+     "note": ""
     },
     {
      "id": "s5r2",
      "text": "Review design-package engine + runtime apply / capture / migration (core/engines/designpackage.ts); fix gaps; same type names, data format and setting keys unless the report says why.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.238Z",
+     "note": ""
     },
     {
      "id": "s5r3",
      "text": "Review behaviour engine + CSS (core/engines/behavior.ts); refine motion / interaction mappings.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.306Z",
+     "note": ""
     },
     {
      "id": "s5r4",
      "text": "Wire windows.stack / minimize / snap + snapGrid into the window manager.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.375Z",
+     "note": ""
     },
     {
      "id": "s5r5",
      "text": "Wire feedback.busyCursor + confirmDelete into framework controls.",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "25 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.433Z",
+     "note": ""
     },
     {
      "id": "s5r6",
      "text": "Extend check-design-package.mts; regenerate fixtures; re-bake apps. (Picker + Everything else polish, shots and the differences report fold into the Ship phase.)",
      "model": "Fable",
      "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)",
      "estimate": "25 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "phase": "Phase 1 · Contracts & engines",
-     "group": "Design package (Fable rebuild)"
+     "done": true,
+     "doneAt": "2026-10-27T18:39:55.597Z",
+     "note": ""
     },
     {
      "id": "s6",
@@ -780,8 +792,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.047Z",
      "note": ""
     },
     {
@@ -796,8 +808,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.101Z",
      "note": ""
     },
     {
@@ -812,8 +824,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.151Z",
      "note": ""
     },
     {
@@ -828,8 +840,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.205Z",
      "note": ""
     },
     {
@@ -846,8 +858,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:44:28.329Z",
      "note": ""
     },
     {
@@ -864,8 +876,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:46:52.502Z",
      "note": ""
     },
     {
@@ -880,8 +892,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:51:14.262Z",
      "note": ""
     },
     {
