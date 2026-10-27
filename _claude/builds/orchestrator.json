@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T17:17:17.565Z",
+ "updatedAt": "2026-10-27T18:08:21.998Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -556,7 +556,7 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T17:17:17.563Z",
+   "updatedAt": "2026-10-27T18:08:21.998Z",
    "builtAt": "",
    "notes": [
     {
@@ -574,6 +574,10 @@
     {
      "text": "Next Fable session: after s12, carry straight on into interface-roller s1-s5 (same session), then ask for the Opus switch.",
      "at": "2026-10-27T17:17:17.563Z"
+    },
+    {
+     "text": "Oct 27 2026 17:40: PRs #123/#124 (another session, Opus) landed design-package + behavior-theme + 10 design packages + the Appearance picker. Steps s2-s5 and s30 ticked; the parked Fable rebuild (pending design-package-fable) is now group \"Design package (Fable rebuild)\" in phase 1 (s5r1-s5r6). s23 reduced to 14 more packages.",
+     "at": "2026-10-27T18:08:21.998Z"
     }
    ],
    "approvals": [],
@@ -612,9 +616,9 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-27T18:08:21.998Z",
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
     },
     {
      "id": "s3",
@@ -630,9 +634,9 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-27T18:08:21.998Z",
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
     },
     {
      "id": "s4",
@@ -648,9 +652,9 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-27T18:08:21.998Z",
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
     },
     {
      "id": "s5",
@@ -664,9 +668,105 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "done": true,
+     "doneAt": "2026-10-27T18:08:21.998Z",
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
+    },
+    {
+     "id": "s5r1",
+     "text": "Read the Opus design-package report (_claude/memory/docs/rebuilds/design-package.md) + code; list keep / change / wire in.",
+     "model": "Fable",
+     "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)"
+    },
+    {
+     "id": "s5r2",
+     "text": "Review design-package engine + runtime apply / capture / migration (core/engines/designpackage.ts); fix gaps; same type names, data format and setting keys unless the report says why.",
+     "model": "Fable",
+     "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)"
+    },
+    {
+     "id": "s5r3",
+     "text": "Review behaviour engine + CSS (core/engines/behavior.ts); refine motion / interaction mappings.",
+     "model": "Fable",
+     "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)"
+    },
+    {
+     "id": "s5r4",
+     "text": "Wire windows.stack / minimize / snap + snapGrid into the window manager.",
+     "model": "Fable",
+     "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)"
+    },
+    {
+     "id": "s5r5",
+     "text": "Wire feedback.busyCursor + confirmDelete into framework controls.",
+     "model": "Fable",
+     "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)"
+    },
+    {
+     "id": "s5r6",
+     "text": "Extend check-design-package.mts; regenerate fixtures; re-bake apps. (Picker + Everything else polish, shots and the differences report fold into the Ship phase.)",
+     "model": "Fable",
+     "why": "Fable rebuild of the Opus build (rule: Fable suggested, Opus chosen)",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "phase": "Phase 1 · Contracts & engines",
+     "group": "Design package (Fable rebuild)"
     },
     {
      "id": "s6",
@@ -946,7 +1046,7 @@
     },
     {
      "id": "s23",
-     "text": "25 AmberX design packages built from the themes above.",
+     "text": "14 more AmberX design packages (11 exist on main: amberx + 10 from PR #124), built from the themes above, to reach 25.",
      "model": "Opus",
      "why": "asset data",
      "phase": "Phase 2 · Asset library",
@@ -1070,9 +1170,9 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-27T18:08:21.998Z",
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
     },
     {
      "id": "s31",
