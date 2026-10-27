@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T22:23:44.302Z",
+ "updatedAt": "2026-10-27T22:31:01.471Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1632,19 +1632,23 @@
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
    "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "running",
+   "status": "blocked",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "claude/builds-one-page",
    "pr": "",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-10-27T22:23:44.300Z",
+   "updatedAt": "2026-10-27T22:31:01.471Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Oct 27 18:15 Brett: folded in 'date + time on every entry, newest (last updated) first in every grid regardless of filter' as two Opus steps before tests (asked for Refactor profile; folded here since this build owns the one dataset).",
      "at": "2026-10-27T22:23:44.299Z"
+    },
+    {
+     "text": "PAUSED by Brett Oct 27 2026 18:30. Don't start s5 or later until he unpauses (set status back to running).",
+     "at": "2026-10-27T22:31:01.407Z"
     }
    ],
    "approvals": [
