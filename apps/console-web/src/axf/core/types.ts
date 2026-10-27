@@ -42,6 +42,7 @@ export const ASSET_TYPES = [
   'settings',
   'behavior-theme',
   'design-package',
+  'style-package',
   'interface',
   'logo-mark',
   'animated-logo',
@@ -51,7 +52,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -479,6 +480,7 @@ export interface AssetDataMap {
   settings: SettingsData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
+  'style-package': import('./engines/stylepackage').StylePackageData;
   interface: InterfaceData;
   'logo-mark': MarkData;
   'animated-logo': AnimatedLogoData;
@@ -491,7 +493,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

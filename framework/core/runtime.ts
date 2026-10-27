@@ -21,6 +21,7 @@ import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, typ
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
+import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
@@ -907,8 +908,10 @@ export class AxfRuntime {
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
-    if (next === this.state.active[type]) return true;
+    if (next === this.state.active[type] && type !== STYLE_PACKAGE_TYPE) return true;
     this.terminal.ok('hot-swap', `${type}: ${this.state.active[type]} → ${next}`);
+    // a style package is a set of controls: picking one swaps every member it names (engines/stylepackage.ts)
+    if (type === STYLE_PACKAGE_TYPE) { this.swapAll({ [type]: next } as Partial<ActiveAssets>); return true; }
 
     const active = { ...this.state.active, [type]: next };
     const patch: Partial<AxfState> = { active, swaps: this.state.swaps + 1 };
@@ -926,6 +929,16 @@ export class AxfRuntime {
   }
 
   swapAll(targets: Partial<ActiveAssets>) {
+    // a style package among the targets brings its member controls; slots named explicitly win over them
+    const sp = (targets as Record<string, string | undefined>)[STYLE_PACKAGE_TYPE];
+    if (sp) {
+      const pkg = this.registry.get(STYLE_PACKAGE_TYPE as AssetType, sp);
+      if (pkg) {
+        const members = stylePackageSlots(pkg.data as StylePackageData);
+        for (const [t, id] of Object.entries(members)) if (!this.registry.has(t as AssetType, id)) { this.terminal.warn('hot-swap', `style package ${sp}: no ${t} "${id}" in this app, kept the current one`); delete members[t]; }
+        targets = { ...members, ...targets } as Partial<ActiveAssets>;
+      }
+    }
     const active = { ...this.state.active };
     const pushed: Record<string, string> = {};
     for (const [t, id] of Object.entries(targets) as [AssetType, string][]) {
@@ -1902,6 +1915,16 @@ export class AxfRuntime {
       }
       this.applyDesignPackage(id);
     }, { label: 'Apply a design package (id, next, prev or random)', requires: 'assets.swap', params: true });
+    // style.package:<id> · style.package:next|prev|random — a matched set of controls in one go
+    a.register('style.package', ([id]) => {
+      if (!id) return;
+      const ids = this.registry.list(STYLE_PACKAGE_TYPE as AssetType).map((p) => p.id);
+      const pick = id === 'next' || id === 'prev' || id === 'random' ? stepPackage(ids, this.state.active[STYLE_PACKAGE_TYPE as AssetType], id) : id;
+      if (pick && this.swap(STYLE_PACKAGE_TYPE as AssetType, pick)) {
+        const a = this.registry.get(STYLE_PACKAGE_TYPE as AssetType, pick);
+        if (a) this.toast(`${a.name} applied.`, 'success', 'Style package');
+      }
+    }, { label: 'Apply a style package (id, next, prev or random)', requires: 'assets.swap', params: true });
     a.register('appearance.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package (old name)', requires: 'assets.swap', params: true, searchable: false });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).

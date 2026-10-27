@@ -1138,6 +1138,33 @@
       },
       "optional": true
     },
+    "style-package": {
+      "label": "Style package",
+      "group": "Themes",
+      "icon": "package",
+      "description": "A Style Package (style-package@1, engine core/engines/stylepackage.ts) is one matched set of control assets — buttons, containers, sliders, dialogs, pop-ups, tab groups, gauges and meters — applied in one go. The style theme sets the shared tokens; the style package decides how each kind of control is built on them. Picking one swaps every control it names.",
+      "required": [
+        "slots"
+      ],
+      "members": [
+        "button",
+        "container",
+        "slider",
+        "dialog",
+        "popup",
+        "tab-group",
+        "gauge",
+        "meter"
+      ],
+      "optional_fields": {
+        "tone": "one lowercase word describing the package's character (crisp, soft, glass, …) for pickers and the interface roller"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
     "interface": {
       "label": "Interface",
       "group": "System",

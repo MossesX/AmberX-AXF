@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "glass-air",
+  "name": "Glass Air button",
+  "version": "1.0.0",
+  "description": "Glass Air: rounded soft buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "glass",
+    "glass"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "soft",
+    "weight": 500,
+    "uppercase": false,
+    "size": "md",
+    "elevation": true
+  }
+}

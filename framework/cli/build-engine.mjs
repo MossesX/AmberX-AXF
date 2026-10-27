@@ -111,6 +111,22 @@ export function validateAsset(raw) {
       if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
     }
   }
+  // style-package@1 — mirrors stylePackageErrors in core/engines/stylepackage.ts (check-style-packages.mts keeps them equal)
+  if (raw.type === 'style-package') {
+    const ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
+    const MEMBERS = spec.types['style-package']?.members ?? [];
+    const d = raw.data;
+    if (!isObj(d.slots)) errors.push('data.slots must be an object of control type → asset id');
+    else {
+      const entries = Object.entries(d.slots);
+      if (!entries.length) errors.push('data.slots must name at least one control');
+      for (const [t, id] of entries) {
+        if (!MEMBERS.includes(t)) errors.push(`data.slots.${t}: not a style-package member (${MEMBERS.join(', ')})`);
+        else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.slots.${t} must be an asset id`);
+      }
+    }
+    if ('tone' in d && (typeof d.tone !== 'string' || !/^[a-z][a-z-]{1,23}$/.test(d.tone))) errors.push('data.tone must be one lowercase word');
+  }
   // interface@1 — mirrors interfaceErrors in core/engines/interface.ts (check-interface.mts keeps them equal)
   if (raw.type === 'interface') {
     const ID = /^[a-z0-9][a-z0-9-]*$/;
