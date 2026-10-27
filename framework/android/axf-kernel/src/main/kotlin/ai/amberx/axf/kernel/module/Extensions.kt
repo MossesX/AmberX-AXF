@@ -36,7 +36,12 @@ public class ExtensionRegistry {
     public fun <T : Any> first(point: ExtensionPoint<T>): T? = get(point).firstOrNull()
     public fun count(id: String): Int = contributions[id]?.size ?: 0
     public fun onChange(point: ExtensionPoint<*>, fn: () -> Unit): () -> Unit { listeners.getOrPut(point.id) { mutableListOf() } += fn; return { listeners[point.id]?.remove(fn) } }
-    public fun removeAllFrom(module: String) { for (l in contributions.values) l.removeAll { it.module == module } }
+    /** Drops every contribution of [module]; listeners of each point that lost something hear about it (like a withdrawn contribute). */
+    public fun removeAllFrom(module: String) {
+        val changed = ArrayList<String>()
+        for ((id, l) in contributions) if (l.removeAll { it.module == module }) changed += id
+        for (id in changed) listeners[id]?.toList()?.forEach { it() }
+    }
 
     /** Empty / filled report for the console's kernel-status screen. */
     public fun report(): List<Triple<String, Int, String>> = points.values.map { Triple(it.id, count(it.id), it.description) }
@@ -81,7 +86,7 @@ public object ExtensionPoints {
     public val COMMANDS: ExtensionPoint<Any> = ExtensionPoint("axf.commands", Any::class, "Command palette / search entries")
     public val DEVTOOLS_PANELS: ExtensionPoint<Any> = ExtensionPoint("axf.devtools-panels", Any::class, "Inspector panels in the developer console")
     public val MACROS: ExtensionPoint<ai.amberx.axf.kernel.contract.ActionMacro> = ExtensionPoint("axf.macros", ai.amberx.axf.kernel.contract.ActionMacro::class, "Action macros contributed by packs/plugins")
-    public val WORKERS: ExtensionPoint<Any> = ExtensionPoint("axf.workers", Any::class, "Background workers registered with the work scheduler")
+    public val WORKERS: ExtensionPoint<Any> = ExtensionPoint("axf.workers", Any::class, "Background workers: work@1 PollWorker (hosted by lib-work, also when contributed late) or a host-specific worker type")
     public val PLUGIN_SOURCES: ExtensionPoint<Any> = ExtensionPoint("axf.plugin-sources", Any::class, "Where plugins are discovered (files, QR, URL, store)")
     public val UI_KITS: ExtensionPoint<Any> = ExtensionPoint("axf.ui-kits", Any::class, "UI kits: a UiKitSpec plus the port's implementation table (third-party widget libraries)")
     // Interop (protocol-neutral): adapters for MCP / axf-link / axHub / …, and the descriptors that decide what they may expose.

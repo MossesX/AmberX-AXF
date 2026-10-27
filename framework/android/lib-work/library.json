@@ -22,5 +22,6 @@
     { "capability": "axf.work.manager", "note": "The kernel's WorkScheduler contract (axf.work) on WorkManager: constrained periodic work, 15 min minimum, survives process death." },
     { "capability": "axf.work.alarm", "note": "Wall-clock alarms (AlarmManager), exact only when allowed." },
     { "capability": "axf.work.chain", "note": "Jobs that run after each other." }
-  ]
+  ],
+  "version": "0.1.1"
 }
