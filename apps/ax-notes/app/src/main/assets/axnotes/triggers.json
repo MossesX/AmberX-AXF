@@ -1,0 +1,17 @@
+{
+  "$axf": "axnotes-triggers@1",
+  "description": "AX Notes voice triggers. Phrases are plain words with at most one {slot}; {slot?} may be empty. Same set as NoteTriggers.DEFAULTS. Moves to triggers@1 (lib-triggers) when that lands.",
+  "triggers": [
+    { "id": "notes.take", "label": "Take a note", "group": "notes", "phrases": ["take a note", "new note", "start a note"], "description": "Starts dictation; everything you say goes into the note until “end note”." },
+    { "id": "notes.end", "label": "End note", "group": "notes", "phrases": ["end note", "end of note", "stop note", "save note"], "description": "Ends dictation and saves the note." },
+    { "id": "notes.cancel", "label": "Cancel note", "group": "notes", "phrases": ["cancel note", "discard note"], "description": "Throws away the note being dictated." },
+    { "id": "notes.quick", "label": "Quick note", "group": "notes", "phrases": ["note {text}"], "description": "Saves the words after “note” as a note right away." },
+    { "id": "notes.readBack", "label": "Read back", "group": "notes", "phrases": ["read back {target?}"], "description": "Reads notes aloud: “read back last”, “read back today” or a category name." },
+    { "id": "notes.summarize", "label": "Summarize", "group": "notes", "phrases": ["summarize {category?}", "summarise {category?}"], "description": "Summarizes a category (or all notes) aloud." },
+    { "id": "notes.open", "label": "Open notes", "group": "notes", "phrases": ["open notes", "show notes", "open my notes"], "description": "Opens AX Notes on the notes screen." },
+    { "id": "lists.todoAdd", "label": "Add to-do", "group": "lists", "phrases": ["add todo {text}", "add a todo {text}", "new todo {text}"], "description": "Adds an item; end with “to <list>” to pick the list." },
+    { "id": "lists.checkOff", "label": "Check off", "group": "lists", "phrases": ["check off {item}", "tick off {item}", "mark done {item}"], "description": "Ticks the item whose words match best." },
+    { "id": "lists.read", "label": "Read my list", "group": "lists", "phrases": ["read my list {name}", "read list {name}", "read my {name} list"], "description": "Reads a list aloud." },
+    { "id": "lists.new", "label": "New list", "group": "lists", "phrases": ["new todo list {name}", "new list {name}", "create list {name}", "make a list {name}"], "description": "Creates a list (“new todo list …” makes a to-do list)." }
+  ]
+}

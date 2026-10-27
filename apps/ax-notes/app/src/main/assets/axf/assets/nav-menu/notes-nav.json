@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "notes-nav",
+  "name": "AX Notes navigation",
+  "version": "0.1.0",
+  "description": "Notes, Speak (voice capture), Lists, Settings.",
+  "author": "AmberX AXF build engine",
+  "tags": [
+    "boilerplate"
+  ],
+  "data": {
+    "style": "list",
+    "header": "AX Notes",
+    "sections": [
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Notes",
+            "icon": "edit",
+            "view": "home"
+          },
+          {
+            "id": "capture",
+            "label": "Speak",
+            "icon": "mic",
+            "view": "capture"
+          },
+          {
+            "id": "lists",
+            "label": "Lists",
+            "icon": "check-circle",
+            "view": "lists"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ]
+  }
+}
