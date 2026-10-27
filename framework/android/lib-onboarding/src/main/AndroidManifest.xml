@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lib-onboarding declares no permissions: each app declares the ones its OnboardingSpec asks for (RECORD_AUDIO, CAMERA,
+     POST_NOTIFICATIONS, SYSTEM_ALERT_WINDOW, and REQUEST_IGNORE_BATTERY_OPTIMIZATIONS for the direct battery dialog). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" />
