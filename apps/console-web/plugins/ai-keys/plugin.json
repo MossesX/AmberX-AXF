@@ -41,7 +41,7 @@
       "AXF_CLAUDE_OAUTH_CLIENT_ID"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "install_instructions.md"
     ]

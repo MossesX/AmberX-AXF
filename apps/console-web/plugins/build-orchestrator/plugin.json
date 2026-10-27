@@ -30,7 +30,7 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "_claude/THREADS.md",
       "_claude/builds/README.md",
       "_claude/rules/RULES.md",

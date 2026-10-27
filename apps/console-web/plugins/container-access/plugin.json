@@ -19,7 +19,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/container-access",
     "env": ["AXF_DOCKER_PROXY", "AXF_DOCKER_PROXY_IMAGE", "AXF_CONSOLE_CONTAINER", "AXF_CONTAINER_ACCESS_DIR"],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md", "deploy/install-console.sh"]
+    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "apps/console-web/plugins/README.md", "deploy/install-console.sh"]
   },
   "opens": false
 }
