@@ -1,5 +1,6 @@
 import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { InterfaceTabBar, InterfaceTabs } from './interfaceTabs';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
@@ -164,14 +165,18 @@ function Shell() {
     return { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
   }, [banners, plugins.contributed.banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
   if (isBannerStrip) return <SlotsProvider slots={slots}><BannerStrip /></SlotsProvider>;
+  // GizmoX interface tabs (interfaceTabs.tsx): the tab row goes in app.frame.head, the shell under the open tab's interface.
+  const withTabs = { ...slots, 'app.frame.head': [{ id: 'console.interface-tabs', order: -100, render: () => <InterfaceTabBar /> }, ...(slots['app.frame.head'] ?? [])] };
   return (
     <div {...drop} style={{ display: 'contents' }}>
-      <SlotsProvider slots={slots}>
+      <SlotsProvider slots={withTabs}>
+      <InterfaceTabs>
       <AppShell
         views={allViews}
         dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
         tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
       />
+      </InterfaceTabs>
       </SlotsProvider>
     </div>
   );

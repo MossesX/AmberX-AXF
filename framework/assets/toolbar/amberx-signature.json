@@ -4,7 +4,7 @@
   "id": "amberx-signature",
   "name": "AmberX Signature",
   "version": "1.0.0",
-  "description": "The AmberX house toolbar: wordmark, live pages, a live search, the day and night switch and the account, on glass.",
+  "description": "The AmberX house toolbar: live pages, a live search, the day and night switch and the account, on glass; the brand draws its own mark here.",
   "author": "AmberX AXF",
   "tags": [
     "brand",
@@ -39,13 +39,6 @@
         "id": "app",
         "items": [
           {
-            "id": "alerts",
-            "icon": "bell",
-            "label": "Alerts",
-            "action": "alerts.open",
-            "badge": "alerts.unread"
-          },
-          {
             "id": "settings",
             "icon": "settings",
             "label": "Settings",
@@ -55,12 +48,6 @@
       }
     ],
     "widgets": [
-      {
-        "type": "logo",
-        "id": "wordmark",
-        "at": "start",
-        "order": 0
-      },
       {
         "type": "theme-switch",
         "id": "day-night",

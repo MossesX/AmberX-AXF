@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "interface",
+  "id": "amberx-signature",
+  "name": "AmberX Signature",
+  "version": "1.0.0",
+  "description": "The AmberX house interface: gold on cream, geometric type, the studio-dock frame with the AmberX signature toolbar and navigation, gradient signature controls, emphasized motion and a showcase brand (animated banner mark, watermarks, gold accent from the brand).",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "brand",
+    "amberx"
+  ],
+  "data": {
+    "design": "amberx-signature-day",
+    "branding": "amberx-brand-014",
+    "slots": {
+      "style-package": "amber-signature",
+      "toolbar": "amberx-signature",
+      "nav-menu": "amber-signature",
+      "context-menu": "appearance-quick"
+    },
+    "spacing": "regular",
+    "hidden": {
+      "toolbar": false,
+      "nav-menu": false
+    },
+    "tab": {
+      "label": "AmberX Signature",
+      "icon": "sparkles"
+    },
+    "tagline": "Gold, roomy and showy: the AmberX house look"
+  }
+}

@@ -104,6 +104,7 @@
           "kiosk",
           "portal-top",
           "right-handed",
+          "signature-dock",
           "split-review",
           "studio-dock"
         ],
@@ -400,7 +401,9 @@
           "touch"
         ],
         "branding": [
+          "amberx-brand-014",
           "amberx",
+          "gizmox-brand-006",
           "gizmox"
         ]
       }
@@ -471,6 +474,7 @@
           "kiosk",
           "portal-top",
           "right-handed",
+          "signature-dock",
           "split-review",
           "studio-dock"
         ],
@@ -767,7 +771,9 @@
           "touch"
         ],
         "branding": [
+          "amberx-brand-014",
           "amberx",
+          "gizmox-brand-006",
           "gizmox"
         ]
       }
@@ -841,6 +847,7 @@
           "kiosk",
           "portal-top",
           "right-handed",
+          "signature-dock",
           "split-review",
           "studio-dock"
         ],
@@ -1140,7 +1147,9 @@
           "touch"
         ],
         "branding": [
+          "amberx-brand-014",
           "amberx",
+          "gizmox-brand-006",
           "gizmox"
         ]
       }
@@ -1211,6 +1220,7 @@
           "kiosk",
           "portal-top",
           "right-handed",
+          "signature-dock",
           "split-review",
           "studio-dock"
         ],
@@ -1507,7 +1517,9 @@
           "touch"
         ],
         "branding": [
+          "amberx-brand-014",
           "amberx",
+          "gizmox-brand-006",
           "gizmox"
         ]
       }
@@ -1580,6 +1592,7 @@
           "kiosk",
           "portal-top",
           "right-handed",
+          "signature-dock",
           "split-review",
           "studio-dock"
         ],
@@ -1846,7 +1859,9 @@
           "touch"
         ],
         "branding": [
+          "amberx-brand-014",
           "amberx",
+          "gizmox-brand-006",
           "gizmox"
         ]
       }
@@ -1917,6 +1932,7 @@
           "kiosk",
           "portal-top",
           "right-handed",
+          "signature-dock",
           "split-review",
           "studio-dock"
         ],
@@ -2213,7 +2229,9 @@
           "touch"
         ],
         "branding": [
+          "amberx-brand-014",
           "amberx",
+          "gizmox-brand-006",
           "gizmox"
         ]
       }
