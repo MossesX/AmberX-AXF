@@ -39,6 +39,7 @@ include(":lib-mcp")
 include(":lib-hub")
 include(":lib-notifications")
 include(":lib-work")
+include(":lib-overlay")
 // Tooling
 include(":axf-devtools")
 include(":axf-testing")
