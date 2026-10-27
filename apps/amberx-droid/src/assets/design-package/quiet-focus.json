@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "quiet-focus",
+  "name": "Quiet Focus",
+  "version": "1.0.0",
+  "description": "Fresh style on Fresh Light, focus layout, minimal motion. Nothing moves that doesn't have to. Keeps this app's own layout. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "accessible"
+  ],
+  "data": {
+    "style-theme": "fresh",
+    "color-theme": "fresh-light",
+    "layout": "axhub-console",
+    "behavior-theme": "minimal-motion"
+  }
+}

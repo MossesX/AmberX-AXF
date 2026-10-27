@@ -1095,18 +1095,38 @@
       },
       "optional": true
     },
-    "appearance-package": {
-      "label": "Appearance package",
-      "group": "System",
-      "icon": "palette",
-      "description": "Every appearance setting saved as one asset (appearance-package@1, engine core/engines/appearancepackage.ts): the active asset of every appearance slot (never the access policy), the Spacing choice, chrome shown / hidden, and every other appearance setting by key (customize tokens, roll switches, banner looks and hides, toolbar fold, where plugin UIs open). Picking one applies all of it at once; Restore default appearance goes back to the app's defaults.",
+    "behavior-theme": {
+      "label": "Behaviour theme",
+      "group": "Themes",
+      "icon": "sparkles",
+      "description": "How the app behaves (behavior-theme@1, engine core/engines/behavior.ts): motion (speed, easing, reduced motion, how pages come in), interaction (hover, press, focus ring, long-press and double-tap times, drag start, cursor), windows (how dialogs, pop-ups, drawers and floating windows open, close, snap, stack and minimize) and feedback (toasts, sound, vibration, confirm before delete, busy cursor). Every field has a default, so a theme may set only what it changes. One of the four themes an AmberX Design Package wraps.",
       "required": [
-        "slots"
+        "motion",
+        "interaction",
+        "windows",
+        "feedback"
       ],
       "optional_fields": {
-        "spacing": "tight | compact | regular",
-        "hidden": "asset type → true (hidden) / false (shown)",
-        "settings": "appearance settings key → value (keys under axf.custom., axf.roll., axf.banners., axf.toolbar.collapsed, axf.placement., axf.appearance.)"
+        "motion": "{ speed: theme | instant | fast | normal | slow | relaxed, easing: standard | emphasized | linear | spring | bounce, reduced: system | always | never, entrance: theme | none | fade | rise | scale }",
+        "interaction": "{ hover: theme | none | tint | lift | glow | underline, press: theme | none | shrink | darken | ripple, focusRing: auto | always | never, cursor: auto | pointer, longPressMs 250–1500, doubleTapMs 150–700, dragThreshold 0–24 }",
+        "windows": "{ dialogOpen: asset | none | fade | scale | slide-up | slide-down, backdrop: asset | dim | blur | none, popupOpen: asset | none | fade | scale | slide, drawerOpen: asset | slide | fade | none, snap, snapGrid 0–48, stack: cascade | center | remember, minimize: cursor | dock | none, closeOnBackdrop, closeOnEscape }",
+        "feedback": "{ toastPosition: asset | top | bottom | top-right | bottom-right | top-left | bottom-left, toastMs 0–20000 (0 = the pop-up asset's time), sound: off | subtle | full, vibration: off | light | strong, confirmDelete: always | risky | never, busyCursor }"
+      },
+      "optional": true
+    },
+    "design-package": {
+      "label": "AmberX Design Package",
+      "group": "System",
+      "icon": "palette",
+      "description": "An AmberX Design Package (design-package@1, engine core/engines/designpackage.ts) wraps the four themes of a whole look and feel: a style theme, a colour theme, a layout and a behaviour theme. Picking one in Settings → Appearance swaps all four at once. Optional extras carry everything else a saved look holds (the other slots, spacing, chrome shown / hidden, other appearance settings); it replaced the appearance package on Oct 27 2026.",
+      "required": [
+        "style-theme",
+        "color-theme",
+        "layout",
+        "behavior-theme"
+      ],
+      "optional_fields": {
+        "extras": "{ slots: asset type → asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
       },
       "roll": {
         "slot": false,

@@ -93,7 +93,7 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (runtime.getState().context) return runtime.closeContext();
-        if (runtime.getState().dialog) return runtime.closeDialog();
+        if (runtime.getState().dialog && runtime.behavior().windows.closeOnEscape) return runtime.closeDialog(); // behaviour theme
       }
       const typing = (e.target as HTMLElement)?.closest?.('input, textarea, select, [contenteditable]');
       if (typing && !e.ctrlKey && !e.metaKey && !e.altKey) return;

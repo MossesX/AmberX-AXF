@@ -2,6 +2,7 @@
   "color-theme": "fresh-light",
   "style-theme": "fresh",
   "layout": "classic-ide",
+  "behavior-theme": "standard",
   "app-menu": "standard-desktop",
   "toolbar": "standard-icons",
   "nav-menu": "sidebar-list",

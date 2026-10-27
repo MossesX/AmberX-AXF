@@ -31,7 +31,8 @@
     "divider",
     "badge",
     "settings",
-    "appearance-package"
+    "behavior-theme",
+    "design-package"
   ],
   "parsed": {
     "full": {

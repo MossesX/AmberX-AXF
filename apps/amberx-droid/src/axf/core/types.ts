@@ -38,12 +38,13 @@ export const ASSET_TYPES = [
   'divider',
   'badge',
   'settings',
-  'appearance-package',
+  'behavior-theme',
+  'design-package',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'appearance-package'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -370,10 +371,18 @@ export interface ContainerData {
 /* ---------- system ---------- */
 
 /** Settings interface asset: the settings page as data, shared by every app that loads it (engines/settingsui.ts). */
-/** appearance-package@1 (engines/appearancepackage.ts): every appearance setting saved as one asset. */
-export interface AppearancePackageData {
-  /** asset type → asset id for every appearance slot (themes, layout, chrome, controls); never the access policy */
-  slots: Record<string, string>;
+/** behavior-theme@1 (engines/behavior.ts): how an app behaves. Every field has a default, so any subset is valid. */
+export interface BehaviorThemeData {
+  motion: { speed: string; easing: string; reduced: string; entrance: string };
+  interaction: { hover: string; press: string; focusRing: string; cursor: string; longPressMs: number; doubleTapMs: number; dragThreshold: number };
+  windows: { dialogOpen: string; backdrop: string; popupOpen: string; drawerOpen: string; snap: boolean; snapGrid: number; stack: string; minimize: string; closeOnBackdrop: boolean; closeOnEscape: boolean };
+  feedback: { toastPosition: string; toastMs: number; sound: string; vibration: string; confirmDelete: string; busyCursor: boolean };
+}
+
+/** What a design package carries beyond its four themes (everything the retired appearance package held). */
+export interface DesignPackageExtras {
+  /** asset type → asset id for every other appearance slot (chrome, controls, widgets); never the policy */
+  slots?: Record<string, string>;
   /** spacing choice (tight | compact | regular) */
   spacing?: string;
   /** chrome slots hidden (true) or shown (false); absent = the app's default */
@@ -381,6 +390,17 @@ export interface AppearancePackageData {
   /** every other appearance setting by key (customize tokens, roll switches, banner looks, toolbar fold …) */
   settings?: Record<string, unknown>;
 }
+
+/** design-package@1 (engines/designpackage.ts): an AmberX Design Package = style + colour + layout + behaviour. */
+export interface DesignPackageData {
+  'style-theme': string;
+  'color-theme': string;
+  layout: string;
+  'behavior-theme': string;
+  extras?: DesignPackageExtras;
+}
+/** @deprecated the appearance package was replaced by the design package (Oct 27 2026); kept for old callers. */
+export type AppearancePackageData = DesignPackageExtras & { slots: Record<string, string> };
 
 export type SettingsData = Pick<SettingsUi, 'layout' | 'header' | 'search' | 'descriptions'> & Partial<Pick<SettingsUi, 'tabs' | 'hide' | 'groups'>>;
 
@@ -436,7 +456,8 @@ export interface AssetDataMap {
   divider: DividerData;
   badge: BadgeData;
   settings: SettingsData;
-  'appearance-package': AppearancePackageData;
+  'behavior-theme': BehaviorThemeData;
+  'design-package': DesignPackageData;
   'uac-policy': UACPolicyData;
 }
 
@@ -444,7 +465,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'appearance-package';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

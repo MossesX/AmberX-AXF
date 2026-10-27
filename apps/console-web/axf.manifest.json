@@ -18,6 +18,7 @@
     "color-theme": "fresh-light",
     "style-theme": "fresh",
     "layout": "focus-top",
+    "behavior-theme": "standard",
     "app-menu": "console",
     "toolbar": "standard-icons",
     "nav-menu": "console-nav",

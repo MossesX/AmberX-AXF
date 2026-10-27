@@ -34,12 +34,15 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), deploying | 2026-10-27 |
+| AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), deploying; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker (categories, phases, groups, steps; grid) | review | `claude/build-orchestrator` | #122 | Merge; then every build runs from `_claude/builds/orchestrator.json` | 2026-10-27 |
 | Enterprise design + branding engine (AmberX app + GizmoX console refactor, 700+ brand assets; includes Design Package) | queued | – | – | Orchestrator build `enterprise-branding` (40 steps, ~20 h): Fable s1-s12 → (approve switch) → Opus s13-s40. Decided: console renamed GizmoX (visible only), assets for both brands, scope (Brett 13:05) = console + AmberX app + plugins installed and switched on in Plugin switches + banner plugins. Next: run phase 1 on Fable. See *To carry on* | 2026-10-27 |
 | Architecture foundation (attachment: contracts, Pydantic migrator, plugin boundary, lifecycle broker, docs) | queued | – | – | Orchestrator build `arch-foundation`: Fable s1-s7 → Opus s8-s12 | 2026-10-27 |
 | Three interfaces in GizmoX tabs + interface roller for every app | queued | – | – | Orchestrator build `interface-roller` (15 steps, ~7.4 h): Fable s1-s5 right after enterprise-branding phase 1, then Opus s6-s15 | 2026-10-27 |
 | Pending builds grid view (attachment) | queued | – | – | Orchestrator build `pending-grid-view`: Opus only, 6 steps | 2026-10-27 |
+| AmberX Design Package (Fable rebuild of the Opus build) | queued | – | – | Fable, pending `design-package-fable`; starts by replacing the Opus build (PR on `rebuild/design-package-opus`). See *To carry on* | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
 | Fix git merge conflicts | blocked | – | – | Needs Brett's answer in the thread | 2026-10-25 |
@@ -102,6 +105,18 @@ VPS). The session reads the rules and this file first, as usual.
   each re-baked app's typecheck + build, `node framework/cli/check-theme.mjs`, `check-controls.mjs`.
 - **First message:** "Start the thread *AmberX Design Package + Behaviour theme* from `_claude/THREADS.md` → To carry
   on (pending item `design-package`). Run on Fable."
+### AmberX Design Package (Fable rebuild)
+- **Built on Opus (Oct 27 2026, Brett: "Do in opus"):** branch `rebuild/design-package-opus`. New types `design-package`
+  (style + colour theme + layout + behaviour theme, optional `extras` = what the appearance package held) and
+  `behavior-theme` (motion, interaction, windows, feedback); `appearance-package` retired and migrated. Settings →
+  Appearance: AmberX Design Package picker on top, everything else in one collapsible *Everything else* container.
+  Report `_claude/memory/docs/rebuilds/design-package.md`.
+- **Fable rebuild:** pending item `design-package-fable` (steps in the pending list). Starts by reading the report and
+  replacing the Opus build in place (same type names, data format and setting keys unless it says why).
+- **Checks:** `npx -y tsx framework/spec/check-design-package.mts`, `gen-fixtures.mts`, `axf.mjs validate --framework`,
+  re-baked apps' typecheck + build, `check-theme.mjs`, `check-controls.mjs`.
+- **First message:** "Start the thread *AmberX Design Package (Fable rebuild)* from `_claude/THREADS.md` → To carry on
+  (pending item `design-package-fable`). Run on Fable."
 
 ### Connections plugin (every connected app, 7 layouts)
 - **Asked (Brett, Oct 26 2026, in the "Repo thread status review" chat; cut off, never started):** "Add tmux, ntfy,

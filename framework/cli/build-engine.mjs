@@ -94,21 +94,81 @@ export function validateAsset(raw) {
   if (raw.type === 'context-menu' && isObj(raw.data.targets)) {
     for (const [t, items] of Object.entries(raw.data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
-  // appearance-package@1 — mirrors packageErrors in core/engines/appearancepackage.ts (slot rules; the settings-key rules live there)
-  if (raw.type === 'appearance-package') {
-    if (!isObj(raw.data.slots)) errors.push('data.slots must be an object (asset type → asset id)');
-    else for (const [t, id] of Object.entries(raw.data.slots)) {
-      if (t === 'uac-policy' || t === 'appearance-package') errors.push(`data.slots.${t}: a package never sets ${t}`);
-      else if (typeof id !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(id)) errors.push(`data.slots.${t} must be an asset id`);
+  // design-package@1 — mirrors designPackageErrors in core/engines/designpackage.ts (theme ids + extras slot rules)
+  if (raw.type === 'design-package') {
+    const ID = /^[a-z0-9][a-z0-9-]*$/;
+    for (const t of DESIGN_THEMES) if (typeof raw.data[t] !== 'string' || !ID.test(raw.data[t])) errors.push(`data.${t} must be a ${t} asset id`);
+    const x = raw.data.extras;
+    if ('extras' in raw.data && !isObj(x)) errors.push('data.extras must be an object');
+    if (isObj(x)) {
+      if ('slots' in x && !isObj(x.slots)) errors.push('data.extras.slots must be an object (asset type → asset id)');
+      if (isObj(x.slots)) for (const [t, id] of Object.entries(x.slots)) {
+        if (DESIGN_THEMES.includes(t)) errors.push(`data.extras.slots.${t}: ${t} is one of the package's own themes`);
+        else if (['uac-policy', 'design-package', 'appearance-package'].includes(t)) errors.push(`data.extras.slots.${t}: a package never sets ${t}`);
+        else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.extras.slots.${t} must be an asset id`);
+      }
+      if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
     }
-    if ('spacing' in raw.data && !['tight', 'compact', 'regular'].includes(raw.data.spacing)) errors.push('data.spacing must be tight, compact or regular');
   }
+  // behavior-theme@1 — mirrors behaviorErrors in core/engines/behavior.ts (check-design-package.mts keeps the lists equal)
+  if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   const host = hostSpec(raw.type);
   if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
     errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/* behavior-theme@1 + design-package@1 — mirrors core/engines/behavior.ts and designpackage.ts (kept equal by check-design-package.mts). */
+export const DESIGN_THEMES = ['style-theme', 'color-theme', 'layout', 'behavior-theme'];
+export const BEHAVIOR_ENUMS = {
+  'motion.speed': ['theme', 'instant', 'fast', 'normal', 'slow', 'relaxed'],
+  'motion.easing': ['standard', 'emphasized', 'linear', 'spring', 'bounce'],
+  'motion.reduced': ['system', 'always', 'never'],
+  'motion.entrance': ['theme', 'none', 'fade', 'rise', 'scale'],
+  'interaction.hover': ['theme', 'none', 'tint', 'lift', 'glow', 'underline'],
+  'interaction.press': ['theme', 'none', 'shrink', 'darken', 'ripple'],
+  'interaction.focusRing': ['auto', 'always', 'never'],
+  'interaction.cursor': ['auto', 'pointer'],
+  'windows.dialogOpen': ['asset', 'none', 'fade', 'scale', 'slide-up', 'slide-down'],
+  'windows.backdrop': ['asset', 'dim', 'blur', 'none'],
+  'windows.popupOpen': ['asset', 'none', 'fade', 'scale', 'slide'],
+  'windows.drawerOpen': ['asset', 'slide', 'fade', 'none'],
+  'windows.stack': ['cascade', 'center', 'remember'],
+  'windows.minimize': ['cursor', 'dock', 'none'],
+  'feedback.toastPosition': ['asset', 'top', 'bottom', 'top-right', 'bottom-right', 'top-left', 'bottom-left'],
+  'feedback.sound': ['off', 'subtle', 'full'],
+  'feedback.vibration': ['off', 'light', 'strong'],
+  'feedback.confirmDelete': ['always', 'risky', 'never'],
+};
+export const BEHAVIOR_RANGES = {
+  'interaction.longPressMs': [250, 1500],
+  'interaction.doubleTapMs': [150, 700],
+  'interaction.dragThreshold': [0, 24],
+  'windows.snapGrid': [0, 48],
+  'feedback.toastMs': [0, 20000],
+};
+export const BEHAVIOR_SWITCHES = ['windows.snap', 'windows.closeOnBackdrop', 'windows.closeOnEscape', 'feedback.busyCursor'];
+function behaviorErrors(data) {
+  if (!isObj(data)) return ['data must be an object'];
+  const errors = [];
+  const grp = (g) => (isObj(data[g]) ? data[g] : {});
+  for (const g of ['motion', 'interaction', 'windows', 'feedback']) if (g in data && !isObj(data[g])) errors.push(`data.${g} must be an object`);
+  for (const [path, allowed] of Object.entries(BEHAVIOR_ENUMS)) {
+    const [g, f] = path.split('.');
+    if (f in grp(g) && !allowed.includes(grp(g)[f])) errors.push(`data.${path} must be one of ${allowed.join(', ')}`);
+  }
+  for (const [path, [min, max]] of Object.entries(BEHAVIOR_RANGES)) {
+    const [g, f] = path.split('.');
+    const v = grp(g)[f];
+    if (f in grp(g) && (typeof v !== 'number' || !Number.isFinite(v) || v < min || v > max)) errors.push(`data.${path} must be a number from ${min} to ${max}`);
+  }
+  for (const path of BEHAVIOR_SWITCHES) {
+    const [g, f] = path.split('.');
+    if (f in grp(g) && typeof grp(g)[f] !== 'boolean') errors.push(`data.${path} must be true or false`);
+  }
+  return errors;
 }
 
 /* Menu items — mirrors validateMenuItems / parseChecked in core/engines/appmenu.ts (asset-types.json → menuItems). */

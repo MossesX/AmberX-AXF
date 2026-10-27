@@ -995,3 +995,63 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-look__hint { grid-column: 1 / -1; margin: 0; font-size: calc(var(--fx-font-size) * 12 / 14); }
 .fx-look__levels { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) var(--fx-space); }
 .fx-look__levelhint { font-size: calc(var(--fx-font-size) * 12 / 14); }
+
+
+/* ---------------- behaviour theme (behavior-theme@1, engines/behavior.ts) ----------------
+ * Root attributes from the active behaviour theme. "theme" / "asset" values set nothing here, so the style theme and
+ * the dialog / pop-up assets keep doing what they did; every other value overrides them. Tokens only.
+ */
+:root { --fx-ease: cubic-bezier(0.2, 0, 0, 1); }
+.fx-btn, .fx-iconbtn, .fx-chip, .fx-seg__opt, .fx-menu__item, .fx-tab { transition-timing-function: var(--fx-ease); }
+
+/* motion: reduced = nothing animates or glides */
+[data-fx-motion='reduced'] *, [data-fx-motion='reduced'] *::before, [data-fx-motion='reduced'] *::after {
+  animation-duration: 0s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
+  transition-duration: 0s !important; transition-delay: 0s !important; scroll-behavior: auto !important;
+}
+/* how pages come in (the main view) */
+[data-fx-entrance='none'] .fx-main > * { animation: none; }
+[data-fx-entrance='fade'] .fx-main > * { animation: fx-fade calc(var(--fx-motion) * 1.6) var(--fx-ease) both; }
+[data-fx-entrance='rise'] .fx-main > * { animation: fx-in calc(var(--fx-motion) * 1.8) var(--fx-ease) both; }
+[data-fx-entrance='scale'] .fx-main > * { animation: fx-scale calc(var(--fx-motion) * 1.6) var(--fx-ease) both; }
+
+/* hover */
+[data-fx-hover='none'] .fx-btn:hover:not(:disabled) { filter: none; }
+[data-fx-hover='none'] .fx-iconbtn:hover { background: transparent; }
+[data-fx-hover='tint'] .fx-btn:hover:not(:disabled) { filter: none; box-shadow: inset 0 0 0 100vmax color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-hover) * 100%), transparent); }
+[data-fx-hover='lift'] .fx-btn:hover:not(:disabled) { filter: none; transform: translateY(calc(var(--fx-border-w) * -2)); box-shadow: var(--fx-shadow-md); }
+[data-fx-hover='glow'] .fx-btn:hover:not(:disabled), [data-fx-hover='glow'] .fx-iconbtn:hover { filter: none; box-shadow: 0 0 0 calc(var(--fx-border-w) * 3) color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 300%), transparent); }
+[data-fx-hover='underline'] .fx-btn:hover:not(:disabled) { filter: none; text-decoration: underline; text-underline-offset: 3px; }
+
+/* press */
+[data-fx-press='none'] .fx-btn:active:not(:disabled) { transform: none; }
+[data-fx-press='shrink'] .fx-btn:active:not(:disabled), [data-fx-press='shrink'] .fx-iconbtn:active { transform: scale(0.96); }
+[data-fx-press='darken'] .fx-btn:active:not(:disabled), [data-fx-press='darken'] .fx-iconbtn:active { transform: none; filter: brightness(0.9); }
+[data-fx-press='ripple'] .fx-btn:active:not(:disabled), [data-fx-press='ripple'] .fx-iconbtn:active { transform: none; box-shadow: inset 0 0 0 100vmax color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 200%), transparent), 0 0 0 calc(var(--fx-border-w) * 4) color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+
+/* focus ring and cursor */
+[data-fx-focus='always'] :focus { outline: 2px solid var(--fx-focus); outline-offset: 2px; }
+[data-fx-focus='never'] :focus-visible { outline: none; }
+[data-fx-cursor='auto'] .fx-btn, [data-fx-cursor='auto'] .fx-iconbtn, [data-fx-cursor='auto'] .fx-chip, [data-fx-cursor='auto'] .fx-menu__item { cursor: default; }
+
+/* dialogs (overrides the dialog asset's animation when the behaviour theme picks one) */
+[data-fx-dialog-anim='none'] .fx-dialog, [data-fx-dialog-anim='none'] .fx-backdrop { animation: none; }
+[data-fx-dialog-anim='slide-down'] .fx-dialog { animation: fx-slide-down calc(var(--fx-motion) * 1.6) var(--fx-ease) both; }
+[data-fx-dialog-anim] .fx-dialog { animation-timing-function: var(--fx-ease); }
+@keyframes fx-slide-down { from { transform: translateY(-40px); opacity: 0; } }
+
+/* drawers */
+[data-fx-drawer-open='none'][data-fx-dialog='drawer'] .fx-dialog { animation: none; }
+[data-fx-drawer-open='fade'][data-fx-dialog='drawer'] .fx-dialog { animation: fx-fade calc(var(--fx-motion) * 1.6) var(--fx-ease) both; }
+[data-fx-drawer-open='slide'][data-fx-dialog='drawer'] .fx-dialog { animation: fx-slide-left calc(var(--fx-motion) * 1.8) var(--fx-ease) both; }
+
+/* pop-ups: context menus, drop-downs, popovers, toasts */
+[data-fx-popup-open='none'] .fx-ctx, [data-fx-popup-open='none'] .fx-popover, [data-fx-popup-open='none'] .fx-toast { animation: none; }
+[data-fx-popup-open='fade'] .fx-ctx, [data-fx-popup-open='fade'] .fx-popover, [data-fx-popup-open='fade'] .fx-toast { animation: fx-fade var(--fx-motion) var(--fx-ease) both; }
+[data-fx-popup-open='scale'] .fx-ctx, [data-fx-popup-open='scale'] .fx-popover, [data-fx-popup-open='scale'] .fx-toast { animation: fx-pop var(--fx-motion) var(--fx-ease) both; }
+[data-fx-popup-open='slide'] .fx-ctx, [data-fx-popup-open='slide'] .fx-popover, [data-fx-popup-open='slide'] .fx-toast { animation: fx-in calc(var(--fx-motion) * 1.4) var(--fx-ease) both; }
+
+/* toast corners the pop-up asset doesn't have */
+[data-fx-toast-pos='top-left'] .fx-toasts { top: 16px; left: 16px; }
+[data-fx-toast-pos='bottom-left'] .fx-toasts { bottom: 16px; left: 16px; flex-direction: column-reverse; }
+@media (max-width: 760px) { [data-fx-toast-pos='top-left'] .fx-toasts, [data-fx-toast-pos='bottom-left'] .fx-toasts { bottom: auto; top: 12px; left: 50%; transform: translateX(-50%); flex-direction: column; } }
