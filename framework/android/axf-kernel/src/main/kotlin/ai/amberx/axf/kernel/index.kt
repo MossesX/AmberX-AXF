@@ -19,6 +19,9 @@
  *   manifest/  AxfManifest
  *   mcp/       McpEngine — MCP client protocol core (JSON-RPC framing, SSE, Streamable HTTP rules, pagination, wire errors, call gate)   (core/engines/mcp.ts)
  *   project/   ProjectManifests, ProjectRules, ProjectValidator — project.manifest.json (project-manifest@1)   (core/project.ts)
+ *   triggers/  Trigger, TriggerKinds, TriggerRegistry, TriggerMatcher, Patterns, SpokenNumbers, TriggerHosting — triggers@1   (core/triggers.ts)
+ *   ai/        AiMode, AiModes, AiModeRegistry, AiSessionClient — ai-modes@1 (lib-ai contract)   (core/ai-modes.ts)
+ *   speech/    SpeechProvider, SpeechQueue — speech@1 (the speaking side)   (core/speech.ts)
  *   AxfKernel  builder + lifecycle + status
  */
 package ai.amberx.axf.kernel

@@ -1,0 +1,4717 @@
+{
+  "contract": "triggers@1",
+  "capability": "axf.triggers",
+  "placeholders": {
+    "gesture": "axf.triggers.gesture",
+    "face": "axf.triggers.face"
+  },
+  "kinds": [
+    {
+      "id": "voice",
+      "label": "Voice",
+      "status": "built",
+      "capability": "axf.voice",
+      "spoken": true,
+      "note": "Spoken phrases with argument slots (lib-voice on Android)"
+    },
+    {
+      "id": "gesture",
+      "label": "Hand gesture",
+      "status": "placeholder",
+      "capability": "axf.triggers.gesture",
+      "spoken": false,
+      "note": "Static poses and motions seen by a camera detector; also the arming poses"
+    },
+    {
+      "id": "face",
+      "label": "Face gesture",
+      "status": "placeholder",
+      "capability": "axf.triggers.face",
+      "spoken": false,
+      "note": "Head poses and blendshape rules (nod, shake, double blink…)"
+    }
+  ],
+  "sources": [
+    "permanent",
+    "custom"
+  ],
+  "armings": [
+    "required",
+    "always"
+  ],
+  "outcomes": [
+    "fired",
+    "no-match",
+    "disabled",
+    "muted",
+    "kind-off",
+    "below-threshold",
+    "wrong-context",
+    "not-armed",
+    "cooldown"
+  ],
+  "slotTypes": [
+    "text",
+    "number",
+    "time"
+  ],
+  "threshold": {
+    "min": 0.01,
+    "max": 99.99,
+    "default": 80,
+    "cooldownMs": 600,
+    "anyContext": "*",
+    "voiceCommand": 80,
+    "clamp": [
+      {
+        "n": 0,
+        "clamped": 0.01
+      },
+      {
+        "n": 0.001,
+        "clamped": 0.01
+      },
+      {
+        "n": 0.005,
+        "clamped": 0.01
+      },
+      {
+        "n": 0.01,
+        "clamped": 0.01
+      },
+      {
+        "n": 50,
+        "clamped": 50
+      },
+      {
+        "n": 99.99,
+        "clamped": 99.99
+      },
+      {
+        "n": 99.995,
+        "clamped": 99.99
+      },
+      {
+        "n": 100,
+        "clamped": 99.99
+      },
+      {
+        "n": 150,
+        "clamped": 99.99
+      },
+      {
+        "n": -1,
+        "clamped": 0.01
+      },
+      {
+        "n": "NaN",
+        "clamped": 80
+      },
+      {
+        "n": 33.333,
+        "clamped": 33.33
+      }
+    ]
+  },
+  "ids": [
+    {
+      "id": "notes.add",
+      "ok": true
+    },
+    {
+      "id": "ai.amberx.axf.notes",
+      "ok": true
+    },
+    {
+      "id": "a.b-c.d9",
+      "ok": true
+    },
+    {
+      "id": "Notes.add",
+      "ok": false
+    },
+    {
+      "id": "notes",
+      "ok": false
+    },
+    {
+      "id": "notes..add",
+      "ok": false
+    },
+    {
+      "id": ".x",
+      "ok": false
+    },
+    {
+      "id": "1a.b",
+      "ok": false
+    },
+    {
+      "id": "a.-b",
+      "ok": false
+    }
+  ],
+  "triggers": [
+    {
+      "id": "notes.add",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "notes.add",
+      "phrases": [
+        "note <text>",
+        "take a note <text>"
+      ],
+      "action": "notes.add",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "todo.add",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "todo.add",
+      "phrases": [
+        "add to do <text>",
+        "add todo <text>"
+      ],
+      "action": "todo.add",
+      "threshold": 80,
+      "worksIn": [
+        "todo",
+        "notes.list"
+      ],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "todo.check",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "todo.check",
+      "phrases": [
+        "check off <text>",
+        "tick <text>"
+      ],
+      "action": "todo.check",
+      "threshold": 80,
+      "worksIn": [
+        "todo"
+      ],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "notes.read",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "notes.read",
+      "phrases": [
+        "read my list <name>",
+        "read list <name>"
+      ],
+      "action": "notes.read",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0,
+      "args": {
+        "voice": true
+      }
+    },
+    {
+      "id": "player.jump",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "player.jump",
+      "phrases": [
+        "jump to <time:time>"
+      ],
+      "action": "player.jump",
+      "threshold": 60,
+      "worksIn": [
+        "player"
+      ],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "notes.sort",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "notes.sort",
+      "phrases": [
+        "sort by <field>"
+      ],
+      "action": "notes.sort",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "always",
+      "enabled": false,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "app.next",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "app.next",
+      "phrases": [
+        "next",
+        "next one"
+      ],
+      "action": "app.next",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 2000,
+      "mutedUntil": 0
+    },
+    {
+      "id": "app.next-page",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "app.next-page",
+      "phrases": [
+        "next page"
+      ],
+      "action": "app.page",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0,
+      "args": {
+        "dir": 1
+      }
+    },
+    {
+      "id": "app.quiet",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "app.quiet",
+      "phrases": [
+        "be quiet"
+      ],
+      "action": "speech.stop",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 5000
+    },
+    {
+      "id": "notes.add-long",
+      "kind": "voice",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "notes.add-long",
+      "phrases": [
+        "note <text>",
+        "make a note <text>"
+      ],
+      "action": "notes.add-long",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "cam.like",
+      "kind": "gesture",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "cam.like",
+      "phrases": [
+        "thumbs_up"
+      ],
+      "action": "media.like",
+      "threshold": 75,
+      "worksIn": [],
+      "arming": "required",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "cam.next",
+      "kind": "gesture",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "cam.next",
+      "phrases": [
+        "index_swipe_right"
+      ],
+      "action": "app.next",
+      "threshold": 75,
+      "worksIn": [
+        "*"
+      ],
+      "arming": "always",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    },
+    {
+      "id": "face.nod",
+      "kind": "face",
+      "source": "permanent",
+      "module": "ai.amberx.axf.notes",
+      "label": "face.nod",
+      "phrases": [
+        "nod_down"
+      ],
+      "action": "app.confirm",
+      "threshold": 80,
+      "worksIn": [],
+      "arming": "required",
+      "enabled": true,
+      "cooldownMs": 600,
+      "mutedUntil": 0
+    }
+  ],
+  "validate": [
+    {
+      "name": "valid-0",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "notes.add",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "notes.add",
+          "phrases": [
+            "note <text>",
+            "take a note <text>"
+          ],
+          "action": "notes.add",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-1",
+      "raw": {
+        "id": "todo.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "todo.add",
+        "phrases": [
+          "add to do <text>",
+          "add todo <text>"
+        ],
+        "action": "todo.add",
+        "threshold": 80,
+        "worksIn": [
+          "todo",
+          "notes.list"
+        ],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "todo.add",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "todo.add",
+          "phrases": [
+            "add to do <text>",
+            "add todo <text>"
+          ],
+          "action": "todo.add",
+          "threshold": 80,
+          "worksIn": [
+            "todo",
+            "notes.list"
+          ],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-2",
+      "raw": {
+        "id": "todo.check",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "todo.check",
+        "phrases": [
+          "check off <text>",
+          "tick <text>"
+        ],
+        "action": "todo.check",
+        "threshold": 80,
+        "worksIn": [
+          "todo"
+        ],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "todo.check",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "todo.check",
+          "phrases": [
+            "check off <text>",
+            "tick <text>"
+          ],
+          "action": "todo.check",
+          "threshold": 80,
+          "worksIn": [
+            "todo"
+          ],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-3",
+      "raw": {
+        "id": "notes.read",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.read",
+        "phrases": [
+          "read my list <name>",
+          "read list <name>"
+        ],
+        "action": "notes.read",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0,
+        "args": {
+          "voice": true
+        }
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "notes.read",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "notes.read",
+          "phrases": [
+            "read my list <name>",
+            "read list <name>"
+          ],
+          "action": "notes.read",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0,
+          "args": {
+            "voice": true
+          }
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-4",
+      "raw": {
+        "id": "player.jump",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "player.jump",
+        "phrases": [
+          "jump to <time:time>"
+        ],
+        "action": "player.jump",
+        "threshold": 60,
+        "worksIn": [
+          "player"
+        ],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "player.jump",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "player.jump",
+          "phrases": [
+            "jump to <time:time>"
+          ],
+          "action": "player.jump",
+          "threshold": 60,
+          "worksIn": [
+            "player"
+          ],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-5",
+      "raw": {
+        "id": "notes.sort",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.sort",
+        "phrases": [
+          "sort by <field>"
+        ],
+        "action": "notes.sort",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": false,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "notes.sort",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "notes.sort",
+          "phrases": [
+            "sort by <field>"
+          ],
+          "action": "notes.sort",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": false,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-6",
+      "raw": {
+        "id": "app.next",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "app.next",
+        "phrases": [
+          "next",
+          "next one"
+        ],
+        "action": "app.next",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 2000,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "app.next",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "app.next",
+          "phrases": [
+            "next",
+            "next one"
+          ],
+          "action": "app.next",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 2000,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-7",
+      "raw": {
+        "id": "app.next-page",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "app.next-page",
+        "phrases": [
+          "next page"
+        ],
+        "action": "app.page",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0,
+        "args": {
+          "dir": 1
+        }
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "app.next-page",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "app.next-page",
+          "phrases": [
+            "next page"
+          ],
+          "action": "app.page",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0,
+          "args": {
+            "dir": 1
+          }
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-8",
+      "raw": {
+        "id": "app.quiet",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "app.quiet",
+        "phrases": [
+          "be quiet"
+        ],
+        "action": "speech.stop",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 5000
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "app.quiet",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "app.quiet",
+          "phrases": [
+            "be quiet"
+          ],
+          "action": "speech.stop",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 5000
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-9",
+      "raw": {
+        "id": "notes.add-long",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add-long",
+        "phrases": [
+          "note <text>",
+          "make a note <text>"
+        ],
+        "action": "notes.add-long",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "notes.add-long",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "notes.add-long",
+          "phrases": [
+            "note <text>",
+            "make a note <text>"
+          ],
+          "action": "notes.add-long",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-10",
+      "raw": {
+        "id": "cam.like",
+        "kind": "gesture",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "cam.like",
+        "phrases": [
+          "thumbs_up"
+        ],
+        "action": "media.like",
+        "threshold": 75,
+        "worksIn": [],
+        "arming": "required",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "cam.like",
+          "kind": "gesture",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "cam.like",
+          "phrases": [
+            "thumbs_up"
+          ],
+          "action": "media.like",
+          "threshold": 75,
+          "worksIn": [],
+          "arming": "required",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-11",
+      "raw": {
+        "id": "cam.next",
+        "kind": "gesture",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "cam.next",
+        "phrases": [
+          "index_swipe_right"
+        ],
+        "action": "app.next",
+        "threshold": 75,
+        "worksIn": [
+          "*"
+        ],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "cam.next",
+          "kind": "gesture",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "cam.next",
+          "phrases": [
+            "index_swipe_right"
+          ],
+          "action": "app.next",
+          "threshold": 75,
+          "worksIn": [
+            "*"
+          ],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "valid-12",
+      "raw": {
+        "id": "face.nod",
+        "kind": "face",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "face.nod",
+        "phrases": [
+          "nod_down"
+        ],
+        "action": "app.confirm",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "required",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "face.nod",
+          "kind": "face",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "face.nod",
+          "phrases": [
+            "nod_down"
+          ],
+          "action": "app.confirm",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "required",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "not-object",
+      "raw": "x",
+      "result": {
+        "ok": false,
+        "errors": [
+          "trigger must be an object"
+        ]
+      }
+    },
+    {
+      "name": "bad-id",
+      "raw": {
+        "id": "Notes Add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "id must be namespaced (module.name)"
+        ]
+      }
+    },
+    {
+      "name": "unknown-kind",
+      "raw": {
+        "id": "notes.add",
+        "kind": "telepathy",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "unknown kind \"telepathy\""
+        ]
+      }
+    },
+    {
+      "name": "bad-source",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "shipped",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "source must be permanent or custom"
+        ]
+      }
+    },
+    {
+      "name": "no-phrases",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "at least one phrase or signature is required"
+        ]
+      }
+    },
+    {
+      "name": "bad-slot",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text",
+          "x <a> <b>"
+        ],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "phrase \"note <text\": bad slot \"<text\"",
+          "phrase \"x <a> <b>\": two slots in a row"
+        ]
+      }
+    },
+    {
+      "name": "bad-action",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "action must be a namespaced action id"
+        ]
+      }
+    },
+    {
+      "name": "bad-arming",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "sometimes",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "arming must be required or always"
+        ]
+      }
+    },
+    {
+      "name": "defaults",
+      "raw": {
+        "id": "a.b",
+        "kind": "gesture",
+        "source": "custom",
+        "module": "m",
+        "label": " Wave ",
+        "phrases": [
+          "wave"
+        ],
+        "action": "a.wave",
+        "threshold": 150
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "a.b",
+          "kind": "gesture",
+          "source": "custom",
+          "module": "m",
+          "label": "Wave",
+          "phrases": [
+            "wave"
+          ],
+          "action": "a.wave",
+          "threshold": 99.99,
+          "worksIn": [],
+          "arming": "required",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "threshold-low",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": 0,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "notes.add",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "notes.add",
+          "phrases": [
+            "note <text>",
+            "take a note <text>"
+          ],
+          "action": "notes.add",
+          "threshold": 0.01,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "threshold-nan",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": "high",
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "result": {
+        "ok": true,
+        "trigger": {
+          "id": "notes.add",
+          "kind": "voice",
+          "source": "permanent",
+          "module": "ai.amberx.axf.notes",
+          "label": "notes.add",
+          "phrases": [
+            "note <text>",
+            "take a note <text>"
+          ],
+          "action": "notes.add",
+          "threshold": 80,
+          "worksIn": [],
+          "arming": "always",
+          "enabled": true,
+          "cooldownMs": 600,
+          "mutedUntil": 0
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "args-list",
+      "raw": {
+        "id": "notes.add",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "notes.add",
+        "phrases": [
+          "note <text>",
+          "take a note <text>"
+        ],
+        "action": "notes.add",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0,
+        "args": [
+          1
+        ]
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "args must be an object"
+        ]
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "note <text>",
+      "parts": [
+        {
+          "literal": "note"
+        },
+        {
+          "slot": {
+            "name": "text",
+            "type": "text"
+          }
+        }
+      ],
+      "error": "",
+      "words": 2
+    },
+    {
+      "pattern": "read my list <name>",
+      "parts": [
+        {
+          "literal": "read my list"
+        },
+        {
+          "slot": {
+            "name": "name",
+            "type": "text"
+          }
+        }
+      ],
+      "error": "",
+      "words": 4
+    },
+    {
+      "pattern": "jump to <time:time>",
+      "parts": [
+        {
+          "literal": "jump to"
+        },
+        {
+          "slot": {
+            "name": "time",
+            "type": "time"
+          }
+        }
+      ],
+      "error": "",
+      "words": 3
+    },
+    {
+      "pattern": "set volume to <n:number>",
+      "parts": [
+        {
+          "literal": "set volume to"
+        },
+        {
+          "slot": {
+            "name": "n",
+            "type": "number"
+          }
+        }
+      ],
+      "error": "",
+      "words": 4
+    },
+    {
+      "pattern": "<text>",
+      "parts": [
+        {
+          "slot": {
+            "name": "text",
+            "type": "text"
+          }
+        }
+      ],
+      "error": "a pattern needs at least one word",
+      "words": 1
+    },
+    {
+      "pattern": "a <x> <y>",
+      "parts": [
+        {
+          "literal": "a"
+        },
+        {
+          "slot": {
+            "name": "x",
+            "type": "text"
+          }
+        },
+        {
+          "slot": {
+            "name": "y",
+            "type": "text"
+          }
+        }
+      ],
+      "error": "two slots in a row",
+      "words": 3
+    },
+    {
+      "pattern": "a <x> b <x>",
+      "parts": [
+        {
+          "literal": "a"
+        },
+        {
+          "slot": {
+            "name": "x",
+            "type": "text"
+          }
+        },
+        {
+          "literal": "b"
+        },
+        {
+          "slot": {
+            "name": "x",
+            "type": "text"
+          }
+        }
+      ],
+      "error": "duplicate slot name",
+      "words": 4
+    },
+    {
+      "pattern": "note <text",
+      "parts": [
+        {
+          "literal": "note text"
+        }
+      ],
+      "error": "bad slot \"<text\"",
+      "words": 2
+    },
+    {
+      "pattern": "Hello, World!",
+      "parts": [
+        {
+          "literal": "hello world"
+        }
+      ],
+      "error": "",
+      "words": 2
+    },
+    {
+      "pattern": "",
+      "parts": [],
+      "error": "empty",
+      "words": 0
+    }
+  ],
+  "phrases": [
+    {
+      "heard": "note buy milk",
+      "pattern": "note <text>",
+      "match": {
+        "score": 1,
+        "args": {
+          "text": "buy milk"
+        }
+      }
+    },
+    {
+      "heard": "Note: buy milk, eggs",
+      "pattern": "note <text>",
+      "match": {
+        "score": 1,
+        "args": {
+          "text": "buy milk eggs"
+        }
+      }
+    },
+    {
+      "heard": "ok amber note buy milk",
+      "pattern": "note <text>",
+      "match": {
+        "score": 0.95,
+        "args": {
+          "text": "buy milk"
+        }
+      }
+    },
+    {
+      "heard": "note",
+      "pattern": "note <text>",
+      "match": {
+        "score": 0,
+        "args": {}
+      }
+    },
+    {
+      "heard": "buy milk",
+      "pattern": "note <text>",
+      "match": {
+        "score": 0,
+        "args": {}
+      }
+    },
+    {
+      "heard": "read my list groceries",
+      "pattern": "read my list <name>",
+      "match": {
+        "score": 1,
+        "args": {
+          "name": "groceries"
+        }
+      }
+    },
+    {
+      "heard": "read my list",
+      "pattern": "read my list <name>",
+      "match": {
+        "score": 0,
+        "args": {}
+      }
+    },
+    {
+      "heard": "read my shopping list",
+      "pattern": "read my list <name>",
+      "match": {
+        "score": 0,
+        "args": {}
+      }
+    },
+    {
+      "heard": "jump to one minute thirty eight seconds",
+      "pattern": "jump to <time:time>",
+      "match": {
+        "score": 1,
+        "args": {
+          "time": 98
+        }
+      }
+    },
+    {
+      "heard": "jump to 2:15",
+      "pattern": "jump to <time:time>",
+      "match": {
+        "score": 1,
+        "args": {
+          "time": 135
+        }
+      }
+    },
+    {
+      "heard": "jump to the end",
+      "pattern": "jump to <time:time>",
+      "match": {
+        "score": 1,
+        "args": {
+          "time": "the end"
+        }
+      }
+    },
+    {
+      "heard": "set volume to forty five",
+      "pattern": "set volume to <n:number>",
+      "match": {
+        "score": 1,
+        "args": {
+          "n": 45
+        }
+      }
+    },
+    {
+      "heard": "set volume to max",
+      "pattern": "set volume to <n:number>",
+      "match": {
+        "score": 1,
+        "args": {
+          "n": "max"
+        }
+      }
+    },
+    {
+      "heard": "next",
+      "pattern": "next",
+      "match": {
+        "score": 1,
+        "args": {}
+      }
+    },
+    {
+      "heard": "next one please",
+      "pattern": "next one",
+      "match": {
+        "score": 0.95,
+        "args": {}
+      }
+    },
+    {
+      "heard": "nest",
+      "pattern": "next",
+      "match": {
+        "score": 0.75,
+        "args": {}
+      }
+    },
+    {
+      "heard": "nex",
+      "pattern": "next",
+      "match": {
+        "score": 0.75,
+        "args": {}
+      }
+    },
+    {
+      "heard": "something else",
+      "pattern": "next",
+      "match": {
+        "score": 0.1429,
+        "args": {}
+      }
+    },
+    {
+      "heard": "",
+      "pattern": "next",
+      "match": {
+        "score": 0,
+        "args": {}
+      }
+    },
+    {
+      "heard": "add to do call mum",
+      "pattern": "add to do <text>",
+      "match": {
+        "score": 1,
+        "args": {
+          "text": "call mum"
+        }
+      }
+    },
+    {
+      "heard": "add todo call mum",
+      "pattern": "add to do <text>",
+      "match": {
+        "score": 0,
+        "args": {}
+      }
+    }
+  ],
+  "numbers": [
+    {
+      "phrase": "forty five",
+      "value": 45
+    },
+    {
+      "phrase": "3 items",
+      "value": 3
+    },
+    {
+      "phrase": "one hundred five",
+      "value": 105
+    },
+    {
+      "phrase": "twenty",
+      "value": 20
+    },
+    {
+      "phrase": "one thirty eight",
+      "value": 1
+    },
+    {
+      "phrase": "nothing",
+      "value": null
+    },
+    {
+      "phrase": "two minutes",
+      "value": 2
+    },
+    {
+      "phrase": "ninety seconds",
+      "value": 90
+    },
+    {
+      "phrase": "12",
+      "value": 12
+    }
+  ],
+  "times": [
+    {
+      "phrase": "one minute thirty-eight seconds",
+      "seconds": 98
+    },
+    {
+      "phrase": "one thirty eight",
+      "seconds": 98
+    },
+    {
+      "phrase": "2:15",
+      "seconds": 135
+    },
+    {
+      "phrase": "ninety seconds",
+      "seconds": 90
+    },
+    {
+      "phrase": "ninety",
+      "seconds": 90
+    },
+    {
+      "phrase": "two minutes",
+      "seconds": 120
+    },
+    {
+      "phrase": "one hundred twenty",
+      "seconds": 120
+    },
+    {
+      "phrase": "the end",
+      "seconds": null
+    },
+    {
+      "phrase": "ten minutes and five seconds",
+      "seconds": 605
+    },
+    {
+      "phrase": "1:5",
+      "seconds": 65
+    }
+  ],
+  "overlap": [
+    {
+      "a": [],
+      "b": [],
+      "overlap": true
+    },
+    {
+      "a": [
+        "a"
+      ],
+      "b": [],
+      "overlap": true
+    },
+    {
+      "a": [
+        "a"
+      ],
+      "b": [
+        "b"
+      ],
+      "overlap": false
+    },
+    {
+      "a": [
+        "a",
+        "b"
+      ],
+      "b": [
+        "b"
+      ],
+      "overlap": true
+    },
+    {
+      "a": [
+        "*"
+      ],
+      "b": [
+        "z"
+      ],
+      "overlap": true
+    }
+  ],
+  "matches": [
+    {
+      "name": "note with text",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "note buy milk"
+        ]
+      },
+      "env": {
+        "context": "notes.list"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "note <text>",
+            "heard": "note buy milk",
+            "args": {
+              "text": "buy milk"
+            }
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 23.08,
+            "phrase": "next one",
+            "heard": "note buy milk",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 23.08,
+            "phrase": "next page",
+            "heard": "note buy milk",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 30.77,
+            "phrase": "be quiet",
+            "heard": "note buy milk",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "note <text>",
+            "heard": "note buy milk",
+            "args": {
+              "text": "buy milk"
+            }
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "notes.add",
+          "action": "notes.add",
+          "args": {
+            "text": "buy milk"
+          },
+          "phrase": "note <text>",
+          "heard": "note buy milk"
+        },
+        "lastFired": {
+          "notes.add": 1000
+        }
+      }
+    },
+    {
+      "name": "alternatives, second one matches",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "no buy milk",
+          "note buy milk"
+        ]
+      },
+      "env": {
+        "context": "notes.list"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "note <text>",
+            "heard": "note buy milk",
+            "args": {
+              "text": "buy milk"
+            }
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 23.08,
+            "phrase": "next one",
+            "heard": "note buy milk",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 23.08,
+            "phrase": "next page",
+            "heard": "note buy milk",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 30.77,
+            "phrase": "be quiet",
+            "heard": "note buy milk",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "note <text>",
+            "heard": "note buy milk",
+            "args": {
+              "text": "buy milk"
+            }
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "notes.add",
+          "action": "notes.add",
+          "args": {
+            "text": "buy milk"
+          },
+          "phrase": "note <text>",
+          "heard": "note buy milk"
+        },
+        "lastFired": {
+          "notes.add": 1000
+        }
+      }
+    },
+    {
+      "name": "todo in a listed context",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "add to do call mum"
+        ]
+      },
+      "env": {
+        "context": "notes.list"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "add to do <text>",
+            "heard": "add to do call mum",
+            "args": {
+              "text": "call mum"
+            }
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 16.67,
+            "phrase": "next one",
+            "heard": "add to do call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 16.67,
+            "phrase": "next page",
+            "heard": "add to do call mum",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 5.56,
+            "phrase": "be quiet",
+            "heard": "add to do call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "todo.add",
+          "action": "todo.add",
+          "args": {
+            "text": "call mum"
+          },
+          "phrase": "add to do <text>",
+          "heard": "add to do call mum"
+        },
+        "lastFired": {
+          "todo.add": 1000
+        }
+      }
+    },
+    {
+      "name": "todo in the wrong context (check off)",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "check off call mum"
+        ]
+      },
+      "env": {
+        "context": "notes.list"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "wrong-context",
+            "confidence": 100,
+            "phrase": "check off <text>",
+            "heard": "check off call mum",
+            "args": {
+              "text": "call mum"
+            }
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 16.67,
+            "phrase": "next one",
+            "heard": "check off call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 16.67,
+            "phrase": "next page",
+            "heard": "check off call mum",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 11.11,
+            "phrase": "be quiet",
+            "heard": "check off call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "todo in its context",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "check off call mum"
+        ]
+      },
+      "env": {
+        "context": "todo"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "check off <text>",
+            "heard": "check off call mum",
+            "args": {
+              "text": "call mum"
+            }
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 16.67,
+            "phrase": "next one",
+            "heard": "check off call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 16.67,
+            "phrase": "next page",
+            "heard": "check off call mum",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 11.11,
+            "phrase": "be quiet",
+            "heard": "check off call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "todo.check",
+          "action": "todo.check",
+          "args": {
+            "text": "call mum"
+          },
+          "phrase": "check off <text>",
+          "heard": "check off call mum"
+        },
+        "lastFired": {
+          "todo.check": 1000
+        }
+      }
+    },
+    {
+      "name": "fixed args merge under captured",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "read my list groceries"
+        ]
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "read my list <name>",
+            "heard": "read my list groceries",
+            "args": {
+              "voice": true,
+              "name": "groceries"
+            }
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 22.73,
+            "phrase": "next one",
+            "heard": "read my list groceries",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 18.18,
+            "phrase": "next page",
+            "heard": "read my list groceries",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 18.18,
+            "phrase": "be quiet",
+            "heard": "read my list groceries",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "notes.read",
+          "action": "notes.read",
+          "args": {
+            "voice": true,
+            "name": "groceries"
+          },
+          "phrase": "read my list <name>",
+          "heard": "read my list groceries"
+        },
+        "lastFired": {
+          "notes.read": 1000
+        }
+      }
+    },
+    {
+      "name": "time slot parsed",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "jump to one thirty eight"
+        ]
+      },
+      "env": {
+        "context": "player"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "jump to <time:time>",
+            "heard": "jump to one thirty eight",
+            "args": {
+              "time": 98
+            }
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 20.83,
+            "phrase": "next one",
+            "heard": "jump to one thirty eight",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 20.83,
+            "phrase": "next page",
+            "heard": "jump to one thirty eight",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 20.83,
+            "phrase": "be quiet",
+            "heard": "jump to one thirty eight",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "player.jump",
+          "action": "player.jump",
+          "args": {
+            "time": 98
+          },
+          "phrase": "jump to <time:time>",
+          "heard": "jump to one thirty eight"
+        },
+        "lastFired": {
+          "player.jump": 1000
+        }
+      }
+    },
+    {
+      "name": "low detector confidence",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "jump to one thirty eight"
+        ],
+        "confidence": 50
+      },
+      "env": {
+        "context": "player"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "below-threshold",
+            "confidence": 50,
+            "phrase": "jump to <time:time>",
+            "heard": "jump to one thirty eight",
+            "args": {
+              "time": 98
+            }
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 10.42,
+            "phrase": "next one",
+            "heard": "jump to one thirty eight",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 10.42,
+            "phrase": "next page",
+            "heard": "jump to one thirty eight",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 10.42,
+            "phrase": "be quiet",
+            "heard": "jump to one thirty eight",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "disabled trigger",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "sort by date"
+        ]
+      },
+      "env": {
+        "context": "notes.list"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "disabled",
+            "confidence": 100,
+            "phrase": "sort by <field>",
+            "heard": "sort by date",
+            "args": {
+              "field": "date"
+            }
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 25,
+            "phrase": "next one",
+            "heard": "sort by date",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 33.33,
+            "phrase": "next page",
+            "heard": "sort by date",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 16.67,
+            "phrase": "be quiet",
+            "heard": "sort by date",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "mishearing below threshold",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "nest"
+        ]
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 75,
+            "phrase": "next",
+            "heard": "nest",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 33.33,
+            "phrase": "next page",
+            "heard": "nest",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 25,
+            "phrase": "be quiet",
+            "heard": "nest",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "exact beats contained",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "next page"
+        ]
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "fired",
+            "confidence": 95,
+            "phrase": "next",
+            "heard": "next page",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "next page",
+            "heard": "next page",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 22.22,
+            "phrase": "be quiet",
+            "heard": "next page",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "app.next-page",
+          "action": "app.page",
+          "args": {
+            "dir": 1
+          },
+          "phrase": "next page",
+          "heard": "next page"
+        },
+        "lastFired": {
+          "app.next-page": 1000
+        }
+      }
+    },
+    {
+      "name": "longer phrase wins a tie",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "make a note call mum"
+        ]
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "fired",
+            "confidence": 95,
+            "phrase": "note <text>",
+            "heard": "make a note call mum",
+            "args": {
+              "text": "call mum"
+            }
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 20,
+            "phrase": "next one",
+            "heard": "make a note call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 20,
+            "phrase": "next page",
+            "heard": "make a note call mum",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 15,
+            "phrase": "be quiet",
+            "heard": "make a note call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "make a note <text>",
+            "heard": "make a note call mum",
+            "args": {
+              "text": "call mum"
+            }
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "notes.add-long",
+          "action": "notes.add-long",
+          "args": {
+            "text": "call mum"
+          },
+          "phrase": "make a note <text>",
+          "heard": "make a note call mum"
+        },
+        "lastFired": {
+          "notes.add-long": 1000
+        }
+      }
+    },
+    {
+      "name": "first registered wins an equal tie",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "note call mum"
+        ]
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "note <text>",
+            "heard": "note call mum",
+            "args": {
+              "text": "call mum"
+            }
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 23.08,
+            "phrase": "next one",
+            "heard": "note call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 23.08,
+            "phrase": "next page",
+            "heard": "note call mum",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 15.38,
+            "phrase": "be quiet",
+            "heard": "note call mum",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "note <text>",
+            "heard": "note call mum",
+            "args": {
+              "text": "call mum"
+            }
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "notes.add",
+          "action": "notes.add",
+          "args": {
+            "text": "call mum"
+          },
+          "phrase": "note <text>",
+          "heard": "note call mum"
+        },
+        "lastFired": {
+          "notes.add": 1000
+        }
+      }
+    },
+    {
+      "name": "cooldown",
+      "obs": {
+        "kind": "voice",
+        "at": 1500,
+        "heard": [
+          "next"
+        ]
+      },
+      "env": {
+        "context": "home",
+        "lastFired": {
+          "app.next": 1000
+        }
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "cooldown",
+            "confidence": 100,
+            "phrase": "next",
+            "heard": "next",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 44.44,
+            "phrase": "next page",
+            "heard": "next",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 25,
+            "phrase": "be quiet",
+            "heard": "next",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {
+          "app.next": 1000
+        }
+      }
+    },
+    {
+      "name": "cooldown over",
+      "obs": {
+        "kind": "voice",
+        "at": 3001,
+        "heard": [
+          "next"
+        ]
+      },
+      "env": {
+        "context": "home",
+        "lastFired": {
+          "app.next": 1000
+        }
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "next",
+            "heard": "next",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 44.44,
+            "phrase": "next page",
+            "heard": "next",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 25,
+            "phrase": "be quiet",
+            "heard": "next",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "app.next",
+          "action": "app.next",
+          "args": {},
+          "phrase": "next",
+          "heard": "next"
+        },
+        "lastFired": {
+          "app.next": 3001
+        }
+      }
+    },
+    {
+      "name": "muted",
+      "obs": {
+        "kind": "voice",
+        "at": 4000,
+        "heard": [
+          "be quiet"
+        ]
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 25,
+            "phrase": "next",
+            "heard": "be quiet",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 22.22,
+            "phrase": "next page",
+            "heard": "be quiet",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 100,
+            "phrase": "be quiet",
+            "heard": "be quiet",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "mute over",
+      "obs": {
+        "kind": "voice",
+        "at": 5000,
+        "heard": [
+          "be quiet"
+        ]
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "below-threshold",
+            "confidence": 25,
+            "phrase": "next",
+            "heard": "be quiet",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "below-threshold",
+            "confidence": 22.22,
+            "phrase": "next page",
+            "heard": "be quiet",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "be quiet",
+            "heard": "be quiet",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "app.quiet",
+          "action": "speech.stop",
+          "args": {},
+          "phrase": "be quiet",
+          "heard": "be quiet"
+        },
+        "lastFired": {
+          "app.quiet": 5000
+        }
+      }
+    },
+    {
+      "name": "voice switched off",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": [
+          "next"
+        ]
+      },
+      "env": {
+        "context": "home",
+        "kindsOff": [
+          "voice"
+        ]
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "kind-off",
+            "confidence": 100,
+            "phrase": "next",
+            "heard": "next",
+            "args": {}
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "kind-off",
+            "confidence": 44.44,
+            "phrase": "next page",
+            "heard": "next",
+            "args": {
+              "dir": 1
+            }
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "muted",
+            "confidence": 25,
+            "phrase": "be quiet",
+            "heard": "next",
+            "args": {}
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "gesture not armed",
+      "obs": {
+        "kind": "gesture",
+        "at": 1000,
+        "signature": "thumbs_up",
+        "confidence": 90
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "not-armed",
+            "confidence": 90,
+            "phrase": "thumbs_up",
+            "args": {}
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "gesture armed",
+      "obs": {
+        "kind": "gesture",
+        "at": 1000,
+        "signature": "thumbs_up",
+        "confidence": 90
+      },
+      "env": {
+        "context": "home",
+        "armed": [
+          "gesture"
+        ]
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "fired",
+            "confidence": 90,
+            "phrase": "thumbs_up",
+            "args": {}
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "cam.like",
+          "action": "media.like",
+          "args": {},
+          "phrase": "thumbs_up"
+        },
+        "lastFired": {
+          "cam.like": 1000
+        }
+      }
+    },
+    {
+      "name": "gesture below threshold",
+      "obs": {
+        "kind": "gesture",
+        "at": 1000,
+        "signature": "thumbs_up",
+        "confidence": 74.99
+      },
+      "env": {
+        "context": "home",
+        "armed": [
+          "gesture"
+        ]
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "below-threshold",
+            "confidence": 74.99,
+            "phrase": "thumbs_up",
+            "args": {}
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "always-armed gesture",
+      "obs": {
+        "kind": "gesture",
+        "at": 1000,
+        "signature": "index_swipe_right"
+      },
+      "env": {
+        "context": "todo"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "fired",
+            "confidence": 100,
+            "phrase": "index_swipe_right",
+            "args": {}
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": {
+          "triggerId": "cam.next",
+          "action": "app.next",
+          "args": {},
+          "phrase": "index_swipe_right"
+        },
+        "lastFired": {
+          "cam.next": 1000
+        }
+      }
+    },
+    {
+      "name": "unknown signature",
+      "obs": {
+        "kind": "gesture",
+        "at": 1000,
+        "signature": "wave"
+      },
+      "env": {
+        "context": "home",
+        "armed": [
+          "gesture"
+        ]
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    },
+    {
+      "name": "face armed",
+      "obs": {
+        "kind": "face",
+        "at": 1000,
+        "signature": "nod_down",
+        "confidence": 80
+      },
+      "env": {
+        "context": "home",
+        "armed": [
+          "face",
+          "gesture"
+        ]
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "fired",
+            "confidence": 80,
+            "phrase": "nod_down",
+            "args": {}
+          }
+        ],
+        "fired": {
+          "triggerId": "face.nod",
+          "action": "app.confirm",
+          "args": {},
+          "phrase": "nod_down"
+        },
+        "lastFired": {
+          "face.nod": 1000
+        }
+      }
+    },
+    {
+      "name": "nothing heard",
+      "obs": {
+        "kind": "voice",
+        "at": 1000,
+        "heard": []
+      },
+      "env": {
+        "context": "home"
+      },
+      "result": {
+        "decisions": [
+          {
+            "triggerId": "notes.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.add",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "todo.check",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.read",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "player.jump",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.sort",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.next-page",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "app.quiet",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "notes.add-long",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.like",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "cam.next",
+            "outcome": "no-match",
+            "confidence": 0
+          },
+          {
+            "triggerId": "face.nod",
+            "outcome": "no-match",
+            "confidence": 0
+          }
+        ],
+        "fired": null,
+        "lastFired": {}
+      }
+    }
+  ],
+  "registry": {
+    "diagnostics": [
+      [],
+      [
+        {
+          "kind": "contribution-conflict",
+          "what": "trigger-phrase",
+          "id": "next",
+          "was": "app.next",
+          "now": "player.next"
+        }
+      ],
+      [
+        {
+          "kind": "contribution-conflict",
+          "what": "trigger",
+          "id": "notes.add",
+          "was": "ai.amberx.axf.notes",
+          "now": "ai.amberx.axf.other"
+        }
+      ],
+      []
+    ],
+    "afterRegister": [
+      [
+        "notes.add",
+        "ai.amberx.axf.other"
+      ],
+      [
+        "todo.add",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "todo.check",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "notes.read",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "player.jump",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "notes.sort",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "app.next",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "app.next-page",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "app.quiet",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "notes.add-long",
+        "ai.amberx.axf.notes"
+      ],
+      [
+        "player.next",
+        "ai.amberx.axf.player"
+      ],
+      [
+        "player.rewind",
+        "ai.amberx.axf.player"
+      ],
+      [
+        "other.tick",
+        "ai.amberx.axf.other"
+      ],
+      [
+        "cam.like",
+        "ai.amberx.axf.cam"
+      ],
+      [
+        "cam.next",
+        "ai.amberx.axf.cam"
+      ],
+      [
+        "face.nod",
+        "ai.amberx.axf.cam"
+      ]
+    ],
+    "removed": {
+      "permanent": false,
+      "missing": false,
+      "custom": true
+    },
+    "updated": {
+      "bad": null,
+      "ok": {
+        "id": "todo.check",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.notes",
+        "label": "todo.check",
+        "phrases": [
+          "check off <text>",
+          "done with <text>"
+        ],
+        "action": "todo.check",
+        "threshold": 99.99,
+        "worksIn": [
+          "todo"
+        ],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      "missing": null
+    },
+    "unregistered": 2,
+    "lists": {
+      "all": [
+        "notes.add",
+        "todo.add",
+        "todo.check",
+        "notes.read",
+        "player.jump",
+        "notes.sort",
+        "app.next",
+        "app.next-page",
+        "app.quiet",
+        "notes.add-long",
+        "other.tick",
+        "cam.like",
+        "cam.next",
+        "face.nod"
+      ],
+      "voice": [
+        "notes.add",
+        "todo.add",
+        "todo.check",
+        "notes.read",
+        "player.jump",
+        "notes.sort",
+        "app.next",
+        "app.next-page",
+        "app.quiet",
+        "notes.add-long",
+        "other.tick"
+      ],
+      "todo": [
+        "notes.add",
+        "todo.add",
+        "todo.check",
+        "notes.read",
+        "notes.sort",
+        "app.next",
+        "app.next-page",
+        "app.quiet",
+        "notes.add-long",
+        "other.tick",
+        "cam.like",
+        "cam.next",
+        "face.nod"
+      ],
+      "cam": [
+        "cam.like",
+        "cam.next",
+        "face.nod"
+      ],
+      "owner": "app.next",
+      "noOwner": null
+    }
+  },
+  "voiceCommands": [
+    {
+      "command": {
+        "id": "vault.store",
+        "label": "Store password",
+        "defaults": [
+          "store password",
+          "save password"
+        ],
+        "module": "ai.amberx.axf.voicevault"
+      },
+      "trigger": {
+        "id": "vault.store",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.voicevault",
+        "label": "Store password",
+        "phrases": [
+          "store password",
+          "save password"
+        ],
+        "action": "vault.store",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      }
+    },
+    {
+      "command": {
+        "id": "confirm",
+        "label": "Confirm",
+        "defaults": [
+          "confirm",
+          "yes",
+          "copy it"
+        ],
+        "module": "ai.amberx.axf.voicevault"
+      },
+      "trigger": {
+        "id": "voicevault.confirm",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.voicevault",
+        "label": "Confirm",
+        "phrases": [
+          "confirm",
+          "yes",
+          "copy it"
+        ],
+        "action": "voice.voicevault.confirm",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      }
+    },
+    {
+      "command": {
+        "id": "wake",
+        "label": "Global trigger",
+        "defaults": [
+          "hey vault"
+        ]
+      },
+      "trigger": {
+        "id": "app.wake",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "app",
+        "label": "Global trigger",
+        "phrases": [
+          "hey vault"
+        ],
+        "action": "voice.app.wake",
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      }
+    }
+  ],
+  "binding": {
+    "input": {
+      "key": "axf.voice.sensitivity",
+      "module": "ai.amberx.axf.voice",
+      "label": "Voice sensitivity",
+      "phrases": [
+        {
+          "pattern": "set voice sensitivity to <value:number>"
+        },
+        {
+          "pattern": "voice sensitivity high",
+          "value": 90
+        },
+        {
+          "pattern": "toggle voice",
+          "toggle": true
+        }
+      ]
+    },
+    "triggers": [
+      {
+        "id": "axf.voice.sensitivity.1",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.voice",
+        "label": "Voice sensitivity",
+        "phrases": [
+          "set voice sensitivity to <value:number>"
+        ],
+        "action": "axf.settings.set",
+        "args": {
+          "key": "axf.voice.sensitivity"
+        },
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      {
+        "id": "axf.voice.sensitivity.2",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.voice",
+        "label": "Voice sensitivity",
+        "phrases": [
+          "voice sensitivity high"
+        ],
+        "action": "axf.settings.set",
+        "args": {
+          "key": "axf.voice.sensitivity",
+          "value": 90
+        },
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      },
+      {
+        "id": "axf.voice.sensitivity.3",
+        "kind": "voice",
+        "source": "permanent",
+        "module": "ai.amberx.axf.voice",
+        "label": "Voice sensitivity",
+        "phrases": [
+          "toggle voice"
+        ],
+        "action": "axf.settings.toggle",
+        "args": {
+          "key": "axf.voice.sensitivity"
+        },
+        "threshold": 80,
+        "worksIn": [],
+        "arming": "always",
+        "enabled": true,
+        "cooldownMs": 600,
+        "mutedUntil": 0
+      }
+    ],
+    "setAction": "axf.settings.set",
+    "toggleAction": "axf.settings.toggle",
+    "commands": [
+      {
+        "command": {
+          "triggerId": "axf.voice.sensitivity.1",
+          "action": "axf.settings.set",
+          "args": {
+            "key": "axf.voice.sensitivity",
+            "value": 60
+          },
+          "phrase": "set voice sensitivity to <value:number>",
+          "heard": "set voice sensitivity to sixty"
+        },
+        "change": {
+          "key": "axf.voice.sensitivity",
+          "value": 60
+        }
+      },
+      {
+        "command": {
+          "triggerId": "axf.voice.sensitivity.2",
+          "action": "axf.settings.set",
+          "args": {
+            "key": "axf.voice.sensitivity",
+            "value": 90
+          },
+          "phrase": "voice sensitivity high",
+          "heard": "voice sensitivity high"
+        },
+        "change": {
+          "key": "axf.voice.sensitivity",
+          "value": 90
+        }
+      },
+      {
+        "command": {
+          "triggerId": "axf.voice.sensitivity.3",
+          "action": "axf.settings.toggle",
+          "args": {
+            "key": "axf.voice.sensitivity"
+          },
+          "phrase": "toggle voice",
+          "heard": "toggle voice"
+        },
+        "change": {
+          "key": "axf.voice.sensitivity",
+          "toggle": true
+        }
+      },
+      {
+        "command": null,
+        "change": null
+      }
+    ]
+  }
+}

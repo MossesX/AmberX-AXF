@@ -1,0 +1,2031 @@
+{
+  "contract": "ai-modes@1",
+  "capability": "axf.ai.session",
+  "host": "axhub",
+  "tiers": [
+    "fast",
+    "balanced",
+    "deep"
+  ],
+  "defaultMode": "ai.chat",
+  "defaultAllowed": [
+    "ai.chat"
+  ],
+  "builtins": [
+    {
+      "id": "ai.chat",
+      "label": "Chat",
+      "requiresPermission": "",
+      "readOnly": true,
+      "needsApproval": false,
+      "sessionKind": "assistant.chat",
+      "tier": "balanced",
+      "description": "Talk with the assistant; nothing is written",
+      "module": "axf.framework"
+    },
+    {
+      "id": "ai.read-codebase",
+      "label": "Read a codebase",
+      "requiresPermission": "ai.read",
+      "readOnly": true,
+      "needsApproval": false,
+      "sessionKind": "assistant.read",
+      "tier": "fast",
+      "description": "Read a repository or folder and turn it into notes",
+      "module": "axf.framework"
+    },
+    {
+      "id": "ai.build-request",
+      "label": "Build request",
+      "requiresPermission": "ai.build",
+      "readOnly": false,
+      "needsApproval": true,
+      "sessionKind": "agent.run",
+      "tier": "deep",
+      "description": "Send a build request to the orchestrator; a person approves it first",
+      "module": "axf.framework"
+    }
+  ],
+  "registry": {
+    "diagnostics": [
+      null,
+      {
+        "kind": "contribution-conflict",
+        "what": "ai-mode",
+        "id": "notes.summarize",
+        "was": "ai.amberx.axf.notes",
+        "now": "ai.amberx.axf.other"
+      },
+      {
+        "kind": "contribution-conflict",
+        "what": "ai-mode",
+        "id": "ai.chat",
+        "was": "axf.framework",
+        "now": "ai.amberx.axf.plugin"
+      }
+    ],
+    "removed": {
+      "builtin": false,
+      "custom": true,
+      "missing": false
+    },
+    "list": [
+      [
+        "ai.chat",
+        "ai.amberx.axf.plugin",
+        "Plugin chat"
+      ],
+      [
+        "ai.read-codebase",
+        "axf.framework",
+        "Read a codebase"
+      ],
+      [
+        "ai.build-request",
+        "axf.framework",
+        "Build request"
+      ]
+    ]
+  },
+  "policies": {
+    "admin": {
+      "admin": true,
+      "perms": []
+    },
+    "anonymous": {
+      "admin": false,
+      "perms": []
+    },
+    "chatOnly": {
+      "admin": false,
+      "perms": [
+        "ai.chat"
+      ]
+    },
+    "wildcard": {
+      "admin": false,
+      "perms": [
+        "ai.*"
+      ]
+    },
+    "allowedNoPerm": {
+      "admin": false,
+      "perms": [
+        "ai.chat"
+      ],
+      "allowedModes": [
+        "ai.chat",
+        "ai.build-request"
+      ]
+    },
+    "allowedWithPerm": {
+      "admin": false,
+      "perms": [
+        "ai.chat",
+        "ai.build",
+        "notes.ai"
+      ],
+      "allowedModes": [
+        "ai.chat",
+        "ai.build-request",
+        "notes.summarize"
+      ]
+    },
+    "noChat": {
+      "admin": false,
+      "perms": [
+        "ai.read"
+      ],
+      "allowedModes": [
+        "ai.read-codebase"
+      ]
+    },
+    "nothing": {
+      "admin": false,
+      "perms": [
+        "*"
+      ],
+      "allowedModes": []
+    },
+    "models": {
+      "admin": false,
+      "perms": [
+        "ai.chat",
+        "assistant.models"
+      ]
+    }
+  },
+  "allowed": [
+    {
+      "policy": "admin",
+      "modes": [
+        "ai.chat",
+        "ai.read-codebase",
+        "ai.build-request",
+        "notes.summarize"
+      ]
+    },
+    {
+      "policy": "anonymous",
+      "modes": [
+        "ai.chat"
+      ]
+    },
+    {
+      "policy": "chatOnly",
+      "modes": [
+        "ai.chat"
+      ]
+    },
+    {
+      "policy": "wildcard",
+      "modes": [
+        "ai.chat"
+      ]
+    },
+    {
+      "policy": "allowedNoPerm",
+      "modes": [
+        "ai.chat"
+      ]
+    },
+    {
+      "policy": "allowedWithPerm",
+      "modes": [
+        "ai.chat",
+        "ai.build-request",
+        "notes.summarize"
+      ]
+    },
+    {
+      "policy": "noChat",
+      "modes": [
+        "ai.read-codebase"
+      ]
+    },
+    {
+      "policy": "nothing",
+      "modes": []
+    },
+    {
+      "policy": "models",
+      "modes": [
+        "ai.chat"
+      ]
+    }
+  ],
+  "resolve": [
+    {
+      "policy": "admin",
+      "pick": {},
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.read-codebase",
+          "label": "Read a codebase",
+          "requiresPermission": "ai.read",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.read",
+          "tier": "fast",
+          "description": "Read a repository or folder and turn it into notes",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.build-request",
+          "label": "Build request",
+          "requiresPermission": "ai.build",
+          "readOnly": false,
+          "needsApproval": true,
+          "sessionKind": "agent.run",
+          "tier": "deep",
+          "description": "Send a build request to the orchestrator; a person approves it first",
+          "module": "axf.framework"
+        },
+        "reason": "override"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.build-request",
+          "label": "Build request",
+          "requiresPermission": "ai.build",
+          "readOnly": false,
+          "needsApproval": true,
+          "sessionKind": "agent.run",
+          "tier": "deep",
+          "description": "Send a build request to the orchestrator; a person approves it first",
+          "module": "axf.framework"
+        },
+        "reason": "override"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": {
+          "id": "notes.summarize",
+          "label": "Summarize notes",
+          "requiresPermission": "notes.ai",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "fast",
+          "module": "ai.amberx.axf.notes"
+        },
+        "reason": "override"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.read-codebase",
+          "label": "Read a codebase",
+          "requiresPermission": "ai.read",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.read",
+          "tier": "fast",
+          "description": "Read a repository or folder and turn it into notes",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {},
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "notes.summarize"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {},
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "notes.summarize"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {},
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "notes.summarize"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "wildcard",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {},
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "notes.summarize"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "allowedNoPerm",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {},
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.build-request",
+          "label": "Build request",
+          "requiresPermission": "ai.build",
+          "readOnly": false,
+          "needsApproval": true,
+          "sessionKind": "agent.run",
+          "tier": "deep",
+          "description": "Send a build request to the orchestrator; a person approves it first",
+          "module": "axf.framework"
+        },
+        "reason": "override"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.build-request",
+          "label": "Build request",
+          "requiresPermission": "ai.build",
+          "readOnly": false,
+          "needsApproval": true,
+          "sessionKind": "agent.run",
+          "tier": "deep",
+          "description": "Send a build request to the orchestrator; a person approves it first",
+          "module": "axf.framework"
+        },
+        "reason": "override"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": {
+          "id": "notes.summarize",
+          "label": "Summarize notes",
+          "requiresPermission": "notes.ai",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "fast",
+          "module": "ai.amberx.axf.notes"
+        },
+        "reason": "override"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {},
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.chat"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.read-codebase",
+          "label": "Read a codebase",
+          "requiresPermission": "ai.read",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.read",
+          "tier": "fast",
+          "description": "Read a repository or folder and turn it into notes",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "notes.summarize"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.read-codebase",
+          "label": "Read a codebase",
+          "requiresPermission": "ai.read",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.read",
+          "tier": "fast",
+          "description": "Read a repository or folder and turn it into notes",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "noChat",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.chat"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {},
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.chat"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "notes.summarize"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "nothing",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.chat"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {},
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "default"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {
+        "override": "ai.build-request"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {
+        "override": "ai.build-request",
+        "requested": "ai.read-codebase"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "ai.build-request"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {
+        "requested": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "nope.mode"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {
+        "override": "notes.summarize"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "fallback",
+        "denied": "notes.summarize"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {
+        "defaultMode": "ai.read-codebase"
+      },
+      "result": {
+        "mode": null,
+        "reason": "denied",
+        "denied": "ai.read-codebase"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": {
+        "requested": "ai.chat",
+        "defaultMode": "nope.mode"
+      },
+      "result": {
+        "mode": {
+          "id": "ai.chat",
+          "label": "Chat",
+          "requiresPermission": "",
+          "readOnly": true,
+          "needsApproval": false,
+          "sessionKind": "assistant.chat",
+          "tier": "balanced",
+          "description": "Talk with the assistant; nothing is written",
+          "module": "axf.framework"
+        },
+        "reason": "requested"
+      }
+    }
+  ],
+  "options": {
+    "all": [
+      {
+        "id": "claude-haiku",
+        "tier": "fast"
+      },
+      {
+        "id": "claude-sonnet",
+        "tier": "balanced"
+      },
+      {
+        "id": "claude-opus",
+        "tier": "deep"
+      }
+    ],
+    "noDeep": [
+      {
+        "id": "claude-haiku",
+        "tier": "fast"
+      },
+      {
+        "id": "claude-sonnet",
+        "tier": "balanced"
+      }
+    ],
+    "onlyFast": [
+      {
+        "id": "claude-haiku",
+        "tier": "fast"
+      }
+    ],
+    "onlyDeep": [
+      {
+        "id": "claude-opus",
+        "tier": "deep"
+      }
+    ],
+    "none": []
+  },
+  "choices": [
+    {
+      "options": "all",
+      "mode": "ai.chat",
+      "choice": {
+        "model": "claude-sonnet",
+        "tier": "balanced",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "all",
+      "mode": "ai.read-codebase",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "all",
+      "mode": "ai.build-request",
+      "choice": {
+        "model": "claude-opus",
+        "tier": "deep",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "all",
+      "mode": "notes.summarize",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "noDeep",
+      "mode": "ai.chat",
+      "choice": {
+        "model": "claude-sonnet",
+        "tier": "balanced",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "noDeep",
+      "mode": "ai.read-codebase",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "noDeep",
+      "mode": "ai.build-request",
+      "choice": {
+        "model": "claude-sonnet",
+        "tier": "balanced",
+        "reason": "nearest"
+      }
+    },
+    {
+      "options": "noDeep",
+      "mode": "notes.summarize",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "onlyFast",
+      "mode": "ai.chat",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "nearest"
+      }
+    },
+    {
+      "options": "onlyFast",
+      "mode": "ai.read-codebase",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "onlyFast",
+      "mode": "ai.build-request",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "nearest"
+      }
+    },
+    {
+      "options": "onlyFast",
+      "mode": "notes.summarize",
+      "choice": {
+        "model": "claude-haiku",
+        "tier": "fast",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "onlyDeep",
+      "mode": "ai.chat",
+      "choice": {
+        "model": "claude-opus",
+        "tier": "deep",
+        "reason": "nearest"
+      }
+    },
+    {
+      "options": "onlyDeep",
+      "mode": "ai.read-codebase",
+      "choice": {
+        "model": "claude-opus",
+        "tier": "deep",
+        "reason": "nearest"
+      }
+    },
+    {
+      "options": "onlyDeep",
+      "mode": "ai.build-request",
+      "choice": {
+        "model": "claude-opus",
+        "tier": "deep",
+        "reason": "mode"
+      }
+    },
+    {
+      "options": "onlyDeep",
+      "mode": "notes.summarize",
+      "choice": {
+        "model": "claude-opus",
+        "tier": "deep",
+        "reason": "nearest"
+      }
+    },
+    {
+      "options": "none",
+      "mode": "ai.chat",
+      "choice": {
+        "model": "",
+        "tier": null,
+        "reason": "none"
+      }
+    },
+    {
+      "options": "none",
+      "mode": "ai.read-codebase",
+      "choice": {
+        "model": "",
+        "tier": null,
+        "reason": "none"
+      }
+    },
+    {
+      "options": "none",
+      "mode": "ai.build-request",
+      "choice": {
+        "model": "",
+        "tier": null,
+        "reason": "none"
+      }
+    },
+    {
+      "options": "none",
+      "mode": "notes.summarize",
+      "choice": {
+        "model": "",
+        "tier": null,
+        "reason": "none"
+      }
+    }
+  ],
+  "userPicks": [
+    {
+      "policy": "anonymous",
+      "pick": "claude-opus",
+      "choice": {
+        "model": "claude-sonnet",
+        "tier": "balanced",
+        "reason": "mode"
+      }
+    },
+    {
+      "policy": "anonymous",
+      "pick": "nope",
+      "choice": {
+        "model": "claude-sonnet",
+        "tier": "balanced",
+        "reason": "mode"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": "claude-opus",
+      "choice": {
+        "model": "claude-opus",
+        "tier": "deep",
+        "reason": "user"
+      }
+    },
+    {
+      "policy": "models",
+      "pick": "nope",
+      "choice": {
+        "model": "claude-sonnet",
+        "tier": "balanced",
+        "reason": "mode"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": "claude-opus",
+      "choice": {
+        "model": "claude-opus",
+        "tier": "deep",
+        "reason": "user"
+      }
+    },
+    {
+      "policy": "admin",
+      "pick": "nope",
+      "choice": {
+        "model": "claude-sonnet",
+        "tier": "balanced",
+        "reason": "mode"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "policy": "chatOnly",
+      "input": {
+        "prompt": "  what is   on my list today?  "
+      },
+      "result": {
+        "request": {
+          "mode": "ai.chat",
+          "sessionKind": "assistant.chat",
+          "prompt": "  what is   on my list today?  ",
+          "model": "claude-sonnet",
+          "readOnly": true,
+          "needsApproval": false,
+          "title": "what is on my list today?"
+        },
+        "resolution": {
+          "mode": {
+            "id": "ai.chat",
+            "label": "Chat",
+            "requiresPermission": "",
+            "readOnly": true,
+            "needsApproval": false,
+            "sessionKind": "assistant.chat",
+            "tier": "balanced",
+            "description": "Talk with the assistant; nothing is written",
+            "module": "axf.framework"
+          },
+          "reason": "default"
+        },
+        "model": {
+          "model": "claude-sonnet",
+          "tier": "balanced",
+          "reason": "mode"
+        }
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "input": {
+        "prompt": "build me a notes app",
+        "requested": "ai.build-request",
+        "triggerId": "notes.build",
+        "context": {
+          "view": "notes"
+        }
+      },
+      "result": {
+        "request": {
+          "mode": "ai.build-request",
+          "sessionKind": "agent.run",
+          "prompt": "build me a notes app",
+          "model": "claude-opus",
+          "readOnly": false,
+          "needsApproval": true,
+          "title": "build me a notes app",
+          "context": {
+            "view": "notes"
+          },
+          "triggerId": "notes.build"
+        },
+        "resolution": {
+          "mode": {
+            "id": "ai.build-request",
+            "label": "Build request",
+            "requiresPermission": "ai.build",
+            "readOnly": false,
+            "needsApproval": true,
+            "sessionKind": "agent.run",
+            "tier": "deep",
+            "description": "Send a build request to the orchestrator; a person approves it first",
+            "module": "axf.framework"
+          },
+          "reason": "requested"
+        },
+        "model": {
+          "model": "claude-opus",
+          "tier": "deep",
+          "reason": "mode"
+        }
+      }
+    },
+    {
+      "policy": "allowedWithPerm",
+      "input": {
+        "prompt": "read this repo",
+        "override": "ai.read-codebase",
+        "title": "Repo notes"
+      },
+      "result": {
+        "request": {
+          "mode": "ai.chat",
+          "sessionKind": "assistant.chat",
+          "prompt": "read this repo",
+          "model": "claude-sonnet",
+          "readOnly": true,
+          "needsApproval": false,
+          "title": "Repo notes"
+        },
+        "resolution": {
+          "mode": {
+            "id": "ai.chat",
+            "label": "Chat",
+            "requiresPermission": "",
+            "readOnly": true,
+            "needsApproval": false,
+            "sessionKind": "assistant.chat",
+            "tier": "balanced",
+            "description": "Talk with the assistant; nothing is written",
+            "module": "axf.framework"
+          },
+          "reason": "fallback",
+          "denied": "ai.read-codebase"
+        },
+        "model": {
+          "model": "claude-sonnet",
+          "tier": "balanced",
+          "reason": "mode"
+        }
+      }
+    },
+    {
+      "policy": "chatOnly",
+      "input": {
+        "prompt": "build it",
+        "requested": "ai.build-request"
+      },
+      "result": {
+        "request": {
+          "mode": "ai.chat",
+          "sessionKind": "assistant.chat",
+          "prompt": "build it",
+          "model": "claude-sonnet",
+          "readOnly": true,
+          "needsApproval": false,
+          "title": "build it"
+        },
+        "resolution": {
+          "mode": {
+            "id": "ai.chat",
+            "label": "Chat",
+            "requiresPermission": "",
+            "readOnly": true,
+            "needsApproval": false,
+            "sessionKind": "assistant.chat",
+            "tier": "balanced",
+            "description": "Talk with the assistant; nothing is written",
+            "module": "axf.framework"
+          },
+          "reason": "fallback",
+          "denied": "ai.build-request"
+        },
+        "model": {
+          "model": "claude-sonnet",
+          "tier": "balanced",
+          "reason": "mode"
+        }
+      }
+    },
+    {
+      "policy": "nothing",
+      "input": {
+        "prompt": "hello"
+      },
+      "result": {
+        "request": null,
+        "resolution": {
+          "mode": null,
+          "reason": "denied",
+          "denied": "ai.chat"
+        },
+        "model": null
+      }
+    },
+    {
+      "policy": "models",
+      "input": {
+        "prompt": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "model": "claude-opus"
+      },
+      "result": {
+        "request": {
+          "mode": "ai.chat",
+          "sessionKind": "assistant.chat",
+          "prompt": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "model": "claude-opus",
+          "readOnly": true,
+          "needsApproval": false,
+          "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        "resolution": {
+          "mode": {
+            "id": "ai.chat",
+            "label": "Chat",
+            "requiresPermission": "",
+            "readOnly": true,
+            "needsApproval": false,
+            "sessionKind": "assistant.chat",
+            "tier": "balanced",
+            "description": "Talk with the assistant; nothing is written",
+            "module": "axf.framework"
+          },
+          "reason": "default"
+        },
+        "model": {
+          "model": "claude-opus",
+          "tier": "deep",
+          "reason": "user"
+        }
+      }
+    },
+    {
+      "policy": "anonymous",
+      "input": {
+        "prompt": "",
+        "model": "claude-opus"
+      },
+      "result": {
+        "request": {
+          "mode": "ai.chat",
+          "sessionKind": "assistant.chat",
+          "prompt": "",
+          "model": "claude-sonnet",
+          "readOnly": true,
+          "needsApproval": false,
+          "title": "Chat"
+        },
+        "resolution": {
+          "mode": {
+            "id": "ai.chat",
+            "label": "Chat",
+            "requiresPermission": "",
+            "readOnly": true,
+            "needsApproval": false,
+            "sessionKind": "assistant.chat",
+            "tier": "balanced",
+            "description": "Talk with the assistant; nothing is written",
+            "module": "axf.framework"
+          },
+          "reason": "default"
+        },
+        "model": {
+          "model": "claude-sonnet",
+          "tier": "balanced",
+          "reason": "mode"
+        }
+      }
+    }
+  ]
+}

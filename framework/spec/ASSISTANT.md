@@ -57,6 +57,39 @@ Build Pilot today, Android later) shares one contract; the chat engine lives in 
 | Build Pilot | its own server on baked copies of `axf.contracts` + `axf.assistant_host` (`scripts/bake-contracts.mjs`; `server/assistant.py`, routes `/api/assistant/*`) | its own, on `HttpAssistantClient` | **built** (Fable rebuild `build-pilot-agents`, Oct 20–21 2026); re-bake from `framework/python` pending |
 | Android | a module implementing `AssistantClient` (HTTP/AXPP/in-process) | Compose | planned (kernel contract only) |
 
+## AI modes — `ai-modes@1` (the lib-ai contract)
+
+What an app asks the assistant to *do*, on top of assistant@1 + live-session@1. Reference `framework/core/ai-modes.ts`
+= Kotlin `ai.amberx.axf.kernel.ai` (AiModes.kt); fixture `spec/fixtures/ai-modes.json`, replayed by
+`spec/check-ai-modes.mts` and `AiModesConformanceTest`. No Python twin yet (assistant@1 has one; ai-modes@1 gets one
+when a Python host needs modes).
+
+- **`AiMode`** `{id (namespaced), label, requiresPermission ('' = none), readOnly, needsApproval, sessionKind, tier
+  fast|balanced|deep, description?, module}`. Built-ins (`BUILTIN_AI_MODES` = Kotlin `AiModes.BUILTINS`): `ai.chat`
+  (read-only, no permission, `assistant.chat`), `ai.read-codebase` (read-only, `ai.read`, `assistant.read`: a repo or
+  folder read into notes), `ai.build-request` (writes, `ai.build`, needs approval, `agent.run`: a build request to the
+  orchestrator). **`AiModeRegistry`**: plugins register modes; a replaced id from another module is a
+  `contribution-conflict` diagnostic (`what: ai-mode`); built-ins can't be unregistered.
+- **UAC gating** (`modeAllowed` / `allowedModes` = Kotlin `AiModes.allowed`): an admin may use every mode; anyone
+  else only the modes in the policy's `allowedModes` (default `['ai.chat']`) *and* whose `requiresPermission` they
+  hold (`a.b.*` wildcards as in `permissionAllows`).
+- **Resolution** (`resolveMode` = `AiModes.resolve`): a trigger's per-trigger `override` first (triggers@1 action
+  args), then what the caller `requested`, then the default; a refused or unknown pick falls back to the default when
+  that is allowed (`reason: fallback`, `denied: <id>`), else `reason: denied` with no mode.
+- **Model choice** (`chooseModel`): a user's explicit pick counts only with `assistant.models` (or admin) and when
+  the model exists; otherwise the mode's tier; a missing tier takes the nearest (up first, then down); then the first
+  option; with no options an empty choice.
+- **`buildRequest`** turns `{prompt, context?, requested?, override?, triggerId?, model?, title?}` into an
+  `AiSessionRequest` `{mode, sessionKind, prompt, model, readOnly, needsApproval, title, context?, triggerId?}` (or
+  null when nothing is allowed).
+- **`AiSessionClient`** (`start / attach / send / stream / stop / close / list`) runs a request as a live session on a
+  host; the host is **axHub** (`AI_SESSION_HOST`), capability `axf.ai.session`, a typed placeholder
+  (`PlaceholderAiSessionClient`) until it is wired. A `needsApproval` session opens in `waiting` (live-session `wait`)
+  until a person approves.
+- **Speaking back** is speech@1 (`framework/core/speech.ts` = Kotlin `ai.amberx.axf.kernel.speech`, capability
+  `axf.speech`): `SpeechProvider {speak, stop, voices}` + the pure `SpeechQueue` rules (enqueue, pause, skip, back,
+  rate steps 0.5–2.0, repeat none/one/all, again). Listening stays on lib-voice through triggers@1.
+
 ## Not yet
 
 - Android `AssistantClient` implementation and Compose chat UI.

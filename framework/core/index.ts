@@ -40,4 +40,7 @@ export * from './agents';
 export * from './engines/plugins';
 export * from './library';
 export * from './engines/work';
+export * from './triggers';
+export * from './ai-modes';
+export * from './speech';
 export * from './engines/placement';
