@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Toolbar attach + plugin binding; ezgrid + ezfilter on Pending builds | working | `claude/ezbar-toolbars` | – | Opus build; Fable rebuild parked as `ezbar-toolbars-fable` | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | review | `claude/fresh-look` | #119 | Merge after CI, then apply `fresh` on axHub | 2026-10-27 |
 | Connections plugin (every connected app, 7 layouts) | queued | – | – | Asked Oct 26, never started. See *To carry on* | 2026-10-26 |
 | Separate Console and Patches asset visibility | blocked | `claude/project-thread-k6ckjv` | #94 | Needs Brett's answer in the thread | 2026-10-25 |
@@ -47,6 +48,25 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
+
+### Toolbar attach + plugin binding; ezgrid + ezfilter on Pending builds
+- **Asked (Brett, Oct 27 2026, claude.ai chat):** "In pending builds is sort by stuff buttons or toolbar? Make it a toolbar
+  asset named ezgrid. Edit toolbar asset type so it can attach it to things like a grid or a chart or an image anything
+  so that its actions will apply to what it's attached to. Also a field in its manifest to attach it to a plugin so
+  that a toolbar's settings will appear in the plugin's settings. So any plugin that's built with a toolbar manifest
+  must note it's a plugin toolbar, what plugin, and what element it's attached to to control or it doesn't validate.
+  Attach ezgrid to the list of pending builds. Change the filter buttons that show the number of each type to a
+  toolbar asset named ezfilter and attach it to the list of pending builds. Make the filter toolbar show an icon, text
+  and a small number badge in the corner noting the number of each type." Standing preference: every asset type is
+  validated with Pydantic.
+- **Model:** Opus (Fable recommended, Opus picked: Fable rebuild parked as `ezbar-toolbars-fable`).
+- **Branch:** `claude/ezbar-toolbars`. Change-log entry `chg-20261027-ezbar7f3a1` on axHub.
+- **Steps:** (1) toolbar type: `attach` + `owner` fields in asset-types.json, schema, TS validator, Pydantic model;
+  (2) runtime attach targets + `AssetToolbar`/`AttachedToolbars`, plugin toolbar settings in the plugin's tab;
+  (3) `ezgrid` + `ezfilter` console assets, Pending.tsx registers the list as target `console.pending-list`;
+  (4) rebake console, typecheck, tests, PR.
+- **First message:** "Carry on the thread *Toolbar attach + plugin binding* from `_claude/THREADS.md` → To carry on,
+  on branch `claude/ezbar-toolbars`."
 
 ### Connections plugin (every connected app, 7 layouts)
 - **Asked (Brett, Oct 26 2026, in the "Repo thread status review" chat; cut off, never started):** "Add tmux, ntfy,
