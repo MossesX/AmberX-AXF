@@ -51,8 +51,12 @@ export function allCommands(rt: AxfRuntime): VoiceCommand[] {
 /* ---------------------------------------------------------------- the conversation log (this session only) */
 
 type Turn = { at: string; heard: string; did: string; ok: boolean };
-type State = { busy: boolean; turns: Turn[]; levels: number[]; db: number; heard: string; heardFinal: boolean; status: VoiceStatus | null; paused: boolean };
-let state: State = { busy: false, turns: [], levels: [], db: -Infinity, heard: '', heardFinal: false, status: null, paused: false };
+type State = { busy: boolean; turns: Turn[]; levels: number[]; db: number; heard: string; heardFinal: boolean; status: VoiceStatus | null };
+let state: State = { busy: false, turns: [], levels: [], db: -Infinity, heard: '', heardFinal: false, status: null };
+
+/** Set while Speak (or "Yes?") waits for the next thing hands-free hears; it receives that text. */
+let nextHeard: ((text: string) => void) | null = null;
+const ASK_MS = 8000;
 const subs = new Set<() => void>();
 const set = (patch: Partial<State>) => { state = { ...state, ...patch }; subs.forEach((f) => f()); };
 const useVoice = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => state);
@@ -87,11 +91,23 @@ export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
   return turn;
 }
 
+/** With hands-free listening, Speak never opens a second recognizer (that would pause hands-free): the next thing heard
+ * is the command. Without it, one native utterance as before. */
+async function nextCommand(rt: AxfRuntime): Promise<string> {
+  if (listens(configOf(rt)) && state.status?.listening) {
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => { nextHeard = null; resolve(''); }, ASK_MS);
+      nextHeard = (text) => { clearTimeout(timer); nextHeard = null; resolve(text); };
+    });
+  }
+  return (await native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') })).text;
+}
+
 export async function listenOnce(rt: AxfRuntime) {
   if (state.busy) return;
   set({ busy: true });
   try {
-    const { text } = await native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') });
+    const text = await nextCommand(rt);
     await handle(rt, text);
   } catch (e) {
     rt.toast(e instanceof Error ? e.message : String(e), 'danger', 'Voice');
@@ -146,7 +162,7 @@ function HandsFree() {
   const v = useVoice();
   const cfg = configOf(rt);
   const on = listens(cfg);
-  const chip = !cfg.handsFree ? 'Off' : !on ? 'Nothing to listen for' : v.paused ? 'Paused' : v.status?.listening ? (cfg.alwaysArmed ? 'Armed' : 'Listening') : 'Starting…';
+  const chip = !cfg.handsFree ? 'Off' : !on ? 'Nothing to listen for' : v.status?.listening ? (cfg.alwaysArmed ? 'Armed' : 'Listening') : 'Starting…';
   return (
     <Section title={`Hands-free · ${chip}`}>
       <p className="fx-muted">
@@ -248,6 +264,7 @@ export const library: AxfWebLibrary = {
     // A wake phrase was heard (hands-free, on screen or with the app closed): the rest of the sentence may already be the
     // command. An empty phrase = no wake phrase in it (always armed on Android, or any final result in a browser).
     void native.addListener('wake', ({ phrase, text }) => {
+      if (nextHeard) { nextHeard(afterWake(text ?? '', phraseList(rt.settings.get(K.wake)))); return; }
       if (state.busy) return;
       const wake = phraseList(rt.settings.get(K.wake));
       if (phrase) {
@@ -260,9 +277,12 @@ export const library: AxfWebLibrary = {
       if (h.kind === 'command') void handle(rt, h.text);
       else if (h.kind === 'wake') void say(rt, 'Yes?').then(() => listenOnce(rt));
     }).catch(() => undefined);
-    void native.addListener('heard', ({ text, final }) => set({ heard: text, heardFinal: final })).catch(() => undefined);
+    void native.addListener('heard', ({ text, final }) => {
+      set({ heard: text, heardFinal: final });
+      // Speak / "Yes?" is waiting: the next final utterance is the command (whether or not it held a wake phrase).
+      if (final && nextHeard) nextHeard(afterWake(text, phraseList(rt.settings.get(K.wake))));
+    }).catch(() => undefined);
     void native.addListener('level', ({ db, source }) => set({ db, levels: pushLevel(state.levels, levelOf(db, source ?? 'android')) })).catch(() => undefined);
-    void native.addListener('voicePaused', ({ paused }) => set({ paused })).catch(() => undefined);
     // A quick setting changed on the overlay: save it so Settings and this page show the same.
     void native.addListener('voiceSettings', (c) => {
       if (typeof c.handsFree === 'boolean') rt.settings.set(K.handsFree, c.handsFree);

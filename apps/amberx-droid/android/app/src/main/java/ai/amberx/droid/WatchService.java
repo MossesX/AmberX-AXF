@@ -42,7 +42,8 @@ import org.json.JSONObject;
  * - **Hands-free listening (Oct 27 2026):** its own switch (Voice control → Hands-free, on by default), independent of
  *   watching axHub. The on-device recognizer listens on screen and in the background for the wake phrases, or for
  *   everything when "always armed" is on. On screen a hit goes straight to the web side; with the app closed it opens
- *   AmberX (a full-screen alert where Android allows it). It pauses while the Speak button is listening.
+ *   AmberX (a full-screen alert where Android allows it). It never pauses: with hands-free on, the Speak button uses this
+ *   same listener (the app takes the next thing heard as a command) instead of a second recognizer.
  * - **Detection overlay:** [DetectionOverlay], a floating window over other apps with the input level, dB, what was heard
  *   and quick settings (needs "Display over other apps").
  *
@@ -251,16 +252,6 @@ public class WatchService extends Service {
         return out;
     }
 
-    /** Paused from the overlay's quick settings (not saved: a restart listens again). */
-    private boolean paused;
-
-    void togglePause() {
-        paused = !paused;
-        main.removeCallbacksAndMessages(null);
-        if (paused) pauseListening(); else main.post(this::listenLoop);
-        AmberxNativePlugin.paused(paused);
-    }
-
     private boolean alwaysArmed() { return handsFree(this) && voice(this).optBoolean("alwaysArmed", false); }
 
     private boolean wantsMic() { return !phrases().isEmpty() || alwaysArmed(); }
@@ -278,7 +269,6 @@ public class WatchService extends Service {
         boolean on = prefs(this).getBoolean("on", false) || handsFree(this);
         if (!on || !wantsMic() || !micGranted()) { stopListening(); return; }
         if (appListening) { pauseListening(); main.postDelayed(this::listenLoop, 1_000); return; } // the Speak button has the mic
-        if (paused) { pauseListening(); return; } // paused from the overlay; togglePause() starts it again
         if (!SpeechRecognizer.isRecognitionAvailable(this)) { stopListening(); return; }
         if (recognizer == null) {
             recognizer = Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
@@ -393,9 +383,12 @@ public class WatchService extends Service {
         boolean watching = prefs(this).getBoolean("on", false);
         String hearing = alwaysArmed() ? "listening (always armed)" : "listening for " + String.join(" / ", phrases());
         String what = watching ? (mic ? "Watching axHub and " + hearing : "Watching axHub for approvals") : (mic ? "Hands-free: " + hearing : "Hands-free is waiting for the microphone");
-        return new NotificationCompat.Builder(this, CH_WATCH)
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CH_WATCH)
             .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX").setContentText(what)
-            .setOngoing(true).setContentIntent(open).addAction(0, "Stop", stop).build();
+            .setOngoing(true).setContentIntent(open);
+        // Hands-free always listens: no Stop here (turn it off in Voice control). Watching axHub alone keeps its Stop.
+        if (!handsFree(this)) b.addAction(0, "Stop", stop);
+        return b.build();
     }
 
     private Notification alert(String channel, String title, String text, String url, boolean full) {

@@ -70,7 +70,6 @@ export interface NativeApi {
   addListener(event: 'level', fn: (e: { db: number; source?: 'android' | 'web' }) => void): Promise<PluginListenerHandle>;
   /** a quick setting changed on the overlay */
   addListener(event: 'voiceSettings', fn: (e: Partial<VoiceConfig>) => void): Promise<PluginListenerHandle>;
-  addListener(event: 'voicePaused', fn: (e: { paused: boolean }) => void): Promise<PluginListenerHandle>;
 }
 
 export const isNative = (): boolean => Capacitor.isNativePlatform();

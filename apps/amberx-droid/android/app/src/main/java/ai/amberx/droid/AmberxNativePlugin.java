@@ -90,11 +90,6 @@ public class AmberxNativePlugin extends Plugin {
         if (p != null) p.notifyListeners("voiceSettings", js(cfg), true);
     }
 
-    static void paused(boolean on) {
-        AmberxNativePlugin p = current;
-        if (p != null) p.notifyListeners("voicePaused", new JSObject().put("paused", on));
-    }
-
     /** MainActivity hands notification taps and wake-phrase hits here. */
     static void deliver(Intent intent) {
         AmberxNativePlugin p = current;

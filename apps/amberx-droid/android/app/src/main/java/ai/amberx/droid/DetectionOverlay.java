@@ -25,8 +25,8 @@ import org.json.JSONObject;
 /**
  * The detection overlay (Oct 27 2026, Brett: "like ActiveX"): a small floating window over every app while hands-free
  * listening is on. It shows a status chip (LISTENING / ARMED / PAUSED), the input level as a moving line, the level in dB,
- * what the recognizer is hearing, and quick settings: pause/resume the microphone, always armed, open AmberX, collapse,
- * hide (hiding turns the overlay setting off; the app's Voice page turns it back on).
+ * what the recognizer is hearing, and quick settings: always armed, open AmberX, collapse, hide (hiding turns the overlay
+ * setting off; the app's Voice page turns it back on). There is no pause: hands-free always listens (Brett, Oct 27 2026).
  * Drag it by its top row; its place is remembered. Colours come from the app's theme tokens (the web side sends them
  * with the voice config), so it looks like AmberX. Needs "Display over other apps".
  *
@@ -41,7 +41,7 @@ final class DetectionOverlay {
     private final WindowManager.LayoutParams lp;
     private final LinearLayout root;
     private final LinearLayout body;
-    private final TextView chip, db, heard, micBtn, armBtn, openBtn, foldBtn, hideBtn;
+    private final TextView chip, db, heard, armBtn, openBtn, foldBtn, hideBtn;
     private final Graph graph;
     private boolean shown, collapsed, listening, armed;
     private int bg = Color.parseColor("#1e1e24"), fg = Color.parseColor("#f2f2f5"), accent = Color.parseColor("#e8a33d"),
@@ -100,13 +100,11 @@ final class DetectionOverlay {
         LinearLayout quick = new LinearLayout(service);
         quick.setOrientation(LinearLayout.HORIZONTAL);
         quick.setPadding(0, dp(6), 0, 0);
-        micBtn = button("Pause", v -> service.togglePause());
         armBtn = button("Armed", v -> WatchService.setVoiceFlag(service, "alwaysArmed", !armed));
         openBtn = button("Open", v -> {
             Intent i = new Intent(service, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             try { service.startActivity(i); } catch (Exception ignored) {}
         });
-        quick.addView(micBtn);
         quick.addView(armBtn);
         quick.addView(openBtn);
         body.addView(quick);
@@ -173,18 +171,15 @@ final class DetectionOverlay {
         panel.setCornerRadius(dp(14));
         panel.setStroke(dp(1), muted);
         root.setBackground(panel);
-        String state = !listening ? "PAUSED" : armed ? "ARMED" : "LISTENING";
+        String state = !listening ? "STARTING" : armed ? "ARMED" : "LISTENING";
         chip.setText(state);
         chip.setTextColor(bg);
         chip.setBackground(pill(!listening ? muted : armed ? danger : accent));
         db.setTextColor(fg);
         heard.setTextColor(muted);
-        for (TextView b : new TextView[] { foldBtn, hideBtn, micBtn, armBtn, openBtn }) b.setTextColor(fg);
+        for (TextView b : new TextView[] { foldBtn, hideBtn, armBtn, openBtn }) b.setTextColor(fg);
         armBtn.setBackground(armed ? pill(accent) : outline());
         armBtn.setTextColor(armed ? bg : fg);
-        micBtn.setText(listening ? "Pause" : "Resume");
-        micBtn.setBackground(listening ? outline() : pill(accent));
-        micBtn.setTextColor(listening ? fg : bg);
         openBtn.setBackground(outline());
         graph.setColors(accent, muted);
     }
