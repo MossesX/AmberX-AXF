@@ -1,3 +1,7 @@
+import java.net.URL
+import java.util.UUID
+import java.util.zip.ZipInputStream
+
 plugins { id("axf.android.application") }
 
 android {
@@ -38,9 +42,9 @@ val fetchVoskModel by tasks.registering {
     doLast {
         val name = "vosk-model-small-en-us-0.15"
         val zip = File(temporaryDir, "$name.zip")
-        java.net.URL("https://alphacephei.com/vosk/models/$name.zip").openStream().use { i -> zip.outputStream().use { o -> i.copyTo(o) } }
+        URL("https://alphacephei.com/vosk/models/$name.zip").openStream().use { i -> zip.outputStream().use { o -> i.copyTo(o) } }
         dir.deleteRecursively(); dir.mkdirs()
-        java.util.zip.ZipInputStream(zip.inputStream()).use { zin ->
+        ZipInputStream(zip.inputStream()).use { zin ->
             generateSequence { zin.nextEntry }.forEach { e ->
                 val rel = e.name.removePrefix("$name/")
                 if (rel.isBlank()) return@forEach
@@ -48,7 +52,7 @@ val fetchVoskModel by tasks.registering {
                 if (e.isDirectory) out.mkdirs() else { out.parentFile.mkdirs(); out.outputStream().use { zin.copyTo(it) } }
             }
         }
-        File(dir, "uuid").writeText(java.util.UUID.randomUUID().toString())
+        File(dir, "uuid").writeText(UUID.randomUUID().toString())
     }
 }
 tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(fetchVoskModel) }

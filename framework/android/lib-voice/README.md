@@ -72,6 +72,11 @@ engine.start(voice.engineOptions())   // … engine.stop() when done
 The library brings the Vosk + JNA dependencies, not the ~40 MB model. An app that uses `VoskVoiceEngine` adds the model to its own `src/main/assets/model-en-us` with a `uuid` file; this task in the app's `build.gradle.kts` fetches it once (from ActiveX):
 
 ```kotlin
+// at the top of build.gradle.kts (inside a Gradle script `java` is the Java extension, so import these)
+import java.net.URL
+import java.util.UUID
+import java.util.zip.ZipInputStream
+
 val voskModelDir = layout.projectDirectory.dir("src/main/assets/model-en-us")
 val fetchVoskModel by tasks.registering {
     val dir = voskModelDir.asFile
@@ -80,9 +85,9 @@ val fetchVoskModel by tasks.registering {
     doLast {
         val name = "vosk-model-small-en-us-0.15"
         val zip = File(temporaryDir, "$name.zip")
-        java.net.URL("https://alphacephei.com/vosk/models/$name.zip").openStream().use { i -> zip.outputStream().use { o -> i.copyTo(o) } }
+        URL("https://alphacephei.com/vosk/models/$name.zip").openStream().use { i -> zip.outputStream().use { o -> i.copyTo(o) } }
         dir.deleteRecursively(); dir.mkdirs()
-        java.util.zip.ZipInputStream(zip.inputStream()).use { zin ->
+        ZipInputStream(zip.inputStream()).use { zin ->
             generateSequence { zin.nextEntry }.forEach { e ->
                 val rel = e.name.removePrefix("$name/")
                 if (rel.isBlank()) return@forEach
@@ -90,7 +95,7 @@ val fetchVoskModel by tasks.registering {
                 if (e.isDirectory) out.mkdirs() else { out.parentFile.mkdirs(); out.outputStream().use { zin.copyTo(it) } }
             }
         }
-        File(dir, "uuid").writeText(java.util.UUID.randomUUID().toString())
+        File(dir, "uuid").writeText(UUID.randomUUID().toString())
     }
 }
 tasks.named("preBuild") { dependsOn(fetchVoskModel) }

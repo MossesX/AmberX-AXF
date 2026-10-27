@@ -313,7 +313,7 @@ jobs:
           set -o pipefail
           for d in $(node framework/cli/app-bundle.mjs list --android --dirs); do
             ls "$d"/app/build/outputs/apk/debug/*.apk >/dev/null 2>&1 && continue
-            echo "== $d"; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
+            echo "== $d" | tee -a /tmp/build-apps.log; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
           done
       - name: Report app build failures (readable without artifact downloads)
         if: failure()
