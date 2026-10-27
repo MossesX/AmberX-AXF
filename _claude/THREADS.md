@@ -34,7 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Build profiles + Build profiles plugin (Main framework, Refactor) | review | `claude/build-profiles` | see GitHub | Merge after CI; then the console shows the profile chip. Main framework stays the saved pick until Brett switches | 2026-10-27 |
+| Build profiles + Build profiles plugin (Main framework, Refactor) | review | `claude/build-profiles` | see GitHub | Merge after CI; then the console shows the profile chip. Refactor is the saved pick; today's refactor/upgrade work imported into it (pending: arch-foundation, enterprise-branding, interface-roller, design-package-fable, apply-all-levels-fable + 5 done; orchestrator: arch-foundation, enterprise-branding, interface-roller, design-package). Main keeps its copies with a note | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
 | AmberX Design Package + Behaviour theme (replaces Appearance package) | merged in #124 (carries #123), live on console, axHub web, Patches web, AmberX; Fable rebuild parked (`design-package-fable`) | 2026-10-27 |

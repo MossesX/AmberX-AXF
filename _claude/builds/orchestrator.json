@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T19:07:43.436Z",
+ "updatedAt": "2026-10-27T19:30:00.000Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -214,9 +214,14 @@
    "branch": "fable/arch-foundation",
    "pr": "",
    "createdAt": "2026-10-27T16:36:55.356Z",
-   "updatedAt": "2026-10-27T16:36:55.356Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -556,7 +561,7 @@
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T18:08:21.998Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
    "builtAt": "",
    "notes": [
     {
@@ -578,6 +583,10 @@
     {
      "text": "Oct 27 2026 17:40: PRs #123/#124 (another session, Opus) landed design-package + behavior-theme + 10 design packages + the Appearance picker. Steps s2-s5 and s30 ticked; the parked Fable rebuild (pending design-package-fable) is now group \"Design package (Fable rebuild)\" in phase 1 (s5r1-s5r6). s23 reduced to 14 more packages.",
      "at": "2026-10-27T18:08:21.998Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
     }
    ],
    "approvals": [],
@@ -1352,7 +1361,7 @@
    "branch": "fable/interface-roller",
    "pr": "",
    "createdAt": "2026-10-27T17:11:59.344Z",
-   "updatedAt": "2026-10-27T17:17:17.313Z",
+   "updatedAt": "2026-10-27T19:30:00.000Z",
    "builtAt": "",
    "notes": [
     {
@@ -1362,6 +1371,10 @@
     {
      "text": "Brett, Oct 27 2026 (cards): the three interface tabs go in the GizmoX console (Main = today's look). Order: enterprise-branding phase 1 first, then this build's Fable phase in the same Fable session, then one switch to Opus.",
      "at": "2026-10-27T17:17:17.307Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T19:30:00.000Z"
     }
    ],
    "approvals": [],
