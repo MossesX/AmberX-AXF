@@ -29,6 +29,7 @@
           { "id": "about-settings", "label": "About settings", "icon": "info", "action": "settings.open:about", "order": 23.6 },
           { "id": "s2", "separator": true, "order": 30 },
           { "id": "terminal", "label": "Output terminal", "icon": "terminal", "action": "terminal.open", "order": 31 },
+          { "id": "dev-console", "label": "Developer console", "icon": "code", "action": "dev.console", "order": 32 },
           { "id": "refresh", "label": "Reload data", "icon": "refresh", "action": "console.refresh", "order": 33 },
           { "id": "open-project", "label": "Open project…", "icon": "folder", "action": "console.openProject", "order": 34 },
           { "id": "save", "label": "Save", "icon": "save", "action": "file.save", "shortcut": "Ctrl+S", "requires": "files.write", "order": 35 },

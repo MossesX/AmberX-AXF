@@ -14,7 +14,7 @@
   "data": {
     "style-theme": "geometric",
     "color-theme": "saffron-day",
-    "layout": "studio-dock",
+    "layout": "signature-dock",
     "behavior-theme": "amber",
     "extras": {
       "slots": {

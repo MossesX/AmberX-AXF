@@ -19,7 +19,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/feature-assist",
     "env": ["AXF_FEATURE_ASSIST_DIR", "AXF_FEATURE_EXPERT", "AXF_FEATURE_BUILDER"],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "apps/console-web/plugins/README.md"]
   },
   "opens": "main"
 }

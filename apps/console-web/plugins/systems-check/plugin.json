@@ -38,7 +38,7 @@
       "AXF_SYSCHECK_AGENT"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       ".github/workflows/android.yml"
     ]

@@ -36,7 +36,7 @@
     "dataDir": ".axf-console/plugins/plugin-manager",
     "env": [],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "_claude/memory/decisions.md",
       "_claude/memory/docs/rebuilds/plugin-manager.md"

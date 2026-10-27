@@ -114,5 +114,21 @@ for (const p of packages) {
   eq([act.button, act.dialog, act['tab-group'], act.toolbar, act['nav-menu']], ['gizmo-console', 'gizmo-console', 'gizmo-console', 'developer-ops', 'gizmo-console'], 'its style package + chrome');
 }
 
+// interfaces (interface-roller s6–s10): a scoped interface brings its style package's controls too
+{
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => read(t));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:ifx' });
+  for (const [iid, sp] of [['gizmox-night', 'gizmo-console'], ['amberx-signature', 'amber-signature']]) {
+    const r = rt.resolveInterface(iid);
+    ok(r && r.missing.length === 0, `${iid}: resolves with nothing missing (${r?.missing.join(', ')})`);
+    eq([r?.active.button, r?.active.dialog, r?.active['tab-group']], [sp, sp, sp], `${iid}: its style package's controls`);
+    const view = rt.scoped(`t-${iid}`, iid);
+    eq((view?.state.active as Record<string, string> | undefined)?.button, sp, `${iid}: the scoped view sees them`);
+    ok(view?.getState() === view?.getState(), `${iid}: scoped state is a stable snapshot`);
+  }
+  eq((rt.state.active as Record<string, string>).button, defaults.button, 'the app itself is untouched');
+}
+
 if (failures.length) { for (const f of failures) console.error(`✗ ${f}`); console.error(`check-style-packages: ${failures.length} of ${n + failures.length} checks failed`); process.exit(1); }
 console.log(`check-style-packages: ${n} checks passed`);

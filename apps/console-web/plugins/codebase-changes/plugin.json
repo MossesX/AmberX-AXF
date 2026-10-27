@@ -39,7 +39,7 @@
       "AXF_CHANGES_REPO"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "_claude/rules/RULES.md",
       "_claude/memory/docs/codebase-changes.md",

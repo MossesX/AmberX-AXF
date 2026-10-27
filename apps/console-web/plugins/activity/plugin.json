@@ -41,7 +41,7 @@
       "AXF_NOTIFY_INBOX"
     ],
     "mentions": [
-      "CLAUDE.md"
+      "CLAUDE.md", "_claude/memory/STATUS.md"
     ]
   },
   "opens": false

@@ -32,7 +32,7 @@
       "AXF_PLUGINS_MENU_DIR"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ]
   },

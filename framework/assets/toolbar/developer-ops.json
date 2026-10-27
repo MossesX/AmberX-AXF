@@ -4,7 +4,7 @@
   "id": "developer-ops",
   "name": "Developer Ops",
   "version": "1.0.0",
-  "description": "Build, deploy and the dev console with the alerts badge, a build progress bar, AI status and a 24 h clock.",
+  "description": "Build, deploy and the dev console with a build progress bar, AI status and a 24 h clock (alerts stay on the banner).",
   "author": "AmberX AXF",
   "tags": [
     "developer"
@@ -39,13 +39,6 @@
             "icon": "terminal",
             "label": "Dev console",
             "action": "dev.console"
-          },
-          {
-            "id": "alerts",
-            "icon": "bell",
-            "label": "Alerts",
-            "action": "alerts.open",
-            "badge": "alerts.unread"
           }
         ]
       }
