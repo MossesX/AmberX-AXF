@@ -4,6 +4,8 @@
  * AssetEnvelope. Any app built on AmberX AXF can load any asset of a known type.
  */
 import type { SettingsUi } from './engines/settingsui';
+import type { AnimatedLogoData, BrandingData, IconPackData, MarkData } from './engines/brand-rules.mjs';
+import type { InterfaceData } from './engines/interface';
 
 // Same order as framework/schemas/asset-types.json (the Kotlin registry's order), so lists derived from it match across ports.
 export const ASSET_TYPES = [
@@ -40,11 +42,16 @@ export const ASSET_TYPES = [
   'settings',
   'behavior-theme',
   'design-package',
+  'interface',
+  'logo-mark',
+  'animated-logo',
+  'icon-pack',
+  'branding',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -458,6 +465,11 @@ export interface AssetDataMap {
   settings: SettingsData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
+  interface: InterfaceData;
+  'logo-mark': MarkData;
+  'animated-logo': AnimatedLogoData;
+  'icon-pack': IconPackData;
+  'branding': BrandingData;
   'uac-policy': UACPolicyData;
 }
 
@@ -465,7 +477,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface';
 
 export interface AxfManifest {
   $axf: 'manifest@1';
@@ -491,6 +503,8 @@ export interface Toast {
   kind: 'info' | 'success' | 'warning' | 'danger';
   title?: string;
   message: string;
+  /** the interface scope it was raised in ('' / absent = the app itself; react/components/InterfaceScope.tsx) */
+  scope?: string;
 }
 
 export interface AxfState {
@@ -499,9 +513,9 @@ export interface AxfState {
   appearance?: import('./engines/appearance').AppearanceSourceState | null;
   role: string;
   view: string;
-  dialog: { id: string; props?: Record<string, unknown> } | null;
+  dialog: { id: string; props?: Record<string, unknown>; scope?: string } | null;
   toasts: Toast[];
-  context: { x: number; y: number; target: string; payload?: string } | null;
+  context: { x: number; y: number; target: string; payload?: string; scope?: string } | null;
   /** increments on every state change */
   rev: number;
   /** increments on every successful hot-swap */
