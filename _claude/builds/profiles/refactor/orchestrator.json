@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T23:01:35.786Z",
+ "updatedAt": "2026-10-27T23:36:43.721Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2309,15 +2309,15 @@
    "title": "AX Notes: voice AI note-taker + to-do lists app, AmberX speaks (lib-speech), lib-overlay/triggers/ai/onboarding + 5 AI plugins",
    "category": "AI & voice",
    "detail": "Brett, Oct 27 2026 (claude.ai, AmberX Framework project): Android app apps/ax-notes, voice-controlled AI note-taker + Claude assistant with an ActiveX-style floating overlay (pill with chips, DETECTIONS-style log, 3-line strip, mini screen). Not a plugin: core hardcoded in the app; reusable parts as framework libraries (lib-overlay NEW, lib-voice EXTEND, lib-triggers NEW, lib-tts NEW, lib-ai NEW = queue epic x.lib.ai, lib-onboarding NEW) and Android plugins (ai-chat, ai-codebase-reader, ai-build-bridge, ai-automations, note-sorter). ActiveX (MossesX/ActiveX) code is COPIED and generalized; ActiveX never named in AXF manifests/hub. Android hold exception granted by Brett for this build only. Build profile: refactor (Brett's pick). Brett allowed up to 3 sub-agents for this build. Folds in queue epic x.lib.ai. overlay@1 joins interface@1 chrome slots and the named-asset rule (namespaced ids).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/ax-notes",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/136",
    "createdAt": "2026-10-27T20:15:45.931Z",
-   "updatedAt": "2026-10-27T21:36:50.574Z",
-   "builtAt": "",
+   "updatedAt": "2026-10-27T23:36:43.720Z",
+   "builtAt": "2026-10-27T23:36:43.337Z",
    "notes": [
     {
      "text": "Build profile: refactor (Brett, card Oct 27 2026). Fable→Opus switch pre-approved by Brett in chat ('do fable and opus', up to 3 sub-agents).",
@@ -2366,6 +2366,10 @@
     {
      "text": "s13 done 812f44e: app wired to 7 libs + generic PluginHost. Gaps: lib-triggers voiceBridge ignores registry-only triggers; lib-ai settings tab 'connections' missing on Android; PreferenceStore can't remove keys; dictate() stops the shared engine; AutomationsWorker needs a kernel worker contract; no lib-hub data client (sync off).",
      "at": "2026-10-27T21:22:48.601Z"
+    },
+    {
+     "text": "s21 done: catalog/libraries.json + tracker regenerated, CI green on a749ac11 (kernel, all libs + tests, AX Notes + 5 plugins, 6 demos, web console). Follow-ups: lib-hub data client (axHub sync off), hub model list / aiModes in /me / needsApproval, verify build-bridge axHub event names, MENU_ITEMS Android consumer, ai-automations onto kernel PollWorker, Voice Vault carries Vosk+JNA libs.",
+     "at": "2026-10-27T23:36:43.720Z"
     }
    ],
    "approvals": [
@@ -2741,8 +2745,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T23:36:43.327Z",
      "note": ""
     }
    ]
