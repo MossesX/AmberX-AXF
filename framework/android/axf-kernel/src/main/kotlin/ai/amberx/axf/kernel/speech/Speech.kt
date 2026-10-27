@@ -136,7 +136,7 @@ public sealed class SpeechQueueEvent {
 
         /** An event from its JSON (`{type, …}`); null for an unknown type. */
         public fun parse(o: JsonObject): SpeechQueueEvent? = when (SpeechJson.str(o, "type")) {
-            "enqueue" -> Enqueue(SpeechItem.parse(o["item"] as? JsonObject ?: return null), SpeechJson.bool(o, "next") ?: false)
+            "enqueue" -> (o["item"] as? JsonObject)?.let { Enqueue(SpeechItem.parse(it), SpeechJson.bool(o, "next") ?: false) }
             "started" -> Started
             "done" -> Done(SpeakOutcome.parse(SpeechJson.str(o, "outcome")))
             "pause" -> Pause
