@@ -6,7 +6,7 @@ import { FOLDER, OrchestratorPage } from './ui';
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.build-orchestrator',
   label: 'Build orchestrator',
-  version: '0.1.0',
+  version: '0.1.1',
   appMenu,
   views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
