@@ -315,6 +315,16 @@ jobs:
             ls "$d"/app/build/outputs/apk/debug/*.apk >/dev/null 2>&1 && continue
             echo "== $d"; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
           done
+      - name: Report app build failures (readable without artifact downloads)
+        if: failure()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          {
+            echo "### App build failures — ${{ github.sha }}"; echo; echo '```'
+            grep -hE "^== |^e: |FAILED|What went wrong|Could not|error:" /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | head -120
+            echo '```'
+          } > /tmp/apps-report.md
+          if [ "${{ github.event_name }}" = "pull_request" ]; then gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/apps-report.md || true; fi
       - name: AmberX APK from its own job (Capacitor shell) for the catalog bundle
         if: ${{ needs.amberx.result == 'success' }}
         uses: actions/download-artifact@v4
