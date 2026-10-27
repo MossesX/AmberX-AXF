@@ -82,8 +82,8 @@ export const LOOK_TOKENS: LookToken[] = [
   // text
   { id: 'textSize', label: 'Text size', category: 'text', level: 'simple', kind: 'slider', scopes: BOTH, inherit: 100, min: 60, max: 160, step: 5, unit: '%' },
   { id: 'textWeight', label: 'Text weight', category: 'text', level: 'basic', kind: 'choice', scopes: BOTH, inherit: '', options: [{ value: '', label: 'The theme’s' }, { value: '300', label: 'Light' }, { value: '400', label: 'Regular' }, { value: '500', label: 'Medium' }, { value: '600', label: 'Semibold' }, { value: '700', label: 'Bold' }] },
-  { id: 'lineHeight', label: 'Line height', category: 'text', level: 'pro', kind: 'slider', scopes: BOTH, inherit: 0, min: 0, max: 200, step: 5, unit: '%', hint: '0 = the theme’s.' },
-  { id: 'letterSpacing', label: 'Letter spacing', category: 'text', level: 'pro', kind: 'slider', scopes: BOTH, inherit: 0, min: -5, max: 20, step: 1, unit: '/100 em' },
+  { id: 'lineHeight', label: 'Line height', category: 'text', level: 'pro', kind: 'slider', scopes: BOTH, inherit: 0, min: 0, max: 200, step: 5, unit: '%', hint: '0 = the theme’s; anything else is at least 100%.' },
+  { id: 'letterSpacing', label: 'Letter spacing', category: 'text', level: 'pro', kind: 'slider', scopes: BOTH, inherit: 0, min: -5, max: 10, step: 1, unit: '/100 em' },
   { id: 'textCase', label: 'Letter case', category: 'text', level: 'advanced', kind: 'choice', scopes: BOTH, inherit: '', options: [{ value: '', label: 'As written' }, { value: 'uppercase', label: 'UPPERCASE' }, { value: 'lowercase', label: 'lowercase' }, { value: 'capitalize', label: 'Capitalized' }] },
   { id: 'fontFamily', label: 'Font', category: 'text', level: 'advanced', kind: 'choice', scopes: BOTH, inherit: '', options: [{ value: '', label: 'The theme’s' }, { value: 'display', label: 'The theme’s display font' }, { value: 'mono', label: 'The theme’s monospace font' }, { value: 'system', label: 'System' }, { value: 'serif', label: 'Serif' }] },
   { id: 'italic', label: 'Italic', category: 'text', level: 'advanced', kind: 'switch', scopes: BOTH, inherit: false },
@@ -177,6 +177,10 @@ export function lookPrefs(values: LookValues): Record<string, LookValue> {
 /** Theme variables a scope re-declares from the captured base (the base selector captures each one). */
 const BASE_VARS = ['space', 'card-pad', 'tab-py', 'tab-px', 'row-h', 'font-size', 'radius-sm', 'radius-md', 'radius-lg', 'border-w', 'blur', 'motion'];
 const pct = (v: LookValue) => Number(v) / 100;
+/** Lowest line height a look can set (%): below it lines of text overlap. */
+export const LINE_HEIGHT_MIN = 100;
+/** Widest letter spacing a look can set (/100 em): past it words fall apart. */
+export const LETTER_SPACING_MAX = 10;
 const n4 = (x: number) => String(Math.round(x * 10000) / 10000);
 
 /**
@@ -207,8 +211,9 @@ export function lookCss(raw: unknown, opts: { scope: string; base: string; p: st
       case 'gap': kids.push(`margin-bottom:calc(var(--fx-space) * ${n4(pct(x))}) !important`); break;
       case 'textSize': decl.push(`--fx-font-size:calc(${b('font-size')} * ${n4(pct(x))})`, `font-size:calc(${b('font-size')} * ${n4(pct(x))})`); break;
       case 'textWeight': decl.push(`font-weight:${Number(x)}`); break;
-      case 'lineHeight': if (Number(x) > 0) decl.push(`line-height:${n4(pct(x))}`); break;
-      case 'letterSpacing': decl.push(`letter-spacing:${n4(Number(x) / 100)}em`, `--fx-tracking:${n4(Number(x) / 100)}em`); break;
+      // 0 = the theme's; anything else never below LINE_HEIGHT_MIN %, so lines can't run into each other
+      case 'lineHeight': if (Number(x) > 0) decl.push(`line-height:${n4(Math.max(LINE_HEIGHT_MIN, Number(x)) / 100)}`); break;
+      case 'letterSpacing': { const ls = Math.min(LETTER_SPACING_MAX, Number(x)) / 100; decl.push(`letter-spacing:${n4(ls)}em`, `--fx-tracking:${n4(ls)}em`); break; }
       case 'textCase': decl.push(`text-transform:${x}`); break;
       case 'fontFamily': decl.push(`font-family:${x === 'display' ? 'var(--fx-font-display)' : x === 'mono' ? 'var(--fx-font-mono)' : x === 'system' ? 'system-ui, sans-serif' : 'serif'}`); break;
       case 'italic': if (x === true) decl.push('font-style:italic'); break;

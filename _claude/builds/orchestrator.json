@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-27T19:30:00.000Z",
+ "updatedAt": "2026-10-27T19:52:29.038Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -34,6 +34,10 @@
     {
      "text": "Merged into enterprise-branding (Oct 27 2026). Archived here; build it there.",
      "at": "2026-10-27T16:56:46.245Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [],
@@ -214,12 +218,12 @@
    "branch": "fable/arch-foundation",
    "pr": "",
    "createdAt": "2026-10-27T16:36:55.356Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-10-27T16:36:55.356Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
-     "at": "2026-10-27T19:30:00.000Z"
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
    "approvals": [],
@@ -554,14 +558,14 @@
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/enterprise-branding",
    "pr": "",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-10-27T19:52:28.960Z",
    "builtAt": "",
    "notes": [
     {
@@ -585,11 +589,34 @@
      "at": "2026-10-27T18:08:21.998Z"
     },
     {
+     "text": "s1: DESIGN-LANGUAGE.md written; the live plugin list is still waiting on axHub approval 29f6dae0 (retrying). s5r1-s5r5 done: window placement rules (stack cascade/center/remember, snap grid, minimize cursor/dock/none) wired into the WindowManager + WindowHost; Button busy/confirm props + rt.busy()/withBusy() + data-fx-busy cursor; 36 new checks in check-design-package (575).",
+     "at": "2026-10-27T18:28:33.506Z"
+    },
+    {
+     "text": "s5r6: fixtures regenerated (roll/appearance gained the brand types); the re-bake of amberx-droid, axhub-web, patches-web, walkthrough-studio and the console lock lands once at the end of the Fable phase (s12) so the React layer (s10-s11) is baked in one go.",
+     "at": "2026-10-27T18:39:55.650Z"
+    },
+    {
+     "text": "Plugin scope read live Oct 27 2026 (approval 72afb5a6): no plugins.json on the console, so every installed plugin is on — all 32 are in scope (list in DESIGN-LANGUAGE.md §13).",
+     "at": "2026-10-27T18:51:49.154Z"
+    },
+    {
+     "text": "Fable phase 1 done Oct 27 2026 (PR #128). Waiting on Brett's approval of the Fable → Opus switch.",
+     "at": "2026-10-27T19:11:51.156Z"
+    },
+    {
      "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
-     "at": "2026-10-27T19:30:00.000Z"
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T19:52:28.958Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -607,8 +634,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.097Z",
      "note": ""
     },
     {
@@ -693,8 +720,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.166Z",
      "note": ""
     },
     {
@@ -709,8 +736,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.238Z",
      "note": ""
     },
     {
@@ -725,8 +752,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.306Z",
      "note": ""
     },
     {
@@ -741,8 +768,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.375Z",
      "note": ""
     },
     {
@@ -757,8 +784,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:28:33.433Z",
      "note": ""
     },
     {
@@ -773,8 +800,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:55.597Z",
      "note": ""
     },
     {
@@ -789,8 +816,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.047Z",
      "note": ""
     },
     {
@@ -805,8 +832,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.101Z",
      "note": ""
     },
     {
@@ -821,8 +848,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.151Z",
      "note": ""
     },
     {
@@ -837,8 +864,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:39:25.205Z",
      "note": ""
     },
     {
@@ -855,8 +882,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:44:28.329Z",
      "note": ""
     },
     {
@@ -873,8 +900,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:46:52.502Z",
      "note": ""
     },
     {
@@ -889,8 +916,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:51:14.262Z",
      "note": ""
     },
     {
@@ -1354,14 +1381,14 @@
    "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "fable/interface-roller",
    "pr": "",
    "createdAt": "2026-10-27T17:11:59.344Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-10-27T19:52:29.038Z",
    "builtAt": "",
    "notes": [
     {
@@ -1373,11 +1400,22 @@
      "at": "2026-10-27T17:17:17.307Z"
     },
     {
+     "text": "Fable phase 1 done Oct 27 2026 (PR #129, stacked on #128). Next on Opus after the switch is approved.",
+     "at": "2026-10-27T19:11:51.096Z"
+    },
+    {
      "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
-     "at": "2026-10-27T19:30:00.000Z"
+     "at": "2026-10-27T22:05:00.000Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-27T19:52:29.038Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -1391,8 +1429,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:58:54.888Z",
      "note": ""
     },
     {
@@ -1407,8 +1445,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T18:58:54.951Z",
      "note": ""
     },
     {
@@ -1423,8 +1461,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:03:25.215Z",
      "note": ""
     },
     {
@@ -1439,8 +1477,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:08:35.374Z",
      "note": ""
     },
     {
@@ -1455,8 +1493,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-27T19:08:35.445Z",
      "note": ""
     },
     {
@@ -1617,89 +1655,6 @@
      "agent": false,
      "done": false,
      "doneAt": "",
-     "note": ""
-    }
-   ]
-  },
-  {
-   "id": "build-profiles",
-   "title": "Build profiles + Build profiles console plugin (main framework, refactor)",
-   "category": "Builds",
-   "detail": "Brett, Oct 27 2026: \"Create multiple build profiles and a console plugin to select and save one. Each build profile holds plans, build queue, pending builds, tracking, and all work stuff. Name current one main framework and then start new one called refactor.\" Web/CLI/Python only.",
-   "status": "complete",
-   "hidden": false,
-   "source": "chat",
-   "pendingId": "build-profiles",
-   "branch": "claude/build-profiles",
-   "pr": "",
-   "createdAt": "2026-10-27T18:59:57.223Z",
-   "updatedAt": "2026-10-27T19:07:43.435Z",
-   "builtAt": "2026-10-27T19:07:43.435Z",
-   "notes": [],
-   "approvals": [],
-   "steps": [
-    {
-     "id": "s1",
-     "text": "build-profiles@1 registry + framework/cli/profiles.mjs (list/select/create/rename/remove), persist.mjs dataPath profile layer, orchestrator tracker per profile, manifest data.shared; seed main-framework + refactor",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 1 · Profiles",
-     "group": "Core",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "done": true,
-     "doneAt": "2026-10-27T19:02:22.045Z",
-     "note": ""
-    },
-    {
-     "id": "s2",
-     "text": "Python mirror (console server data paths) + /api/profiles routes; main.py pending/media, build-manager and activity plugins read through it",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 1 · Profiles",
-     "group": "Server",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "done": true,
-     "doneAt": "2026-10-27T19:03:43.012Z",
-     "note": ""
-    },
-    {
-     "id": "s3",
-     "text": "Console plugin build-profiles: picker dialog, settings sub-tab, app-menu + banner chip, lifecycle install/uninstall",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 1 · Profiles",
-     "group": "Plugin",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "done": true,
-     "doneAt": "2026-10-27T19:07:02.572Z",
-     "note": ""
-    },
-    {
-     "id": "s4",
-     "text": "Tests (node + python), docs (CLAUDE.md, RULES, THREADS, README), PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "Phase 1 · Profiles",
-     "group": "Finish",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "done": true,
-     "doneAt": "2026-10-27T19:07:43.377Z",
      "note": ""
     }
    ]

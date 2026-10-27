@@ -43,7 +43,7 @@
     "--fx-text": "#261b1a",
     "--fx-muted": "#73625f",
     "--fx-border": "#e5dbd8",
-    "--fx-accent": "#d9533a",
+    "--fx-accent": "#c9452d",
     "--fx-accent-text": "#ffffff",
     "--fx-accent-soft": "rgba(217,83,58,0.10)",
     "--fx-danger": "#c22d47",

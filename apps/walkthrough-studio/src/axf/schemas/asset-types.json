@@ -1134,6 +1134,144 @@
       },
       "optional": true
     },
+    "interface": {
+      "label": "Interface",
+      "group": "System",
+      "icon": "layout",
+      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a design package (style, colour, layout, behaviour), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance → Assets (Settings → Appearance → Interface applies one).",
+      "required": [
+        "design"
+      ],
+      "optional_fields": {
+        "branding": "a branding asset id",
+        "slots": "asset type → asset id for every other slot (never the themes, the policy or a package)",
+        "spacing": "tight | compact | regular",
+        "hidden": "asset type → true / false",
+        "settings": "appearance settings key → value",
+        "tab": "{ label, icon } for a host showing interfaces as tabs",
+        "tagline": "one line under the tab label"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
+    "logo-mark": {
+      "label": "Logo mark",
+      "group": "Brand",
+      "icon": "star",
+      "description": "A brand mark as safe vector data (logo-mark@1, engine core/engines/brand.ts; rules in brand-rules.mjs): form mark / wordmark / lockup, a viewBox, paths (path commands only, no script, links or raster), an optional wordmark text, colours as theme tokens (currentColor, text, accent, brand1-3 …) or the mark's own #hex palette. Branding packages and the brand library reference it; it is never picked as a slot.",
+      "required": [
+        "form",
+        "paths"
+      ],
+      "enums": {
+        "form": [
+          "mark",
+          "wordmark",
+          "lockup"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "viewBox": "four numbers (default 0 0 24 24)",
+        "text": "{ value, weight, tracking, font: ui | display | mono, fill } for a wordmark / lockup",
+        "palette": "{ brand1, brand2, brand3 }: #hex the mark may use",
+        "safeArea": "number 0-1 (default 0.25): clear space as a fraction of the height",
+        "minSize": "number px (default 16)",
+        "brand": "string: the brand this mark belongs to"
+      }
+    },
+    "animated-logo": {
+      "label": "Animated logo",
+      "group": "Brand",
+      "icon": "sparkles",
+      "description": "A logo-mark plus a motion preset (animated-logo@1): spin, pulse, draw, orbit, float, shimmer, wink or none; duration, delay, loop (always / once / on hover), intensity. Under reduced motion it shows its still frame.",
+      "required": [
+        "mark",
+        "preset"
+      ],
+      "enums": {
+        "preset": [
+          "spin",
+          "pulse",
+          "draw",
+          "orbit",
+          "float",
+          "shimmer",
+          "wink",
+          "none"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "durationMs": "number 300-20000 (default 2400)",
+        "delayMs": "number 0-10000",
+        "loop": "true (default) | false | \"hover\"",
+        "still": "first | last: which frame shows when it does not move",
+        "intensity": "number 0.1-1 (default 0.6)"
+      }
+    },
+    "icon-pack": {
+      "label": "Icon pack",
+      "group": "Brand",
+      "icon": "grid",
+      "description": "A named set of glyphs on one grid (icon-pack@1): style outline / filled / duotone / sharp / rounded, grid 16-48, stroke, linecap, glyphs name → path (commands only). Any name the pack lacks falls back to the framework glyph set. The branding package picks the active pack; the Icon component reads it.",
+      "required": [
+        "style",
+        "grid",
+        "glyphs"
+      ],
+      "enums": {
+        "style": [
+          "outline",
+          "filled",
+          "duotone",
+          "sharp",
+          "rounded"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "stroke": "number 0.5-4 (default 1.75)",
+        "linecap": "round | square | butt",
+        "fallback": "framework (default) | none"
+      }
+    },
+    "branding": {
+      "label": "Branding package",
+      "group": "Brand",
+      "icon": "package",
+      "description": "The hot-swappable branding package (branding@1, engine core/engines/brand.ts): brand name + tagline, which logo-marks (mark, wordmark, lockup) and animated logo to use, the icon pack, a palette (brand1-3 as #hex, optionally driving the accent), and decorations = which mark form each brand place shows (banner, window, floating-window, dialog, container, tab-group, toolbar, nav-menu, app-menu, context-menu, splash, favicon, empty-state; an open list, registerBrandSlot adds more). Swapping it rebrands every app, plugin and library at once.",
+      "required": [
+        "brand",
+        "marks"
+      ],
+      "optional": true,
+      "roll": {
+        "slot": true,
+        "asset": true
+      },
+      "optional_fields": {
+        "iconPack": "icon-pack id",
+        "decorations": "{ <brand slot>: none | mark | wordmark | lockup | animated | accent-edge | watermark }",
+        "palette": "{ brand1, brand2, brand3 }: #hex",
+        "accentFromBrand": "boolean: brand1 becomes the accent (default false)"
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

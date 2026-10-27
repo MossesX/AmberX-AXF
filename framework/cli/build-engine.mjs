@@ -4,6 +4,7 @@
  * from an HTTP API, a browser UI, an SSH session or an MCP server.
  */
 import { installLibrary } from './libraries.mjs';
+import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
@@ -110,8 +111,30 @@ export function validateAsset(raw) {
       if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
     }
   }
+  // interface@1 — mirrors interfaceErrors in core/engines/interface.ts (check-interface.mts keeps them equal)
+  if (raw.type === 'interface') {
+    const ID = /^[a-z0-9][a-z0-9-]*$/;
+    const NEVER = ['uac-policy', 'interface', 'design-package', 'appearance-package', ...DESIGN_THEMES];
+    const d = raw.data;
+    if (typeof d.design !== 'string' || !ID.test(d.design)) errors.push('data.design must be a design-package asset id');
+    if (d.branding !== undefined && (typeof d.branding !== 'string' || !ID.test(d.branding))) errors.push('data.branding must be a branding asset id');
+    if (d.slots !== undefined) {
+      if (!isObj(d.slots)) errors.push('data.slots must be an object (asset type → asset id)');
+      else for (const [t, v] of Object.entries(d.slots)) {
+        if (NEVER.includes(t)) errors.push(`data.slots.${t}: ${DESIGN_THEMES.includes(t) ? 'the themes come from the design package' : `an interface never sets ${t}`}`);
+        else if (!ID.test(t)) errors.push(`data.slots.${t}: not an asset type name`);
+        else if (typeof v !== 'string' || !ID.test(v)) errors.push(`data.slots.${t} must be an asset id`);
+      }
+    }
+    if (d.spacing !== undefined && !['tight', 'compact', 'regular'].includes(d.spacing)) errors.push('data.spacing must be tight, compact or regular');
+    if (d.hidden !== undefined && (!isObj(d.hidden) || Object.values(d.hidden).some((v) => typeof v !== 'boolean'))) errors.push('data.hidden must map asset types to true / false');
+    if (d.settings !== undefined && !isObj(d.settings)) errors.push('data.settings must be an object');
+    if (d.tab !== undefined && (!isObj(d.tab) || typeof d.tab.label !== 'string')) errors.push('data.tab must be { label, icon? }');
+  }
   // behavior-theme@1 — mirrors behaviorErrors in core/engines/behavior.ts (check-design-package.mts keeps the lists equal)
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
+  // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
+  errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
   if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {

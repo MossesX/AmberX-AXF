@@ -16,6 +16,7 @@
   "gauge": "classic-arc",
   "meter": "striped-pill",
   "banner": "amberx-thin",
+  "branding": "amberx",
   "clock": "digital-12h",
   "search-bar": "everything",
   "logo": "wordmark",
@@ -31,5 +32,6 @@
   "divider": "rule",
   "badge": "new",
   "settings": "standard",
+  "interface": "fresh",
   "uac-policy": "standard"
 }
