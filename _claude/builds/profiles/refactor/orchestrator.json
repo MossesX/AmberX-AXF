@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T15:30:11.243Z",
+ "updatedAt": "2026-10-28T15:43:56.299Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3579,11 +3579,16 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/basic-filter",
-   "pr": "",
+   "pr": "#155",
    "createdAt": "2026-10-28T15:16:53.872Z",
-   "updatedAt": "2026-10-28T15:26:39.456Z",
+   "updatedAt": "2026-10-28T15:43:56.298Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PR #155 open, CI green on 2c185a79; merge approval sent to Brett through axHub (push-banner merge-pr.sh).",
+     "at": "2026-10-28T15:43:56.298Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
