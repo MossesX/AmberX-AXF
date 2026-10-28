@@ -69,7 +69,7 @@
     "src/axf/libs/dnd/library.json": "cf15fa6e110225f5",
     "src/axf/libs/docstore/index.ts": "fcec9841e4dec7f1",
     "src/axf/libs/docstore/library.json": "a009dea404b159b5",
-    "src/axf/libs/hub/hub.ts": "9d40fb40578bad41",
+    "src/axf/libs/hub/hub.ts": "be2b6bd953506ed7",
     "src/axf/libs/hub/index.ts": "b0708250139f1e29",
     "src/axf/libs/hub/library.json": "85f4640cdf94c285",
     "src/axf/libs/mcp/client.ts": "1de950f095e33a61",

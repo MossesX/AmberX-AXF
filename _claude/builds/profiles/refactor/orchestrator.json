@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T19:13:47.224Z",
+ "updatedAt": "2026-10-28T19:27:43.976Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4194,14 +4194,14 @@
    "title": "Run unless blocked: 2-min countdown → urgent alarm (red banner + loud AmberX ring) → 1-min grace → runs; Block anytime; zero session tokens",
    "category": "axHub",
    "detail": "Brett Oct 28 2026 (claude.ai): 'Can you send notification that a command is about to be ran and I can intercept it from the banner and block it before axhub tries sending it.' HELD: queued, not started. Picks (cards): profile Refactor, held; countdown 2 minutes.\n\nDesign: a third tool policy next to allow / confirm, e.g. 'veto' (run unless blocked). A session's call returns a job id at once; axHub holds the call for the countdown (default 2 min, per-tool override possible later) and immediately pushes through the AmberX app (rule: all axHub pushes come from AmberX) and shows it in the console's banner (approvals banner or its own) with the reason title, the exact call, a live countdown, Block and Run now. No action = runs at zero. Block = cancelled, never runs, the session sees 'blocked' when it next looks at the job. Sessions never poll during the countdown: they carry on and read the job result once at the end only if they need it, which saves the re-read cost of approval checks. Approvals (confirm) stay for risky calls: deletes and free-form root shell. Brett picks which tools move to veto (proposal: merge-pr, redeploys, container restarts). Every veto call is logged with its outcome (ran / blocked / ran early) in the approvals history (approval-costs build). Related: approval-costs (history, wait call, resume), axhub-github-write.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-28T18:56:29.579Z",
-   "updatedAt": "2026-10-28T18:56:29.768Z",
+   "updatedAt": "2026-10-28T19:27:43.976Z",
    "builtAt": "",
    "notes": [
     {
@@ -4223,8 +4223,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:27:26.496Z",
      "note": ""
     },
     {
@@ -4239,8 +4239,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:27:26.557Z",
      "note": ""
     },
     {
@@ -4255,8 +4255,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:27:26.619Z",
      "note": ""
     },
     {
@@ -4271,8 +4271,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:27:43.975Z",
      "note": ""
     },
     {

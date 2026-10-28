@@ -31,6 +31,10 @@ export interface ApprovalItem {
   showExpires: boolean;
   decidedBy?: string;
   postponed?: { kind: string; waitingFor: string; until?: string; since: string; lastCheck?: string; lastNote?: string; nextReminder?: string; reminders: number };
+  /** Run unless blocked (axHub decision 102): the hub runs it by itself at `runAt` unless declined. */
+  veto?: { alarmAt: string; runAt: string; alarmed: boolean; countdownSec: number; graceSec: number };
+  /** The hub keeps the call and runs it itself once approved (axHub decision 101). */
+  held?: boolean;
   history: { at: string; from: string; to: string; by: string; note?: string }[];
 }
 

@@ -64,7 +64,7 @@
     "src/axf/libs/apiclient/client.ts": "507a2b50eff72a2a",
     "src/axf/libs/apiclient/index.tsx": "cd746d64b6375f91",
     "src/axf/libs/apiclient/library.json": "d1d65b1f4a3693ba",
-    "src/axf/libs/hub/hub.ts": "9d40fb40578bad41",
+    "src/axf/libs/hub/hub.ts": "be2b6bd953506ed7",
     "src/axf/libs/hub/index.ts": "b0708250139f1e29",
     "src/axf/libs/hub/library.json": "85f4640cdf94c285",
     "src/axf/libs/mcp/client.ts": "1de950f095e33a61",

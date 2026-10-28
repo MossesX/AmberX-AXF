@@ -23,3 +23,12 @@ button.axp-approvals-banner__text { flex-wrap: nowrap; white-space: nowrap; over
 .axp-approvals-banner__text > .axp-approvals-banner__sum { flex: 1 1 0; min-width: 0 }
 button.axp-approvals-banner__item { flex-wrap: nowrap; white-space: nowrap; overflow: hidden }
 .axp-approvals-banner__tool { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis }
+
+/* Run unless blocked (axHub decision 102): about-to-run entries on top; red once the countdown ended unblocked. Tokens only. */
+.axp-approvals-banner__veto { border-top: 0; max-height: none }
+.axp-approvals-banner__veto > li { display: flex; align-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); min-width: 0; white-space: nowrap; overflow: hidden }
+.axp-approvals-banner__veto > li > .fx-btn { flex-shrink: 0 }
+.axp-approvals-banner__count { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; flex-shrink: 0 }
+.axp-approvals-banner__alarm { color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-approvals-banner--alarm { border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+@media (max-width: 720px) { .axp-approvals-banner__veto .axp-approvals-banner__cmd { display: none } }

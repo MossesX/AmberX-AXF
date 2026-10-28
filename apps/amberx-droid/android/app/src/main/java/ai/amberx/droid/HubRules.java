@@ -77,7 +77,13 @@ final class HubRules {
 
     static final class Approval {
         final String id, tool, summary, url;
-        Approval(String id, String tool, String summary, String url) { this.id = id; this.tool = tool; this.summary = summary; this.url = url; }
+        /** Run unless blocked (axHub decision 102): when it runs by itself, and whether its countdown already ended. */
+        final String runAt;
+        final boolean veto, alarmed;
+        Approval(String id, String tool, String summary, String url) { this(id, tool, summary, url, false, false, ""); }
+        Approval(String id, String tool, String summary, String url, boolean veto, boolean alarmed, String runAt) {
+            this.id = id; this.tool = tool; this.summary = summary; this.url = url; this.veto = veto; this.alarmed = alarmed; this.runAt = runAt;
+        }
     }
 
     static final class Feed {
@@ -106,7 +112,9 @@ final class HubRules {
                 String url = approvalUrl(hub, id);
                 if (url == null || ids.contains(id) || !isHub(hub, p.optString("url", ""))) continue;
                 ids.add(id);
-                out.add(new Approval(id, cap(p.optString("tool", "call"), 120), cap(p.optString("summary", ""), 600), url));
+                JSONObject v = p.optJSONObject("veto");
+                out.add(new Approval(id, cap(p.optString("tool", "call"), 120), cap(p.optString("summary", ""), 600), url,
+                    v != null, v != null && v.optBoolean("alarmed", false), v == null ? "" : cap(v.optString("runAt", ""), 40)));
             }
             int count = Math.max(out.size(), Math.max(0, Math.min(1_000_000, j.optInt("count", out.size()))));
             return new Feed("ok", count, out);
@@ -116,6 +124,16 @@ final class HubRules {
     }
 
     private static String cap(String s, int n) { return s.length() > n ? s.substring(0, n) : s; }
+
+    /** "HH:MM" in the phone's time zone from an ISO time, or "soon" when it can't be read. */
+    static String clock(String iso) {
+        try {
+            java.time.ZonedDateTime t = java.time.Instant.parse(iso).atZone(java.time.ZoneId.systemDefault());
+            return String.format(java.util.Locale.ROOT, "%02d:%02d", t.getHour(), t.getMinute());
+        } catch (Throwable e) {
+            return "soon";
+        }
+    }
 
     /* ---------------------------------------------------------------- Dev Console alerts (alert@1, GET <console>/api/alerts) */
 

@@ -53,7 +53,7 @@ public class WatchService extends Service {
     static final String PREFS = "amberx_watch";
     static final String ACTION_STOP = "ai.amberx.droid.STOP";
     static final String ACTION_CHECK = "ai.amberx.droid.CHECK";
-    static final String CH_WATCH = "watch", CH_APPROVALS = "approvals", CH_WAKE = "wake", CH_CONSOLE = "console";
+    static final String CH_WATCH = "watch", CH_APPROVALS = "approvals", CH_WAKE = "wake", CH_CONSOLE = "console", CH_ALARM = "urgent-alarm";
     private static final int ID_ONGOING = 1, ID_WAKE = 2;
 
     /** Last status, read by the plugin; [listener] gets every change. */
@@ -190,6 +190,7 @@ public class WatchService extends Service {
         if (running == this) running = null;
         stopListening();
         hideOverlay();
+        stopRinging();
         if (thread != null) thread.quitSafely();
         super.onDestroy();
     }
@@ -227,6 +228,8 @@ public class WatchService extends Service {
         } catch (Exception ignored) {}
         setStatus(s);
         long next = "signed-out".equals(feed.status) || "not-admin".equals(feed.status) ? 300_000L : every * 1000L;
+        // A run-unless-blocked request is waiting (axHub decision 102): check every 10 s so the alarm is on time.
+        for (HubRules.Approval a : feed.pending) if (a.veto) { next = Math.min(next, 10_000L); break; }
         work.postDelayed(this::check, next);
     }
 
@@ -235,9 +238,22 @@ public class WatchService extends Service {
         Set<String> seen = new HashSet<>(p.getStringSet("seen", new HashSet<>()));
         Set<String> now = new HashSet<>();
         NotificationManager nm = getSystemService(NotificationManager.class);
+        Set<String> alarmed = new HashSet<>(p.getStringSet("alarmed", new HashSet<>()));
+        Set<String> alarmedNow = new HashSet<>();
+        JSONObject alarm = config(this).optJSONObject("alarm");
         for (HubRules.Approval a : feed.pending) {
             now.add(a.id);
+            // Run unless blocked: the countdown ended unblocked → the urgent alarm, once per request (decision 102).
+            if (a.veto && a.alarmed) {
+                alarmedNow.add(a.id);
+                if (!alarmed.contains(a.id)) urgentAlarm(a, alarm);
+            }
             if (seen.contains(a.id)) continue;
+            if (a.veto) { // a heads-up now: it runs by itself unless blocked; never auto-approved, so the window stays open
+                soundThrough();
+                nm.notify(a.id, 0, alert(CH_APPROVALS, "About to run: " + a.tool, "Runs by itself at " + HubRules.clock(a.runAt) + " unless you block it. Tap to block or run now.", a.url, true));
+                continue;
+            }
             boolean approve = auto != null && HubRules.autoApproves(auto.optBoolean("on"), auto.optBoolean("all"), auto.optString("tools", ""), a.tool);
             if (approve && HubRules.approve(hub, a.id, cookie)) {
                 nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
@@ -247,7 +263,65 @@ public class WatchService extends Service {
             }
         }
         for (String gone : seen) if (!now.contains(gone)) nm.cancel(gone, 0); // decided elsewhere: take its alert away
-        p.edit().putStringSet("seen", now).apply();
+        for (String gone : alarmed) if (!now.contains(gone)) { nm.cancel("alarm:" + gone, 0); stopRinging(); }
+        p.edit().putStringSet("seen", now).putStringSet("alarmed", alarmedNow).apply();
+    }
+
+    /* ---------------------------------------------------------------- the urgent alarm (axHub decision 102) */
+
+    private android.media.Ringtone ringing;
+    private final Runnable stopRing = this::stopRinging;
+    private int restoreVolume = -1;
+
+    /**
+     * Countdown over and not blocked: a red, full-screen, loud alert that rings on the alarm stream (through Do Not
+     * Disturb where Android allows it) for `ringSec` seconds or until tapped. Settings live in AmberX → Settings → Plugins →
+     * Monitoring → Urgent alarm: on, ring seconds, vibrate, full volume, ring through Do Not Disturb.
+     */
+    private void urgentAlarm(HubRules.Approval a, JSONObject cfg) {
+        boolean on = cfg == null || cfg.optBoolean("on", true);
+        NotificationManager nm = getSystemService(NotificationManager.class);
+        Intent open = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(MainActivity.EXTRA_OPEN, a.url);
+        PendingIntent pi = PendingIntent.getActivity(this, ("alarm" + a.url).hashCode(), open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CH_ALARM)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("URGENT: runs in a minute · " + a.tool)
+            .setContentText("Not blocked yet. It runs by itself at " + HubRules.clock(a.runAt) + ". Tap to block.")
+            .setColor(0xFFD32F2F).setColorized(true)
+            .setPriority(NotificationCompat.PRIORITY_MAX).setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setContentIntent(pi).setFullScreenIntent(pi, true).setAutoCancel(true).setOngoing(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(new NotificationCompat.Builder(this, CH_ALARM).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("URGENT: a command runs in a minute").build());
+        if (cfg == null || cfg.optBoolean("vibrate", true)) b.setVibrate(new long[] { 0, 800, 400, 800, 400, 800 });
+        nm.notify("alarm:" + a.id, 0, b.build());
+        if (!on) return;
+        try {
+            android.media.AudioManager am = getSystemService(android.media.AudioManager.class);
+            if (cfg == null || cfg.optBoolean("maxVolume", true)) {
+                restoreVolume = am.getStreamVolume(android.media.AudioManager.STREAM_ALARM);
+                am.setStreamVolume(android.media.AudioManager.STREAM_ALARM, am.getStreamMaxVolume(android.media.AudioManager.STREAM_ALARM), 0);
+            }
+            android.net.Uri uri = android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_ALARM);
+            if (uri == null) uri = android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_RINGTONE);
+            stopRinging();
+            ringing = android.media.RingtoneManager.getRingtone(this, uri);
+            if (ringing != null) {
+                ringing.setAudioAttributes(new android.media.AudioAttributes.Builder().setUsage(android.media.AudioAttributes.USAGE_ALARM).setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
+                if (Build.VERSION.SDK_INT >= 28) ringing.setLooping(true);
+                ringing.play();
+            }
+            int secs = Math.max(5, Math.min(120, cfg == null ? 45 : cfg.optInt("ringSec", 45)));
+            work.removeCallbacks(stopRing);
+            work.postDelayed(stopRing, secs * 1000L);
+        } catch (Exception ignored) { /* the notification still shows */ }
+    }
+
+    private void stopRinging() {
+        try { if (ringing != null) ringing.stop(); } catch (Exception ignored) {}
+        ringing = null;
+        if (restoreVolume >= 0) {
+            try { getSystemService(android.media.AudioManager.class).setStreamVolume(android.media.AudioManager.STREAM_ALARM, restoreVolume, 0); } catch (Exception ignored) {}
+            restoreVolume = -1;
+        }
     }
 
     /**
@@ -445,6 +519,14 @@ public class WatchService extends Service {
         nm.createNotificationChannel(new NotificationChannel(CH_APPROVALS, "Approvals", NotificationManager.IMPORTANCE_HIGH));
         nm.createNotificationChannel(new NotificationChannel(CH_WAKE, "Wake phrase", NotificationManager.IMPORTANCE_HIGH));
         nm.createNotificationChannel(new NotificationChannel(CH_CONSOLE, "Console alerts", NotificationManager.IMPORTANCE_HIGH));
+        // Silent channel: the ring is played on the alarm stream by the service, so its length and volume follow the settings.
+        NotificationChannel urgent = new NotificationChannel(CH_ALARM, "Urgent: about to run (not blocked)", NotificationManager.IMPORTANCE_HIGH);
+        urgent.setSound(null, null);
+        urgent.enableVibration(true);
+        urgent.enableLights(true);
+        urgent.setLightColor(0xFFD32F2F);
+        urgent.setBypassDnd(true); // honoured only when Do Not Disturb access is granted
+        nm.createNotificationChannel(urgent);
     }
 
     private Notification ongoing(boolean mic) {

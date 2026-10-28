@@ -25,6 +25,10 @@ export const K = {
   autoApproveAll: 'amberx.monitor.autoApproveAll',
   autoApproveTools: 'amberx.monitor.autoApproveTools',
   consoleAlerts: 'amberx.monitor.consoleAlerts',
+  alarmOn: 'amberx.monitor.alarm.on',
+  alarmRingSec: 'amberx.monitor.alarm.ringSec',
+  alarmVibrate: 'amberx.monitor.alarm.vibrate',
+  alarmMaxVolume: 'amberx.monitor.alarm.maxVolume',
 } as const;
 
 const configOf = (rt: AxfRuntime) => watchConfig({
@@ -37,6 +41,10 @@ const configOf = (rt: AxfRuntime) => watchConfig({
   autoApproveAll: rt.settings.get(K.autoApproveAll),
   autoApproveTools: rt.settings.get(K.autoApproveTools),
   consoleAlerts: rt.settings.get(K.consoleAlerts),
+  alarmOn: rt.settings.get(K.alarmOn),
+  alarmRingSec: rt.settings.get(K.alarmRingSec),
+  alarmVibrate: rt.settings.get(K.alarmVibrate),
+  alarmMaxVolume: rt.settings.get(K.alarmMaxVolume),
 });
 
 async function start(rt: AxfRuntime) {
@@ -134,6 +142,15 @@ export const library: AxfWebLibrary = {
         { key: K.consoleAlerts, label: 'Dev Console alerts', kind: 'toggle', default: true, description: 'Errors and warnings from console.amberxai.com (builds, CI, deploys, systems check). Tap opens the console in your browser.' },
         { key: K.interval, label: 'Check every (seconds)', kind: 'number', default: 30, min: 15, max: 300, step: 5 },
         { key: K.listen, label: 'Listen for the wake phrase while watching', kind: 'toggle', default: true, description: 'Only used when Voice control → Listen hands-free is off. Hands-free listening (on by default) works without watching axHub.' },
+      ],
+    },
+    {
+      id: 'amberx.monitor.alarm', label: 'Urgent alarm (run unless blocked)', icon: 'bell', tab: 'monitor', order: 1,
+      description: 'For axHub commands set to run unless you block them: you get a notice when one is asked for; when its countdown ends and you haven’t blocked it, the phone shows a red full-screen alert and rings loudly on the alarm sound for the grace minute. Alarms pass Do Not Disturb unless you blocked alarms there.', settings: [
+        { key: K.alarmOn, label: 'Ring loudly', kind: 'toggle', default: true, description: 'Off = the red alert still shows, without the ring.' },
+        { key: K.alarmRingSec, label: 'Ring for (seconds)', kind: 'number', default: 45, min: 5, max: 120, step: 5, description: 'Stops sooner when you open it or the command is decided.' },
+        { key: K.alarmMaxVolume, label: 'Full alarm volume while it rings', kind: 'toggle', default: true, description: 'Your alarm volume is put back afterwards.' },
+        { key: K.alarmVibrate, label: 'Vibrate', kind: 'toggle', default: true },
       ],
     },
     {

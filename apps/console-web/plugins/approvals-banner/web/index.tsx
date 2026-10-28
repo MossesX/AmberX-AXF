@@ -18,6 +18,10 @@
  * AXHUB_APPROVALS_FRAME_ANCESTORS). Approve/Reject run on the hub's page with its Origin + CSRF checks, so the console
  * still never approves anything itself. When the request is decided the dialog closes. "Open new approvals by
  * themselves" can be switched off in its settings (per browser).
+ *
+ * Run unless blocked (Oct 28 2026, axHub decision 102): a request the hub will run by itself shows on top with a live
+ * countdown and Block / Run now (both open the hub's page: Decline there blocks it, Approve runs it now). When its
+ * countdown ends unblocked the entry turns red (danger tokens) for the grace minute; it can't be hidden.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
@@ -113,6 +117,40 @@ const shortSummary = (p: Pending) => {
   return text.length > 90 ? `${text.slice(0, 90)}…` : text;
 };
 
+/* ---------------- run unless blocked (axHub decision 102) ---------------- */
+
+/** "2:05" until `iso`, or "now". */
+const left = (iso: string, now: number) => {
+  const s = Math.max(0, Math.round((new Date(iso).getTime() - now) / 1000));
+  return s === 0 ? 'now' : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+};
+/** A clock that ticks every second while something is counting down. */
+function useTick(on: boolean) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { if (!on) return; const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, [on]);
+  return now;
+}
+
+/** The about-to-run entries: countdown, red once the countdown ended unblocked; Block / Run now open the hub's page. */
+function AboutToRun({ items }: { items: Pending[] }) {
+  const now = useTick(items.length > 0);
+  if (!items.length) return null;
+  return (
+    <ul className="axp-approvals-banner__list axp-approvals-banner__veto">
+      {items.map((p) => (
+        <li key={p.id} className={p.veto?.alarmed ? 'axp-approvals-banner__alarm' : undefined} role={p.veto?.alarmed ? 'alert' : undefined}>
+          <Icon name={p.veto?.alarmed ? 'alert' : 'clock'} size={16} />
+          <span className="axp-approvals-banner__tool">{p.tool}</span>
+          <span className="axp-approvals-banner__cmd">{shortSummary(p)}</span>
+          <span className="axp-approvals-banner__count">{p.veto?.alarmed ? 'Not blocked: runs in ' : 'Runs by itself in '}{left(p.veto!.runAt, now)}</span>
+          <Button tone="danger" size="sm" icon="x" onClick={() => openReview(p.id)} title="Opens it on axHub: tap Decline there to block it">Block</Button>
+          <Button size="sm" icon="play" onClick={() => openReview(p.id)} title="Opens it on axHub: tap Approve there to run it now">Run now</Button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /* ---------------- the banner ---------------- */
 
 function ApprovalsBanner() {
@@ -121,11 +159,15 @@ function ApprovalsBanner() {
   useEffect(() => { start(); }, []);
   if (s.status !== 'ok' || s.count === 0) return null;
   const ids = s.pending.map((p) => p.id).join(',');
-  if (ids && ids === s.hiddenIds) return null;
+  const veto = s.pending.filter((p) => p.veto);
+  const alarmed = veto.some((p) => p.veto?.alarmed);
+  // An about-to-run entry can't be hidden: it is the chance to block it.
+  if (ids && ids === s.hiddenIds && !veto.length) return null;
   const first = s.pending[0];
   const review = s.count === 1 && first ? first.url : s.approvalsUrl;
   return (
-    <div className="axp-approvals-banner" role="alert">
+    <div className={`axp-approvals-banner${alarmed ? ' axp-approvals-banner--alarm' : ''}`} role="alert">
+      <AboutToRun items={veto} />
       <div className="axp-approvals-banner__row">
         <BannerIcon icon="shield" working={s.count > 0} size={20} />
         <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -220,7 +262,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.2.1',
+  version: '0.3.0',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
