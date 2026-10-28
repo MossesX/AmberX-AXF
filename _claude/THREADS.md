@@ -34,7 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| AmberX voice notes, lists, tasks + AI router (amberx.amberxai.com) | working | `claude/amberx-notes` (+ agent branches `claude/amberx-notes-{notes,tasks,voice,ai}`) | – | Orchestrator build `amberx-notes` (15 steps, Opus, sub-agents allowed by Brett). Core + store done; 4 agents building notes UI, tasks, voice/dictation, AI server. See *To carry on* | 2026-10-27 |
+| AmberX voice notes, lists, tasks + AI router (amberx.amberxai.com) | review | `claude/amberx-notes` | [#144](https://github.com/MossesX/AmberX-AXF/pull/144) | Orchestrator build `amberx-notes`: 14/15 steps done (notes, tasks, dictation, voice commands, web, AI server + router; design-language pass). Merge after CI, then deploy the new server image on the VPS (s15, needs Brett's approval on axHub). See *To carry on* | 2026-10-27 |
 | AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
 | Build orchestrator plugin + repo build tracker | merged (#122) and live; holds 4 builds, the other open lists not imported yet | 2026-10-27 |
 | 10 more design packages (Midnight Pro, Terminal Lime, Ember Studio, Sage Reader, Coral Play, Neon Night, Arctic Calm, Fresh Night, Quiet Focus, Ink Terminal) | merged (#124), live | 2026-10-27 |
@@ -62,8 +62,8 @@ VPS). The session reads the rules and this file first, as usual.
 - **Asked (Brett, Oct 27 2026, 20:26, with an attachment):** a voice-controlled notes app in AmberX (amberx.amberxai.com): notes in lists with categories and sub-lists for software development; each plugin gets its own list under Plugins when it loads; take, sort, transcribe, organize, rename notes and move them between lists; task manager + todo list; AI for real-time parsing of voice into notes, summaries and storing them in the right place, with a steady connection to Claude (subscription or API, with a switch) and any mainstream LLM; an integrated web component; a section to configure voice commands with predefined commands from the codebase; tabs/containers for the different parts.
 - **Decided (cards):** AI runs on AmberX's own server behind the axHub wall (keys server-side, framework assistant_host providers); notes shared on axHub with the console Voice notes + Voice Vault (`voice-notes/` read-only, AmberX writes `amberx-notes/`); start phase A now, sub-agents allowed.
 - **Plan:** orchestrator build `amberx-notes` (also pending `amberx-notes`), 15 Opus steps. Core `apps/amberx-droid/src/plugins/notes/web/core.ts` + `store.ts`, AI client contract `src/plugins/ai/web/client.ts`. Plugins: notes, tasks, dictation, voice (extended), ai (+ `apps/amberx-droid/server/`), web.
-- **Done:** s1 core, s2 store (commit 8b13a4b).
-- **Left:** s3-s15 (agents on worktree branches, then merge into `claude/amberx-notes`, tests, PR, deploy with the new server image).
+- **Done:** s1-s14 on `claude/amberx-notes`, PR #144 (test.mjs 459, server 110). Design-language §12 pass on the new pages (Brett's card: console Voice notes plugin stays with the refactor phase).
+- **Left (s15):** merge #144 once CI is green; deploy: `sudo bash /opt/amberx-web/apps/amberx-droid/deploy/install.sh` via axHub `vps.run` (approval); then add an AI provider in Settings → Plugins → AI connection; check the pages on the phone.
 - **First message:** "Carry on orchestrator build `amberx-notes` on branch `claude/amberx-notes` (`orchestrator.mjs brief amberx-notes`); merge any `claude/amberx-notes-*` branches first."
 
 ### Build orchestrator (how every build below is carried on)
