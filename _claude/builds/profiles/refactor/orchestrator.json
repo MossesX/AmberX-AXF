@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T09:55:19.557Z",
+ "updatedAt": "2026-10-28T10:01:41.231Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2837,7 +2837,7 @@
    "branch": "claude/banner-fix-fallback",
    "pr": "",
    "createdAt": "2026-10-28T09:55:19.427Z",
-   "updatedAt": "2026-10-28T09:55:19.556Z",
+   "updatedAt": "2026-10-28T10:01:41.231Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -2854,8 +2854,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T10:01:41.167Z",
      "note": ""
     },
     {
@@ -2870,8 +2870,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T10:01:41.230Z",
      "note": ""
     },
     {

@@ -3,6 +3,7 @@ import * as api from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { SystemBanner, SystemCheckDialog, loadSystemCheck, setSystemCheckRuntime } from './SystemCheck';
 import { KeysBanner, KeysDialog } from './KeysBanner';
+import { FixHelpDialog } from './FixHelp';
 import { WhatsNewBanner, loadWhatsNew } from './WhatsNew';
 import { AiPanel, BannersPanel, ClaudePanel, RoutinePanel } from './panels';
 import { appMenu } from './menu';
@@ -60,6 +61,7 @@ export const plugin: AxfWebLibrary = {
   ],
   dialogs: {
     'keys-needed': { title: 'Keys needed', icon: 'key', render: () => <KeysDialog /> },
+    'fix-help': { title: 'Fix failed', icon: 'zap', render: (p) => <FixHelpDialog id={String(p.id ?? '')} reason={typeof p.reason === 'string' ? p.reason : undefined} /> },
     'system-check': { title: 'Systems check', icon: 'shield', render: (p) => <SystemCheckDialog focus={typeof p.focus === 'string' ? p.focus : undefined} /> },
   },
   settingsTabs: [{ id: 'systems-check', label: 'Systems check', icon: 'shield', parent: 'plugins', order: 5, description: 'The systems check and What’s new banners, their AI switches, and the routine Mosses saved for running without AI.' }],

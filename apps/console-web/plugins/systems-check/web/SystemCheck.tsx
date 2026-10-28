@@ -241,6 +241,12 @@ async function runMossesJob(c: Check): Promise<{ state: string; message: string 
   return j;
 }
 
+/** A fix failed: open the Fix failed dialog (Claude badge, approve Mosses, or Vinny's VPS command). Not during Auto fix all. */
+let helpOnFail = true;
+function failHelp(c: Check, why: string, rt: ReturnType<typeof useRuntime>) {
+  if (helpOnFail) rt.openDialog('fix-help', { id: c.id, reason: why.slice(0, 400) });
+}
+
 async function mossesFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
   try {
     const j = await runMossesJob(c);
@@ -250,7 +256,8 @@ async function mossesFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<v
     const by = j.message.startsWith('Fixed by Vinny') ? j.message : 'Fixed by Mosses.';
     st.run[c.id] = fixed ? 'done' : 'failed'; st.runMsg[c.id] = fixed ? by : j.message; if (fixed) markFixed(c.id); emit();
     rt.toast(`${c.title}: ${fixed ? by.replace(/\.$/, '').toLowerCase() : j.message}`, fixed ? 'success' : 'warning');
-  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
+    if (!fixed) failHelp(c, j.message, rt);
+  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); failHelp(c, (e as Error).message, rt); }
 }
 
 interface HostJob { state: 'asking' | 'waiting' | 'running' | 'done' | 'failed'; message: string }
@@ -280,7 +287,8 @@ async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise
     st.run[c.id] = j.state === 'done' ? 'done' : 'failed'; st.runMsg[c.id] = j.message; if (j.state === 'done') markFixed(c.id); emit();
     rt.toast(`${c.title}: ${j.message}`, j.state === 'done' ? 'success' : 'warning');
     await loadSystemCheck(true);
-  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
+    if (j.state !== 'done') failHelp(c, j.message, rt);
+  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); failHelp(c, (e as Error).message, rt); }
 }
 
 export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
@@ -297,7 +305,8 @@ export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Prom
     st.run[c.id] = r.check.status === 'ok' || r.check.status === 'info' ? 'done' : 'failed'; st.runMsg[c.id] = r.message;
     if (st.run[c.id] === 'done') markFixed(c.id);
     rt.toast(`${c.title}: ${r.message}`, st.run[c.id] === 'done' ? 'success' : 'warning');
-  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
+    if (st.run[c.id] === 'failed') failHelp(c, r.message, rt);
+  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); failHelp(c, (e as Error).message, rt); }
   emit();
 }
 
@@ -353,7 +362,7 @@ export function SystemBanner() {
         <ul className="axp-systems-check-banner__list">
           {list.some((c) => c.fix?.type === 'action') && (
             <li className="axp-systems-check-banner__fixall">
-              <ActBadge icon="zap" label={`Auto fix all (${list.filter((c) => c.fix?.type === 'action').length})`} disabled={list.some((c) => s.run[c.id] === 'working')} onClick={() => void (async () => { for (const c of list.filter((x) => x.fix?.type === 'action')) await autoFix(c, rt); })()} />
+              <ActBadge icon="zap" label={`Auto fix all (${list.filter((c) => c.fix?.type === 'action').length})`} disabled={list.some((c) => s.run[c.id] === 'working')} onClick={() => void (async () => { helpOnFail = false; try { for (const c of list.filter((x) => x.fix?.type === 'action')) await autoFix(c, rt); } finally { helpOnFail = true; } })()} />
             </li>
           )}
           {guidedOrder(list).map((c) => {
