@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T15:54:37.605Z",
+ "updatedAt": "2026-10-28T16:55:24.190Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3605,6 +3605,41 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-28T15:41:17.287Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "amberx-claude-tokens",
+   "title": "AmberX AI connection: fix Save key + several Claude tokens with Test and a primary",
+   "category": "AmberX app",
+   "detail": "Brett Oct 28 2026: \"Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default\". Cause: the save never reached the AmberX server (no POST in the amberx-web log) and the error went to the top of the settings page, off-screen on the phone. Fix: errors shown next to the button, clear sign-in/timeout messages; new Claude plan tokens list (add name + access + optional refresh, saved and tested in one tap, Test each / Test all, star = primary). Server: POST /api/ai/profiles (add with key, atomic), POST /api/ai/primary/{id}.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-claude-tokens",
+   "pr": "",
+   "createdAt": "2026-10-28T16:55:24.086Z",
+   "updatedAt": "2026-10-28T16:55:24.190Z",
+   "builtAt": "2026-10-28T16:55:24.190Z",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Server add-with-key + primary routes + tests; page: inline errors + Claude tokens list",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "AmberX",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T16:55:24.189Z",
      "note": ""
     }
    ]

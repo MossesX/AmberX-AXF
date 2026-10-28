@@ -12,11 +12,11 @@
  */
 import { useEffect, useState, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Chip, Container, IconButton, Icon, Markdown, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Chip, Container, IconButton, Icon, Markdown, Note, Segmented, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { search, pathOf, type Item, type Store } from '../../notes/web/core';
 import { useNotes } from '../../notes/web/store';
 import {
-  ask, checkAi, clearAiKey, getAiConfig, putAiConfig, saveAiKey, testAiProfile, useAiStatus,
+  ask, checkAi, clearAiKey, getAiConfig, putAiConfig, saveAiKey, testAiProfile, useAiStatus, addAiProfileWithKey, makeAiPrimary,
   type AiConfig, type AiProfile, type ProfileEdit,
   setAiEnabled,
 } from './client';
@@ -126,7 +126,10 @@ function ProfileRow({ p, cfg, index, onChange, setError }: {
   const [busy, setBusy] = useState(false);
   const kind = cfg.kinds.find((k) => k.kind === p.kind);
   const plan = p.kind === 'claude-code';
-  const run = async (fn: () => Promise<void>) => { setBusy(true); setError(''); try { await fn(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };
+  const [fail, setFail] = useState('');
+  // errors show right here, next to the button that was tapped (not only at the top of the page, off-screen on a phone)
+  const run = async (fn: () => Promise<void>) => { setBusy(true); setError(''); setFail(''); setNote(''); try { await fn(); } catch (e) { setFail((e as Error).message); } finally { setBusy(false); } };
+  void setError;
   const all = cfg.profiles.map(toEdit);
   const save = () => run(async () => { onChange(await putAiConfig({ profiles: all.map((x) => (x.id === p.id ? { ...x, label, model, baseUrl: base } : x)) })); setNote('Saved.'); });
   const move = (d: -1 | 1) => run(async () => {
@@ -166,6 +169,7 @@ function ProfileRow({ p, cfg, index, onChange, setError }: {
             onClick={() => run(async () => onChange(await putAiConfig({ profiles: all.filter((x) => x.id !== p.id) })))}>Remove</Button>
         </div>
         {note && <p className="fx-muted" style={{ margin: 0 }}>{note}</p>}
+        {fail && <Note tone="danger">{fail}</Note>}
         {open && (
           <div className="fx-stack">
             <TextField label="Name" value={label} onChange={setLabel} placeholder={kind?.label} />
@@ -189,12 +193,118 @@ function ProfileRow({ p, cfg, index, onChange, setError }: {
                     })}>Save key</Button>
                     {p.keySource === 'saved' && <Button size="sm" tone="danger" confirm="Delete the saved key?" disabled={busy} onClick={() => run(async () => { await clearAiKey(p.id); onChange(await getAiConfig()); setNote('Key deleted.'); })}>Delete key</Button>}
                   </div>
+                  {busy && <p className="fx-muted fx-small" style={{ margin: 0 }}>Saving…</p>}
+                  {fail && <Note tone="danger">{fail}</Note>}
+                  {note && <p className="fx-muted fx-small" style={{ margin: 0 }}>{note}</p>}
                   {kind && kind.envNames.length > 0 && <p className="fx-muted fx-small" style={{ margin: 0 }}>Or set <span className="fx-mono">{kind.envNames[0]}</span> on the server.</p>}
                 </div>
               </Container>
             )}
           </div>
         )}
+      </div>
+    </Container>
+  );
+}
+
+/* ---------------------------------------------------------------- Claude plan tokens: several pairs, test each, one primary */
+
+const PLAN = 'claude-code';
+
+function expiry(p: AiProfile): string {
+  if (!p.pair) return 'long-lived token';
+  if (!p.expiresAt) return 'pair · renews on first use';
+  const m = Math.round((p.expiresAt - Date.now()) / 60_000);
+  return m <= 0 ? 'pair · access expired, renews on next use' : `pair · renews in ${m < 120 ? `${m} min` : `${Math.round(m / 60)} h`}`;
+}
+
+function TokenRow({ p, cfg, onChange }: { p: AiProfile; cfg: AiConfig; onChange: (c: AiConfig) => void }) {
+  const [busy, setBusy] = useState('');
+  const [msg, setMsg] = useState<{ tone: 'success' | 'danger' | 'info'; text: string } | null>(null);
+  const primary = cfg.active === p.id;
+  const run = async (what: string, fn: () => Promise<void>) => { setBusy(what); setMsg(null); try { await fn(); } catch (e) { setMsg({ tone: 'danger', text: (e as Error).message }); } finally { setBusy(''); } };
+  const test = () => run('test', async () => {
+    const t = await testAiProfile(p.id);
+    setMsg(t.ok ? { tone: 'success', text: `Works · answered in ${t.ms ?? 0} ms.` } : { tone: 'danger', text: `Failed: ${t.error ?? 'no answer'}` });
+    onChange(await getAiConfig());
+  });
+  return (
+    <div className="fx-stack" data-fx-row>
+      <div className="fx-row fx-row--wrap">
+        <IconButton icon="star" label={primary ? 'Primary (default)' : 'Make this the primary token'} disabled={!!busy || primary}
+          onClick={() => void run('star', async () => { onChange(await makeAiPrimary(p.id)); setMsg({ tone: 'info', text: 'Now the primary. The others answer if it fails.' }); })} />
+        <strong className="fx-grow">{p.label}</strong>
+        {primary && <Chip tone="accent">primary</Chip>}
+        <KeyChip p={p} />
+        <HealthChip p={p} />
+      </div>
+      <div className="fx-row fx-row--wrap">
+        <span className="fx-muted fx-small">{p.keySource === 'saved' ? expiry(p) : p.keySource === 'env' ? 'token from the server environment' : 'no token yet'}</span>
+      </div>
+      {p.refreshError && <Note tone="danger">Renewing failed: {p.refreshError}</Note>}
+      <div className="fx-row fx-row--wrap">
+        <Button size="sm" icon="zap" busy={busy === 'test'} disabled={!!busy} onClick={() => void test()}>Test</Button>
+        {!primary && <Button size="sm" tone="primary" icon="star" busy={busy === 'star'} disabled={!!busy} onClick={() => void run('star', async () => onChange(await makeAiPrimary(p.id)))}>Make primary</Button>}
+        <Button size="sm" icon="trash" tone="danger" confirm={`Remove ${p.label}? Its saved token is deleted.`} busy={busy === 'rm'} disabled={!!busy}
+          onClick={() => void run('rm', async () => onChange(await putAiConfig({ profiles: cfg.profiles.filter((x) => x.id !== p.id).map(toEdit) })))}>Remove</Button>
+      </div>
+      {msg && <Note tone={msg.tone}>{msg.text}</Note>}
+    </div>
+  );
+}
+
+function ClaudeTokens({ cfg, onChange }: { cfg: AiConfig; onChange: (c: AiConfig) => void }) {
+  const tokens = cfg.profiles.filter((p) => p.kind === PLAN);
+  const [label, setLabel] = useState('');
+  const [access, setAccess] = useState('');
+  const [refreshTok, setRefreshTok] = useState('');
+  const [primary, setPrimary] = useState(false);
+  const [busy, setBusy] = useState('');
+  const [msg, setMsg] = useState<{ tone: 'success' | 'danger' | 'info'; text: string } | null>(null);
+  const [adding, setAdding] = useState(tokens.length === 0);
+  const add = async () => {
+    setBusy('add'); setMsg(null);
+    try {
+      const r = await addAiProfileWithKey({ kind: PLAN, label: label.trim() || `Claude token ${tokens.length + 1}`, key: access.trim(), ...(refreshTok.trim() ? { refresh: refreshTok.trim() } : {}), primary: primary || tokens.length === 0 });
+      setAccess(''); setRefreshTok(''); setLabel(''); setPrimary(false);
+      onChange(r.config);
+      setBusy('test');
+      const t = await testAiProfile(r.profile.id);
+      onChange(await getAiConfig());
+      setMsg(t.ok ? { tone: 'success', text: `${r.profile.label} saved and tested · answered in ${t.ms ?? 0} ms.` } : { tone: 'danger', text: `${r.profile.label} saved, but the test failed: ${t.error ?? 'no answer'}` });
+      setAdding(false);
+    } catch (e) { setMsg({ tone: 'danger', text: `Not saved: ${(e as Error).message}` }); } finally { setBusy(''); }
+  };
+  const testAll = async () => {
+    setBusy('all'); setMsg(null);
+    try {
+      const res = await Promise.all(tokens.map(async (p) => ({ p, t: await testAiProfile(p.id).catch((e: Error) => ({ ok: false, error: e.message })) })));
+      onChange(await getAiConfig());
+      const bad = res.filter((x) => !x.t.ok);
+      setMsg(bad.length ? { tone: 'danger', text: `${res.length - bad.length} of ${res.length} work. Failed: ${bad.map((x) => x.p.label).join(', ')}` } : { tone: 'success', text: `All ${res.length} work.` });
+    } catch (e) { setMsg({ tone: 'danger', text: (e as Error).message }); } finally { setBusy(''); }
+  };
+  return (
+    <Container title={`Claude plan tokens (${tokens.length})`} icon="key" actions={tokens.length > 1 ? <Button size="sm" icon="zap" busy={busy === 'all'} disabled={!!busy} onClick={() => void testAll()}>Test all</Button> : undefined}>
+      <div className="fx-stack">
+        {!cfg.cli && <Note tone="warning">The Claude Code CLI isn't installed on the AmberX server, so plan tokens can't answer yet.</Note>}
+        {tokens.length === 0 && <p className="fx-muted" style={{ margin: 0 }}>No Claude plan token yet. Add one below.</p>}
+        {tokens.map((p) => <TokenRow key={p.id} p={p} cfg={cfg} onChange={onChange} />)}
+        {msg && <Note tone={msg.tone}>{msg.text}</Note>}
+        {adding ? (
+          <div className="fx-stack">
+            <TextField label="Name" value={label} onChange={setLabel} placeholder={`Claude token ${tokens.length + 1}`} />
+            <TextField label="Access token (sk-ant-oat…)" type="password" value={access} onChange={setAccess} mono
+              hint={<>From <span className="fx-mono">claude setup-token</span> (long-lived), or the access half of a pair.</>} />
+            <TextField label="Refresh token (sk-ant-ort…, optional)" type="password" value={refreshTok} onChange={setRefreshTok} mono hint="With it the server renews the access token before it expires." />
+            {tokens.length > 0 && <Switch label="Make it the primary" checked={primary} onChange={setPrimary} />}
+            <div className="fx-row fx-row--wrap">
+              <Button tone="primary" icon="key" busy={busy === 'add' || busy === 'test'} disabled={!!busy || !access.trim()} onClick={() => void add()}>{busy === 'test' ? 'Testing…' : 'Save and test'}</Button>
+              {tokens.length > 0 && <Button tone="ghost" disabled={!!busy} onClick={() => setAdding(false)}>Cancel</Button>}
+            </div>
+          </div>
+        ) : <div className="fx-row"><Button icon="plus" disabled={!!busy} onClick={() => { setAdding(true); setMsg(null); }}>Add a token</Button></div>}
+        <p className="fx-muted fx-small" style={{ margin: 0 }}>The primary answers first; if it fails, the other tokens and providers answer in the order below.</p>
       </div>
     </Container>
   );
@@ -225,6 +335,7 @@ function ConnectionPanel() {
           </p>
         </div>
       </Container>
+      <ClaudeTokens cfg={cfg} onChange={change} />
       <Container title={`Providers, in fallback order (${cfg.profiles.length})`} icon="list" actions={cfg.last ? <span className="fx-muted fx-small">Last answer: {cfg.last.label}{cfg.last.fallback ? ' (fallback)' : ''}</span> : undefined}>
         <div className="fx-stack">
           {cfg.profiles.length === 0 && (

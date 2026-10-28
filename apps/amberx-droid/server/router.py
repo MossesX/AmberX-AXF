@@ -230,6 +230,43 @@ class Router:
             self.health.pop(pid, None)
             return self.public_profile(p)
 
+    def add_with_key(self, kind: str, label: str, key: str, refresh: str | None = None, primary: bool = False) -> dict[str, Any]:
+        """Add a profile and its key in one step (several Claude tokens, each its own profile). Nothing is kept when the
+        key is refused. `primary` makes it active and first in line."""
+        with self.lock:
+            db = self._load()
+            if len(db["profiles"]) >= MAX_PROFILES:
+                raise ValueError(f"at most {MAX_PROFILES} providers")
+            p = self._clean_profile({"kind": kind, "label": label}, None, set(db["profiles"]))
+            db["profiles"][p["id"]] = p
+            db["order"].append(p["id"])
+            if primary or db["active"] not in db["profiles"] or not db["active"]:
+                db["active"] = p["id"]
+                db["order"] = [p["id"]] + [i for i in db["order"] if i != p["id"]]
+            self._save(db)
+            try:
+                return self.set_key(p["id"], key, refresh)
+            except ValueError:
+                db = self._load()
+                db["profiles"].pop(p["id"], None)
+                db["order"] = [i for i in db["order"] if i != p["id"]]
+                if db["active"] == p["id"]:
+                    db["active"] = db["order"][0] if db["order"] else ""
+                self._save(db)
+                raise
+
+    def make_primary(self, pid: str) -> dict[str, Any]:
+        """Active and first in the fallback order."""
+        with self.lock:
+            db = self._load()
+            if pid not in db["profiles"]:
+                raise KeyError(pid)
+            db["profiles"][pid]["enabled"] = True
+            db["active"] = pid
+            db["order"] = [pid] + [i for i in db["order"] if i != pid]
+            self._save(db)
+        return self.config()
+
     def _fresh_token(self, pid: str, ahead_ms: int = FRESH_MS) -> None:
         """A Claude plan pair close to expiry gets a new access token (the rotated pair is stored)."""
         with self.lock:

@@ -444,6 +444,28 @@ check("bad switch value ignored → 200 but unchanged", c.put("/api/ai/config", 
 c.post("/api/ai/keys/claude-plan", headers=W, json={"clear": True})
 check("clear removes the token", json.loads((TMP / "data1" / "ai.json").read_text())["profiles"]["claude-plan"].get("key") is None)
 check("keep-alive bounds", c.put("/api/ai/config", headers=W, json={"keepAliveMin": 61}).status_code == 400)
+# several Claude tokens: add each with its key, test, star one as primary
+before = c.get("/api/ai/config", headers=A).json()
+check("user can't add a token", c.post("/api/ai/profiles", headers={**U, "origin": ORIGIN}, json={"kind": "claude-code", "key": OAT}).status_code == 403)
+t1 = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "Main", "key": "sk-ant-oat01-" + "1" * 40})
+t2 = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "Spare", "key": "sk-ant-oat01-" + "2" * 40, "refresh": "sk-ant-ort01-" + "2" * 40})
+check("two more tokens added", t1.status_code == 200 and t2.status_code == 200 and t2.json()["profile"]["pair"] is True, (t1.text[:200], t2.text[:200]))
+ids = [p["id"] for p in t2.json()["config"]["profiles"] if p["kind"] == "claude-code"]
+check("three plan profiles now", len(ids) == 3, ids)
+check("adding doesn't change the primary", t2.json()["config"]["active"] == before["active"])
+bad = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "Oops", "key": "sk-ant-api03-" + "x" * 40})
+check("refused key keeps nothing", bad.status_code == 400 and len(c.get("/api/ai/config", headers=A).json()["profiles"]) == len(t2.json()["config"]["profiles"]), bad.text[:200])
+check("empty key refused", c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "key": " "}).status_code == 400)
+spare = t2.json()["profile"]["id"]
+pc = c.post(f"/api/ai/primary/{spare}", headers=W).json()
+check("star makes it primary and first", pc["active"] == spare and pc["order"][0] == spare and pc["claude"] == "plan", pc.get("active"))
+check("primary of unknown 404", c.post("/api/ai/primary/nope", headers=W).status_code == 404)
+t3 = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "New main", "key": "sk-ant-oat01-" + "3" * 40, "primary": True}).json()
+check("add as primary", t3["config"]["active"] == t3["profile"]["id"] and t3["config"]["order"][0] == t3["profile"]["id"])
+check("token keys never in config", "1111111111" not in c.get("/api/ai/config", headers=A).text)
+c.put("/api/ai/config", headers=W, json={"profiles": [{"id": p["id"], "kind": p["kind"]} for p in c.get("/api/ai/config", headers=A).json()["profiles"] if p["label"] not in ("Main", "Spare", "New main")]})
+c.put("/api/ai/config", headers=W, json={"claude": "api"})
+
 from axf.assistant_host import providers  # noqa: E402
 check("CLI env hides AMBERX_ vars", "AMBERX_" in providers.ENV_PREFIXES_HIDDEN)
 fake.calls.clear()
