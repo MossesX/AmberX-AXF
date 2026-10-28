@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T10:01:41.231Z",
+ "updatedAt": "2026-10-28T09:55:08.020Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2821,6 +2821,46 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-28T05:10:31.767Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "fix-banner-snap",
+   "title": "Fix: console banner items overlap on phones; attached widgets snap, never overlap",
+   "category": "Fix",
+   "detail": "Brett Oct 28 2026 (screenshot, console.amberxai.com on his phone): banner items clip and run into each other (Profile chip under the search bar, search squeezed to 'Se', axHub status, build dot and alerts bell cut off at the right edge). Rule: 'always make attached things snap so no overlap'. Fix in the framework (all apps): banner sides sized to their content (never clipped or drawn over a neighbour), the search bar shrinks to a minimum first, anything that still doesn't fit scrolls sideways with scroll snap; same for toolbar widget hosts and the menubar.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "fix/banner-snap",
+   "pr": "#149",
+   "createdAt": "2026-10-28T05:01:49.680Z",
+   "updatedAt": "2026-10-28T09:55:08.020Z",
+   "builtAt": "2026-10-28T09:55:07.941Z",
+   "notes": [
+    {
+     "text": "Merged PR #149, branch fix/banner-snap",
+     "at": "2026-10-28T09:55:08.019Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Banner + toolbar host CSS: sides never smaller than content, search bar shrinks to a minimum, sideways scroll with snap when full; menubar menus snap; re-bake console; phone + desktop screenshots before/after",
+     "model": "Opus",
+     "why": "",
+     "phase": "Fix",
+     "group": "Framework CSS",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T05:05:08.295Z",
      "note": ""
     }
    ]
