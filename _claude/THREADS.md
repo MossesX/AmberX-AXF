@@ -34,7 +34,6 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Fix: console look not saved to axHub (Hub sync detached the console's own hub source on restart) | review | `fix/hubsync-own-look-source` | [#148](https://github.com/MossesX/AmberX-AXF/pull/148) | Orchestrator build `fix-hubsync-look-source` (refactor, Opus). Merge after CI; console + axHub web + AmberX redeploy on the 5-minute update | 2026-10-28 |
 | AmberX voice notes, lists, tasks + AI router (amberx.amberxai.com) | done | `claude/amberx-notes` | [#144](https://github.com/MossesX/AmberX-AXF/pull/144) merged | Live Oct 28 02:34 UTC (FastAPI server answering, wall-signed only). Left for Brett: add an AI provider in Settings → Plugins → AI connection | 2026-10-28 |
 | AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
 | AmberX hands-free listening + ActiveX-style detection overlay (level graph, dB, quick settings) | review | `claude/amberx-handsfree` | #141 | Orchestrator build `amberx-handsfree` (refactor, Opus): s1–s3 done, CI is the first Java compile; then merge approval | 2026-10-27 |
@@ -193,6 +192,7 @@ VPS). The session reads the rules and this file first, as usual.
 
 | Thread | Result | Updated |
 |---|---|---|
+| Fix: console look not saved to axHub (Hub sync detached the console's own source) | merged (#148), console + axHub web + AmberX redeploy on the 5-minute update | 2026-10-28 |
 | Fix: Appearance switches + interface tab buttons dead inside GizmoX tabs | merged (#146), console redeploys on the 5-minute update | 2026-10-28 |
 | AmberX look fix + Lock the look + Get the look from axHub switches | merged (#126) through Brett's axHub merge approval; amberx.amberxai.com picks it up in the 5-minute update | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | merged (#119), deployed to console, AmberX, axHub web, Patches web; shared look on axHub switched to Fresh | 2026-10-27 |

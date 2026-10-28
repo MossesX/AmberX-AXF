@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T05:10:31.839Z",
+ "updatedAt": "2026-10-28T05:19:54.279Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2790,16 +2790,21 @@
    "title": "Fix: console look not saved to axHub (Hub sync replaced the console own hub source)",
    "category": "Fix",
    "detail": "Brett Oct 28 2026: either console isnt saving look to hub or other apps arent getting look from hub. Hub doc unchanged since 02:54 UTC. Cause: HubSync.stop() detached whatever appearance source the runtime had (the console own one too) on every restart and start() attached its own. Fix: runtime appearanceSourceIs; HubSync detaches only its own.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "fix/hubsync-own-look-source",
    "pr": "#148",
    "createdAt": "2026-10-28T05:10:31.665Z",
-   "updatedAt": "2026-10-28T05:10:31.839Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-10-28T05:19:54.279Z",
+   "builtAt": "2026-10-28T05:19:54.195Z",
+   "notes": [
+    {
+     "text": "Merged PR #148 (1359f5f), branch fix/hubsync-own-look-source",
+     "at": "2026-10-28T05:19:54.279Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
