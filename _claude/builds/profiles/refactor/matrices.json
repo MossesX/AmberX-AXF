@@ -1,15 +1,15 @@
 {
  "$axf": "feature-matrix@0",
  "note": "Draft data until feature-matrix s1 (feature-matrix@1) lands; s1 adopts it as-is. Items are never deleted: keep=false means skip.",
- "updatedAt": "2026-10-28T23:10:00.000Z",
+ "updatedAt": "2026-10-28T23:25:00.000Z",
  "matrices": [
   {
    "build": "refactor-all",
    "profile": "refactor",
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-28T23:10:00.000Z",
-   "minutesKept": 2055,
+   "updatedAt": "2026-10-28T23:25:00.000Z",
+   "minutesKept": 2195,
    "minutesSkipped": 625,
    "items": [
     {
@@ -1199,6 +1199,66 @@
      "keep": true,
      "why": "",
      "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "assistant-approvals:s1",
+     "name": "approval-badge@1 contract: shared feed of open axHub approvals + assistant title-bar slot (badge, popover, Approve/Decline, toast); fixture + check",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "source": "assistant-approvals",
+     "sourceStep": "s1",
+     "model": "Fable",
+     "minutes": 30,
+     "keep": true,
+     "why": "cross-app contract, console + AmberX",
+     "addedAt": "2026-10-28T23:25:00.000Z"
+    },
+    {
+     "id": "assistant-approvals:s2",
+     "name": "framework/libs/approvals: shared library over the feed (hub session, live updates, approve/decline), tests",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "source": "assistant-approvals",
+     "sourceStep": "s2",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T23:25:00.000Z"
+    },
+    {
+     "id": "assistant-approvals:s3",
+     "name": "Dev Console AI assistant window: title-bar badge + popover, click Approve runs it, snaps never overlaps",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "source": "assistant-approvals",
+     "sourceStep": "s3",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T23:25:00.000Z"
+    },
+    {
+     "id": "assistant-approvals:s4",
+     "name": "AmberX app assistant: same badge + popover in its title bar, tap Approve from the phone, push opens it",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "source": "assistant-approvals",
+     "sourceStep": "s4",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T23:25:00.000Z"
+    },
+    {
+     "id": "assistant-approvals:s5",
+     "name": "Checks, before/after shots of both title bars, docs, THREADS, PR + merge approval",
+     "group": "Approvals in the assistant title bar (claude.ai chat, Oct 28 19:19)",
+     "source": "assistant-approvals",
+     "sourceStep": "s5",
+     "model": "Opus",
+     "minutes": 20,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T23:25:00.000Z"
     }
    ],
    "page": "https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS",

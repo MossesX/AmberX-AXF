@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T20:02:38.604Z",
+ "updatedAt": "2026-10-28T23:21:28.363Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4454,7 +4454,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-28T20:02:38.602Z",
+   "updatedAt": "2026-10-28T23:21:28.362Z",
    "builtAt": "",
    "notes": [
     {
@@ -4472,6 +4472,10 @@
     {
      "text": "s71 (merge PR #161, Plugins ladder + Disable + submenu flip) DONE: Brett allowed this one merge despite the STOP ORDER (Oct 28 15:47); merged after his axHub approval.",
      "at": "2026-10-28T20:02:38.599Z"
+    },
+    {
+     "text": "Oct 28 2026 19:19 EDT (Brett, claude.ai): approvals pop up in the assistants' title bars, click to approve — one mechanism for the console assistant and the AmberX app (both via axHub). Steps s76–s80 + matrix items assistant-approvals:s1–s5.",
+     "at": "2026-10-28T23:21:28.362Z"
     }
    ],
    "approvals": [],
@@ -5691,6 +5695,89 @@
      "phase": "Opus",
      "group": "plugin-theme-override",
      "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s76",
+     "text": "[assistant-approvals s1] approval-badge@1 contract: one shared feed of open axHub approvals (id, title, description, age, one-tap link, decisions) and a title-bar slot for assistant windows (badge count + popover listing them, Approve/Decline per item, result toast); same shape for the Dev Console assistant and the AmberX assistant; reuse the approvals-banner source; fixture + check",
+     "model": "Fable",
+     "why": "cross-app contract (console + AmberX) and a new window title-bar slot",
+     "phase": "Fable 2",
+     "group": "assistant-approvals",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/approvals-banner/web/client.ts",
+      "framework/react"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s77",
+     "text": "[assistant-approvals s2] framework/libs/approvals: shared library over the approval-badge@1 feed (axHub session, live updates via the hub, approve/decline calls, errors), used by both apps; unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "assistant-approvals",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s78",
+     "text": "[assistant-approvals s3] Dev Console AI assistant window: badge + popover in its title bar from the shared library; click Approve runs the approval and shows the result; nothing drawn when there are no open approvals; snaps, never overlaps (banner rule)",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "assistant-approvals",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s79",
+     "text": "[assistant-approvals s4] AmberX app assistant: the same badge + popover in its title bar (apps/amberx-droid ai plugin), tap Approve from the phone; an axHub push notification opens the popover",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "assistant-approvals",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s80",
+     "text": "[assistant-approvals s5] Checks (tsc, build, check-theme, lifecycle), before/after shots of both title bars, docs, THREADS, PR + merge approval",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "assistant-approvals",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
