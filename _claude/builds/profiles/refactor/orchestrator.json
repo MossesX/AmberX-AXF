@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T14:42:12.969Z",
+ "updatedAt": "2026-10-28T14:42:23.337Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2947,9 +2947,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-push",
-   "pr": "",
+   "pr": "#154",
    "createdAt": "2026-10-28T14:39:25.869Z",
-   "updatedAt": "2026-10-28T14:42:12.969Z",
+   "updatedAt": "2026-10-28T14:42:23.337Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
