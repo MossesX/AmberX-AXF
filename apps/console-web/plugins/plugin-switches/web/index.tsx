@@ -11,7 +11,7 @@
  * plugin removes every trace of it.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Icon, ModelBadge, Switch, useRuntime } from '@console/axf/react';
+import { Button, Icon, ModelBadge, Slot, Switch, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { post } from '@console/api';
 import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from '@console/plugins';
@@ -23,6 +23,8 @@ const ID = 'ai.amberx.axf.console.plugin-switches';
 /** This plugin's folder under plugins/ — its row is the greyed-out one. */
 const FOLDER = 'plugin-switches';
 const DIALOG = 'plugin-switches';
+/** Extension point under each row: plugins contribute through AxfWebLibrary.slots (they check `folder` themselves). */
+const ROW_SLOT = 'plugin-switches.row';
 
 interface Row { folder: string; name: string; description: string; enabled: boolean; problem: string | null; provides: string[]; requires: string[]; model?: string }
 
@@ -138,6 +140,8 @@ function SwitchList() {
               </div>
               <Switch hideLabel label={`${r.name} ${r.enabled ? 'on' : 'off'}`} title={self ? "Can't switch itself off" : r.enabled ? 'Turn off' : 'Turn on'}
                 checked={r.enabled} disabled={locked || busy === r.folder} onChange={(on) => flip(r, on)} className="axp-plugin-switches__switch" />
+              {/* a plugin may add to its own row (e.g. Basic filter's "attach to datasets"); props: folder, enabled */}
+              <Slot name={ROW_SLOT} props={{ folder: r.folder, enabled: r.enabled }} />
             </li>
           );
         })}

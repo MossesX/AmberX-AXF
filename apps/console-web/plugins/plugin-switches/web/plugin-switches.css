@@ -6,7 +6,7 @@
 .axp-plugin-switches__confirm { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-danger); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-plugin-switches__confirm-text { margin: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
 .axp-plugin-switches__list { list-style: none; margin: 0; padding: 0; overflow-y: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
-.axp-plugin-switches__row { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-space); min-height: var(--fx-row-h); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75) }
+.axp-plugin-switches__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-space); min-height: var(--fx-row-h); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75) }
 .axp-plugin-switches__row + .axp-plugin-switches__row { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-plugin-switches__row.is-self { opacity: var(--fx-opacity-disabled) }
 .axp-plugin-switches__text { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); min-width: 0 }

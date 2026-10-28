@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Basic filter plugin: sort & filter dialog attachable to any dataset (every grid), configurable toolbar with live floating preview, attach from Plugin switches | review | `claude/basic-filter` | [#155](https://github.com/MossesX/AmberX-AXF/pull/155) | Orchestrator build `basic-filter` (refactor, Opus, 7 steps; s1–s6 done, CI green, merge approval sent). Built in the AmberX Framework claude.ai chat | 2026-10-28 |
 | Approval costs + history (cost on every approval, history in Console + axHub, one-call wait with AmberX alert) | queued (held) | – | – | Orchestrator build `approval-costs` (refactor, Opus, 5 steps, ~2.25 h; AXF + MossesX/axHub). Retry-rule change to one wait call needs Brett's OK at build time | 2026-10-28 |
 | axHub GitHub write tools (create/update file, branch, commit; each needs approval) | queued (held) | – | – | Orchestrator build `axhub-github-write` (refactor, Opus, 3 steps, ~1 h; work in MossesX/axHub). From the Oct 28 fix wizard; VPS writes only when needed | 2026-10-28 |
 | Share Search: programmable grid toolbar plugin (search/filter bar, 5 buttons, advanced search, attach prompt) | queued (held) | – | – | Orchestrator build `share-search` (refactor, 8 steps, ~3.9 h: Fable s1–s2 contract, Opus s3–s8). Brett: "send to orchestrator and hold off on build" — don't start until he says | 2026-10-28 |

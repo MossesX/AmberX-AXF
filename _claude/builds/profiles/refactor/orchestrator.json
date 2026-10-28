@@ -3648,6 +3648,142 @@
      "note": ""
     }
    ]
+  },
+  {
+   "id": "basic-filter",
+   "title": "Basic filter plugin: search + filter dialog attachable to any dataset, with a configurable toolbar",
+   "category": "Console plugins",
+   "detail": "Brett, Oct 28 2026: 'Add new plugin called basic filter that opens a dialog with search and filter options that you can attach to any dataset. Also comes with a toolbar customized in the plugins settings like hide and show and interface to configure using preset actions to select from in a grid with expandable rows that display everything about the action and style. Live floating preview of toolbar that hot renders when something is edited. By default toolbar is on with 1 button to open the sort and filter dialog. Attach it to the dataset in plugin switches.' Datasets = every lib-datagrid grid (registers itself) + anything registering through the new lib-datagrid dataset registry; web only, Android twin deferred. All Opus (console plugin UI + small web lib hook). Profile: Refactor (Brett's pick).",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/basic-filter",
+   "pr": "#155",
+   "createdAt": "2026-10-28T15:16:53.872Z",
+   "updatedAt": "2026-10-28T15:43:56.298Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "PR #155 open, CI green on 2c185a79; merge approval sent to Brett through axHub (push-banner merge-pr.sh).",
+     "at": "2026-10-28T15:43:56.298Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "lib-datagrid dataset registry: grids register as datasets (columns, rows), attachable row transforms + a toolbar slot above attached grids; placeholder for the Android twin",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Dataset hook",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:20:20.040Z",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "basic-filter plugin scaffold: plugin.json, install/uninstall, hooks, menu.ts, settings store (attachments, toolbar config) in localStorage + dataDir-free web store",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Plugin",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.183Z",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Sort & filter dialog: search, per-column rules (text/number/choice), multi-level sort, apply/reset; filter engine applied as the dataset transform",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Plugin",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.244Z",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Toolbar: preset action catalog, default = on with one button (open sort & filter); renders on attached datasets",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Toolbar",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.312Z",
+     "note": ""
+    },
+    {
+     "id": "s5",
+     "text": "Toolbar settings: show/hide, actions grid with expandable rows (action + style details), add from presets, live floating preview that hot-renders",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Toolbar",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.380Z",
+     "note": ""
+    },
+    {
+     "id": "s6",
+     "text": "Plugin switches: per-plugin dataset attach switches (slot contributed by basic-filter, no folder coupling)",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Attach",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.456Z",
+     "note": ""
+    },
+    {
+     "id": "s7",
+     "text": "Checks (typecheck, build, check-theme, check-controls, menu-reach, plugins --check, lifecycle check), docs, THREADS, PR + merge approval",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Ship",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    }
+   ]
   }
  ]
 }
