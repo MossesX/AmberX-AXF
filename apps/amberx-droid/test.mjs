@@ -8,6 +8,7 @@
  */
 import * as voice from './src/plugins/voice/web/core.ts';
 import * as mon from './src/plugins/monitor/web/core.ts';
+import * as notes from './src/plugins/notes/web/core.ts';
 import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
 import { readFileSync } from 'node:fs';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
@@ -240,6 +241,104 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq((cap.server?.allowNavigation ?? []).length, 2, 'only the app and the hub may load in the shell');
   eq(cap.server?.errorPath, 'offline.html', 'offline page when the server is unreachable');
   ok(readFileSync(new URL('./public/offline.html', import.meta.url), 'utf8').includes(HOSTED_URL), 'the offline page retries the hosted app');
+}
+
+// notes plugin
+/* ---------------------------------------------------------------- notes (plugins/notes/web/core.ts) */
+{
+  const T = '2026-10-27T10:00:00.000Z';
+  const now = new Date('2026-10-27T10:00:00');
+  const s = notes.emptyStore(T);
+  eq(notes.childrenOf(s, null).map((l) => l.id), ['inbox', 'plugins', 'voice-notes'], 'notes: Inbox, Plugins and Voice notes are built in');
+
+  // one list per plugin, renamed when the plugin is, never removed
+  const added = notes.syncPluginLists(s, [{ id: 'ai.amberx.amberx.voice', name: 'Voice control' }, { id: 'ai.amberx.amberx.notes', name: 'Notes' }], T);
+  eq(added.length, 2, 'notes: a list is made for each plugin');
+  eq(notes.childrenOf(s, 'plugins').map((l) => l.name), ['Voice control', 'Notes'], 'notes: plugin lists sit under Plugins');
+  eq(notes.syncPluginLists(s, [{ id: 'ai.amberx.amberx.voice', name: 'Voice' }], T), [], 'notes: a second sync makes nothing new');
+  eq(notes.childrenOf(s, 'plugins').map((l) => l.name), ['Voice', 'Notes'], 'notes: a renamed plugin renames its list, a missing one keeps it');
+
+  // lists: add, sub-list, rename, move, reorder, remove
+  const work = notes.addList(s, 'Work', null, T);
+  const bugs = notes.addList(s, 'Bugs', work.id, T);
+  const home = notes.addList(s, 'Home', null, T);
+  eq(notes.pathOf(s, bugs.id), 'Work › Bugs', 'notes: a sub-list has a path');
+  notes.renameList(s, home.id, 'House', T);
+  eq(s.lists[home.id].name, 'House', 'notes: rename a list');
+  let threw = ''; try { notes.renameList(s, 'inbox', 'Mine', T); } catch (e) { threw = e.message; }
+  ok(threw.includes("can't be renamed"), 'notes: the Inbox can\'t be renamed');
+  threw = ''; try { notes.removeList(s, 'plugins', undefined, T); } catch (e) { threw = e.message; }
+  ok(threw.includes("can't be removed"), 'notes: Plugins can\'t be removed');
+  ok(notes.canMoveList(s, work.id, bugs.id) !== null, 'notes: a list can\'t move inside itself');
+  ok(notes.canMoveList(s, 'inbox', work.id) !== null, 'notes: the Inbox can\'t move');
+  notes.moveList(s, home.id, work.id, T);
+  eq(notes.pathOf(s, home.id), 'Work › House', 'notes: move a list under another');
+  notes.reorderLists(s, [home.id, bugs.id], T);
+  eq(notes.childrenOf(s, work.id).map((l) => l.name), ['House', 'Bugs'], 'notes: reorder siblings');
+  const a = notes.addItem(s, { text: 'Leaky tap in the kitchen', list: home.id, tags: ['fix'] }, T);
+  notes.removeList(s, home.id, 'inbox', T);
+  ok(!s.lists[home.id], 'notes: remove a list');
+  eq(s.items[a.id].list, 'inbox', 'notes: its items go where asked');
+
+  // items: merge, search
+  const b = notes.addItem(s, { text: 'Buy washers', list: 'inbox', tags: ['shop'] }, T);
+  const m = notes.mergeItems(s, [a.id, b.id], T);
+  ok(!s.items[b.id] && m.text.includes('Buy washers') && m.text.includes('Leaky tap'), 'notes: merge joins the texts and removes the rest');
+  eq(m.tags, ['fix', 'shop'], 'notes: merge unites the tags');
+  threw = ''; try { notes.mergeItems(s, [a.id], T); } catch (e) { threw = e.message; }
+  ok(threw.includes('two or more'), 'notes: merging one is refused');
+  notes.addItem(s, { text: 'Login button broken on phones', list: bugs.id }, T);
+  eq(notes.search(s, { q: 'login phones' }).length, 1, 'notes: search needs every word');
+  eq(notes.search(s, { q: 'bugs' }).length, 1, 'notes: search finds the list name');
+  eq(notes.search(s, { list: work.id, deep: true }).length, 1, 'notes: search in a list and its sub-lists');
+  eq(notes.search(s, { tag: 'shop' }).length, 1, 'notes: search by tag');
+  eq(notes.search(s, { q: 'nothing like this' }).length, 0, 'notes: no match, nothing found');
+
+  // spoken sentences → intents → the store
+  const said = [
+    ['create a list called groceries', { action: 'create-list', list: 'groceries', create: true }],
+    ['rename list groceries to shopping', { action: 'rename-list', target: 'groceries', to: 'shopping' }],
+    ['note buy milk', { action: 'add', kind: 'note', text: 'buy milk' }],
+    ['move the last note to shopping', { action: 'move', target: 'last', kind: 'note', list: 'shopping' }],
+    ['note in work: fix login', { action: 'add', kind: 'note', list: 'work', text: 'fix login' }],
+    ['add todo call mom tomorrow', { action: 'add', kind: 'todo', due: '2026-10-28', text: 'call mom', title: 'call mom' }],
+    ['remind me to pay rent by friday, urgent', { action: 'add', kind: 'todo', priority: 3, due: '2026-10-30', text: 'pay rent', title: 'pay rent' }],
+    ['make a list sprints under work', { action: 'create-list', list: 'work', sublist: 'sprints', create: true }],
+    ['mark call mom as done', { action: 'done', target: 'call mom' }],
+    ['find milk', { action: 'search', text: 'milk' }],
+    ['open the shopping list', { action: 'open', list: 'shopping' }],
+  ];
+  const sayings = [];
+  for (const [heard, want] of said) {
+    const intent = notes.parseIntent(heard, now);
+    eq(intent, want, `notes: “${heard}” is understood`);
+    const v = notes.validateIntent(intent);
+    ok(v.ok, `notes: “${heard}” passes validation`);
+    if (v.ok) sayings.push(notes.applyIntent(s, v.intent, { now: new Date(Date.parse(T) + 1000 * (sayings.length + 1)).toISOString(), transcript: heard }));
+  }
+  eq(notes.parseIntent('what is the weather', now), null, 'notes: not a notes sentence = null (for the AI)');
+  ok(sayings.every((r) => r.ok), `notes: every sentence was carried out (${sayings.filter((r) => !r.ok).map((r) => r.say).join(' | ')})`);
+  const shopping = notes.findList(s, 'shopping');
+  ok(shopping && shopping.name === 'Shopping', 'notes: groceries became Shopping');
+  ok(notes.findList(s, 'sprints')?.parent === work.id, 'notes: a sub-list made by voice sits under Work');
+  ok(notes.itemsIn(s, shopping.id).some((i) => i.text === 'buy milk'), 'notes: the last note moved into Shopping');
+  ok(notes.itemsIn(s, work.id).some((i) => i.text === 'fix login'), 'notes: “note in work:” lands in Work');
+  ok(Object.values(s.items).find((i) => i.title === 'call mom')?.status === 'done', 'notes: call mom is done');
+  eq(sayings.find((r) => r.open?.q === 'milk')?.items?.length, 1, 'notes: find milk finds it');
+  ok(!notes.validateIntent({ action: 'rm -rf' }).ok, 'notes: an unknown action is refused');
+  ok(!notes.validateIntent({ action: 'rename-list', target: 'x' }).ok, 'notes: rename without a new name is refused');
+  ok(!notes.applyIntent(s, { action: 'rename-list', target: 'inbox', to: 'Mine' }, { now: T }).ok, 'notes: a voice rename of the Inbox is refused, not thrown');
+
+  // export
+  const md = notes.toMarkdown(s);
+  ok(md.startsWith('# Inbox'), 'notes: Markdown starts with the first list');
+  ok(md.includes('## Bugs') && md.includes('**Login button broken on phones**'), 'notes: sub-lists are sub-headings with their items');
+  ok(md.includes('- [x] **call mom**') && md.includes('due 2026-10-28'), 'notes: todos are tick boxes with their due date');
+  const one = notes.toMarkdown(s, work.id);
+  ok(one.startsWith('# Work') && !one.includes('# Inbox'), 'notes: one list exports alone');
+  const j = JSON.parse(notes.toJson(s));
+  eq(j.$axf, 'amberx-notes@1', 'notes: JSON names its format');
+  eq(j.items.length, Object.keys(s.items).length, 'notes: JSON has every item');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

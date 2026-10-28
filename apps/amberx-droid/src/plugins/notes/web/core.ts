@@ -295,6 +295,7 @@ export function renameList(s: Store, id: string, name: string, now = new Date().
   const l = s.lists[id];
   const n = str(name, MAX_NAME);
   if (!l) throw new Error('That list is gone.');
+  if (l.system && l.system !== 'plugin') throw new Error(`${l.name} can't be renamed.`);
   if (!n) throw new Error('A list needs a name.');
   l.name = n; l.updatedAt = now;
 }
