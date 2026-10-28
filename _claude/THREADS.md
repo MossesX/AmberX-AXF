@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Basic filter plugin: sort & filter dialog attachable to any dataset (every grid), configurable toolbar with live floating preview, attach from Plugin switches | review | `claude/basic-filter` | see GitHub | Orchestrator build `basic-filter` (refactor, Opus, 7 steps; s1–s6 done, s7 CI + merge approval). Built in the AmberX Framework claude.ai chat | 2026-10-28 |
 | Systems check: Fix failed dialog (Claude badge + account, approve Mosses → headless Claude Code; dead connection → error, fix, VPS command, Vinny Auto fix) | merged | `claude/banner-fix-fallback` | #151 | Orchestrator build `banner-fix-fallback` (refactor, Opus, 3 steps; s1+s2 done, s3 CI + merge). Built in the AX Notes claude.ai chat (Brett's pick) | 2026-10-28 |
 | Console banner overlap fix: attached widgets snap, never overlap (all web apps) | done | `fix/banner-snap` | [#149](https://github.com/MossesX/AmberX-AXF/pull/149) merged | Merged Oct 28; the 5-minute update redeploys the console | 2026-10-28 |
 | Push notifications from the AmberX Android app (replaces AXHub app) | done | `claude/amberx-push` | [#154](https://github.com/MossesX/AmberX-AXF/pull/154) | Orchestrator build `amberx-push` (refactor, Opus): AmberX watches approvals + console alerts, on by default; Patches + AXHub app quiet while AmberX is installed. Merged Oct 28; needs the new AmberX/Patches/AXHub APKs on the phone | 2026-10-28 |
