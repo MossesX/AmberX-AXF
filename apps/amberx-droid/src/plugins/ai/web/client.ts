@@ -142,8 +142,14 @@ async function admin<T>(method: 'GET' | 'PUT' | 'POST', path: string, body?: unk
   try {
     const r = await fetch(path, { method, credentials: 'same-origin', redirect: 'error', cache: 'no-store', headers: body === undefined ? {} : { 'content-type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body), signal: ctl.signal });
     const j = (await r.json().catch(() => ({}))) as { detail?: unknown };
-    if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : r.status === 403 ? 'Only hub admins can change the AI connection.' : `The AI server answered ${r.status}.`);
+    if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : r.status === 403 ? 'Only hub admins can change the AI connection.' : r.status === 401 ? 'Your axHub sign-in ran out. Close and reopen AmberX, then try again.' : `The AI server answered ${r.status}.`);
     return j as T;
+  } catch (e) {
+    // fetch throws (no response) when the axHub wall sends a sign-in redirect, the network drops or it times out
+    if (e instanceof Error && (e.name === 'AbortError' || e instanceof TypeError)) {
+      throw new Error(e.name === 'AbortError' ? 'The AmberX server took too long to answer. Try again.' : 'The AmberX server couldn\'t be reached, or your axHub sign-in ran out. Close and reopen AmberX, then try again.');
+    }
+    throw e;
   } finally { clearTimeout(t); }
 }
 
@@ -152,4 +158,8 @@ export const putAiConfig = (patch: { profiles?: ProfileEdit[]; order?: string[];
 /** Write-only: the key goes to the server and is never read back. `refresh` makes a Claude plan pair. */
 export const saveAiKey = (profile: string, key: string, refresh?: string) => admin<{ ok: boolean; profile: AiProfile }>('POST', `/api/ai/keys/${encodeURIComponent(profile)}`, { key, ...(refresh ? { refresh } : {}) });
 export const clearAiKey = (profile: string) => admin<{ ok: boolean; profile: AiProfile }>('POST', `/api/ai/keys/${encodeURIComponent(profile)}`, { clear: true });
+/** Add a provider with its key in one step (e.g. one more Claude plan token); nothing is kept when the key is refused. */
+export const addAiProfileWithKey = (b: { kind: string; label?: string; key: string; refresh?: string; primary?: boolean }) => admin<{ ok: boolean; profile: AiProfile; config: AiConfig }>('POST', '/api/ai/profiles', b);
+/** The primary (default): active and first in the fallback order. */
+export const makeAiPrimary = (profile: string) => admin<AiConfig>('POST', `/api/ai/primary/${encodeURIComponent(profile)}`);
 export const testAiProfile = (profile: string) => admin<{ ok: boolean; ms?: number; error?: string; reply?: string; label: string; model: string }>('POST', `/api/ai/test/${encodeURIComponent(profile)}`);

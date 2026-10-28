@@ -17,6 +17,8 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     GET  /api/ai/config                   profiles without keys (+ hasKey), order, active, Claude switch, kinds
     PUT  /api/ai/config     {profiles?, order?, active?, claude?: plan|api, keepAliveMin?}
     POST /api/ai/keys/{id}  {key, refresh?} | {clear: true}
+    POST /api/ai/profiles   {kind, label?, key, refresh?, primary?}   add a provider with its key (nothing kept if refused)
+    POST /api/ai/primary/{id}                                          active + first in the fallback order
     POST /api/ai/test/{id}
 
 Who may call: the wall's signed headers count only with a valid signature (axf_server.wall, env AMBERX_TRUST_WALL=1 +
@@ -423,6 +425,29 @@ def make_app(router: Router | None = None) -> FastAPI:
         except ValueError as e:
             raise HTTPException(400, str(e)) from None
         return {"ok": True, "profile": prof}
+
+    @app.post("/api/ai/profiles")
+    async def add_profile(request: Request) -> dict[str, Any]:
+        """Add a provider with its key in one step: {kind, label?, key, refresh?, primary?}. Nothing is kept if the key
+        is refused, so several Claude token pairs can be added one after another."""
+        b = await body_of(request)
+        key, refresh = b.get("key"), b.get("refresh")
+        if not isinstance(key, str) or not key.strip():
+            raise HTTPException(400, "key is required")
+        if refresh is not None and not isinstance(refresh, str):
+            raise HTTPException(400, "refresh is a string")
+        try:
+            prof = rt.add_with_key(str(b.get("kind") or ""), str(b.get("label") or ""), key, refresh or None, b.get("primary") is True)
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from None
+        return {"ok": True, "profile": prof, "config": rt.config()}
+
+    @app.post("/api/ai/primary/{pid}")
+    async def make_primary(pid: str) -> dict[str, Any]:
+        try:
+            return rt.make_primary(pid)
+        except KeyError:
+            raise HTTPException(404, "no such profile") from None
 
     @app.post("/api/ai/test/{pid}")
     async def test(pid: str) -> dict[str, Any]:
