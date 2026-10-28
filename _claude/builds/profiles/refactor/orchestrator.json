@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T18:14:23.592Z",
+ "updatedAt": "2026-10-28T17:28:21.750Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2140,7 +2140,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T23:01:35.774Z",
-   "updatedAt": "2026-10-28T16:51:24.968Z",
+   "updatedAt": "2026-10-27T23:01:35.776Z",
    "builtAt": "",
    "notes": [
     {
@@ -3486,9 +3486,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-28T15:30:11.241Z",
-   "updatedAt": "2026-10-28T15:30:11.241Z",
+   "updatedAt": "2026-10-28T17:28:21.749Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett Oct 28 13:27: look into axHub waking a stopped session. Found: Claude Code routine API trigger (POST /v1/claude_code/routines/{id}/fire, per-routine bearer token made only in the web UI). A send_later task is bound to the session (persistent_session_id), so firing it wakes the same chat. This session could not make it recurring (safety check), so Brett does that one-time in the web UI.",
+     "at": "2026-10-28T17:28:21.749Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -3515,6 +3520,22 @@
      "phase": "Build",
      "group": "One-call wait",
      "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s6",
+     "text": "Wake-up on approve: axHub POSTs the session's scheduled-task fire URL (https://api.anthropic.com/v1/claude_code/routines/<trig>/fire, headers anthropic-version 2023-06-01 + anthropic-beta experimental-cc-routine-2026-04-01, bearer token stored as an axHub secret, never in the repo) with text = confirmation id + result, so a stopped session resumes in the same chat. Test trigger made Oct 28: trig_017QVmMHcWV2TCgfooE3CyjA bound to claude.ai session_01XfLJCQwPcAjqfBaHYyA1FE (one-shot; Brett makes it repeat + adds the API token at claude.ai/code/routines). Sessions: short waits use the wait call, long waits send + stop + wake",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Wake-up",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -3609,6 +3630,182 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-28T15:41:17.287Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "amberx-claude-tokens",
+   "title": "AmberX AI connection: fix Save key + several Claude tokens with Test and a primary",
+   "category": "AmberX app",
+   "detail": "Brett Oct 28 2026: \"Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default\". Cause: the save never reached the AmberX server (no POST in the amberx-web log) and the error went to the top of the settings page, off-screen on the phone. Fix: errors shown next to the button, clear sign-in/timeout messages; new Claude plan tokens list (add name + access + optional refresh, saved and tested in one tap, Test each / Test all, star = primary). Server: POST /api/ai/profiles (add with key, atomic), POST /api/ai/primary/{id}.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-claude-tokens",
+   "pr": "#157",
+   "createdAt": "2026-10-28T16:55:24.086Z",
+   "updatedAt": "2026-10-28T17:04:41.550Z",
+   "builtAt": "2026-10-28T17:04:41.490Z",
+   "notes": [
+    {
+     "text": "Merged PR #157, branch claude/amberx-claude-tokens",
+     "at": "2026-10-28T17:04:41.549Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Server add-with-key + primary routes + tests; page: inline errors + Claude tokens list",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "AmberX",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T16:55:24.189Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "basic-filter",
+   "title": "Basic filter plugin: search + filter dialog attachable to any dataset, with a configurable toolbar",
+   "category": "Console plugins",
+   "detail": "Brett, Oct 28 2026: 'Add new plugin called basic filter that opens a dialog with search and filter options that you can attach to any dataset. Also comes with a toolbar customized in the plugins settings like hide and show and interface to configure using preset actions to select from in a grid with expandable rows that display everything about the action and style. Live floating preview of toolbar that hot renders when something is edited. By default toolbar is on with 1 button to open the sort and filter dialog. Attach it to the dataset in plugin switches.' Datasets = every lib-datagrid grid (registers itself) + anything registering through the new lib-datagrid dataset registry; web only, Android twin deferred. All Opus (console plugin UI + small web lib hook). Profile: Refactor (Brett's pick).",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/basic-filter",
+   "pr": "#155",
+   "createdAt": "2026-10-28T15:16:53.872Z",
+   "updatedAt": "2026-10-28T15:43:56.298Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "PR #155 open, CI green on 2c185a79; merge approval sent to Brett through axHub (push-banner merge-pr.sh).",
+     "at": "2026-10-28T15:43:56.298Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "lib-datagrid dataset registry: grids register as datasets (columns, rows), attachable row transforms + a toolbar slot above attached grids; placeholder for the Android twin",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Dataset hook",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:20:20.040Z",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "basic-filter plugin scaffold: plugin.json, install/uninstall, hooks, menu.ts, settings store (attachments, toolbar config) in localStorage + dataDir-free web store",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Plugin",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.183Z",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Sort & filter dialog: search, per-column rules (text/number/choice), multi-level sort, apply/reset; filter engine applied as the dataset transform",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Plugin",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.244Z",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Toolbar: preset action catalog, default = on with one button (open sort & filter); renders on attached datasets",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Toolbar",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.312Z",
+     "note": ""
+    },
+    {
+     "id": "s5",
+     "text": "Toolbar settings: show/hide, actions grid with expandable rows (action + style details), add from presets, live floating preview that hot-renders",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Toolbar",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.380Z",
+     "note": ""
+    },
+    {
+     "id": "s6",
+     "text": "Plugin switches: per-plugin dataset attach switches (slot contributed by basic-filter, no folder coupling)",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Attach",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:26:39.456Z",
+     "note": ""
+    },
+    {
+     "id": "s7",
+     "text": "Checks (typecheck, build, check-theme, check-controls, menu-reach, plugins --check, lifecycle check), docs, THREADS, PR + merge approval",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Ship",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
      "note": ""
     }
    ]

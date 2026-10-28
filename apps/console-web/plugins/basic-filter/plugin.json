@@ -1,0 +1,35 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.basic-filter",
+  "name": "Basic filter",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A sort & filter dialog (search, rules on any column, match all / any, multi-level sort) you can attach to any dataset — every grid is one. Attached datasets get its toolbar above them: on by default with one button that opens the dialog, designed in its settings (show / hide, preset actions in a grid with expandable rows showing everything about each action and its style, live floating preview that redraws on every edit). Attach or detach it in its settings or from its row in Plugin switches.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:basic-filter",
+    "settings-tab:basic-filter",
+    "slot:axf.dataset.toolbar",
+    "slot:plugin-switches.row"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-28" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/basic-filter",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": "dialog"
+}
