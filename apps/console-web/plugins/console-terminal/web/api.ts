@@ -80,6 +80,22 @@ export function loadXterm(): Promise<Lib> {
   return lib;
 }
 
+import schemesData from './schemes.json';
+export const SCHEMES = (schemesData as { schemes: Record<string, Record<string, string>> }).schemes;
+/** The terminal colours: a Windows Terminal scheme (schemes.json), or 'app' = the app's theme tokens. */
+export function schemeColors(scheme: string | undefined, el: HTMLElement): Record<string, string> {
+  const s = scheme && scheme !== 'app' ? SCHEMES[scheme] : null;
+  if (!s) return themeFromTokens(el);
+  const { name: _n, ...colors } = s; return colors;
+}
+/** xterm options from the terminal settings (look + behaviour). */
+export function lookOptions(s: Settings | null, el: HTMLElement): Record<string, unknown> {
+  const mono = getComputedStyle(el).getPropertyValue('--fx-font-mono').trim() || 'monospace';
+  const family = (s?.fontFamily || "'Cascadia Mono', 'Cascadia Code', Consolas, 'Lucida Console'") + `, ${mono}`;
+  return { theme: schemeColors(s?.scheme, el), fontFamily: family, lineHeight: s?.lineHeight ?? 1.15, cursorStyle: s?.cursorStyle ?? 'bar',
+    cursorBlink: s?.cursorBlink ?? true, scrollback: s?.scrollback ?? 10000 };
+}
+
 /** Theme from the engine-compiled tokens (no colours of our own). */
 export function themeFromTokens(el: HTMLElement): Record<string, string> {
   const cs = getComputedStyle(el);

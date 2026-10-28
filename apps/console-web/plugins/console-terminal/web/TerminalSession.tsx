@@ -8,11 +8,19 @@
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
-import { getSettings, loadXterm, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type XTerm } from './api';
+import { SCHEMES, getSettings, loadXterm, lookOptions, onSettings, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type XTerm } from './api';
 import { setCtl, type Conn, type HostSession } from './hosts';
 
-/** The font stack: the Windows Terminal font first, then Consolas, then the theme's monospace font. */
-export const WINDOWS_FONT = "'Cascadia Mono', 'Cascadia Code', Consolas, 'Lucida Console'";
+/** The bell: flash the screen, or a short soft tone. */
+function ring(el: HTMLElement, how: string) {
+  if (how === 'visual') { el.classList.remove('is-bell'); void el.offsetWidth; el.classList.add('is-bell'); return; }
+  if (how !== 'sound') return;
+  try {
+    const A = (globalThis as unknown as { AudioContext?: new () => AudioContext }).AudioContext; if (!A) return;
+    const ctx = new A(); const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.frequency.value = 880; g.gain.value = 0.05; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.08); o.onended = () => void ctx.close();
+  } catch { /* no audio */ }
+}
 const P = 'axp-terminal';
 
 const KEYS: { label: string; seq?: string; mod?: 'ctrl' }[] = [
@@ -37,6 +45,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
   const [err, setErr] = useState('');
   const [confirm, setConfirm] = useState<string | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
+  const settingsRef = useRef<Settings | null>(null);
   const prefs = tabPrefs.get(tab.id);
   const [mouse, setMouse] = useState(prefs?.mouse ?? false);
   const [mosh, setMosh] = useState(prefs?.mosh ?? false);
@@ -120,13 +129,13 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
     const cleanups: (() => void)[] = [];
     void (async () => {
       const s = await getSettings().catch(() => null);
-      if (s) { setSettings(s); setFontSize(s.fontSize); if (!prefs) { setMouse(s.mouseDefault); setMosh(s.moshDefault); } }
+      if (s) { settingsRef.current = s; setSettings(s); setFontSize(s.fontSize); if (!prefs) { setMouse(s.mouseDefault); setMosh(s.moshDefault); } }
       const L = await loadXterm().catch((e: Error) => { setErr(e.message); return null; });
       if (!L || disposed || !host.current) return;
       const el = host.current;
       const term = new L.Terminal({
-        fontFamily: `${WINDOWS_FONT}, ${getComputedStyle(el).getPropertyValue('--fx-font-mono').trim() || 'monospace'}`, fontSize: s?.fontSize ?? 14, cursorBlink: true, scrollback: 5000,
-        allowProposedApi: true, theme: themeFromTokens(el), macOptionIsMeta: true, rightClickSelectsWord: false, altClickMovesCursor: true,
+        ...lookOptions(s, el), fontSize: s?.fontSize ?? 14,
+        allowProposedApi: true, macOptionIsMeta: true, rightClickSelectsWord: false, altClickMovesCursor: true,
       });
       const fit = new L.FitAddon();
       const search = new L.SearchAddon();
@@ -142,7 +151,11 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
       const d2 = term.onBinary((d) => { const ws = wsRef.current; if (ws?.readyState === WebSocket.OPEN) ws.send(Uint8Array.from(d, (c) => c.charCodeAt(0))); });
       const d3 = term.onResize(({ cols, rows }) => { const ws = wsRef.current; if (ws?.readyState === WebSocket.OPEN) ws.send(`\x00resize:${cols},${rows}`); });
       const d4 = term.onSelectionChange(() => { if (s?.copyOnSelect && term.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()).catch(() => undefined); });
-      cleanups.push(() => { d1.dispose(); d2.dispose(); d3.dispose(); d4.dispose(); });
+      // bell: a flash of the screen, or a short tone (Settings → Terminal → Bell)
+      const d5 = (term as unknown as { onBell(f: () => void): { dispose(): void } }).onBell(() => ring(el, settingsRef.current?.bell ?? 'visual'));
+      cleanups.push(() => { d1.dispose(); d2.dispose(); d3.dispose(); d4.dispose(); d5.dispose(); });
+      // every open terminal follows a settings save, live
+      cleanups.push(onSettings((ns) => { settingsRef.current = ns; setSettings(ns); const o = lookOptions(ns, el); for (const [k, v] of Object.entries(o)) term.options[k] = v; try { fit.fit(); } catch { /* hidden */ } }));
       term.attachCustomKeyEventHandler((e) => {
         if (e.type !== 'keydown') return true;
         const k = e.key.toLowerCase();
@@ -166,7 +179,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
       cleanups.push(() => el.removeEventListener('paste', onPaste, true));
       void start(open);
     })();
-    const onTheme = () => { const t = termRef.current; if (t && host.current) t.options.theme = themeFromTokens(host.current); };
+    const onTheme = () => { const t = termRef.current; if (t && host.current && (settingsRef.current?.scheme ?? 'app') === 'app') t.options.theme = themeFromTokens(host.current); };
     const mo = new MutationObserver(onTheme);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'data-fx-scheme'] });
     return () => {
@@ -268,7 +281,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
           <Button tone="ghost" onClick={() => { setPasteAsk(null); term?.focus(); }}>Cancel</Button>
         </div>
       )}
-      <div ref={host} className={`${P}__screen ${mouse ? 'is-mouse' : ''}`} onClick={onClick} onPointerDown={onPointerDown} onPointerUp={cancelPress} onPointerMove={cancelPress} onPointerCancel={cancelPress} />
+      <div ref={host} className={`${P}__screen ${mouse ? 'is-mouse' : ''}`} data-pad={settings?.padding ?? 1} data-scheme={settings?.scheme ?? 'app'} style={settings?.scheme && settings.scheme !== 'app' ? { ['--axp-terminal-bg' as string]: SCHEMES[settings.scheme]?.background } : undefined} onClick={onClick} onPointerDown={onPointerDown} onPointerUp={cancelPress} onPointerMove={cancelPress} onPointerCancel={cancelPress} />
       {mosh && pending && conn !== 'live' && <div className={`${P}__predict`} aria-live="polite">{pending}</div>}
       {(conn === 'reconnecting' || conn === 'closed' || err) && (
         <div className={`${P}__status`}>

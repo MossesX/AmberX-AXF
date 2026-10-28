@@ -12,7 +12,8 @@
 .axp-terminal__badge.is-host { background: var(--fx-danger) }
 .axp-terminal__screen { flex: 1; min-height: 0; padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); overflow: hidden }
 .axp-terminal__screen.is-mouse { cursor: default }
-.axp-terminal__screen .xterm, .axp-terminal__screen .xterm-viewport { background-color: var(--fx-surface) !important }
+.axp-terminal__screen[data-scheme='app'] .xterm, .axp-terminal__screen[data-scheme='app'] .xterm-viewport { background-color: var(--fx-surface) !important }
+.axp-terminal__screen:not([data-scheme='app']) { background: var(--axp-terminal-bg) }
 .axp-terminal__screen .xterm-viewport::-webkit-scrollbar { width: calc(var(--fx-space) * 0.625) }
 .axp-terminal__screen .xterm-viewport::-webkit-scrollbar-thumb { background: var(--fx-border); border-radius: 999px }
 .axp-terminal__search, .axp-terminal__warn { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
@@ -104,3 +105,12 @@
 .axp-wt-conn__facts > div { min-width: 0 }
 .axp-wt-conn__facts dt { font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted) }
 .axp-wt-conn__facts dd { margin: 0; overflow-wrap: anywhere }
+/* screen padding (Settings → Terminal → Padding, 0–4 steps) and the visual bell */
+.axp-terminal__screen[data-pad='0'] { padding: 0 }
+.axp-terminal__screen[data-pad='2'] { padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
+.axp-terminal__screen[data-pad='3'] { padding: var(--fx-space) calc(var(--fx-space) * 1.5) }
+.axp-terminal__screen[data-pad='4'] { padding: calc(var(--fx-space) * 1.5) calc(var(--fx-space) * 2) }
+.axp-terminal__screen.is-bell { animation: axp-terminal-bell calc(var(--fx-motion) * 1.5) ease-out }
+@keyframes axp-terminal-bell { from { box-shadow: inset 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-warning) } to { box-shadow: inset 0 0 0 0 transparent } }
+.axp-terminal__profile { display: flex; flex-direction: column; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border) }
+.axp-terminal__profile .fx-row { align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }

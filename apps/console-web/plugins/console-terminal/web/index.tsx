@@ -5,6 +5,7 @@ import { newTab, openFromContext } from './open';
 import { ConnectDialog, ConnectionDialog } from './connections';
 import { getSettings } from './api';
 import { applyProfile } from './profiles';
+import { AppearancePanel, BehaviourPanel, ProfilesPanel } from './look';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
@@ -54,9 +55,12 @@ export const plugin: AxfWebLibrary = {
     'terminal.connection': { title: 'Connection', icon: 'shuffle', searchable: false, render: (props, close) => <ConnectionDialog props={props} close={close} /> },
   },
   tabs: { 'terminal-host': (t) => <TerminalHost tab={t} />, terminal: (t) => <TerminalHost tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },
-  settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Terminal windows: options, the VPS host key, Claude Code, Mosh / Moshi, open sessions and the session log.' }],
+  settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Windows-style terminal: appearance, tabs, Claude Code profiles and connections, the VPS host key, Mosh / Moshi, open sessions and the session log.' }],
   settingsPanels: [
-    { id: 'terminal.general', tab: 'terminal', title: 'Terminal', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },
+    { id: 'terminal.appearance', tab: 'terminal', title: 'Appearance', icon: 'palette', order: 4, render: () => <AppearancePanel /> },
+    { id: 'terminal.behaviour', tab: 'terminal', title: 'Tabs & behaviour', icon: 'layout', order: 6, render: () => <BehaviourPanel /> },
+    { id: 'terminal.profiles', tab: 'terminal', title: 'Claude Code profiles', icon: 'sparkles', order: 8, render: () => <ProfilesPanel /> },
+    { id: 'terminal.general', tab: 'terminal', title: 'Sessions & shells', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },
     { id: 'terminal.vps', tab: 'terminal', title: 'VPS host', icon: 'monitor', order: 20, render: () => <div className="axp-terminal-settings"><VpsPanel /></div> },
     { id: 'terminal.claude', tab: 'terminal', title: 'Claude Code', icon: 'sparkles', order: 30, render: () => <div className="axp-terminal-settings"><ClaudePanel /></div> },
     { id: 'terminal.moshi', tab: 'terminal', title: 'Mosh & Moshi', icon: 'zap', order: 40, render: () => <div className="axp-terminal-settings"><MoshiPanel /></div> },
