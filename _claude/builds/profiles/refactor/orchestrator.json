@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T18:15:40.290Z",
+ "updatedAt": "2026-10-28T18:17:41.774Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3822,7 +3822,7 @@
    "branch": "claude/windows-terminal",
    "pr": "#158",
    "createdAt": "2026-10-28T16:51:24.871Z",
-   "updatedAt": "2026-10-28T18:15:40.286Z",
+   "updatedAt": "2026-10-28T18:17:41.773Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -3909,7 +3909,7 @@
     },
     {
      "id": "s6",
-     "text": "Window engine (windows.ts + WindowHost): resize from all 8 edges/corners with touch, maximize/restore (Brett Oct 28: no keep-on-screen); fixture",
+     "text": "Window engine (windows.ts + WindowHost): resize from all 8 edges/corners with touch, maximize/restore, and a frameless option (WindowSpec.frame: the content draws the title bar, e.g. the Terminal's tab strip, with drag + min/max/close hooks) so the Terminal looks like Windows Terminal (Brett Oct 28: no keep-on-screen); fixture",
      "model": "Fable",
      "why": "changes how windows work across apps",
      "phase": "Windows + levels",
@@ -3941,7 +3941,7 @@
     },
     {
      "id": "s8",
-     "text": "lib-workspace floating panes use the same physics (resize handles, snap, clamp, minimize/maximize)",
+     "text": "lib-workspace floating panes use the same physics (resize handles, snap, minimize/maximize; no keep-on-screen)",
      "model": "Fable",
      "why": "",
      "phase": "Windows + levels",
