@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T14:38:08.898Z",
+ "updatedAt": "2026-10-28T14:42:07.116Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2947,9 +2947,9 @@
    "source": "chat",
    "pendingId": "",
    "branch": "claude/amberx-voice-center",
-   "pr": "",
+   "pr": "#153",
    "createdAt": "2026-10-28T13:59:55.535Z",
-   "updatedAt": "2026-10-28T14:38:08.898Z",
+   "updatedAt": "2026-10-28T14:42:07.115Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
