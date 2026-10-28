@@ -1748,8 +1748,19 @@ export class AxfRuntime {
       return memo.r;
     };
     const view = Object.create(base) as AxfRuntime & { scopeId: string; scopeInterface: string };
-    const settings = Object.create(base.settings) as SettingsRegistry;
-    Object.defineProperty(settings, 'get', { value: (key: string) => (key in resolved().settings ? (resolved().settings[key] as SettingValue) : key === SPACING_KEY ? resolved().spacing : base.settings.get(key)) });
+    // Reads of look keys come from the interface; everything else (set, clear, reload, watchers, groups, …) is the
+    // shared registry itself. A prototype copy (Object.create) is not enough: SettingsRegistry.set() assigns
+    // `this.values`, which would land on the copy, so a switch or tab button inside a scope never reached the app
+    // (fix Oct 28 2026: Settings → Appearance switches and the interface tab buttons did nothing inside a GizmoX tab).
+    const scopedGet = (key: string): SettingValue => (key in resolved().settings ? (resolved().settings[key] as SettingValue) : key === SPACING_KEY ? resolved().spacing : base.settings.get(key));
+    const settings = new Proxy(base.settings, {
+      get(target, prop) {
+        if (prop === 'get') return scopedGet;
+        const v = Reflect.get(target, prop, target) as unknown;
+        return typeof v === 'function' ? (v as (...a: unknown[]) => unknown).bind(target) : v;
+      },
+      set(target, prop, value) { return Reflect.set(target, prop, value, target); },
+    }) as SettingsRegistry;
     Object.defineProperties(view, {
       scopeId: { value: scopeId },
       scopeInterface: { value: interfaceId },

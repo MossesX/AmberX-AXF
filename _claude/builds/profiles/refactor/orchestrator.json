@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T02:35:09.837Z",
+ "updatedAt": "2026-10-28T04:36:58.577Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2647,6 +2647,46 @@
      "agent": true,
      "done": true,
      "doneAt": "2026-10-28T02:35:09.742Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "fix-interface-scope-settings",
+   "title": "Fix: switches and tab buttons dead inside interface tabs",
+   "category": "Fix",
+   "detail": "Brett Oct 27 2026: Appearance switches in console settings and the layout (interface) buttons at the top do nothing. Cause: AxfRuntime.scoped() gives a scope settings = Object.create(base.settings), so set()/clear()/reload() assign this.values on the scoped object and the shared settings never change (Main tab cannot be reached again from GizmoX Night / AmberX Signature). Fix: scoped settings forward every member except get to the shared registry.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "fix/interface-scope-settings",
+   "pr": "#146",
+   "createdAt": "2026-10-28T03:03:09.005Z",
+   "updatedAt": "2026-10-28T04:36:58.577Z",
+   "builtAt": "2026-10-28T04:36:58.472Z",
+   "notes": [
+    {
+     "text": "Merged PR #146 (5cc390d), branch fix/interface-scope-settings",
+     "at": "2026-10-28T04:36:58.577Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Scoped settings forward writes to the shared SettingsRegistry (framework/core/runtime.ts scoped()); re-bake console; check-interface test for writes from a scope; verify taps in a phone-sized browser",
+     "model": "Opus",
+     "why": "",
+     "phase": "Fix",
+     "group": "Runtime",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T03:05:25.022Z",
      "note": ""
     }
    ]

@@ -100,6 +100,16 @@ for (const a of starters) eq(validateAsset(a).errors, [], `interface/${a.id} val
   v.swap('color-theme', 'fresh-dark');
   ok(rt.asset('color-theme').id === 'fresh-dark' && v.asset('color-theme').id === 'arctic-daylight', 'swap through a scope goes to the app');
   ok(v.branding()?.name === 'AmberX', 'scope branding resolves');
+  // a setting written inside the scope reaches the app (Oct 28 2026 fix: Object.create kept writes on the scope)
+  let heard = 0;
+  const off = rt.settings.onChange('test.scope.key', () => { heard++; });
+  v.settings.set('test.scope.key', 'b');
+  ok(rt.settings.get('test.scope.key') === 'b' && v.settings.get('test.scope.key') === 'b' && heard === 1, 'settings.set through a scope reaches the app and its watchers');
+  v.settings.set('test.scope.key', 'c');
+  ok(rt.settings.get('test.scope.key') === 'c', 'a second write through the scope reaches the app too');
+  v.settings.clear('test.scope.key');
+  ok(rt.settings.get('test.scope.key') === null, 'settings.clear through a scope reaches the app');
+  off();
   rt.dropScope('tab-a');
   ok(rt.scoped('tab-a', 'fresh') !== v, 'dropped scope is rebuilt');
   // applyInterface on the app

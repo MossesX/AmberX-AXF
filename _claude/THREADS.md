@@ -201,6 +201,7 @@ VPS). The session reads the rules and this file first, as usual.
 
 | Thread | Result | Updated |
 |---|---|---|
+| Fix: Appearance switches + interface tab buttons dead inside GizmoX tabs | merged (#146), console redeploys on the 5-minute update | 2026-10-28 |
 | AmberX look fix + Lock the look + Get the look from axHub switches | merged (#126) through Brett's axHub merge approval; amberx.amberxai.com picks it up in the 5-minute update | 2026-10-27 |
 | Fresh look: new default style theme + `fresh` appearance package | merged (#119), deployed to console, AmberX, axHub web, Patches web; shared look on axHub switched to Fresh | 2026-10-27 |
 | AmberX as an empty shell for building and testing plugins | merged (#118); the hosted app updates in 5 min, CI builds the APK | 2026-10-26 |
