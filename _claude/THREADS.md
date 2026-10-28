@@ -93,7 +93,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - **Build:** orchestrator `refactor-all` (Refactor profile), 67 steps. Fable phase s1–s30 (arch-foundation contracts, trim, style-package Fable rebuild, look@1 review, window engine + settings levels, feature-matrix contract), then one switch to Opus (open PRs #141/#155 finished first, then enterprise-branding refactor, interface roller, arch-foundation docs, trim UI, Tools plugin without Patches, pending grid view, feature-matrix plugin). Everything UI is held to `framework/spec/DESIGN-LANGUAGE.md`.
 - **Matrix page:** https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS (db doc `matrix/refactor-all`; read it before each step).
 - **Scope = matrix `refactor-all`** in `_claude/builds/profiles/refactor/matrices.json` (draft feature-matrix@0; 90 items; skipped by default: share-search, approval-costs, veto-window, axhub-github-write, postponed-gestures, Tools' Patches tab, look-levels s3 folded into windows-terminal). Skipped items aren't built unless Brett ticks them.
-- **Branches to carry on from:** enterprise-branding `opus/enterprise-branding` (PR #128, #129 stacked), windows-terminal `claude/windows-terminal` #158, basic-filter #155, amberx-handsfree #141; new work on `claude/refactor-all`.
+- **Branches to carry on from:** enterprise-branding `opus/enterprise-branding` (PR #128, #129 stacked), windows-terminal `claude/windows-terminal` #158, basic-filter #155, amberx-handsfree #141; new work on `claude/refactor-all`. · feature-matrix `fable/feature-matrix` (Fable s1–s2 = refactor-all s24–s25 done there, not merged; cherry-pick/merge before s62)
 - **First message (Fable session):** `Start orchestrator build refactor-all (refactor) in AmberX-AXF: Fable phase. Read the brief with AXF_BUILD_PROFILE=refactor node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief refactor-all, and the matrix refactor-all.`
 
 
@@ -299,7 +299,8 @@ VPS). The session reads the rules and this file first, as usual.
 - **Next:** Fable phase s6–s12 on a new branch `fable/windows-terminal` from main after the Opus PR merges: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief windows-terminal`. Waits on: Brett's approval of the Opus → Fable switch. <!-- axf-plugin:build-orchestrator -->
 - **First message for a new session (Fable):** "Carry on orchestrator build windows-terminal (refactor): the Fable phase s6–s12, on branch fable/windows-terminal from main. Read the brief with orchestrator.mjs brief windows-terminal."
 
-### feature-matrix (not started)
+### feature-matrix (stopped by the STOP ORDER Oct 28 2026 15:26 EDT; Fable s1–s2 done on `fable/feature-matrix`, folded into refactor-all)
+- **Stopped:** after s2, nothing mid-way. s1 (contract) + s2 (Apply engine) are pushed on `fable/feature-matrix` (`cb43a82`, handoff `aa82cf2`), not merged. In `refactor-all`: s24, s25 ticked done; s62–s67 (= s3–s8) left. Full handoff in that branch's THREADS.md and `_claude/memory/docs/feature-matrix.md`.
 - **Asked (Brett, Oct 28 2026, claude.ai):** full request in orchestrator build `feature-matrix` detail. Model of the UI: the windows-terminal scope list https://claude.ai/artifact/CwBGQof4NBe4F3dPTczBvS (its db doc `scope/selection` is the first matrix).
 - **Picks:** Refactor profile; standalone plugin; builds-one-page archived ("remove one page"); own chat thread.
 - **Model:** Fable s1–s2 (feature-matrix@1 contract + apply engine), Opus s3–s8 (console plugin, views, grid hooks, seed, ship). Approval card at the switch.

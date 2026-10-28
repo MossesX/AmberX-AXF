@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T19:39:31.730Z",
+ "updatedAt": "2026-10-28T19:43:14.326Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4447,14 +4447,14 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-28T19:39:31.728Z",
+   "updatedAt": "2026-10-28T19:43:14.325Z",
    "builtAt": "",
    "notes": [
     {
@@ -4464,6 +4464,10 @@
     {
      "text": "From the claude.ai AmberX Framework chat (Oct 28): basic-filter s7 (s27 here) is already DONE — PR #155 merged 13:04, console redeployed; nothing left. Added plugin-theme-override steps (Fable s1-s3 in the Fable phase, Opus merge of PR #161 + s4-s6, s9 at the end).",
      "at": "2026-10-28T19:39:31.728Z"
+    },
+    {
+     "text": "feature-matrix thread stopped by the STOP ORDER: s24, s25 done on fable/feature-matrix (not merged); s62–s67 left. Pick that branch up first.",
+     "at": "2026-10-28T19:43:14.324Z"
     }
    ],
    "approvals": [],
@@ -4859,9 +4863,9 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-28T19:43:14.152Z",
+     "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-core.mjs, fixture + check-feature-matrix.mjs; see _claude/memory/docs/feature-matrix.md on that branch"
     },
     {
      "id": "s25",
@@ -4875,9 +4879,9 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-28T19:43:14.236Z",
+     "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-apply.mjs + skip/fm support in orchestrator/pending/build-queue/changes cores; merge or cherry-pick that branch before s62"
     },
     {
      "id": "s68",
