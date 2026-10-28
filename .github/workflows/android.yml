@@ -250,7 +250,22 @@ jobs:
           npm ci --no-audit --no-fund && npm run build && npx cap sync android
       - name: Native unit tests + debug APK
         working-directory: apps/amberx-droid/android
-        run: chmod +x gradlew && ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+        run: |
+          chmod +x gradlew
+          set -o pipefail
+          ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/amberx-gradle.log
+      - name: Report AmberX build/test errors to the "CI build errors" issue
+        if: failure()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          {
+            echo "### AmberX Android build failed on \`${{ github.ref_name }}\` — ${{ github.sha }}"; echo; echo '```'
+            grep -E "error:|\.java:[0-9]+|FAILED|expected|but was|AssertionError|What went wrong|> Task .*FAILED" /tmp/amberx-gradle.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | head -60
+            for f in apps/amberx-droid/android/app/build/test-results/testDebugUnitTest/*.xml; do [ -f "$f" ] && grep -A3 "<failure" "$f" | head -20; done
+            echo '```'
+          } > /tmp/amberx-report.md
+          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
+          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/amberx-report.md; else gh issue comment "$N" --body-file /tmp/amberx-report.md; fi
       - uses: actions/upload-artifact@v4
         with:
           name: amberx-debug.apk
