@@ -14,13 +14,20 @@
     "banner:push-banner",
     "settings-tab:push-banner"
   ],
-  "optional": ["service:axf.activity@1"],
+  "optional": [
+    "service:axf.activity@1"
+  ],
   "scopes": [
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-22" },
-  "banner": ["push-banner"],
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-22"
+  },
+  "banner": [
+    "push-banner"
+  ],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -29,8 +36,9 @@
       "AXF_PUSH_BANNER_DIR"
     ],
     "mentions": [
-      "CLAUDE.md",
-      "apps/console-web/plugins/README.md"
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "_claude/shared/rules/RULES.md"
     ]
   },
   "opens": false

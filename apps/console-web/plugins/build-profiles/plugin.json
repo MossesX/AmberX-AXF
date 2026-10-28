@@ -1,0 +1,35 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.build-profiles",
+  "name": "Build profiles",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Pick and save the build profile the console works on. A build profile is one complete set of work data: plan (+ media), build queue, pending builds, catalog status + tracker, and the Build orchestrator's builds. Main framework is the base profile; Refactor started empty. Switching changes it for every device and session (sessions can override with AXF_BUILD_PROFILE). Banner chip shows the profile in force; tap it, the app menu (Builds → Build profile), the right-click menu or Settings → Plugins → Build profiles to switch, create, rename or take a profile off the list (its data stays). Profiles are framework data (framework/cli/profiles.mjs): removing this plugin leaves them in place.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:build-profiles",
+    "settings-tab:build-profiles"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-27"
+  },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/build-profiles",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md"
+    ]
+  },
+  "opens": "main"
+}

@@ -62,6 +62,34 @@ public class AmberxNativePlugin extends Plugin {
         try { return JSObject.fromJSONObject(o); } catch (Exception e) { return new JSObject(); }
     }
 
+    /* ---------------------------------------------------------------- hands-free events (from WatchService) */
+
+    /** A wake phrase (or, always armed, a whole command) heard while the app is on screen: true when delivered. */
+    static boolean wakeInApp(String phrase, String text) {
+        AmberxNativePlugin p = current;
+        if (p == null) return false;
+        p.notifyListeners("wake", new JSObject().put("phrase", phrase).put("text", text), true);
+        return true;
+    }
+
+    /** What the recognizer is hearing (partial or final), for the Voice page. */
+    static void heard(String text, boolean last) {
+        AmberxNativePlugin p = current;
+        if (p != null && WatchService.inApp) p.notifyListeners("heard", new JSObject().put("text", text).put("final", last));
+    }
+
+    /** Input level (recognizer RMS dB), at most ten a second, for the Voice page's graph. */
+    static void level(float db) {
+        AmberxNativePlugin p = current;
+        if (p != null && WatchService.inApp) p.notifyListeners("level", new JSObject().put("db", db));
+    }
+
+    /** A quick setting changed on the overlay: the web side saves it so Settings shows the same. */
+    static void voiceChanged(JSONObject cfg) {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("voiceSettings", js(cfg), true);
+    }
+
     /** MainActivity hands notification taps and wake-phrase hits here. */
     static void deliver(Intent intent) {
         AmberxNativePlugin p = current;
@@ -146,14 +174,16 @@ public class AmberxNativePlugin extends Plugin {
     }
 
     private void doListen(PluginCall call) {
+        WatchService.appListening = true; // hands-free lets go of the microphone while the Speak button listens
         getActivity().runOnUiThread(() -> {
-            if (!SpeechRecognizer.isRecognitionAvailable(getContext())) { call.reject("No speech recognizer on this phone."); return; }
+            if (!SpeechRecognizer.isRecognitionAvailable(getContext())) { WatchService.appListening = false; call.reject("No speech recognizer on this phone."); return; }
             SpeechRecognizer rec = SpeechRecognizer.createSpeechRecognizer(getContext());
             rec.setRecognitionListener(new RecognitionListener() {
                 private boolean done;
                 private void finish(String text) {
                     if (done) return;
                     done = true;
+                    WatchService.appListening = false;
                     call.resolve(new JSObject().put("text", text));
                     rec.destroy();
                 }
@@ -174,7 +204,10 @@ public class AmberxNativePlugin extends Plugin {
                 .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 .putExtra(RecognizerIntent.EXTRA_LANGUAGE, call.getString("lang", "en-US"))
                 .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-            rec.startListening(i);
+            // Give hands-free a moment to release the microphone first.
+            getActivity().getWindow().getDecorView().postDelayed(() -> {
+                try { rec.startListening(i); } catch (Exception e) { WatchService.appListening = false; call.reject("The microphone is busy."); }
+            }, 250);
         });
     }
 
@@ -206,6 +239,52 @@ public class AmberxNativePlugin extends Plugin {
     @PluginMethod
     public void monitorStatus(PluginCall call) {
         call.resolve(js(WatchService.status));
+    }
+
+    /* ---------------------------------------------------------------- hands-free + detection overlay */
+
+    /** Saves the voice config (handsFree, alwaysArmed, overlay, wakePhrases, lang, colors) and starts/stops to match. */
+    @PluginMethod
+    public void voiceSet(PluginCall call) {
+        JSONObject cfg = call.getData();
+        if (cfg.optBoolean("handsFree", true) && getPermissionState("microphone") != PermissionState.GRANTED) {
+            requestPermissionForAlias("microphone", call, "voiceSetAfterPermission");
+            return;
+        }
+        WatchService.setVoice(getContext(), cfg);
+        call.resolve(voiceStatusJs());
+    }
+
+    @PermissionCallback
+    private void voiceSetAfterPermission(PluginCall call) {
+        WatchService.setVoice(getContext(), call.getData());
+        call.resolve(voiceStatusJs());
+    }
+
+    @PluginMethod
+    public void voiceStatus(PluginCall call) { call.resolve(voiceStatusJs()); }
+
+    private JSObject voiceStatusJs() {
+        boolean listening = WatchService.status.optBoolean("listening", false);
+        return new JSObject()
+            .put("listening", listening)
+            .put("microphone", getPermissionState("microphone") == PermissionState.GRANTED)
+            .put("overlayAllowed", DetectionOverlay.canDraw(getContext()));
+    }
+
+    /** Opens Android's "Display over other apps" screen for AmberX; resolves with whether it's allowed when they return. */
+    @PluginMethod
+    public void overlayPermission(PluginCall call) {
+        if (DetectionOverlay.canDraw(getContext())) { call.resolve(new JSObject().put("allowed", true)); return; }
+        startActivityForResult(call, DetectionOverlay.permissionIntent(getContext()), "overlayPermissionResult");
+    }
+
+    @ActivityCallback
+    private void overlayPermissionResult(PluginCall call, ActivityResult result) {
+        boolean ok = DetectionOverlay.canDraw(getContext());
+        WatchService s = WatchService.running;
+        if (ok && s != null) s.syncOverlay();
+        if (call != null) call.resolve(new JSObject().put("allowed", ok));
     }
 
     @PluginMethod

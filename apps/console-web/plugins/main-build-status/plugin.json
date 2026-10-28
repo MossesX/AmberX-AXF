@@ -30,7 +30,7 @@
       "AXF_MAIN_BUILD_STATUS_DIR"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ]
   },

@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "paper-cut",
+  "name": "Paper Cut slider",
+  "version": "1.0.0",
+  "description": "Paper Cut: circle thumb on a 2 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "paper",
+    "flat"
+  ],
+  "data": {
+    "track": 2,
+    "thumb": "circle",
+    "thumbSize": 14,
+    "fill": "none",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

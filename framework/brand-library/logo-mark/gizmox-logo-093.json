@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-093",
+  "name": "GizmoX mark · shield notch",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield notch motif in a seeded bright palette (seed 1099).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "notch",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#2e9969",
+      "brand2": "#124530",
+      "brand3": "#bad9cd"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M11 2h2v3h-2zM11 19h2v3h-2zM2 11h3v2H2zM19 11h3v2h-3z",
+        "fill": "brand2"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "gizmox-anim-006",
+  "name": "gizmox-logo-064 · orbit",
+  "version": "1.0.0",
+  "description": "Generated animation: orbit over 1600 ms, on hover (seed 1006).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "orbit",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "mark": "gizmox-logo-064",
+    "preset": "orbit",
+    "durationMs": 1600,
+    "delayMs": 200,
+    "loop": "hover",
+    "intensity": 0.8
+  }
+}

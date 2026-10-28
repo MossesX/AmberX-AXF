@@ -30,7 +30,7 @@
       "AXF_MCP_TIMEOUT"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "_claude/memory/docs/rebuilds/lib-mcp.md"
     ]

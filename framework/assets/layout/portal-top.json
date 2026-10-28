@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "portal-top",
+  "name": "Portal Top",
+  "version": "1.0.0",
+  "description": "Top navigation, toolbar and a centred 1200 px page: customer portals and admin sites.",
+  "author": "AmberX AXF",
+  "tags": [
+    "web",
+    "portal"
+  ],
+  "data": {
+    "nav": "top",
+    "navWidth": 0,
+    "showMenubar": false,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 1200
+  }
+}

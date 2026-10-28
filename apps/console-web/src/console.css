@@ -235,3 +235,6 @@ html.axf-strip-page #root { height: auto; min-height: 0; display: block; }
 .bm-cost { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--fx-text) }
 .bm-cost.is-none { color: var(--fx-muted); font-style: italic }
 .bm-cost__price { color: var(--fx-muted); font-variant-numeric: tabular-nums }
+
+/* GizmoX interface tabs (interfaceTabs.tsx): layout only, the tab-group engine draws the tabs */
+.axp-ifx-tabs { flex: none; padding: 0 calc(var(--fx-space) * 1.5); background: var(--fx-surface); }

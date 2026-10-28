@@ -37,7 +37,7 @@
       "AXF_HANDOFF_HOST"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ],
     "keeps": [

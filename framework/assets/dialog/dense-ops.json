@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "dense-ops",
+  "name": "Dense Ops dialog",
+  "version": "1.0.0",
+  "description": "Dense Ops: drawer, none backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "dense",
+    "compact",
+    "data"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 440,
+    "backdrop": "none",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

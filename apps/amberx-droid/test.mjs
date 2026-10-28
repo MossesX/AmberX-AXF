@@ -9,6 +9,7 @@
 import * as voice from './src/plugins/voice/web/core.ts';
 import * as mon from './src/plugins/monitor/web/core.ts';
 import * as notes from './src/plugins/notes/web/core.ts';
+import * as hf from './src/plugins/voice/web/handsfree.ts';
 import { HOSTED_URL, sharesHubSite } from './src/hosted.ts';
 import { readFileSync } from 'node:fs';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
@@ -179,6 +180,43 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(!JSON.stringify(menu).includes('hub.apps'), 'no app-catalog list in the menu');
   const dialogs = readFileSync(`${here}src/dialogs.tsx`, 'utf8');
   ok(!dialogs.includes('new-file') && !dialogs.includes('confirm-delete'), 'demo dialogs are gone');
+}
+
+/* ---------------------------------------------------------------- hands-free + detection overlay (plugins/voice/web/handsfree.ts) */
+{
+  const c = hf.voiceConfig({ handsFree: undefined, alwaysArmed: undefined, overlay: undefined, wake: ['hey amberx'], lang: '' });
+  eq([c.handsFree, c.alwaysArmed, c.overlay, c.lang], [true, false, true, 'en-US'], 'defaults: hands-free on, always armed off, overlay on');
+  ok(hf.listens(c), 'hands-free with a wake phrase listens');
+  ok(!hf.listens({ ...c, handsFree: false }), 'hands-free off = no listening');
+  ok(!hf.listens({ ...c, wakePhrases: [] }), 'no wake phrase and not always armed = nothing to listen for');
+  ok(hf.listens({ ...c, wakePhrases: [], alwaysArmed: true }), 'always armed listens without a wake phrase');
+  eq(hf.nativeColor('#abc'), '#aabbcc', 'short hex grows'); // theme-ok
+  eq(hf.nativeColor('#11223380'), '#80112233', 'css #rrggbbaa becomes android #aarrggbb'); // theme-ok
+  eq(hf.nativeColor('rgb(255, 0, 10)'), '#ff000a', 'rgb() becomes hex'); // theme-ok
+  eq(hf.nativeColor('rgba(0,0,0,0.5)'), '#80000000', 'rgba() keeps its alpha'); // theme-ok
+  eq(hf.nativeColor('var(--fx-x)'), null, 'anything else is refused');
+  eq(hf.overlayColors({ accent: '#00ff00', bg: 'nope' }), { accent: '#00ff00' }, 'a token that can\'t be read is left out'); // theme-ok
+  eq(hf.levelOf(-2, 'android'), 0, 'android silence = 0');
+  eq(hf.levelOf(10, 'android'), 1, 'android loud = 1');
+  eq(hf.levelOf(4, 'android'), 0.5, 'android middle');
+  eq(hf.levelOf(-90, 'web'), 0, 'web floor clamps');
+  eq(hf.levelOf(NaN, 'web'), 0, 'NaN reads as silence');
+  eq(Math.round(hf.dbfs([0.5, -0.5, 0.5, -0.5])), -6, 'dBFS of a half-scale square');
+  eq(hf.dbfs([0, 0]), -Infinity, 'silence is -Infinity dBFS');
+  eq(hf.dbText(-6.4), '-6 dB', 'dB text rounds');
+  eq(hf.dbText(-Infinity), '– dB', 'no level shows a dash');
+  let h = [];
+  for (let i = 0; i < 70; i++) h = hf.pushLevel(h, i / 70);
+  eq(h.length, hf.HISTORY, 'history keeps the last 60');
+  eq(hf.pushLevel([], 3), [1], 'levels clamp to 1');
+  eq(hf.graphPoints([0, 1], 59, 10), '58,10 59,0', 'newest point on the right edge, louder is higher');
+  eq(hf.graphPoints([], 59, 10), '', 'no history, no line');
+  const n = voice.normalize;
+  eq(hf.interpretHeard('Hey AmberX open approvals', ['hey amberx'], false, n), { kind: 'command', text: 'open approvals' }, 'wake phrase + command');
+  eq(hf.interpretHeard('hey amberx', ['hey amberx'], false, n), { kind: 'wake' }, 'wake phrase alone');
+  eq(hf.interpretHeard('open approvals', ['hey amberx'], false, n), { kind: 'ignore' }, 'no wake phrase is ignored');
+  eq(hf.interpretHeard('open approvals', ['hey amberx'], true, n), { kind: 'command', text: 'open approvals' }, 'always armed acts on everything');
+  eq(hf.interpretHeard('  ', [], true, n), { kind: 'ignore' }, 'nothing heard is ignored');
 }
 
 /* ---------------------------------------------------------------- voice control (plugins/voice/web/core.ts) */

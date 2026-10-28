@@ -28,7 +28,7 @@
       "AXF_CONTEXT_MENU_DESIGNER_DIR"
     ],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ]
   },

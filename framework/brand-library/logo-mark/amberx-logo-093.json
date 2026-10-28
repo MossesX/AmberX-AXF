@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-093",
+  "name": "AmberX mark · shield pulse",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield pulse motif in a seeded bright palette (seed 98).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "pulse",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#a38538",
+      "brand2": "#525019",
+      "brand3": "#dedac9"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 12h3l2-4 3 8 2-4h4",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

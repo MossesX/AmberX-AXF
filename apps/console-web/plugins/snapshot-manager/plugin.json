@@ -20,7 +20,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/snapshot-manager",
     "env": ["AXF_SNAPSHOT_MANAGER_DIR"],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "apps/console-web/plugins/README.md"]
   },
   "opens": false
 }

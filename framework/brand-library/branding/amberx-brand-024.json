@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "amberx-brand-024",
+  "name": "AmberX · Showcase 24",
+  "version": "1.0.0",
+  "description": "AmberX branding: AmberX mark · hexagon stack, showcase placement, icon pack pack-093.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "brand-library",
+    "showcase"
+  ],
+  "data": {
+    "brand": {
+      "name": "AmberX",
+      "tagline": "One framework, every port."
+    },
+    "marks": {
+      "mark": "amberx-logo-043",
+      "wordmark": "amberx-logo-005",
+      "lockup": "amberx-logo-107",
+      "animated": "amberx-anim-064"
+    },
+    "iconPack": "pack-093",
+    "palette": {
+      "brand1": "#793aa6",
+      "brand2": "#2c1a56",
+      "brand3": "#d6cde0"
+    },
+    "accentFromBrand": true,
+    "decorations": {
+      "banner": "animated",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "wordmark",
+      "container": "watermark",
+      "tab-group": "mark",
+      "toolbar": "wordmark",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "animated"
+    }
+  }
+}

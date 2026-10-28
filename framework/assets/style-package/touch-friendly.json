@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "touch-friendly",
+  "name": "Touch Friendly",
+  "version": "1.0.0",
+  "description": "Big pill buttons, chunky sliders and bottom sheets sized for thumbs on tablets and phones.",
+  "author": "AmberX AXF",
+  "tags": [
+    "friendly",
+    "touch"
+  ],
+  "data": {
+    "slots": {
+      "button": "touch-friendly",
+      "container": "touch-friendly",
+      "slider": "touch-friendly",
+      "dialog": "touch-friendly",
+      "popup": "touch-friendly",
+      "tab-group": "touch-friendly",
+      "gauge": "classic-arc",
+      "meter": "striped-pill"
+    },
+    "tone": "friendly"
+  }
+}

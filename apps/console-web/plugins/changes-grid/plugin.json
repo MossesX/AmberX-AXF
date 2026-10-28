@@ -29,7 +29,7 @@
     "dataDir": ".axf-console/plugins/changes-grid",
     "env": [],
     "mentions": [
-      "CLAUDE.md",
+      "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md"
     ]
   },

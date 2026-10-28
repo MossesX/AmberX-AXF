@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-119",
+  "name": "AmberX mark · shield bolt",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield bolt motif in a seeded rich palette (seed 125).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "bolt",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#6f38bc",
+      "brand2": "#511b69",
+      "brand3": "#dfd8e9"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M13 4L7 13h5l-1 7 6-9h-5z",
+        "fill": "bg"
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

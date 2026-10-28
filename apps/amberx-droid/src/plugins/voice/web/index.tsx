@@ -1,6 +1,8 @@
 /**
- * Voice control: say a wake phrase (the Android watch service hears it with the screen off) or tap the mic, say what you
- * want, and AmberX runs it and answers out loud. Commands are data (`core.ts`): the built-in ones below, ones other
+ * Voice control: say a wake phrase or tap the mic, say what you want, and AmberX runs it and answers out loud.
+ * Hands-free (on by default, Oct 27 2026) keeps listening on screen and in the background without pressing Speak; on
+ * Android the detection overlay shows the input level, dB, what was heard and quick settings over other apps
+ * (`handsfree.ts`, `WatchService.java`, `DetectionOverlay.java`). Commands are data (`core.ts`): the built-in ones below, ones other
  * plugins add with `registerVoiceCommands`, one per page and per app action (made from the codebase at run time) and
  * the user's own; the **Voice commands** page switches and rewords them (overrides in settings, never code edits).
  * A sentence no command explains better goes to the notes intent path (local parser, then the AI when connected).
@@ -10,13 +12,14 @@ import type { AxfRuntime } from '../../../axf/core';
 import { Button, Container, Icon, IconButton, Note, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '../../../axf/libs/datagrid';
 import './voice.css';
-import { isNative, native } from '../../../native';
+import { isNative, native, type VoiceStatus } from '../../../native';
+import { dbText, graphPoints, interpretHeard, levelOf, listens, overlayColors, pushLevel, voiceConfig, type VoiceConfig } from './handsfree';
 import { flatTree, localDay, parseIntent, type Intent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
 import { aiReady, parseNote } from '../../ai/web/client';
 import {
   GROUPS, NOTE_EXAMPLES, TASK_EXAMPLES, actionCommands, afterWake, applyOverrides, checkMine, decide, describeIntent, fillReply,
-  navigationCommands, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
+  navigationCommands, normalize, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
   type CommandGroup, type Effective, type ManagedCommand, type MyCommand, type VoiceCommand,
 } from './core';
 
@@ -32,6 +35,9 @@ export const K = {
   mine: 'amberx.voice.mine',
   /** let note sentences ("note in work: …") go to the notes plugin */
   notes: 'amberx.voice.notes',
+  handsFree: 'amberx.voice.handsFree',
+  alwaysArmed: 'amberx.voice.alwaysArmed',
+  overlay: 'amberx.voice.overlay',
 } as const;
 
 const ID = 'ai.amberx.amberx.voice';
@@ -98,8 +104,12 @@ const notesOn = (rt: AxfRuntime) => rt.settings.get(K.notes) !== false && rt.lib
 /* ---------------------------------------------------------------- the conversation log (this session only) */
 
 type Turn = { at: string; heard: string; did: string; ok: boolean };
-type State = { busy: boolean; turns: Turn[] };
-let state: State = { busy: false, turns: [] };
+type State = { busy: boolean; turns: Turn[]; levels: number[]; db: number; heard: string; heardFinal: boolean; status: VoiceStatus | null };
+let state: State = { busy: false, turns: [], levels: [], db: -Infinity, heard: '', heardFinal: false, status: null };
+
+/** Set while Speak (or "Yes?") waits for the next thing hands-free hears; it receives that text. */
+let nextHeard: ((text: string) => void) | null = null;
+const ASK_MS = 8000;
 const subs = new Set<() => void>();
 const set = (patch: Partial<State>) => { state = { ...state, ...patch }; subs.forEach((f) => f()); };
 const useVoice = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => state);
@@ -163,11 +173,23 @@ export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
   return turn;
 }
 
+/** With hands-free listening, Speak never opens a second recognizer (that would pause hands-free): the next thing heard
+ * is the command. Without it, one native utterance as before. */
+async function nextCommand(rt: AxfRuntime): Promise<string> {
+  if (listens(configOf(rt)) && state.status?.listening) {
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => { nextHeard = null; resolve(''); }, ASK_MS);
+      nextHeard = (text) => { clearTimeout(timer); nextHeard = null; resolve(text); };
+    });
+  }
+  return (await native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') })).text;
+}
+
 export async function listenOnce(rt: AxfRuntime) {
   if (state.busy) return;
   set({ busy: true });
   try {
-    const { text } = await native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') });
+    const text = await nextCommand(rt);
     await handle(rt, text);
   } catch (e) {
     rt.toast(e instanceof Error ? e.message : String(e), 'danger', 'Voice');
@@ -175,6 +197,75 @@ export async function listenOnce(rt: AxfRuntime) {
     set({ busy: false });
   }
 }
+
+/* ---------------------------------------------------------------- hands-free */
+
+/** The overlay's colours from the app's theme tokens (the native side can't read CSS). */
+function themeColors() {
+  if (typeof document === 'undefined') return overlayColors({});
+  const css = getComputedStyle(document.documentElement);
+  const v = (n: string) => css.getPropertyValue(`--fx-${n}`).trim();
+  return overlayColors({ bg: v('surface'), fg: v('text'), accent: v('accent'), muted: v('muted'), danger: v('danger') });
+}
+
+export function configOf(rt: AxfRuntime): VoiceConfig {
+  return voiceConfig({
+    handsFree: rt.settings.get(K.handsFree), alwaysArmed: rt.settings.get(K.alwaysArmed), overlay: rt.settings.get(K.overlay),
+    wake: phraseList(rt.settings.get(K.wake)), lang: rt.settings.get(K.lang),
+  }, themeColors());
+}
+
+async function syncNative(rt: AxfRuntime, cfg: VoiceConfig) {
+  try { set({ status: await native.voiceSet(cfg) }); } catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'warning', 'Hands-free'); }
+}
+
+async function allowOverlay(rt: AxfRuntime) {
+  const { allowed } = await native.overlayPermission().catch(() => ({ allowed: false }));
+  if (!allowed) rt.toast('Allow “Display over other apps” for AmberX to see the detection overlay.', 'info', 'Overlay');
+  void native.voiceStatus().then((st) => set({ status: st })).catch(() => undefined);
+}
+
+/** The moving input-level line + dB, drawn with theme tokens only. */
+function LevelGraph({ levels, db }: { levels: number[]; db: number }) {
+  const w = 240, h = 48;
+  return (
+    <div className="axp-voice-level">
+      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} role="img" aria-label={`Input level ${dbText(db)}`}>
+        <line x1={0} y1={h - 1} x2={w} y2={h - 1} stroke="var(--fx-border)" strokeWidth={1} />
+        <polyline points={graphPoints(levels, w, h - 2)} fill="none" stroke="var(--fx-accent)" strokeWidth={2} strokeLinejoin="round" />
+      </svg>
+      <strong className="fx-mono">{dbText(db)}</strong>
+    </div>
+  );
+}
+
+function HandsFree() {
+  const rt = useRuntime();
+  const v = useVoice();
+  const cfg = configOf(rt);
+  const on = listens(cfg);
+  const chip = !cfg.handsFree ? 'Off' : !on ? 'Nothing to listen for' : v.status?.listening ? (cfg.alwaysArmed ? 'Armed' : 'Listening') : 'Starting…';
+  return (
+    <Container title={`Hands-free · ${chip}`} icon="mic">
+      <p className="fx-muted">
+        {cfg.alwaysArmed ? 'Always armed: everything AmberX hears is taken as a command.' : cfg.wakePhrases.length ? <>Say “{cfg.wakePhrases[0]}” and then what you want. No need to press Speak.</> : 'Add a wake phrase in settings, or switch on Always armed.'}
+      </p>
+      <LevelGraph levels={v.levels} db={v.db} />
+      <p className={v.heardFinal ? '' : 'fx-muted'}>{v.heard ? (v.heardFinal ? `“${v.heard}”` : `${v.heard}…`) : 'Heard nothing yet.'}</p>
+      <div className="fx-stack">
+        <Switch label="Listen hands-free" checked={cfg.handsFree} onChange={(x) => rt.settings.set(K.handsFree, x)} hint="On screen and in the background (Android shows a notification while it listens)." />
+        <Switch label="Always armed" checked={cfg.alwaysArmed} onChange={(x) => rt.settings.set(K.alwaysArmed, x)} hint="Act on everything heard, no wake phrase." />
+        {isNative() && <Switch label="Detection overlay" checked={cfg.overlay} onChange={(x) => rt.settings.set(K.overlay, x)} hint="Level, dB, what was heard and quick settings, floating over other apps." />}
+      </div>
+      {isNative() && cfg.overlay && v.status && !v.status.overlayAllowed && (
+        <Note tone="info">The overlay needs “Display over other apps”. <Button icon="settings" onClick={() => void allowOverlay(rt)}>Allow</Button></Note>
+      )}
+      {v.status && !v.status.microphone && cfg.handsFree && <Note tone="warning">The microphone isn't allowed, so hands-free can't listen.</Note>}
+    </Container>
+  );
+}
+
+/* ---------------------------------------------------------------- view */
 
 /* ---------------------------------------------------------------- views */
 
@@ -231,7 +322,8 @@ function VoiceView() {
         </div>
         <Button tone="primary" icon="mic" disabled={v.busy} onClick={() => void listenOnce(rt)}>{v.busy ? 'Listening…' : 'Speak'}</Button>
       </header>
-      {!isNative() && <Note tone="info">In a browser the mic works while this page is open. The Android app also listens with the screen off.</Note>}
+      {!isNative() && <Note tone="info">In a browser AmberX listens while this page is open. The Android app also listens with the screen off and shows the detection overlay.</Note>}
+      <HandsFree />
       {errors.length > 0 && <Note tone="warning">{errors.join(' ')}</Note>}
       <Container title="Just now" icon="clock">
         {v.turns.length === 0
@@ -444,7 +536,10 @@ export const library: AxfWebLibrary = {
   settings: [
     {
       id: 'amberx.voice', label: 'Voice control', icon: 'mic', tab: 'voice', settings: [
-        { key: K.wake, label: 'Wake phrases', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated. Heard by the Android app with the screen off (Monitoring → Listen in the background).' },
+        { key: K.handsFree, label: 'Listen hands-free', kind: 'toggle', default: true, description: 'Keep listening for the wake phrase on screen and in the background, without pressing Speak.' },
+        { key: K.wake, label: 'Wake phrases', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated. Say one, then the command.' },
+        { key: K.alwaysArmed, label: 'Always armed', kind: 'toggle', default: false, description: 'Act on everything heard, with no wake phrase. Background talk can trigger commands.' },
+        { key: K.overlay, label: 'Detection overlay', kind: 'toggle', default: true, description: 'Android: a floating window with the input level, dB, what was heard and quick settings.' },
         { key: K.lang, label: 'Language', kind: 'text', default: 'en-US', description: 'For recognition and spoken replies, e.g. en-US, en-GB.' },
         { key: K.speak, label: 'Answer out loud', kind: 'toggle', default: true },
         { key: K.notes, label: 'Notes sentences', kind: 'toggle', default: true, description: 'Let sentences like “note in work: …” or “add a todo … by friday” go to the Notes plugin.' },
@@ -458,11 +553,44 @@ export const library: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('voice.listen', () => void listenOnce(rt), { label: 'Speak a command' });
     rt.actions.register('voice.commands', () => rt.navigate('voice-commands'), { label: 'Voice commands' });
-    // The watch service heard the wake phrase with the app closed: the rest of the sentence may already be the command.
-    void native.addListener('wake', ({ text }) => {
-      const rest = afterWake(text ?? '', phraseList(rt.settings.get(K.wake)));
-      if (rest) void handle(rt, rest);
-      else void say(rt, 'Yes?').then(() => listenOnce(rt));
+    // A wake phrase was heard (hands-free, on screen or with the app closed): the rest of the sentence may already be the
+    // command. An empty phrase = no wake phrase in it (always armed on Android, or any final result in a browser).
+    void native.addListener('wake', ({ phrase, text }) => {
+      if (nextHeard) { nextHeard(afterWake(text ?? '', phraseList(rt.settings.get(K.wake)))); return; }
+      if (state.busy) return;
+      const wake = phraseList(rt.settings.get(K.wake));
+      if (phrase) {
+        const rest = afterWake(text ?? '', wake);
+        if (rest) void handle(rt, rest);
+        else void say(rt, 'Yes?').then(() => listenOnce(rt));
+        return;
+      }
+      const h = interpretHeard(text ?? '', wake, rt.settings.get(K.alwaysArmed) === true, normalize);
+      if (h.kind === 'command') void handle(rt, h.text);
+      else if (h.kind === 'wake') void say(rt, 'Yes?').then(() => listenOnce(rt));
     }).catch(() => undefined);
+    void native.addListener('heard', ({ text, final }) => {
+      set({ heard: text, heardFinal: final });
+      // Speak / "Yes?" is waiting: the next final utterance is the command (whether or not it held a wake phrase).
+      if (final && nextHeard) nextHeard(afterWake(text, phraseList(rt.settings.get(K.wake))));
+    }).catch(() => undefined);
+    void native.addListener('level', ({ db, source }) => set({ db, levels: pushLevel(state.levels, levelOf(db, source ?? 'android')) })).catch(() => undefined);
+    // A quick setting changed on the overlay: save it so Settings and this page show the same.
+    void native.addListener('voiceSettings', (c) => {
+      if (typeof c.handsFree === 'boolean') rt.settings.set(K.handsFree, c.handsFree);
+      if (typeof c.alwaysArmed === 'boolean') rt.settings.set(K.alwaysArmed, c.alwaysArmed);
+      if (typeof c.overlay === 'boolean') rt.settings.set(K.overlay, c.overlay);
+    }).catch(() => undefined);
+    // Settings (or the theme) changed: send the native side the new config. Same config = no call.
+    let last = '';
+    const sync = () => {
+      const cfg = configOf(rt);
+      const next = JSON.stringify(cfg);
+      if (next === last) return;
+      last = next;
+      void syncNative(rt, cfg);
+    };
+    rt.subscribe(sync);
+    sync();
   },
 };
