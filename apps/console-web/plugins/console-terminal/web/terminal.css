@@ -50,7 +50,13 @@
 .axp-terminal[hidden] { display: none }
 .axp-wt { position: relative; display: flex; flex-direction: column; height: 100%; min-height: calc(var(--fx-row-h) * 8); font-family: var(--fx-font); color: var(--fx-text);
   /* Mica: the window behind shows through a little, blurred */
-  background: color-mix(in srgb, var(--fx-surface3) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur)) saturate(1.4) }
+  background: var(--fx-surface3) }
+.axp-wt--mica { background: color-mix(in srgb, var(--fx-surface3) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur)) saturate(1.4) }
+/* App look (windowsLook off): plain framework tabs on a bar, no Windows shapes */
+.axp-wt--plain .axp-wt__strip { padding: 0; align-items: center; border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.axp-wt--plain .axp-wt__tab { border-radius: 0 }
+.axp-wt--tabs-compact .axp-wt__tab { flex: 0 1 calc(var(--fx-space) * 18); min-width: calc(var(--fx-space) * 9) }
+.axp-wt--tabs-title .axp-wt__tab { flex: 0 0 auto; min-width: 0 }
 .axp-wt__strip { display: flex; align-items: flex-end; gap: calc(var(--fx-space) * 0.125); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.5) 0; min-width: 0; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity }
 .axp-wt__strip::-webkit-scrollbar { display: none }
 .axp-wt__tab { position: relative; flex: 0 1 calc(var(--fx-space) * 30); min-width: calc(var(--fx-space) * 12); scroll-snap-align: start; gap: calc(var(--fx-space) * 0.5);
@@ -84,3 +90,17 @@
 .axp-wt__colors { display: flex; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
 .axp-wt__swatch { all: unset; box-sizing: border-box; width: calc(var(--fx-space) * 2); height: calc(var(--fx-space) * 2); border-radius: 999px; cursor: pointer; border: var(--fx-border-w) solid var(--fx-border); background: var(--axp-wt-tint, var(--fx-surface)) }
 .axp-wt__swatch.is-on { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+
+/* connection picker + per-tab Connection manager (connections.tsx) */
+.axp-wt-conn { display: flex; flex-direction: column; gap: var(--fx-space); min-width: min(calc(var(--fx-space) * 46), 100%) }
+.axp-wt-conn__list { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); max-height: 50vh; overflow: auto }
+.axp-wt-conn__item { gap: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); text-align: left }
+.axp-wt-conn__item.is-current { background: var(--fx-accent-soft) }
+.axp-wt-conn__text { display: flex; flex-direction: column; flex: 1; min-width: 0 }
+.axp-wt-conn__text > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-wt-conn__now { display: flex; align-items: center; gap: var(--fx-space); padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }
+.axp-wt-conn__now .axp-wt__dot[data-live] { background: var(--fx-success) }
+.axp-wt-conn__facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 18), 1fr)); gap: calc(var(--fx-space) * 0.5) var(--fx-space); margin: 0 }
+.axp-wt-conn__facts > div { min-width: 0 }
+.axp-wt-conn__facts dt { font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted) }
+.axp-wt-conn__facts dd { margin: 0; overflow-wrap: anywhere }

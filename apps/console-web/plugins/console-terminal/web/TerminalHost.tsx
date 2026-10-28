@@ -14,7 +14,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Icon, useRuntime, useWindowManager } from '@console/axf/react';
 import type { TabSpec } from '@console/axf/core';
-import { call, parseOpen, tabSessions, type Open, type Target } from './api';
+import { call, getSettings, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target } from './api';
+import { applyProfile, useProfiles } from './profiles';
 import { activate, addSession, ctl, dropHost, host, move, patchSession, removeSession, sessionId, snapshot, subscribe, titleFor, type HostSession } from './hosts';
 import { newWindow } from './open';
 import { TerminalSession } from './TerminalSession';
@@ -41,13 +42,22 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const [renaming, setRenaming] = useState<{ id: string; text: string } | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number; id: string } | null>(null);
   const [drop, setDrop] = useState<{ x: number; y: number } | null>(null);
-  const [toolbar, setToolbar] = useState(true);
+  const [settings, setSettings] = useState<Settings | null>(null);
+  const [toolbarOverride, setToolbar] = useState<boolean | null>(null);
+  const toolbar = toolbarOverride ?? settings?.toolbar ?? true;
+  const [ask, setAsk] = useState<string | null>(null); // close confirm for a running tab
+  const profiles = useProfiles();
+  useEffect(() => { void getSettings().then(setSettings, () => undefined); return onSettings(setSettings); }, []);
   const dragFrom = useRef<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
 
   const windowId = () => { const g = wm.groupOf(tab.id); return g ? wm.state.groups[g]?.windowId ?? null : null; };
   const add = (o: Open) => addSession(tab.id, { id: sessionId(), title: titleFor(o), open: o });
-  const close = (sid: string) => closeSession(sid);
+  const closeNow = (sid: string) => { setAsk(null); closeSession(sid); };
+  const close = (sid: string) => { const sc = ctl(sid); if (settings?.closeConfirm !== false && sc?.conn === 'live') setAsk(sid); else closeNow(sid); };
+  const pick = (mode: 'claude' | 'shell') => rt.openDialog('terminal.connect', { hostId: tab.id, mode });
+  const manage = (sid: string) => rt.openDialog('terminal.connection', { sessionId: sid });
+  const newLike = () => (settings?.newTab === 'same' || !front ? add(front?.open ? { ...front.open, attach: undefined } : { kind: 'console' }) : pick(front.open.kind === 'claude' ? 'claude' : 'shell'));
   const duplicate = (s: HostSession) => addSession(tab.id, { id: sessionId(), title: s.title, open: { ...s.open, attach: undefined }, color: s.color }, h.sessions.indexOf(s) + 1);
   const toNewWindow = (s: HostSession) => { removeSession(s.id); newWindow(rt, [s]); };
 
@@ -86,7 +96,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const target = front?.open ? describe(front.open) : '';
 
   return (
-    <div ref={root} className={P} data-fx-ctx-ignore>
+    <div ref={root} className={`${P} ${settings?.mica === false ? '' : `${P}--mica`} ${settings?.windowsLook === false ? `${P}--plain` : ''} ${P}--tabs-${settings?.tabWidth ?? 'equal'}`} data-fx-ctx-ignore>
       <div className={`${P}__strip`} role="tablist" aria-label="Terminal tabs">
         {h.sessions.map((s, i) => {
           const sc = ctl(s.id); const on = s.id === front?.id;
@@ -114,7 +124,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
             </div>
           );
         })}
-        <button type="button" className={`fx-iconbtn ${P}__new`} title="New tab (Ctrl+Shift+T)" aria-label="New tab" onClick={() => add(front?.open ? { ...front.open, attach: undefined } : { kind: 'console' })}><Icon name="plus" size={14} /></button>
+        <button type="button" className={`fx-iconbtn ${P}__new`} title="New tab (Ctrl+Shift+T)" aria-label="New tab" onClick={newLike}><Icon name="plus" size={14} /></button>
         <button type="button" className={`fx-iconbtn ${P}__new`} title="Open a tab: pick the connection" aria-label="New tab menu" aria-expanded={!!drop}
           onClick={(e) => { const r = (e.currentTarget as HTMLElement).getBoundingClientRect(); setDrop({ x: r.left, y: r.bottom + 2 }); }}><Icon name="chevron-down" size={14} /></button>
         <span className={`${P}__drag`} />
@@ -122,9 +132,9 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
 
       {toolbar && (
         <div className={`${P}__toolbar`} role="toolbar" aria-label="Terminal commands">
-          <button type="button" className="fx-btn fx-btn--ghost" title="New Claude Code tab" onClick={() => add({ kind: 'claude' })}><Icon name="sparkles" size={14} /> Claude Code</button>
+          <button type="button" className="fx-btn fx-btn--ghost" title="New Claude Code tab: pick a connection" onClick={() => pick('claude')}><Icon name="sparkles" size={14} /> Claude Code</button>
           <span className={`${P}__sep`} />
-          <button type="button" className={`fx-chip ${P}__conn`} title="This tab's connection" disabled={!front} onClick={(e) => { if (front) { const r = (e.currentTarget as HTMLElement).getBoundingClientRect(); setMenu({ x: r.left, y: r.bottom + 2, id: front.id }); } }}>
+          <button type="button" className={`fx-chip ${P}__conn`} title="This tab's connection" disabled={!front} onClick={() => { if (front) manage(front.id); }}>
             <Icon name={front ? iconFor(front.open) : 'terminal'} size={13} /> {target || 'No tab'}
             {c?.info?.badge && <strong className={`${P}__flag`}>{c.info.badge}</strong>}
           </button>
@@ -141,6 +151,12 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         </div>
       )}
 
+      {ask && (() => { const s = h.sessions.find((x) => x.id === ask); return s ? (
+        <div className={`axp-terminal__warn`} role="alertdialog">
+          <Icon name="alert" size={14} /><span className="fx-grow">Close “{s.title}”? It’s still running.</span>
+          <button type="button" className="fx-btn fx-btn--danger" onClick={() => closeNow(s.id)}>Close</button>
+          <button type="button" className="fx-btn fx-btn--ghost" onClick={() => setAsk(null)}>Cancel</button>
+        </div>) : null; })()}
       <div className={`${P}__body`}>
         {h.sessions.map((s) => <TerminalSession key={s.id} s={s} active={s.id === front?.id} onClose={() => close(s.id)} onRename={() => setRenaming({ id: s.id, text: s.title })} />)}
       </div>
@@ -150,6 +166,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         const s = h.sessions.find((x) => x.id === menu.id); if (!s) return null; const i = h.sessions.indexOf(s);
         return (
           <div className={`${P}__menu fx-popover`} role="menu" style={at(menu.x, menu.y)}>
+            {item('Connection…', 'shuffle', () => manage(s.id))}
             {item('Rename tab', 'edit', () => setRenaming({ id: s.id, text: s.title }))}
             {item('Duplicate tab', 'copy', () => duplicate(s), { hint: 'Ctrl+Shift+D' })}
             <div className={`${P}__colors`} role="group" aria-label="Tab colour">
@@ -166,7 +183,8 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
           </div>
         );
       })()}
-      {drop && <NewTabMenu at={at(drop.x, drop.y, 280, 440)} onPick={(o) => { setDrop(null); add(o); }} settings={() => { setDrop(null); rt.dispatch('settings.open:terminal'); }} />}
+      {drop && <NewTabMenu at={at(drop.x, drop.y, 280, 480)} profiles={profiles.items} onPick={(o, color) => { setDrop(null); addSession(tab.id, { id: sessionId(), title: titleFor(o), open: o, color }); }}
+        picker={(m) => { setDrop(null); pick(m); }} settings={() => { setDrop(null); rt.dispatch('settings.open:terminal'); }} />}
     </div>
   );
 }
@@ -176,14 +194,14 @@ export function describe(o: Open): string {
   switch (o.kind) {
     case 'console': return 'Console container';
     case 'vps': return o.attach ? `VPS host · ${o.attach}` : 'VPS host (root)';
-    case 'claude': return 'Claude Code';
+    case 'claude': return `Claude Code · ${o.via === 'vps' ? 'VPS host' : o.via === 'axhub' ? 'axHub' : o.via === 'container' ? o.container ?? 'container' : 'console'}`;
     case 'container': return `Container · ${o.container ?? '?'}`;
     default: return String(o.kind);
   }
 }
 
 /** ∨: every place a tab can open, like Windows Terminal's profile list. */
-function NewTabMenu({ at, onPick, settings }: { at: { left: number; top: number }; onPick(o: Open): void; settings(): void }) {
+function NewTabMenu({ at, profiles, onPick, picker, settings }: { at: { left: number; top: number }; profiles: ClaudeProfile[]; onPick(o: Open, color?: string): void; picker(m: 'claude' | 'shell'): void; settings(): void }) {
   const [targets, setTargets] = useState<Target[] | null>(null);
   const [status, setStatus] = useState<{ claude: boolean; vps: { ready: boolean }; containers: boolean } | null>(null);
   useEffect(() => {
@@ -197,7 +215,15 @@ function NewTabMenu({ at, onPick, settings }: { at: { left: number; top: number 
   );
   return (
     <div className="axp-wt__menu fx-popover" role="menu" style={at}>
-      {row('Claude Code', 'sparkles', { kind: 'claude' }, { disabled: status ? !status.claude : false })}
+      <button type="button" role="menuitem" className="fx-menu__item" onClick={() => picker('claude')}><Icon name="sparkles" size={13} /> <span className="fx-grow">Claude Code…</span><span className="axp-wt__hint">pick a connection</span></button>
+      {profiles.length > 0 && <div className="axp-wt__mh">Claude Code profiles</div>}
+      {profiles.map((p) => (
+        <button key={p.id} type="button" role="menuitem" className="fx-menu__item" onClick={() => onPick({ ...applyProfile(p), ...viaOf(p.connection) } as Open, p.color || undefined)}>
+          <Icon name={p.icon || 'sparkles'} size={13} /> <span className="fx-grow">{p.name}</span><span className="axp-wt__hint">{p.connection.replace('container:', '')}</span>
+        </button>
+      ))}
+      <div className="axp-wt__sepline" />
+      <button type="button" role="menuitem" className="fx-menu__item" onClick={() => picker('shell')}><Icon name="terminal" size={13} /> <span className="fx-grow">Shell…</span><span className="axp-wt__hint">pick a connection</span></button>
       {row('Console (this container)', 'terminal', { kind: 'console' })}
       {row('VPS host (root)', 'monitor', { kind: 'vps' }, { disabled: !status?.vps.ready, title: status?.vps.ready ? '' : 'Set up the VPS host in Settings → Plugins → Terminal' })}
       {status?.containers && <div className="axp-wt__mh">Containers</div>}
@@ -207,4 +233,10 @@ function NewTabMenu({ at, onPick, settings }: { at: { left: number; top: number 
       <button type="button" role="menuitem" className="fx-menu__item" onClick={settings}><Icon name="settings" size={13} /> <span className="fx-grow">Settings</span><span className="axp-wt__hint">Ctrl+,</span></button>
     </div>
   );
+}
+
+/** A profile's default connection as the Claude Code part of an Open. */
+function viaOf(conn: string): Partial<Open> {
+  if (conn.startsWith('container:')) return { kind: 'claude', via: 'container', container: conn.slice(10) };
+  return { kind: 'claude', via: conn === 'vps' || conn === 'axhub' ? conn : 'console' };
 }
