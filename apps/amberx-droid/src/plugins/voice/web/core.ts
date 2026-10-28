@@ -6,6 +6,8 @@
  * should answer, a reply. A reply may hold `{waiting}` (approvals waiting now). Plugins add commands with
  * `registerVoiceCommands`; the user adds their own in Settings → Plugins → Voice control as `phrase = action` lines.
  */
+import { splitWake } from './speech';
+
 export interface VoiceCommand {
   id: string;
   /** what the user may say; any of these, found anywhere in what was heard (whole words, case and punctuation ignored) */
@@ -56,7 +58,9 @@ export function afterWake(heard: string, wakePhrases: readonly string[]): string
     const i = ` ${h} `.indexOf(` ${w} `);
     if (i >= 0) return h.slice(i + w.length).trim();
   }
-  return h;
+  // Recognizers spell the wake phrase their own way ("hey amber x", "hey ambrex"): match it loosely too.
+  const loose = splitWake(heard, wakePhrases);
+  return loose ? normalize(loose.rest) : h;
 }
 
 /** Phrases from a settings value: comma or new-line separated, trimmed, capped. */

@@ -1,0 +1,31 @@
+{
+  "$axf": "speech-cases@1",
+  "readme": "Shared cases for the swear un-masker and loose wake-phrase matching: src/plugins/voice/web/speech.ts (test.mjs) and android SpeechTuning.java (SpeechTuningTest) must give the same answers.",
+  "compact": [["Hey, Amber X!", "heyamberx"], ["  okay   AMBERX ", "okayamberx"], ["", ""]],
+  "wake": {
+    "phrases": ["hey amberx", "okay amberx"],
+    "cases": [
+      ["hey amberx open approvals", "hey amberx"],
+      ["Hey Amber X, open approvals", "hey amberx"],
+      ["hey amber ex take a note", "hey amberx"],
+      ["hey ambrex", "hey amberx"],
+      ["hey ember x what's waiting", "hey amberx"],
+      ["hey amber acts read my tasks", "hey amberx"],
+      ["okay amberx", "okay amberx"],
+      ["ok amberx", "okay amberx"],
+      ["hey amber", null],
+      ["the chambers are open", null],
+      ["", null]
+    ]
+  },
+  "unmask": [
+    ["f*** this", "fuck this"],
+    ["what the f***", "what the fuck"],
+    ["this is f****** broken", "this is fucking broken"],
+    ["S*** happens", "Shit happens"],
+    ["you b****", "you bitch"],
+    ["no stars here", "no stars here"],
+    ["x*** unknown", "x*** unknown"],
+    ["2 * 3 = 6", "2 * 3 = 6"]
+  ]
+}

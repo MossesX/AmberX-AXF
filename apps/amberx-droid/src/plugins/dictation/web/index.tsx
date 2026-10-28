@@ -84,6 +84,12 @@ export async function start(rt: AxfRuntime, list = '') {
   const cfg = { stops: phrases(rt.settings.get(K.stop), DEFAULT_STOP), maxMinutes: clampMinutes(rt.settings.get(K.max)) };
   let s: Session = newSession(Date.now());
   let end: EndReason | null = null;
+  // Live text: show each word as it's said, not only when a turn ends (Brett: "text doesn't show up in real time").
+  const live = await native.addListener('heard', ({ text, final, source }) => {
+    if (final || source !== 'listen' || st.phase !== 'listening') return;
+    const so = joinParts(s.parts);
+    set({ live: so ? `${so} ${text}` : text });
+  }).catch(() => null);
   try {
     while (!stopAsked) {
       const { text } = await native.listen({ lang: lang(rt), prompt: 'Dictating… say “stop note” to finish' });
@@ -95,6 +101,7 @@ export async function start(rt: AxfRuntime, list = '') {
   } catch (e) {
     set({ note: e instanceof Error ? e.message : String(e) });
   }
+  void live?.remove();
   beep(rt, false);
   await finish(rt, joinParts(s.parts), end);
 }

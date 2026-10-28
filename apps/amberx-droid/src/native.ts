@@ -10,6 +10,7 @@
  * Plugins never import Capacitor themselves: they call `native`.
  */
 import { registerPlugin, Capacitor, type PluginListenerHandle } from '@capacitor/core';
+import { unmask } from './plugins/voice/web/speech';
 import { sharesHubSite } from './hosted';
 import { dbfs, type VoiceConfig } from './plugins/voice/web/handsfree';
 
@@ -65,7 +66,7 @@ export interface NativeApi {
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
   /** what hands-free is hearing (only while AmberX is on screen) */
-  addListener(event: 'heard', fn: (e: { text: string; final: boolean }) => void): Promise<PluginListenerHandle>;
+  addListener(event: 'heard', fn: (e: { text: string; final: boolean; source?: 'listen' }) => void): Promise<PluginListenerHandle>;
   /** input level in dB (Android: recognizer RMS dB; browser: dBFS), about ten a second while on screen */
   addListener(event: 'level', fn: (e: { db: number; source?: 'android' | 'web' }) => void): Promise<PluginListenerHandle>;
   /** a quick setting changed on the overlay */
@@ -115,7 +116,8 @@ async function webVoiceStart(cfg: VoiceConfig) {
   rec.lang = cfg.lang; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
   rec.onresult = (e) => {
     const last = e.results[e.results.length - 1];
-    const text = (last?.[0]?.transcript ?? '').trim();
+    const raw = (last?.[0]?.transcript ?? '').trim();
+    const text = cfg.swears === false ? raw : unmask(raw);
     if (!last || !text) return;
     emit('heard', { text, final: last.isFinal });
     if (last.isFinal) emit('wake', { phrase: '', text });
@@ -173,9 +175,14 @@ const web: NativeApi = {
     return new Promise<{ text: string }>((resolve, reject) => {
       if (!Recognition) { reject(new Error('This browser has no speech recognition.')); return; }
       const rec = new Recognition();
-      rec.lang = lang; rec.interimResults = false; rec.continuous = false; rec.maxAlternatives = 1;
+      rec.lang = lang; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
       let text = '';
-      rec.onresult = (e) => { text = Array.from(e.results).map((r) => r[0]?.transcript ?? '').join(' ').trim(); };
+      rec.onresult = (e) => {
+        const all = Array.from(e.results);
+        text = unmask(all.map((r) => r[0]?.transcript ?? '').join(' ').trim());
+        // Live text while you talk (the Android side sends the same 'heard' partials from its recognizer).
+        if (!all[all.length - 1]?.isFinal && text) emit('heard', { text, final: false, source: 'listen' });
+      };
       rec.onerror = (e) => (e.error === 'no-speech' ? resolve({ text: '' }) : reject(new Error(e.error)));
       rec.onend = () => resolve({ text });
       rec.start();

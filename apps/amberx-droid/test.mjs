@@ -695,5 +695,34 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   }
 }
 
+
+// voice fix (Oct 28 2026): loose wake phrases, swear words, beep/online/swears settings
+{
+  const sp = await import('./src/plugins/voice/web/speech.ts');
+  const cases = JSON.parse(readFileSync(new URL('./src/plugins/voice/web/speech-cases.json', import.meta.url), 'utf8'));
+  for (const [a, b] of cases.compact) eq(sp.compact(a), b, `speech: compact ${JSON.stringify(a)}`);
+  for (const [a, b] of cases.wake.cases) eq(sp.wakeHit(a, cases.wake.phrases), b, `speech: wake in ${JSON.stringify(a)}`);
+  for (const [a, b] of cases.unmask) eq(sp.unmask(a), b, `speech: unmask ${JSON.stringify(a)}`);
+  eq(sp.splitWake('Hey Amber X, open approvals', ['hey amberx']), { phrase: 'hey amberx', rest: 'open approvals' }, 'speech: split loose wake');
+  eq(sp.splitWake('hey ambrex', ['hey amberx']), { phrase: 'hey amberx', rest: '' }, 'speech: wake alone');
+  eq(sp.splitWake('the chambers are open', ['hey amberx']), null, 'speech: no wake');
+  eq(voice.afterWake('hey amber ex note in work: fix login', ['hey amberx']), 'note in work fix login', 'voice: afterWake strips a loosely spelled wake phrase');
+  eq(hf.interpretHeard('Hey Amber X open approvals', ['hey amberx'], false, voice.normalize), { kind: 'command', text: 'open approvals' }, 'hands-free: loose wake → command');
+  eq(hf.interpretHeard('hey ember x', ['hey amberx'], false, voice.normalize), { kind: 'wake' }, 'hands-free: loose wake alone');
+  const cfg = hf.voiceConfig({ handsFree: undefined, alwaysArmed: undefined, overlay: undefined, wake: ['hey amberx'], lang: '' });
+  eq([cfg.beep, cfg.online, cfg.swears], ['silence', true, true], 'voice config: tone silenced, online, swears shown by default');
+  eq(hf.voiceConfig({ handsFree: 1, alwaysArmed: 0, overlay: 0, wake: [], lang: 'en', beep: 'loud', online: false, swears: false }).beep, 'silence', 'voice config: unknown tone mode → silenced');
+  eq(sp.beepMode('silence-all'), 'silence-all', 'speech: beep mode kept');
+  const java = readFileSync(new URL('./android/app/src/main/java/ai/amberx/droid/SpeechTuning.java', import.meta.url), 'utf8');
+  for (const k of ['MASK_OFFENSIVE_WORDS', 'EXTRA_PARTIAL_RESULTS', 'ADJUST_MUTE', 'SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS']) ok(java.includes(k), `android: SpeechTuning sets ${k}`);
+  const watch = readFileSync(new URL('./android/app/src/main/java/ai/amberx/droid/WatchService.java', import.meta.url), 'utf8');
+  ok(watch.includes('SpeechTuning.quiet(') && watch.includes('SpeechTuning.loud('), 'android: hands-free silences the tone and restores it');
+  ok(!/onPartialResults\(Bundle b\) \{ if \(heard/.test(watch), 'android: a wake phrase mid-sentence no longer cuts the command off');
+  const plug = readFileSync(new URL('./android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java', import.meta.url), 'utf8');
+  ok(/onPartialResults[\s\S]{0,300}notifyListeners\("heard"/.test(plug), 'android: Speak / dictation stream live text');
+  const dict = readFileSync(new URL('./src/plugins/dictation/web/index.tsx', import.meta.url), 'utf8');
+  ok(dict.includes("addListener('heard'"), 'dictation shows live text');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
