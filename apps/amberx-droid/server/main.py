@@ -17,6 +17,8 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     GET  /api/ai/config                   profiles without keys (+ hasKey), order, active, Claude switch, kinds
     PUT  /api/ai/config     {profiles?, order?, active?, claude?: plan|api, keepAliveMin?}
     POST /api/ai/keys/{id}  {key, refresh?} | {clear: true}
+    POST /api/ai/profiles   {kind, label?, key, refresh?, primary?}   add a provider with its key (nothing kept if refused)
+    POST /api/ai/primary/{id}                                          active + first in the fallback order
     POST /api/ai/test/{id}
 
 Who may call: the wall's signed headers count only with a valid signature (axf_server.wall, env AMBERX_TRUST_WALL=1 +
@@ -46,9 +48,10 @@ from typing import Any
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import wall as wallmod
 from axf_server.console_client import ConsoleClient, ConsoleError, TokenFile
+import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 
 import intent as intents
 from router import AllFailed, Router
@@ -59,6 +62,24 @@ DIST = Path(os.environ.get("AMBERX_DIST") or ROOT / "dist")
 DATA = Path(os.environ.get("AMBERX_DATA_DIR") or ROOT / "data")
 HUB = (os.environ.get("AMBERX_WALL_HUB") or "https://axhub.amberxai.com").rstrip("/")
 MAX_BODY = 256 * 1024
+# Console plugins installed in AmberX unchanged (their plugin.json targets "amberx-droid"): their server part runs on the
+# console and /api/console/plugins/<folder>/... forwards to it with the console token. Hub admins only.
+def _console_plugins() -> frozenset[str]:
+    """The console plugins built into this AmberX (dist/console-plugins.json, written by the web build from the
+    plugins whose plugin.json targets "amberx-droid"); AMBERX_CONSOLE_PLUGINS (comma list) overrides."""
+    raw = os.environ.get("AMBERX_CONSOLE_PLUGINS")
+    if raw is None:
+        try:
+            raw = ",".join(json.loads((DIST / "console-plugins.json").read_text()).get("folders") or [])
+        except (OSError, ValueError, AttributeError, TypeError):
+            raw = ""
+    return frozenset(f for f in re.split(r"[\s,]+", raw) if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", f))
+
+
+CONSOLE_PLUGINS = _console_plugins()
+CONSOLE_PREFIX = "/api/console/plugins/"
+CONSOLE_MAX_BODY = 12 * 1024 * 1024  # chat images
+CONSOLE_PASS_HEADERS = ("content-type", "accept", "last-event-id")
 WALL = wallmod.Wall("AMBERX_")
 
 # What a signed-in hub *user* (not admin) may call; everything else under /api is admin-only.
@@ -115,8 +136,9 @@ def make_app(router: Router | None = None) -> FastAPI:
         if not (path == "/api" or path.startswith("/api/")):
             return await call_next(request)
         try:
-            if int(request.headers.get("content-length") or 0) > MAX_BODY:
-                return JSONResponse({"detail": f"request too big (max {MAX_BODY // 1024} KB)"}, status_code=413)
+            limit = CONSOLE_MAX_BODY if path.startswith(CONSOLE_PREFIX) else MAX_BODY
+            if int(request.headers.get("content-length") or 0) > limit:
+                return JSONResponse({"detail": f"request too big (max {limit // 1024} KB)"}, status_code=413)
         except ValueError:
             return JSONResponse({"detail": "bad content-length"}, status_code=400)
         if request.headers.get("x-auth-via") == "token" and not token_ok(request):
@@ -338,6 +360,45 @@ def make_app(router: Router | None = None) -> FastAPI:
             out["walkthrough"] = wt["title"][:120]
         return out
 
+    # ---- console plugins (AI assistant, Agent manager): same chats, agents and live sessions as the console
+
+    @app.api_route(CONSOLE_PREFIX + "{folder}/{rest:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+    async def console_plugin(folder: str, rest: str, request: Request) -> Response:
+        if folder not in CONSOLE_PLUGINS:
+            raise HTTPException(404, f"{folder} isn't a console plugin AmberX forwards")
+        if "\\" in rest or any(seg in ("..", ".") for seg in rest.split("/")):
+            raise HTTPException(400, "bad path")
+        tok = _CONSOLE_TOKEN()
+        if not tok:
+            raise HTTPException(503, "The console isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
+        body = b""
+        async for chunk in request.stream():
+            body += chunk
+            if len(body) > CONSOLE_MAX_BODY:
+                raise HTTPException(413, f"request too big (max {CONSOLE_MAX_BODY // 1024} KB)")
+        url = f"{CONSOLE_URL}/api/plugins/{folder}/{rest}" + (f"?{request.url.query}" if request.url.query else "")
+        headers = {k: v for k in CONSOLE_PASS_HEADERS if (v := request.headers.get(k))}
+        headers["authorization"] = f"Bearer {tok}"
+        client = httpx.AsyncClient(timeout=httpx.Timeout(30.0, read=None), follow_redirects=False)
+        try:
+            upstream = await client.send(client.build_request(request.method, url, headers=headers, content=body or None), stream=True)
+        except httpx.HTTPError as e:
+            await client.aclose()
+            raise HTTPException(502, f"The console couldn't be reached: {type(e).__name__}") from None
+
+        async def relay():  # streams (assistant replies are server-sent events) pass through as they come
+            try:
+                async for part in upstream.aiter_raw():
+                    yield part
+            finally:
+                await upstream.aclose()
+                await client.aclose()
+
+        out = {k: v for k in ("content-type", "content-disposition") if (v := upstream.headers.get(k))}
+        if "text/event-stream" in out.get("content-type", ""):
+            out["x-accel-buffering"] = "no"
+        return StreamingResponse(relay(), status_code=upstream.status_code, headers=out)
+
     @app.get("/api/ai/config")
     def get_config() -> dict[str, Any]:
         return rt.config()
@@ -364,6 +425,29 @@ def make_app(router: Router | None = None) -> FastAPI:
         except ValueError as e:
             raise HTTPException(400, str(e)) from None
         return {"ok": True, "profile": prof}
+
+    @app.post("/api/ai/profiles")
+    async def add_profile(request: Request) -> dict[str, Any]:
+        """Add a provider with its key in one step: {kind, label?, key, refresh?, primary?}. Nothing is kept if the key
+        is refused, so several Claude token pairs can be added one after another."""
+        b = await body_of(request)
+        key, refresh = b.get("key"), b.get("refresh")
+        if not isinstance(key, str) or not key.strip():
+            raise HTTPException(400, "key is required")
+        if refresh is not None and not isinstance(refresh, str):
+            raise HTTPException(400, "refresh is a string")
+        try:
+            prof = rt.add_with_key(str(b.get("kind") or ""), str(b.get("label") or ""), key, refresh or None, b.get("primary") is True)
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from None
+        return {"ok": True, "profile": prof, "config": rt.config()}
+
+    @app.post("/api/ai/primary/{pid}")
+    async def make_primary(pid: str) -> dict[str, Any]:
+        try:
+            return rt.make_primary(pid)
+        except KeyError:
+            raise HTTPException(404, "no such profile") from None
 
     @app.post("/api/ai/test/{pid}")
     async def test(pid: str) -> dict[str, Any]:

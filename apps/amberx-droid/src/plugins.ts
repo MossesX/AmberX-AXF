@@ -4,8 +4,12 @@
  * (`plugin-catalog.mjs app-install amberx <folder>`, Patches → Plugins per app) and commits the folder to GitHub; this
  * app's 5-minute update rebuilds with it. They run only in the browser: the Android shell loads the same bundle.
  * Folders starting with "_" (the template) never load.
+ *
+ * Console plugins that list "amberx-droid" in their plugin.json `targets` (AI assistant, Agent manager, …) load here
+ * too, unchanged, from `virtual:amberx-console-plugins` (vite.config.ts); their server part stays on the console.
  */
 import type { AxfWebLibrary } from './axf/react';
+import consolePlugins from 'virtual:amberx-console-plugins';
 
 type Manifest = { $axf?: string; id?: string; name?: string; version?: string };
 
@@ -30,6 +34,12 @@ export function loadPlugins(): LoadedPlugin[] {
     }
     seen.add(m.id);
     out.push({ folder, id: m.id, name: m.name ?? m.id, version: m.version ?? '', library: mod.library });
+  }
+  for (const c of consolePlugins) {
+    const id = c.manifest.id;
+    if (typeof id !== 'string' || seen.has(id) || !c.library) continue;
+    seen.add(id);
+    out.push({ folder: c.folder, id, name: c.manifest.name ?? id, version: c.manifest.version ?? '', library: c.library });
   }
   return out;
 }

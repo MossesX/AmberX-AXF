@@ -7,9 +7,13 @@
 #   docker run -p 7491:8080 -e AMBERX_DEV_OPEN=1 -v /tmp/amberx-data:/data amberx-web     (local try-out only)
 # CLAUDE_CLI=0 leaves the Claude Code CLI out (the Claude plan then can't answer; API providers still work).
 FROM node:22-bookworm-slim AS web
-WORKDIR /app
+# Same paths as in the repo: console plugins whose plugin.json targets "amberx-droid" are built in unchanged
+# (vite.config.ts: virtual:amberx-console-plugins, @console/* aliases). The build only reads their plugin.json + web/.
+WORKDIR /repo/apps/amberx-droid
 COPY apps/amberx-droid/package.json apps/amberx-droid/package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+COPY apps/console-web/plugins /repo/apps/console-web/plugins
+COPY apps/console-web/src/changeBatch.tsx apps/console-web/src/changeBatch.css /repo/apps/console-web/src/
 COPY apps/amberx-droid/ .
 RUN npm run build
 
@@ -31,7 +35,7 @@ RUN pip install --no-cache-dir -r server/requirements.txt
 COPY framework/python framework/python
 COPY framework/schemas/ai-providers.json framework/schemas/ai-providers.json
 COPY apps/amberx-droid/server server
-COPY --from=web /app/dist dist
+COPY --from=web /repo/apps/amberx-droid/dist dist
 ENV AMBERX_DATA_DIR=/data AMBERX_DIST=/app/dist PORT=8080 PYTHONPATH=/app/framework/python DISABLE_AUTOUPDATER=1 CLAUDE_BIN=claude
 RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http; from axf.assistant_host import providers; assert providers.kind('claude-code')" \
  && useradd -r -u 1000 -m app && mkdir -p /data && chown app /data && chmod 700 /data

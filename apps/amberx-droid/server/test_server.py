@@ -337,6 +337,77 @@ check("Molly: asks the console's walkthrough guide, answer + walkthrough title b
 check("Molly status: connected", c.get("/api/ai/molly/status", headers=A).json()["ok"] is True)
 main.console_client = _real
 
+# ---------------------------------------------------------------- console plugins (AI assistant, Agent manager) via the console
+from http import server as _hs  # noqa: E402
+import threading  # noqa: E402
+
+
+class _Console(_hs.BaseHTTPRequestHandler):
+    seen: list = []
+
+    def log_message(self, *a):  # quiet
+        pass
+
+    def _do(self):
+        n = int(self.headers.get("content-length") or 0)
+        body = self.rfile.read(n) if n else b""
+        _Console.seen.append((self.command, self.path, self.headers.get("authorization"), body, self.headers.get("cookie")))
+        if self.path.endswith("/stream"):
+            self.send_response(200)
+            self.send_header("content-type", "text/event-stream")
+            self.end_headers()
+            for i in range(3):
+                self.wfile.write(f"data: {{\"n\": {i}}}\n\n".encode())
+                self.wfile.flush()
+            return
+        out = json.dumps({"path": self.path}).encode()
+        self.send_response(201 if self.command == "POST" else 200)
+        self.send_header("content-type", "application/json")
+        self.send_header("content-length", str(len(out)))
+        self.end_headers()
+        self.wfile.write(out)
+
+    do_GET = do_POST = do_PUT = do_PATCH = do_DELETE = _do
+
+
+srv = _hs.ThreadingHTTPServer(("127.0.0.1", 0), _Console)
+threading.Thread(target=srv.serve_forever, daemon=True).start()
+_real_url = main.CONSOLE_URL
+main.CONSOLE_URL = f"http://127.0.0.1:{srv.server_address[1]}"
+CP = "/api/console/plugins/"
+_real_cp = main.CONSOLE_PLUGINS
+os.environ["AMBERX_CONSOLE_PLUGINS"] = "fake-chat, fake-agents,../x,Bad"
+main.CONSOLE_PLUGINS = main._console_plugins()
+check("console plugins: allowlist from the env, bad names dropped", main.CONSOLE_PLUGINS == {"fake-chat", "fake-agents"}, main.CONSOLE_PLUGINS)
+os.environ.pop("AMBERX_CONSOLE_PLUGINS")
+(DIST / "console-plugins.json").write_text(json.dumps({"folders": ["fake-chat"]}))
+check("console plugins: allowlist from the build (dist/console-plugins.json)", main._console_plugins() == {"fake-chat"})
+(DIST / "console-plugins.json").unlink()
+check("console plugins: none without a build list", main._console_plugins() == frozenset())
+main.CONSOLE_PLUGINS = frozenset({"fake-chat", "fake-agents"})
+check("console plugins: admins only", c.get(CP + "fake-chat/status", headers=P).status_code == 403)
+os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
+check("console plugins: no console token -> 503", c.get(CP + "fake-chat/status", headers=A).status_code == 503)
+os.environ["AMBERX_CONSOLE_TOKEN"] = "c" * 32
+g = c.get(CP + "fake-chat/conversations?limit=5", headers=A)
+m, path, auth, _b, cookie = _Console.seen[-1]
+check("console plugins: GET forwarded with the console token + query", g.status_code == 200 and path == "/api/plugins/fake-chat/conversations?limit=5" and auth == "Bearer " + "c" * 32 and not cookie, (g.status_code, _Console.seen[-1]))
+po = c.post(CP + "fake-agents/agents", headers=AP, json={"name": "x"})
+check("console plugins: POST body + status pass through", po.status_code == 201 and _Console.seen[-1][0] == "POST" and json.loads(_Console.seen[-1][3]) == {"name": "x"}, po.text)
+check("console plugins: cross-site write refused", c.post(CP + "fake-agents/agents", headers={**A, "origin": "https://evil.example"}, json={}).status_code == 403)
+st = c.get(CP + "fake-chat/stream", headers=A)
+check("console plugins: event streams pass through", st.status_code == 200 and "text/event-stream" in st.headers["content-type"] and st.text.count("data:") == 3, st.text[:120])
+check("console plugins: only the listed plugins", c.get(CP + "other-plugin/status", headers=A).status_code == 404)
+before = len(_Console.seen)
+for bad in ("fake-chat/../vps/run", "fake-chat/%2e%2e/x"):
+    r_ = c.get(CP + bad, headers=A)
+    check(f"console plugins: no escape {bad}", r_.status_code in (400, 404) and len(_Console.seen) == before, (r_.status_code, _Console.seen[-1:]))
+check("console plugins: bigger body cap for chat images", c.post(CP + "fake-chat/chat", headers={**AP, "content-length": str(13 * 1024 * 1024)}, content=b"").status_code == 413)
+srv.shutdown()
+main.CONSOLE_URL = _real_url
+main.CONSOLE_PLUGINS = _real_cp
+os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
+
 # ---------------------------------------------------------------- size caps
 check("transcript cap", c.post("/api/ai/parse", headers=P, json={"transcript": "x" * 20_001}).status_code == 413)
 check("empty transcript refused", c.post("/api/ai/parse", headers=P, json={"transcript": "  "}).status_code == 400)
@@ -373,6 +444,28 @@ check("bad switch value ignored → 200 but unchanged", c.put("/api/ai/config", 
 c.post("/api/ai/keys/claude-plan", headers=W, json={"clear": True})
 check("clear removes the token", json.loads((TMP / "data1" / "ai.json").read_text())["profiles"]["claude-plan"].get("key") is None)
 check("keep-alive bounds", c.put("/api/ai/config", headers=W, json={"keepAliveMin": 61}).status_code == 400)
+# several Claude tokens: add each with its key, test, star one as primary
+before = c.get("/api/ai/config", headers=A).json()
+check("user can't add a token", c.post("/api/ai/profiles", headers={**U, "origin": ORIGIN}, json={"kind": "claude-code", "key": OAT}).status_code == 403)
+t1 = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "Main", "key": "sk-ant-oat01-" + "1" * 40})
+t2 = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "Spare", "key": "sk-ant-oat01-" + "2" * 40, "refresh": "sk-ant-ort01-" + "2" * 40})
+check("two more tokens added", t1.status_code == 200 and t2.status_code == 200 and t2.json()["profile"]["pair"] is True, (t1.text[:200], t2.text[:200]))
+ids = [p["id"] for p in t2.json()["config"]["profiles"] if p["kind"] == "claude-code"]
+check("three plan profiles now", len(ids) == 3, ids)
+check("adding doesn't change the primary", t2.json()["config"]["active"] == before["active"])
+bad = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "Oops", "key": "sk-ant-api03-" + "x" * 40})
+check("refused key keeps nothing", bad.status_code == 400 and len(c.get("/api/ai/config", headers=A).json()["profiles"]) == len(t2.json()["config"]["profiles"]), bad.text[:200])
+check("empty key refused", c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "key": " "}).status_code == 400)
+spare = t2.json()["profile"]["id"]
+pc = c.post(f"/api/ai/primary/{spare}", headers=W).json()
+check("star makes it primary and first", pc["active"] == spare and pc["order"][0] == spare and pc["claude"] == "plan", pc.get("active"))
+check("primary of unknown 404", c.post("/api/ai/primary/nope", headers=W).status_code == 404)
+t3 = c.post("/api/ai/profiles", headers=W, json={"kind": "claude-code", "label": "New main", "key": "sk-ant-oat01-" + "3" * 40, "primary": True}).json()
+check("add as primary", t3["config"]["active"] == t3["profile"]["id"] and t3["config"]["order"][0] == t3["profile"]["id"])
+check("token keys never in config", "1111111111" not in c.get("/api/ai/config", headers=A).text)
+c.put("/api/ai/config", headers=W, json={"profiles": [{"id": p["id"], "kind": p["kind"]} for p in c.get("/api/ai/config", headers=A).json()["profiles"] if p["label"] not in ("Main", "Spare", "New main")]})
+c.put("/api/ai/config", headers=W, json={"claude": "api"})
+
 from axf.assistant_host import providers  # noqa: E402
 check("CLI env hides AMBERX_ vars", "AMBERX_" in providers.ENV_PREFIXES_HIDDEN)
 fake.calls.clear()
