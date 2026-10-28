@@ -957,8 +957,13 @@
    "title": "AmberX voice notes, lists, tasks + AI router",
    "detail": "Orchestrator build amberx-notes, branch claude/amberx-notes. Building now (Oct 27 2026), sub-agents allowed by Brett.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
+     "at": "2026-10-28T02:35:00.000Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Notes core: lists tree (categories, sub-lists, Inbox, Plugins root auto-filled with a list per plugin), notes/todos/tasks model, move/rename/merge, intent schema + validator, local voice-intent parser",
@@ -1061,11 +1066,13 @@
     {
      "text": "Export (Markdown/JSON), tests, re-check, deploy, docs, THREADS",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T02:35:00.000Z"
     }
    ],
    "createdAt": "2026-10-28T00:32:23.016Z",
-   "builtAt": "",
+   "builtAt": "2026-10-28T02:35:00.000Z",
    "updatedAt": "2026-10-28T00:32:23.016Z",
    "source": "chat",
    "note": ""
