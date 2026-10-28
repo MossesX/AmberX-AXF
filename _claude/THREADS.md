@@ -35,8 +35,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
 | Plugin theme override (every plugin UI, over the axHub theme) + Plugins ladder in the app menu (Interface · Settings · Documentation · About · Disable) | queued | `claude/plugin-theme-override` | – | Orchestrator build `plugin-theme-override` (refactor, 9 steps): Fable phase 1 s1–s3 (scoped theme engine) first, then Opus s4–s9. Waits on a Fable session: `orchestrator.mjs brief plugin-theme-override`. See *To carry on* | 2026-10-28 |
+| axHub runs approved calls itself (send once, never wait) | queued (held) | – | – | Orchestrator build `hub-runs-approved` (refactor, Opus, 3 steps, ~1.25 h; MossesX/axHub). Do before `veto-window` | 2026-10-28 |
+| Run unless blocked: 2-min countdown, then urgent alarm (red banner + loud AmberX ring), 1-min grace, runs; Block anytime | queued (held) | – | – | Orchestrator build `veto-window` (refactor, Opus, 5 steps, ~2.2 h; axHub + AXF + AmberX alert settings) | 2026-10-28 |
+| Feature Matrix plugin (skip/keep matrix per build, one dataset grid, hooks in every builds grid, Apply updates every table) | queued (new thread) | – | – | Orchestrator build `feature-matrix` (refactor, 8 steps ~3.8 h: Fable s1–s2 contract + apply engine, Opus s3–s8 plugin). builds-one-page archived (Brett: removed). Start in its own chat with the first message below | 2026-10-28 |
+| Windows-style Terminal (Claude Code tabs + connections + profiles) + window snap/resize + settings level toolbar & level editor | review (Opus phase) · waiting on Fable switch | `claude/windows-terminal` | [#158](https://github.com/MossesX/AmberX-AXF/pull/158) | Orchestrator build `windows-terminal` (refactor): **Opus s1–s5 done** (Terminal v0.3.0, report rebuilds/windows-terminal.md); PR open → merge approval once CI passes. Next: **Fable s6–s12** (window edge resize/snap/frameless, levels contract, level toolbar + editor) after Brett approves the switch. Held: `postponed-gestures` (drag from anywhere). Change log chg-20261028-427e401aac | 2026-10-28 |
 | Basic filter plugin: sort & filter dialog attachable to any dataset (every grid), configurable toolbar with live floating preview, attach from Plugin switches | done | `claude/basic-filter` | [#155](https://github.com/MossesX/AmberX-AXF/pull/155) merged | Merged Oct 28 (Brett's approval); console redeployed | 2026-10-28 |
-| Approval costs + history (cost on every approval, history in Console + axHub, one-call wait with AmberX alert) | queued (held) | – | – | Orchestrator build `approval-costs` (refactor, Opus, 5 steps, ~2.25 h; AXF + MossesX/axHub). Retry-rule change to one wait call needs Brett's OK at build time | 2026-10-28 |
+| Approval history with costs (Console + axHub) | queued (held) | – | – | Orchestrator build `approval-costs` (refactor, Opus, 5 steps, ~2.25 h; AXF + MossesX/axHub). cut to history + costs Oct 28 (wait/resume dropped) | 2026-10-28 |
 | axHub GitHub write tools (create/update file, branch, commit; each needs approval) | queued (held) | – | – | Orchestrator build `axhub-github-write` (refactor, Opus, 3 steps, ~1 h; work in MossesX/axHub). From the Oct 28 fix wizard; VPS writes only when needed | 2026-10-28 |
 | Share Search: programmable grid toolbar plugin (search/filter bar, 5 buttons, advanced search, attach prompt) | queued (held) | – | – | Orchestrator build `share-search` (refactor, 8 steps, ~3.9 h: Fable s1–s2 contract, Opus s3–s8). Brett: "send to orchestrator and hold off on build" — don't start until he says | 2026-10-28 |
 | AmberX: install the AI assistant + agent manager (console plugins, unchanged) | done | `claude/amberx-assistant-agents` | [#156](https://github.com/MossesX/AmberX-AXF/pull/156) | Merged Oct 28; amberx.amberxai.com picks it up on the 5-minute update. Orchestrator build `amberx-assistant-agents` (refactor, Opus). Same chats/agents as the console via AmberX's server; moves to axHub with `axhub-agent-host` | 2026-10-28 |
@@ -278,3 +282,18 @@ VPS). The session reads the rules and this file first, as usual.
 | Pull all repair flow | merged | 2026-10-23 |
 | Floating banner group window | done | 2026-10-23 |
 | Pending PR merges | done | 2026-10-23 |
+
+### windows-terminal (claude/windows-terminal)
+- **Asked (Brett, Oct 28 2026, claude.ai):** see orchestrator build `windows-terminal` detail (full request there).
+- **Model:** Opus s1–s5 (console-terminal upgrade), Fable s6–s12 (window engine physics, settings-ui@1 levels contract, level toolbar + editor). Approval card at the switch.
+- **Read first:** apps/console-web/plugins/console-terminal (README, web/, server/), framework/core/engines/windows.ts, framework/react/windows/WindowHost.tsx, framework/core/engines/settingsui.ts, framework/libs/settings.
+- **Done:** s1–s5 (Opus) on `claude/windows-terminal`.
+- **Next:** Fable phase s6–s12 on a new branch `fable/windows-terminal` from main after the Opus PR merges: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief windows-terminal`. Waits on: Brett's approval of the Opus → Fable switch. <!-- axf-plugin:build-orchestrator -->
+- **First message for a new session (Fable):** "Carry on orchestrator build windows-terminal (refactor): the Fable phase s6–s12, on branch fable/windows-terminal from main. Read the brief with orchestrator.mjs brief windows-terminal."
+
+### feature-matrix (not started)
+- **Asked (Brett, Oct 28 2026, claude.ai):** full request in orchestrator build `feature-matrix` detail. Model of the UI: the windows-terminal scope list https://claude.ai/artifact/CwBGQof4NBe4F3dPTczBvS (its db doc `scope/selection` is the first matrix).
+- **Picks:** Refactor profile; standalone plugin; builds-one-page archived ("remove one page"); own chat thread.
+- **Model:** Fable s1–s2 (feature-matrix@1 contract + apply engine), Opus s3–s8 (console plugin, views, grid hooks, seed, ship). Approval card at the switch.
+- **Read first:** apps/console-web/plugins/build-orchestrator (web/orchestrator-core.mjs), framework/cli/pending.mjs, framework/cli/build-queue.mjs, apps/console-web/plugins/build-manager, apps/console-web/plugins/changes-grid, orchestrator build share-search s1 (grid-attach@1).
+- **First message for the new chat (Fable):** "Start orchestrator build feature-matrix (refactor) in AmberX-AXF: Fable phase s1–s2 on branch fable/feature-matrix. Read the brief with orchestrator.mjs brief feature-matrix." <!-- axf-plugin:build-orchestrator -->
