@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T19:13:05.260Z",
+ "updatedAt": "2026-10-28T19:13:47.224Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4302,16 +4302,25 @@
    "title": "axHub runs approved calls itself: hold the call, run on Approve, drop on Reject; sessions send once and never wait",
    "category": "axHub",
    "detail": "Brett Oct 28 2026 14:18-14:20 (claude.ai): send the command to axHub; axHub waits for approval and runs it or not; the session does not wait. Today a confirm call returns confirmation_required and drops the call, so the session must re-send it with the confirmation_id after approval, which is why sessions poll (each check re-reads the whole chat). Change: axHub stores the full call on create; Approve = the hub runs it itself and keeps the result; Reject/expire = dropped. The session gets an approval id at once and moves on; it reads the result once later only if needed. Replaces the polling rule (15 s x10 then 1 min). HELD: queued in Refactor; Brett says go.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/hub-runs-approved (axHub)",
+   "pr": "axHub #14",
    "createdAt": "2026-10-28T18:56:29.828Z",
-   "updatedAt": "2026-10-28T18:56:29.828Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-10-28T19:13:47.224Z",
+   "builtAt": "2026-10-28T19:13:47.224Z",
+   "notes": [
+    {
+     "text": "Oct 28 15:05 Brett: \"Build it all\". Order: hub-runs-approved → veto-window → approval-costs → axhub-github-write → share-search (Fable s1-s2 need a Fable session). Started on Opus in claude.ai session_01XfLJCQwPcAjqfBaHYyA1FE.",
+     "at": "2026-10-28T19:07:11.131Z"
+    },
+    {
+     "text": "Built: axHub PR #14 (branch claude/hub-runs-approved), 414 tests pass. Shared rule \"send approvals once, never poll\" added (AXF + axHub copies), effective once #14 is deployed. Waiting on Brett: merge approval → Coolify auto-deploy.",
+     "at": "2026-10-28T19:13:47.224Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -4326,8 +4335,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:13:46.881Z",
      "note": ""
     },
     {
@@ -4342,8 +4351,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:13:46.949Z",
      "note": ""
     },
     {
@@ -4358,8 +4367,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:13:47.023Z",
      "note": ""
     }
    ]
