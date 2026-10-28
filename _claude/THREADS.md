@@ -94,7 +94,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - **Matrix page:** https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS (db doc `matrix/refactor-all`; read it before each step).
 - **Scope = matrix `refactor-all`** in `_claude/builds/profiles/refactor/matrices.json` (draft feature-matrix@0; 90 items; skipped by default: share-search, approval-costs, veto-window, axhub-github-write, postponed-gestures, Tools' Patches tab, look-levels s3 folded into windows-terminal). Skipped items aren't built unless Brett ticks them.
 - **Branches to carry on from:** enterprise-branding `opus/enterprise-branding` (PR #128, #129 stacked), windows-terminal `claude/windows-terminal` #158, basic-filter #155, amberx-handsfree #141; new work on `claude/refactor-all`. · feature-matrix `fable/feature-matrix` (Fable s1–s2 = refactor-all s24–s25 done there, not merged; cherry-pick/merge before s62)
-- **First message (Fable session):** `Start orchestrator build refactor-all (refactor) in AmberX-AXF: Fable phase. Read the brief with AXF_BUILD_PROFILE=refactor node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief refactor-all, and the matrix refactor-all.`
+- **First message (Fable session):** `Start orchestrator build refactor-all (refactor) in AmberX-AXF: Fable phase. Read the brief with AXF_BUILD_PROFILE=refactor node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief refactor-all, and the matrix refactor-all.` <!-- axf-plugin:build-orchestrator -->
 
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
