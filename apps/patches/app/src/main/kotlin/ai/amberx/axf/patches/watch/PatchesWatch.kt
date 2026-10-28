@@ -70,17 +70,26 @@ object PatchesWatch {
         val prefs = patchesPrefs(context)
         val f = HubClient.Default.feed(prefs.base)
         HubState.update(f)
+        // AmberX serves every axHub notification on the phone (Brett, Oct 28 2026): while it is installed Patches stays
+        // quiet (still tracks what it has seen, so nothing old pops up if AmberX goes away).
+        val quiet = amberxInstalled(context)
         if (f.status == HubFeedStatus.OK) {
             val plan = prefs.track(f.pending.map { it.id })
             plan.gone.forEach { PatchesAlerts.clearApproval(context, it) }
-            f.pending.filter { it.id in plan.fresh }.forEach { PatchesAlerts.approval(context, it, prefs.fullScreen) }
+            if (!quiet) f.pending.filter { it.id in plan.fresh }.forEach { PatchesAlerts.approval(context, it, prefs.fullScreen) }
         }
-        runCatching { consoleAlerts(context) }
+        runCatching { consoleAlerts(context, quiet) }
         return f.status.id
     }
 
+    /** AmberX (ai.amberx.droid) is on this phone: every axHub push comes from it (manifest `<queries>` lists it). */
+    fun amberxInstalled(context: Context): Boolean = runCatching {
+        @Suppress("DEPRECATION") context.packageManager.getPackageInfo(AMBERX_PACKAGE, 0); true
+    }.getOrDefault(false)
+    const val AMBERX_PACKAGE = "ai.amberx.droid"
+
     /** The console's open alerts: alert once per key + time, clear the ones resolved or read since. */
-    private suspend fun consoleAlerts(context: Context) = withContext(Dispatchers.IO) {
+    private suspend fun consoleAlerts(context: Context, quiet: Boolean) = withContext(Dispatchers.IO) {
         val origin = console(context) ?: return@withContext
         val cookie = CookieManager.getInstance().getCookie(origin) ?: return@withContext
         val conn = URL("$origin/api/alerts").openConnection() as HttpURLConnection
@@ -105,7 +114,7 @@ object PatchesWatch {
             count++
             val stamp = "$key@${a.optLong("lastAt")}"
             open += stamp
-            if (stamp in seen) continue
+            if (stamp in seen || quiet) continue
             PatchesAlerts.consoleAlert(context, key, a.optString("title", "Console alert"), a.optString("body").ifEmpty { null }, severity)
         }
         openAlerts = count

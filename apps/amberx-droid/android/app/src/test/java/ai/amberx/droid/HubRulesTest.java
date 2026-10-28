@@ -68,4 +68,19 @@ public class HubRulesTest {
             HubRules.approvalApiUrl("https://axhub.amberxai.com", "0123abcd-0123-4567-89ab-0123456789ab"));
         assertNull(HubRules.approvalApiUrl("https://axhub.amberxai.com", "../x"));
     }
+
+    @Test public void consoleAlerts() {
+        String body = "{\"alerts\":[{\"key\":\"ci:main\",\"severity\":\"error\",\"title\":\"CI failed\",\"body\":\"android\",\"lastAt\":5},"
+            + "{\"key\":\"ci:main\",\"severity\":\"error\",\"lastAt\":6},"
+            + "{\"key\":\"deploy\",\"severity\":\"info\",\"lastAt\":1},"
+            + "{\"key\":\"sys:disk\",\"severity\":\"warning\",\"resolved\":true},"
+            + "{\"key\":\"\",\"severity\":\"error\"}]}";
+        HubRules.Alerts a = HubRules.consoleAlerts(200, body);
+        assertEquals(1, a.open.size());
+        assertEquals("ci:main@5", a.open.get(0).stamp);
+        assertEquals("CI failed", a.open.get(0).title);
+        assertTrue(a.closed.contains("sys:disk"));
+        assertNull(HubRules.consoleAlerts(302, ""));
+        assertNull(HubRules.consoleAlerts(200, "<html>sign in</html>"));
+    }
 }

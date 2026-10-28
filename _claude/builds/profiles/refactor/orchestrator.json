@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T14:42:07.116Z",
+ "updatedAt": "2026-10-28T14:52:00.674Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2933,6 +2933,78 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-28T10:11:22.287Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "amberx-push",
+   "title": "All axHub push notifications come from the AmberX Android app",
+   "category": "AmberX app",
+   "detail": "Brett Oct 28 2026: 'From now on all push notifications for approval or anything from axHub comes from amberx android app.' AmberX's WatchService already alerts on hub approvals (incl. merge approvals). Add the Dev Console's alerts (builds, CI, deploys, systems check; alert@1 via GET <console>/api/alerts) to AmberX's watcher, and make Patches and the AXHub app stay quiet while AmberX is installed (Brett approved the small AXHub app change despite the Android hold).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-push",
+   "pr": "#154",
+   "createdAt": "2026-10-28T14:39:25.869Z",
+   "updatedAt": "2026-10-28T14:52:00.673Z",
+   "builtAt": "2026-10-28T14:52:00.612Z",
+   "notes": [
+    {
+     "text": "Merged PR #154, branch claude/amberx-push",
+     "at": "2026-10-28T14:52:00.673Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "AmberX WatchService: console alerts (errors/warnings once per change, cleared when resolved), with a setting for the console address",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "AmberX",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T14:42:12.883Z",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Patches + AXHub app stay quiet while AmberX (ai.amberx.droid) is installed; manifest <queries>; settings text",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Quiet others",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T14:42:12.969Z",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Docs/rules, CI green, merge approval",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Ship",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T14:52:00.523Z",
      "note": ""
     }
    ]

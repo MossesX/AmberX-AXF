@@ -263,6 +263,8 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq(c.wakePhrases, [], 'background listening off = no wake phrases sent');
   eq(c.lang, 'en-US', 'language default');
   eq(c.autoApprove, { on: true, all: false, tools: 'github.*' }, 'auto-approval config');
+  eq(c.consoleAlerts, true, 'console alerts on by default (every push comes from AmberX)');
+  eq(mon.watchConfig({ hub: HUB, interval: 60, listen: true, wake: [], lang: '', autoApprove: false, autoApproveAll: false, autoApproveTools: '', consoleAlerts: false }).consoleAlerts, false, 'console alerts can be switched off');
 }
 
 {
