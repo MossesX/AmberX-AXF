@@ -105,6 +105,7 @@ export function normalize(raw, { now = nowIso() } = {}) {
     if (isoOr(o.startedAt)) out.startedAt = o.startedAt;
     if (isoOr(o.finishedAt)) out.finishedAt = o.finishedAt;
     if (o.note != null && String(o.note).trim()) out.note = redact(o.note, LIMITS.note, true);
+    if (o.fm != null && String(o.fm).trim()) out.fm = String(o.fm).trim().slice(0, 80); // feature-matrix@1 item id
     return out;
   });
 
