@@ -129,7 +129,7 @@ export const library: AxfWebLibrary = {
       id: 'amberx.monitor', label: 'Background monitoring', icon: 'eye', tab: 'monitor', settings: [
         { key: K.on, label: 'Watch axHub in the background', kind: 'toggle', default: false },
         { key: K.interval, label: 'Check every (seconds)', kind: 'number', default: 30, min: 15, max: 300, step: 5 },
-        { key: K.listen, label: 'Listen for the wake phrase in the background', kind: 'toggle', default: true, description: 'Android only: the on-device recognizer listens for the wake phrases while the app is closed.' },
+        { key: K.listen, label: 'Listen for the wake phrase while watching', kind: 'toggle', default: true, description: 'Only used when Voice control → Listen hands-free is off. Hands-free listening (on by default) works without watching axHub.' },
       ],
     },
     {
