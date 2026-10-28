@@ -170,6 +170,47 @@ export function parseOverrides(raw: unknown): Overrides {
   return out;
 }
 
+const CATEGORY_IDS: CategoryId[] = ['notes', 'tasks', 'developer', 'snippets'];
+
+/** Chains, wizards and commands the person made (`mine.*` ids), from settings: checked like everything else. */
+export function parseCustom(raw: unknown): Command[] {
+  let v: unknown = raw;
+  if (typeof raw === 'string') { try { v = JSON.parse(raw); } catch { return []; } }
+  if (!Array.isArray(v)) return [];
+  const out: Command[] = [];
+  const seen = new Set<string>();
+  for (const x of v.slice(0, MAX_CUSTOM)) {
+    if (!x || typeof x !== 'object') continue;
+    const r = x as Record<string, unknown>;
+    const id = typeof r.id === 'string' ? r.id : '';
+    if (!/^mine\.[a-z0-9-]{1,40}$/.test(id) || seen.has(id)) continue;
+    const category = CATEGORY_IDS.includes(r.category as CategoryId) ? (r.category as CategoryId) : null;
+    const kind = r.kind === 'action' || r.kind === 'chain' || r.kind === 'wizard' ? r.kind : null;
+    const phrases = Array.isArray(r.phrases) ? dedupe(r.phrases.filter((p): p is string => typeof p === 'string').map((p) => p.slice(0, 100))).slice(0, MAX_PHRASES) : [];
+    const steps = Array.isArray(r.steps) ? cleanSteps(r.steps) : [];
+    if (!category || !kind || !phrases.length || !steps.length) continue;
+    seen.add(id);
+    out.push({
+      id, category, kind, group: 'Yours', phrases, steps,
+      label: typeof r.label === 'string' && r.label.trim() ? r.label.trim().slice(0, 80) : phrases[0]!,
+      description: typeof r.description === 'string' ? r.description.slice(0, 300) : '',
+      settings: cleanSettings(r.settings),
+      ...(category === 'developer' ? { developer: true, needsAi: true } : {}),
+      ...(steps.some((s) => s.do === 'ai' || s.do === 'molly') ? { needsAi: true } : {}),
+      ...(steps.some((s) => s.do === 'molly') ? { developer: true } : {}),
+    });
+  }
+  return out;
+}
+
+/** A new id for something the person makes. */
+export const mineId = (label: string, taken: (id: string) => boolean): string => {
+  const base = `mine.${norm(label).replace(/ /g, '-').slice(0, 30) || 'chain'}`;
+  let id = base; let n = 2;
+  while (taken(id)) id = `${base}-${n++}`;
+  return id;
+};
+
 export function cleanSettings(raw: unknown): CommandSettings {
   const r = (raw ?? {}) as Record<string, unknown>;
   const s: CommandSettings = {};

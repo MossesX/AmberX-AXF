@@ -21,8 +21,10 @@ export interface RunEnv {
   ai(prompt: string): Promise<string | null>;
   molly(task: string): Promise<string | null>;
   command(id: string): Effective | undefined;
-  /** the AI / Molly connection is on and answering */
+  /** the AI connection is on and answering */
   aiReady(): boolean;
+  /** Molly (the console's agent) is reachable; developer commands need her (default: aiReady) */
+  mollyReady?(): boolean;
 }
 
 export interface RunResult { ok: boolean; did: string; stoppedAt?: number; slots: Record<string, string>; said: string[] }
@@ -70,7 +72,8 @@ export async function runCommand(hit: Pick<CommandHit, 'command' | 'slots'>, env
   const stop = (did: string, ok: boolean, i?: number): RunResult => ({ ok, did, stoppedAt: i, slots, said });
 
   if (depth > MAX_DEPTH) return stop('Too many commands inside commands.', false);
-  if ((cmd.needsAi || cmd.developer) && !env.aiReady()) {
+  const ready = cmd.developer ? (env.mollyReady?.() ?? env.aiReady()) : !cmd.needsAi || env.aiReady();
+  if (!ready) {
     await speak(cmd.developer ? 'Molly isn\'t connected, so developer commands are off. Open AI snippets to set her up.' : 'The AI isn\'t connected. Open AI snippets to set it up.');
     return stop('AI not connected.', false);
   }

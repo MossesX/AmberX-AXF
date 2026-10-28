@@ -843,6 +843,34 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     eq(f.log.filter((l) => l.startsWith('molly')).length, 4, 'runner: chain of chains runs every Molly task');
     ok(r.ok, 'runner: dev morning ok');
   }
+  /* custom commands + the voice wizard */
+  const custom = cc.parseCustom(JSON.stringify([{ id: 'mine.home', category: 'tasks', kind: 'chain', label: 'Home', phrases: ['im home'], steps: [{ do: 'say', text: 'hi' }, { do: 'evil' }] }, { id: 'bad id', category: 'tasks', kind: 'chain', phrases: ['x'], steps: [{ do: 'say', text: 'x' }] }, { id: 'mine.dev', category: 'developer', kind: 'chain', phrases: ['dev thing'], steps: [{ do: 'molly', task: 'x' }] }]));
+  eq(custom.map((c) => [c.id, c.steps.length, !!c.developer]), [['mine.home', 1, false], ['mine.dev', 1, true]], 'custom: checked, bad ids and steps dropped, developer flagged');
+  eq(cc.mineId('Good Night!', (id) => id === 'mine.good-night'), 'mine.good-night-2', 'custom: ids never clash');
+  const vw = await import('./src/plugins/commands/web/voicewizard.ts');
+  const io = (answers) => { const said = []; return { said, io: { ask: async (q) => { said.push(`? ${q}`); return answers.shift() ?? ''; }, say: (t) => { said.push(t); } } }; };
+  {
+    const t = io(['Garden day', 'start garden day', 'open the car door', 'start garden day', 'start garden day', 'tasks', 'add task water the tomatoes', 'flibber', 'say lets go', 'undo', 'say ready', 'whats due today', 'done', 'yes']);
+    const r = await vw.recordChain(t.io, eff);
+    ok(r.ok && r.command.phrases[0] === 'start garden day' && r.command.category === 'tasks' && r.command.settings.confirm === true, 'voice wizard: name, phrase recorded twice (retry on mismatch), tab, confirm');
+    eq(r.ok && r.command.steps.map((s) => s.do), ['intent', 'say', 'op'], 'voice wizard: steps from what was said, unknown skipped, undo works');
+    eq(r.ok && r.command.steps[0].intent.title, 'water the tomatoes', 'voice wizard: what was said fills the step');
+    ok(cc.checkLibrary([...LIBRARY, r.command]).length === 0, 'voice wizard: the chain passes the library checks');
+  }
+  {
+    const t = io(['Morning two', 'good morning', 'good morning']);
+    const r = await vw.recordChain(t.io, eff);
+    ok(!r.ok || r.command.phrases[0] !== 'good morning', 'voice wizard: a phrase another command uses is refused');
+  }
+  {
+    const t = io(['cancel']);
+    eq((await vw.recordChain(t.io, eff)).ok, false, 'voice wizard: cancel saves nothing');
+  }
+  {
+    const t = io(['remove step 1', 'move step 2 up', 'add say all done', 'done']);
+    const r = await vw.editChain(t.io, byId('tasks.morning'), eff);
+    eq(r.steps.map((s) => s.do + (s.op ? `:${s.op}` : '')), ['op:read-priority', 'op:read-due', 'action', 'say'], 'voice wizard: edit removes, moves and adds');
+  }
   eq(rn.readAnswer('number', 'three please'), '3', 'runner: spoken number');
   eq(rn.readAnswer('choice', 'the medium one', ['high', 'medium', 'low']), 'medium', 'runner: choice');
 }
