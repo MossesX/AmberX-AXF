@@ -501,7 +501,8 @@ class VinnyService:
 
     def find_fix(self, key: str, text: str = "") -> dict[str, Any] | None:
         c = fix_for(load()["commands"], str(key), str(text or ""))
-        return {k: v for k, v in c.items() if k in ("id", "name", "kind")} if c else None
+        # `command` / `tool` so a dialog can show what would run before Brett asks for it (no secrets live in commands).
+        return {k: v for k, v in c.items() if k in ("id", "name", "kind", "command", "tool", "repo")} if c else None
 
     def start_fix(self, key: str, text: str = "", ctx: dict[str, Any] | None = None, source: str = "auto-fix") -> dict[str, Any] | None:
         """Start the command for this Auto fix (None when Vinny has none or isn't ready); poll with get_run."""

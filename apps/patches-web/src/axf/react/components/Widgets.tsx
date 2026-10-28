@@ -28,7 +28,7 @@ export function widgetRenderer(type: string): WidgetRenderer | undefined { retur
 export function SearchBarWidget({ data }: WidgetRenderProps<SearchBarData>) {
   const cfg = searchBarConfig(data);
   return (
-    <div className="fx-widget-search" style={{ width: `min(calc(var(--fx-space) * ${cfg.width}), 52vw)` }}>
+    <div className="fx-widget-search" style={{ flexBasis: `min(calc(var(--fx-space) * ${cfg.width}), 52vw)` }}>
       <LiveSearch config={cfg} />
     </div>
   );
