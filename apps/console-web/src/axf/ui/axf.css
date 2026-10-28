@@ -109,17 +109,28 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 
 /* ---------------- banner (core/engines/banner.ts) ---------------- */
 .fx-banner {
-  flex: none; height: var(--fx-banner-h); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center;
+  flex: none; height: var(--fx-banner-h); display: grid; align-items: center;
+  /* Attached things snap, never overlap (Brett, Oct 28 2026): a side is never narrower than what's on it, the center
+     (search bar) gives way first down to its minimum, and when the banner is still full it scrolls sideways and each
+     item snaps into place. Nothing is clipped or drawn over a neighbour. */
+  grid-template-columns: minmax(max-content, 1fr) minmax(min-content, auto) minmax(max-content, 1fr);
+  overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity; scroll-padding-inline: calc(var(--fx-space) * 1.25);
   gap: var(--fx-space); padding: 0 calc(var(--fx-space) * 1.25); background: var(--fx-bg); color: var(--fx-muted);
   font-size: calc(var(--fx-font-size) * 12 / 14); line-height: 1; position: relative; z-index: 30; min-width: 0;
 }
+.fx-banner::-webkit-scrollbar, .fx-toolbar::-webkit-scrollbar, .fx-menubar__menus::-webkit-scrollbar { display: none; }
 .fx-banner.is-raised { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
 .fx-banner.is-accent { background: var(--fx-accent); color: var(--fx-accent-text); }
 .fx-banner.has-divider { border-bottom: var(--fx-border-w) solid var(--fx-border); }
-.fx-banner__side { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0; overflow: hidden; }
-.fx-banner__side.is-center { overflow: visible; }
-/* On narrow screens a crowded side clips in order (last attachments first) instead of drawing over its neighbours. */
-.fx-banner__item { flex: none; }
+.fx-banner__side { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0; height: 100%; }
+.fx-banner__side.is-center { min-width: min-content; }
+/* Every attachment keeps its own width and is a snap point; the search bar is the one thing that shrinks. */
+.fx-banner__item, .fx-banner__logo { flex: none; scroll-snap-align: start; }
+.fx-banner__item:has(> .fx-widget-search) { flex: 0 1 auto; min-width: 0; }
+.fx-banner .fx-widget-search { min-width: calc(var(--fx-space) * 12); }
+/* while arranging, the drop bar under the banner must show (and dragging needs no scroll) */
+.fx-banner.is-arranging { overflow: visible; }
 @media (max-width: 480px) { .fx-banner__side.is-left { justify-content: flex-start; } .fx-banner__side .fx-widget-label, .fx-banner__side .fx-widget-progress__label { display: none; } }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }
 .fx-banner__side.is-right { justify-content: flex-end; justify-content: safe flex-end; }
@@ -146,8 +157,9 @@ button.fx-banner__badge { cursor: pointer; }
 button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); outline-offset: 1px; }
 .fx-banner__dot { width: 40%; height: 40%; border-radius: 999px; background: currentColor; }
 .fx-banner__pop {
-  position: absolute; left: calc(100% + var(--fx-space)); top: 50%; transform: translateY(-50%); white-space: nowrap;
-  padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface);
+  /* in the flow, next to its attachment: the neighbours make room for it (snap, never overlap) instead of being covered */
+  position: relative; flex: none; margin-inline-start: calc(var(--fx-space) * 0.9); white-space: nowrap;
+  padding: calc(var(--fx-space) * 0.3) var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface);
   color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-md); font-weight: 600;
   animation: fx-banner-pop var(--fx-motion) ease-out; pointer-events: none;
 }
@@ -155,7 +167,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%);
   border: calc(var(--fx-space) * 0.6) solid transparent; border-right-color: var(--fx-border);
 }
-@keyframes fx-banner-pop { from { opacity: 0; transform: translate(calc(var(--fx-space) * -1), -50%); } to { opacity: 1; transform: translateY(-50%); } }
+@keyframes fx-banner-pop { from { opacity: 0; transform: translateX(calc(var(--fx-space) * -1)); } to { opacity: 1; transform: none; } }
 @media (max-width: 480px) { .fx-banner__name { display: none; } }
 
 /* ---------------- widgets (core/engines/widgets.ts): clock, search bar on banners and toolbars ---------------- */
@@ -271,7 +283,10 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   background: conic-gradient(from 210deg, var(--fx-accent), var(--fx-info), var(--fx-accent));
   box-shadow: inset 0 0 0 4px var(--fx-surface), inset 0 0 0 5px var(--fx-accent);
 }
-.fx-menubar__menus { display: flex; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.fx-menubar__menus { display: flex; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+.fx-menubar__item { scroll-snap-align: start; }
+.fx-menubar > * { flex: none; }
+.fx-menubar > .fx-menubar__menus { flex: 0 1 auto; }
 .fx-menubar__item { position: relative; }
 .fx-menubar__btn {
   border: 0; background: transparent; padding: 4px 10px; border-radius: var(--fx-radius-sm);
@@ -350,8 +365,9 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar {
   display: flex; align-items: center; gap: var(--fx-space);
   padding: var(--fx-toolbar-py, calc(var(--fx-space) * 0.6)) calc(var(--fx-space) * 1.5);
-  background: var(--fx-surface2); overflow-x: auto; scrollbar-width: none;
+  background: var(--fx-surface2); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
 }
+.fx-toolbar > *, .fx-toolbar__widgets > * { scroll-snap-align: start; }
 /* toolbar surface + divider (component style engine: data-fx-toolbar-*) */
 [data-fx-toolbar-surface='raised'] .fx-toolbar { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
 [data-fx-toolbar-surface='glass'] .fx-toolbar {
