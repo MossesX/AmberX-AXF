@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.dictation",
+  "name": "Dictation",
+  "version": "0.1.0",
+  "description": "Say a note in turns until a stop phrase, then check its text, title, list, checkboxes and tasks before saving it to your notes.",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27" }
+}

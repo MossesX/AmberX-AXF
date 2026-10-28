@@ -1,0 +1,26 @@
+/* Tasks plugin: layout only (theme tokens, never restyles a control). Phone first. */
+.axp-tasks-filters { display: flex; flex-wrap: wrap; gap: var(--fx-space); align-items: flex-end; }
+.axp-tasks-filters > * { flex: 1 1 calc(var(--fx-space) * 18); min-width: 0; }
+.axp-tasks-filters > .fx-seg, .axp-tasks-filters > .fx-btn { flex: 0 0 auto; }
+.axp-tasks-addline { display: flex; gap: var(--fx-space); align-items: flex-end; flex-wrap: wrap; }
+.axp-tasks-addline > .fx-field { flex: 1 1 calc(var(--fx-space) * 20); min-width: 0; }
+.axp-tasks-rows { display: flex; flex-direction: column; }
+.axp-tasks-row {
+  display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0;
+  padding: calc(var(--fx-space) * 0.5) 0 calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 2 * var(--axp-depth, 0));
+  border-bottom: var(--fx-border-w) solid var(--fx-border);
+}
+.axp-tasks-row.is-done .axp-tasks-titletext { text-decoration: line-through; opacity: var(--fx-opacity-muted); }
+.axp-tasks-row.is-selected { background: var(--fx-accent-soft); }
+.axp-tasks-title { flex: 1 1 auto; flex-direction: column; align-items: flex-start; gap: 0; }
+.axp-tasks-titletext { overflow: hidden; text-overflow: ellipsis; overflow-wrap: anywhere; }
+.axp-tasks-meta { flex: 0 0 auto; }
+.axp-tasks-chips { display: inline-flex; gap: calc(var(--fx-space) * 0.5); align-items: center; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; }
+.axp-tasks-box { display: inline-flex; flex: 0 0 auto; }
+.axp-tasks-sr { position: absolute; width: var(--fx-border-w); height: var(--fx-border-w); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.axp-tasks-check { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-space); }
+.axp-tasks-link { display: inline; color: var(--fx-accent); text-decoration: underline; }
+.axp-tasks-grow { flex: 1 1 auto; }
+.axp-tasks-empty { gap: var(--fx-space); min-height: calc(var(--fx-space) * 20); }
+.axp-tasks-empty > p { margin: 0; }
+.axp-tasks-editor { min-width: min(100%, calc(var(--fx-space) * 40)); }

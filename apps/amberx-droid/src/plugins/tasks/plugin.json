@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.tasks",
+  "name": "Tasks",
+  "version": "0.1.0",
+  "description": "Todos and tasks from the shared AmberX notes store, by when they're due: Today, Upcoming, Todo, All, Done; grid or tree, quick add, checklists, subtasks, bulk changes.",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27" }
+}
