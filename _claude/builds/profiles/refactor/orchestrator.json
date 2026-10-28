@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T17:04:41.550Z",
+ "updatedAt": "2026-10-28T17:28:21.750Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3482,9 +3482,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-28T15:30:11.241Z",
-   "updatedAt": "2026-10-28T15:30:11.241Z",
+   "updatedAt": "2026-10-28T17:28:21.749Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett Oct 28 13:27: look into axHub waking a stopped session. Found: Claude Code routine API trigger (POST /v1/claude_code/routines/{id}/fire, per-routine bearer token made only in the web UI). A send_later task is bound to the session (persistent_session_id), so firing it wakes the same chat. This session could not make it recurring (safety check), so Brett does that one-time in the web UI.",
+     "at": "2026-10-28T17:28:21.749Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -3511,6 +3516,22 @@
      "phase": "Build",
      "group": "One-call wait",
      "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s6",
+     "text": "Wake-up on approve: axHub POSTs the session's scheduled-task fire URL (https://api.anthropic.com/v1/claude_code/routines/<trig>/fire, headers anthropic-version 2023-06-01 + anthropic-beta experimental-cc-routine-2026-04-01, bearer token stored as an axHub secret, never in the repo) with text = confirmation id + result, so a stopped session resumes in the same chat. Test trigger made Oct 28: trig_017QVmMHcWV2TCgfooE3CyjA bound to claude.ai session_01XfLJCQwPcAjqfBaHYyA1FE (one-shot; Brett makes it repeat + adds the API token at claude.ai/code/routines). Sessions: short waits use the wait call, long waits send + stop + wake",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "Wake-up",
+     "estimate": "30 min",
      "files": [],
      "checks": [],
      "session": "same",
