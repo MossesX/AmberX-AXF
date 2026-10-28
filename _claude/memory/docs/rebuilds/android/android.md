@@ -1,7 +1,7 @@
 # Android screenshots — before / after
 
 Captured automatically by `.github/workflows/rebuild-shots.yml` on an API 34 emulator (Pixel 6, demo-mode status bar).
-Before = `2bc56dfb9ced`, after = `89021b6ac4a2` — [run](https://github.com/MossesX/AmberX-AXF/actions/runs/40638558940). ✓ = the capture reached that screen through the app's own nav; ? = it didn't (e.g. an app lock in front).
+Before = `9e20366611cc`, after = `2f816072b941` — [run](https://github.com/MossesX/AmberX-AXF/actions/runs/40676414168). ✓ = the capture reached that screen through the app's own nav; ? = it didn't (e.g. an app lock in front).
 
 ## ax-notes
 
