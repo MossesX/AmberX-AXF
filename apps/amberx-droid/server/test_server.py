@@ -324,7 +324,7 @@ class FakeConsole:
 
     def call(self, method, path, body=None, timeout=None):
         self.calls.append((method, path, body))
-        if path.startswith("/api/plugins/molly-guide/ask"):
+        if path.startswith(main.MOLLY_ASK):
             return {"text": "CI is green.", "walkthrough": {"title": "Open CI", "steps": []}}
         return {"walkthroughs": []}
 
@@ -333,7 +333,7 @@ fc = FakeConsole()
 _real = main.console_client
 main.console_client = lambda: fc
 mr = c.post("/api/ai/molly", headers=AP, json={"task": "is ci green", "page": "developer<x>"}).json()
-check("Molly: asks the console's molly-guide, answer + walkthrough title back", mr == {"answer": "CI is green.", "walkthrough": "Open CI"} and fc.calls[-1] == ("POST", "/api/plugins/molly-guide/ask", {"task": "is ci green", "app": "amberx", "page": "developerx"}), (mr, fc.calls))
+check("Molly: asks the console's walkthrough guide, answer + walkthrough title back", mr == {"answer": "CI is green.", "walkthrough": "Open CI"} and fc.calls[-1] == ("POST", main.MOLLY_ASK, {"task": "is ci green", "app": "amberx", "page": "developerx"}), (mr, fc.calls))
 check("Molly status: connected", c.get("/api/ai/molly/status", headers=A).json()["ok"] is True)
 main.console_client = _real
 

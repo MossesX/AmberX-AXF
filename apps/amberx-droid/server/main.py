@@ -12,7 +12,7 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     POST /api/ai/prompt     {prompt, notes[]?}            → {answer}   (AI snippets; notes only as data)
   hub admins only:
     GET  /api/ai/molly/status                     {ok, reason}   is Molly (the console's agent) reachable
-    POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Molly through the console's molly-guide
+    POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Molly through the console's walkthrough guide
                                                    (every VPS command she runs is approved by Brett on axHub)
     GET  /api/ai/config                   profiles without keys (+ hasKey), order, active, Claude switch, kinds
     PUT  /api/ai/config     {profiles?, order?, active?, claude?: plan|api, keepAliveMin?}
@@ -68,6 +68,11 @@ USER_ROUTES = frozenset({("GET", "/api/health"), ("GET", "/api/me"), ("GET", "/a
 CONSOLE_URL = (os.environ.get("AMBERX_CONSOLE_URL") or "http://axf-console:7090").rstrip("/")
 _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, fallback=lambda: os.environ.get("AMBERX_CONSOLE_TOKEN", ""))
 MOLLY_TIMEOUT = 300.0
+# Where the console serves Molly's guide (its walkthrough plugin's folder). If that plugin is removed the console answers
+# 404 and AmberX says Molly can't be reached; nothing here breaks.
+MOLLY_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_MOLLY_PLUGIN") or "molly-guide") or "molly-guide"
+MOLLY_ASK = f"/api/plugins/{MOLLY_PLUGIN}/ask"
+MOLLY_WALKS = f"/api/plugins/{MOLLY_PLUGIN}/walkthroughs"
 
 
 def console_client() -> ConsoleClient | None:
@@ -303,14 +308,14 @@ def make_app(router: Router | None = None) -> FastAPI:
         if c is None:
             return {"ok": False, "reason": "Molly isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).", "fix": "token"}
         try:
-            await run_in_threadpool(c.call, "GET", "/api/plugins/molly-guide/walkthroughs?after=999999999", None, 10)
+            await run_in_threadpool(c.call, "GET", f"{MOLLY_WALKS}?after=999999999", None, 10)
             return {"ok": True, "reason": ""}
         except ConsoleError as e:
             return {"ok": False, "reason": f"The console answered: {str(e)[:200]}", "fix": "console"}
 
     @app.post("/api/ai/molly")
     async def molly(request: Request) -> dict[str, Any]:
-        """A developer task or app question for Molly. Runs on the console (molly-guide → axf.agents@1); anything she
+        """A developer task or app question for Molly. Runs on the console (its walkthrough guide → axf.agents@1); anything she
         does on the VPS waits for Brett's approval on axHub, so this can take minutes."""
         b = await body_of(request)
         task = b.get("task")
@@ -323,7 +328,7 @@ def make_app(router: Router | None = None) -> FastAPI:
             raise HTTPException(503, "Molly isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
         body = {"task": task.strip(), "app": "amberx", "page": re.sub(r"[^\w.:-]", "", str(b.get("page") or ""))[:80]}
         try:
-            r = await run_in_threadpool(c.call, "POST", "/api/plugins/molly-guide/ask", body, MOLLY_TIMEOUT)
+            r = await run_in_threadpool(c.call, "POST", MOLLY_ASK, body, MOLLY_TIMEOUT)
         except ConsoleError as e:
             raise HTTPException(502, f"Molly couldn't answer: {str(e)[:300]}") from None
         r = r if isinstance(r, dict) else {}

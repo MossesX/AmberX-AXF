@@ -104,7 +104,7 @@
         "id": "molly.builds",
         "name": "Builds and the orchestrator",
         "description": "Reads and drives builds: orchestrator, pending list, build queue, threads, codebase changes log.",
-        "instructions": "1. Read: _claude/builds/profiles/<active>/orchestrator.json (profile: framework/cli/profiles.mjs current), framework/plan/**/pending.json, build-queue.json, _claude/THREADS.md, the changes log on axHub (_data/changes).\n2. Changing any of them, or running a CLI, goes through axhub_call on the VPS checkout /opt/axf (e.g. node apps/console-web/plugins/build-orchestrator/orchestrator.mjs next). Run it through axhub_call (tool vps.run, arguments {command, timeout_seconds}, and reason {title, description}); Brett approves every command on the hub.\n3. Any build that changes features or function: ask Brett which build profile first, add it to the orchestrator first, never straight to the pending list.",
+        "instructions": "1. Read: _claude/builds/profiles/<active>/orchestrator.json (profile: framework/cli/profiles.mjs current), framework/plan/**/pending.json, build-queue.json, _claude/THREADS.md, the changes log on axHub (_data/changes).\n2. Changing any of them, or running a CLI, goes through axhub_call on the VPS checkout /opt/axf (the build orchestrator's CLI: find orchestrator.mjs with repo_search, then `node <its path> next`). Run it through axhub_call (tool vps.run, arguments {command, timeout_seconds}, and reason {title, description}); Brett approves every command on the hub.\n3. Any build that changes features or function: ask Brett which build profile first, add it to the orchestrator first, never straight to the pending list.",
         "triggers": [
           "build",
           "orchestrator",
@@ -126,7 +126,7 @@
         "id": "molly.github",
         "name": "GitHub and merges",
         "description": "PRs, CI, issues, commits. Merges only through the axHub merge approval.",
-        "instructions": "1. Read PRs and CI with gh on the VPS (gh pr list -R MossesX/AmberX-AXF --json number,title,headRefName,mergeable,statusCheckRollup). Run it through axhub_call (tool vps.run, arguments {command, timeout_seconds}, and reason {title, description}); Brett approves every command on the hub.\n2. CI errors: read the open issue titled 'CI build errors'.\n3. To merge, never `gh pr merge`: run bash /opt/axf/apps/console-web/plugins/push-banner/merge-pr.sh MossesX/<repo> <n> with reason.title 'Merge PR #<n>: <title>' and a description of what it brings in plus 'merges only if CI passed, head commit pinned'.\n4. Closing a PR keeps its branch; say why in a comment.",
+        "instructions": "1. Read PRs and CI with gh on the VPS (gh pr list -R MossesX/AmberX-AXF --json number,title,headRefName,mergeable,statusCheckRollup). Run it through axhub_call (tool vps.run, arguments {command, timeout_seconds}, and reason {title, description}); Brett approves every command on the hub.\n2. CI errors: read the open issue titled 'CI build errors'.\n3. To merge, never `gh pr merge`: run the push banner's merge script (find merge-pr.sh with repo_search; on the VPS it is under /opt/axf) with `bash <path> MossesX/<repo> <n>` with reason.title 'Merge PR #<n>: <title>' and a description of what it brings in plus 'merges only if CI passed, head commit pinned'.\n4. Closing a PR keeps its branch; say why in a comment.",
         "triggers": [
           "pr",
           "pull request",
@@ -398,7 +398,7 @@
         },
         {
           "kind": "knowledge",
-          "text": "The VPS is a Hostinger server running Coolify; Traefik owns 80/443. The Dev Console runs as a container at console.amberxai.com with its checkout in /opt/axf; axHub is at axhub.amberxai.com. Merges go through /opt/axf/apps/console-web/plugins/push-banner/merge-pr.sh with an axHub approval.",
+          "text": "The VPS is a Hostinger server running Coolify; Traefik owns 80/443. The Dev Console runs as a container at console.amberxai.com with its checkout in /opt/axf; axHub is at axhub.amberxai.com. Merges go through the push banner's merge-pr.sh with an axHub approval.",
           "source": "AXF CLAUDE.md"
         },
         {

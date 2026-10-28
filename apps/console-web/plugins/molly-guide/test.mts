@@ -1,3 +1,4 @@
+// @ts-nocheck: a Node test (node --experimental-strip-types), not part of the console's build
 /** Self-test for walkthrough@1 cleaning and stepping (node --experimental-strip-types apps/console-web/plugins/molly-guide/test.mts). */
 import { cleanWalkthrough, stepAt, targetSelector, voiceMove } from './web/walkthrough.ts';
 let n = 0, bad = 0;
