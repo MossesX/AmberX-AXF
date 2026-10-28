@@ -1,15 +1,15 @@
 {
  "$axf": "feature-matrix@0",
  "note": "Draft data until feature-matrix s1 (feature-matrix@1) lands; s1 adopts it as-is. Items are never deleted: keep=false means skip.",
- "updatedAt": "2026-10-28T19:31:15.654Z",
+ "updatedAt": "2026-10-28T19:50:00.000Z",
  "matrices": [
   {
    "build": "refactor-all",
    "profile": "refactor",
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "minutesKept": 1850,
+   "updatedAt": "2026-10-28T19:50:00.000Z",
+   "minutesKept": 2055,
    "minutesSkipped": 625,
    "items": [
     {
@@ -1091,6 +1091,102 @@
      "keep": false,
      "why": "On the postponed gesture list; start only when Brett says",
      "addedAt": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "id": "plugin-theme-override:s1",
+     "name": "Design plugin-theme@1 override contract: which tokens (layout, colour, style, behaviour/animation from look@1), stored per plugin (setting axf.plugin.<id>.look,",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s1",
+     "model": "Fable",
+     "minutes": 25,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "plugin-theme-override:s2",
+     "name": "Engine: compile a plugin override to CSS vars scoped to the plugin's UI root (data-axf-plugin=<id>) incl. motion vars; normalise/validate; fixture spec/fixtures",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s2",
+     "model": "Fable",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "plugin-theme-override:s3",
+     "name": "React layer: every plugin UI root (views, dialogs, floating windows, tab-group tabs, settings page mode) carries data-axf-plugin and applies its override live (",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s3",
+     "model": "Fable",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "plugin-theme-override:s7+s8",
+     "name": "Merge PR #161 (built + CI green on c10129f2, branch claude/plugin-theme-override, marked WIP by the STOP ORDER): Plugins ▸ All plugins ▸ <plugin> ▸ Interface · ",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s7+s8",
+     "model": "Opus",
+     "minutes": 15,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "plugin-theme-override:s4",
+     "name": "Appearance tab for every plugin (Settings → Plugins → <plugin> → Appearance) with a Theme override switch; when on, a collapsible container with every layout/co",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s4",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "plugin-theme-override:s5",
+     "name": "Override editing views: token tree (tri-state, search), grouped form (sliders, colour pickers, choices), raw JSON, copy from another plugin / a theme asset, res",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s5",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "plugin-theme-override:s6",
+     "name": "Switch a plugin's theme override from right-click (every plugin UI's context menu), a toolbar action and the application menu (Plugins ladder)",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s6",
+     "model": "Opus",
+     "minutes": 20,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
+    },
+    {
+     "id": "plugin-theme-override:s9",
+     "name": "Checks (tsc, build, check-theme, check-controls, menu-reach, theme-swap, lifecycle), docs (STATUS, README, PORTING deferred), THREADS, PR + merge approval",
+     "group": "Plugin theme override + Plugins ladder (claude.ai chat, Oct 28)",
+     "source": "plugin-theme-override",
+     "sourceStep": "s9",
+     "model": "Opus",
+     "minutes": 25,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-28T19:50:00.000Z"
     }
    ],
    "page": "https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS",
