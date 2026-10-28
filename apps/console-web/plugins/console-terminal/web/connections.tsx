@@ -37,7 +37,7 @@ const last = () => { try { return localStorage.getItem(LAST) ?? ''; } catch { re
 export function useConnections() {
   const [items, setItems] = useState<Connection[] | null>(null);
   const [err, setErr] = useState('');
-  useEffect(() => { void call<{ items: Connection[] }>('connections').then((r) => setItems(r.items), (e: Error) => { setErr(e.message); setItems([]); }); }, []);
+  useEffect(() => { void call<{ items: Connection[]; note?: string }>('connections').then((r) => { setItems(r.items); if (r.note) setErr(r.note); }, (e: Error) => { setErr(e.message); setItems([]); }); }, []);
   return { items, err };
 }
 
@@ -105,7 +105,7 @@ export function ConnectDialog({ props, close }: { props: Record<string, unknown>
       )}
       <p className="fx-small fx-muted">{switching ? 'Move this tab to:' : mode === 'claude' ? 'Run Claude Code on:' : 'Open a shell on:'}</p>
       {items === null ? <p className="fx-muted">Loading connections…</p> : <ConnectionList items={items} mode={mode} current={last()} onPick={pick} />}
-      {err && <p className="fx-small" role="alert">{err}</p>}
+      {err && <p className="fx-small fx-muted" role="status">{err}</p>}
     </div>
   );
 }

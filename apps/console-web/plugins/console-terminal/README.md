@@ -2,13 +2,28 @@
 
 `ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026).
 
-Floating terminal windows (drag, resize, minimize, dock/undock like any console window) with tabs:
-- **Container**: a root shell in a container, through Container access (`axf.containers@1` → exec TTY), so the
-  protected list and audit log apply; protected containers (Coolify, Traefik, databases) open only after a confirm.
-- **Console**: the console's own container (always there, even without Container access).
-- **VPS**: root on the host over SSH with a key made just for this (Settings → VPS host), red **HOST ROOT** badge.
-- **Claude Code**: an interactive CLI session (Edit/Write/Bash on: you're driving), optional saved token.
-- **+** adds any of these; tabs can be renamed, reordered and dragged out into their own window.
+**Windows-style terminal (v0.3.0, Oct 28 2026, Opus).** One floating window per terminal host (tab kind
+`terminal-host`, `web/TerminalHost.tsx`) drawn like Windows Terminal: its own tab strip (icon, title, status dot, close;
+double-click renames, middle-click closes, drag reorders; right-click = Connection…, rename, duplicate, colour, move to
+a new window, close / others / to the right), **+** and **∨** (Claude Code…, every Claude Code profile, Shell…, the
+console, the VPS host, containers, Settings), a hideable command toolbar (Claude Code, the tab's connection, find, text
+size, mouse + Mosh modes, copy / paste, settings), Mica, and Windows keys (Ctrl+Shift+T / W / D, Ctrl+Tab, Ctrl+Alt+1…9,
+Ctrl+= / -). Closing the last tab closes the window. Sessions live in `web/hosts.ts` (per browser) and keep their server
+session when moved between windows.
+
+- **Connections** (`web/connections.tsx`, `GET connections`): Claude Code runs on the console container, the VPS host
+  (ssh, HOST ROOT), any container (Container access exec, protected ones after a confirm) or **axHub** (Claude Code in
+  the console with axHub's MCP server added). The picker opens new tabs; a tab's Connection manager shows where it is and
+  switches it.
+- **Claude Code profiles** (`web/profiles.ts`, Settings → Claude Code profiles): model, permission mode, extra flags
+  (each checked on the server), folder, first prompt, icon, tab colour, default connection; the default one opens with
+  New terminal (Settings → Tabs & behaviour → New terminal opens).
+- **Settings** (`web/look.tsx`, live): colour scheme (Windows Terminal set in `web/schemes.json`, or the app theme), font,
+  cursor, text size, line height, padding, Windows look, Mica, toolbar, blinking cursor, startup, + button, tab width,
+  bell, scrollback, close confirm, copy on select, paste warning. Every setting carries its level for the settings level
+  toolbar.
+
+Classic tabs (pre-0.3 `terminal` tabs) open as a host with one session.
 
 **Open terminal** is on every right-click / long-press (runtime context extras `*:terminal`). On a container or a
 folder the console marks (`data-fx-ctx-target` `axf-container` / `axf-container-path`), it opens right there.

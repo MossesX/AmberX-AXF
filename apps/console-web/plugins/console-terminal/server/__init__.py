@@ -77,12 +77,16 @@ def connections() -> dict[str, Any]:
         {"id": "axhub", "via": "axhub", "label": "axHub", "detail": "Claude Code with every axHub service as a tool", "icon": "zap",
          "ready": cli, "claude": cli, "shell": False, "why": "" if cli else "the claude CLI isn't installed in the console"},
     ]
-    t = targets() if st["containers"] else {"items": []}
+    note = ""
+    try:
+        t = targets() if st["containers"] else {"items": []}
+    except HTTPException as e:  # Docker unreachable: the other connections still work
+        t, note = {"items": []}, f"containers unavailable: {e.detail}"
     for c in t["items"]:
         out.append({"id": f"container:{c['name']}", "via": "container", "container": c["name"], "label": c["name"], "detail": c["image"],
                     "icon": "lock" if c["protected"] else "box", "badge": "PROTECTED" if c["protected"] else None, "ready": True, "claude": True,
                     "why": "", "group": "Containers"})
-    return {"items": out, "containersPlugin": st["containers"]}
+    return {"items": out, "containersPlugin": st["containers"], "note": note}
 
 
 @router.get("/sessions")

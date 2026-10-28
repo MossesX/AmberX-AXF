@@ -12,6 +12,7 @@
  * framework's (fx-tab, fx-iconbtn, fx-btn, fx-menu__item) so the app's style still applies.
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon, useRuntime, useWindowManager } from '@console/axf/react';
 import type { TabSpec } from '@console/axf/core';
 import { call, getSettings, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target } from './api';
@@ -161,30 +162,32 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         {h.sessions.map((s) => <TerminalSession key={s.id} s={s} active={s.id === front?.id} onClose={() => close(s.id)} onRename={() => setRenaming({ id: s.id, text: s.title })} />)}
       </div>
 
+      {(menu || drop) && createPortal(<>
       {(menu || drop) && <div className={`${P}__scrim`} onClick={() => { setMenu(null); setDrop(null); }} onContextMenu={(e) => { e.preventDefault(); setMenu(null); setDrop(null); }} />}
-      {menu && (() => {
-        const s = h.sessions.find((x) => x.id === menu.id); if (!s) return null; const i = h.sessions.indexOf(s);
-        return (
-          <div className={`${P}__menu fx-popover`} role="menu" style={at(menu.x, menu.y)}>
-            {item('Connection…', 'shuffle', () => manage(s.id))}
-            {item('Rename tab', 'edit', () => setRenaming({ id: s.id, text: s.title }))}
-            {item('Duplicate tab', 'copy', () => duplicate(s), { hint: 'Ctrl+Shift+D' })}
-            <div className={`${P}__colors`} role="group" aria-label="Tab colour">
-              {[null, 'accent', 'success', 'warning', 'danger', 'info'].map((col) => (
-                <button key={col ?? 'none'} type="button" className={`${P}__swatch ${s.color === (col ?? undefined) ? 'is-on' : ''}`} style={col ? { ['--axp-wt-tint' as string]: `var(--fx-${col})` } : undefined} title={col ?? 'No colour'} aria-label={col ? `Colour ${col}` : 'No colour'} onClick={() => { patchSession(s.id, { color: col ?? undefined }); setMenu(null); }} />
-              ))}
+        {menu && (() => {
+          const s = h.sessions.find((x) => x.id === menu.id); if (!s) return null; const i = h.sessions.indexOf(s);
+          return (
+            <div className={`${P}__menu fx-popover`} role="menu" style={at(menu.x, menu.y)}>
+              {item('Connection…', 'shuffle', () => manage(s.id))}
+              {item('Rename tab', 'edit', () => setRenaming({ id: s.id, text: s.title }))}
+              {item('Duplicate tab', 'copy', () => duplicate(s), { hint: 'Ctrl+Shift+D' })}
+              <div className={`${P}__colors`} role="group" aria-label="Tab colour">
+                {[null, 'accent', 'success', 'warning', 'danger', 'info'].map((col) => (
+                  <button key={col ?? 'none'} type="button" className={`${P}__swatch ${s.color === (col ?? undefined) ? 'is-on' : ''}`} style={col ? { ['--axp-wt-tint' as string]: `var(--fx-${col})` } : undefined} title={col ?? 'No colour'} aria-label={col ? `Colour ${col}` : 'No colour'} onClick={() => { patchSession(s.id, { color: col ?? undefined }); setMenu(null); }} />
+                ))}
+              </div>
+              {item('Move to a new window', 'external', () => toNewWindow(s), { disabled: h.sessions.length < 2 })}
+              {!toolbar && item('Show the toolbar', 'layout', () => setToolbar(true))}
+              <div className={`${P}__sepline`} />
+              {item('Close tab', 'x', () => close(s.id), { hint: 'Ctrl+Shift+W' })}
+              {item('Close other tabs', 'x', () => h.sessions.filter((x) => x.id !== s.id).forEach((x) => close(x.id)), { disabled: h.sessions.length < 2 })}
+              {item('Close tabs to the right', 'x', () => h.sessions.slice(i + 1).forEach((x) => close(x.id)), { disabled: i === h.sessions.length - 1 })}
             </div>
-            {item('Move to a new window', 'external', () => toNewWindow(s), { disabled: h.sessions.length < 2 })}
-            {!toolbar && item('Show the toolbar', 'layout', () => setToolbar(true))}
-            <div className={`${P}__sepline`} />
-            {item('Close tab', 'x', () => close(s.id), { hint: 'Ctrl+Shift+W' })}
-            {item('Close other tabs', 'x', () => h.sessions.filter((x) => x.id !== s.id).forEach((x) => close(x.id)), { disabled: h.sessions.length < 2 })}
-            {item('Close tabs to the right', 'x', () => h.sessions.slice(i + 1).forEach((x) => close(x.id)), { disabled: i === h.sessions.length - 1 })}
-          </div>
-        );
-      })()}
-      {drop && <NewTabMenu at={at(drop.x, drop.y, 280, 480)} profiles={profiles.items} onPick={(o, color) => { setDrop(null); addSession(tab.id, { id: sessionId(), title: titleFor(o), open: o, color }); }}
-        picker={(m) => { setDrop(null); pick(m); }} settings={() => { setDrop(null); rt.dispatch('settings.open:terminal'); }} />}
+          );
+        })()}
+        {drop && <NewTabMenu at={at(drop.x, drop.y, 280, 480)} profiles={profiles.items} onPick={(o, color) => { setDrop(null); addSession(tab.id, { id: sessionId(), title: titleFor(o), open: o, color }); }}
+          picker={(m) => { setDrop(null); pick(m); }} settings={() => { setDrop(null); rt.dispatch('settings.open:terminal'); }} />}
+  </>, document.body)}
     </div>
   );
 }
@@ -226,11 +229,11 @@ function NewTabMenu({ at, profiles, onPick, picker, settings }: { at: { left: nu
       <button type="button" role="menuitem" className="fx-menu__item" onClick={() => picker('shell')}><Icon name="terminal" size={13} /> <span className="fx-grow">Shell…</span><span className="axp-wt__hint">pick a connection</span></button>
       {row('Console (this container)', 'terminal', { kind: 'console' })}
       {row('VPS host (root)', 'monitor', { kind: 'vps' }, { disabled: !status?.vps.ready, title: status?.vps.ready ? '' : 'Set up the VPS host in Settings → Plugins → Terminal' })}
-      {status?.containers && <div className="axp-wt__mh">Containers</div>}
+      {(targets ?? []).length > 0 && <div className="axp-wt__mh">Containers</div>}
       {(targets ?? []).map((t) => row(t.name, t.protected ? 'lock' : 'box', { kind: 'container', container: t.name }, { hint: t.protected ? 'protected' : '' }))}
       {status && !status.containers && <div className="axp-wt__mh fx-muted">Install Container access for container shells</div>}
       <div className="axp-wt__sepline" />
-      <button type="button" role="menuitem" className="fx-menu__item" onClick={settings}><Icon name="settings" size={13} /> <span className="fx-grow">Settings</span><span className="axp-wt__hint">Ctrl+,</span></button>
+      <button type="button" role="menuitem" className="fx-menu__item" onClick={settings}><Icon name="settings" size={13} /> <span className="fx-grow">Settings</span></button>
     </div>
   );
 }

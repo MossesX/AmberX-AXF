@@ -75,7 +75,14 @@ export function move(hostId: string, from: number, to: number) {
 }
 export function dropHost(hostId: string) { if (hosts.delete(hostId)) emit(); }
 
-export function setCtl(sid: string, c: SessionCtl | null) { if (c) ctls.set(sid, c); else ctls.delete(sid); version++; listeners.forEach((f) => f()); }
+/** Store a session's handle. The host re-renders only when what it shows changed (state, badge, modes, size), never
+ *  for a fresh handle with the same state (that would loop: the host's render re-renders the session). */
+export function setCtl(sid: string, c: SessionCtl | null) {
+  const prev = ctls.get(sid);
+  if (c) ctls.set(sid, c); else ctls.delete(sid);
+  const key = (x?: SessionCtl | null) => (x ? `${x.conn}|${x.info?.id ?? ''}|${x.info?.badge ?? ''}|${x.mouse}|${x.mosh}|${x.fontSize}` : '');
+  if (!c || !prev || key(prev) !== key(c)) { version++; listeners.forEach((f) => f()); }
+}
 export const ctl = (sid: string | null | undefined) => (sid ? ctls.get(sid) ?? null : null);
 
 /** Bring a session's window up (restore, focus, raise) and put the session in front. */

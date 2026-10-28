@@ -2,24 +2,52 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.terminal",
   "name": "Terminal",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Terminal windows with tabs: a root shell in any container (through Container access; protected ones after a confirm), the console's own container, the VPS host over SSH (HOST ROOT), and Claude Code. Open terminal is on every right-click; on a container or folder it opens right there. Mouse mode, standard copy and paste, Mosh mode (server-kept sessions that survive dropped signal), phone key row, idle timeout and a session log. Settings → Plugins → Terminal.",
-  "targets": ["axf-console"],
-  "provides": ["tab:terminal", "settings-tab:terminal", "action:terminal.open", "action:terminal.new", "context-menu:*"],
-  "optional": ["service:axf.containers@1"],
-  "scopes": ["ROUTES", "SHELL"],
+  "description": "Windows-style terminal: a Windows Terminal window with its own tab strip (rename, colour, drag to reorder, duplicate, move to a new window), a command toolbar and Windows keys. Claude Code tabs open on any connection (console container, VPS root, any container, axHub) through a connection picker; right-click a tab for its Connection manager. Claude Code profiles (model, permissions, flags, folder, first prompt, colour, default connection). Live settings: colour schemes, font, cursor, line height, padding, bell, scrollback, startup, tab width. Mouse mode, Mosh mode, copy/paste, phone key row, idle timeout and a session log. Settings → Plugins → Terminal.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "action:terminal.claude",
+    "action:terminal.new",
+    "action:terminal.open",
+    "context-menu:*",
+    "dialog:terminal.connect",
+    "dialog:terminal.connection",
+    "settings-tab:terminal",
+    "tab:terminal",
+    "tab:terminal-host"
+  ],
+  "optional": [
+    "service:axf.containers@1"
+  ],
+  "scopes": [
+    "ROUTES",
+    "SHELL"
+  ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-28"
+  },
   "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/console-terminal",
-    "env": ["AXF_TERMINAL_DIR", "AXF_VPS_HOST", "CLAUDE_BIN"],
-    "mentions": ["CLAUDE.md", "_claude/memory/STATUS.md", "apps/console-web/plugins/README.md"]
+    "env": [
+      "AXF_TERMINAL_DIR",
+      "AXF_VPS_HOST",
+      "CLAUDE_BIN"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
   },
   "opens": false
 }

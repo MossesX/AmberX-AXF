@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T17:20:18.607Z",
+ "updatedAt": "2026-10-28T18:14:23.592Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3618,14 +3618,14 @@
    "title": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/resize + settings levels toolbar & level editor",
    "category": "Plugins",
    "detail": "Brett Oct 28 2026 (claude.ai): \"Add those plus build a powerful terminal plugin that looks and feels and behaves exactly like a Windows program.\" Asked, in full:\n- 'Those' = the four window gaps: resize from every edge/corner (touch too), snapping (no overlap), keep windows on screen, drop a window on another to split.\n- Terminal: native Windows look and feel, no Linux feel. Dockable/undockable, draggable, minimizable, snappable window that opens floating by default. Powerful configuration, preferences and customization with an easy interface.\n- A toolbar button adds a tab running Claude Code and prompts for one of the available connections (VPS root, specific containers, axHub, console…). Right-click any tab = interface to manage that tab's connection from the available ones. Claude Code tabs get extra customization profiles.\n- From now on every settings interface has a default-on, hideable toolbar that picks Simple / Basic / Administrator / Developer; the available settings show in a collapsible container and the rest in another. Administrator shows them all. Levels: Pro becomes Administrator, Advanced becomes Developer (Brett's pick); Administrator shows everything.\n- A switch in settings opens a dialog with two columns: left = sortable categorized tree of every setting in the interface, one colour when available to the selected level, another when not; multi-select; toolbar buttons or right-click 'Add to visible'; right tree shows what's on. The settings interface changes live with every selection.\n\nUpgrades the existing console-terminal plugin (one instance per plugin; it already has container/console/VPS/Claude Code tabs, Mosh mode, xterm 5.3). Folds in apply-all-levels-fable s3 (settings-ui@1 levels review). Patches is paused: its baked copy is skipped. Android twins deferred (PORTING.md).",
-   "status": "running",
+   "status": "waiting",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-28T16:51:24.871Z",
-   "updatedAt": "2026-10-28T17:20:18.607Z",
+   "updatedAt": "2026-10-28T18:14:23.592Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -3706,8 +3706,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T18:14:23.585Z",
      "note": ""
     },
     {

@@ -7,6 +7,7 @@
  * another window remounts it on the same server session).
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { SCHEMES, getSettings, loadXterm, lookOptions, onSettings, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type XTerm } from './api';
 import { setCtl, type Conn, type HostSession } from './hosts';
@@ -299,7 +300,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
         <button type="button" className={`fx-chip ${P}__key`} title="Copy" onClick={() => { if (term?.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()); }}><Icon name="copy" size={12} /></button>
         <button type="button" className={`fx-chip ${P}__key`} title="Paste" onClick={() => void pasteFromClipboard(false)}><Icon name="paste" size={12} /></button>
       </div>
-      {menu && (
+      {menu && createPortal(
         <>
           <div className={`${P}__scrim`} onClick={() => setMenu(null)} onContextMenu={(e) => { e.preventDefault(); setMenu(null); }} />
           <div className={`${P}__menu fx-popover`} role="menu" style={{ left: Math.min(menu.x, innerWidth - 220), top: Math.min(menu.y, innerHeight - 320) }}>
@@ -313,7 +314,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
             {menuItem('Rename tab', 'edit', onRename)}
             {menuItem('Close terminal', 'x', close)}
           </div>
-        </>
+        </>, document.body,
       )}
     </div>
   );
