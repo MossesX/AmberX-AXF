@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Fix: Appearance switches + interface tab buttons dead inside GizmoX tabs (scoped settings wrote a private copy) | review | `fix/interface-scope-settings` | see GitHub | Orchestrator build `fix-interface-scope-settings` (refactor, Opus, 1/1 done). Merge approval after CI; the 5-minute update redeploys the console | 2026-10-28 |
 | AmberX voice notes, lists, tasks + AI router (amberx.amberxai.com) | done | `claude/amberx-notes` | [#144](https://github.com/MossesX/AmberX-AXF/pull/144) merged | Live Oct 28 02:34 UTC (FastAPI server answering, wall-signed only). Left for Brett: add an AI provider in Settings → Plugins → AI connection | 2026-10-28 |
 | AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
 | AmberX hands-free listening + ActiveX-style detection overlay (level graph, dB, quick settings) | review | `claude/amberx-handsfree` | #141 | Orchestrator build `amberx-handsfree` (refactor, Opus): s1–s3 done, CI is the first Java compile; then merge approval | 2026-10-27 |
