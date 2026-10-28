@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T05:19:54.279Z",
+ "updatedAt": "2026-10-28T09:55:19.557Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2821,6 +2821,73 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-28T05:10:31.767Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "banner-fix-fallback",
+   "title": "Systems check: when a Fix fails, a dialog with the Claude connection badge + account, approve Mosses to launch headless Claude Code; no connection = error, fix, VPS command and Vinny Auto fix",
+   "category": "Console",
+   "detail": "Brett, Oct 28 2026 (claude.ai): \"If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.\" Mosses = the console agent; Vinny = axHub vps.run. Profile refactor, Opus. Built in the AX Notes claude.ai chat (Brett's pick).",
+   "status": "running",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "claude/banner-fix-fallback",
+   "pr": "",
+   "createdAt": "2026-10-28T09:55:19.427Z",
+   "updatedAt": "2026-10-28T09:55:19.556Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "systems-check: GET fix-help/{id} (check, failure, Claude connection state ok/no-credit/dead + model + account profile, Mosses ready, Vinny's command for it, VPS command), POST fix-help/{id}/claude (explicit approval launches headless Claude Code through Mosses, no setting needed), POST fix-help/{id}/vinny + GET run; Vinny find_fix returns the command text",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus",
+     "group": "Server",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Fix failed dialog: badge + account, Approve Mosses → headless Claude (approval link, live state); dead connection → error, how to fix, VPS command (copy) + Auto fix with Vinny; opened whenever a banner Fix fails",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus",
+     "group": "Web",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Tests (systems-check test.py/test.mts), lifecycle + theme checks, CI, PR, merge approval",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus",
+     "group": "Ship",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
      "note": ""
     }
    ]
