@@ -223,6 +223,24 @@ function ReviewDialog({ id }: { id: string }) {
   );
 }
 
+/* ---------------- history + costs (axHub decision 103): the hub's approvals log page, in a frame ---------------- */
+
+const historyUrl = (hub: string) => `${approvalsUrl(hub)}/log`;
+
+function HistoryDialog() {
+  const s = useApprovals();
+  useEffect(() => { start(); }, []);
+  const url = historyUrl(s.hub);
+  return (
+    <div className="fx-stack axp-approvals-review">
+      <iframe className="axp-approvals-review__frame" title="Approval history on axHub" src={url} sandbox="allow-scripts allow-forms allow-same-origin allow-downloads" referrerPolicy="no-referrer" />
+      <p className="fx-small fx-muted" style={{ margin: 0 }}>
+        axHub's approvals log: every request, how it was decided, what it cost (checks the hub counted, dollars as sessions reported them), with totals per day and tool. Blank? <a href={url} target="_blank" rel="noopener noreferrer">Open it on the hub <Icon name="external" size={12} /></a>
+      </p>
+    </div>
+  );
+}
+
 /* ---------------- settings ---------------- */
 
 function AutoOpenSwitch() {
@@ -252,6 +270,7 @@ function StatusPanel() {
       <AutoOpenSwitch />
       <div className="fx-row fx-row--wrap">
         <Button tone="primary" icon="refresh" onClick={() => void checkNow()}>Check now</Button>
+        <Button icon="chart" onClick={() => runtime?.openDialog('approvals.history', {})}>History and costs</Button>
         <a className="fx-btn fx-btn--neutral" style={{ textDecoration: 'none' }} href={s.approvalsUrl} target="_blank" rel="noopener noreferrer">Open the approvals page</a>
       </div>
       <p className="fx-muted fx-small" style={{ margin: 0 }}>Hub: {s.hub}. The console server never sees your hub session: your browser asks the hub directly.</p>
@@ -279,12 +298,14 @@ export const plugin: AxfWebLibrary = {
     start();
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
+    rt.actions.register('approvals.history', () => rt.openDialog('approvals.history', {}), { label: 'Approval history and costs' });
     // approvals.review:<id> — that request on the hub's own page, in the review dialog (menu live list)
     rt.actions.register('approvals.review', ([id]) => { if (id && st.pending.some((x) => x.id === id)) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
   },
   banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {
     'approvals.review': { title: 'Approval waiting', icon: 'shield', render: (p) => <ReviewDialog id={typeof p.id === 'string' ? p.id : ''} /> },
+    'approvals.history': { title: 'Approval history and costs', icon: 'chart', render: () => <HistoryDialog /> },
   },
   settingsTabs: [{ id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', order: 8, parent: 'plugins' }],
   settingsPanels: [
