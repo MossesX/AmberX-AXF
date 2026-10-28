@@ -149,6 +149,24 @@ async function runNotes(rt: AxfRuntime, heard: string, intent: Intent): Promise<
   return { did: r.say, ok: r.ok };
 }
 
+/* ---------------------------------------------------------------- routers (the command center, Oct 28 2026) */
+
+/** A plugin that understands sentences itself (the command center: actions, chains, wizards). It returns null when it
+ * has nothing for the sentence, and the usual order (commands, notes) carries on. Your own commands still win. */
+export type VoiceRouter = (rt: AxfRuntime, heard: string) => Promise<{ did: string; ok: boolean } | null>;
+const routers = new Map<string, VoiceRouter>();
+export function registerVoiceRouter(module: string, fn: VoiceRouter): () => void {
+  routers.set(module, fn);
+  return () => { routers.delete(module); };
+}
+
+/** Says a question and returns the next thing heard ('' when nothing was): wizards and confirmations use it. */
+export async function askAloud(rt: AxfRuntime, question: string): Promise<string> {
+  await say(rt, question);
+  set({ heard: question, heardFinal: true });
+  return nextCommand(rt);
+}
+
 /** Runs what was heard: a command or a notes sentence (see `decide` in core.ts for the order), then answers. */
 export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
   const heard = afterWake(heardRaw, phraseList(rt.settings.get(K.wake)));
@@ -160,7 +178,9 @@ export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
     const local = notes ? parseIntent(heard) : null;
     const d = decide(heard, allCommands(rt), { localIntent: !!local, ai: notes && aiReady() });
     let done: { did: string; ok: boolean } | null = null;
-    if (d.route === 'command' && d.match) done = await runCommand(rt, d.match.command);
+    const yours = d.route === 'command' && d.match && (d.match.command as Partial<Effective>).group === 'user';
+    if (!yours) for (const r of routers.values()) { done = await r(rt, heard).catch(() => null); if (done) break; }
+    if (done) { /* a router ran it */ } else if (d.route === 'command' && d.match) done = await runCommand(rt, d.match.command);
     else {
       const intent = notes ? await notesIntent(heard, local) : null;
       if (intent) done = await runNotes(rt, heard, intent);
