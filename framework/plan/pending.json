@@ -1640,6 +1640,10 @@
     {
      "text": "Oct 23 2026 (patches-settings-banner-hide): inside a host, settings are no longer greyed out; the Settings → Plugins overview is dropped instead and plugin sub-tabs render normally. Keep that when reworking the lock mode.",
      "at": "2026-10-23T12:52:32.760Z"
+    },
+    {
+     "text": "On hold: Brett paused all work on Patches globally (Oct 28 2026). Do not build until he lifts the pause.",
+     "at": "2026-10-28T15:22:00.000Z"
     }
    ],
    "subPrompts": [
@@ -2512,6 +2516,10 @@
     {
      "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
      "at": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "On hold: Brett paused all work on Patches globally (Oct 28 2026). Do not build until he lifts the pause.",
+     "at": "2026-10-28T15:22:00.000Z"
     }
    ],
    "subPrompts": [

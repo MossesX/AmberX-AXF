@@ -2,7 +2,7 @@
 
 Create, edit, manage and orchestrate AI agents built from reusable parts — personas, lingo packs, skills, tools — each
 with its own persistent memory (type and settings per agent), trained from Firecrawl, web pages, the repo, pasted text
-and MCP servers. Add-on agents install as bundles (four ship with the plugin: coder = Mosses, vinny = Vinny (VPS root through axHub), axf-expert, ai-expert).
+and MCP servers. Add-on agents install as bundles (five ship with the plugin: coder = Mosses, vinny = Vinny (VPS root through axHub), molly = Molly (AmberX developer agent, walkthroughs), axf-expert, ai-expert).
 
 The definition format is the framework contract agent-definition@1 (framework/core/agents.ts = Python
 `axf.contracts.agents` in framework/python = Kotlin ai.amberx.axf.kernel.agents), so Build Pilot and other AXF apps
@@ -163,6 +163,27 @@ def _offer_vinny() -> None:
 
 
 _offer_vinny()
+
+
+def _offer_molly() -> None:
+    """Molly (Oct 28 2026): AmberX's developer agent, installed once on start like Vinny and allowed dangerous tools
+    (axhub_call as root through axHub approvals; container changes through the snapshot + approval batch). An
+    uninstall or a Safety change afterwards is respected: this never runs twice."""
+    try:
+        s = store.load_settings()
+        if s.get("mollyOffered") or "molly" not in addons.bundles():
+            return
+        if "molly" not in store.addon_records():
+            addons.install("molly", run_training=False)
+        s = store.load_settings()
+        s["safety"] = {**s["safety"], "dangerousAgents": sorted(set(s["safety"].get("dangerousAgents") or []) | {"molly"})}
+        s["mollyOffered"] = True
+        store.save_settings(s)
+    except Exception:  # noqa: BLE001 — never block the console start
+        pass
+
+
+_offer_molly()
 training.start_scheduler(lambda: plugin_services.get("axf.agents@1") is not None)
 
 

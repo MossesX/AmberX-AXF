@@ -1,0 +1,10 @@
+/* Molly guide: layout only; controls are the framework's, colours and sizes are theme tokens. */
+.axp-molly-guide { padding: var(--fx-space); gap: var(--fx-space); }
+.axp-molly-guide__head { align-items: center; gap: calc(var(--fx-space) / 2); }
+.axp-molly-guide__title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-molly-guide__say { margin: 0; font-size: var(--fx-font-size); line-height: 1.5; }
+.axp-molly-guide__dots { display: flex; gap: calc(var(--fx-space) / 2); flex-wrap: wrap; }
+.axp-molly-guide__dot { width: calc(var(--fx-space) * 0.75); height: calc(var(--fx-space) * 0.75); border-radius: 999px; background: color-mix(in srgb, var(--fx-muted) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.axp-molly-guide__dot.is-done { background: var(--fx-muted); }
+.axp-molly-guide__dot.is-on { background: var(--fx-accent); }
+.axp-molly-guide-target { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: calc(var(--fx-space) / 4); box-shadow: 0 0 0 calc(var(--fx-space) / 2) color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); border-radius: var(--fx-radius-sm); transition: outline-color .2s; }

@@ -15,4 +15,6 @@ AmberX is an empty shell for building and testing plugins (Oct 26 2026): its onl
 everything a plugin declares in its library (views + nav, app-menu and context-menu items, settings groups under
 Settings → Plugins, banners, actions) is all there is besides it. Voice commands: a plugin adds phrases with
 `registerVoiceCommands(module, commands)` from `voice/web/index.tsx`; each maps trigger phrases to an action id the
-runtime already knows.
+runtime already knows. The **Voice command center** (`commands`, Oct 28 2026) holds the big library (notes, tasks,
+developer through Molly, AI snippets; chains and wizards) and runs before the simple commands through
+`registerVoiceRouter`; spec: `_claude/memory/docs/voice-command-center.md`.

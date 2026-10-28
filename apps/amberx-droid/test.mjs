@@ -726,5 +726,156 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(dict.includes("addListener('heard'"), 'dictation shows live text');
 }
 
+// voice command center (Oct 28 2026, voice-command@1): matcher, overrides, recordings, library, ops, runner
+{
+  const cc = await import('./src/plugins/commands/web/core.ts');
+  const { LIBRARY } = await import('./src/plugins/commands/web/library.ts');
+  const ops = await import('./src/plugins/commands/web/ops.ts');
+  const rn = await import('./src/plugins/commands/web/runner.ts');
+  eq(cc.checkLibrary(LIBRARY), [], 'commands: library passes its own checks');
+  const count = (cat, kinds) => LIBRARY.filter((c) => c.category === cat && kinds.includes(c.kind)).length;
+  ok(count('notes', ['action']) >= 75, 'commands: 75+ notes actions');
+  ok(count('tasks', ['action']) >= 65, 'commands: 65+ task actions');
+  ok(count('notes', ['chain', 'wizard']) + count('tasks', ['chain', 'wizard']) >= 25, 'commands: 25+ notes/tasks chains and wizards');
+  ok(count('developer', ['action', 'chain', 'wizard']) >= 50 && count('snippets', ['action']) >= 30, 'commands: developer 50+, AI snippets 30+');
+  ok(LIBRARY.filter((c) => c.category === 'developer').every((c) => c.developer && c.needsAi), 'commands: every developer command goes through Molly');
+  for (const c of LIBRARY) for (const st of c.steps) if (st.do === 'op') ok(ops.OP_NAMES.includes(st.op), `commands: ${c.id} uses a real op (${st.op})`);
+  const clash = new Map();
+  for (const c of LIBRARY) for (const ph of c.phrases) { const k = `${c.category}:${ph.replace(/\{[a-z0-9_]+\}/g, '{}')}`; ok(!clash.has(k), `commands: phrase "${ph}" only once (${c.id}, ${clash.get(k)})`); clash.set(k, c.id); }
+
+  /* matching */
+  eq(cc.matchPattern('add task {text} due {due}', 'add task buy milk due friday')?.slots, { text: 'buy milk', due: 'friday' }, 'match: slots');
+  eq(cc.matchPattern('open notes', 'open the notes'), null, 'match: extra words fail');
+  eq(cc.splitCategory('task add pay rent'), { category: 'tasks', rest: 'add pay rent' }, 'match: category trigger');
+  const eff = cc.effective(LIBRARY, {});
+  const hit = (h, ctx) => cc.findCommand(h, eff, ctx)?.command.id;
+  eq(hit('add task buy milk due friday'), 'tasks.add-due', 'match: task with a date');
+  eq(hit('note pin that'), 'notes.pin-last', 'match: notes trigger');
+  eq(hit('task tag that task home'), 'tasks.tag-last', 'match: tasks trigger');
+  eq(hit('dev merge pr 150'), 'dev.merge', 'match: developer trigger');
+  eq(hit('ask what is a quark'), 'ai.ask', 'match: snippets trigger');
+  eq(hit('good morning'), 'tasks.morning', 'match: chain');
+  eq(hit('task wizard'), 'tasks.wiz-task', 'match: wizard');
+  eq(hit('flibber the jabberwock'), undefined, 'match: nothing');
+
+  /* overrides + recordings */
+  const o1 = cc.setOverride({}, 'notes.open', { on: false });
+  eq(hit('open notes', undefined), 'notes.open', 'override: on by default');
+  eq(cc.findCommand('open notes', cc.effective(LIBRARY, o1))?.command.id, undefined, 'override: switched off = not matched');
+  const o2 = cc.setOverride({}, 'notes.open', { recordings: [{ phrase: 'show me the notebook', at: '2026-10-28T00:00:00Z' }] });
+  eq(cc.findCommand('show me the notebook', cc.effective(LIBRARY, o2))?.command.id, 'notes.open', 'override: a recorded phrase matches');
+  eq(cc.resetOverride(o2, 'notes.open'), {}, 'override: reset');
+  ok(cc.recordingsMatch('open my shopping list', 'open my shopping lists'), 'recordings: one word off matches');
+  ok(!cc.recordingsMatch('open shopping', 'close the garage door'), 'recordings: different phrases do not');
+  eq(cc.phraseTaken('open notes', eff, 'notes.manage-lists')?.id, 'notes.open', 'recordings: a phrase another command uses is flagged');
+  eq(cc.cleanSteps([{ do: 'op', op: 'pin', args: { item: 'last' } }, { do: 'op', op: 'Bad Op!' }, { do: 'nope' }, { do: 'say', text: 'hi' }]).length, 2, 'cleanSteps: bad steps dropped');
+  eq(cc.parseOverrides('{"x":{"on":false,"steps":[{"do":"say","text":"hi"},{"do":"evil"}]}}').x.steps.length, 1, 'overrides: steps cleaned on load');
+  eq(cc.filterCommands(eff, { q: 'overdue', kind: 'chain' }).map((c) => c.id), ['tasks.morning', 'tasks.weekly-review', 'tasks.catch-up'], 'grid: filter by text + kind');
+  eq(cc.sortCommands(eff.filter((c) => c.group === 'Wizards' && c.category === 'notes'), 'label').map((c) => c.label)[0], 'Export wizard', 'grid: sort by label');
+
+  /* ops on a real store */
+  const now = new Date(2026, 9, 28, 10, 0, 0);
+  const s = notes.emptyStore(now.toISOString());
+  notes.ensureSystemLists(s, now.toISOString());
+  const work = notes.addList(s, 'Work', null, now.toISOString());
+  notes.addItem(s, { kind: 'note', title: 'Meeting with Sam', text: 'call vendor\nsend deck\nbook room', list: work.id }, new Date(now.getTime() - 60_000).toISOString());
+  notes.addItem(s, { kind: 'task', title: 'Pay rent', due: '2026-10-25' }, now.toISOString());
+  eq(ops.runOp(s, 'pin', { item: 'meeting', kind: 'note' }).say, 'Pinned Meeting with Sam.', 'ops: pin by name');
+  eq(ops.runOp(s, 'read-due', { when: 'overdue' }, now).say.startsWith('One task overdue: Pay rent'), true, 'ops: read overdue');
+  eq(ops.runOp(s, 'overdue-to-today', {}, now).say, 'Moved One overdue task to today.'.replace('One', 'One'), 'ops: overdue to today');
+  eq(notes.latest(s, 'task').due, '2026-10-28', 'ops: overdue now due today');
+  eq(ops.runOp(s, 'priority', { item: 'last', priority: 'high' }).say, 'Pay rent: high priority.', 'ops: priority on the last task');
+  eq(ops.runOp(s, 'tasks-from-note', { item: 'meeting' }, now).say, 'Made 3 tasks from Meeting with Sam.', 'ops: tasks from note lines');
+  eq(ops.runOp(s, 'list-new', { name: 'bugs', parent: 'work' }, now).say, 'Made Work › Bugs.', 'ops: sub-list');
+  eq(ops.runOp(s, 'tag', { item: 'pay rent', kind: 'task', tag: 'home bills' }).say, 'Tagged Pay rent #home-bills.', 'ops: tags');
+  eq(ops.runOp(s, 'list-delete', { list: 'inbox' }).ok, false, 'ops: system lists stay');
+  eq(ops.runOp(s, 'nonsense', {}).ok, false, 'ops: unknown op fails softly');
+  eq(ops.runOp(s, 'count', { what: 'tasks' }).say, '4 open tasks.', 'ops: count');
+
+  /* runner with a fake app */
+  const fake = (answers, { ai = true } = {}) => {
+    const log = [];
+    const st = notes.emptyStore(now.toISOString()); notes.ensureSystemLists(st, now.toISOString());
+    return {
+      log, st,
+      env: {
+        action: (a) => { log.push(`action ${a}`); },
+        intent: (i) => { const r = notes.applyIntent(st, notes.validateIntent(i).intent ?? i, { now: now.toISOString() }); return { ok: r.ok, say: r.say ?? r.message ?? '' }; },
+        op: (n, a) => ops.runOp(st, n, a, now),
+        say: (t) => { log.push(`say ${t}`); },
+        listen: async (q) => { log.push(`ask ${q}`); return answers.shift() ?? ''; },
+        ai: async (p) => { log.push(`ai ${p}`); return 'step one\nstep two'; },
+        molly: async (t) => { log.push(`molly ${t}`); return 'ok'; },
+        command: (id) => eff.find((c) => c.id === id),
+        aiReady: () => ai,
+      },
+    };
+  };
+  const byId = (id) => eff.find((c) => c.id === id);
+  {
+    const f = fake([]);
+    const r = await rn.runCommand({ command: byId('notes.new-project'), slots: { name: 'garden' } }, f.env);
+    ok(r.ok && notes.findList(f.st, 'garden') && notes.findList(f.st, 'garden ideas'), 'runner: chain makes a project with sub-lists');
+  }
+  {
+    const f = fake(['buy seeds', 'back', 'buy tulip bulbs', 'skip', 'high', 'inbox']);
+    const r = await rn.runCommand({ command: byId('tasks.wiz-task'), slots: {} }, f.env);
+    ok(r.ok, 'runner: wizard finishes');
+    const t = notes.latest(f.st);
+    eq([t?.title, t?.due, t?.priority], ['buy tulip bulbs', '', 3], 'runner: wizard went back, skipped the date, set priority');
+  }
+  {
+    const f = fake(['cancel']);
+    const r = await rn.runCommand({ command: byId('notes.wiz-note'), slots: {} }, f.env);
+    eq([r.ok, r.did], [false, 'Cancelled.'], 'runner: cancel stops a wizard');
+  }
+  {
+    const f = fake(['no']);
+    const r = await rn.runCommand({ command: byId('tasks.clear-done'), slots: {} }, f.env);
+    eq(r.did, 'Cancelled.', 'runner: confirm setting asks first');
+  }
+  {
+    const f = fake([], { ai: false });
+    const r = await rn.runCommand({ command: byId('dev.status'), slots: {} }, f.env);
+    ok(!r.ok && r.said[0].includes('Molly'), 'runner: developer commands need Molly');
+  }
+  {
+    const f = fake(['yes']);
+    const r = await rn.runCommand({ command: byId('dev.morning'), slots: {} }, f.env);
+    eq(f.log.filter((l) => l.startsWith('molly')).length, 4, 'runner: chain of chains runs every Molly task');
+    ok(r.ok, 'runner: dev morning ok');
+  }
+  /* custom commands + the voice wizard */
+  const custom = cc.parseCustom(JSON.stringify([{ id: 'mine.home', category: 'tasks', kind: 'chain', label: 'Home', phrases: ['im home'], steps: [{ do: 'say', text: 'hi' }, { do: 'evil' }] }, { id: 'bad id', category: 'tasks', kind: 'chain', phrases: ['x'], steps: [{ do: 'say', text: 'x' }] }, { id: 'mine.dev', category: 'developer', kind: 'chain', phrases: ['dev thing'], steps: [{ do: 'molly', task: 'x' }] }]));
+  eq(custom.map((c) => [c.id, c.steps.length, !!c.developer]), [['mine.home', 1, false], ['mine.dev', 1, true]], 'custom: checked, bad ids and steps dropped, developer flagged');
+  eq(cc.mineId('Good Night!', (id) => id === 'mine.good-night'), 'mine.good-night-2', 'custom: ids never clash');
+  const vw = await import('./src/plugins/commands/web/voicewizard.ts');
+  const io = (answers) => { const said = []; return { said, io: { ask: async (q) => { said.push(`? ${q}`); return answers.shift() ?? ''; }, say: (t) => { said.push(t); } } }; };
+  {
+    const t = io(['Garden day', 'start garden day', 'open the car door', 'start garden day', 'start garden day', 'tasks', 'add task water the tomatoes', 'flibber', 'say lets go', 'undo', 'say ready', 'whats due today', 'done', 'yes']);
+    const r = await vw.recordChain(t.io, eff);
+    ok(r.ok && r.command.phrases[0] === 'start garden day' && r.command.category === 'tasks' && r.command.settings.confirm === true, 'voice wizard: name, phrase recorded twice (retry on mismatch), tab, confirm');
+    eq(r.ok && r.command.steps.map((s) => s.do), ['intent', 'say', 'op'], 'voice wizard: steps from what was said, unknown skipped, undo works');
+    eq(r.ok && r.command.steps[0].intent.title, 'water the tomatoes', 'voice wizard: what was said fills the step');
+    ok(cc.checkLibrary([...LIBRARY, r.command]).length === 0, 'voice wizard: the chain passes the library checks');
+  }
+  {
+    const t = io(['Morning two', 'good morning', 'good morning']);
+    const r = await vw.recordChain(t.io, eff);
+    ok(!r.ok || r.command.phrases[0] !== 'good morning', 'voice wizard: a phrase another command uses is refused');
+  }
+  {
+    const t = io(['cancel']);
+    eq((await vw.recordChain(t.io, eff)).ok, false, 'voice wizard: cancel saves nothing');
+  }
+  {
+    const t = io(['remove step 1', 'move step 2 up', 'add say all done', 'done']);
+    const r = await vw.editChain(t.io, byId('tasks.morning'), eff);
+    eq(r.steps.map((s) => s.do + (s.op ? `:${s.op}` : '')), ['op:read-priority', 'op:read-due', 'action', 'say'], 'voice wizard: edit removes, moves and adds');
+  }
+  eq(rn.readAnswer('number', 'three please'), '3', 'runner: spoken number');
+  eq(rn.readAnswer('choice', 'the medium one', ['high', 'medium', 'low']), 'medium', 'runner: choice');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
