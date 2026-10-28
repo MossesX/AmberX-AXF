@@ -624,7 +624,7 @@ export function parseIntent(heard: string, now = new Date()): Intent | null {
 
 /** Pulls "to/in/on <list>", "by/due <date>" and a priority off the end of a sentence. */
 function withPlace(base: Intent, tail: string, now: Date): Intent {
-  let t = tail.trim();
+  let t = tail.trim().replace(/[.!?]+$/, '');
   const out: Intent = { ...base };
   const pr = spokenPriority(t);
   if (pr !== null) { out.priority = pr; t = t.replace(/[, ]*\b(urgent|high priority|medium priority|low priority|important|asap|critical)\b/i, '').trim(); }

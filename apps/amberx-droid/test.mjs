@@ -461,5 +461,166 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq(j.items.length, Object.keys(s.items).length, 'notes: JSON has every item');
 }
 
+// voice + dictation (orchestrator s6–s8): commands manager, command vs notes sentence, dictation rules
+{
+  const notes = await import('./src/plugins/notes/web/core.ts');
+  const dict = await import('./src/plugins/dictation/web/core.ts');
+
+  /* commands built from the codebase */
+  const nav = voice.navigationCommands([{ id: 'notes', title: 'Notes' }, { id: 'notes', title: 'Again' }, { id: '', title: 'x' }, { id: 'bad id', title: 'y' }, { id: 'tasks', title: '' }]);
+  eq(nav.map((c) => c.id), ['nav.notes'], 'one navigation command per page (duplicates, blanks and bad ids dropped)');
+  eq(nav[0].phrases, ['open notes', 'go to notes', 'show notes'], 'navigation phrases come from the page title');
+  eq([nav[0].action, nav[0].group, nav[0].defaultOn], ['nav:notes', 'nav', true], 'navigation command runs nav:<id>, on by default');
+  const acts = voice.actionCommands([
+    { id: 'app.settings', meta: { label: 'Settings', module: 'axf.framework' } },
+    { id: 'swap', meta: { label: 'Swap', params: true } },
+    { id: 'demo.stub', meta: { label: 'Stub', stub: true } },
+    { id: 'hidden.one', meta: { label: 'Hidden', searchable: false } },
+    { id: 'nav', meta: { label: 'Navigate' } },
+    { id: 'no.label', meta: { label: '  ' } },
+    { id: 'notes.export', meta: { label: 'Export notes', module: 'ai.amberx.amberx.notes' } },
+    { id: 'my.thing', meta: { label: 'My thing!' } },
+  ]);
+  eq(acts.map((c) => c.action), ['app.settings', 'notes.export', 'my.thing'].sort((a, b) => ({ 'app.settings': 'axf.framework', 'notes.export': 'ai.amberx.amberx.notes', 'my.thing': 'app' })[a].localeCompare(({ 'app.settings': 'axf.framework', 'notes.export': 'ai.amberx.amberx.notes', 'my.thing': 'app' })[b])), 'argument-free labelled actions only, grouped by owner');
+  eq(acts.find((c) => c.action === 'app.settings').defaultOn, true, 'curated actions start on');
+  eq(acts.find((c) => c.action === 'notes.export').defaultOn, false, 'other actions start off');
+  eq(acts.find((c) => c.action === 'my.thing').phrases, ['my thing'], 'the phrase is the label, normalised');
+  eq(acts.find((c) => c.action === 'my.thing').owner, 'app', "an action without a module is the app's");
+
+  /* overrides */
+  eq(voice.parseOverrides('not json'), {}, 'bad override JSON is ignored');
+  eq(voice.parseOverrides('[1]'), {}, 'a list is not overrides');
+  eq(voice.parseOverrides(JSON.stringify({ 'nav.notes': { on: false, phrases: ['My Notes!', ''], reply: 'Here.' }, 'bad id!': { on: true }, 'x.y': { on: 'yes' } })),
+    { 'nav.notes': { on: false, phrases: ['my notes'], reply: 'Here.' } }, 'overrides are cleaned: bad ids and values dropped');
+  const base = [...nav, ...acts];
+  let ov = voice.setOverride({}, nav[0], { on: false });
+  eq(ov, { 'nav.notes': { on: false } }, 'switching a command off is stored');
+  ov = voice.setOverride(ov, nav[0], { on: true });
+  eq(ov, {}, 'switching it back to its default stores nothing');
+  ov = voice.setOverride(ov, nav[0], { phrases: ['open notes', 'go to notes', 'show notes'] });
+  eq(ov, {}, 'phrases equal to the defaults store nothing');
+  ov = voice.setOverride(ov, nav[0], { phrases: ['my notes'], reply: 'Notes.' });
+  const eff = voice.applyOverrides(base, ov);
+  eq(eff[0].phrases, ['my notes'], 'overridden phrases replace the defaults');
+  eq([eff[0].reply, eff[0].edited, eff[0].on], ['Notes.', true, true], 'reply replaced, marked changed, still on');
+  eq(eff.find((c) => c.action === 'notes.export').on, false, 'an untouched off-by-default action stays off');
+  eq(voice.applyOverrides(base, { 'action.notes.export': { on: true } }).find((c) => c.action === 'notes.export').on, true, 'switching an action on');
+  eq(voice.resetOverrides({ a: { on: true }, b: { on: false } }, ['a']), { b: { on: false } }, 'reset one tab drops only its overrides');
+  eq(voice.resetOverrides({ a: { on: true } }), {}, 'reset all');
+
+  /* your own commands */
+  const mine = voice.parseMine(JSON.stringify([
+    { id: 'mine.a1', phrases: ['Good morning', 'morning'], action: 'nav:home', reply: 'Morning.' },
+    { id: 'mine.a1', phrases: ['dup'], action: 'nav:home' },
+    { id: 'evil', phrases: ['x'], action: 'nav:home' },
+    { id: 'mine.b2', phrases: ['x'], action: 'rm -rf /' },
+    { id: 'mine.c3', phrases: ['hi'], action: '', reply: 'Hello.' },
+    { id: 'mine.d4', phrases: ['nothing'], action: '' },
+  ]));
+  eq(mine.map((m) => m.id), ['mine.a1', 'mine.c3'], 'own commands: duplicates, bad ids, bad actions and empty ones dropped');
+  eq(mine[0].phrases, ['good morning', 'morning'], 'own phrases normalised');
+  eq(voice.parseMine('{oops'), [], 'bad JSON = no own commands');
+  ok(voice.checkMine({ phrases: '', action: 'nav:home', reply: '' }).includes('phrase'), 'the form needs a phrase');
+  ok(voice.checkMine({ phrases: 'x', action: 'not an action', reply: '' }).includes('action id'), 'the form refuses a bad action');
+  ok(voice.checkMine({ phrases: 'x', action: '', reply: '' }).includes('reply'), 'the form needs an action or a reply');
+  eq(voice.checkMine({ phrases: 'x', action: 'nav:home', reply: '' }), null, 'a good form passes');
+  const users = voice.userCommands('old one = nav:monitor', mine);
+  eq(users.map((u) => [u.id, u.group]), [['mine.a1', 'user'], ['mine.c3', 'user'], ['user.1', 'user']], 'the typed settings commands still work, under Yours');
+
+  /* command or notes sentence */
+  const cmds = [
+    { id: 'settings', phrases: ['settings'], action: 'app.settings' },
+    { id: 'dict', phrases: ['take a note'], action: 'dictation.start' },
+    { id: 'appr', phrases: ['open approvals'], action: 'nav:home' },
+  ];
+  const route = (heard, ai = false) => voice.decide(heard, cmds, { localIntent: !!notes.parseIntent(heard), ai }).route;
+  eq(voice.coverage('please open approvals', 'open approvals'), 2 / 3, 'coverage = phrase words / sentence words');
+  eq(route('take a note'), 'command', 'a command phrase that is the whole sentence wins (starts dictation)');
+  eq(voice.decide('settings', cmds, { localIntent: true }).route, 'command', 'the whole-sentence rule beats a notes parse');
+  eq(route('note in settings: change the wifi password'), 'intent', 'a notes sentence beats a command phrase inside it');
+  eq(route('take a note buy a new charger'), 'intent', 'a note with words after "take a note" is saved, not dictated');
+  eq(route('please open approvals'), 'command', 'a command covering most of the sentence wins');
+  eq(route('could you maybe tell me about the settings thing'), 'command', 'a weak match still runs without the AI');
+  eq(route('could you maybe tell me about the settings thing', true), 'intent', 'with the AI a weak match goes to the AI');
+  eq(voice.decide('make coffee', cmds).match, null, 'nothing matched');
+  eq(route('make coffee'), 'intent', 'nothing matched = the notes path (AI or "didn\'t catch")');
+  ok(voice.decide('settings', cmds).why.length > 0, 'every decision says why');
+
+  /* previews and results */
+  ok(voice.describeIntent(notes.parseIntent('add a todo call the bank to errands by friday')).startsWith('Add a todo “call the bank” in errands, due '), 'Try box: a todo with list and date');
+  eq(voice.describeIntent(notes.parseIntent('create list bugs under work')), 'Make the list bugs under work.', 'Try box: a sub-list');
+  eq(voice.describeIntent(notes.parseIntent('move the last note to shopping')), 'Move the last note to shopping.', 'Try box: move');
+  eq(voice.describeIntent(null), 'Nothing: no notes sentence.', 'Try box: nothing');
+  const has = (ids) => (id) => ids.includes(id);
+  eq(voice.openSpec({ list: 'l-1' }, has(['notes.open'])), 'notes.open:l-1', 'a list result opens the list');
+  eq(voice.openSpec({ q: 'wifi: router' }, has(['notes.search'])), 'notes.search:wifi router', 'a search opens search (no colons in the argument)');
+  eq(voice.openSpec({ list: 'l-1' }, has([])), null, 'nothing opens when the notes plugin has no such action');
+  eq(voice.openSpec(undefined, has(['notes.open'])), null, 'no open = nothing');
+  for (const e of [...voice.NOTE_EXAMPLES, ...voice.TASK_EXAMPLES]) ok(notes.parseIntent(e.say) !== null, `example is understood by the notes parser: “${e.say}”`);
+  eq(voice.GROUPS.map((g) => g.id), ['notes', 'tasks', 'nav', 'actions', 'plugins', 'user', 'builtin'], 'the Voice commands tabs');
+
+  /* dictation: stop phrases */
+  eq(dict.cutStop("Buy milk. That's it, thanks", dict.DEFAULT_STOP), { text: 'Buy milk.', stopped: true }, "“that's it” ends it and what follows is cut");
+  eq(dict.cutStop('call mom stop note', dict.DEFAULT_STOP), { text: 'call mom', stopped: true }, 'a stop phrase at the end is cut');
+  eq(dict.cutStop('END NOTE.', dict.DEFAULT_STOP), { text: '', stopped: true }, 'a turn that is only the stop phrase');
+  eq(dict.cutStop('unstoppable notes stopnote', ['stop note']), { text: 'unstoppable notes stopnote', stopped: false }, 'only whole words stop');
+  eq(dict.cutStop('a end note b stop note c', dict.DEFAULT_STOP).text, 'a', 'the earliest stop phrase wins');
+  eq(dict.cutStop('fix the well-known bug, stop note', ['stop note']).text, 'fix the well-known bug', 'punctuation before the stop phrase is tidied, words kept as said');
+  eq(dict.phrases('', dict.DEFAULT_STOP), dict.DEFAULT_STOP, 'no phrases set = the defaults');
+  eq(dict.phrases("Stop Note, I'm done\n stop note", []), ['stop note', 'im done'], 'phrases are normalised, no repeats');
+  eq([dict.clampMinutes('x'), dict.clampMinutes(0.1), dict.clampMinutes(99), dict.clampMinutes(3)], [5, 0.5, 30, 3], 'time limit clamped');
+
+  /* dictation: turns */
+  const cfg = { stops: dict.DEFAULT_STOP, maxMinutes: 1 };
+  let s = dict.newSession(0);
+  let r = dict.turn(s, 'buy milk', cfg, 1000);
+  eq([r.session.parts, r.end], [['buy milk'], null], 'a turn is kept and listening goes on');
+  r = dict.turn(r.session, '', cfg, 2000);
+  eq(r.end, null, 'one quiet turn goes on');
+  r = dict.turn(r.session, '', cfg, 3000);
+  eq(r.end, 'silence', 'two quiet turns in a row end it');
+  r = dict.turn(dict.turn(s, '', cfg, 1).session, 'and eggs', cfg, 2);
+  eq(r.session.empties, 0, 'speaking resets the quiet count');
+  r = dict.turn(s, 'and eggs end note please', cfg, 1000);
+  eq([r.session.parts, r.end], [['and eggs'], 'stop'], 'the stop phrase ends it, cut out');
+  eq(dict.turn(s, 'more', cfg, 61_000).end, 'max', 'the time limit ends it');
+  eq(dict.turn(s, 'x'.repeat(dict.MAX_CHARS), cfg, 1).end, 'full', 'too long ends it');
+  eq(dict.joinParts(['buy milk', 'then eggs.', '']), 'Buy milk. Then eggs.', 'turns join with capitals and full stops');
+  eq(dict.sentences('One. Two!\nThree'), ['One.', 'Two!', 'Three'], 'sentences');
+
+  /* dictation: drafts */
+  const parse = (x) => notes.parseIntent(x);
+  const lists = { work: 'l-work', errands: 'l-errands' };
+  const resolveList = (spoken) => lists[notes.norm(spoken)] ?? null;
+  let d = dict.draftFromText('Remind me to call mom.', parse, resolveList);
+  eq([d.kind, d.title, d.text, d.tasks.length], ['todo', 'call mom', '', 0], 'one spoken todo = the item is that todo');
+  d = dict.draftFromText('Meeting went well. Remind me to send the notes by friday.\n- [ ] book room\n- [x] invite bob', parse, resolveList);
+  eq([d.kind, d.text, d.tasks.length, d.checklist], ['note', 'Meeting went well.', 1, [{ text: 'book room', done: false }, { text: 'invite bob', done: true }]], 'a note with checkboxes and a task pulled out');
+  ok(/^\d{4}-\d{2}-\d{2}$/.test(d.tasks[0].due ?? ''), 'the task keeps its spoken date');
+  eq(d.title, 'Meeting went well', 'title from the first sentence');
+  d = dict.draftFromText('note in work: fix the login page', parse, resolveList);
+  eq([d.list, d.text, d.listWhy !== ''], ['l-work', 'fix the login page', true], 'a list named in the sentence is suggested');
+  eq(dict.draftFromText('note in work: fix it', parse, resolveList, 'l-errands').list, 'l-errands', 'the list passed to dictation.start wins');
+  eq(dict.draftFromText('just thinking out loud', parse, resolveList).list, '', 'no list named = none picked (Inbox)');
+  d = dict.draftFromIntent({ action: 'add', kind: 'note', title: 'Plan', text: 'Body\n- [ ] a', list: 'work', tasks: [{ content: 'ship it', due: '2026-11-01' }] }, 'heard', resolveList);
+  eq([d.title, d.text, d.checklist.length, d.tasks, d.list], ['Plan', 'Body', 1, [{ content: 'ship it', due: '2026-11-01' }], 'l-work'], 'an AI intent becomes a draft');
+  eq(dict.draftFromIntent({ action: 'add', text: 'x', list: 'nowhere' }, 'x', resolveList).list, '', 'an AI list that does not exist is not picked');
+  const items = dict.draftToItems({ title: 'Plan', text: 'Body', kind: 'note', list: '', listWhy: '', checklist: [{ text: ' a ', done: false }, { text: ' ', done: true }], tasks: [{ content: 'ship it', due: '2026-11-01' }, { content: ' ' }] }, { fallback: 'inbox', transcript: 'heard' });
+  eq(items.map((i) => [i.kind, i.list, i.title]), [['note', 'inbox', 'Plan'], ['task', 'inbox', 'ship it']], 'Save writes the note and each task, Inbox when no list');
+  eq(items[0].checklist, [{ id: 'c1', text: 'a', done: false }], 'empty checkboxes are dropped');
+  eq([items[0].source, items[0].transcript], ['voice', 'heard'], 'saved as a voice note with what was heard');
+  eq(dict.draftToItems({ title: '', text: '', kind: 'note', list: '', listWhy: '', checklist: [], tasks: [] }, { fallback: 'inbox', transcript: '' }), [], 'an empty draft saves nothing');
+  const st = notes.emptyStore('2026-10-27T00:00:00.000Z');
+  for (const i of items) notes.addItem(st, i);
+  eq(Object.values(st.items).length, 2, 'draft items are valid notes-store items');
+
+  /* manifests */
+  const pj = JSON.parse(readFileSync(new URL('./src/plugins/dictation/plugin.json', import.meta.url), 'utf8'));
+  eq([pj.$axf, pj.id, pj.name, pj.builtWith.model], ['amberx-plugin@1', 'ai.amberx.amberx.dictation', 'Dictation', 'opus'], 'dictation manifest');
+  const dsrc = readFileSync(new URL('./src/plugins/dictation/web/index.tsx', import.meta.url), 'utf8');
+  for (const a of ["'dictation.start'", "'dictation.stop'"]) ok(dsrc.includes(`rt.actions.register(${a}`), `dictation registers ${a}`);
+  ok(!/#[0-9a-f]{3,6}\b|\d+px/i.test(readFileSync(new URL('./src/plugins/dictation/web/dictation.css', import.meta.url), 'utf8')), 'dictation CSS uses tokens only');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);

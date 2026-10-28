@@ -1,0 +1,4 @@
+/* Layout only: the record button is a framework Button, sized here with tokens. */
+.axp-dictation-record { width: 100%; min-height: calc(var(--fx-space) * 14); justify-content: center; }
+.axp-dictation-live { min-height: calc(var(--fx-space) * 8); white-space: pre-wrap; }
+.axp-dictation-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--fx-space); align-items: center; }
