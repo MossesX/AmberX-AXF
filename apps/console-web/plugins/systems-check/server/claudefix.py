@@ -156,12 +156,13 @@ class Launches:
         with self.lock:
             self.jobs[cid].update(kw, updatedAt=time.time())
 
-    def maybe_launch(self, check: dict[str, Any], failure: str, *, force: bool = False) -> dict[str, Any] | None:
+    def maybe_launch(self, check: dict[str, Any], failure: str, *, force: bool = False, approved: bool = False) -> dict[str, Any] | None:
         """Start a session for a failed fix when the setting is on. None when it's off, the check is fine, or one was
-        started for this check recently (`force` skips the cooldown, never a running session)."""
+        started for this check recently (`force` skips the cooldown, never a running session). `approved` = Brett
+        approved it in the Fix failed dialog (Oct 28 2026): it starts without the setting; axHub still asks again."""
         s = self.settings()
         cid = str(check.get("id") or "")
-        if not s.get("claudeOnFail") or not _ID.match(cid) or check.get("status") in ("ok", "info"):
+        if not (s.get("claudeOnFail") or approved) or not _ID.match(cid) or check.get("status") in ("ok", "info"):
             return None
         with self.lock:
             cur = self.jobs.get(cid)

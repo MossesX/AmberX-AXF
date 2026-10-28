@@ -518,6 +518,44 @@ dv.FIXES.clear()
 doctor = (Path(__file__).resolve().parents[4] / "deploy" / "console-doctor.sh").read_text()
 check('export PATH="$USER_HOME/.local/bin:$PATH"' in doctor, "doctor sees ~/.local/bin (claude, claude-pick, claude-sync) from cron and vps.run")
 
+# ---- Fix failed dialog (Oct 28 2026): approved launch, connection badge, VPS command (Vinny first)
+sett["claudeOnFail"] = False
+hub_calls.clear()
+L2 = cf.Launches(lambda: sett, claude_call(["ok"]), delays=lambda: [0.01] * 5, changes=lambda: fc)
+fbad = {"id": "host-mosh", "service": "vps", "title": "mosh server", "status": "error", "summary": "mosh-server not installed",
+        "details": [], "instructions": ["sudo apt-get install -y mosh"], "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-mosh"}}
+bad2 = {**fbad, "id": "host-tmux"}
+check(L2.maybe_launch(bad2, "x") is None, "setting off and not approved: nothing starts")
+L2.maybe_launch(bad2, "x", force=True, approved=True)
+for _ in range(300):
+    if (L2.get("host-tmux") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+check((L2.get("host-tmux") or {}).get("state") == "launched", "approved in the dialog: starts without the setting (axHub still asks)")
+_old_ai = mod.ai_state
+mod.ai_state = lambda refresh=False: {"ok": True, "model": "claude-opus-5-5", "profile": "Max (brett)", "error": "", "at": 1}
+conn = mod.claude_connection()
+check(conn["state"] == "ok" and conn["profile"] == "Max (brett)" and conn["model"] == "claude-opus-5-5" and conn["error"] == "", "badge: connected, with model and account")
+mod.ai_state = lambda refresh=False: {"ok": False, "model": "", "profile": "", "error": "Your credit balance is too low", "at": 1}
+check(mod.claude_connection()["state"] == "no-credit", "badge: out of credits")
+mod.ai_state = lambda refresh=False: {"ok": False, "model": "", "profile": "", "error": "401 invalid x-api-key", "at": 1}
+check(mod.claude_connection()["state"] == "dead", "badge: dead connection")
+r = c.post("/p/fix-help-claude/host-mosh", json={"reason": "x"})
+check(r.status_code == 409 and "isn't connected" in r.json()["detail"], "no launch while Claude is dead")
+mod.ai_state = _old_ai
+_old_v = mod._vinny_svc
+class FakeVinny:
+    def find_fix(self, key, text=""): return {"id": "restart-console", "name": "Restart the console", "kind": "vps", "command": "docker restart axf-console"} if key == "host-mosh" else None
+mod._vinny_svc = lambda: FakeVinny()
+v = mod.vps_command(fbad)
+check(v and v["by"] == "vinny" and v["command"] == "docker restart axf-console", "VPS command: Vinny's mapped one first")
+v = mod.vps_command({**fbad, "id": "host-other"})
+check(v and v["by"] == "check" and "console-doctor.sh --fix host-mosh" in v["command"], "else the check's own host command")
+mod._vinny_svc = lambda: None
+check(mod.vps_command({"id": "x", "fix": {"type": "action"}}) is None, "no command when there is none")
+r = c.post("/p/fix-help-vinny/host-mosh")
+check(r.status_code == 409 and "Vinny" in r.json()["detail"], "Vinny not ready: says so")
+mod._vinny_svc = _old_v
+
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")
