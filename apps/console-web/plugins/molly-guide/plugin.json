@@ -1,0 +1,37 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.molly-guide",
+  "name": "Molly guide",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Molly's narrated walkthroughs (walkthrough@1) in the console: ask her how to do something, or say it to AmberX, and a small floating window shows each step with Next and Previous while the console moves there, highlights it and reads the step out loud. Reaches Molly through the axf.agents@1 capability (the Agent manager provides it); AmberX's server asks her through this plugin's /ask route.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "tab:molly.walkthrough",
+    "settings-tab:molly-guide"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-28"
+  },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/molly-guide",
+    "env": [],
+    "mentions": [
+      "_claude/memory/STATUS.md"
+    ]
+  },
+  "opens": false
+}

@@ -9,8 +9,12 @@
  *   parseNote(transcript, ctx)     → a validated Intent (notes core) or null; never throws
  *   summarize(text)                → { title, summary, tags } or null; never throws
  *   ask(question, notes)           → answer text or null; never throws
+ *   prompt(text, notes?)           → answer text or null (AI snippets); never throws
+ *   molly(task, ctx?)              → Molly's reply or null (developer commands, app questions); never throws
+ *   aiEnabled() / setAiEnabled()   → the app-level AI switch (aiReady() is false while it's off)
  *
- * Server routes (JSON, same origin): GET /api/ai/status · POST /api/ai/parse · POST /api/ai/summarize · POST /api/ai/ask
+ * Server routes (JSON, same origin): GET /api/ai/status · POST /api/ai/parse · POST /api/ai/summarize · POST /api/ai/ask ·
+ * POST /api/ai/prompt · POST /api/ai/molly
  * (plus the config routes the AI plugin's settings use).
  */
 import { useSyncExternalStore } from 'react';
@@ -32,13 +36,19 @@ let status: AiStatus = { known: false, ok: false, provider: '', model: '', reaso
 const subs = new Set<() => void>();
 export function setAiStatus(s: Partial<AiStatus>) { status = { ...status, ...s, known: true }; subs.forEach((f) => f()); }
 export const aiStatus = () => status;
-export const aiReady = () => status.ok;
+/** Settings → AI connection → "Use the AI in this app" (amberx.ai.enabled); off = nothing is sent anywhere. */
+let enabled = true;
+export function setAiEnabled(on: boolean) { if (enabled !== on) { enabled = on; subs.forEach((f) => f()); } }
+export const aiEnabled = () => enabled;
+export const aiReady = () => enabled && status.ok;
 export const useAiStatus = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => status);
+export const useAiEnabled = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => enabled);
 
 const TIMEOUT_MS = 30_000;
-async function post<T>(path: string, body: unknown): Promise<T | null> {
+async function post<T>(path: string, body: unknown, timeoutMs = TIMEOUT_MS): Promise<T | null> {
+  if (!enabled) return null;
   const ctl = new AbortController();
-  const t = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+  const t = setTimeout(() => ctl.abort(), timeoutMs);
   try {
     const r = await fetch(path, { method: 'POST', credentials: 'same-origin', redirect: 'error', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: ctl.signal });
     if (!r.ok) { if (r.status >= 500 || r.status === 503) setAiStatus({ ok: false, reason: `The AI server answered ${r.status}.` }); return null; }
@@ -85,6 +95,23 @@ export async function ask(question: string, notes: { title: string; text: string
   if (!question.trim()) return null;
   const r = await post<{ answer?: unknown }>('/api/ai/ask', { question: question.slice(0, 2000), notes: notes.slice(0, 200).map((n) => ({ title: n.title.slice(0, 160), text: n.text.slice(0, 2000), list: n.list.slice(0, 200) })) });
   return r && typeof r.answer === 'string' ? r.answer : null;
+}
+
+/** A free prompt (AI snippets, chains): the answer text or null. Notes are sent only when the prompt is about them. */
+export async function prompt(text: string, notes: { title: string; text: string; list: string }[] = []): Promise<string | null> {
+  if (!text.trim()) return null;
+  const r = await post<{ answer?: unknown }>('/api/ai/prompt', { prompt: text.slice(0, 8000), notes: notes.slice(0, 200).map((n) => ({ title: n.title.slice(0, 160), text: n.text.slice(0, 2000), list: n.list.slice(0, 200) })) });
+  return r && typeof r.answer === 'string' ? r.answer : null;
+}
+
+/** Molly (the console's AmberX agent on axHub): a developer task or an app question. Anything she runs on the VPS asks
+ * Brett on axHub first; this returns her spoken answer, and `walkthrough` when she opened one in the console. */
+export interface MollyReply { answer: string; walkthrough?: string; approvals?: string[] }
+export async function molly(task: string, context: { page?: string; app?: string } = {}): Promise<MollyReply | null> {
+  if (!task.trim()) return null;
+  const r = await post<{ answer?: unknown; walkthrough?: unknown; approvals?: unknown }>('/api/ai/molly', { task: task.slice(0, 4000), page: context.page ?? '', app: context.app ?? 'amberx' }, 120_000);
+  if (!r || typeof r.answer !== 'string') return null;
+  return { answer: r.answer, ...(typeof r.walkthrough === 'string' ? { walkthrough: r.walkthrough } : {}), ...(Array.isArray(r.approvals) ? { approvals: r.approvals.filter((a): a is string => typeof a === 'string') } : {}) };
 }
 
 /* ---------------------------------------------------------------- admin: the AI connection settings (hub admins) */

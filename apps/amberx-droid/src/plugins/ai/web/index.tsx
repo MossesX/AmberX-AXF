@@ -18,6 +18,7 @@ import { useNotes } from '../../notes/web/store';
 import {
   ask, checkAi, clearAiKey, getAiConfig, putAiConfig, saveAiKey, testAiProfile, useAiStatus,
   type AiConfig, type AiProfile, type ProfileEdit,
+  setAiEnabled,
 } from './client';
 
 export * from './client';
@@ -25,7 +26,7 @@ export * from './client';
 const ID = 'ai.amberx.amberx.ai';
 const ASSET_ID = 'amberx-ai';
 const COUNTER = 'ai.ok';
-const K = { badge: 'amberx.ai.badge', every: 'amberx.ai.every' } as const;
+const K = { badge: 'amberx.ai.badge', every: 'amberx.ai.every', enabled: 'amberx.ai.enabled' } as const;
 
 /* ---------------------------------------------------------------- the banner badge */
 
@@ -338,6 +339,9 @@ export const library: AxfWebLibrary = {
   nav: { label: 'AI', items: [{ id: 'ask', label: 'Ask my notes', icon: 'sparkles', view: 'ask' }] },
   settingsTabs: [{ id: 'ai', label: 'AI connection', icon: 'sparkles', order: 15, parent: 'plugins', description: 'The AI on the AmberX server: Claude plan or API, other providers as fallbacks.' }],
   settings: [
+    { id: 'amberx.ai.use', label: 'Use the AI', icon: 'sparkles', tab: 'ai', order: 1, settings: [
+      { key: K.enabled, label: 'Use the AI in this app (notes parsing, AI snippets, Molly)', kind: 'toggle', default: true },
+    ] },
     { id: 'amberx.ai', label: 'On this device', icon: 'eye', tab: 'ai', order: 30, settings: [
       { key: K.badge, label: 'Show the AI badge on the banner', kind: 'toggle', default: true, scope: 'device', slot: 'banner' },
       { key: K.every, label: 'Check the AI every (minutes)', kind: 'number', default: 3, min: 1, max: 60, step: 1 },
@@ -351,6 +355,9 @@ export const library: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('ai.status.open', () => rt.dispatch('settings.open:ai'), { label: 'Show the AI connection' });
     rt.actions.register('ai.check', () => void refresh(rt), { label: 'Check the AI now' });
+    setAiEnabled(rt.settings.get(K.enabled) !== false);
+    rt.settings.onChange(K.enabled, () => setAiEnabled(rt.settings.get(K.enabled) !== false));
+    rt.actions.register('ai.enable', () => rt.settings.set(K.enabled, true), { label: 'Switch the AI on' });
     for (const k of Object.values(K)) rt.settings.onChange(k, () => { painted = ''; paint(rt); if (k === K.every) loop(rt); });
     paint(rt);
     void refresh(rt);
