@@ -242,5 +242,125 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(readFileSync(new URL('./public/offline.html', import.meta.url), 'utf8').includes(HOSTED_URL), 'the offline page retries the hosted app');
 }
 
+
+// tasks plugin
+{
+  const notes = await import('./src/plugins/notes/web/core.ts');
+  const tk = await import('./src/plugins/tasks/web/core.ts');
+  // Tuesday 27 Oct 2026, 10:00 local
+  const now = new Date(2026, 9, 27, 10, 0, 0);
+  const T = now.toISOString();
+  // dueBucket edges
+  eq(notes.dueBucket('', now), 'none', 'no due date');
+  eq(notes.dueBucket('2026-10-26', now), 'overdue', 'yesterday is overdue');
+  eq(notes.dueBucket('2026-10-27', now), 'today', 'today');
+  eq(notes.dueBucket('2026-10-28', now), 'upcoming', 'tomorrow is upcoming');
+  eq(notes.dueBucket('2026-11-03', now), 'upcoming', 'seven days out is still upcoming');
+  eq(notes.dueBucket('2026-11-04', now), 'later', 'eight days out is later');
+  // spokenDate
+  eq(notes.spokenDate('today', now), '2026-10-27', 'spoken today');
+  eq(notes.spokenDate('tomorrow', now), '2026-10-28', 'spoken tomorrow');
+  eq(notes.spokenDate('friday', now), '2026-10-30', 'next friday');
+  eq(notes.spokenDate('tuesday', now), '2026-11-03', 'same weekday = next week');
+  eq(notes.spokenDate('in 3 days', now), '2026-10-30', 'in 3 days');
+  eq(notes.spokenDate('in three days', now), '2026-10-30', 'in three days');
+  eq(notes.spokenDate('next week', now), '2026-11-03', 'next week');
+  eq(notes.spokenDate('someday', now), '', 'unknown phrase');
+  eq(tk.parseDue('2026-11-02', now), '2026-11-02', 'date input passes through');
+  eq(tk.parseDue('Friday', now), '2026-10-30', 'typed weekday');
+  eq(tk.parseDue('', now), '', 'empty due');
+  // a store with tasks
+  const s = notes.emptyStore(T);
+  const work = notes.addList(s, 'Work', null, T);
+  const home = notes.addList(s, 'Home', null, T);
+  const over = tk.quickAdd(s, { title: 'File taxes', kind: 'task', list: work.id, due: '2026-10-20', priority: 3 }, now);
+  const today = tk.quickAdd(s, { title: 'Call mum', kind: 'todo', list: home.id, due: 'today' }, now);
+  const soon = tk.quickAdd(s, { title: 'Ship build', kind: 'task', list: work.id, due: 'friday' }, now);
+  const later = tk.quickAdd(s, { title: 'Plan trip', kind: 'task', list: home.id, due: '2026-12-01' }, now);
+  const loose = tk.quickAdd(s, { title: 'Buy milk', kind: 'todo' }, now);
+  const sub = tk.quickAdd(s, { title: 'Find receipts', kind: 'todo', parent: over.id }, now);
+  notes.addItem(s, { kind: 'note', title: 'Just a note', due: '2026-10-27' }, T);
+  eq(sub.kind, 'task', 'a subtask is a task');
+  eq(sub.list, work.id, 'a subtask lives in its task\'s list');
+  eq(sub.parent, over.id, 'subtask parent');
+  eq(today.due, '2026-10-27', 'quick add reads spoken due');
+  eq(loose.list, notes.SYS.inbox, 'no list = Inbox');
+  let threw = false; try { tk.quickAdd(s, { title: '  ', kind: 'todo' }, now); } catch { threw = true; }
+  ok(threw, 'quick add needs a title');
+  eq(tk.tabItems(s, 'today', now).map((i) => i.title), ['File taxes', 'Call mum'], 'Today = overdue first, then today; notes left out');
+  eq(tk.tabItems(s, 'upcoming', now).map((i) => i.title), ['Ship build'], 'Upcoming = the next 7 days');
+  eq(tk.tabItems(s, 'todo', now).map((i) => i.title).sort(), ['Buy milk', 'Call mum'], 'Todo = quick todos');
+  ok(!tk.tabItems(s, 'all', now).some((i) => i.id === sub.id), 'All shows a subtask under its task, not on its own');
+  eq(tk.tabItems(s, 'all', now).length, 5, 'All = every open todo and task');
+  eq(tk.todayCount(s, now), 2, 'badge counts overdue + today');
+  eq(tk.todaySummary(s, now), '2 due today or overdue.', 'spoken summary');
+  eq(tk.filterTasks(s, tk.tabItems(s, 'all', now), { list: work.id }).map((i) => i.title).sort(), ['File taxes', 'Ship build'], 'filter by list');
+  eq(tk.filterTasks(s, tk.tabItems(s, 'all', now), { priority: 3 }).map((i) => i.title), ['File taxes'], 'filter by priority');
+  eq(tk.filterTasks(s, tk.tabItems(s, 'all', now), { q: 'trip' }).map((i) => i.title), ['Plan trip'], 'search');
+  eq(tk.subtaskProgress(s, over.id), { done: 0, total: 1 }, 'subtask progress');
+  // done / reopen
+  const t2 = new Date(2026, 9, 27, 11, 0, 0);
+  const d1 = tk.setDone(s, today.id, true, t2);
+  eq(d1.status, 'done', 'ticked done');
+  eq(d1.doneAt, t2.toISOString(), 'doneAt stamped');
+  const d2 = notes.updateItem(s, today.id, { title: 'Call mum back' }, new Date(2026, 9, 27, 12).toISOString());
+  eq(d2.doneAt, t2.toISOString(), 'editing a done item keeps doneAt');
+  const d3 = tk.setDone(s, today.id, false, t2);
+  eq([d3.status, d3.doneAt], ['open', ''], 'reopen clears doneAt');
+  eq(tk.cycleStatus(s, soon.id, now).status, 'doing', 'task open → doing');
+  eq(tk.cycleStatus(s, soon.id, now).status, 'done', 'doing → done');
+  eq(tk.cycleStatus(s, soon.id, now).status, 'open', 'done → open');
+  eq(tk.cycleStatus(s, loose.id, now).status, 'done', 'a todo just ticks');
+  eq(tk.tabItems(s, 'done', now).map((i) => i.title), ['Buy milk'], 'Done tab');
+  eq(tk.cyclePriority(s, later.id, now).priority, 1, 'priority cycles up');
+  eq(tk.nextPriority(3), 0, 'priority wraps');
+  // subtasks travel with their task
+  notes.moveItems(s, [over.id], home.id, T);
+  eq(s.items[sub.id].list, home.id, 'moving a task moves its subtasks');
+  eq(notes.removeItems(s, [over.id]), 2, 'removing a task removes its subtasks');
+  // bulk
+  eq(tk.setDueMany(s, [later.id, soon.id], 'tomorrow', now), 2, 'bulk set due');
+  eq(s.items[later.id].due, '2026-10-28', 'bulk due applied');
+  threw = false; try { tk.setDueMany(s, [later.id], 'blursday', now); } catch { threw = true; }
+  ok(threw, 'bulk due refuses an unknown date');
+  eq(tk.setDueMany(s, [later.id], '', now), 1, 'empty clears the due date');
+  eq(s.items[later.id].due, '', 'due cleared');
+  eq(tk.setDoneMany(s, [later.id, soon.id, loose.id], true, now), 2, 'bulk done skips the ones already done');
+  // due labels
+  eq(tk.dueLabel('2026-10-25', now).text, 'Overdue 2 d', 'overdue label');
+  eq(tk.dueLabel('2026-10-25', now).tone, 'danger', 'overdue tone');
+  eq(tk.dueLabel('2026-10-26', now).text, 'Yesterday', 'yesterday');
+  eq(tk.dueLabel('2026-10-27', now).text, 'Today', 'today label');
+  eq(tk.dueLabel('2026-10-28', now).text, 'Tomorrow', 'tomorrow label');
+  eq(tk.dueLabel('2026-10-30', now).text, 'Fri', 'weekday this week');
+  eq(tk.dueLabel('2026-11-09', now).text, 'Mon 9 Nov', 'a later date');
+  eq(tk.dueLabel('2027-01-04', now).text, 'Mon 4 Jan 2027', 'another year');
+  eq(tk.dueLabel('2026-10-20', now, true).overdue, false, 'done is never overdue');
+  // checklist helpers
+  let cl = tk.addCheck([], 'one');
+  cl = tk.addCheck(cl, 'two');
+  cl = tk.addCheck(cl, '   ');
+  eq(cl.map((c) => c.text), ['one', 'two'], 'checklist add, blank ignored');
+  ok(new Set(cl.map((c) => c.id)).size === 2, 'checklist ids are unique');
+  cl = tk.toggleCheck(cl, cl[0].id);
+  eq(cl[0].done, true, 'checklist tick');
+  eq(tk.moveCheck(cl, cl[1].id, -1).map((c) => c.text), ['two', 'one'], 'checklist reorder');
+  eq(tk.moveCheck(cl, cl[0].id, -1), cl, 'top item cannot go up');
+  eq(tk.removeCheck(cl, cl[0].id).map((c) => c.text), ['two'], 'checklist remove');
+  const id3 = tk.addCheck(tk.removeCheck(tk.addCheck(tk.addCheck([], 'a'), 'b'), 'c1'), 'c');
+  ok(new Set(id3.map((c) => c.id)).size === id3.length, 'ids stay unique after a remove');
+  eq(tk.nextStatus('open'), 'doing', 'status cycle');
+  ok(tk.isTab('today') && !tk.isTab('bogus'), 'tab ids');
+  // the plugin is wired
+  const pj = JSON.parse(readFileSync(new URL('./src/plugins/tasks/plugin.json', import.meta.url), 'utf8'));
+  eq([pj.$axf, pj.id, pj.name], ['amberx-plugin@1', 'ai.amberx.amberx.tasks', 'Tasks'], 'tasks plugin.json');
+  const src = readFileSync(new URL('./src/plugins/tasks/web/index.tsx', import.meta.url), 'utf8');
+  for (const a of ["'tasks.open'", "'tasks.add'", "badge: BADGE", "registerVoiceCommands(ID"]) ok(src.includes(a), `tasks plugin has ${a}`);
+  for (const t of ['today', 'upcoming', 'todo', 'all', 'done']) ok(src.includes(`action: 'tasks.open:${t}'`), `voice opens ${t}`);
+  ok(!/<button(?![^>]*(fx-chip|fx-tab|data-fx-row))/.test(src), 'every tasks <button> is a framework chip, tab or row');
+  const css = readFileSync(new URL('./src/plugins/tasks/web/tasks.css', import.meta.url), 'utf8');
+  ok(!/#[0-9a-f]{3,8}\b|rgb\(/i.test(css), 'tasks CSS has no hard-coded colours');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
