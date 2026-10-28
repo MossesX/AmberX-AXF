@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T15:41:17.288Z",
+ "updatedAt": "2026-10-28T15:41:39.141Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3579,9 +3579,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-assistant-agents",
-   "pr": "",
+   "pr": "#156",
    "createdAt": "2026-10-28T15:41:17.167Z",
-   "updatedAt": "2026-10-28T15:41:17.287Z",
+   "updatedAt": "2026-10-28T15:41:39.141Z",
    "builtAt": "2026-10-28T15:41:17.288Z",
    "notes": [],
    "approvals": [],
