@@ -38,6 +38,9 @@ export const K = {
   handsFree: 'amberx.voice.handsFree',
   alwaysArmed: 'amberx.voice.alwaysArmed',
   overlay: 'amberx.voice.overlay',
+  beep: 'amberx.voice.beep',
+  online: 'amberx.voice.online',
+  swears: 'amberx.voice.swears',
 } as const;
 
 const ID = 'ai.amberx.amberx.voice';
@@ -212,6 +215,7 @@ export function configOf(rt: AxfRuntime): VoiceConfig {
   return voiceConfig({
     handsFree: rt.settings.get(K.handsFree), alwaysArmed: rt.settings.get(K.alwaysArmed), overlay: rt.settings.get(K.overlay),
     wake: phraseList(rt.settings.get(K.wake)), lang: rt.settings.get(K.lang),
+    beep: rt.settings.get(K.beep), online: rt.settings.get(K.online), swears: rt.settings.get(K.swears),
   }, themeColors());
 }
 
@@ -256,6 +260,9 @@ function HandsFree() {
         <Switch label="Listen hands-free" checked={cfg.handsFree} onChange={(x) => rt.settings.set(K.handsFree, x)} hint="On screen and in the background (Android shows a notification while it listens)." />
         <Switch label="Always armed" checked={cfg.alwaysArmed} onChange={(x) => rt.settings.set(K.alwaysArmed, x)} hint="Act on everything heard, no wake phrase." />
         {isNative() && <Switch label="Detection overlay" checked={cfg.overlay} onChange={(x) => rt.settings.set(K.overlay, x)} hint="Level, dB, what was heard and quick settings, floating over other apps." />}
+        {isNative() && <SelectField label="Listening tone" value={cfg.beep} onChange={(x) => rt.settings.set(K.beep, x)} options={[{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }]} hint="Still hear a tone? Pick “also media”." />}
+        {isNative() && <Switch label="Best recognition (online)" checked={cfg.online} onChange={(x) => rt.settings.set(K.online, x)} hint="Google's online model hears far better; off = on-device, works offline." />}
+        <Switch label="Show swear words" checked={cfg.swears} onChange={(x) => rt.settings.set(K.swears, x)} hint="Write words as you say them, no f***." />
       </div>
       {isNative() && cfg.overlay && v.status && !v.status.overlayAllowed && (
         <Note tone="info">The overlay needs “Display over other apps”. <Button icon="settings" onClick={() => void allowOverlay(rt)}>Allow</Button></Note>
@@ -540,6 +547,9 @@ export const library: AxfWebLibrary = {
         { key: K.wake, label: 'Wake phrases', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated. Say one, then the command.' },
         { key: K.alwaysArmed, label: 'Always armed', kind: 'toggle', default: false, description: 'Act on everything heard, with no wake phrase. Background talk can trigger commands.' },
         { key: K.overlay, label: 'Detection overlay', kind: 'toggle', default: true, description: 'Android: a floating window with the input level, dB, what was heard and quick settings.' },
+        { key: K.beep, label: 'Listening tone', kind: 'choice', default: 'silence', options: [{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }], description: 'Android plays a tone each time it starts listening. Silenced mutes notification and system sounds while hands-free listens (approval alerts still get through). Still hear it? Pick "also media": music is muted too while AmberX listens, and comes back when it speaks.' },
+        { key: K.online, label: 'Best recognition (online)', kind: 'toggle', default: true, description: "Google's online speech model hears far better. Off = the phone's on-device model (works offline, misses more)." },
+        { key: K.swears, label: 'Show swear words', kind: 'toggle', default: true, description: 'Write words as you say them instead of f***.' },
         { key: K.lang, label: 'Language', kind: 'text', default: 'en-US', description: 'For recognition and spoken replies, e.g. en-US, en-GB.' },
         { key: K.speak, label: 'Answer out loud', kind: 'toggle', default: true },
         { key: K.notes, label: 'Notes sentences', kind: 'toggle', default: true, description: 'Let sentences like “note in work: …” or “add a todo … by friday” go to the Notes plugin.' },
