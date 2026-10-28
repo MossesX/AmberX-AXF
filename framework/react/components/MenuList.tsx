@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { filterMenu, resolveChecked, type AssetType, type MenuItem } from '../../core';
 import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
@@ -10,6 +10,45 @@ interface MenuListProps {
   payload?: string;
   showIcons?: boolean;
   showShortcuts?: boolean;
+}
+
+/**
+ * A submenu's flyout box: opens to the right of its row and flips to the left only when it would run off the screen
+ * (Brett, Oct 28 2026); a box taller than the room below moves up to fit. Used by context menus and the app menu.
+ */
+export function MenuSub({ children, role }: { children: ReactNode; role?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [flip, setFlip] = useState(false);
+  const [lift, setLift] = useState(0);
+  const [shift, setShift] = useState(0);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || getComputedStyle(el).position !== 'absolute') return; // phones show submenus inline
+    // measured again whenever the box changes size (a live list fills in after its loading row)
+    const fit = () => {
+      const parent = el.parentElement?.getBoundingClientRect();
+      if (!parent) return;
+      const w = el.offsetWidth, h = el.offsetHeight;
+      const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+      const rightEdge = parent.right + 2 + w;
+      const left = rightEdge > vw - 4 && parent.left - w >= 0; // flip only when the right has no room and the left has
+      setFlip(left);
+      setShift(!left && rightEdge > vw - 4 ? Math.min(parent.right + 2 - 4, rightEdge - vw + 4) : 0);
+      const top = parent.top - 4;
+      setLift(top + h > vh - 4 ? Math.min(top - 4, top + h - vh + 4) : 0);
+    };
+    fit();
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(fit);
+    ro?.observe(el);
+    return () => ro?.disconnect();
+  }, []);
+  const move = lift > 0 || shift > 0 ? { transform: `translate(${shift > 0 ? -shift : 0}px, ${lift > 0 ? -lift : 0}px)` } : undefined;
+  return (
+    <div ref={ref} className="fx-menu__sub fx-popover" role={role} data-fx-flip={flip ? 'left' : undefined}
+      style={move}>
+      {children}
+    </div>
+  );
 }
 
 /** Items without the hooks a host app took over (embed@1), nested lists included. */
@@ -73,10 +112,10 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
               {hasSub && <Icon name="chevron-right" size={14} />}
             </button>
             {hasSub && openSub === item.id && (
-              <div className="fx-menu__sub fx-popover">
+              <MenuSub>
                 {item.items?.length ? <MenuList items={item.items} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />
                   : <ProviderList id={item.provider!} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />}
-              </div>
+              </MenuSub>
             )}
           </li>
         );

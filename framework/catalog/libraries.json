@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-27T22:30:29.851Z",
+  "generatedAt": "2026-10-28T19:12:54.413Z",
   "items": [
     {
       "$axf": "library@1",
@@ -541,7 +541,7 @@
       "id": "ai.amberx.axf.datagrid",
       "module": "lib-datagrid",
       "name": "Data grid (categorized sub-grids, hideable columns, expandable rows)",
-      "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid.",
+      "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid. Every grid is also a dataset (datasets.ts, Oct 28 2026): plugins attach filters, sorts and a toolbar above it without the view knowing them.",
       "features": [],
       "dependsOn": [],
       "manifestKey": "libraries.datagrid",
@@ -613,6 +613,10 @@
         {
           "capability": "axf.datagrid.resize",
           "note": "Column resizing by dragging the header edge — not built."
+        },
+        {
+          "capability": "axf.datagrid.datasets.android",
+          "note": "Dataset registry + attachable transforms (datasets.ts) — Compose twin deferred, Android on hold."
         }
       ]
     },

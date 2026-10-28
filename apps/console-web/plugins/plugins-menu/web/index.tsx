@@ -23,8 +23,8 @@ import { bundledPlugins, fetchPluginStatus, pluginApi, PLUGINS_CHANGED, type Plu
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import {
-  FOLDER, ID, INSTALL_DIALOG, K, PARAM_GROUPS, PARAM_TYPES, SETTINGS_DIALOG, TAB,
-  columnRows, initialPick, installAction, pluginsSubmenu, sortCatalog, type PluginRow, type SortKey,
+  FOLDER, ID, INFO_DIALOG, INSTALL_DIALOG, K, LADDER, PARAM_GROUPS, PARAM_TYPES, SETTINGS_DIALOG, TAB,
+  columnRows, initialPick, installAction, ladderItems, offCounter, pluginsSubmenu, sortCatalog, type LadderPlugin, type PluginRow, type SortKey,
 } from './core';
 import './plugins-menu.css';
 
@@ -71,6 +71,8 @@ async function setEnabled(rt: AxfRuntime, folder: string, on: boolean): Promise<
 /* ------------------------------------------------------------------ right-click submenu */
 
 let menuListener: (() => void) | null = null;
+/** the runtime the ladder's live list reads (set in register) */
+let ladderRt: AxfRuntime | null = null;
 
 function refreshMenu(rt: AxfRuntime): void {
   void fetchPluginStatus().then((s) => {
@@ -79,6 +81,106 @@ function refreshMenu(rt: AxfRuntime): void {
     const manage = pm && (s?.find((x) => x.folder === pm.folder)?.enabled ?? true) ? 'nav:plugin-manager' : 'settings.open:plugins';
     rt.addContextItems({ id: 'plugins-menu.default', module: ID, target: 'default', order: 89, items: [pluginsSubmenu(toRows(s), { manage })] });
   });
+}
+
+/* ------------------------------------------------------------------ the Plugins ladder (application menu) */
+
+const svc = (xs?: string[]) => (xs ?? []).filter((x) => x.startsWith('service:'));
+const manifestOf = (folder: string) => bundledPlugins.find((p) => p.folder === folder)?.manifest as (PluginStatus & { provides?: string[]; requires?: string[]; optional?: string[] }) | undefined;
+
+/** What Interface runs for a plugin: its first page, else its first dialog, else its own application-menu entry. */
+function uiAction(folder: string): string | undefined {
+  const lib = bundledPlugins.find((p) => p.folder === folder)?.library;
+  if (!lib) return undefined;
+  const view = Object.keys(lib.views ?? {})[0];
+  if (view) return `nav:${view}`;
+  const dialog = Object.keys(lib.dialogs ?? {})[0];
+  if (dialog) return `dialog:${dialog}`;
+  for (const c of lib.appMenu ?? []) for (const i of c.items) if (i.action && !i.action.startsWith('settings.open:')) return i.action;
+  return undefined;
+}
+
+let lastStatus: PluginStatus[] | null = null;
+
+async function ladder(rt: AxfRuntime) {
+  const status = await fetchPluginStatus();
+  lastStatus = status;
+  const rows = toRows(status);
+  const list: LadderPlugin[] = rows.map((r) => ({
+    folder: r.folder, name: r.name, enabled: r.enabled,
+    icon: bundledPlugins.find((p) => p.folder === r.folder)?.library?.settingsTabs?.[0]?.icon,
+    ui: uiAction(r.folder), tab: r.tab,
+  }));
+  for (const r of rows) rt.setBadge(offCounter(r.folder), r.enabled ? 0 : 1);
+  const style = rt.settings.get(K.disableStyle) === 'toggle' ? 'toggle' : 'check';
+  return ladderItems(list, { style, offline: status === null });
+}
+
+/** Running plugins that need a capability only `folder` provides (same rule as Plugin switches). */
+function neededBy(folder: string): string[] {
+  const on = (f: string) => lastStatus?.find((x) => x.folder === f)?.enabled ?? true;
+  const gives = svc(manifestOf(folder)?.provides);
+  if (!gives.length) return [];
+  return bundledPlugins.filter((p) => p.folder !== folder && on(p.folder) && svc((p.manifest as { requires?: string[] }).requires).some((need) =>
+    gives.includes(need) && !bundledPlugins.some((o) => o.folder !== folder && o.folder !== p.folder && on(o.folder) && svc((o.manifest as { provides?: string[] }).provides).includes(need)))).map((p) => p.manifest.name);
+}
+
+async function togglePlugin(rt: AxfRuntime, folder: string) {
+  const status = lastStatus ?? await fetchPluginStatus();
+  const cur = status?.find((x) => x.folder === folder);
+  if (!cur) { rt.toast('The console API is offline, so plugins can\'t be switched.', 'warning', LABEL); return; }
+  if (folder === FOLDER) return;
+  const turnOn = !cur.enabled;
+  if (!turnOn) {
+    const needers = neededBy(folder);
+    if (needers.length && !globalThis.confirm?.(`${needers.join(', ')} ${needers.length === 1 ? 'needs' : 'need'} ${cur.name ?? folder}. Turn it off anyway?`)) return;
+  }
+  if (await setEnabled(rt, folder, turnOn)) rt.setBadge(offCounter(folder), turnOn ? 0 : 1);
+}
+
+/** Documentation / About for one plugin (from its manifest and web library). */
+function PluginInfo({ folder, show }: { folder: string; show: 'docs' | 'about' }) {
+  const rt = useRuntime();
+  const { rows } = usePluginRows();
+  const b = bundledPlugins.find((p) => p.folder === folder);
+  const m = b?.manifest as (typeof b extends undefined ? never : NonNullable<typeof b>['manifest']) & { provides?: string[]; requires?: string[]; optional?: string[]; lifecycle?: { dataDir?: string } } | undefined;
+  const [tab, setTab] = useState<'docs' | 'about'>(show);
+  if (!b || !m) return <Note tone="warning">No plugin “{folder}” in this console.</Note>;
+  const row = rows?.find((r) => r.folder === folder);
+  const ui = uiAction(folder);
+  const needs = [...svc(m.requires), ...svc(m.optional).map((x) => `${x} (optional)`)];
+  const dependents = bundledPlugins.filter((p) => svc((p.manifest as { requires?: string[] }).requires).some((x) => svc(m.provides).includes(x))).map((p) => p.manifest.name);
+  return (
+    <div className="axp-plugins-menu-info fx-stack">
+      <Segmented label="Show" size="sm" value={tab} onChange={setTab} options={[{ value: 'docs', label: 'Documentation', icon: 'file' }, { value: 'about', label: 'About', icon: 'info' }]} />
+      {tab === 'docs' ? (
+        <div className="fx-stack">
+          <p style={{ margin: 0 }}>{m.description || 'No description.'}</p>
+          <div className="fx-row fx-row--wrap">
+            {ui && <Button size="sm" icon="layout" onClick={() => rt.dispatch(ui)}>Open its interface</Button>}
+            {row?.tab && <Button size="sm" icon="settings" onClick={() => rt.dispatch(`settings.open:${row.tab}`)}>Its settings</Button>}
+          </div>
+          <dl className="axp-plugins-menu-info__dl">
+            <dt>Adds</dt><dd>{(m.provides ?? []).join(', ') || '—'}</dd>
+            <dt>Data</dt><dd className="fx-mono">{m.lifecycle?.dataDir ?? '—'}</dd>
+            <dt>Remove</dt><dd className="fx-mono">node apps/console-web/plugins/{folder}/uninstall.mjs --all</dd>
+            <dt>Guide</dt><dd>apps/console-web/plugins/README.md (its line ends with axf-plugin:{folder})</dd>
+          </dl>
+        </div>
+      ) : (
+        <dl className="axp-plugins-menu-info__dl">
+          <dt>Name</dt><dd>{m.name} <ModelBadge model={m.builtWith?.model} /></dd>
+          <dt>Id</dt><dd className="fx-mono">{m.id}</dd>
+          <dt>Version</dt><dd>{m.version}</dd>
+          <dt>Built</dt><dd>{m.builtWith?.builtAt || '—'}{m.builtWith?.model ? ` on ${m.builtWith.model}` : ''}</dd>
+          <dt>State</dt><dd>{row ? (row.enabled ? 'On' : 'Off') : '—'}{row?.problem ? ` · ${row.problem}` : ''}</dd>
+          <dt>Folder</dt><dd className="fx-mono">plugins/{folder}</dd>
+          <dt>Needs</dt><dd>{needs.join(', ') || 'Nothing'}</dd>
+          <dt>Needed by</dt><dd>{dependents.join(', ') || 'Nothing'}</dd>
+        </dl>
+      )}
+    </div>
+  );
 }
 
 /* ------------------------------------------------------------------ settings browser */
@@ -442,7 +544,11 @@ export const plugin: AxfWebLibrary = {
   label: 'Plugins menu',
   version: '0.1.0',
   appMenu,
+  appMenuProviders: { [LADDER]: { items: () => ladderRt ? ladder(ladderRt) : [], max: 200 } },
   register(rt) {
+    ladderRt = rt;
+    rt.actions.register('plugins-menu.toggle', ([folder]) => { if (folder) void togglePlugin(rt, folder); }, { label: 'Switch a plugin on or off', searchable: false });
+    rt.actions.register('plugins-menu.info', ([folder = '', show = 'about']) => folder && rt.openDialog(INFO_DIALOG, { plugin: folder, show }), { label: 'About a plugin', searchable: false, params: true } as never);
     rt.actions.register('plugins-menu.settings', () => rt.openDialog(SETTINGS_DIALOG), { label: 'Plugin settings' });
     rt.actions.register('plugins-menu.install', () => rt.openDialog(INSTALL_DIALOG), { label: 'Install plugins' });
     rt.actions.register('plugins-menu.manage', () => rt.dispatch('settings.open:plugins'), { label: 'Manage plugins' });
@@ -456,6 +562,7 @@ export const plugin: AxfWebLibrary = {
   dialogs: {
     [SETTINGS_DIALOG]: { title: 'Plugin settings', icon: 'settings', render: (props) => <SettingsBrowser ask={typeof props?.plugin === 'string' ? props.plugin : undefined} /> },
     [INSTALL_DIALOG]: { title: 'Install plugins', icon: 'download', render: () => <Installer /> },
+    [INFO_DIALOG]: { title: 'About the plugin', icon: 'info', searchable: false, render: (props) => <PluginInfo folder={String(props?.plugin ?? '')} show={props?.show === 'docs' ? 'docs' : 'about'} /> },
   },
   settingsTabs: [{ id: TAB, label: 'Plugins menu', icon: 'package', order: 4, parent: 'plugins' }],
   settings: [
@@ -478,6 +585,9 @@ export const plugin: AxfWebLibrary = {
     { id: 'plugins-menu.behaviour', label: 'Behaviour', icon: 'play', tab: TAB, order: 40, settings: [
       choice(K.onOpen, 'When it opens, show', 'last', [['last', 'The last plugin picked'], ['first', 'The first plugin'], ['self', "This browser's settings"], ['none', 'Nothing picked']]),
       choice(K.sort, 'Sort the list by', 'name', [['name', 'Name'], ['model', 'Model'], ['enabled', 'On first'], ['built', 'Newest build']]),
+    ] },
+    { id: 'plugins-menu.ladder', label: 'Application menu', icon: 'menu', tab: TAB, order: 45, description: 'Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Disable.', settings: [
+      choice(K.disableStyle, 'The Disable item shows', 'check', [['check', 'A check mark while the plugin is off'], ['toggle', 'Disable / Enable, no check mark']]),
     ] },
   ],
   settingsPanels: [
