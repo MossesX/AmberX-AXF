@@ -87,7 +87,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - **Branch:** `claude/plugin-theme-override`: Plugins ladder (plugins-menu: live list `plugins-menu.ladder`, Disable item + setting `plugins-menu.ladder.disableStyle`, info dialog) and framework `MenuSub` (submenu flips left only when no room) — s7 + s8 done, moved ahead of the Fable phase.
 - **Read first:** `framework/spec/THEMING.md`, `framework/core/engines/looktokens.ts`, `framework/react/AxfProvider.tsx`, `framework/core/engines/appmenu.ts`, `apps/console-web/plugins/theme-manager`, `apps/console-web/plugins/plugin-switches`.
 - **Checks:** tsc + build (console-web), `check-theme.mjs`, `check-controls.mjs`, `scripts/menu-reach.mts`, `scripts/theme-swap.mjs`, new `spec/check-plugin-theme.mts`.
-- **First message:** `Carry on orchestrator build plugin-theme-override (Refactor profile), phase 1 on Fable: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief plugin-theme-override`
+- **First message:** `Carry on orchestrator build plugin-theme-override (Refactor profile), phase 1 (Fable) — s7/s8 done: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief plugin-theme-override` <!-- axf-plugin:build-orchestrator -->
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
