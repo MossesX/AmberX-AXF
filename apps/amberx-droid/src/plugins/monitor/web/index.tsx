@@ -24,6 +24,7 @@ export const K = {
   autoApprove: 'amberx.monitor.autoApprove',
   autoApproveAll: 'amberx.monitor.autoApproveAll',
   autoApproveTools: 'amberx.monitor.autoApproveTools',
+  consoleAlerts: 'amberx.monitor.consoleAlerts',
 } as const;
 
 const configOf = (rt: AxfRuntime) => watchConfig({
@@ -35,6 +36,7 @@ const configOf = (rt: AxfRuntime) => watchConfig({
   autoApprove: rt.settings.get(K.autoApprove),
   autoApproveAll: rt.settings.get(K.autoApproveAll),
   autoApproveTools: rt.settings.get(K.autoApproveTools),
+  consoleAlerts: rt.settings.get(K.consoleAlerts),
 });
 
 async function start(rt: AxfRuntime) {
@@ -106,6 +108,7 @@ function MonitorView() {
           <tr><td>Last check</td><td className="fx-muted">{when} · {st?.status ?? 'off'}</td></tr>
           <tr><td>Every</td><td className="fx-muted">{cfg.intervalSec} s</td></tr>
           <tr><td>Listening for</td><td className="fx-muted">{cfg.wakePhrases.length ? cfg.wakePhrases.map((p) => `“${p}”`).join(', ') : 'nothing'}{st?.listening ? ' (on)' : ''}</td></tr>
+          <tr><td>Console alerts</td><td className="fx-muted">{!cfg.consoleAlerts ? 'off' : st?.alerts === undefined ? '–' : st.alerts < 0 ? 'not signed in to the console' : `${st.alerts} open`}</td></tr>
           <tr><td>Auto-approval</td><td className="fx-muted">{cfg.autoApprove.all ? 'everything except vps.run' : cfg.autoApprove.on ? cfg.autoApprove.tools || 'nothing listed' : 'off'}</td></tr>
         </tbody></table>
       </Section>
@@ -127,7 +130,8 @@ export const library: AxfWebLibrary = {
   settings: [
     {
       id: 'amberx.monitor', label: 'Background monitoring', icon: 'eye', tab: 'monitor', settings: [
-        { key: K.on, label: 'Watch axHub in the background', kind: 'toggle', default: false },
+        { key: K.on, label: 'Watch axHub in the background', kind: 'toggle', default: true, description: 'AmberX is the phone’s one source of axHub notifications (approvals, merge approvals, console alerts); Patches and the AXHub app stay quiet while it is installed.' },
+        { key: K.consoleAlerts, label: 'Dev Console alerts', kind: 'toggle', default: true, description: 'Errors and warnings from console.amberxai.com (builds, CI, deploys, systems check). Tap opens the console in your browser.' },
         { key: K.interval, label: 'Check every (seconds)', kind: 'number', default: 30, min: 15, max: 300, step: 5 },
         { key: K.listen, label: 'Listen for the wake phrase while watching', kind: 'toggle', default: true, description: 'Only used when Voice control → Listen hands-free is off. Hands-free listening (on by default) works without watching axHub.' },
       ],
@@ -156,7 +160,12 @@ export const library: AxfWebLibrary = {
     const sync = () => {
       if (rt.settings.get(K.on) !== true) { last = ''; return; }
       const next = JSON.stringify(configOf(rt));
-      if (next !== last) { last = next; void native.monitorStart(JSON.parse(next)).catch(() => undefined); }
+      if (next !== last) {
+        const firstRun = last === '';
+        last = next;
+        // On by default now (every push comes from AmberX): ask for notification permission before the first start.
+        void (firstRun ? native.permissions().catch(() => undefined) : Promise.resolve()).then(() => native.monitorStart(JSON.parse(next))).catch(() => undefined);
+      }
     };
     rt.subscribe(sync);
     sync();

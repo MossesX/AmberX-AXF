@@ -27,6 +27,8 @@ export const clampInterval = (v: unknown): number => {
 export interface WatchSettings {
   hub: string; interval: unknown; listen: unknown; wake: string[]; lang: unknown;
   autoApprove: unknown; autoApproveAll: unknown; autoApproveTools: unknown;
+  /** Dev Console alerts (builds, CI, deploys, systems check) as phone notifications; on unless switched off */
+  consoleAlerts?: unknown;
 }
 
 /** The config the native watch service runs with (MonitorConfig in src/native.ts). */
@@ -37,5 +39,6 @@ export function watchConfig(s: WatchSettings) {
     autoApprove: { on: s.autoApprove === true, all: s.autoApproveAll === true, tools: String(s.autoApproveTools ?? '').slice(0, 2000) },
     wakePhrases: s.listen === false ? [] : s.wake.slice(0, 20),
     lang: typeof s.lang === 'string' && s.lang.trim() ? s.lang.trim() : 'en-US',
+    consoleAlerts: s.consoleAlerts !== false,
   };
 }

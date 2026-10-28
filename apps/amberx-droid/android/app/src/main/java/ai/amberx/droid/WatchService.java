@@ -53,7 +53,7 @@ public class WatchService extends Service {
     static final String PREFS = "amberx_watch";
     static final String ACTION_STOP = "ai.amberx.droid.STOP";
     static final String ACTION_CHECK = "ai.amberx.droid.CHECK";
-    static final String CH_WATCH = "watch", CH_APPROVALS = "approvals", CH_WAKE = "wake";
+    static final String CH_WATCH = "watch", CH_APPROVALS = "approvals", CH_WAKE = "wake", CH_CONSOLE = "console";
     private static final int ID_ONGOING = 1, ID_WAKE = 2;
 
     /** Last status, read by the plugin; [listener] gets every change. */
@@ -219,10 +219,11 @@ public class WatchService extends Service {
             }
             if ("ok".equals(feed.status)) handleNew(hub, cookie, feed, cfg.optJSONObject("autoApprove"));
         }
+        int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts() : -1;
         JSONObject s = new JSONObject();
         try {
             s.put("running", true).put("listening", listening).put("lastCheck", Instant.now().toString())
-                .put("status", feed.status).put("waiting", feed.count);
+                .put("status", feed.status).put("waiting", feed.count).put("alerts", alerts);
         } catch (Exception ignored) {}
         setStatus(s);
         long next = "signed-out".equals(feed.status) || "not-admin".equals(feed.status) ? 300_000L : every * 1000L;
@@ -247,6 +248,36 @@ public class WatchService extends Service {
         }
         for (String gone : seen) if (!now.contains(gone)) nm.cancel(gone, 0); // decided elsewhere: take its alert away
         p.edit().putStringSet("seen", now).apply();
+    }
+
+    /**
+     * The Dev Console's open alerts (builds, CI, deploys, systems check), read with the phone's own session for the console
+     * (the hub's sign-in wall lets a signed-in admin through). Errors and warnings alert once per change; resolved or read
+     * ones are taken away. Returns how many are open, or -1 when the console can't be read (signed out, unreachable).
+     */
+    private int consoleAlerts() {
+        String cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE);
+        if (cookie == null) return -1;
+        HubRules.Alerts a;
+        try {
+            HubRules.Reply r = HubRules.get(HubRules.CONSOLE + HubRules.ALERTS_PATH, cookie);
+            a = HubRules.consoleAlerts(r.status, r.body);
+        } catch (Exception e) {
+            return -1;
+        }
+        if (a == null) return -1;
+        SharedPreferences p = prefs(this);
+        Set<String> seen = new HashSet<>(p.getStringSet("alertsSeen", new HashSet<>()));
+        Set<String> now = new HashSet<>();
+        NotificationManager nm = getSystemService(NotificationManager.class);
+        for (String key : a.closed) nm.cancel("console:" + key, 0);
+        for (HubRules.ConsoleAlert c : a.open) {
+            now.add(c.stamp);
+            if (seen.contains(c.stamp)) continue;
+            nm.notify("console:" + c.key, 0, consoleAlert(c));
+        }
+        p.edit().putStringSet("alertsSeen", now).apply();
+        return a.open.size();
     }
 
     /* ---------------------------------------------------------------- hands-free listening */
@@ -413,6 +444,7 @@ public class WatchService extends Service {
         nm.createNotificationChannel(new NotificationChannel(CH_WATCH, "Watching axHub", NotificationManager.IMPORTANCE_LOW));
         nm.createNotificationChannel(new NotificationChannel(CH_APPROVALS, "Approvals", NotificationManager.IMPORTANCE_HIGH));
         nm.createNotificationChannel(new NotificationChannel(CH_WAKE, "Wake phrase", NotificationManager.IMPORTANCE_HIGH));
+        nm.createNotificationChannel(new NotificationChannel(CH_CONSOLE, "Console alerts", NotificationManager.IMPORTANCE_HIGH));
     }
 
     private Notification ongoing(boolean mic) {
@@ -440,6 +472,20 @@ public class WatchService extends Service {
             .setPublicVersion(new NotificationCompat.Builder(this, channel).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Approval waiting").build());
         if (full) b.setCategory(NotificationCompat.CATEGORY_REMINDER);
         return b.build();
+    }
+
+    /** A console alert: tap opens the Dev Console in the browser (its own sign-in), never inside the app. */
+    private Notification consoleAlert(HubRules.ConsoleAlert c) {
+        Intent view = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(HubRules.CONSOLE)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pi = PendingIntent.getActivity(this, ("console:" + c.key).hashCode(), view, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        String label = "critical".equals(c.severity) || "error".equals(c.severity) ? "Console error" : "Console warning";
+        return new NotificationCompat.Builder(this, CH_CONSOLE)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label + ": " + c.title).setContentText(c.body)
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(c.body))
+            .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(pi).setAutoCancel(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(new NotificationCompat.Builder(this, CH_CONSOLE).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label).build())
+            .build();
     }
 
     private static void setStatus(JSONObject s) {

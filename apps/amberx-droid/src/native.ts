@@ -24,6 +24,8 @@ export interface MonitorConfig {
   wakePhrases: string[];
   /** BCP-47 language for recognition, e.g. en-US */
   lang: string;
+  /** Dev Console alerts (errors + warnings) as notifications too (Brett, Oct 28 2026: every push comes from AmberX) */
+  consoleAlerts: boolean;
 }
 
 export interface MonitorStatus {
@@ -32,6 +34,8 @@ export interface MonitorStatus {
   lastCheck: string | null;
   status: string;
   waiting: number;
+  /** open console alerts (errors + warnings); -1 = the console can't be read (not signed in there); absent = off */
+  alerts?: number;
 }
 
 export interface VoiceStatus {
