@@ -20,4 +20,8 @@
 .axp-notes-indent__step { display: inline-block; width: calc(var(--fx-space) * 1.5); flex: 0 0 auto; }
 
 .axp-notes-scroll { max-height: 50vh; overflow: auto; }
+.axp-notes-framed { padding: var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-notes-end { justify-content: flex-end; }
+.axp-notes-empty { gap: var(--fx-space); min-height: calc(var(--fx-space) * 20); }
+.axp-notes-empty > p { margin: 0; }
 .axp-notes-editor, .axp-notes-manager { min-width: 0; }

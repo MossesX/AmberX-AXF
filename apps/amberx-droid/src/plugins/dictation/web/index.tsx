@@ -8,7 +8,7 @@
  */
 import { useEffect, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Checkbox, Note, Section, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Checkbox, Container, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { isNative, native } from '../../../native';
 import { addItem, findList, flatTree, localDay, parseIntent, type ItemKind } from '../../notes/web/core';
 import { NOTES_ID, deviceName, load as loadNotes, mutate, snapshot as notesSnapshot, useNotes } from '../../notes/web/store';
@@ -136,7 +136,7 @@ function Review({ rt, draft }: { rt: AxfRuntime; draft: Draft }) {
   const edit = (p: Partial<Draft>) => set({ draft: { ...draft, ...p } });
   const lists = writable();
   return (
-    <Section title="Check it, then save">
+    <Container title="Check it, then save" icon="edit">
       <div className="fx-stack">
         {st.ended && <p className="fx-muted">{REASON[st.ended]}</p>}
         <TextField label="Title" value={draft.title} onChange={(title) => edit({ title })} />
@@ -174,17 +174,17 @@ function Review({ rt, draft }: { rt: AxfRuntime; draft: Draft }) {
             ))}
           </div>
         )}
-        <div className="fx-row fx-row--wrap">
-          <Button tone="primary" icon="save" onClick={() => save(rt, draft)}>Save</Button>
-          <Button icon="mic" onClick={() => save(rt, draft, true)}>Save and dictate another</Button>
+        <div className="fx-row fx-row--wrap axp-dictation-actions">
           <Button tone="quiet" icon="trash" onClick={() => set({ phase: 'idle', draft: null, live: '', note: 'Discarded.' })}>Discard</Button>
+          <Button icon="mic" onClick={() => save(rt, draft, true)}>Save and dictate another</Button>
+          <Button tone="primary" icon="save" onClick={() => save(rt, draft)}>Save</Button>
         </div>
         <details>
           <summary className="fx-muted">What was heard</summary>
           <p className="fx-muted">{st.transcript}</p>
         </details>
       </div>
-    </Section>
+    </Container>
   );
 }
 
@@ -201,7 +201,7 @@ function DictationView() {
         <div>
           <p className="fx-eyebrow">Dictation</p>
           <h1>{listening ? 'Listening…' : d.phase === 'thinking' ? 'Reading it…' : d.phase === 'review' ? 'Your note' : 'Dictate a note'}</h1>
-          <p className="fx-muted">Talk as long as you like. Say “{stops[0]}” when you're done.</p>
+          <p className="fx-muted">Talk as long as you like, then say “{stops[0]}” when you're done.</p>
         </div>
       </header>
       {!notes && <Note tone="warning">The Notes plugin isn't installed here, so saved notes won't show anywhere yet.</Note>}
@@ -218,9 +218,9 @@ function DictationView() {
         </Button>
       )}
       {(listening || d.phase === 'thinking') && (
-        <Section title="So far">
+        <Container title="So far" icon="mic">
           <p className="axp-dictation-live">{d.live || <span className="fx-muted">Say something…</span>}</p>
-        </Section>
+        </Container>
       )}
       {d.phase === 'review' && d.draft && <Review rt={rt} draft={d.draft} />}
       {d.phase === 'idle' && d.note && <p className="fx-muted">{d.note}</p>}

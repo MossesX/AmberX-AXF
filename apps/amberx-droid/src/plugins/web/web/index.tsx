@@ -5,9 +5,11 @@
  *
  * Actions: `web.open`, `web.open:<url>` (a typed address or https URL), `web.clip` (clip the current tab).
  */
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, IconButton, Note, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Container, Icon, IconButton, Note, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { DataGrid, type GridColumn } from '../../../axf/libs/datagrid';
+import type { Item } from '../../notes/web/core';
 import { addItem, addList, flatTree, type Store } from '../../notes/web/core';
 import { mutate, useNotes } from '../../notes/web/store';
 import { MAX_TABS, WEB_LIST, clipToItem, hostOf, toUrl } from './core';
@@ -69,20 +71,37 @@ function ClipCard({ tab }: { tab: Tab }) {
     set({ clip: null });
   };
   return (
-    <div className="fx-card axp-web-clip fx-stack">
-      <strong>Clip to a note</strong>
-      <TextField label="Title" value={title} onChange={setTitle} />
-      <TextField label="What to keep" value={text} onChange={setText} rows={4} placeholder="Paste a passage, or write why it matters." />
-      <SelectField label="List" value={list} onChange={setList} empty="Web (default)" options={tree.map((t) => ({ value: t.list.id, label: `${'  '.repeat(t.depth)}${t.path}` }))} />
-      <div className="axp-web-row">
-        <Button size="sm" icon="paste" onClick={() => void paste()}>Paste</Button>
-        <span className="axp-web-grow" />
-        <Button size="sm" tone="quiet" onClick={() => set({ clip: null })}>Cancel</Button>
-        <Button size="sm" tone="primary" icon="save" onClick={save}>Save</Button>
+    <Container title="Clip to a note" icon="edit">
+      <div className="fx-stack axp-web-clip">
+        <TextField label="Title" value={title} onChange={setTitle} />
+        <TextField label="What to keep" value={text} onChange={setText} rows={4} placeholder="Paste a passage, or write why it matters." />
+        <SelectField label="List" value={list} onChange={setList} empty="Web (default)" options={tree.map((t) => ({ value: t.list.id, label: `${'  '.repeat(t.depth)}${t.path}` }))} />
+        <div className="axp-web-row">
+          <Button size="sm" icon="paste" onClick={() => void paste()}>Paste</Button>
+          <span className="axp-web-grow" />
+          <Button size="sm" tone="quiet" onClick={() => set({ clip: null })}>Cancel</Button>
+          <Button size="sm" tone="primary" icon="save" onClick={save}>Save</Button>
+        </div>
       </div>
+    </Container>
+  );
+}
+
+/** Empty state (design language §11): an icon, one sentence, one action. */
+function Empty({ icon, text, action }: { icon: string; text: string; action?: ReactNode }) {
+  return (
+    <div className="fx-empty axp-web-empty">
+      <Icon name={icon} size={24} />
+      <p className="fx-muted">{text}</p>
+      {action}
     </div>
   );
 }
+
+const BOOKMARK_COLUMNS: GridColumn<Item>[] = [
+  { id: 'title', label: 'Page', width: 'minmax(calc(var(--fx-space) * 16), 3fr)', fixed: true, render: (b) => <span className="axp-web-clipline">{b.title}</span> },
+  { id: 'site', label: 'Site', width: 'minmax(calc(var(--fx-space) * 10), 2fr)', render: (b) => <span className="fx-muted axp-web-clipline">{hostOf(b.url)}</span> },
+];
 
 function WebView() {
   const rt = useRuntime();
@@ -93,11 +112,26 @@ function WebView() {
   const bookmarks = Object.values(own.items).filter((i) => i.url && i.source === 'web').sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 30);
   const close = (id: string) => { const tabs = w.tabs.filter((t) => t.id !== id); set({ tabs, active: tabs[tabs.length - 1]?.id ?? '' }); remember(rt); };
   const bookmark = (t: Tab) => { mutate((s) => addItem(s, { ...clipToItem({ url: t.url, title: t.title }), list: webList(s) })); rt.toast('Bookmarked in Web.', 'success', 'Web'); };
+  const home = String(rt.settings.get(K.home) ?? '').trim();
   return (
-    <div className="fx-stack axp-web">
+    <div className="fx-stack fx-stack--lg axp-web">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Web</p>
+          <h1>{active ? active.title : 'Browse the web'}</h1>
+          <p className="fx-muted">Open pages here in tabs, then bookmark them or clip them into a note.</p>
+        </div>
+        {active && (
+          <div className="axp-web-row">
+            <IconButton icon="star" label="Bookmark" onClick={() => bookmark(active)} />
+            <IconButton icon="edit" label="Clip to a note" onClick={() => set({ clip: active })} />
+            <IconButton icon="external" label="Open outside" onClick={() => window.open(active.url, '_blank', 'noopener')} />
+          </div>
+        )}
+      </header>
       <form className="axp-web-bar" onSubmit={(e) => { e.preventDefault(); openUrl(rt, typed); setTyped(''); }}>
-        <input className="fx-input axp-web-grow" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Address or search" aria-label="Address or search" inputMode="url" />
-        <Button size="sm" tone="primary" icon="search" type="submit">Go</Button>
+        <TextField label="Address or search" type="search" value={typed} onChange={setTyped} placeholder="example.com or a few words" className="axp-web-grow" />
+        <Button tone="primary" icon="search" type="submit">Go</Button>
       </form>
       {w.tabs.length > 0 && (
         <div className="axp-web-tabs" role="tablist">
@@ -109,14 +143,7 @@ function WebView() {
           ))}
         </div>
       )}
-      {active && (
-        <div className="axp-web-row">
-          <span className="fx-muted fx-mono axp-web-grow axp-web-url">{active.url}</span>
-          <IconButton icon="star" label="Bookmark" onClick={() => bookmark(active)} />
-          <IconButton icon="edit" label="Clip to a note" onClick={() => set({ clip: active })} />
-          <IconButton icon="external" label="Open outside" onClick={() => window.open(active.url, '_blank', 'noopener')} />
-        </div>
-      )}
+      {active && <p className="fx-muted fx-mono fx-small axp-web-url">{active.url}</p>}
       {w.clip && <ClipCard tab={w.clip} />}
       {w.tabs.length > 0 ? (
         <>
@@ -124,18 +151,26 @@ function WebView() {
           <Note tone="info">A blank page means that site doesn't allow being shown inside other apps. Use Open outside; Bookmark and Clip still work.</Note>
         </>
       ) : (
-        <div className="fx-stack">
-          <p className="fx-muted">Type an address or a search above. Pages open here in tabs; star one to keep it in your Web list.</p>
+        <>
+          <Empty icon="monitor" text="No pages open yet: type an address or a search above."
+            action={home
+              ? <Button tone="primary" icon="external" onClick={() => openUrl(rt, home)}>Open {hostOf(toUrl(home) ?? home) || home}</Button>
+              : <Button icon="sliders" onClick={() => rt.dispatch('settings.open:web')}>Set a start page</Button>} />
           {bookmarks.length > 0 && (
-            <table className="fx-table"><tbody>
-              {bookmarks.map((b) => (
-                <tr key={b.id} data-fx-row onClick={() => openUrl(rt, b.url)}>
-                  <td>{b.title}</td><td className="fx-muted">{hostOf(b.url)}</td>
-                </tr>
-              ))}
-            </tbody></table>
+            <Container title="Bookmarks" icon="star">
+              <DataGrid<Item>
+                id="amberx-web-bookmarks"
+                label="Bookmarks"
+                groups={[{ id: 'bookmarks', title: `${bookmarks.length} saved in Web`, rows: bookmarks, groups: [], fixed: true }]}
+                columns={BOOKMARK_COLUMNS}
+                rowId={(b) => b.id}
+                rowLabel={(b) => b.title}
+                hidden={[]}
+                onRowClick={(b) => openUrl(rt, b.url)}
+              />
+            </Container>
           )}
-        </div>
+        </>
       )}
     </div>
   );

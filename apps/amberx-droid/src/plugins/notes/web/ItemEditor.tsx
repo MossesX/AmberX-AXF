@@ -4,7 +4,7 @@
  * Summarize fills title, summary and tags for review before Save.
  */
 import { useState } from 'react';
-import { Button, Checkbox, IconButton, Markdown, Note, SelectField, Segmented, TextField, useRuntime } from '../../../axf/react';
+import { Button, Checkbox, Container, IconButton, Markdown, Note, SelectField, Segmented, TextField, useRuntime } from '../../../axf/react';
 import { useAiStatus, summarize } from '../../ai/web/client';
 import { PRIORITY_LABEL, SYS, isShared, pathOf, removeItems, tagList, updateItem, type Item, type ItemKind, type Priority, type Status } from './core';
 import { adoptShared, useNotes } from './store';
@@ -84,19 +84,20 @@ function EditItem({ it, close }: { it: Item; close: () => void }) {
         </div>
       )}
       {(kind === 'task' || checklist.length > 0) && (
-        <div className="fx-stack">
-          <p className="fx-small fx-muted">Checklist</p>
-          {checklist.map((c, i) => (
-            <div key={c.id} className="axp-notes-bar">
-              <Checkbox label={c.text} checked={c.done} onChange={(v) => setChecklist(checklist.map((x, j) => (j === i ? { ...x, done: v } : x)))} className="axp-notes-grow" />
-              <IconButton icon="x" label={`Remove ${c.text}`} onClick={() => setChecklist(checklist.filter((_, j) => j !== i))} />
+        <Container title="Checklist" icon="check">
+          <div className="fx-stack">
+            {checklist.map((c, i) => (
+              <div key={c.id} className="axp-notes-bar">
+                <Checkbox label={c.text} checked={c.done} onChange={(v) => setChecklist(checklist.map((x, j) => (j === i ? { ...x, done: v } : x)))} className="axp-notes-grow" />
+                <IconButton icon="x" label={`Remove ${c.text}`} onClick={() => setChecklist(checklist.filter((_, j) => j !== i))} />
+              </div>
+            ))}
+            <div className="axp-notes-bar">
+              <TextField label="Add to the checklist" value={newBox} onChange={setNewBox} className="axp-notes-grow" />
+              <Button size="sm" icon="plus" disabled={!newBox.trim()} onClick={() => { setChecklist([...checklist, { id: `c${Date.now().toString(36)}`, text: newBox.trim(), done: false }]); setNewBox(''); }}>Add</Button>
             </div>
-          ))}
-          <div className="axp-notes-bar">
-            <TextField label="Add to the checklist" value={newBox} onChange={setNewBox} className="axp-notes-grow" />
-            <Button size="sm" icon="plus" disabled={!newBox.trim()} onClick={() => { setChecklist([...checklist, { id: `c${Date.now().toString(36)}`, text: newBox.trim(), done: false }]); setNewBox(''); }}>Add</Button>
           </div>
-        </div>
+        </Container>
       )}
       {(summary || ai.ok) && <TextField label="Summary" value={summary} onChange={setSummary} rows={3} />}
       {aiNote && <Note tone="info">{aiNote}</Note>}
@@ -106,11 +107,11 @@ function EditItem({ it, close }: { it: Item; close: () => void }) {
         {it.updatedAt !== it.createdAt ? ` · changed ${new Date(it.updatedAt).toLocaleString()}` : ''}
       </p>
       <div className="axp-notes-bar">
-        <Button tone="primary" icon="save" onClick={save}>Save</Button>
-        {ai.ok && <Button icon="sparkles" busy={busy} onClick={() => void runSummary()}>Summarize</Button>}
-        <Button tone="ghost" onClick={close}>Cancel</Button>
-        <span className="axp-notes-grow" />
         <Button tone="danger" icon="trash" confirm={`Delete “${it.title}”?`} onClick={() => { if (tryDo(rt, (s) => removeItems(s, [it.id]), 'Deleted.') !== undefined) close(); }}>Delete</Button>
+        <span className="axp-notes-grow" />
+        <Button tone="ghost" onClick={close}>Cancel</Button>
+        {ai.ok && <Button icon="sparkles" busy={busy} onClick={() => void runSummary()}>Summarize</Button>}
+        <Button tone="primary" icon="save" onClick={save}>Save</Button>
       </div>
     </div>
   );

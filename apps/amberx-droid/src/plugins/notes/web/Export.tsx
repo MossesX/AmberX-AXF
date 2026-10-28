@@ -40,15 +40,16 @@ export function Export({ start, close }: { start?: string; close: () => void }) 
   };
   return (
     <div className="fx-stack">
+      <p className="fx-muted">Copy or download everything, or one list with its sub-lists, as Markdown or JSON.</p>
       <div className="axp-notes-bar">
         <SelectField label="What" value={id} onChange={setId} options={[{ value: '', label: 'Everything' }, ...listOptions(s, false)]} className="axp-notes-grow" />
         <Segmented label="Format" value={format} onChange={setFormat} options={[{ value: 'md', label: 'Markdown' }, { value: 'json', label: 'JSON' }]} />
       </div>
       <pre className="fx-code axp-notes-scroll">{out.length > 20_000 ? `${out.slice(0, 20_000)}\n…` : out}</pre>
       <div className="axp-notes-bar">
-        <Button tone="primary" icon="copy" onClick={() => void copy()}>Copy</Button>
-        <Button icon="download" onClick={download}>Download {name}</Button>
         <Button tone="ghost" onClick={close}>Close</Button>
+        <Button icon="download" onClick={download}>Download {name}</Button>
+        <Button tone="primary" icon="copy" onClick={() => void copy()}>Copy</Button>
       </div>
     </div>
   );

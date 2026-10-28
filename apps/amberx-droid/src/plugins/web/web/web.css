@@ -1,10 +1,14 @@
 /* Web plugin: layout only, theme tokens only. */
 .axp-web { min-height: 0; }
-.axp-web-bar, .axp-web-row { display: flex; align-items: center; gap: var(--fx-space); min-width: 0; }
+.axp-web-bar { display: flex; align-items: flex-end; gap: var(--fx-space); min-width: 0; }
+.axp-web-row { display: flex; align-items: center; gap: var(--fx-space); min-width: 0; }
 .axp-web-grow { flex: 1 1 auto; min-width: 0; }
-.axp-web-url { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-web-url { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-web-tabs { display: flex; gap: calc(var(--fx-space) / 2); overflow-x: auto; }
 .axp-web-tab { display: inline-flex; align-items: center; flex: 0 0 auto; max-width: 14em; }
 .axp-web-tab .fx-tab { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-web-stage { position: relative; height: 70vh; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden; }
 .axp-web-frame { width: 100%; height: 100%; border: 0; background: var(--fx-surface); }
+.axp-web-clipline { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.axp-web-empty { gap: var(--fx-space); min-height: calc(var(--fx-space) * 20); }
+.axp-web-empty > p { margin: 0; }

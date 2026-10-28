@@ -7,7 +7,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore, type MouseEvent as RMouseEvent, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
 import {
-  Button, Checkbox, Chip, IconButton, Note, Section, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary,
+  Button, Checkbox, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary,
 } from '../../../axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '../../../axf/libs/datagrid';
 import {
@@ -84,7 +84,18 @@ function Progress({ s, item }: { s: Store; item: Item }) {
   const sub = subtaskProgress(s, item.id);
   const cl = checklistProgress(item);
   const parts = [sub.total ? `${sub.done}/${sub.total} sub` : '', cl.total ? `☑ ${cl.done}/${cl.total}` : ''].filter(Boolean);
-  return parts.length ? <span className="fx-muted axp-tasks-meta">{parts.join(' · ')}</span> : null;
+  return parts.length ? <span className="fx-muted fx-small axp-tasks-meta">{parts.join(' · ')}</span> : null;
+}
+
+/** Empty state (design language §11): an icon, one sentence, one action. */
+function Empty({ icon, text, action }: { icon: string; text: string; action?: ReactNode }) {
+  return (
+    <div className="fx-empty axp-tasks-empty">
+      <Icon name={icon} size={24} />
+      <p className="fx-muted">{text}</p>
+      {action}
+    </div>
+  );
 }
 
 /** One line: tick, title (opens the editor), chips. `select` = tap toggles selection instead. */
@@ -180,7 +191,7 @@ function Editor({ id, close }: { id: string; close: () => void }) {
       {item.parent && own.items[item.parent] && (
         <p className="fx-muted">Subtask of <button type="button" data-fx-row className="axp-tasks-link" onClick={() => rt.openDialog(EDIT, { id: item.parent })}>{own.items[item.parent]!.title}</button></p>
       )}
-      <Section title={`Checklist (${checklistProgress(item).done}/${item.checklist.length})`}>
+      <Container title={`Checklist (${checklistProgress(item).done}/${item.checklist.length})`} icon="check">
         <div className="fx-stack">
           {item.checklist.map((c, i) => (
             <div key={c.id} className="axp-tasks-check">
@@ -197,17 +208,18 @@ function Editor({ id, close }: { id: string; close: () => void }) {
             <Button icon="plus" type="submit" disabled={!check.trim()}>Add</Button>
           </form>
         </div>
-      </Section>
-      <Section title={`Subtasks (${subtaskProgress(own, id).done}/${subs.length})`}>
+      </Container>
+      <Container title={`Subtasks (${subtaskProgress(own, id).done}/${subs.length})`} icon="list">
         <div className="fx-stack">
           {subs.map((sub) => <TaskRow key={sub.id} s={own} item={sub} selecting={false} selected={false} onSelect={() => undefined} />)}
           <QuickAddForm parent={id} />
         </div>
-      </Section>
+      </Container>
       <div className="axp-tasks-addline">
         <Button tone="danger" icon="trash" confirm={`Delete “${item.title}”${subs.length ? ` and its ${subs.length} subtasks` : ''}?`}
           onClick={() => { tryMutate(rt, (s) => removeItems(s, [id])); close(); }}>Delete</Button>
-        <Button onClick={() => { if (changed) saveText(); close(); }}>Done</Button>
+        <span className="axp-tasks-grow" />
+        <Button tone="primary" onClick={() => { if (changed) saveText(); close(); }}>Done</Button>
       </div>
     </div>
   );
@@ -247,10 +259,9 @@ function TreeMode({ s, items, selecting, selected, onSelect }: { s: Store; items
     const seen = new Set<string>();
     for (const it of here.sort(byDue)) walk(it, 0, seen);
     out.push(
-      <section key={t.list.id} className="axp-tasks-group">
-        <p className="fx-eyebrow">{t.path} <span className="fx-muted">· {here.length}</span></p>
+      <Container key={t.list.id} title={t.path} icon="list" actions={<span className="fx-muted">{here.length}</span>}>
         <div className="axp-tasks-rows">{[...lines]}</div>
-      </section>,
+      </Container>,
     );
   }
   return <div className="fx-stack">{out}</div>;
@@ -300,7 +311,7 @@ function TasksView() {
         <div>
           <p className="fx-eyebrow">Tasks</p>
           <h1>{TABS.find((t) => t.id === tab)!.label}</h1>
-          <p className="fx-muted">{counts.today ? `${counts.today} due today or overdue.` : 'Nothing due today.'}{snap.queued ? ` ${snap.queued} change${snap.queued === 1 ? '' : 's'} waiting for axHub.` : ''}</p>
+          <p className="fx-muted">{counts.today ? `${counts.today} due today or overdue` : 'Nothing due today'}{snap.queued ? `, ${snap.queued} change${snap.queued === 1 ? '' : 's'} waiting for axHub` : ''}.</p>
         </div>
         <Button icon="refresh" onClick={() => void load()}>Sync</Button>
       </header>
@@ -315,22 +326,26 @@ function TasksView() {
         ))}
       </div>
 
-      <QuickAddForm defaultList={f.list} />
+      <Container title="Add a task" icon="plus">
+        <QuickAddForm defaultList={f.list} />
+      </Container>
 
-      <div className="axp-tasks-filters">
-        <SelectField label="List" value={f.list ?? ''} empty="Every list" onChange={(v) => setF({ ...f, list: v || undefined })} options={listOptions(s)} />
-        <SelectField label="Priority" value={String(f.priority ?? -1)} onChange={(v) => setF({ ...f, priority: Number(v) as Priority | -1 })} options={[{ value: '-1', label: 'Any' }, ...PRIORITY_OPTIONS]} />
-        <SelectField label="Tag" value={f.tag ?? ''} empty="Any tag" onChange={(v) => setF({ ...f, tag: v || undefined })} options={tags.map((t) => ({ value: t, label: `#${t}` }))} />
-        <TextField label="Search" type="search" value={f.q ?? ''} onChange={(v) => setF({ ...f, q: v })} placeholder="Find…" />
-      </div>
-      <div className="axp-tasks-addline">
-        <Segmented label="Show as" size="sm" value={mode} onChange={setMode} options={[{ value: 'tree', label: 'Tree', icon: 'list' }, { value: 'grid', label: 'Grid', icon: 'grid' }]} />
-        <Button size="sm" tone={selecting ? 'primary' : 'neutral'} icon="check" onClick={() => { setSelecting(!selecting); setSelected(new Set()); }}>{selecting ? 'Stop selecting' : 'Select'}</Button>
-      </div>
+      <Container title="Filter and show" icon="sliders" collapsible
+        actions={<Button size="sm" tone={selecting ? 'primary' : 'neutral'} icon="check" onClick={() => { setSelecting(!selecting); setSelected(new Set()); }}>{selecting ? 'Stop selecting' : 'Select'}</Button>}>
+        <div className="fx-stack">
+          <div className="axp-tasks-filters">
+            <SelectField label="List" value={f.list ?? ''} empty="Every list" onChange={(v) => setF({ ...f, list: v || undefined })} options={listOptions(s)} />
+            <SelectField label="Priority" value={String(f.priority ?? -1)} onChange={(v) => setF({ ...f, priority: Number(v) as Priority | -1 })} options={[{ value: '-1', label: 'Any' }, ...PRIORITY_OPTIONS]} />
+            <SelectField label="Tag" value={f.tag ?? ''} empty="Any tag" onChange={(v) => setF({ ...f, tag: v || undefined })} options={tags.map((t) => ({ value: t, label: `#${t}` }))} />
+            <TextField label="Search" type="search" value={f.q ?? ''} onChange={(v) => setF({ ...f, q: v })} placeholder="Find…" />
+          </div>
+          <Segmented label="Show as" size="sm" value={mode} onChange={setMode} options={[{ value: 'tree', label: 'Tree', icon: 'list' }, { value: 'grid', label: 'Grid', icon: 'grid' }]} />
+        </div>
+      </Container>
 
       {selecting && (
-        <div className="axp-tasks-bulk fx-stack">
-          <p className="fx-muted">{ids.length} selected · <button type="button" data-fx-row className="axp-tasks-link" onClick={() => setSelected(new Set(items.map((i) => i.id)))}>select all {items.length}</button></p>
+        <Container title={`${ids.length} selected`} icon="check"
+          actions={<Button size="sm" tone="quiet" onClick={() => setSelected(new Set(items.map((i) => i.id)))}>Select all {items.length}</Button>}>
           <div className="axp-tasks-filters">
             <Button size="sm" icon="check-circle" disabled={!ids.length} onClick={() => bulk((st) => setDoneMany(st, ids, tab !== 'done'), tab === 'done' ? 'Reopened' : 'Done')}>{tab === 'done' ? 'Reopen' : 'Done'}</Button>
             <SelectField label="Move to" value={bulkList} empty="Pick a list" onChange={setBulkList} options={listOptions(s)} />
@@ -339,28 +354,33 @@ function TasksView() {
             <Button size="sm" icon="clock" disabled={!ids.length} onClick={() => bulk((st) => setDueMany(st, ids, bulkDue), bulkDue ? 'Due set' : 'Due cleared')}>Set due</Button>
             <Button size="sm" tone="danger" icon="trash" disabled={!ids.length} confirm={`Delete ${ids.length} (and their subtasks)?`} onClick={() => bulk((st) => removeItems(st, ids), 'Deleted')}>Delete</Button>
           </div>
-        </div>
+        </Container>
       )}
 
       {!snap.loaded && snap.status === 'loading' ? <p className="fx-muted">Loading from axHub…</p>
-        : items.length === 0 ? <p className="fx-muted">{tab === 'done' ? 'Nothing finished yet.' : tab === 'today' ? 'Nothing due today. 🎉' : 'Nothing here.'}</p>
+        : items.length === 0 ? (
+          <Empty icon="check-circle" text={tab === 'done' ? 'Nothing finished yet.' : tab === 'today' ? 'Nothing due today.' : 'Nothing here yet.'}
+            action={<Button tone="primary" icon="plus" onClick={() => rt.openDialog(ADD)}>New task</Button>} />
+        )
           : mode === 'tree' ? <TreeMode s={s} items={items} selecting={selecting} selected={selected} onSelect={toggle} />
             : (
-              <DataGrid<Item>
-                id="amberx-tasks"
-                label="Tasks"
-                groups={[{ id: tab, title: TABS.find((t) => t.id === tab)!.label, rows: sorted, groups: [], fixed: true }]}
-                columns={columns(s, now)}
-                rowId={(r) => r.id}
-                rowLabel={(r) => r.title}
-                hidden={[]}
-                sort={sort}
-                onSort={(col) => setSort((cur) => (!col ? null : cur?.col === col ? (cur.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 }))}
-                rowTone={(r) => (r.status === 'done' ? 'muted' : dueLabel(r.due, now).overdue ? 'danger' : r.status === 'doing' ? 'accent' : '')}
-                multi={selecting ? ids : []}
-                onRowClick={(r: Item, _e: RMouseEvent) => (selecting ? toggle(r.id) : rt.openDialog(EDIT, { id: r.id }))}
-                empty={<p className="fx-muted">Nothing here.</p>}
-              />
+              <Container title={TABS.find((t) => t.id === tab)!.label} icon="grid">
+                <DataGrid<Item>
+                  id="amberx-tasks"
+                  label="Tasks"
+                  groups={[{ id: tab, title: `${items.length} item${items.length === 1 ? '' : 's'}`, rows: sorted, groups: [], fixed: true }]}
+                  columns={columns(s, now)}
+                  rowId={(r) => r.id}
+                  rowLabel={(r) => r.title}
+                  hidden={[]}
+                  sort={sort}
+                  onSort={(col) => setSort((cur) => (!col ? null : cur?.col === col ? (cur.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 }))}
+                  rowTone={(r) => (r.status === 'done' ? 'muted' : dueLabel(r.due, now).overdue ? 'danger' : r.status === 'doing' ? 'accent' : '')}
+                  multi={selecting ? ids : []}
+                  onRowClick={(r: Item, _e: RMouseEvent) => (selecting ? toggle(r.id) : rt.openDialog(EDIT, { id: r.id }))}
+                  empty={<Empty icon="check-circle" text="Nothing here yet." />}
+                />
+              </Container>
             )}
     </div>
   );

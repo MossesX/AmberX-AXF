@@ -622,5 +622,40 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(!/#[0-9a-f]{3,6}\b|\d+px/i.test(readFileSync(new URL('./src/plugins/dictation/web/dictation.css', import.meta.url), 'utf8')), 'dictation CSS uses tokens only');
 }
 
+// design language
+/* ---------------------------------------------------------------- design language (framework/spec/DESIGN-LANGUAGE.md §11, §12) */
+{
+  const { readdirSync: dir } = await import('node:fs');
+  const PLUGINS = ['notes', 'tasks', 'dictation', 'voice', 'web'];
+  for (const p of PLUGINS) {
+    const base = new URL(`./src/plugins/${p}/web/`, import.meta.url);
+    const files = dir(base).filter((f) => f.endsWith('.tsx'));
+    const srcs = Object.fromEntries(files.map((f) => [f, readFileSync(new URL(f, base), 'utf8')]));
+    const all = Object.values(srcs).join('\n');
+    // every page (a view's component) opens with the page head: eyebrow, h1, one sentence
+    const index = srcs['index.tsx'];
+    const views = [...index.matchAll(/render: \(\) => <([A-Z][A-Za-z]+) \/>/g)].map((m) => m[1]);
+    ok(views.length > 0, `${p}: has at least one page`);
+    for (const v of views) {
+      const file = Object.entries(srcs).find(([, src]) => new RegExp(`function ${v}\\(`).test(src));
+      ok(!!file, `${p}: page ${v} is defined in the plugin`);
+      if (!file) continue;
+      const body = file[1].slice(file[1].search(new RegExp(`function ${v}\\(`)));
+      const head = body.slice(body.indexOf('fx-pagehead'), body.indexOf('</header>'));
+      ok(body.includes('<header className="fx-pagehead">'), `${p}: page ${v} starts with fx-pagehead`);
+      ok(head.includes('className="fx-eyebrow"') && head.includes('<h1>') && head.includes('<p className="fx-muted">'), `${p}: page ${v} head has an eyebrow, a title and a description`);
+    }
+    ok(!/<table\b/.test(all), `${p}: tables go through the framework DataGrid, never <table>`);
+    ok(!/import \{[^}]*\bSection\b[^}]*\} from '\.\.\/\.\.\/\.\.\/axf\/react'/.test(all), `${p}: sections are Container cards, not Section`);
+    ok(!/className="fx-card"/.test(all), `${p}: no hand-written fx-card sections`);
+    ok(!/className="fx-card (?!axp-notes-card")/.test(all), `${p}: only note cards are hand-made cards`);
+    for (const f of dir(base).filter((x) => x.endsWith('.css'))) {
+      const css = readFileSync(new URL(f, base), 'utf8');
+      ok(!/font-size|#[0-9a-f]{3,8}\b|rgba?\(|\b\d+(\.\d+)?px\b/i.test(css), `${p}/${f}: layout and theme tokens only (no font sizes, colours or px)`);
+      ok(!/text-transform:\s*uppercase/.test(css), `${p}/${f}: uppercase only in eyebrows`);
+    }
+  }
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);

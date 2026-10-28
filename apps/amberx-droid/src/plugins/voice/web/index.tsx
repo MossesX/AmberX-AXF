@@ -5,9 +5,11 @@
  * the user's own; the **Voice commands** page switches and rewords them (overrides in settings, never code edits).
  * A sentence no command explains better goes to the notes intent path (local parser, then the AI when connected).
  */
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Note, Section, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Container, Icon, IconButton, Note, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { DataGrid, type GridColumn, type GridGroup } from '../../../axf/libs/datagrid';
+import './voice.css';
 import { isNative, native } from '../../../native';
 import { flatTree, localDay, parseIntent, type Intent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
@@ -178,6 +180,35 @@ export async function listenOnce(rt: AxfRuntime) {
 
 const useSetting = (rt: AxfRuntime, key: string) => useSyncExternalStore(rt.settings.subscribe, () => rt.settings.get(key));
 
+/** Empty state (design language §11): an icon, one sentence, one action. */
+function Empty({ icon, text, action }: { icon: string; text: string; action?: ReactNode }) {
+  return (
+    <div className="fx-empty axp-voice-empty">
+      <Icon name={icon} size={24} />
+      <p className="fx-muted">{text}</p>
+      {action}
+    </div>
+  );
+}
+
+/** “first” or “second”, “third” — the phrases of a command as one line. */
+function Phrases({ list }: { list: string[] }) {
+  return <span>“{list[0]}”{list.length > 1 ? <span className="fx-muted"> or {list.slice(1, 3).map((p) => `“${p}”`).join(', ')}</span> : null}</span>;
+}
+
+const W = { wide: 'minmax(calc(var(--fx-space) * 16), 3fr)', mid: 'minmax(calc(var(--fx-space) * 10), 2fr)', narrow: 'calc(var(--fx-space) * 9)' } as const;
+const oneGroup = <R,>(id: string, title: string, rows: R[]): GridGroup<R>[] => [{ id, title, rows, groups: [], fixed: true }];
+
+const TURN_COLUMNS: GridColumn<Turn>[] = [
+  { id: 'heard', label: 'Heard', width: W.wide, fixed: true, render: (t) => <span>“{t.heard}”</span> },
+  { id: 'did', label: 'What it did', width: W.mid, render: (t) => <span className="fx-muted">{t.ok ? '' : '✗ '}{t.did}</span> },
+];
+
+const SAY_COLUMNS: GridColumn<VoiceCommand>[] = [
+  { id: 'say', label: 'Say', width: W.wide, fixed: true, render: (c) => <Phrases list={c.phrases} /> },
+  { id: 'does', label: 'Does', width: W.mid, render: (c) => <span className="fx-mono fx-muted">{c.action || 'reply'}</span> },
+];
+
 function VoiceView() {
   const rt = useRuntime();
   const v = useVoice();
@@ -186,6 +217,7 @@ function VoiceView() {
   const wake = phraseList(rt.settings.get(K.wake));
   const { errors } = parseUserCommands(rt.settings.get(K.commands));
   const commands = allCommands(rt);
+  const shown = commands.slice(0, 40);
   useEffect(() => { void native.permissions().catch(() => undefined); }, []);
   return (
     <div className="fx-stack fx-stack--lg">
@@ -201,29 +233,21 @@ function VoiceView() {
       </header>
       {!isNative() && <Note tone="info">In a browser the mic works while this page is open. The Android app also listens with the screen off.</Note>}
       {errors.length > 0 && <Note tone="warning">{errors.join(' ')}</Note>}
-      <Section title="Just now">
-        {v.turns.length === 0 ? <p className="fx-muted">Nothing said yet.</p> : (
-          <table className="fx-table"><tbody>
-            {v.turns.map((t) => (
-              <tr key={t.at}>
-                <td>“{t.heard}”</td>
-                <td className="fx-muted">{t.ok ? '' : '✗ '}{t.did}</td>
-              </tr>
-            ))}
-          </tbody></table>
-        )}
-      </Section>
-      <Section title={`What you can say (${commands.length})`} aside={<Button size="sm" icon="sliders" onClick={() => rt.navigate('voice-commands')}>Voice commands</Button>}>
-        <table className="fx-table"><tbody>
-          {commands.slice(0, 40).map((c) => (
-            <tr key={`${c.module}:${c.id}`}>
-              <td>“{c.phrases[0]}”{c.phrases.length > 1 ? <span className="fx-muted"> or {c.phrases.slice(1, 3).map((p) => `“${p}”`).join(', ')}</span> : null}</td>
-              <td className="fx-mono fx-muted">{c.action || 'reply'}</td>
-            </tr>
-          ))}
-        </tbody></table>
+      <Container title="Just now" icon="clock">
+        {v.turns.length === 0
+          ? <Empty icon="mic" text="Nothing said yet." action={<Button icon="mic" disabled={v.busy} onClick={() => void listenOnce(rt)}>Speak</Button>} />
+          : (
+            <DataGrid<Turn> id="amberx-voice-turns" label="What was said" groups={oneGroup('turns', `${v.turns.length} this session`, v.turns)}
+              columns={TURN_COLUMNS} rowId={(t) => t.at} rowLabel={(t) => t.heard} hidden={[]} rowTone={(t) => (t.ok ? 'muted' : 'danger')} />
+          )}
+      </Container>
+      <Container title={`What you can say (${commands.length})`} icon="list"
+        actions={<Button size="sm" icon="sliders" onClick={() => rt.navigate('voice-commands')}>Voice commands</Button>}>
+        <DataGrid<VoiceCommand> id="amberx-voice-say" label="What you can say" groups={oneGroup('say', `${shown.length} of ${commands.length}`, shown)}
+          columns={SAY_COLUMNS} rowId={(c) => `${c.module}:${c.id}`} rowLabel={(c) => c.phrases[0] ?? c.id} hidden={[]}
+          empty={<Empty icon="mic" text="No commands are switched on." action={<Button icon="sliders" onClick={() => rt.navigate('voice-commands')}>Voice commands</Button>} />} />
         {commands.length > 40 && <p className="fx-muted">…and {commands.length - 40} more on the Voice commands page.</p>}
-      </Section>
+      </Container>
     </div>
   );
 }
@@ -235,7 +259,7 @@ function TryBox({ rt, commands, value, onChange }: { rt: AxfRuntime; commands: V
   const local = heard && notes ? parseIntent(heard) : null;
   const d = heard ? decide(heard, commands, { localIntent: !!local, ai: notes && aiReady() }) : null;
   return (
-    <Section title="Try a sentence">
+    <Container title="Try a sentence" icon="search">
       <TextField label="Say or type" value={value} onChange={onChange} placeholder="note in work: fix the login page" type="search" />
       {d && (
         <p className={d.route === 'command' || local ? '' : 'fx-muted'}>
@@ -248,72 +272,68 @@ function TryBox({ rt, commands, value, onChange }: { rt: AxfRuntime; commands: V
           {' '}<span className="fx-muted">({d.why})</span>
         </p>
       )}
-    </Section>
+    </Container>
   );
 }
 
-function CommandRow({ c, onPatch }: { c: Effective; onPatch: (patch: { on?: boolean; phrases?: string[]; reply?: string } | null) => void }) {
-  const [open, setOpen] = useState(false);
+type Patch = { on?: boolean; phrases?: string[]; reply?: string } | null;
+
+/** The opened row of a command: its phrases and reply. */
+function CommandEditor({ c, onPatch, done }: { c: Effective; onPatch: (patch: Patch) => void; done: () => void }) {
   const [phrases, setPhrases] = useState(c.phrases.join(', '));
   const [reply, setReply] = useState(c.reply ?? '');
   useEffect(() => { setPhrases(c.phrases.join(', ')); setReply(c.reply ?? ''); }, [c.phrases.join('|'), c.reply]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <>
-      <tr>
-        <td><Switch label={`Listen for ${c.phrases[0]}`} hideLabel checked={c.on} onChange={(on) => onPatch({ on })} /></td>
-        <td data-fx-row onClick={() => setOpen(!open)}>
-          “{c.phrases[0]}”{c.phrases.length > 1 ? <span className="fx-muted"> or {c.phrases.slice(1, 3).map((p) => `“${p}”`).join(', ')}</span> : null}
-          {c.edited && <span className="fx-chip">changed</span>}
-          <div className="fx-mono fx-muted">{c.action || 'reply only'}</div>
-        </td>
-      </tr>
-      {open && (
-        <tr><td colSpan={2}>
-          <div className="fx-stack">
-            <TextField label="Phrases" hint="Comma separated. Any of them, anywhere in a sentence." value={phrases} onChange={setPhrases} />
-            <TextField label="Reply" hint="What AmberX says back. {waiting} = approvals waiting." value={reply} onChange={setReply} />
-            <div className="fx-row fx-row--wrap">
-              <Button size="sm" tone="primary" onClick={() => { onPatch({ phrases: phraseList(phrases, 10), reply }); setOpen(false); }}>Save</Button>
-              <Button size="sm" tone="quiet" disabled={!c.edited} onClick={() => { onPatch(null); setOpen(false); }}>Back to default</Button>
-            </div>
-          </div>
-        </td></tr>
-      )}
-    </>
-  );
-}
-
-function CommandTable({ list, onPatch }: { list: Effective[]; onPatch: (c: Effective, patch: { on?: boolean; phrases?: string[]; reply?: string } | null) => void }) {
-  const byOwner = new Map<string, Effective[]>();
-  for (const c of list) byOwner.set(c.owner ?? '', [...(byOwner.get(c.owner ?? '') ?? []), c]);
-  if (!list.length) return <p className="fx-muted">None here yet.</p>;
-  return (
-    <div className="fx-stack">
-      {[...byOwner.entries()].map(([owner, cs]) => (
-        <div key={owner || '-'}>
-          {byOwner.size > 1 && <p className="fx-eyebrow">{owner || 'Other'} ({cs.filter((c) => c.on).length}/{cs.length} on)</p>}
-          <table className="fx-table"><tbody>
-            {cs.map((c) => <CommandRow key={c.id} c={c} onPatch={(p) => onPatch(c, p)} />)}
-          </tbody></table>
-        </div>
-      ))}
+    <div className="fx-stack axp-voice-detail">
+      <TextField label="Phrases" hint="Comma separated. Any of them, anywhere in a sentence." value={phrases} onChange={setPhrases} />
+      <TextField label="Reply" hint="What AmberX says back. {waiting} = approvals waiting." value={reply} onChange={setReply} />
+      <div className="fx-row fx-row--wrap">
+        <Button size="sm" tone="quiet" disabled={!c.edited} onClick={() => { onPatch(null); done(); }}>Back to default</Button>
+        <Button size="sm" tone="primary" onClick={() => { onPatch({ phrases: phraseList(phrases, 10), reply }); done(); }}>Save</Button>
+      </div>
     </div>
   );
 }
 
-function Examples({ items, onTry }: { items: { say: string; does: string }[]; onTry: (s: string) => void }) {
+const rowKey = (c: { module?: string; id: string }) => `${c.module ?? ''}:${c.id}`;
+
+function CommandTable({ list, onPatch }: { list: Effective[]; onPatch: (c: Effective, patch: Patch) => void }) {
+  const [open, setOpen] = useState<string[]>([]);
+  const toggle = (id: string) => setOpen((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
+  const byOwner = new Map<string, Effective[]>();
+  for (const c of list) byOwner.set(c.owner ?? '', [...(byOwner.get(c.owner ?? '') ?? []), c]);
+  if (!list.length) return <Empty icon="mic" text="No commands here yet." />;
+  const columns: GridColumn<Effective>[] = [
+    {
+      id: 'on', label: 'On', width: W.narrow, fixed: true,
+      render: (c) => <span onClick={(e) => e.stopPropagation()}><Switch label={`Listen for ${c.phrases[0]}`} hideLabel checked={c.on} onChange={(on) => onPatch(c, { on })} /></span>,
+    },
+    { id: 'say', label: 'Say', width: W.wide, fixed: true, render: (c) => <span><Phrases list={c.phrases} />{c.edited && <> <span className="fx-chip">changed</span></>}</span> },
+    { id: 'does', label: 'Does', width: W.mid, render: (c) => <span className="fx-mono fx-muted">{c.action || 'reply only'}</span> },
+  ];
+  const groups: GridGroup<Effective>[] = [...byOwner.entries()].map(([owner, cs]) => ({
+    id: owner || '-', title: `${owner || (byOwner.size > 1 ? 'Other' : 'Commands')} (${cs.filter((c) => c.on).length}/${cs.length} on)`, rows: cs, groups: [], fixed: true,
+  }));
   return (
-    <Section title="Sentences it understands">
-      <p className="fx-muted">Built into the notes plugin: no setup. Swap in your own words and list names. Tap one to try it.</p>
-      <table className="fx-table"><tbody>
-        {items.map((e) => (
-          <tr key={e.say} data-fx-row onClick={() => onTry(e.say)}>
-            <td>“{e.say}”</td>
-            <td className="fx-muted">{e.does}</td>
-          </tr>
-        ))}
-      </tbody></table>
-    </Section>
+    <DataGrid<Effective> id="amberx-voice-commands" label="Voice commands" groups={groups} columns={columns} rowId={rowKey} rowLabel={(c) => c.phrases[0] ?? c.id} hidden={[]}
+      rowTone={(c) => (c.on ? 'accent' : 'muted')} expanded={open} onToggleExpand={toggle} onRowClick={(c) => toggle(rowKey(c))}
+      renderDetail={(c) => <CommandEditor c={c} onPatch={(p) => onPatch(c, p)} done={() => toggle(rowKey(c))} />} />
+  );
+}
+
+type Example = { say: string; does: string };
+const EXAMPLE_COLUMNS: GridColumn<Example>[] = [
+  { id: 'say', label: 'Say', width: W.wide, fixed: true, render: (e) => <span>“{e.say}”</span> },
+  { id: 'does', label: 'Does', width: W.mid, render: (e) => <span className="fx-muted">{e.does}</span> },
+];
+
+function Examples({ items, onTry }: { items: Example[]; onTry: (s: string) => void }) {
+  return (
+    <Container title="Sentences it understands" icon="sparkles">
+      <p className="fx-muted">Built into the notes plugin, no setup: swap in your own words and list names, and tap one to try it.</p>
+      <DataGrid<Example> id="amberx-voice-examples" label="Example sentences" groups={oneGroup('examples', `${items.length} examples`, items)}
+        columns={EXAMPLE_COLUMNS} rowId={(e) => e.say} rowLabel={(e) => e.say} hidden={[]} onRowClick={(e) => onTry(e.say)} />
+    </Container>
   );
 }
 
@@ -335,8 +355,13 @@ function Yours({ rt }: { rt: AxfRuntime }) {
     save([...mine, { id: `mine.${Date.now().toString(36)}`, phrases: phraseList(form.phrases, 10), action: form.action.trim(), ...(form.reply.trim() ? { reply: form.reply.trim() } : {}) }]);
     setForm({ phrases: '', action: '', reply: '' }); setErr(null);
   };
+  const columns: GridColumn<MyCommand>[] = [
+    { id: 'say', label: 'Say', width: W.wide, fixed: true, render: (m) => <span>“{m.phrases.join('”, “')}”</span> },
+    { id: 'does', label: 'Does', width: W.mid, render: (m) => <span className="fx-mono fx-muted">{m.action || 'reply only'}</span> },
+    { id: 'remove', label: 'Remove', width: W.narrow, align: 'end', render: (m) => <IconButton icon="trash" label={`Remove ${m.phrases[0] ?? ''}`} onClick={() => save(mine.filter((x) => x.id !== m.id))} /> },
+  ];
   return (
-    <Section title="Add your own">
+    <Container title="Add your own" icon="plus">
       <div className="fx-stack">
         <TextField label="Phrases" hint="Comma separated." value={form.phrases} onChange={(phrases) => setForm({ ...form, phrases })} placeholder="good morning, morning" />
         <SelectField label="Does" value={form.action} options={options} onChange={(action) => setForm({ ...form, action })} />
@@ -344,18 +369,12 @@ function Yours({ rt }: { rt: AxfRuntime }) {
         {err && <Note tone="warning">{err}</Note>}
         <div><Button tone="primary" icon="plus" onClick={add}>Add command</Button></div>
         {mine.length > 0 && (
-          <table className="fx-table"><tbody>
-            {mine.map((m) => (
-              <tr key={m.id}>
-                <td>“{m.phrases.join('”, “')}”<div className="fx-mono fx-muted">{m.action || 'reply only'}</div></td>
-                <td><Button size="sm" tone="quiet" icon="trash" onClick={() => save(mine.filter((x) => x.id !== m.id))}>Remove</Button></td>
-              </tr>
-            ))}
-          </tbody></table>
+          <DataGrid<MyCommand> id="amberx-voice-mine" label="Your commands" groups={oneGroup('mine', `${mine.length} of yours`, mine)}
+            columns={columns} rowId={(m) => m.id} rowLabel={(m) => m.phrases[0] ?? m.id} hidden={[]} />
         )}
         {errors.length > 0 && <Note tone="warning">Typed commands in settings: {errors.join(' ')}</Note>}
       </div>
-    </Section>
+    </Container>
   );
 }
 
@@ -370,7 +389,7 @@ function VoiceCommandsView() {
   const all = effectiveCommands(rt);
   const overrides = parseOverrides(rt.settings.get(K.overrides));
   const inTab = all.filter((c) => c.group === tab);
-  const patch = (c: Effective, p: { on?: boolean; phrases?: string[]; reply?: string } | null) => {
+  const patch = (c: Effective, p: Patch) => {
     const base = managedCommands(rt).find((m) => m.id === c.id) ?? c;
     rt.settings.set(K.overrides, JSON.stringify(p ? setOverride(overrides, base, p) : resetOverrides(overrides, [c.id])));
   };
@@ -380,7 +399,7 @@ function VoiceCommandsView() {
         <div>
           <p className="fx-eyebrow">Voice control</p>
           <h1>Voice commands</h1>
-          <p className="fx-muted">{all.filter((c) => c.on).length} of {all.length} on. Pages and actions are read from the app, so new ones show up by themselves.</p>
+          <p className="fx-muted">{all.filter((c) => c.on).length} of {all.length} on, with pages and actions read from the app so new ones show up by themselves.</p>
         </div>
         <Button icon="mic" onClick={() => void listenOnce(rt)}>Speak</Button>
       </header>
@@ -397,13 +416,14 @@ function VoiceCommandsView() {
       {(tab === 'notes' || tab === 'tasks') && !notesOn(rt) && <Note tone="info">Install the Notes plugin to use these sentences.</Note>}
       {tab === 'user' && <Yours rt={rt} />}
       {tab === 'actions' && <Note tone="info">Every action the app can run without extra details. Most start off: switch on the ones you want to say.</Note>}
-      <Section
+      <Container
         title={GROUPS.find((g) => g.id === tab)!.label}
-        aside={<Button size="sm" tone="quiet" icon="undo" disabled={!inTab.some((c) => c.edited)} confirm="Put this tab's commands back to their defaults?" undoable={false}
+        icon="mic"
+        actions={<Button size="sm" tone="quiet" icon="undo" disabled={!inTab.some((c) => c.edited)} confirm="Put this tab's commands back to their defaults?" undoable={false}
           onClick={() => rt.settings.set(K.overrides, JSON.stringify(resetOverrides(overrides, inTab.map((c) => c.id))))}>Reset to defaults</Button>}
       >
         <CommandTable list={inTab} onPatch={patch} />
-      </Section>
+      </Container>
     </div>
   );
 }

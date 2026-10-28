@@ -4,7 +4,7 @@
  * lists (Inbox, Plugins, Voice notes) refuse rename/remove in core; the message shows as a toast.
  */
 import { useState } from 'react';
-import { Button, Icon, Note, SelectField, TextField, useRuntime } from '../../../axf/react';
+import { Button, Container, Icon, Note, SelectField, TextField, useRuntime } from '../../../axf/react';
 import { SYS, addList, canMoveList, childrenOf, flatTree, isShared, itemsIn, moveList, pathOf, removeList, renameList, reorderLists, type Store } from './core';
 import { useNotes } from './store';
 import { tryDo } from './NotesView';
@@ -45,7 +45,8 @@ export function ListsManager({ start, close }: { start?: string; close: () => vo
 
   return (
     <div className="fx-stack axp-notes-manager">
-      <div className="fx-card axp-notes-pad axp-notes-tree axp-notes-scroll">
+      <p className="fx-muted">Pick a list to rename, move, reorder or delete it, or make a new one at the top or inside it.</p>
+      <div className="axp-notes-tree axp-notes-scroll axp-notes-framed">
         {tree.map((t) => (
           <button key={t.list.id} type="button" data-fx-row aria-pressed={t.list.id === sel} className={`axp-notes-tree__name${t.list.id === sel ? ' is-on' : ''}`} onClick={() => { setSel(t.list.id); setRename(''); setMoveTo(''); setItemsTo(''); }}>
             <span className="axp-notes-indent" aria-hidden>{Array.from({ length: t.depth }, (_, i) => <span key={i} className="axp-notes-indent__step" />)}</span>
@@ -63,36 +64,37 @@ export function ListsManager({ start, close }: { start?: string; close: () => vo
       </div>
 
       {l && (
-        <div className="fx-card axp-notes-pad fx-stack">
-          <p><strong>{pathOf(s, l.id)}</strong> <span className="fx-muted fx-small">{itemsIn(s, l.id).length} items · {childrenOf(s, l.id).length} lists</span></p>
-          {system && <Note tone="info">{l.name} is built in: it can't be renamed, moved or removed (you can still add lists inside it).</Note>}
-          {pluginList && <Note tone="info">This list belongs to a plugin: it keeps the plugin's name and comes back if removed. You can move it and add lists inside it.</Note>}
-          <div className="axp-notes-bar">
-            <Button size="sm" icon="chevron-up" onClick={() => shift(-1)}>Up</Button>
-            <Button size="sm" icon="chevron-down" onClick={() => shift(1)}>Down</Button>
-            <Button size="sm" icon="external" onClick={() => { setUi({ tab: 'lists', list: l.id }); rt.navigate('notes'); close(); }}>Open</Button>
+        <Container title={pathOf(s, l.id)} icon={l.icon || 'list'} actions={<span className="fx-muted fx-small">{itemsIn(s, l.id).length} items · {childrenOf(s, l.id).length} lists</span>}>
+          <div className="fx-stack">
+            {system && <Note tone="info">{l.name} is built in: it can't be renamed, moved or removed (you can still add lists inside it).</Note>}
+            {pluginList && <Note tone="info">This list belongs to a plugin: it keeps the plugin's name and comes back if removed. You can move it and add lists inside it.</Note>}
+            <div className="axp-notes-bar">
+              <Button size="sm" icon="chevron-up" onClick={() => shift(-1)}>Up</Button>
+              <Button size="sm" icon="chevron-down" onClick={() => shift(1)}>Down</Button>
+              <Button size="sm" icon="external" onClick={() => { setUi({ tab: 'lists', list: l.id }); rt.navigate('notes'); close(); }}>Open</Button>
+            </div>
+            {!system && (
+              <>
+                {!pluginList && <div className="axp-notes-bar">
+                  <TextField label="Rename" value={rename} onChange={setRename} placeholder={l.name} className="axp-notes-grow" />
+                  <Button size="sm" icon="edit" disabled={!rename.trim()} onClick={() => { if (tryDo(rt, (st) => renameList(st, l.id, rename)) !== undefined) setRename(''); }}>Rename</Button>
+                </div>}
+                <div className="axp-notes-bar">
+                  <SelectField label="Move under" value={moveTo} options={parents(s)} onChange={setMoveTo} className="axp-notes-grow" />
+                  <Button size="sm" icon="move" onClick={() => tryDo(rt, (st) => moveList(st, l.id, moveTo || null), 'Moved.')}>Move</Button>
+                </div>
+                {!pluginList && <div className="axp-notes-bar">
+                  <SelectField label="Delete it; its items go to" value={itemsTo || (l.parent ?? SYS.inbox)} onChange={setItemsTo}
+                    options={tree.filter((t) => t.list.id !== l.id).map((t) => ({ value: t.list.id, label: t.path }))} className="axp-notes-grow" />
+                  <Button size="sm" tone="danger" icon="trash" confirm={`Delete the list ${l.name}? Its lists move up a level and its items go to ${s.lists[itemsTo || (l.parent ?? SYS.inbox)]?.name ?? 'Inbox'}.`}
+                    onClick={() => { const to = itemsTo || (l.parent ?? SYS.inbox); if (tryDo(rt, (st) => removeList(st, l.id, to), `Deleted ${l.name}.`) !== undefined) setSel(to); }}>Delete</Button>
+                </div>}
+              </>
+            )}
           </div>
-          {!system && (
-            <>
-              {!pluginList && <div className="axp-notes-bar">
-                <TextField label="Rename" value={rename} onChange={setRename} placeholder={l.name} className="axp-notes-grow" />
-                <Button size="sm" icon="edit" disabled={!rename.trim()} onClick={() => { if (tryDo(rt, (st) => renameList(st, l.id, rename)) !== undefined) setRename(''); }}>Rename</Button>
-              </div>}
-              <div className="axp-notes-bar">
-                <SelectField label="Move under" value={moveTo} options={parents(s)} onChange={setMoveTo} className="axp-notes-grow" />
-                <Button size="sm" icon="move" onClick={() => tryDo(rt, (st) => moveList(st, l.id, moveTo || null), 'Moved.')}>Move</Button>
-              </div>
-              {!pluginList && <div className="axp-notes-bar">
-                <SelectField label="Delete it; its items go to" value={itemsTo || (l.parent ?? SYS.inbox)} onChange={setItemsTo}
-                  options={tree.filter((t) => t.list.id !== l.id).map((t) => ({ value: t.list.id, label: t.path }))} className="axp-notes-grow" />
-                <Button size="sm" tone="danger" icon="trash" confirm={`Delete the list ${l.name}? Its lists move up a level and its items go to ${s.lists[itemsTo || (l.parent ?? SYS.inbox)]?.name ?? 'Inbox'}.`}
-                  onClick={() => { const to = itemsTo || (l.parent ?? SYS.inbox); if (tryDo(rt, (st) => removeList(st, l.id, to), `Deleted ${l.name}.`) !== undefined) setSel(to); }}>Delete</Button>
-              </div>}
-            </>
-          )}
-        </div>
+        </Container>
       )}
-      <div className="axp-notes-bar"><Button tone="ghost" onClick={close}>Close</Button></div>
+      <div className="axp-notes-bar axp-notes-end"><Button onClick={close}>Close</Button></div>
     </div>
   );
 }

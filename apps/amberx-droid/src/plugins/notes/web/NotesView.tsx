@@ -3,9 +3,9 @@
  * multi-select (move, merge, tag, delete). Everything changes the store through `mutate` (store.ts) with the pure
  * functions of core.ts; nothing here touches the hub directly.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Checkbox, Icon, IconButton, Note, Section, SelectField, Segmented, TextField, useRuntime } from '../../../axf/react';
+import { Button, Checkbox, Container, Icon, IconButton, Note, SelectField, Segmented, TextField, useRuntime } from '../../../axf/react';
 import { loginUrl } from '../../../axf/libs/hub';
 import { HUB } from '../../../hub/useHub';
 import { native } from '../../../native';
@@ -42,6 +42,17 @@ const when = (iso: string) => {
   return d.toDateString() === new Date().toDateString() ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : d.toLocaleDateString();
 };
 
+/** Empty state (design language §11): an icon, one sentence, one action. */
+export function Empty({ icon, text, action }: { icon: string; text: string; action?: ReactNode }) {
+  return (
+    <div className="fx-empty axp-notes-empty">
+      <Icon name={icon} size={24} />
+      <p className="fx-muted">{text}</p>
+      {action}
+    </div>
+  );
+}
+
 /* ---------------------------------------------------------------- hub status line */
 
 function HubLine({ n }: { n: Snapshot }) {
@@ -77,14 +88,16 @@ function QuickAdd({ s, list, nonce }: { s: Store; list: string | null; nonce: nu
     if (it) { setText(''); rt.toast(`Saved to ${s.lists[it.list]?.name ?? 'Inbox'}.`, 'success', 'Notes'); }
   };
   return (
-    <div className="fx-stack axp-notes-quick" key={nonce}>
-      <TextField label="Quick add" value={text} onChange={setText} rows={2} placeholder="Type a note…" autoFocus={nonce > 0} />
-      <div className="axp-notes-bar">
-        <Segmented size="sm" label="Kind" value={kind} onChange={setKind} options={[{ value: 'note', label: 'Note' }, { value: 'todo', label: 'Todo' }, { value: 'task', label: 'Task' }]} />
-        <SelectField label="List" value={to} options={listOptions(s)} onChange={setTo} className="axp-notes-grow" />
-        <Button tone="primary" icon="plus" disabled={!text.trim()} onClick={add}>Add</Button>
+    <Container title="Quick add" icon="plus">
+      <div className="fx-stack axp-notes-quick" key={nonce}>
+        <TextField label="Note" value={text} onChange={setText} rows={2} placeholder="Type a note…" autoFocus={nonce > 0} />
+        <div className="axp-notes-bar">
+          <Segmented size="sm" label="Kind" value={kind} onChange={setKind} options={[{ value: 'note', label: 'Note' }, { value: 'todo', label: 'Todo' }, { value: 'task', label: 'Task' }]} />
+          <SelectField label="List" value={to} options={listOptions(s)} onChange={setTo} className="axp-notes-grow" />
+          <Button tone="primary" icon="plus" disabled={!text.trim()} onClick={add}>Add</Button>
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }
 
@@ -137,39 +150,41 @@ function SelectionBar({ s, ids, clear }: { s: Store; ids: string[]; clear: () =>
   const [tag, setTag] = useState('');
   const n = ids.length;
   return (
-    <div className="fx-card axp-notes-pad fx-stack">
-      <p className="fx-small"><strong>{n} selected</strong>{sharedOnes ? <span className="fx-muted"> · {sharedOnes} shared Voice note{sharedOnes === 1 ? '' : 's'}: Move copies {sharedOnes === 1 ? 'it' : 'them'}</span> : null}</p>
-      <div className="axp-notes-bar">
-        <SelectField label="Move to list" value={to} options={listOptions(s)} onChange={setTo} className="axp-notes-grow" />
-        <Button icon="move" disabled={!n} onClick={() => {
-          const moved = tryDo(rt, (st) => moveItems(st, own, to));
-          if (sharedOnes) adoptShared(ids.filter(isShared), to);
-          if (moved !== undefined) { rt.toast(`Moved to ${s.lists[to]?.name}.`, 'success', 'Notes'); clear(); }
-        }}>Move</Button>
+    <Container title={`${n} selected`} icon="check">
+      <div className="fx-stack">
+        {sharedOnes ? <p className="fx-small fx-muted">{sharedOnes} shared Voice note{sharedOnes === 1 ? '' : 's'}: Move copies {sharedOnes === 1 ? 'it' : 'them'}.</p> : null}
+        <div className="axp-notes-bar">
+          <SelectField label="Move to list" value={to} options={listOptions(s)} onChange={setTo} className="axp-notes-grow" />
+          <Button icon="move" disabled={!n} onClick={() => {
+            const moved = tryDo(rt, (st) => moveItems(st, own, to));
+            if (sharedOnes) adoptShared(ids.filter(isShared), to);
+            if (moved !== undefined) { rt.toast(`Moved to ${s.lists[to]?.name}.`, 'success', 'Notes'); clear(); }
+          }}>Move</Button>
+        </div>
+        <div className="axp-notes-bar">
+          <TextField label="Tag" value={tag} onChange={setTag} placeholder="e.g. work" className="axp-notes-grow" />
+          <Button icon="plus" disabled={!own.length || !tagList(tag).length} onClick={() => {
+            if (tryDo(rt, (st) => { for (const id of own) updateItem(st, id, { tags: tagList([...(st.items[id]?.tags ?? []), ...tagList(tag)]) }); }) !== undefined) setTag('');
+          }}>Tag</Button>
+        </div>
+        <div className="axp-notes-bar">
+          <Button icon="layers" disabled={own.length < 2} onClick={() => { if (tryDo(rt, (st) => mergeItems(st, own), `Merged ${own.length} into one.`)) clear(); }}>Merge</Button>
+          <Button tone="danger" icon="trash" disabled={!own.length} confirm={`Delete ${own.length} item${own.length === 1 ? '' : 's'}?`}
+            onClick={() => { if (tryDo(rt, (st) => removeItems(st, own), `Deleted ${own.length}.`) !== undefined) clear(); }}>Delete</Button>
+          <Button tone="ghost" onClick={clear}>Cancel</Button>
+        </div>
       </div>
-      <div className="axp-notes-bar">
-        <TextField label="Tag" value={tag} onChange={setTag} placeholder="e.g. work" className="axp-notes-grow" />
-        <Button icon="plus" disabled={!own.length || !tagList(tag).length} onClick={() => {
-          if (tryDo(rt, (st) => { for (const id of own) updateItem(st, id, { tags: tagList([...(st.items[id]?.tags ?? []), ...tagList(tag)]) }); }) !== undefined) setTag('');
-        }}>Tag</Button>
-      </div>
-      <div className="axp-notes-bar">
-        <Button icon="layers" disabled={own.length < 2} onClick={() => { if (tryDo(rt, (st) => mergeItems(st, own), `Merged ${own.length} into one.`)) clear(); }}>Merge</Button>
-        <Button tone="danger" icon="trash" disabled={!own.length} confirm={`Delete ${own.length} item${own.length === 1 ? '' : 's'}?`}
-          onClick={() => { if (tryDo(rt, (st) => removeItems(st, own), `Deleted ${own.length}.`) !== undefined) clear(); }}>Delete</Button>
-        <Button tone="ghost" onClick={clear}>Cancel</Button>
-      </div>
-    </div>
+    </Container>
   );
 }
 
-function ItemList({ s, items, empty }: { s: Store; items: Item[]; empty: string }) {
+function ItemList({ s, items, empty }: { s: Store; items: Item[]; empty: ReactNode }) {
   const [selecting, setSelecting] = useState(false);
   const [sel, setSel] = useState<string[]>([]);
   const top = items.filter((i) => !i.parent || !s.items[i.parent]);
   const [limit, setLimit] = useState(60);
   const clear = () => { setSel([]); setSelecting(false); };
-  if (!top.length) return <p className="fx-muted">{empty}</p>;
+  if (!top.length) return <>{empty}</>;
   return (
     <div className="fx-stack">
       <div className="axp-notes-bar">
@@ -213,7 +228,7 @@ function ListTree({ s }: { s: Store }) {
     }
   };
   walk(null, 0);
-  return <div className="fx-card axp-notes-pad axp-notes-tree">{rows}</div>;
+  return <div className="axp-notes-tree">{rows}</div>;
 }
 
 function ListDetail({ s, id, ui }: { s: Store; id: string; ui: { quickAdd: number } }) {
@@ -232,8 +247,8 @@ function ListDetail({ s, id, ui }: { s: Store; id: string; ui: { quickAdd: numbe
       </div>
       {shared && <Note tone="info">Voice notes come from the console's Voice notes and Voice Vault. They're read-only here; open one to copy it into a list.</Note>}
       {subs.length > 0 && (
-        <Section title={`Lists in ${l.name}`}>
-          <div className="fx-card axp-notes-pad axp-notes-tree">
+        <Container title={`Lists in ${l.name}`} icon="folder">
+          <div className="axp-notes-tree">
             {subs.map((c) => (
               <button key={c.id} type="button" data-fx-row className="axp-notes-tree__name" onClick={() => setUi({ list: c.id })}>
                 <Icon name={c.icon || 'list'} size={14} /><span className="axp-notes-clip">{c.name}</span>
@@ -241,14 +256,15 @@ function ListDetail({ s, id, ui }: { s: Store; id: string; ui: { quickAdd: numbe
               </button>
             ))}
           </div>
-        </Section>
+        </Container>
       )}
       <div className="axp-notes-bar">
         <Button size="sm" icon="sliders" onClick={() => rt.openDialog('notes.lists', { id })}>Manage lists</Button>
         <Button size="sm" icon="download" onClick={() => rt.openDialog('notes.export', { id })}>Export this list</Button>
       </div>
       {!shared && <QuickAdd s={s} list={id} nonce={ui.quickAdd} />}
-      <ItemList s={s} items={itemsIn(s, id)} empty={`Nothing in ${l.name} yet.`} />
+      <ItemList s={s} items={itemsIn(s, id)} empty={<Empty icon="file" text={`Nothing in ${l.name} yet.`}
+        action={shared ? undefined : <Button tone="primary" icon="plus" onClick={() => rt.dispatch('notes.add')}>New note</Button>} />} />
     </div>
   );
 }
@@ -265,18 +281,24 @@ function SearchTab({ s, q }: { s: Store; q: string }) {
   const busy = q.trim() || kind || status || tag || list;
   return (
     <div className="fx-stack">
-      <TextField label="Search notes" type="search" value={q} onChange={(v) => setUi({ q: v })} placeholder="Words in a title, text, tag or list" autoFocus />
-      <div className="axp-notes-bar">
-        <SelectField label="Kind" value={kind} onChange={(v) => setKind(v as '' | ItemKind)} options={[{ value: '', label: 'Any' }, { value: 'note', label: 'Notes' }, { value: 'todo', label: 'Todos' }, { value: 'task', label: 'Tasks' }]} />
-        <SelectField label="Status" value={status} onChange={(v) => setStatus(v as '' | 'not-done' | 'done')} options={[{ value: '', label: 'Any' }, { value: 'not-done', label: 'Not done' }, { value: 'done', label: 'Done' }]} />
-        <SelectField label="In list" value={list} onChange={setList} options={[{ value: '', label: 'Everywhere' }, ...listOptions(s, false)]} className="axp-notes-grow" />
-      </div>
-      {tags.length > 0 && (
-        <div className="axp-notes-tags">
-          {tags.map((t) => <button key={t} type="button" className={`fx-chip${tag === t ? ' is-on' : ''}`} aria-pressed={tag === t} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}
+      <Container title="Search" icon="search">
+        <div className="fx-stack">
+          <TextField label="Search notes" type="search" value={q} onChange={(v) => setUi({ q: v })} placeholder="Words in a title, text, tag or list" autoFocus />
+          <div className="axp-notes-bar">
+            <SelectField label="Kind" value={kind} onChange={(v) => setKind(v as '' | ItemKind)} options={[{ value: '', label: 'Any' }, { value: 'note', label: 'Notes' }, { value: 'todo', label: 'Todos' }, { value: 'task', label: 'Tasks' }]} />
+            <SelectField label="Status" value={status} onChange={(v) => setStatus(v as '' | 'not-done' | 'done')} options={[{ value: '', label: 'Any' }, { value: 'not-done', label: 'Not done' }, { value: 'done', label: 'Done' }]} />
+            <SelectField label="In list" value={list} onChange={setList} options={[{ value: '', label: 'Everywhere' }, ...listOptions(s, false)]} className="axp-notes-grow" />
+          </div>
+          {tags.length > 0 && (
+            <div className="axp-notes-tags">
+              {tags.map((t) => <button key={t} type="button" className={`fx-chip${tag === t ? ' is-on' : ''}`} aria-pressed={tag === t} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}
+            </div>
+          )}
         </div>
-      )}
-      {busy ? <ItemList s={s} items={found} empty="Nothing found." /> : <p className="fx-muted">Type a word, or pick a kind, status, list or tag.</p>}
+      </Container>
+      {busy
+        ? <ItemList s={s} items={found} empty={<Empty icon="search" text="Nothing found." action={<Button onClick={() => { setUi({ q: '' }); setKind(''); setStatus(''); setTag(''); setList(''); }}>Clear the search</Button>} />} />
+        : <Empty icon="search" text="Type a word, or pick a kind, status, list or tag." action={<Button onClick={() => setUi({ tab: 'notes' })}>Show every note</Button>} />}
     </div>
   );
 }
@@ -306,13 +328,14 @@ export function NotesView() {
         <div>
           <p className="fx-eyebrow">Notes</p>
           <h1>{ui.tab === 'lists' && ui.list && s.lists[ui.list] ? s.lists[ui.list]!.name : TABS.find((t) => t.id === ui.tab)!.label}</h1>
-          <HubLine n={n} />
+          <p className="fx-muted">Notes, todos and tasks in your lists, kept on axHub for every device.</p>
         </div>
         <div className="axp-notes-bar">
           {canDictate && <Button tone="primary" icon="mic" onClick={() => rt.dispatch(openList ? `dictation.start:${openList}` : 'dictation.start')}>Dictate</Button>}
           <Button icon="download" onClick={() => rt.openDialog('notes.export', ui.tab === 'lists' && ui.list ? { id: ui.list } : {})}>Export</Button>
         </div>
       </header>
+      <HubLine n={n} />
       <div className="fx-tabs" role="tablist">
         {TABS.map((t) => {
           const c = t.id === 'lists' ? listCount : countOf(t.id);
@@ -329,25 +352,24 @@ export function NotesView() {
           {ui.tab === 'inbox' && (
             <>
               <QuickAdd s={s} list={SYS.inbox} nonce={ui.quickAdd} />
-              <ItemList s={s} items={itemsIn(s, SYS.inbox)} empty="The inbox is empty. Notes with no list land here." />
+              <ItemList s={s} items={itemsIn(s, SYS.inbox)} empty={<Empty icon="file" text="The inbox is empty: notes with no list land here." action={<Button tone="primary" icon="plus" onClick={() => rt.dispatch('notes.add')}>New note</Button>} />} />
             </>
           )}
           {ui.tab === 'lists' && (ui.list ? <ListDetail s={s} id={ui.list} ui={ui} /> : (
-            <div className="fx-stack">
-              <div className="axp-notes-bar">
-                <Button size="sm" icon="sliders" onClick={() => rt.openDialog('notes.lists', {})}>Manage lists</Button>
-                <span className="fx-muted fx-small">Tap a list to open it. Plugins get a list each under Plugins.</span>
+            <Container title="Lists" icon="folder" actions={<Button size="sm" icon="sliders" onClick={() => rt.openDialog('notes.lists', {})}>Manage lists</Button>}>
+              <div className="fx-stack">
+                <p className="fx-muted fx-small">Tap a list to open it; plugins get a list each under Plugins.</p>
+                <ListTree s={s} />
               </div>
-              <ListTree s={s} />
-            </div>
+            </Container>
           ))}
           {ui.tab === 'notes' && (
             <>
               <QuickAdd s={s} list={null} nonce={ui.quickAdd} />
-              <ItemList s={s} items={Object.values(s.items).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))} empty="No notes yet." />
+              <ItemList s={s} items={Object.values(s.items).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))} empty={<Empty icon="file" text="No notes here yet." action={<Button tone="primary" icon="plus" onClick={() => rt.dispatch('notes.add')}>New note</Button>} />} />
             </>
           )}
-          {ui.tab === 'pinned' && <ItemList s={s} items={Object.values(s.items).filter((i) => i.pinned || i.starred).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))} empty="Nothing pinned or starred yet." />}
+          {ui.tab === 'pinned' && <ItemList s={s} items={Object.values(s.items).filter((i) => i.pinned || i.starred).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))} empty={<Empty icon="star" text="Nothing pinned or starred yet." action={<Button onClick={() => setUi({ tab: 'notes' })}>Show every note</Button>} />} />}
           {ui.tab === 'search' && <SearchTab s={s} q={ui.q} />}
         </>
       )}
