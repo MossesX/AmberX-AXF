@@ -303,6 +303,40 @@ a = c.post("/api/ai/ask", headers=P, json={"question": "what is the gate code?",
 sent = json.loads(fake.calls[-1].body)
 check("ask answers from the notes", a["answer"].startswith("Your notes say") and "code 1234" in sent["system"] and "ONLY the notes" in sent["system"], (a, sent["system"][:200]))
 
+# prompt (AI snippets) + Molly (Oct 28 2026)
+fake.on("api.anthropic.com", anthropic("step one\nstep two"))
+pr = c.post("/api/ai/prompt", headers=P, json={"prompt": "plan a garden", "notes": [{"title": "Garden", "text": "tomatoes"}]})
+sent = json.loads(fake.calls[-1].body)
+check("prompt answers (a signed-in user may)", pr.status_code == 200 and pr.json()["answer"] == "step one\nstep two" and "read aloud" in sent["system"] and "tomatoes" in sent["system"], pr.text[:200])
+check("prompt cap", c.post("/api/ai/prompt", headers=P, json={"prompt": "x" * 8001}).status_code == 413)
+check("prompt required", c.post("/api/ai/prompt", headers=P, json={"prompt": " "}).status_code == 400)
+check("Molly is admins only", c.post("/api/ai/molly", headers=P, json={"task": "status"}).status_code == 403)
+AP = {**A, "origin": ORIGIN}
+os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
+ms = c.get("/api/ai/molly/status", headers=A).json()
+check("Molly without a console token: not connected, says why", ms["ok"] is False and "AMBERX_CONSOLE_TOKEN" in ms["reason"] and ms["fix"] == "token", ms)
+check("Molly without a console token: 503", c.post("/api/ai/molly", headers=AP, json={"task": "status"}).status_code == 503)
+
+
+class FakeConsole:
+    def __init__(self):
+        self.calls = []
+
+    def call(self, method, path, body=None, timeout=None):
+        self.calls.append((method, path, body))
+        if path.startswith("/api/plugins/molly-guide/ask"):
+            return {"text": "CI is green.", "walkthrough": {"title": "Open CI", "steps": []}}
+        return {"walkthroughs": []}
+
+
+fc = FakeConsole()
+_real = main.console_client
+main.console_client = lambda: fc
+mr = c.post("/api/ai/molly", headers=AP, json={"task": "is ci green", "page": "developer<x>"}).json()
+check("Molly: asks the console's molly-guide, answer + walkthrough title back", mr == {"answer": "CI is green.", "walkthrough": "Open CI"} and fc.calls[-1] == ("POST", "/api/plugins/molly-guide/ask", {"task": "is ci green", "app": "amberx", "page": "developerx"}), (mr, fc.calls))
+check("Molly status: connected", c.get("/api/ai/molly/status", headers=A).json()["ok"] is True)
+main.console_client = _real
+
 # ---------------------------------------------------------------- size caps
 check("transcript cap", c.post("/api/ai/parse", headers=P, json={"transcript": "x" * 20_001}).status_code == 413)
 check("empty transcript refused", c.post("/api/ai/parse", headers=P, json={"transcript": "  "}).status_code == 400)

@@ -96,6 +96,18 @@ done < <(env)
 SRVENV="$STATE/server.env"
 (umask 077; printf 'AMBERX_DATA_DIR=/data\nAMBERX_WALL_HUB=%s\n' "${APP_WALL_HUB:-https://axhub.amberxai.com}" > "$SRVENV"); chmod 600 "$SRVENV"
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data --env-file "$SRVENV" --env-file "$AIENV")
+# Molly (Oct 28 2026): AmberX's developer commands reach the console's Molly over Coolify's network with the console
+# token, copied from the console's env file into this 0600 env file (the container runs as uid 1000 and can't read the
+# console's file; the token never goes on a command line). A token reset is picked up on the next install / update run.
+CONSOLE_ENV="${APP_CONSOLE_ENV:-$AXF_DIR/.axf-console/env}"
+CONSOLE_TOKEN="$(grep -E '^AXF_TOKEN=' "$CONSOLE_ENV" 2>/dev/null | tail -1 | cut -d= -f2- | tr -d "\"' ")"
+if [ -n "$CONSOLE_TOKEN" ]; then
+  (umask 077; printf 'AMBERX_CONSOLE_TOKEN=%s\nAMBERX_CONSOLE_URL=%s\n' "$CONSOLE_TOKEN" "${APP_CONSOLE_URL:-http://axf-console:7090}" >> "$SRVENV"); chmod 600 "$SRVENV"
+  say "Molly: connected to the console's token"
+else
+  say "Molly: no console token in $CONSOLE_ENV yet, so developer commands say Molly isn't connected (install the console, then re-run this)"
+fi
+unset CONSOLE_TOKEN
 
 if axf_coolify_proxy_running; then
   NET="$(axf_coolify_network)"
