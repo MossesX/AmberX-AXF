@@ -34,7 +34,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Basic filter plugin: sort & filter dialog attachable to any dataset (every grid), configurable toolbar with live floating preview, attach from Plugin switches | review | `claude/basic-filter` | [#155](https://github.com/MossesX/AmberX-AXF/pull/155) | Orchestrator build `basic-filter` (refactor, Opus, 7 steps; s1–s6 done, CI green, merge approval sent). Built in the AmberX Framework claude.ai chat | 2026-10-28 |
+| Plugin theme override (every plugin UI, over the axHub theme) + Plugins ladder in the app menu (Interface · Settings · Documentation · About · Disable) | queued | `claude/plugin-theme-override` | – | Orchestrator build `plugin-theme-override` (refactor, 9 steps): Fable phase 1 s1–s3 (scoped theme engine) first, then Opus s4–s9. Waits on a Fable session: `orchestrator.mjs brief plugin-theme-override`. See *To carry on* | 2026-10-28 |
+| Basic filter plugin: sort & filter dialog attachable to any dataset (every grid), configurable toolbar with live floating preview, attach from Plugin switches | done | `claude/basic-filter` | [#155](https://github.com/MossesX/AmberX-AXF/pull/155) merged | Merged Oct 28 (Brett's approval); console redeployed | 2026-10-28 |
 | Approval costs + history (cost on every approval, history in Console + axHub, one-call wait with AmberX alert) | queued (held) | – | – | Orchestrator build `approval-costs` (refactor, Opus, 5 steps, ~2.25 h; AXF + MossesX/axHub). Retry-rule change to one wait call needs Brett's OK at build time | 2026-10-28 |
 | axHub GitHub write tools (create/update file, branch, commit; each needs approval) | queued (held) | – | – | Orchestrator build `axhub-github-write` (refactor, Opus, 3 steps, ~1 h; work in MossesX/axHub). From the Oct 28 fix wizard; VPS writes only when needed | 2026-10-28 |
 | Share Search: programmable grid toolbar plugin (search/filter bar, 5 buttons, advanced search, attach prompt) | queued (held) | – | – | Orchestrator build `share-search` (refactor, 8 steps, ~3.9 h: Fable s1–s2 contract, Opus s3–s8). Brett: "send to orchestrator and hold off on build" — don't start until he says | 2026-10-28 |
@@ -73,6 +74,16 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Plugin theme override + Plugins ladder (`plugin-theme-override`, Refactor)
+
+- **Asked (Brett, Oct 28 2026):** give every plugin's UI a theme override that overrides the axHub theme; when on, a collapsible container in the plugin's Appearance tab with every layout, colour, style and animation token, full control, several views and ways of editing; switchable from right-click, toolbar and the app menu. App menu: a **Plugins** entry (created if missing) with a collapsible ladder of every plugin; picking one opens a submenu with Interface, Settings, Documentation, About and a **Disable** toggle.
+- **His card answers:** profile Refactor; scope = every plugin UI (not only floating); the Disable item shows a check mark or a plain toggle, picked by a setting; the submenu opens right and flips left only when there's no room.
+- **Model:** Fable s1–s3 (scoped theme engine, contract, fixture, React layer), then Opus s4–s9 (editor, switches, Plugins ladder, Disable, ship). Ask Brett at the Fable → Opus switch.
+- **Branch:** `claude/plugin-theme-override` (only the tracker so far).
+- **Read first:** `framework/spec/THEMING.md`, `framework/core/engines/looktokens.ts`, `framework/react/AxfProvider.tsx`, `framework/core/engines/appmenu.ts`, `apps/console-web/plugins/theme-manager`, `apps/console-web/plugins/plugin-switches`.
+- **Checks:** tsc + build (console-web), `check-theme.mjs`, `check-controls.mjs`, `scripts/menu-reach.mts`, `scripts/theme-swap.mjs`, new `spec/check-plugin-theme.mts`.
+- **First message:** `Carry on orchestrator build plugin-theme-override (Refactor profile), phase 1 on Fable: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief plugin-theme-override`
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
