@@ -12,7 +12,7 @@ NUM="${2:?usage: merge-pr.sh <owner/repo> <number>}"
 [[ "$REPO" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || { echo "not a repo name: $REPO" >&2; exit 2; }
 [[ "$NUM" =~ ^[0-9]{1,7}$ ]] || { echo "not a PR number: $NUM" >&2; exit 2; }
 CONTAINER="${AXF_CONSOLE_CONTAINER:-axf-console}"
-docker exec -e MERGE_REPO="$REPO" -e MERGE_NUM="$NUM" "$CONTAINER" python3 - <<'PY'
+docker exec -i -e MERGE_REPO="$REPO" -e MERGE_NUM="$NUM" "$CONTAINER" python3 - <<'PY'
 import json, os, re, sys, urllib.error, urllib.request
 repo, num = os.environ["MERGE_REPO"], int(os.environ["MERGE_NUM"])
 env = open("/axf/.axf-console/env", encoding="utf-8").read()
