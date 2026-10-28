@@ -17,4 +17,6 @@ export default defineConfig(({ mode }) => ({
     ...(mode === 'single' ? [viteSingleFile()] : []),
   ],
   build: { outDir: mode === 'single' ? 'dist-single' : 'dist' },
+  // `npm run dev`: /api goes to the AmberX server (AMBERX_DEV_OPEN=1 uvicorn main:app --app-dir server --port 7492)
+  server: { proxy: { '/api': { target: process.env.AMBERX_API ?? 'http://127.0.0.1:7492', changeOrigin: false } } },
 }));

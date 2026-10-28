@@ -86,3 +86,43 @@ export async function ask(question: string, notes: { title: string; text: string
   const r = await post<{ answer?: unknown }>('/api/ai/ask', { question: question.slice(0, 2000), notes: notes.slice(0, 200).map((n) => ({ title: n.title.slice(0, 160), text: n.text.slice(0, 2000), list: n.list.slice(0, 200) })) });
   return r && typeof r.answer === 'string' ? r.answer : null;
 }
+
+/* ---------------------------------------------------------------- admin: the AI connection settings (hub admins) */
+
+export interface AiKind { kind: string; label: string; protocol: string; models: string[]; baseUrl: string; editableBaseUrl: boolean; needsKey: boolean; keyUrl: string; envNames: string[] }
+export interface AiProfile {
+  id: string; kind: string; label: string; model: string; baseUrl: string; enabled: boolean;
+  /** a key is saved here or set in the server's environment; the key itself never comes back */
+  hasKey: boolean; keySource: 'saved' | 'env' | 'not needed' | 'none';
+  /** a Claude plan token pair (access + refresh), renewed before it expires */
+  pair: boolean; expiresAt: number | null; refreshError: string | null;
+  health: { ok: boolean; at: number; ms?: number; error?: string } | null;
+}
+export interface AiConfig {
+  profiles: AiProfile[]; order: string[]; active: string;
+  /** which Claude is active: plan (subscription) or api; "" = the active profile isn't Claude */
+  claude: '' | 'plan' | 'api';
+  keepAliveMin: number; kinds: AiKind[];
+  /** the Claude Code CLI is installed on the server (needed for the Claude plan) */
+  cli: boolean;
+  last: { profile: string; label: string; model: string; at: number; ms: number; fallback: boolean } | null;
+}
+export type ProfileEdit = Pick<AiProfile, 'kind' | 'label' | 'model' | 'baseUrl' | 'enabled'> & { id?: string };
+
+async function admin<T>(method: 'GET' | 'PUT' | 'POST', path: string, body?: unknown): Promise<T> {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), TIMEOUT_MS * 2);
+  try {
+    const r = await fetch(path, { method, credentials: 'same-origin', redirect: 'error', cache: 'no-store', headers: body === undefined ? {} : { 'content-type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body), signal: ctl.signal });
+    const j = (await r.json().catch(() => ({}))) as { detail?: unknown };
+    if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : r.status === 403 ? 'Only hub admins can change the AI connection.' : `The AI server answered ${r.status}.`);
+    return j as T;
+  } finally { clearTimeout(t); }
+}
+
+export const getAiConfig = () => admin<AiConfig>('GET', '/api/ai/config');
+export const putAiConfig = (patch: { profiles?: ProfileEdit[]; order?: string[]; active?: string; claude?: 'plan' | 'api'; keepAliveMin?: number }) => admin<AiConfig>('PUT', '/api/ai/config', patch);
+/** Write-only: the key goes to the server and is never read back. `refresh` makes a Claude plan pair. */
+export const saveAiKey = (profile: string, key: string, refresh?: string) => admin<{ ok: boolean; profile: AiProfile }>('POST', `/api/ai/keys/${encodeURIComponent(profile)}`, { key, ...(refresh ? { refresh } : {}) });
+export const clearAiKey = (profile: string) => admin<{ ok: boolean; profile: AiProfile }>('POST', `/api/ai/keys/${encodeURIComponent(profile)}`, { clear: true });
+export const testAiProfile = (profile: string) => admin<{ ok: boolean; ms?: number; error?: string; reply?: string; label: string; model: string }>('POST', `/api/ai/test/${encodeURIComponent(profile)}`);

@@ -160,6 +160,7 @@ jobs:
             python apps/console-web/server/test_app_ci.py
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
+            python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue
         if: failure()
