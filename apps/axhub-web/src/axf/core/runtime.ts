@@ -373,6 +373,9 @@ export class AxfRuntime {
   /** Is a source attached (developer app)? */
   hasAppearanceSource(): boolean { return this.appearanceSource !== null; }
 
+  /** Is `source` the one attached right now? Libraries that attach a source detach only their own (Oct 28 2026). */
+  appearanceSourceIs(source: AppearanceSource | null | undefined): boolean { return !!source && this.appearanceSource === source; }
+
   /** The hub the source talks to (shown on the waiting screen), when the source says. */
   appearanceHub(): string | undefined { return (this.appearanceSource as { origin?: string } | null)?.origin; }
 

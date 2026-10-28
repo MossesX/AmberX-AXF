@@ -71,7 +71,7 @@ export class HubSync {
 
   private compute(): HubSyncStatus {
     const look: HubSyncStatus['look'] = this.cfg.look === 'off' ? { status: 'off' }
-      : this.lookOwn ? { status: 'own', hub: this.rt.appearanceHub() }
+      : this.lookOwn || (this.look && !this.rt.appearanceSourceIs(this.look)) ? { status: 'own', hub: this.rt.appearanceHub() }
       : this.look instanceof FollowSource ? this.look.real()
       : this.look ? this.look.state() : { status: 'connecting' };
     return { config: this.cfg, look, settings: this.hubSettings ? this.hubSettings.state() : { status: 'off' }, summary: describeSync(this.cfg) };
@@ -107,7 +107,10 @@ export class HubSync {
   stop(): void {
     this.offMirror?.(); this.offMirror = null;
     this.offLook?.(); this.offLook = null;
-    if (this.look) { this.rt.detachAppearanceSource(); this.look = null; }
+    // only our own source: an app's own (the console's developer source, attached after us) stays attached
+    // (Oct 28 2026: a restart here detached the console's source, so its look never reached axHub)
+    if (this.look && this.rt.appearanceSourceIs(this.look)) this.rt.detachAppearanceSource();
+    this.look = null;
     this.lookOwn = false;
     this.hubSettings = null;
     this.hubData = new HubData({ deviceOnly: true });
