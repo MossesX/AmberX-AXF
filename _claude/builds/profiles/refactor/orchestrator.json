@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T03:05:34.457Z",
+ "updatedAt": "2026-10-28T03:05:59.508Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2651,15 +2651,15 @@
    "title": "Fix: switches and tab buttons dead inside interface tabs",
    "category": "Fix",
    "detail": "Brett Oct 27 2026: Appearance switches in console settings and the layout (interface) buttons at the top do nothing. Cause: AxfRuntime.scoped() gives a scope settings = Object.create(base.settings), so set()/clear()/reload() assign this.values on the scoped object and the shared settings never change (Main tab cannot be reached again from GizmoX Night / AmberX Signature). Fix: scoped settings forward every member except get to the shared registry.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "fix/interface-scope-settings",
-   "pr": "",
+   "pr": "#146",
    "createdAt": "2026-10-28T03:03:09.005Z",
-   "updatedAt": "2026-10-28T03:05:34.457Z",
-   "builtAt": "",
+   "updatedAt": "2026-10-28T03:05:59.508Z",
+   "builtAt": "2026-10-28T03:05:59.508Z",
    "notes": [],
    "approvals": [],
    "steps": [
