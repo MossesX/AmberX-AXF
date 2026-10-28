@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T14:42:23.337Z",
+ "updatedAt": "2026-10-28T14:52:00.674Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2942,16 +2942,21 @@
    "title": "All axHub push notifications come from the AmberX Android app",
    "category": "AmberX app",
    "detail": "Brett Oct 28 2026: 'From now on all push notifications for approval or anything from axHub comes from amberx android app.' AmberX's WatchService already alerts on hub approvals (incl. merge approvals). Add the Dev Console's alerts (builds, CI, deploys, systems check; alert@1 via GET <console>/api/alerts) to AmberX's watcher, and make Patches and the AXHub app stay quiet while AmberX is installed (Brett approved the small AXHub app change despite the Android hold).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-push",
    "pr": "#154",
    "createdAt": "2026-10-28T14:39:25.869Z",
-   "updatedAt": "2026-10-28T14:42:23.337Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-10-28T14:52:00.673Z",
+   "builtAt": "2026-10-28T14:52:00.612Z",
+   "notes": [
+    {
+     "text": "Merged PR #154, branch claude/amberx-push",
+     "at": "2026-10-28T14:52:00.673Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -2998,8 +3003,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T14:52:00.523Z",
      "note": ""
     }
    ]
