@@ -177,33 +177,38 @@ public class AmberxNativePlugin extends Plugin {
         WatchService.appListening = true; // hands-free lets go of the microphone while the Speak button listens
         getActivity().runOnUiThread(() -> {
             if (!SpeechRecognizer.isRecognitionAvailable(getContext())) { WatchService.appListening = false; call.reject("No speech recognizer on this phone."); return; }
+            JSONObject voice = WatchService.voice(getContext());
             SpeechRecognizer rec = SpeechRecognizer.createSpeechRecognizer(getContext());
+            SpeechTuning.quiet(getContext(), voice); // no tone
             rec.setRecognitionListener(new RecognitionListener() {
                 private boolean done;
                 private void finish(String text) {
                     if (done) return;
                     done = true;
                     WatchService.appListening = false;
+                    if (WatchService.running == null) SpeechTuning.loud(getContext()); // hands-free keeps it quiet
                     call.resolve(new JSObject().put("text", text));
                     rec.destroy();
                 }
-                @Override public void onResults(Bundle b) {
-                    ArrayList<String> r = b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                    finish(r == null || r.isEmpty() ? "" : r.get(0));
+                private String top(Bundle b) {
+                    ArrayList<String> r = b == null ? null : b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    return r == null || r.isEmpty() ? "" : SpeechTuning.clean(r.get(0), voice);
                 }
+                @Override public void onResults(Bundle b) { finish(top(b)); }
                 @Override public void onError(int error) { finish(""); }
                 @Override public void onReadyForSpeech(Bundle b) {}
                 @Override public void onBeginningOfSpeech() {}
-                @Override public void onRmsChanged(float v) {}
+                @Override public void onRmsChanged(float v) { level(v); }
                 @Override public void onBufferReceived(byte[] b) {}
                 @Override public void onEndOfSpeech() {}
-                @Override public void onPartialResults(Bundle b) {}
+                // Live text: what's been heard so far, as it's said (Brett: "text doesn't show up in real time").
+                @Override public void onPartialResults(Bundle b) {
+                    String t = top(b);
+                    if (!t.isEmpty()) notifyListeners("heard", new JSObject().put("text", t).put("final", false).put("source", "listen"));
+                }
                 @Override public void onEvent(int t, Bundle b) {}
             });
-            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                .putExtra(RecognizerIntent.EXTRA_LANGUAGE, call.getString("lang", "en-US"))
-                .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+            Intent i = SpeechTuning.request(call.getString("lang", "en-US"), voice, false);
             // Give hands-free a moment to release the microphone first.
             getActivity().getWindow().getDecorView().postDelayed(() -> {
                 try { rec.startListening(i); } catch (Exception e) { WatchService.appListening = false; call.reject("The microphone is busy."); }
@@ -216,6 +221,7 @@ public class AmberxNativePlugin extends Plugin {
         String text = call.getString("text", "");
         if (tts == null || !ttsReady || text.isEmpty()) { call.resolve(); return; }
         tts.setLanguage(Locale.forLanguageTag(call.getString("lang", "en-US")));
+        SpeechTuning.unmuteMedia(getContext()); // "silence-all" mutes media while listening; spoken replies need it
         tts.speak(text.length() > 2000 ? text.substring(0, 2000) : text, TextToSpeech.QUEUE_FLUSH, null, "amberx");
         call.resolve();
     }

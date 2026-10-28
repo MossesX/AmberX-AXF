@@ -18,7 +18,6 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.webkit.CookieManager;
 import androidx.core.app.NotificationCompat;
@@ -111,8 +110,20 @@ public class WatchService extends Service {
 
     /** Saves the voice config from the web side and starts or stops the service to match. */
     static void setVoice(Context c, JSONObject cfg) {
+        String before = prefs(c).getString("voice", "{}");
         prefs(c).edit().putString("voice", cfg.toString()).apply();
         refresh(c);
+        WatchService w = running;
+        if (w != null && tuningChanged(before, cfg)) w.retune();
+    }
+
+    /** True when a setting that changes how the recognizer runs changed (online, beep, swears, lang). */
+    static boolean tuningChanged(String before, JSONObject after) {
+        try {
+            JSONObject b = new JSONObject(before);
+            for (String k : new String[] { "online", "beep", "swears", "lang" }) if (!String.valueOf(b.opt(k)).equals(String.valueOf(after.opt(k)))) return true;
+        } catch (Exception e) { return true; }
+        return false;
     }
 
     /** One quick-setting change made on the overlay (handsFree / alwaysArmed / overlay). */
@@ -230,6 +241,7 @@ public class WatchService extends Service {
             if (approve && HubRules.approve(hub, a.id, cookie)) {
                 nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
             } else {
+                soundThrough();
                 nm.notify(a.id, 0, alert(CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, true));
             }
         }
@@ -271,16 +283,16 @@ public class WatchService extends Service {
         if (appListening) { pauseListening(); main.postDelayed(this::listenLoop, 1_000); return; } // the Speak button has the mic
         if (!SpeechRecognizer.isRecognitionAvailable(this)) { stopListening(); return; }
         if (recognizer == null) {
-            recognizer = Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
+            // The online recognizer hears far better (Brett: "misses what I say"); the on-device one only when chosen.
+            boolean offline = !voice(this).optBoolean("online", true);
+            recognizer = offline && Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
                 ? SpeechRecognizer.createOnDeviceSpeechRecognizer(this) : SpeechRecognizer.createSpeechRecognizer(this);
             recognizer.setRecognitionListener(new Listener());
         }
         setListening(true);
-        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            .putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang())
-            .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-            .putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+        JSONObject v = voice(this);
+        SpeechTuning.quiet(this, v); // no start/stop tone on every turn
+        Intent i = SpeechTuning.request(lang(), v, true);
         try { recognizer.startListening(i); } catch (Exception e) { main.postDelayed(this::listenLoop, 5_000); }
     }
 
@@ -290,7 +302,24 @@ public class WatchService extends Service {
         setListening(false);
     }
 
+    /** An approval alert's sound gets through the beep silencer, then it's silenced again. */
+    private void soundThrough() {
+        main.post(() -> SpeechTuning.loud(this));
+        main.postDelayed(() -> { if (listening) SpeechTuning.quiet(this, voice(this)); }, 4_000);
+    }
+
+    /** Settings changed: the next turn uses them (a new recognizer for online / offline). */
+    void retune() {
+        main.post(() -> {
+            if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; }
+            SpeechTuning.loud(this);
+            listening = false;
+            listenLoop();
+        });
+    }
+
     private void stopListening() {
+        SpeechTuning.loud(this);
         setListening(false);
         if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; }
     }
@@ -307,18 +336,27 @@ public class WatchService extends Service {
         private boolean heard(Bundle b, boolean last) {
             ArrayList<String> said = b == null ? null : b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             if (said == null || said.isEmpty()) return false;
-            if (overlay != null) overlay.setHeard(said.get(0), last);
-            AmberxNativePlugin.heard(said.get(0), last);
+            JSONObject v = voice(WatchService.this);
+            String top = SpeechTuning.clean(said.get(0), v);
+            if (overlay != null) overlay.setHeard(top, last);
+            AmberxNativePlugin.heard(top, last);
+            // Act on the whole sentence only: a wake phrase caught mid-sentence used to cut the command off.
+            if (!last) return false;
             for (String s : said) {
-                String t = s.toLowerCase(Locale.ROOT);
-                for (String p : phrases()) if (t.contains(p)) { woke(p, s); return true; }
+                String p = SpeechTuning.wakeHit(s, phrases());
+                if (p != null) { woke(p, SpeechTuning.clean(s, v)); return true; }
             }
-            if (last && alwaysArmed() && !said.get(0).trim().isEmpty()) { woke("", said.get(0)); return true; }
+            if (alwaysArmed() && !top.trim().isEmpty()) { woke("", top); return true; }
             return false;
         }
-        @Override public void onPartialResults(Bundle b) { if (heard(b, false) && recognizer != null) recognizer.cancel(); }
-        @Override public void onResults(Bundle b) { heard(b, true); main.postDelayed(WatchService.this::listenLoop, 400); }
-        @Override public void onError(int error) { main.postDelayed(WatchService.this::listenLoop, error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ? 3_000 : 800); }
+        @Override public void onPartialResults(Bundle b) { heard(b, false); }
+        @Override public void onResults(Bundle b) { heard(b, true); main.postDelayed(WatchService.this::listenLoop, 150); }
+        @Override public void onError(int error) {
+            // Silence or nothing understood: straight back to listening (the tone is silenced, so no beep loop).
+            long wait = error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ? 3_000
+                : error == SpeechRecognizer.ERROR_NO_MATCH || error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT ? 150 : 800;
+            main.postDelayed(WatchService.this::listenLoop, wait);
+        }
         @Override public void onReadyForSpeech(Bundle b) {}
         @Override public void onBeginningOfSpeech() {}
         @Override public void onRmsChanged(float db) {

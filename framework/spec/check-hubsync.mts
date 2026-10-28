@@ -72,8 +72,13 @@ let attached = 0;
 const rt = {
   manifest: { app: { id: 'voice-vault' } }, settings: reg,
   terminal: { log() {}, warn() {}, ok() {} },
-  hasAppearanceSource: () => false, attachAppearanceSource() { attached++; }, detachAppearanceSource() { attached--; }, appearanceHub: () => undefined,
+  hasAppearanceSource: () => cur !== null,
+  attachAppearanceSource(src: unknown) { if (cur) attached--; cur = src; attached++; },
+  detachAppearanceSource() { if (cur) attached--; cur = null; },
+  appearanceSourceIs: (src: unknown) => !!src && src === cur,
+  appearanceHub: () => undefined,
 };
+let cur: unknown = null;
 const sync = new HubSync(rt as never, { hub: 'https://hub.example', look: 'off', data: ['notes'], fetchImpl: fakeFetch }).start();
 await new Promise((r) => setTimeout(r, 20));
 check(attached === 0 && sync.state().look.status === 'off', 'look off: nothing attached');
@@ -93,6 +98,16 @@ sync.restart({ look: 'follow' });
 check(attached === 1 && sync.config.look === 'follow', 'restart attaches the follow source');
 sync.stop();
 check(attached === 0 && sync.settings === null && sync.data.where('notes') === 'device', 'stop detaches everything');
+// the app attaches its own source after Hub sync attached one (the console's developer source): a restart must not
+// detach the app's source or swap Hub sync's back in (Oct 28 2026 fix: the console's look never reached axHub)
+sync.restart({ look: 'follow' });
+const appSource = { origin: 'https://app.example' };
+rt.attachAppearanceSource(appSource);
+sync.restart({ look: 'follow' });
+check(cur === appSource && attached === 1 && sync.state().look.status === 'own', 'restart keeps the app source attached');
+sync.stop();
+check(cur === appSource && attached === 1, 'stop never detaches a source Hub sync did not attach');
+rt.detachAppearanceSource();
 const own = new HubSync({ ...rt, hasAppearanceSource: () => true } as never, { look: 'required', settings: false }).start();
 check(own.state().look.status === 'own' && attached === 0, 'an app with its own source keeps it');
 reg.set(CONNECTION_KEY, JSON.stringify({ look: 'off' }));
