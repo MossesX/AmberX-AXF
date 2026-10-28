@@ -38,6 +38,7 @@ signed in). Hub calls from the hosted page go straight from the WebView; only a 
 | --- | --- |
 | `src/plugins/voice` | Voice control: commands (`web/core.ts`), mic, spoken replies, wake event |
 | `src/plugins/monitor` | Background monitoring: watch settings, auto-approval, status |
+| `src/plugins/ai-assistant`, `agent-manager` | The console's AI assistant + Agent manager plugins, unchanged (same chats, agents, live sessions); `@console/*` → `src/console/` bridge, server calls via `/api/console/plugins/<folder>/` (hub admins, console token on the server) |
 | `src/plugins/notes`, `tasks`, `dictation`, `web`, `ai` | Notes, lists, tasks, dictation, web clips, AI connection (see above) |
 | `server/` | AmberX server: static site + `/api/ai/*` (router, intents, wall), self-test `test_server.py` |
 | `src/native.ts` | The one seam to the native side (`AmberxNative`), with a browser fallback |

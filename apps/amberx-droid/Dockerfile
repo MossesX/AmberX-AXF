@@ -7,9 +7,14 @@
 #   docker run -p 7491:8080 -e AMBERX_DEV_OPEN=1 -v /tmp/amberx-data:/data amberx-web     (local try-out only)
 # CLAUDE_CLI=0 leaves the Claude Code CLI out (the Claude plan then can't answer; API providers still work).
 FROM node:22-bookworm-slim AS web
-WORKDIR /app
+# Same paths as in the repo: AmberX installs the console's AI assistant + Agent manager plugins unchanged
+# (src/plugins/ai-assistant, agent-manager re-export apps/console-web/plugins/*/web; vite.config.ts aliases @console/*).
+WORKDIR /repo/apps/amberx-droid
 COPY apps/amberx-droid/package.json apps/amberx-droid/package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+COPY apps/console-web/plugins/ai-assistant/web /repo/apps/console-web/plugins/ai-assistant/web
+COPY apps/console-web/plugins/agent-manager/web /repo/apps/console-web/plugins/agent-manager/web
+COPY apps/console-web/src/changeBatch.tsx apps/console-web/src/changeBatch.css /repo/apps/console-web/src/
 COPY apps/amberx-droid/ .
 RUN npm run build
 
@@ -31,7 +36,7 @@ RUN pip install --no-cache-dir -r server/requirements.txt
 COPY framework/python framework/python
 COPY framework/schemas/ai-providers.json framework/schemas/ai-providers.json
 COPY apps/amberx-droid/server server
-COPY --from=web /app/dist dist
+COPY --from=web /repo/apps/amberx-droid/dist dist
 ENV AMBERX_DATA_DIR=/data AMBERX_DIST=/app/dist PORT=8080 PYTHONPATH=/app/framework/python DISABLE_AUTOUPDATER=1 CLAUDE_BIN=claude
 RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http; from axf.assistant_host import providers; assert providers.kind('claude-code')" \
  && useradd -r -u 1000 -m app && mkdir -p /data && chown app /data && chmod 700 /data

@@ -1,0 +1,9 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.axf.console.ai-assistant",
+  "name": "AI assistant",
+  "version": "0.1.0",
+  "description": "The Dev Console's AI assistant, installed in AmberX unchanged: same chats, providers, live sessions and agents as the console. Its server part runs on the console; AmberX's server forwards to it (hub admins only).",
+  "consolePlugin": "ai-assistant",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-28" }
+}

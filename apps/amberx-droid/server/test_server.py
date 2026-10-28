@@ -337,6 +337,66 @@ check("Molly: asks the console's walkthrough guide, answer + walkthrough title b
 check("Molly status: connected", c.get("/api/ai/molly/status", headers=A).json()["ok"] is True)
 main.console_client = _real
 
+# ---------------------------------------------------------------- console plugins (AI assistant, Agent manager) via the console
+from http import server as _hs  # noqa: E402
+import threading  # noqa: E402
+
+
+class _Console(_hs.BaseHTTPRequestHandler):
+    seen: list = []
+
+    def log_message(self, *a):  # quiet
+        pass
+
+    def _do(self):
+        n = int(self.headers.get("content-length") or 0)
+        body = self.rfile.read(n) if n else b""
+        _Console.seen.append((self.command, self.path, self.headers.get("authorization"), body, self.headers.get("cookie")))
+        if self.path.endswith("/stream"):
+            self.send_response(200)
+            self.send_header("content-type", "text/event-stream")
+            self.end_headers()
+            for i in range(3):
+                self.wfile.write(f"data: {{\"n\": {i}}}\n\n".encode())
+                self.wfile.flush()
+            return
+        out = json.dumps({"path": self.path}).encode()
+        self.send_response(201 if self.command == "POST" else 200)
+        self.send_header("content-type", "application/json")
+        self.send_header("content-length", str(len(out)))
+        self.end_headers()
+        self.wfile.write(out)
+
+    do_GET = do_POST = do_PUT = do_PATCH = do_DELETE = _do
+
+
+srv = _hs.ThreadingHTTPServer(("127.0.0.1", 0), _Console)
+threading.Thread(target=srv.serve_forever, daemon=True).start()
+_real_url = main.CONSOLE_URL
+main.CONSOLE_URL = f"http://127.0.0.1:{srv.server_address[1]}"
+CP = "/api/console/plugins/"
+check("console plugins: admins only", c.get(CP + "ai-assistant/status", headers=P).status_code == 403)
+os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
+check("console plugins: no console token -> 503", c.get(CP + "ai-assistant/status", headers=A).status_code == 503)
+os.environ["AMBERX_CONSOLE_TOKEN"] = "c" * 32
+g = c.get(CP + "ai-assistant/conversations?limit=5", headers=A)
+m, path, auth, _b, cookie = _Console.seen[-1]
+check("console plugins: GET forwarded with the console token + query", g.status_code == 200 and path == "/api/plugins/ai-assistant/conversations?limit=5" and auth == "Bearer " + "c" * 32 and not cookie, (g.status_code, _Console.seen[-1]))
+po = c.post(CP + "agent-manager/agents", headers=AP, json={"name": "x"})
+check("console plugins: POST body + status pass through", po.status_code == 201 and _Console.seen[-1][0] == "POST" and json.loads(_Console.seen[-1][3]) == {"name": "x"}, po.text)
+check("console plugins: cross-site write refused", c.post(CP + "agent-manager/agents", headers={**A, "origin": "https://evil.example"}, json={}).status_code == 403)
+st = c.get(CP + "ai-assistant/stream", headers=A)
+check("console plugins: event streams pass through", st.status_code == 200 and "text/event-stream" in st.headers["content-type"] and st.text.count("data:") == 3, st.text[:120])
+check("console plugins: only the listed plugins", c.get(CP + "systems-check/status", headers=A).status_code == 404)
+before = len(_Console.seen)
+for bad in ("ai-assistant/../vps/run", "ai-assistant/%2e%2e/x"):
+    r_ = c.get(CP + bad, headers=A)
+    check(f"console plugins: no escape {bad}", r_.status_code in (400, 404) and len(_Console.seen) == before, (r_.status_code, _Console.seen[-1:]))
+check("console plugins: bigger body cap for chat images", c.post(CP + "ai-assistant/chat", headers={**AP, "content-length": str(13 * 1024 * 1024)}, content=b"").status_code == 413)
+srv.shutdown()
+main.CONSOLE_URL = _real_url
+os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
+
 # ---------------------------------------------------------------- size caps
 check("transcript cap", c.post("/api/ai/parse", headers=P, json={"transcript": "x" * 20_001}).status_code == 413)
 check("empty transcript refused", c.post("/api/ai/parse", headers=P, json={"transcript": "  "}).status_code == 400)
