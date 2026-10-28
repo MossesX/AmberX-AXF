@@ -951,6 +951,124 @@
    "updatedAt": "2026-10-27T19:25:27.054Z",
    "estimate": "1.5 h",
    "source": "chat"
+  },
+  {
+   "id": "amberx-notes",
+   "title": "AmberX voice notes, lists, tasks + AI router",
+   "detail": "Orchestrator build amberx-notes, branch claude/amberx-notes. Building now (Oct 27 2026), sub-agents allowed by Brett.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Notes core: lists tree (categories, sub-lists, Inbox, Plugins root auto-filled with a list per plugin), notes/todos/tasks model, move/rename/merge, intent schema + validator, local voice-intent parser",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Notes store on axHub (lib-hubstore tables in amberx-notes/), shared read of the console Voice notes + Voice Vault tables, offline queue",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Notes page: tabs Inbox / Lists / Notes / Pinned / Search; collapsible list tree with Plugins folder; note cards; rename, move to list, merge, tags, pin, star",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Lists manager: create/rename/move/delete lists and sub-lists, drag to reorder, bulk move items between lists",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Tasks + Todo page: status, priority, due, checklist, subtasks; tabs Today / Upcoming / All / Done; grid and tree views",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Dictation: record a note hands-free (start/stop triggers, cut stop words), live transcript, review card, save to the right list",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Voice commands section: predefined commands from the codebase (every registered action + notes/tasks commands) grouped in tabs, switch each on/off, edit phrases, test pad",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Voice note commands wired: new note in X, add todo, move last note, rename list, create list under, mark done, read my tasks",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "AmberX server: FastAPI behind the axHub wall (signed headers), Dockerfile + deploy switch from static nginx",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "LLM router on framework assistant_host providers: Claude plan ↔ Claude API switch, any mainstream LLM, fallback chain, keep-alive health checks, retries, keys server-side only",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "AI connection settings: provider switch, keys (write-only), test, status badge, fallback order",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Real-time parsing: transcript → validated intent JSON (summary, list, sub-list, tasks, due, priority, tags), review then store",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Summaries, title cleanup, Ask my notes",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Integrated web component: Web tab with address bar, clip page/selection to a note",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-28T01:20:00.000Z"
+    },
+    {
+     "text": "Export (Markdown/JSON), tests, re-check, deploy, docs, THREADS",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-28T00:32:23.016Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-28T00:32:23.016Z",
+   "source": "chat",
+   "note": ""
   }
  ]
 }

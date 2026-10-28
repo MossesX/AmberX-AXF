@@ -1,0 +1,27 @@
+/* Notes plugin: layout only (THEMING.md); every control is a framework control, sizes are theme tokens. */
+.axp-notes { min-width: 0; }
+.axp-notes-status { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: 0; }
+.axp-notes-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-space); min-width: 0; }
+.axp-notes-grow { flex: 1 1 calc(var(--fx-space) * 20); min-width: 0; }
+.axp-notes-pad { padding: var(--fx-space); }
+.axp-notes-quick { min-width: 0; }
+
+.axp-notes-card { display: flex; align-items: flex-start; gap: var(--fx-space); padding: var(--fx-space); min-width: 0; }
+.axp-notes-card__main { display: flex; flex-direction: column; align-items: stretch; text-align: start; gap: calc(var(--fx-space) * 0.35); flex: 1 1 auto; min-width: 0; }
+.axp-notes-card__tools { display: flex; gap: calc(var(--fx-space) * 0.25); flex: 0 0 auto; }
+.axp-notes-clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.axp-notes-tags { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); min-width: 0; }
+
+.axp-notes-tree { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); min-width: 0; }
+.axp-notes-tree__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0; }
+.axp-notes-tree__name { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); flex: 1 1 auto; min-width: 0; text-align: start; }
+.axp-notes-tree__name > .axp-notes-clip { flex: 1 1 auto; }
+.axp-notes-indent { display: flex; flex: 0 0 auto; }
+.axp-notes-indent__step { display: inline-block; width: calc(var(--fx-space) * 1.5); flex: 0 0 auto; }
+
+.axp-notes-scroll { max-height: 50vh; overflow: auto; }
+.axp-notes-framed { padding: var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-notes-end { justify-content: flex-end; }
+.axp-notes-empty { gap: var(--fx-space); min-height: calc(var(--fx-space) * 20); }
+.axp-notes-empty > p { margin: 0; }
+.axp-notes-editor, .axp-notes-manager { min-width: 0; }
