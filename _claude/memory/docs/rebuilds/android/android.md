@@ -1,7 +1,7 @@
 # Android screenshots — before / after
 
 Captured automatically by `.github/workflows/rebuild-shots.yml` on an API 34 emulator (Pixel 6, demo-mode status bar).
-Before = `eaba8c587bd4`, after = `3cd32f62180d` — [run](https://github.com/MossesX/AmberX-AXF/actions/runs/40608933584). ✓ = the capture reached that screen through the app's own nav; ? = it didn't (e.g. an app lock in front).
+Before = `b3173afa998b`, after = `4504145516f1` — [run](https://github.com/MossesX/AmberX-AXF/actions/runs/40624012558). ✓ = the capture reached that screen through the app's own nav; ? = it didn't (e.g. an app lock in front).
 
 ## ax-notes
 
@@ -35,18 +35,18 @@ Before = `eaba8c587bd4`, after = `3cd32f62180d` — [run](https://github.com/Mos
 
 | Screen | Before | After |
 |---|---|---|
-| Start | ✓ <img src="shots/android/before/axhub-android/start.png" width="220"> | ✓ <img src="shots/android/after/axhub-android/start.png" width="220"> |
-| Approvals | ? <img src="shots/android/before/axhub-android/home.png" width="220"> | ? <img src="shots/android/after/axhub-android/home.png" width="220"> |
-| Hub | ? <img src="shots/android/before/axhub-android/hub.png" width="220"> | ? <img src="shots/android/after/axhub-android/hub.png" width="220"> |
-| Apps | ? <img src="shots/android/before/axhub-android/apps.png" width="220"> | ? <img src="shots/android/after/axhub-android/apps.png" width="220"> |
-| Services | ? <img src="shots/android/before/axhub-android/services.png" width="220"> | ? <img src="shots/android/after/axhub-android/services.png" width="220"> |
-| Jobs | ? <img src="shots/android/before/axhub-android/jobs.png" width="220"> | ? <img src="shots/android/after/axhub-android/jobs.png" width="220"> |
-| Audit log | ? <img src="shots/android/before/axhub-android/audit.png" width="220"> | ? <img src="shots/android/after/axhub-android/audit.png" width="220"> |
-| Vault | ? <img src="shots/android/before/axhub-android/vault.png" width="220"> | ? <img src="shots/android/after/axhub-android/vault.png" width="220"> |
-| Users | ? <img src="shots/android/before/axhub-android/users.png" width="220"> | ? <img src="shots/android/after/axhub-android/users.png" width="220"> |
-| Projects | ? <img src="shots/android/before/axhub-android/projects.png" width="220"> | ? <img src="shots/android/after/axhub-android/projects.png" width="220"> |
-| Devices | ? <img src="shots/android/before/axhub-android/devices.png" width="220"> | ? <img src="shots/android/after/axhub-android/devices.png" width="220"> |
-| Settings | ? <img src="shots/android/before/axhub-android/settings.png" width="220"> | ? <img src="shots/android/after/axhub-android/settings.png" width="220"> |
+| Start | — | ✓ <img src="shots/android/after/axhub-android/start.png" width="220"> |
+| Approvals | — | ? <img src="shots/android/after/axhub-android/home.png" width="220"> |
+| Hub | — | ? <img src="shots/android/after/axhub-android/hub.png" width="220"> |
+| Apps | — | ? <img src="shots/android/after/axhub-android/apps.png" width="220"> |
+| Services | — | ? <img src="shots/android/after/axhub-android/services.png" width="220"> |
+| Jobs | — | ? <img src="shots/android/after/axhub-android/jobs.png" width="220"> |
+| Audit log | — | ? <img src="shots/android/after/axhub-android/audit.png" width="220"> |
+| Vault | — | ? <img src="shots/android/after/axhub-android/vault.png" width="220"> |
+| Users | — | ? <img src="shots/android/after/axhub-android/users.png" width="220"> |
+| Projects | — | ? <img src="shots/android/after/axhub-android/projects.png" width="220"> |
+| Devices | — | ? <img src="shots/android/after/axhub-android/devices.png" width="220"> |
+| Settings | — | ? <img src="shots/android/after/axhub-android/settings.png" width="220"> |
 
 ## demo-ai
 
