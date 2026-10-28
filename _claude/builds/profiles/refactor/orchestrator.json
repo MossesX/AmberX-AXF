@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T09:55:03.687Z",
+ "updatedAt": "2026-10-28T09:55:08.020Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2696,10 +2696,10 @@
    "source": "chat",
    "pendingId": "",
    "branch": "claude/amberx-voice-fix",
-   "pr": "#147",
+   "pr": "pending",
    "createdAt": "2026-10-28T04:39:11.299Z",
-   "updatedAt": "2026-10-28T09:55:03.686Z",
-   "builtAt": "2026-10-28T09:55:03.598Z",
+   "updatedAt": "2026-10-28T04:45:09.500Z",
+   "builtAt": "2026-10-28T04:45:09.447Z",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -2837,9 +2837,14 @@
    "branch": "fix/banner-snap",
    "pr": "#149",
    "createdAt": "2026-10-28T05:01:49.680Z",
-   "updatedAt": "2026-10-28T05:05:08.295Z",
-   "builtAt": "2026-10-28T05:05:08.295Z",
-   "notes": [],
+   "updatedAt": "2026-10-28T09:55:08.020Z",
+   "builtAt": "2026-10-28T09:55:07.941Z",
+   "notes": [
+    {
+     "text": "Merged PR #149, branch fix/banner-snap",
+     "at": "2026-10-28T09:55:08.019Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
