@@ -260,7 +260,7 @@ jobs:
         run: |
           {
             echo "### AmberX Android build failed on \`${{ github.ref_name }}\` — ${{ github.sha }}"; echo; echo '```'
-            grep -E "error:|\.java:[0-9]+|FAILED|expected|but was|AssertionError|What went wrong|> Task .*FAILED" /tmp/amberx-gradle.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | head -60
+            grep -E "error:|\.java:[0-9]+|FAILED|expected|but was|AssertionError|What went wrong|> Task .*FAILED" /tmp/amberx-gradle.log 2>/dev/null | grep -vE "^\s+at " | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | head -60
             for f in apps/amberx-droid/android/app/build/test-results/testDebugUnitTest/*.xml; do [ -f "$f" ] && grep -A3 "<failure" "$f" | head -20; done
             echo '```'
           } > /tmp/amberx-report.md

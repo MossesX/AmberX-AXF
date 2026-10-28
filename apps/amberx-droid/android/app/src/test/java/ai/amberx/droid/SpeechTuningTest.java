@@ -25,7 +25,7 @@ public class SpeechTuningTest {
         throw new IllegalStateException("speech-cases.json not found");
     }
 
-    private static String strOrNull(JSONArray a, int i) { return a.isNull(i) ? null : a.getString(i); }
+    private static String strOrNull(JSONArray a, int i) throws Exception { return a.isNull(i) ? null : a.getString(i); }
 
     @Test public void compact() throws Exception {
         JSONArray c = cases().getJSONArray("compact");
