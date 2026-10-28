@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T04:45:09.501Z",
+ "updatedAt": "2026-10-28T05:10:31.839Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2781,6 +2781,41 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.446Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "fix-hubsync-look-source",
+   "title": "Fix: console look not saved to axHub (Hub sync replaced the console own hub source)",
+   "category": "Fix",
+   "detail": "Brett Oct 28 2026: either console isnt saving look to hub or other apps arent getting look from hub. Hub doc unchanged since 02:54 UTC. Cause: HubSync.stop() detached whatever appearance source the runtime had (the console own one too) on every restart and start() attached its own. Fix: runtime appearanceSourceIs; HubSync detaches only its own.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "fix/hubsync-own-look-source",
+   "pr": "#148",
+   "createdAt": "2026-10-28T05:10:31.665Z",
+   "updatedAt": "2026-10-28T05:10:31.839Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "rt.appearanceSourceIs(src); HubSync.stop detaches only its own source; re-bake console + patch baked hubsync in axhub-web + amberx-droid; checks; verify saves reach a local hub",
+     "model": "Opus",
+     "why": "",
+     "phase": "Fix",
+     "group": "Hub sync",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T05:10:31.767Z",
      "note": ""
     }
    ]
