@@ -19,6 +19,9 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
                                     axHub's vps.run (approval pops up). Every Auto fix goes through Mosses (mosses.py).
   GET  claude | POST claude/{id}    Claude on failure: a failed fix handed to headless Claude Code on the VPS (setting
                                     claudeOnFail; vps.run, so it needs approval; reports on a change-log entry = building banner)
+  GET  fix-help/{id} | POST fix-help-claude/{id} | POST fix-help-vinny/{id} | GET fix-help-run/{run}
+                                    Fix failed dialog: Claude badge + account, approve Mosses → headless Claude Code; no
+                                    connection → error, fix, VPS command and Vinny's Auto fix (Oct 28 2026)
   GET  ai                           the AI switches + what they need (and which plugin would provide it)
   PUT  settings                     {ai: {systems, whatsnew}, whatsNewBanner}
   GET  routine | POST routine/run | DELETE routine
@@ -273,6 +276,118 @@ def claude_start(cid: str, req: ClaudeReq) -> dict[str, Any]:
     return {"ok": True, "job": {k: v for k, v in job.items() if k != "command"}}
 
 
+# ---------------------------------------------------------------- Fix failed dialog (Oct 28 2026)
+#
+# Brett: "If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge
+# information about the account in the dialogue then if approved and connected launch Claude code headless session and
+# fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps
+# command if available with an autofix that uses Vinny for vps."
+#
+#   GET  fix-help/{id}?reason=…   what the dialog shows: the check, why the fix failed, Claude's connection (state
+#                                 ok | no-credit | dead, model, account profile, error), whether Mosses can take it, the
+#                                 headless session already running for it, and Vinny's VPS command for it (or the check's)
+#   POST fix-help-claude/{id}    Brett approved Mosses: start headless Claude Code on the VPS for this check (axHub asks
+#                                 for the vps.run approval as always). Refused while Claude isn't connected.
+#   POST fix-help-vinny/{id}     no Claude: Vinny runs his command for this check through axHub vps.run (approval there)
+#   GET  fix-help-run/{run}       follow that run
+
+NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota|payment required|\b402\b", re.I)
+
+
+def claude_connection(refresh: bool = False) -> dict[str, Any]:
+    """The badge: ok (answers) / no-credit (account works, out of credits or over its limit) / dead (can't connect)."""
+    st = ai_state(refresh)
+    err = str(st.get("error") or "")
+    state = "ok" if st.get("ok") else "no-credit" if NO_CREDIT.search(err) else "dead"
+    model = str(st.get("model") or "")
+    return {"state": state, "model": model, "profile": str(st.get("profile") or ""), "error": "" if state == "ok" else err[:300],
+            "testedAt": st.get("at") or 0}
+
+
+def _vinny_svc() -> Any:
+    try:
+        svc = plugin_services.get(mosses.VINNY)
+        return svc if svc is not None and svc.ready()[0] else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def vps_command(c: dict[str, Any]) -> dict[str, Any] | None:
+    """The VPS command for this check: Vinny's mapped one first (he can run it), else the check's own host fix."""
+    svc = _vinny_svc()
+    if svc is not None:
+        try:
+            f = svc.find_fix(str(c.get("id")), str(c.get("summary") or ""))
+        except Exception:  # noqa: BLE001
+            f = None
+        if f and f.get("kind") in ("vps", "git") and f.get("command"):
+            return {"by": "vinny", "name": f.get("name") or f.get("id"), "command": str(f["command"])[:3000], "commandId": f.get("id")}
+    fix = c.get("fix") or {}
+    if fix.get("type") == "host" and fix.get("command"):
+        return {"by": "check", "name": c.get("title") or c.get("id"), "command": str(fix["command"])[:3000], "commandId": None}
+    return None
+
+
+@router.get("/fix-help/{cid:path}")
+def fix_help(cid: str, reason: str = "", refresh: bool = False) -> dict[str, Any]:
+    try:
+        c = SVC.run_one(cid)
+    except KeyError:
+        raise HTTPException(404, f"no check {cid}") from None
+    ok, why = mosses.ready()
+    job = CLAUDE.get(cid)
+    return {"check": c, "fixed": c.get("status") in ("ok", "info"), "failure": reason[:400],
+            "claude": claude_connection(refresh), "mosses": {"ok": ok, "why": why},
+            "job": {k: v for k, v in job.items() if k != "command"} if job else None,
+            "vps": vps_command(c), "vinny": _vinny_svc() is not None}
+
+
+@router.post("/fix-help-claude/{cid:path}")
+def fix_help_claude(cid: str, req: ClaudeReq) -> dict[str, Any]:
+    conn = claude_connection(refresh=True)
+    if conn["state"] != "ok":
+        raise HTTPException(409, f"Claude isn't connected ({conn['state']}): {conn['error'] or 'no answer'}")
+    ok, why = mosses.ready()
+    if not ok:
+        raise HTTPException(409, why)
+    try:
+        c = SVC.run_one(cid)
+    except KeyError:
+        raise HTTPException(404, f"no check {cid}") from None
+    if c.get("status") in ("ok", "info"):
+        return {"ok": True, "job": None, "message": "It passes now: nothing to fix."}
+    job = CLAUDE.maybe_launch(c, req.reason or "a fix failed in the console (Brett approved Mosses in the Fix failed dialog)", force=True, approved=True)
+    if not job:
+        raise HTTPException(400, "This check can't be handed over")
+    cx.log("system", f"{cid}: Brett approved Mosses; asking axHub to start headless Claude Code on the VPS", "info")
+    return {"ok": True, "job": {k: v for k, v in job.items() if k != "command"}}
+
+
+@router.post("/fix-help-vinny/{cid:path}")
+def fix_help_vinny(cid: str) -> dict[str, Any]:
+    svc = _vinny_svc()
+    if svc is None:
+        raise HTTPException(409, "Vinny isn't ready (agent manager → Vinny: allow axhub_call)")
+    try:
+        c = SVC.run_one(cid)
+    except KeyError:
+        raise HTTPException(404, f"no check {cid}") from None
+    run = svc.start_fix(cid, str(c.get("summary") or ""), {"check": cid}, source="fix-failed-dialog")
+    if not run:
+        raise HTTPException(409, "Vinny has no command for this check (add one in his command book, or turn on “Auto fix asks Vinny first”)")
+    cx.log("system", f"{cid}: Vinny Auto fix started ({run.get('name') or run.get('commandId')}); axHub asks for the approval", "info")
+    return {"ok": True, "run": run}
+
+
+@router.get("/fix-help-run/{rid}")
+def fix_help_vinny_run(rid: str) -> dict[str, Any]:
+    svc = _vinny_svc()
+    run = svc.get_run(rid) if svc is not None else None
+    if not run:
+        raise HTTPException(404, "no such run")
+    return {"run": run}
+
+
 # ---------------------------------------------------------------- AI switches + routine
 
 @router.get("/ai")
@@ -299,17 +414,17 @@ def ai_test() -> dict[str, Any]:
     except Exception as e:  # noqa: BLE001
         msg = str(e).strip("'\"")[:300] or e.__class__.__name__
         cx.log("system", f"AI connection test failed: {msg}", "error")
-        _AI_STATE.update({"ok": False, "model": "", "error": msg, "at": time.time()})
+        _AI_STATE.update({"ok": False, "model": "", "profile": "", "error": msg, "at": time.time()})
         return {"ok": False, "error": msg, "agent": agent.get("name") or "Mosses", "ms": int((time.time() - started) * 1000)}
     text = str(out.get("text") or "").strip()
     res = {"ok": bool(text), "agent": agent.get("name") or "Mosses", "model": out.get("model") or "", "profile": out.get("profile") or "",
            "ms": int((time.time() - started) * 1000), "reply": text[:200], "error": "" if text else "the model answered with nothing"}
-    _AI_STATE.update({"ok": res["ok"], "model": res["model"], "error": res["error"], "at": time.time()})
+    _AI_STATE.update({"ok": res["ok"], "model": res["model"], "profile": res["profile"], "error": res["error"], "at": time.time()})
     cx.log("system", f"AI connection test: {'ok' if res['ok'] else 'empty reply'} ({res['model'] or 'model unknown'}, {res['ms']} ms)", "ok" if res["ok"] else "warn")
     return res
 
 
-_AI_STATE: dict[str, Any] = {"ok": False, "model": "", "error": "not tested yet", "at": 0.0}
+_AI_STATE: dict[str, Any] = {"ok": False, "model": "", "profile": "", "error": "not tested yet", "at": 0.0}
 AI_STATE_TTL = 300
 
 
