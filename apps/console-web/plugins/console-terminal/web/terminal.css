@@ -95,8 +95,7 @@
 /* connection picker + per-tab Connection manager (connections.tsx) */
 .axp-wt-conn { display: flex; flex-direction: column; gap: var(--fx-space); min-width: min(calc(var(--fx-space) * 46), 100%) }
 .axp-wt-conn__list { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); max-height: 50vh; overflow: auto }
-.axp-wt-conn__item { gap: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); text-align: left }
-.axp-wt-conn__item.is-current { background: var(--fx-accent-soft) }
+.axp-wt-conn__item { gap: var(--fx-space); text-align: left }
 .axp-wt-conn__text { display: flex; flex-direction: column; flex: 1; min-width: 0 }
 .axp-wt-conn__text > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-wt-conn__now { display: flex; align-items: center; gap: var(--fx-space); padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }

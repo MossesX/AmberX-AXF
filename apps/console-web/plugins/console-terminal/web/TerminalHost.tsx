@@ -173,7 +173,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
               {item('Duplicate tab', 'copy', () => duplicate(s), { hint: 'Ctrl+Shift+D' })}
               <div className={`${P}__colors`} role="group" aria-label="Tab colour">
                 {[null, 'accent', 'success', 'warning', 'danger', 'info'].map((col) => (
-                  <button key={col ?? 'none'} type="button" className={`${P}__swatch ${s.color === (col ?? undefined) ? 'is-on' : ''}`} style={col ? { ['--axp-wt-tint' as string]: `var(--fx-${col})` } : undefined} title={col ?? 'No colour'} aria-label={col ? `Colour ${col}` : 'No colour'} onClick={() => { patchSession(s.id, { color: col ?? undefined }); setMenu(null); }} />
+                  <button key={col ?? 'none'} type="button" data-fx-row className={`${P}__swatch ${s.color === (col ?? undefined) ? 'is-on' : ''}`} style={col ? { ['--axp-wt-tint' as string]: `var(--fx-${col})` } : undefined} title={col ?? 'No colour'} aria-label={col ? `Colour ${col}` : 'No colour'} onClick={() => { patchSession(s.id, { color: col ?? undefined }); setMenu(null); }} />
                 ))}
               </div>
               {item('Move to a new window', 'external', () => toNewWindow(s), { disabled: h.sessions.length < 2 })}
