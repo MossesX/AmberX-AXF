@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T04:36:58.577Z",
+ "updatedAt": "2026-10-28T04:55:53.000Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2682,6 +2682,41 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-28T03:05:25.022Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "fix-hubsync-look-source",
+   "title": "Fix: console look not saved to axHub (Hub sync replaced the console own hub source)",
+   "category": "Fix",
+   "detail": "Brett Oct 28 2026: either console isnt saving look to hub or other apps arent getting look from hub. Hub doc unchanged since 02:54 UTC. Cause: Hub sync plugin startHubSync restarts on every library install; HubSync.stop() detaches whatever appearance source the runtime has (the console own one too) and start() attaches its own, so the console developer source is replaced and saves are lost in restart churn. Fix: runtime exposes the current source; HubSync detaches only its own and treats any other attached source as the app own.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "fix/hubsync-own-look-source",
+   "pr": "",
+   "createdAt": "2026-10-28T04:53:37.586Z",
+   "updatedAt": "2026-10-28T04:55:53.000Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "rt.appearanceSourceIs(src); HubSync.stop detaches only its own source, start keeps an app own source; re-bake console + patch baked hubsync in other web apps; checks; verify saves reach a local hub",
+     "model": "Opus",
+     "why": "",
+     "phase": "Fix",
+     "group": "Hub sync",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T04:55:52.964Z",
      "note": ""
     }
    ]

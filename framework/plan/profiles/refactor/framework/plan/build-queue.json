@@ -3,6 +3,17 @@
  "order": [],
  "steps": {},
  "dirty": false,
- "updatedAt": "2026-10-27T19:02:12.359Z",
- "history": []
+ "updatedAt": "2026-10-28T04:54:55.741Z",
+ "history": [
+  {
+   "at": "2026-10-28T04:54:55.674Z",
+   "by": "console:init",
+   "text": "Build queue created from the plan"
+  },
+  {
+   "at": "2026-10-28T04:54:55.741Z",
+   "by": "console:init",
+   "text": "Build queue created from the plan"
+  }
+ ]
 }
