@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T19:27:43.976Z",
+ "updatedAt": "2026-10-28T19:34:25.353Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3488,14 +3488,14 @@
    "title": "Approval history with costs: every approval recorded with details + cost, browsable in Console + axHub",
    "category": "axHub",
    "detail": "Brett Oct 28 2026 (claude.ai): 'Add cost of approval every time something is approved and display costs, as well as all details and history of past approvals browsing. Can you alert when needing approval without stopping and restarting.' Context: he asked whether sending an approval and waiting costs tokens. Answer given: waiting is free, but each retry check re-reads the conversation (mostly cached). The 15 s x10 then 1 min rule costs about 10-15 checks per 5 minutes. HELD: queued, not started. Picks (cards): profile Refactor, held; history in the Console AND on axHub's approvals page.\n\nScope:\n1) Cost per approval: every approval records the session's token/cost spent while it waited (number of checks, tokens in/out, cached vs not, USD from framework/schemas/model-pricing.json), plus the time it waited and who/what asked (session, surface, machine, build ref, reason title/description, exact call, result).\n2) History browser: every past approval with all details and its cost; filter/sort/search, totals per day/build/session. Console = History view in the approvals-banner plugin (framework DataGrid, expanding rows). axHub = same list on its approvals page. Approve stays on the first screen.\n3) Alert without stopping/restarting: a hub-side wait (axhub tool, e.g. approvals.wait / long-poll on the confirmation id, up to ~10 min per call) so a session makes ONE call that returns the moment Brett approves. No retry loop and no session restart. The AmberX app push (already shipped, amberx-push) fires when the approval is created. Then update the shared retry rule (15 s x10, then 1 min) to 'one wait call, re-issued only if it times out' — Brett to confirm that rule change at build time.\nWork spans MossesX/axHub (wait tool, cost fields, approvals page history) and AXF (approvals-banner History view, cost capture via codebase-changes hooks / session transcript).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-28T15:30:11.241Z",
-   "updatedAt": "2026-10-28T18:56:29.518Z",
+   "updatedAt": "2026-10-28T19:34:25.352Z",
    "builtAt": "",
    "notes": [
     {
@@ -3505,6 +3505,10 @@
     {
      "text": "Oct 28 14:20: cut to history + costs only. Wait call and resume/wake-up dropped: build hub-runs-approved makes axHub run approved calls itself, so sessions never wait. install_steps Step 23a removed.",
      "at": "2026-10-28T18:56:29.517Z"
+    },
+    {
+     "text": "Built: axHub PR #16 (log cost fields, result reads, axhub.approval_cost, totals) + AXF PR (AXHub web log cost line/totals/sort; console Approval history and costs dialog + menu). s3 cost capture is rule-based for now: sessions report with axhub.approval_cost (shared rule); automatic reporting from the Claude Code Stop hook (transcript tokens per approval) is a follow-up. s5: the retry rule was replaced by hub-runs-approved (send once, never poll), so no wait-call rule is needed.",
+     "at": "2026-10-28T19:34:25.352Z"
     }
    ],
    "approvals": [],
@@ -3521,8 +3525,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:34:25.162Z",
      "note": ""
     },
     {
@@ -3537,8 +3541,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:34:25.224Z",
      "note": ""
     },
     {
@@ -3553,8 +3557,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T19:34:25.298Z",
      "note": ""
     },
     {
