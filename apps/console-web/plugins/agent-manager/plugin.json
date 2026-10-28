@@ -9,7 +9,8 @@
   "description": "Create, edit, manage and orchestrate AI agents built from personas, lingo, skills and tools, each with its own persistent memory. Wizards for agents, skills, tools, an all-in-one agent builder and training (Firecrawl, web pages, the repo, MCP). Add-on agents: Mosses (React/TS/Python coder with container write mode), AXF expert, AI expert. Agents follow the framework contract agent-definition@1, so other AXF apps load the same ones. Works with the AI assistant when both are installed.",
   "targets": [
     "axf-console",
-    "axf-web-app"
+    "axf-web-app",
+    "amberx-droid"
   ],
   "provides": [
     "view:agent-manager",

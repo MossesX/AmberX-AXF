@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T15:30:11.243Z",
+ "updatedAt": "2026-10-28T15:41:39.141Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3565,6 +3565,41 @@
      "agent": false,
      "done": false,
      "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "amberx-assistant-agents",
+   "title": "AmberX: install the AI assistant + agent manager plugins",
+   "category": "AmberX app",
+   "detail": "Brett Oct 28 2026: \"Install assistant and agent manager in amberx\" / \"Why take so much time installing an existing plugin\". The console plugins ai-assistant and agent-manager load in AmberX unchanged (same web code, @console aliases to an AmberX bridge); their server calls go through AmberX server /api/console/plugins/<folder>/* to the console (admins only, console token server-side). Same chats, agents and live sessions as the console; moves to axHub with axhub-agent-host.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-assistant-agents",
+   "pr": "#156",
+   "createdAt": "2026-10-28T15:41:17.167Z",
+   "updatedAt": "2026-10-28T15:41:39.141Z",
+   "builtAt": "2026-10-28T15:41:17.288Z",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Bridge + aliases + server proxy + two AmberX plugin folders + Dockerfile + tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "Build",
+     "group": "AmberX",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T15:41:17.287Z",
      "note": ""
     }
    ]
