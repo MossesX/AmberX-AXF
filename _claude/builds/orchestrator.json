@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T00:47:48.740Z",
+ "updatedAt": "2026-10-28T00:51:02.810Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1640,7 +1640,7 @@
    "branch": "claude/amberx-notes",
    "pr": "",
    "createdAt": "2026-10-28T00:32:03.143Z",
-   "updatedAt": "2026-10-28T00:47:48.740Z",
+   "updatedAt": "2026-10-28T00:51:02.810Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -1737,8 +1737,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T00:51:02.655Z",
      "note": ""
     },
     {
@@ -1753,8 +1753,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T00:51:02.741Z",
      "note": ""
     },
     {
@@ -1769,8 +1769,8 @@
      "checks": [],
      "session": "same",
      "agent": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T00:51:02.810Z",
      "note": ""
     },
     {
