@@ -36,7 +36,7 @@
             android:foregroundServiceType="specialUse|microphone">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Watches the owner's axHub for approvals waiting on them and alerts them" />
+                android:value="Watches the owner's axHub for approvals waiting on them and alerts them, and listens hands-free for the owner's voice commands" />
         </service>
 
         <receiver
@@ -69,6 +69,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- The detection overlay (hands-free listening shown over other apps) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <queries>
         <intent>

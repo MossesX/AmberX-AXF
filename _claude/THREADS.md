@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| AmberX hands-free listening + ActiveX-style detection overlay (level graph, dB, quick settings) | merged | `claude/amberx-handsfree` | #141 | Merged Oct 27 20:25 (eaba8c58) after Brett's approval. Always listens (no pause); detection overlay. Watch for recognizer beeps and self-hearing replies | 2026-10-27 |
 | Merge approvals: ready PRs go to Brett as an axHub approval; Approve on the first screen of the approval page | merged | `claude/merge-approvals` | #131 | Merge through its own merge approval once CI passes | 2026-10-27 |
 | Empty banner strip stays after the last banner item is removed (fix) | review | `fix/banner-strip-collapse` | #133 | Merge after CI; the 5-minute update redeploys the console | 2026-10-27 |
 | Build profiles + Build profiles plugin (Main framework, Refactor) | review | `claude/build-profiles` | see GitHub | Merge after CI; then the console shows the profile chip. Refactor is the saved pick; today's refactor/upgrade work imported into it (pending: arch-foundation, enterprise-branding, interface-roller, design-package-fable, apply-all-levels-fable + 5 done; orchestrator: arch-foundation, enterprise-branding, interface-roller, design-package). Main keeps its copies with a note | 2026-10-27 |

@@ -11,6 +11,7 @@
  */
 import { registerPlugin, Capacitor, type PluginListenerHandle } from '@capacitor/core';
 import { sharesHubSite } from './hosted';
+import { dbfs, type VoiceConfig } from './plugins/voice/web/handsfree';
 
 export interface MonitorConfig {
   hub: string;
@@ -32,6 +33,13 @@ export interface MonitorStatus {
   waiting: number;
 }
 
+export interface VoiceStatus {
+  listening: boolean;
+  microphone: boolean;
+  /** Android: "Display over other apps" allowed (the detection overlay); always false in a browser */
+  overlayAllowed: boolean;
+}
+
 export interface NativeApi {
   /** GET a hub page or feed with the hub session. No redirects, capped. */
   hubGet(opts: { url: string }): Promise<{ status: number; body: string; etag?: string }>;
@@ -46,11 +54,22 @@ export interface NativeApi {
   monitorStart(opts: MonitorConfig): Promise<MonitorStatus>;
   monitorStop(): Promise<MonitorStatus>;
   monitorStatus(): Promise<MonitorStatus>;
+  /** Hands-free listening + the detection overlay (plugins/voice/web/handsfree.ts). Asks for the microphone if needed. */
+  voiceSet(opts: VoiceConfig): Promise<VoiceStatus>;
+  voiceStatus(): Promise<VoiceStatus>;
+  /** Android: opens "Display over other apps" for AmberX; resolves with whether it's allowed when the user returns. */
+  overlayPermission(): Promise<{ allowed: boolean }>;
   /** Ask for the microphone + notifications (Android 13+) permissions. */
   permissions(): Promise<{ microphone: boolean; notifications: boolean }>;
   addListener(event: 'wake', fn: (e: { phrase: string; text: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
+  /** what hands-free is hearing (only while AmberX is on screen) */
+  addListener(event: 'heard', fn: (e: { text: string; final: boolean }) => void): Promise<PluginListenerHandle>;
+  /** input level in dB (Android: recognizer RMS dB; browser: dBFS), about ten a second while on screen */
+  addListener(event: 'level', fn: (e: { db: number; source?: 'android' | 'web' }) => void): Promise<PluginListenerHandle>;
+  /** a quick setting changed on the overlay */
+  addListener(event: 'voiceSettings', fn: (e: Partial<VoiceConfig>) => void): Promise<PluginListenerHandle>;
 }
 
 export const isNative = (): boolean => Capacitor.isNativePlatform();
@@ -66,6 +85,64 @@ type Rec = { lang: string; interimResults: boolean; continuous: boolean; maxAlte
   onerror: ((e: { error: string }) => void) | null; onend: (() => void) | null };
 const Recognition = (globalThis as unknown as { SpeechRecognition?: new () => Rec; webkitSpeechRecognition?: new () => Rec }).SpeechRecognition
   ?? (globalThis as unknown as { webkitSpeechRecognition?: new () => Rec }).webkitSpeechRecognition;
+
+/**
+ * Browser hands-free: while the page is open and visible, continuous Web Speech recognition (restarted when it stops)
+ * reports what it hears; every final result goes out as `wake` (the voice plugin decides whether it held a wake phrase or
+ * is armed). An analyser on the microphone reports the level in dBFS. No overlay in a browser.
+ */
+const webVoice: { cfg: VoiceConfig | null; rec: Rec | null; stream: MediaStream | null; ctx: AudioContext | null; timer: ReturnType<typeof setInterval> | null; listening: boolean } =
+  { cfg: null, rec: null, stream: null, ctx: null, timer: null, listening: false };
+
+function webVoiceStop() {
+  const v = webVoice;
+  try { v.rec?.abort(); } catch { /* already stopped */ }
+  v.rec = null;
+  if (v.timer) clearInterval(v.timer);
+  v.timer = null;
+  v.stream?.getTracks().forEach((t) => t.stop());
+  v.stream = null;
+  void v.ctx?.close().catch(() => undefined);
+  v.ctx = null;
+  v.listening = false;
+}
+
+async function webVoiceStart(cfg: VoiceConfig) {
+  webVoiceStop();
+  webVoice.cfg = cfg;
+  if (!cfg.handsFree || !Recognition) return;
+  const rec = new Recognition();
+  rec.lang = cfg.lang; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
+  rec.onresult = (e) => {
+    const last = e.results[e.results.length - 1];
+    const text = (last?.[0]?.transcript ?? '').trim();
+    if (!last || !text) return;
+    emit('heard', { text, final: last.isFinal });
+    if (last.isFinal) emit('wake', { phrase: '', text });
+  };
+  rec.onerror = () => undefined;
+  rec.onend = () => { if (webVoice.rec === rec && document.visibilityState === 'visible') { try { rec.start(); } catch { /* starting */ } } };
+  webVoice.rec = rec;
+  try { rec.start(); webVoice.listening = true; } catch { webVoice.listening = false; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (webVoice.rec !== rec) { stream.getTracks().forEach((t) => t.stop()); return; }
+    const ctx = new AudioContext();
+    const an = ctx.createAnalyser();
+    an.fftSize = 1024;
+    ctx.createMediaStreamSource(stream).connect(an);
+    const buf = new Float32Array(an.fftSize);
+    webVoice.stream = stream; webVoice.ctx = ctx;
+    webVoice.timer = setInterval(() => { an.getFloatTimeDomainData(buf); emit('level', { db: dbfs(buf), source: 'web' }); }, 100);
+  } catch { /* no microphone level, recognition may still work */ }
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (!webVoice.cfg) return;
+    if (document.visibilityState === 'visible') void webVoiceStart(webVoice.cfg); else webVoiceStop();
+  });
+}
 
 let webMonitor: { timer: ReturnType<typeof setInterval> | null; status: MonitorStatus } = {
   timer: null,
@@ -89,7 +166,11 @@ const web: NativeApi = {
   },
   async hubSignOut({ hub }) { window.open(`${hub}/auth/logout`, '_blank', 'noopener,noreferrer'); },
   listen({ lang }) {
-    return new Promise((resolve, reject) => {
+    // Hands-free lets go of the recognizer while the Speak button listens, and comes back afterwards.
+    const resume = webVoice.cfg;
+    if (webVoice.rec) webVoiceStop();
+    const back = <T,>(v: T) => { if (resume) void webVoiceStart(resume); return v; };
+    return new Promise<{ text: string }>((resolve, reject) => {
       if (!Recognition) { reject(new Error('This browser has no speech recognition.')); return; }
       const rec = new Recognition();
       rec.lang = lang; rec.interimResults = false; rec.continuous = false; rec.maxAlternatives = 1;
@@ -98,7 +179,7 @@ const web: NativeApi = {
       rec.onerror = (e) => (e.error === 'no-speech' ? resolve({ text: '' }) : reject(new Error(e.error)));
       rec.onend = () => resolve({ text });
       rec.start();
-    });
+    }).then(back, (e) => { back(null); throw e; });
   },
   async speak({ text, lang }) {
     const synth = globalThis.speechSynthesis;
@@ -121,6 +202,12 @@ const web: NativeApi = {
     return webMonitor.status;
   },
   async monitorStatus() { return webMonitor.status; },
+  async voiceSet(cfg) {
+    await webVoiceStart(cfg);
+    return { listening: webVoice.listening, microphone: webVoice.stream !== null, overlayAllowed: false };
+  },
+  async voiceStatus() { return { listening: webVoice.listening, microphone: webVoice.stream !== null, overlayAllowed: false }; },
+  async overlayPermission() { return { allowed: false }; },
   async permissions() {
     let microphone = false;
     try { (await navigator.mediaDevices?.getUserMedia({ audio: true }))?.getTracks().forEach((t) => t.stop()); microphone = true; } catch { /* refused */ }
