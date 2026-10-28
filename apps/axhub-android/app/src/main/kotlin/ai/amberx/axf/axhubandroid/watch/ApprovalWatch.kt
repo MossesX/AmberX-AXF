@@ -50,9 +50,9 @@ object ApprovalWatch {
         val prefs = hubPrefs(context)
         val f = HubClient.Default.feed(prefs.base)
         HubState.update(f)
-        // Patches serves the phone's notifications for the hub, the Console and Pilot (Brett, Oct 21 2026): while it is
-        // installed AXHub stays quiet (still tracks what it has seen, so nothing old pops up if Patches goes away).
-        val quiet = patchesInstalled(context)
+        // AmberX serves every axHub notification on the phone (Brett, Oct 28 2026; before that Patches, Oct 21): while either
+        // is installed AXHub stays quiet (still tracks what it has seen, so nothing old pops up if they go away).
+        val quiet = amberxInstalled(context) || patchesInstalled(context)
         if (f.status == HubFeedStatus.OK) {
             val plan = prefs.track(f.pending.map { it.id })
             if (quiet) { plan.gone.forEach { Alerts.clearApproval(context, it) }; return f.status.id }
@@ -77,6 +77,12 @@ object ApprovalWatch {
         @Suppress("DEPRECATION") context.packageManager.getPackageInfo(PATCHES_PACKAGE, 0); true
     }.getOrDefault(false)
     const val PATCHES_PACKAGE = "ai.amberx.axf.patches"
+
+    /** AmberX (ai.amberx.droid) is on this phone: every axHub push comes from it (manifest `<queries>` lists it). */
+    fun amberxInstalled(context: Context): Boolean = runCatching {
+        @Suppress("DEPRECATION") context.packageManager.getPackageInfo(AMBERX_PACKAGE, 0); true
+    }.getOrDefault(false)
+    const val AMBERX_PACKAGE = "ai.amberx.droid"
 
     /** What the ongoing notification says, from the last feed (rebuilt by the service after every run). */
     private fun watchingNote(): Pair<Int, String?> {

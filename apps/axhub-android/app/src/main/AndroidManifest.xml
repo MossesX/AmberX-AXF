@@ -4,6 +4,7 @@
     <!-- Patches serves the notifications when it is installed: AXHub checks for it and stays quiet (ApprovalWatch). -->
     <queries>
         <package android:name="ai.amberx.axf.patches" />
+        <package android:name="ai.amberx.droid" />
     </queries>
     <!-- Every framework module contributes its own manifest pieces (lib-notifications: POST_NOTIFICATIONS + full-screen
          intents; lib-work: foreground service + boot receiver); this file holds only the app's identity. -->

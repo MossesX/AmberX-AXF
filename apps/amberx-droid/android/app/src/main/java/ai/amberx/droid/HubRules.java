@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -115,6 +116,51 @@ final class HubRules {
     }
 
     private static String cap(String s, int n) { return s.length() > n ? s.substring(0, n) : s; }
+
+    /* ---------------------------------------------------------------- Dev Console alerts (alert@1, GET <console>/api/alerts) */
+
+    /** The Dev Console AmberX reads alerts from (builds, CI, deploys, systems check). Brett, Oct 28 2026: every push comes from AmberX. */
+    static final String CONSOLE = "https://console.amberxai.com";
+    static final String ALERTS_PATH = "/api/alerts";
+    /** Only these severities make a sound; info alerts stay in the console. */
+    static final Set<String> LOUD = Set.of("critical", "error", "warning");
+
+    static final class ConsoleAlert {
+        final String key, stamp, title, body, severity;
+        ConsoleAlert(String key, String stamp, String title, String body, String severity) { this.key = key; this.stamp = stamp; this.title = title; this.body = body; this.severity = severity; }
+    }
+    static final class Alerts {
+        /** open, loud alerts (one stamp per key + lastAt: a repeat of the same alert alerts again) */
+        final List<ConsoleAlert> open;
+        /** keys resolved or read since: their notification is taken away */
+        final Set<String> closed;
+        Alerts(List<ConsoleAlert> open, Set<String> closed) { this.open = open; this.closed = closed; }
+    }
+
+    /** The console's alerts reply, or null when it isn't one (signed out = a redirect or HTML, not 200 JSON). */
+    static Alerts consoleAlerts(int status, String body) {
+        if (status != 200 || body == null) return null;
+        try {
+            JSONArray arr = new JSONObject(body).optJSONArray("alerts");
+            if (arr == null) return null;
+            List<ConsoleAlert> open = new ArrayList<>();
+            Set<String> closed = new LinkedHashSet<>();
+            Set<String> keys = new HashSet<>();
+            for (int i = 0; i < arr.length() && open.size() < FEED_MAX_ITEMS; i++) {
+                JSONObject a = arr.optJSONObject(i);
+                if (a == null) continue;
+                String key = a.optString("key", "");
+                if (key.isEmpty() || key.length() > 200) continue;
+                if (a.optBoolean("resolved") || a.optBoolean("ack")) { closed.add(key); continue; }
+                String sev = a.optString("severity", "info");
+                if (!LOUD.contains(sev) || !keys.add(key)) continue;
+                open.add(new ConsoleAlert(key, key + "@" + a.optLong("lastAt"), cap(a.optString("title", "Console alert"), 200), cap(a.optString("body", ""), 600), sev));
+            }
+            return new Alerts(open, closed);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     /* ---------------------------------------------------------------- auto-approval (the AXHub app's rules) */
 
