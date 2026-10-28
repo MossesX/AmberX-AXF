@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Windows-style Terminal (Claude Code tabs + connections + profiles) + window snap/resize + settings level toolbar & level editor | working | `claude/windows-terminal` | – | Orchestrator build `windows-terminal` (refactor, 12 steps ~6 h: Opus s1–s5 Terminal, then Fable s6–s12 windows + levels; approval at the switch). Folds in apply-all-levels-fable s3. Change log chg-20261028-427e401aac | 2026-10-28 |
 | Approval costs + history (cost on every approval, history in Console + axHub, one-call wait with AmberX alert) | queued (held) | – | – | Orchestrator build `approval-costs` (refactor, Opus, 5 steps, ~2.25 h; AXF + MossesX/axHub). Retry-rule change to one wait call needs Brett's OK at build time | 2026-10-28 |
 | axHub GitHub write tools (create/update file, branch, commit; each needs approval) | queued (held) | – | – | Orchestrator build `axhub-github-write` (refactor, Opus, 3 steps, ~1 h; work in MossesX/axHub). From the Oct 28 fix wizard; VPS writes only when needed | 2026-10-28 |
 | Share Search: programmable grid toolbar plugin (search/filter bar, 5 buttons, advanced search, attach prompt) | queued (held) | – | – | Orchestrator build `share-search` (refactor, 8 steps, ~3.9 h: Fable s1–s2 contract, Opus s3–s8). Brett: "send to orchestrator and hold off on build" — don't start until he says | 2026-10-28 |
@@ -265,3 +266,10 @@ VPS). The session reads the rules and this file first, as usual.
 | Pull all repair flow | merged | 2026-10-23 |
 | Floating banner group window | done | 2026-10-23 |
 | Pending PR merges | done | 2026-10-23 |
+
+### windows-terminal (claude/windows-terminal)
+- **Asked (Brett, Oct 28 2026, claude.ai):** see orchestrator build `windows-terminal` detail (full request there).
+- **Model:** Opus s1–s5 (console-terminal upgrade), Fable s6–s12 (window engine physics, settings-ui@1 levels contract, level toolbar + editor). Approval card at the switch.
+- **Read first:** apps/console-web/plugins/console-terminal (README, web/, server/), framework/core/engines/windows.ts, framework/react/windows/WindowHost.tsx, framework/core/engines/settingsui.ts, framework/libs/settings.
+- **Next:** `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief windows-terminal`.
+- **First message for a new session:** "Carry on orchestrator build windows-terminal (refactor) on branch claude/windows-terminal from the next unticked step."
