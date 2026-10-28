@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Windows-style Terminal (Claude Code tabs + connections + profiles) + window snap/resize + settings level toolbar & level editor | review (Opus phase) · waiting on Fable switch | `claude/windows-terminal` | [#158](https://github.com/MossesX/AmberX-AXF/pull/158) | Orchestrator build `windows-terminal` (refactor): **Opus s1–s5 done** (Terminal v0.3.0, report rebuilds/windows-terminal.md); PR open → merge approval once CI passes. Next: **Fable s6–s12** (window edge resize/snap/frameless, levels contract, level toolbar + editor) after Brett approves the switch. Held: `postponed-gestures` (drag from anywhere). Change log chg-20261028-427e401aac | 2026-10-28 |
 | Basic filter plugin: sort & filter dialog attachable to any dataset (every grid), configurable toolbar with live floating preview, attach from Plugin switches | review | `claude/basic-filter` | [#155](https://github.com/MossesX/AmberX-AXF/pull/155) | Orchestrator build `basic-filter` (refactor, Opus, 7 steps; s1–s6 done, CI green, merge approval sent). Built in the AmberX Framework claude.ai chat | 2026-10-28 |
 | Approval costs + history (cost on every approval, history in Console + axHub, one-call wait with AmberX alert) | queued (held) | – | – | Orchestrator build `approval-costs` (refactor, Opus, 5 steps, ~2.25 h; AXF + MossesX/axHub). Retry-rule change to one wait call needs Brett's OK at build time | 2026-10-28 |
 | axHub GitHub write tools (create/update file, branch, commit; each needs approval) | queued (held) | – | – | Orchestrator build `axhub-github-write` (refactor, Opus, 3 steps, ~1 h; work in MossesX/axHub). From the Oct 28 fix wizard; VPS writes only when needed | 2026-10-28 |
@@ -267,3 +268,11 @@ VPS). The session reads the rules and this file first, as usual.
 | Pull all repair flow | merged | 2026-10-23 |
 | Floating banner group window | done | 2026-10-23 |
 | Pending PR merges | done | 2026-10-23 |
+
+### windows-terminal (claude/windows-terminal)
+- **Asked (Brett, Oct 28 2026, claude.ai):** see orchestrator build `windows-terminal` detail (full request there).
+- **Model:** Opus s1–s5 (console-terminal upgrade), Fable s6–s12 (window engine physics, settings-ui@1 levels contract, level toolbar + editor). Approval card at the switch.
+- **Read first:** apps/console-web/plugins/console-terminal (README, web/, server/), framework/core/engines/windows.ts, framework/react/windows/WindowHost.tsx, framework/core/engines/settingsui.ts, framework/libs/settings.
+- **Done:** s1–s5 (Opus) on `claude/windows-terminal`.
+- **Next:** Fable phase s6–s12 on a new branch `fable/windows-terminal` from main after the Opus PR merges: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief windows-terminal`. Waits on: Brett's approval of the Opus → Fable switch. <!-- axf-plugin:build-orchestrator -->
+- **First message for a new session (Fable):** "Carry on orchestrator build windows-terminal (refactor): the Fable phase s6–s12, on branch fable/windows-terminal from main. Read the brief with orchestrator.mjs brief windows-terminal."
