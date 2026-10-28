@@ -1,9 +1,0 @@
-{
-  "$axf": "amberx-plugin@1",
-  "id": "ai.amberx.axf.console.agent-manager",
-  "name": "Agent manager",
-  "version": "0.1.0",
-  "description": "The Dev Console's Agent manager, installed in AmberX unchanged: the same agents (Mosses, Vinny, Molly, add-ons), skills, tools, memory and training. Its server part runs on the console; AmberX's server forwards to it (hub admins only).",
-  "consolePlugin": "agent-manager",
-  "builtWith": { "model": "opus", "builtAt": "2026-10-28" }
-}

@@ -7,13 +7,12 @@
 #   docker run -p 7491:8080 -e AMBERX_DEV_OPEN=1 -v /tmp/amberx-data:/data amberx-web     (local try-out only)
 # CLAUDE_CLI=0 leaves the Claude Code CLI out (the Claude plan then can't answer; API providers still work).
 FROM node:22-bookworm-slim AS web
-# Same paths as in the repo: AmberX installs the console's AI assistant + Agent manager plugins unchanged
-# (src/plugins/ai-assistant, agent-manager re-export apps/console-web/plugins/*/web; vite.config.ts aliases @console/*).
+# Same paths as in the repo: console plugins whose plugin.json targets "amberx-droid" are built in unchanged
+# (vite.config.ts: virtual:amberx-console-plugins, @console/* aliases). The build only reads their plugin.json + web/.
 WORKDIR /repo/apps/amberx-droid
 COPY apps/amberx-droid/package.json apps/amberx-droid/package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
-COPY apps/console-web/plugins/ai-assistant/web /repo/apps/console-web/plugins/ai-assistant/web
-COPY apps/console-web/plugins/agent-manager/web /repo/apps/console-web/plugins/agent-manager/web
+COPY apps/console-web/plugins /repo/apps/console-web/plugins
 COPY apps/console-web/src/changeBatch.tsx apps/console-web/src/changeBatch.css /repo/apps/console-web/src/
 COPY apps/amberx-droid/ .
 RUN npm run build

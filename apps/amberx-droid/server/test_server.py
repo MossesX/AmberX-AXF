@@ -375,26 +375,37 @@ threading.Thread(target=srv.serve_forever, daemon=True).start()
 _real_url = main.CONSOLE_URL
 main.CONSOLE_URL = f"http://127.0.0.1:{srv.server_address[1]}"
 CP = "/api/console/plugins/"
-check("console plugins: admins only", c.get(CP + "ai-assistant/status", headers=P).status_code == 403)
+_real_cp = main.CONSOLE_PLUGINS
+os.environ["AMBERX_CONSOLE_PLUGINS"] = "fake-chat, fake-agents,../x,Bad"
+main.CONSOLE_PLUGINS = main._console_plugins()
+check("console plugins: allowlist from the env, bad names dropped", main.CONSOLE_PLUGINS == {"fake-chat", "fake-agents"}, main.CONSOLE_PLUGINS)
+os.environ.pop("AMBERX_CONSOLE_PLUGINS")
+(DIST / "console-plugins.json").write_text(json.dumps({"folders": ["fake-chat"]}))
+check("console plugins: allowlist from the build (dist/console-plugins.json)", main._console_plugins() == {"fake-chat"})
+(DIST / "console-plugins.json").unlink()
+check("console plugins: none without a build list", main._console_plugins() == frozenset())
+main.CONSOLE_PLUGINS = frozenset({"fake-chat", "fake-agents"})
+check("console plugins: admins only", c.get(CP + "fake-chat/status", headers=P).status_code == 403)
 os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
-check("console plugins: no console token -> 503", c.get(CP + "ai-assistant/status", headers=A).status_code == 503)
+check("console plugins: no console token -> 503", c.get(CP + "fake-chat/status", headers=A).status_code == 503)
 os.environ["AMBERX_CONSOLE_TOKEN"] = "c" * 32
-g = c.get(CP + "ai-assistant/conversations?limit=5", headers=A)
+g = c.get(CP + "fake-chat/conversations?limit=5", headers=A)
 m, path, auth, _b, cookie = _Console.seen[-1]
-check("console plugins: GET forwarded with the console token + query", g.status_code == 200 and path == "/api/plugins/ai-assistant/conversations?limit=5" and auth == "Bearer " + "c" * 32 and not cookie, (g.status_code, _Console.seen[-1]))
-po = c.post(CP + "agent-manager/agents", headers=AP, json={"name": "x"})
+check("console plugins: GET forwarded with the console token + query", g.status_code == 200 and path == "/api/plugins/fake-chat/conversations?limit=5" and auth == "Bearer " + "c" * 32 and not cookie, (g.status_code, _Console.seen[-1]))
+po = c.post(CP + "fake-agents/agents", headers=AP, json={"name": "x"})
 check("console plugins: POST body + status pass through", po.status_code == 201 and _Console.seen[-1][0] == "POST" and json.loads(_Console.seen[-1][3]) == {"name": "x"}, po.text)
-check("console plugins: cross-site write refused", c.post(CP + "agent-manager/agents", headers={**A, "origin": "https://evil.example"}, json={}).status_code == 403)
-st = c.get(CP + "ai-assistant/stream", headers=A)
+check("console plugins: cross-site write refused", c.post(CP + "fake-agents/agents", headers={**A, "origin": "https://evil.example"}, json={}).status_code == 403)
+st = c.get(CP + "fake-chat/stream", headers=A)
 check("console plugins: event streams pass through", st.status_code == 200 and "text/event-stream" in st.headers["content-type"] and st.text.count("data:") == 3, st.text[:120])
-check("console plugins: only the listed plugins", c.get(CP + "systems-check/status", headers=A).status_code == 404)
+check("console plugins: only the listed plugins", c.get(CP + "other-plugin/status", headers=A).status_code == 404)
 before = len(_Console.seen)
-for bad in ("ai-assistant/../vps/run", "ai-assistant/%2e%2e/x"):
+for bad in ("fake-chat/../vps/run", "fake-chat/%2e%2e/x"):
     r_ = c.get(CP + bad, headers=A)
     check(f"console plugins: no escape {bad}", r_.status_code in (400, 404) and len(_Console.seen) == before, (r_.status_code, _Console.seen[-1:]))
-check("console plugins: bigger body cap for chat images", c.post(CP + "ai-assistant/chat", headers={**AP, "content-length": str(13 * 1024 * 1024)}, content=b"").status_code == 413)
+check("console plugins: bigger body cap for chat images", c.post(CP + "fake-chat/chat", headers={**AP, "content-length": str(13 * 1024 * 1024)}, content=b"").status_code == 413)
 srv.shutdown()
 main.CONSOLE_URL = _real_url
+main.CONSOLE_PLUGINS = _real_cp
 os.environ.pop("AMBERX_CONSOLE_TOKEN", None)
 
 # ---------------------------------------------------------------- size caps

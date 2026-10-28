@@ -9,7 +9,8 @@
   "description": "The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, any OpenAI-compatible server), setup wizard in Settings → Plugins → AI assistant, settings dialog inside the chat, live sessions on an open host registry, write-mode approval cards, the Claude Code MCP bridge. Chats as an agent from an installed agent manager. Hub users (behind axHub's sign-in wall) chat at /api/plugins/ai-assistant/app with permissions from the hub's users page.",
   "targets": [
     "axf-console",
-    "axf-web-app"
+    "axf-web-app",
+    "amberx-droid"
   ],
   "provides": [
     "view:ai-assistant",

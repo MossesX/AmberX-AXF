@@ -60,10 +60,21 @@ DIST = Path(os.environ.get("AMBERX_DIST") or ROOT / "dist")
 DATA = Path(os.environ.get("AMBERX_DATA_DIR") or ROOT / "data")
 HUB = (os.environ.get("AMBERX_WALL_HUB") or "https://axhub.amberxai.com").rstrip("/")
 MAX_BODY = 256 * 1024
-# Console plugins installed in AmberX unchanged (src/plugins/<folder>, "consolePlugin" in plugin.json): their server part
-# runs on the console and /api/console/plugins/<folder>/... forwards to it with the console token. Hub admins only.
-CONSOLE_PLUGINS = frozenset(f for f in re.split(r"[\s,]+", os.environ.get("AMBERX_CONSOLE_PLUGINS") or "ai-assistant,agent-manager")
-                            if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", f))
+# Console plugins installed in AmberX unchanged (their plugin.json targets "amberx-droid"): their server part runs on the
+# console and /api/console/plugins/<folder>/... forwards to it with the console token. Hub admins only.
+def _console_plugins() -> frozenset[str]:
+    """The console plugins built into this AmberX (dist/console-plugins.json, written by the web build from the
+    plugins whose plugin.json targets "amberx-droid"); AMBERX_CONSOLE_PLUGINS (comma list) overrides."""
+    raw = os.environ.get("AMBERX_CONSOLE_PLUGINS")
+    if raw is None:
+        try:
+            raw = ",".join(json.loads((DIST / "console-plugins.json").read_text()).get("folders") or [])
+        except (OSError, ValueError, AttributeError, TypeError):
+            raw = ""
+    return frozenset(f for f in re.split(r"[\s,]+", raw) if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", f))
+
+
+CONSOLE_PLUGINS = _console_plugins()
 CONSOLE_PREFIX = "/api/console/plugins/"
 CONSOLE_MAX_BODY = 12 * 1024 * 1024  # chat images
 CONSOLE_PASS_HEADERS = ("content-type", "accept", "last-event-id")
