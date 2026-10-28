@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T14:52:00.674Z",
+ "updatedAt": "2026-10-28T15:21:30.754Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2221,19 +2221,23 @@
    "title": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches web",
    "category": "Console plugins",
    "detail": "Brett, Oct 22 2026: the Tools section is a plugin of its own, and Claude handoff depends on it.\n\n- New plugin `tools` (plugin@1 + lifecycle): it owns the Tools nav section and the top-level `tools` application menu that tool plugins add to; it provides a capability service (e.g. `axf.tools@1`) that tool plugins require.\n- Claude handoff (and any later tool plugin) declares it as a dependency (`requires`) and adds its entries through it instead of creating the section itself.\n- For Patches: the Tools plugin adds a **Tools** tab to Patches web's app tab group (next to Console / Pilot / axHub). Patches itself runs the Tools page; it is not the console page in a frame.\n- Patches web only for now (Android later).",
-   "status": "pending",
+   "status": "blocked",
    "hidden": false,
    "source": "pending",
    "pendingId": "tools-plugin",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T23:01:35.786Z",
-   "updatedAt": "2026-10-27T23:01:35.786Z",
+   "updatedAt": "2026-10-28T15:21:30.753Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator).",
      "at": "2026-10-27T23:01:35.786Z"
+    },
+    {
+     "text": "On hold: Brett paused all work on Patches globally (Oct 28 2026). The Patches web tab part waits; ask before building any of it.",
+     "at": "2026-10-28T15:21:30.753Z"
     }
    ],
    "approvals": [],
