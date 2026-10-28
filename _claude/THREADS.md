@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| **STOP ORDER + one build: `refactor-all`** (every unfinished Refactor step in one build, matrix `refactor-all`) | queued (new session) | `claude/refactor-all` | – | Brett Oct 28 15:26 EDT: stop all sessions except documentation; everything left goes into one build in a new session. 67 steps ~30.8 h kept (Fable ~11.8 h first, then Opus ~19 h; one switch), ~10.4 h skipped by default in the matrix (held items + Patches). The 17 source builds are archived in the orchestrator; their rows below are superseded. Start with the first message under *To carry on* | 2026-10-28 |
 | axHub runs approved calls itself (send once, never wait) | PR open | `claude/hub-runs-approved` (axHub) | [axHub #14](https://github.com/MossesX/axHub/pull/14) | Orchestrator build `hub-runs-approved` (refactor, Opus, 3 steps, ~1.25 h; MossesX/axHub). Do before `veto-window` | 2026-10-28 |
 | Run unless blocked: 2-min countdown, then urgent alarm (red banner + loud AmberX ring), 1-min grace, runs; Block anytime | queued (held) | – | – | Orchestrator build `veto-window` (refactor, Opus, 5 steps, ~2.2 h; axHub + AXF + AmberX alert settings) | 2026-10-28 |
 | Feature Matrix plugin (skip/keep matrix per build, one dataset grid, hooks in every builds grid, Apply updates every table) | queued (new thread) | – | – | Orchestrator build `feature-matrix` (refactor, 8 steps ~3.8 h: Fable s1–s2 contract + apply engine, Opus s3–s8 plugin). builds-one-page archived (Brett: removed). Start in its own chat with the first message below | 2026-10-28 |
@@ -77,6 +78,15 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Refactor: everything left, one build (`refactor-all`)
+- **Asked (Brett, Oct 28 2026 15:26 EDT):** "Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions."
+- **Build:** orchestrator `refactor-all` (Refactor profile), 67 steps. Fable phase s1–s30 (arch-foundation contracts, trim, style-package Fable rebuild, look@1 review, window engine + settings levels, feature-matrix contract), then one switch to Opus (open PRs #141/#155 finished first, then enterprise-branding refactor, interface roller, arch-foundation docs, trim UI, Tools plugin without Patches, pending grid view, feature-matrix plugin). Everything UI is held to `framework/spec/DESIGN-LANGUAGE.md`.
+- **Matrix page:** https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS (db doc `matrix/refactor-all`; read it before each step).
+- **Scope = matrix `refactor-all`** in `_claude/builds/profiles/refactor/matrices.json` (draft feature-matrix@0; 90 items; skipped by default: share-search, approval-costs, veto-window, axhub-github-write, postponed-gestures, Tools' Patches tab, look-levels s3 folded into windows-terminal). Skipped items aren't built unless Brett ticks them.
+- **Branches to carry on from:** enterprise-branding `opus/enterprise-branding` (PR #128, #129 stacked), windows-terminal `claude/windows-terminal` #158, basic-filter #155, amberx-handsfree #141; new work on `claude/refactor-all`.
+- **First message (Fable session):** `Start orchestrator build refactor-all (refactor) in AmberX-AXF: Fable phase. Read the brief with AXF_BUILD_PROFILE=refactor node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief refactor-all, and the matrix refactor-all.`
+
 
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
