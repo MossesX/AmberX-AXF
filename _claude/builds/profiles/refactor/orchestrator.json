@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T00:47:31.318Z",
+ "updatedAt": "2026-10-28T01:11:04.755Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2863,6 +2863,83 @@
      "agent": false,
      "done": true,
      "doneAt": "2026-10-27T19:25:27.054Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "orch-pending-sync",
+   "title": "Orchestrator ↔ Pending builds auto-sync (Build manager follows)",
+   "category": "Builds",
+   "detail": "Brett, Oct 27 2026 20:46: all builds go to the orchestrator, which splits them into Fable/Opus steps and sends them out to Pending builds and the Build manager; they always stay in sync. Bridge until builds-one-page (paused) merges the datasets. Every orchestrator save rewrites the profile Pending list; every Pending change (console, CLI, MCP, plugins) flows back into the orchestrator. Profile: Refactor.",
+   "status": "running",
+   "hidden": false,
+   "source": "chat",
+   "pendingId": "",
+   "branch": "claude/orch-pending-sync",
+   "pr": "",
+   "createdAt": "2026-10-28T01:07:25.673Z",
+   "updatedAt": "2026-10-28T01:11:04.754Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/orch-pending-sync, PR #143; s3 ticks when merged.",
+     "at": "2026-10-28T01:11:04.754Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "framework/plan/orch-sync.mjs (pure): orchestratorToPending + pendingToOrchestrator on the raw shapes ([Fable]/[Opus] step prefixes, status map, notes, step ticks, removals archive the build), fixture test",
+     "model": "Opus",
+     "why": "wiring on existing contracts",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/plan/pending-core.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T01:10:06.928Z",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Wire both writers: orchestrator.mjs save() pushes to Pending; pending.mjs actPending() pulls into the orchestrator (covers console, engine-rpc, MCP, plugins); same build profile on both sides; no loops",
+     "model": "Opus",
+     "why": "wiring on existing contracts",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/cli/pending.mjs",
+      "framework/cli/persist.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": true,
+     "doneAt": "2026-10-28T01:10:06.991Z",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Rule + docs (RULES.md, _claude/builds/README.md), CI test, PR + merge approval",
+     "model": "Opus",
+     "why": "wiring on existing contracts",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
      "note": ""
     }
    ]
