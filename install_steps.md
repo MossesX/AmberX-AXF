@@ -344,38 +344,6 @@ On claude.ai in a browser → **Settings → Connectors**:
    `/opt/axf/.axf-console/env`). Optionally add `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token`.
 3. Network access: **Trusted** or **Full**, so it can reach `axhub.<domain>`.
 
-### Step 23a. Approval wake-up for a Claude chat
-
-Lets a Claude chat send an axHub approval, **stop** (no tokens while it waits) and be woken in the same chat the
-moment you approve, instead of checking every 15 seconds. Do it once for each chat that should be woken this way.
-The axHub side that calls the wake-up address is orchestrator build `approval-costs` step s6. Until that lands,
-this step only gets the address and token ready.
-
-1. In that chat, ask Claude: **"Make the axHub approval wake-up task for this chat."** It creates a scheduled task
-   named `axHub approval wake-up (<chat>)` that is bound to the chat. Claude can't make it repeat or give it a
-   token, so you do the next steps.
-2. Open **claude.ai/code/routines** → that task → **Edit**.
-3. **Schedule:** change it from one time to **repeating** (yearly is fine). Otherwise it's used up after the first
-   wake-up.
-4. **Add another trigger → API → Generate token.** Copy the **URL** and the **token**. The token is shown only
-   once, and making a new one cancels the old one. Never paste it into a chat.
-5. Coolify → axHub → **Terminal** (values are typed at a hidden prompt):
-   ```bash
-   axhub vault set claude-wake-url      # the URL from 4
-   axhub vault set claude-wake-token    # the token from 4
-   ```
-   For more than one chat, add the chat's name: `claude-wake-<name>-url` and `-token`.
-6. **Check:** in the same terminal, wake the chat once (paste the URL and token at the hidden prompts). A message
-   should appear in that chat within a minute:
-   ```bash
-   read -rsp 'URL: ' U; echo; read -rsp 'Token: ' T; echo
-   curl -sX POST "$U" -H "Authorization: Bearer $T" \
-     -H "anthropic-version: 2023-06-01" -H "anthropic-beta: experimental-cc-routine-2026-04-01" \
-     -H "Content-Type: application/json" -d '{"text":"wake-up test"}'; unset U T
-   ```
-   It answers with JSON that includes `"type": "routine_fire"`. Docs:
-   [Trigger a routine through the API](https://platform.claude.com/docs/en/api/claude-code/routines-fire).
-
 ---
 
 ## Part G: Deploys and checks
