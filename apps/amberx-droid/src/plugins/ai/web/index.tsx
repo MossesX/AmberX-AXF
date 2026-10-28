@@ -12,7 +12,7 @@
  */
 import { useEffect, useState, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Chip, Container, IconButton, Markdown, Note, Section, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Chip, Container, IconButton, Icon, Markdown, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { search, pathOf, type Item, type Store } from '../../notes/web/core';
 import { useNotes } from '../../notes/web/store';
 import {
@@ -175,7 +175,7 @@ function ProfileRow({ p, cfg, index, onChange, setError }: {
             {kind?.editableBaseUrl && <TextField label="Address" value={base} onChange={setBase} mono placeholder={kind.baseUrl} hint="https, or plain http only to the server itself or a host the server allows." />}
             <Button size="sm" icon="save" disabled={busy} onClick={() => void save()}>Save</Button>
             {(kind?.needsKey ?? true) && (
-              <Section title={plan ? 'Claude plan token' : 'Key'} aside={<KeyChip p={p} />}>
+              <Container title={plan ? 'Claude plan token' : 'Key'} icon="key" actions={<KeyChip p={p} />}>
                 <div className="fx-stack">
                   <TextField label={plan ? 'Access token (sk-ant-oat…)' : 'API key'} type="password" value={key} onChange={setKey} mono
                     hint={plan ? <>From <span className="fx-mono">claude setup-token</span> (long-lived), or the access token of a pair with its refresh token below.</> : kind?.keyUrl ? <>Get one at {kind.keyUrl}</> : undefined} />
@@ -190,7 +190,7 @@ function ProfileRow({ p, cfg, index, onChange, setError }: {
                   </div>
                   {kind && kind.envNames.length > 0 && <p className="fx-muted fx-small" style={{ margin: 0 }}>Or set <span className="fx-mono">{kind.envNames[0]}</span> on the server.</p>}
                 </div>
-              </Section>
+              </Container>
             )}
           </div>
         )}
@@ -213,7 +213,7 @@ function ConnectionPanel() {
   return (
     <div className="fx-stack fx-stack--lg">
       {error && <Note tone="danger">{error}</Note>}
-      <Container title="Claude">
+      <Container title="Claude" icon="sparkles">
         <div className="fx-stack">
           <Segmented label="Which Claude" value={cfg.claude || 'none'} onChange={(v) => { if (v !== 'none') void run(async () => change(await putAiConfig({ claude: v as 'plan' | 'api' }))); }}
             options={[{ value: 'plan', label: 'Claude plan (subscription)', icon: 'user' }, { value: 'api', label: 'Claude API (key)', icon: 'key' }, ...(cfg.claude ? [] : [{ value: 'none' as const, label: 'Another AI', disabled: true }])]} />
@@ -224,9 +224,15 @@ function ConnectionPanel() {
           </p>
         </div>
       </Container>
-      <Section title={`Providers, in fallback order (${cfg.profiles.length})`} aside={cfg.last ? <span className="fx-muted fx-small">Last answer: {cfg.last.label}{cfg.last.fallback ? ' (fallback)' : ''}</span> : undefined}>
+      <Container title={`Providers, in fallback order (${cfg.profiles.length})`} icon="list" actions={cfg.last ? <span className="fx-muted fx-small">Last answer: {cfg.last.label}{cfg.last.fallback ? ' (fallback)' : ''}</span> : undefined}>
         <div className="fx-stack">
-          {cfg.profiles.length === 0 && <p className="fx-muted">None yet. Pick Claude above or add a provider below.</p>}
+          {cfg.profiles.length === 0 && (
+            <div className="fx-row fx-row--wrap">
+              <Icon name="sparkles" size={18} />
+              <span className="fx-muted">No AI provider yet.</span>
+              <Button size="sm" tone="primary" icon="user" disabled={busy} onClick={() => void run(async () => change(await putAiConfig({ claude: 'plan' })))}>Use my Claude plan</Button>
+            </div>
+          )}
           {cfg.profiles.map((p, i) => <ProfileRow key={p.id} p={p} cfg={cfg} index={i} onChange={change} setError={setError} />)}
           <div className="fx-row fx-row--wrap">
             <SelectField label="Add a provider" value={addKind} onChange={setAddKind} empty="Pick one…" options={cfg.kinds.map((k) => ({ value: k.kind, label: k.label }))} />
@@ -237,13 +243,13 @@ function ConnectionPanel() {
           </div>
           <p className="fx-muted fx-small" style={{ margin: 0 }}>The active one is asked first, then the others from the top. A provider that is busy or down is retried a few times, then the next one answers.</p>
         </div>
-      </Section>
-      <Section title="Keep-alive">
+      </Container>
+      <Container title="Keep-alive" icon="clock">
         <div className="fx-row fx-row--wrap">
           <TextField label="Check the AI every (minutes, 0 = off)" type="number" value={every} onChange={setEvery} />
           <Button size="sm" disabled={busy} onClick={() => run(async () => change(await putAiConfig({ keepAliveMin: Math.round(Number(every)) })))}>Save</Button>
         </div>
-      </Section>
+      </Container>
     </div>
   );
 }
@@ -264,6 +270,7 @@ export function notesFor(store: Store, question: string, max = 60): Item[] {
 }
 
 function AskView() {
+  const rt = useRuntime();
   const notes = useNotes();
   const s = useAiStatus();
   const [q, setQ] = useState('');
@@ -290,6 +297,13 @@ function AskView() {
           <p className="fx-muted">The AI answers only from your notes ({total} {total === 1 ? 'note' : 'notes'}).</p>
         </div>
       </header>
+      {total === 0 && (
+        <div className="fx-row fx-row--wrap">
+          <Icon name="file" size={18} />
+          <span className="fx-muted">No notes yet, so there is nothing to ask about.</span>
+          <Button size="sm" icon="plus" onClick={() => rt.dispatch('nav:notes')}>Write a note</Button>
+        </div>
+      )}
       {!s.ok && s.known && <Note tone="warning">{s.reason || 'The AI isn\'t answering right now.'}</Note>}
       <form className="fx-stack" onSubmit={(e) => { e.preventDefault(); void go(); }}>
         <TextField label="Your question" value={q} onChange={setQ} rows={2} placeholder="What did I write about the trip?" />
@@ -299,7 +313,7 @@ function AskView() {
       </form>
       {error && <Note tone="danger">{error}</Note>}
       {answer && (
-        <Container title="Answer">
+        <Container title="Answer" icon="sparkles">
           <div className="fx-stack">
             <Markdown text={answer.text} compact />
             <p className="fx-muted fx-small" style={{ margin: 0 }}>From {answer.sent} {answer.sent === 1 ? 'note' : 'notes'}.</p>
