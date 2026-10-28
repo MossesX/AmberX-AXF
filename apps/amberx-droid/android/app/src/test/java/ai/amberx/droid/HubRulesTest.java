@@ -48,6 +48,19 @@ public class HubRulesTest {
         assertEquals("signed-out", HubRules.interpret(HUB, 200, "{\"signedIn\":false}").status);
     }
 
+    @Test public void runUnlessBlocked() { // axHub decision 102
+        String body = "{\"count\":2,\"pending\":[{\"id\":\"" + ID + "\",\"tool\":\"vps.run\",\"url\":\"" + HUB + "/x\",\"veto\":{\"alarmAt\":\"2026-10-28T12:02:00Z\",\"runAt\":\"2026-10-28T12:03:00Z\",\"alarmed\":true}},"
+            + "{\"id\":\"1123abcd-0123-0123-0123-0123456789ab\",\"tool\":\"github.x\",\"url\":\"" + HUB + "/y\"}]}";
+        HubRules.Feed f = HubRules.interpret(HUB, 200, body);
+        assertEquals(2, f.pending.size());
+        assertTrue(f.pending.get(0).veto);
+        assertTrue(f.pending.get(0).alarmed);
+        assertEquals("2026-10-28T12:03:00Z", f.pending.get(0).runAt);
+        assertFalse(f.pending.get(1).veto);
+        assertFalse(f.pending.get(1).alarmed);
+        assertEquals("soon", HubRules.clock("not a time"));
+    }
+
     @Test public void autoApproval() {
         List<String> p = HubRules.patterns("vps.logs, github.*;\n*x");
         assertEquals(3, p.size());

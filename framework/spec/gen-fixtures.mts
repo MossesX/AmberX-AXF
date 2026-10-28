@@ -1062,6 +1062,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     ['ok-fields-defaulted-and-capped', 200, JSON.stringify({ count: 1, pending: [{ id: ID1, url: `${B}/auth/admin/approvals/${ID1}`, tool: 5, summary: big(900), createdAt: big(100) }, item(ID2, { tool: big(300), summary: null })] })],
     ['ok-too-many-items', 200, JSON.stringify({ count: 60, pending: Array.from({ length: 60 }, (_, i) => item(`00000000-0000-4000-8000-${String(i).padStart(12, '0')}`)) })],
     ['ok-pending-not-array', 200, JSON.stringify({ count: 2, pending: { id: ID1 } })],
+    ['ok-run-unless-blocked', 200, JSON.stringify({ count: 3, vetoCount: 2, alarmCount: 1, pending: [item(ID1, { veto: { alarmAt: '2026-10-28T12:02:00.000Z', runAt: '2026-10-28T12:03:00.000Z', alarmed: true } }), item(ID2, { veto: { alarmAt: '2026-10-28T12:05:00.000Z', runAt: '2026-10-28T12:06:00.000Z', alarmed: 'yes' } }), item(ID3, { veto: { alarmAt: 'x' } })] })],
     ['body-signed-out', 200, JSON.stringify({ signedIn: false, approvalsUrl: `${B}/auth/admin/approvals` })],
     ['body-not-admin', 200, JSON.stringify({ signedIn: true, admin: false })],
     ['status-401', 401, JSON.stringify({ signedIn: false })],

@@ -264,6 +264,8 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq(c.lang, 'en-US', 'language default');
   eq(c.autoApprove, { on: true, all: false, tools: 'github.*' }, 'auto-approval config');
   eq(c.consoleAlerts, true, 'console alerts on by default (every push comes from AmberX)');
+  eq(c.alarm, { on: true, ringSec: 45, vibrate: true, maxVolume: true }, 'urgent alarm on by default (axHub decision 102)');
+  eq(mon.watchConfig({ hub: HUB, interval: 60, listen: false, wake: [], lang: '', autoApprove: false, autoApproveAll: false, autoApproveTools: '', alarmOn: false, alarmRingSec: 999, alarmVibrate: false, alarmMaxVolume: false }).alarm, { on: false, ringSec: 120, vibrate: false, maxVolume: false }, 'alarm settings carried, ring capped at 120 s');
   eq(mon.watchConfig({ hub: HUB, interval: 60, listen: true, wake: [], lang: '', autoApprove: false, autoApproveAll: false, autoApproveTools: '', consoleAlerts: false }).consoleAlerts, false, 'console alerts can be switched off');
 }
 

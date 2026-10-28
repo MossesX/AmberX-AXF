@@ -142,7 +142,7 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
     <Container
       title={item.title}
       icon={item.status === 'pending' ? 'shield' : item.status === 'postponed' ? 'clock' : 'check'}
-      actions={<Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>}
+      actions={<>{item.veto && <Chip tone={item.veto.alarmed ? 'danger' : 'warning'}>{item.veto.alarmed ? 'Runs in a minute' : 'Runs by itself'}</Chip>}<Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip></>}
       collapsible
       defaultOpen={false}
     >

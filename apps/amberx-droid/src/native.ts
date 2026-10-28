@@ -26,6 +26,8 @@ export interface MonitorConfig {
   lang: string;
   /** Dev Console alerts (errors + warnings) as notifications too (Brett, Oct 28 2026: every push comes from AmberX) */
   consoleAlerts: boolean;
+  /** The urgent alarm when a run-unless-blocked countdown ends unblocked (axHub decision 102): loud ring on the alarm stream */
+  alarm: { on: boolean; ringSec: number; vibrate: boolean; maxVolume: boolean };
 }
 
 export interface MonitorStatus {

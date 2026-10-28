@@ -3,7 +3,7 @@
  * who asked, its times and history, every action it allows, and Postpone — for a time, until a date, or until a
  * condition from the hub's open registry (a service is healthy, a job is done, an address answers).
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Chip, Container, Note, Segmented, SelectField, TextField, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { hubGet } from '../hub/api';
@@ -49,13 +49,14 @@ function Detail() {
           {item && <div className="fx-row fx-row--wrap" data-axf-anchor="approval-actions">
             <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>
             {orderActions(item.actions).map((a) => (
-              <Button key={a} disabled={busy} icon={a === 'approve' ? 'check' : undefined}
+              <Button key={a} disabled={busy} icon={a === 'approve' ? (item.veto ? 'play' : 'check') : item.veto && a === 'decline' ? 'x' : undefined}
                 tone={a === 'approve' ? 'success' : a === 'decline' || a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
-                {ACTION_LABELS[a]}
+                {item.veto && a === 'decline' ? 'Block' : item.veto && a === 'approve' ? 'Run now' : ACTION_LABELS[a]}
               </Button>
             ))}
             {item.actions.length === 0 && <span className="fx-muted">Nothing more to do with this one{item.decidedBy ? ` (decided by ${item.decidedBy})` : ''}.</span>}
           </div>}
+          {item?.veto && <VetoCountdown veto={item.veto} onTick={() => void res.reload()} />}
         </div>
         <div className="fx-row fx-row--wrap">
           <Button icon="arrow-left" onClick={() => go(rt, 'home')}>All requests</Button>
@@ -114,6 +115,23 @@ function Detail() {
 }
 
 /** Approve first, then the rest in the hub's order (Approve is the one tapped most). */
+/** Run unless blocked (axHub decision 102): live countdown on the first screen; red once the countdown ended unblocked. */
+function VetoCountdown({ veto, onTick }: { veto: NonNullable<ApprovalItem['veto']>; onTick: () => void }) {
+  const [now, setNow] = useState(() => Date.now());
+  const tick = useRef(onTick);
+  tick.current = onTick;
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    const r = setInterval(() => tick.current(), 5000); // pick up the alarm and the decision without a tap
+    return () => { clearInterval(t); clearInterval(r); };
+  }, []);
+  const secs = Math.max(0, Math.round((new Date(veto.runAt).getTime() - now) / 1000));
+  const left = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+  return veto.alarmed
+    ? <Note tone="danger" icon="alert">Not blocked: axHub runs it by itself in {left}. Tap Block to stop it.</Note>
+    : <Note tone="warning" icon="clock">axHub runs this by itself in {left} unless you block it ({Math.round(veto.countdownSec / 60 * 10) / 10} min countdown, then an urgent alarm and {veto.graceSec} s to block).</Note>;
+}
+
 export function orderActions(actions: ApprovalAction[]): ApprovalAction[] {
   return [...actions.filter((a) => a === 'approve'), ...actions.filter((a) => a !== 'approve')];
 }

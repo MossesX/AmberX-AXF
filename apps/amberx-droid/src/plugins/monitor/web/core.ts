@@ -29,7 +29,14 @@ export interface WatchSettings {
   autoApprove: unknown; autoApproveAll: unknown; autoApproveTools: unknown;
   /** Dev Console alerts (builds, CI, deploys, systems check) as phone notifications; on unless switched off */
   consoleAlerts?: unknown;
+  /** The urgent run-unless-blocked alarm (axHub decision 102) */
+  alarmOn?: unknown; alarmRingSec?: unknown; alarmVibrate?: unknown; alarmMaxVolume?: unknown;
 }
+
+export const clampRing = (v: unknown): number => {
+  const n = typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : 45;
+  return Math.max(5, Math.min(120, n));
+};
 
 /** The config the native watch service runs with (MonitorConfig in src/native.ts). */
 export function watchConfig(s: WatchSettings) {
@@ -40,5 +47,6 @@ export function watchConfig(s: WatchSettings) {
     wakePhrases: s.listen === false ? [] : s.wake.slice(0, 20),
     lang: typeof s.lang === 'string' && s.lang.trim() ? s.lang.trim() : 'en-US',
     consoleAlerts: s.consoleAlerts !== false,
+    alarm: { on: s.alarmOn !== false, ringSec: clampRing(s.alarmRingSec), vibrate: s.alarmVibrate !== false, maxVolume: s.alarmMaxVolume !== false },
   };
 }

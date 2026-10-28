@@ -145,7 +145,11 @@ export type HubFeedStatus = 'ok' | 'signed-out' | 'not-admin' | 'unreachable';
 export const HUB_FEED_STATUSES: readonly HubFeedStatus[] = ['ok', 'signed-out', 'not-admin', 'unreachable'];
 
 /** One call waiting for approval, as the hub's feed lists it; `url` is always built here from the id. */
-export interface HubApproval { id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string }
+export interface HubApproval {
+  id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string;
+  /** Run unless blocked (axHub decision 102): runs by itself at `runAt` unless declined; `alarmed` once the countdown ended. Absent otherwise. */
+  veto?: { alarmAt: string; runAt: string; alarmed: boolean };
+}
 
 export interface HubFeed {
   status: HubFeedStatus;
@@ -168,6 +172,14 @@ export const unreachableFeed = (base: string, error: string = HUB_MESSAGES.unrea
  * the hub (only links pointing at the hub are used; the link itself is rebuilt from the id), duplicates are dropped,
  * fields are capped. `count` is the hub's number when it is one (never less than the items kept).
  */
+const vetoOf = (v: unknown): Pick<HubApproval, 'veto'> => {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return {};
+  const o = v as Record<string, unknown>;
+  const runAt = str(o, 'runAt');
+  if (runAt === null) return {};
+  return { veto: { alarmAt: (str(o, 'alarmAt') ?? '').slice(0, HUB_FIELD_CAPS.time), runAt: runAt.slice(0, HUB_FIELD_CAPS.time), alarmed: o.alarmed === true } };
+};
+
 export function interpretFeed(base: string, status: number, body: string): HubFeed {
   if (status === 401) return empty(base, 'signed-out');
   if (status === 403) return empty(base, 'not-admin');
@@ -196,6 +208,7 @@ export function interpretFeed(base: string, status: number, body: string): HubFe
       createdAt: (str(p, 'createdAt') ?? '').slice(0, HUB_FIELD_CAPS.time),
       expiresAt: (str(p, 'expiresAt') ?? '').slice(0, HUB_FIELD_CAPS.time),
       url,
+      ...vetoOf(p.veto),
     });
   }
   const c = typeof j.count === 'number' && Number.isFinite(j.count) ? Math.min(1_000_000, Math.max(0, Math.floor(j.count))) : pending.length;
