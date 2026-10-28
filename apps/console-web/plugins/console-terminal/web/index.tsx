@@ -3,7 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
 import { openFromContext } from './open';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
-import { TerminalTab } from './TerminalTab';
+import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
 import { watchHeadless } from './headless';
 import './terminal.css';
@@ -11,7 +11,8 @@ import { appMenu } from './menu';
 
 /*
  * Terminal plugin (web part):
- *  - tab kind `terminal` (floating window, tabs: container / console / VPS / Claude Code, + for more)
+ *  - tab kind `terminal-host` (TerminalHost.tsx): a Windows Terminal-style window with its own tab strip, toolbar and
+ *    sessions (container / console / VPS / Claude Code); legacy `terminal` tabs open as a host with one session
  *  - "Open terminal" on every right-click / long-press (runtime contextExtras key `*:terminal`); on a container or a
  *    folder the console marks (data-fx-ctx-target axf-container / axf-container-path) it opens right there
  *  - actions terminal.open[:<target>:<payload>], terminal.new
@@ -23,7 +24,7 @@ import { appMenu } from './menu';
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Terminal',
-  version: '0.2.0',
+  version: '0.3.0',
   appMenu,
   provides: ['axf.terminal'],
   register(rt) {
@@ -33,7 +34,7 @@ export const plugin: AxfWebLibrary = {
     watchHeadless(rt); // headless Claude Code sessions on the VPS open here, window to the front (setting showHeadless)
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);
   },
-  tabs: { terminal: (t) => <TerminalTab tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },
+  tabs: { 'terminal-host': (t) => <TerminalHost tab={t} />, terminal: (t) => <TerminalHost tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },
   settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Terminal windows: options, the VPS host key, Claude Code, Mosh / Moshi, open sessions and the session log.' }],
   settingsPanels: [
     { id: 'terminal.general', tab: 'terminal', title: 'Terminal', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },

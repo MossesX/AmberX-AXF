@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T16:51:24.969Z",
+ "updatedAt": "2026-10-28T16:58:54.075Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3618,21 +3618,21 @@
    "title": "Windows-style Terminal (Claude Code tabs, connections, profiles) + window snap/resize + settings levels toolbar & level editor",
    "category": "Plugins",
    "detail": "Brett Oct 28 2026 (claude.ai): \"Add those plus build a powerful terminal plugin that looks and feels and behaves exactly like a Windows program.\" Asked, in full:\n- 'Those' = the four window gaps: resize from every edge/corner (touch too), snapping (no overlap), keep windows on screen, drop a window on another to split.\n- Terminal: native Windows look and feel, no Linux feel. Dockable/undockable, draggable, minimizable, snappable window that opens floating by default. Powerful configuration, preferences and customization with an easy interface.\n- A toolbar button adds a tab running Claude Code and prompts for one of the available connections (VPS root, specific containers, axHub, console…). Right-click any tab = interface to manage that tab's connection from the available ones. Claude Code tabs get extra customization profiles.\n- From now on every settings interface has a default-on, hideable toolbar that picks Simple / Basic / Administrator / Developer; the available settings show in a collapsible container and the rest in another. Administrator shows them all. Levels: Pro becomes Administrator, Advanced becomes Developer (Brett's pick); Administrator shows everything.\n- A switch in settings opens a dialog with two columns: left = sortable categorized tree of every setting in the interface, one colour when available to the selected level, another when not; multi-select; toolbar buttons or right-click 'Add to visible'; right tree shows what's on. The settings interface changes live with every selection.\n\nUpgrades the existing console-terminal plugin (one instance per plugin; it already has container/console/VPS/Claude Code tabs, Mosh mode, xterm 5.3). Folds in apply-all-levels-fable s3 (settings-ui@1 levels review). Patches is paused: its baked copy is skipped. Android twins deferred (PORTING.md).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-28T16:51:24.871Z",
-   "updatedAt": "2026-10-28T16:51:24.879Z",
+   "updatedAt": "2026-10-28T16:58:54.074Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
    "steps": [
     {
      "id": "s1",
-     "text": "Terminal: native Windows look — title bar (icon, title, minimize/maximize/close on the right), Windows Terminal tab strip with + and a new-tab dropdown, Mica/acrylic surface and Cascadia Mono through tokens and a terminal look asset; no Linux feel",
+     "text": "Terminal: native Windows look — title bar (icon, title, minimize/maximize/close on the right), Windows Terminal tab strip with + and a new-tab dropdown, Mica/acrylic surface and Cascadia Mono through tokens and a terminal look asset; no Linux feel (frameless window with the tab strip in the title bar waits on s6)",
      "model": "Opus",
      "why": "",
      "phase": "Terminal",
@@ -3642,8 +3642,8 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-28T16:58:54.074Z",
      "note": ""
     },
     {
@@ -3712,7 +3712,7 @@
     },
     {
      "id": "s6",
-     "text": "Window engine (windows.ts + WindowHost): resize from all 8 edges/corners with touch, keep-on-screen clamp, maximize/restore; fixture",
+     "text": "Window engine (windows.ts + WindowHost): resize from all 8 edges/corners with touch, maximize/restore (Brett Oct 28: no keep-on-screen); fixture",
      "model": "Fable",
      "why": "changes how windows work across apps",
      "phase": "Windows + levels",
@@ -3813,6 +3813,46 @@
      "why": "",
      "phase": "Windows + levels",
      "group": "Ship",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "postponed-gestures",
+   "title": "Postponed gestures (held list): drag a window from anywhere",
+   "category": "Gestures",
+   "detail": "Brett Oct 28 2026 (claude.ai, windows-terminal chat): \"add draggable from anywhere to postponed gesture list\". HELD: postponed, do not build until Brett says. Items on this list:\n- Drag a window from anywhere on it, not just the title bar (e.g. Alt+drag on desktop, long-press then drag on a phone), without breaking text selection, terminals or controls inside the window.\nRelates to plan feature ui.gestures (gesture engine) and the window engine work in windows-terminal s6-s7.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-28T16:55:27.142Z",
+   "updatedAt": "2026-10-28T16:55:27.198Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Held: postponed by Brett; start only when he says.",
+     "at": "2026-10-28T16:55:27.197Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Drag a window from anywhere: gesture contract in the gesture engine (Alt+drag, long-press-drag), window engine hook, opt-out for content that needs the pointer (terminals, editors, sliders); fixture",
+     "model": "Fable",
+     "why": "changes how windows behave across apps",
+     "phase": "Gestures",
+     "group": "Drag from anywhere",
      "estimate": "30 min",
      "files": [],
      "checks": [],
