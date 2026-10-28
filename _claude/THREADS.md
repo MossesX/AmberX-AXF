@@ -34,6 +34,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| AmberX voice notes, lists, tasks + AI router (amberx.amberxai.com) | done | `claude/amberx-notes` | [#144](https://github.com/MossesX/AmberX-AXF/pull/144) merged | Live Oct 28 02:34 UTC (FastAPI server answering, wall-signed only). Left for Brett: add an AI provider in Settings → Plugins → AI connection | 2026-10-28 |
+| AmberX look fix + Lock the look + Get the look from axHub switches | review | `claude/amberx-appearance-lock` | #126 | Merge after CI; the 5-minute update redeploys amberx.amberxai.com | 2026-10-27 |
+| AmberX hands-free listening + ActiveX-style detection overlay (level graph, dB, quick settings) | review | `claude/amberx-handsfree` | #141 | Orchestrator build `amberx-handsfree` (refactor, Opus): s1–s3 done, CI is the first Java compile; then merge approval | 2026-10-27 |
 | AmberX hands-free listening + ActiveX-style detection overlay (level graph, dB, quick settings) | merged | `claude/amberx-handsfree` | #141 | Merged Oct 27 20:25 (eaba8c58) after Brett's approval. Always listens (no pause); detection overlay. Watch for recognizer beeps and self-hearing replies | 2026-10-27 |
 | Merge approvals: ready PRs go to Brett as an axHub approval; Approve on the first screen of the approval page | merged | `claude/merge-approvals` | #131 | Merge through its own merge approval once CI passes | 2026-10-27 |
 | Empty banner strip stays after the last banner item is removed (fix) | review | `fix/banner-strip-collapse` | #133 | Merge after CI; the 5-minute update redeploys the console | 2026-10-27 |
@@ -71,6 +74,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 Paste the *First message* into a new chat on any account (claude.ai/code on MossesX/AmberX-AXF, or Claude Code on the
 VPS). The session reads the rules and this file first, as usual.
 
+### AmberX voice notes, lists, tasks + AI router
+- **Asked (Brett, Oct 27 2026, 20:26, with an attachment):** a voice-controlled notes app in AmberX (amberx.amberxai.com): notes in lists with categories and sub-lists for software development; each plugin gets its own list under Plugins when it loads; take, sort, transcribe, organize, rename notes and move them between lists; task manager + todo list; AI for real-time parsing of voice into notes, summaries and storing them in the right place, with a steady connection to Claude (subscription or API, with a switch) and any mainstream LLM; an integrated web component; a section to configure voice commands with predefined commands from the codebase; tabs/containers for the different parts.
+- **Decided (cards):** AI runs on AmberX's own server behind the axHub wall (keys server-side, framework assistant_host providers); notes shared on axHub with the console Voice notes + Voice Vault (`voice-notes/` read-only, AmberX writes `amberx-notes/`); start phase A now, sub-agents allowed.
+- **Plan:** orchestrator build `amberx-notes` (also pending `amberx-notes`), 15 Opus steps. Core `apps/amberx-droid/src/plugins/notes/web/core.ts` + `store.ts`, AI client contract `src/plugins/ai/web/client.ts`. Plugins: notes, tasks, dictation, voice (extended), ai (+ `apps/amberx-droid/server/`), web.
+- **Done:** s1-s14 on `claude/amberx-notes`, PR #144 (test.mjs 459, server 110). Design-language §12 pass on the new pages (Brett's card: console Voice notes plugin stays with the refactor phase).
+- **Left (s15):** merge #144 once CI is green; deploy: `sudo bash /opt/amberx-web/apps/amberx-droid/deploy/install.sh` via axHub `vps.run` (approval); then add an AI provider in Settings → Plugins → AI connection; check the pages on the phone.
+- **First message:** "Carry on orchestrator build `amberx-notes` on branch `claude/amberx-notes` (`orchestrator.mjs brief amberx-notes`); merge any `claude/amberx-notes-*` branches first."
 ### Build profiles + plugin
 - Asked (Brett, Oct 27 2026): "Create multiple build profiles and a console plugin to select and save one. Each build profile holds plans, build queue, pending builds, tracking, and all work stuff. Name current one main framework and then start new one called refactor."
 - Model Opus. Branch `claude/build-profiles`, all 4 orchestrator steps done (orchestrator build `build-profiles`, pending `build-profiles`).

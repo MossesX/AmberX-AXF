@@ -1,0 +1,5 @@
+/* Voice control plugin: layout only (THEMING.md), theme tokens only. */
+.axp-voice-empty { gap: var(--fx-space); min-height: calc(var(--fx-space) * 16); }
+.axp-voice-empty > p { margin: 0; }
+.axp-voice-detail { padding: var(--fx-space) calc(var(--fx-space) * 2); }
+.axp-voice-level { display: flex; align-items: center; gap: var(--fx-space); }

@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.web",
+  "name": "Web",
+  "version": "0.1.0",
+  "description": "Integrated web component: open pages inside AmberX, keep bookmarks as notes, clip a page or a pasted passage into any list.",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-27" }
+}

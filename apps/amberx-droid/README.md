@@ -10,9 +10,22 @@ npm install
 npm run dev                      # the web app in a browser (Web Speech fallback)
 npm run build && npx cap sync android
 cd android && ./gradlew :app:assembleDebug   # needs JDK 21 + Android SDK 36 (CI job "amberx" builds it)
-npx -y tsx test.mjs              # hub, voice and monitoring rules
+npx -y tsx test.mjs              # hub, voice, monitoring, notes, tasks, dictation, web rules
+python3 server/test_server.py    # the AmberX server (wall, AI router, intents)
 sudo bash deploy/install.sh      # on the VPS: serve it at https://amberx.amberxai.com (--remove rolls back)
 ```
+
+**Notes, tasks and AI (Oct 27 2026):** plugins `notes` (lists tree with categories and sub-lists, Inbox, a Plugins
+folder with one list per plugin made automatically, the console's Voice notes read-only; tabs Inbox / Lists / Notes /
+Pinned / Search, lists manager, export), `tasks` (Today / Upcoming / Todo / All / Done, grid or tree, checklists,
+subtasks), `dictation` (hands-free note taking with a review card), `voice` (sentences like "note in work: …", "add a todo
+… by friday", "move the last note to ideas" run through the notes intents; Voice commands page with tabs built from the
+app's pages and actions), `web` (pages in tabs, bookmarks and clips as notes) and `ai` (AI connection settings, Ask my
+notes). Data: axHub data server, hub project `amberx-axf`, folder `amberx-notes/` (shared by every device). The core is
+`src/plugins/notes/web/core.ts`; every change goes through an *intent* (`validateIntent` → `applyIntent`), from the
+local parser or the AI. **The site is now served by AmberX's own server** (`server/main.py`, FastAPI, behind the wall):
+it serves `dist/` and `/api/ai/*` — the LLM router (Claude plan ↔ Claude API switch, any provider in
+`framework/schemas/ai-providers.json`, fallback order, retries, keep-alive); keys live only on the server in `/data`.
 
 **Hosted, not bundled (Oct 26 2026):** the shell loads `https://amberx.amberxai.com` (`capacitor.config.json`
 `server.url`; `allowNavigation` = that host + the hub only; `public/offline.html` when unreachable). The site is under the
@@ -25,6 +38,8 @@ signed in). Hub calls from the hosted page go straight from the WebView; only a 
 | --- | --- |
 | `src/plugins/voice` | Voice control: commands (`web/core.ts`), mic, spoken replies, wake event |
 | `src/plugins/monitor` | Background monitoring: watch settings, auto-approval, status |
+| `src/plugins/notes`, `tasks`, `dictation`, `web`, `ai` | Notes, lists, tasks, dictation, web clips, AI connection (see above) |
+| `server/` | AmberX server: static site + `/api/ai/*` (router, intents, wall), self-test `test_server.py` |
 | `src/native.ts` | The one seam to the native side (`AmberxNative`), with a browser fallback |
 | `android/app/src/main/java/ai/amberx/droid` | `WatchService` (foreground service), `AmberxNativePlugin`, `HubWebActivity`, `HubRules` |
 | `src/views/Approvals.tsx`, `src/hub` | Approvals, the only page of its own (home; through lib-hub) |
