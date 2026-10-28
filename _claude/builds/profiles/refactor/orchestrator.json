@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T17:28:21.750Z",
+ "updatedAt": "2026-10-28T18:15:40.290Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3819,10 +3819,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/windows-terminal",
+   "pr": "#158",
    "createdAt": "2026-10-28T16:51:24.871Z",
-   "updatedAt": "2026-10-28T18:14:23.592Z",
+   "updatedAt": "2026-10-28T18:15:40.286Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
