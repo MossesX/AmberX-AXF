@@ -1,0 +1,604 @@
+{
+  "$schema": "asset-customize@1",
+  "_doc": "Extra editable tokens every customizable asset type gets in Settings → Appearance → Assets, on top of the fields its own asset carries. Values are saved per slot in setting axf.custom.<type> = {all, shared, byId} (all = one set of values for every asset of the type, the default; otherwise one per asset id) and apply to the active asset of the slot. Every value maps to theme tokens (colours = colour-theme tokens, sizes = multiples of the style theme), so themes still restyle everything. A token with `types` applies to those types only. `targets` = the elements each type styles (root, and its items for hover/click). Engine: core/engines/customize.ts; icon sets in icon-sets.json. New token = one entry here + one case in customizeCss.",
+  "tokens": [
+    {
+      "key": "fontSize",
+      "label": "Font size",
+      "group": "Text",
+      "kind": "scale",
+      "default": 100,
+      "min": 60,
+      "max": 200,
+      "step": 5,
+      "unit": "%"
+    },
+    {
+      "key": "fontWeight",
+      "label": "Font weight",
+      "group": "Text",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "300",
+        "400",
+        "500",
+        "600",
+        "700",
+        "800"
+      ]
+    },
+    {
+      "key": "fontFamily",
+      "label": "Font",
+      "group": "Text",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "display",
+        "mono",
+        "serif",
+        "rounded",
+        "system"
+      ]
+    },
+    {
+      "key": "letterSpacing",
+      "label": "Letter spacing",
+      "group": "Text",
+      "kind": "choice",
+      "default": "normal",
+      "options": [
+        "tight",
+        "normal",
+        "wide",
+        "wider"
+      ]
+    },
+    {
+      "key": "textTransform",
+      "label": "Letter case",
+      "group": "Text",
+      "kind": "choice",
+      "default": "none",
+      "options": [
+        "none",
+        "uppercase",
+        "lowercase",
+        "capitalize"
+      ]
+    },
+    {
+      "key": "italic",
+      "label": "Italic",
+      "group": "Text",
+      "kind": "toggle",
+      "default": false
+    },
+    {
+      "key": "lineHeight",
+      "label": "Line height",
+      "group": "Text",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "tight",
+        "relaxed",
+        "loose"
+      ]
+    },
+    {
+      "key": "textAlign",
+      "label": "Text alignment",
+      "group": "Text",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "start",
+        "center",
+        "end",
+        "justify"
+      ]
+    },
+    {
+      "key": "textColor",
+      "label": "Text colour",
+      "group": "Colour",
+      "kind": "color",
+      "default": "theme",
+      "options": [
+        "theme",
+        "text",
+        "muted",
+        "accent",
+        "accentText",
+        "accentSoft",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "surface",
+        "surface2",
+        "surface3",
+        "bg",
+        "border",
+        "focus"
+      ]
+    },
+    {
+      "key": "background",
+      "label": "Background",
+      "group": "Colour",
+      "kind": "color",
+      "default": "theme",
+      "options": [
+        "theme",
+        "transparent",
+        "text",
+        "muted",
+        "accent",
+        "accentText",
+        "accentSoft",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "surface",
+        "surface2",
+        "surface3",
+        "bg",
+        "border",
+        "focus"
+      ]
+    },
+    {
+      "key": "borderColor",
+      "label": "Border colour",
+      "group": "Colour",
+      "kind": "color",
+      "default": "theme",
+      "options": [
+        "theme",
+        "text",
+        "muted",
+        "accent",
+        "accentText",
+        "accentSoft",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "surface",
+        "surface2",
+        "surface3",
+        "bg",
+        "border",
+        "focus"
+      ]
+    },
+    {
+      "key": "opacity",
+      "label": "Opacity",
+      "group": "Colour",
+      "kind": "scale",
+      "default": 100,
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "%"
+    },
+    {
+      "key": "glass",
+      "label": "Frosted glass",
+      "group": "Colour",
+      "kind": "toggle",
+      "default": false
+    },
+    {
+      "key": "alignment",
+      "label": "Item alignment",
+      "group": "Layout",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "start",
+        "center",
+        "end",
+        "spread"
+      ]
+    },
+    {
+      "key": "location",
+      "label": "Location",
+      "group": "Layout",
+      "kind": "choice",
+      "default": "default",
+      "options": [
+        "default",
+        "pinned-top",
+        "pinned-bottom"
+      ],
+      "types": [
+        "app-menu",
+        "toolbar",
+        "nav-menu",
+        "tab-group",
+        "banner"
+      ]
+    },
+    {
+      "key": "width",
+      "label": "Width",
+      "group": "Layout",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "fit",
+        "full"
+      ]
+    },
+    {
+      "key": "padding",
+      "label": "Padding",
+      "group": "Layout",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ]
+    },
+    {
+      "key": "itemPadding",
+      "label": "Item padding",
+      "group": "Layout",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "types": [
+        "app-menu",
+        "toolbar",
+        "nav-menu",
+        "context-menu",
+        "tab-group",
+        "banner"
+      ]
+    },
+    {
+      "key": "gap",
+      "label": "Gap between items",
+      "group": "Layout",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ]
+    },
+    {
+      "key": "radius",
+      "label": "Corners",
+      "group": "Shape",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "pill"
+      ]
+    },
+    {
+      "key": "borderWidth",
+      "label": "Border width",
+      "group": "Shape",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "key": "shadow",
+      "label": "Shadow",
+      "group": "Shape",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "key": "iconSet",
+      "label": "Icon set",
+      "group": "Icons",
+      "kind": "iconset",
+      "default": "outline-regular"
+    },
+    {
+      "key": "iconSize",
+      "label": "Icon size",
+      "group": "Icons",
+      "kind": "scale",
+      "default": 100,
+      "min": 60,
+      "max": 200,
+      "step": 5,
+      "unit": "%"
+    },
+    {
+      "key": "iconColor",
+      "label": "Icon colour",
+      "group": "Icons",
+      "kind": "color",
+      "default": "theme",
+      "options": [
+        "theme",
+        "text",
+        "muted",
+        "accent",
+        "accentText",
+        "accentSoft",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "surface",
+        "surface2",
+        "surface3",
+        "bg",
+        "border",
+        "focus"
+      ]
+    },
+    {
+      "key": "showIcons",
+      "label": "Show icons",
+      "group": "Icons",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "key": "animation",
+      "label": "Entrance animation",
+      "group": "Motion",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "fade",
+        "slide-down",
+        "slide-up",
+        "slide-start",
+        "scale",
+        "bounce",
+        "flip",
+        "blur"
+      ]
+    },
+    {
+      "key": "animationSpeed",
+      "label": "Animation speed",
+      "group": "Motion",
+      "kind": "choice",
+      "default": "normal",
+      "options": [
+        "fast",
+        "normal",
+        "slow"
+      ]
+    },
+    {
+      "key": "easing",
+      "label": "Easing",
+      "group": "Motion",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "linear",
+        "ease-out",
+        "ease-in-out",
+        "spring"
+      ]
+    },
+    {
+      "key": "hover",
+      "label": "Hover behaviour",
+      "group": "Hover",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "highlight",
+        "tint",
+        "lift",
+        "glow",
+        "underline",
+        "grow",
+        "dim"
+      ]
+    },
+    {
+      "key": "hoverColor",
+      "label": "Hover colour",
+      "group": "Hover",
+      "kind": "color",
+      "default": "theme",
+      "options": [
+        "theme",
+        "text",
+        "muted",
+        "accent",
+        "accentText",
+        "accentSoft",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "surface",
+        "surface2",
+        "surface3",
+        "bg",
+        "border",
+        "focus"
+      ]
+    },
+    {
+      "key": "cursor",
+      "label": "Pointer",
+      "group": "Hover",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "pointer",
+        "default"
+      ]
+    },
+    {
+      "key": "click",
+      "label": "Click behaviour",
+      "group": "Click",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "none",
+        "press",
+        "sink",
+        "flash",
+        "pulse",
+        "bounce"
+      ]
+    },
+    {
+      "key": "clickColor",
+      "label": "Click colour",
+      "group": "Click",
+      "kind": "color",
+      "default": "theme",
+      "options": [
+        "theme",
+        "text",
+        "muted",
+        "accent",
+        "accentText",
+        "accentSoft",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "surface",
+        "surface2",
+        "surface3",
+        "bg",
+        "border",
+        "focus"
+      ]
+    },
+    {
+      "key": "focusRing",
+      "label": "Focus ring",
+      "group": "Click",
+      "kind": "choice",
+      "default": "theme",
+      "options": [
+        "theme",
+        "thick",
+        "offset",
+        "soft"
+      ]
+    }
+  ],
+  "targets": {
+    "app-menu": {
+      "root": ".fx-menubar",
+      "item": ".fx-menubar__btn"
+    },
+    "toolbar": {
+      "root": ".fx-toolbar",
+      "item": ".fx-toolbtn"
+    },
+    "nav-menu": {
+      "root": ".fx-nav",
+      "item": ".fx-nav__item"
+    },
+    "context-menu": {
+      "root": ".fx-ctx",
+      "item": ".fx-menu__item"
+    },
+    "tab-group": {
+      "root": ".fx-tabs, .fx-tabgroup__bar",
+      "item": ".fx-tab"
+    },
+    "banner": {
+      "root": ".fx-banner",
+      "item": ".fx-banner__item"
+    },
+    "dialog": {
+      "root": ".fx-dialog"
+    },
+    "popup": {
+      "root": ".fx-popover, .fx-dropdown"
+    },
+    "button": {
+      "root": ".fx-btn, .fx-iconbtn"
+    },
+    "slider": {
+      "root": ".fx-slider"
+    },
+    "container": {
+      "root": ".fx-card"
+    },
+    "gauge": {
+      "root": ".fx-gauge"
+    },
+    "meter": {
+      "root": ".fx-meter"
+    },
+    "search-bar": {
+      "root": ".fx-search"
+    },
+    "badge": {
+      "root": ".fx-badge"
+    }
+  }
+}

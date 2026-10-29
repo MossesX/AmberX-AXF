@@ -6,20 +6,35 @@ export type AssetSource = 'builtin' | 'app' | 'imported';
 export interface RegisteredAsset extends AssetEnvelope {
   /** where the asset came from (not part of the on-disk format) */
   readonly __source?: AssetSource;
+  /** which module registered it (a library or plugin id), when known */
+  readonly __origin?: string;
 }
+
+/** An asset id registered again by someone else with different content (see AxfRuntime.diagnostics). */
+export interface AssetReplacement { type: string; id: string; was: string; now: string }
 
 /** In-memory store of every asset available to the app, keyed by type then id. */
 export class AssetRegistry {
   private store = new Map<AssetType, Map<string, RegisteredAsset>>();
+  /**
+   * Called when two modules clash: an asset replaces one with the same type and id that another module registered,
+   * with other content. Apps and imports overriding a built-in asset are deliberate overrides, not clashes.
+   */
+  onReplace?: (r: AssetReplacement) => void;
 
   constructor() {
     for (const t of ASSET_TYPES) this.store.set(t, new Map());
   }
 
-  register(raw: unknown, source: AssetSource = 'builtin'): ValidationResult & { asset?: AssetEnvelope } {
+  register(raw: unknown, source: AssetSource = 'builtin', origin?: string): ValidationResult & { asset?: AssetEnvelope } {
     const result = validateAsset(raw);
     if (!result.ok) return result;
-    const asset = Object.freeze({ ...(raw as AssetEnvelope), __source: source }) as RegisteredAsset;
+    const asset = Object.freeze({ ...(raw as AssetEnvelope), __source: source, ...(origin ? { __origin: origin } : {}) }) as RegisteredAsset;
+    const prev = this.store.get(asset.type)!.get(asset.id);
+    if (prev?.__origin && asset.__origin && prev.__origin !== asset.__origin && this.onReplace) {
+      const strip = ({ __source: _s, __origin: _o, ...rest }: RegisteredAsset) => JSON.stringify(rest);
+      if (strip(prev) !== strip(asset)) this.onReplace({ type: asset.type, id: asset.id, was: prev.__origin, now: asset.__origin });
+    }
     this.store.get(asset.type)!.set(asset.id, asset);
     return { ...result, asset };
   }

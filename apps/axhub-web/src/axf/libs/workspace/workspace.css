@@ -26,8 +26,13 @@
 .axf-ws-split--right, .axf-ws-gap--right { grid-area: rsplit; width: calc(var(--fx-border-w) * 4); cursor: col-resize; }
 .axf-ws-split--bottom, .axf-ws-gap--bottom { grid-area: bsplit; height: calc(var(--fx-border-w) * 4); cursor: row-resize; }
 .axf-ws-gap--left, .axf-ws-gap--right, .axf-ws-gap--bottom { cursor: default; }
-.axf-ws-float { position: absolute; display: flex; flex-direction: column; resize: both; overflow: hidden; min-width: calc(var(--fx-space) * 30); min-height: calc(var(--fx-space) * 20); padding: 0; }
-.axf-ws-float__head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space); background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); cursor: move; touch-action: none; }
+/* floating panes (s19): the window engine's physics; the 8 resize handles are the framework's (.fx-window__edge, sized like a window's), so no CSS `resize` and no size floor here (FLOAT_MIN in the store) */
+.axf-ws-float { position: absolute; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+.axf-ws-float.is-maximized { border-radius: 0; box-shadow: none; }
+.axf-ws-float__head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space); background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); cursor: move; touch-action: none; user-select: none; position: relative; z-index: 1; }
+.axf-ws-float__body { position: relative; z-index: 1; }
+.axf-ws-chips { position: absolute; left: 0; bottom: 0; z-index: 45; display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5); }
+.axf-ws-preview { position: absolute; z-index: 39; }
 .axf-ws-float__body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .axf-ws-dock { display: flex; flex-wrap: wrap; background: var(--fx-surface2); }
 .axf-ws-dock--top { border-bottom: var(--fx-border-w) solid var(--fx-border); flex-direction: column; }
