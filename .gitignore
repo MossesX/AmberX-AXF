@@ -17,3 +17,6 @@ projects/*/_claude/shared/
 
 # Boilerplate screenshot runs generate these in CI (boilerplate-shots.yml); never commit them
 apps/shots-*/
+
+# Build agents' git worktrees in the console checkout (agent-manager gittools, Oct 28 2026)
+.mosses/

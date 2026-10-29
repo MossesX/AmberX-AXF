@@ -542,6 +542,8 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 model = amodel["model"]
             else:
                 model = prof.get("defaultModel")
+            if agent and me.admin and agent.get("buildMode") and providers.protocol_of(prof) != "claude-cli":
+                yield _sse("status", {"text": f"{agent.get('name', 'This agent')} builds with Edit/Write/Bash only on the Claude Code (subscription) provider; on {prof.get('label') or pid} he has his console tools only."})
             produced = False
             try:
                 rounds = int(cfg.get("maxToolRounds") or 12)
@@ -554,7 +556,8 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                     round_thinking: list[dict[str, Any]] = []
                     calls: list[dict[str, Any]] = []
                     for ev in providers.stream_chat(prof, wire + new_msgs, system=system, model=model, tools=tool_specs or None, params=params, cancel=cancel, cwd=str(tools_root()),
-                                                    tool_runner=exec_tool, read_files=me.can("assistant.tools")):
+                                                    tool_runner=exec_tool, read_files=me.can("assistant.tools"),
+                                                    build=(agent.get("buildMode") if agent and me.admin else None)):
                         t = ev["type"]
                         if t == "tool_done":  # a tool the CLI ran through the console's bridge
                             produced = True

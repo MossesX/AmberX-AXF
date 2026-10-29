@@ -122,6 +122,8 @@ export function SafetyPanel() {
   if (!s || !cache) return <LoadingSkeleton />;
   const allowed = new Set(s.safety?.dangerousAgents ?? []);
   const flip = (id: string) => { const n = new Set(allowed); if (n.has(id)) n.delete(id); else n.add(id); void saveS({ safety: { dangerousAgents: [...n] } }); };
+  const builders = new Set(s.safety?.buildAgents ?? []);
+  const flipBuild = (id: string) => { const n = new Set(builders); if (n.has(id)) n.delete(id); else n.add(id); void saveS({ safety: { dangerousAgents: [...allowed], buildAgents: [...n] } }); };
   const dangerous = cache.tools.filter((t) => isDangerousTool(t, status));
   const skillTools = new Map(cache.skills.map((sk) => [sk.id, sk.toolIds ?? []]));
   const wants = (a: { toolIds?: string[]; skillIds?: string[] }) => {
@@ -148,6 +150,16 @@ export function SafetyPanel() {
         {!cache.agents.length && <p className="fx-small fx-muted">No agents yet.</p>}
       </div>
       <p className="fx-small fx-muted">Dangerous tools: {dangerous.length ? dangerous.map((t) => t.name).join(', ') : 'none yet'}.</p>
+      <h4>Build agents</h4>
+      <p className="fx-small fx-muted">Build agents work in the console's AmberX-AXF checkout from the AI assistant (admins only, Claude Code provider): Edit, Write and Bash there without asking, plus git push and open PR (the GitHub token stays in the console). Merging is still yours, through a merge approval. They must be ticked above too.</p>
+      <div className="fx-stack">
+        {cache.agents.map((a) => (
+          <label key={a.id} className="axp-agent-manager__toggle">
+            <input type="checkbox" checked={builders.has(a.id)} onChange={() => flipBuild(a.id)} /> <Icon name={a.icon || 'user'} size={14} /> {a.name} <span className="fx-small fx-muted">{a.id}</span>
+            {builders.has(a.id) && <Chip tone={allowed.has(a.id) ? 'warning' : undefined}>{allowed.has(a.id) ? 'builds in the repo' : 'needs dangerous tools on'}</Chip>}
+          </label>
+        ))}
+      </div>
     </div>
   );
 }
