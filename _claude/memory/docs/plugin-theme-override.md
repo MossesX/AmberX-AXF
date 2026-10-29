@@ -17,7 +17,7 @@ this is a web library on what already exists, not a cross-port contract. Android
 | Settings tab scope: `SettingsTab.plugin` → `TabContent` wraps the tab in `data-axf-plugin` (Settings, the plugins browser, Banner settings, page mode) | `framework/core/settings.ts`, `framework/libs/settings/index.tsx` |
 | Framework controls: `Checkbox indeterminate` (tri-state), `ColorField` (picker + text: hex, rgb(), `var(--fx-…)`); `.fx-plugin-scope { display: contents }` | `framework/react/components/Forms.tsx`, `framework/ui/axf.css` |
 | Console wiring: `underPlugins` wraps every plugin with `withPluginTheme({ id: manifest.id, name })`; `pluginThemeLibrary` installed with the built-ins | `apps/console-web/src/App.tsx` |
-| Application menu: Plugins ▸ All plugins ▸ <plugin> ▸ **Theme override** (check mark) | `apps/console-web/plugins/plugins-menu/web/core.ts` (`themeToggle`, `themeCounter`), `web/index.tsx` |
+| Application menu: Plugins ▸ All plugins ▸ <plugin> ▸ **Theme override** (check mark) | the Plugins menu plugin's ladder (`themeToggle`, `themeCounter` in its `web/core.ts`) |
 | Self-tests | `framework/spec/check-plugintheme.mts` (54), `plugins-menu/test.mts` (46) |
 
 ## Storage shape (what a contract should adopt)
