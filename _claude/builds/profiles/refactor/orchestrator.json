@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T02:10:51.217Z",
+ "updatedAt": "2026-10-29T02:22:20.263Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4673,7 +4673,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T02:10:51.217Z",
+   "updatedAt": "2026-10-29T02:22:20.263Z",
    "builtAt": "",
    "notes": [
     {
@@ -5120,9 +5120,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:22:20.263Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-s23b → refactor-all/terminal (6d6d8590, 10f3bdc3): re-baked console/axhub-web/walkthrough/amberx/demo, shots + report _claude/memory/docs/rebuilds/windows-terminal-fable.md"
     },
     {
      "id": "s24",
