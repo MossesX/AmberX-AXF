@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T03:50:54.986Z",
+ "updatedAt": "2026-10-29T03:53:16.932Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6210,6 +6210,76 @@
      "done": true,
      "doneAt": "2026-10-29T02:01:47.901Z",
      "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+    }
+   ]
+  },
+  {
+   "id": "mosses-build-tools",
+   "title": "Mosses builds in the AI assistant: Edit/Write/Bash in the /axf git checkout + push/PR tools (token stays in the host)",
+   "category": "assistant",
+   "detail": "Brett Oct 28 21:08: Mosses could not build; the Claude Code provider hard-blocked Edit/Write/Bash. Picked: live /axf folder, Bash free there, Refactor profile. Build agents get Edit/Write/MultiEdit/Bash in the CLI provider (admins only) plus repo_git_push / repo_open_pr run by the console with GITHUB_TOKEN.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/mosses-build-tools",
+   "pr": "#164",
+   "createdAt": "2026-10-29T03:53:16.640Z",
+   "updatedAt": "2026-10-29T03:53:16.932Z",
+   "builtAt": "2026-10-29T03:53:16.932Z",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "providers.py build mode",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:53:16.760Z",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "agent-manager build agents + git push / PR builtins; ai-assistant passes build mode",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:53:16.849Z",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Tests, THREADS, PR + merge approval",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:53:16.932Z",
+     "note": ""
     }
    ]
   }
