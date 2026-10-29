@@ -13,8 +13,8 @@
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, settingsLevel, shownAtLevel, lookCss, lookChanged, normalizeLook, type LookLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, LookEditor, LookLevelSwitch, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, lookCss, lookChanged, normalizeLook, type SettingsLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, LookEditor, ModelBadge, Segmented, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -43,8 +43,8 @@ function useSettingsRevision(rt: AxfRuntime): number {
 function settingsUi(rt: AxfRuntime): SettingsUi {
   return normalizeSettingsUi(rt.assetOrNull('settings')?.data);
 }
-/** The level the settings page shows (Simple / Basic / Pro / Advanced), when the interface has levels. */
-function useSettingsLevel(ui: SettingsUi): LookLevel {
+/** The level the settings page shows (Simple / Basic / Developer / Administrator), when the interface has levels. */
+function useSettingsLevel(ui: SettingsUi): SettingsLevel {
   const rt = useRuntime();
   const sub = useMemo(() => (fn: () => void) => rt.settings.onChange(SETTINGS_LEVEL_KEY, fn), [rt]);
   const raw = useSyncExternalStore(sub, () => rt.settings.get(SETTINGS_LEVEL_KEY), () => rt.settings.get(SETTINGS_LEVEL_KEY));
@@ -730,7 +730,7 @@ export function SettingsView() {
           </form>
         } />
       )}
-      {ui.levels && <LookLevelSwitch label="Settings detail" value={level} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} />}
+      {ui.levels && <div className="fx-look__levels"><Segmented label="Settings level" value={level} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} options={SETTINGS_LEVELS.map((l) => ({ value: l, label: SETTINGS_LEVEL_LABEL[l], title: SETTINGS_LEVEL_HINT[l] }))} /><span className="fx-muted fx-look__levelhint">{SETTINGS_LEVEL_HINT[level]}</span></div>}
       {ui.search && !toolbarSearch && <TextField label="Search settings" value={query} onChange={setQuery} placeholder="Search every setting" className="axf-settings__search" />}
       {ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
     </div>

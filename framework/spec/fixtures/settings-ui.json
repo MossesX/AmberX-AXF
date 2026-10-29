@@ -72,7 +72,8 @@
         "groups": [],
         "levels": false,
         "defaultLevel": "basic",
-        "levelOf": {}
+        "levelOf": {},
+        "visible": {}
       }
     },
     {
@@ -102,12 +103,13 @@
         "hide": [],
         "groups": [],
         "levels": true,
-        "defaultLevel": "pro",
+        "defaultLevel": "administrator",
         "levelOf": {
           "appearance": "simple",
           "axf.look.sliders": "simple",
-          "axf.roll": "advanced"
-        }
+          "axf.roll": "developer"
+        },
+        "visible": {}
       }
     },
     {
@@ -134,8 +136,809 @@
         "groups": [],
         "levels": false,
         "defaultLevel": "basic",
-        "levelOf": {}
+        "levelOf": {},
+        "visible": {}
       }
+    },
+    {
+      "name": "levels: migration Pro → Administrator, Advanced → Developer (any case), new names kept, group level too",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "levels": true,
+        "defaultLevel": "Advanced",
+        "levelOf": {
+          "a": "pro",
+          "b": "advanced",
+          "c": "developer",
+          "d": "administrator",
+          "e": "ADMINISTRATOR",
+          "f": "expert"
+        },
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "dev",
+            "level": "pro",
+            "settings": [
+              {
+                "key": "k",
+                "label": "K",
+                "kind": "toggle"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "dev",
+            "settings": [
+              {
+                "key": "k",
+                "label": "K",
+                "kind": "toggle"
+              }
+            ],
+            "level": "administrator"
+          }
+        ],
+        "levels": true,
+        "defaultLevel": "developer",
+        "levelOf": {
+          "a": "administrator",
+          "b": "developer",
+          "c": "developer",
+          "d": "administrator",
+          "e": "administrator"
+        },
+        "visible": {}
+      }
+    },
+    {
+      "name": "visible: per level sets (old names migrated, administrator dropped, bare list = show, hide loses to show, bad ids out)",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "levels": true,
+        "visible": {
+          "simple": [
+            "axf.roll",
+            "bad id"
+          ],
+          "basic": {
+            "show": [
+              "x"
+            ],
+            "hide": [
+              "y",
+              "x"
+            ]
+          },
+          "pro": {
+            "hide": [
+              "z"
+            ]
+          },
+          "advanced": {
+            "show": [
+              "w"
+            ]
+          },
+          "administrator": {
+            "show": [
+              "q"
+            ]
+          },
+          "developer": {
+            "show": [
+              "v"
+            ]
+          },
+          "expert": {
+            "show": [
+              "n"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [],
+        "levels": true,
+        "defaultLevel": "basic",
+        "levelOf": {},
+        "visible": {
+          "simple": {
+            "show": [
+              "axf.roll"
+            ],
+            "hide": []
+          },
+          "basic": {
+            "show": [
+              "x"
+            ],
+            "hide": [
+              "y"
+            ]
+          },
+          "developer": {
+            "show": [
+              "w",
+              "v"
+            ],
+            "hide": []
+          }
+        }
+      }
+    },
+    {
+      "name": "visible: not an object = none",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "visible": "nope"
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [],
+        "levels": false,
+        "defaultLevel": "basic",
+        "levelOf": {},
+        "visible": {}
+      }
+    },
+    {
+      "name": "visible-sets: JSON string, merge, with",
+      "fn": "visible",
+      "input": {
+        "base": {
+          "basic": {
+            "show": [
+              "a"
+            ],
+            "hide": [
+              "b"
+            ]
+          }
+        },
+        "over": "{\"basic\":{\"show\":[\"b\"],\"hide\":[\"a\",\"c\"]},\"simple\":[\"d\"]}"
+      },
+      "expected": {
+        "base": {
+          "basic": {
+            "show": [
+              "a"
+            ],
+            "hide": [
+              "b"
+            ]
+          }
+        },
+        "over": {
+          "basic": {
+            "show": [
+              "b"
+            ],
+            "hide": [
+              "a",
+              "c"
+            ]
+          },
+          "simple": {
+            "show": [
+              "d"
+            ],
+            "hide": []
+          }
+        },
+        "merged": {
+          "simple": {
+            "show": [
+              "d"
+            ],
+            "hide": []
+          },
+          "basic": {
+            "show": [
+              "b"
+            ],
+            "hide": [
+              "a",
+              "c"
+            ]
+          }
+        },
+        "with": {
+          "simple": {
+            "show": [
+              "d"
+            ],
+            "hide": []
+          },
+          "basic": {
+            "show": [
+              "b"
+            ],
+            "hide": [
+              "a",
+              "c"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "level: saved pick migrates, bad falls back to the default",
+      "fn": "level",
+      "input": {
+        "ui": {
+          "defaultLevel": "developer"
+        },
+        "stored": [
+          "pro",
+          "advanced",
+          "simple",
+          "Basic",
+          "max",
+          7,
+          null
+        ]
+      },
+      "expected": [
+        "administrator",
+        "developer",
+        "simple",
+        "basic",
+        "developer",
+        "developer",
+        "developer"
+      ]
+    },
+    {
+      "name": "shown: rank rule, administrator shows all, visible sets win, no levels = all",
+      "fn": "shown",
+      "input": {
+        "ui": {
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {
+            "dev": "developer",
+            "adm": "administrator",
+            "simp": "simple"
+          },
+          "visible": {
+            "simple": {
+              "show": [
+                "adm"
+              ],
+              "hide": [
+                "simp"
+              ]
+            },
+            "developer": {
+              "hide": [
+                "dev"
+              ]
+            }
+          }
+        },
+        "ids": [
+          "simp",
+          "plain",
+          "dev",
+          "adm"
+        ]
+      },
+      "expected": {
+        "simple": [
+          false,
+          false,
+          false,
+          true
+        ],
+        "basic": [
+          true,
+          true,
+          false,
+          false
+        ],
+        "developer": [
+          true,
+          true,
+          false,
+          false
+        ],
+        "administrator": [
+          true,
+          true,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "shown: levels off shows everything",
+      "fn": "shown",
+      "input": {
+        "ui": {
+          "levels": false,
+          "levelOf": {
+            "adm": "administrator"
+          }
+        },
+        "ids": [
+          "adm"
+        ]
+      },
+      "expected": {
+        "simple": [
+          true
+        ],
+        "basic": [
+          true
+        ],
+        "developer": [
+          true
+        ],
+        "administrator": [
+          true
+        ]
+      }
+    },
+    {
+      "name": "split: at basic, one setting is developer (rest), administrator shows all",
+      "fn": "split",
+      "input": {
+        "ui": {
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {
+            "axf.display.animations": "developer"
+          }
+        },
+        "at": [
+          "basic",
+          "developer",
+          "administrator"
+        ]
+      },
+      "expected": [
+        {
+          "at": "basic",
+          "shown": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              }
+            ]
+          },
+          "rest": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.animations",
+                "label": "Animations",
+                "kind": "toggle",
+                "description": "Off reduces motion."
+              }
+            ]
+          }
+        },
+        {
+          "at": "developer",
+          "shown": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              },
+              {
+                "key": "axf.display.animations",
+                "label": "Animations",
+                "kind": "toggle",
+                "description": "Off reduces motion."
+              }
+            ]
+          },
+          "rest": null
+        },
+        {
+          "at": "administrator",
+          "shown": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              },
+              {
+                "key": "axf.display.animations",
+                "label": "Animations",
+                "kind": "toggle",
+                "description": "Off reduces motion."
+              }
+            ]
+          },
+          "rest": null
+        }
+      ]
+    },
+    {
+      "name": "split: group above the level, one setting added by the visible set",
+      "fn": "split",
+      "input": {
+        "ui": {
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {
+            "axf.display": "developer"
+          },
+          "visible": {
+            "simple": {
+              "show": [
+                "axf.display.fontScale"
+              ]
+            }
+          }
+        },
+        "at": [
+          "simple",
+          "basic",
+          "developer"
+        ]
+      },
+      "expected": [
+        {
+          "at": "simple",
+          "shown": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              }
+            ]
+          },
+          "rest": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.animations",
+                "label": "Animations",
+                "kind": "toggle",
+                "description": "Off reduces motion."
+              }
+            ]
+          }
+        },
+        {
+          "at": "basic",
+          "shown": null,
+          "rest": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              },
+              {
+                "key": "axf.display.animations",
+                "label": "Animations",
+                "kind": "toggle",
+                "description": "Off reduces motion."
+              }
+            ]
+          }
+        },
+        {
+          "at": "developer",
+          "shown": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              },
+              {
+                "key": "axf.display.animations",
+                "label": "Animations",
+                "kind": "toggle",
+                "description": "Off reduces motion."
+              }
+            ]
+          },
+          "rest": null
+        }
+      ]
+    },
+    {
+      "name": "split: setting taken out by the visible set; hidden key never in either",
+      "fn": "split",
+      "input": {
+        "ui": {
+          "levels": true,
+          "defaultLevel": "simple",
+          "hide": [
+            "axf.display.animations"
+          ],
+          "visible": {
+            "basic": {
+              "hide": [
+                "axf.display.fontScale"
+              ]
+            }
+          }
+        },
+        "at": [
+          "basic",
+          "administrator"
+        ]
+      },
+      "expected": [
+        {
+          "at": "basic",
+          "shown": null,
+          "rest": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              }
+            ]
+          }
+        },
+        {
+          "at": "administrator",
+          "shown": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              }
+            ]
+          },
+          "rest": null
+        }
+      ]
+    },
+    {
+      "name": "split: no level = no rest",
+      "fn": "split",
+      "input": {
+        "ui": {
+          "levels": true
+        },
+        "at": [
+          null
+        ]
+      },
+      "expected": [
+        {
+          "at": null,
+          "shown": {
+            "id": "axf.display",
+            "label": "Display",
+            "tab": "appearance",
+            "settings": [
+              {
+                "key": "axf.display.fontScale",
+                "label": "Text size",
+                "kind": "slider"
+              },
+              {
+                "key": "axf.display.animations",
+                "label": "Animations",
+                "kind": "toggle",
+                "description": "Off reduces motion."
+              }
+            ]
+          },
+          "rest": null
+        }
+      ]
+    },
+    {
+      "name": "set-visible: smallest change over the asset (rank + asset sets), administrator is a no-op, clears when empty",
+      "fn": "set",
+      "input": {
+        "ui": {
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {
+            "dev": "developer"
+          },
+          "visible": {
+            "simple": {
+              "show": [
+                "dev"
+              ]
+            }
+          }
+        },
+        "moves": [
+          [
+            "basic",
+            [
+              "dev",
+              "plain"
+            ],
+            true
+          ],
+          [
+            "basic",
+            [
+              "plain"
+            ],
+            false
+          ],
+          [
+            "basic",
+            [
+              "plain",
+              "dev"
+            ],
+            true
+          ],
+          [
+            "simple",
+            [
+              "dev"
+            ],
+            false
+          ],
+          [
+            "simple",
+            [
+              "dev"
+            ],
+            true
+          ],
+          [
+            "administrator",
+            [
+              "dev"
+            ],
+            false
+          ],
+          [
+            "basic",
+            [
+              "bad id"
+            ],
+            true
+          ]
+        ]
+      },
+      "expected": [
+        {
+          "basic": {
+            "show": [
+              "dev"
+            ],
+            "hide": []
+          }
+        },
+        {
+          "basic": {
+            "show": [
+              "dev"
+            ],
+            "hide": [
+              "plain"
+            ]
+          }
+        },
+        {
+          "basic": {
+            "show": [
+              "dev"
+            ],
+            "hide": []
+          }
+        },
+        {
+          "basic": {
+            "show": [
+              "dev"
+            ],
+            "hide": []
+          },
+          "simple": {
+            "show": [],
+            "hide": [
+              "dev"
+            ]
+          }
+        },
+        {
+          "basic": {
+            "show": [
+              "dev"
+            ],
+            "hide": []
+          }
+        },
+        {
+          "basic": {
+            "show": [
+              "dev"
+            ],
+            "hide": []
+          }
+        },
+        {
+          "basic": {
+            "show": [
+              "dev"
+            ],
+            "hide": []
+          }
+        }
+      ]
     },
     {
       "name": "toolbar: a toolbar asset id is kept",
@@ -158,7 +961,8 @@
         "toolbar": "settings-page",
         "levels": false,
         "defaultLevel": "basic",
-        "levelOf": {}
+        "levelOf": {},
+        "visible": {}
       }
     },
     {
@@ -194,7 +998,8 @@
         "groups": [],
         "levels": false,
         "defaultLevel": "basic",
-        "levelOf": {}
+        "levelOf": {},
+        "visible": {}
       }
     },
     {
@@ -245,7 +1050,8 @@
         "groups": [],
         "levels": false,
         "defaultLevel": "basic",
-        "levelOf": {}
+        "levelOf": {},
+        "visible": {}
       }
     },
     {
@@ -406,7 +1212,8 @@
         ],
         "levels": false,
         "defaultLevel": "basic",
-        "levelOf": {}
+        "levelOf": {},
+        "visible": {}
       }
     },
     {
