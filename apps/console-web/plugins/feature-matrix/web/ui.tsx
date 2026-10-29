@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Chip, Container, Icon, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Button, Checkbox, Chip, Icon, IconButton, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import * as fm from './fm-core.mjs';
+import * as pendingCore from '@console/axf/plan/pending-core.mjs';
+import pricing from '@console/axf/schemas/model-pricing.json';
+import { groupPlain, itemPlain } from './plain';
 import { clearFocus, FOLDER, KEYS, useFocus, VIEW } from './focus';
 import './feature-matrix.css';
 
@@ -24,6 +27,9 @@ type Act = (path: 'act' | 'seed' | 'apply' | 'import', body: Record<string, unkn
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 const mins = (n: number) => fm.formatMinutes(n) || '0 min';
+const usd = (model: string, minutes: number) => (minutes ? pendingCore.costForMinutes(model, minutes, pricing) ?? 0 : 0);
+const money = (v: number) => (v ? pendingCore.formatUsd(v) : '$0');
+const itemsUsd = (items: fm.Item[]) => items.reduce((t, it) => t + usd(it.model, it.minutes), 0);
 const KIND_LABEL: Record<string, string> = { orchestrator: 'Orchestrator', pending: 'Pending', queue: 'Build queue', plan: 'Plan', change: 'Change log' };
 const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: unknown) => { try { return rt.settings.get(k) ?? d; } catch { return d; } };
 
@@ -173,7 +179,7 @@ export function MatrixView({ m, busy, act, report }: { m: fm.Matrix; busy: boole
   return (
     <div className="fx-stack axp-feature-matrix__matrix" data-fx-ctx-target="axf-feature-matrix" data-fx-ctx-payload={m.id}>
       <div className="axp-feature-matrix__totals" role="list" aria-label="Totals">
-        <span role="listitem"><b>{t.kept}</b> kept · {mins(t.keptMinutes)}</span>
+        <span role="listitem"><b>{t.kept}</b> kept · {mins(t.keptMinutes)} · <b>{money(itemsUsd(m.items.filter(fm.isKept)))}</b></span>
         <span role="listitem" className="fx-muted">{t.skipped} skipped · {mins(t.skippedMinutes)}</span>
         {fm.MODELS.map((md) => <span role="listitem" key={md}><ModelBadge model={md} compact /> {mins(t.byModel[md].keptMinutes)}</span>)}
         <span className="fx-grow" />
@@ -188,31 +194,14 @@ export function MatrixView({ m, busy, act, report }: { m: fm.Matrix; busy: boole
         </div>
       ) : null}
       {groups.length === 0 && <EmptyState icon="list" compact>No items yet. Add the first one below.</EmptyState>}
-      {groups.map((g) => {
-        const keptN = g.items.filter(fm.isKept).length;
-        const gm = g.items.filter(fm.isKept).reduce((s, it) => s + it.minutes, 0);
-        return (
-          <Container key={g.label || '—'} collapsible title={<span>{g.label || 'Ungrouped'} <span className="fx-muted fx-small">· {keptN}/{g.items.length} kept · {mins(gm)}</span></span>} icon="folder"
-            actions={<span className="fx-row"><Button size="sm" tone="quiet" disabled={busy || keptN === g.items.length} onClick={() => setGroup(g, true)}>Keep all</Button><Button size="sm" tone="quiet" disabled={busy || keptN === 0} onClick={() => setGroup(g, false)}>Skip all</Button></span>}>
-            <div className="axp-feature-matrix__items" role="list">
-              {g.items.map((it) => editing?.id === it.id ? (
-                <ItemForm key={it.id} d={editing.d} groups={groupNames} busy={busy} onChange={(d) => setEditing({ id: it.id, d })} onSave={saveEdit} onCancel={() => setEditing(null)} label="Save" />
-              ) : (
-                <div key={it.id} role="listitem" className={`axp-feature-matrix__item ${fm.isKept(it) ? '' : 'is-skip'}`}>
-                  <Checkbox label={<span><span className="axp-feature-matrix__name">{it.name}</span>{it.why ? <span className="fx-small fx-muted"> — {it.why}</span> : null}</span>} checked={fm.isKept(it)} disabled={busy} onChange={(v) => setState(it, v)} />
-                  <span className="axp-feature-matrix__meta">
-                    <span className="fx-small">{it.minutes ? mins(it.minutes) : '—'}</span>
-                    <ModelBadge model={it.model} compact />
-                    {it.history.some((h) => h.action === 'done') && <Chip tone="success">done</Chip>}
-                    {!fm.isKept(it) && <Chip>skip</Chip>}
-                    <Button size="sm" tone="quiet" icon="edit" aria-label={`Edit ${it.name}`} onClick={() => setEditing({ id: it.id, d: { name: it.name, why: it.why, group: it.group, minutes: String(it.minutes || ''), model: it.model } })}>Edit</Button>
-                  </span>
-                </div>
-              ))}
-            </div>
-          </Container>
-        );
-      })}
+      <div className="axp-feature-matrix__list" role="list">
+        {groups.map((g) => (
+          <GroupRow key={g.label || '—'} label={g.label} items={g.items} busy={busy} editing={editing?.id ?? null}
+            onKeep={(it, v) => setState(it, v)} onGroup={(v) => setGroup(g, v)}
+            onEdit={(it) => setEditing({ id: it.id, d: { name: it.name, why: it.why, group: it.group, minutes: String(it.minutes || ''), model: it.model } })}
+            form={editing ? <ItemForm d={editing.d} groups={groupNames} busy={busy} onChange={(d) => setEditing({ id: editing.id, d })} onSave={saveEdit} onCancel={() => setEditing(null)} label="Save" /> : null} />
+        ))}
+      </div>
       {adding ? <ItemForm d={adding} groups={groupNames} busy={busy} onChange={setAdding} onSave={save} onCancel={() => setAdding(null)} label="Add item" /> : null}
       <div className="fx-row fx-row--wrap">
         {!adding && <Button icon="plus" onClick={() => setAdding(blank(groupNames[groupNames.length - 1] ?? ''))}>Add item</Button>}
@@ -226,6 +215,70 @@ export function MatrixView({ m, busy, act, report }: { m: fm.Matrix; busy: boole
           {[...m.history].reverse().map((h, i) => (
             <div key={i} role="listitem" className="pd-entry"><time dateTime={h.at}>{fmtTime(h.at)}</time><p>{h.action}{h.item ? <> · <span className="fx-mono">{h.item}</span></> : null}{h.from != null || h.to != null ? <span className="fx-muted"> {h.from ?? ''}{h.from != null && h.to != null ? ' → ' : ''}{h.to ?? ''}</span> : null}{h.by ? <span className="fx-muted"> · {h.by}</span> : null}</p></div>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** One build inside a matrix: a single tappable line (plain title, kept count, time, cost) that opens to its items. */
+function GroupRow({ label, items, busy, editing, onKeep, onGroup, onEdit, form }: { label: string; items: fm.Item[]; busy: boolean; editing: string | null; onKeep: (it: fm.Item, keep: boolean) => void; onGroup: (keep: boolean) => void; onEdit: (it: fm.Item) => void; form: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const p = groupPlain(items[0]?.id, label);
+  const kept = items.filter(fm.isKept);
+  const all = kept.length === items.length;
+  return (
+    <div role="listitem" className={`axp-feature-matrix__group ${open ? 'is-open' : ''} ${kept.length ? '' : 'is-skip'}`}>
+      <div className="axp-feature-matrix__line">
+        <Checkbox label={null} title={`Keep or skip all of ${p.title}`} checked={all} indeterminate={!all && kept.length > 0} disabled={busy} onChange={(v) => onGroup(v)} />
+        <button type="button" className="axp-feature-matrix__hit" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <span className="axp-feature-matrix__label"><b>{p.title}</b></span>
+          <span className="axp-feature-matrix__nums fx-small fx-muted">{kept.length}/{items.length} · {mins((kept.length ? kept : items).reduce((s, it) => s + it.minutes, 0))} · {money(itemsUsd(kept.length ? kept : items))}</span>
+          <Icon name="chevron-down" size={15} className={open ? '' : 'fx-rot--90'} />
+        </button>
+      </div>
+      {open && (
+        <div className="axp-feature-matrix__body">
+          {p.does && <p className="fx-small axp-feature-matrix__does">{p.does}</p>}
+          <div className="axp-feature-matrix__items" role="list">
+            {items.map((it) => (editing === it.id ? <div key={it.id}>{form}</div> : <ItemRow key={it.id} it={it} busy={busy} onKeep={(v) => onKeep(it, v)} onEdit={() => onEdit(it)} />))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** One feature: a single line (keep tick, plain title, time, cost) that opens to what it does, cost, model and the technical text. */
+function ItemRow({ it, busy, onKeep, onEdit }: { it: fm.Item; busy: boolean; onKeep: (keep: boolean) => void; onEdit: () => void }) {
+  const [open, setOpen] = useState(false);
+  const p = itemPlain(it.id, it.name, it.why);
+  const keep = fm.isKept(it);
+  const done = it.history.some((h) => h.action === 'done');
+  return (
+    <div role="listitem" className={`axp-feature-matrix__item ${keep ? '' : 'is-skip'} ${open ? 'is-open' : ''}`}>
+      <div className="axp-feature-matrix__line">
+        <Checkbox label={null} title={keep ? `Skip ${p.title}` : `Keep ${p.title}`} checked={keep} disabled={busy} onChange={onKeep} />
+        <button type="button" className="axp-feature-matrix__hit" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <span className="axp-feature-matrix__label axp-feature-matrix__name">{p.title}{done ? <Icon name="check" size={12} className="axp-feature-matrix__done" /> : null}</span>
+          <span className="axp-feature-matrix__nums fx-small fx-muted">{it.minutes ? mins(it.minutes) : '—'} · {money(usd(it.model, it.minutes))}</span>
+          <Icon name="chevron-down" size={14} className={open ? '' : 'fx-rot--90'} />
+        </button>
+      </div>
+      {open && (
+        <div className="axp-feature-matrix__body">
+          {p.does && <p className="fx-small axp-feature-matrix__does">{p.does}</p>}
+          <div className="axp-feature-matrix__facts fx-small">
+            <span>{it.minutes ? mins(it.minutes) : 'No estimate'}</span>
+            <span><b>{money(usd(it.model, it.minutes))}</b></span>
+            <ModelBadge model={it.model} compact />
+            {done && <Chip tone="success">Done</Chip>}
+            {!keep && <Chip>Skipped</Chip>}
+            <span className="fx-grow" />
+            <IconButton icon="edit" label={`Edit ${p.title}`} onClick={onEdit} />
+          </div>
+          {it.why && p.does !== it.why && <p className="fx-small fx-muted">Note: {it.why}</p>}
+          <details className="fx-small fx-muted axp-feature-matrix__tech"><summary>Technical detail</summary><p className="fx-mono">{it.name}</p></details>
         </div>
       )}
     </div>
