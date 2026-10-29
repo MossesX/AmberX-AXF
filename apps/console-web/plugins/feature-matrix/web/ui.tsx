@@ -231,7 +231,7 @@ function GroupRow({ label, items, busy, editing, onKeep, onGroup, onEdit, form }
     <div role="listitem" className={`axp-feature-matrix__group ${open ? 'is-open' : ''} ${kept.length ? '' : 'is-skip'}`}>
       <div className="axp-feature-matrix__line">
         <Checkbox label={null} title={`Keep or skip all of ${p.title}`} checked={all} indeterminate={!all && kept.length > 0} disabled={busy} onChange={(v) => onGroup(v)} />
-        <button type="button" className="axp-feature-matrix__hit" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <button type="button" data-fx-row className="axp-feature-matrix__hit" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           <span className="axp-feature-matrix__label"><b>{p.title}</b></span>
           <span className="axp-feature-matrix__nums fx-small fx-muted">{kept.length}/{items.length} · {mins((kept.length ? kept : items).reduce((s, it) => s + it.minutes, 0))} · {money(itemsUsd(kept.length ? kept : items))}</span>
           <Icon name="chevron-down" size={15} className={open ? '' : 'fx-rot--90'} />
@@ -259,7 +259,7 @@ function ItemRow({ it, busy, onKeep, onEdit }: { it: fm.Item; busy: boolean; onK
     <div role="listitem" className={`axp-feature-matrix__item ${keep ? '' : 'is-skip'} ${open ? 'is-open' : ''}`}>
       <div className="axp-feature-matrix__line">
         <Checkbox label={null} title={keep ? `Skip ${p.title}` : `Keep ${p.title}`} checked={keep} disabled={busy} onChange={onKeep} />
-        <button type="button" className="axp-feature-matrix__hit" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <button type="button" data-fx-row className="axp-feature-matrix__hit" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           <span className="axp-feature-matrix__label axp-feature-matrix__name">{p.title}{done ? <Icon name="check" size={12} className="axp-feature-matrix__done" /> : null}</span>
           <span className="axp-feature-matrix__nums fx-small fx-muted">{it.minutes ? mins(it.minutes) : '—'} · {money(usd(it.model, it.minutes))}</span>
           <Icon name="chevron-down" size={14} className={open ? '' : 'fx-rot--90'} />
