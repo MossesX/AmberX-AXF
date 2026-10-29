@@ -1,0 +1,4 @@
+/* AmberX page windows — layout only; colours, spacing and radii are theme tokens. */
+.amberx-window { padding: calc(var(--fx-space) * 1.5); min-height: 100%; overflow: auto; }
+.amberx-window__empty { position: relative; display: grid; place-items: center; min-height: calc(var(--fx-space) * 20); padding: calc(var(--fx-space) * 2); color: var(--fx-muted); text-align: center; overflow: hidden; }
+.amberx-window__empty p { margin: 0; }

@@ -182,6 +182,22 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(existsSync(`${here}src/assets/color-theme/${sw.light}.json`) && existsSync(`${here}src/assets/color-theme/${sw.dark}.json`), 'the day/night switch flips between colours the app ships');
 }
 
+// Windows (enterprise-branding s32): any page opens in a floating window on the framework's window engine, and the
+// app's dialogs, containers, tab groups and popups are the Amber Signature set the design package names.
+{
+  const { readFileSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const app = readFileSync(`${here}src/App.tsx`, 'utf8');
+  ok(app.includes('VIEW_TAB_KIND') && app.includes('registerWindowActions'), 'App registers the page window kind and its action');
+  const win = readFileSync(`${here}src/windows/ViewWindow.tsx`, 'utf8');
+  ok(win.includes("register('amberx.window'") && win.includes('windows.openFloating:'), 'amberx.window opens a floating window through the window engine');
+  const ctx = JSON.parse(readFileSync(`${here}src/assets/context-menu/amberx-droid.json`, 'utf8')).data.targets['nav-item'];
+  ok(ctx.some((i) => i.action === 'amberx.window:{payload}'), 'nav right-click offers Open in a window');
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  for (const t of ['dialog', 'container', 'tab-group', 'popup']) eq(man.defaults[t], 'amber-signature', `default ${t} is the Amber Signature one`);
+  ok(!/#[0-9a-f]{3,8}\b/i.test(readFileSync(`${here}src/windows/windows.css`, 'utf8')), 'window CSS uses tokens only');
+}
+
 // An empty shell for building and testing plugins (Oct 26 2026): Approvals is its only page; voice, monitor and any
 // installed plugin bring the rest. No menu, toolbar or voice command may point at a page that isn't there.
 {
