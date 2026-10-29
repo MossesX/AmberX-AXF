@@ -41,6 +41,8 @@ const entry = (e) => ({
   text: str(e?.text), at: iso(e?.at),
   ...(str(e?.estimate).trim() ? { estimate: str(e.estimate).trim() } : {}),
   ...(e?.done === true ? { done: true, doneAt: iso(e?.doneAt) || iso(e?.at) } : {}),
+  ...(e?.skip === true ? { skip: true } : {}), // feature-matrix@1: skipped when the build runs, never removed
+  ...(str(e?.fm).trim() ? { fm: str(e.fm, 80).trim() } : {}), // its feature-matrix item id
 });
 const entries = (list) => (Array.isArray(list) ? list : []).map(entry).filter((e) => e.text);
 
@@ -65,7 +67,8 @@ export function formatMinutes(min) {
  * An entry's build time in minutes (Oct 23 2026): when every step carries an estimate, the steps added up (so the item
  * and its steps never disagree); otherwise its own estimate, else whatever steps have one; null when nothing gives a time.
  */
-const stepsOfEntry = (entry) => (Array.isArray(entry?.subPrompts) ? entry.subPrompts : Array.isArray(entry?.steps) ? entry.steps : []);
+/** The steps that count: skipped ones (feature matrix) stay in the list but leave every sum. */
+const stepsOfEntry = (entry) => (Array.isArray(entry?.subPrompts) ? entry.subPrompts : Array.isArray(entry?.steps) ? entry.steps : []).filter((s) => s?.skip !== true);
 export function entryMinutes(entry) {
   const steps = stepsOfEntry(entry);
   const mins = steps.map((s) => estimateMinutes(s?.estimate));
@@ -113,7 +116,7 @@ export function formatUsd(v) {
  * for a build-queue step record (steps = steps); `needsSplit` is its boolean. `stepsProgress` adds the steps up.
  */
 export const SPLIT_LIMIT_MINUTES = 30;
-const stepsOf = (entry) => (Array.isArray(entry?.subPrompts) ? entry.subPrompts : Array.isArray(entry?.steps) ? entry.steps : []);
+const stepsOf = stepsOfEntry;
 export function splitCheck(entry, limit = SPLIT_LIMIT_MINUTES) {
   const steps = stepsOf(entry);
   const stepMins = steps.map((s) => estimateMinutes(s?.estimate));

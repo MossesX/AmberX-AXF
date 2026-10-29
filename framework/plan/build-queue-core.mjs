@@ -166,6 +166,8 @@ export function recordSteps(rec) {
     text: String(s?.text ?? ''),
     ...(String(s?.estimate ?? '').trim() ? { estimate: String(s.estimate).trim() } : {}),
     ...(s?.done === true ? { done: true, doneAt: iso(s?.doneAt) } : {}),
+    ...(s?.skip === true ? { skip: true } : {}), // feature-matrix@1: skipped, never removed
+    ...(String(s?.fm ?? '').trim() ? { fm: String(s.fm).trim().slice(0, 80) } : {}),
   })).filter((s) => s.text);
 }
 function stepsView(rec) {
@@ -193,7 +195,7 @@ export function stepsAction(features, queue, a, now = new Date().toISOString(), 
   const rec = (q.steps[epic.id] = { ...(q.steps[epic.id] ?? {}) });
   let steps = recordSteps(rec);
   const what = [];
-  const clean = (s) => { const text = String(s?.text ?? '').trim(); if (!text) throw new Error('text is required'); const e = String(s?.estimate ?? '').trim(); return { text, ...(e ? { estimate: e } : {}), ...(s?.done === true ? { done: true, doneAt: iso(s?.doneAt) || now } : {}) }; };
+  const clean = (s) => { const text = String(s?.text ?? '').trim(); if (!text) throw new Error('text is required'); const e = String(s?.estimate ?? '').trim(); return { text, ...(e ? { estimate: e } : {}), ...(s?.done === true ? { done: true, doneAt: iso(s?.doneAt) || now } : {}), ...(s?.skip === true ? { skip: true } : {}), ...(String(s?.fm ?? '').trim() ? { fm: String(s.fm).trim().slice(0, 80) } : {}) }; };
   if (a.estimate !== undefined) { const e = String(a.estimate ?? '').trim(); if (e) rec.estimate = e; else delete rec.estimate; what.push(e ? `~${e}` : 'estimate cleared'); }
   if (a.steps !== undefined) { if (!Array.isArray(a.steps)) throw new Error('steps must be an array'); steps = a.steps.map(clean); what.push(`${steps.length} step(s) set`); }
   if (a.add !== undefined) { steps.push(clean(a.add)); what.push(`step ${steps.length} added`); }

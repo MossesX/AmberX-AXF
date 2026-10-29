@@ -24,6 +24,8 @@ export const MODEL_GUIDE = {
 
 const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
+/** A step still to do: not done and not skipped by the build's feature matrix. */
+const open = (s) => !s.done && !s.skip;
 const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
 
 /** "45 min", "2 h", "1.5 d", "90" → minutes (a day = 8 working hours), null when unreadable. */
@@ -54,6 +56,7 @@ function normStep(s, i) {
     checks: Array.isArray(o.checks) ? o.checks.map((f) => str(f, 300)).filter(Boolean).slice(0, 20) : [],
     session: o.session === 'new' ? 'new' : 'same',
     agent: o.agent === true,
+    skip: o.skip === true, // set by the feature matrix (feature-matrix@1): skipped when the build runs, never removed
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
@@ -106,16 +109,16 @@ export function phases(build) {
   });
   for (const p of out) {
     p.name = p.label || `Phase ${p.index + 1}`;
-    p.done = p.steps.every((s) => s.done);
+    p.done = p.steps.every((s) => !open(s));
     p.approved = !p.gate || build.approvals.some((a) => a.phase === p.index && a.to === p.model);
-    p.minutesLeft = p.steps.filter((s) => !s.done).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0);
+    p.minutesLeft = p.steps.filter(open).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0);
     p.groups = [];
     for (const s of p.steps) {
       const g = p.groups[p.groups.length - 1];
       if (g && g.label === s.group) g.steps.push(s);
       else p.groups.push({ label: s.group, steps: [s] });
     }
-    for (const g of p.groups) { g.done = g.steps.filter((s) => s.done).length; g.minutesLeft = g.steps.filter((s) => !s.done).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0); }
+    for (const g of p.groups) { g.done = g.steps.filter((s) => s.done).length; g.skipped = g.steps.filter((s) => s.skip).length; g.minutesLeft = g.steps.filter(open).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0); }
   }
   return out;
 }
@@ -132,18 +135,18 @@ export function nextUp(build, rules = DEFAULT_RULES) {
   const ps = phases(build);
   const phase = ps.find((p) => !p.done) ?? null;
   if (!phase) return { phase: null, step: null, needsApproval: false, done: build.steps.length > 0 };
-  const step = phase.steps.find((s) => !s.done) ?? null;
+  const step = phase.steps.find(open) ?? null;
   const needsApproval = rules.approveModelSwitch !== false && phase.gate && !phase.approved;
   return { phase, step, needsApproval, done: false };
 }
 
 export function progress(build) {
-  const total = build.steps.length; const done = build.steps.filter((s) => s.done).length;
-  const left = build.steps.filter((s) => !s.done);
+  const total = build.steps.length; const done = build.steps.filter((s) => s.done).length; const skipped = build.steps.filter((s) => s.skip && !s.done).length;
+  const left = build.steps.filter(open);
   const minutesLeft = left.reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0);
   const byModel = Object.fromEntries(MODELS.map((m) => [m, left.filter((s) => s.model === m).reduce((t, s) => t + (estimateMinutes(s.estimate) ?? 0), 0)]));
   const switches = phases(build).filter((p) => p.gate).length;
-  return { total, done, minutesLeft, byModel, switches };
+  return { total, done, skipped, minutesLeft, byModel, switches };
 }
 
 /** Steps over the size limit or without an estimate (the small-steps rule). */
@@ -155,6 +158,7 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
     else if (m > (rules.maxStepMinutes || 30)) reasons.push(`step ${i + 1} is ${formatMinutes(m)}`);
   });
   if (!build.steps.length) reasons.push('no steps yet');
+  // skipped steps (feature matrix) still have to be small: they may come back
   return { needsSplit: reasons.length > 0, reasons };
 }
 
@@ -189,15 +193,15 @@ export function brief(build, rules = DEFAULT_RULES) {
   const n = nextUp(build, rules);
   if (n.done) return `Build "${build.title}" (${build.id}) is complete.`;
   const p = n.phase;
-  const files = [...new Set(p.steps.filter((s) => !s.done).flatMap((s) => s.files))];
-  const checks = [...new Set(p.steps.filter((s) => !s.done).flatMap((s) => s.checks))];
+  const files = [...new Set(p.steps.filter(open).flatMap((s) => s.files))];
+  const checks = [...new Set(p.steps.filter(open).flatMap((s) => s.checks))];
   const lines = [
     `Continue build "${build.title}" (${build.id})${build.category ? ` [${build.category}]` : ''} — ${p.name}, model ${p.model}.`,
     n.needsApproval ? `STOP: this phase switches ${p.from} → ${p.model}. Ask Brett to approve the switch (card) before any work: orchestrator.mjs act approve ${build.id} ${p.index}.` : '',
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
-    `Steps in this phase (${p.steps.filter((s) => !s.done).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
-    ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
+    `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
+    ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — then commit _claude/builds/orchestrator.json with your work.`,
@@ -237,6 +241,7 @@ export function apply(state, change) {
       st.done = c.done !== false; st.doneAt = st.done ? now() : ''; if (typeof c.note === 'string') st.note = str(c.note, 1000); log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break; }
     case 'add-step': { b = find(); const st = normStep({ ...c.stepData, id: `s${b.steps.length + 1}` }, b.steps.length); if (!st.text) throw new Error('step text needed'); const at = Number.isInteger(c.at) ? c.at : b.steps.length; b.steps.splice(at, 0, st); log.push(`${b.id} + ${st.id}`); break; }
     case 'edit-step': { b = find(); const st = stepOf(b); Object.assign(st, normStep({ ...st, ...c.stepData, id: st.id, done: st.done, doneAt: st.doneAt }, 0)); log.push(`${b.id} ${st.id} edited`); break; }
+    case 'skip-step': { b = find(); const st = stepOf(b); st.skip = c.skip !== false; log.push(`${b.id} ${st.id} ${st.skip ? 'skipped' : 'back in'}`); break; } // the feature matrix's view of a step; the step stays
     case 'remove-step': { b = find(); const st = stepOf(b); b.steps = b.steps.filter((x) => x !== st); log.push(`${b.id} − ${st.id}`); break; }
     case 'move-step': { b = find(); const st = stepOf(b); const i = b.steps.indexOf(st); const j = i + (c.dir === 'up' ? -1 : 1); if (j >= 0 && j < b.steps.length) { b.steps.splice(i, 1); b.steps.splice(j, 0, st); } log.push(`${b.id} ${st.id} moved ${c.dir}`); break; }
     case 'approve': { b = find(); const p = phases(b)[Number(c.phase)]; if (!p || !p.gate) throw new Error('that phase has no model switch to approve');
