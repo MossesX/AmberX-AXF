@@ -8,6 +8,8 @@
  *   remove), the server's keep-alive interval. Changing anything needs a hub admin (the server checks).
  * - A `status` widget on the banner (asset `status/amberx-ai`, counter `ai.ok`): green while the AI answers.
  * - View `ask` (Ask my notes): sends the notes that match the question and shows the answer.
+ * - The assistant's title bar (Ask my notes) carries lib-approvals' badge: axHub approvals + held calls, tap to
+ *   decide (the phone's path from the approvals plugin); action `approvals.popover[:<id>]` opens it (notification taps).
  * - `checkAi()` runs on start, every few minutes while the page is visible, and on focus.
  */
 import { useEffect, useState, type ReactNode } from 'react';
@@ -15,6 +17,9 @@ import type { AxfRuntime } from '../../../axf/core';
 import { Button, Chip, Container, IconButton, Icon, Markdown, Note, Segmented, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { search, pathOf, type Item, type Store } from '../../notes/web/core';
 import { useNotes } from '../../notes/web/store';
+import { ApprovalsBadge, approvalsBadgesOnScreen, requestApprovalsOpen } from '../../../axf/libs/approvals/react';
+import { isApprovalId } from '../../../axf/libs/hub';
+import { HUB } from '../../../hub/useHub';
 import {
   ask, checkAi, clearAiKey, getAiConfig, putAiConfig, saveAiKey, testAiProfile, useAiStatus, addAiProfileWithKey, makeAiPrimary,
   type AiConfig, type AiProfile, type ProfileEdit,
@@ -26,7 +31,7 @@ export * from './client';
 const ID = 'ai.amberx.amberx.ai';
 const ASSET_ID = 'amberx-ai';
 const COUNTER = 'ai.ok';
-const K = { badge: 'amberx.ai.badge', every: 'amberx.ai.every', enabled: 'amberx.ai.enabled' } as const;
+const K = { badge: 'amberx.ai.badge', every: 'amberx.ai.every', enabled: 'amberx.ai.enabled', approvals: 'amberx.ai.approvals' } as const;
 
 /* ---------------------------------------------------------------- the banner badge */
 
@@ -408,6 +413,8 @@ function AskView() {
           <h1>Ask my notes</h1>
           <p className="fx-muted">The AI answers only from your notes ({total} {total === 1 ? 'note' : 'notes'}).</p>
         </div>
+        {/* axHub approvals + held calls (lib-approvals): nothing while none wait; tap = Approve (hub view) / Deny. */}
+        {rt.settings.get(K.approvals) !== false && <ApprovalsBadge hub={HUB} />}
       </header>
       {total === 0 && (
         <div className="fx-row fx-row--wrap">
@@ -443,7 +450,7 @@ function Panel({ children }: { children: ReactNode }) { return <div className="f
 export const library: AxfWebLibrary = {
   id: ID,
   label: 'AI connection',
-  version: '0.1.0',
+  version: '0.1.1',
   builtWith: { model: 'opus', builtAt: '2026-10-27' },
   provides: ['amberx.ai'],
   views: { ask: { title: 'Ask my notes', icon: 'sparkles', keywords: ['ask', 'ai', 'question', 'notes', 'answer'], render: () => <AskView /> } },
@@ -455,6 +462,7 @@ export const library: AxfWebLibrary = {
     ] },
     { id: 'amberx.ai', label: 'On this device', icon: 'eye', tab: 'ai', order: 30, settings: [
       { key: K.badge, label: 'Show the AI badge on the banner', kind: 'toggle', default: true, scope: 'device', slot: 'banner' },
+      { key: K.approvals, label: 'Show axHub approvals in the assistant title bar', kind: 'toggle', default: true, description: 'A count while axHub has calls waiting. Tap: Approve in the hub view, or Deny a held command before its countdown ends.' },
       { key: K.every, label: 'Check the AI every (minutes)', kind: 'number', default: 3, min: 1, max: 60, step: 1 },
     ] },
   ],
@@ -466,6 +474,12 @@ export const library: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('ai.status.open', () => rt.dispatch('settings.open:ai'), { label: 'Show the AI connection' });
     rt.actions.register('ai.check', () => void refresh(rt), { label: 'Check the AI now' });
+    // approvals.popover[:<id>] — the assistant's approvals popover (a tapped approval notification): opens it on the
+    // title bar on screen, or brings the assistant up first.
+    rt.actions.register('approvals.popover', ([id]) => {
+      requestApprovalsOpen(isApprovalId(id) ? id : null);
+      if (approvalsBadgesOnScreen() === 0) rt.navigate('ask');
+    }, { label: 'Show axHub approvals', params: true });
     setAiEnabled(rt.settings.get(K.enabled) !== false);
     rt.settings.onChange(K.enabled, () => setAiEnabled(rt.settings.get(K.enabled) !== false));
     rt.actions.register('ai.enable', () => rt.settings.set(K.enabled, true), { label: 'Switch the AI on' });

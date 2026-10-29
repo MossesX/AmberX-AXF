@@ -9,6 +9,9 @@
  * In a browser this page raises them while it is open (Notification API, tones, `navigator.vibrate`) and Deny opens the
  * call on the hub, which only takes a Deny under its own Origin.
  *
+ * It also plugs the phone's deciding path into lib-approvals (the assistant title bar badge): native Deny, Approve /
+ * Decline in the signed-in hub web view.
+ *
  * Removable: everything is in this folder except the shell's `VetoAlerts.java` + its seam in native.ts (shared shell
  * code, like the monitor's WatchService). Uninstall: `node framework/cli/plugin-catalog.mjs app-uninstall amberx approvals`.
  */
@@ -18,7 +21,9 @@ import { notifyPlan, secondsLeftNow, type VetoPhase } from '../../../axf/libs/hu
 import { isNative, native } from '../../../native';
 import { alertConfig, DEFAULTS, K, notificationText, patternOf, SOUNDS, soundOf, tonesOf, VIBRATIONS, vibrationOf, type Sound } from './core';
 import { checkVeto, markDenied, startVeto, subscribeVeto, vetoState, setVetoHooks } from './store';
-import { deny, getRuntime, setRuntime, useVeto } from './deny';
+import { decideFromPhone, deny, getRuntime, setRuntime, useVeto } from './deny';
+import { setApprovalsHost } from '../../../axf/libs/approvals/react';
+import { HUB } from '../../../hub/useHub';
 import { showTab, TerminalView } from './terminal';
 
 const ID = 'ai.amberx.amberx.approvals';
@@ -133,7 +138,7 @@ function PermissionNote() {
 export const library: AxfWebLibrary = {
   id: ID,
   label: 'Approvals (veto)',
-  version: '0.1.0',
+  version: '0.1.1',
   builtWith: { model: 'opus', builtAt: '2026-10-28' },
   provides: ['amberx.approvals.veto', 'amberx.terminal'],
   views: { terminal: { title: 'Terminal', icon: 'terminal', keywords: ['terminal', 'held', 'veto', 'deny', 'countdown', 'command', 'output'], render: () => <TerminalView /> } },
@@ -159,6 +164,9 @@ export const library: AxfWebLibrary = {
   register(rt) {
     setRuntime(rt);
     startVeto();
+    // lib-approvals (assistant title bars): this app's hub, no framing (the hub frames only the console), and the
+    // phone's deciding path. Removing this plugin leaves the badge on its defaults (hub pages open in the hub view).
+    setApprovalsHost({ hub: HUB, frame: false, decide: decideFromPhone, open: (url) => void native.hubOpen({ url }).catch(() => undefined) });
     // Browser: notifications from this page. Android: the watch service sends them (also with the app closed).
     if (!isNative()) subscribeVeto(notifyInPage);
     setVetoHooks({

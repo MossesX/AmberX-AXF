@@ -51,6 +51,9 @@ export const approvalsHost = (): ApprovalsHost => host;
 const useHost = () => useSyncExternalStore((f) => { hostSubs.add(f); return () => { hostSubs.delete(f); }; }, () => host, () => host);
 
 let pendingOpen: { id: string | null } | null = null;
+let mounted = 0;
+/** How many badges are on screen now (0: a notification tap should bring a title bar with one up first). */
+export const approvalsBadgesOnScreen = (): number => mounted;
 /** Open the popover (on the badge on screen now, or the next one to mount), `id` first. */
 export function requestApprovalsOpen(id: string | null = null): void {
   pendingOpen = { id };
@@ -129,6 +132,8 @@ function BadgeFor({ hub, frame: frameProp, className }: ApprovalsBadgeProps & { 
     if (was && freshIds(was, state.items).length) { setFresh(true); const t = setTimeout(() => setFresh(false), 2_400); return () => clearTimeout(t); }
     return undefined;
   }, [state]);
+
+  useEffect(() => { mounted++; return () => { mounted--; }; }, []);
 
   // A notification tap / push: open, that item first.
   useEffect(() => {
