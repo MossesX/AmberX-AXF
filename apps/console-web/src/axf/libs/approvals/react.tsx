@@ -239,7 +239,7 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
   return createPortal(
     <div ref={box} className="fx-popover axf-approvals__pop" style={pos} role="dialog" aria-label="Approvals waiting on axHub">
       <div className="axf-approvals__head">
-        {framed ? <Button size="sm" icon="arrow-left" onClick={() => setFramed(null)}>Back</Button> : <strong>{state.count ? badgeLabel(state) : 'Nothing waiting'}</strong>}
+        {framed ? <Button size="sm" icon="arrow-left" onClick={() => setFramed(null)}>Back</Button> : <strong title={badgeLabel(state)}>{state.count ? `${state.count} waiting on axHub` : 'Nothing waiting'}</strong>}
         <button type="button" className="fx-iconbtn" aria-label="Close" title="Close" onClick={onClose}><Icon name="x" size={14} /></button>
       </div>
       {framed ? (
