@@ -1,0 +1,31 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "kiosk",
+  "name": "Kiosk",
+  "version": "1.0.0",
+  "description": "No chrome at all: a single full-screen surface for kiosks, wall displays and embedded views. The console keeps its menu bar on top (it reaches everything when the toolbar and navigation are hidden).",
+  "author": "AmberX AXF",
+  "tags": [
+    "kiosk",
+    "focus"
+  ],
+  "data": {
+    "nav": "top",
+    "navWidth": 0,
+    "showMenubar": true,
+    "showToolbar": false,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 0,
+    "slots": {
+      "menubar": [
+        "app-menu"
+      ],
+      "toolbar": [],
+      "nav": []
+    }
+  }
+}

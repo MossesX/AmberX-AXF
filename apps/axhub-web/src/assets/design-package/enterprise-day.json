@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "enterprise-day",
+  "name": "Enterprise Day",
+  "version": "1.0.0",
+  "description": "The dependable business look by day: Inter on porcelain, the full enterprise frame, crisp controls and steady behaviour.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "enterprise"
+  ],
+  "data": {
+    "style-theme": "enterprise",
+    "color-theme": "porcelain",
+    "layout": "enterprise-shell",
+    "behavior-theme": "steady",
+    "extras": {
+      "slots": {
+        "style-package": "enterprise-crisp",
+        "toolbar": "enterprise-command",
+        "context-menu": "enterprise-standard"
+      }
+    }
+  }
+}

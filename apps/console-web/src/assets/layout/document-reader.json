@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "document-reader",
+  "name": "Document Reader",
+  "version": "1.0.0",
+  "description": "Top navigation and a centred 760 px column: nothing competes with the text. The console keeps its menu bar on top (it reaches everything when the toolbar and navigation are hidden).",
+  "author": "AmberX AXF",
+  "tags": [
+    "reading",
+    "focus"
+  ],
+  "data": {
+    "nav": "top",
+    "navWidth": 0,
+    "showMenubar": true,
+    "showToolbar": false,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 760
+  }
+}

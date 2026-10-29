@@ -1165,7 +1165,23 @@ export class AxfRuntime {
     if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
     this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
     this.toast(`${a.name} applied.`, 'success', 'Design package');
+    this.lookApplied('design-package', id);
     return true;
+  }
+
+  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void>();
+
+  /**
+   * Called after a design package, an interface or the default look is applied to the app (also on "Apply again").
+   * Hosts that draw the app under something else (the console's GizmoX interface tabs) bring the app back into view.
+   */
+  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void): () => void {
+    this.lookAppliedListeners.add(fn);
+    return () => { this.lookAppliedListeners.delete(fn); };
+  }
+
+  private lookApplied(kind: 'design-package' | 'interface' | 'default', id: string): void {
+    for (const fn of [...this.lookAppliedListeners]) { try { fn({ kind, id }); } catch (e) { this.terminal.warn('hot-swap', `look listener failed: ${(e as Error).message}`); } }
   }
 
   /** @deprecated the appearance package became the design package (Oct 27 2026). */
@@ -1184,6 +1200,7 @@ export class AxfRuntime {
     this.pushAppearance({ spacing: this.spacing() });
     this.terminal.ok('hot-swap', 'default appearance restored');
     this.toast('Default appearance restored.', 'success', 'Appearance');
+    this.lookApplied('default', '');
   }
 
   /* ---------------- behaviour (engines/behavior.ts) ---------------- */
@@ -1728,6 +1745,7 @@ export class AxfRuntime {
     for (const m of r.missing) this.terminal.warn('hot-swap', `interface ${id}: ${m} isn't in this app, kept the current one`);
     this.terminal.ok('hot-swap', `interface ${id} applied (${Object.keys(r.active).length} slots)`);
     this.toast(`${a.name} applied.`, 'success', 'Interface');
+    this.lookApplied('interface', id);
     return true;
   }
 
@@ -1781,6 +1799,17 @@ export class AxfRuntime {
       slotHidden: { value: (type: AssetType) => hideable(type) && view.hiddenSlots().includes(type) },
       spacing: { value: () => spacingOf(resolved().spacing) },
       appliedInterface: { value: () => interfaceId },
+      // swaps inside a scope change the app: the palette pushed to axHub is the app's, not the scope's interface
+      // (fix Oct 29 2026: the hub document carried the AmberX Signature tab's saffron palette over fresh-light)
+      appearancePalette: { value: () => base.appearancePalette() },
+      // look changes made inside a scope run on the app itself, from the app's own active set: run on the view they
+      // read the interface's slots and wrote them all into the app (style package, toolbar, interface marker)
+      swap: { value: (type: AssetType, target: string) => base.swap(type, target) },
+      swapAll: { value: (targets: Partial<ActiveAssets>) => base.swapAll(targets) },
+      randomize: { value: () => base.randomize() },
+      applyDesignPackage: { value: (pid: string) => base.applyDesignPackage(pid) },
+      applyInterface: { value: (iid: string) => base.applyInterface(iid) },
+      restoreDefaultAppearance: { value: () => base.restoreDefaultAppearance() },
       scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
       // anything opened through the scoped view belongs to the scope (its own hosts draw it)
       openDialog: { value: (did: string, props?: Record<string, unknown>) => { base.enterScope(scopeId); base.openDialog(did, props); } },

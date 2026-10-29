@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "dense-ops",
+  "name": "Dense Ops button",
+  "version": "1.0.0",
+  "description": "Dense Ops: square outline buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "dense",
+    "compact",
+    "data"
+  ],
+  "data": {
+    "shape": "square",
+    "fill": "outline",
+    "weight": 600,
+    "uppercase": false,
+    "size": "sm",
+    "elevation": false
+  }
+}

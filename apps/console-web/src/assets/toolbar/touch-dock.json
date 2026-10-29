@@ -1,0 +1,50 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "touch-dock",
+  "name": "Touch Dock",
+  "version": "1.0.0",
+  "description": "Roomy labelled buttons spread across the width, sized for thumbs: home, pages, alerts and settings. In the console the alerts bell lives on the banner only.",
+  "author": "AmberX AXF",
+  "tags": [
+    "touch"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "spread",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "go",
+        "items": [
+          {
+            "id": "home",
+            "icon": "home",
+            "label": "Go home",
+            "action": "nav:home"
+          }
+        ]
+      },
+      {
+        "id": "pages",
+        "items": [],
+        "provider": "views",
+        "max": 3,
+        "label": "Pages"
+      },
+      {
+        "id": "app",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          }
+        ]
+      }
+    ],
+    "density": "roomy",
+    "divider": false
+  }
+}

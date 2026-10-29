@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "document-reader",
+  "name": "Document Reader",
+  "version": "1.0.0",
+  "description": "Top navigation and a centred 760 px column: nothing competes with the text.",
+  "author": "AmberX AXF",
+  "tags": [
+    "reading",
+    "focus"
+  ],
+  "data": {
+    "nav": "top",
+    "navWidth": 0,
+    "showMenubar": false,
+    "showToolbar": false,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 760
+  }
+}

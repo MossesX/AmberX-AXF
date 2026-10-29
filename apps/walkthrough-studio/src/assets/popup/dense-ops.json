@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "dense-ops",
+  "name": "Dense Ops pop-ups",
+  "version": "1.0.0",
+  "description": "Dense Ops: minimal pop-ups at the bottom-center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "dense",
+    "compact",
+    "data"
+  ],
+  "data": {
+    "position": "bottom-center",
+    "variant": "minimal",
+    "duration": 3000,
+    "showIcon": true,
+    "maxVisible": 5
+  }
+}

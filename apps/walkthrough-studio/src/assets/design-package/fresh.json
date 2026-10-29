@@ -4,7 +4,7 @@
   "id": "fresh",
   "name": "Fresh",
   "version": "2.0.0",
-  "description": "Fresh: Walkthrough Studio's new default look (Fresh Light + Fresh style, solid rounded buttons, soft cards), super-tight spacing. An AmberX Design Package: its style, colour, layout and behaviour themes, with the rest of the look as extras (was an appearance package).",
+  "description": "Fresh: the framework's default look (Fresh Light + Fresh style, solid rounded buttons, soft cards), super-tight spacing, top toolbar hidden. An AmberX Design Package: its style, colour, layout and behaviour themes, with the rest of the look as extras (was an appearance package).",
   "author": "AmberX AXF",
   "tags": [
     "default"
@@ -12,13 +12,13 @@
   "data": {
     "style-theme": "fresh",
     "color-theme": "fresh-light",
-    "layout": "walkthrough-studio",
+    "layout": "classic-ide",
     "behavior-theme": "standard",
     "extras": {
       "slots": {
-        "app-menu": "walkthrough-studio",
+        "app-menu": "standard-desktop",
         "toolbar": "standard-icons",
-        "nav-menu": "walkthrough-studio",
+        "nav-menu": "sidebar-list",
         "context-menu": "compact-classic",
         "tab-group": "underline",
         "dialog": "centered-modal",
@@ -28,22 +28,22 @@
         "container": "soft-card",
         "gauge": "classic-arc",
         "meter": "striped-pill",
-        "settings": "console",
-        "banner": "walkthrough-studio",
+        "banner": "amberx-thin",
         "clock": "digital-12h",
         "search-bar": "everything",
         "logo": "wordmark",
-        "action-button": "ws-compile",
-        "label": "ws-length",
-        "status": "ws-recording",
-        "counter": "ws-review",
-        "progress": "ws-built",
+        "action-button": "settings",
+        "label": "version",
+        "status": "online",
+        "counter": "alerts",
+        "progress": "build",
         "avatar": "account",
         "link": "docs",
         "theme-switch": "fresh-day-night",
         "spacer": "gap",
         "divider": "rule",
-        "badge": "new"
+        "badge": "new",
+        "settings": "standard"
       },
       "spacing": "tight",
       "hidden": {

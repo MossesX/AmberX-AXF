@@ -35,6 +35,6 @@
     "opacityTint": 0.18,
     "opacityScrim": 0.6,
     "opacityGlass": 0.85,
-    "wrapGroups": false
+    "wrapGroups": true
   }
 }

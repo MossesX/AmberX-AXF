@@ -100,6 +100,19 @@ for (const a of starters) eq(validateAsset(a).errors, [], `interface/${a.id} val
   v.swap('color-theme', 'fresh-dark');
   ok(rt.asset('color-theme').id === 'fresh-dark' && v.asset('color-theme').id === 'arctic-daylight', 'swap through a scope goes to the app');
   ok(v.branding()?.name === 'AmberX', 'scope branding resolves');
+  // a design package applied inside the scope changes only the app's themes: none of the scope's interface slots
+  // leak into the app, and the app's own look listeners hear it (fix Oct 29 2026)
+  rt.setRole('admin');
+  const before = { ...rt.getState().active };
+  let looked = 0;
+  const offLook = rt.onLookApplied(() => { looked++; });
+  ok(v.applyDesignPackage('midnight-pro'), 'design package applied through a scope');
+  const after = rt.getState().active as Record<string, string>;
+  ok(after['color-theme'] === 'midnight-ink' && after['style-theme'] === 'glass-orbit' && after['design-package'] === 'midnight-pro', 'the app takes the package themes');
+  eq(Object.keys(after).filter((t) => !['style-theme', 'color-theme', 'layout', 'behavior-theme', 'design-package'].includes(t) && after[t] !== (before as Record<string, string>)[t]), [], 'no interface slot leaked into the app');
+  ok(after['interface'] === (before as Record<string, string>)['interface'], 'the app keeps its own interface marker');
+  ok(rt.applyDesignPackage('midnight-pro') && looked === 2, 'look listeners hear every apply, Apply again too');
+  offLook();
   // a setting written inside the scope reaches the app (Oct 28 2026 fix: Object.create kept writes on the scope)
   let heard = 0;
   const off = rt.settings.onChange('test.scope.key', () => { heard++; });

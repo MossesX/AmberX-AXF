@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "neon-edge",
+  "name": "Neon Edge button",
+  "version": "1.0.0",
+  "description": "Neon Edge: square gradient buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "neon",
+    "vivid",
+    "dark"
+  ],
+  "data": {
+    "shape": "square",
+    "fill": "gradient",
+    "weight": 700,
+    "uppercase": true,
+    "size": "md",
+    "elevation": true
+  }
+}

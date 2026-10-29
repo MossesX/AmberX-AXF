@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "warm-craft",
+  "name": "Warm Craft slider",
+  "version": "1.0.0",
+  "description": "Warm Craft: circle thumb on a 5 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "warm",
+    "warm"
+  ],
+  "data": {
+    "track": 5,
+    "thumb": "circle",
+    "thumbSize": 18,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": false
+  }
+}
