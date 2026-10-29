@@ -32,6 +32,7 @@ import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES,
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
+import { RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, WINDOW_MIN, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, restoreWindow, toggleMaximized, type Rect, type ResizeEdge, type WindowSpec } from '../core/engines/windows';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -1310,5 +1311,55 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     conditions: flagsCases.map((flags) => ({ flags, unmet: unmetConditions(A, flags), restart: shouldRestart(A, flags), restartNoBoot: shouldRestart(D, flags) })),
     delays: delays.map((d) => ({ ...d, ms: delayFor(d.rule, d.intervalMs, d.streak) })),
     scenarios: scenarios.map((s) => ({ name: s.name, spec: s.spec.id, intervalMs: s.intervalMs ?? null, initial: initialJobState(s.spec, s.intervalMs), steps: replayJob(s.spec, s.events, s.intervalMs).map((step, i) => ({ event: s.events[i].event, flags: s.events[i].flags ?? {}, state: step.state, effects: step.effects })) })),
+  });
+}
+
+// Window engine geometry (windows-terminal s17, Oct 28 2026): the 8 resize handles (hit-testing, cursors), resize maths
+// with size floors (opposite edge fixed, no viewport clamp: windows may leave the screen), maximize / restore and the
+// title-bar drag that restores a maximized window under the pointer. Kotlin `Windows.kt` replays the same file.
+{
+  const r: Rect = { x: 100, y: 50, width: 400, height: 300 };
+  const probes: [string, number, number][] = [
+    ['inside body', 300, 200], ['north band', 300, 53], ['south band', 300, 345], ['west band', 103, 200], ['east band', 497, 200],
+    ['nw corner', 105, 55], ['ne corner', 495, 55], ['sw corner', 105, 345], ['se corner', 495, 345],
+    ['north just outside', 300, 44], ['north too far outside', 300, 40], ['west on the edge', 100, 200], ['corner square reaches past the band', 112, 62],
+    ['east bottom corner diagonal', 492, 340], ['far away', 900, 900], ['touch band wide', 300, 64],
+  ];
+  const hits = probes.map(([name, px, py]) => ({ name, px, py, edge: hitResizeEdge(r, px, py), touch: hitResizeEdge(r, px, py, RESIZE_HANDLE_TOUCH) }));
+  const drags: [string, ResizeEdge, number, number, Partial<Rect> | null, { minWidth: number; minHeight: number; maxWidth?: number; maxHeight?: number } | null][] = [
+    ['grow east', 'e', 50, 0, null, null], ['grow south', 's', 0, 40, null, null], ['grow west (x moves)', 'w', -30, 0, null, null], ['grow north (y moves)', 'n', 0, -20, null, null],
+    ['se corner', 'se', 25, 35, null, null], ['nw corner', 'nw', -10, -15, null, null], ['ne corner', 'ne', 10, -15, null, null], ['sw corner', 'sw', -10, 15, null, null],
+    ['shrink east to the floor', 'e', -500, 0, null, null], ['shrink west to the floor keeps right edge', 'w', 500, 0, null, null], ['shrink north to the floor keeps bottom edge', 'n', 0, 500, null, null], ['shrink south to the floor', 's', 0, -500, null, null],
+    ['own floor', 'w', 300, 0, null, { minWidth: 320, minHeight: 200 }], ['ceiling east', 'e', 500, 0, null, { minWidth: 200, minHeight: 160, maxWidth: 450 }], ['ceiling north keeps bottom', 'n', 0, -500, null, { minWidth: 200, minHeight: 160, maxHeight: 320 }],
+    ['past the viewport is allowed', 'e', 2000, 0, null, null], ['negative origin is allowed', 'nw', -300, -300, null, null], ['fractions round', 'se', 10.4, 10.6, null, null],
+  ];
+  const resizes = drags.map(([name, edge, dx, dy, startOverride, limits]) => { const start = { ...r, ...(startOverride ?? {}) }; return { name, edge, dx, dy, start, limits, rect: resizeRect(start, edge, dx, dy, limits ?? undefined) }; });
+  const spec = (o: Partial<WindowSpec> = {}): WindowSpec => ({ id: 'w1', type: 'floating', title: 'T', toolbarsAllowed: true, toolbarEnabled: true, origin: null, settings: { corner: 'bottom-right', mode: 'stacked', toolbarAsset: null, alwaysOnTop: false, opacity: 1 }, x: 100, y: 50, width: 400, height: 300, minimized: null, minimizedAtX: 0, minimizedAtY: 0, closable: true, z: 1, mode: 'tree', ...o });
+  const vp = { width: 1280, height: 800 };
+  const work = { x: 0, y: 48, width: 1280, height: 752 };
+  const pick = (w: WindowSpec) => ({ x: w.x, y: w.y, width: w.width, height: w.height, maximized: w.maximized ?? false, restore: w.restore ?? null });
+  const w0 = spec();
+  const max = maximizeWindow(w0, vp);
+  const maxWork = maximizeWindow(w0, vp, work);
+  const again = maximizeWindow(max, vp);
+  const back = restoreWindow(max);
+  const toggled = toggleMaximized(toggleMaximized(w0, vp), vp);
+  const notMax = restoreWindow(w0);
+  const maximize = {
+    viewport: vp, work, rect: maximizedRect(vp), rectWork: maximizedRect(vp, work),
+    from: pick(w0), maximized: pick(max), maximizedWork: pick(maxWork), maximizedTwice: pick(again), restored: pick(back), toggledTwice: pick(toggled), restoreWhenNotMaximized: pick(notMax),
+    dragRestore: [
+      { name: 'grab at the left', px: 128, py: 20, grab: 12, rect: pick(dragRestore(max, 128, 20, 12)) },
+      { name: 'grab in the middle', px: 640, py: 30, grab: 0, rect: pick(dragRestore(max, 640, 30, 0)) },
+      { name: 'grab at the right edge', px: 1280, py: 10, grab: 10, rect: pick(dragRestore(max, 1280, 10, 10)) },
+      { name: 'not maximized = unchanged', px: 300, py: 60, grab: 4, rect: pick(dragRestore(w0, 300, 60, 4)) },
+    ],
+  };
+  write('windows.json', {
+    contract: 'windows@1',
+    edges: RESIZE_EDGES, handle: RESIZE_HANDLE, handleTouch: RESIZE_HANDLE_TOUCH, min: WINDOW_MIN,
+    cursors: Object.fromEntries(RESIZE_EDGES.map((e) => [e, resizeCursor(e)])),
+    frames: ['standard', 'frameless'], frameDefault: 'standard',
+    rect: r, hits, resizes, maximize,
   });
 }

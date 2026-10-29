@@ -946,6 +946,22 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-window__body { flex: 1 1 auto; min-height: 0; display: flex; padding: 6px; }
 .fx-window__body > * { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .fx-window__resize { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); touch-action: none; }
+/* windows-terminal s17: resize from all 8 edges / corners (engine: RESIZE_EDGES, hitResizeEdge, resizeRect). The bands are
+   invisible hit areas just inside the border (the window clips at its radius); corners are squares twice the band. Wider
+   on touch. No keep-on-screen: a window may be dragged or resized past the viewport. */
+.fx-window { --fx-win-handle: var(--fx-space); }
+@media (pointer: coarse) { .fx-window { --fx-win-handle: calc(var(--fx-space) * 2); } }
+.fx-window__edge { position: absolute; z-index: 3; touch-action: none; user-select: none; }
+.fx-window__edge--n, .fx-window__edge--s { left: calc(var(--fx-win-handle) * 2); right: calc(var(--fx-win-handle) * 2); height: var(--fx-win-handle); }
+.fx-window__edge--e, .fx-window__edge--w { top: calc(var(--fx-win-handle) * 2); bottom: calc(var(--fx-win-handle) * 2); width: var(--fx-win-handle); }
+.fx-window__edge--n { top: 0; } .fx-window__edge--s { bottom: 0; } .fx-window__edge--w { left: 0; } .fx-window__edge--e { right: 0; }
+.fx-window__edge--ne, .fx-window__edge--nw, .fx-window__edge--se, .fx-window__edge--sw { width: calc(var(--fx-win-handle) * 2); height: calc(var(--fx-win-handle) * 2); }
+.fx-window__edge--nw { top: 0; left: 0; } .fx-window__edge--ne { top: 0; right: 0; } .fx-window__edge--sw { bottom: 0; left: 0; } .fx-window__edge--se { bottom: 0; right: 0; }
+.fx-window--standard .fx-window__edge--se { background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); }
+/* maximized: square, borderless, fills the viewport (engine: maximizedRect); handles are gone */
+.fx-window.is-maximized { border-radius: 0; box-shadow: none; }
+/* frameless (Terminal): the content draws its own title bar through useWindowFrame(); no host chrome, no body inset */
+.fx-window--frameless .fx-window__body { padding: 0; }
 .fx-dragghost { position: fixed; z-index: 200; pointer-events: none; padding: 4px 10px; border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: 12px; box-shadow: var(--fx-shadow-md); }
 .fx-corner { position: fixed; z-index: 70; display: flex; gap: 4px; padding: 6px; }
 .fx-corner--top-left { top: 0; left: 0; } .fx-corner--top-right { top: 0; right: 0; } .fx-corner--bottom-left { bottom: 0; left: 0; } .fx-corner--bottom-right { bottom: 0; right: 0; }

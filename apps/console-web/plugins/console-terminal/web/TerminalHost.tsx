@@ -13,7 +13,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Icon, useRuntime, useWindowManager } from '@console/axf/react';
+import { Icon, useRuntime, useWindowFrame, useWindowManager } from '@console/axf/react';
 import type { TabSpec } from '@console/axf/core';
 import { call, getSettings, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target } from './api';
 import { applyProfile, useProfiles } from './profiles';
@@ -48,6 +48,10 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const toolbar = toolbarOverride ?? settings?.toolbar ?? true;
   const [ask, setAsk] = useState<string | null>(null); // close confirm for a running tab
   const profiles = useProfiles();
+  // frameless window (s17): the strip is the title bar. Empty strip space drags (double-tap maximizes); the caption
+  // buttons sit at its end, Windows order: minimize, maximize / restore, close.
+  const frame = useWindowFrame();
+  const stripDown = (e: React.PointerEvent) => { if (!frame || (e.target as HTMLElement).closest('.fx-tab, button, input, form, [role="menu"]')) return; frame.startMove(e); };
   useEffect(() => { void getSettings().then(setSettings, () => undefined); return onSettings(setSettings); }, []);
   const dragFrom = useRef<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
@@ -98,7 +102,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
 
   return (
     <div ref={root} className={`${P} ${settings?.mica === false ? '' : `${P}--mica`} ${settings?.windowsLook === false ? `${P}--plain` : ''} ${P}--tabs-${settings?.tabWidth ?? 'equal'}`} data-fx-ctx-ignore>
-      <div className={`${P}__strip`} role="tablist" aria-label="Terminal tabs">
+      <div className={`${P}__strip ${frame ? `${P}__strip--titlebar` : ''}`} role="tablist" aria-label="Terminal tabs" onPointerDown={stripDown} onContextMenu={(e) => { if (!frame || (e.target as HTMLElement).closest('.fx-tab, button')) return; e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', frame.w.id); }}>
         {h.sessions.map((s, i) => {
           const sc = ctl(s.id); const on = s.id === front?.id;
           return (
@@ -129,6 +133,13 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         <button type="button" className={`fx-iconbtn ${P}__new`} title="Open a tab: pick the connection" aria-label="New tab menu" aria-expanded={!!drop}
           onClick={(e) => { const r = (e.currentTarget as HTMLElement).getBoundingClientRect(); setDrop({ x: r.left, y: r.bottom + 2 }); }}><Icon name="chevron-down" size={14} /></button>
         <span className={`${P}__drag`} />
+        {frame && (
+          <div className={`${P}__caption`} role="group" aria-label="Window">
+            {frame.canMinimize && <button type="button" className={`fx-iconbtn ${P}__cap`} title="Minimize" aria-label="Minimize" onPointerDown={(e) => e.stopPropagation()} onClick={frame.minimize}><Icon name="minimize" size={14} /></button>}
+            <button type="button" className={`fx-iconbtn ${P}__cap`} title={frame.maximized ? 'Restore down' : 'Maximize'} aria-label={frame.maximized ? 'Restore down' : 'Maximize'} onPointerDown={(e) => e.stopPropagation()} onClick={frame.toggleMaximize}><Icon name={frame.maximized ? 'restore' : 'maximize'} size={13} /></button>
+            {frame.w.closable && <button type="button" className={`fx-iconbtn ${P}__cap ${P}__cap--close`} title="Close" aria-label="Close window" onPointerDown={(e) => e.stopPropagation()} onClick={frame.close}><Icon name="x" size={14} /></button>}
+          </div>
+        )}
       </div>
 
       {toolbar && (

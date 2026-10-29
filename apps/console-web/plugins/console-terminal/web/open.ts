@@ -17,7 +17,8 @@ export function findHost(rt: AxfRuntime): string | null {
 export function newWindow(rt: AxfRuntime, sessions: HostSession[]): string {
   const hid = `term-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
   host(hid, sessions);
-  rt.windows.openFloating([{ id: hid, title: 'Terminal', kind: HOST_KIND, payload: '', icon: 'terminal' }], 'Terminal', 'floating', Math.min(900, innerWidth - 32), Math.min(540, innerHeight - 120));
+  // frameless (windows-terminal s17): the tab strip is the title bar (drag, double-click, min / max / close), like Windows Terminal
+  rt.windows.openFloating([{ id: hid, title: 'Terminal', kind: HOST_KIND, payload: '', icon: 'terminal' }], 'Terminal', 'floating', Math.min(900, innerWidth - 32), Math.min(540, innerHeight - 120), undefined, undefined, { frame: 'frameless', minWidth: 320, minHeight: 200 });
   return hid;
 }
 

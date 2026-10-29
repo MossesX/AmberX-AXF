@@ -31,7 +31,101 @@ export interface WindowSpec {
   mode: string;
   /** the interface scope it was opened from ('' / absent = the app itself); each scope's host draws only its own */
   scope?: string;
+  /** who draws the title bar (absent = `standard`); see WindowFrame */
+  frame?: WindowFrame;
+  /** filling the viewport; `restore` is the rect it goes back to (null = never maximized) */
+  maximized?: boolean;
+  restore?: Rect | null;
+  /** per-window size floor (absent = WINDOW_MIN); the engine never lets a resize go below it */
+  minWidth?: number; minHeight?: number;
 }
+
+/* ---------- geometry: rects, resize handles, maximize (windows-terminal s17) ---------- */
+
+export interface Rect { x: number; y: number; width: number; height: number }
+export interface SizeLimits { minWidth: number; minHeight: number; maxWidth?: number; maxHeight?: number }
+/** The eight resize handles, named by compass side (`n` = top edge, `se` = bottom-right corner). */
+export type ResizeEdge = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
+export const RESIZE_EDGES: ResizeEdge[] = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
+/** Default size floor for every window (px, root units). */
+export const WINDOW_MIN: SizeLimits = { minWidth: 200, minHeight: 160 };
+/** Width of the band along each edge that counts as a resize handle (mouse) and the wider band for touch. Corners take a square of twice the band. */
+export const RESIZE_HANDLE = 8;
+export const RESIZE_HANDLE_TOUCH = 16;
+
+export const rectOf = (w: Rect): Rect => ({ x: w.x, y: w.y, width: w.width, height: w.height });
+export const limitsOf = (w: Pick<WindowSpec, 'minWidth' | 'minHeight'>): SizeLimits => ({ minWidth: Math.max(1, w.minWidth ?? WINDOW_MIN.minWidth), minHeight: Math.max(1, w.minHeight ?? WINDOW_MIN.minHeight) });
+
+/**
+ * Which resize handle a point is on. The band straddles the edge (`handle` px inside and outside the rect, so a finger
+ * can grab a thin border); a point within `2 * handle` of two edges is the corner. Null = not on a handle (inside the
+ * window body, or clearly outside). Points outside by more than `handle` never hit.
+ */
+export function hitResizeEdge(r: Rect, px: number, py: number, handle = RESIZE_HANDLE): ResizeEdge | null {
+  const h = Math.max(1, handle), corner = h * 2;
+  const left = px - r.x, right = r.x + r.width - px, top = py - r.y, bottom = r.y + r.height - py;
+  if (left < -h || right < -h || top < -h || bottom < -h) return null;
+  const nearW = left <= corner, nearE = right <= corner, nearN = top <= corner, nearS = bottom <= corner;
+  if (nearN && nearW) return 'nw'; if (nearN && nearE) return 'ne'; if (nearS && nearW) return 'sw'; if (nearS && nearE) return 'se';
+  if (top <= h) return 'n'; if (bottom <= h) return 's'; if (left <= h) return 'w'; if (right <= h) return 'e';
+  return null;
+}
+
+/** The cursor a handle wants (CSS names; ports map them). */
+export const resizeCursor = (e: ResizeEdge): string => ({ n: 'ns-resize', s: 'ns-resize', e: 'ew-resize', w: 'ew-resize', ne: 'nesw-resize', sw: 'nesw-resize', nw: 'nwse-resize', se: 'nwse-resize' })[e];
+
+/**
+ * Resize `start` by dragging `edge` through (dx, dy). Opposite edges stay put: a west drag moves x and shrinks width,
+ * and when the size would go under its floor (or over its ceiling) the moving edge stops, so the fixed edge never
+ * drifts. Rounded to whole px. No viewport clamp: windows may leave the screen (Brett, Oct 28 2026: no keep-on-screen).
+ */
+export function resizeRect(start: Rect, edge: ResizeEdge, dx: number, dy: number, limits: SizeLimits = WINDOW_MIN): Rect {
+  const minW = Math.max(1, limits.minWidth), minH = Math.max(1, limits.minHeight);
+  const maxW = limits.maxWidth && limits.maxWidth >= minW ? limits.maxWidth : Infinity, maxH = limits.maxHeight && limits.maxHeight >= minH ? limits.maxHeight : Infinity;
+  let { x, y, width, height } = start;
+  const right = start.x + start.width, bottom = start.y + start.height;
+  if (edge.includes('e')) width = Math.min(maxW, Math.max(minW, start.width + dx));
+  if (edge.includes('w')) { width = Math.min(maxW, Math.max(minW, start.width - dx)); x = right - width; }
+  if (edge.includes('s')) height = Math.min(maxH, Math.max(minH, start.height + dy));
+  if (edge.includes('n')) { height = Math.min(maxH, Math.max(minH, start.height - dy)); y = bottom - height; }
+  return { x: Math.round(x), y: Math.round(y), width: Math.round(width), height: Math.round(height) };
+}
+
+/** The rect a maximized window fills: the whole viewport (or `work`, the area left after fixed chrome). */
+export const maximizedRect = (viewport: { width: number; height: number }, work?: Rect | null): Rect => work ?? { x: 0, y: 0, width: Math.max(1, Math.round(viewport.width)), height: Math.max(1, Math.round(viewport.height)) };
+
+/** Maximize: remember the current rect and fill the viewport. Already maximized = unchanged (the restore rect is kept). */
+export function maximizeWindow(w: WindowSpec, viewport: { width: number; height: number }, work?: Rect | null): WindowSpec {
+  if (isMaximized(w)) return w;
+  return { ...w, ...maximizedRect(viewport, work), maximized: true, restore: rectOf(w) };
+}
+/** Restore from maximized to the remembered rect (a window never maximized is unchanged). */
+export function restoreWindow(w: WindowSpec): WindowSpec {
+  if (!isMaximized(w)) return w;
+  const r = w.restore ?? rectOf(w);
+  return { ...w, ...r, maximized: false, restore: null };
+}
+export const toggleMaximized = (w: WindowSpec, viewport: { width: number; height: number }, work?: Rect | null): WindowSpec => (isMaximized(w) ? restoreWindow(w) : maximizeWindow(w, viewport, work));
+
+/**
+ * Dragging a maximized title bar restores the window under the pointer, like Windows: the restored window keeps the
+ * pointer at the same fraction of its width, and its top edge at the pointer's y minus the grab offset within the bar.
+ */
+export function dragRestore(w: WindowSpec, pointerX: number, pointerY: number, grabOffsetY = 0): WindowSpec {
+  if (!isMaximized(w)) return w;
+  const r = restoreWindow(w);
+  const frac = w.width > 0 ? Math.min(1, Math.max(0, (pointerX - w.x) / w.width)) : 0.5;
+  return { ...r, x: Math.round(pointerX - r.width * frac), y: Math.round(pointerY - Math.max(0, grabOffsetY)) };
+}
+/**
+ * Window frame (Oct 28 2026, windows-terminal s17): `standard` = the host draws the title bar (name, badge, buttons);
+ * `frameless` = the content draws its own title bar (the Terminal's tab strip) and drives the window through the
+ * frame hooks (move, resize, minimize, maximize, close). Absent = `standard`, so every existing WindowSpec still reads.
+ */
+export type WindowFrame = 'standard' | 'frameless';
+export const windowFrame = (w: Pick<WindowSpec, 'frame'>): WindowFrame => (w.frame === 'frameless' ? 'frameless' : 'standard');
+export const isMaximized = (w: Pick<WindowSpec, 'maximized'>) => w.maximized === true;
+
 export const isFloating = (w: WindowSpec) => w.type === 'floating' || w.type === 'dock' || w.type === 'element';
 export const forcesToolbar = (w: WindowSpec) => isFloating(w) && w.type !== 'element';
 export const effectiveToolbar = (w: WindowSpec) => w.toolbarsAllowed && (w.toolbarEnabled || forcesToolbar(w));
@@ -166,11 +260,11 @@ export class WindowManager {
   }
 
   /** Opens the tabs in a brand-new floating window (what Compare does). */
-  openFloating(tabs: TabSpec[], title: string, type: WindowType = 'floating', width = 380, height = 460, x?: number, y?: number): string {
+  openFloating(tabs: TabSpec[], title: string, type: WindowType = 'floating', width = 380, height = 460, x?: number, y?: number, opts: Partial<Pick<WindowSpec, 'frame' | 'minWidth' | 'minHeight' | 'toolbarsAllowed'>> = {}): string {
     const wid = this.nextId('win');
     const count = this._state.windows.filter(isFloating).length;
     const at = placeNewWindow(this.placement, count, { width, height }, this.viewport, this.remembered.get(title) ?? null);
-    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', x: x ?? at.x, y: y ?? at.y, width, height, z: this.topZ(s) })], focused: wid }));
+    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', ...opts, x: x ?? at.x, y: y ?? at.y, width, height, z: this.topZ(s) })], focused: wid }));
     this.openGroup(tabs, wid);
     return wid;
   }
@@ -302,7 +396,32 @@ export class WindowManager {
   moveTo(windowId: string, x: number, y: number) { this.update(windowId, (w) => this.remember({ ...w, x, y })); }
   /** Called when a drag ends: snaps the window to the grid under the behaviour theme's rules and remembers where it is. */
   settle(windowId: string) { this.update(windowId, (w) => this.remember({ ...w, x: snapCoord(w.x, this.placement), y: snapCoord(w.y, this.placement) })); }
-  resize(windowId: string, width: number, height: number) { this.update(windowId, (w) => ({ ...w, width: Math.max(200, snapCoord(width, this.placement)), height: Math.max(160, snapCoord(height, this.placement)) })); }
+  resize(windowId: string, width: number, height: number) { this.update(windowId, (w) => { const l = limitsOf(w); return { ...w, width: Math.max(l.minWidth, snapCoord(width, this.placement)), height: Math.max(l.minHeight, snapCoord(height, this.placement)), maximized: false, restore: null }; }); }
+  /** Resize from any of the 8 handles: `start` is the rect when the drag began, (dx, dy) the pointer travel since. Leaves maximized. */
+  resizeFrom(windowId: string, edge: ResizeEdge, start: Rect, dx: number, dy: number) { this.update(windowId, (w) => ({ ...w, ...resizeRect(start, edge, dx, dy, limitsOf(w)), maximized: false, restore: null })); }
+  /** Set a window's own size floor (null = back to WINDOW_MIN); the current size grows to meet it. */
+  setMinSize(windowId: string, minWidth: number | null, minHeight: number | null) {
+    this.update(windowId, (w) => { const n = { ...w, minWidth: minWidth ?? undefined, minHeight: minHeight ?? undefined }; const l = limitsOf(n); return { ...n, width: Math.max(l.minWidth, w.width), height: Math.max(l.minHeight, w.height) }; });
+  }
+  /** Who draws the title bar (frameless content gets the frame hooks). */
+  setFrame(windowId: string, frame: WindowFrame) { this.update(windowId, (w) => ({ ...w, frame })); }
+
+  /* ---------- maximize / restore ---------- */
+
+  /** The area a maximized window fills; null = the whole viewport. The UI sets it when fixed chrome (a banner) should stay visible. */
+  workArea: Rect | null = null;
+  private vp() { return this.viewport ?? { width: 1280, height: 800 }; }
+  maximize(windowId: string) { this.update(windowId, (w) => maximizeWindow(w, this.vp(), this.workArea)); this.focus(windowId); }
+  /** Back from maximized to the remembered rect. */
+  unmaximize(windowId: string) { this.update(windowId, (w) => this.remember(restoreWindow(w))); }
+  toggleMaximize(windowId: string) { const w = this._state.windows.find((x) => x.id === windowId); if (!w) return; if (isMaximized(w)) this.unmaximize(windowId); else this.maximize(windowId); }
+  /** A title-bar drag that starts on a maximized window: restore it under the pointer first (Windows behaviour). Returns the restored rect. */
+  dragRestore(windowId: string, pointerX: number, pointerY: number, grabOffsetY = 0): Rect | null {
+    const w = this._state.windows.find((x) => x.id === windowId); if (!w || !isMaximized(w)) return null;
+    const r = dragRestore(w, pointerX, pointerY, grabOffsetY);
+    this.update(windowId, () => r);
+    return rectOf(r);
+  }
   private remember(w: WindowSpec): WindowSpec { this.remembered.set(this.rememberKey(w), { x: w.x, y: w.y }); return w; }
   setSettings(windowId: string, settings: WindowSettings) { this.update(windowId, (w) => ({ ...w, settings })); }
   setMode(windowId: string, mode: string) { this.update(windowId, (w) => ({ ...w, mode })); }
@@ -341,6 +460,7 @@ export class WindowManager {
     return [
       { id: 'settings', label: 'Window settings…', icon: 'settings', action: 'dialog:window-settings:{payload}' },
       { id: 'redock', label: 'Redock', icon: 'download', action: 'windows.redock:{payload}' },
+      { id: 'maximize', label: 'Maximize / restore', icon: 'maximize', action: 'windows.maximize:{payload}' },
       { id: 'min-corner', label: 'Minimize to title bar (cycle corners)', icon: 'minus', action: 'windows.minimizeCorner:{payload}' },
       { id: 'min-toolbar', label: 'Minimize to floating toolbar at cursor', icon: 'minus', action: 'windows.minimizeToolbar:{payload}' },
       { id: 's1', separator: true },

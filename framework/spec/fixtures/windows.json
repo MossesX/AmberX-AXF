@@ -1,0 +1,662 @@
+{
+  "contract": "windows@1",
+  "edges": [
+    "n",
+    "s",
+    "e",
+    "w",
+    "ne",
+    "nw",
+    "se",
+    "sw"
+  ],
+  "handle": 8,
+  "handleTouch": 16,
+  "min": {
+    "minWidth": 200,
+    "minHeight": 160
+  },
+  "cursors": {
+    "n": "ns-resize",
+    "s": "ns-resize",
+    "e": "ew-resize",
+    "w": "ew-resize",
+    "ne": "nesw-resize",
+    "nw": "nwse-resize",
+    "se": "nwse-resize",
+    "sw": "nesw-resize"
+  },
+  "frames": [
+    "standard",
+    "frameless"
+  ],
+  "frameDefault": "standard",
+  "rect": {
+    "x": 100,
+    "y": 50,
+    "width": 400,
+    "height": 300
+  },
+  "hits": [
+    {
+      "name": "inside body",
+      "px": 300,
+      "py": 200,
+      "edge": null,
+      "touch": null
+    },
+    {
+      "name": "north band",
+      "px": 300,
+      "py": 53,
+      "edge": "n",
+      "touch": "n"
+    },
+    {
+      "name": "south band",
+      "px": 300,
+      "py": 345,
+      "edge": "s",
+      "touch": "s"
+    },
+    {
+      "name": "west band",
+      "px": 103,
+      "py": 200,
+      "edge": "w",
+      "touch": "w"
+    },
+    {
+      "name": "east band",
+      "px": 497,
+      "py": 200,
+      "edge": "e",
+      "touch": "e"
+    },
+    {
+      "name": "nw corner",
+      "px": 105,
+      "py": 55,
+      "edge": "nw",
+      "touch": "nw"
+    },
+    {
+      "name": "ne corner",
+      "px": 495,
+      "py": 55,
+      "edge": "ne",
+      "touch": "ne"
+    },
+    {
+      "name": "sw corner",
+      "px": 105,
+      "py": 345,
+      "edge": "sw",
+      "touch": "sw"
+    },
+    {
+      "name": "se corner",
+      "px": 495,
+      "py": 345,
+      "edge": "se",
+      "touch": "se"
+    },
+    {
+      "name": "north just outside",
+      "px": 300,
+      "py": 44,
+      "edge": "n",
+      "touch": "n"
+    },
+    {
+      "name": "north too far outside",
+      "px": 300,
+      "py": 40,
+      "edge": null,
+      "touch": "n"
+    },
+    {
+      "name": "west on the edge",
+      "px": 100,
+      "py": 200,
+      "edge": "w",
+      "touch": "w"
+    },
+    {
+      "name": "corner square reaches past the band",
+      "px": 112,
+      "py": 62,
+      "edge": "nw",
+      "touch": "nw"
+    },
+    {
+      "name": "east bottom corner diagonal",
+      "px": 492,
+      "py": 340,
+      "edge": "se",
+      "touch": "se"
+    },
+    {
+      "name": "far away",
+      "px": 900,
+      "py": 900,
+      "edge": null,
+      "touch": null
+    },
+    {
+      "name": "touch band wide",
+      "px": 300,
+      "py": 64,
+      "edge": null,
+      "touch": "n"
+    }
+  ],
+  "resizes": [
+    {
+      "name": "grow east",
+      "edge": "e",
+      "dx": 50,
+      "dy": 0,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 450,
+        "height": 300
+      }
+    },
+    {
+      "name": "grow south",
+      "edge": "s",
+      "dx": 0,
+      "dy": 40,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 340
+      }
+    },
+    {
+      "name": "grow west (x moves)",
+      "edge": "w",
+      "dx": -30,
+      "dy": 0,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 70,
+        "y": 50,
+        "width": 430,
+        "height": 300
+      }
+    },
+    {
+      "name": "grow north (y moves)",
+      "edge": "n",
+      "dx": 0,
+      "dy": -20,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 30,
+        "width": 400,
+        "height": 320
+      }
+    },
+    {
+      "name": "se corner",
+      "edge": "se",
+      "dx": 25,
+      "dy": 35,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 425,
+        "height": 335
+      }
+    },
+    {
+      "name": "nw corner",
+      "edge": "nw",
+      "dx": -10,
+      "dy": -15,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 90,
+        "y": 35,
+        "width": 410,
+        "height": 315
+      }
+    },
+    {
+      "name": "ne corner",
+      "edge": "ne",
+      "dx": 10,
+      "dy": -15,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 35,
+        "width": 410,
+        "height": 315
+      }
+    },
+    {
+      "name": "sw corner",
+      "edge": "sw",
+      "dx": -10,
+      "dy": 15,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 90,
+        "y": 50,
+        "width": 410,
+        "height": 315
+      }
+    },
+    {
+      "name": "shrink east to the floor",
+      "edge": "e",
+      "dx": -500,
+      "dy": 0,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 200,
+        "height": 300
+      }
+    },
+    {
+      "name": "shrink west to the floor keeps right edge",
+      "edge": "w",
+      "dx": 500,
+      "dy": 0,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 300,
+        "y": 50,
+        "width": 200,
+        "height": 300
+      }
+    },
+    {
+      "name": "shrink north to the floor keeps bottom edge",
+      "edge": "n",
+      "dx": 0,
+      "dy": 500,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 190,
+        "width": 400,
+        "height": 160
+      }
+    },
+    {
+      "name": "shrink south to the floor",
+      "edge": "s",
+      "dx": 0,
+      "dy": -500,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 160
+      }
+    },
+    {
+      "name": "own floor",
+      "edge": "w",
+      "dx": 300,
+      "dy": 0,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": {
+        "minWidth": 320,
+        "minHeight": 200
+      },
+      "rect": {
+        "x": 180,
+        "y": 50,
+        "width": 320,
+        "height": 300
+      }
+    },
+    {
+      "name": "ceiling east",
+      "edge": "e",
+      "dx": 500,
+      "dy": 0,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": {
+        "minWidth": 200,
+        "minHeight": 160,
+        "maxWidth": 450
+      },
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 450,
+        "height": 300
+      }
+    },
+    {
+      "name": "ceiling north keeps bottom",
+      "edge": "n",
+      "dx": 0,
+      "dy": -500,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": {
+        "minWidth": 200,
+        "minHeight": 160,
+        "maxHeight": 320
+      },
+      "rect": {
+        "x": 100,
+        "y": 30,
+        "width": 400,
+        "height": 320
+      }
+    },
+    {
+      "name": "past the viewport is allowed",
+      "edge": "e",
+      "dx": 2000,
+      "dy": 0,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 2400,
+        "height": 300
+      }
+    },
+    {
+      "name": "negative origin is allowed",
+      "edge": "nw",
+      "dx": -300,
+      "dy": -300,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": -200,
+        "y": -250,
+        "width": 700,
+        "height": 600
+      }
+    },
+    {
+      "name": "fractions round",
+      "edge": "se",
+      "dx": 10.4,
+      "dy": 10.6,
+      "start": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      },
+      "limits": null,
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 410,
+        "height": 311
+      }
+    }
+  ],
+  "maximize": {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "work": {
+      "x": 0,
+      "y": 48,
+      "width": 1280,
+      "height": 752
+    },
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 800
+    },
+    "rectWork": {
+      "x": 0,
+      "y": 48,
+      "width": 1280,
+      "height": 752
+    },
+    "from": {
+      "x": 100,
+      "y": 50,
+      "width": 400,
+      "height": 300,
+      "maximized": false,
+      "restore": null
+    },
+    "maximized": {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 800,
+      "maximized": true,
+      "restore": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      }
+    },
+    "maximizedWork": {
+      "x": 0,
+      "y": 48,
+      "width": 1280,
+      "height": 752,
+      "maximized": true,
+      "restore": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      }
+    },
+    "maximizedTwice": {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 800,
+      "maximized": true,
+      "restore": {
+        "x": 100,
+        "y": 50,
+        "width": 400,
+        "height": 300
+      }
+    },
+    "restored": {
+      "x": 100,
+      "y": 50,
+      "width": 400,
+      "height": 300,
+      "maximized": false,
+      "restore": null
+    },
+    "toggledTwice": {
+      "x": 100,
+      "y": 50,
+      "width": 400,
+      "height": 300,
+      "maximized": false,
+      "restore": null
+    },
+    "restoreWhenNotMaximized": {
+      "x": 100,
+      "y": 50,
+      "width": 400,
+      "height": 300,
+      "maximized": false,
+      "restore": null
+    },
+    "dragRestore": [
+      {
+        "name": "grab at the left",
+        "px": 128,
+        "py": 20,
+        "grab": 12,
+        "rect": {
+          "x": 88,
+          "y": 8,
+          "width": 400,
+          "height": 300,
+          "maximized": false,
+          "restore": null
+        }
+      },
+      {
+        "name": "grab in the middle",
+        "px": 640,
+        "py": 30,
+        "grab": 0,
+        "rect": {
+          "x": 440,
+          "y": 30,
+          "width": 400,
+          "height": 300,
+          "maximized": false,
+          "restore": null
+        }
+      },
+      {
+        "name": "grab at the right edge",
+        "px": 1280,
+        "py": 10,
+        "grab": 10,
+        "rect": {
+          "x": 880,
+          "y": 0,
+          "width": 400,
+          "height": 300,
+          "maximized": false,
+          "restore": null
+        }
+      },
+      {
+        "name": "not maximized = unchanged",
+        "px": 300,
+        "py": 60,
+        "grab": 4,
+        "rect": {
+          "x": 100,
+          "y": 50,
+          "width": 400,
+          "height": 300,
+          "maximized": false,
+          "restore": null
+        }
+      }
+    ]
+  }
+}

@@ -75,6 +75,14 @@
 .axp-wt__badge { flex: none; display: inline-flex; color: var(--fx-danger) }
 .axp-wt__new { flex: none; align-self: center; margin-bottom: calc(var(--fx-space) * 0.25) }
 .axp-wt__drag { flex: 1; min-width: calc(var(--fx-space) * 2) }
+/* the strip as the window's title bar (frameless window, s17): empty space drags, caption buttons at the end snap to it
+   and never overlap the tabs (the strip scrolls sideways when full) */
+.axp-wt__strip--titlebar { touch-action: none; user-select: none; cursor: default }
+.axp-wt__strip--titlebar .axp-wt__drag { cursor: move; align-self: stretch }
+.axp-wt__caption { flex: none; display: inline-flex; align-items: center; align-self: flex-start; margin-left: auto; gap: 0; position: sticky; right: 0; background: inherit }
+.axp-wt__cap { width: calc(var(--fx-space) * 5.75); height: calc(var(--fx-space) * 4); border-radius: 0 }
+.axp-wt__cap--close:hover { color: var(--fx-surface); background: var(--fx-danger) }
+.axp-wt--plain .axp-wt__cap { height: auto }
 .axp-wt__toolbar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0; overflow-x: auto; scrollbar-width: none }
 .axp-wt__toolbar > * { flex: none }
 .axp-wt__sep { width: var(--fx-border-w); align-self: stretch; margin: calc(var(--fx-space) * 0.25); background: var(--fx-border) }
