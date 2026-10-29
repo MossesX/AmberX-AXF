@@ -1,7 +1,8 @@
 // @ts-nocheck: a Node test (node --experimental-strip-types), not part of the console's build
 // Plugins menu, the pure part (web/core.ts). Run: node --experimental-strip-types apps/console-web/plugins/plugins-menu/test.mts
 import { columnRows, initialPick, installAction, PARAM_TYPES, PARAM_GROUPS, pluginsSubmenu, sortCatalog, FOLDER, ladderItems, offCounter } from './web/core.ts';
-import { PLUGIN_LOOK_COUNTER } from '../../../../framework/libs/plugintheme/core.ts';
+/** Mirrors framework/libs/plugintheme PLUGIN_LOOK_COUNTER (the lib's core imports framework/core, which node --experimental-strip-types cannot resolve without extensions). */
+const PLUGIN_LOOK_COUNTER = (pluginId: string) => `plugin-theme.on:${pluginId}`;
 
 let ok = 0, fail = 0;
 const check = (name: string, cond: boolean) => { if (cond) ok++; else { fail++; console.error(`✗ ${name}`); } };
