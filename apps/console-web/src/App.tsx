@@ -24,6 +24,7 @@ import { library as settingsLibrary } from './axf/libs/settings';
 import { createAlertsLibrary } from './axf/libs/alerts';
 import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
 import { hubStatusLibrary } from './axf/libs/hubstatus';
+import { pluginThemeLibrary, withPluginTheme } from './axf/libs/plugintheme';
 import { library as dataGridLibrary } from './axf/libs/datagrid';
 import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
@@ -83,8 +84,11 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
     ...(m.opens ? { opens: m.opens } : {}),
     ...(m.opensUi ? { opensUi: m.opensUi } : {}),
   };
-  if (!lib.settingsTabs?.length) return out;
-  return { ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) };
+  // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
+  // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
+  const themed = (l: AxfWebLibrary) => withPluginTheme(l, { id: m.id, name: m.name });
+  if (!lib.settingsTabs?.length) return themed(out);
+  return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
 }
 
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
@@ -121,7 +125,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
     const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, ...enabled.map(underPlugins)]);
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins)]);
   }, [rt, status, loaded, managed, hostIds]);
   return { contributed };
 }

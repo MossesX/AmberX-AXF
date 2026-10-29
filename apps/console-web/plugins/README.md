@@ -181,6 +181,17 @@ lays plugins out from these parts. Full rules: `framework/spec/THEMING.md`. CI r
 app's button asset, style theme or spacing restyles the plugin too; a whole row or card you tap is marked
 `data-fx-row`. Your own class on a control only lays it out. CI runs `node framework/cli/check-controls.mjs`.
 
+**Its own theme override** (Oct 28 2026; `framework/libs/plugintheme`): every plugin gets **Settings → Plugins →
+<plugin> → Appearance** without code of its own (the console wraps each plugin with `withPluginTheme`). The Theme
+override switch and its container hold every layout / colour / style / animation token (form, token tree, JSON, copy
+from another plugin or a theme asset, reset, preview), stored as `axf.plugin.<plugin id>.look = { on, tokens }` and
+applied as CSS variables on every root of the plugin's UI, which the console marks `data-axf-plugin="<plugin id>"`
+(pages, dialogs, window and tab-group tabs, settings tab and panels). The app's theme stays the base. Switch it from
+right-click inside the plugin, the toolbar button or Plugins ▸ All plugins ▸ <plugin> ▸ Theme override. So: keep using
+theme tokens only; a plugin never sets `--fx-*` itself (the override is the user's, applied by the framework), and a
+plugin that renders into a portal outside its roots (`document.body`) should put `data-axf-plugin` on that portal root
+too if it wants the override there.
+
 ## Security rules
 
 - Every server route of a plugin requires the console token (`AXF_TOKEN`) for **every** method, reads

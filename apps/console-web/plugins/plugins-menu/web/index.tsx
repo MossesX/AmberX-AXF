@@ -109,7 +109,7 @@ async function ladder(rt: AxfRuntime) {
   const list: LadderPlugin[] = rows.map((r) => ({
     folder: r.folder, name: r.name, enabled: r.enabled,
     icon: bundledPlugins.find((p) => p.folder === r.folder)?.library?.settingsTabs?.[0]?.icon,
-    ui: uiAction(r.folder), tab: r.tab,
+    ui: uiAction(r.folder), tab: r.tab, id: bundledPlugins.find((p) => p.folder === r.folder)?.manifest.id,
   }));
   for (const r of rows) rt.setBadge(offCounter(r.folder), r.enabled ? 0 : 1);
   const style = rt.settings.get(K.disableStyle) === 'toggle' ? 'toggle' : 'check';
@@ -586,7 +586,7 @@ export const plugin: AxfWebLibrary = {
       choice(K.onOpen, 'When it opens, show', 'last', [['last', 'The last plugin picked'], ['first', 'The first plugin'], ['self', "This browser's settings"], ['none', 'Nothing picked']]),
       choice(K.sort, 'Sort the list by', 'name', [['name', 'Name'], ['model', 'Model'], ['enabled', 'On first'], ['built', 'Newest build']]),
     ] },
-    { id: 'plugins-menu.ladder', label: 'Application menu', icon: 'menu', tab: TAB, order: 45, description: 'Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Disable.', settings: [
+    { id: 'plugins-menu.ladder', label: 'Application menu', icon: 'menu', tab: TAB, order: 45, description: 'Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Theme override · Disable.', settings: [
       choice(K.disableStyle, 'The Disable item shows', 'check', [['check', 'A check mark while the plugin is off'], ['toggle', 'Disable / Enable, no check mark']]),
     ] },
   ],
