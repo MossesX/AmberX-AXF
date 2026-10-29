@@ -213,9 +213,9 @@ public class AmberxNativePlugin extends Plugin {
     }
 
     private void doListen(PluginCall call) {
-        WatchService.appListening = true; // hands-free lets go of the microphone while the Speak button listens
+        WatchService.appMic(true); // hands-free lets go of the microphone while the Speak button listens
         getActivity().runOnUiThread(() -> {
-            if (!SpeechRecognizer.isRecognitionAvailable(getContext())) { WatchService.appListening = false; call.reject("No speech recognizer on this phone."); return; }
+            if (!SpeechRecognizer.isRecognitionAvailable(getContext())) { WatchService.appMic(false); call.reject("No speech recognizer on this phone."); return; }
             JSONObject voice = WatchService.voice(getContext());
             SpeechRecognizer rec = SpeechRecognizer.createSpeechRecognizer(getContext());
             SpeechTuning.quiet(getContext(), voice); // no tone
@@ -224,8 +224,11 @@ public class AmberxNativePlugin extends Plugin {
                 private void finish(String text) {
                     if (done) return;
                     done = true;
-                    WatchService.appListening = false;
-                    if (WatchService.running == null) SpeechTuning.loud(getContext()); // hands-free keeps it quiet
+                    WatchService.appMic(false);
+                    // Classic hands-free keeps it quiet; the silent wake mode mutes only while Google listens.
+                    if (WatchService.running == null || WatchService.wakeMode(getContext())) {
+                        getActivity().getWindow().getDecorView().postDelayed(() -> SpeechTuning.loud(getContext()), 600);
+                    }
                     call.resolve(new JSObject().put("text", text));
                     rec.destroy();
                 }
@@ -250,7 +253,7 @@ public class AmberxNativePlugin extends Plugin {
             Intent i = SpeechTuning.request(call.getString("lang", "en-US"), voice, false);
             // Give hands-free a moment to release the microphone first.
             getActivity().getWindow().getDecorView().postDelayed(() -> {
-                try { rec.startListening(i); } catch (Exception e) { WatchService.appListening = false; call.reject("The microphone is busy."); }
+                try { rec.startListening(i); } catch (Exception e) { WatchService.appMic(false); call.reject("The microphone is busy."); }
             }, 250);
         });
     }
@@ -314,7 +317,10 @@ public class AmberxNativePlugin extends Plugin {
         return new JSObject()
             .put("listening", listening)
             .put("microphone", getPermissionState("microphone") == PermissionState.GRANTED)
-            .put("overlayAllowed", DetectionOverlay.canDraw(getContext()));
+            .put("overlayAllowed", DetectionOverlay.canDraw(getContext()))
+            .put("engine", WatchService.status.optString("engine", WatchService.wakeMode(getContext()) ? "wake" : "classic"))
+            .put("phase", WatchService.status.optString("phase", ""))
+            .put("phaseDetail", WatchService.status.optString("phaseDetail", ""));
     }
 
     /** Opens Android's "Display over other apps" screen for AmberX; resolves with whether it's allowed when they return. */

@@ -63,7 +63,18 @@ final class SpeechTuning {
      * media while it speaks). Called on the main thread. Never throws (Do Not Disturb can refuse).
      */
     static synchronized void quiet(Context c, JSONObject voice) {
-        String mode = voice == null ? "silence" : voice.optString("beep", "silence");
+        quietMode(c, voice == null ? "silence" : voice.optString("beep", "silence"));
+    }
+
+    /**
+     * The silent wake mode's mute around one Google utterance (Oct 29 2026): always silences (a "Leave it on" tone
+     * setting still mutes here; "Play tone on trigger" is what lets the tone through), also media for "silence-all".
+     */
+    static void quietTrigger(Context c, JSONObject voice) {
+        quietMode(c, voice != null && "silence-all".equals(voice.optString("beep", "")) ? "silence-all" : "silence");
+    }
+
+    static synchronized void quietMode(Context c, String mode) {
         int[] want = "on".equals(mode) ? new int[0] : "silence-all".equals(mode) ? QUIET_ALL : QUIET;
         if (sameStreams(want, muted)) return;
         loud(c);
