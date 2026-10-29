@@ -1,5 +1,5 @@
 /* Dev Console additions on top of the framework's axf.css (all colors from tokens). */
-.cx-bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--fx-surface3); min-width: 160px; }
+.cx-bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--fx-surface3); min-width: calc(var(--fx-space) * 6); width: 100%; }
 .cx-bar__built { background: var(--fx-success); } .cx-bar__partial { background: var(--fx-info); } .cx-bar__placeholder { background: var(--fx-warning); } .cx-bar__planned { background: transparent; }
 .cx-list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.5); }
 .cx-item { display: flex; align-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-sm); }
@@ -238,3 +238,18 @@ html.axf-strip-page #root { height: auto; min-height: 0; display: block; }
 
 /* GizmoX interface tabs (interfaceTabs.tsx): layout only, the tab-group engine draws the tabs */
 .axp-ifx-tabs { flex: none; padding: 0 calc(var(--fx-space) * 1.5); background: var(--fx-surface); }
+
+/* ---- enterprise shell (enterprise-branding s34): page heads, cards, empty states; tokens only ---- */
+.fx-pagehead { padding-bottom: calc(var(--fx-space) * 1.5); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-pagehead .fx-eyebrow { letter-spacing: 0.08em; }
+.fx-pagehead > div:last-child.fx-row { align-items: center; }
+.cx-home__actions { justify-content: flex-end; }
+.cx-home__bar { width: 100%; vertical-align: middle; }
+.cx-home__num { white-space: nowrap; text-align: right; }
+.fx-grid > .fx-card { min-width: 0; }
+.fx-card .fx-table { table-layout: auto; }
+.cx-empty { position: relative; display: grid; justify-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 3) calc(var(--fx-space) * 2); color: var(--fx-muted); text-align: center; border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden; }
+.cx-empty p { margin: 0; max-width: 46ch; }
+.cx-empty--compact { padding: calc(var(--fx-space) * 1.5) var(--fx-space); }
+.cx-empty .fx-brand-watermark { inset-inline-end: var(--fx-space); inset-block-end: var(--fx-space); }
+.cx-empty .fx-brand-watermark svg { height: calc(var(--fx-space) * 7); width: auto; }

@@ -34,6 +34,7 @@ export function MenuBar() {
     return () => window.removeEventListener('pointerdown', close);
   }, [open]);
 
+  const menuMark = useBrandPlace('app-menu', 18);
   // Left / Right move between menus while one is open (a submenu list handles its own arrows first).
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     if (!open || !menus.length) return;
@@ -46,8 +47,9 @@ export function MenuBar() {
   return (
     <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
       <div className="fx-brand">
-        <span className="fx-brand__mark" aria-hidden="true" />
-        <span className="fx-brand__name">{rt.manifest.app.name}</span>
+        {/* the branding package names the app everywhere it shows (GizmoX for the Dev Console); the manifest name is the fallback */}
+        {menuMark?.svg ? <BrandMark slot="app-menu" height={18} /> : <span className="fx-brand__mark" aria-hidden="true" />}
+        <span className="fx-brand__name">{rt.branding()?.name || rt.manifest.app.name}</span>
       </div>
       <div className="fx-menubar__menus">
         {menus.map((m) => (
