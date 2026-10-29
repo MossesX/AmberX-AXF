@@ -178,10 +178,14 @@ jobs:
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/web-report.md; else gh issue comment "$N" --body-file /tmp/web-report.md; fi
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
+        env:
+          AXF_BUILD_PROFILE: main-framework   # self-tests read the base profile's data whatever profile Brett has saved
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
       - name: Plugin pure-part self-tests (every plugins/*/test.mts; found by glob so removing a plugin never breaks CI)
+        env:
+          AXF_BUILD_PROFILE: main-framework
         run: |
           for t in apps/console-web/plugins/[!_]*/test.mts; do [ -f "$t" ] || continue; echo "== $t"; node --experimental-strip-types "$t"; done
       - name: Library templates — generate every template for web + Python and compile them
