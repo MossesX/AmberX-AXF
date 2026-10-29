@@ -8,13 +8,19 @@
 import { useEffect, useState } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
 import { Button, Note, Section, useRuntime, type AxfWebLibrary } from '../../../axf/react';
-import { loginUrl, seenPlan } from '../../../axf/libs/hub';
+import { approvalUrl, isHub, loginUrl, seenPlan } from '../../../axf/libs/hub';
 import { hubWatcher } from '../../../axf/libs/hub/react';
 import { HUB } from '../../../hub/useHub';
 import { isNative, native, reportWebMonitor, type MonitorStatus } from '../../../native';
 import { K as VOICE } from '../../voice/web';
 import { phraseList } from '../../voice/web/core';
 import { autoApproves, watchConfig } from './core';
+
+/** The approval id of a hub approval page link (a tapped approval notification), else null. */
+export function approvalIdOf(url: string): string | null {
+  const m = /\/auth\/admin\/approvals\/([0-9a-f-]{36})\/?(?:[?#].*)?$/.exec(url);
+  return m && isHub(HUB, url) && approvalUrl(HUB, m[1]) ? m[1]! : null;
+}
 
 const ID = 'ai.amberx.amberx.monitor';
 export const K = {
@@ -120,7 +126,7 @@ function MonitorView() {
 export const library: AxfWebLibrary = {
   id: ID,
   label: 'Background monitoring',
-  version: '0.1.0',
+  version: '0.1.1',
   builtWith: { model: 'opus', builtAt: '2026-10-25' },
   dependsOn: ['ai.amberx.amberx.voice'],
   provides: ['amberx.monitor'],
@@ -154,7 +160,13 @@ export const library: AxfWebLibrary = {
       else rt.toast('Nothing is waiting.', 'info', 'Approvals');
     }, { label: 'Review the first approval' });
     // A tapped alert: its approval page on the hub (native.hubOpen accepts only the hub).
-    void native.addListener('open', ({ url }) => void native.hubOpen({ url }).catch(() => undefined)).catch(() => undefined);
+    // An approval page (…/auth/admin/approvals/<id>) opens the assistant's approvals popover when an app plugin offers
+    // one (action approvals.popover); anything else, or no popover, opens in the hub view as before.
+    void native.addListener('open', ({ url }) => {
+      const id = approvalIdOf(url);
+      if (id && rt.actions.get('approvals.popover')) { rt.dispatch(`approvals.popover:${id}`); return; }
+      void native.hubOpen({ url }).catch(() => undefined);
+    }).catch(() => undefined);
     // Settings changed while watching: send the service the new config (it restarts its loop). Same config = no call.
     let last = '';
     const sync = () => {

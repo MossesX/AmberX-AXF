@@ -16,3 +16,11 @@ Contract and parsing: `framework/libs/hub/veto.ts`. Docs: `_claude/memory/docs/v
 
 Remove: `node framework/cli/plugin-catalog.mjs app-uninstall amberx approvals`. Outside this folder only the shell's
 `VetoAlerts.java` and its seam in `src/native.ts` remain (shared shell code; inert without this plugin's settings).
+
+## Assistant title bar (Oct 28 2026)
+
+This plugin also plugs the phone's deciding path into lib-approvals (`framework/libs/approvals`), whose badge sits in
+the assistant's title bar (the AI plugin's Ask view, and the console AI assistant's chat when it runs here):
+`setApprovalsHost({ hub, frame: false, decide: decideFromPhone })` in `register`. Deny = native `vetoDeny` (fallback:
+the call's page); Approve / Decline open the approval in the signed-in hub web view. A tapped approval notification
+dispatches `approvals.popover:<id>` (the monitor's `open` listener) and the popover opens on that item.

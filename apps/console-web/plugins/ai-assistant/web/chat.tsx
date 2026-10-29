@@ -8,10 +8,11 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type Clipbo
 import { Button, Chip, Icon, Markdown, useAxfState, useRuntime } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
+import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
 import { ActivityIcon, useReportActivity } from './activity';
 import { ChatSettingsDialog } from './settings';
 import {
-  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
+  APPROVALS_BADGE_KEY, FOLDER, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
@@ -336,6 +337,9 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
               <span className="fx-small fx-muted">{activeAgent ? `${activeAgent.name} · ` : ''}{settings.model || status?.defaultProfile?.defaultModel || ''}{settings.profileId ? ` · ${settings.profileId}` : status?.defaultProfile ? ` · ${status.defaultProfile.label}` : ''}</span>
             </div>
           </div>
+          {/* axHub approvals + held calls (lib-approvals): nothing drawn while nothing waits; click = popover with
+              Approve / Decline (the hub's own page, framed: the hub allows the console's origin) or countdown + Deny. */}
+          {rt.settings.get(APPROVALS_BADGE_KEY) !== false && <ApprovalsBadge resolveHub={consoleHub} frame className="axp-ai-assistant__approvals" />}
           {live && <span className="axp-ai-assistant__livepill" title="This reply runs on its host: closing the chat only detaches, and any device can follow it."><Icon name="cloud" size={12} /> live</span>}
           {writeMode && (
             <span className="axp-ai-assistant__write" title={`${activeAgent?.name ?? 'This agent'} can propose changes to these containers. Nothing changes until you approve a card; a snapshot is taken first.`}>

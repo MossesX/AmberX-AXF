@@ -6,6 +6,16 @@ import { pluginApi, pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'ai-assistant';
 export const ID = 'ai.amberx.axf.console.ai-assistant';
+/** Setting: show axHub approvals (lib-approvals badge) in the chat's title bar. */
+export const APPROVALS_BADGE_KEY = 'ai-assistant.approvalsBadge';
+
+/** The console's hub (`/api/me` → AXF_WALL_HUB on the server); lib-approvals falls back to its default hub. */
+export async function consoleHub(): Promise<string> {
+  const r = await fetch('/api/me', { cache: 'no-store', credentials: 'same-origin' });
+  const j = (await r.json()) as { hub?: string };
+  if (typeof j.hub !== 'string' || !j.hub) throw new Error('no hub');
+  return j.hub;
+}
 
 export type {
   AgentRef, ChatContext as Ctx, ChatImage as Image, Conversation, ConversationSettings as ConvSettings, ConversationSummary as ConvSummary,
