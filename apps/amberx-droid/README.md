@@ -36,7 +36,7 @@ signed in). Hub calls from the hosted page go straight from the WebView; only a 
 
 | Path | What |
 | --- | --- |
-| `src/plugins/voice` | Voice control: commands (`web/core.ts`), mic, spoken replies, wake event |
+| `src/plugins/voice` | Voice control: commands (`web/core.ts`), mic, spoken replies, wake event; silent wake rules (`web/wake.ts` = `WakeListener` / `WakeRules.java`, cases `web/wake-cases.json`, see `_claude/memory/docs/amberx-voice-wake.md`) |
 | `src/plugins/monitor` | Background monitoring: watch settings, auto-approval, status |
 | console plugins targeting `amberx-droid` | Loaded unchanged from `apps/console-web/plugins` (AI assistant, Agent manager: same chats, agents, live sessions); `@console/*` → `src/console/` bridge, server calls via `/api/console/plugins/<folder>/` (hub admins, console token on the server) |
 | `src/plugins/notes`, `tasks`, `dictation`, `web`, `ai` | Notes, lists, tasks, dictation, web clips, AI connection (see above) |

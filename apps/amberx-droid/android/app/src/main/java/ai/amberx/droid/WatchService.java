@@ -189,7 +189,11 @@ public class WatchService extends Service {
         work.removeCallbacksAndMessages(null);
         if (watching) work.post(this::check);
         else setStatus(listeningOnly());
+        // Pending main-thread work goes (a one-shot's start, its guard, a stream restore): end any one-shot first and
+        // put back muted streams, so nothing is left stuck or silent. The classic loop mutes again on its next turn.
+        cancelOneShot();
         main.removeCallbacksAndMessages(null);
+        SpeechTuning.loud(this);
         if (wantMic) main.post(this::listenLoop); else stopListening();
         main.post(this::syncOverlay);
         return START_STICKY;

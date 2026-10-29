@@ -22,6 +22,7 @@ import {
   navigationCommands, normalize, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
   type CommandGroup, type Effective, type ManagedCommand, type MyCommand, type VoiceCommand,
 } from './core';
+import { FACTORY_PHRASES, SUGGESTED_PHRASES, addPhrase, phrasesText, removePhrase } from './wake';
 
 export const K = {
   wake: 'amberx.voice.wake',
@@ -302,6 +303,9 @@ function HandsFree() {
         <Switch label="Listen hands-free" checked={cfg.handsFree} onChange={(x) => rt.settings.set(K.handsFree, x)} hint="On screen and in the background (Android shows a notification while it listens)." />
         <Switch label="Always armed" checked={cfg.alwaysArmed} onChange={(x) => rt.settings.set(K.alwaysArmed, x)} hint="Act on everything heard, no wake phrase." />
         {isNative() && <Switch label="Detection overlay" checked={cfg.overlay} onChange={(x) => rt.settings.set(K.overlay, x)} hint="Level, dB, what was heard and quick settings, floating over other apps." />}
+        {isNative() && <SelectField label="Hands-free mode" value={cfg.mode} onChange={(x) => rt.settings.set(K.mode, x)} options={[{ value: 'wake', label: 'Silent wake (offline, no tone)' }, { value: 'classic', label: 'Classic (Google all the time)' }]} hint="Silent wake listens offline for the wake phrase, then Google hears the command once." />}
+        {isNative() && cfg.mode === 'wake' && <SelectField label="Wake sensitivity" value={cfg.sensitivity} onChange={(x) => rt.settings.set(K.sensitivity, x)} options={[{ value: 'low', label: 'Low' }, { value: 'normal', label: 'Normal' }, { value: 'high', label: 'High' }]} />}
+        {isNative() && cfg.mode === 'wake' && <Switch label="Play tone on trigger" checked={cfg.triggerTone} onChange={(x) => rt.settings.set(K.triggerTone, x)} hint="Off: muted while it hears the command." />}
         {isNative() && <SelectField label="Listening tone" value={cfg.beep} onChange={(x) => rt.settings.set(K.beep, x)} options={[{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }]} hint="Still hear a tone? Pick “also media”." />}
         {isNative() && <Switch label="Best recognition (online)" checked={cfg.online} onChange={(x) => rt.settings.set(K.online, x)} hint="Google's online model hears far better; off = on-device, works offline." />}
         <Switch label="Show swear words" checked={cfg.swears} onChange={(x) => rt.settings.set(K.swears, x)} hint="Write words as you say them, no f***." />
@@ -313,6 +317,56 @@ function HandsFree() {
       {isNative() && cfg.handsFree && cfg.mode === 'wake' && v.status?.phase === 'downloading' && <Note tone="info">Getting the offline wake model once (about 40 MB) {v.status.phaseDetail}. Hands-free starts by itself when it's done.</Note>}
       {isNative() && cfg.handsFree && cfg.mode === 'wake' && v.status?.phase === 'no-model' && <Note tone="warning">The offline wake model isn't ready{v.status.phaseDetail ? ` (${v.status.phaseDetail})` : ''}. AmberX tries again in a few minutes; switch Hands-free mode to Classic to listen without it (with the tone).</Note>}
     </Container>
+  );
+}
+
+/**
+ * The trigger phrase list (Oct 29 2026, "like ActiveX"): one dense column, a remove button per phrase, add one,
+ * suggested phrases one tap away, and Factory phrases to put the defaults back. Saved as the wake setting's text.
+ */
+function PhraseListPanel() {
+  const rt = useRuntime();
+  const raw = useSetting(rt, K.wake);
+  const list = phraseList(raw);
+  const [draft, setDraft] = useState('');
+  const [err, setErr] = useState<string | null>(null);
+  const save = (next: string[]) => rt.settings.set(K.wake, phrasesText(next));
+  const add = (p: string) => {
+    const r = addPhrase(list, p);
+    setErr(r.error);
+    if (!r.error) { save(r.list); setDraft(''); }
+  };
+  const factory = list.join('|') === FACTORY_PHRASES.join('|');
+  const offered = SUGGESTED_PHRASES.filter((p) => !list.includes(p));
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted">Say one of these, then the command. The silent wake listener hears only these phrases, so short or common words trigger by mistake.</p>
+      {list.length === 0
+        ? <Empty icon="mic" text="No trigger phrases: hands-free listens only when Always armed is on." />
+        : (
+          <ul className="axp-voice-phrases" aria-label="Trigger phrases">
+            {list.map((p) => (
+              <li key={p}>
+                <span>“{p}”</span>
+                <IconButton icon="trash" label={`Remove ${p}`} onClick={() => { setErr(null); save(removePhrase(list, p)); }} />
+              </li>
+            ))}
+          </ul>
+        )}
+      <div className="fx-row fx-row--wrap axp-voice-add">
+        <TextField label="Add a phrase" value={draft} onChange={setDraft} placeholder="hey amberx" />
+        <Button icon="plus" onClick={() => add(draft)}>Add</Button>
+      </div>
+      {err && <Note tone="warning">{err}</Note>}
+      {offered.length > 0 && (
+        <div className="fx-row fx-row--wrap">
+          {offered.map((p) => <Button key={p} size="sm" tone="quiet" icon="plus" onClick={() => add(p)}>{p}</Button>)}
+        </div>
+      )}
+      <div>
+        <Button size="sm" tone="quiet" icon="undo" disabled={factory} onClick={() => { setErr(null); save(FACTORY_PHRASES); }}>Factory phrases</Button>
+      </div>
+    </div>
   );
 }
 
@@ -576,8 +630,8 @@ function VoiceCommandsView() {
 export const library: AxfWebLibrary = {
   id: ID,
   label: 'Voice control',
-  version: '0.2.0',
-  builtWith: { model: 'opus', builtAt: '2026-10-27' },
+  version: '0.3.0',
+  builtWith: { model: 'opus', builtAt: '2026-10-29' },
   provides: ['amberx.voice'],
   views: { voice: { title: 'Voice', icon: 'mic', keywords: ['voice', 'speak', 'talk', 'command', 'wake'], render: () => <VoiceView /> },
     'voice-commands': { title: 'Voice commands', icon: 'sliders', keywords: ['voice', 'commands', 'phrases', 'say'], render: () => <VoiceCommandsView /> },
@@ -588,8 +642,9 @@ export const library: AxfWebLibrary = {
     {
       id: 'amberx.voice', label: 'Voice control', icon: 'mic', tab: 'voice', settings: [
         { key: K.handsFree, label: 'Listen hands-free', kind: 'toggle', default: true, description: 'Keep listening for the wake phrase on screen and in the background, without pressing Speak.' },
-        { key: K.wake, label: 'Wake phrases', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated. Say one, then the command.' },
+        { key: K.wake, label: 'Wake phrases (typed)', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated, the same list as Trigger phrases above. Say one, then the command.' },
         { key: K.mode, label: 'Hands-free mode', kind: 'choice', default: 'wake', options: [{ value: 'wake', label: 'Silent wake (offline, no tone)' }, { value: 'classic', label: 'Classic (Google all the time)' }], description: 'Android. Silent wake listens offline for the wake phrase (like ActiveX, no tone) and only then lets Google hear the command. Classic keeps Google listening the whole time (restarts every few seconds, which can beep).' },
+        { key: K.sensitivity, label: 'Wake sensitivity', kind: 'choice', default: 'normal', options: [{ value: 'low', label: 'Low (whole phrase, said clearly)' }, { value: 'normal', label: 'Normal' }, { value: 'high', label: 'High (first hint of the phrase)' }], description: 'Silent wake mode. Low waits for the whole phrase, loud enough: fewer false triggers. High triggers as soon as it starts hearing it, even quietly.' },
         { key: K.triggerTone, label: 'Play tone on trigger', kind: 'toggle', default: false, description: 'Silent wake mode: let Android\'s listening tone play when a wake phrase starts the command recognizer. Off = notification and system sounds are muted only while it hears the command, then put back.' },
         { key: K.alwaysArmed, label: 'Always armed', kind: 'toggle', default: false, description: 'Act on everything heard, with no wake phrase. Background talk can trigger commands.' },
         { key: K.overlay, label: 'Detection overlay', kind: 'toggle', default: true, description: 'Android: a floating window with the input level, dB, what was heard and quick settings.' },
@@ -603,6 +658,9 @@ export const library: AxfWebLibrary = {
         { key: K.commands, label: 'Your own commands (typed)', kind: 'text', default: '', description: 'One per line: phrase, other phrase = action | reply. Example: open alerts = nav:monitor | Here you go. The Voice commands page has a form for these.' },
       ],
     },
+  ],
+  settingsPanels: [
+    { id: 'amberx.voice.phrases', tab: 'voice', title: 'Trigger phrases', icon: 'mic', order: 0, render: () => <PhraseListPanel /> },
   ],
   contextMenu: [{ id: 'amberx.voice', items: [{ id: 'voice.listen', label: 'Speak a command', icon: 'mic', action: 'voice.listen' }] }],
   appMenu: [{ id: 'amberx.voice', menu: 'axhub', items: [{ id: 'voice.listen', label: 'Speak a command', icon: 'mic', action: 'voice.listen' }, { id: 'voice.commands', label: 'Voice commands', icon: 'sliders', action: 'voice.commands' }] }],
