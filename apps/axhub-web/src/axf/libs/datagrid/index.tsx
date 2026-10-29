@@ -12,7 +12,7 @@ import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
-import { applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, useDataset, type DatasetField } from './datasets';
+import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
 import './datagrid.css';
 
@@ -70,6 +70,11 @@ export interface DataGridProps<R> {
   onToggleGroup?: (id: string) => void;
   onGroupClick?: (id: string) => void;
   rowCtx?: (r: R) => { target: string; payload?: string };
+  /**
+   * What the row stands for (grid-hook@1, datasets.ts → row hooks): `{ kind, id }`, e.g. `{ kind: 'pending', id }`.
+   * Plugins' row hooks for that kind draw a button on the row and an item in its right-click menu.
+   */
+  rowRef?: (r: R) => RowRef | null;
   compact?: boolean;
   /** drag: what moved where (row / group, before / after / inside a group) */
   onMove?: (item: { kind: 'row' | 'group'; id: string }, target: { kind: 'row' | 'group'; id: string }, pos: DropPos) => void;
@@ -104,7 +109,9 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const zone = p.zone ?? `axf-grid:${p.id}`;
   const drag = config.drag && p.onMove ? config.drag : false;
   const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
-  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} calc(var(--fx-space) * 4)` } as CSSProperties;
+  useDatasetsRevision(); // row hooks registered later redraw the grid
+  const tail = p.rowRef && anyRowHooks() ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
+  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}` } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
   const all = useMemo(() => flatRows(p.groups), [p.groups]);
@@ -193,7 +200,10 @@ export function DataGrid<R>(p: DataGridProps<R>) {
 function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {
   const id = p.rowId(r);
   const open = config.expand && !!p.expanded?.includes(id);
-  const ctx = p.rowCtx?.(r);
+  const ref = p.rowRef?.(r) ?? null;
+  const ctx = p.rowCtx?.(r) ?? (ref ? { target: ROW_TARGET, payload: `${ref.kind}:${ref.id}` } : undefined);
+  if (ref && ctx) noteDrawnRef(ctx.target, ctx.payload ?? '', ref, p.dataset === false ? undefined : p.dataset ?? p.id);
+  const expand = config.expand && p.renderDetail ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : null;
   return (
     <>
       <div className={`axf-grid-row ${p.selected === id ? 'is-active' : ''} ${p.multi?.includes(id) ? 'is-multi' : ''} axf-grid-edge--${p.rowTone?.(r) ?? 'muted'}`} role="row" aria-selected={p.selected === id}
@@ -201,11 +211,25 @@ function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r
         {...dragProps} onClick={(e) => p.onRowClick?.(r, e)} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
         <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>
         {cols.map((c) => <span key={c.id} role="gridcell" className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''}`}>{c.render(r)}</span>)}
-        {config.expand && p.renderDetail ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : <span />}
+        {ref ? <span className="axf-grid-tail"><RowHookButtons rowRef={ref} dataset={p.dataset === false ? undefined : p.dataset ?? p.id} />{expand}</span> : expand ?? <span />}
       </div>
       {open && p.renderDetail && <div className="axf-grid-detail" role="row">{p.renderDetail(r)}</div>}
     </>
   );
+}
+
+/** Context target of DataGrid rows that give a `rowRef` and no `rowCtx` (payload `<kind>:<id>`). */
+export const ROW_TARGET = 'axf-grid-row';
+
+/**
+ * The row hooks' buttons for one row (grid-hook@1). DataGrid draws them for every row with a `rowRef`; other lists and
+ * cards draw this component themselves. Nothing registered = nothing drawn.
+ */
+export function RowHookButtons({ rowRef, dataset, size }: { rowRef: RowRef | null | undefined; dataset?: string; size?: number }) {
+  useDatasetsRevision();
+  const hs = rowHooks(rowRef, { buttons: true });
+  if (!rowRef || !hs.length) return null;
+  return <span className="axf-grid-hooks">{hs.map((h) => <IconButton key={h.id} icon={h.icon ?? 'link'} size={size} label={`${h.label}: ${rowRef.id}`} title={h.label} onClick={(e) => { e.stopPropagation(); h.run(rowRef, { dataset }); }} />)}</span>;
 }
 
 /** header-menu actions of the grids on screen (one action, `axf.grid.do:<grid>:<what>[:<col>]`) */
@@ -222,5 +246,15 @@ export const library: AxfWebLibrary = {
       const g = grids.get(grid); if (!g) return;
       if (what === 'col') g.col(col); else if (what === 'all') g.all(); else if (what === 'choose') g.choose(); else if (what === 'sort') g.sort(col); else if (what === 'unsort') g.sort(null);
     }, { label: 'Grid columns', params: true } as never);
+    // row hooks (grid-hook@1): right-click / long-press on any row whose ref is known lists the hooks for its kind
+    registerRowRefTarget(ROW_TARGET, (payload) => { const i = payload.indexOf(':'); return i > 0 ? { kind: payload.slice(0, i), id: payload.slice(i + 1) } : null; });
+    rt.contextExtras.set('*:axf.row-hooks', (target, payload) => {
+      const ref = rowRefForContext(target, payload); if (!ref) return [];
+      return rowHooks(ref).map((h) => ({ id: `row-hook-${h.id}`, label: h.label, icon: h.icon ?? 'link', action: `axf.grid.hook:${encodeURIComponent(h.id)}:${encodeURIComponent(ref.kind)}:${encodeURIComponent(ref.id)}:${encodeURIComponent(ref.dataset ?? '')}` }));
+    });
+    rt.actions.register('axf.grid.hook', ([hook = '', kind = '', id = '', dataset = '']) => {
+      const d = (v: string) => { try { return decodeURIComponent(v); } catch { return v; } };
+      runRowHook(d(hook), { kind: d(kind), id: d(id) }, d(dataset) ? { dataset: d(dataset) } : {});
+    }, { label: 'Row hook', params: true } as never);
   },
 };

@@ -11,6 +11,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { RowHookButtons } from '@console/axf/libs/datagrid';
 import { buildRows, counts, formatWhen, statusTone, type ChangeSummary, type FeatureLike, type Row, type Show, type Sort } from './core';
 import { appMenu } from './menu';
 
@@ -113,22 +114,23 @@ function GridView() {
         {data && !rows.length ? <p className="fx-empty">Nothing matches.</p> : null}
         {rows.length ? (
           <div className="fx-tablewrap"><table className="fx-table">
-            <thead><tr><th aria-label="Expand" /><th>Name</th><th>Date and time</th><th>Type</th><th>Status</th><th>Model</th></tr></thead>
+            <thead><tr><th aria-label="Expand" /><th>Name</th><th>Date and time</th><th>Type</th><th>Status</th><th>Model</th><th aria-label="Row actions" /></tr></thead>
             <tbody>
               {rows.slice(0, limit).map((r) => {
                 const isOpen = open.has(r.key);
                 const f = r.source === 'feature' ? byFeature.get(r.refId) : undefined;
                 return (
                   <Fragment key={r.key}>
-                    <tr data-fx-row onClick={() => toggle(r.key)} aria-expanded={isOpen}>
+                    <tr data-fx-row onClick={() => toggle(r.key)} aria-expanded={isOpen} data-fx-ctx-target={r.source === 'change' ? 'axf-change-entry' : 'axf-plan-feature'} data-fx-ctx-payload={r.refId}>
                       <td><IconButton icon={isOpen ? 'chevron-down' : 'chevron-right'} label={isOpen ? 'Collapse' : 'Expand'} onClick={(e) => { e.stopPropagation(); toggle(r.key); }} /></td>
                       <td><strong>{r.title}</strong></td>
                       <td className="fx-small" style={{ whiteSpace: 'nowrap' }}>{formatWhen(r.at)}</td>
                       <td><Chip>{r.source === 'change' ? `change · ${r.kind}` : r.kind}</Chip></td>
                       <td><Chip tone={statusTone(r.status)}>{r.status}</Chip></td>
                       <td>{r.model ? <ModelBadge model={r.model} /> : <span className="fx-muted fx-small">—</span>}</td>
+                      <td><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></td>
                     </tr>
-                    {isOpen ? <tr><td /><td colSpan={5}>{r.source === 'change' ? <ChangeDetail row={r} /> : f ? <FeatureDetail f={f} row={r} /> : null}</td></tr> : null}
+                    {isOpen ? <tr><td /><td colSpan={6}>{r.source === 'change' ? <ChangeDetail row={r} /> : f ? <FeatureDetail f={f} row={r} /> : null}</td></tr> : null}
                   </Fragment>
                 );
               })}

@@ -1,11 +1,11 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, Switch, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, Slot, Switch, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
-import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { DataGrid, type GridColumn, type GridGroup, type GridSort, RowHookButtons, registerRowRefTarget } from '@console/axf/libs/datagrid';
 
 /* ---------------- time ---------------- */
 
@@ -400,7 +400,7 @@ function SessionRequests({ row, hidden, setHidden }: { row: SessionRow; hidden: 
         hidden={hidden} onToggleColumn={(c, show) => setHidden(toggleIn(hidden, c, show))} onShowAll={() => setHidden([])}
         sort={sort} onSort={(c) => setSort(sortFor(sort, c))}
         expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))}
-        rowCtx={(i) => ({ target: 'axf-change-entry', payload: i.id })}
+        rowCtx={(i) => ({ target: 'axf-change-entry', payload: i.id })} rowRef={(i) => ({ kind: 'change', id: i.id })}
         renderDetail={(i) => (
           <div className="axp-build-manager__subdetail">
             {i.asked && <p className="fx-small"><strong>Asked:</strong> {i.asked}</p>}
@@ -623,6 +623,11 @@ function CleanUp({ rows, onClose }: { rows: Row[]; onClose: () => void }) {
   );
 }
 
+// grid-hook@1: a build row's right-click finds the row hooks for its source (pending item, build-queue step, plan feature);
+// a change-log entry's row the same way (kind change)
+registerRowRefTarget('axf-build-item', (key) => { const i = key.indexOf(':'); return i > 0 ? { kind: key.slice(0, i), id: key.slice(i + 1) } : null; });
+registerRowRefTarget('axf-change-entry', (id) => (id ? { kind: 'change', id } : null));
+
 function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; onToggle: () => void; canTick: boolean }) {
   const rt = useRuntime();
   const s = useStore();
@@ -674,6 +679,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           {row.features?.length ? <p className="fx-small fx-muted axp-build-manager__none">Plan features in this step: {row.features.filter((f) => f.status !== 'built').length} to build of {row.features.length}.</p> : null}
           <div className="axp-build-manager__actions">
             <Button size="sm" tone="neutral" icon="arrow-right" onClick={go}>Open in {row.source === 'pending' ? 'Pending builds' : row.source === 'queue' ? 'Build queue' : 'Plan'}</Button>
+            <RowHookButtons rowRef={{ kind: row.source, id: row.id }} />
             {row.fable && rt.actions.get('fable-rebuilds.open') && <Button size="sm" tone="neutral" icon="sparkles" onClick={() => rt.dispatch(`fable-rebuilds.open:${encodeURIComponent(row.id)}`)}>Fable rebuild</Button>}
           </div>
           <TakeOffRow row={row} />
@@ -763,6 +769,7 @@ export function BuildManagerView() {
         <div className="fx-row fx-row--wrap">
           <Button icon="check-circle" onClick={() => setCleaning(!cleaning)} title="Take off builds that are already built or removed">Clean up{gone.length ? ` (${gone.length})` : ''}</Button>
           <Button icon="refresh" onClick={() => { void loadList(); void loadLive(); void loadChanges(true); }}>Refresh</Button>
+          <Slot name="builds.toolbar" props={{ page: 'build-manager' }} />
         </div>
       </header>
 

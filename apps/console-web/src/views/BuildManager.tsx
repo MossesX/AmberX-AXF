@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
+import { Button, Chip, Container, Icon, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
 import * as core from '../axf/plan/build-queue-core.mjs';
 import type { Proposal, QFeature, QueueState, StepView } from '../axf/plan/build-queue-core.mjs';
 import { ModelChip, applyLocalStatuses, loadPlanStore, planFeatures, usePlan } from './Plan';
 import { formatMinutes } from '../axf/plan/pending-core.mjs';
+import { RowHookButtons, registerRowRefTarget } from '../axf/libs/datagrid';
+
+// grid-hook@1: plugins' row hooks for build-queue steps (button + right-click on the step)
+registerRowRefTarget('axf-queue-step', (id) => (id ? { kind: 'queue', id } : null));
 import pricing from '../axf/schemas/model-pricing.json';
 
 /*
@@ -189,6 +193,7 @@ export function BuildManager() {
           <Button tone="primary" icon="shuffle" disabled={busy} onClick={() => rt.openDialog('build-reprocess')}>Reprocess</Button>
           <Button icon="refresh" disabled={busy} onClick={() => run({ kind: 'sync' }).then(() => log('synced with the feature tracker', 'ok'))}>Sync</Button>
           <Button icon="layers" onClick={() => rt.navigate('plan')}>Feature tracker</Button>
+          <Slot name="builds.toolbar" props={{ page: 'build' }} />
         </div>
       </header>
 
@@ -268,7 +273,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
   const rt = useRuntime();
   const builtFeatures = s.features.filter((f) => f.status === 'built').length;
   return (
-    <div className={`bm-step is-${s.state} ${s.violations.length ? 'has-violation' : ''}`} draggable={draggable} onDragStart={(e) => { e.dataTransfer.effectAllowed = 'move'; onDragStart?.(); }} onDragEnd={onDragEnd}>
+    <div className={`bm-step is-${s.state} ${s.violations.length ? 'has-violation' : ''}`} data-fx-ctx-target="axf-queue-step" data-fx-ctx-payload={s.id} draggable={draggable} onDragStart={(e) => { e.dataTransfer.effectAllowed = 'move'; onDragStart?.(); }} onDragEnd={onDragEnd}>
       <div className="bm-step__head">
         {draggable ? <span className="bm-grip" title="Drag to reorder"><Icon name="menu" size={14} /></span> : <span className="bm-grip is-fixed"><Icon name="lock" size={12} /></span>}
         <span className="bm-pos">{s.position}</span>
@@ -283,6 +288,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
         {!s.ready && s.state !== 'done' && s.state !== 'rework' && <span title={`Waits on ${s.deps.filter((d) => !d.done).map((d) => d.title).join(', ')}`}><Icon name="lock" size={14} /></span>}
         {(s.violations.length > 0 || s.rework) && <span className="pl-warn" title={[...s.violations, ...(s.rework?.reasons ?? [])].join('\n')}><Icon name="alert" size={14} /></span>}
         <span className="bm-actions">
+          <RowHookButtons rowRef={{ kind: 'queue', id: s.id }} />
           {onMove && <><button className="fx-iconbtn" aria-label="Move up" onClick={() => onMove(-1)}><Icon name="chevron-up" size={14} /></button><button className="fx-iconbtn" aria-label="Move down" onClick={() => onMove(1)}><Icon name="chevron-down" size={14} /></button></>}
         </span>
       </div>

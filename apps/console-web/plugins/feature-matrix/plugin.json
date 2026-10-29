@@ -1,0 +1,48 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.feature-matrix",
+  "name": "Feature matrix",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every build gets a feature matrix (feature-matrix@1): grouped items, each with its minutes, model (Fable / Opus) and why; tick = keep, untick = skip; items can be added any time and are never deleted. All matrices are one dataset, shown as a grid of expandable rows (row = build: profile, date added, time cost of the kept items, kept / skipped, needs apply, last applied). Editing lights Apply, which pushes the totals, skips and estimates to every table the build lives in (orchestrator, pending list, build queue, build manager / change log, plan) through the framework's Apply engine. Every builds grid gets a row button and a right-click 'Feature matrix' (lib-datagrid row hooks). Files: _claude/builds/[profiles/<id>/]matrices.json, mirrored to the plugin data folder.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:feature-matrix",
+    "settings-tab:feature-matrix"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "axf.changes@1"
+  ],
+  "banner": false,
+  "tabable": {
+    "view": "feature-matrix",
+    "label": "Feature matrix",
+    "icon": "check-circle"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/feature-matrix",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "_claude/memory/docs/feature-matrix.md",
+      "_claude/memory/docs/rebuilds/LOG.md",
+      "_claude/memory/docs/rebuilds/feature-matrix-plugin.md"
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-29"
+  },
+  "opens": "main"
+}

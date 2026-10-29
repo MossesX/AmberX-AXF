@@ -1,0 +1,14 @@
+/* Feature matrix plugin: layout only (tokens; controls keep the framework's look). */
+.axp-feature-matrix__bar { gap: var(--fx-space); align-items: center; }
+.axp-feature-matrix__title { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); align-items: baseline; min-width: 0; overflow-wrap: anywhere; }
+.axp-feature-matrix__missing { display: flex; flex-wrap: wrap; gap: var(--fx-space); align-items: center; }
+.axp-feature-matrix__matrix { padding-block: var(--fx-space); min-width: 0; }
+.axp-feature-matrix__totals { display: flex; flex-wrap: wrap; gap: var(--fx-space) calc(var(--fx-space) * 2); align-items: center; }
+.axp-feature-matrix__totals > span { display: inline-flex; gap: calc(var(--fx-space) / 2); align-items: center; }
+.axp-feature-matrix__items { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); }
+.axp-feature-matrix__item { display: flex; flex-wrap: wrap; gap: var(--fx-space); align-items: flex-start; justify-content: space-between; min-width: 0; }
+.axp-feature-matrix__item > :first-child { flex: 1 1 calc(var(--fx-space) * 30); min-width: 0; overflow-wrap: anywhere; }
+.axp-feature-matrix__item.is-skip .axp-feature-matrix__name { text-decoration: line-through; opacity: var(--fx-opacity-muted); }
+.axp-feature-matrix__meta { display: inline-flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); align-items: center; flex: 0 0 auto; }
+.axp-feature-matrix__two { display: grid; gap: var(--fx-space); grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 14), 1fr)); }
+.axp-feature-matrix__changes { margin: 0; padding-inline-start: calc(var(--fx-space) * 2); max-height: calc(var(--fx-space) * 40); overflow: auto; overflow-wrap: anywhere; }

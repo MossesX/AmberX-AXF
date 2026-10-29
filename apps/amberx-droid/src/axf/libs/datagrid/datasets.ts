@@ -144,3 +144,66 @@ export function useDataset<R>(info: { id: string; label: string; fields: Dataset
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => (info.id ? applyDataset(info.id, info.rows, { ...info, mounted: 1 }) : (info.rows as R[])), [info.id, info.rows, r]);
 }
+
+// ---------------------------------------------------------------- row hooks (grid-hook@1, Oct 29 2026)
+/**
+ * Row hooks: a plugin adds an action to every row that stands for a given kind of entity (a build in the orchestrator,
+ * a pending item, a build-queue step, a plan feature, a change-log entry…) without the grid knowing which plugins
+ * exist, and the grid never names the plugin. The grid says what a row *is* (`rowRef(r) → { kind, id }`; `DataGrid`
+ * takes it as a prop), the plugin says which kinds it serves. The hook shows as a small button on the row (when
+ * `button` allows) and as an item in the row's right-click / long-press menu.
+ *
+ * - `registerRowHook({ id, owner, label, icon?, kinds?, button?, order?, run })` → unregister; `kinds` left out = every kind.
+ * - Views that aren't a `DataGrid` draw `<RowHookButtons rowRef=… />` (index.tsx) and map their context-menu target to a
+ *   ref with `registerRowRefTarget(target, payload → ref)`, so right-click finds the hooks too.
+ * - Forward-compatible with share-search's grid-attach@1 (a registry of grids): hooks attach to entity kinds, a grid
+ *   registry can add `datasets: [...]` matching later without changing this shape (the `dataset` is passed to `run`).
+ */
+export interface RowRef { kind: string; id: string }
+export interface RowHook {
+  id: string;
+  owner: string;
+  label: string;
+  icon?: string;
+  /** entity kinds served (e.g. orchestrator, pending, queue, plan, change); left out = every kind */
+  kinds?: string[];
+  /** draw the row button (true by default; a function is read on every render, e.g. from a setting) */
+  button?: boolean | (() => boolean);
+  order?: number;
+  run: (ref: RowRef, ctx: { dataset?: string }) => void;
+}
+const hooks = new Map<string, RowHook>();
+const refTargets = new Map<string, (payload: string) => RowRef | null>();
+/** context target + payload → ref, as the grids on screen last drew them */
+const drawnRefs = new Map<string, RowRef & { dataset?: string }>();
+const normRowRef = (r: RowRef | null | undefined): RowRef | null => (r && typeof r.kind === 'string' && r.kind && typeof r.id === 'string' && r.id ? { kind: r.kind, id: r.id } : null);
+
+export function registerRowHook(h: RowHook): () => void {
+  hooks.set(h.id, h); emit();
+  return () => { if (hooks.get(h.id) === h) { hooks.delete(h.id); emit(); } };
+}
+export function clearOwnerRowHooks(owner: string) { let hit = false; for (const [id, h] of hooks) if (h.owner === owner) { hooks.delete(id); hit = true; } if (hit) emit(); }
+/** Hooks serving a row (ordered); `buttons: true` keeps only the ones that draw a button. */
+export function rowHooks(ref: RowRef | null | undefined, opts: { buttons?: boolean } = {}): RowHook[] {
+  const r = normRowRef(ref); if (!r) return [];
+  return [...hooks.values()]
+    .filter((h) => !h.kinds || h.kinds.includes(r.kind))
+    .filter((h) => !opts.buttons || (typeof h.button === 'function' ? h.button() : h.button !== false))
+    .sort((a, b) => (a.order ?? 50) - (b.order ?? 50) || a.id.localeCompare(b.id));
+}
+export const anyRowHooks = () => hooks.size > 0;
+export function runRowHook(id: string, ref: RowRef, ctx: { dataset?: string } = {}) { const h = hooks.get(id); const r = normRowRef(ref); if (h && r) h.run(r, ctx); }
+/** A view's context-menu target → the ref of the row it was opened on (views that aren't a DataGrid). */
+export function registerRowRefTarget(target: string, toRef: (payload: string) => RowRef | null): () => void {
+  refTargets.set(target, toRef);
+  return () => { if (refTargets.get(target) === toRef) refTargets.delete(target); };
+}
+/** DataGrid records each row it draws with a context target, so right-click on it finds the row's ref. */
+export function noteDrawnRef(target: string, payload: string, ref: RowRef, dataset?: string) { drawnRefs.set(`${target}\u0000${payload}`, { ...ref, ...(dataset ? { dataset } : {}) }); if (drawnRefs.size > 5000) drawnRefs.delete(drawnRefs.keys().next().value as string); }
+/** The ref behind a context menu (target + payload), or null. */
+export function rowRefForContext(target?: string, payload?: string): (RowRef & { dataset?: string }) | null {
+  if (!target) return null;
+  const drawn = drawnRefs.get(`${target}\u0000${payload ?? ''}`); if (drawn) return drawn;
+  const f = refTargets.get(target); if (!f) return null;
+  try { return normRowRef(f(payload ?? '')); } catch { return null; }
+}
