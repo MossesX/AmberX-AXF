@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T07:08:32.672Z",
+ "updatedAt": "2026-10-29T07:38:54.593Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4666,15 +4666,15 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T07:08:32.671Z",
-   "builtAt": "",
+   "updatedAt": "2026-10-29T07:38:54.593Z",
+   "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
      "text": "Made from every unfinished Refactor build on Brett's stop order (15:26 EDT). Matrix: matrices.json → refactor-all.",
@@ -5858,9 +5858,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T07:38:54.255Z",
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
     },
     {
      "id": "s63",
@@ -5875,9 +5875,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T07:38:54.329Z",
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
     },
     {
      "id": "s64",
@@ -5892,9 +5892,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T07:38:54.398Z",
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
     },
     {
      "id": "s65",
@@ -5909,9 +5909,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T07:38:54.469Z",
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
     },
     {
      "id": "s66",
@@ -5926,9 +5926,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T07:38:54.529Z",
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
     },
     {
      "id": "s67",
@@ -5943,9 +5943,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T07:38:54.592Z",
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
     },
     {
      "id": "s71",
