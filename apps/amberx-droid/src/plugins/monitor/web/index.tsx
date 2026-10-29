@@ -103,7 +103,7 @@ function MonitorView() {
           </p>
         </div>
         <div className="fx-row fx-row--wrap">
-          {on ? <Button icon="close" onClick={() => void stop(rt)}>Stop</Button> : <Button tone="primary" icon="eye" onClick={() => void start(rt)}>Start watching</Button>}
+          {on ? <Button icon="pause" onClick={() => void stop(rt)}>Stop watching</Button> : <Button tone="primary" icon="eye" onClick={() => void start(rt)}>Start watching</Button>}
           <Button icon="external" onClick={() => void native.hubOpen({ url: loginUrl(HUB) })}>Sign in to axHub</Button>
         </div>
       </header>
@@ -131,7 +131,7 @@ export const library: AxfWebLibrary = {
   dependsOn: ['ai.amberx.amberx.voice'],
   provides: ['amberx.monitor'],
   views: { monitor: { title: 'Monitor', icon: 'eye', keywords: ['monitor', 'watch', 'background', 'alerts', 'auto approve'], render: () => <MonitorView /> } },
-  nav: { label: 'Monitor', items: [{ id: 'monitor', label: 'Monitor', icon: 'eye', view: 'monitor' }] },
+  nav: { label: 'Work', items: [{ id: 'monitor', label: 'Monitor', icon: 'eye', view: 'monitor' }] },
   settingsTabs: [{ id: 'monitor', label: 'Monitoring', icon: 'eye', order: 21, parent: 'plugins' }],
   settings: [
     {

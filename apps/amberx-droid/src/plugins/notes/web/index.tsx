@@ -52,7 +52,7 @@ export const library: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-27' },
   provides: ['amberx.notes'],
   views: { notes: { title: 'Notes', icon: 'file', keywords: ['notes', 'note', 'todo', 'task', 'list', 'inbox', 'memo'], render: () => <NotesView /> } },
-  nav: { label: 'Notes', items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }] },
+  nav: { label: 'Work', items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }] },
   dialogs: {
     'notes.item': { title: 'Note', icon: 'edit', searchable: false, render: (p, close) => <ItemEditor id={str(p.id)} close={close} /> },
     'notes.lists': { title: 'Manage lists', icon: 'folder', render: (p, close) => <ListsManager start={str(p.id) || undefined} close={close} /> },

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Icon, ModelBadge, useRuntime } from '@console/axf/react';
 import { pendingPost } from '@console/api';
 import { call, getData, onData, park, refresh, setFocus, takeFocus, type Rebuild } from './api';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const useData = () => useSyncExternalStore(onData, getData, getData);
 const STATUS: Record<string, string> = { pending: 'Pending', unsafe: 'Unsafe', broken: 'Broken', failed: 'Failed', complete: 'Rebuilt' };
@@ -98,7 +99,7 @@ export function ReportDialog({ id }: { id: string }) {
   const [err, setErr] = useState('');
   useEffect(() => { call<{ markdown: string; android: string }>(`report/${encodeURIComponent(id)}`).then(setR, (e) => setErr((e as Error).message)); }, [id]);
   if (err) return <p className="fx-small">{err}</p>;
-  if (!r) return <p className="fx-muted">Loading…</p>;
+  if (!r) return <LoadingSkeleton />;
   return (
     <div className="fx-stack">
       <pre className="axp-fable__report">{r.markdown}</pre>

@@ -401,7 +401,7 @@ export const library: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-27' },
   provides: ['amberx.tasks'],
   views: { tasks: { title: 'Tasks', icon: 'check-circle', keywords: ['tasks', 'todo', 'todos', 'due', 'today', 'upcoming', 'checklist'], render: () => <TasksView /> } },
-  nav: { label: 'Tasks', items: [{ id: 'tasks', label: 'Tasks', icon: 'check-circle', view: 'tasks', badge: BADGE }] },
+  nav: { label: 'Work', items: [{ id: 'tasks', label: 'Tasks', icon: 'check-circle', view: 'tasks', badge: BADGE }] },
   dialogs: {
     [EDIT]: { title: 'Task', icon: 'edit', searchable: false, render: (p, close) => <Editor key={String(p.id ?? '')} id={String(p.id ?? '')} close={close} /> },
     [ADD]: { title: 'New task', icon: 'plus', render: (_p, close) => <QuickAddForm autoFocus onDone={close} /> },

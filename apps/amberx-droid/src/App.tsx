@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { AppShell, installLibraries, useRuntime, type ViewMap } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { hubSyncLibrary } from './axf/libs/hubsync';
@@ -7,6 +7,8 @@ import { Approvals } from './views/Approvals';
 import { useHubBannerCount } from './axf/libs/hub/react';
 import { HUB } from './hub/useHub';
 import { loadPlugins } from './plugins';
+import { VIEW_TAB_KIND, ViewPane, registerWindowActions } from './windows/ViewWindow';
+import './windows/windows.css';
 
 /**
  * AmberX is an empty shell for building and testing plugins (Oct 26 2026): banner, toolbar, nav menu, application menu,
@@ -29,5 +31,11 @@ export function App() {
   const contributed = useMemo(() => installLibraries(rt, libraries), [rt]);
   // Approvals waiting: counter `approvals.waiting` (toolbar + menu badges) and the counter widget on the banner.
   useHubBannerCount(HUB, { banner: { id: 'approvals', at: 'right', order: 29 }, origin: 'amberx-droid' });
-  return <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />;
+  const allViews = useMemo(() => ({ ...contributed.views, ...views }), [contributed]);
+  // floating windows (window engine: frameless / resize / snap / maximize): any page can open in one
+  const latest = useRef(allViews);
+  latest.current = allViews;
+  useEffect(() => registerWindowActions(rt, () => latest.current), [rt]);
+  const tabs = useMemo(() => ({ ...contributed.tabs, [VIEW_TAB_KIND]: (t: { payload?: string }) => <ViewPane view={t.payload ?? ''} views={latest.current} /> }), [contributed]);
+  return <AppShell views={allViews} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={tabs} />;
 }

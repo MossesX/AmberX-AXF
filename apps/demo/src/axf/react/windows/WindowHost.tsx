@@ -70,7 +70,7 @@ export function TabGroupView({ group }: { group: TabGroup }) {
   const brand = useBrandPlace('tab-group');
   const brandHost = brandHostProps(brand);
   return (
-    <div ref={ref} className={`fx-tabgroup ${brandHost.className}`.trim()} data-fx-ctx-target="tab-group" data-fx-ctx-payload={group.id} data-fx-tabs={group.tabs.length} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div ref={ref} className={`fx-tabgroup ${brandHost.className}`.trim()} data-fx-ctx-target="tab-group" data-fx-ctx-payload={group.id} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <div className="fx-tabgroup__bar" onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'tab-group', group.id); }}>
         {brand?.svg && <span className="fx-tabgroup__brand"><BrandMark slot="tab-group" height={16} /></span>}
         {group.tabs.map((t, i) => <TabChip key={t.id} tab={t} group={group} active={i === group.active} onActivate={() => wm.activate(group.id, i)} />)}

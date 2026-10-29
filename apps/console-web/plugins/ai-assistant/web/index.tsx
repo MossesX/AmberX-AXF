@@ -23,7 +23,7 @@ function AssistantView() {
   const s = useStatus();
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">AI · assistant</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1><p className="fx-muted">Chat with the framework's assistant or a specialist agent; anything that writes asks you first.</p></div></header>
       <ChatPanel />
     </div>
   );

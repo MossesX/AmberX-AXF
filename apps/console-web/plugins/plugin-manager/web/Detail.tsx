@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Button, Chip, Icon, ModelBadge, useRuntime } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
+import { LoadingSkeleton } from '@console/emptyState';
 import {
   DEP_LABEL, DEP_TONE, fmtBytes, HEALTH_LABEL, HEALTH_TONE, loadFiles, loadLogs, monogram,
   type Conflict, type Dependency, type Inventory, type LogLine, type PluginRow,
@@ -250,7 +251,7 @@ function Logs({ row }: { row: PluginRow }) {
         </select>
         <Button tone="ghost" icon="refresh" onClick={load}>Refresh</Button>
       </div>
-      {lines === null && <p className="fx-muted">Loading…</p>}
+      {lines === null && <LoadingSkeleton />}
       {lines?.length === 0 && <p className="fx-muted fx-small">No console log lines from or about {row.name} yet.</p>}
       {lines && lines.length > 0 && (
         <ol className="axp-plugin-manager-log">
@@ -270,7 +271,7 @@ function Logs({ row }: { row: PluginRow }) {
 function Files({ row }: { row: PluginRow }) {
   const [files, setFiles] = useState<{ path: string; bytes: number }[] | null>(null);
   useEffect(() => { setFiles(null); void loadFiles(row.folder).then(setFiles); }, [row.folder]);
-  if (files === null) return <p className="fx-muted">Loading…</p>;
+  if (files === null) return <LoadingSkeleton />;
   if (!files.length) return <p className="fx-muted fx-small">No file list (the console API is offline).</p>;
   return (
     <ul className="axp-plugin-manager-files">

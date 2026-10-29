@@ -45,7 +45,7 @@ export function HandoffView() {
   const st = s.status;
   return (
     <div className="fx-stack fx-stack--lg axp-claude-handoff">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1><p className="fx-muted">Everything a new Claude account needs to carry this project on, kept current.</p></div></header>
       <p className="axp-claude-handoff__lead">One prompt that moves this project to a new Claude account: it keeps working on the same repo and sets up the claude.ai Project, instructions, memory and user files from the handoff kit in <code>_claude/handoff/</code>, which this page keeps current.</p>
 
       <Container title="Assemble the prompt" icon="rocket">
@@ -268,7 +268,7 @@ export function PreviewView() {
   return (
     <div className="fx-stack fx-stack--lg axp-claude-handoff">
       <header className="fx-pagehead">
-        <div><p className="fx-eyebrow">Tools</p><h1>Installer preview</h1></div>
+        <div><p className="fx-eyebrow">Tools</p><h1>Installer preview</h1><p className="fx-muted">The installer as it runs, with example data, in the look you pick.</p></div>
         <Button icon="palette" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>
       </header>
       <p className="axp-claude-handoff__lead">The Claude handoff installer running on this project's real files, with example machines. Nothing is published: the prompt at the end comes from a preview build. Change its layout, gauges, meters and themes with <strong>Look</strong> (also Tools → Installer look).</p>

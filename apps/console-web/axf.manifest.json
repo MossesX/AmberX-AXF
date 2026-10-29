@@ -47,7 +47,9 @@
     "spacer": "gap",
     "divider": "rule",
     "badge": "new",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "design-package": "fresh",
+    "branding": "gizmox"
   },
   "hidden": [
     "toolbar",

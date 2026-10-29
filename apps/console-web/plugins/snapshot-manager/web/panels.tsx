@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import { call, del, getFocus, onFocus, post, put, size, when, type DiffEntry, type FileDiff, type Settings, type Snapshot, type Usage } from './api';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const P = 'axp-snapshot-manager';
 
@@ -123,7 +124,7 @@ export function SnapshotsPanel() {
     return g;
   }, [items, container]);
   if (err) return <p className={`${P}__bad`}>{err}</p>;
-  if (!items) return <p className="fx-muted">Loading snapshots…</p>;
+  if (!items) return <LoadingSkeleton />;
   const names = [...new Set(items.map((s) => s.container))].sort();
   return (
     <div className="fx-stack">

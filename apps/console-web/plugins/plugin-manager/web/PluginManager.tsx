@@ -14,6 +14,7 @@ import { FILTERS, LAYOUTS, SORTS, usePrefs, VIEWS, type FilterId, type LayoutId,
 import { CardsView, GraphView, MasterDetailView, TableView, type ViewProps } from './views';
 import { InstallView } from './InstallView';
 import './plugin-manager.css';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const FILTER_LABEL: Record<FilterId, string> = { all: 'All', enabled: 'Running', off: 'Switched off', problems: 'Needs attention', editors: 'UI editors' };
 const SORT_LABEL: Record<SortId, string> = { name: 'Name', health: 'Health', size: 'Size', deps: 'Most used' };
@@ -85,7 +86,7 @@ export function PluginManager({ embedded }: { embedded?: boolean }) {
     globalThis.addEventListener('axp-plugin-manager:select', on);
     return () => globalThis.removeEventListener('axp-plugin-manager:select', on);
   }); // eslint-disable-line react-hooks/exhaustive-deps
-  if (!inv) return <div className="axp-plugin-manager axp-plugin-manager--loading"><p className="fx-muted">Loading plugins…</p></div>;
+  if (!inv) return <div className="axp-plugin-manager axp-plugin-manager--loading"><LoadingSkeleton /></div>;
   const shared = { inv, rows, prefs, set, q, setQ, reload, loading, select, embedded: Boolean(embedded) };
   const L = { studio: Studio, mission: Mission, terminal: Terminal, catalog: Catalog }[prefs.layout];
   return (

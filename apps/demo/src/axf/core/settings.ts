@@ -62,8 +62,6 @@ export interface SettingsTab {
   parent?: string;
   /** contributing module (filled in by installLibraries) */
   module?: string;
-  /** the plugin whose UI this tab is: its content carries data-axf-plugin="<id>" (plugin theme override, libs/plugintheme) */
-  plugin?: string;
 }
 
 /** Custom UI inside a tab (a framework-agnostic render function; the React layer calls it). */

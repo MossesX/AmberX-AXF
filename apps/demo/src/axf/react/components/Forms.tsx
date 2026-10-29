@@ -9,7 +9,7 @@
  * choice cards are radio / checkbox buttons in a radiogroup / group, errors are announced through `aria-describedby`,
  * and keyboard focus shows through `:focus-visible` on the visible part.
  */
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import { Icon } from './Icon';
 import { paramBool, paramDefaultText, paramError, type LibraryParam } from '../../core';
 
@@ -73,17 +73,13 @@ export interface CheckboxProps {
   disabled?: boolean;
   title?: string;
   className?: string;
-  /** Third state (some of the items it stands for are ticked): drawn as a dash; a tap sends `true`. */
-  indeterminate?: boolean;
 }
 
 /** A tick box with its label (for an option that enables another control next to it, e.g. a timer's minutes). */
-export function Checkbox({ label, checked, onChange, disabled, title, className, indeterminate }: CheckboxProps) {
-  const ref = useRef<HTMLInputElement>(null);
-  useEffect(() => { if (ref.current) ref.current.indeterminate = !!indeterminate && !checked; }, [indeterminate, checked]);
+export function Checkbox({ label, checked, onChange, disabled, title, className }: CheckboxProps) {
   return (
     <label className={`fx-checkrow ${disabled ? 'is-disabled' : ''} ${className ?? ''}`} title={title}>
-      <input ref={ref} type="checkbox" className="fx-check" checked={checked} disabled={disabled} aria-checked={indeterminate && !checked ? 'mixed' : checked} onChange={(e) => onChange(indeterminate && !checked ? true : e.target.checked)} />
+      <input type="checkbox" className="fx-check" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} />
       <span className="fx-checkrow__label">{label}</span>
     </label>
   );
@@ -146,38 +142,6 @@ export function TextField({ label, value, onChange, placeholder, hint, error, mo
         <textarea id={id} name={name} className={cls} rows={rows} value={value} placeholder={placeholder} disabled={disabled} required={required} aria-invalid={error ? true : undefined} aria-describedby={describedBy} autoFocus={autoFocus} autoComplete={autoComplete} spellCheck={false} onChange={(e) => onChange(e.target.value)} />
       ) : (
         <input id={id} name={name} className={cls} type={type} value={value} placeholder={placeholder} disabled={disabled} required={required} aria-invalid={error ? true : undefined} aria-describedby={describedBy} autoFocus={autoFocus} autoComplete={autoComplete} spellCheck={false} onChange={(e) => onChange(e.target.value)} />
-      )}
-    </Field>
-  );
-}
-
-/* ---------------- ColorField ---------------- */
-
-export interface ColorFieldProps {
-  label: ReactNode;
-  /** any CSS colour (hex, rgb(), var(--fx-…)); the picker shows `swatch` (the colour it resolves to, as hex) (theme-ok: text) */
-  value: string;
-  onChange: (v: string) => void;
-  /** hex the picker shows when `value` isn't a #rrggbb colour (e.g. the computed theme colour) */
-  swatch?: string;
-  hint?: ReactNode;
-  error?: string;
-  disabled?: boolean;
-  className?: string;
-}
-
-const HEX6 = /^#[0-9a-f]{6}$/i;
-
-/** A colour: the browser's colour picker next to a text field (hex, rgb() or a theme reference like var(--fx-accent)). (theme-ok: text) */
-export function ColorField({ label, value, onChange, swatch, hint, error, disabled, className }: ColorFieldProps) {
-  const pick = HEX6.test(value) ? value : swatch && HEX6.test(swatch) ? swatch : undefined;
-  return (
-    <Field label={label} hint={hint} error={error} className={`fx-colorfield ${className ?? ''}`}>
-      {(id, describedBy) => (
-        <span className="fx-row fx-colorfield__row">
-          <input type="color" className="fx-input fx-colorfield__pick" aria-label="Pick a colour" value={pick ?? '#808080'} disabled={disabled} onChange={(e) => onChange(e.target.value)} /> {/* theme-ok: the picker needs a start value */}
-          <input id={id} className="fx-input fx-field__input fx-mono" value={value} disabled={disabled} aria-describedby={describedBy} spellCheck={false} autoComplete="off" onChange={(e) => onChange(e.target.value)} />
-        </span>
       )}
     </Field>
   );

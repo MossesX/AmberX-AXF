@@ -6,6 +6,14 @@
   "version": "1.0.0",
   "description": "Searches the whole app as you type: views, settings, actions, assets, windows, words on the page, and whatever modules add. Ctrl/Cmd+K or / focuses it.",
   "author": "AmberX AXF",
-  "tags": ["search", "widget"],
-  "data": { "placeholder": "Search everything…", "maxResults": 14, "width": "regular", "shortcut": true }
+  "tags": [
+    "search",
+    "widget"
+  ],
+  "data": {
+    "placeholder": "Search everything…",
+    "maxResults": 14,
+    "width": "regular",
+    "shortcut": true
+  }
 }

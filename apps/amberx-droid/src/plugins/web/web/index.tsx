@@ -182,7 +182,7 @@ export const library: AxfWebLibrary = {
   version: '0.1.0',
   builtWith: { model: 'opus', builtAt: '2026-10-27' },
   views: { web: { title: 'Web', icon: 'monitor', keywords: ['web', 'browser', 'page', 'bookmark', 'clip', 'link'], render: () => <WebView /> } },
-  nav: { label: 'Web', items: [{ id: 'web', label: 'Web', icon: 'monitor', view: 'web' }] },
+  nav: { label: 'Work', items: [{ id: 'web', label: 'Web', icon: 'monitor', view: 'web' }] },
   settingsTabs: [{ id: 'web', label: 'Web', icon: 'monitor', order: 60, parent: 'plugins' }],
   settings: [{
     id: 'amberx.web', label: 'Web', icon: 'monitor', tab: 'web', settings: [

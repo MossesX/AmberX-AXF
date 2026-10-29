@@ -6,6 +6,13 @@
   "version": "1.0.0",
   "description": "6:20 PM, monospace digits, no date.",
   "author": "AmberX AXF",
-  "tags": ["clock"],
-  "data": { "format": "12h", "seconds": false, "date": "none", "mono": true }
+  "tags": [
+    "clock"
+  ],
+  "data": {
+    "format": "12h",
+    "seconds": false,
+    "date": "none",
+    "mono": true
+  }
 }

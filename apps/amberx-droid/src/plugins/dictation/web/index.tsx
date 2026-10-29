@@ -253,7 +253,7 @@ export const library: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-27' },
   provides: ['amberx.dictation'],
   views: { dictation: { title: 'Dictate', icon: 'mic', keywords: ['dictation', 'dictate', 'note', 'record', 'speak'], render: () => <DictationView /> } },
-  nav: { label: 'Dictation', items: [{ id: 'dictation', label: 'Dictate', icon: 'mic', view: 'dictation' }] },
+  nav: { label: 'Voice', items: [{ id: 'dictation', label: 'Dictate', icon: 'mic', view: 'dictation' }] },
   settingsTabs: [{ id: 'dictation', label: 'Dictation', icon: 'mic', order: 22, parent: 'plugins' }],
   settings: [
     {

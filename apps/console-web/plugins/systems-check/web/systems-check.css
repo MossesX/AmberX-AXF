@@ -1,6 +1,6 @@
 /* Systems check plugin (banner, dialog, settings). Theme tokens only, axp-systems-check prefix. */
-.axp-systems-check-banner { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
-.axp-systems-check-banner.is-error { border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-systems-check-banner { --axf-banner-tone: var(--fx-warning); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.axp-systems-check-banner.is-error { --axf-banner-tone: var(--fx-danger) }
 .axp-systems-check-banner__row, .axp-systems-check-banner > .axp-systems-check-banner__text { display: flex; align-items: center; gap: var(--fx-space); flex-wrap: wrap }
 .axp-systems-check-banner.is-warn:not(:has(.axp-systems-check-banner__row)) { flex-direction: row; align-items: center; flex-wrap: wrap }
 .axp-systems-check-banner__text { all: unset; flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); font-weight: 600; cursor: pointer }
@@ -67,7 +67,7 @@
 .axp-systems-check-prompt__actions { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-space) }
 @media (prefers-reduced-motion: reduce) { .axp-systems-check-run.is-waiting { animation: none } }
 .axp-systems-check-bad { color: var(--fx-danger) }
-.axp-systems-check-new { border-color: var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-systems-check-new { --axf-banner-tone: var(--fx-accent) }
 .axp-systems-check-new__body { display: flex; flex-direction: column; gap: var(--fx-space); padding-top: calc(var(--fx-space) * 0.5); border-top: var(--fx-border-w) solid var(--fx-border); max-height: 60vh; overflow: auto }
 .axp-systems-check-new__summary { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axp-systems-check-new__list { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }

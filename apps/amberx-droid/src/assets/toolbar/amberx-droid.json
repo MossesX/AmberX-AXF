@@ -3,25 +3,27 @@
   "type": "toolbar",
   "id": "amberx-droid",
   "name": "AmberX",
-  "version": "2.0.0",
-  "description": "The empty shell's toolbar: speak a command, approvals, the live search box (finds any page, action or setting a plugin adds), settings.",
+  "version": "3.0.0",
+  "description": "AmberX's toolbar on the enterprise design language: speak a command and Approvals, then Settings; the day/night switch and the account sit at the end. Search lives once, on the banner (Ctrl K). It folds on a phone.",
   "author": "AmberX AXF",
   "tags": [
-    "search",
-    "live"
+    "branded",
+    "enterprise",
+    "live",
+    "search"
   ],
   "data": {
     "variant": "icons",
     "align": "start",
-    "showSearch": true,
-    "search": {
-      "live": true,
-      "placeholder": "Search AmberX…  (Ctrl K)",
-      "maxResults": 14
-    },
+    "density": "regular",
+    "surface": "flat",
+    "divider": true,
+    "collapsible": true,
+    "showSearch": false,
     "groups": [
       {
         "id": "go",
+        "label": "Go",
         "items": [
           {
             "id": "voice",
@@ -40,6 +42,7 @@
       },
       {
         "id": "tools",
+        "label": "App",
         "items": [
           {
             "id": "settings",
@@ -48,6 +51,20 @@
             "action": "app.settings"
           }
         ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "theme-switch",
+        "id": "amberx-day-night",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "end",
+        "order": 20
       }
     ]
   }

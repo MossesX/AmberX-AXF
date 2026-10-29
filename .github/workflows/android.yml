@@ -47,6 +47,8 @@ jobs:
         run: node framework/cli/check-theme.mjs
       - name: Plugin and library controls are framework controls (they inherit the app's style)
         run: node framework/cli/check-controls.mjs
+      - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
+        run: node framework/cli/check-plugin-pages.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)

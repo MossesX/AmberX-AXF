@@ -14,6 +14,7 @@ import { call, tabSessions, type Connection, type Open } from './api';
 import { addSession, ctl, host, hostIds, hostOf, patchSession, sessionId, snapshot, subscribe, titleFor, type HostSession } from './hosts';
 import { applyProfile, profilesFor, useProfiles } from './profiles';
 import { newTab } from './open';
+import { LoadingSkeleton } from '@console/emptyState';
 
 export type Mode = 'claude' | 'shell';
 const LAST = 'axf.terminal.lastConnection';
@@ -104,7 +105,7 @@ export function ConnectDialog({ props, close }: { props: Record<string, unknown>
         </label>
       )}
       <p className="fx-small fx-muted">{switching ? 'Move this tab to:' : mode === 'claude' ? 'Run Claude Code on:' : 'Open a shell on:'}</p>
-      {items === null ? <p className="fx-muted">Loading connections…</p> : <ConnectionList items={items} mode={mode} current={last()} onPick={pick} />}
+      {items === null ? <LoadingSkeleton /> : <ConnectionList items={items} mode={mode} current={last()} onPick={pick} />}
       {err && <p className="fx-small fx-muted" role="status">{err}</p>}
     </div>
   );
@@ -144,7 +145,7 @@ export function ConnectionDialog({ props, close }: { props: Record<string, unkno
         <Button icon="shuffle" tone={switching ? 'primary' : 'ghost'} onClick={() => setSwitching(!switching)}>Switch connection</Button>
         <Button icon="copy" tone="ghost" onClick={() => { close(); rt.openDialog('terminal.connect', { hostId: hid, mode }); }}>New tab elsewhere</Button>
       </div>
-      {switching && (items ? <ConnectionList items={items} mode={mode} current={cur} onPick={(x) => { const o = openFor(x, mode, s.open); if (o) { remember(x.id); switchSession(sid, o); close(); } }} /> : <p className="fx-muted">Loading connections…</p>)}
+      {switching && (items ? <ConnectionList items={items} mode={mode} current={cur} onPick={(x) => { const o = openFor(x, mode, s.open); if (o) { remember(x.id); switchSession(sid, o); close(); } }} /> : <LoadingSkeleton />)}
     </div>
   );
 }

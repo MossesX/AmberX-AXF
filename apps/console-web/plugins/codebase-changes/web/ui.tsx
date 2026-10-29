@@ -280,10 +280,13 @@ export function ChangesView() {
   const filtered = JSON.stringify(f) !== JSON.stringify(NO_FILTERS);
   return (
     <div className="axp-codebase-changes">
-      <header className="axp-codebase-changes__intro">
-        <h2 className="axp-codebase-changes__h1"><Icon name="branch" size={20} /> Codebase changes</h2>
-        <p className="fx-small fx-muted">Every request to build, edit, remove or fix something, with its steps and result. Kept on axHub; closing an entry only takes it out of the banner.</p>
+      <header className="fx-pagehead axp-codebase-changes__intro">
+        <div>
+          <p className="fx-eyebrow">Builds</p>
+          <h1 className="axp-codebase-changes__h1"><Icon name="branch" size={20} /> Codebase changes</h1>
+          <p className="fx-muted">Every request to build, edit, remove or fix something, with its steps and result. Kept on axHub; closing an entry only takes it out of the banner.</p>
         {c && <p className="fx-small axp-codebase-changes__counts"><strong>{c.total}</strong> in the log · <strong>{c.open}</strong> in the banner{Object.entries(c.byState).map(([k, v]) => ` · ${v} ${(STATE_LABEL[k] ?? k).toLowerCase()}`).join('')}</p>}
+      </div>
       </header>
       <div className="axp-codebase-changes__filters" role="search">
         <input className="fx-input" type="search" placeholder="Search titles, requests, results…" aria-label="Search the log" value={f.q} onChange={(e) => up({ q: e.target.value })} />

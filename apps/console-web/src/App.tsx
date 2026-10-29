@@ -1,7 +1,7 @@
 import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InterfaceTabBar, InterfaceTabs } from './interfaceTabs';
-import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useRuntime, type ViewMap } from './axf/react';
+import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -139,12 +139,18 @@ function Shell() {
   useHubAppearance();
   const plugins = usePlugins();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
+  // the tab title follows the branding package (GizmoX) and the page: "Plan · GizmoX"
+  const rtTitle = useRuntime();
+  const st = useAxfState();
+  const brandName = rtTitle.branding()?.name || rtTitle.manifest.app.name;
   const allViews: ViewMap = {
     ...plugins.contributed.views,
     ...views,
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
+  const pageTitle = allViews[st.view]?.title;
+  useEffect(() => { document.title = pageTitle && st.view !== 'home' ? `${pageTitle} · ${brandName}` : brandName; }, [pageTitle, brandName, st.view]);
   // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) sit above the page
   // (slot app.frame.banners) when the console runs on its own. As a tab in Patches the console page shows none of them:
   // Patches shows them above every tab through the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx), which

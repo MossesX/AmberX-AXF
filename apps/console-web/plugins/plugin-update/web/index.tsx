@@ -18,6 +18,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { label, rebuildRequest, rows as toRows, summary, type CatalogItem, type Installed, type Model, type Pending, type Row } from './core';
 import { appMenu } from './menu';
 import './plugin-update.css';
+import { EmptyState } from '@console/emptyState';
 
 const ID = 'ai.amberx.axf.console.plugin-update';
 const FOLDER = 'plugin-update';
@@ -114,6 +115,7 @@ function PluginUpdate() {
     <div className="fx-stack axp-plugin-update">
       <header className="fx-pagehead">
         <div>
+          <p className="fx-eyebrow">Plugins · updates</p>
           <h1>Plugin Update</h1>
           <p className="fx-muted">Every installed plugin, the model that built it, when, and its version, checked against the plugin catalog on axHub. One copy of each plugin, always: a build by another model replaces the installed one.</p>
         </div>
@@ -176,7 +178,7 @@ function PluginUpdate() {
           </li>
         ))}
       </ul>
-      {!list.length && !u.loading && !u.error && <p className="fx-muted">No plugins installed.</p>}
+      {!list.length && !u.loading && !u.error && <EmptyState icon="package" compact>No plugins installed.</EmptyState>}
     </div>
   );
 }
