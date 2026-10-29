@@ -1,15 +1,15 @@
 {
  "$axf": "feature-matrix@0",
  "note": "Draft data until feature-matrix s1 (feature-matrix@1) lands; s1 adopts it as-is. Items are never deleted: keep=false means skip.",
- "updatedAt": "2026-10-29T05:20:00.000Z",
+ "updatedAt": "2026-10-29T07:10:00.000Z",
  "matrices": [
   {
    "build": "refactor-all",
    "profile": "refactor",
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T05:20:00.000Z",
-   "minutesKept": 85,
+   "updatedAt": "2026-10-29T07:10:00.000Z",
+   "minutesKept": 255,
    "minutesSkipped": 1960,
    "items": [
     {
@@ -824,8 +824,8 @@
      "sourceStep": "s3",
      "model": "Opus",
      "minutes": 30,
-     "keep": false,
-     "why": "",
+     "keep": true,
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -836,8 +836,8 @@
      "sourceStep": "s4",
      "model": "Opus",
      "minutes": 30,
-     "keep": false,
-     "why": "",
+     "keep": true,
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -848,8 +848,8 @@
      "sourceStep": "s5",
      "model": "Opus",
      "minutes": 30,
-     "keep": false,
-     "why": "",
+     "keep": true,
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -860,8 +860,8 @@
      "sourceStep": "s6",
      "model": "Opus",
      "minutes": 30,
-     "keep": false,
-     "why": "",
+     "keep": true,
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -872,8 +872,8 @@
      "sourceStep": "s7",
      "model": "Opus",
      "minutes": 20,
-     "keep": false,
-     "why": "",
+     "keep": true,
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -884,8 +884,8 @@
      "sourceStep": "s8",
      "model": "Opus",
      "minutes": 30,
-     "keep": false,
-     "why": "",
+     "keep": true,
+     "why": "Brett Oct 29 03:08: make the matrix a plugin, reachable from Build in the app menu",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {

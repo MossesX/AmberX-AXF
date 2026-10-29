@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T05:57:18.706Z",
+ "updatedAt": "2026-10-29T07:08:32.672Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4666,15 +4666,15 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T05:51:30.365Z",
-   "builtAt": "2026-10-29T05:51:30.366Z",
+   "updatedAt": "2026-10-29T07:08:32.671Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Made from every unfinished Refactor build on Brett's stop order (15:26 EDT). Matrix: matrices.json → refactor-all.",
@@ -4707,6 +4707,10 @@
     {
      "text": "Oct 29 2026 01:13 EDT (Brett): AmberX voice control constantly triggers the tone; make it like ActiveX. Decision: hybrid — silent Vosk wake listener, Google recognizer only after the trigger for one utterance, tone muted. Steps s87–s89, run now.",
      "at": "2026-10-29T05:38:10.962Z"
+    },
+    {
+     "text": "Oct 29 2026 03:08 EDT (Brett): 'Make the matrix a plugin accessible from Build in the app menu' — feature-matrix s62–s67 un-skipped and built now; app menu Build ▸ Feature matrix added to s65.",
+     "at": "2026-10-29T07:08:32.671Z"
     }
    ],
    "approvals": [
@@ -5853,7 +5857,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": true,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5870,7 +5874,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": true,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5887,14 +5891,14 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": true,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
     },
     {
      "id": "s65",
-     "text": "[feature-matrix s6] Hooks in every builds grid (orchestrator, pending, build queue, build manager, changes grid, plan): row button + right-click 'Feature matrix' opening that entry's matrix; through a grid hook registry compatible with share-search grid-attach@1",
+     "text": "[feature-matrix s6] Hooks in every builds grid (orchestrator, pending, build queue, build manager, changes grid, plan): row button + right-click \"Feature matrix\" opening that entry's matrix; through a grid hook registry compatible with share-search grid-attach@1. PLUS (Brett, Oct 29 03:08): the matrix is reachable from the application menu — Build ▸ Feature matrix (the dataset grid) — and from the Builds page toolbar",
      "model": "Opus",
      "why": "",
      "phase": "Opus",
@@ -5904,7 +5908,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": true,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5921,7 +5925,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": true,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5938,7 +5942,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": true,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
