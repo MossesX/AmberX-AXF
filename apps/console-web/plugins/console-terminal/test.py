@@ -188,6 +188,32 @@ check(pc["protected"] and pc["badge"] == "PROTECTED" and fc.opened[-1]["allow"],
 check(c.post("/p/sessions", json={"kind": "container", "container": "nope"}).status_code == 404, "unknown container is 404")
 plugin_services.withdraw("fake-container-access")
 
+# Windows-style terminal (Oct 28 2026): connections, Claude Code profiles + arguments, look settings
+S0 = mod.sessions
+check(S0.claude_args({"model": "claude-opus-5-5", "permissionMode": "plan", "flags": ["--verbose"], "prompt": "hi there"})
+      == ["--model", "claude-opus-5-5", "--permission-mode", "plan", "--verbose", "hi there"], "profile options become claude arguments")
+for bad in ({"model": "x; rm -rf /"}, {"permissionMode": "yolo"}, {"flags": ["; rm"]}, {"flags": ["notaflag"]}):
+    try:
+        S0.claude_args(bad); check(False, f"claude args refuse {bad}")
+    except ValueError:
+        check(True, f"claude args refuse {json.dumps(bad)[:40]}")
+conns = c.get("/p/connections").json()["items"]
+ids = [x["id"] for x in conns]
+check(ids[:3] == ["console", "vps", "axhub"] and all({"ready", "claude", "why", "label"} <= set(x) for x in conns), "connections: console, VPS host, axHub (+ containers), each with ready/why")
+check(next(x for x in conns if x["id"] == "axhub")["shell"] is False, "axHub is Claude Code only (no shell)")
+check(c.post("/p/sessions", json={"kind": "claude", "via": "moon"}).status_code == 400, "claude via must be console, vps, container or axhub")
+check(c.post("/p/sessions", json={"kind": "claude", "via": "vps"}).status_code == 400, "Claude Code on the VPS needs the VPS host set up")
+good = c.put("/p/settings", json={"scheme": "campbell", "cursorStyle": "block", "lineHeight": 1.3, "scrollback": 20000, "fontFamily": "'Cascadia Mono', Consolas",
+                                  "claudeProfiles": [{"id": "review", "name": "Review", "model": "claude-opus-5-5", "permissionMode": "plan", "flags": ["--verbose"], "connection": "vps", "color": "info"}],
+                                  "defaultClaudeProfile": "review"})
+st = c.get("/p/settings").json()
+check(good.status_code == 200 and st["scheme"] == "campbell" and st["claudeProfiles"][0]["connection"] == "vps" and st["defaultClaudeProfile"] == "review", "look settings + Claude Code profiles save")
+for bad in ({"scheme": "matrix"}, {"cursorStyle": "laser"}, {"fontFamily": "x;}{"}, {"claudeProfiles": []}, {"claudeProfiles": [{"id": "Bad Id"}]},
+            {"claudeProfiles": [{"id": "a", "connection": "ftp"}]}, {"claudeProfiles": [{"id": "a", "flags": ["rm -rf"]}]}, {"claudeProfiles": [{"id": "a"}, {"id": "a"}]}):
+    check(c.put("/p/settings", json=bad).status_code == 400, f"settings refuse {json.dumps(bad)[:50]}")
+c.put("/p/settings", json={"claudeProfiles": [{"id": "default", "name": "Default"}], "defaultClaudeProfile": "gone"})
+check(c.get("/p/settings").json()["defaultClaudeProfile"] == "default", "a default profile that's gone falls back to the first")
+
 # VPS tab
 check(c.post("/p/sessions", json={"kind": "vps"}).status_code == 400, "VPS tab needs a host and a key first")
 for bad in ({"vps": {"host": "-oProxyCommand=evil"}}, {"vps": {"host": "a b"}}, {"vps": {"host": "h", "user": "root;id"}}, {"user": "root; rm"}, {"claudeToken": "sk-ant-api03-nope"}):

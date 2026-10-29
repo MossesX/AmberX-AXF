@@ -63,6 +63,32 @@ def targets() -> dict[str, Any]:
     return {"available": True, "items": items}
 
 
+@router.get("/connections")
+def connections() -> dict[str, Any]:
+    """Every place a tab can connect to (Oct 28 2026): what the connection picker and each tab's Connection manager
+    list. id = what a tab's Open carries (`via`, plus `container` for containers); ready + why say if it can be used now."""
+    st = status()
+    cli, vps_ready = st["claude"], st["vps"]["ready"]
+    out: list[dict[str, Any]] = [
+        {"id": "console", "via": "console", "label": "Console container", "detail": "The console's own container, at the repo", "icon": "terminal",
+         "ready": True, "claude": cli, "why": "" if cli else "the claude CLI isn't installed in the console"},
+        {"id": "vps", "via": "vps", "label": "VPS host (root)", "detail": st["vps"]["host"] or "not set up", "icon": "monitor", "badge": "HOST ROOT",
+         "ready": vps_ready, "claude": vps_ready, "why": "" if vps_ready else "set up the VPS host in Settings → Plugins → Terminal"},
+        {"id": "axhub", "via": "axhub", "label": "axHub", "detail": "Claude Code with every axHub service as a tool", "icon": "zap",
+         "ready": cli, "claude": cli, "shell": False, "why": "" if cli else "the claude CLI isn't installed in the console"},
+    ]
+    note = ""
+    try:
+        t = targets() if st["containers"] else {"items": []}
+    except HTTPException as e:  # Docker unreachable: the other connections still work
+        t, note = {"items": []}, f"containers unavailable: {e.detail}"
+    for c in t["items"]:
+        out.append({"id": f"container:{c['name']}", "via": "container", "container": c["name"], "label": c["name"], "detail": c["image"],
+                    "icon": "lock" if c["protected"] else "box", "badge": "PROTECTED" if c["protected"] else None, "ready": True, "claude": True,
+                    "why": "", "group": "Containers"})
+    return {"items": out, "containersPlugin": st["containers"], "note": note}
+
+
 @router.get("/sessions")
 def list_sessions() -> dict[str, Any]:
     return {"items": sessions.MANAGER.list()}

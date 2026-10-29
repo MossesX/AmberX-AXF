@@ -11,12 +11,26 @@ export const FOLDER = 'console-terminal';
 export const ID = 'ai.amberx.axf.console.terminal';
 
 export type Kind = 'console' | 'container' | 'vps' | 'claude';
-export interface Open { kind: Kind; container?: string; cwd?: string; confirmProtected?: boolean; title?: string; attach?: string }
+export type Via = 'console' | 'vps' | 'container' | 'axhub';
+/** What a tab opens. Claude Code tabs carry `via` (+ `container`) for their connection and their profile's options. */
+export interface Open {
+  kind: Kind; container?: string; cwd?: string; confirmProtected?: boolean; title?: string; attach?: string;
+  via?: Via; profile?: string; model?: string; permissionMode?: string; flags?: string[]; prompt?: string;
+}
+/** A place a tab can connect to (GET connections). */
+export interface Connection { id: string; via: Via; container?: string; label: string; detail: string; icon: string; badge?: string | null; ready: boolean; claude: boolean; shell?: boolean; why: string; group?: string }
 export interface SessionInfo { id: string; kind: Kind; title: string; target: string; cwd: string; mosh: boolean; badge: string | null; protected: boolean; createdAt: number; attached: number; closed: boolean }
 export interface Settings {
   idleMinutes: number; moshKeepMinutes: number; fontSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; showHubRuns: boolean; showHeadless: boolean; user: string;
   vps: { host: string; port: number; user: string }; sshKey: boolean; claudeToken: boolean; publicKey?: string;
+  // Windows-style terminal (Oct 28 2026)
+  windowsLook: boolean; mica: boolean; toolbar: boolean; scheme: string; fontFamily: string; lineHeight: number; cursorStyle: 'bar' | 'block' | 'underline';
+  cursorBlink: boolean; scrollback: number; padding: number; bell: 'none' | 'visual' | 'sound'; closeConfirm: boolean;
+  startup: 'claude' | 'console' | 'picker' | 'none'; newTab: 'picker' | 'same'; tabWidth: 'equal' | 'compact' | 'title';
+  claudeProfiles: ClaudeProfile[]; defaultClaudeProfile: string;
 }
+/** A Claude Code profile: how a Claude Code tab starts (Oct 28 2026). */
+export interface ClaudeProfile { id: string; name: string; model: string; permissionMode: string; flags: string[]; cwd: string; prompt: string; icon: string; color: string; connection: string }
 export interface Status { containers: boolean; claude: boolean; ssh: boolean; vps: { ready: boolean; host: string }; settings: Settings; sessions: SessionInfo[] }
 export interface Target { name: string; image: string; state: string; protected: string | null; reachable: boolean }
 
@@ -66,6 +80,22 @@ export function loadXterm(): Promise<Lib> {
   return lib;
 }
 
+import schemesData from './schemes.json';
+export const SCHEMES = (schemesData as { schemes: Record<string, Record<string, string>> }).schemes;
+/** The terminal colours: a Windows Terminal scheme (schemes.json), or 'app' = the app's theme tokens. */
+export function schemeColors(scheme: string | undefined, el: HTMLElement): Record<string, string> {
+  const s = scheme && scheme !== 'app' ? SCHEMES[scheme] : null;
+  if (!s) return themeFromTokens(el);
+  const { name: _n, ...colors } = s; return colors;
+}
+/** xterm options from the terminal settings (look + behaviour). */
+export function lookOptions(s: Settings | null, el: HTMLElement): Record<string, unknown> {
+  const mono = getComputedStyle(el).getPropertyValue('--fx-font-mono').trim() || 'monospace';
+  const family = (s?.fontFamily || "'Cascadia Mono', 'Cascadia Code', Consolas, 'Lucida Console'") + `, ${mono}`;
+  return { theme: schemeColors(s?.scheme, el), fontFamily: family, lineHeight: s?.lineHeight ?? 1.15, cursorStyle: s?.cursorStyle ?? 'bar',
+    cursorBlink: s?.cursorBlink ?? true, scrollback: s?.scrollback ?? 10000 };
+}
+
 /** Theme from the engine-compiled tokens (no colours of our own). */
 export function themeFromTokens(el: HTMLElement): Record<string, string> {
   const cs = getComputedStyle(el);
@@ -77,8 +107,12 @@ export function themeFromTokens(el: HTMLElement): Record<string, string> {
 export const tabSessions = new Map<string, string>();
 export const tabPrefs = new Map<string, { mouse: boolean; mosh: boolean }>();
 let settingsCache: Settings | null = null;
+const settingsListeners = new Set<(s: Settings) => void>();
 export async function getSettings(force = false): Promise<Settings> {
-  if (!settingsCache || force) settingsCache = await call<Settings>('settings');
+  if (!settingsCache || force) { const s = await call<Settings>('settings'); settingsCache = s; settingsListeners.forEach((f) => f(s)); return s; }
   return settingsCache;
 }
+/** Every open terminal follows a settings save (each session re-reads its look). */
+export const onSettings = (f: (s: Settings) => void) => { settingsListeners.add(f); return () => { settingsListeners.delete(f); }; };
+export async function saveSettings(patch: Partial<Settings>): Promise<Settings> { await put('settings', patch); return getSettings(true); }
 export const parseOpen = (payload?: string): Open => { try { return JSON.parse(payload || '{}') as Open; } catch { return { kind: 'console' }; } };
