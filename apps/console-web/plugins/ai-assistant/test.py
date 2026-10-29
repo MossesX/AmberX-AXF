@@ -471,6 +471,11 @@ check("Bash" in _de and "Edit" in _de and _ba[_ba.index("--permission-mode") + 1
 list(prov.stream_chat(_prof, [{"role": "user", "content": "hi"}], model="claude-test", cwd=_bd, build={"root": _bd}, read_files=False))
 _ba = json.load(open(_os.path.join(_bd, "argv.json")))["argv"]
 check("Bash" in _ba[_ba.index("--disallowedTools") + 1:], "build mode never applies to users without file tools")
+for _bm in ({"root": _bd}, None):
+    list(prov.stream_chat(_prof, [{"role": "user", "content": "hi"}], model="claude-test", cwd=_bd, build=_bm))
+    _ba = json.load(open(_os.path.join(_bd, "argv.json")))["argv"]
+    _al, _de = _ba[_ba.index("--allowedTools") + 1:_ba.index("--disallowedTools")], _ba[_ba.index("--disallowedTools") + 1:]
+    check({"Task", "Agent"} <= set(_de) and not {"Task", "Agent"} & set(_al), f"no sub-agents in the assistant ({'build mode' if _bm else 'chat'})")
 deny = prov._cli_abs_deny("/work/repo")
 check("Read(//proc/**)" in deny and "Read(//work/repo/.axf-console/**)" in deny and "Grep(~/.ssh/**)" in deny, "Claude Code CLI can't read /proc, the console's private folder or SSH keys")
 
