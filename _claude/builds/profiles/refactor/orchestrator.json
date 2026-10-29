@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T01:39:00.961Z",
+ "updatedAt": "2026-10-29T01:51:01.462Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4673,7 +4673,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T01:39:00.960Z",
+   "updatedAt": "2026-10-29T01:51:01.461Z",
    "builtAt": "",
    "notes": [
     {
@@ -6028,10 +6028,7 @@
      "phase": "Fable 2",
      "group": "assistant-approvals",
      "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/approvals-banner/web/client.ts",
-      "framework/react"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
