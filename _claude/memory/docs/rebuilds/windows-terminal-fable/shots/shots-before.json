@@ -1,0 +1,49 @@
+[
+ {
+  "name": "terminal-window",
+  "steps": [
+   {
+    "search": "Open a terminal",
+    "wait": 3000
+   }
+  ]
+ },
+ {
+  "name": "terminal-maximized",
+  "steps": [
+   {
+    "search": "Open a terminal",
+    "wait": 2500
+   },
+   {
+    "wait": 1200,
+    "eval": "document.querySelector(\".fx-window [title='Maximize']\")?.click()"
+   }
+  ]
+ },
+ {
+  "name": "snap-preview",
+  "viewports": [
+   "desktop"
+  ],
+  "steps": [
+   {
+    "search": "Open a terminal",
+    "wait": 2500
+   },
+   {
+    "eval": "(()=>{const w=document.querySelector('.fx-window');if(!w)return;const t=w.querySelector('.fx-window__title')||w.querySelector('[role=tablist]');const r=t.getBoundingClientRect();const x=r.left+Math.min(60,r.width/2),y=r.top+r.height/2;const ev=(type,el,cx,cy)=>el.dispatchEvent(new PointerEvent(type,{bubbles:true,cancelable:true,clientX:cx,clientY:cy,button:0,buttons:1,pointerId:1,pointerType:'mouse',isPrimary:true}));ev('pointerdown',t,x,y);for(let i=1;i<=12;i++){ev('pointermove',window,x+(10-x)*i/12,y+(260-y)*i/12);}})()",
+    "wait": 900
+   }
+  ]
+ },
+ {
+  "name": "settings-levels",
+  "steps": [
+   {
+    "search": "Settings",
+    "wait": 2500
+   }
+  ]
+ }
+]
