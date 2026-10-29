@@ -4,7 +4,7 @@
   "id": "touch-dock",
   "name": "Touch Dock",
   "version": "1.0.0",
-  "description": "Roomy labelled buttons spread across the width, sized for thumbs: home, pages, alerts and settings.",
+  "description": "Roomy labelled buttons spread across the width, sized for thumbs: home, pages, alerts and settings. In the console the alerts bell lives on the banner only.",
   "author": "AmberX AXF",
   "tags": [
     "touch"
@@ -35,13 +35,6 @@
       {
         "id": "app",
         "items": [
-          {
-            "id": "alerts",
-            "icon": "bell",
-            "label": "Alerts",
-            "action": "alerts.open",
-            "badge": "alerts.unread"
-          },
           {
             "id": "settings",
             "icon": "settings",

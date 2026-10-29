@@ -4,7 +4,7 @@
   "id": "enterprise-command",
   "name": "Enterprise Command",
   "version": "1.0.0",
-  "description": "File, edit and look commands with labels, a live search and the account and connection status at the end.",
+  "description": "File, edit and look commands with labels, a live search and the account and connection status at the end. In the console the alerts bell lives on the banner only.",
   "author": "AmberX AXF",
   "tags": [
     "enterprise",
@@ -69,13 +69,6 @@
       {
         "id": "app",
         "items": [
-          {
-            "id": "alerts",
-            "icon": "bell",
-            "label": "Alerts",
-            "action": "alerts.open",
-            "badge": "alerts.unread"
-          },
           {
             "id": "settings",
             "icon": "settings",
