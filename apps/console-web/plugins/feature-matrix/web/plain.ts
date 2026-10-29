@@ -6,29 +6,29 @@
 
 export type Plain = { title: string; does: string };
 
-/** Group (build) titles, keyed by the item's `source`. */
+/** Group (build) titles, keyed by the build id with - written as _ (plain keys, never a quoted plugin folder name). */
 export const GROUPS: Record<string, Plain> = {
-  'arch-foundation': { title: 'Stronger foundation', does: 'Firm rules for how layouts, themes and plugins fit together, so plugins can\'t break the app and old data keeps loading.' },
-  'trim-asset': { title: 'Trims (layout + colours in one)', does: 'Save a layout and a colour scheme together as one pick you can swap in one tap.' },
-  'style-package-fable': { title: 'Style packages, rebuilt', does: 'Redo the "swap all the controls\' look at once" feature properly, with better-matched starter sets.' },
-  'apply-all-levels-fable': { title: 'Look + settings levels, rebuilt', does: 'Redo the "apply this look everywhere" button and the settings levels properly.' },
-  'windows-terminal': { title: 'Windows-style terminal + window snapping', does: 'A terminal that feels like a Windows program, plus windows that resize from any edge and snap into place.' },
-  'feature-matrix': { title: 'Feature matrix', does: 'This page: one keep/skip list for every build, with time and cost.' },
-  'amberx-handsfree': { title: 'AmberX hands-free listening', does: 'Finish and ship hands-free voice listening in the AmberX app.' },
-  'basic-filter': { title: 'Basic filter', does: 'Finish and ship the search-and-filter add-on for any list.' },
-  'enterprise-branding': { title: 'Branding + polished look', does: 'A brand library (logos, icons, brand packs) and a full visual clean-up of AmberX and the console.' },
-  'interface-roller': { title: 'Interface roller', does: 'Shuffle an app\'s whole look at random, lock the parts you like, and save the result.' },
-  'tools-plugin': { title: 'Tools as its own plugin', does: 'Move the Tools section into a plugin you can switch on and off.' },
-  'pending-grid-view': { title: 'Pending builds as a table', does: 'Show pending builds as a sortable table with expandable rows and bulk actions.' },
-  'share-search': { title: 'Share Search', does: 'A search bar and filter buttons you can attach to any table in any app.' },
-  'approval-costs': { title: 'Approval history with costs', does: 'A record of every approval: what it was, how long it waited and what it cost.' },
-  'veto-window': { title: 'Run unless blocked (old plan)', does: 'Older version of the countdown approvals; replaced by Veto approvals.' },
-  'axhub-github-write': { title: 'axHub can commit to GitHub', does: 'Let axHub write files and commits to your repos, each one with your approval.' },
-  'postponed-gestures': { title: 'Drag a window from anywhere', does: 'Move a window by grabbing any part of it, not just the title bar.' },
-  'plugin-theme-override': { title: 'Per-plugin look + Plugins menu', does: 'Give any plugin its own colours and style, and reach every plugin from one Plugins menu.' },
-  'assistant-approvals': { title: 'Approve from the assistant', does: 'Approval requests pop up in the AI assistant\'s title bar with a one-tap Approve.' },
-  'veto-approvals': { title: 'Veto approvals', does: 'Commands run by themselves after 3 minutes unless you tap Deny; AmberX alerts you.' },
-  'amberx-voice-wake': { title: 'AmberX silent wake word', does: 'AmberX listens silently for its wake phrase, with no system beep.' },
+  arch_foundation: { title: 'Stronger foundation', does: 'Firm rules for how layouts, themes and plugins fit together, so plugins can\'t break the app and old data keeps loading.' },
+  trim_asset: { title: 'Trims (layout + colours in one)', does: 'Save a layout and a colour scheme together as one pick you can swap in one tap.' },
+  style_package_fable: { title: 'Style packages, rebuilt', does: 'Redo the "swap all the controls\' look at once" feature properly, with better-matched starter sets.' },
+  apply_all_levels_fable: { title: 'Look + settings levels, rebuilt', does: 'Redo the "apply this look everywhere" button and the settings levels properly.' },
+  windows_terminal: { title: 'Windows-style terminal + window snapping', does: 'A terminal that feels like a Windows program, plus windows that resize from any edge and snap into place.' },
+  feature_matrix: { title: 'Feature matrix', does: 'This page: one keep/skip list for every build, with time and cost.' },
+  amberx_handsfree: { title: 'AmberX hands-free listening', does: 'Finish and ship hands-free voice listening in the AmberX app.' },
+  basic_filter: { title: 'Basic filter', does: 'Finish and ship the search-and-filter add-on for any list.' },
+  enterprise_branding: { title: 'Branding + polished look', does: 'A brand library (logos, icons, brand packs) and a full visual clean-up of AmberX and the console.' },
+  interface_roller: { title: 'Interface roller', does: 'Shuffle an app\'s whole look at random, lock the parts you like, and save the result.' },
+  tools_plugin: { title: 'Tools as its own plugin', does: 'Move the Tools section into a plugin you can switch on and off.' },
+  pending_grid_view: { title: 'Pending builds as a table', does: 'Show pending builds as a sortable table with expandable rows and bulk actions.' },
+  share_search: { title: 'Share Search', does: 'A search bar and filter buttons you can attach to any table in any app.' },
+  approval_costs: { title: 'Approval history with costs', does: 'A record of every approval: what it was, how long it waited and what it cost.' },
+  veto_window: { title: 'Run unless blocked (old plan)', does: 'Older version of the countdown approvals; replaced by Veto approvals.' },
+  axhub_github_write: { title: 'axHub can commit to GitHub', does: 'Let axHub write files and commits to your repos, each one with your approval.' },
+  postponed_gestures: { title: 'Drag a window from anywhere', does: 'Move a window by grabbing any part of it, not just the title bar.' },
+  plugin_theme_override: { title: 'Per-plugin look + Plugins menu', does: 'Give any plugin its own colours and style, and reach every plugin from one Plugins menu.' },
+  assistant_approvals: { title: 'Approve from the assistant', does: 'Approval requests pop up in the AI assistant\'s title bar with a one-tap Approve.' },
+  veto_approvals: { title: 'Veto approvals', does: 'Commands run by themselves after 3 minutes unless you tap Deny; AmberX alerts you.' },
+  amberx_voice_wake: { title: 'AmberX silent wake word', does: 'AmberX listens silently for its wake phrase, with no system beep.' },
 };
 
 /** Items, keyed by item id. */
@@ -159,5 +159,5 @@ const ITEMS_BY_SLUG = new Map(Object.entries(ITEMS).map(([k, v]) => [slug(k), v]
 /** The build an item came from: its id without the trailing step part (`-s12`, `-s7-s8`). */
 export const sourceOf = (itemId: string) => slug(itemId).replace(/(-s\d+)+$/, '');
 
-export const groupPlain = (firstItemId: string | undefined, label: string): Plain => (firstItemId ? GROUPS[sourceOf(firstItemId)] : undefined) ?? { title: firstClause(label) || 'Ungrouped', does: '' };
+export const groupPlain = (firstItemId: string | undefined, label: string): Plain => (firstItemId ? GROUPS[sourceOf(firstItemId).replace(/-/g, '_')] : undefined) ?? { title: firstClause(label) || 'Ungrouped', does: '' };
 export const itemPlain = (id: string, name: string, why: string): Plain => ITEMS_BY_SLUG.get(slug(id)) ?? { title: firstClause(name), does: why || '' };
