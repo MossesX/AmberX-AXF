@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T02:22:20.263Z",
+ "updatedAt": "2026-10-29T02:34:59.089Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4673,7 +4673,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T02:22:20.263Z",
+   "updatedAt": "2026-10-29T02:34:59.089Z",
    "builtAt": "",
    "notes": [
     {
@@ -5965,9 +5965,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:34:58.934Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s73",
@@ -5982,9 +5982,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:34:58.987Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s74",
@@ -5999,9 +5999,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:34:59.038Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s75",
@@ -6016,9 +6016,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:34:59.089Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s76",
