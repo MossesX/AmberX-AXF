@@ -23,6 +23,8 @@ export const K = {
   onOpen: 'plugins-menu.behaviour.onOpen',
   sort: 'plugins-menu.behaviour.sort',
   last: 'plugins-menu.last',
+  /** the ladder's Disable item: 'check' (a check mark while the plugin is off) or 'toggle' (Disable / Enable, no check mark) */
+  disableStyle: 'plugins-menu.ladder.disableStyle',
 } as const;
 
 export interface PluginRow {
@@ -168,4 +170,51 @@ export function compareVersions(a: string, b: string): number {
   const x = n(a), y = n(b);
   for (let i = 0; i < Math.max(x.length, y.length); i++) { const d = (x[i] ?? 0) - (y[i] ?? 0); if (d) return d; }
   return 0;
+}
+
+/* ------------------------------------------------------------------ the Plugins ladder (application menu) */
+
+/** Live list behind Plugins ▸ All plugins (application menu). */
+export const LADDER = 'plugins-menu.ladder';
+export const INFO_DIALOG = 'plugins-menu.info';
+/** Counter that is 1 while a plugin is switched off (drives the Disable check mark). */
+export const offCounter = (folder: string) => `plugins-menu.off:${folder}`;
+
+export interface LadderPlugin {
+  folder: string; name: string; enabled: boolean; icon?: string;
+  /** what Interface runs: its first page, dialog or own menu entry (none = greyed) */
+  ui?: string;
+  /** its settings tab */
+  tab?: string;
+}
+export interface LadderItem { id: string; label: string; icon?: string; action?: string; checked?: string; separator?: boolean; items?: LadderItem[] }
+
+/**
+ * One submenu per plugin (sorted by name): Interface, Settings, Documentation, About, then Disable. The Disable item
+ * is a check mark (checked while off) or a plain Disable / Enable toggle, per `style`. A plugin can't switch off the
+ * menu it lives in (`self`), and nothing switches while the console API is offline.
+ */
+export function ladderItems(list: LadderPlugin[], o: { style: 'check' | 'toggle'; self?: string; offline?: boolean }): LadderItem[] {
+  const self = o.self ?? FOLDER;
+  return [...list].sort((a, b) => a.name.localeCompare(b.name)).map((p) => {
+    const sub = `plugins-menu.ladder.${p.folder}`;
+    const off = !p.enabled;
+    const disable: LadderItem = p.folder === self
+      ? { id: `${sub}.disable`, label: "Can't switch itself off", icon: 'lock' }
+      : o.offline
+        ? { id: `${sub}.disable`, label: 'Disable (console offline)', icon: 'lock' }
+        : o.style === 'check'
+          ? { id: `${sub}.disable`, label: 'Disable', icon: 'pause', action: `plugins-menu.toggle:${p.folder}`, checked: `counter:${offCounter(p.folder)}` }
+          : { id: `${sub}.disable`, label: off ? 'Enable' : 'Disable', icon: off ? 'play' : 'pause', action: `plugins-menu.toggle:${p.folder}` };
+    return {
+      id: sub, label: off ? `${p.name} (off)` : p.name, icon: p.icon ?? 'package', items: [
+        { id: `${sub}.ui`, label: p.ui && !off ? 'Interface' : off ? 'Interface (switched off)' : 'Interface (none)', icon: 'layout', ...(p.ui && !off ? { action: p.ui } : {}) },
+        { id: `${sub}.settings`, label: p.tab && !off ? 'Settings' : 'Settings (none)', icon: 'settings', ...(p.tab && !off ? { action: `settings.open:${p.tab}` } : {}) },
+        { id: `${sub}.docs`, label: 'Documentation', icon: 'file', action: `plugins-menu.info:${p.folder}:docs` },
+        { id: `${sub}.about`, label: 'About', icon: 'info', action: `plugins-menu.info:${p.folder}:about` },
+        { id: `${sub}.s1`, label: '', separator: true },
+        disable,
+      ],
+    };
+  });
 }

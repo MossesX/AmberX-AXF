@@ -39,3 +39,7 @@
   .axp-plugins-menu__col { border: 0; padding: 0; max-height: 30vh }
   .axp-plugins-menu__filters { grid-template-columns: minmax(0, 1fr) }
 }
+.axp-plugins-menu-info { min-width: 0; }
+.axp-plugins-menu-info__dl { display: grid; grid-template-columns: max-content 1fr; gap: calc(var(--fx-space) * 0.5) var(--fx-space); margin: 0; }
+.axp-plugins-menu-info__dl dt { color: var(--fx-muted); }
+.axp-plugins-menu-info__dl dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
