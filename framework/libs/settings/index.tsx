@@ -18,6 +18,7 @@ import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable,
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, IconButton, LookEditor, ModelBadge, Segmented, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
+import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -86,6 +87,7 @@ function SettingsLevelBar({ level, actions }: { level: SettingsLevel; actions?: 
       <span className="fx-muted fx-look__levelhint axf-settings__levelhint">{SETTINGS_LEVEL_HINT[level]}</span>
       <span className="axf-settings__levelbar-actions">
         {actions}
+        <Button size="sm" tone="quiet" icon="edit" onClick={() => rt.openDialog(LEVEL_EDITOR_DIALOG)} title="Pick which settings each level shows">Edit levels</Button>
         <IconButton icon="more" label="Level toolbar menu" onClick={(e) => openMenu(e.currentTarget)} />
       </span>
     </div>
@@ -1017,7 +1019,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS;
+  el.textContent = CSS + LEVELS_CSS;
   doc.head.appendChild(el);
 }
 
@@ -1067,7 +1069,16 @@ export const library: AxfWebLibrary = {
     rt.addContextItems({ id: 'axf.settings.levelbar.ctx', module: SETTINGS_LIBRARY_ID, target: SETTINGS_LEVEL_CTX, order: 1, items: [
       ...SETTINGS_LEVELS.map((l) => ({ id: `axf-settings-level-${l}`, label: SETTINGS_LEVEL_LABEL[l], action: `settings.level:${l}` })),
       { id: 'axf-settings-levelbar-sep', separator: true },
+      { id: 'axf-settings-levels-edit', label: 'Edit levels…', icon: 'edit', action: LEVEL_EDITOR_ACTIONS.open },
       { id: 'axf-settings-levelbar-hide', label: 'Hide this toolbar', icon: 'eye', action: 'settings.levelbar:off' },
+    ] });
+    // The level editor dialog (Brett, Oct 28 2026): its tree's right-click menu acts on the editor's selection.
+    rt.actions.register(LEVEL_EDITOR_ACTIONS.open, () => rt.openDialog(LEVEL_EDITOR_DIALOG), { label: 'Edit settings levels' });
+    rt.actions.register(LEVEL_EDITOR_ACTIONS.add, () => levelEditorAct('add'), { label: 'Add the selected settings to the level' });
+    rt.actions.register(LEVEL_EDITOR_ACTIONS.remove, () => levelEditorAct('remove'), { label: 'Remove the selected settings from the level' });
+    rt.addContextItems({ id: 'axf.settings.leveleditor.ctx', module: SETTINGS_LIBRARY_ID, target: LEVEL_EDITOR_CTX, order: 1, items: [
+      { id: 'axf-settings-levels-add', label: 'Add to visible', icon: 'plus', action: LEVEL_EDITOR_ACTIONS.add },
+      { id: 'axf-settings-levels-remove', label: 'Remove', icon: 'minus', action: LEVEL_EDITOR_ACTIONS.remove },
     ] });
     rt.actions.register('settings.open', ([tab]) => {
       rt.navigate(VIEW);
@@ -1081,6 +1092,9 @@ export const library: AxfWebLibrary = {
     [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> },
     // Banners on their own: the page a host shows in its own settings (embed@1 page `banners`, Patches' Banners tab).
     [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
+  },
+  dialogs: {
+    [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
   },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
