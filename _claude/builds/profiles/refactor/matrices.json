@@ -1,16 +1,16 @@
 {
  "$axf": "feature-matrix@0",
  "note": "Draft data until feature-matrix s1 (feature-matrix@1) lands; s1 adopts it as-is. Items are never deleted: keep=false means skip.",
- "updatedAt": "2026-10-28T23:25:00.000Z",
+ "updatedAt": "2026-10-29T01:35:00.000Z",
  "matrices": [
   {
    "build": "refactor-all",
    "profile": "refactor",
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-28T23:25:00.000Z",
-   "minutesKept": 2195,
-   "minutesSkipped": 625,
+   "updatedAt": "2026-10-29T01:35:00.000Z",
+   "minutesKept": 835,
+   "minutesSkipped": 1960,
    "items": [
     {
      "id": "arch-foundation:s1",
@@ -20,7 +20,7 @@
      "sourceStep": "s1",
      "model": "Fable",
      "minutes": 20,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -32,7 +32,7 @@
      "sourceStep": "s2",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -44,7 +44,7 @@
      "sourceStep": "s3",
      "model": "Fable",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -56,7 +56,7 @@
      "sourceStep": "s4",
      "model": "Fable",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -68,7 +68,7 @@
      "sourceStep": "s5",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -80,7 +80,7 @@
      "sourceStep": "s6",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -92,7 +92,7 @@
      "sourceStep": "s7",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -104,7 +104,7 @@
      "sourceStep": "s1",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -116,7 +116,7 @@
      "sourceStep": "s2",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -128,7 +128,7 @@
      "sourceStep": "s1",
      "model": "Fable",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -140,7 +140,7 @@
      "sourceStep": "s2",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -152,7 +152,7 @@
      "sourceStep": "s3",
      "model": "Fable",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -164,7 +164,7 @@
      "sourceStep": "s4",
      "model": "Fable",
      "minutes": 15,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -176,7 +176,7 @@
      "sourceStep": "s1",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -188,7 +188,7 @@
      "sourceStep": "s2",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -200,7 +200,7 @@
      "sourceStep": "s4",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -296,7 +296,7 @@
      "sourceStep": "s1",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z",
      "done": true,
@@ -311,7 +311,7 @@
      "sourceStep": "s2",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z",
      "done": true,
@@ -509,7 +509,7 @@
      "sourceStep": "s11",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -521,7 +521,7 @@
      "sourceStep": "s12",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -533,7 +533,7 @@
      "sourceStep": "s13",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -545,7 +545,7 @@
      "sourceStep": "s14",
      "model": "Opus",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -557,7 +557,7 @@
      "sourceStep": "s15",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -569,7 +569,7 @@
      "sourceStep": "s8",
      "model": "Opus",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -581,7 +581,7 @@
      "sourceStep": "s9",
      "model": "Opus",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -593,7 +593,7 @@
      "sourceStep": "s10",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -605,7 +605,7 @@
      "sourceStep": "s11",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -617,7 +617,7 @@
      "sourceStep": "s12",
      "model": "Opus",
      "minutes": 20,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -629,7 +629,7 @@
      "sourceStep": "s3",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -641,7 +641,7 @@
      "sourceStep": "s4",
      "model": "Opus",
      "minutes": 20,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -653,7 +653,7 @@
      "sourceStep": "s1",
      "model": "Opus",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -665,7 +665,7 @@
      "sourceStep": "s2",
      "model": "Opus",
      "minutes": 20,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -677,7 +677,7 @@
      "sourceStep": "s4",
      "model": "Opus",
      "minutes": 15,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -689,7 +689,7 @@
      "sourceStep": "s1",
      "model": "Opus",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -701,7 +701,7 @@
      "sourceStep": "s2",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -713,7 +713,7 @@
      "sourceStep": "s3",
      "model": "Opus",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -725,7 +725,7 @@
      "sourceStep": "s4",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -737,7 +737,7 @@
      "sourceStep": "s5",
      "model": "Opus",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -749,7 +749,7 @@
      "sourceStep": "s6",
      "model": "Opus",
      "minutes": 20,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -761,7 +761,7 @@
      "sourceStep": "s3",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -773,7 +773,7 @@
      "sourceStep": "s4",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -785,7 +785,7 @@
      "sourceStep": "s5",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -797,7 +797,7 @@
      "sourceStep": "s6",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -809,7 +809,7 @@
      "sourceStep": "s7",
      "model": "Opus",
      "minutes": 20,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -821,7 +821,7 @@
      "sourceStep": "s8",
      "model": "Opus",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
@@ -1109,7 +1109,7 @@
      "sourceStep": "s1",
      "model": "Fable",
      "minutes": 25,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:50:00.000Z"
     },
@@ -1121,7 +1121,7 @@
      "sourceStep": "s2",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:50:00.000Z"
     },
@@ -1133,7 +1133,7 @@
      "sourceStep": "s3",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:50:00.000Z"
     },
@@ -1145,7 +1145,7 @@
      "sourceStep": "s7+s8",
      "model": "Opus",
      "minutes": 15,
-     "keep": true,
+     "keep": false,
      "why": "",
      "addedAt": "2026-10-28T19:50:00.000Z",
      "done": true,
@@ -1208,7 +1208,7 @@
      "sourceStep": "s1",
      "model": "Fable",
      "minutes": 30,
-     "keep": true,
+     "keep": false,
      "why": "cross-app contract, console + AmberX",
      "addedAt": "2026-10-28T23:25:00.000Z"
     },
@@ -1264,7 +1264,8 @@
    "page": "https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS",
    "pageDb": "matrix/refactor-all",
    "minutesDone": 100,
-   "minutesLeft": 1955
+   "minutesLeft": 1955,
+   "appliedAt": "2026-10-29T01:35:00.000Z"
   }
  ]
 }

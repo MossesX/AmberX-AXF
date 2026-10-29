@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-28T23:21:28.363Z",
+ "updatedAt": "2026-10-29T01:29:19.243Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -52,6 +52,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -72,6 +73,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -90,6 +92,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -110,6 +113,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -128,6 +132,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -144,6 +149,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -164,6 +170,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -180,6 +187,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -196,6 +204,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -240,6 +249,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -256,6 +266,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -272,6 +283,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -290,6 +302,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -308,6 +321,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -324,6 +338,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -340,6 +355,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -358,6 +374,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -374,6 +391,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -390,6 +408,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -406,6 +425,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -424,6 +444,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -511,6 +532,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.097Z",
      "note": ""
@@ -529,6 +551,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -547,6 +570,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -565,6 +589,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -581,6 +606,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -597,6 +623,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.166Z",
      "note": ""
@@ -613,6 +640,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.238Z",
      "note": ""
@@ -629,6 +657,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.306Z",
      "note": ""
@@ -645,6 +674,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.375Z",
      "note": ""
@@ -661,6 +691,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.433Z",
      "note": ""
@@ -677,6 +708,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:55.597Z",
      "note": ""
@@ -693,6 +725,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.047Z",
      "note": ""
@@ -709,6 +742,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.101Z",
      "note": ""
@@ -725,6 +759,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.151Z",
      "note": ""
@@ -741,6 +776,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.205Z",
      "note": ""
@@ -759,6 +795,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:44:28.329Z",
      "note": ""
@@ -777,6 +814,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:46:52.502Z",
      "note": ""
@@ -793,6 +831,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:51:14.262Z",
      "note": ""
@@ -809,6 +848,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:31:42.318Z",
      "note": ""
@@ -825,6 +865,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:31:42.369Z",
      "note": ""
@@ -841,6 +882,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:34:14.770Z",
      "note": ""
@@ -857,6 +899,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:34:14.844Z",
      "note": ""
@@ -873,6 +916,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:42:08.861Z",
      "note": ""
@@ -889,6 +933,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:42:08.934Z",
      "note": ""
@@ -905,6 +950,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:47:13.405Z",
      "note": ""
@@ -921,6 +967,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:47:13.482Z",
      "note": ""
@@ -937,6 +984,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:50:08.047Z",
      "note": ""
@@ -953,6 +1001,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:50:08.100Z",
      "note": ""
@@ -969,6 +1018,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:51:10.874Z",
      "note": ""
@@ -985,6 +1035,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:55:00.852Z",
      "note": ""
@@ -1001,6 +1052,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:55:00.906Z",
      "note": ""
@@ -1017,6 +1069,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:56:06.767Z",
      "note": ""
@@ -1033,6 +1086,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1049,6 +1103,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1065,6 +1120,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1083,6 +1139,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -1101,6 +1158,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1117,6 +1175,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1133,6 +1192,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1151,6 +1211,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1167,6 +1228,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1183,6 +1245,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1199,6 +1262,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1215,6 +1279,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1231,6 +1296,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1247,6 +1313,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1310,6 +1377,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:58:54.888Z",
      "note": ""
@@ -1326,6 +1394,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:58:54.951Z",
      "note": ""
@@ -1342,6 +1411,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:03:25.215Z",
      "note": ""
@@ -1358,6 +1428,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:08:35.374Z",
      "note": ""
@@ -1374,6 +1445,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:08:35.445Z",
      "note": ""
@@ -1390,6 +1462,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.746Z",
      "note": ""
@@ -1406,6 +1479,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.816Z",
      "note": ""
@@ -1422,6 +1496,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.876Z",
      "note": ""
@@ -1438,6 +1513,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.927Z",
      "note": ""
@@ -1454,6 +1530,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.983Z",
      "note": ""
@@ -1470,6 +1547,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1486,6 +1564,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1502,6 +1581,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1518,6 +1598,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1534,6 +1615,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1580,6 +1662,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1598,6 +1681,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1614,6 +1698,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1630,6 +1715,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1646,6 +1732,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1662,6 +1749,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1706,6 +1794,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1722,6 +1811,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1738,6 +1828,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1754,6 +1845,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1818,6 +1910,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:35:41.594Z",
      "note": ""
@@ -1834,6 +1927,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:41:13.352Z",
      "note": ""
@@ -1850,6 +1944,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:45:58.111Z",
      "note": ""
@@ -1866,6 +1961,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:46:34.469Z",
      "note": ""
@@ -1882,6 +1978,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1898,6 +1995,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1914,6 +2012,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1930,6 +2029,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1946,6 +2046,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1962,6 +2063,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1978,6 +2080,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1994,6 +2097,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2017,6 +2121,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2040,6 +2145,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2056,6 +2162,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2103,6 +2210,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2119,6 +2227,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2135,6 +2244,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2151,6 +2261,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2199,6 +2310,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2215,6 +2327,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2231,6 +2344,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2247,6 +2361,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2295,6 +2410,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2311,6 +2427,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2327,6 +2444,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2343,6 +2461,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2383,6 +2502,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.444Z",
      "note": ""
@@ -2399,6 +2519,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.492Z",
      "note": ""
@@ -2415,6 +2536,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.545Z",
      "note": ""
@@ -2431,6 +2553,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2466,6 +2589,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:37:06.746Z",
      "note": ""
@@ -2482,6 +2606,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:37:06.797Z",
      "note": ""
@@ -2498,6 +2623,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:47:48.682Z",
      "note": ""
@@ -2514,6 +2640,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:47:48.739Z",
      "note": ""
@@ -2530,6 +2657,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:46:16.982Z",
      "note": ""
@@ -2546,6 +2674,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.655Z",
      "note": ""
@@ -2562,6 +2691,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.741Z",
      "note": ""
@@ -2578,6 +2708,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.810Z",
      "note": ""
@@ -2594,6 +2725,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.507Z",
      "note": ""
@@ -2610,6 +2742,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.574Z",
      "note": ""
@@ -2626,6 +2759,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.638Z",
      "note": ""
@@ -2642,6 +2776,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.678Z",
      "note": ""
@@ -2658,6 +2793,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.720Z",
      "note": ""
@@ -2674,6 +2810,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:41:50.166Z",
      "note": ""
@@ -2690,6 +2827,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T02:35:09.742Z",
      "note": ""
@@ -2730,6 +2868,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T03:05:25.022Z",
      "note": ""
@@ -2765,6 +2904,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.242Z",
      "note": ""
@@ -2781,6 +2921,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.296Z",
      "note": ""
@@ -2797,6 +2938,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.343Z",
      "note": ""
@@ -2813,6 +2955,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.392Z",
      "note": ""
@@ -2829,6 +2972,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.446Z",
      "note": ""
@@ -2869,6 +3013,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T05:10:31.767Z",
      "note": ""
@@ -2909,6 +3054,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T05:05:08.295Z",
      "note": ""
@@ -2949,6 +3095,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:01:41.167Z",
      "note": ""
@@ -2965,6 +3112,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:01:41.230Z",
      "note": ""
@@ -2981,6 +3129,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:11:22.287Z",
      "note": ""
@@ -3021,6 +3170,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:42:12.883Z",
      "note": ""
@@ -3037,6 +3187,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:42:12.969Z",
      "note": ""
@@ -3053,6 +3204,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:52:00.523Z",
      "note": ""
@@ -3088,6 +3240,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.823Z",
      "note": ""
@@ -3104,6 +3257,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.909Z",
      "note": ""
@@ -3120,6 +3274,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.973Z",
      "note": ""
@@ -3136,6 +3291,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:15:00.036Z",
      "note": ""
@@ -3152,6 +3308,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.310Z",
      "note": ""
@@ -3168,6 +3325,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.378Z",
      "note": ""
@@ -3184,6 +3342,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.462Z",
      "note": ""
@@ -3200,6 +3359,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.543Z",
      "note": ""
@@ -3216,6 +3376,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.619Z",
      "note": ""
@@ -3232,6 +3393,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.697Z",
      "note": ""
@@ -3248,6 +3410,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.770Z",
      "note": ""
@@ -3264,6 +3427,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.837Z",
      "note": ""
@@ -3280,6 +3444,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.898Z",
      "note": ""
@@ -3296,6 +3461,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:29:37.266Z",
      "note": ""
@@ -3340,6 +3506,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3356,6 +3523,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3372,6 +3540,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3388,6 +3557,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3404,6 +3574,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3420,6 +3591,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3436,6 +3608,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3452,6 +3625,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3492,6 +3666,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3508,6 +3683,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3524,6 +3700,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3572,6 +3749,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3588,6 +3766,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3604,6 +3783,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3620,6 +3800,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3660,6 +3841,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:41:17.287Z",
      "note": ""
@@ -3700,6 +3882,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T16:55:24.189Z",
      "note": ""
@@ -3744,6 +3927,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:20:20.040Z",
      "note": ""
@@ -3760,6 +3944,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.183Z",
      "note": ""
@@ -3776,6 +3961,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.244Z",
      "note": ""
@@ -3792,6 +3978,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.312Z",
      "note": ""
@@ -3808,6 +3995,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.380Z",
      "note": ""
@@ -3824,6 +4012,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.456Z",
      "note": ""
@@ -3840,6 +4029,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3880,6 +4070,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T16:58:54.074Z",
      "note": ""
@@ -3896,6 +4087,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:17:09.876Z",
      "note": ""
@@ -3912,6 +4104,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:20:18.551Z",
      "note": ""
@@ -3928,6 +4121,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:20:18.607Z",
      "note": ""
@@ -3944,6 +4138,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T18:14:23.585Z",
      "note": ""
@@ -3960,6 +4155,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3976,6 +4172,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3992,6 +4189,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4008,6 +4206,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4024,6 +4223,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4040,6 +4240,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4056,6 +4257,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4100,6 +4302,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4140,6 +4343,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4156,6 +4360,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4172,6 +4377,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4188,6 +4394,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4204,6 +4411,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4220,6 +4428,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4236,6 +4445,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4252,6 +4462,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4296,6 +4507,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4312,6 +4524,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4328,6 +4541,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4344,6 +4558,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4360,6 +4575,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4404,6 +4620,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:46.881Z",
      "note": ""
@@ -4420,6 +4637,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:46.949Z",
      "note": ""
@@ -4436,6 +4654,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:47.023Z",
      "note": ""
@@ -4454,7 +4673,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-28T23:21:28.362Z",
+   "updatedAt": "2026-10-29T01:29:19.242Z",
    "builtAt": "",
    "notes": [
     {
@@ -4478,7 +4697,26 @@
      "at": "2026-10-28T23:21:28.362Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-29T01:29:16.654Z"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-10-29T01:29:16.707Z"
+    },
+    {
+     "phase": 3,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-29T01:29:16.757Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -4496,6 +4734,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4512,6 +4751,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4528,6 +4768,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4546,6 +4787,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4564,6 +4806,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4580,6 +4823,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4596,6 +4840,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4615,6 +4860,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4631,6 +4877,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4647,6 +4894,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4663,6 +4911,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4679,6 +4928,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4695,6 +4945,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4711,6 +4962,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4727,6 +4979,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4743,6 +4996,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4759,6 +5013,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4775,6 +5030,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4791,6 +5047,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4807,6 +5064,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4823,6 +5081,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4839,6 +5098,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4855,6 +5115,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4871,6 +5132,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:43:14.152Z",
      "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-core.mjs, fixture + check-feature-matrix.mjs; see _claude/memory/docs/feature-matrix.md on that branch"
@@ -4887,6 +5149,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:43:14.236Z",
      "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-apply.mjs + skip/fm support in orchestrator/pending/build-queue/changes cores; merge or cherry-pick that branch before s62"
@@ -4903,6 +5166,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4919,6 +5183,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4935,6 +5200,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4951,6 +5217,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4967,9 +5234,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T01:29:16.807Z",
+     "note": "PR #155 merged Oct 28 (Basic filter live)"
     },
     {
      "id": "s28",
@@ -4983,6 +5251,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4999,6 +5268,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5015,6 +5285,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5033,6 +5304,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5049,6 +5321,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5065,6 +5338,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5083,6 +5357,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5099,6 +5374,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5115,6 +5391,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5131,6 +5408,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5147,6 +5425,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5163,6 +5442,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5179,6 +5459,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5195,6 +5476,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5211,6 +5493,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5227,6 +5510,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5243,6 +5527,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5259,6 +5544,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5277,6 +5563,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5293,6 +5580,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5309,6 +5597,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5325,6 +5614,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5343,6 +5633,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5359,6 +5650,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5375,6 +5667,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5391,6 +5684,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5407,6 +5701,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5423,6 +5718,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5441,6 +5737,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5459,6 +5756,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5475,6 +5773,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5491,6 +5790,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5507,6 +5807,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5523,6 +5824,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5539,6 +5841,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5555,6 +5858,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5571,6 +5875,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5587,6 +5892,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5603,6 +5909,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5619,6 +5926,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5635,9 +5943,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T01:29:16.860Z",
+     "note": "PR #161 merged Oct 28"
     },
     {
      "id": "s72",
@@ -5651,6 +5960,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5667,6 +5977,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5683,6 +5994,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5699,6 +6011,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5718,6 +6031,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5734,6 +6048,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5750,6 +6065,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5766,6 +6082,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5782,6 +6099,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
