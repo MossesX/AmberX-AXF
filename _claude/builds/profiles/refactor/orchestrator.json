@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T02:57:11.636Z",
+ "updatedAt": "2026-10-29T03:15:29.557Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4666,15 +4666,15 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T02:57:11.635Z",
-   "builtAt": "",
+   "updatedAt": "2026-10-29T03:15:29.557Z",
+   "builtAt": "2026-10-29T03:15:29.557Z",
    "notes": [
     {
      "text": "Made from every unfinished Refactor build on Brett's stop order (15:26 EDT). Matrix: matrices.json → refactor-all.",
@@ -5256,9 +5256,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:28.918Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s29",
@@ -5273,9 +5273,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:28.968Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s30",
@@ -5290,9 +5290,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.018Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s31",
@@ -5309,9 +5309,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.068Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s32",
@@ -5326,9 +5326,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.122Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s33",
@@ -5343,9 +5343,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.172Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s34",
@@ -5362,9 +5362,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.222Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s35",
@@ -5379,9 +5379,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.270Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s36",
@@ -5396,9 +5396,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.335Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s37",
@@ -5413,9 +5413,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.388Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s38",
@@ -5430,9 +5430,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.439Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s39",
@@ -5447,9 +5447,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.491Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s40",
@@ -5464,9 +5464,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.557Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s41",
