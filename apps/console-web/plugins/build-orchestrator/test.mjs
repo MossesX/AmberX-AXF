@@ -52,4 +52,13 @@ cli.act({ action: 'step', id: 'cli', step: 's1' });
 t('CLI saves the tracker', () => { const f = JSON.parse(readFileSync(process.env.AXF_ORCH_FILE, 'utf8')); assert.equal(f.$axf, 'orchestrator@1'); assert.equal(f.builds[0].status, 'complete'); });
 const repo = JSON.parse(readFileSync(new URL('../../../../_claude/builds/orchestrator.json', import.meta.url), 'utf8'));
 t('repo tracker is valid', () => { const st = c.normalizeState(repo); assert.ok(st.builds.length >= 1); for (const bb of st.builds) assert.equal(c.splitCheck(bb, st.rules).needsSplit, false, bb.id); });
+// feature-matrix@1 Apply engine output (framework/spec/fixtures/feature-matrix.json): skipped steps leave sums, next and the brief
+const fmx = JSON.parse(readFileSync(new URL('../../../../framework/spec/fixtures/feature-matrix.json', import.meta.url), 'utf8'));
+t('matrix-applied build: skipped step leaves progress, phases and the brief', () => {
+  const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
+  assert.equal(c.progress(b2).minutesLeft, 60); assert.equal(c.progress(b2).skipped, 1);
+  const ph = c.phases(b2); assert.equal(ph[1].minutesLeft, 35); assert.equal(ph[1].groups[0].skipped, 1);
+  const one = { ...b2, steps: b2.steps.map((st) => ({ ...st, model: 'Fable' })) };
+  assert.match(c.brief(one), /\[skip\] s3/); assert.match(c.brief(one), /\[ \] fm-dark-mode-shots/); assert.match(c.brief(one), /3 left, ~1 h/);
+});
 console.log(`build-orchestrator: ${n} checks passed`);
