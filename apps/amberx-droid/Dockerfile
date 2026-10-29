@@ -13,7 +13,7 @@ WORKDIR /repo/apps/amberx-droid
 COPY apps/amberx-droid/package.json apps/amberx-droid/package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 COPY apps/console-web/plugins /repo/apps/console-web/plugins
-COPY apps/console-web/src/changeBatch.tsx apps/console-web/src/changeBatch.css /repo/apps/console-web/src/
+COPY apps/console-web/src/changeBatch.tsx apps/console-web/src/changeBatch.css apps/console-web/src/emptyState.tsx /repo/apps/console-web/src/
 COPY apps/amberx-droid/ .
 RUN npm run build
 
