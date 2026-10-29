@@ -6,7 +6,9 @@
  */
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { restoreApplied } from './apply';
 import { BrandLibrary } from './BrandLibrary';
+import { Preview } from './Preview';
 import { FOLDER, ID, VIEW } from './model';
 import './brand-library.css';
 import { appMenu } from './menu';
@@ -15,7 +17,7 @@ function Page() {
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Brand library</h1><p className="fx-muted">Every logo, animated logo, icon pack and branding package the framework ships, ready to preview and apply.</p></div></header>
-      <BrandLibrary />
+      <BrandLibrary renderPreview={(p) => <Preview {...p} />} />
     </div>
   );
 }
@@ -26,6 +28,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   register(rt) {
+    void restoreApplied(rt);
     rt.actions.register('brand-library.open', () => rt.navigate(VIEW), { label: 'Open the brand library' });
   },
   views: { [VIEW]: { title: 'Brand library', icon: 'star', keywords: ['brand', 'logo', 'logos', 'animated', 'icon pack', 'icons', 'branding', 'mark'], render: () => <Page /> } },
