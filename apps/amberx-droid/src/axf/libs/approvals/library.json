@@ -1,0 +1,20 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.approvals",
+  "module": "lib-approvals",
+  "name": "Approvals badge (axHub approvals + held calls in any title bar, click to decide)",
+  "description": "Everything axHub is waiting on, for any AXF app's title bar (Brett, Oct 28 2026: \"Make approvals pop up in the assistant's title bar, click to approve\"). One list from the hub's approvals feed with the app's own hub session (lib-hub's read rules): calls waiting for an approval (title and description from the caller's reason, tool, age, approval link, the hub's decisions) and held veto@1 calls (live countdown, Deny only, never Approve). Live: polled every 5 s while the page is visible, on focus, on the axf:hub-check event and on a push (the hub has no approvals event stream yet). The badge shows the count and draws nothing when nothing waits; its popover lists each item with Approve / Decline or Deny, a result toast and All approvals on axHub. Deciding: the app's own path (setApprovalsHost decide, e.g. the AmberX phone's hub web view and native Deny), directly from a page on the hub's own origin (POST /auth/api/approvals/<id> with CSRF, veto Deny), the hub's approval page framed inside the popover where the hub allows it (AXHUB_APPROVALS_FRAME_ANCESTORS), else the page opens. requestApprovalsOpen(id) opens the popover from a notification tap. No new contract (approval-badge@1 was skipped): built over lib-hub hub.ts + veto.ts. Built Oct 28 2026 (Opus).",
+  "features": [],
+  "dependsOn": ["ai.amberx.axf.hub"],
+  "manifestKey": "libraries.approvals",
+  "params": [
+    { "key": "hub", "label": "axHub address", "type": "text", "default": "https://axhub.amberxai.com", "help": "Used when the app has no hub of its own. https only." },
+    { "key": "everyMs", "label": "Check every (ms)", "type": "number", "default": 5000, "help": "2000–300000, while the page is visible." }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/approvals" } },
+  "placeholders": [
+    { "capability": "axf.approvals.live", "note": "An approvals event stream from the hub (SSE / data-events) instead of polling; ApprovalsWatcher.push is the entry point." },
+    { "capability": "axf.approvals.contract", "note": "approval-badge@1 cross-port contract + fixture (Fable step, skipped by Brett Oct 28 2026)." },
+    { "capability": "axf.approvals.android", "note": "Compose twin — Android framework work is on hold." }
+  ]
+}
