@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T03:53:16.932Z",
+ "updatedAt": "2026-10-29T05:38:10.963Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4666,15 +4666,15 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "complete",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T03:50:54.985Z",
-   "builtAt": "2026-10-29T03:15:29.557Z",
+   "updatedAt": "2026-10-29T05:38:10.962Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Made from every unfinished Refactor build on Brett's stop order (15:26 EDT). Matrix: matrices.json → refactor-all.",
@@ -4703,6 +4703,10 @@
     {
      "text": "Merged Oct 28 2026 23:50 EDT: AXF #166 + axHub #18. Hub migration after redeploy: axhub services veto vps run 180 30; same for logs.",
      "at": "2026-10-29T03:50:54.985Z"
+    },
+    {
+     "text": "Oct 29 2026 01:13 EDT (Brett): AmberX voice control constantly triggers the tone; make it like ActiveX. Decision: hybrid — silent Vosk wake listener, Google recognizer only after the trigger for one utterance, tone muted. Steps s87–s89, run now.",
+     "at": "2026-10-29T05:38:10.962Z"
     }
    ],
    "approvals": [
@@ -6210,6 +6214,57 @@
      "done": true,
      "doneAt": "2026-10-29T02:01:47.901Z",
      "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+    },
+    {
+     "id": "s87",
+     "text": "[amberx-voice-wake s1] AmberX (Capacitor shell, apps/amberx-droid/android): silent offline wake listener like ActiveX — Vosk (small en model bundled or downloaded once) running in the hands-free foreground service, matching the trigger phrases (the app's wake phrase + 'always armed' off by default), no system tone; replaces SpeechRecognizer for idle listening",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "amberx-voice-wake",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s88",
+     "text": "[amberx-voice-wake s2] After a trigger: start Android SpeechRecognizer (Google) for one utterance, feed the result to the existing voice plugin pipeline, then back to the silent Vosk idle; mute the recognizer's start/stop tones (AudioManager on the notification/system streams around the call) with a setting 'play tone on trigger' default off; overlay shows wake vs listening state",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "amberx-voice-wake",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s89",
+     "text": "[amberx-voice-wake s3] Settings (Voice): trigger phrases list like ActiveX (dense single column, add/remove), sensitivity, tone switch; tests (test.mjs + Java unit where possible), CI compiles the Java, docs (STATUS, _claude/memory/docs/amberx-voice-wake.md), THREADS, PR + merge approval",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "amberx-voice-wake",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": ""
     }
    ]
   },

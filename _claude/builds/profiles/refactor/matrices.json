@@ -1,15 +1,15 @@
 {
  "$axf": "feature-matrix@0",
  "note": "Draft data until feature-matrix s1 (feature-matrix@1) lands; s1 adopts it as-is. Items are never deleted: keep=false means skip.",
- "updatedAt": "2026-10-29T03:30:00.000Z",
+ "updatedAt": "2026-10-29T05:20:00.000Z",
  "matrices": [
   {
    "build": "refactor-all",
    "profile": "refactor",
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T03:30:00.000Z",
-   "minutesKept": 0,
+   "updatedAt": "2026-10-29T05:20:00.000Z",
+   "minutesKept": 85,
    "minutesSkipped": 1960,
    "items": [
     {
@@ -1436,6 +1436,42 @@
      "done": true,
      "doneAt": "2026-10-29T03:30:00.000Z",
      "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
+    },
+    {
+     "id": "amberx-voice-wake:s1",
+     "name": "Silent offline wake listener (Vosk, trigger phrases like ActiveX) in the hands-free service; no system tone",
+     "group": "AmberX voice wake: silent Vosk idle, Google after the trigger, no tone (Brett, Oct 29 01:13)",
+     "source": "amberx-voice-wake",
+     "sourceStep": "s1",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-29T05:20:00.000Z"
+    },
+    {
+     "id": "amberx-voice-wake:s2",
+     "name": "Google recognizer only after the trigger, one utterance, back to silent idle; tones muted (setting)",
+     "group": "AmberX voice wake: silent Vosk idle, Google after the trigger, no tone (Brett, Oct 29 01:13)",
+     "source": "amberx-voice-wake",
+     "sourceStep": "s2",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-29T05:20:00.000Z"
+    },
+    {
+     "id": "amberx-voice-wake:s3",
+     "name": "Voice settings: trigger phrases, sensitivity, tone switch; tests, docs, PR + merge approval",
+     "group": "AmberX voice wake: silent Vosk idle, Google after the trigger, no tone (Brett, Oct 29 01:13)",
+     "source": "amberx-voice-wake",
+     "sourceStep": "s3",
+     "model": "Opus",
+     "minutes": 25,
+     "keep": true,
+     "why": "",
+     "addedAt": "2026-10-29T05:20:00.000Z"
     }
    ],
    "page": "https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS",
