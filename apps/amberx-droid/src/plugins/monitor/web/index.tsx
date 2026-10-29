@@ -125,7 +125,7 @@ export const library: AxfWebLibrary = {
   dependsOn: ['ai.amberx.amberx.voice'],
   provides: ['amberx.monitor'],
   views: { monitor: { title: 'Monitor', icon: 'eye', keywords: ['monitor', 'watch', 'background', 'alerts', 'auto approve'], render: () => <MonitorView /> } },
-  nav: { label: 'Monitor', items: [{ id: 'monitor', label: 'Monitor', icon: 'eye', view: 'monitor' }] },
+  nav: { label: 'Work', items: [{ id: 'monitor', label: 'Monitor', icon: 'eye', view: 'monitor' }] },
   settingsTabs: [{ id: 'monitor', label: 'Monitoring', icon: 'eye', order: 21, parent: 'plugins' }],
   settings: [
     {

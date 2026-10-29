@@ -137,7 +137,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const { readFileSync, existsSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
-  const own = { banner: 'amberx-thin', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'amberx-droid', 'app-menu': 'amberx-droid' };
+  const own = { banner: 'amberx-branded', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'amberx-droid', 'app-menu': 'amberx-droid' };
   for (const [type, id] of Object.entries(own)) {
     eq(man.defaults[type], id, `default ${type} is ${id}`);
     ok(existsSync(`${here}src/assets/${type}/${id}.json`), `ships ${type}/${id}`);
@@ -147,6 +147,39 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const libs = [...app.matchAll(/from '\.\/axf\/libs\/([a-z-]+)/g)].map((m) => m[1]).sort();
   for (const l of libs) ok(['hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
   ok(!/plugins\//.test(app), 'no console plugin is imported');
+}
+
+// Enterprise design language + branding (enterprise-branding s31, Oct 28 2026): the app names its own design package
+// and the AmberX branding package; every asset they name ships with the app, and the banner stays one line (§11).
+{
+  const { readFileSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  const read = (t, id) => JSON.parse(readFileSync(`${here}src/assets/${t}/${id}.json`, 'utf8'));
+  eq(man.defaults['design-package'], 'amberx-app-day', 'default design package is AmberX · Day');
+  eq(man.defaults.branding, 'amberx-app', 'default branding is the AmberX app branding package');
+  for (const id of ['amberx-app-day', 'amberx-app-night']) {
+    ok(existsSync(`${here}src/assets/design-package/${id}.json`), `ships design-package/${id}`);
+    const d = read('design-package', id).data;
+    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(existsSync(`${here}src/assets/${t}/${d[t]}.json`), `${id}: ${t} ${d[t]} ships`);
+    for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(existsSync(`${here}src/assets/${t}/${sid}.json`), `${id}: ${t} ${sid} ships`);
+    if (id === 'amberx-app-day') for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) eq(man.defaults[t], d[t], `default ${t} matches the default design package`);
+  }
+  const b = read('branding', 'amberx-app').data;
+  for (const [slot, mode] of Object.entries({ banner: 'lockup', toolbar: 'none', container: 'none', 'tab-group': 'none', dialog: 'mark', window: 'mark' })) eq(b.decorations[slot], mode, `brand ${slot} = ${mode} (DESIGN-LANGUAGE §10)`);
+  for (const [k, mid] of Object.entries(b.marks)) ok(existsSync(`${here}src/assets/${k === 'animated' ? 'animated-logo' : 'logo-mark'}/${mid}.json`), `branding ${k} ${mid} ships`);
+  ok(existsSync(`${here}src/assets/icon-pack/${b.iconPack}.json`), `branding icon pack ${b.iconPack} ships`);
+  eq(b.brand.name, 'AmberX', 'the brand is AmberX');
+  const banner = read('banner', 'amberx-branded').data;
+  ok(banner.height >= 24 && banner.height <= 40, 'the banner is one line, 24–40 px');
+  ok(banner.logo.show === true, 'the banner shows the brand lockup');
+  const tb = read('toolbar', 'amberx-droid').data;
+  const tbItems = tb.groups.reduce((n, g) => n + g.items.length + (g.provider ? (g.max ?? 0) : 0), 0);
+  ok(tbItems <= 12, `toolbar shows at most 12 items (${tbItems})`);
+  ok(read('nav-menu', 'amberx-droid').data.sections.every((s) => typeof s.label === 'string' && s.label), 'every nav section has an eyebrow');
+  ok(read('app-menu', 'amberx-droid').data.menus.length <= 9, 'at most 9 top menus');
+  const sw = read('theme-switch', man.defaults['theme-switch']).data;
+  ok(existsSync(`${here}src/assets/color-theme/${sw.light}.json`) && existsSync(`${here}src/assets/color-theme/${sw.dark}.json`), 'the day/night switch flips between colours the app ships');
 }
 
 // An empty shell for building and testing plugins (Oct 26 2026): Approvals is its only page; voice, monitor and any

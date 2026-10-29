@@ -1,6 +1,6 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
@@ -225,6 +225,37 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
 
 /* ---------------- NavMenu (nav-menu asset, oriented by the layout asset) ---------------- */
 
+/**
+ * Sections with the same eyebrow are one section (DESIGN-LANGUAGE §11: one level, grouped by eyebrow), so plugins
+ * that file their page under "Voice" join the asset's own "Voice" section instead of repeating the eyebrow. Order:
+ * first appearance wins; unlabelled sections stay separate.
+ */
+export function mergeNavSections<S extends { label?: string | null; items: NavItem[] }>(sections: S[]): S[] {
+  const out: S[] = [];
+  const byLabel = new Map<string, S>();
+  for (const s of sections) {
+    const key = s.label ? s.label.trim().toLowerCase() : '';
+    const hit = key ? byLabel.get(key) : undefined;
+    if (hit) { hit.items = [...hit.items, ...s.items.filter((it) => !hit.items.some((x) => x.view === it.view))]; continue; }
+    const copy = { ...s, items: [...s.items] };
+    out.push(copy);
+    if (key) byLabel.set(key, copy);
+  }
+  return out;
+}
+
+/** A nav item's badge: a runtime counter name (`tasks.today`) shows its count and hides at 0; any other text shows as is. */
+function NavBadge({ badge }: { badge?: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  if (!badge) return null;
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(badge)) {
+    const n = rt.badge(badge);
+    return n > 0 ? <span className="fx-nav__badge" aria-label={`${n}`}>{n > 99 ? '99+' : n}</span> : null;
+  }
+  return <span className="fx-nav__badge">{badge}</span>;
+}
+
 export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
   const nav = useAsset('nav-menu');
@@ -235,7 +266,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
   return (
     <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
-      {[...nav.data.sections, ...rt.navExtras].map((sec, i) => {
+      {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
         if (!items.length) return null;
         return (
@@ -258,7 +289,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                 >
                   <Icon name={locked ? 'lock' : it.icon} size={17} />
                   <span className="fx-nav__text">{it.label}</span>
-                  {it.badge && <span className="fx-nav__badge">{it.badge}</span>}
+                  <NavBadge badge={it.badge} />
                 </button>
               );
             })}
