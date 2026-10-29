@@ -18,6 +18,7 @@ import { ACTION_LABELS, STATUS_TONE, type ActionReply, type ApprovalAction, type
 import { HUB } from '../hub/useHub';
 import { CodeSection, WhatItDoes } from './ApprovalParts';
 import { HubGate, TapTwice, useHubJson } from './hubPage';
+import { HeldBar, HeldChip, isHeld } from './HeldCall';
 
 export function Approvals() {
   return (
@@ -136,13 +137,15 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
     catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); onDone(); }
     finally { setBusy(false); }
   };
-  const quick = item.actions.filter((a) => (a === 'approve' ? item.whole : true));
+  // veto@1: a held command never offers Approve (or any other action): only its countdown and Deny.
+  const held = isHeld(item);
+  const quick = held ? [] : item.actions.filter((a) => (a === 'approve' ? item.whole : true));
   // Collapsed: what is being approved. Opened: what it does, then the code in its own collapsible section.
   return (
     <Container
       title={item.title}
-      icon={item.status === 'pending' ? 'shield' : item.status === 'postponed' ? 'clock' : 'check'}
-      actions={<Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>}
+      icon={item.status === 'pending' ? 'shield' : item.status === 'postponed' || held ? 'clock' : 'check'}
+      actions={held ? <HeldBar item={item} onDone={onDone} /> : <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>}
       collapsible
       defaultOpen={false}
     >
@@ -158,6 +161,7 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
           <p className="fx-muted">Waiting for {item.postponed.waitingFor}{item.postponed.lastNote ? ` · ${item.postponed.lastNote}` : ''}</p>
         )}
         {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
+        {held && <HeldChip item={item} />}
         <div className="fx-row fx-row--wrap">
           {quick.map((a) => (
             <Button key={a} size="sm" disabled={busy} tone={a === 'approve' ? 'success' : a === 'decline' || a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>

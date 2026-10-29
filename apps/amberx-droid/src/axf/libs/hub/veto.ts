@@ -5,7 +5,7 @@
  * the held entries and splits them off, so an app shows held calls (countdown + Deny) apart from calls waiting for an
  * approval (Review).
  *
- * The contract (axHub, decision #101 + veto@1):
+ * The contract (axHub decision 101 + veto@1):
  *  - the feed (`GET /auth/api/approvals`, legacy `/auth/admin/approvals.json`) lists a held call in `pending` with
  *    `status: "held"`, `veto: { runsAt, secondsLeft, countdownSeconds }`, `jobId`, `denyUrl`, `streamUrl`; also in
  *    `held[]` with `heldCount`;
