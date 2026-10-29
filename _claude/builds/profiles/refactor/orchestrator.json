@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T18:11:24.852Z",
+ "updatedAt": "2026-10-29T18:46:29.667Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6383,15 +6383,15 @@
    "title": "Fix: design packages do nothing + developer apps look different",
    "category": "Appearance",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-29T18:04:38.474Z",
-   "updatedAt": "2026-10-29T18:11:24.851Z",
-   "builtAt": "",
+   "updatedAt": "2026-10-29T18:46:29.666Z",
+   "builtAt": "2026-10-29T18:46:29.667Z",
    "notes": [
     {
      "text": "PR #170 (fix/design-package-shared-look). s1-s3 done; s4 waits on CI + merge approval.",
@@ -6464,8 +6464,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-29T18:46:29.664Z",
      "note": ""
     }
    ]
