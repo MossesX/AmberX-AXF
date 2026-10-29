@@ -1,0 +1,35 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.brand-library",
+  "name": "Brand library",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Browse the framework's brand library: 250 logos, 250 animated logos, 100 icon packs and 50 branding packages for AmberX and GizmoX, in tabs with search, brand and style filters and a virtualised grid. Preview any piece light and dark at every size (animations play), copy its id, and apply it: a branding package becomes the brand, a logo, animated logo or icon pack goes into the active brand. Nav → Plugins → Brand library; settings in Settings → Plugins → Brand library.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:brand-library",
+    "settings-tab:brand-library"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": { "view": "brand-library", "label": "Brand library", "icon": "star" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/brand-library",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-28" },
+  "opens": "main"
+}
