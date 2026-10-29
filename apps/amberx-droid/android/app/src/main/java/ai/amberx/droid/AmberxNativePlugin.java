@@ -96,8 +96,47 @@ public class AmberxNativePlugin extends Plugin {
         if (p == null || intent == null) return;
         String open = intent.getStringExtra(MainActivity.EXTRA_OPEN);
         if (open != null) p.notifyListeners("open", new JSObject().put("url", open), true);
+        String veto = intent.getStringExtra(MainActivity.EXTRA_VETO);
+        if (veto != null) p.notifyListeners("veto", new JSObject().put("id", veto).put("action", "open"), true);
         String wake = intent.getStringExtra(MainActivity.EXTRA_WAKE);
         if (wake != null) p.notifyListeners("wake", new JSObject().put("phrase", wake).put("text", intent.getStringExtra(MainActivity.EXTRA_WAKE_TEXT)), true);
+    }
+
+    /** A held command was denied (or the Deny failed) from its notification. */
+    static void vetoEvent(String id, String action, String error) {
+        AmberxNativePlugin p = current;
+        if (p == null) return;
+        JSObject o = new JSObject().put("id", id).put("action", action);
+        if (error != null) o.put("error", error);
+        p.notifyListeners("veto", o, true);
+    }
+
+    /* ---------------------------------------------------------------- veto approvals (VetoAlerts) */
+
+    @PluginMethod
+    public void vetoSettings(PluginCall call) {
+        VetoAlerts.configure(getContext(), call.getData());
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void vetoDeny(PluginCall call) {
+        String id = call.getString("id", "");
+        if (HubRules.approvalUrl(HubRules.HUB, id) == null) { call.reject("Not a request id."); return; }
+        io.execute(() -> {
+            int code = VetoAlerts.deny(getContext(), id);
+            JSObject r = new JSObject().put("ok", code == 200);
+            if (code == 200) r.put("state", "denied");
+            else r.put("error", code < 0 ? "signed out of axHub" : "the hub answered " + code);
+            call.resolve(r);
+        });
+    }
+
+    @PluginMethod
+    public void vetoTest(PluginCall call) {
+        String phase = call.getString("phase", "held");
+        VetoAlerts.test(getContext(), "warning".equals(phase) || "running".equals(phase) ? phase : "held");
+        call.resolve();
     }
 
     /* ---------------------------------------------------------------- hub */

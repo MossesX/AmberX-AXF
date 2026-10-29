@@ -208,16 +208,25 @@ public class WatchService extends Service {
         String hub = HubRules.isHub(HubRules.HUB, cfg.optString("hub", "")) ? HubRules.HUB : null;
         int every = Math.max(15, Math.min(300, cfg.optInt("intervalSec", 30)));
         HubRules.Feed feed;
+        int held = 0;
         if (hub == null) feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
         else {
             String cookie = CookieManager.getInstance().getCookie(hub);
+            String body = null;
             try {
                 HubRules.Reply r = HubRules.get(hub + HubRules.FEED_PATH, cookie);
                 feed = HubRules.interpret(hub, r.status, r.body);
+                body = r.body;
             } catch (Exception e) {
                 feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
             }
-            if ("ok".equals(feed.status)) handleNew(hub, cookie, feed, cfg.optJSONObject("autoApprove"));
+            if ("ok".equals(feed.status)) {
+                handleNew(hub, cookie, feed, cfg.optJSONObject("autoApprove"));
+                // Held veto calls (veto@1): their own notifications with Deny, never treated as approvals.
+                List<HubRules.Veto> vetoes = HubRules.vetoes(hub, body, System.currentTimeMillis());
+                held = vetoes.size();
+                VetoAlerts.update(this, work, vetoes);
+            }
         }
         int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts() : -1;
         JSONObject s = new JSONObject();
@@ -227,7 +236,14 @@ public class WatchService extends Service {
         } catch (Exception ignored) {}
         setStatus(s);
         long next = "signed-out".equals(feed.status) || "not-admin".equals(feed.status) ? 300_000L : every * 1000L;
+        // While a command is held, read every 10 s so a Deny elsewhere takes its card away quickly.
+        if (held > 0) next = Math.min(next, 10_000L);
         work.postDelayed(this::check, next);
+    }
+
+    /** Stops the scheduled notifications of one held call (it was denied). */
+    void cancelVeto(String token) {
+        if (work != null) work.removeCallbacksAndMessages(token);
     }
 
     private void handleNew(String hub, String cookie, HubRules.Feed feed, JSONObject auto) {
@@ -445,6 +461,7 @@ public class WatchService extends Service {
         nm.createNotificationChannel(new NotificationChannel(CH_APPROVALS, "Approvals", NotificationManager.IMPORTANCE_HIGH));
         nm.createNotificationChannel(new NotificationChannel(CH_WAKE, "Wake phrase", NotificationManager.IMPORTANCE_HIGH));
         nm.createNotificationChannel(new NotificationChannel(CH_CONSOLE, "Console alerts", NotificationManager.IMPORTANCE_HIGH));
+        VetoAlerts.channels(c);
     }
 
     private Notification ongoing(boolean mic) {

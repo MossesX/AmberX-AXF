@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.approvals",
+  "name": "Approvals (veto)",
+  "version": "0.1.0",
+  "description": "Held commands (veto@1): Claude sends a command through Vinnie on axHub, the hub holds it for 3 minutes and then runs it unless you deny it. Notifications when the timer starts, at 30 s left and when it runs (sound + vibration of your choice, each with a test), Deny from the notification, and a Terminal tab per held command with its countdown, Deny and the output.",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-28" }
+}
