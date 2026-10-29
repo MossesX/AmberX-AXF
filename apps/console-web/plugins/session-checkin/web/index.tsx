@@ -4,6 +4,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
 import { appMenu } from './menu';
+import { LoadingSkeleton } from '@console/emptyState';
 
 /** Plugin folder: server routes live at /api/plugins/session-checkin/. */
 const FOLDER = 'session-checkin';
@@ -154,7 +155,7 @@ function SessionDetail({ id }: { id: string }) {
   const [err, setErr] = useState('');
   useEffect(() => { getJson<Rec>(`sessions/${encodeURIComponent(id)}`).then(setR, (e: Error) => setErr(e.message)); }, [id]);
   if (err) return <p className={`${P}__error`}>{err}</p>;
-  if (!r) return <p className="fx-muted">Loading…</p>;
+  if (!r) return <LoadingSkeleton />;
   const repo = r.repo;
   const notes: string[] = [];
   if (repo?.ok === false) notes.push(`Wrong repo: ${repo.slug} (not the expected one).`);
@@ -196,7 +197,7 @@ function StatusPanel() {
     setBusy(''); void reload();
   };
   if (err) return <p className={`${P}__error`}>{err}</p>;
-  if (!st) return <p className="fx-muted">Loading…</p>;
+  if (!st) return <LoadingSkeleton />;
   const copy = (t: string) => navigator.clipboard?.writeText(t).then(() => rt.toast('Copied', 'success'), () => rt.toast('Clipboard blocked', 'warning'));
   return (
     <div className="fx-stack">
@@ -237,7 +238,7 @@ function InstallWizard() {
     if (inst) setTarget(inst);
     setCfg(structuredClone((inst && st.targets[inst].config) || st.defaults));
   }, [st, cfg]);
-  if (!st || !cfg) return <p className="fx-muted">Loading…</p>;
+  if (!st || !cfg) return <LoadingSkeleton />;
   const set = (p: Partial<Config>) => setCfg({ ...cfg, ...p });
   const go = async (n: number) => {
     setErr('');
@@ -362,7 +363,7 @@ function BaselinePanel() {
     try { await post('pricing', { asOf, source, models }); rt.toast('Prices saved', 'success'); void load(); } catch (e) { rt.toast((e as Error).message, 'danger'); }
   };
   if (err) return <p className={`${P}__error`}>{err}</p>;
-  if (!b) return <p className="fx-muted">Loading…</p>;
+  if (!b) return <LoadingSkeleton />;
   return (
     <div className="fx-stack">
       <p className="fx-small fx-muted" style={{ margin: 0 }}>The cost of one fixed reference build ({b.version}, <span className="fx-mono">baseline/BASELINE-v1.md</span>) per model and effort, so every check-in quotes comparable numbers. "uncalibrated" = placeholder token counts until a real run is measured with <span className="fx-mono">checkin.mjs calibrate</span> ({b.runs.length} run{b.runs.length === 1 ? '' : 's'} so far).</p>

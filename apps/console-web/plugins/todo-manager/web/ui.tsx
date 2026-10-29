@@ -11,6 +11,7 @@ import {
   type CorePart, type CoreRule, type Entry, type EntryKind, type FieldDef, type GroupBy, type ListView, type SortBy, type TodoList, type Tone, type TypeDef, type TypeSchema,
 } from './core';
 import { bulk, createList, deleteEntry, deleteList, exportList, loadAll, openList, saveEntry, saveTypes, toggleCheck, toggleDone, todoState, updateList, useTodo, type EntryDraft } from './store';
+import { LoadingSkeleton } from '@console/emptyState';
 
 export const ENTRY_DIALOG = 'todo-manager.entry';
 const VIEW_KEY = 'todo-manager.view';
@@ -32,7 +33,7 @@ export function TodoView({ embedded = false }: { embedded?: boolean }) {
   useEffect(() => { if (!s.types && !s.loading) void loadAll(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className={`axp-todo ${embedded ? 'is-embedded' : ''}`}>
-      {!embedded && <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin</p><h1>Todos</h1></div></header>}
+      {!embedded && <header className="fx-pagehead"><div><p className="fx-eyebrow">Work</p><h1>Todos</h1><p className="fx-muted">Lists of notes, to-dos and tasks with subtasks, checklists, tags and due dates — as a tree or a grid.</p></div></header>}
       {s.error && <Note tone="danger">{s.error}</Note>}
       <div className="axp-todo__body">
         <ListsColumn />
@@ -44,7 +45,7 @@ export function TodoView({ embedded = false }: { embedded?: boolean }) {
 
 function Empty() {
   const s = useTodo();
-  if (s.loading) return <p className="fx-muted">Loading…</p>;
+  if (s.loading) return <LoadingSkeleton />;
   return (
     <div className="axp-todo__empty">
       <Icon name="list" size={28} />
@@ -323,7 +324,7 @@ export function EntryEditor({ props, close }: { props: Record<string, unknown>; 
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const types = s.types;
-  if (!types) return <p className="fx-muted">Loading…</p>;
+  if (!types) return <LoadingSkeleton />;
   if (id != null && !existing) return <Note tone="warning">That entry isn’t in the open list any more.</Note>;
   const kind = (d.kind ?? 'task') as EntryKind;
   const t = types[kind];
