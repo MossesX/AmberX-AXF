@@ -22,6 +22,7 @@ import {
   navigationCommands, normalize, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
   type CommandGroup, type Effective, type ManagedCommand, type MyCommand, type VoiceCommand,
 } from './core';
+import { FACTORY_PHRASES, SUGGESTED_PHRASES, addPhrase, phrasesText, removePhrase } from './wake';
 
 export const K = {
   wake: 'amberx.voice.wake',
@@ -41,6 +42,12 @@ export const K = {
   beep: 'amberx.voice.beep',
   online: 'amberx.voice.online',
   swears: 'amberx.voice.swears',
+  /** 'wake' (silent offline wake listener, Google only after a trigger) | 'classic' (Google all the time) */
+  mode: 'amberx.voice.mode',
+  /** wake listener: 'low' | 'normal' | 'high' */
+  sensitivity: 'amberx.voice.sensitivity',
+  /** wake mode: let the recognizer's tone play when a wake phrase starts it (off = muted around the one utterance) */
+  triggerTone: 'amberx.voice.triggerTone',
 } as const;
 
 const ID = 'ai.amberx.amberx.voice';
@@ -199,7 +206,8 @@ export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
 /** With hands-free listening, Speak never opens a second recognizer (that would pause hands-free): the next thing heard
  * is the command. Without it, one native utterance as before. */
 async function nextCommand(rt: AxfRuntime): Promise<string> {
-  if (listens(configOf(rt)) && state.status?.listening) {
+  // Silent wake mode: the idle listener only knows the wake phrases, so one Google utterance (it pauses the idle one).
+  if (listens(configOf(rt)) && state.status?.listening && state.status.engine !== 'wake') {
     return new Promise((resolve) => {
       const timer = setTimeout(() => { nextHeard = null; resolve(''); }, ASK_MS);
       nextHeard = (text) => { clearTimeout(timer); nextHeard = null; resolve(text); };
@@ -236,6 +244,7 @@ export function configOf(rt: AxfRuntime): VoiceConfig {
     handsFree: rt.settings.get(K.handsFree), alwaysArmed: rt.settings.get(K.alwaysArmed), overlay: rt.settings.get(K.overlay),
     wake: phraseList(rt.settings.get(K.wake)), lang: rt.settings.get(K.lang),
     beep: rt.settings.get(K.beep), online: rt.settings.get(K.online), swears: rt.settings.get(K.swears),
+    mode: rt.settings.get(K.mode), sensitivity: rt.settings.get(K.sensitivity), triggerTone: rt.settings.get(K.triggerTone),
   }, themeColors());
 }
 
@@ -263,12 +272,26 @@ function LevelGraph({ levels, db }: { levels: number[]; db: number }) {
   );
 }
 
+/** The wake engine's phase as the chip in the Hands-free card says it (the overlay says the same). */
+function phaseLabel(phase: string, detail = ''): string {
+  switch (phase) {
+    case 'wake': return 'Idle (wake)';
+    case 'armed': return 'Armed';
+    case 'listening': return 'Listening';
+    case 'downloading': return `Getting the wake model ${detail}`.trim();
+    case 'loading': return 'Loading the wake model';
+    case 'no-model': return 'Wake model not ready';
+    case 'paused': return 'Paused (Speak)';
+    default: return 'Starting…';
+  }
+}
+
 function HandsFree() {
   const rt = useRuntime();
   const v = useVoice();
   const cfg = configOf(rt);
   const on = listens(cfg);
-  const chip = !cfg.handsFree ? 'Off' : !on ? 'Nothing to listen for' : v.status?.listening ? (cfg.alwaysArmed ? 'Armed' : 'Listening') : 'Starting…';
+  const chip = !cfg.handsFree ? 'Off' : !on ? 'Nothing to listen for' : v.status?.engine === 'wake' && v.status.phase ? phaseLabel(v.status.phase, v.status.phaseDetail) : v.status?.listening ? (cfg.alwaysArmed ? 'Armed' : 'Listening') : 'Starting…';
   return (
     <Container title={`Hands-free · ${chip}`} icon="mic">
       <p className="fx-muted">
@@ -280,6 +303,9 @@ function HandsFree() {
         <Switch label="Listen hands-free" checked={cfg.handsFree} onChange={(x) => rt.settings.set(K.handsFree, x)} hint="On screen and in the background (Android shows a notification while it listens)." />
         <Switch label="Always armed" checked={cfg.alwaysArmed} onChange={(x) => rt.settings.set(K.alwaysArmed, x)} hint="Act on everything heard, no wake phrase." />
         {isNative() && <Switch label="Detection overlay" checked={cfg.overlay} onChange={(x) => rt.settings.set(K.overlay, x)} hint="Level, dB, what was heard and quick settings, floating over other apps." />}
+        {isNative() && <SelectField label="Hands-free mode" value={cfg.mode} onChange={(x) => rt.settings.set(K.mode, x)} options={[{ value: 'wake', label: 'Silent wake (offline, no tone)' }, { value: 'classic', label: 'Classic (Google all the time)' }]} hint="Silent wake listens offline for the wake phrase, then Google hears the command once." />}
+        {isNative() && cfg.mode === 'wake' && <SelectField label="Wake sensitivity" value={cfg.sensitivity} onChange={(x) => rt.settings.set(K.sensitivity, x)} options={[{ value: 'low', label: 'Low' }, { value: 'normal', label: 'Normal' }, { value: 'high', label: 'High' }]} />}
+        {isNative() && cfg.mode === 'wake' && <Switch label="Play tone on trigger" checked={cfg.triggerTone} onChange={(x) => rt.settings.set(K.triggerTone, x)} hint="Off: muted while it hears the command." />}
         {isNative() && <SelectField label="Listening tone" value={cfg.beep} onChange={(x) => rt.settings.set(K.beep, x)} options={[{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }]} hint="Still hear a tone? Pick “also media”." />}
         {isNative() && <Switch label="Best recognition (online)" checked={cfg.online} onChange={(x) => rt.settings.set(K.online, x)} hint="Google's online model hears far better; off = on-device, works offline." />}
         <Switch label="Show swear words" checked={cfg.swears} onChange={(x) => rt.settings.set(K.swears, x)} hint="Write words as you say them, no f***." />
@@ -288,7 +314,59 @@ function HandsFree() {
         <Note tone="info">The overlay needs “Display over other apps”. <Button icon="settings" onClick={() => void allowOverlay(rt)}>Allow</Button></Note>
       )}
       {v.status && !v.status.microphone && cfg.handsFree && <Note tone="warning">The microphone isn't allowed, so hands-free can't listen.</Note>}
+      {isNative() && cfg.handsFree && cfg.mode === 'wake' && v.status?.phase === 'downloading' && <Note tone="info">Getting the offline wake model once (about 40 MB) {v.status.phaseDetail}. Hands-free starts by itself when it's done.</Note>}
+      {isNative() && cfg.handsFree && cfg.mode === 'wake' && v.status?.phase === 'no-model' && <Note tone="warning">The offline wake model isn't ready{v.status.phaseDetail ? ` (${v.status.phaseDetail})` : ''}. AmberX tries again in a few minutes; switch Hands-free mode to Classic to listen without it (with the tone).</Note>}
     </Container>
+  );
+}
+
+/**
+ * The trigger phrase list (Oct 29 2026, "like ActiveX"): one dense column, a remove button per phrase, add one,
+ * suggested phrases one tap away, and Factory phrases to put the defaults back. Saved as the wake setting's text.
+ */
+function PhraseListPanel() {
+  const rt = useRuntime();
+  const raw = useSetting(rt, K.wake);
+  const list = phraseList(raw);
+  const [draft, setDraft] = useState('');
+  const [err, setErr] = useState<string | null>(null);
+  const save = (next: string[]) => rt.settings.set(K.wake, phrasesText(next));
+  const add = (p: string) => {
+    const r = addPhrase(list, p);
+    setErr(r.error);
+    if (!r.error) { save(r.list); setDraft(''); }
+  };
+  const factory = list.join('|') === FACTORY_PHRASES.join('|');
+  const offered = SUGGESTED_PHRASES.filter((p) => !list.includes(p));
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted">Say one of these, then the command. The silent wake listener hears only these phrases, so short or common words trigger by mistake.</p>
+      {list.length === 0
+        ? <Empty icon="mic" text="No trigger phrases: hands-free listens only when Always armed is on." />
+        : (
+          <ul className="axp-voice-phrases" aria-label="Trigger phrases">
+            {list.map((p) => (
+              <li key={p}>
+                <span>“{p}”</span>
+                <IconButton icon="trash" label={`Remove ${p}`} onClick={() => { setErr(null); save(removePhrase(list, p)); }} />
+              </li>
+            ))}
+          </ul>
+        )}
+      <div className="fx-row fx-row--wrap axp-voice-add">
+        <TextField label="Add a phrase" value={draft} onChange={setDraft} placeholder="hey amberx" />
+        <Button icon="plus" onClick={() => add(draft)}>Add</Button>
+      </div>
+      {err && <Note tone="warning">{err}</Note>}
+      {offered.length > 0 && (
+        <div className="fx-row fx-row--wrap">
+          {offered.map((p) => <Button key={p} size="sm" tone="quiet" icon="plus" onClick={() => add(p)}>{p}</Button>)}
+        </div>
+      )}
+      <div>
+        <Button size="sm" tone="quiet" icon="undo" disabled={factory} onClick={() => { setErr(null); save(FACTORY_PHRASES); }}>Factory phrases</Button>
+      </div>
+    </div>
   );
 }
 
@@ -552,8 +630,8 @@ function VoiceCommandsView() {
 export const library: AxfWebLibrary = {
   id: ID,
   label: 'Voice control',
-  version: '0.2.0',
-  builtWith: { model: 'opus', builtAt: '2026-10-27' },
+  version: '0.3.0',
+  builtWith: { model: 'opus', builtAt: '2026-10-29' },
   provides: ['amberx.voice'],
   views: { voice: { title: 'Voice', icon: 'mic', keywords: ['voice', 'speak', 'talk', 'command', 'wake'], render: () => <VoiceView /> },
     'voice-commands': { title: 'Voice commands', icon: 'sliders', keywords: ['voice', 'commands', 'phrases', 'say'], render: () => <VoiceCommandsView /> },
@@ -564,7 +642,10 @@ export const library: AxfWebLibrary = {
     {
       id: 'amberx.voice', label: 'Voice control', icon: 'mic', tab: 'voice', settings: [
         { key: K.handsFree, label: 'Listen hands-free', kind: 'toggle', default: true, description: 'Keep listening for the wake phrase on screen and in the background, without pressing Speak.' },
-        { key: K.wake, label: 'Wake phrases', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated. Say one, then the command.' },
+        { key: K.wake, label: 'Wake phrases (typed)', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated, the same list as Trigger phrases above. Say one, then the command.' },
+        { key: K.mode, label: 'Hands-free mode', kind: 'choice', default: 'wake', options: [{ value: 'wake', label: 'Silent wake (offline, no tone)' }, { value: 'classic', label: 'Classic (Google all the time)' }], description: 'Android. Silent wake listens offline for the wake phrase (like ActiveX, no tone) and only then lets Google hear the command. Classic keeps Google listening the whole time (restarts every few seconds, which can beep).' },
+        { key: K.sensitivity, label: 'Wake sensitivity', kind: 'choice', default: 'normal', options: [{ value: 'low', label: 'Low (whole phrase, said clearly)' }, { value: 'normal', label: 'Normal' }, { value: 'high', label: 'High (first hint of the phrase)' }], description: 'Silent wake mode. Low waits for the whole phrase, loud enough: fewer false triggers. High triggers as soon as it starts hearing it, even quietly.' },
+        { key: K.triggerTone, label: 'Play tone on trigger', kind: 'toggle', default: false, description: 'Silent wake mode: let Android\'s listening tone play when a wake phrase starts the command recognizer. Off = notification and system sounds are muted only while it hears the command, then put back.' },
         { key: K.alwaysArmed, label: 'Always armed', kind: 'toggle', default: false, description: 'Act on everything heard, with no wake phrase. Background talk can trigger commands.' },
         { key: K.overlay, label: 'Detection overlay', kind: 'toggle', default: true, description: 'Android: a floating window with the input level, dB, what was heard and quick settings.' },
         { key: K.beep, label: 'Listening tone', kind: 'choice', default: 'silence', options: [{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }], description: 'Android plays a tone each time it starts listening. Silenced mutes notification and system sounds while hands-free listens (approval alerts still get through). Still hear it? Pick "also media": music is muted too while AmberX listens, and comes back when it speaks.' },
@@ -577,6 +658,9 @@ export const library: AxfWebLibrary = {
         { key: K.commands, label: 'Your own commands (typed)', kind: 'text', default: '', description: 'One per line: phrase, other phrase = action | reply. Example: open alerts = nav:monitor | Here you go. The Voice commands page has a form for these.' },
       ],
     },
+  ],
+  settingsPanels: [
+    { id: 'amberx.voice.phrases', tab: 'voice', title: 'Trigger phrases', icon: 'mic', order: 0, render: () => <PhraseListPanel /> },
   ],
   contextMenu: [{ id: 'amberx.voice', items: [{ id: 'voice.listen', label: 'Speak a command', icon: 'mic', action: 'voice.listen' }] }],
   appMenu: [{ id: 'amberx.voice', menu: 'axhub', items: [{ id: 'voice.listen', label: 'Speak a command', icon: 'mic', action: 'voice.listen' }, { id: 'voice.commands', label: 'Voice commands', icon: 'sliders', action: 'voice.commands' }] }],
@@ -605,6 +689,13 @@ export const library: AxfWebLibrary = {
       if (final && nextHeard) nextHeard(afterWake(text, phraseList(rt.settings.get(K.wake))));
     }).catch(() => undefined);
     void native.addListener('level', ({ db, source }) => set({ db, levels: pushLevel(state.levels, levelOf(db, source ?? 'android')) })).catch(() => undefined);
+    // The watch service's status carries the wake engine's phase (downloading %, idle, listening): keep the card live.
+    void native.addListener('monitor', (m) => {
+      const x = m as unknown as Partial<VoiceStatus>;
+      if (state.status && (x.phase !== undefined || x.listening !== undefined)) {
+        set({ status: { ...state.status, listening: x.listening ?? state.status.listening, engine: x.engine ?? state.status.engine, phase: x.phase ?? state.status.phase, phaseDetail: x.phaseDetail ?? state.status.phaseDetail } });
+      }
+    }).catch(() => undefined);
     // A quick setting changed on the overlay: save it so Settings and this page show the same.
     void native.addListener('voiceSettings', (c) => {
       if (typeof c.handsFree === 'boolean') rt.settings.set(K.handsFree, c.handsFree);

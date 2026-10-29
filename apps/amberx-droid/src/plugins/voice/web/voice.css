@@ -3,3 +3,8 @@
 .axp-voice-empty > p { margin: 0; }
 .axp-voice-detail { padding: var(--fx-space) calc(var(--fx-space) * 2); }
 .axp-voice-level { display: flex; align-items: center; gap: var(--fx-space); }
+/* Trigger phrases (like ActiveX): one dense column, remove at the end of each row. */
+.axp-voice-phrases { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.axp-voice-phrases > li { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-space); padding: calc(var(--fx-space) / 4) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-voice-add { align-items: flex-end; }
+.axp-voice-add > :first-child { flex: 1 1 auto; min-width: 0; }

@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 /**
  * The detection overlay (Oct 27 2026, Brett: "like ActiveX"): a small floating window over every app while hands-free
- * listening is on. It shows a status chip (LISTENING / ARMED / PAUSED), the input level as a moving line, the level in dB,
+ * listening is on. It shows a status chip (IDLE · WAKE / LISTENING / ARMED / MODEL n% / PAUSED), the input level as a moving line, the level in dB,
  * what the recognizer is hearing, and quick settings: always armed, open AmberX, collapse, hide (hiding turns the overlay
  * setting off; the app's Voice page turns it back on). There is no pause: hands-free always listens (Brett, Oct 27 2026).
  * Drag it by its top row; its place is remembered. Colours come from the app's theme tokens (the web side sends them
@@ -44,6 +44,9 @@ final class DetectionOverlay {
     private final TextView chip, db, heard, armBtn, openBtn, foldBtn, hideBtn;
     private final Graph graph;
     private boolean shown, collapsed, listening, armed;
+    /** The wake engine's phase (WatchService), "" in classic mode; its detail (download %, why there's no model). */
+    private String phase = "", detail = "";
+    private String firstPhrase = "";
     private int bg = Color.parseColor("#1e1e24"), fg = Color.parseColor("#f2f2f5"), accent = Color.parseColor("#e8a33d"),
         muted = Color.parseColor("#8a8a96"), danger = Color.parseColor("#e5484d");
 
@@ -141,6 +144,32 @@ final class DetectionOverlay {
 
     void setArmed(boolean on) { armed = on; paint(); }
 
+    /**
+     * Silent wake mode (Oct 29 2026): idle (wake) → listening (one Google utterance) → idle. While the offline model is
+     * downloading or missing the overlay says so, under the chip.
+     */
+    void setPhase(String p, String d, java.util.List<String> phrases) {
+        phase = p == null ? "" : p;
+        detail = d == null ? "" : d;
+        firstPhrase = phrases == null || phrases.isEmpty() ? "" : phrases.get(0);
+        paint();
+        String line = phaseLine();
+        if (line != null) { heard.setText(line); heard.setTextColor(muted); }
+    }
+
+    /** The line under the graph for a phase, or null to leave what was heard. */
+    private String phaseLine() {
+        switch (phase) {
+            case "downloading": return "Getting the offline wake model (once, ~40 MB) " + detail;
+            case "loading": return "Loading the offline wake model…";
+            case "no-model": return "Wake model not ready" + (detail.isEmpty() ? "" : ": " + detail) + ". Classic mode in Voice settings listens without it.";
+            case "wake": return firstPhrase.isEmpty() ? "Idle, listening offline" : "Idle: say “" + firstPhrase + "”";
+            case "listening": return "Listening for the command…";
+            case "paused": return "Paused while Speak listens";
+            default: return null;
+        }
+    }
+
     void pushLevel(float rms) {
         graph.push(Math.max(0f, Math.min(1f, (rms - DB_LO) / (DB_HI - DB_LO))));
         db.setText(Math.round(rms) + " dB");
@@ -171,10 +200,22 @@ final class DetectionOverlay {
         panel.setCornerRadius(dp(14));
         panel.setStroke(dp(1), muted);
         root.setBackground(panel);
-        String state = !listening ? "STARTING" : armed ? "ARMED" : "LISTENING";
+        String state; int tone;
+        switch (phase) {
+            case "wake": state = "IDLE · WAKE"; tone = muted; break;
+            case "armed": state = "ARMED"; tone = danger; break;
+            case "listening": state = "LISTENING"; tone = accent; break;
+            case "downloading": state = "MODEL " + detail; tone = muted; break;
+            case "loading": state = "LOADING"; tone = muted; break;
+            case "no-model": state = "NO MODEL"; tone = danger; break;
+            case "paused": state = "PAUSED"; tone = muted; break;
+            default:
+                state = !listening ? "STARTING" : armed ? "ARMED" : "LISTENING";
+                tone = !listening ? muted : armed ? danger : accent;
+        }
         chip.setText(state);
         chip.setTextColor(bg);
-        chip.setBackground(pill(!listening ? muted : armed ? danger : accent));
+        chip.setBackground(pill(tone));
         db.setTextColor(fg);
         heard.setTextColor(muted);
         for (TextView b : new TextView[] { foldBtn, hideBtn, armBtn, openBtn }) b.setTextColor(fg);

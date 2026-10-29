@@ -1038,5 +1038,52 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   }
 }
 
+// silent wake listener (Oct 29 2026, amberx-voice-wake s87–s89): Vosk idle, one Google utterance after a trigger
+{
+  const wk = await import('./src/plugins/voice/web/wake.ts');
+  const cases = JSON.parse(readFileSync(new URL('./src/plugins/voice/web/wake-cases.json', import.meta.url), 'utf8'));
+  eq(wk.grammar(cases.phrases), cases.grammar, 'wake: grammar = the phrases as a small model hears them, then [unk]');
+  for (const [heard, partial, sens, peak, want] of cases.trigger) eq(wk.triggerHit(heard, partial, sens, peak, cases.phrases), want, `wake: trigger ${JSON.stringify([heard, partial, sens, peak])}`);
+  for (const [a, b] of cases.clean) eq(wk.cleanHeard(a), b, `wake: clean ${JSON.stringify(a)}`);
+  for (const [dbfs, level, db] of cases.level) {
+    const l = wk.levelOfDbfs(dbfs);
+    ok(Math.abs(l - level) < 1e-9 && Math.abs(wk.recognizerDb(l) - db) < 1e-9, `wake: level of ${dbfs} dBFS`);
+  }
+  for (const [a, b] of cases.sensitivity) eq(wk.sensitivity(a), b, `wake: sensitivity ${JSON.stringify(a)}`);
+  eq(wk.levelOfDbfs(-Infinity), 0, 'wake: silence is level 0');
+  ok(wk.grammar(Array.from({ length: 40 }, (_, i) => `hey amberx ${i}`)).length <= wk.MAX_GRAMMAR + 1, 'wake: grammar is capped');
+  eq(wk.grammar([]), ['[unk]'], 'wake: no phrases = only [unk]');
+  eq([wk.handsFreeMode(undefined), wk.handsFreeMode('classic'), wk.handsFreeMode('x')], ['wake', 'classic', 'wake'], 'wake: silent wake is the default mode');
+  // the phrase list (settings)
+  eq(wk.addPhrase(['hey amberx'], '  Hi, AmberX! ').list, ['hey amberx', 'hi amberx'], 'phrases: add tidies the phrase');
+  ok(wk.addPhrase(['hey amberx'], 'Hey AmberX').error?.includes('already'), 'phrases: no duplicates');
+  ok(wk.addPhrase([], 'yo').error?.includes('short'), 'phrases: too short refused');
+  ok(wk.addPhrase([], '   ').error !== null, 'phrases: empty refused');
+  ok(wk.addPhrase(Array.from({ length: wk.MAX_PHRASES }, (_, i) => `phrase ${i}`), 'one more please').error?.includes('most'), 'phrases: list is capped');
+  eq(wk.removePhrase(['hey amberx', 'okay amberx'], 'hey amberx'), ['okay amberx'], 'phrases: remove');
+  eq(voice.phraseList(wk.phrasesText(wk.FACTORY_PHRASES)), wk.FACTORY_PHRASES, 'phrases: the text round-trips through the wake setting');
+  // the config the native side gets
+  const c0 = hf.voiceConfig({ handsFree: undefined, alwaysArmed: undefined, overlay: undefined, wake: ['hey amberx'], lang: '' });
+  eq([c0.mode, c0.sensitivity, c0.triggerTone], ['wake', 'normal', false], 'voice config: silent wake, normal sensitivity, no trigger tone by default');
+  const c1 = hf.voiceConfig({ handsFree: true, alwaysArmed: false, overlay: true, wake: [], lang: 'en', mode: 'classic', sensitivity: 'high', triggerTone: true });
+  eq([c1.mode, c1.sensitivity, c1.triggerTone], ['classic', 'high', true], 'voice config: mode, sensitivity, tone kept');
+  // the Android side (compiled by CI)
+  const dir = './android/app/src/main/java/ai/amberx/droid/';
+  const src = (f) => readFileSync(new URL(dir + f, import.meta.url), 'utf8');
+  const wl = src('WakeListener.java'), ws = src('WatchService.java'), wr = src('WakeRules.java');
+  ok(/static final String MODEL_URL = /.test(wl) && (wl.match(/alphacephei\.com/g) ?? []).length === 1, 'android: the model address lives in one constant');
+  ok(wl.includes('getCanonicalPath()') && wl.includes('MAX_DOWNLOAD'), 'android: the model unzip stays in its folder and the download is capped');
+  ok(wl.includes('WakeRules.grammarJson(') && wl.includes('new Recognizer(m, RATE)'), 'android: grammar of the wake phrases, full vocabulary when armed');
+  ok(!/SpeechRecognizer/.test(wl), 'android: no SpeechRecognizer while idle (no tone)');
+  ok(ws.includes('SpeechTuning.quietTrigger(') && /if \(muted\) main\.postDelayed\(\(\) -> \{ if \(!oneShot\) SpeechTuning\.loud/.test(ws), 'android: tones muted only around the one utterance, then restored');
+  ok(/oneShot\(String phrase\)[\s\S]{0,2000}SpeechTuning\.request\(lang\(\), v, false\)/.test(ws) && src('SpeechTuning.java').includes('EXTRA_PARTIAL_RESULTS'), 'android: the one utterance uses SpeechTuning (partial results on)');
+  ok(wr.includes('SpeechTuning.wakeHit('), 'android: one wake matcher (SpeechTuning) behind both modes');
+  const gradle = readFileSync(new URL('./android/app/build.gradle', import.meta.url), 'utf8');
+  ok(gradle.includes("com.alphacephei:vosk-android:") && gradle.includes('net.java.dev.jna:jna:'), 'android: vosk + jna dependencies');
+  const ui = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
+  ok(/settingsPanels:[\s\S]{0,200}tab: 'voice'/.test(ui), 'voice: the trigger phrase list is a panel in the plugin\'s own settings tab');
+  for (const k of ['K.mode', 'K.sensitivity', 'K.triggerTone']) ok(ui.includes(`key: ${k},`), `voice: ${k} is a setting`);
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
