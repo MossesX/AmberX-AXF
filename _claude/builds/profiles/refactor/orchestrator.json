@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T05:51:30.366Z",
+ "updatedAt": "2026-10-29T05:57:18.706Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6334,6 +6334,42 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:53:16.932Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "assistant-no-subagents",
+   "title": "No sub-agents in the AI assistant (Task/Agent denied) + fix build mode crash (env scrub flag)",
+   "category": "assistant",
+   "detail": "Brett Oct 29 01:41: Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/assistant-no-subagents",
+   "pr": "",
+   "createdAt": "2026-10-29T05:57:18.585Z",
+   "updatedAt": "2026-10-29T05:57:18.705Z",
+   "builtAt": "2026-10-29T05:57:18.706Z",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Deny Task/Agent in the CLI provider; drop the env scrub flag; tests, PR, merge, deploy",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T05:57:18.705Z",
      "note": ""
     }
    ]

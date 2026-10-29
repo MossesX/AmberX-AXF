@@ -610,7 +610,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         j = args.index("--disallowedTools")
         args[j + 1:] = [a for a in args[j + 1:] if a not in BUILD_TOOLS]
         args[args.index("--permission-mode") + 1] = "acceptEdits"
-        env["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] = "1"  # keep the CLI's own token out of Bash's environment where supported
+        # No CLAUDE_CODE_SUBPROCESS_ENV_SCRUB here: on this CLI it needs managed settings and otherwise exits with code 1
+        # (Brett's Mosses chat, Oct 29 2026 01:56).
         args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = [*_cli_abs_deny(cwd, ("Edit", "Write", "MultiEdit")), *_cli_deny(("Edit", "Write", "MultiEdit"))]
     args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = _cli_abs_deny(cwd)
     jail = None

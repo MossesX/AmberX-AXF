@@ -462,7 +462,7 @@ _ba = _b["argv"]
 _al = _ba[_ba.index("--allowedTools") + 1:_ba.index("--disallowedTools")]
 _de = _ba[_ba.index("--disallowedTools") + 1:]
 check({"Edit", "Write", "MultiEdit", "Bash"} <= set(_al) and not {"Edit", "Write", "MultiEdit", "Bash"} & set(_de) and _ba[_ba.index("--permission-mode") + 1] == "acceptEdits"
-      and _b["cwd"] == _os.path.realpath(_bd) and _b["scrub"] == "1", "build mode: CLI gets Edit/Write/MultiEdit/Bash without asking, in the build folder")
+      and _b["cwd"] == _os.path.realpath(_bd) and _b["scrub"] is None, "build mode: CLI gets Edit/Write/MultiEdit/Bash without asking, in the build folder")
 check(any(x.startswith("Edit(") and ".env" in x for x in _de) and any(x.startswith("Read(") and ".env" in x for x in _de), "build mode: env files and keys stay unreadable and unwritable")
 list(prov.stream_chat(_prof, [{"role": "user", "content": "hi"}], model="claude-test", cwd=_bd))
 _ba = json.load(open(_os.path.join(_bd, "argv.json")))["argv"]
