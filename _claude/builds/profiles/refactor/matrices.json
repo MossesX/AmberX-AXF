@@ -1,15 +1,15 @@
 {
  "$axf": "feature-matrix@0",
  "note": "Draft data until feature-matrix s1 (feature-matrix@1) lands; s1 adopts it as-is. Items are never deleted: keep=false means skip.",
- "updatedAt": "2026-10-29T01:35:00.000Z",
+ "updatedAt": "2026-10-29T01:50:00.000Z",
  "matrices": [
   {
    "build": "refactor-all",
    "profile": "refactor",
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T01:35:00.000Z",
-   "minutesKept": 835,
+   "updatedAt": "2026-10-29T01:50:00.000Z",
+   "minutesKept": 1000,
    "minutesSkipped": 1960,
    "items": [
     {
@@ -1002,7 +1002,7 @@
      "model": "Opus",
      "minutes": 30,
      "keep": false,
-     "why": "Held/queued by Brett, not started",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -1014,7 +1014,7 @@
      "model": "Opus",
      "minutes": 25,
      "keep": false,
-     "why": "Held/queued by Brett, not started",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -1026,7 +1026,7 @@
      "model": "Opus",
      "minutes": 25,
      "keep": false,
-     "why": "Held/queued by Brett, not started",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -1038,7 +1038,7 @@
      "model": "Opus",
      "minutes": 30,
      "keep": false,
-     "why": "Held/queued by Brett, not started",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -1050,7 +1050,7 @@
      "model": "Opus",
      "minutes": 20,
      "keep": false,
-     "why": "Held/queued by Brett, not started",
+     "why": "Held/queued by Brett, not started; superseded by veto-approvals (Oct 28 21:35)",
      "addedAt": "2026-10-28T19:31:15.654Z"
     },
     {
@@ -1259,6 +1259,78 @@
      "keep": true,
      "why": "",
      "addedAt": "2026-10-28T23:25:00.000Z"
+    },
+    {
+     "id": "veto-approvals:s1",
+     "name": "axHub: veto policy (hold 180 s then run unless denied), Deny API, Vinnie agent module + job stream, approval page countdown + Deny",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oct 28 21:35)",
+     "source": "veto-approvals",
+     "sourceStep": "s1",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "addedAt": "2026-10-29T01:50:00.000Z"
+    },
+    {
+     "id": "veto-approvals:s2",
+     "name": "axHub: Vinnie pushes hold / time-running-out / running to the AmberX app with Deny action; feed fields; docs, tests, PR",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oct 28 21:35)",
+     "source": "veto-approvals",
+     "sourceStep": "s2",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "addedAt": "2026-10-29T01:50:00.000Z"
+    },
+    {
+     "id": "veto-approvals:s3",
+     "name": "AmberX app: held-call notification with Deny; settings for notification sound, vibration, time-running-out sound, running sound",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oct 28 21:35)",
+     "source": "veto-approvals",
+     "sourceStep": "s3",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "addedAt": "2026-10-29T01:50:00.000Z"
+    },
+    {
+     "id": "veto-approvals:s4",
+     "name": "AmberX terminal: tab opens on timer start with countdown + Deny, then attaches to the running command's output",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oct 28 21:35)",
+     "source": "veto-approvals",
+     "sourceStep": "s4",
+     "model": "Opus",
+     "minutes": 30,
+     "keep": true,
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "addedAt": "2026-10-29T01:50:00.000Z"
+    },
+    {
+     "id": "veto-approvals:s5",
+     "name": "Console approvals banner + AXHub web approval page: countdown + Deny, no Approve for veto calls",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oct 28 21:35)",
+     "source": "veto-approvals",
+     "sourceStep": "s5",
+     "model": "Opus",
+     "minutes": 25,
+     "keep": true,
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "addedAt": "2026-10-29T01:50:00.000Z"
+    },
+    {
+     "id": "veto-approvals:s6",
+     "name": "Shared rule (send once, never poll), docs, shots, THREADS, PRs + merge approvals",
+     "group": "Veto approvals: Vinnie holds, notifies, runs; Deny instead of Approve (Brett, Oct 28 21:35)",
+     "source": "veto-approvals",
+     "sourceStep": "s6",
+     "model": "Opus",
+     "minutes": 20,
+     "keep": true,
+     "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
+     "addedAt": "2026-10-29T01:50:00.000Z"
     }
    ],
    "page": "https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS",
