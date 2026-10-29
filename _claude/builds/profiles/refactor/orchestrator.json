@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T02:34:59.089Z",
+ "updatedAt": "2026-10-29T02:57:11.636Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4673,7 +4673,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T02:34:59.089Z",
+   "updatedAt": "2026-10-29T02:57:11.635Z",
    "builtAt": "",
    "notes": [
     {
@@ -6050,9 +6050,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.396Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
     },
     {
      "id": "s78",
@@ -6067,9 +6067,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.477Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
     },
     {
      "id": "s79",
@@ -6084,9 +6084,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.547Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
     },
     {
      "id": "s80",
@@ -6101,9 +6101,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.635Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
     },
     {
      "id": "s81",
