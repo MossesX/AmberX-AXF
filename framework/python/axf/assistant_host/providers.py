@@ -488,6 +488,9 @@ def _cli_env() -> dict[str, str]:
 
 
 BUILD_TOOLS = ("Edit", "Write", "MultiEdit", "Bash")
+# No sub-agents in any assistant chat, build mode included (Brett, Oct 29 2026: "Disable sub agents in assistant";
+# shared rule "One agent, no sub-agents"): the CLI's sub-agent tool is always denied (Task, and its newer name Agent).
+NO_SUBAGENTS = ("Task", "Agent")
 
 
 def _cli_abs_deny(cwd: str | None, tools: tuple[str, ...] = ("Read", "Grep", "Glob", "LS")) -> list[str]:
@@ -587,7 +590,7 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
     prompt = (f"Conversation so far:\n{history}\n\nUSER: " if history else "") + str(messages[-1].get("content", ""))
     args = [os.environ.get("CLAUDE_BIN", "claude"), "-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages",
             "--model", model, "--permission-mode", "default", "--allowedTools", "Read", "Grep", "Glob", "LS",
-            "--disallowedTools", "Edit", "Write", "MultiEdit", "NotebookEdit", "Bash", "WebFetch", *_cli_deny()]
+            "--disallowedTools", "Edit", "Write", "MultiEdit", "NotebookEdit", "Bash", "WebFetch", *NO_SUBAGENTS, *_cli_deny()]
     bridge = _Bridge(tools, tool_runner) if tools and tool_runner else None
     if bridge:
         # The host's tools as an MCP server (same rules and approval cards as API providers); the CLI's own
@@ -607,7 +610,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         j = args.index("--disallowedTools")
         args[j + 1:] = [a for a in args[j + 1:] if a not in BUILD_TOOLS]
         args[args.index("--permission-mode") + 1] = "acceptEdits"
-        env["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] = "1"  # keep the CLI's own token out of Bash's environment where supported
+        # No CLAUDE_CODE_SUBPROCESS_ENV_SCRUB here: on this CLI it needs managed settings and otherwise exits with code 1
+        # (Brett's Mosses chat, Oct 29 2026 01:56).
         args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = [*_cli_abs_deny(cwd, ("Edit", "Write", "MultiEdit")), *_cli_deny(("Edit", "Write", "MultiEdit"))]
     args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = _cli_abs_deny(cwd)
     jail = None
@@ -618,7 +622,7 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         kept = [a for a in args[i + 1:j] if a.startswith("mcp__")]
         args[i:j] = (["--allowedTools", *kept] if kept else [])
         k = args.index("--disallowedTools")
-        args[k + 1:k + 1] = ["Read", "Grep", "Glob", "LS", "Task", "WebSearch"]
+        args[k + 1:k + 1] = ["Read", "Grep", "Glob", "LS", "WebSearch"]
         jail = tempfile.mkdtemp(prefix="axf-cli-jail-")
         os.chmod(jail, 0o700)
         cwd = jail

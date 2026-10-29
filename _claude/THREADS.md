@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| No sub-agents in the AI assistant: CLI Task/Agent tool always denied (orchestrator `assistant-no-subagents`, Refactor, Opus) | review | `claude/assistant-no-subagents` | – | Brett Oct 29 01:41 (claude.ai): "Disable sub agents in assistant". Then merge + deploy | 2026-10-29 |
 | Mosses builds in the AI assistant: Edit/Write/Bash in the /axf git checkout + git push / open PR tools (orchestrator `mosses-build-tools`, Refactor, Opus) | done | `claude/mosses-build-tools` | [#164](https://github.com/MossesX/AmberX-AXF/pull/164) | Merged + deployed Oct 29 00:02 EDT (console updated). Mosses: start a fresh chat on the Claude Code provider | 2026-10-29 |
 | Basic filter plugin (claude.ai AmberX Framework chat) | done | `claude/basic-filter` | [#155](https://github.com/MossesX/AmberX-AXF/pull/155) merged | Merged Oct 28 13:04, console redeployed. `refactor-all` s27 (basic-filter s7) is already done | 2026-10-28 |
 | Plugin theme override + Plugins ladder (claude.ai AmberX Framework chat) | queued (in refactor-all) | `claude/plugin-theme-override` | [#161](https://github.com/MossesX/AmberX-AXF/pull/161) merged | #161 merged Oct 28 ~15:55 (Brett's one exception to the STOP ORDER): Plugins ladder + Disable + submenu flip are on main. Left: refactor-all s68–s70 (Fable), s72–s75 (Opus) | 2026-10-28 |
