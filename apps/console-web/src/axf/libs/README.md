@@ -121,6 +121,16 @@ app's Settings screen) or construct the classes with explicit `hub` / `project` 
 Picking parts in Build Pilot: settings only, all data (`mode: all`), or some tables (`mode: some`, `tables: lists, notes`).
 The app's origin must be in the hub's `AXHUB_DATA_ORIGINS`.
 
+## plugintheme (`ai.amberx.axf.plugintheme`)
+
+Per-plugin theme override over the app's theme (Oct 28 2026, web only). `withPluginTheme(lib, { id, name })` wraps a
+plugin's web library: every UI root (views, dialogs, window tabs, settings tab via `SettingsTab.plugin`, panels) carries
+`data-axf-plugin="<id>"`, and the plugin's settings tab gets an Appearance panel (switch + form / token tree / JSON
+editors, copy from a plugin or theme asset, reset, preview). `pluginThemeLibrary` compiles every override that is on
+into one stylesheet, adds the right-click item, the toolbar button and actions `plugin-theme.toggle[:<id>]` /
+`plugin-theme.edit[:<id>]`. Storage: `axf.plugin.<id>.look = { on, tokens: { "--fx-…": value } }` (`./plugintheme/core.ts`).
+Self-test: `npx -y tsx framework/spec/check-plugintheme.mts`. Design notes: `_claude/memory/docs/plugin-theme-override.md`.
+
 ## hubstatus (`ai.amberx.axf.hubstatus`)
 
 The axHub badge for any AXF app, no dependencies. A status widget on the banner (asset `status/axhub`, counter

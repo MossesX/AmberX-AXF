@@ -1,0 +1,11 @@
+/* Plugin theme override (libs/plugintheme): layout only; every control is a framework control and keeps the theme. */
+.axf-plugintheme__fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-space); }
+.axf-plugintheme__bar { justify-content: space-between; align-items: center; }
+.axf-plugintheme__copy { align-items: flex-end; }
+.axf-plugintheme__grow { flex: 1 1 14em; min-width: 0; }
+.axf-plugintheme__token { align-items: flex-end; gap: calc(var(--fx-space) * 0.5); }
+.axf-plugintheme__colour { flex: 1; align-items: flex-end; gap: calc(var(--fx-space) * 0.5); }
+.axf-plugintheme__tree, .axf-plugintheme__leaves { list-style: none; margin: 0; padding-inline-start: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); }
+.axf-plugintheme__leaves { padding-inline-start: calc(var(--fx-space) * 3); }
+.axf-plugintheme__leaf { align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap; }
+.axf-plugintheme__preview { min-width: 0; }

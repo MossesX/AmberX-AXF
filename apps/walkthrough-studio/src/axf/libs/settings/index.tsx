@@ -875,7 +875,16 @@ function DesignPackagePanel() {
 
 /** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings.
  *  What the active settings asset leaves out (group, panel or setting ids) isn't shown. */
+/** One tab's settings. A plugin's own tab is that plugin's UI: its content carries data-axf-plugin, so the plugin's theme
+ *  override (libs/plugintheme) applies wherever the tab shows (Settings, the plugins browser, Banner settings, page mode). */
 export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const plugin = rt.settings.getTab(id)?.plugin;
+  return plugin ? <div className="fx-plugin-scope" data-axf-plugin={plugin}><TabBody id={id} all={all} /></div> : <TabBody id={id} all={all} />;
+}
+
+function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const ui = useSettingsUi();

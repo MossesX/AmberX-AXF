@@ -830,6 +830,11 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-checkrow { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-height: var(--fx-row-h); cursor: pointer; }
 .fx-checkrow.is-disabled { cursor: not-allowed; opacity: var(--fx-opacity-disabled); }
 .fx-check { width: calc(var(--fx-font-size) * 16 / 14); height: calc(var(--fx-font-size) * 16 / 14); margin: 0; accent-color: var(--fx-accent); cursor: inherit; }
+/* a plugin UI root (plugin theme override, libs/plugintheme): carries data-axf-plugin, adds no box of its own */
+.fx-plugin-scope { display: contents; }
+.fx-colorfield__row { gap: calc(var(--fx-space) * 0.5); align-items: center; flex-wrap: nowrap; }
+.fx-colorfield__pick { flex: none; width: calc(var(--fx-row-h) * 1.2); height: var(--fx-row-h); padding: calc(var(--fx-space) * 0.25); cursor: pointer; }
+.fx-colorfield__row .fx-field__input { flex: 1; min-width: 0; }
 .fx-check:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: 2px; }
 .fx-switchrow__hint { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); }
 .fx-switch { --fx-switch-w: calc(var(--fx-font-size) * 2.6); --fx-switch-h: calc(var(--fx-font-size) * 1.45); position: relative; display: inline-flex; flex: none; }

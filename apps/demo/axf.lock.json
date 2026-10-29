@@ -48,7 +48,7 @@
     "src/axf/core/project.ts": "84be834f0c45169c",
     "src/axf/core/registry.ts": "8cf580aca5b3988e",
     "src/axf/core/runtime.ts": "68ffc4c7628f39d9",
-    "src/axf/core/settings.ts": "775823f05993d34f",
+    "src/axf/core/settings.ts": "d23348d29814a769",
     "src/axf/core/sse.ts": "64f6a80f14560843",
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
     "src/axf/core/types.ts": "e36f8f729f2898ff",
@@ -63,7 +63,7 @@
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
     "src/axf/react/components/Chrome.tsx": "0b733b8b25b8bd57",
     "src/axf/react/components/Controls.tsx": "0627e2446e099ab4",
-    "src/axf/react/components/Forms.tsx": "c84e282726701238",
+    "src/axf/react/components/Forms.tsx": "26e3744619b16b8d",
     "src/axf/react/components/Icon.tsx": "e8148c3e8da3b31d",
     "src/axf/react/components/InterfaceScope.tsx": "c610cb111863aadd",
     "src/axf/react/components/LookEditor.tsx": "b9114a8bd91acd64",
@@ -78,7 +78,7 @@
     "src/axf/react/components/Widgets.tsx": "6d1442ad79d7775a",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "a4fc6206e6a2ef4b",
-    "src/axf/react/index.ts": "939417d44aa76295",
+    "src/axf/react/index.ts": "eec452d8ebbafa00",
     "src/axf/react/library.ts": "ee23d7bcc4745dcc",
     "src/axf/react/placement.tsx": "e50243526c856169",
     "src/axf/react/pluginRecords.ts": "b0165b309076c3d3",
@@ -152,6 +152,6 @@
     "src/axf/schemas/model-pricing.json": "d8fe01a93138abc8",
     "src/axf/schemas/plugin.schema.json": "166fd652bf021af5",
     "src/axf/schemas/project-rules.json": "be7b7c29a1fd9663",
-    "src/axf/ui/axf.css": "c88e657758833f88"
+    "src/axf/ui/axf.css": "ecb4617922679bfd"
   }
 }
