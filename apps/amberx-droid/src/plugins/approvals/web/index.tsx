@@ -12,34 +12,17 @@
  * Removable: everything is in this folder except the shell's `VetoAlerts.java` + its seam in native.ts (shared shell
  * code, like the monitor's WatchService). Uninstall: `node framework/cli/plugin-catalog.mjs app-uninstall amberx approvals`.
  */
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import type { AxfRuntime } from '../../../axf/core';
+import { useEffect, useState } from 'react';
 import { Button, Note, Section, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { notifyPlan, secondsLeftNow, type VetoPhase } from '../../../axf/libs/hub/veto';
 import { isNative, native } from '../../../native';
 import { alertConfig, DEFAULTS, K, notificationText, patternOf, SOUNDS, soundOf, tonesOf, VIBRATIONS, vibrationOf, type Sound } from './core';
-import { checkVeto, markDenied, startVeto, subscribeVeto, vetoState, setVetoHooks, type Track } from './store';
+import { checkVeto, markDenied, startVeto, subscribeVeto, vetoState, setVetoHooks } from './store';
+import { deny, getRuntime, setRuntime, useVeto } from './deny';
+import { showTab, TerminalView } from './terminal';
 
 const ID = 'ai.amberx.amberx.approvals';
 const SENT_KEY = 'amberx.approvals.sent';
-let runtime: AxfRuntime | null = null;
-
-export const useVeto = () => useSyncExternalStore(subscribeVeto, vetoState, vetoState);
-
-/* ---------------------------------------------------------------- deny */
-
-/** Deny a held call: the phone posts it with its hub session; a browser opens the call on the hub (Deny is there). */
-export async function deny(t: Track): Promise<void> {
-  const rt = runtime;
-  if (isNative()) {
-    const r = await native.vetoDeny({ id: t.call.id }).catch((e) => ({ ok: false, error: String(e?.message ?? e) }));
-    if (r.ok) { markDenied(t.call.id); rt?.toast(`Denied: ${t.call.title}`, 'success', 'Approvals'); void checkVeto(); return; }
-    rt?.toast(`Couldn't deny it here (${r.error ?? 'hub refused'}). Opening it on the hub.`, 'warning', 'Approvals');
-    void native.hubOpen({ url: t.call.url }).finally(() => void checkVeto());
-    return;
-  }
-  window.open(t.call.url, '_blank', 'noopener,noreferrer');
-}
 
 /* ---------------------------------------------------------------- sounds (browser) */
 
@@ -66,7 +49,7 @@ export function playTones(sound: Sound) {
   } catch { /* no audio */ }
 }
 
-const get = (k: string) => runtime?.settings.get(k);
+const get = (k: string) => getRuntime()?.settings.get(k);
 
 /** One phase's notification: native channel test, or the browser's tones + vibration + a Notification. */
 export function testPhase(phase: VetoPhase) {
@@ -95,7 +78,7 @@ function notifyInPage() {
     playTones(cfg[phase].sound);
     if (cfg[phase].vibrate && cfg[phase].vibration.length) try { navigator.vibrate?.(cfg[phase].vibration); } catch { /* none */ }
     const n = new Notification(title, { body: text, tag: `veto-${call.id}`, requireInteraction: phase !== 'running' });
-    n.onclick = () => { window.focus(); runtime?.dispatch(`approvals.terminal:${call.id}`); };
+    n.onclick = () => { window.focus(); getRuntime()?.dispatch(`approvals.terminal:${call.id}`); };
   }
 }
 
@@ -152,7 +135,9 @@ export const library: AxfWebLibrary = {
   label: 'Approvals (veto)',
   version: '0.1.0',
   builtWith: { model: 'opus', builtAt: '2026-10-28' },
-  provides: ['amberx.approvals.veto'],
+  provides: ['amberx.approvals.veto', 'amberx.terminal'],
+  views: { terminal: { title: 'Terminal', icon: 'terminal', keywords: ['terminal', 'held', 'veto', 'deny', 'countdown', 'command', 'output'], render: () => <TerminalView /> } },
+  nav: { label: 'Terminal', items: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', view: 'terminal' }] },
   settingsTabs: [{ id: 'approvals', label: 'Approvals', icon: 'shield', order: 20, parent: 'plugins' }],
   settings: [
     {
@@ -172,7 +157,7 @@ export const library: AxfWebLibrary = {
     { id: 'amberx.approvals.test', tab: 'approvals', title: 'Test the notifications', icon: 'bell', order: 3, render: () => <><PermissionNote /><Section title="Plays each one with the sound and vibration chosen above"><TestRow /></Section></> },
   ],
   register(rt) {
-    runtime = rt;
+    setRuntime(rt);
     startVeto();
     // Browser: notifications from this page. Android: the watch service sends them (also with the app closed).
     if (!isNative()) subscribeVeto(notifyInPage);
@@ -183,6 +168,8 @@ export const library: AxfWebLibrary = {
       const t = vetoState().tracks.find((x) => x.call.id === id);
       if (t && t.state === 'held') void deny(t); else rt.toast('That call is no longer held.', 'info', 'Approvals');
     }, { label: 'Deny a held command', params: true, searchable: false });
+    // approvals.terminal[:<id>] — the Terminal view, with that held command's tab in front
+    rt.actions.register('approvals.terminal', ([id]) => { showTab(id ?? null); rt.navigate('terminal'); }, { label: 'Open the terminal', params: true });
     rt.actions.register('approvals.check', () => void checkVeto(), { label: 'Check held commands' });
     // Notification taps and Denies from the shell.
     void native.addListener('veto', (e) => {
@@ -205,4 +192,4 @@ export const library: AxfWebLibrary = {
   },
 };
 
-export { soundOf, vibrationOf, patternOf };
+export { soundOf, vibrationOf, patternOf, deny, useVeto };

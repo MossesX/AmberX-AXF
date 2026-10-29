@@ -948,6 +948,25 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq(ap.patternOf('pulse'), [0, 150, 100, 150, 100, 150], 'approvals: vibration pattern');
   eq(ap.notificationText({ title: 'Restart web', command: 'docker restart web', tool: 'vps.run' }, 'held', 180).title, 'Runs in 3:00: Restart web', 'approvals: timer started text');
   eq(ap.tonesOf('none').length, 0, 'approvals: silent = no tones');
+  {
+    const store = await import('./src/plugins/approvals/web/store.ts');
+    store.resetVeto();
+    const started = [];
+    store.setVetoHooks({ started: (t) => started.push(t.call.id) });
+    const c0 = { ...calls[0], streamUrl: null };
+    store.mergeHeld([c0], NOW);
+    eq([store.vetoState().tracks.length, started], [1, [ID1]], 'store: a held call opens a track (terminal tab)');
+    store.mergeHeld([c0], NOW + 1000);
+    eq(started.length, 1, 'store: once');
+    store.markDenied(ID1);
+    eq(store.vetoState().tracks[0].state, 'denied', 'store: denied');
+    store.closeTrack(ID1);
+    eq(store.vetoState().tracks.length, 0, 'store: a finished tab closes');
+    store.mergeHeld([c0], NOW);
+    store.mergeHeld([], NOW + 5000);
+    eq(store.vetoState().tracks[0].state, 'gone', 'store: no longer held = gone');
+    store.resetVeto();
+  }
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
