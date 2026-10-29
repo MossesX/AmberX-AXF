@@ -146,4 +146,29 @@ for (const r of f.resizes) eq(resizeRect(r.start, r.edge as ResizeEdge, r.dx, r.
   ok(wm.windowMenu().some((m) => m.id === 'snap' && (m.items?.length ?? 0) === 6), 'window menu has the snap submenu');
 }
 
+// ---- s19: lib-workspace floating panes run on the same physics (no pane maths of their own) ----
+{
+  (globalThis as any).localStorage = { getItem: () => null, setItem: () => undefined };
+  const { Workspace, FLOAT_MIN, defineLayout } = await import('../libs/workspace/store');
+  const panes = [{ id: 'a', title: 'A', icon: 'box' }, { id: 'b', title: 'B', icon: 'box' }];
+  const ws = new Workspace({ id: 't', panes, layouts: [defineLayout(panes, 'l', 'L', 'layout', '', { float: ['a', 'b'] })], toolbars: [] });
+  ws.area = { x: 0, y: 0, width: 1000, height: 700 };
+  ws.setFloat('a', { x: 100, y: 100, w: 300, h: 200 }); ws.setFloat('b', { x: 600, y: 100, w: 300, h: 200 });
+  const F = (id: string) => { const f = ws.float(id); return [f.x, f.y, f.w, f.h]; };
+  eq(ws.dragFloatTo('a', 293, 110, 400, 120, ws.area), null, 'pane pull = no preview'); eq(F('a'), [300, 100, 300, 200], 'pane snaps to the other pane (abut + align)');
+  eq(ws.dragFloatTo('a', -50, 300, 3, 300, ws.area)?.zone, 'left', 'pane zone'); ws.settleFloat('a'); eq(F('a'), [0, 0, 500, 700], 'pane settles into the half'); ok(ws.preview === null, 'preview cleared');
+  ws.resizeFloatFrom('a', 'se', { x: 0, y: 0, width: 500, height: 700 }, -1000, -1000); eq(F('a'), [0, 0, FLOAT_MIN.minWidth, FLOAT_MIN.minHeight], 'pane resize floor'); 
+  ws.resizeFloatFrom('a', 'nw', { x: 0, y: 0, width: 300, height: 200 }, -500, -500); eq(F('a'), [-500, -500, 800, 700], 'pane may leave the workspace (no keep-on-screen)');
+  ws.setFloat('a', { x: 100, y: 400, w: 150, h: 100 });
+  for (const t of [0, 100, DEFAULT_SNAP_RULES.splitDwellMs]) ws.dragFloatTo('a', 650, 150, 640, 200, ws.area, 1000 + t);
+  eq(ws.preview?.kind, 'split', 'pane split arms after the dwell'); ws.settleFloat('a'); eq(F('a'), [600, 100, 150, 200], 'pane takes the left half'); eq(F('b'), [750, 100, 150, 200], 'other pane keeps the right half');
+  ws.maximizeFloat('a', ws.area); eq(F('a'), [0, 0, 1000, 700], 'pane maximizes'); ok(ws.float('a').maximized === true, 'flag'); ws.restoreFloat('a'); eq(F('a'), [600, 100, 150, 200], 'pane restores');
+  ws.toggleFloatMax('a', ws.area); ws.toggleFloatMax('a', ws.area); eq(F('a'), [600, 100, 150, 200], 'toggle twice');
+  ws.minimizeFloat('a'); ok(ws.float('a').minimized === true, 'minimized'); ws.minimizeFloat('a', false); ok(!ws.float('a').minimized, 'back');
+  ws.snapFloatTo('a', 'bottom-right', ws.area); eq(F('a'), [500, 350, 500, 350], 'snapFloatTo quarter'); ws.snapFloatTo('a', 'top', ws.area); ok(ws.float('a').maximized === true, 'snapFloatTo top maximizes');
+  ws.restoreFloat('a'); ws.snapRules = { ...DEFAULT_SNAP_RULES, noOverlap: true }; ws.setFloat('a', { x: 760, y: 150, w: 100, h: 100 }); ws.settleFloat('a');
+  const a = ws.float('a'), b = ws.float('b'); ok(!rectsOverlap({ x: a.x, y: a.y, width: a.w, height: a.h }, { x: b.x, y: b.y, width: b.w, height: b.h }), 'pane no-overlap settle');
+  ws.snapRules = { ...DEFAULT_SNAP_RULES }; ws.placement = { stack: 'cascade', snap: true, snapGrid: 10, minimize: 'cursor' }; ws.setFloat('a', { x: 123, y: 456 }); ws.settleFloat('a'); eq([ws.float('a').x, ws.float('a').y], [120, 460], 'pane grid from the behaviour theme');
+}
+
 console.log(`check-windows: ${checks} checks passed`);

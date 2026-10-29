@@ -949,9 +949,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* windows-terminal s17: resize from all 8 edges / corners (engine: RESIZE_EDGES, hitResizeEdge, resizeRect). The bands are
    invisible hit areas just inside the border (the window clips at its radius); corners are squares twice the band. Wider
    on touch. No keep-on-screen: a window may be dragged or resized past the viewport. */
-.fx-window { --fx-win-handle: var(--fx-space); }
-@media (pointer: coarse) { .fx-window { --fx-win-handle: calc(var(--fx-space) * 2); } }
-.fx-window__edge { position: absolute; z-index: 3; touch-action: none; user-select: none; }
+.fx-window__edge { --fx-win-handle: var(--fx-space); position: absolute; z-index: 3; touch-action: none; user-select: none; }
+@media (pointer: coarse) { .fx-window__edge { --fx-win-handle: calc(var(--fx-space) * 2); } }
 .fx-window__edge--n, .fx-window__edge--s { left: calc(var(--fx-win-handle) * 2); right: calc(var(--fx-win-handle) * 2); height: var(--fx-win-handle); }
 .fx-window__edge--e, .fx-window__edge--w { top: calc(var(--fx-win-handle) * 2); bottom: calc(var(--fx-win-handle) * 2); width: var(--fx-win-handle); }
 .fx-window__edge--n { top: 0; } .fx-window__edge--s { bottom: 0; } .fx-window__edge--w { left: 0; } .fx-window__edge--e { right: 0; }
