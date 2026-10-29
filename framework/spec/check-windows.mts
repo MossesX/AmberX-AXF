@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, WINDOW_MIN, WindowManager, dragRestore, hitResizeEdge, isMaximized, limitsOf, maximizeWindow, maximizedRect, resizeCursor, resizeRect, restoreWindow, toggleMaximized, windowFrame, type ResizeEdge, type WindowSpec } from '../core/engines/windows';
+import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, WindowManager, armSplit, dragRestore, hitResizeEdge, isMaximized, limitsOf, maximizeWindow, maximizedRect, rectsOverlap, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, windowFrame, type ResizeEdge, type SnapZone, type SplitArm, type WindowSpec } from '../core/engines/windows';
 
 const root = new URL('../', import.meta.url).pathname;
 const f = JSON.parse(readFileSync(join(root, 'spec/fixtures/windows.json'), 'utf8'));
@@ -91,6 +91,59 @@ for (const r of f.resizes) eq(resizeRect(r.start, r.edge as ResizeEdge, r.dx, r.
   wm.move(id2, 5, 5); wm.minimize(id2, 'corner-titlebar'); eq(w2().minimized, 'corner-titlebar', 'minimize'); wm.restore(id2); eq(w2().minimized, null, 'restore (un-minimize)');
   ok(wm.windowMenu().some((m) => m.action === 'windows.maximize:{payload}'), 'window menu has maximize');
   wm.close(id); wm.close(id2); eq(wm.state.windows.length, 1, 'closed');
+}
+
+// ---- s18: snapping fixture replay ----
+{
+  const sn = f.snap;
+  eq(DEFAULT_SNAP_RULES, sn.rules, 'snap rules'); eq([...SNAP_ZONES], sn.zonesList, 'zones');
+  for (const c of sn.snaps) eq(snapRect({ ...c.at, ...sn.moving }, sn.viewport, sn.others, c.rules), c.result, `snap ${c.name}`);
+  for (const z of sn.zones) { eq(snapZoneAt(z.px, z.py, sn.viewport), z.zone, `zone ${z.px},${z.py}`); eq(snapZoneAt(z.px, z.py, sn.viewport, 8), z.narrow, `narrow zone ${z.px},${z.py}`); }
+  for (const [z, r] of Object.entries<any>(sn.zoneRects)) { eq(snapZoneRect(z as SnapZone, { x: 0, y: 0, ...sn.viewport }), r.full, `zone rect ${z}`); eq(snapZoneRect(z as SnapZone, sn.work), r.work, `zone work rect ${z}`); eq(snapZoneRect(z as SnapZone, { x: 10, y: 20, width: 333, height: 201 }), r.odd, `zone odd rect ${z}`); }
+  for (const o of sn.overlap) eq(resolveOverlap(o.rect, sn.others), o.out, `overlap ${o.name}`);
+  for (const c of sn.split.cases) eq(splitDrop(sn.split.target, c.px, c.py), c.result, `split ${c.name}`);
+  eq(splitDrop({ x: 0, y: 0, width: 301, height: 201 }, 10, 100), sn.split.odd, 'split odd sizes');
+  for (const p of sn.topmost.probes) eq(topmostAt(sn.topmost.stack, p.px, p.py), p.index, `topmost ${p.px},${p.py}`);
+  let arm: SplitArm | null = null; for (const st of sn.arm.steps) { arm = armSplit(arm, st.target, st.now); eq(arm, st.arm, `arm ${st.target} @${st.now}`); }
+  eq(armSplit(null, 'a', 0, 0), sn.arm.zeroDwell, 'zero dwell arms at once');
+  // invariants: halves tile the target exactly, quarters tile the area, resolved rects never overlap
+  for (const c of sn.split.cases) { const d = c.result; eq(d.dropped.width * d.dropped.height + d.target.width * d.target.height, sn.split.target.width * sn.split.target.height, `split ${c.name} keeps the area`); ok(!rectsOverlap(d.dropped, d.target), `split ${c.name} halves do not overlap`); }
+  { const a = { x: 0, y: 0, width: 1001, height: 777 }; const q = (['top-left', 'top-right', 'bottom-left', 'bottom-right'] as SnapZone[]).map((z) => snapZoneRect(z, a)); eq(q.reduce((n, r) => n + r.width * r.height, 0), a.width * a.height, 'quarters tile the area'); for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) ok(!rectsOverlap(q[i]!, q[j]!), `quarters ${i},${j} disjoint`); }
+  for (const o of sn.overlap) for (const other of sn.others) ok(!rectsOverlap(o.out, other), `resolved ${o.name} clear of others`);
+}
+
+// ---- s18: WindowManager drag / zone / split / no-overlap ----
+{
+  const wm = new WindowManager();
+  wm.viewport = { width: 1000, height: 700 };
+  const a = wm.openFloating([{ id: 'ta', title: 'A', kind: 'placeholder' }], 'A', 'floating', 300, 200, 100, 100);
+  const b = wm.openFloating([{ id: 'tb', title: 'B', kind: 'placeholder' }], 'B', 'floating', 300, 200, 600, 100);
+  const W = (id: string) => wm.state.windows.find((x) => x.id === id)!;
+  // dragging A near B's left edge pulls it to abut
+  eq(wm.dragTo(a, 600 - 300 - 7, 110, 400, 120), null, 'plain pull = no preview'); eq([W(a).x, W(a).y], [300, 100], 'window-to-window snap abuts (x) and aligns tops (y)');
+  // pointer at the left viewport edge arms the left half zone; settle applies it
+  const pz = wm.dragTo(a, -50, 300, 3, 300); eq(pz?.kind, 'zone', 'zone preview'); eq(pz?.zone, 'left', 'left zone'); eq(wm.state.preview?.rect, { x: 0, y: 0, width: 500, height: 700 }, 'half rect');
+  wm.settle(a); eq([W(a).x, W(a).y, W(a).width, W(a).height, wm.state.preview ?? null], [0, 0, 500, 700, null], 'settle into the half');
+  // top zone maximizes with a restore rect
+  wm.dragTo(a, 200, 10, 500, 2); wm.settle(a); ok(isMaximized(W(a)) && W(a).restore?.width === 500, 'top zone maximizes'); wm.unmaximize(a);
+  // split: resting over B for the dwell arms a split; settle halves B and places A
+  wm.resizeFrom(a, 'se', { x: 0, y: 0, width: 500, height: 700 }, -200, -500); wm.moveTo(a, 100, 400);
+  eq(wm.dragTo(a, 650, 150, 640, 200, 1000), null, 'passing over B does not split'); eq(wm.dragTo(a, 650, 150, 640, 200, 1000 + DEFAULT_SNAP_RULES.splitDwellMs - 1), null, 'still not armed');
+  const ps = wm.dragTo(a, 650, 150, 640, 200, 1000 + DEFAULT_SNAP_RULES.splitDwellMs); eq(ps?.kind, 'split', 'split armed after the dwell'); eq(ps?.target, b, 'split target B'); eq(ps?.side, 'left', 'pointer on B\'s left half');
+  wm.settle(a); eq([W(a).x, W(a).y, W(a).width, W(a).height], [600, 100, 150, 200], 'A takes B\'s left half'); eq([W(b).x, W(b).y, W(b).width, W(b).height], [750, 100, 150, 200], 'B keeps the right half');
+  // split off = never a split preview; zones off = no zone
+  wm.setSnapRules({ split: false, zones: false }); eq(wm.dragTo(a, 760, 150, 800, 150, 99999), null, 'split off'); eq(wm.dragTo(a, -50, 300, 3, 300), null, 'zones off'); wm.settle(a);
+  // direct API: snapTo + splitOnto
+  wm.setSnapRules({}); wm.snapTo(a, 'bottom-right'); eq([W(a).x, W(a).y, W(a).width, W(a).height], [500, 350, 500, 350], 'snapTo quarter');
+  wm.workArea = { x: 0, y: 50, width: 1000, height: 650 }; wm.snapTo(a, 'right'); eq([W(a).x, W(a).y, W(a).width, W(a).height], [500, 50, 500, 650], 'snapTo honours the work area'); wm.workArea = null;
+  wm.snapTo(a, 'top'); ok(isMaximized(W(a)), 'snapTo top maximizes'); wm.unmaximize(a);
+  wm.moveTo(b, 600, 100); wm.resizeFrom(b, 'se', { x: 600, y: 100, width: 150, height: 200 }, 150, 0);
+  const d = wm.splitOnto(a, b, 700, 110); eq(d?.side, 'top', 'splitOnto top'); eq([W(a).x, W(a).y, W(a).width, W(a).height], [600, 100, 300, 100], 'splitOnto places A'); eq([W(b).x, W(b).y, W(b).width, W(b).height], [600, 200, 300, 100], 'splitOnto shrinks B');
+  eq(wm.splitOnto(a, a, 0, 0), null, 'cannot split onto itself');
+  // no-overlap: settling a window that overlaps another pushes it clear (and may leave the screen)
+  wm.setSnapRules({ noOverlap: true }); wm.moveTo(a, 620, 150); wm.settle(a); ok(!rectsOverlap({ x: W(a).x, y: W(a).y, width: W(a).width, height: W(a).height }, { x: W(b).x, y: W(b).y, width: W(b).width, height: W(b).height }), 'no-overlap settle clears B');
+  wm.setSnapRules({});
+  ok(wm.windowMenu().some((m) => m.id === 'snap' && (m.items?.length ?? 0) === 6), 'window menu has the snap submenu');
 }
 
 console.log(`check-windows: ${checks} checks passed`);

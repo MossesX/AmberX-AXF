@@ -3,7 +3,7 @@ import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
 import { useScopeId } from '../components/InterfaceScope';
-import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, ResizeEdge, WindowFrame } from '../../core/engines/windows';
+import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
 import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
 
 /* ------------------------------------------------------------------ */
@@ -132,7 +132,20 @@ export function FloatingWindowsHost() {
       {s.windows.filter((w) => isFloating(w) && !w.minimized && own(w)).sort((a, b) => a.z - b.z).map((w) => <FloatingWindow key={w.id} w={w} />)}
       {CORNERS.map((c) => <MinimizedCorner key={c} corner={c} windows={wm.minimizedAt(c).filter(own)} />)}
       {s.windows.filter((w) => w.minimized === 'floating-toolbar' && own(w)).map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
+      {s.preview && <SnapPreview preview={s.preview} />}
       {s.drag && <div className="fx-dragghost" style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
+    </>
+  );
+}
+
+/** The translucent outline shown while a drag arms a half / quarter zone or a split onto another window (s18). Tokens only. */
+function SnapPreview({ preview }: { preview: DragPreview }) {
+  return (
+    <>
+      <div className={`fx-snap-preview fx-snap-preview--${preview.kind}`} style={{ left: preview.rect.x, top: preview.rect.y, width: preview.rect.width, height: preview.rect.height }} aria-hidden>
+        <span className="fx-snap-preview__label">{preview.kind === 'zone' ? preview.zone : `split ${preview.side}`}</span>
+      </div>
+      {preview.kind === 'split' && preview.targetRect && <div className="fx-snap-preview fx-snap-preview--target" style={{ left: preview.targetRect.x, top: preview.targetRect.y, width: preview.targetRect.width, height: preview.targetRect.height }} aria-hidden />}
     </>
   );
 }
@@ -179,11 +192,14 @@ function useWindowDrag(w: WindowSpec) {
     const now = Date.now();
     if (now - lastTap.current < 320) { lastTap.current = 0; wm.toggleMaximize(w.id); return; }
     lastTap.current = now;
-    let lx = e.clientX, ly = e.clientY; let restored = !isMaximized(w);
+    const lx = e.clientX, ly = e.clientY; let restored = !isMaximized(w);
     const grab = e.clientY - (e.currentTarget as HTMLElement).getBoundingClientRect().top;
+    // grab offset: where the pointer sits inside the window; the unsnapped position is pointer minus offset, and the
+    // engine snaps from there each step (so a pull never accumulates); s18: screen / window edges, zones, split preview
+    let ox = e.clientX - w.x, oy = e.clientY - w.y;
     const move = (ev: PointerEvent) => {
-      if (!restored) { if (Math.hypot(ev.clientX - lx, ev.clientY - ly) < 6) return; wm.dragRestore(w.id, ev.clientX, ev.clientY, grab); restored = true; lx = ev.clientX; ly = ev.clientY; return; }
-      const dx = ev.clientX - lx, dy = ev.clientY - ly; lx = ev.clientX; ly = ev.clientY; wm.move(w.id, dx, dy);
+      if (!restored) { if (Math.hypot(ev.clientX - lx, ev.clientY - ly) < 6) return; const r = wm.dragRestore(w.id, ev.clientX, ev.clientY, grab); restored = true; if (r) { ox = ev.clientX - r.x; oy = ev.clientY - r.y; } return; }
+      wm.dragTo(w.id, ev.clientX - ox, ev.clientY - oy, ev.clientX, ev.clientY, Date.now());
     };
     const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); wm.settle(w.id); };
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
