@@ -1,15 +1,15 @@
 {
  "$axf": "feature-matrix@0",
  "note": "Draft data until feature-matrix s1 (feature-matrix@1) lands; s1 adopts it as-is. Items are never deleted: keep=false means skip.",
- "updatedAt": "2026-10-29T01:50:00.000Z",
+ "updatedAt": "2026-10-29T03:30:00.000Z",
  "matrices": [
   {
    "build": "refactor-all",
    "profile": "refactor",
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T01:50:00.000Z",
-   "minutesKept": 1000,
+   "updatedAt": "2026-10-29T03:30:00.000Z",
+   "minutesKept": 0,
    "minutesSkipped": 1960,
    "items": [
     {
@@ -214,7 +214,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "windows-terminal:s7",
@@ -226,7 +229,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "windows-terminal:s8",
@@ -238,7 +244,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "windows-terminal:s9",
@@ -250,7 +259,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "windows-terminal:s10",
@@ -262,7 +274,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "windows-terminal:s11",
@@ -274,7 +289,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "windows-terminal:s12",
@@ -286,7 +304,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "feature-matrix:s1",
@@ -328,7 +349,10 @@
      "minutes": 20,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "basic-filter:s7",
@@ -355,7 +379,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s28",
@@ -367,7 +394,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s29",
@@ -379,7 +409,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s31",
@@ -391,7 +424,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s32",
@@ -403,7 +439,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s33",
@@ -415,7 +454,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s34",
@@ -427,7 +469,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s35",
@@ -439,7 +484,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s36",
@@ -451,7 +499,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s37",
@@ -463,7 +514,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s38",
@@ -475,7 +529,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s39",
@@ -487,7 +544,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "enterprise-branding:s40",
@@ -499,7 +559,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:31:15.654Z"
+     "addedAt": "2026-10-28T19:31:15.654Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "interface-roller:s11",
@@ -1162,7 +1225,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:50:00.000Z"
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "plugin-theme-override:s5",
@@ -1174,7 +1240,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:50:00.000Z"
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "plugin-theme-override:s6",
@@ -1186,7 +1255,10 @@
      "minutes": 20,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:50:00.000Z"
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "plugin-theme-override:s9",
@@ -1198,7 +1270,10 @@
      "minutes": 25,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T19:50:00.000Z"
+     "addedAt": "2026-10-28T19:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "assistant-approvals:s1",
@@ -1222,7 +1297,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T23:25:00.000Z"
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "assistant-approvals:s3",
@@ -1234,7 +1312,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T23:25:00.000Z"
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "assistant-approvals:s4",
@@ -1246,7 +1327,10 @@
      "minutes": 30,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T23:25:00.000Z"
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "assistant-approvals:s5",
@@ -1258,7 +1342,10 @@
      "minutes": 20,
      "keep": true,
      "why": "",
-     "addedAt": "2026-10-28T23:25:00.000Z"
+     "addedAt": "2026-10-28T23:25:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "veto-approvals:s1",
@@ -1270,7 +1357,10 @@
      "minutes": 30,
      "keep": true,
      "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
-     "addedAt": "2026-10-29T01:50:00.000Z"
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "veto-approvals:s2",
@@ -1282,7 +1372,10 @@
      "minutes": 30,
      "keep": true,
      "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
-     "addedAt": "2026-10-29T01:50:00.000Z"
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "veto-approvals:s3",
@@ -1294,7 +1387,10 @@
      "minutes": 30,
      "keep": true,
      "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
-     "addedAt": "2026-10-29T01:50:00.000Z"
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "veto-approvals:s4",
@@ -1306,7 +1402,10 @@
      "minutes": 30,
      "keep": true,
      "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
-     "addedAt": "2026-10-29T01:50:00.000Z"
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "veto-approvals:s5",
@@ -1318,7 +1417,10 @@
      "minutes": 25,
      "keep": true,
      "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
-     "addedAt": "2026-10-29T01:50:00.000Z"
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     },
     {
      "id": "veto-approvals:s6",
@@ -1330,7 +1432,10 @@
      "minutes": 20,
      "keep": true,
      "why": "replaces the skipped veto-window items with Brett's Oct 28 21:35 spec",
-     "addedAt": "2026-10-29T01:50:00.000Z"
+     "addedAt": "2026-10-29T01:50:00.000Z",
+     "done": true,
+     "doneAt": "2026-10-29T03:30:00.000Z",
+     "doneNote": "Built Oct 28–29 2026 by refactor-all sub-agents; PR #166 (Terminal also #165; axHub #18)"
     }
    ],
    "page": "https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS",
