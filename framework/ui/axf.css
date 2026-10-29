@@ -961,6 +961,11 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-window.is-maximized { border-radius: 0; box-shadow: none; }
 /* frameless (Terminal): the content draws its own title bar through useWindowFrame(); no host chrome, no body inset */
 .fx-window--frameless .fx-window__body { padding: 0; }
+/* a frameless window holding one tab shows that content's own bar only: the host's tab-group bar (its tab chip, undock
+   and split buttons) would be a second title bar above it. A second tab dropped in brings the bar back. */
+.fx-window--frameless .fx-window__body > .fx-tabgroup { border: 0; border-radius: 0; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__bar { display: none; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__body { padding: 0; }
 /* s18: snap preview — a translucent accent pane where a dragged window will land (zone or split); the split target's
    remaining half is outlined. Transparency through the themed opacities, never a fixed percentage. */
 .fx-snap-preview { position: fixed; z-index: 59; pointer-events: none; box-sizing: border-box; border-radius: var(--fx-radius-lg); border: calc(var(--fx-border-w) * 2) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); transition: left var(--fx-motion) ease, top var(--fx-motion) ease, width var(--fx-motion) ease, height var(--fx-motion) ease; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--fx-space); }

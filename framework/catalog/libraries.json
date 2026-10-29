@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-28T18:17:09.635Z",
+  "generatedAt": "2026-10-29T02:07:32.506Z",
   "items": [
     {
       "$axf": "library@1",
@@ -1214,7 +1214,7 @@
         {
           "id": "floating-panes",
           "label": "Floating panes",
-          "description": "Any pane can float as a window you drag and resize.",
+          "description": "Any pane can float as a window on the window engine's physics: drag with snapping to the workspace edges and other panes, half / quarter zones, drop onto another pane to split it, resize from all 8 edges and corners (touch too), maximize / restore, minimize to a chip. No keep-on-screen.",
           "requires": [
             "areas"
           ]

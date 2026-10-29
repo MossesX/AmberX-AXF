@@ -1073,7 +1073,11 @@
       "icon": "settings",
       "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
       "optional_fields": {
-        "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)"
+        "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)",
+        "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
+        "defaultLevel": "level of anything levelOf doesn't name (simple | basic | developer | administrator; older pro = administrator, advanced = developer)",
+        "levelOf": "tab, group, panel or setting id → its level",
+        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)"
       },
       "required": [
         "layout",

@@ -8,6 +8,7 @@
  */
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu';
+import { MenuSub } from './MenuList';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Kbd } from './Controls';
@@ -119,9 +120,9 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
               {hasSub && <Icon name="chevron-right" size={14} className="fx-menu__chevron" />}
             </button>
             {sub && (
-              <div className="fx-menu__sub fx-popover" role="presentation">
+              <MenuSub role="presentation">
                 <SubmenuBody item={item} depth={depth + 1} onDone={onDone} open />
-              </div>
+              </MenuSub>
             )}
           </li>
         );

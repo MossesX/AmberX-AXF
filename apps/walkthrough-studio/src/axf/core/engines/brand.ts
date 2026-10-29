@@ -95,13 +95,36 @@ export function glyphFor(raw: unknown, name: string): Glyph | null {
   return pack.glyphs[name] ?? null;
 }
 
+/**
+ * A glyph path split into its closed sub-paths (filled in a filled pack) and open ones (stroked). Sub-paths start at
+ * absolute `M`; a path with a relative `m` after the start can't be split safely, so it is kept whole: closed when
+ * every sub-path closes, open otherwise.
+ */
+export function splitGlyph(d: string): { closed: string; open: string } {
+  const src = d.trim();
+  if (/[m]/.test(src.slice(1))) return /[zZ]\s*$/.test(src) && !/[^zZ\s]\s*[Mm]/.test(src.replace(/[zZ]\s*[Mm]/g, '')) ? { closed: src, open: '' } : { closed: '', open: src };
+  const parts = src.split(/(?=M)/).map((x) => x.trim()).filter(Boolean);
+  const closed = parts.filter((x) => /[zZ]$/.test(x));
+  const open = parts.filter((x) => !/[zZ]$/.test(x));
+  return { closed: closed.join(''), open: open.join('') };
+}
+
 /** Inline SVG for one glyph of a pack at `size` px (stroke or fill per the pack's style). */
 export function glyphSvg(raw: unknown, name: string, size = 16, title?: string): string | null {
   const pack = normalizeIconPack(raw);
   const g = pack.glyphs[name];
   if (!g) return null;
   const filled = g.fill || pack.style === 'filled';
-  const main = filled ? `<path d="${esc(g.d)}" fill="currentColor"/>` : `<path d="${esc(g.d)}" fill="none" stroke="currentColor" stroke-width="${pack.stroke}" stroke-linecap="${pack.linecap}" stroke-linejoin="round"/>`;
+  const stroked = (d: string) => `<path d="${esc(d)}" fill="none" stroke="currentColor" stroke-width="${pack.stroke}" stroke-linecap="${pack.linecap}" stroke-linejoin="round"/>`;
+  let main: string;
+  if (!filled) main = stroked(g.d);
+  else if (g.fill) main = `<path d="${esc(g.d)}" fill="currentColor"/>`; // the glyph's author asked for a fill
+  else {
+    // a filled pack fills closed shapes but keeps open lines stroked (a check mark, ×, +, a search handle), else
+    // they would vanish or turn into wedges (enterprise-branding s25)
+    const { closed, open } = splitGlyph(g.d);
+    main = (closed ? `<path d="${esc(closed)}" fill="currentColor"/>` : '') + (open ? stroked(open) : '');
+  }
   const second = g.secondary ? `<path d="${esc(g.secondary)}" fill="currentColor" opacity="var(--fx-opacity-tint, 0.14)"/>` : '';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pack.grid} ${pack.grid}" width="${size}" height="${size}" aria-hidden="${title ? 'false' : 'true'}"${title ? ` role="img" aria-label="${esc(title)}"` : ''}>${second}${main}</svg>`;
 }

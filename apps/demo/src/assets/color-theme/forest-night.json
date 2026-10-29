@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "forest-night",
+  "name": "Forest Night",
+  "version": "1.0.0",
+  "description": "Pine-dark greens with a fresh leaf accent; easy on the eyes.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "natural"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0d1411",
+      "surface": "#131e18",
+      "surface2": "#192720",
+      "surface3": "#21332a",
+      "text": "#e3ede8",
+      "muted": "#8fae9e",
+      "border": "#263b30",
+      "accent": "#60d286",
+      "accentText": "#0a2413",
+      "accentSoft": "rgba(96,210,134,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#60d286",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}
