@@ -32,9 +32,12 @@
     "dataDir": ".axf-console/plugins/feature-matrix",
     "env": [],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
-      "_claude/memory/docs/feature-matrix.md"
+      "_claude/memory/docs/feature-matrix.md",
+      "_claude/memory/docs/rebuilds/LOG.md",
+      "_claude/memory/docs/rebuilds/feature-matrix-plugin.md"
     ]
   },
   "builtWith": {

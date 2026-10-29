@@ -1,0 +1,7 @@
+[
+ { "name": "orchestrator", "steps": [ { "search": "Build orchestrator", "wait": 3000 } ] },
+ { "name": "pending", "steps": [ { "search": "Pending builds", "wait": 3000 } ] },
+ { "name": "builds-menu", "viewports": ["desktop"], "steps": [ { "click": "text=Builds >> nth=0", "wait": 1000 } ] },
+ { "name": "feature-matrix", "steps": [ { "search": "Build orchestrator", "wait": 2500 }, { "click": "button:has-text('Feature matrix') >> nth=0", "wait": 3000 } ] },
+ { "name": "feature-matrix-open", "steps": [ { "search": "Build orchestrator", "wait": 2500 }, { "click": "button:has-text('Feature matrix') >> nth=0", "wait": 3000 }, { "click": "text=Refactor: everything left to build >> nth=0", "wait": 1500 } ] }
+]
