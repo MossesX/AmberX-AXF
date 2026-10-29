@@ -5,6 +5,10 @@ import type { PlanFeature, PlanStatus, PortId } from '../api';
 import { PreviewPane } from './Boilerplates';
 import { ElementPreview } from './Explorer';
 import { useStore } from '../store';
+import { RowHookButtons, registerRowRefTarget } from '../axf/libs/datagrid';
+
+// grid-hook@1: plugins' row hooks for plan features (right-click on a row; a button in the feature's details)
+registerRowRefTarget('axf-plan-feature', (id) => (id ? { kind: 'plan', id } : null));
 
 /* ------------------------------------------------------------------ */
 /* plan store: one shared copy for the view, floating windows, dialogs */
@@ -345,6 +349,7 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
         <div className="fx-row fx-row--wrap">
           <Button tone="primary" icon="save" disabled={!dirty} onClick={() => save()}>{dirty ? 'Save' : 'Saved'}</Button>
           {dirty && <Button icon="undo" onClick={() => { setD(feature); setDirty(false); }}>Discard</Button>}
+          <RowHookButtons rowRef={{ kind: 'plan', id: d.id }} />
           <Button icon="external" onClick={() => wm.openFloating([{ id: `plan-${d.id}-${Date.now().toString(36)}`, title: d.title, kind: 'plan-feature', payload: d.id, icon: 'layers' }], d.title, 'floating', 460, 620)}>Open in window</Button>
           {d.source === 'user' && <Button tone="danger" icon="trash" onClick={() => removeFeature(d.id, (t, l) => log(t, l))}>Delete</Button>}
         </div>

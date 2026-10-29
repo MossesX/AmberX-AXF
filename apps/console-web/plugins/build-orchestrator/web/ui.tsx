@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, Segmented, useRuntime } from '@console/axf/react';
+import { Button, Icon, Segmented, Slot, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
-import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import './orchestrator.css';
 
 /*
@@ -16,6 +16,8 @@ import './orchestrator.css';
  */
 
 export const FOLDER = 'build-orchestrator';
+// grid-hook@1: a build card's right-click finds the row hooks for orchestrator builds
+registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
 type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string }[]; steps: Step[] };
@@ -66,7 +68,7 @@ export function OrchestratorPage() {
           <h1>Build orchestrator</h1>
           <p className="fx-muted">Every build broken into small steps on Fable or Opus. A model switch waits for your approval. One session, no sub-agents unless a step says so. Tracker: <span className="fx-mono">_claude/builds/orchestrator.json</span>.</p>
         </div>
-        <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button></div>
+        <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <div className="fx-tabs" role="tablist" aria-label="Build orchestrator">
@@ -245,6 +247,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           <Button icon="plus" onClick={() => open('step')}>Add step</Button>
           <Button icon="file" onClick={() => open('edit')}>Edit</Button>
           <Button icon="copy" onClick={copyBrief}>Copy next brief</Button>
+          <RowHookButtons rowRef={{ kind: 'orchestrator', id: b.id }} />
           <Button icon={b.hidden ? 'eye' : 'minimize'} disabled={busy} onClick={() => act({ action: b.hidden ? 'unhide' : 'hide', id: b.id })}>{b.hidden ? 'Unhide' : 'Hide'}</Button>
           <Button icon="package" disabled={busy || b.status === 'archived'} onClick={() => act({ action: 'archive', id: b.id })}>Archive</Button>
           <Button icon="trash" onClick={() => setMode('confirm')}>Remove</Button>
@@ -426,7 +429,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
           sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(b) => setOpen((o) => toggleIn(o, b.id))}
           onToggleGroup={(id) => setCollapsed((c) => toggleIn(c, id))}
-          rowCtx={(b) => ({ target: 'axf-orchestrator-build', payload: b.id })}
+          rowCtx={(b) => ({ target: 'axf-orchestrator-build', payload: b.id })} rowRef={(b) => ({ kind: 'orchestrator', id: b.id })}
           renderDetail={(b) => (
             <div className="oc-detail">
               <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />

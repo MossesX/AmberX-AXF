@@ -4,7 +4,7 @@ import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import * as fm from './fm-core.mjs';
-import { clearFocus, FOLDER, KEYS, useFocus } from './focus';
+import { clearFocus, FOLDER, KEYS, useFocus, VIEW } from './focus';
 import './feature-matrix.css';
 
 /*
@@ -26,6 +26,12 @@ const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.ge
 const mins = (n: number) => fm.formatMinutes(n) || '0 min';
 const KIND_LABEL: Record<string, string> = { orchestrator: 'Orchestrator', pending: 'Pending', queue: 'Build queue', plan: 'Plan', change: 'Change log' };
 const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: unknown) => { try { return rt.settings.get(k) ?? d; } catch { return d; } };
+
+/** The Builds pages' toolbar button (slot builds.toolbar). */
+export function OpenMatrixButton() {
+  const rt = useRuntime();
+  return <Button icon="check-circle" onClick={() => rt.navigate(VIEW)} title="Every build's keep / skip feature list">Feature matrix</Button>;
+}
 
 export function FeatureMatrixPage() {
   const rt = useRuntime();

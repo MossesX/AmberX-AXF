@@ -20,3 +20,6 @@
 [class*='axf-grid-edge--'] { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--axf-grid-edge); }
 .axf-grid-edge--muted { --axf-grid-edge: var(--fx-border); } .axf-grid-edge--success { --axf-grid-edge: var(--fx-success); } .axf-grid-edge--accent { --axf-grid-edge: var(--fx-accent); }
 .axf-grid-edge--danger { --axf-grid-edge: var(--fx-danger); } .axf-grid-edge--warning { --axf-grid-edge: var(--fx-warning); } .axf-grid-edge--info { --axf-grid-edge: var(--fx-info); }
+/* row hooks (grid-hook@1): the hook buttons sit with the expand button; the tail track sizes to them, nothing overlaps */
+.axf-grid-tail { display: inline-flex; align-items: center; justify-content: flex-end; gap: calc(var(--fx-space) / 4); min-width: 0; }
+.axf-grid-hooks { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 4); }

@@ -3,6 +3,7 @@ import { Button, Icon, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
+import { RowHookButtons, registerRowRefTarget } from '../axf/libs/datagrid';
 import type { PendingAction, PendingItem, PendingModel, PendingSort, PendingState, PendingStatus } from '../axf/plan/pending-core.mjs';
 
 /** Estimated dollars for `minutes` on a model (the pricing file's price per working minute), '' without a price. */
@@ -78,6 +79,7 @@ export function Pending() {
         </div>
         <div className="fx-row fx-row--wrap">
           <Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button>
+          <Slot name="builds.toolbar" props={{ page: 'pending' }} />
           <a className="fx-btn" href={state.artifact || core.ARTIFACT_URL} target="_blank" rel="noreferrer"><Icon name="external" size={15} />claude.ai list</a>
         </div>
       </header>
@@ -112,6 +114,9 @@ export function Pending() {
     </div>
   );
 }
+
+// grid-hook@1: plugins' row hooks for pending items (button + right-click on the card)
+registerRowRefTarget('axf-pending-item', (id) => (id ? { kind: 'pending', id } : null));
 
 function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c: PendingAction) => Promise<boolean> }) {
   const rt = useRuntime();
@@ -186,6 +191,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
           <Button icon="terminal" onClick={() => open('sub')}>Sub prompt</Button>
           <Button icon="file" onClick={() => open('edit')}>Edit</Button>
           <Button icon="copy" onClick={copy}>Copy brief</Button>
+          <RowHookButtons rowRef={{ kind: 'pending', id: it.id }} />
           <Button icon="trash" onClick={() => setMode('confirm')}>Remove</Button>
         </div>
       )}

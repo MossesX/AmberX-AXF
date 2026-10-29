@@ -3,7 +3,7 @@
   "id": "ai.amberx.axf.datagrid",
   "module": "lib-datagrid",
   "name": "Data grid (categorized sub-grids, hideable columns, expandable rows)",
-  "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid. Every grid is also a dataset (datasets.ts, Oct 28 2026): plugins attach filters, sorts and a toolbar above it without the view knowing them.",
+  "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid. Every grid is also a dataset (datasets.ts, Oct 28 2026): plugins attach filters, sorts and a toolbar above it without the view knowing them. Row hooks (grid-hook@1, Oct 29 2026): a grid says what each row is (rowRef → { kind, id }) and plugins add a row button + a right-click item for that kind without the grid naming them.",
   "features": [],
   "dependsOn": [],
   "manifestKey": "libraries.datagrid",
