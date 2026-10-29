@@ -4,7 +4,7 @@
   "id": "data-grid",
   "name": "Data Grid",
   "version": "1.0.0",
-  "description": "Narrow rail, toolbar, status bar and no inspector: every pixel for tables and grids.",
+  "description": "Narrow rail, toolbar, status bar and no inspector: every pixel for tables and grids. The console keeps its menu bar on top (it reaches everything when the toolbar and navigation are hidden).",
   "author": "AmberX AXF",
   "tags": [
     "desktop",
@@ -13,7 +13,7 @@
   "data": {
     "nav": "left",
     "navWidth": 64,
-    "showMenubar": false,
+    "showMenubar": true,
     "showToolbar": true,
     "toolbarPosition": "top",
     "showStatusbar": true,

@@ -4,7 +4,7 @@
   "id": "right-handed",
   "name": "Right Handed",
   "version": "1.0.0",
-  "description": "Navigation on the right and the toolbar at the bottom, in reach of the thumb on tablets and big phones.",
+  "description": "Navigation on the right and the toolbar at the bottom, in reach of the thumb on tablets and big phones. The console keeps its menu bar on top (it reaches everything when the toolbar and navigation are hidden).",
   "author": "AmberX AXF",
   "tags": [
     "tablet",
@@ -13,7 +13,7 @@
   "data": {
     "nav": "right",
     "navWidth": 220,
-    "showMenubar": false,
+    "showMenubar": true,
     "showToolbar": true,
     "toolbarPosition": "bottom",
     "showStatusbar": false,

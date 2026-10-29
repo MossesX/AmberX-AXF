@@ -4,7 +4,7 @@
   "id": "portal-top",
   "name": "Portal Top",
   "version": "1.0.0",
-  "description": "Top navigation, toolbar and a centred 1200 px page: customer portals and admin sites.",
+  "description": "Top navigation, toolbar and a centred 1200 px page: customer portals and admin sites. The console keeps its menu bar on top (it reaches everything when the toolbar and navigation are hidden).",
   "author": "AmberX AXF",
   "tags": [
     "web",
@@ -13,7 +13,7 @@
   "data": {
     "nav": "top",
     "navWidth": 0,
-    "showMenubar": false,
+    "showMenubar": true,
     "showToolbar": true,
     "toolbarPosition": "top",
     "showStatusbar": false,
