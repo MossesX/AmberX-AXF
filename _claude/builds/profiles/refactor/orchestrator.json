@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T02:01:47.901Z",
+ "updatedAt": "2026-10-29T02:09:31.094Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4673,7 +4673,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T02:01:47.901Z",
+   "updatedAt": "2026-10-29T02:09:31.093Z",
    "builtAt": "",
    "notes": [
     {
@@ -6118,9 +6118,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:09:31.017Z",
+     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'"
     },
     {
      "id": "s82",
@@ -6135,9 +6135,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:09:31.093Z",
+     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'"
     },
     {
      "id": "s83",
