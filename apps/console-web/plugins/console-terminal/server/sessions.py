@@ -12,6 +12,7 @@ from __future__ import annotations
 import asyncio
 import fcntl
 import os
+import json
 import pty
 import re
 import secrets
@@ -265,18 +266,56 @@ class Manager:
             be = PtyBackend(vps_argv(st, remote, tty=True), str(cx.ROOT), clean_env(), cols, rows)
             title, target, badge = (f"Claude: {attach[4:]}" if attach else "VPS"), vps["host"], "HOST ROOT"
         elif kind == "claude":
+            # Claude Code on a connection (Oct 28 2026): via = console (default) | vps | container | axhub.
+            # axhub = Claude Code in the console with axHub's MCP server added, so every hub service is a tool.
+            via = str(req.get("via") or "console")
             exe = os.environ.get("CLAUDE_BIN", "claude")
-            if not subprocess.run(["sh", "-c", f"command -v {shlex.quote(exe)}"], capture_output=True).stdout.strip():
-                raise ValueError("the claude CLI isn't installed in the console")
-            d = Path(cwd) if cwd else cx.ROOT
-            if not d.is_dir():
-                d = cx.ROOT
-            extra = {"DISABLE_AUTOUPDATER": "1"}
+            cargs = claude_args(req)
             tok = store.claude_token()
-            if tok:
-                extra["CLAUDE_CODE_OAUTH_TOKEN"] = tok
-            be = PtyBackend([exe], str(d), clean_env(extra), cols, rows)
-            title, target, cwd = "Claude Code", "console", str(d)
+            if via in ("console", "axhub"):
+                if not subprocess.run(["sh", "-c", f"command -v {shlex.quote(exe)}"], capture_output=True).stdout.strip():
+                    raise ValueError("the claude CLI isn't installed in the console")
+                d = Path(cwd) if cwd else cx.ROOT
+                if not d.is_dir():
+                    d = cx.ROOT
+                extra = {"DISABLE_AUTOUPDATER": "1"}
+                if tok:
+                    extra["CLAUDE_CODE_OAUTH_TOKEN"] = tok
+                if via == "axhub":
+                    cargs = ["--mcp-config", json.dumps({"mcpServers": {"axHub": {"type": "http", "url": axhub_url()}}}), *cargs]
+                be = PtyBackend([exe, *cargs], str(d), clean_env(extra), cols, rows)
+                title, target, cwd = "Claude Code", ("axhub" if via == "axhub" else "console"), str(d)
+            elif via == "vps":
+                vps = st["vps"]
+                if not vps.get("host") or not store.ssh_key().exists():
+                    raise ValueError("set up the VPS tab first (Settings → Plugins → Terminal → VPS host: host + a key)")
+                run = " ".join(shlex.quote(x) for x in ["claude", *cargs])
+                remote = (f"cd -- {shlex.quote(cwd)} 2>/dev/null; " if cwd else "") + \
+                    f"command -v claude >/dev/null 2>&1 || {{ echo 'Claude Code is not installed on the VPS host.'; exec \"${{SHELL:-bash}}\" -l; }}; exec {run}"
+                be = PtyBackend(vps_argv(st, remote, tty=True), str(cx.ROOT), clean_env(), cols, rows)
+                title, target, badge = "Claude Code", vps["host"], "HOST ROOT"
+            elif via == "container":
+                cs = plugin_services.get("axf.containers@1")
+                if not cs:
+                    raise PermissionError("Container access isn't installed or enabled")
+                name = str(req.get("container") or "")
+                entry = next((c for c in cs.list() if c["name"] == name), None)
+                if not entry:
+                    raise KeyError(f"no container named {name!r}")
+                protected = bool(entry.get("protected"))
+                if protected and not req.get("confirmProtected"):
+                    raise PermissionError(f"{name} is protected ({entry['protected']['label']}): confirm to run Claude Code in it")
+                run = " ".join(shlex.quote(x) for x in ["claude", *cargs])
+                cmd = ["sh", "-c", f"command -v claude >/dev/null 2>&1 && exec {run} || {{ echo 'Claude Code is not installed in this container.'; "
+                       "if command -v bash >/dev/null 2>&1; then exec bash -l; else exec sh -l; fi; }"]
+                env = [f"CLAUDE_CODE_OAUTH_TOKEN={tok}"] if tok else []
+                tty, c = cs.tty(name, actor={"kind": "user", "id": "console", "name": "Brett (terminal)"}, cwd=cwd, user=st["user"],
+                                allow_protected=protected, cols=cols, rows=rows, command=cmd, env=env)
+                be = TtyBackend(tty)
+                title, target = "Claude Code", name
+                badge = "PROTECTED" if protected else None
+            else:
+                raise ValueError("via is console, vps, container or axhub")
         else:
             raise ValueError("kind is console, container, vps or claude")
         s = Session(kind, title, target, cwd, be, mosh, badge, protected)
@@ -335,6 +374,39 @@ MANAGER = Manager()
 
 
 HEADLESS_RE = re.compile(r"^axf-[A-Za-z0-9._-]{1,64}$")
+
+
+CLAUDE_FLAG = re.compile(r"^--?[A-Za-z][A-Za-z0-9-]*(=[^\x00]*)?$")
+
+
+def claude_args(req: dict[str, Any]) -> list[str]:
+    """Claude Code arguments from a tab's profile: model, permission mode, extra flags (each checked), a first prompt."""
+    out: list[str] = []
+    model = str(req.get("model") or "").strip()
+    if model:
+        if not re.fullmatch(r"[A-Za-z0-9._:-]{1,80}", model):
+            raise ValueError("model is a model name")
+        out += ["--model", model]
+    mode = str(req.get("permissionMode") or "").strip()
+    if mode:
+        if mode not in ("default", "acceptEdits", "plan", "bypassPermissions"):
+            raise ValueError("permissionMode is default, acceptEdits, plan or bypassPermissions")
+        out += ["--permission-mode", mode]
+    for f in req.get("flags") or []:
+        f = str(f).strip()
+        if not f:
+            continue
+        if not CLAUDE_FLAG.match(f) or len(f) > 300:
+            raise ValueError(f"not a flag: {f[:40]}")
+        out.append(f)
+    prompt = str(req.get("prompt") or "").strip()
+    if prompt:
+        out.append(prompt[:4000])
+    return out
+
+
+def axhub_url() -> str:
+    return os.environ.get("AXF_AXHUB_MCP_URL", "https://axhub.amberxai.com/mcp")
 
 
 def vps_argv(st: dict[str, Any], remote: str, tty: bool) -> list[str]:
