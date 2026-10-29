@@ -97,7 +97,7 @@ function MonitorView() {
           </p>
         </div>
         <div className="fx-row fx-row--wrap">
-          {on ? <Button icon="close" onClick={() => void stop(rt)}>Stop</Button> : <Button tone="primary" icon="eye" onClick={() => void start(rt)}>Start watching</Button>}
+          {on ? <Button icon="pause" onClick={() => void stop(rt)}>Stop watching</Button> : <Button tone="primary" icon="eye" onClick={() => void start(rt)}>Start watching</Button>}
           <Button icon="external" onClick={() => void native.hubOpen({ url: loginUrl(HUB) })}>Sign in to axHub</Button>
         </div>
       </header>

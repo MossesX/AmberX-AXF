@@ -198,6 +198,26 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(!/#[0-9a-f]{3,8}\b/i.test(readFileSync(`${here}src/windows/windows.css`, 'utf8')), 'window CSS uses tokens only');
 }
 
+// Pages (enterprise-branding s33): every page head has an eyebrow, a title and one sentence; icons exist in the
+// framework set (a missing name falls back to a box); Approvals shows skeletons while it reads and can pop out.
+{
+  const { readFileSync, readdirSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const iconSrc = readFileSync(`${here}src/axf/react/components/Icon.tsx`, 'utf8');
+  const names = new Set([...iconSrc.matchAll(/^\s+["']?([a-z0-9-]+)["']?:\s*["'`]M/gm)].map((m) => m[1]));
+  const files = [`${here}src/views/Approvals.tsx`, ...readdirSync(`${here}src/plugins`).filter((p) => !p.startsWith('_') && existsSync(`${here}src/plugins/${p}/web`))
+    .flatMap((p) => readdirSync(`${here}src/plugins/${p}/web`).filter((f) => f.endsWith('.tsx')).map((f) => `${here}src/plugins/${p}/web/${f}`))];
+  for (const f of files) {
+    const src = readFileSync(f, 'utf8');
+    for (const m of src.matchAll(/icon="([a-z0-9-]+)"/g)) ok(names.has(m[1]), `${f.split('/src/')[1]}: icon ${m[1]} exists`);
+    for (const head of src.matchAll(/<header className="fx-pagehead">([\s\S]*?)<\/header>/g)) {
+      ok(head[1].includes('fx-eyebrow') && head[1].includes('<h1'), `${f.split('/src/')[1]}: page head has an eyebrow and a title`);
+    }
+  }
+  const ap = readFileSync(`${here}src/views/Approvals.tsx`, 'utf8');
+  ok(ap.includes('aria-busy') && ap.includes("amberx.window:home"), 'Approvals: skeleton while reading, pops out into a window');
+}
+
 // An empty shell for building and testing plugins (Oct 26 2026): Approvals is its only page; voice, monitor and any
 // installed plugin bring the rest. No menu, toolbar or voice command may point at a page that isn't there.
 {

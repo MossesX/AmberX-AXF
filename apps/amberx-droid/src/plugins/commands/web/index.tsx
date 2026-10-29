@@ -231,8 +231,8 @@ function StepsEditor({ steps, all, onChange }: { steps: Step[]; all: Effective[]
         {steps.map((s, i) => (
           <li key={i} className="axp-cmd-steps__row">
             <span className="axp-cmd-steps__text">{describeStep(s)}</span>
-            <IconButton icon="arrow-up" label={`Move step ${i + 1} up`} disabled={i === 0} onClick={() => move(i, -1)} />
-            <IconButton icon="arrow-down" label={`Move step ${i + 1} down`} disabled={i === steps.length - 1} onClick={() => move(i, 1)} />
+            <IconButton icon="chevron-up" label={`Move step ${i + 1} up`} disabled={i === 0} onClick={() => move(i, -1)} />
+            <IconButton icon="chevron-down" label={`Move step ${i + 1} down`} disabled={i === steps.length - 1} onClick={() => move(i, 1)} />
             <IconButton icon="trash" label={`Remove step ${i + 1}`} onClick={() => onChange(steps.filter((_, j) => j !== i))} />
           </li>
         ))}
@@ -383,7 +383,7 @@ function Unavailable({ cat }: { cat: CategoryId }) {
   let why: string; let what: ReactNode;
   if (!enabled) {
     why = 'The AI is switched off in this app\'s settings, so nothing is sent to it and these commands can\'t run.';
-    what = <><Button tone="primary" icon="power" onClick={() => rt.dispatch('ai.enable')}>Switch the AI on</Button><Button tone="quiet" icon="settings" onClick={() => rt.dispatch('ai.status.open')}>AI settings</Button></>;
+    what = <><Button tone="primary" icon="zap" onClick={() => rt.dispatch('ai.enable')}>Switch the AI on</Button><Button tone="quiet" icon="settings" onClick={() => rt.dispatch('ai.status.open')}>AI settings</Button></>;
   } else if (!s.ok) {
     why = `The AI isn't answering: ${s.reason || 'not checked yet'}.`;
     what = <>
