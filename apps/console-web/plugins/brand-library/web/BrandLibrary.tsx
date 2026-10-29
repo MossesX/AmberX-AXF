@@ -145,7 +145,7 @@ function VirtualGrid({ items, marks, config, picked, onPick, onCopy }: { items: 
           {visible.map((a, k) => {
             const i = w.start + k;
             return (
-              <button key={a.id} type="button" data-id={a.id} role="gridcell" className={`axp-brand-library__tile ${picked === a.id ? 'is-active' : ''}`} aria-selected={picked === a.id}
+              <button key={a.id} type="button" data-fx-row data-id={a.id} role="gridcell" className={`axp-brand-library__tile ${picked === a.id ? 'is-active' : ''}`} aria-selected={picked === a.id}
                 title={`${a.name} — ${a.id}`} onClick={() => onPick(a)} onKeyDown={(e) => onKey(e, i)}
                 onDoubleClick={() => onCopy(a)}>
                 <span className="axp-brand-library__tile-art"><TileArt a={a} marks={marks} height={ART_HEIGHT[config.tile]} motion={config.motion} /></span>
