@@ -186,11 +186,18 @@ export interface LadderPlugin {
   ui?: string;
   /** its settings tab */
   tab?: string;
+  /** its plugin id (plugin.json `id`): the Theme override item switches that plugin's override */
+  id?: string;
 }
+
+/** The framework's plugin theme override (framework/libs/plugintheme: action `plugin-theme.toggle:<id>`, counter
+ *  PLUGIN_LOOK_COUNTER = `plugin-theme.on:<id>`), reached through its action, never through another plugin's folder. */
+export const themeToggle = (id: string) => `plugin-theme.toggle:${id}`;
+export const themeCounter = (id: string) => `plugin-theme.on:${id}`;
 export interface LadderItem { id: string; label: string; icon?: string; action?: string; checked?: string; separator?: boolean; items?: LadderItem[] }
 
 /**
- * One submenu per plugin (sorted by name): Interface, Settings, Documentation, About, then Disable. The Disable item
+ * One submenu per plugin (sorted by name): Interface, Settings, Documentation, About, Theme override, then Disable. The Disable item
  * is a check mark (checked while off) or a plain Disable / Enable toggle, per `style`. A plugin can't switch off the
  * menu it lives in (`self`), and nothing switches while the console API is offline.
  */
@@ -212,6 +219,10 @@ export function ladderItems(list: LadderPlugin[], o: { style: 'check' | 'toggle'
         { id: `${sub}.settings`, label: p.tab && !off ? 'Settings' : 'Settings (none)', icon: 'settings', ...(p.tab && !off ? { action: `settings.open:${p.tab}` } : {}) },
         { id: `${sub}.docs`, label: 'Documentation', icon: 'file', action: `plugins-menu.info:${p.folder}:docs` },
         { id: `${sub}.about`, label: 'About', icon: 'info', action: `plugins-menu.info:${p.folder}:about` },
+        // its theme override over the app's theme (check mark while on); a switched-off plugin has no UI to theme
+        p.id && !off
+          ? { id: `${sub}.theme`, label: 'Theme override', icon: 'palette', action: themeToggle(p.id), checked: `counter:${themeCounter(p.id)}` }
+          : { id: `${sub}.theme`, label: off ? 'Theme override (switched off)' : 'Theme override (none)', icon: 'palette' },
         { id: `${sub}.s1`, label: '', separator: true },
         disable,
       ],
