@@ -8,6 +8,7 @@
  * line, the decibel number, what was heard, quick settings); in a browser the page listens while it's open.
  */
 import { beepMode, splitWake, type BeepMode } from './speech';
+import { handsFreeMode, sensitivity, type HandsFreeMode, type Sensitivity } from './wake';
 
 
 /** The overlay's colours, from the app's theme tokens. A token that can't be read is left out (the overlay keeps its own). */
@@ -28,6 +29,10 @@ export interface VoiceConfig {
   online: boolean;
   /** show swear words as said (no f***) */
   swears: boolean;
+  /** Android: `wake` = silent offline wake listener, Google only after a trigger (default); `classic` = Google all the time */
+  mode: HandsFreeMode;
+  /** how easily the wake listener triggers */
+  sensitivity: Sensitivity;
 }
 
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
@@ -55,7 +60,7 @@ export function overlayColors(tokens: Partial<Record<keyof OverlayColors, unknow
   return out;
 }
 
-export interface VoiceSettings { handsFree: unknown; alwaysArmed: unknown; overlay: unknown; wake: string[]; lang: unknown; beep?: unknown; online?: unknown; swears?: unknown }
+export interface VoiceSettings { handsFree: unknown; alwaysArmed: unknown; overlay: unknown; wake: string[]; lang: unknown; beep?: unknown; online?: unknown; swears?: unknown; mode?: unknown; sensitivity?: unknown }
 
 /** Defaults: hands-free on, always armed off, overlay on. Always armed with no wake phrase still listens. */
 export function voiceConfig(s: VoiceSettings, colors: OverlayColors = {}): VoiceConfig {
@@ -69,6 +74,8 @@ export function voiceConfig(s: VoiceSettings, colors: OverlayColors = {}): Voice
     beep: beepMode(s.beep),
     online: s.online !== false,
     swears: s.swears !== false,
+    mode: handsFreeMode(s.mode),
+    sensitivity: sensitivity(s.sensitivity),
   };
 }
 

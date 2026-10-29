@@ -39,8 +39,10 @@ import org.json.JSONObject;
  *   while signed out), raises one alert per new approval (tap = its page on the hub, in [HubWebActivity]) and, when
  *   auto-approval is on and the tool matches, approves it on the hub's own form ([HubRules#approve]).
  * - **Hands-free listening (Oct 27 2026):** its own switch (Voice control → Hands-free, on by default), independent of
- *   watching axHub. The on-device recognizer listens on screen and in the background for the wake phrases, or for
- *   everything when "always armed" is on. On screen a hit goes straight to the web side; with the app closed it opens
+ *   watching axHub. It listens on screen and in the background for the wake phrases, or for everything when "always
+ *   armed" is on. **Silent wake mode (Oct 29 2026, default, "make it like ActiveX"):** [WakeListener] idles on offline
+ *   Vosk (no recognizer restarts, so no system tone); only after a trigger does Google's recognizer run, for one
+ *   utterance. **Classic mode** (Voice control → Hands-free mode) is the old loop: Google's recognizer the whole time. On screen a hit goes straight to the web side; with the app closed it opens
  *   AmberX (a full-screen alert where Android allows it). It never pauses: with hands-free on, the Speak button uses this
  *   same listener (the app takes the next thing heard as a command) instead of a second recognizer.
  * - **Detection overlay:** [DetectionOverlay], a floating window over other apps with the input level, dB, what was heard
@@ -75,6 +77,10 @@ public class WatchService extends Service {
     private boolean listening;
     private DetectionOverlay overlay;
     private long lastLevelEvent;
+    /** The silent wake listener (wake mode); null until first used. */
+    private WakeListener wake;
+    /** What the wake engine is doing: wake | armed | listening | loading | downloading | no-model | paused | "" (classic). */
+    private String phase = "", phaseDetail = "";
 
     static JSONObject idle() {
         JSONObject o = new JSONObject();
@@ -121,7 +127,7 @@ public class WatchService extends Service {
     static boolean tuningChanged(String before, JSONObject after) {
         try {
             JSONObject b = new JSONObject(before);
-            for (String k : new String[] { "online", "beep", "swears", "lang" }) if (!String.valueOf(b.opt(k)).equals(String.valueOf(after.opt(k)))) return true;
+            for (String k : new String[] { "online", "beep", "swears", "lang", "mode" }) if (!String.valueOf(b.opt(k)).equals(String.valueOf(after.opt(k)))) return true;
         } catch (Exception e) { return true; }
         return false;
     }
@@ -199,6 +205,7 @@ public class WatchService extends Service {
     private JSONObject listeningOnly() {
         JSONObject s = new JSONObject();
         try { s.put("running", false).put("listening", listening).put("lastCheck", JSONObject.NULL).put("status", "off").put("waiting", 0); } catch (Exception ignored) {}
+        withPhase(s);
         return s;
     }
 
@@ -234,11 +241,16 @@ public class WatchService extends Service {
             s.put("running", true).put("listening", listening).put("lastCheck", Instant.now().toString())
                 .put("status", feed.status).put("waiting", feed.count).put("alerts", alerts);
         } catch (Exception ignored) {}
+        withPhase(s);
         setStatus(s);
         long next = "signed-out".equals(feed.status) || "not-admin".equals(feed.status) ? 300_000L : every * 1000L;
         // While a command is held, read every 10 s so a Deny elsewhere takes its card away quickly.
         if (held > 0) next = Math.min(next, 10_000L);
         work.postDelayed(this::check, next);
+    }
+
+    private void withPhase(JSONObject s) {
+        try { s.put("engine", phase.isEmpty() ? "classic" : "wake").put("phase", phase).put("phaseDetail", phaseDetail); } catch (Exception ignored) {}
     }
 
     /** Stops the scheduled notifications of one held call (it was denied). */
@@ -324,9 +336,74 @@ public class WatchService extends Service {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
+    /** Wake mode: hands-free on and "Hands-free mode" not switched to classic. */
+    static boolean wakeMode(Context c) { return handsFree(c) && "wake".equals(WakeRules.mode(voice(c).opt("mode"))); }
+
+    private String sensitivity() { return WakeRules.sensitivity(voice(this).opt("sensitivity")); }
+
     private void listenLoop() {
         boolean on = prefs(this).getBoolean("on", false) || handsFree(this);
         if (!on || !wantsMic() || !micGranted()) { stopListening(); return; }
+        if (wakeMode(this)) wakeLoop(); else classicLoop();
+    }
+
+    /* ---- wake mode: silent Vosk idle */
+
+    private void wakeLoop() {
+        // Leaving classic mode: its recognizer goes, and the streams it muted come back.
+        if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; SpeechTuning.loud(this); }
+        if (appListening) { // the Speak button has the mic
+            if (wake != null) wake.stop();
+            setPhase("paused", "");
+            main.postDelayed(this::listenLoop, 1_000);
+            return;
+        }
+        if (wake == null) wake = new WakeListener(this, new WakeEvents());
+        wake.start(phrases(), alwaysArmed(), sensitivity());
+        setListening(true);
+    }
+
+    /** The Speak button wants the microphone (true) or is done with it (false). */
+    static void appMic(boolean on) {
+        appListening = on;
+        WatchService w = running;
+        if (w != null) w.main.post(() -> { if (wakeMode(w)) w.listenLoop(); });
+    }
+
+    private class WakeEvents implements WakeListener.Events {
+        @Override public void phase(String p, String detail) { setPhase(p, detail); }
+        @Override public void level(float db) {
+            if (overlay != null) overlay.pushLevel(db);
+            long now = System.currentTimeMillis();
+            if (now - lastLevelEvent >= 100) { lastLevelEvent = now; AmberxNativePlugin.level(db); }
+        }
+        @Override public void heard(String text, boolean last) {
+            if (overlay != null) overlay.setHeard(text, last);
+            AmberxNativePlugin.heard(text, last);
+        }
+        @Override public void trigger(String phrase, String text) { triggered(phrase, text); }
+    }
+
+    /** A wake phrase (or, always armed, a whole sentence) from the wake listener. */
+    private void triggered(String phrase, String text) {
+        if (!text.isEmpty()) { woke(phrase, text); return; } // always armed: the sentence is the command
+        woke(phrase, phrase);
+        main.postDelayed(this::listenLoop, 300);
+    }
+
+    private void setPhase(String p, String detail) {
+        if (p.equals(phase) && detail.equals(phaseDetail)) return;
+        phase = p;
+        phaseDetail = detail;
+        if (overlay != null) overlay.setPhase(p, detail, phrases());
+        try { JSONObject s = new JSONObject(status.toString()); s.put("engine", phase.isEmpty() ? "classic" : "wake").put("phase", p).put("phaseDetail", detail); setStatus(s); } catch (Exception ignored) {}
+    }
+
+    /* ---- classic mode: Google's recognizer the whole time (the old loop) */
+
+    private void classicLoop() {
+        if (wake != null) { wake.stop(); }
+        if (!phase.isEmpty()) setPhase("", "");
         if (appListening) { pauseListening(); main.postDelayed(this::listenLoop, 1_000); return; } // the Speak button has the mic
         if (!SpeechRecognizer.isRecognitionAvailable(this)) { stopListening(); return; }
         if (recognizer == null) {
@@ -352,7 +429,8 @@ public class WatchService extends Service {
     /** An approval alert's sound gets through the beep silencer, then it's silenced again. */
     private void soundThrough() {
         main.post(() -> SpeechTuning.loud(this));
-        main.postDelayed(() -> { if (listening) SpeechTuning.quiet(this, voice(this)); }, 4_000);
+        // Wake mode keeps nothing muted while idle: only the classic loop silences again.
+        main.postDelayed(() -> { if (listening && !wakeMode(this)) SpeechTuning.quiet(this, voice(this)); }, 4_000);
     }
 
     /** Settings changed: the next turn uses them (a new recognizer for online / offline). */
@@ -366,6 +444,8 @@ public class WatchService extends Service {
     }
 
     private void stopListening() {
+        if (wake != null) wake.stop();
+        if (!phase.isEmpty()) setPhase("stopped", "");
         SpeechTuning.loud(this);
         setListening(false);
         if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; }
@@ -444,6 +524,7 @@ public class WatchService extends Service {
             overlay.setColors(voice(this).optJSONObject("colors"));
             overlay.setListening(listening, alwaysArmed());
             overlay.setArmed(alwaysArmed());
+            overlay.setPhase(phase, phaseDetail, phrases());
             overlay.show();
         } else hideOverlay();
     }

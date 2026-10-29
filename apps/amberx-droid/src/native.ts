@@ -43,6 +43,12 @@ export interface VoiceStatus {
   microphone: boolean;
   /** Android: "Display over other apps" allowed (the detection overlay); always false in a browser */
   overlayAllowed: boolean;
+  /** Android: which hands-free engine runs: `wake` (silent offline wake listener) or `classic` */
+  engine?: 'wake' | 'classic';
+  /** Android wake engine: wake | armed | listening | loading | downloading | no-model | paused | stopped */
+  phase?: string;
+  /** download percentage ("42%") or why there's no model */
+  phaseDetail?: string;
 }
 
 /** One veto notification channel: a sound name (plugins/approvals/web/core.ts SOUNDS) and a vibration pattern (ms). */

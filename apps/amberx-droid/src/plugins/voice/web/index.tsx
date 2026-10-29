@@ -41,6 +41,10 @@ export const K = {
   beep: 'amberx.voice.beep',
   online: 'amberx.voice.online',
   swears: 'amberx.voice.swears',
+  /** 'wake' (silent offline wake listener, Google only after a trigger) | 'classic' (Google all the time) */
+  mode: 'amberx.voice.mode',
+  /** wake listener: 'low' | 'normal' | 'high' */
+  sensitivity: 'amberx.voice.sensitivity',
 } as const;
 
 const ID = 'ai.amberx.amberx.voice';
@@ -236,6 +240,7 @@ export function configOf(rt: AxfRuntime): VoiceConfig {
     handsFree: rt.settings.get(K.handsFree), alwaysArmed: rt.settings.get(K.alwaysArmed), overlay: rt.settings.get(K.overlay),
     wake: phraseList(rt.settings.get(K.wake)), lang: rt.settings.get(K.lang),
     beep: rt.settings.get(K.beep), online: rt.settings.get(K.online), swears: rt.settings.get(K.swears),
+    mode: rt.settings.get(K.mode), sensitivity: rt.settings.get(K.sensitivity),
   }, themeColors());
 }
 
@@ -263,12 +268,26 @@ function LevelGraph({ levels, db }: { levels: number[]; db: number }) {
   );
 }
 
+/** The wake engine's phase as the chip in the Hands-free card says it (the overlay says the same). */
+function phaseLabel(phase: string, detail = ''): string {
+  switch (phase) {
+    case 'wake': return 'Idle (wake)';
+    case 'armed': return 'Armed';
+    case 'listening': return 'Listening';
+    case 'downloading': return `Getting the wake model ${detail}`.trim();
+    case 'loading': return 'Loading the wake model';
+    case 'no-model': return 'Wake model not ready';
+    case 'paused': return 'Paused (Speak)';
+    default: return 'Starting…';
+  }
+}
+
 function HandsFree() {
   const rt = useRuntime();
   const v = useVoice();
   const cfg = configOf(rt);
   const on = listens(cfg);
-  const chip = !cfg.handsFree ? 'Off' : !on ? 'Nothing to listen for' : v.status?.listening ? (cfg.alwaysArmed ? 'Armed' : 'Listening') : 'Starting…';
+  const chip = !cfg.handsFree ? 'Off' : !on ? 'Nothing to listen for' : v.status?.engine === 'wake' && v.status.phase ? phaseLabel(v.status.phase, v.status.phaseDetail) : v.status?.listening ? (cfg.alwaysArmed ? 'Armed' : 'Listening') : 'Starting…';
   return (
     <Container title={`Hands-free · ${chip}`} icon="mic">
       <p className="fx-muted">
@@ -288,6 +307,8 @@ function HandsFree() {
         <Note tone="info">The overlay needs “Display over other apps”. <Button icon="settings" onClick={() => void allowOverlay(rt)}>Allow</Button></Note>
       )}
       {v.status && !v.status.microphone && cfg.handsFree && <Note tone="warning">The microphone isn't allowed, so hands-free can't listen.</Note>}
+      {isNative() && cfg.handsFree && cfg.mode === 'wake' && v.status?.phase === 'downloading' && <Note tone="info">Getting the offline wake model once (about 40 MB) {v.status.phaseDetail}. Hands-free starts by itself when it's done.</Note>}
+      {isNative() && cfg.handsFree && cfg.mode === 'wake' && v.status?.phase === 'no-model' && <Note tone="warning">The offline wake model isn't ready{v.status.phaseDetail ? ` (${v.status.phaseDetail})` : ''}. AmberX tries again in a few minutes; switch Hands-free mode to Classic to listen without it (with the tone).</Note>}
     </Container>
   );
 }
@@ -565,6 +586,7 @@ export const library: AxfWebLibrary = {
       id: 'amberx.voice', label: 'Voice control', icon: 'mic', tab: 'voice', settings: [
         { key: K.handsFree, label: 'Listen hands-free', kind: 'toggle', default: true, description: 'Keep listening for the wake phrase on screen and in the background, without pressing Speak.' },
         { key: K.wake, label: 'Wake phrases', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated. Say one, then the command.' },
+        { key: K.mode, label: 'Hands-free mode', kind: 'choice', default: 'wake', options: [{ value: 'wake', label: 'Silent wake (offline, no tone)' }, { value: 'classic', label: 'Classic (Google all the time)' }], description: 'Android. Silent wake listens offline for the wake phrase (like ActiveX, no tone) and only then lets Google hear the command. Classic keeps Google listening the whole time (restarts every few seconds, which can beep).' },
         { key: K.alwaysArmed, label: 'Always armed', kind: 'toggle', default: false, description: 'Act on everything heard, with no wake phrase. Background talk can trigger commands.' },
         { key: K.overlay, label: 'Detection overlay', kind: 'toggle', default: true, description: 'Android: a floating window with the input level, dB, what was heard and quick settings.' },
         { key: K.beep, label: 'Listening tone', kind: 'choice', default: 'silence', options: [{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }], description: 'Android plays a tone each time it starts listening. Silenced mutes notification and system sounds while hands-free listens (approval alerts still get through). Still hear it? Pick "also media": music is muted too while AmberX listens, and comes back when it speaks.' },
@@ -605,6 +627,13 @@ export const library: AxfWebLibrary = {
       if (final && nextHeard) nextHeard(afterWake(text, phraseList(rt.settings.get(K.wake))));
     }).catch(() => undefined);
     void native.addListener('level', ({ db, source }) => set({ db, levels: pushLevel(state.levels, levelOf(db, source ?? 'android')) })).catch(() => undefined);
+    // The watch service's status carries the wake engine's phase (downloading %, idle, listening): keep the card live.
+    void native.addListener('monitor', (m) => {
+      const x = m as unknown as Partial<VoiceStatus>;
+      if (state.status && (x.phase !== undefined || x.listening !== undefined)) {
+        set({ status: { ...state.status, listening: x.listening ?? state.status.listening, engine: x.engine ?? state.status.engine, phase: x.phase ?? state.status.phase, phaseDetail: x.phaseDetail ?? state.status.phaseDetail } });
+      }
+    }).catch(() => undefined);
     // A quick setting changed on the overlay: save it so Settings and this page show the same.
     void native.addListener('voiceSettings', (c) => {
       if (typeof c.handsFree === 'boolean') rt.settings.set(K.handsFree, c.handsFree);

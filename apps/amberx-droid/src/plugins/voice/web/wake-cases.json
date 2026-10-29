@@ -1,0 +1,22 @@
+{
+  "$axf": "wake-cases@1",
+  "readme": "Shared cases for the silent wake listener (Oct 29 2026): src/plugins/voice/web/wake.ts (test.mjs) and android WakeRules.java (WakeRulesTest) must give the same answers. grammar = the Vosk word list for the wake phrases; trigger = [heard, partial, sensitivity, peak level 0..1, wanted phrase or null]; level = [dBFS, level 0..1, recognizer dB].",
+  "phrases": ["hey amberx", "okay amberx"],
+  "grammar": ["hey amberx", "hey amber x", "hey amber ex", "hey amber acts", "okay amberx", "okay amber x", "okay amber ex", "okay amber acts", "ok amberx", "ok amber x", "ok amber ex", "ok amber acts", "[unk]"],
+  "trigger": [
+    ["hey amber x", true, "normal", 0.5, "hey amberx"],
+    ["hey amber x", false, "normal", 0.5, "hey amberx"],
+    ["hey amber x", true, "low", 0.5, null],
+    ["hey amber x", false, "low", 0.5, "hey amberx"],
+    ["hey amber x", false, "low", 0.2, null],
+    ["hey amber x", true, "normal", 0.05, null],
+    ["hey amber x", true, "high", 0.0, "hey amberx"],
+    ["[unk] hey [unk]", false, "high", 1.0, null],
+    ["[unk] ok amber ex [unk]", false, "normal", 0.4, "okay amberx"],
+    ["[unk]", false, "high", 1.0, null],
+    ["", true, "high", 1.0, null]
+  ],
+  "clean": [["[unk] hey [unk] amber x", "hey amber x"], ["[unk]", ""], ["  open   approvals ", "open approvals"]],
+  "level": [[-70, 0, -2], [-10, 1, 10], [-40, 0.5, 4], [-100, 0, -2], [0, 1, 10]],
+  "sensitivity": [["low", "low"], ["high", "high"], ["normal", "normal"], ["loud", "normal"], [null, "normal"]]
+}
