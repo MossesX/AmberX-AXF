@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "gradient-pop",
+  "name": "Gradient Pop dialog",
+  "version": "1.0.0",
+  "description": "Gradient Pop: modal, blur backdrop, scale in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "vivid",
+    "vivid"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 520,
+    "backdrop": "blur",
+    "animation": "scale",
+    "header": "filled",
+    "closeOnBackdrop": true
+  }
+}

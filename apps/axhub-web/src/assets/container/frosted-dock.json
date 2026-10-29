@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "frosted-dock",
+  "name": "Frosted Dock container",
+  "version": "1.0.0",
+  "description": "Frosted Dock: glass with a divided header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "frosted",
+    "glass"
+  ],
+  "data": {
+    "variant": "glass",
+    "header": "divided",
+    "padding": "md",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

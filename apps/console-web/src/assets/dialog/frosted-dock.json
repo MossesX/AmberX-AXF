@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "frosted-dock",
+  "name": "Frosted Dock dialog",
+  "version": "1.0.0",
+  "description": "Frosted Dock: drawer, blur backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "frosted",
+    "glass"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 420,
+    "backdrop": "blur",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

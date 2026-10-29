@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "terminal",
+  "name": "Terminal",
+  "version": "1.0.0",
+  "description": "Outlined square controls, numeric sliders and boxed tabs for developer consoles.",
+  "author": "AmberX AXF",
+  "tags": [
+    "technical",
+    "developer"
+  ],
+  "data": {
+    "slots": {
+      "button": "terminal",
+      "container": "terminal",
+      "slider": "terminal",
+      "dialog": "terminal",
+      "popup": "terminal",
+      "tab-group": "terminal",
+      "gauge": "digital",
+      "meter": "steps"
+    },
+    "tone": "technical"
+  }
+}

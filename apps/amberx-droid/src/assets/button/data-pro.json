@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "data-pro",
+  "name": "Data Pro button",
+  "version": "1.0.0",
+  "description": "Data Pro: rounded outline buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "analytical",
+    "data"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "outline",
+    "weight": 600,
+    "uppercase": false,
+    "size": "sm",
+    "elevation": false
+  }
+}

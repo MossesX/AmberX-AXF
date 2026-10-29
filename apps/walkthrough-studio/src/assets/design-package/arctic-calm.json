@@ -4,7 +4,7 @@
   "id": "arctic-calm",
   "name": "Arctic Calm",
   "version": "1.0.0",
-  "description": "Soft Studio on Arctic Daylight, classic IDE layout, calm motion. A cool, gentle light look. Keeps this app's own layout. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "description": "Soft Studio on Arctic Daylight, classic IDE layout, calm motion. A cool, gentle light look. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
   "author": "AmberX AXF",
   "tags": [
     "light"
@@ -12,7 +12,7 @@
   "data": {
     "style-theme": "soft-studio",
     "color-theme": "arctic-daylight",
-    "layout": "walkthrough-studio",
+    "layout": "classic-ide",
     "behavior-theme": "calm"
   }
 }

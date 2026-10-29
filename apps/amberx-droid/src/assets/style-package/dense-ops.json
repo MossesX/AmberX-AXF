@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "dense-ops",
+  "name": "Dense Ops",
+  "version": "1.0.0",
+  "description": "Small outlined buttons, flat panels, ticked bar sliders and side drawers: built for operations screens.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dense",
+    "compact",
+    "data"
+  ],
+  "data": {
+    "slots": {
+      "button": "dense-ops",
+      "container": "dense-ops",
+      "slider": "dense-ops",
+      "dialog": "dense-ops",
+      "popup": "dense-ops",
+      "tab-group": "dense-ops",
+      "gauge": "digital",
+      "meter": "segments"
+    },
+    "tone": "dense"
+  }
+}

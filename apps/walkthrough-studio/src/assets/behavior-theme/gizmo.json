@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "gizmo",
+  "name": "GizmoX",
+  "version": "1.0.0",
+  "description": "The GizmoX console feel: fast emphasized fades, docked windows that remember their places, quiet notices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:gizmo-console"
+  ],
+  "data": {
+    "motion": {
+      "speed": "fast",
+      "easing": "emphasized",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "darken",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 500,
+      "doubleTapMs": 260,
+      "dragThreshold": 6
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "dim",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": true,
+      "snapGrid": 8,
+      "stack": "remember",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom-right",
+      "toastMs": 3500,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

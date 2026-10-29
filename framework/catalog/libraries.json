@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-29T02:38:32.627Z",
+  "generatedAt": "2026-10-29T18:10:19.522Z",
   "items": [
     {
       "$axf": "library@1",
@@ -589,7 +589,7 @@
       "id": "ai.amberx.axf.datagrid",
       "module": "lib-datagrid",
       "name": "Data grid (categorized sub-grids, hideable columns, expandable rows)",
-      "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid. Every grid is also a dataset (datasets.ts, Oct 28 2026): plugins attach filters, sorts and a toolbar above it without the view knowing them.",
+      "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid. Every grid is also a dataset (datasets.ts, Oct 28 2026): plugins attach filters, sorts and a toolbar above it without the view knowing them. Row hooks (grid-hook@1, Oct 29 2026): a grid says what each row is (rowRef → { kind, id }) and plugins add a row button + a right-click item for that kind without the grid naming them.",
       "features": [],
       "dependsOn": [],
       "manifestKey": "libraries.datagrid",
@@ -1056,6 +1056,33 @@
         {
           "capability": "axf.hubsync.layout-data",
           "note": "Per-app layout state (window positions, dock) as a hub table — not built."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.plugintheme",
+      "module": "lib-plugintheme",
+      "name": "Plugin theme override (each plugin's own tokens over the app's theme)",
+      "description": "Every plugin UI gets a theme override on top of the app's (axHub) theme: Settings → Plugins → <plugin> → Appearance has a Theme override switch and a collapsible container with every layout, colour, style and animation token, edited as a grouped form, a token tree (tri-state groups, search) or raw JSON; copy from another plugin or a colour / style theme asset; reset per token, group or all; live preview. Switch it from right-click inside any plugin UI, the toolbar button or Plugins ▸ All plugins ▸ <plugin> ▸ Theme override. Stored as setting axf.plugin.<id>.look = { on, tokens: { \"--fx-…\": value } }, applied as CSS variables on every root carrying data-axf-plugin=\"<id>\". withPluginTheme(lib, {id, name}) wraps a plugin's web library (no per-plugin code). Built Oct 28 2026 (Opus); not a cross-port contract (Fable plugin-theme@1 skipped).",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.plugintheme",
+      "params": [],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/plugintheme"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.plugintheme.android",
+          "note": "Compose port (a scoped AxfTheme per plugin) — Android on hold."
+        },
+        {
+          "capability": "axf.plugintheme.contract",
+          "note": "plugin-theme@1 contract, scoped engine and fixture (Fable) — skipped by Brett Oct 28 2026; this storage shape is what it would adopt."
         }
       ]
     },

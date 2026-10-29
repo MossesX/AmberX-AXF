@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "gizmo-console",
+  "name": "GizmoX Console",
+  "version": "1.0.0",
+  "description": "The GizmoX development console set: compact solid buttons, divided panels and inspector drawers.",
+  "author": "AmberX AXF",
+  "tags": [
+    "developer",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "slots": {
+      "button": "gizmo-console",
+      "container": "gizmo-console",
+      "slider": "gizmo-console",
+      "dialog": "gizmo-console",
+      "popup": "gizmo-console",
+      "tab-group": "gizmo-console",
+      "gauge": "digital",
+      "meter": "hairline"
+    },
+    "tone": "developer"
+  }
+}

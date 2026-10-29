@@ -4,7 +4,7 @@
   "id": "ember-studio",
   "name": "Ember Studio",
   "version": "1.0.0",
-  "description": "Soft Studio shapes in warm Amber Ember, docked studio layout, playful motion. Keeps this app's own layout. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "description": "Soft Studio shapes in warm Amber Ember, docked studio layout, playful motion. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
   "author": "AmberX AXF",
   "tags": [
     "dark",
@@ -13,7 +13,7 @@
   "data": {
     "style-theme": "soft-studio",
     "color-theme": "amber-ember",
-    "layout": "focus-top",
+    "layout": "studio-dock",
     "behavior-theme": "playful"
   }
 }

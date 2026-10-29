@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "minimal-line",
+  "name": "Minimal Line dialog",
+  "version": "1.0.0",
+  "description": "Minimal Line: modal, none backdrop, fade in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "minimal",
+    "minimal"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 520,
+    "backdrop": "none",
+    "animation": "fade",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

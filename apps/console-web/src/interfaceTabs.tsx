@@ -9,8 +9,12 @@
  *   console.interfaceTab    the open tab ('main' or an interface id)
  *   console.interfaceTabs   the interface ids shown as tabs (default: GizmoX Night, AmberX Signature); the interface
  *                           roller adds to it
+ *
+ * Applying a design package or an interface to the app (Settings → Appearance, the Appearance menu, an action) changes
+ * Main, which a GizmoX tab doesn't show: the console goes back to Main so the change is visible (fix Oct 29 2026:
+ * "click design package, nothing changes" while the AmberX Signature tab was open).
  */
-import { useSyncExternalStore, type ReactNode } from 'react';
+import { useEffect, useSyncExternalStore, type ReactNode } from 'react';
 import { Icon, InterfaceScope, useRuntime } from './axf/react';
 import type { AxfRuntime } from './axf/core';
 
@@ -61,10 +65,16 @@ export function InterfaceTabBar() {
   );
 }
 
+/** A design package or interface applied to the app brings the console back to Main, where it shows. */
+export function followAppliedLook(rt: AxfRuntime): () => void {
+  return rt.onLookApplied(() => { if (currentInterfaceTab(rt) !== MAIN_TAB) rt.settings.set(TAB_KEY, MAIN_TAB); });
+}
+
 /** Wraps the app: Main as it is, any other tab under its interface scope. */
 export function InterfaceTabs({ children }: { children: ReactNode }) {
   const rt = useRuntime();
   useSyncExternalStore(rt.subscribe, rt.getState, rt.getState);
+  useEffect(() => followAppliedLook(rt), [rt]);
   const open = currentInterfaceTab(rt);
   if (open === MAIN_TAB) return <>{children}</>;
   return <InterfaceScope key={open} id={SCOPE(open)} interface={open}>{children}</InterfaceScope>;

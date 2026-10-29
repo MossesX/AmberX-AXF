@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "command-deck",
+  "name": "Command Deck pop-ups",
+  "version": "1.0.0",
+  "description": "Command Deck: solid pop-ups at the top-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "command",
+    "ops"
+  ],
+  "data": {
+    "position": "top-right",
+    "variant": "solid",
+    "duration": 3000,
+    "showIcon": true,
+    "maxVisible": 6
+  }
+}

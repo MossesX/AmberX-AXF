@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "executive-suite",
+  "name": "Executive Suite",
+  "version": "1.0.0",
+  "description": "IBM Plex on harbour navy, a centred portal page, soft controls and unhurried motion for presenting.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "presentation"
+  ],
+  "data": {
+    "style-theme": "executive",
+    "color-theme": "harbor",
+    "layout": "portal-top",
+    "behavior-theme": "executive",
+    "extras": {
+      "slots": {
+        "style-package": "executive-soft",
+        "toolbar": "brand-bar",
+        "nav-menu": "executive-overview"
+      },
+      "spacing": "regular"
+    }
+  }
+}

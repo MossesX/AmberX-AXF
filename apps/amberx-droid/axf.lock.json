@@ -48,7 +48,7 @@
     "src/axf/core/project-guard.mjs": "b6edefce6ede4dcc",
     "src/axf/core/project.ts": "84be834f0c45169c",
     "src/axf/core/registry.ts": "8cf580aca5b3988e",
-    "src/axf/core/runtime.ts": "68ffc4c7628f39d9",
+    "src/axf/core/runtime.ts": "6f80676428c776ac",
     "src/axf/core/settings.ts": "d23348d29814a769",
     "src/axf/core/sse.ts": "64f6a80f14560843",
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
