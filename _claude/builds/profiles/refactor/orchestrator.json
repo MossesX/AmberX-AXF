@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T02:00:27.543Z",
+ "updatedAt": "2026-10-29T02:01:47.901Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4673,7 +4673,7 @@
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T02:00:27.542Z",
+   "updatedAt": "2026-10-29T02:01:47.901Z",
    "builtAt": "",
    "notes": [
     {
@@ -6152,9 +6152,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.724Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
     },
     {
      "id": "s84",
@@ -6169,9 +6169,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.785Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
     },
     {
      "id": "s85",
@@ -6186,9 +6186,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.847Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
     },
     {
      "id": "s86",
@@ -6203,9 +6203,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.901Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
     }
    ]
   }
