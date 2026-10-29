@@ -293,11 +293,13 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
                 tools: list[dict[str, Any]] | None = None, params: dict[str, Any] | None = None,
                 cancel: threading.Event | None = None, cwd: str | None = None,
                 tool_runner: Callable[[str, dict[str, Any]], tuple[bool, str]] | None = None,
-                read_files: bool = True) -> Iterator[dict[str, Any]]:
+                read_files: bool = True, build: dict[str, Any] | None = None) -> Iterator[dict[str, Any]]:
     """Stream one model call. ``read_files=False`` (hub users without assistant.tools): the Claude Code CLI gets no
     file tools, an empty working folder and a throwaway config folder, so it can't read the server's files or
     earlier sessions' transcripts. Tools are [{name, description, parameters (JSON Schema)}]; tool execution is the caller's job.
-    ``tool_runner(name, args) -> (ok, text)`` is for providers that run their own tool loop (the Claude Code CLI)."""
+    ``tool_runner(name, args) -> (ok, text)`` is for providers that run their own tool loop (the Claude Code CLI).
+    ``build={"root": path}`` (build mode, Oct 28 2026: admins chatting with a build agent such as Mosses) gives the
+    Claude Code CLI its own Edit / Write / MultiEdit / Bash in that folder without asking; other providers ignore it."""
     proto = protocol_of(profile)
     model = model or profile.get("defaultModel") or (kind(profile.get("kind", "")).get("models") or [""])[0]
     if not model:
@@ -306,7 +308,7 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
     if proto == "anthropic":
         yield from _stream_anthropic(profile, messages, system, model, tools, params, cancel)
     elif proto == "claude-cli":
-        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner, read_files=read_files)
+        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner, read_files=read_files, build=build)
     elif proto == "openai":
         yield from _stream_openai(profile, messages, system, model, tools, params, cancel)
     elif proto in PROTOCOLS:
@@ -464,10 +466,10 @@ def cli_available() -> bool:
 _DENY_PATTERNS = ("**/.env", "**/.env.*", "**/*.pem", "**/*.key", "**/secrets.env", "**/credentials.json", "**/id_rsa*", "**/id_ed25519*", ".git/**")
 
 
-def _cli_deny() -> list[str]:
+def _cli_deny(tools: tuple[str, ...] = ("Read", "Grep", "Glob", "LS")) -> list[str]:
     """Relative deny rules: the host's private folders anywhere under the working tree, env files, keys, git internals."""
     pats = [p for d in PRIVATE_DIRS for p in (f"{d}/**", f"**/{d}/**")] + list(_DENY_PATTERNS)
-    return [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS") for pat in pats]
+    return [f"{tool}({pat})" for tool in tools for pat in pats]
 
 
 _SECRETISH = re.compile(r"(TOKEN|SECRET|PASSWORD|PASSWD|CREDENTIAL|PRIVATE|(^|_)KEY$|_KEY_|API_KEY|AUTH)", re.I)
@@ -485,7 +487,10 @@ def _cli_env() -> dict[str, str]:
     return {k: v for k, v in os.environ.items() if k in _ENV_KEEP or (not _SECRETISH.search(k) and k not in stored and not k.startswith(hidden))}
 
 
-def _cli_abs_deny(cwd: str | None) -> list[str]:
+BUILD_TOOLS = ("Edit", "Write", "MultiEdit", "Bash")
+
+
+def _cli_abs_deny(cwd: str | None, tools: tuple[str, ...] = ("Read", "Grep", "Glob", "LS")) -> list[str]:
     """Absolute-path deny rules (Claude Code's `//abs/path` form): process info, the host's private folders, keys."""
     roots = {os.path.abspath(cwd or os.getcwd())}
     try:
@@ -494,7 +499,7 @@ def _cli_abs_deny(cwd: str | None) -> list[str]:
         pass
     pats = ["//proc/**", "//sys/**", "//etc/shadow", "~/.ssh/**", "~/.anthropic-key", "~/.claude/.credentials.json", "~/.config/gh/**"]
     pats += [f"/{r}/{d}/**" for r in sorted(roots) for d in PRIVATE_DIRS]
-    return [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS") for pat in pats]
+    return [f"{tool}({pat})" for tool in tools for pat in pats]
 
 
 CLI_DEADLINE = float(os.environ.get("AXF_AI_CLI_TIMEOUT", "600"))
@@ -568,7 +573,7 @@ class _Bridge:
         shutil.rmtree(self.dir, ignore_errors=True)
 
 
-def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None, read_files=True):
+def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None, read_files=True, build=None):
     import tempfile
     token = resolve_key(profile)
     if not token:
@@ -593,6 +598,17 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
     if system:
         args += ["--append-system-prompt", system[:100_000]]
     env = {**_cli_env(), "CLAUDE_CODE_OAUTH_TOKEN": token, "CI": "1", "TERM": "dumb", "MCP_TOOL_TIMEOUT": "900000"}
+    if build and read_files and build.get("root"):
+        # Build mode: the CLI's own Edit/Write/MultiEdit/Bash run in the build folder without asking (Brett picked
+        # "free in his workspace"); secret files stay unreadable and unwritable, and the environment stays scrubbed.
+        cwd = os.path.abspath(str(build["root"]))
+        i, j = args.index("--allowedTools"), args.index("--disallowedTools")
+        args[i + 1:j] = [*args[i + 1:j], *BUILD_TOOLS]
+        j = args.index("--disallowedTools")
+        args[j + 1:] = [a for a in args[j + 1:] if a not in BUILD_TOOLS]
+        args[args.index("--permission-mode") + 1] = "acceptEdits"
+        env["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] = "1"  # keep the CLI's own token out of Bash's environment where supported
+        args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = [*_cli_abs_deny(cwd, ("Edit", "Write", "MultiEdit")), *_cli_deny(("Edit", "Write", "MultiEdit"))]
     args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = _cli_abs_deny(cwd)
     jail = None
     if not read_files:

@@ -43,7 +43,9 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "defaults": {"memoryType": "hybrid", "topK": 6, "window": 8, "maxItems": 2000},
     "scheduler": True,
     # Agents allowed to use dangerous tools (container access, writes, commands). Personas and skills can't change this.
-    "safety": {"dangerousAgents": ["coder", "vinny"]},
+    # Build agents (Oct 28 2026): also get the Claude Code CLI's own Edit/Write/Bash in the repo checkout + git push/PR
+    # tools in the AI assistant (admins only); they must be allowed dangerous tools too.
+    "safety": {"dangerousAgents": ["coder", "vinny"], "buildAgents": ["coder"]},
 }
 
 
@@ -106,6 +108,10 @@ def memory_defaults() -> dict[str, Any]:
 
 def dangerous_agents() -> set[str]:
     return set(load_settings().get("safety", {}).get("dangerousAgents") or [])
+
+
+def build_agents() -> set[str]:
+    return set(load_settings().get("safety", {}).get("buildAgents") or [])
 
 
 # ---------------------------------------------------------------- collections

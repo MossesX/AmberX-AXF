@@ -574,4 +574,34 @@ check(ok_v or "Vinny" in why_v, "ready() says what Vinny is missing")
 check("✓ Health" in vn.summary([run_]), "his plain reply (no model) lists what ran")
 rt_ = svc.run_task("coder", "Say hi in one line.")
 check(isinstance(rt_["text"], str) and isinstance(rt_["tools"], list), "run_task: one headless turn as Mosses (the systems check hands him checks to fix)")
+# Build agents (Oct 28 2026): Mosses builds in the repo checkout; git push / open PR run in the console with its token
+gt = sys.modules["axf_console_plugins.agent_manager.gittools"]
+c.put("/am/settings", json={"safety": {"dangerousAgents": ["coder"], "buildAgents": ["coder"]}})
+ga = svc.get_agent("coder")
+check(ga["buildMode"] and ga["buildMode"]["root"] == str(am.store.ROOT) and {"repo_git_push", "repo_open_pr"} <= {t["name"] for t in ga["tools"]} and "Build mode" in ga["system_prompt"],
+      "a build agent gets build mode, the git push / PR tools and the build guide")
+check(c.get("/am/status").json()["safety"]["buildAgents"] == ["coder"], "status lists build agents")
+c.put("/am/settings", json={"safety": {"dangerousAgents": [], "buildAgents": ["coder"]}})
+gb = svc.get_agent("coder")
+check(not gb["buildMode"] and "repo_git_push" not in {t["name"] for t in gb["tools"]}, "no build mode without dangerous tools")
+c.put("/am/settings", json={"safety": {"dangerousAgents": ["coder"], "buildAgents": []}})
+check(not svc.get_agent("coder")["buildMode"], "no build mode when he isn't a build agent")
+c.put("/am/settings", json={"safety": {"dangerousAgents": ["coder"], "buildAgents": ["coder"]}})
+bad = []
+for b in ("main", "master", "go-pass", "site", "x/../main", "-f", "a b", "origin/main"):
+    try:
+        gt._branch({"branch": b})
+        bad.append(b)
+    except ValueError:
+        pass
+check(not bad and gt._branch({"branch": "claude/my-fix"}) == "claude/my-fix", f"push refuses protected and odd branch names {bad}")
+_tok = os.environ.pop("GITHUB_TOKEN", None)
+try:
+    gt.push({"branch": "claude/x"}, {})
+    check(False, "push without a token says so")
+except RuntimeError as e:
+    check("GITHUB_TOKEN" in str(e), "push without a token says so")
+if _tok is not None:
+    os.environ["GITHUB_TOKEN"] = _tok
+check(gt._redact("https://x-access-token:abc123@github.com", "abc123") == "https://x-access-token:***@github.com", "the token is redacted from git output")
 print(f"all {ok} checks passed")

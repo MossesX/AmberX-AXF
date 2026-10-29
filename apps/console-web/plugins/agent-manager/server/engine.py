@@ -20,7 +20,7 @@ from typing import Any, Callable
 
 from axf.contracts import agents as contract  # framework/python
 
-from . import containers, llm, memory, store, toolkit
+from . import containers, gittools, llm, memory, store, toolkit
 
 MEMORY_TOOLS = contract.MEMORY_TOOL_NAMES
 MAX_ROUNDS = 10
@@ -58,6 +58,11 @@ def compose(agent_id: str) -> dict[str, Any]:
     lg = [lingo[x] for x in a.get("lingoIds") or [] if x in lingo]
     r = resolve_tools(agent_id, a, sk)
     trecs = list(r["tools"])
+    build = gittools.build_agent(agent_id)
+    if build:
+        have = {t["name"] for t in trecs}
+        trecs += [t for t in gittools.records() if t["name"] not in have]
+        r["extras"] = [*r["extras"], gittools.GUIDE]
     mcfg = memory.config(a)
     if mcfg["type"] != "none":
         have = {t["name"] for t in trecs}
@@ -70,7 +75,8 @@ def compose(agent_id: str) -> dict[str, Any]:
             trecs.append({"id": f"delegate.{d['id']}", "name": f"ask_{re.sub(r'[^a-zA-Z0-9_]', '_', d['id'])}"[:64], "kind": "agent", "config": {"agentId": d["id"]},
                           "description": f"Delegate a task to {d.get('name')}: {d.get('description', '')[:200]}", "parameters": {"type": "object", "properties": {"task": {"type": "string"}}, "required": ["task"]}})
     system = contract.compose_system_prompt(a, p, sk, lg, r["extras"], mcfg["type"] != "none", [t["name"] for t in trecs])
-    return {"agent": a, "system": system, "tools": trecs, "model": a.get("model") or {}, "memory": mcfg, "writeMode": r["writeMode"], "dropped": r["dropped"]}
+    return {"agent": a, "system": system, "tools": trecs, "model": a.get("model") or {}, "memory": mcfg, "writeMode": r["writeMode"], "dropped": r["dropped"],
+            "buildMode": {"root": gittools.root(), "repo": gittools.repo()} if build else None}
 
 
 def run_agent(agent_id: str, task: str, history: list[dict[str, Any]] | None = None, depth: int = 0, max_rounds: int = MAX_ROUNDS, use_memory: bool = True,

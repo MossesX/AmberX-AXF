@@ -443,6 +443,34 @@ os.environ.update({"COOLIFY_TOKEN": "c-secret", "HOSTINGER_API_TOKEN": "h", "AXH
 ce = prov._cli_env()
 check(not any(k in ce for k in ("COOLIFY_TOKEN", "HOSTINGER_API_TOKEN", "AXHUB_TOKEN", "AXF_TOKEN", "SOME_PASSWORD")) and ce.get("HARMLESS_SETTING") == "ok" and "PATH" in ce,
       "Claude Code CLI env: every token, key and password removed")
+# Build mode (Oct 28 2026): a build agent's turn gives the CLI its own Edit/Write/Bash in the repo, secrets still denied
+_bd = _tf.mkdtemp()
+_bf = _os.path.join(_bd, "fake-build-claude")
+with open(_bf, "w") as f:
+    f.write(f"""#!{sys.executable}
+import json, os, sys
+json.dump({{"argv": sys.argv[1:], "cwd": os.getcwd(), "scrub": os.environ.get("CLAUDE_CODE_SUBPROCESS_ENV_SCRUB")}}, open({_os.path.join(_bd, "argv.json")!r}, "w"))
+sys.stdin.read()
+print(json.dumps({{"type": "result", "usage": {{"input_tokens": 1, "output_tokens": 1}}}}), flush=True)
+""")
+_os.chmod(_bf, 0o755)
+_os.environ["CLAUDE_BIN"] = _bf
+_prof = {"kind": "claude-code", "key": "sk-ant-oat01-" + "x" * 40}
+list(prov.stream_chat(_prof, [{"role": "user", "content": "build"}], model="claude-test", cwd=_bd, build={"root": _bd}))
+_b = json.load(open(_os.path.join(_bd, "argv.json")))
+_ba = _b["argv"]
+_al = _ba[_ba.index("--allowedTools") + 1:_ba.index("--disallowedTools")]
+_de = _ba[_ba.index("--disallowedTools") + 1:]
+check({"Edit", "Write", "MultiEdit", "Bash"} <= set(_al) and not {"Edit", "Write", "MultiEdit", "Bash"} & set(_de) and _ba[_ba.index("--permission-mode") + 1] == "acceptEdits"
+      and _b["cwd"] == _os.path.realpath(_bd) and _b["scrub"] == "1", "build mode: CLI gets Edit/Write/MultiEdit/Bash without asking, in the build folder")
+check(any(x.startswith("Edit(") and ".env" in x for x in _de) and any(x.startswith("Read(") and ".env" in x for x in _de), "build mode: env files and keys stay unreadable and unwritable")
+list(prov.stream_chat(_prof, [{"role": "user", "content": "hi"}], model="claude-test", cwd=_bd))
+_ba = json.load(open(_os.path.join(_bd, "argv.json")))["argv"]
+_de = _ba[_ba.index("--disallowedTools") + 1:]
+check("Bash" in _de and "Edit" in _de and _ba[_ba.index("--permission-mode") + 1] == "default", "without build mode the CLI's Edit/Bash stay off")
+list(prov.stream_chat(_prof, [{"role": "user", "content": "hi"}], model="claude-test", cwd=_bd, build={"root": _bd}, read_files=False))
+_ba = json.load(open(_os.path.join(_bd, "argv.json")))["argv"]
+check("Bash" in _ba[_ba.index("--disallowedTools") + 1:], "build mode never applies to users without file tools")
 deny = prov._cli_abs_deny("/work/repo")
 check("Read(//proc/**)" in deny and "Read(//work/repo/.axf-console/**)" in deny and "Grep(~/.ssh/**)" in deny, "Claude Code CLI can't read /proc, the console's private folder or SSH keys")
 

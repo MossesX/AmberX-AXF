@@ -71,7 +71,7 @@ class AgentsService:
             return None
         out = {"id": agent_id, "name": c["agent"].get("name"), "icon": c["agent"].get("icon", "user"), "description": c["agent"].get("description", ""),
                "system_prompt": c["system"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]},
-               "voice": _voice(c["agent"]), "writeMode": None}
+               "voice": _voice(c["agent"]), "writeMode": None, "buildMode": c.get("buildMode")}
         if c.get("writeMode"):
             cs = containers.service()
             try:
@@ -199,7 +199,7 @@ def status() -> dict[str, Any]:
             "memoryTypes": list(memory.TYPES), "memoryKinds": list(memory.KINDS), "toolKinds": list(toolkit.KINDS),
             "builtins": {k: v["description"] for k, v in toolkit.BUILTINS.items()}, "dangerousBuiltins": sorted(k for k, v in toolkit.BUILTINS.items() if v.get("dangerous") or k in containers.ALL),
             "sourceTypes": list(training.SOURCE_TYPES), "workflowModes": list(contract.WORKFLOW_MODES), "services": {"containers": cont["containers"], "snapshots": cont["snapshots"]},
-            "safety": {"dangerousAgents": sorted(store.dangerous_agents())}}
+            "safety": {"dangerousAgents": sorted(store.dangerous_agents()), "buildAgents": sorted(store.build_agents())}}
 
 
 @router.get("/contract")
@@ -246,6 +246,9 @@ def put_settings(body: dict[str, Any]) -> dict[str, Any]:
     if isinstance(body.get("safety"), dict) and isinstance(body["safety"].get("dangerousAgents"), list):
         ids = [str(x) for x in body["safety"]["dangerousAgents"] if store.ID_RE.match(str(x))][:20]
         s["safety"] = {**s["safety"], "dangerousAgents": sorted(set(ids))}
+    if isinstance(body.get("safety"), dict) and isinstance(body["safety"].get("buildAgents"), list):
+        ids = [str(x) for x in body["safety"]["buildAgents"] if store.ID_RE.match(str(x))][:20]
+        s["safety"] = {**s["safety"], "buildAgents": sorted(set(ids))}
     store.save_settings(s)
     return store.public_settings()
 

@@ -36,7 +36,7 @@ export interface Settings {
   llm: { kind: string; baseUrl: string; keyEnv: string; model: string; embedModel: string; hasKey: boolean; envPresent: boolean };
   firecrawl: { baseUrl: string; version: string; keyEnv: string; hasKey: boolean; envPresent: boolean };
   defaults: { memoryType: string; topK: number; window: number; maxItems: number }; preferAssistant: boolean; scheduler: boolean;
-  safety: { dangerousAgents: string[] };
+  safety: { dangerousAgents: string[]; buildAgents?: string[] };
 }
 
 const api = pluginApi(FOLDER, 'The agent manager plugin');
