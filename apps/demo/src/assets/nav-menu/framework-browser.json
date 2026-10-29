@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "framework-browser",
+  "name": "Framework Browser",
+  "version": "1.0.0",
+  "description": "Framework Browser: catalog browsing. Lists the pages it can; each app shows the ones it has. Pairs with the Gentle behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:gentle"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "label": "Browse",
+        "items": [
+          {
+            "id": "catalog",
+            "label": "Features",
+            "icon": "check-circle",
+            "view": "catalog"
+          },
+          {
+            "id": "libraries",
+            "label": "Libraries",
+            "icon": "package",
+            "view": "libraries"
+          },
+          {
+            "id": "modules",
+            "label": "Modules",
+            "icon": "box",
+            "view": "modules"
+          },
+          {
+            "id": "boilerplates",
+            "label": "Boilerplates",
+            "icon": "file",
+            "view": "boilerplates"
+          }
+        ]
+      },
+      {
+        "label": "Look",
+        "items": [
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets"
+          }
+        ]
+      }
+    ]
+  }
+}

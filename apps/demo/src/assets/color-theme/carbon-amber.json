@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "carbon-amber",
+  "name": "Carbon Amber",
+  "version": "1.0.0",
+  "description": "Carbon fibre greys and molten AmberX gold; the brand look after dark.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "warm",
+    "amber"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#121110",
+      "surface": "#1a1817",
+      "surface2": "#22201e",
+      "surface3": "#2d2a28",
+      "text": "#e9e8e7",
+      "muted": "#a49e98",
+      "border": "#33302e",
+      "accent": "#fbad37",
+      "accentText": "#251a09",
+      "accentSoft": "rgba(251,173,55,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#fbad37",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

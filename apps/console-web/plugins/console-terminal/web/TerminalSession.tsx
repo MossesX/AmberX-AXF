@@ -1,16 +1,27 @@
 /*
- * One terminal tab (tab kind `terminal`, payload = JSON Open). A floating window holds several; tabs can be renamed,
- * reordered and dragged out like any console tab. Each tab has: a status dot, the HOST ROOT / PROTECTED badge,
- * mouse mode, Mosh mode (server-kept session, auto-reconnect, predictive echo), search, font size, copy/paste,
- * its own right-click / long-press menu, a multi-line paste warning and a phone key row.
+ * One terminal session inside a terminal host (TerminalHost.tsx): xterm + its server session. The host draws the
+ * Windows-style tab strip and toolbar; this draws the screen and hands the host a control handle (hosts.ts setCtl).
+ * Each session has: mouse mode, Mosh mode (server-kept session, auto-reconnect, predictive echo), search, font size,
+ * copy/paste, its own right-click / long-press menu, a multi-line paste warning and a phone key row.
+ * The server session is closed only when the session is closed in its host, never on unmount (moving a session to
+ * another window remounts it on the same server session).
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Icon, useRuntime, useWindowManager } from '@console/axf/react';
-import type { TabSpec } from '@console/axf/core';
-import { call, getSettings, loadXterm, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type Target, type XTerm } from './api';
-import { newTab } from './open';
+import { createPortal } from 'react-dom';
+import { Button, Icon, useRuntime } from '@console/axf/react';
+import { SCHEMES, getSettings, loadXterm, lookOptions, onSettings, parseOpen, post, socketUrl, tabPrefs, tabSessions, themeFromTokens, type Open, type SessionInfo, type Settings, type XTerm } from './api';
+import { setCtl, type Conn, type HostSession } from './hosts';
 
-type Conn = 'connecting' | 'live' | 'reconnecting' | 'closed';
+/** The bell: flash the screen, or a short soft tone. */
+function ring(el: HTMLElement, how: string) {
+  if (how === 'visual') { el.classList.remove('is-bell'); void el.offsetWidth; el.classList.add('is-bell'); return; }
+  if (how !== 'sound') return;
+  try {
+    const A = (globalThis as unknown as { AudioContext?: new () => AudioContext }).AudioContext; if (!A) return;
+    const ctx = new A(); const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.frequency.value = 880; g.gain.value = 0.05; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.08); o.onended = () => void ctx.close();
+  } catch { /* no audio */ }
+}
 const P = 'axp-terminal';
 
 const KEYS: { label: string; seq?: string; mod?: 'ctrl' }[] = [
@@ -18,10 +29,10 @@ const KEYS: { label: string; seq?: string; mod?: 'ctrl' }[] = [
   { label: '↓', seq: '\x1b[B' }, { label: '→', seq: '\x1b[C' }, { label: '|', seq: '|' }, { label: '~', seq: '~' }, { label: '/', seq: '/' }, { label: '-', seq: '-' },
 ];
 
-export function TerminalTab({ tab }: { tab: TabSpec }) {
+export function TerminalSession({ s: session, active, onClose, onRename }: { s: HostSession; active: boolean; onClose(): void; onRename(): void }) {
   const rt = useRuntime();
-  const wm = useWindowManager();
-  const open = useMemo(() => parseOpen(tab.payload), [tab.payload]);
+  const tab = { id: session.id };
+  const open = useMemo(() => session.open ?? parseOpen(''), [session.open]);
   const host = useRef<HTMLDivElement>(null);
   const termRef = useRef<XTerm | null>(null);
   const fitRef = useRef<{ fit(): void } | null>(null);
@@ -35,6 +46,7 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
   const [err, setErr] = useState('');
   const [confirm, setConfirm] = useState<string | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
+  const settingsRef = useRef<Settings | null>(null);
   const prefs = tabPrefs.get(tab.id);
   const [mouse, setMouse] = useState(prefs?.mouse ?? false);
   const [mosh, setMosh] = useState(prefs?.mosh ?? false);
@@ -43,9 +55,7 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const [pending, setPending] = useState('');
   const [pasteAsk, setPasteAsk] = useState<string | null>(null);
-  const [renaming, setRenaming] = useState<string | null>(null);
   const [ctrlOn, setCtrlOn] = useState(false);
-  const [plus, setPlus] = useState(false);
 
   const send = (data: string) => {
     const ws = wsRef.current;
@@ -120,13 +130,13 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
     const cleanups: (() => void)[] = [];
     void (async () => {
       const s = await getSettings().catch(() => null);
-      if (s) { setSettings(s); setFontSize(s.fontSize); if (!prefs) { setMouse(s.mouseDefault); setMosh(s.moshDefault); } }
+      if (s) { settingsRef.current = s; setSettings(s); setFontSize(s.fontSize); if (!prefs) { setMouse(s.mouseDefault); setMosh(s.moshDefault); } }
       const L = await loadXterm().catch((e: Error) => { setErr(e.message); return null; });
       if (!L || disposed || !host.current) return;
       const el = host.current;
       const term = new L.Terminal({
-        fontFamily: getComputedStyle(el).getPropertyValue('--fx-font-mono').trim() || 'monospace', fontSize: s?.fontSize ?? 14, cursorBlink: true, scrollback: 5000,
-        allowProposedApi: true, theme: themeFromTokens(el), macOptionIsMeta: true, rightClickSelectsWord: false, altClickMovesCursor: true,
+        ...lookOptions(s, el), fontSize: s?.fontSize ?? 14,
+        allowProposedApi: true, macOptionIsMeta: true, rightClickSelectsWord: false, altClickMovesCursor: true,
       });
       const fit = new L.FitAddon();
       const search = new L.SearchAddon();
@@ -142,7 +152,11 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
       const d2 = term.onBinary((d) => { const ws = wsRef.current; if (ws?.readyState === WebSocket.OPEN) ws.send(Uint8Array.from(d, (c) => c.charCodeAt(0))); });
       const d3 = term.onResize(({ cols, rows }) => { const ws = wsRef.current; if (ws?.readyState === WebSocket.OPEN) ws.send(`\x00resize:${cols},${rows}`); });
       const d4 = term.onSelectionChange(() => { if (s?.copyOnSelect && term.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()).catch(() => undefined); });
-      cleanups.push(() => { d1.dispose(); d2.dispose(); d3.dispose(); d4.dispose(); });
+      // bell: a flash of the screen, or a short tone (Settings → Terminal → Bell)
+      const d5 = (term as unknown as { onBell(f: () => void): { dispose(): void } }).onBell(() => ring(el, settingsRef.current?.bell ?? 'visual'));
+      cleanups.push(() => { d1.dispose(); d2.dispose(); d3.dispose(); d4.dispose(); d5.dispose(); });
+      // every open terminal follows a settings save, live
+      cleanups.push(onSettings((ns) => { settingsRef.current = ns; setSettings(ns); const o = lookOptions(ns, el); for (const [k, v] of Object.entries(o)) term.options[k] = v; try { fit.fit(); } catch { /* hidden */ } }));
       term.attachCustomKeyEventHandler((e) => {
         if (e.type !== 'keydown') return true;
         const k = e.key.toLowerCase();
@@ -166,7 +180,7 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
       cleanups.push(() => el.removeEventListener('paste', onPaste, true));
       void start(open);
     })();
-    const onTheme = () => { const t = termRef.current; if (t && host.current) t.options.theme = themeFromTokens(host.current); };
+    const onTheme = () => { const t = termRef.current; if (t && host.current && (settingsRef.current?.scheme ?? 'app') === 'app') t.options.theme = themeFromTokens(host.current); };
     const mo = new MutationObserver(onTheme);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'data-fx-scheme'] });
     return () => {
@@ -175,9 +189,7 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
       cleanups.forEach((f) => f());
       wsRef.current?.close(); wsRef.current = null;
       termRef.current?.dispose(); termRef.current = null;
-      const sid = tabSessions.get(tab.id);
-      // A tab that moved windows remounts; a closed tab is gone from every group: then the session closes too.
-      setTimeout(() => { if (sid && !wm.groupOf(tab.id)) { tabSessions.delete(tab.id); tabPrefs.delete(tab.id); void call(`sessions/${sid}`, { method: 'DELETE' }).catch(() => undefined); } }, 800);
+      setCtl(tab.id, null);
     };
   }, [tab.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -218,10 +230,24 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
   const cancelPress = () => { if (press.current) clearTimeout(press.current); press.current = null; };
 
   const term = termRef.current;
-  const close = () => { const sid = tabSessions.get(tab.id); tabSessions.delete(tab.id); if (sid) void call(`sessions/${sid}`, { method: 'DELETE' }).catch(() => undefined); wm.closeTab(tab.id); };
+  const close = onClose;
   const menuItem = (label: string, icon: string, fn: () => void, disabled = false): ReactNode => (
     <button type="button" role="menuitem" className="fx-menu__item" disabled={disabled} onClick={() => { setMenu(null); fn(); }}><Icon name={icon} size={13} /> {label}</button>
   );
+
+  const restart = () => { alive.current = true; tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); void start(open); };
+  // the host's toolbar and tab strip act on this session through its control handle
+  useEffect(() => {
+    const t = () => termRef.current;
+    setCtl(tab.id, {
+      conn, info, mouse, mosh, fontSize,
+      setMouse, setMosh, zoom: (d) => setFontSize((f) => Math.max(8, Math.min(32, f + d))), search: () => setSearch(''),
+      copy: () => { const x = t(); if (x?.hasSelection()) void navigator.clipboard?.writeText(x.getSelection()); },
+      paste: (plain) => void pasteFromClipboard(plain), selectAll: () => t()?.selectAll(), clear: () => t()?.clear(), restart,
+      focus: () => t()?.focus(), menu: (x, y) => setMenu({ x, y }),
+    });
+  }); // every render: the handle always carries the current state
+  useEffect(() => { if (active) { const f = fitRef.current; setTimeout(() => { try { f?.fit(); } catch { /* hidden */ } termRef.current?.focus(); }, 0); } }, [active]);
 
   if (confirm) {
     return (
@@ -240,28 +266,7 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
   }
 
   return (
-    <div className={`${P}`} data-fx-ctx-ignore onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setMenu({ x: e.clientX, y: e.clientY }); }}>
-      <div className={`${P}__bar`}>
-        <span className={`${P}__dot is-${conn}`} title={conn} aria-label={`connection ${conn}`} />
-        {renaming !== null ? (
-          <form onSubmit={(e) => { e.preventDefault(); wm.renameTab(tab.id, renaming.trim() || tab.title); setRenaming(null); }} className={`${P}__rename`}>
-            <input className="fx-input" autoFocus value={renaming} onChange={(e) => setRenaming(e.target.value)} onBlur={() => setRenaming(null)} aria-label="Tab name" />
-          </form>
-        ) : (
-          <button type="button" data-fx-row className={`${P}__title`} title="Rename" onClick={() => setRenaming(tab.title)}>{tab.title}{info?.cwd ? <span className="fx-muted"> · {info.cwd}</span> : null}</button>
-        )}
-        {info?.badge && <span className={`${P}__badge ${info.badge === 'HOST ROOT' ? 'is-host' : 'is-protected'}`}>{info.badge}</span>}
-        <span className="fx-grow" />
-        <button type="button" className={`fx-iconbtn ${mouse ? 'is-active' : ''}`} title="Mouse mode: click moves the cursor; clicks go to apps that use the mouse" aria-pressed={mouse} onClick={() => setMouse(!mouse)}><Icon name="monitor" size={14} /></button>
-        <button type="button" className={`fx-iconbtn ${mosh ? 'is-active' : ''}`} title="Mosh mode: the session lives on the server, survives dropped signal, reconnects by itself" aria-pressed={mosh} onClick={() => setMosh(!mosh)}><Icon name="zap" size={14} /></button>
-        <button type="button" className="fx-iconbtn" title="Search (Ctrl+Shift+F)" onClick={() => setSearch(search === null ? '' : null)}><Icon name="search" size={14} /></button>
-        <button type="button" className="fx-iconbtn" title="Smaller text" onClick={() => setFontSize((f) => Math.max(9, f - 1))}>A−</button>
-        <button type="button" className="fx-iconbtn" title="Bigger text" onClick={() => setFontSize((f) => Math.min(28, f + 1))}>A+</button>
-        <div className={`${P}__plusw`}>
-          <button type="button" className="fx-iconbtn" title="New terminal tab" aria-expanded={plus} onClick={() => setPlus(!plus)}><Icon name="plus" size={14} /></button>
-          {plus && <PlusMenu groupId={wm.groupOf(tab.id)} done={() => setPlus(false)} />}
-        </div>
-      </div>
+    <div className={`${P}`} hidden={!active} data-fx-ctx-ignore onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setMenu({ x: e.clientX, y: e.clientY }); }}>
       {search !== null && (
         <form className={`${P}__search`} onSubmit={(e) => { e.preventDefault(); searchRef.current?.findNext(search); }}>
           <input className="fx-input" autoFocus placeholder="Find in terminal" value={search} onChange={(e) => { setSearch(e.target.value); searchRef.current?.findNext(e.target.value); }} />
@@ -277,12 +282,12 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
           <Button tone="ghost" onClick={() => { setPasteAsk(null); term?.focus(); }}>Cancel</Button>
         </div>
       )}
-      <div ref={host} className={`${P}__screen ${mouse ? 'is-mouse' : ''}`} onClick={onClick} onPointerDown={onPointerDown} onPointerUp={cancelPress} onPointerMove={cancelPress} onPointerCancel={cancelPress} />
+      <div ref={host} className={`${P}__screen ${mouse ? 'is-mouse' : ''}`} data-pad={settings?.padding ?? 1} data-scheme={settings?.scheme ?? 'app'} style={settings?.scheme && settings.scheme !== 'app' ? { ['--axp-terminal-bg' as string]: SCHEMES[settings.scheme]?.background } : undefined} onClick={onClick} onPointerDown={onPointerDown} onPointerUp={cancelPress} onPointerMove={cancelPress} onPointerCancel={cancelPress} />
       {mosh && pending && conn !== 'live' && <div className={`${P}__predict`} aria-live="polite">{pending}</div>}
       {(conn === 'reconnecting' || conn === 'closed' || err) && (
         <div className={`${P}__status`}>
           {conn === 'reconnecting' ? <span>Reconnecting{mosh ? ' (Mosh mode: nothing is lost)' : ''}…</span> : conn === 'closed' ? <span>{err ? `Closed: ${err}` : 'Session ended.'}</span> : <span>{err}</span>}
-          {conn === 'closed' && <Button tone="ghost" icon="refresh" onClick={() => { alive.current = true; tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); void start(open); }}>Start again</Button>}
+          {conn === 'closed' && <Button tone="ghost" icon="refresh" onClick={restart}>Start again</Button>}
         </div>
       )}
       <div className={`${P}__keys`} role="toolbar" aria-label="Extra keys">
@@ -295,7 +300,7 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
         <button type="button" className={`fx-chip ${P}__key`} title="Copy" onClick={() => { if (term?.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()); }}><Icon name="copy" size={12} /></button>
         <button type="button" className={`fx-chip ${P}__key`} title="Paste" onClick={() => void pasteFromClipboard(false)}><Icon name="paste" size={12} /></button>
       </div>
-      {menu && (
+      {menu && createPortal(
         <>
           <div className={`${P}__scrim`} onClick={() => setMenu(null)} onContextMenu={(e) => { e.preventDefault(); setMenu(null); }} />
           <div className={`${P}__menu fx-popover`} role="menu" style={{ left: Math.min(menu.x, innerWidth - 220), top: Math.min(menu.y, innerHeight - 320) }}>
@@ -306,37 +311,12 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
             {menuItem('Clear', 'trash', () => term?.clear())}
             {menuItem('Search', 'search', () => setSearch(''))}
             {menuItem('Open link', 'external', () => { const sel = term?.getSelection().trim() ?? ''; if (/^https?:\/\/\S+$/.test(sel)) window.open(sel, '_blank', 'noopener,noreferrer'); else rt.toast('Select a link first', 'warning'); })}
-            {menuItem('Rename tab', 'edit', () => setRenaming(tab.title))}
+            {menuItem('Rename tab', 'edit', onRename)}
             {menuItem('Close terminal', 'x', close)}
           </div>
-        </>
+        </>, document.body,
       )}
     </div>
   );
 }
 
-/** “+”: another terminal in the same window. */
-function PlusMenu({ groupId, done }: { groupId: string | null; done: () => void }) {
-  const rt = useRuntime();
-  const [targets, setTargets] = useState<Target[] | null>(null);
-  const [status, setStatus] = useState<{ claude: boolean; vps: { ready: boolean }; containers: boolean } | null>(null);
-  useEffect(() => {
-    void call<{ claude: boolean; vps: { ready: boolean }; containers: boolean }>('status').then(setStatus, () => undefined);
-    void call<{ items: Target[] }>('targets').then((r) => setTargets(r.items), () => setTargets([]));
-  }, []);
-  const add = (o: Open) => { newTab(rt, o, groupId); done(); };
-  return (
-    <div className="axp-terminal__menu axp-terminal__plus fx-popover" role="menu">
-      <button type="button" role="menuitem" className="fx-menu__item" onClick={() => add({ kind: 'console' })}><Icon name="terminal" size={13} /> Console (this container)</button>
-      <button type="button" role="menuitem" className="fx-menu__item" disabled={!status?.vps.ready} title={status?.vps.ready ? '' : 'Set up the VPS host in Settings → Plugins → Terminal'} onClick={() => add({ kind: 'vps' })}><Icon name="monitor" size={13} /> VPS host (root)</button>
-      <button type="button" role="menuitem" className="fx-menu__item" disabled={!status?.claude} onClick={() => add({ kind: 'claude' })}><Icon name="sparkles" size={13} /> Claude Code</button>
-      {status?.containers && <div className="axp-terminal__mh">Containers</div>}
-      {(targets ?? []).map((t) => (
-        <button key={t.name} type="button" role="menuitem" className="fx-menu__item" onClick={() => add({ kind: 'container', container: t.name })}>
-          <Icon name={t.protected ? 'lock' : 'box'} size={13} /> {t.name}{t.protected ? <span className="fx-muted"> · protected</span> : null}
-        </button>
-      ))}
-      {status && !status.containers && <div className="axp-terminal__mh fx-muted">Install Container access for container shells</div>}
-    </div>
-  );
-}

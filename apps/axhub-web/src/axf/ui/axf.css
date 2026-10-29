@@ -54,7 +54,7 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-frame > .fx-frame__menubar { flex: none; position: relative; z-index: 44; }
 /* banners libraries contribute (slot app.frame.banners): above app tabs and the layout; a tall stack scrolls inside itself */
 .fx-frame-banners { flex: none; max-height: 45vh; overflow: auto; padding: var(--fx-space) var(--fx-space) 0; background: var(--fx-bg); position: relative; z-index: 42; }
-.fx-frame-banners:empty { display: none; }
+.fx-frame-banners:empty, .fx-frame-banners[data-fx-empty='on'] { display: none; }
 /* Banner group (Oct 23 2026): one wrapper around every banner once 2+ show; thin title bar; undocks into a floating,
    draggable, resizable window that scrolls inside itself. */
 .fx-banner-group__bar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-height: calc(var(--fx-font-size) * 1.6); padding: 0 calc(var(--fx-space) * 0.5); margin-bottom: calc(var(--fx-space) * 0.4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 0.8); user-select: none; }
@@ -321,6 +321,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__sep { height: var(--fx-border-w); background: var(--fx-border); margin: 4px 6px; }
 .fx-menu__spacer { height: calc(var(--fx-space) * 2); list-style: none; }
 .fx-menu__sub { position: absolute; left: calc(100% + 2px); top: -4px; min-width: 200px; padding: 4px; }
+/* no room on the right (MenuSub measures): open to the left of the row instead */
+.fx-menu__sub[data-fx-flip='left'] { left: auto; right: calc(100% + 2px); }
 /* application menu (components/AppMenu.tsx): check marks, badges, live-list rows, phone drill-down */
 .fx-menu__check { width: 16px; display: inline-flex; justify-content: center; color: var(--fx-accent); }
 .fx-menu__item.is-checked { color: var(--fx-text); }
@@ -391,6 +393,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-toolbtn:hover:not(:disabled) { background: var(--fx-surface3); color: var(--fx-text); }
 .fx-toolbtn:disabled { opacity: max(var(--fx-opacity-disabled), 0.4); }
+.fx-toolbtn.is-on { background: var(--fx-accent-soft); color: var(--fx-accent); }
+.fx-toolbtn.is-on:hover:not(:disabled) { background: var(--fx-accent-soft); color: var(--fx-accent); }
 .fx-toolbtn { position: relative; }
 /* unread counter (toolbar item `badge`) */
 .fx-toolbtn__badge {
@@ -942,6 +946,31 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-window__body { flex: 1 1 auto; min-height: 0; display: flex; padding: 6px; }
 .fx-window__body > * { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .fx-window__resize { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); touch-action: none; }
+/* windows-terminal s17: resize from all 8 edges / corners (engine: RESIZE_EDGES, hitResizeEdge, resizeRect). The bands are
+   invisible hit areas just inside the border (the window clips at its radius); corners are squares twice the band. Wider
+   on touch. No keep-on-screen: a window may be dragged or resized past the viewport. */
+.fx-window__edge { --fx-win-handle: var(--fx-space); position: absolute; z-index: 3; touch-action: none; user-select: none; }
+@media (pointer: coarse) { .fx-window__edge { --fx-win-handle: calc(var(--fx-space) * 2); } }
+.fx-window__edge--n, .fx-window__edge--s { left: calc(var(--fx-win-handle) * 2); right: calc(var(--fx-win-handle) * 2); height: var(--fx-win-handle); }
+.fx-window__edge--e, .fx-window__edge--w { top: calc(var(--fx-win-handle) * 2); bottom: calc(var(--fx-win-handle) * 2); width: var(--fx-win-handle); }
+.fx-window__edge--n { top: 0; } .fx-window__edge--s { bottom: 0; } .fx-window__edge--w { left: 0; } .fx-window__edge--e { right: 0; }
+.fx-window__edge--ne, .fx-window__edge--nw, .fx-window__edge--se, .fx-window__edge--sw { width: calc(var(--fx-win-handle) * 2); height: calc(var(--fx-win-handle) * 2); }
+.fx-window__edge--nw { top: 0; left: 0; } .fx-window__edge--ne { top: 0; right: 0; } .fx-window__edge--sw { bottom: 0; left: 0; } .fx-window__edge--se { bottom: 0; right: 0; }
+.fx-window--standard .fx-window__edge--se { background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); }
+/* maximized: square, borderless, fills the viewport (engine: maximizedRect); handles are gone */
+.fx-window.is-maximized { border-radius: 0; box-shadow: none; }
+/* frameless (Terminal): the content draws its own title bar through useWindowFrame(); no host chrome, no body inset */
+.fx-window--frameless .fx-window__body { padding: 0; }
+/* a frameless window holding one tab shows that content's own bar only: the host's tab-group bar (its tab chip, undock
+   and split buttons) would be a second title bar above it. A second tab dropped in brings the bar back. */
+.fx-window--frameless .fx-window__body > .fx-tabgroup { border: 0; border-radius: 0; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__bar { display: none; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__body { padding: 0; }
+/* s18: snap preview — a translucent accent pane where a dragged window will land (zone or split); the split target's
+   remaining half is outlined. Transparency through the themed opacities, never a fixed percentage. */
+.fx-snap-preview { position: fixed; z-index: 59; pointer-events: none; box-sizing: border-box; border-radius: var(--fx-radius-lg); border: calc(var(--fx-border-w) * 2) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); transition: left var(--fx-motion) ease, top var(--fx-motion) ease, width var(--fx-motion) ease, height var(--fx-motion) ease; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--fx-space); }
+.fx-snap-preview--target { border-style: dashed; background: transparent; }
+.fx-snap-preview__label { font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: .06em; color: var(--fx-accent); opacity: var(--fx-opacity-muted); }
 .fx-dragghost { position: fixed; z-index: 200; pointer-events: none; padding: 4px 10px; border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: 12px; box-shadow: var(--fx-shadow-md); }
 .fx-corner { position: fixed; z-index: 70; display: flex; gap: 4px; padding: 6px; }
 .fx-corner--top-left { top: 0; left: 0; } .fx-corner--top-right { top: 0; right: 0; } .fx-corner--bottom-left { bottom: 0; left: 0; } .fx-corner--bottom-right { bottom: 0; right: 0; }
@@ -1099,8 +1128,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
   border-radius: inherit; pointer-events: none;
 }
 .fx-banner.is-brand-edge::before, .fx-toolbar.is-brand-edge::before { inset-inline: 0; inset-block-end: 0; inset-block-start: auto; width: auto; height: calc(var(--fx-border-w) * 2); background: linear-gradient(90deg, var(--fx-brand-1), var(--fx-brand-2) 50%, transparent); }
-.is-brand-watermark { position: relative; }
-.fx-brand-watermark { position: absolute; inset-inline-end: calc(var(--fx-space) * 2); inset-block-end: calc(var(--fx-space) * 2); opacity: calc(var(--fx-opacity-tint) * 0.5); pointer-events: none; color: var(--fx-brand-1); line-height: 0; }
+.is-brand-watermark { position: relative; isolation: isolate; }
+.fx-brand-watermark { position: absolute; z-index: -1; inset-inline-end: calc(var(--fx-space) * 2); inset-block-end: calc(var(--fx-space) * 2); opacity: calc(var(--fx-opacity-tint) * 0.5); pointer-events: none; color: var(--fx-brand-1); line-height: 0; }
 .fx-brand-watermark > svg { display: block; }
 /* animation presets (durations + intensity come from the animated-logo asset as --fx-brand-anim-*) */
 .fx-brand-anim { animation-timing-function: var(--fx-ease, ease-in-out); transform-origin: 50% 50%; will-change: transform, opacity; }
@@ -1117,5 +1146,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 
 /* interface scopes (react/components/InterfaceScope.tsx): a subtree drawn under another interface; vars + attrs on this element */
 .fx-scope { display: contents; }
+/* inherited text properties are resolved once on <body>; a scope re-declares them so its subtree reads the scope's
+   tokens (interface tabs: dark text on a dark interface otherwise) */
+[data-fx-scope] { color: var(--fx-text); font-family: var(--fx-font); font-size: var(--fx-font-size); }
 .fx-scope--block { display: block; position: relative; min-height: 0; height: 100%; }
 .fx-scope > style { display: none; }

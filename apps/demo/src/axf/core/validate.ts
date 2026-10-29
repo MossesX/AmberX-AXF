@@ -1,5 +1,12 @@
 import spec from '../schemas/asset-types.json';
 import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
+import { hostSpec, validateHostAttachments } from './engines/widgets';
+import { validateMenuItems } from './engines/appmenu';
+import { designPackageErrors } from './engines/designpackage';
+import { stylePackageErrors } from './engines/stylepackage';
+import { interfaceErrors } from './engines/interface';
+import { brandAssetErrors } from './engines/brand-rules.mjs';
+import { behaviorErrors } from './engines/behavior';
 
 export interface ValidationResult {
   ok: boolean;
@@ -17,6 +24,11 @@ interface TypeSpec {
 
 export const assetTypeSpecs = spec.types as unknown as Record<AssetType, TypeSpec>;
 export const FRAMEWORK_VERSION: string = spec.frameworkVersion;
+
+/** Attachable types (badge, clock): assets placed on a host (the banner), not slots picked in Appearance or rolled. */
+export function attachable(t: string): boolean {
+  return (spec.types as unknown as Record<string, { attachable?: boolean }>)[t]?.attachable === true;
+}
 
 export function isAssetType(t: unknown): t is AssetType {
   return typeof t === 'string' && (ASSET_TYPES as readonly string[]).includes(t);
@@ -66,11 +78,47 @@ export function validateAsset(raw: unknown): ValidationResult {
     if (!isObj(inner)) continue;
     for (const nk of keys) if (!(nk in inner)) errors.push(`data.${k}.${nk} is required`);
   }
+  if (raw.type === 'layout' && 'slots' in data) errors.push(...validateSlots(data.slots, (t) => isAssetType(t)));
+  // Menu items (app-menu menus, context-menu targets): optional fields provider / badge / checked / order / before / after.
+  if (raw.type === 'app-menu' && Array.isArray(data.menus)) {
+    (data.menus as unknown[]).forEach((m, i) => {
+      if (!isObj(m)) return;
+      if ('order' in m && (typeof m.order !== 'number' || !Number.isFinite(m.order))) errors.push(`data.menus[${i}].order must be a number`);
+      if ('items' in m) errors.push(...validateMenuItems(m.items, `data.menus[${i}].items`));
+    });
+  }
+  if (raw.type === 'context-menu' && isObj(data.targets)) {
+    for (const [t, items] of Object.entries(data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
+  }
+  if (raw.type === 'design-package') errors.push(...designPackageErrors(data));
+  if (raw.type === 'style-package') errors.push(...stylePackageErrors(data));
+  if (raw.type === 'interface') errors.push(...interfaceErrors(data));
+  if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
+  errors.push(...(brandAssetErrors(raw.type, data) ?? []));
+  // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
+  const host = hostSpec(raw.type);
+  if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/**
+ * Layout slot contract: keys must be regions from asset-types.json (layout.slots.regions),
+ * values lists of known asset types. Same messages in build-engine.mjs and AssetValidator.kt.
+ */
+export function validateSlots(slots: unknown, known: (t: string) => boolean): string[] {
+  const regions = (spec.types.layout as unknown as { slots: { regions: string[] } }).slots.regions;
+  if (!isObj(slots)) return ['data.slots must be an object'];
+  const errors: string[] = [];
+  for (const [r, types] of Object.entries(slots)) {
+    if (!regions.includes(r)) { errors.push(`data.slots.${r} is not a layout region (one of: ${regions.join(', ')})`); continue; }
+    if (!Array.isArray(types)) { errors.push(`data.slots.${r} must be a list of asset types`); continue; }
+    for (const t of types) if (typeof t !== 'string' || !known(t)) errors.push(`data.slots.${r} accepts unknown asset type "${String(t)}"`);
+  }
+  return errors;
 }
 
 export function asEnvelope(raw: unknown): AssetEnvelope {

@@ -946,6 +946,31 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-window__body { flex: 1 1 auto; min-height: 0; display: flex; padding: 6px; }
 .fx-window__body > * { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .fx-window__resize { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); touch-action: none; }
+/* windows-terminal s17: resize from all 8 edges / corners (engine: RESIZE_EDGES, hitResizeEdge, resizeRect). The bands are
+   invisible hit areas just inside the border (the window clips at its radius); corners are squares twice the band. Wider
+   on touch. No keep-on-screen: a window may be dragged or resized past the viewport. */
+.fx-window__edge { --fx-win-handle: var(--fx-space); position: absolute; z-index: 3; touch-action: none; user-select: none; }
+@media (pointer: coarse) { .fx-window__edge { --fx-win-handle: calc(var(--fx-space) * 2); } }
+.fx-window__edge--n, .fx-window__edge--s { left: calc(var(--fx-win-handle) * 2); right: calc(var(--fx-win-handle) * 2); height: var(--fx-win-handle); }
+.fx-window__edge--e, .fx-window__edge--w { top: calc(var(--fx-win-handle) * 2); bottom: calc(var(--fx-win-handle) * 2); width: var(--fx-win-handle); }
+.fx-window__edge--n { top: 0; } .fx-window__edge--s { bottom: 0; } .fx-window__edge--w { left: 0; } .fx-window__edge--e { right: 0; }
+.fx-window__edge--ne, .fx-window__edge--nw, .fx-window__edge--se, .fx-window__edge--sw { width: calc(var(--fx-win-handle) * 2); height: calc(var(--fx-win-handle) * 2); }
+.fx-window__edge--nw { top: 0; left: 0; } .fx-window__edge--ne { top: 0; right: 0; } .fx-window__edge--sw { bottom: 0; left: 0; } .fx-window__edge--se { bottom: 0; right: 0; }
+.fx-window--standard .fx-window__edge--se { background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); }
+/* maximized: square, borderless, fills the viewport (engine: maximizedRect); handles are gone */
+.fx-window.is-maximized { border-radius: 0; box-shadow: none; }
+/* frameless (Terminal): the content draws its own title bar through useWindowFrame(); no host chrome, no body inset */
+.fx-window--frameless .fx-window__body { padding: 0; }
+/* a frameless window holding one tab shows that content's own bar only: the host's tab-group bar (its tab chip, undock
+   and split buttons) would be a second title bar above it. A second tab dropped in brings the bar back. */
+.fx-window--frameless .fx-window__body > .fx-tabgroup { border: 0; border-radius: 0; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__bar { display: none; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__body { padding: 0; }
+/* s18: snap preview — a translucent accent pane where a dragged window will land (zone or split); the split target's
+   remaining half is outlined. Transparency through the themed opacities, never a fixed percentage. */
+.fx-snap-preview { position: fixed; z-index: 59; pointer-events: none; box-sizing: border-box; border-radius: var(--fx-radius-lg); border: calc(var(--fx-border-w) * 2) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); transition: left var(--fx-motion) ease, top var(--fx-motion) ease, width var(--fx-motion) ease, height var(--fx-motion) ease; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--fx-space); }
+.fx-snap-preview--target { border-style: dashed; background: transparent; }
+.fx-snap-preview__label { font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: .06em; color: var(--fx-accent); opacity: var(--fx-opacity-muted); }
 .fx-dragghost { position: fixed; z-index: 200; pointer-events: none; padding: 4px 10px; border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: 12px; box-shadow: var(--fx-shadow-md); }
 .fx-corner { position: fixed; z-index: 70; display: flex; gap: 4px; padding: 6px; }
 .fx-corner--top-left { top: 0; left: 0; } .fx-corner--top-right { top: 0; right: 0; } .fx-corner--bottom-left { bottom: 0; left: 0; } .fx-corner--bottom-right { bottom: 0; right: 0; }

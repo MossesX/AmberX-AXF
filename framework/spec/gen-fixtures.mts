@@ -32,6 +32,7 @@ import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES,
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
+import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, SNAP_ZONES, WINDOW_MIN, armSplit, dragRestore, hitResizeEdge, maximizeWindow, maximizedRect, resizeCursor, resizeRect, resolveOverlap, restoreWindow, snapRect, snapZoneAt, snapZoneRect, splitDrop, toggleMaximized, topmostAt, type Rect, type ResizeEdge, type SplitArm, type WindowSpec } from '../core/engines/windows';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -1310,5 +1311,83 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     conditions: flagsCases.map((flags) => ({ flags, unmet: unmetConditions(A, flags), restart: shouldRestart(A, flags), restartNoBoot: shouldRestart(D, flags) })),
     delays: delays.map((d) => ({ ...d, ms: delayFor(d.rule, d.intervalMs, d.streak) })),
     scenarios: scenarios.map((s) => ({ name: s.name, spec: s.spec.id, intervalMs: s.intervalMs ?? null, initial: initialJobState(s.spec, s.intervalMs), steps: replayJob(s.spec, s.events, s.intervalMs).map((step, i) => ({ event: s.events[i].event, flags: s.events[i].flags ?? {}, state: step.state, effects: step.effects })) })),
+  });
+}
+
+// Window engine geometry (windows-terminal s17, Oct 28 2026): the 8 resize handles (hit-testing, cursors), resize maths
+// with size floors (opposite edge fixed, no viewport clamp: windows may leave the screen), maximize / restore and the
+// title-bar drag that restores a maximized window under the pointer. Kotlin `Windows.kt` replays the same file.
+{
+  const r: Rect = { x: 100, y: 50, width: 400, height: 300 };
+  const probes: [string, number, number][] = [
+    ['inside body', 300, 200], ['north band', 300, 53], ['south band', 300, 345], ['west band', 103, 200], ['east band', 497, 200],
+    ['nw corner', 105, 55], ['ne corner', 495, 55], ['sw corner', 105, 345], ['se corner', 495, 345],
+    ['north just outside', 300, 44], ['north too far outside', 300, 40], ['west on the edge', 100, 200], ['corner square reaches past the band', 112, 62],
+    ['east bottom corner diagonal', 492, 340], ['far away', 900, 900], ['touch band wide', 300, 64],
+  ];
+  const hits = probes.map(([name, px, py]) => ({ name, px, py, edge: hitResizeEdge(r, px, py), touch: hitResizeEdge(r, px, py, RESIZE_HANDLE_TOUCH) }));
+  const drags: [string, ResizeEdge, number, number, Partial<Rect> | null, { minWidth: number; minHeight: number; maxWidth?: number; maxHeight?: number } | null][] = [
+    ['grow east', 'e', 50, 0, null, null], ['grow south', 's', 0, 40, null, null], ['grow west (x moves)', 'w', -30, 0, null, null], ['grow north (y moves)', 'n', 0, -20, null, null],
+    ['se corner', 'se', 25, 35, null, null], ['nw corner', 'nw', -10, -15, null, null], ['ne corner', 'ne', 10, -15, null, null], ['sw corner', 'sw', -10, 15, null, null],
+    ['shrink east to the floor', 'e', -500, 0, null, null], ['shrink west to the floor keeps right edge', 'w', 500, 0, null, null], ['shrink north to the floor keeps bottom edge', 'n', 0, 500, null, null], ['shrink south to the floor', 's', 0, -500, null, null],
+    ['own floor', 'w', 300, 0, null, { minWidth: 320, minHeight: 200 }], ['ceiling east', 'e', 500, 0, null, { minWidth: 200, minHeight: 160, maxWidth: 450 }], ['ceiling north keeps bottom', 'n', 0, -500, null, { minWidth: 200, minHeight: 160, maxHeight: 320 }],
+    ['past the viewport is allowed', 'e', 2000, 0, null, null], ['negative origin is allowed', 'nw', -300, -300, null, null], ['fractions round', 'se', 10.4, 10.6, null, null],
+  ];
+  const resizes = drags.map(([name, edge, dx, dy, startOverride, limits]) => { const start = { ...r, ...(startOverride ?? {}) }; return { name, edge, dx, dy, start, limits, rect: resizeRect(start, edge, dx, dy, limits ?? undefined) }; });
+  const spec = (o: Partial<WindowSpec> = {}): WindowSpec => ({ id: 'w1', type: 'floating', title: 'T', toolbarsAllowed: true, toolbarEnabled: true, origin: null, settings: { corner: 'bottom-right', mode: 'stacked', toolbarAsset: null, alwaysOnTop: false, opacity: 1 }, x: 100, y: 50, width: 400, height: 300, minimized: null, minimizedAtX: 0, minimizedAtY: 0, closable: true, z: 1, mode: 'tree', ...o });
+  const vp = { width: 1280, height: 800 };
+  const work = { x: 0, y: 48, width: 1280, height: 752 };
+  const pick = (w: WindowSpec) => ({ x: w.x, y: w.y, width: w.width, height: w.height, maximized: w.maximized ?? false, restore: w.restore ?? null });
+  const w0 = spec();
+  const max = maximizeWindow(w0, vp);
+  const maxWork = maximizeWindow(w0, vp, work);
+  const again = maximizeWindow(max, vp);
+  const back = restoreWindow(max);
+  const toggled = toggleMaximized(toggleMaximized(w0, vp), vp);
+  const notMax = restoreWindow(w0);
+  const maximize = {
+    viewport: vp, work, rect: maximizedRect(vp), rectWork: maximizedRect(vp, work),
+    from: pick(w0), maximized: pick(max), maximizedWork: pick(maxWork), maximizedTwice: pick(again), restored: pick(back), toggledTwice: pick(toggled), restoreWhenNotMaximized: pick(notMax),
+    dragRestore: [
+      { name: 'grab at the left', px: 128, py: 20, grab: 12, rect: pick(dragRestore(max, 128, 20, 12)) },
+      { name: 'grab in the middle', px: 640, py: 30, grab: 0, rect: pick(dragRestore(max, 640, 30, 0)) },
+      { name: 'grab at the right edge', px: 1280, py: 10, grab: 10, rect: pick(dragRestore(max, 1280, 10, 10)) },
+      { name: 'not maximized = unchanged', px: 300, py: 60, grab: 4, rect: pick(dragRestore(w0, 300, 60, 4)) },
+    ],
+  };
+  // s18: snapping. Screen edges + other windows' edges pull a dragged rect; zones at the viewport edge; no-overlap
+  // pushes; drop onto another window splits it; split arms only after a dwell.
+  const others: Rect[] = [{ x: 600, y: 100, width: 300, height: 200 }, { x: 100, y: 500, width: 400, height: 200 }];
+  const moving = { width: 200, height: 150 };
+  const snapCases: [string, number, number, Partial<typeof DEFAULT_SNAP_RULES>][] = [
+    ['free', 300, 300, {}], ['left screen edge', 7, 300, {}], ['right screen edge', 1280 - 200 - 9, 300, {}], ['top screen edge', 300, -5, {}], ['bottom screen edge', 300, 800 - 150 + 4, {}],
+    ['corner pulls both', 6, 5, {}], ['abut left of a window', 600 - 200 - 8, 120, {}], ['abut right of a window', 900 + 6, 120, {}], ['align left edges', 605, 120, {}], ['align right edges', 900 - 200 + 7, 120, {}],
+    ['abut above a window', 150, 500 - 150 - 5, {}], ['abut below a window', 150, 700 + 9, {}], ['no pull: top edges aligned but apart on x', 150, 96, {}], ['no pull from a window far off on the other axis', 605, 450, {}],
+    ['outside the threshold', 20, 20, {}], ['window pull off', 600 - 200 - 8, 120, { windows: false }], ['edge pull off', 7, 300, { edges: false }], ['tie: viewport wins', 0, 4, {}], ['tight threshold', 7, 300, { threshold: 4 }],
+  ];
+  const snaps = snapCases.map(([name, x, y, o]) => { const rules = { ...DEFAULT_SNAP_RULES, ...o }; return { name, at: { x, y }, rules: { edges: rules.edges, windows: rules.windows, threshold: rules.threshold }, result: snapRect({ x, y, ...moving }, vp, others, rules) }; });
+  const zoneProbes: [number, number][] = [[640, 400], [5, 400], [1275, 400], [640, 3], [640, 797], [4, 6], [1278, 2], [3, 796], [1279, 799], [24, 400], [25, 400], [-10, 400], [-40, 400], [640, 830]];
+  const zones = zoneProbes.map(([px, py]) => ({ px, py, zone: snapZoneAt(px, py, vp), narrow: snapZoneAt(px, py, vp, 8) }));
+  const zoneRects = Object.fromEntries(SNAP_ZONES.map((z) => [z, { full: snapZoneRect(z, { x: 0, y: 0, ...vp }), work: snapZoneRect(z, work), odd: snapZoneRect(z, { x: 10, y: 20, width: 333, height: 201 }) }]));
+  const overlap = [
+    { name: 'no overlap', rect: { x: 0, y: 0, width: 100, height: 100 } }, { name: 'push left (smallest)', rect: { x: 560, y: 120, width: 100, height: 100 } }, { name: 'push right', rect: { x: 840, y: 120, width: 100, height: 100 } },
+    { name: 'push up', rect: { x: 700, y: 60, width: 100, height: 100 } }, { name: 'push down', rect: { x: 700, y: 240, width: 100, height: 100 } }, { name: 'may leave the screen', rect: { x: 0, y: 480, width: 150, height: 100 } },
+    { name: 'inside: shortest way out', rect: { x: 620, y: 110, width: 50, height: 50 } }, { name: 'chain through two', rect: { x: 450, y: 450, width: 200, height: 100 } },
+  ].map((c) => ({ ...c, out: resolveOverlap(c.rect, others) }));
+  const target = { x: 200, y: 100, width: 600, height: 400 };
+  const splits = ([[210, 300, 'left'], [790, 300, 'right'], [500, 110, 'top'], [500, 490, 'bottom'], [500, 300, 'centre goes right'], [260, 140, 'nearer the left than the top'], [500, 160, 'nearer the top']] as [number, number, string][]).map(([px, py, name]) => ({ name, px, py, result: splitDrop(target, px, py) }));
+  const oddSplit = splitDrop({ x: 0, y: 0, width: 301, height: 201 }, 10, 100);
+  const stack = [{ x: 0, y: 0, width: 400, height: 400, z: 1 }, { x: 200, y: 200, width: 400, height: 400, z: 5 }, { x: 300, y: 300, width: 100, height: 100, z: 3 }];
+  const topmost = [[100, 100], [300, 300], [350, 350], [500, 500], [900, 900], [200, 200]].map(([px, py]) => ({ px, py, index: topmostAt(stack, px!, py!) }));
+  let arm: SplitArm | null = null; const armSteps: { target: string | null; now: number; arm: SplitArm }[] = [];
+  for (const [target, now] of [['a', 0], ['a', 200], ['a', 449], ['a', 450], ['b', 500], ['b', 949], ['b', 950], [null, 1000], ['b', 1100], ['b', 1549], ['b', 1550]] as [string | null, number][]) { arm = armSplit(arm, target, now); armSteps.push({ target, now, arm }); }
+  const armZero = armSplit(null, 'a', 0, 0);
+  write('windows.json', {
+    contract: 'windows@1',
+    edges: RESIZE_EDGES, handle: RESIZE_HANDLE, handleTouch: RESIZE_HANDLE_TOUCH, min: WINDOW_MIN,
+    cursors: Object.fromEntries(RESIZE_EDGES.map((e) => [e, resizeCursor(e)])),
+    frames: ['standard', 'frameless'], frameDefault: 'standard',
+    rect: r, hits, resizes, maximize,
+    snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
   });
 }

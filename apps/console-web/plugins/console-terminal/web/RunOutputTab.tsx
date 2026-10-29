@@ -24,7 +24,7 @@ export function openRunTab(rt: AxfRuntime, run: HubRun) {
   const gid = wm.groupOf(tabId);
   if (gid) { const g = wm.state.groups[gid]; if (g) wm.activate(gid, g.tabs.findIndex((t) => t.id === tabId)); return; }
   const tab = { id: tabId, title: `VPS: ${(run.command.split('\n')[0] ?? '').slice(0, 32)}`, kind: 'terminal-output', payload: run.id, icon: 'terminal' };
-  const existing = Object.values(wm.state.groups).find((g) => g.tabs.some((t) => t.kind === 'terminal' || t.kind === 'terminal-output'))?.id;
+  const existing = Object.values(wm.state.groups).find((g) => g.tabs.some((t) => t.kind === 'terminal-host' || t.kind === 'terminal-output'))?.id;
   if (existing) wm.addTab(existing, tab);
   else wm.openFloating([tab], 'Terminal', 'floating', Math.min(820, innerWidth - 32), Math.min(480, innerHeight - 120));
 }

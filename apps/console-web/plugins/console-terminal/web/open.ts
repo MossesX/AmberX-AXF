@@ -1,17 +1,33 @@
-/* Opening terminals: into the open terminal window when there is one, else a new floating window. */
+/* Opening terminals: a new session in the open terminal window when there is one, else a new floating window. */
 import type { AxfRuntime } from '@console/axf/core';
 import type { Open } from './api';
+import { addSession, host, sessionId, titleFor, type HostSession } from './hosts';
 
-const TITLES: Record<string, string> = { console: 'Console', vps: 'VPS', claude: 'Claude Code' };
+export const HOST_KIND = 'terminal-host';
 
-export function newTab(rt: AxfRuntime, o: Open, groupId?: string | null): string {
+/** The terminal window to add to: the one in front (focused) first, else any. */
+export function findHost(rt: AxfRuntime): string | null {
   const wm = rt.windows;
-  const id = `term-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-  const tab = { id, title: o.title || (o.kind === 'container' ? o.container ?? 'Container' : TITLES[o.kind] ?? 'Terminal'), kind: 'terminal', payload: JSON.stringify(o), icon: 'terminal' };
-  const existing = groupId ?? Object.values(wm.state.groups).find((g) => g.tabs.some((t) => t.kind === 'terminal'))?.id ?? null;
-  if (existing && wm.state.groups[existing]) wm.addTab(existing, tab);
-  else wm.openFloating([tab], 'Terminal', 'floating', Math.min(820, innerWidth - 32), Math.min(480, innerHeight - 120));
-  return id;
+  const groups = Object.values(wm.state.groups).filter((g) => g.tabs.some((t) => t.kind === HOST_KIND));
+  const front = groups.find((g) => wm.state.windows.find((w) => w.id === g.windowId)?.id === wm.state.focused) ?? groups[0];
+  return front?.tabs.find((t) => t.kind === HOST_KIND)?.id ?? null;
+}
+
+/** Open a fresh terminal window holding these sessions. Returns the host id. */
+export function newWindow(rt: AxfRuntime, sessions: HostSession[]): string {
+  const hid = `term-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  host(hid, sessions);
+  // frameless (windows-terminal s17): the tab strip is the title bar (drag, double-click, min / max / close), like Windows Terminal
+  rt.windows.openFloating([{ id: hid, title: 'Terminal', kind: HOST_KIND, payload: '', icon: 'terminal' }], 'Terminal', 'floating', Math.min(900, innerWidth - 32), Math.min(540, innerHeight - 120), undefined, undefined, { frame: 'frameless', minWidth: 320, minHeight: 200 });
+  return hid;
+}
+
+/** Add a session (into `hostId`, the window in front, or a new window). Returns the session id. */
+export function newTab(rt: AxfRuntime, o: Open, hostId?: string | null): string {
+  const s: HostSession = { id: sessionId(), title: titleFor(o), open: o };
+  const hid = hostId ?? findHost(rt);
+  if (hid && rt.windows.groupOf(hid)) addSession(hid, s); else newWindow(rt, [s]);
+  return s.id;
 }
 
 /**

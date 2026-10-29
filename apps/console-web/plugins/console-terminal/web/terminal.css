@@ -12,7 +12,8 @@
 .axp-terminal__badge.is-host { background: var(--fx-danger) }
 .axp-terminal__screen { flex: 1; min-height: 0; padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); overflow: hidden }
 .axp-terminal__screen.is-mouse { cursor: default }
-.axp-terminal__screen .xterm, .axp-terminal__screen .xterm-viewport { background-color: var(--fx-surface) !important }
+.axp-terminal__screen[data-scheme='app'] .xterm, .axp-terminal__screen[data-scheme='app'] .xterm-viewport { background-color: var(--fx-surface) !important }
+.axp-terminal__screen:not([data-scheme='app']) { background: var(--axp-terminal-bg) }
 .axp-terminal__screen .xterm-viewport::-webkit-scrollbar { width: calc(var(--fx-space) * 0.625) }
 .axp-terminal__screen .xterm-viewport::-webkit-scrollbar-thumb { background: var(--fx-border); border-radius: 999px }
 .axp-terminal__search, .axp-terminal__warn { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
@@ -44,3 +45,81 @@
 .axp-terminal__run { display: flex; flex-direction: column; height: 100%; min-height: 0 }
 .axp-terminal__runbar { gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-bottom: var(--fx-border-w) solid var(--fx-border) }
 .axp-terminal__runterm { flex: 1; min-height: 0; padding: calc(var(--fx-space) * 0.5) }
+
+/* ---- Windows Terminal-style host (TerminalHost.tsx, Oct 28 2026). Layout + tokens only: the tabs, buttons and menu
+   items are the framework's controls (fx-tab, fx-iconbtn, fx-btn, fx-menu__item), placed the Windows way. ---- */
+.axp-terminal[hidden] { display: none }
+.axp-wt { position: relative; display: flex; flex-direction: column; height: 100%; min-height: calc(var(--fx-row-h) * 8); font-family: var(--fx-font); color: var(--fx-text);
+  /* Mica: the window behind shows through a little, blurred */
+  background: var(--fx-surface3) }
+.axp-wt--mica { background: color-mix(in srgb, var(--fx-surface3) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur)) saturate(1.4) }
+/* App look (windowsLook off): plain framework tabs on a bar, no Windows shapes */
+.axp-wt--plain .axp-wt__strip { padding: 0; align-items: center; border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.axp-wt--plain .axp-wt__tab { border-radius: 0 }
+.axp-wt--tabs-compact .axp-wt__tab { flex: 0 1 calc(var(--fx-space) * 18); min-width: calc(var(--fx-space) * 9) }
+.axp-wt--tabs-title .axp-wt__tab { flex: 0 0 auto; min-width: 0 }
+.axp-wt__strip { display: flex; align-items: flex-end; gap: calc(var(--fx-space) * 0.125); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.5) 0; min-width: 0; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity }
+.axp-wt__strip::-webkit-scrollbar { display: none }
+.axp-wt__tab { position: relative; flex: 0 1 calc(var(--fx-space) * 30); min-width: calc(var(--fx-space) * 12); scroll-snap-align: start; gap: calc(var(--fx-space) * 0.5);
+  padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md) var(--fx-radius-md) 0 0; box-shadow: none; user-select: none }
+.axp-wt__tab:hover { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-hover) * 100%), transparent) }
+.axp-wt__tab.is-active { background: var(--fx-surface); color: var(--fx-text) }
+.axp-wt__tab[data-tint]::before { content: ''; position: absolute; left: var(--fx-radius-md); right: var(--fx-radius-md); top: 0; height: calc(var(--fx-border-w) * 3); border-radius: 0 0 999px 999px; background: var(--axp-wt-tint) }
+.axp-wt__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left }
+.axp-wt__rename { width: 100%; padding: 0 calc(var(--fx-space) * 0.25); font-size: inherit }
+.axp-wt__close { flex: none; width: calc(var(--fx-space) * 2.5); height: calc(var(--fx-space) * 2.5); opacity: 0 }
+.axp-wt__tab:hover .axp-wt__close, .axp-wt__tab.is-active .axp-wt__close, .axp-wt__tab:focus-within .axp-wt__close { opacity: 1 }
+@media (pointer: coarse) { .axp-wt__close { opacity: 1 } }
+.axp-wt__dot { flex: none; width: calc(var(--fx-space) * 0.5); height: calc(var(--fx-space) * 0.5); border-radius: 999px; background: var(--fx-warning) }
+.axp-wt__dot.is-closed { background: var(--fx-danger) }
+.axp-wt__badge { flex: none; display: inline-flex; color: var(--fx-danger) }
+.axp-wt__new { flex: none; align-self: center; margin-bottom: calc(var(--fx-space) * 0.25) }
+.axp-wt__drag { flex: 1; min-width: calc(var(--fx-space) * 2) }
+/* the strip as the window's title bar (frameless window, s17): empty space drags, caption buttons at the end snap to it
+   and never overlap the tabs (the strip scrolls sideways when full) */
+.axp-wt__strip--titlebar { touch-action: none; user-select: none; cursor: default }
+.axp-wt__strip--titlebar .axp-wt__drag { cursor: move; align-self: stretch }
+.axp-wt__caption { flex: none; display: inline-flex; align-items: center; align-self: flex-start; margin-left: auto; gap: 0; position: sticky; right: 0; background: inherit }
+.axp-wt__cap { width: calc(var(--fx-space) * 5.75); height: calc(var(--fx-space) * 4); border-radius: 0 }
+.axp-wt__cap--close:hover { color: var(--fx-surface); background: var(--fx-danger) }
+.axp-wt--plain .axp-wt__cap { height: auto }
+.axp-wt__toolbar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0; overflow-x: auto; scrollbar-width: none }
+.axp-wt__toolbar > * { flex: none }
+.axp-wt__sep { width: var(--fx-border-w); align-self: stretch; margin: calc(var(--fx-space) * 0.25); background: var(--fx-border) }
+.axp-wt__conn { gap: calc(var(--fx-space) * 0.5); max-width: calc(var(--fx-space) * 32); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-wt__flag { padding: 0 calc(var(--fx-space) * 0.375); border-radius: var(--fx-radius-sm); color: var(--fx-surface); background: var(--fx-danger); font-size: calc(var(--fx-font-size) * 10 / 14); letter-spacing: .04em }
+.axp-wt__body { position: relative; flex: 1; min-height: 0; background: var(--fx-surface) }
+.axp-wt__body > .axp-terminal { position: absolute; inset: 0; min-height: 0 }
+.axp-wt__scrim { position: fixed; inset: 0; z-index: 900 }
+.axp-wt__menu { position: fixed; z-index: 901; display: flex; flex-direction: column; min-width: calc(var(--fx-space) * 26); max-height: 70vh; overflow: auto; padding: calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); box-shadow: var(--fx-shadow-md) }
+.axp-wt__menu .fx-menu__item { gap: calc(var(--fx-space) * 0.75); white-space: nowrap }
+.axp-wt__hint { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-wt__mh { padding: calc(var(--fx-space) * 0.5) var(--fx-space) calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted) }
+.axp-wt__sepline { height: var(--fx-border-w); margin: calc(var(--fx-space) * 0.25) 0; background: var(--fx-border) }
+.axp-wt__colors { display: flex; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
+.axp-wt__swatch { all: unset; box-sizing: border-box; width: calc(var(--fx-space) * 2); height: calc(var(--fx-space) * 2); border-radius: 999px; cursor: pointer; border: var(--fx-border-w) solid var(--fx-border); background: var(--axp-wt-tint, var(--fx-surface)) }
+.axp-wt__swatch.is-on { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+
+/* connection picker + per-tab Connection manager (connections.tsx) */
+.axp-wt-conn { display: flex; flex-direction: column; gap: var(--fx-space); min-width: min(calc(var(--fx-space) * 46), 100%) }
+.axp-wt-conn__list { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); max-height: 50vh; overflow: auto }
+.axp-wt-conn__item { gap: var(--fx-space); text-align: left }
+.axp-wt-conn__text { display: flex; flex-direction: column; flex: 1; min-width: 0 }
+.axp-wt-conn__text > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-wt-conn__now { display: flex; align-items: center; gap: var(--fx-space); padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }
+.axp-wt-conn__now .axp-wt__dot[data-live] { background: var(--fx-success) }
+.axp-wt-conn__facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 18), 1fr)); gap: calc(var(--fx-space) * 0.5) var(--fx-space); margin: 0 }
+.axp-wt-conn__facts > div { min-width: 0 }
+.axp-wt-conn__facts dt { font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted) }
+.axp-wt-conn__facts dd { margin: 0; overflow-wrap: anywhere }
+/* screen padding (Settings → Terminal → Padding, 0–4 steps) and the visual bell */
+.axp-terminal__screen[data-pad='0'] { padding: 0 }
+.axp-terminal__screen[data-pad='2'] { padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
+.axp-terminal__screen[data-pad='3'] { padding: var(--fx-space) calc(var(--fx-space) * 1.5) }
+.axp-terminal__screen[data-pad='4'] { padding: calc(var(--fx-space) * 1.5) calc(var(--fx-space) * 2) }
+.axp-terminal__screen.is-bell { animation: axp-terminal-bell calc(var(--fx-motion) * 1.5) ease-out }
+@keyframes axp-terminal-bell { from { box-shadow: inset 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-warning) } to { box-shadow: inset 0 0 0 0 transparent } }
+.axp-terminal__profile { display: flex; flex-direction: column; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border) }
+.axp-terminal__profile .fx-row { align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
+/* menus portal to <body> (a blurred window is a containing block for fixed children): above every window */
+.axp-wt__menu.fx-popover, .axp-terminal__menu.fx-popover { z-index: 901 }

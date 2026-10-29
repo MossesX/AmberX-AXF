@@ -8,16 +8,51 @@
  * is active, module `asset:settings/<id>`). Anything it doesn't know is dropped, never a crash: an app with no
  * settings asset gets SETTINGS_UI_DEFAULTS, which is the page as it was before the type existed.
  *
+ * Levels (Brett, Oct 28 2026): Simple / Basic / Developer / Administrator. Every tab, group, panel and setting has a
+ * level and shows from it up; Administrator shows everything, always. The older names still load: Pro is read as
+ * Administrator and Advanced as Developer (SETTINGS_LEVEL_MIGRATION), in assets, in group levels and in saved picks.
+ * On top of the rank rule each level has a visible set (`visible`): ids added to that level (`show`) or taken out of
+ * it (`hide`), per interface in the asset, and per user in the saved setting SETTINGS_VISIBLE_KEY (the level editor
+ * writes it), merged with `withSettingsVisible`. Additive field: assets without it are unchanged.
+ *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md); spec/fixtures/settings-ui.json is what it will replay.
  */
 import type { SettingKind, SettingSpec, SettingsGroup, SettingsTab, SettingValue } from '../settings';
-import { LOOK_LEVELS, lookLevelRank, type LookLevel } from './looktokens';
+
+/* ---------------- levels ---------------- */
+
+export type SettingsLevel = 'simple' | 'basic' | 'developer' | 'administrator';
+/** In rank order: an item at a level shows at that level and every level after it. */
+export const SETTINGS_LEVELS: readonly SettingsLevel[] = ['simple', 'basic', 'developer', 'administrator'];
+export const SETTINGS_LEVEL_LABEL: Record<SettingsLevel, string> = { simple: 'Simple', basic: 'Basic', developer: 'Developer', administrator: 'Administrator' };
+export const SETTINGS_LEVEL_HINT: Record<SettingsLevel, string> = {
+  simple: 'A few big choices.',
+  basic: 'The everyday settings.',
+  developer: 'Developer settings: engines, assets, plumbing.',
+  administrator: 'Every setting there is.',
+};
+/** Older level names (Oct 26 2026) → today's (Brett's pick, Oct 28 2026). */
+export const SETTINGS_LEVEL_MIGRATION: Readonly<Record<string, SettingsLevel>> = { pro: 'administrator', advanced: 'developer' };
+/** The level in a value: a current name, an older one migrated, else nothing. Case-insensitive, trimmed. */
+export function settingsLevelOf(v: unknown): SettingsLevel | undefined {
+  if (typeof v !== 'string') return undefined;
+  const k = v.trim().toLowerCase();
+  return SETTINGS_LEVELS.includes(k as SettingsLevel) ? (k as SettingsLevel) : SETTINGS_LEVEL_MIGRATION[k];
+}
+export const settingsLevelRank = (l: SettingsLevel): number => SETTINGS_LEVELS.indexOf(l);
+/** The one level that always shows everything (no visible set of its own). */
+export const SETTINGS_LEVEL_ALL: SettingsLevel = 'administrator';
+
+/** One level's visible set: ids (tab, group, panel or setting key) shown there whatever their level, and ids taken out. */
+export interface SettingsVisibleSet { show: string[]; hide: string[] }
+/** Visible sets by level (never Administrator). */
+export type SettingsVisible = Partial<Record<SettingsLevel, SettingsVisibleSet>>;
 
 export type SettingsLayout = 'tabs-top' | 'tabs-side' | 'list';
 export type SettingsHeader = 'full' | 'compact' | 'none';
 
 export interface SettingsUiTab { id: string; label?: string; icon?: string; order?: number; description?: string; parent?: string; hidden?: boolean }
-export interface SettingsUiGroup { id: string; label: string; icon?: string; tab: string; order?: number; description?: string; settings: SettingSpec[]; level?: LookLevel; collapsible?: boolean; collapsed?: boolean }
+export interface SettingsUiGroup { id: string; label: string; icon?: string; tab: string; order?: number; description?: string; settings: SettingSpec[]; level?: SettingsLevel; collapsible?: boolean; collapsed?: boolean }
 
 export interface SettingsUi {
   layout: SettingsLayout;
@@ -35,13 +70,15 @@ export interface SettingsUi {
   /** id of a toolbar asset drawn at the top of the settings page (its items, and the search field when it has
    *  `showSearch`); left out = no toolbar */
   toolbar?: string;
-  /** Simple / Basic / Pro / Advanced (Oct 26 2026): a level switch on the settings page; every tab, group, panel and
-   *  setting shows from its level up. Off = everything shows, as before. */
+  /** Simple / Basic / Developer / Administrator (Oct 26 2026, renamed Oct 28 2026): a level toolbar on the settings
+   *  page; every tab, group, panel and setting shows from its level up, Administrator shows all. Off = everything shows. */
   levels: boolean;
   /** level of anything `levelOf` doesn't name */
-  defaultLevel: LookLevel;
-  /** tab, group, panel or setting id → its level */
-  levelOf: Record<string, LookLevel>;
+  defaultLevel: SettingsLevel;
+  /** tab, group, panel or setting id → its level (older names migrated) */
+  levelOf: Record<string, SettingsLevel>;
+  /** per-level visible sets on top of the rank rule (the interface's own; a user's saved sets merge over them) */
+  visible: SettingsVisible;
 }
 
 export const SETTINGS_LAYOUTS: readonly SettingsLayout[] = ['tabs-top', 'tabs-side', 'list'];
@@ -50,10 +87,14 @@ export const SETTINGS_HEADERS: readonly SettingsHeader[] = ['full', 'compact', '
 export const ASSET_SETTING_KINDS: readonly SettingKind[] = ['toggle', 'text', 'number', 'slider', 'choice', 'multi_choice', 'color', 'link', 'section'];
 export const SETTINGS_UI_LIMITS = { tabs: 40, hide: 200, groups: 40, settings: 60, options: 50, text: 200, id: 120 } as const;
 
-export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {} };
-/** The level the settings page shows (per browser, like every setting). */
+export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {}, visible: {} };
+/** The level the settings page shows (per browser, like every setting). Older saved names are migrated on read. */
 export const SETTINGS_LEVEL_KEY = 'axf.settings.level';
-const level = (v: unknown): LookLevel | undefined => (LOOK_LEVELS.includes(v as LookLevel) ? (v as LookLevel) : undefined);
+/** The user's own visible sets (JSON of SettingsVisible), merged over the interface's; the level editor writes it. */
+export const SETTINGS_VISIBLE_KEY = 'axf.settings.visible';
+/** Whether the level toolbar is shown on the settings page (default on; hideable from the toolbar's menu). */
+export const SETTINGS_LEVEL_BAR_KEY = 'axf.settings.levelbar';
+const level = settingsLevelOf;
 
 const ID = /^[a-z0-9][a-z0-9._:-]*$/i;
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -152,22 +193,100 @@ export function normalizeSettingsUi(raw: unknown): SettingsUi {
     ...(id(d.toolbar) ? { toolbar: id(d.toolbar)! } : {}),
     levels: bool(d.levels, SETTINGS_UI_DEFAULTS.levels),
     defaultLevel: level(d.defaultLevel) ?? SETTINGS_UI_DEFAULTS.defaultLevel,
-    levelOf: Object.fromEntries(Object.entries(isObj(d.levelOf) ? d.levelOf : {}).filter(([k, v]) => id(k) && level(v)).slice(0, SETTINGS_UI_LIMITS.hide)) as Record<string, LookLevel>,
+    levelOf: Object.fromEntries(Object.entries(isObj(d.levelOf) ? d.levelOf : {}).filter(([k, v]) => id(k) && level(v)).slice(0, SETTINGS_UI_LIMITS.hide).map(([k, v]) => [k, level(v)!])) as Record<string, SettingsLevel>,
+    visible: normalizeSettingsVisible(d.visible),
   };
 }
 
-/** The level of a tab, group, panel or setting: what the asset names, a group's own `level`, else the default. */
-export function settingsItemLevel(ui: SettingsUi, itemId: string, own?: LookLevel): LookLevel {
-  return ui.levelOf[itemId] ?? own ?? ui.defaultLevel;
+/* ---------------- visible sets ---------------- */
+
+const idList = (v: unknown): string[] => uniqueBy((Array.isArray(v) ? v : []).map(id).filter((x): x is string => !!x), (x) => x).slice(0, SETTINGS_UI_LIMITS.hide);
+
+/**
+ * Visible sets from an asset field or a saved setting: an object keyed by level (older names migrated, Administrator
+ * dropped: it shows all), each `{ show, hide }` of ids (a bare list = show). A JSON string is parsed first (settings
+ * hold strings). Anything else = no sets. Levels with nothing in them are left out.
+ */
+export function normalizeSettingsVisible(raw: unknown): SettingsVisible {
+  let v = raw;
+  if (typeof v === 'string') { try { v = JSON.parse(v); } catch { return {}; } }
+  if (!isObj(v)) return {};
+  const out: SettingsVisible = {};
+  for (const [k, set] of Object.entries(v)) {
+    const lv = level(k);
+    if (!lv || lv === SETTINGS_LEVEL_ALL) continue;
+    const show = Array.isArray(set) ? idList(set) : isObj(set) ? idList(set.show) : [];
+    const hide = isObj(set) ? idList(set.hide).filter((x) => !show.includes(x)) : [];
+    if (!show.length && !hide.length) continue;
+    const prev = out[lv];
+    out[lv] = prev ? { show: uniqueBy([...prev.show, ...show], (x) => x), hide: uniqueBy([...prev.hide, ...hide], (x) => x).filter((x) => !show.includes(x)) } : { show, hide };
+  }
+  return out;
 }
 
-/** Is this item shown at the picked level? (always, when the interface has no levels) */
-export function shownAtLevel(ui: SettingsUi, itemId: string, at: LookLevel, own?: LookLevel): boolean {
-  return !ui.levels || lookLevelRank(settingsItemLevel(ui, itemId, own)) <= lookLevelRank(at);
+/** `over` on top of `base`, per level: what `over` shows is shown, what it hides is hidden, the rest stays as `base` has it. */
+export function mergeSettingsVisible(base: SettingsVisible, over: SettingsVisible): SettingsVisible {
+  const out: SettingsVisible = {};
+  for (const lv of SETTINGS_LEVELS) {
+    const b = base[lv], o = over[lv];
+    if (!b && !o) continue;
+    const show = uniqueBy([...(b?.show ?? []).filter((x) => !o?.hide.includes(x)), ...(o?.show ?? [])], (x) => x);
+    const hide = uniqueBy([...(b?.hide ?? []).filter((x) => !o?.show.includes(x)), ...(o?.hide ?? [])], (x) => x);
+    if (show.length || hide.length) out[lv] = { show, hide };
+  }
+  return out;
 }
 
-/** The picked level, checked (falls back to the interface's default level). */
-export function settingsLevel(ui: SettingsUi, stored: unknown): LookLevel {
+/** The interface with the user's saved visible sets (SETTINGS_VISIBLE_KEY) merged over its own. */
+export function withSettingsVisible(ui: SettingsUi, stored: unknown): SettingsUi {
+  const over = normalizeSettingsVisible(stored);
+  return Object.keys(over).length ? { ...ui, visible: mergeSettingsVisible(ui.visible, over) } : ui;
+}
+
+/**
+ * The level editor's one move: make `ids` visible (or not) at `level`, written as the smallest change to the user's
+ * saved sets (`stored`) given the interface they sit on (`base`, the asset's own sets + ranks): an id the rank rule
+ * already shows is only ever listed under `hide`; one it doesn't, only under `show`. Returns the sets to save.
+ */
+export function setSettingsVisible(base: SettingsUi, stored: unknown, at: SettingsLevel, ids: readonly string[], visible: boolean, levelOfId: (id: string) => SettingsLevel = (i) => settingsItemLevel(base, i)): SettingsVisible {
+  const saved = normalizeSettingsVisible(stored);
+  if (at === SETTINGS_LEVEL_ALL) return saved;
+  const cur = saved[at] ?? { show: [], hide: [] };
+  let show = [...cur.show], hide = [...cur.hide];
+  for (const i of ids) {
+    if (!id(i)) continue;
+    const byRank = settingsLevelRank(levelOfId(i)) <= settingsLevelRank(at);
+    const own = base.visible[at];
+    const byAsset = own?.hide.includes(i) ? false : own?.show.includes(i) ? true : byRank;
+    show = show.filter((x) => x !== i); hide = hide.filter((x) => x !== i);
+    if (visible && !byAsset) show.push(i);
+    if (!visible && byAsset) hide.push(i);
+  }
+  const next = { ...saved };
+  if (show.length || hide.length) next[at] = { show, hide }; else delete next[at];
+  return next;
+}
+
+/** The level of a tab, group, panel or setting: what the asset names, a group's own `level` (older names migrated), else the default. */
+export function settingsItemLevel(ui: SettingsUi, itemId: string, own?: string): SettingsLevel {
+  return ui.levelOf[itemId] ?? level(own) ?? ui.defaultLevel;
+}
+
+/** The visible set's word on an item at a level: true (shown), false (taken out) or nothing (the rank rule decides). */
+export function settingsVisibleAt(ui: SettingsUi, itemId: string, at: SettingsLevel): boolean | undefined {
+  const v = ui.visible[at];
+  return v?.hide.includes(itemId) ? false : v?.show.includes(itemId) ? true : undefined;
+}
+
+/** Is this item shown at the picked level? Always when the interface has no levels, always at Administrator, else the
+ *  level's visible set, else from its level up. */
+export function shownAtLevel(ui: SettingsUi, itemId: string, at: SettingsLevel, own?: string): boolean {
+  if (!ui.levels || at === SETTINGS_LEVEL_ALL) return true;
+  return settingsVisibleAt(ui, itemId, at) ?? settingsLevelRank(settingsItemLevel(ui, itemId, own)) <= settingsLevelRank(at);
+}
+
+/** The picked level, checked (older names migrated; falls back to the interface's default level). */
+export function settingsLevel(ui: SettingsUi, stored: unknown): SettingsLevel {
   return level(stored) ?? ui.defaultLevel;
 }
 
@@ -224,13 +343,34 @@ export function arrangeSettingsTabs(tabs: readonly SettingsTab[], ui: SettingsUi
     .map((x, i) => ({ ...x.t, order: i + 1 }));
 }
 
-/** A group with the asset's hidden setting keys taken out (null when nothing is left, or the group itself is hidden). */
-export function filterSettingsGroup(group: SettingsGroup, ui: SettingsUi, at?: LookLevel): SettingsGroup | null {
-  if (!settingsShown(ui, group.id)) return null;
-  const own = (group as SettingsGroup & { level?: LookLevel }).level;
-  if (at && !shownAtLevel(ui, group.id, at, own)) return null;
-  const settings = group.settings.filter((s) => settingsShown(ui, s.key) && (!at || !ui.levelOf[s.key] || shownAtLevel(ui, s.key, at)));
-  return settings.length ? (settings.length === group.settings.length ? group : { ...group, settings }) : null;
+/** Is a setting inside a group shown at the level? Its own word (visible set, then a level named for it) wins; a setting
+ *  with neither follows its group. */
+export function settingShownAtLevel(ui: SettingsUi, key: string, at: SettingsLevel, groupShown: boolean): boolean {
+  if (!ui.levels || at === SETTINGS_LEVEL_ALL) return true;
+  const v = settingsVisibleAt(ui, key, at);
+  if (v !== undefined) return v;
+  return ui.levelOf[key] ? shownAtLevel(ui, key, at) : groupShown;
+}
+
+/**
+ * A group split by the asset and the level: `shown` = what the page shows (the asset's hidden keys out; at a level,
+ * what that level has), `rest` = the settings the level leaves out (shown greyed in "More settings"). Either is null
+ * when empty. Without a level, `rest` is always null.
+ */
+export function splitSettingsGroup(group: SettingsGroup, ui: SettingsUi, at?: SettingsLevel): { shown: SettingsGroup | null; rest: SettingsGroup | null } {
+  if (!settingsShown(ui, group.id)) return { shown: null, rest: null };
+  const kept = group.settings.filter((s) => settingsShown(ui, s.key));
+  const pack = (list: SettingSpec[]): SettingsGroup | null => (list.length ? (list.length === group.settings.length ? group : { ...group, settings: list }) : null);
+  if (!at) return { shown: pack(kept), rest: null };
+  const own = (group as SettingsGroup & { level?: string }).level;
+  const groupShown = shownAtLevel(ui, group.id, at, own);
+  const shown = kept.filter((s) => settingShownAtLevel(ui, s.key, at, groupShown));
+  return { shown: pack(shown), rest: pack(kept.filter((s) => !shown.includes(s))) };
+}
+
+/** A group with the asset's hidden setting keys taken out, and at a level only what that level shows (null when nothing is left). */
+export function filterSettingsGroup(group: SettingsGroup, ui: SettingsUi, at?: SettingsLevel): SettingsGroup | null {
+  return splitSettingsGroup(group, ui, at).shown;
 }
 
 /** The asset's own option groups as settings groups for the registry, owned by `asset:settings/<id>`. */
