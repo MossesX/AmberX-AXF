@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
 import { call, getStatus, onStatus, planChanged, post, refreshStatus, rememberFeatures, type BuildPlan, type Draft, type DraftResult, type Status } from './api';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const P = 'axp-feature-assist';
 const MODEL_LABEL: Record<string, string> = { fable: 'Fable 5.1', opus: 'Opus 5.5', sonnet: 'Sonnet 5.5' };
@@ -229,7 +230,7 @@ export function StatusPanel() {
   const rt = useRuntime();
   const [log, setLog] = useState<{ at: number; op: string; feature?: string; title?: string; model?: string; saved?: string[]; pending?: string[]; status?: string }[]>([]);
   useEffect(() => { void refreshStatus(); void call<{ items: typeof log }>('builds?limit=60').then((r) => setLog(r.items), () => undefined); }, []);
-  if (!s) return <p className="fx-muted">Loading…</p>;
+  if (!s) return <LoadingSkeleton />;
   const item = (ok: boolean, label: string, hint: string) => <li><Icon name={ok ? 'check-circle' : 'alert'} size={14} /> <strong>{label}</strong> <span className="fx-small fx-muted">{ok ? 'ready' : hint}</span></li>;
   return (
     <div className="fx-stack">

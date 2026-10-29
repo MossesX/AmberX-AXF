@@ -38,7 +38,7 @@ export const plugin: AxfWebLibrary = {
       keywords: ['context menu', 'right-click', 'chunk', 'menu designer'],
       render: () => (
         <div className="fx-stack fx-stack--lg">
-          <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin</p><h1>Context menu designer</h1></div></header>
+          <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Context menu designer</h1><p className="fx-muted">Design right-click menus from reusable chunks, preview them live, and save them as context-menu assets.</p></div></header>
           <Designer />
         </div>
       ),

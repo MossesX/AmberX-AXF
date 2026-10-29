@@ -47,6 +47,7 @@ export const plugin: AxfWebLibrary = {
     // The Install view (plugin catalog on axHub) in one step, for the app menu and search.
     rt.actions.register('plugin-manager.install', () => { rt.settings.set(KEYS.view, 'install'); rt.navigate('plugin-manager'); }, { label: 'Install plugins from the catalog' });
   },
+  // design-ok: no page head — every Plugin Manager layout (Studio, Mission control, Terminal, Catalog) draws its own eyebrow + title
   views: {
     'plugin-manager': { title: 'Plugin Manager', icon: 'package', keywords: ['plugins', 'extensions', 'dependencies', 'enable', 'disable', 'uninstall'], render: () => <PluginManager /> },
   },
