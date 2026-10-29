@@ -33,6 +33,8 @@ export interface VoiceConfig {
   mode: HandsFreeMode;
   /** how easily the wake listener triggers */
   sensitivity: Sensitivity;
+  /** wake mode: let the recognizer's tone play when a trigger starts it (default off: muted around the one utterance) */
+  triggerTone: boolean;
 }
 
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
@@ -60,7 +62,7 @@ export function overlayColors(tokens: Partial<Record<keyof OverlayColors, unknow
   return out;
 }
 
-export interface VoiceSettings { handsFree: unknown; alwaysArmed: unknown; overlay: unknown; wake: string[]; lang: unknown; beep?: unknown; online?: unknown; swears?: unknown; mode?: unknown; sensitivity?: unknown }
+export interface VoiceSettings { handsFree: unknown; alwaysArmed: unknown; overlay: unknown; wake: string[]; lang: unknown; beep?: unknown; online?: unknown; swears?: unknown; mode?: unknown; sensitivity?: unknown; triggerTone?: unknown }
 
 /** Defaults: hands-free on, always armed off, overlay on. Always armed with no wake phrase still listens. */
 export function voiceConfig(s: VoiceSettings, colors: OverlayColors = {}): VoiceConfig {
@@ -76,6 +78,7 @@ export function voiceConfig(s: VoiceSettings, colors: OverlayColors = {}): Voice
     swears: s.swears !== false,
     mode: handsFreeMode(s.mode),
     sensitivity: sensitivity(s.sensitivity),
+    triggerTone: s.triggerTone === true,
   };
 }
 

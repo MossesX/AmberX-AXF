@@ -81,6 +81,10 @@ public class WatchService extends Service {
     private WakeListener wake;
     /** What the wake engine is doing: wake | armed | listening | loading | downloading | no-model | paused | "" (classic). */
     private String phase = "", phaseDetail = "";
+    /** After a trigger: Google's recognizer for one utterance (wake mode). */
+    private SpeechRecognizer oneShotRec;
+    private boolean oneShot;
+    private int oneShotGen;
 
     static JSONObject idle() {
         JSONObject o = new JSONObject();
@@ -352,6 +356,7 @@ public class WatchService extends Service {
     private void wakeLoop() {
         // Leaving classic mode: its recognizer goes, and the streams it muted come back.
         if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; SpeechTuning.loud(this); }
+        if (oneShot) { if (appListening) cancelOneShot(); else return; } // the one utterance has the mic
         if (appListening) { // the Speak button has the mic
             if (wake != null) wake.stop();
             setPhase("paused", "");
@@ -384,11 +389,99 @@ public class WatchService extends Service {
         @Override public void trigger(String phrase, String text) { triggered(phrase, text); }
     }
 
-    /** A wake phrase (or, always armed, a whole sentence) from the wake listener. */
+    /**
+     * A wake phrase (or, always armed, a whole sentence) from the wake listener. Always armed: the sentence is the
+     * command, unless it was only the wake phrase. Otherwise Google hears the command, once.
+     */
     private void triggered(String phrase, String text) {
-        if (!text.isEmpty()) { woke(phrase, text); return; } // always armed: the sentence is the command
-        woke(phrase, phrase);
+        boolean onlyWake = !phrase.isEmpty() && SpeechTuning.loosen(SpeechTuning.compact(text)).equals(SpeechTuning.loosen(SpeechTuning.compact(phrase)));
+        if (!text.isEmpty() && !onlyWake) { woke(phrase, text); return; }
+        oneShot(phrase);
+    }
+
+    /**
+     * ONE utterance on Google's recognizer after a trigger (partial results on, SpeechTuning's request), its start/stop
+     * tones muted unless "Play tone on trigger" is on; the text goes to the same pipeline as the Speak button (the web
+     * side's `wake` event, or the app opened with it), then back to silent Vosk idle.
+     */
+    private void oneShot(String phrase) {
+        if (oneShot) return;
+        if (wake != null) wake.stop();
+        if (!SpeechRecognizer.isRecognitionAvailable(this)) { woke(phrase, phrase); main.postDelayed(this::listenLoop, 500); return; }
+        oneShot = true;
+        final int gen = ++oneShotGen;
+        setPhase("listening", "");
+        if (overlay != null) { overlay.flashWake(); overlay.setHeard("", false); }
+        JSONObject v = voice(this);
+        final boolean muted = !v.optBoolean("triggerTone", false);
+        if (muted) SpeechTuning.quietTrigger(this, v);
+        boolean offline = !v.optBoolean("online", true);
+        SpeechRecognizer rec = offline && Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
+            ? SpeechRecognizer.createOnDeviceSpeechRecognizer(this) : SpeechRecognizer.createSpeechRecognizer(this);
+        oneShotRec = rec;
+        rec.setRecognitionListener(new OneShot(gen, phrase, muted, v));
+        Intent i = SpeechTuning.request(lang(), v, false);
+        // The wake listener lets go of the microphone within one 100 ms read.
+        main.postDelayed(() -> {
+            if (gen != oneShotGen || !oneShot) return;
+            try { rec.startListening(i); } catch (Exception e) { endOneShot(gen, phrase, "", muted); }
+        }, 150);
+        // Never stuck listening: 15 s and it's over.
+        main.postDelayed(() -> { if (gen == oneShotGen && oneShot) endOneShot(gen, phrase, "", muted); }, 15_000);
+    }
+
+    private class OneShot implements RecognitionListener {
+        private final int gen;
+        private final String phrase;
+        private final boolean muted;
+        private final JSONObject v;
+        OneShot(int gen, String phrase, boolean muted, JSONObject v) { this.gen = gen; this.phrase = phrase; this.muted = muted; this.v = v; }
+        private String top(Bundle b) {
+            ArrayList<String> r = b == null ? null : b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            return r == null || r.isEmpty() ? "" : SpeechTuning.clean(r.get(0), v);
+        }
+        @Override public void onPartialResults(Bundle b) {
+            String t = top(b);
+            if (t.isEmpty() || gen != oneShotGen) return;
+            if (overlay != null) overlay.setHeard(t, false);
+            AmberxNativePlugin.heard(t, false);
+        }
+        @Override public void onResults(Bundle b) { endOneShot(gen, phrase, top(b), muted); }
+        @Override public void onError(int error) { endOneShot(gen, phrase, "", muted); }
+        @Override public void onRmsChanged(float db) {
+            if (overlay != null) overlay.pushLevel(db);
+            long now = System.currentTimeMillis();
+            if (now - lastLevelEvent >= 100) { lastLevelEvent = now; AmberxNativePlugin.level(db); }
+        }
+        @Override public void onReadyForSpeech(Bundle b) {}
+        @Override public void onBeginningOfSpeech() {}
+        @Override public void onBufferReceived(byte[] b) {}
+        @Override public void onEndOfSpeech() {}
+        @Override public void onEvent(int t, Bundle b) {}
+    }
+
+    /** The utterance is over: the command goes on (nothing heard = back to idle quietly), tones back, Vosk idle again. */
+    private void endOneShot(int gen, String phrase, String text, boolean muted) {
+        if (gen != oneShotGen || !oneShot) return;
+        oneShot = false;
+        oneShotGen++;
+        SpeechRecognizer rec = oneShotRec;
+        oneShotRec = null;
+        if (rec != null) { try { rec.destroy(); } catch (Exception ignored) {} }
+        // The stop tone plays just after the result: restore a moment later, unless another utterance started.
+        if (muted) main.postDelayed(() -> { if (!oneShot) SpeechTuning.loud(this); }, 600);
+        String t = text.trim();
+        if (overlay != null) overlay.setHeard(t.isEmpty() ? "Didn't catch a command" : t, true);
+        AmberxNativePlugin.heard(t, true);
+        if (!t.isEmpty()) woke(phrase, phrase.isEmpty() ? t : phrase + " " + t);
         main.postDelayed(this::listenLoop, 300);
+    }
+
+    private void cancelOneShot() {
+        if (!oneShot) return;
+        SpeechRecognizer rec = oneShotRec;
+        if (rec != null) { try { rec.cancel(); } catch (Exception ignored) {} }
+        endOneShot(oneShotGen, "", "", true);
     }
 
     private void setPhase(String p, String detail) {
@@ -430,7 +523,7 @@ public class WatchService extends Service {
     private void soundThrough() {
         main.post(() -> SpeechTuning.loud(this));
         // Wake mode keeps nothing muted while idle: only the classic loop silences again.
-        main.postDelayed(() -> { if (listening && !wakeMode(this)) SpeechTuning.quiet(this, voice(this)); }, 4_000);
+        main.postDelayed(() -> { if (listening && (!wakeMode(this) || oneShot)) SpeechTuning.quiet(this, voice(this)); }, 4_000);
     }
 
     /** Settings changed: the next turn uses them (a new recognizer for online / offline). */
@@ -444,6 +537,7 @@ public class WatchService extends Service {
     }
 
     private void stopListening() {
+        cancelOneShot();
         if (wake != null) wake.stop();
         if (!phase.isEmpty()) setPhase("stopped", "");
         SpeechTuning.loud(this);
@@ -504,7 +598,8 @@ public class WatchService extends Service {
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .putExtra(MainActivity.EXTRA_WAKE, phrase).putExtra(MainActivity.EXTRA_WAKE_TEXT, text);
         PendingIntent pi = PendingIntent.getActivity(this, 2, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        String what = phrase.isEmpty() ? "Heard \"" + text + "\". Tap to run it." : "Heard \"" + phrase + "\". Tap to talk.";
+        boolean command = phrase.isEmpty() || !SpeechTuning.compact(text).equals(SpeechTuning.compact(phrase));
+        String what = command ? "Heard \"" + text + "\". Tap to run it." : "Heard \"" + phrase + "\". Tap to talk.";
         Notification n = new NotificationCompat.Builder(this, CH_WAKE)
             .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX is listening").setContentText(what)
             .setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_CALL)

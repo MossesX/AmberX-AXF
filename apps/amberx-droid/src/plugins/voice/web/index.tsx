@@ -45,6 +45,8 @@ export const K = {
   mode: 'amberx.voice.mode',
   /** wake listener: 'low' | 'normal' | 'high' */
   sensitivity: 'amberx.voice.sensitivity',
+  /** wake mode: let the recognizer's tone play when a wake phrase starts it (off = muted around the one utterance) */
+  triggerTone: 'amberx.voice.triggerTone',
 } as const;
 
 const ID = 'ai.amberx.amberx.voice';
@@ -203,7 +205,8 @@ export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
 /** With hands-free listening, Speak never opens a second recognizer (that would pause hands-free): the next thing heard
  * is the command. Without it, one native utterance as before. */
 async function nextCommand(rt: AxfRuntime): Promise<string> {
-  if (listens(configOf(rt)) && state.status?.listening) {
+  // Silent wake mode: the idle listener only knows the wake phrases, so one Google utterance (it pauses the idle one).
+  if (listens(configOf(rt)) && state.status?.listening && state.status.engine !== 'wake') {
     return new Promise((resolve) => {
       const timer = setTimeout(() => { nextHeard = null; resolve(''); }, ASK_MS);
       nextHeard = (text) => { clearTimeout(timer); nextHeard = null; resolve(text); };
@@ -240,7 +243,7 @@ export function configOf(rt: AxfRuntime): VoiceConfig {
     handsFree: rt.settings.get(K.handsFree), alwaysArmed: rt.settings.get(K.alwaysArmed), overlay: rt.settings.get(K.overlay),
     wake: phraseList(rt.settings.get(K.wake)), lang: rt.settings.get(K.lang),
     beep: rt.settings.get(K.beep), online: rt.settings.get(K.online), swears: rt.settings.get(K.swears),
-    mode: rt.settings.get(K.mode), sensitivity: rt.settings.get(K.sensitivity),
+    mode: rt.settings.get(K.mode), sensitivity: rt.settings.get(K.sensitivity), triggerTone: rt.settings.get(K.triggerTone),
   }, themeColors());
 }
 
@@ -587,6 +590,7 @@ export const library: AxfWebLibrary = {
         { key: K.handsFree, label: 'Listen hands-free', kind: 'toggle', default: true, description: 'Keep listening for the wake phrase on screen and in the background, without pressing Speak.' },
         { key: K.wake, label: 'Wake phrases', kind: 'text', default: 'hey amberx, okay amberx', description: 'Comma separated. Say one, then the command.' },
         { key: K.mode, label: 'Hands-free mode', kind: 'choice', default: 'wake', options: [{ value: 'wake', label: 'Silent wake (offline, no tone)' }, { value: 'classic', label: 'Classic (Google all the time)' }], description: 'Android. Silent wake listens offline for the wake phrase (like ActiveX, no tone) and only then lets Google hear the command. Classic keeps Google listening the whole time (restarts every few seconds, which can beep).' },
+        { key: K.triggerTone, label: 'Play tone on trigger', kind: 'toggle', default: false, description: 'Silent wake mode: let Android\'s listening tone play when a wake phrase starts the command recognizer. Off = notification and system sounds are muted only while it hears the command, then put back.' },
         { key: K.alwaysArmed, label: 'Always armed', kind: 'toggle', default: false, description: 'Act on everything heard, with no wake phrase. Background talk can trigger commands.' },
         { key: K.overlay, label: 'Detection overlay', kind: 'toggle', default: true, description: 'Android: a floating window with the input level, dB, what was heard and quick settings.' },
         { key: K.beep, label: 'Listening tone', kind: 'choice', default: 'silence', options: [{ value: 'silence', label: 'Silenced' }, { value: 'silence-all', label: 'Silenced (also media)' }, { value: 'on', label: 'Leave it on' }], description: 'Android plays a tone each time it starts listening. Silenced mutes notification and system sounds while hands-free listens (approval alerts still get through). Still hear it? Pick "also media": music is muted too while AmberX listens, and comes back when it speaks.' },

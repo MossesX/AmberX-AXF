@@ -225,7 +225,10 @@ public class AmberxNativePlugin extends Plugin {
                     if (done) return;
                     done = true;
                     WatchService.appMic(false);
-                    if (WatchService.running == null) SpeechTuning.loud(getContext()); // hands-free keeps it quiet
+                    // Classic hands-free keeps it quiet; the silent wake mode mutes only while Google listens.
+                    if (WatchService.running == null || WatchService.wakeMode(getContext())) {
+                        getActivity().getWindow().getDecorView().postDelayed(() -> SpeechTuning.loud(getContext()), 600);
+                    }
                     call.resolve(new JSObject().put("text", text));
                     rec.destroy();
                 }
