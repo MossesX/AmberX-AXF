@@ -4,6 +4,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './project-wizard.css';
 import { appMenu } from './menu';
+import { LoadingSkeleton, EmptyState } from '@console/emptyState';
 
 /** Plugin folder: server routes live at /api/plugins/project-wizard/. */
 const FOLDER = 'project-wizard';
@@ -505,7 +506,7 @@ function KitPanel({ st, project, files: initial, onChange }: { st: Status; proje
 function Projects({ st, reload }: { st: Status; reload: () => void }) {
   const rt = useRuntime();
   const [open, setOpen] = useState<string | null>(null);
-  if (!st.projects.length) return <p className="fx-muted" style={{ margin: 0 }}>None yet. Projects you make here are listed with their homes and Claude.ai kit.</p>;
+  if (!st.projects.length) return <EmptyState icon="folder" compact>No projects yet — the ones you make here are listed with their homes and Claude.ai kit.</EmptyState>;
   const forget = async (name: string) => {
     try { await post('forget', { name }); rt.toast('Removed from the list (nothing was deleted)', 'success'); reload(); } catch (e) { rt.toast((e as Error).message, 'danger'); }
   };
@@ -539,7 +540,7 @@ function Projects({ st, reload }: { st: Status; reload: () => void }) {
 function SettingsPanel() {
   const { st, err, reload } = useStatus();
   if (err) return <p className={`${P}__error`}>{err}</p>;
-  if (!st) return <p className="fx-muted">Loading…</p>;
+  if (!st) return <LoadingSkeleton />;
   const row = (k: string, v: ReactNode, ok: boolean) => <tr><th>{k}</th><td>{v}</td><td>{ok ? <Chip tone="success">ok</Chip> : <Chip tone="warning">off</Chip>}</td></tr>;
   return (
     <div className="fx-stack">

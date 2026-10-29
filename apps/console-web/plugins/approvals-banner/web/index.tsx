@@ -18,12 +18,18 @@
  * AXHUB_APPROVALS_FRAME_ANCESTORS). Approve/Reject run on the hub's page with its Origin + CSRF checks, so the console
  * still never approves anything itself. When the request is decided the dialog closes. "Open new approvals by
  * themselves" can be switched off in its settings (per browser).
+ *
+ * Held commands (veto@1, Brett Oct 28 2026): a command Claude sends through Vinnie is held by the hub for 3 minutes and
+ * then run, unless Brett denies it. The feed lists those with `status: "held"`; lib-hub's `veto.ts` splits them off. Held
+ * entries show a live countdown and **Deny** (no Approve/Review): Deny opens the call's approval page (the hub only takes
+ * a Deny under its own Origin, so the console never sends it). They open by themselves like new requests.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import { HUB_DEFAULT, approvalUrl, fetchHubFeed, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
+import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
+import { fetchVetoFeed, formatCountdown, secondsLeftNow, VETO_WARNING_SECONDS, type VetoCall } from '@console/axf/libs/hub/veto';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
@@ -41,7 +47,7 @@ export const autoOpenOn = () => load(AUTO_KEY) !== 'off';
 const opened = new Set<string>((load(OPENED_KEY) ?? '').split(',').filter(Boolean));
 let reviewing: string | null = null;
 /** Open each new request once, in the console, unless switched off or one is already on screen. */
-function autoOpen(pending: Pending[]) {
+function autoOpen(pending: { id: string }[]) {
   if (!runtime || !autoOpenOn() || reviewing) return;
   const next = pending.find((p) => !opened.has(p.id));
   if (!next) return;
@@ -54,13 +60,13 @@ const DEFAULT_HUB = HUB_DEFAULT;
 
 type Pending = HubApproval;
 type Status = 'idle' | HubFeedStatus;
-interface State { status: Status; hub: string; count: number; pending: Pending[]; approvalsUrl: string; checkedAt: string | null; hiddenIds: string; error: string }
+interface State { status: Status; hub: string; count: number; pending: Pending[]; held: VetoCall[]; approvalsUrl: string; checkedAt: string | null; hiddenIds: string; error: string }
 
 /* ---------------- a tiny store shared by the banner and the settings panel ---------------- */
 
-let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
+let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], held: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
-const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count : 0); subs.forEach((f) => f()); };
+const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); subs.forEach((f) => f()); };
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 /** The hub's address, from the console's own account endpoint (AXF_WALL_HUB on the server); https only. */
@@ -80,11 +86,14 @@ export async function checkNow(): Promise<void> {
   inflight = true;
   try {
     const hub = st.status === 'idle' ? await hubUrl() : st.hub;
-    // lib-hub: the browser's own hub session (credentials included), redirects refused, reply capped, links checked.
-    const feed = await fetchHubFeed(hub);
-    const pending = feed.status === 'ok' ? feed.pending : [];
-    set({ hub, status: feed.status, count: feed.count, pending, approvalsUrl: feed.approvalsUrl, checkedAt: new Date().toISOString(), error: feed.error });
-    autoOpen(pending);
+    // lib-hub: the browser's own hub session (credentials included), redirects refused, reply capped, links checked;
+    // veto.ts splits held commands (countdown + Deny) off the calls waiting for an approval.
+    const { feed, held: heldNow } = await fetchVetoFeed(hub);
+    const ok = feed.status === 'ok';
+    const pending = ok ? feed.pending : [];
+    const held = ok ? heldNow : [];
+    set({ hub, status: feed.status, count: feed.count, pending, held, approvalsUrl: feed.approvalsUrl, checkedAt: new Date().toISOString(), error: feed.error });
+    autoOpen([...held, ...pending]);
   } finally {
     inflight = false;
   }
@@ -115,17 +124,49 @@ const shortSummary = (p: Pending) => {
 
 /* ---------------- the banner ---------------- */
 
+/** Re-renders every second while a held command counts down (the countdown runs on this browser's clock). */
+function useTick(on: boolean) {
+  const [, setN] = useState(0);
+  useEffect(() => { if (!on) return; const t = setInterval(() => setN((n) => n + 1), 1_000); return () => clearInterval(t); }, [on]);
+}
+
+/** One held command: title, command, live countdown, Deny (opens its page on the hub, where Deny runs). No Approve. */
+function HeldRow({ c }: { c: VetoCall }) {
+  const left = secondsLeftNow(c);
+  const urgent = left <= VETO_WARNING_SECONDS;
+  return (
+    <div className="axp-approvals-banner__row axp-approvals-banner__held">
+      <BannerIcon icon="clock" working={left > 0} size={20} />
+      <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${c.title}\n${c.command}`} onClick={() => openReview(c.id)}>
+        {left > 0 ? 'Runs in' : 'Running'}
+        <span className={`axp-approvals-banner__count${urgent ? ' is-urgent' : ''}`} role="timer">{left > 0 ? formatCountdown(left) : '0:00'}</span>
+        <span className="axp-approvals-banner__sum">{c.title}{c.command ? `: ${c.command}` : ''}</span>
+      </button>
+      {left > 0 && <Button tone="danger" icon="x-circle" onClick={() => openReview(c.id)}>Deny</Button>}
+    </div>
+  );
+}
+
 function ApprovalsBanner() {
   const s = useApprovals();
   const [open, setOpen] = useBannerLaunchOpen(); // launches expanded unless its Banner settings say minimized
   useEffect(() => { start(); }, []);
-  if (s.status !== 'ok' || s.count === 0) return null;
-  const ids = s.pending.map((p) => p.id).join(',');
+  useTick(s.held.length > 0);
+  if (s.status !== 'ok' || (s.count === 0 && s.held.length === 0)) return null;
+  const ids = [...s.held, ...s.pending].map((p) => p.id).join(',');
   if (ids && ids === s.hiddenIds) return null;
+  if (s.count === 0) {
+    return (
+      <div className="axp-approvals-banner" role="alert">
+        {s.held.map((c) => <HeldRow key={c.id} c={c} />)}
+      </div>
+    );
+  }
   const first = s.pending[0];
   const review = s.count === 1 && first ? first.url : s.approvalsUrl;
   return (
     <div className="axp-approvals-banner" role="alert">
+      {s.held.map((c) => <HeldRow key={c.id} c={c} />)}
       <div className="axp-approvals-banner__row">
         <BannerIcon icon="shield" working={s.count > 0} size={20} />
         <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -160,7 +201,7 @@ function ApprovalsBanner() {
 function ReviewDialog({ id }: { id: string }) {
   const s = useApprovals();
   const [decided, setDecided] = useState(false);
-  const p = s.pending.find((x) => x.id === id);
+  const p = s.pending.find((x) => x.id === id) ?? s.held.find((x) => x.id === id);
   const url = p?.url ?? approvalUrl(s.hub, id) ?? s.approvalsUrl;
   // Fast checks while it's open; once the request leaves the waiting list it was decided (or expired): close.
   useEffect(() => { const t = setInterval(() => void checkNow(), 2_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
@@ -198,7 +239,7 @@ function StatusPanel() {
   useEffect(() => { start(); }, []);
   const line: Record<Status, string> = {
     idle: 'Checking…',
-    ok: s.count ? `${s.count} waiting.` : 'Nothing is waiting.',
+    ok: `${s.count ? `${s.count} waiting.` : 'Nothing is waiting.'}${s.held.length ? ` ${s.held.length} held (counting down, Deny only).` : ''}`,
     'signed-out': 'This browser isn\'t signed in to axHub, so the banner stays hidden. Sign in on the hub (the console\'s sign-in wall does it) to see approvals here.',
     'not-admin': 'Signed in to axHub, but not as an admin: approvals are for admins only.',
     unreachable: `Couldn't reach axHub${s.error ? ` (${s.error})` : ''}.`,
@@ -220,7 +261,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.2.1',
+  version: '0.3.0',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -228,7 +269,10 @@ export const plugin: AxfWebLibrary = {
       items: async () => {
         await checkNow();
         if (st.status !== 'ok') return [{ id: 'status', label: st.status === 'signed-out' ? 'Sign in to axHub to see approvals' : st.status === 'not-admin' ? 'Approvals are for hub admins' : 'axHub not reachable', icon: 'info', action: 'approvals.open' }];
-        return st.pending.map((x) => ({ id: `approval:${x.id}`, label: `${x.tool}: ${shortSummary(x)}`, icon: 'shield', action: `approvals.review:${x.id}` }));
+        return [
+          ...st.held.map((x) => ({ id: `held:${x.id}`, label: `Held ${formatCountdown(secondsLeftNow(x))}: ${x.title}`, icon: 'clock', action: `approvals.review:${x.id}` })),
+          ...st.pending.map((x) => ({ id: `approval:${x.id}`, label: `${x.tool}: ${shortSummary(x)}`, icon: 'shield', action: `approvals.review:${x.id}` })),
+        ];
       },
     },
   },
@@ -238,7 +282,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.review:<id> — that request on the hub's own page, in the review dialog (menu live list)
-    rt.actions.register('approvals.review', ([id]) => { if (id && st.pending.some((x) => x.id === id)) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
+    rt.actions.register('approvals.review', ([id]) => { if (id && (st.pending.some((x) => x.id === id) || st.held.some((x) => x.id === id))) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
   },
   banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {

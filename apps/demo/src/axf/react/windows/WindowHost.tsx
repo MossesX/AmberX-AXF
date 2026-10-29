@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
-import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner } from '../../core/engines/windows';
-import { effectiveToolbar, forcesToolbar, isFloating, CORNERS } from '../../core/engines/windows';
+import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
+import { useScopeId } from '../components/InterfaceScope';
+import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
+import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -65,9 +67,12 @@ export function TabGroupView({ group }: { group: TabGroup }) {
     window.addEventListener('scroll', report, true);
     return () => { ro.disconnect(); window.removeEventListener('scroll', report, true); wm.groupBounds.delete(group.id); };
   });
+  const brand = useBrandPlace('tab-group');
+  const brandHost = brandHostProps(brand);
   return (
-    <div ref={ref} className="fx-tabgroup" data-fx-ctx-target="tab-group" data-fx-ctx-payload={group.id}>
+    <div ref={ref} className={`fx-tabgroup ${brandHost.className}`.trim()} data-fx-ctx-target="tab-group" data-fx-ctx-payload={group.id} data-fx-tabs={group.tabs.length} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <div className="fx-tabgroup__bar" onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'tab-group', group.id); }}>
+        {brand?.svg && <span className="fx-tabgroup__brand"><BrandMark slot="tab-group" height={16} /></span>}
         {group.tabs.map((t, i) => <TabChip key={t.id} tab={t} group={group} active={i === group.active} onActivate={() => wm.activate(group.id, i)} />)}
         <span className="fx-tabgroup__spacer" />
         <button className="fx-iconbtn" title="Undock to floating window" onClick={() => wm.undock(group.id)}><Icon name="external" /></button>
@@ -114,14 +119,101 @@ export function FloatingWindowsHost() {
   const rt = useRuntime();
   const wm = rt.windows;
   const s = useWindowState();
+  useEffect(() => {
+    const report = () => { wm.viewport = { width: window.innerWidth, height: window.innerHeight }; };
+    report(); window.addEventListener('resize', report);
+    return () => window.removeEventListener('resize', report);
+  }, [wm]);
+  // one host per interface scope: each draws the windows opened in its scope ('' = the app itself)
+  const scope = useScopeId();
+  const own = (w: WindowSpec) => (w.scope ?? '') === scope;
   return (
     <>
-      {s.windows.filter((w) => isFloating(w) && !w.minimized).sort((a, b) => a.z - b.z).map((w) => <FloatingWindow key={w.id} w={w} />)}
-      {CORNERS.map((c) => <MinimizedCorner key={c} corner={c} windows={wm.minimizedAt(c)} />)}
-      {s.windows.filter((w) => w.minimized === 'floating-toolbar').map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
+      {s.windows.filter((w) => isFloating(w) && !w.minimized && own(w)).sort((a, b) => a.z - b.z).map((w) => <FloatingWindow key={w.id} w={w} />)}
+      {CORNERS.map((c) => <MinimizedCorner key={c} corner={c} windows={wm.minimizedAt(c).filter(own)} />)}
+      {s.windows.filter((w) => w.minimized === 'floating-toolbar' && own(w)).map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
+      {s.preview && <SnapPreview preview={s.preview} />}
       {s.drag && <div className="fx-dragghost" style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
     </>
   );
+}
+
+/** The translucent outline shown while a drag arms a half / quarter zone or a split onto another window (s18). Tokens only. */
+function SnapPreview({ preview }: { preview: DragPreview }) {
+  return (
+    <>
+      <div className={`fx-snap-preview fx-snap-preview--${preview.kind}`} style={{ left: preview.rect.x, top: preview.rect.y, width: preview.rect.width, height: preview.rect.height }} aria-hidden>
+        <span className="fx-snap-preview__label">{preview.kind === 'zone' ? preview.zone : `split ${preview.side}`}</span>
+      </div>
+      {preview.kind === 'split' && preview.targetRect && <div className="fx-snap-preview fx-snap-preview--target" style={{ left: preview.targetRect.x, top: preview.targetRect.y, width: preview.targetRect.width, height: preview.targetRect.height }} aria-hidden />}
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* window frame hooks (windows-terminal s17)                           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * What a window's content may drive: move (start a title-bar drag), resize from a handle, minimize, maximize / restore,
+ * close. A `frameless` window draws no host title bar, so its content (the Terminal's tab strip) wires these onto its
+ * own bar. Null outside a floating window.
+ */
+export interface WindowFrameHooks {
+  w: WindowSpec;
+  frame: WindowFrame;
+  maximized: boolean;
+  /** pointer-down on whatever acts as the title bar: starts the move (restores a maximized window under the pointer first); double-tap = maximize / restore */
+  startMove: (e: React.PointerEvent) => void;
+  /** pointer-down on a resize handle */
+  startResize: (e: React.PointerEvent, edge: ResizeEdge) => void;
+  minimize: () => void;
+  toggleMaximize: () => void;
+  close: () => void;
+  canMinimize: boolean;
+}
+const FrameCtx = createContext<WindowFrameHooks | null>(null);
+/** The frame hooks of the floating window this content is in (null when docked in the main shell). */
+export const useWindowFrame = () => useContext(FrameCtx);
+
+/** The 8 resize handles of a window (`frameless` content that draws its own chrome still gets them from the host). */
+export function WindowResizeHandles({ onStart }: { onStart: (e: React.PointerEvent, edge: ResizeEdge) => void }) {
+  return <>{RESIZE_EDGES.map((edge) => <div key={edge} className={`fx-window__edge fx-window__edge--${edge}`} style={{ cursor: resizeCursor(edge) }} onPointerDown={(e) => onStart(e, edge)} aria-hidden />)}</>;
+}
+
+/** Shared pointer plumbing for move + resize (mouse, pen and touch: pointer events with capture, touch-action none in CSS). */
+function useWindowDrag(w: WindowSpec) {
+  const wm = useWindowManager();
+  const lastTap = useRef(0);
+  const startMove = (e: React.PointerEvent) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault(); wm.focus(w.id);
+    // double-tap / double-click on the title bar = maximize / restore (Windows)
+    const now = Date.now();
+    if (now - lastTap.current < 320) { lastTap.current = 0; wm.toggleMaximize(w.id); return; }
+    lastTap.current = now;
+    const lx = e.clientX, ly = e.clientY; let restored = !isMaximized(w);
+    const grab = e.clientY - (e.currentTarget as HTMLElement).getBoundingClientRect().top;
+    // grab offset: where the pointer sits inside the window; the unsnapped position is pointer minus offset, and the
+    // engine snaps from there each step (so a pull never accumulates); s18: screen / window edges, zones, split preview
+    let ox = e.clientX - w.x, oy = e.clientY - w.y;
+    const move = (ev: PointerEvent) => {
+      if (!restored) { if (Math.hypot(ev.clientX - lx, ev.clientY - ly) < 6) return; const r = wm.dragRestore(w.id, ev.clientX, ev.clientY, grab); restored = true; if (r) { ox = ev.clientX - r.x; oy = ev.clientY - r.y; } return; }
+      wm.dragTo(w.id, ev.clientX - ox, ev.clientY - oy, ev.clientX, ev.clientY, Date.now());
+    };
+    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); wm.settle(w.id); };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  };
+  const startResize = (e: React.PointerEvent, edge: ResizeEdge) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault(); e.stopPropagation(); wm.focus(w.id);
+    const cur = wm.state.windows.find((x) => x.id === w.id) ?? w;
+    const start = rectOf(cur); const ox = e.clientX, oy = e.clientY;
+    const move = (ev: PointerEvent) => wm.resizeFrom(w.id, edge, start, ev.clientX - ox, ev.clientY - oy);
+    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); wm.settle(w.id); };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  };
+  return { startMove, startResize };
 }
 
 function FloatingWindow({ w }: { w: WindowSpec }) {
@@ -129,27 +221,37 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
   const wm = rt.windows;
   const s = useWindowState();
   const layout = s.layouts[w.id];
-  const drag = (e: React.PointerEvent, kind: 'move' | 'resize') => {
-    e.preventDefault(); wm.focus(w.id);
-    let lx = e.clientX, ly = e.clientY;
-    const move = (ev: PointerEvent) => { const dx = ev.clientX - lx, dy = ev.clientY - ly; lx = ev.clientX; ly = ev.clientY; if (kind === 'move') wm.move(w.id, dx, dy); else wm.resize(w.id, w.width + (ev.clientX - e.clientX), w.height + (ev.clientY - e.clientY)); };
-    const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
-    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+  const { startMove, startResize } = useWindowDrag(w);
+  const frame = windowFrame(w);
+  const maximized = isMaximized(w);
+  const hooks: WindowFrameHooks = {
+    w, frame, maximized, startMove, startResize, canMinimize: wm.canMinimize,
+    minimize: () => wm.minimizeToNextCorner(w.id), toggleMaximize: () => wm.toggleMaximize(w.id), close: () => wm.close(w.id),
   };
+  // branding@1: floating windows use the `floating-window` slot, every other window the `window` slot
+  const brandSlot = isFloating(w) ? 'floating-window' : 'window';
+  const brand = useBrandPlace(brandSlot, 14);
+  const brandHost = brandHostProps(brand);
   return (
     <WindowCtx.Provider value={w}>
-      <div className={`fx-window fx-window--${w.type} ${s.focused === w.id ? 'is-focused' : ''}`} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: 60 + w.z, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)}>
-        <div className="fx-window__title" onPointerDown={(e) => drag(e, 'move')} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', w.id); }} data-fx-ctx-target="window-title" data-fx-ctx-payload={w.id}>
-          <span className="fx-window__name">{w.title}</span>
-          <span className="fx-window__badge">{w.type}</span>
-          {w.toolbarsAllowed && !forcesToolbar(w) && <label className="fx-window__switch" onPointerDown={(e) => e.stopPropagation()}><input type="checkbox" checked={w.toolbarEnabled} onChange={(e) => wm.setToolbar(w.id, e.target.checked)} /> toolbar</label>}
-          <button className="fx-iconbtn" title="Minimize to corner" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minus" /></button>
-          {w.closable && <button className="fx-iconbtn" title="Close" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.close(w.id)}><Icon name="x" /></button>}
+      <FrameCtx.Provider value={hooks}>
+        <div className={`fx-window fx-window--${w.type} fx-window--${frame} ${maximized ? 'is-maximized' : ''} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: 60 + w.z, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']} data-fx-window={w.id}>
+          {frame === 'standard' && (
+            <div className="fx-window__title" onPointerDown={startMove} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', w.id); }} data-fx-ctx-target="window-title" data-fx-ctx-payload={w.id}>
+              {brand?.svg && <BrandMark slot={brandSlot} height={14} className="fx-window__brand" />}
+              <span className="fx-window__name">{w.title}</span>
+              <span className="fx-window__badge">{w.type}</span>
+              {w.toolbarsAllowed && !forcesToolbar(w) && <label className="fx-window__switch" onPointerDown={(e) => e.stopPropagation()}><input type="checkbox" checked={w.toolbarEnabled} onChange={(e) => wm.setToolbar(w.id, e.target.checked)} /> toolbar</label>}
+              {wm.canMinimize && <button className="fx-iconbtn" title="Minimize to corner" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minimize" /></button>}
+              <button className="fx-iconbtn" title={maximized ? 'Restore' : 'Maximize'} onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.toggleMaximize(w.id)}><Icon name={maximized ? 'restore' : 'maximize'} /></button>
+              {w.closable && <button className="fx-iconbtn" title="Close" onPointerDown={(e) => e.stopPropagation()} onClick={() => wm.close(w.id)}><Icon name="x" /></button>}
+            </div>
+          )}
+          {frame === 'standard' && effectiveToolbar(w) && <WindowToolbar w={w} />}
+          <div className="fx-window__body">{layout ? <PaneView pane={layout} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
+          {!maximized && <WindowResizeHandles onStart={startResize} />}
         </div>
-        {effectiveToolbar(w) && <WindowToolbar w={w} />}
-        <div className="fx-window__body">{layout ? <PaneView pane={layout} /> : <div className="fx-empty">Empty window</div>}</div>
-        <div className="fx-window__resize" onPointerDown={(e) => drag(e, 'resize')} />
-      </div>
+      </FrameCtx.Provider>
     </WindowCtx.Provider>
   );
 }
@@ -162,8 +264,9 @@ export function WindowToolbar({ w }: { w: WindowSpec }) {
     <div className="fx-window__toolbar">
       <button className="fx-iconbtn" title="Window settings" onClick={() => rt.openDialog('window-settings', { arg: w.id })}><Icon name="settings" /></button>
       <button className="fx-iconbtn" title="Redock" onClick={() => wm.redock(w.id)}><Icon name="download" /></button>
-      <button className="fx-iconbtn" title="Minimize to corner title bar (cycles corners)" onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minus" /></button>
-      <button className="fx-iconbtn" title="Minimize to floating toolbar at cursor" onClick={(e) => wm.minimize(w.id, 'floating-toolbar', e.clientX, e.clientY)}><Icon name="external" /></button>
+      <button className="fx-iconbtn" title={isMaximized(w) ? 'Restore' : 'Maximize'} onClick={() => wm.toggleMaximize(w.id)}><Icon name={isMaximized(w) ? 'restore' : 'maximize'} /></button>
+      {wm.canMinimize && <button className="fx-iconbtn" title="Minimize to corner title bar (cycles corners)" onClick={() => wm.minimizeToNextCorner(w.id)}><Icon name="minus" /></button>}
+      {wm.canMinimize && wm.placement.minimize !== 'dock' && <button className="fx-iconbtn" title="Minimize to floating toolbar at cursor" onClick={(e) => wm.minimize(w.id, 'floating-toolbar', e.clientX, e.clientY)}><Icon name="external" /></button>}
       <span className="fx-tabgroup__spacer" />
       <button className={`fx-iconbtn ${w.mode === 'grid' ? 'is-active' : ''}`} title={w.mode === 'grid' ? 'View as tree' : 'View as grid'} onClick={() => wm.setMode(w.id, w.mode === 'grid' ? 'tree' : 'grid')}><Icon name={w.mode === 'grid' ? 'list' : 'grid'} /></button>
     </div>
@@ -231,8 +334,8 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
 
 /** Register these with the shell's dialogs: `{ ...windowDialogs }`. */
 export const windowDialogs = {
-  'split-grid': { title: 'Custom grid', icon: 'grid', render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
-  'window-settings': { title: 'Window settings', icon: 'settings', render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
+  'split-grid': { title: 'Custom grid', icon: 'grid', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
+  'window-settings': { title: 'Window settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
 };
 
 /** Keep the floating host's pointer/escape handling simple: Escape closes the focused floating window. */

@@ -32,6 +32,11 @@ export interface ApprovalItem {
   decidedBy?: string;
   postponed?: { kind: string; waitingFor: string; until?: string; since: string; lastCheck?: string; lastNote?: string; nextReminder?: string; reminders: number };
   history: { at: string; from: string; to: string; by: string; note?: string }[];
+  /** Held commands (veto@1): `status: "held"`, run by the hub when the countdown ends unless denied (no Approve). */
+  veto?: { runsAt: string; secondsLeft: number; countdownSeconds: number };
+  jobId?: string;
+  denyUrl?: string;
+  streamUrl?: string;
 }
 
 export interface AutoState {
@@ -73,5 +78,5 @@ export const EFFECT_LABEL: Record<ApprovalItem['effect'], string> = { destructiv
 export const EFFECT_TONE: Record<ApprovalItem['effect'], 'danger' | 'success' | 'warning'> = { destructive: 'danger', 'read-only': 'success', changes: 'warning' };
 
 export const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
-  pending: 'accent', approved: 'success', consumed: 'success', rejected: 'danger', revoked: 'danger', postponed: 'warning', ignored: undefined, expired: undefined,
+  pending: 'accent', held: 'warning', running: 'accent', ran: 'success', failed: 'danger', denied: undefined, approved: 'success', consumed: 'success', rejected: 'danger', revoked: 'danger', postponed: 'warning', ignored: undefined, expired: undefined,
 };

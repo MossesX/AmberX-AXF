@@ -9,6 +9,7 @@
 import type { AxfRuntime } from '@console/axf/core';
 import { call } from './api';
 import { newTab } from './open';
+import { focusSession, hostOf } from './hosts';
 
 export interface Headless { name: string; createdAt: number }
 interface Answer { ready: boolean; on: boolean; items: Headless[]; why: string; now: number }
@@ -28,21 +29,13 @@ export function toOpen(items: Headless[], seen: Set<string>): Headless[] {
   return items.filter((h) => /^axf-[A-Za-z0-9._-]{1,64}$/.test(h.name) && !seen.has(h.name)).sort((a, b) => a.createdAt - b.createdAt);
 }
 
-/** Bring a tab's window up: restore it if minimized, focus it, raise it, show the tab. */
-export function bringToFront(rt: AxfRuntime, tabId: string) {
-  const wm = rt.windows;
-  const gid = wm.groupOf(tabId);
-  const g = gid ? wm.state.groups[gid] : null;
-  if (!g) return;
-  wm.activate(g.id, g.tabs.findIndex((t) => t.id === tabId));
-  const w = wm.state.windows.find((x) => x.id === g.windowId);
-  if (w?.minimized) wm.restore(w.id); else if (w) wm.focus(w.id);
-}
+/** Bring a session's window up: restore it if minimized, focus it, raise it, show the session. */
+export function bringToFront(rt: AxfRuntime, sid: string) { focusSession(rt, sid); }
 
 /** Open (or bring forward) the attached VPS tab for one headless session. */
 export function openHeadless(rt: AxfRuntime, h: Headless) {
   const known = tabFor.get(h.name);
-  if (known && rt.windows.groupOf(known)) { bringToFront(rt, known); return; }
+  if (known && hostOf(known)) { bringToFront(rt, known); return; }
   const id = newTab(rt, { kind: 'vps', attach: h.name, title: `Claude: ${h.name.slice(4)}` });
   tabFor.set(h.name, id);
   bringToFront(rt, id);

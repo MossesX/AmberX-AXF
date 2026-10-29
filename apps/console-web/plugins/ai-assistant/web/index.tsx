@@ -1,7 +1,7 @@
 import { Button, Container, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { FOLDER, ID, type Ctx } from './api';
+import { APPROVALS_BADGE_KEY, FOLDER, ID, type Ctx } from './api';
 import { ActivityIcon } from './activity';
 import { ChatPanel, type ChatStart, useStatus } from './chat';
 import { BehaviorPanel, PromptsPanel, ProvidersPanel, SessionsPanel, SetupWizard, UsagePanel } from './settings';
@@ -14,6 +14,7 @@ import { appMenu } from './menu';
  * can reuse the same core — see server/__init__.py for the engine.
  *  - view "ai-assistant": full-page chat (nav → Plugins → AI assistant)
  *  - dialog "ai-assistant.chat": the chat dialog, from anywhere (action ai-assistant.open, payload = optional prompt)
+ *  - the chat's title bar carries lib-approvals' badge (axHub approvals + held calls, click to decide; Oct 28 2026)
  *  - Settings → Plugins → AI assistant: setup wizard, providers, behaviour, prompts, usage, install & uninstall
  * Talks to the agent manager only through the server's axf.agents@1 lookup, so either plugin can be removed cleanly.
  */
@@ -22,7 +23,7 @@ function AssistantView() {
   const s = useStatus();
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">AI · assistant</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1><p className="fx-muted">Chat with the framework's assistant or a specialist agent; anything that writes asks you first.</p></div></header>
       <ChatPanel />
     </div>
   );
@@ -40,7 +41,7 @@ function WizardIntro() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'AI assistant',
-  version: '0.2.0',
+  version: '0.2.1',
   appMenu,
   provides: ['axf.ai-assistant', 'axf.llm@1', 'axf.live-sessions@1'],
   register(rt) {
@@ -63,6 +64,11 @@ export const plugin: AxfWebLibrary = {
   },
   nav: { label: 'Plugins', items: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', view: 'ai-assistant' }] },
   settingsTabs: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', order: 30, description: 'Providers, defaults, personality, prompts and usage for the AI assistant. Keys stay on the console server.' }],
+  settings: [
+    { id: 'ai-assistant.titlebar', label: 'Title bar', icon: 'shield', tab: 'ai-assistant', order: 6, settings: [
+      { key: APPROVALS_BADGE_KEY, label: 'Show axHub approvals in the chat title bar', kind: 'toggle', default: true, description: 'A count while axHub has calls waiting (nothing when none). Click it to Approve / Decline on the hub page, or Deny a held command before its countdown ends.' },
+    ] },
+  ],
   settingsPanels: [
     { id: 'ai-assistant.quick', tab: 'ai-assistant', title: 'Open the assistant', icon: 'sparkles', order: 5, render: () => <QuickOpen /> },
     { id: 'ai-assistant.wizard', tab: 'ai-assistant', title: 'Setup wizard', icon: 'rocket', order: 10, render: () => <WizardIntro /> },

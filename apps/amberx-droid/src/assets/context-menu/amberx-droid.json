@@ -3,7 +3,7 @@
   "type": "context-menu",
   "id": "amberx-droid",
   "name": "AmberX",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "AmberX's basic right-click / long-press menu: approvals, search, copy, settings, plugins. Plugins add their own items at runtime.",
   "author": "AmberX AXF",
   "tags": [],
@@ -61,6 +61,12 @@
           "label": "Open",
           "icon": "chevron-right",
           "action": "nav:{payload}"
+        },
+        {
+          "id": "window",
+          "label": "Open in a window",
+          "icon": "external",
+          "action": "amberx.window:{payload}"
         }
       ]
     }

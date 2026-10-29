@@ -2,7 +2,7 @@
   "$axf": "amberx-plugin@1",
   "id": "ai.amberx.amberx.ai",
   "name": "AI connection",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Connects AmberX to an AI through AmberX's own server, which holds the keys and switches providers: Claude plan or Claude API, any mainstream LLM as a fallback, keep-alive, a status badge on the banner, and Ask my notes.",
   "builtWith": { "model": "opus", "builtAt": "2026-10-27" }
 }

@@ -27,6 +27,7 @@ import {
   columnRows, initialPick, installAction, ladderItems, offCounter, pluginsSubmenu, sortCatalog, type LadderPlugin, type PluginRow, type SortKey,
 } from './core';
 import './plugins-menu.css';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const api = pluginApi(FOLDER, 'The Plugins menu plugin');
 const LABEL = 'Plugins';
@@ -109,7 +110,7 @@ async function ladder(rt: AxfRuntime) {
   const list: LadderPlugin[] = rows.map((r) => ({
     folder: r.folder, name: r.name, enabled: r.enabled,
     icon: bundledPlugins.find((p) => p.folder === r.folder)?.library?.settingsTabs?.[0]?.icon,
-    ui: uiAction(r.folder), tab: r.tab,
+    ui: uiAction(r.folder), tab: r.tab, id: bundledPlugins.find((p) => p.folder === r.folder)?.manifest.id,
   }));
   for (const r of rows) rt.setBadge(offCounter(r.folder), r.enabled ? 0 : 1);
   const style = rt.settings.get(K.disableStyle) === 'toggle' ? 'toggle' : 'check';
@@ -225,7 +226,7 @@ function SettingsBrowser({ ask }: { ask?: string }) {
         {!collapsed && (
           <nav className="axp-plugins-menu__col" aria-label="Installed plugins">
             {setting(rt, K.search, true) && <TextField label="Find a plugin" value={q} onChange={setQ} placeholder="Name or folder" />}
-            {!rows && <p className="fx-muted">Loading plugins…</p>}
+            {!rows && <LoadingSkeleton />}
             <ul className="axp-plugins-menu__list">
               {list.map((r) => (
                 <li key={r.folder}>
@@ -435,7 +436,7 @@ function Archives() {
   useEffect(load, [load]);
   const test = async (a: Archive) => { try { setData(await api.post(`archives/${a.id}/test`, {}) as typeof data); } catch (e) { rt.toast(String((e as Error).message), 'danger', LABEL); } };
   const remove = async (a: Archive) => { try { setData(await api.del(`archives/${a.id}`) as typeof data); } catch (e) { rt.toast(String((e as Error).message), 'danger', LABEL); } };
-  if (!data) return error ? <Note tone="danger">{error}</Note> : <p className="fx-muted">Loading archives…</p>;
+  if (!data) return error ? <Note tone="danger">{error}</Note> : <LoadingSkeleton />;
   return (
     <div className="fx-stack">
       <p className="fx-muted" style={{ margin: 0 }}>Places plugins are kept. axHub is the permanent archive and needs its token. Credentials stay on the console server: this page only shows whether one is set.</p>
@@ -514,7 +515,7 @@ function InstallerSettings({ config, onSaved }: { config: Config | null; onSaved
   const rt = useRuntime();
   const [archives, setArchives] = useState<Archive[]>([]);
   useEffect(() => { void api.call('archives').then((r) => setArchives((r as { archives: Archive[] }).archives)).catch(() => undefined); }, []);
-  if (!config) return <p className="fx-muted">Loading…</p>;
+  if (!config) return <LoadingSkeleton />;
   const set = async (patch: Partial<Config>) => {
     try { onSaved(((await api.put('config', patch)) as { config: Config }).config); } catch (e) { rt.toast(String((e as Error).message), 'danger', LABEL); }
   };
@@ -586,7 +587,7 @@ export const plugin: AxfWebLibrary = {
       choice(K.onOpen, 'When it opens, show', 'last', [['last', 'The last plugin picked'], ['first', 'The first plugin'], ['self', "This browser's settings"], ['none', 'Nothing picked']]),
       choice(K.sort, 'Sort the list by', 'name', [['name', 'Name'], ['model', 'Model'], ['enabled', 'On first'], ['built', 'Newest build']]),
     ] },
-    { id: 'plugins-menu.ladder', label: 'Application menu', icon: 'menu', tab: TAB, order: 45, description: 'Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Disable.', settings: [
+    { id: 'plugins-menu.ladder', label: 'Application menu', icon: 'menu', tab: TAB, order: 45, description: 'Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Theme override · Disable.', settings: [
       choice(K.disableStyle, 'The Disable item shows', 'check', [['check', 'A check mark while the plugin is off'], ['toggle', 'Disable / Enable, no check mark']]),
     ] },
   ],

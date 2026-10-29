@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Chip, useRuntime, IconButton, Note, Section, SelectField, Switch, TextField } from '@console/axf/react';
 import { call, del, post, put } from './api';
+import { LoadingSkeleton } from '@console/emptyState';
 
 type Kind = 'vps' | 'git' | 'github';
 export interface VinnyCommand {
@@ -78,7 +79,7 @@ export function VinnyCommandsDialog() {
     return () => window.clearInterval(t);
   }, [busy, load]);
   if (err && !book) return <Note tone="danger">{err}</Note>;
-  if (!book) return <p className="fx-muted">Loading…</p>;
+  if (!book) return <LoadingSkeleton />;
   const setting = async (patch: Partial<VinnySettings>) => {
     setBook({ ...book, settings: { ...book.settings, ...patch } });  // hot: the switch moves at once
     try { await put('vinny/settings', patch); } finally { void load(); }

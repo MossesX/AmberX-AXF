@@ -13,6 +13,7 @@ import { ACTION_LABELS, STATUS_TONE, type ApprovalAction, type ApprovalItem, typ
 import { act } from './Approvals';
 import { HubGate, useHubJson, when } from './hubPage';
 import { CodeSection, WhatItDoes } from './ApprovalParts';
+import { HeldBar, isHeld } from './HeldCall';
 
 export function ApprovalDetail() {
   return <HubGate admin what="approvals">{() => <Detail />}</HubGate>;
@@ -22,11 +23,15 @@ function Detail() {
   const rt = useRuntime();
   const params = useRouteParams('approval');
   const id = params.id ?? '';
-  const res = useHubJson<{ item: ApprovalItem; auto: AutoState }>(id ? `/auth/api/approvals/${id}` : null, 10_000);
+  const [fast, setFast] = useState(false);
+  // A held command counts down: read the hub every 3 s so a Deny elsewhere or the run shows quickly.
+  const res = useHubJson<{ item: ApprovalItem; auto: AutoState }>(id ? `/auth/api/approvals/${id}` : null, fast ? 3_000 : 10_000);
   const [busy, setBusy] = useState(false);
   const [postponing, setPostponing] = useState(params.postpone === '1');
   useEffect(() => setPostponing(params.postpone === '1'), [id, params.postpone]);
   const item = res.data?.item;
+  const held = !!item && isHeld(item);
+  useEffect(() => setFast(held), [held]);
 
   const run = async (a: ApprovalAction) => {
     if (!item) return;
@@ -46,7 +51,9 @@ function Detail() {
           {item && <p className="fx-muted">Asked {when(item.createdAt)} by {item.callerId}{item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}</p>}
           {/* Brett (Oct 27 2026): the decision buttons are on the first screen, right under the title, before any
               description or code, so Approve never needs a scroll on a phone. */}
-          {item && <div className="fx-row fx-row--wrap" data-axf-anchor="approval-actions">
+          {/* veto@1: a held command has no Approve; the countdown and Deny take the actions' place, first screen. */}
+          {item && held && <HeldBar big item={item} onDone={(next) => { if (next) res.setData({ item: next, auto: res.data!.auto }); else void res.reload(); }} />}
+          {item && !held && <div className="fx-row fx-row--wrap" data-axf-anchor="approval-actions">
             <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>
             {orderActions(item.actions).map((a) => (
               <Button key={a} disabled={busy} icon={a === 'approve' ? 'check' : undefined}

@@ -8,7 +8,7 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsUiErrors, settingsUiGroups } from '../core/engines/settingsui';
+import { arrangeSettingsTabs, filterSettingsGroup, mergeSettingsVisible, normalizeSettingsUi, normalizeSettingsVisible, SETTINGS_LEVELS, setSettingsVisible, settingMatches, settingsLevel, settingsUiErrors, settingsUiGroups, shownAtLevel, splitSettingsGroup, withSettingsVisible, type SettingsLevel } from '../core/engines/settingsui';
 import { validateAsset } from '../core/validate';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -29,6 +29,20 @@ const CASES: { name: string; fn: string; input: unknown }[] = [
   { name: 'nothing = defaults', fn: 'normalize', input: null },
   { name: 'levels: on, default level, levelOf (bad ids and levels dropped)', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, levels: true, defaultLevel: 'pro', levelOf: { appearance: 'simple', 'axf.look.sliders': 'simple', 'bad id': 'pro', about: 'expert', 'axf.roll': 'advanced' } } },
   { name: 'levels: bad values fall back', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, levels: 'yes', defaultLevel: 'max', levelOf: [1] } },
+  { name: 'levels: migration Pro → Administrator, Advanced → Developer (any case), new names kept, group level too', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, levels: true, defaultLevel: 'Advanced', levelOf: { a: 'pro', b: 'advanced', c: 'developer', d: 'administrator', e: 'ADMINISTRATOR', f: 'expert' }, groups: [{ id: 'g', label: 'G', tab: 'dev', level: 'pro', settings: [{ key: 'k', label: 'K', kind: 'toggle' }] }] } },
+  { name: 'visible: per level sets (old names migrated, administrator dropped, bare list = show, hide loses to show, bad ids out)', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, levels: true, visible: { simple: ['axf.roll', 'bad id'], basic: { show: ['x'], hide: ['y', 'x'] }, pro: { hide: ['z'] }, advanced: { show: ['w'] }, administrator: { show: ['q'] }, developer: { show: ['v'] }, expert: { show: ['n'] } } } },
+  { name: 'visible: not an object = none', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, visible: 'nope' } },
+  { name: 'visible-sets: JSON string, merge, with', fn: 'visible', input: { base: { basic: { show: ['a'], hide: ['b'] } }, over: '{"basic":{"show":["b"],"hide":["a","c"]},"simple":["d"]}' } },
+  { name: 'level: saved pick migrates, bad falls back to the default', fn: 'level', input: { ui: { defaultLevel: 'developer' }, stored: ['pro', 'advanced', 'simple', 'Basic', 'max', 7, null] } },
+  { name: 'shown: rank rule, administrator shows all, visible sets win, no levels = all', fn: 'shown', input: { ui: { levels: true, defaultLevel: 'basic', levelOf: { dev: 'developer', adm: 'administrator', simp: 'simple' }, visible: { simple: { show: ['adm'], hide: ['simp'] }, developer: { hide: ['dev'] } } }, ids: ['simp', 'plain', 'dev', 'adm'] } },
+  { name: 'shown: levels off shows everything', fn: 'shown', input: { ui: { levels: false, levelOf: { adm: 'administrator' } }, ids: ['adm'] } },
+  { name: 'split: at basic, one setting is developer (rest), administrator shows all', fn: 'split', input: { ui: { levels: true, defaultLevel: 'basic', levelOf: { 'axf.display.animations': 'developer' } }, at: ['basic', 'developer', 'administrator'] } },
+  { name: 'split: group above the level, one setting added by the visible set', fn: 'split', input: { ui: { levels: true, defaultLevel: 'basic', levelOf: { 'axf.display': 'developer' }, visible: { simple: { show: ['axf.display.fontScale'] } } }, at: ['simple', 'basic', 'developer'] } },
+  { name: 'split: setting taken out by the visible set; hidden key never in either', fn: 'split', input: { ui: { levels: true, defaultLevel: 'simple', hide: ['axf.display.animations'], visible: { basic: { hide: ['axf.display.fontScale'] } } }, at: ['basic', 'administrator'] } },
+  { name: 'split: no level = no rest', fn: 'split', input: { ui: { levels: true }, at: [undefined] } },
+  { name: 'set-visible: smallest change over the asset (rank + asset sets), administrator is a no-op, clears when empty', fn: 'set', input: { ui: { levels: true, defaultLevel: 'basic', levelOf: { dev: 'developer' }, visible: { simple: { show: ['dev'] } } }, moves: [
+    ['basic', ['dev', 'plain'], true], ['basic', ['plain'], false], ['basic', ['plain', 'dev'], true], ['simple', ['dev'], false], ['simple', ['dev'], true], ['administrator', ['dev'], false], ['basic', ['bad id'], true],
+  ] } },
   { name: 'toolbar: a toolbar asset id is kept', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'settings-page' } },
   { name: 'toolbar: bad id', fn: 'errors', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'bad id' } },
   { name: 'bad enums fall back', fn: 'normalize', input: { layout: 'grid', header: 7, search: 'yes', descriptions: false } },
@@ -67,6 +81,11 @@ const run: Record<string, (i: never) => unknown> = {
   filter: (i) => filterSettingsGroup(GROUP as never, normalizeSettingsUi(i)),
   groups: (i) => settingsUiGroups(normalizeSettingsUi(i), 'shared'),
   match: (i) => GROUP.settings.map((s) => settingMatches(s as never, i)),
+  visible: (i: { base: unknown; over: unknown }) => ({ base: normalizeSettingsVisible(i.base), over: normalizeSettingsVisible(i.over), merged: mergeSettingsVisible(normalizeSettingsVisible(i.base), normalizeSettingsVisible(i.over)), with: withSettingsVisible(normalizeSettingsUi({ levels: true, visible: i.base }), i.over).visible }),
+  level: (i: { ui: unknown; stored: unknown[] }) => i.stored.map((s) => settingsLevel(normalizeSettingsUi(i.ui), s)),
+  shown: (i: { ui: unknown; ids: string[] }) => { const ui = normalizeSettingsUi(i.ui); return Object.fromEntries(SETTINGS_LEVELS.map((l) => [l, i.ids.map((x) => shownAtLevel(ui, x, l))])); },
+  split: (i: { ui: unknown; at: (SettingsLevel | undefined)[] }) => i.at.map((at) => ({ at: at ?? null, ...splitSettingsGroup(GROUP as never, normalizeSettingsUi(i.ui), at) })),
+  set: (i: { ui: unknown; moves: [SettingsLevel, string[], boolean][] }) => { const ui = normalizeSettingsUi(i.ui); let stored: unknown = null; return i.moves.map(([at, ids, on]) => { stored = JSON.stringify(setSettingsVisible(ui, stored, at, ids, on)); return JSON.parse(stored as string); }); },
 };
 let ok = 0;
 const fail = (m: string) => { console.error(`FAIL: ${m}`); process.exit(1); };

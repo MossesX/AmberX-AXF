@@ -13,10 +13,12 @@
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, settingsLevel, shownAtLevel, lookCss, lookChanged, normalizeLook, type LookLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, LookEditor, LookLevelSwitch, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import type { SettingsPanel } from '../../core';
+import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, lookCss, lookChanged, normalizeLook, type SettingsLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, IconButton, LookEditor, ModelBadge, Segmented, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
+import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -43,20 +45,57 @@ function useSettingsRevision(rt: AxfRuntime): number {
 function settingsUi(rt: AxfRuntime): SettingsUi {
   return normalizeSettingsUi(rt.assetOrNull('settings')?.data);
 }
-/** The level the settings page shows (Simple / Basic / Pro / Advanced), when the interface has levels. */
-function useSettingsLevel(ui: SettingsUi): LookLevel {
+/** One setting's live value (re-renders on its changes). */
+function useSettingValue(key: string): SettingValue {
   const rt = useRuntime();
-  const sub = useMemo(() => (fn: () => void) => rt.settings.onChange(SETTINGS_LEVEL_KEY, fn), [rt]);
-  const raw = useSyncExternalStore(sub, () => rt.settings.get(SETTINGS_LEVEL_KEY), () => rt.settings.get(SETTINGS_LEVEL_KEY));
-  return settingsLevel(ui, raw);
+  const sub = useMemo(() => (fn: () => void) => rt.settings.onChange(key, fn), [rt, key]);
+  return useSyncExternalStore(sub, () => rt.settings.get(key), () => rt.settings.get(key));
 }
 
+/** The level the settings page shows (Simple / Basic / Developer / Administrator), when the interface has levels. */
+function useSettingsLevel(ui: SettingsUi): SettingsLevel {
+  return settingsLevel(ui, useSettingValue(SETTINGS_LEVEL_KEY));
+}
+
+/** The active settings interface (the `settings` asset) with the user's own visible sets merged over it (the level
+ *  editor saves them under SETTINGS_VISIBLE_KEY); defaults when the app has none. */
 function useSettingsUi(): SettingsUi {
   const rt = useRuntime();
   useAxfState();
   const a = rt.assetOrNull('settings');
-  return useMemo(() => normalizeSettingsUi(a?.data), [a]);
+  const visible = useSettingValue(SETTINGS_VISIBLE_KEY);
+  return useMemo(() => withSettingsVisible(normalizeSettingsUi(a?.data), visible), [a, visible]);
 }
+
+/* ---------------- level toolbar (Brett, Oct 28 2026: on every settings interface, default on, hideable) ---------------- */
+
+/** Context-menu target of the level toolbar: its own menu (hide it, edit levels). */
+export const SETTINGS_LEVEL_CTX = 'axf-settings-levels';
+
+/** The toolbar is on unless the setting says off (default on). */
+function useLevelBarOn(): boolean {
+  return useSettingValue(SETTINGS_LEVEL_BAR_KEY) !== false;
+}
+
+/** Simple / Basic / Developer / Administrator picker, its hint, and the toolbar's own menu (right-click or the menu button). */
+function SettingsLevelBar({ level, actions }: { level: SettingsLevel; actions?: ReactNode }) {
+  const rt = useRuntime();
+  const openMenu = (el: HTMLElement) => { const r = el.getBoundingClientRect(); rt.openContext(r.left, r.bottom, SETTINGS_LEVEL_CTX); };
+  return (
+    <div className="axf-settings__levelbar" role="toolbar" aria-label="Settings level" data-fx-ctx-target={SETTINGS_LEVEL_CTX} data-axf-anchor="settings-levelbar">
+      <Segmented label="Settings level" value={level} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} options={SETTINGS_LEVELS.map((l) => ({ value: l, label: SETTINGS_LEVEL_LABEL[l], title: SETTINGS_LEVEL_HINT[l] }))} />
+      <span className="fx-muted fx-look__levelhint axf-settings__levelhint">{SETTINGS_LEVEL_HINT[level]}</span>
+      <span className="axf-settings__levelbar-actions">
+        {actions}
+        <Button size="sm" tone="quiet" icon="edit" onClick={() => rt.openDialog(LEVEL_EDITOR_DIALOG)} title="Pick which settings each level shows">Edit levels</Button>
+        <IconButton icon="more" label="Level toolbar menu" onClick={(e) => openMenu(e.currentTarget)} />
+      </span>
+    </div>
+  );
+}
+
+/** Settings for the level toolbar itself: shown in Settings → Appearance → Display, so a hidden toolbar can be brought back. */
+const LEVEL_BAR_SETTING: SettingSpec = { key: SETTINGS_LEVEL_BAR_KEY, label: 'Level toolbar', kind: 'toggle', default: true, description: 'The Simple / Basic / Developer / Administrator bar at the top of Settings. Its menu (⋯ or right-click) hides it too.' };
 
 /* ---------------- controls ---------------- */
 
@@ -644,6 +683,7 @@ export function SettingsView() {
   const pluginLock = rt.hostLockNote('plugins');
   // Every tab as the settings asset arranges it (order, labels, left out), then split into top tabs and sub-tabs.
   const level = useSettingsLevel(ui);
+  const levelBar = useLevelBarOn();
   const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level));
   const byId = new Map(all.map((t) => [t.id, t]));
   const childrenOf = (id: string) => all.filter((t) => t.parent === id);
@@ -730,7 +770,7 @@ export function SettingsView() {
           </form>
         } />
       )}
-      {ui.levels && <LookLevelSwitch label="Settings detail" value={level} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} />}
+      {ui.levels && levelBar && <SettingsLevelBar level={level} />}
       {ui.search && !toolbarSearch && <TextField label="Search settings" value={query} onChange={setQuery} placeholder="Search every setting" className="axf-settings__search" />}
       {ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
     </div>
@@ -835,39 +875,68 @@ function DesignPackagePanel() {
 
 /** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings.
  *  What the active settings asset leaves out (group, panel or setting ids) isn't shown. */
+/** One tab's settings. A plugin's own tab is that plugin's UI: its content carries data-axf-plugin, so the plugin's theme
+ *  override (libs/plugintheme) applies wherever the tab shows (Settings, the plugins browser, Banner settings, page mode). */
 export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const plugin = rt.settings.getTab(id)?.plugin;
+  return plugin ? <div className="fx-plugin-scope" data-axf-plugin={plugin}><TabBody id={id} all={all} /></div> : <TabBody id={id} all={all} />;
+}
+
+function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const ui = useSettingsUi();
   const level = useSettingsLevel(ui);
   // `all`: every level (a plugin's own settings inside Banner settings aren't cut by the page's level)
-  const at = all ? undefined : level;
+  const at = all || !ui.levels ? undefined : level;
   const tab = rt.settings.getTab(id);
-  const groups = rt.settings.groupsIn(id).map((g) => filterSettingsGroup(g, ui, at)).filter((g): g is SettingsGroup => !!g);
-  const panels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id) && (!at || shownAtLevel(ui, p.id, at)));
+  const split = rt.settings.groupsIn(id).map((g) => splitSettingsGroup(g, ui, at));
+  const groups = split.map((x) => x.shown).filter((g): g is SettingsGroup => !!g);
+  const restGroups = split.map((x) => x.rest).filter((g): g is SettingsGroup => !!g);
+  const allPanels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
+  const panels = allPanels.filter((p) => !at || shownAtLevel(ui, p.id, at));
+  const restPanels = at ? allPanels.filter((p) => !panels.includes(p)) : [];
+  const panelNode = (p: SettingsPanel, icon: string) => <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id) || undefined}>{p.render() as ReactNode}</Container></div>;
+  const ordered = (ps: SettingsPanel[], gs: SettingsGroup[]) => [...ps.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: panelNode(p, 'settings') })),
+    ...gs.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
+    .sort((a, b) => a.order - b.order || a.tie - b.tie)
+    .map((x) => <Fragment key={x.key}>{x.node}</Fragment>);
   // Settings → Appearance: the AmberX Design Package picker on top, everything else in one collapsible container
   const design = id === 'appearance' && !all ? panels.find((p) => p.id === DESIGN_PANEL_ID) : undefined;
   const lock = design ? panels.find((p) => p.id === LOCK_PANEL_ID) : undefined;
-  const rest = design ? panels.filter((p) => p !== design && p !== lock) : panels;
-  const items = [...rest.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'} collapsible={COLLAPSIBLE_PANELS.has(p.id) || undefined}>{p.render() as ReactNode}</Container></div> })),
-    ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
-    .sort((a, b) => a.order - b.order || a.tie - b.tie)
-    .map((x) => <Fragment key={x.key}>{x.node}</Fragment>);
-  if (design) return (
+  const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), groups) : ordered(panels, groups);
+  const shown = design ? (
     <>
-      {lock && <div data-axf-anchor={`settings-panel:${lock.id}`}><Container title={lock.title} icon={lock.icon ?? 'lock'}>{lock.render() as ReactNode}</Container></div>}
-      <div data-axf-anchor={`settings-panel:${design.id}`}><Container title={design.title} icon={design.icon ?? 'palette'}>{design.render() as ReactNode}</Container></div>
+      {lock && panelNode(lock, 'lock')}
+      {panelNode(design, 'palette')}
       {items.length > 0 && <div data-axf-anchor="settings-panel:axf.appearance.rest"><Container title="Everything else" icon="sliders" collapsible defaultOpen={false}><div className="fx-stack">{items}</div></Container></div>}
     </>
+  ) : items;
+  const empty = !panels.length && !groups.length;
+  if (!at) return (
+    <>
+      {shown}
+      {empty && <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>}
+    </>
   );
+  // With levels: what this level has in one collapsible container, what it leaves out in another (greyed, readable, not editable).
+  const rest = ordered(restPanels, restGroups);
   return (
     <>
-      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'} collapsible={COLLAPSIBLE_PANELS.has(p.id) || undefined}>{p.render() as ReactNode}</Container></div> })),
-        ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
-        .sort((a, b) => a.order - b.order || a.tie - b.tie)
-        .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
-      {!panels.length && !groups.length && (
-        <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : ui.levels && !all ? 'Nothing here at this level. Pick a higher level above for more.' : 'Nothing here yet.'}</p>
+      <div data-axf-anchor={`settings-level:${id}:available`}>
+        <Container title="Available settings" icon="check" collapsible className="axf-settings__available">
+          {empty ? <p className="fx-muted" style={{ margin: 0 }}>{id === 'connections' && !rest.length ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : rest.length ? `Nothing at ${SETTINGS_LEVEL_LABEL[level]} here. Pick a higher level above, or add settings to this level with Edit levels.` : 'Nothing here yet.'}</p> : <div className="fx-stack">{shown}</div>}
+        </Container>
+      </div>
+      {rest.length > 0 && (
+        <div data-axf-anchor={`settings-level:${id}:more`}>
+          <Container title="More settings" icon="more" collapsible defaultOpen={false} className="axf-settings__rest">
+            <p className="fx-muted axf-settings__hint" style={{ marginTop: 0 }}>Not part of {SETTINGS_LEVEL_LABEL[level]}. Pick a higher level to change them, or add them to this level with Edit levels.</p>
+            <div className="fx-stack axf-settings__restbody" aria-disabled="true">{rest}</div>
+          </Container>
+        </div>
       )}
     </>
   );
@@ -941,6 +1010,11 @@ const CSS = `
 .axf-settings__listitem .axf-settings__hint{margin-left:var(--fx-space)}
 .axf-settings__title,.axf-settings__tabtitle{margin:0}
 .axf-settings__search{max-width:420px}
+.axf-settings__levelbar{display:flex;flex-wrap:wrap;align-items:center;gap:calc(var(--fx-space)*.5) var(--fx-space);padding:calc(var(--fx-space)*.5) var(--fx-space);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2)}
+.axf-settings__levelbar>*{min-width:0}
+.axf-settings__levelhint{flex:1 1 160px}
+.axf-settings__levelbar-actions{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.5);margin-left:auto}
+.axf-settings__rest .axf-settings__restbody{opacity:var(--fx-opacity-muted);pointer-events:none;user-select:text}
 .axf-settings__split{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:calc(var(--fx-space)*2);align-items:start}
 .axf-settings--tabs-side .axf-settings__tabs{display:flex;flex-direction:column;align-items:stretch;gap:calc(var(--fx-space)/2)}
 .axf-settings--tabs-side .axf-settings__tabs>*{justify-content:flex-start}
@@ -954,7 +1028,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS;
+  el.textContent = CSS + LEVELS_CSS;
   doc.head.appendChild(el);
 }
 
@@ -998,6 +1072,23 @@ export const library: AxfWebLibrary = {
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
     rt.actions.register('app.settings', () => rt.navigate(VIEW), { label: 'Settings' });
+    // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
+    rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
+    rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
+    rt.addContextItems({ id: 'axf.settings.levelbar.ctx', module: SETTINGS_LIBRARY_ID, target: SETTINGS_LEVEL_CTX, order: 1, items: [
+      ...SETTINGS_LEVELS.map((l) => ({ id: `axf-settings-level-${l}`, label: SETTINGS_LEVEL_LABEL[l], action: `settings.level:${l}` })),
+      { id: 'axf-settings-levelbar-sep', separator: true },
+      { id: 'axf-settings-levels-edit', label: 'Edit levels…', icon: 'edit', action: LEVEL_EDITOR_ACTIONS.open },
+      { id: 'axf-settings-levelbar-hide', label: 'Hide this toolbar', icon: 'eye', action: 'settings.levelbar:off' },
+    ] });
+    // The level editor dialog (Brett, Oct 28 2026): its tree's right-click menu acts on the editor's selection.
+    rt.actions.register(LEVEL_EDITOR_ACTIONS.open, () => rt.openDialog(LEVEL_EDITOR_DIALOG), { label: 'Edit settings levels' });
+    rt.actions.register(LEVEL_EDITOR_ACTIONS.add, () => levelEditorAct('add'), { label: 'Add the selected settings to the level' });
+    rt.actions.register(LEVEL_EDITOR_ACTIONS.remove, () => levelEditorAct('remove'), { label: 'Remove the selected settings from the level' });
+    rt.addContextItems({ id: 'axf.settings.leveleditor.ctx', module: SETTINGS_LIBRARY_ID, target: LEVEL_EDITOR_CTX, order: 1, items: [
+      { id: 'axf-settings-levels-add', label: 'Add to visible', icon: 'plus', action: LEVEL_EDITOR_ACTIONS.add },
+      { id: 'axf-settings-levels-remove', label: 'Remove', icon: 'minus', action: LEVEL_EDITOR_ACTIONS.remove },
+    ] });
     rt.actions.register('settings.open', ([tab]) => {
       rt.navigate(VIEW);
       if (tab) {
@@ -1011,6 +1102,9 @@ export const library: AxfWebLibrary = {
     // Banners on their own: the page a host shows in its own settings (embed@1 page `banners`, Patches' Banners tab).
     [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
   },
+  dialogs: {
+    [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
+  },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
     {
@@ -1023,6 +1117,7 @@ export const library: AxfWebLibrary = {
         { key: SPACING_KEY, label: 'Spacing', kind: 'choice', default: SPACING_DEFAULT, requires: 'assets.swap', options: SPACINGS.map((v) => ({ value: v, label: SPACING_LABEL[v] })), description: 'How much room between and around things. Applies to every theme; Regular shows the style theme as designed.' },
         { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, requires: 'assets.swap', description: 'Percent of the normal size.' },
         { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, requires: 'assets.swap', description: 'Off reduces motion.' },
+        LEVEL_BAR_SETTING,
       ],
     },
   ],

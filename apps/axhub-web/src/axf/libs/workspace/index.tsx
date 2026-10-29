@@ -11,12 +11,13 @@
  * layouts {default}, floating-panes, maximise, toolbars {max, labels}, floating-toolbars, customizer, phone {breakpoint}.
  */
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent, type ReactNode, type RefObject } from 'react';
-import { Button, Icon, IconButton, SelectField, Switch, TextField, useAxfState, useRuntime } from '../../react';
+import { Button, Icon, IconButton, SelectField, Switch, TextField, WindowResizeHandles, useAxfState, useRuntime } from '../../react';
+import type { Rect, ResizeEdge, SnapZone } from '../../core/engines/windows';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime, MenuEntry } from '../../core';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { DragLayer, registerZone, startDrag } from '../dnd';
-import { AREAS, Workspace, useWorkspace, type Area, type Dock, type FloatRect, type ToolbarDef, type WorkspaceOptions } from './store';
+import { AREAS, FLOAT_DEFAULT, Workspace, useWorkspace, type Area, type Dock, type FloatRect, type ToolbarDef, type WorkspaceOptions } from './store';
 import spec from './library.json';
 import './workspace.css';
 
@@ -93,6 +94,7 @@ export function WorkspaceHost({ ws, renderPane, describe, emptyHint, dragLayer =
     return () => offs.forEach((f) => f());
   }, [ws, zone]);
 
+  useEffect(() => { const el = rootRef.current; if (!el) return; const report = () => { ws.area = { x: 0, y: 0, width: el.clientWidth, height: el.clientHeight }; }; report(); const ro = new ResizeObserver(report); ro.observe(el); return () => ro.disconnect(); }, [ws]);
   const by = Object.fromEntries(AREAS.map((a) => [a, ws.visible(a)])) as Record<(typeof AREAS)[number], string[]>;
   const floating = config.floatingPanes ? ws.visible('float') : [];
   const dock = (d: Dock) => (config.toolbars ? s.toolbars.filter((t) => t.visible && t.dock === d && (d !== 'float' || config.floatingToolbars)).sort((a, b) => a.order - b.order) : []);
@@ -118,7 +120,8 @@ export function WorkspaceHost({ ws, renderPane, describe, emptyHint, dragLayer =
         {!phone && tb('right')}
       </div>
       {tb('bottom')}
-      {!phone && floating.map((id) => <FloatPane key={id} ws={ws} id={id} rect={s.floats[id]} renderPane={renderPane} />)}
+      {!phone && floating.map((id) => <FloatPane key={id} ws={ws} id={id} rect={s.floats[id]} renderPane={renderPane} root={rootRef} />)}
+      {!phone && floating.length > 0 && <FloatChips ws={ws} ids={floating} />}
       {dock('float').map((t) => <div key={t.id} className="axf-ws-tbfloat fx-popover" style={{ left: t.x, top: t.y }}><Toolbar ws={ws} tb={t} describe={describe} zone={zone} rt={rt} onGrip={(e) => detach(e, ws, t, rootRef.current)} /></div>)}
       {dragLayer && <DragLayer />}
     </div>
@@ -163,27 +166,66 @@ function Splitter({ ws, which }: { ws: Workspace; which: 'left' | 'right' | 'bot
   return <div className={`axf-ws-split axf-ws-split--${which}`} onPointerDown={down} role="separator" aria-orientation={which === 'bottom' ? 'horizontal' : 'vertical'} aria-label={`Resize the ${which} area`} />;
 }
 
-function FloatPane({ ws, id, rect, renderPane }: { ws: Workspace; id: string; rect?: FloatRect; renderPane: (id: string) => ReactNode }) {
+/**
+ * A floating pane (s19): the window engine's physics — drag with snapping to the workspace edges and the other panes,
+ * half / quarter zones at the workspace edge, drop onto another pane to split it, resize from all 8 edges / corners
+ * (touch too), maximize / restore (double-tap the head), minimize to a chip. No keep-on-screen: a pane may be moved or
+ * resized past the workspace. Coordinates are the workspace's; `area` is its rect.
+ */
+function FloatPane({ ws, id, rect, renderPane, root }: { ws: Workspace; id: string; rect?: FloatRect; renderPane: (id: string) => ReactNode; root: RefObject<HTMLDivElement> }) {
   const pd = ws.pane(id)!;
-  const r = rect ?? { x: 80, y: 80, w: 420, h: 320, z: 0 };
-  const ref = useRef<HTMLDivElement>(null);
-  const keep = () => ref.current && ws.setFloat(id, { w: ref.current.offsetWidth, h: ref.current.offsetHeight });
-  const drag = (e: RPointerEvent) => {
-    if ((e.target as HTMLElement).closest('button')) return;
-    const sx = e.clientX - r.x, sy = e.clientY - r.y; ws.front(id);
-    const move = (ev: PointerEvent) => ws.setFloat(id, { x: Math.max(0, ev.clientX - sx), y: Math.max(0, ev.clientY - sy) });
-    const up = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', up); keep(); };
-    addEventListener('pointermove', move); addEventListener('pointerup', up);
+  const r = rect ?? FLOAT_DEFAULT;
+  const area = (): Rect => { const el = root.current; if (el) ws.area = { x: 0, y: 0, width: el.clientWidth, height: el.clientHeight }; return ws.area; };
+  const local = (ev: { clientX: number; clientY: number }) => { const b = root.current?.getBoundingClientRect(); return { x: ev.clientX - (b?.left ?? 0) + (root.current?.scrollLeft ?? 0), y: ev.clientY - (b?.top ?? 0) + (root.current?.scrollTop ?? 0) }; };
+  const lastTap = useRef(0);
+  const listen = (move: (ev: PointerEvent) => void, up: () => void) => {
+    const end = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', end); removeEventListener('pointercancel', end); up(); };
+    addEventListener('pointermove', move); addEventListener('pointerup', end); addEventListener('pointercancel', end);
   };
+  const drag = (e: RPointerEvent) => {
+    if ((e.target as HTMLElement).closest('button') || (e.button !== undefined && e.button !== 0)) return;
+    e.preventDefault(); ws.front(id);
+    const now = Date.now(); if (now - lastTap.current < 320) { lastTap.current = 0; ws.toggleFloatMax(id, area()); return; } lastTap.current = now;
+    const p0 = local(e); let ox = p0.x - r.x, oy = p0.y - r.y; let restored = !r.maximized;
+    listen((ev) => {
+      const p = local(ev);
+      if (!restored) { if (Math.hypot(p.x - p0.x, p.y - p0.y) < 6) return; ws.restoreFloat(id); const f = ws.float(id); const frac = r.w > 0 ? Math.min(1, Math.max(0, p0.x / r.w)) : 0.5; ws.setFloat(id, { x: Math.round(p.x - f.w * frac), y: Math.round(p.y - oy) }); ox = f.w * frac; restored = true; return; }
+      ws.dragFloatTo(id, p.x - ox, p.y - oy, p.x, p.y, area(), Date.now());
+    }, () => ws.settleFloat(id));
+  };
+  const resize = (e: RPointerEvent, edge: ResizeEdge) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault(); e.stopPropagation(); ws.front(id);
+    const f = ws.float(id); const start: Rect = { x: f.x, y: f.y, width: f.w, height: f.h }; const p0 = local(e);
+    listen((ev) => { const p = local(ev); ws.resizeFloatFrom(id, edge, start, p.x - p0.x, p.y - p0.y); }, () => ws.settleFloat(id));
+  };
+  if (r.minimized) return null; // drawn by FloatChips
   return (
-    <div className="axf-ws-float fx-popover" ref={ref} style={{ left: r.x, top: r.y, width: r.w, height: r.h, zIndex: 40 + (r.z % 1000) }} onPointerUp={keep}>
+    <div className={`axf-ws-float fx-popover ${r.maximized ? 'is-maximized' : ''}`} style={{ left: r.x, top: r.y, width: r.w, height: r.h, zIndex: 40 + (r.z % 1000) }}>
       <header className="axf-ws-float__head" onPointerDown={drag} data-fx-ctx-target={`axf-ws-pane:${ws.id}`} data-fx-ctx-payload={id}>
-        <Icon name={pd.icon} size={14} /> <strong>{pd.title}</strong><span className="fx-grow" />
+        <Icon name={pd.icon} size={14} /> <strong className="axf-ws-ellipsis">{pd.title}</strong><span className="fx-grow" />
+        <IconButton icon="minimize" label="Minimize" onClick={() => ws.minimizeFloat(id, true)} />
+        <IconButton icon={r.maximized ? 'restore' : 'maximize'} label={r.maximized ? 'Restore' : 'Maximize'} onClick={() => ws.toggleFloatMax(id, area())} />
         <IconButton icon="layout" label="Dock in the center" onClick={() => ws.movePane(id, 'center')} />
         <IconButton icon="x" label="Hide" onClick={() => ws.togglePane(id, false)} />
       </header>
       <div className="axf-ws-float__body">{renderPane(id)}</div>
+      {!r.maximized && <WindowResizeHandles onStart={resize} />}
     </div>
+  );
+}
+
+/** Minimized floating panes as title chips in the workspace's bottom-left corner; the zone / split preview of a float drag. */
+function FloatChips({ ws, ids }: { ws: Workspace; ids: string[] }) {
+  const s = useWorkspace(ws, (x) => x);
+  const mins = ids.filter((id) => s.floats[id]?.minimized);
+  const p = ws.preview;
+  return (
+    <>
+      {mins.length > 0 && <div className="axf-ws-chips">{mins.map((id) => { const pd = ws.pane(id)!; return <Button key={id} tone="neutral" size="sm" className="axf-ws-chip" icon={pd.icon} onClick={() => ws.minimizeFloat(id, false)} title="Restore">{pd.title}</Button>; })}</div>}
+      {p && <div className={`fx-snap-preview fx-snap-preview--${p.kind} axf-ws-preview`} style={{ left: p.rect.x, top: p.rect.y, width: p.rect.width, height: p.rect.height }} aria-hidden><span className="fx-snap-preview__label">{p.kind === 'zone' ? p.zone : `split ${p.side}`}</span></div>}
+      {p?.kind === 'split' && p.targetRect && <div className="fx-snap-preview fx-snap-preview--target axf-ws-preview" style={{ left: p.targetRect.x, top: p.targetRect.y, width: p.targetRect.width, height: p.targetRect.height }} aria-hidden />}
+    </>
   );
 }
 
@@ -374,6 +416,11 @@ export function registerWorkspaceMenus(rt: AxfRuntime, ws: Workspace, opts: { cu
   rt.contextExtras.set(targets[0]!, (_t, id = '') => [
     { id: 'move', label: 'Move to', icon: 'arrow-right', items: (['left', 'center', 'right', 'bottom', ...(config.floatingPanes ? ['float'] : [])] as const).map((x) => ({ id: `m-${x}`, label: x === 'float' ? 'Float' : x[0]!.toUpperCase() + x.slice(1), icon: x === 'float' ? 'layers' : 'layout', action: a('move', id, x) })) },
     { id: 'hide', label: 'Hide this pane', icon: 'x', action: a('pane', id) },
+    ...(config.floatingPanes && ws.layout().panes[id]?.area === 'float' ? [
+      { id: 'fmax', label: ws.float(id).maximized ? 'Restore' : 'Maximize', icon: ws.float(id).maximized ? 'restore' : 'maximize', action: a('float-max', id) },
+      { id: 'fmin', label: 'Minimize', icon: 'minimize', action: a('float-min', id) },
+      { id: 'fsnap', label: 'Snap', icon: 'layout', items: (['left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'] as const).map((z) => ({ id: `fs-${z}`, label: z.includes('-') ? `${z.replace('-', ' ')} quarter` : `${z} half`, icon: z.includes('-') ? 'grid' : 'layout', action: a('float-snap', id, z) })) },
+    ] : []),
     ...(config.maximise ? [{ id: 'zoom', label: 'Maximise its area', icon: 'monitor', action: a('zoom', ws.layout().panes[id]?.area ?? 'center') }] : []),
     { id: 's1', separator: true },
     { id: 'panes', label: 'Panes', icon: 'layout', items: paneMenu(ws) },
@@ -408,6 +455,9 @@ function runWs(args: string[]) {
     case 'pane': ws.togglePane(x); break;
     case 'show': ws.togglePane(x, true); break;
     case 'move': ws.movePane(x, y as Area); break;
+    case 'float-max': ws.toggleFloatMax(x, ws.area); break;
+    case 'float-min': ws.minimizeFloat(x, !ws.float(x).minimized); break;
+    case 'float-snap': ws.snapFloatTo(x, y as SnapZone, ws.area); break;
     case 'layout': ws.setLayout(x); break;
     case 'layout-reset': ws.resetLayout(); break;
     case 'zoom': ws.zoom((x as Area) || null); break;

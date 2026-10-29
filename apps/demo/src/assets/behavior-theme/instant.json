@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "instant",
+  "name": "Instant",
+  "version": "1.0.0",
+  "description": "No animation at all, short toasts, a 4 px snap, and no delete confirmations: for people who know what they're doing.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:power-rail"
+  ],
+  "data": {
+    "motion": {
+      "speed": "instant",
+      "easing": "linear",
+      "reduced": "system",
+      "entrance": "none"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "none",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 400,
+      "doubleTapMs": 220,
+      "dragThreshold": 4
+    },
+    "windows": {
+      "dialogOpen": "none",
+      "backdrop": "none",
+      "popupOpen": "none",
+      "drawerOpen": "none",
+      "snap": true,
+      "snapGrid": 4,
+      "stack": "remember",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom-right",
+      "toastMs": 2500,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "never",
+      "busyCursor": true
+    }
+  }
+}

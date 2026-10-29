@@ -1,0 +1,62 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-046",
+  "name": "GizmoX lockup · diamond chevron",
+  "version": "1.0.0",
+  "description": "Generated lockup: a diamond chevron motif in a seeded rich palette (seed 1049).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "diamond",
+    "chevron",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#4c50c8",
+      "brand2": "#2d2281",
+      "brand3": "#ebecf4"
+    },
+    "paths": [
+      {
+        "d": "M12 2l10 10-10 10L2 12Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M8 7l5 5-5 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": false
+      },
+      {
+        "d": "M13 7l4 5-4 5",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.4,
+        "round": false,
+        "opacity": 0.6
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 700,
+      "tracking": 0.08,
+      "font": "mono",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

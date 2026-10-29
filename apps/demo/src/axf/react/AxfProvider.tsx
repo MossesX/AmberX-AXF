@@ -1,12 +1,17 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 
-const AxfContext = createContext<AxfRuntime | null>(null);
+export const AxfContext = createContext<AxfRuntime | null>(null);
 
 export function useRuntime(): AxfRuntime {
   const rt = useContext(AxfContext);
   if (!rt) throw new Error('AmberX AXF hooks must be used inside <AxfProvider>.');
   return rt;
+}
+
+/** The runtime when the component sits inside <AxfProvider>, else null (for pieces that also render standalone). */
+export function useOptionalRuntime(): AxfRuntime | null {
+  return useContext(AxfContext);
 }
 
 /** Subscribes the component to runtime changes and returns the current state. */
@@ -68,15 +73,32 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   const state = useSyncExternalStore(runtime.subscribe, runtime.getState, runtime.getState);
 
   // Compile active assets -> CSS on the document root (this is the hot-swap).
+  // Hidden slots change the layout grid too, so they re-apply it.
+  const hidden = runtime.hiddenSlots().join(',');
+  // The Spacing choice scales the style theme (core/engines/spacing.ts), so it re-applies too.
+  const spacing = runtime.spacing();
   useLayoutEffect(() => {
     runtime.applyTo(document.documentElement);
-  }, [runtime, state.active]);
+  }, [runtime, state.active, hidden, spacing]);
+
+  // Extra tokens per asset (Settings → Appearance → Assets; core/engines/customize.ts) as one sheet.
+  const customSheet = runtime.customSheet();
+  useLayoutEffect(() => {
+    let el = document.getElementById('axf-custom') as HTMLStyleElement | null;
+    if (!customSheet) return void el?.remove();
+    if (!el) {
+      el = document.createElement('style');
+      el.id = 'axf-custom';
+      document.head.appendChild(el);
+    }
+    if (el.textContent !== customSheet) el.textContent = customSheet;
+  }, [customSheet]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (runtime.getState().context) return runtime.closeContext();
-        if (runtime.getState().dialog) return runtime.closeDialog();
+        if (runtime.getState().dialog && runtime.behavior().windows.closeOnEscape) return runtime.closeDialog(); // behaviour theme
       }
       const typing = (e.target as HTMLElement)?.closest?.('input, textarea, select, [contenteditable]');
       if (typing && !e.ctrlKey && !e.metaKey && !e.altKey) return;
@@ -90,7 +112,11 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
       }
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    // interface scopes (components/InterfaceScope.tsx): a pointer / key outside every scope puts the app back in its own scope
+    const leave = (e: Event) => { if (!(e.target as Element | null)?.closest?.('[data-fx-scope]')) runtime.enterScope(''); };
+    document.addEventListener('pointerdown', leave, true);
+    document.addEventListener('keydown', leave, true);
+    return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', leave, true); document.removeEventListener('keydown', leave, true); };
   }, [runtime]);
 
   return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;

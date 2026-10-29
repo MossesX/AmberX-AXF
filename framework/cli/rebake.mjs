@@ -22,15 +22,18 @@ import { createGitHub, gitAuthEnv, repoPath, scrub, validRepo } from './github.m
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const BAKED = ['core', 'react', 'ui', 'schemas'];
+/** Installable libraries are baked too (CI copies `libs` with the rest) when the app already ships them under src/axf/libs. */
+export const OPTIONAL_BAKED = ['libs'];
 const BAKE_DIR = 'src/axf';
+const bakedDirs = (appDir) => [...BAKED, ...OPTIONAL_BAKED.filter((d) => existsSync(join(appDir, BAKE_DIR, d)))];
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
 const walk = (d) => (existsSync(d) ? readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; }) : []);
 const posix = (p) => p.split(sep).join('/');
 
 /** rel path under src/axf → hash, for the framework (what a bake would write) or an app's copy. */
-function tree(base) {
+function tree(base, dirs = BAKED) {
   const out = {};
-  for (const d of BAKED) for (const f of walk(join(base, d))) out[posix(relative(base, f))] = sha(f);
+  for (const d of dirs) for (const f of walk(join(base, d))) out[posix(relative(base, f))] = sha(f);
   return out;
 }
 
@@ -50,8 +53,9 @@ export function appStatus(dir, root = ROOT) {
   const name = posix(relative(root, appDir));
   let lock;
   try { lock = JSON.parse(readFileSync(join(appDir, 'axf.lock.json'), 'utf8')); } catch (e) { return { dir: name, state: 'error', error: `axf.lock.json unreadable: ${e.message}` }; }
-  const want = tree(join(root, 'framework'));
-  const have = tree(join(appDir, BAKE_DIR));
+  const dirs = bakedDirs(appDir);
+  const want = tree(join(root, 'framework'), dirs);
+  const have = tree(join(appDir, BAKE_DIR), dirs);
   const changed = [], missing = [], extra = [], edited = [];
   for (const [rel, h] of Object.entries(want)) { if (!(rel in have)) missing.push(rel); else if (have[rel] !== h) changed.push(rel); }
   for (const rel of Object.keys(have)) if (!(rel in want)) extra.push(rel);
@@ -75,11 +79,12 @@ export function apply(dir, root = ROOT, { force = false } = {}) {
   if (s.state === 'edited' && !force) throw new Error(`${s.dir} has edited baked files (${s.edited.slice(0, 3).join(', ')}): move the edits into the framework first`);
   if (s.state === 'current') return { ...s, rebaked: false };
   const appDir = resolve(root, dir);
-  for (const d of BAKED) { rmSync(join(appDir, BAKE_DIR, d), { recursive: true, force: true }); cpSync(join(root, 'framework', d), join(appDir, BAKE_DIR, d), { recursive: true }); }
+  const dirs = bakedDirs(appDir);
+  for (const d of dirs) { rmSync(join(appDir, BAKE_DIR, d), { recursive: true, force: true }); cpSync(join(root, 'framework', d), join(appDir, BAKE_DIR, d), { recursive: true }); }
   const lockPath = join(appDir, 'axf.lock.json');
   const lock = JSON.parse(readFileSync(lockPath, 'utf8'));
-  const files = Object.fromEntries(Object.entries(lock.files ?? {}).filter(([k]) => !BAKED.some((d) => k.startsWith(`${BAKE_DIR}/${d}/`))));
-  for (const [rel, h] of Object.entries(tree(join(appDir, BAKE_DIR)))) files[`${BAKE_DIR}/${rel}`] = h;
+  const files = Object.fromEntries(Object.entries(lock.files ?? {}).filter(([k]) => !dirs.some((d) => k.startsWith(`${BAKE_DIR}/${d}/`))));
+  for (const [rel, h] of Object.entries(tree(join(appDir, BAKE_DIR), dirs))) files[`${BAKE_DIR}/${rel}`] = h;
   lock.files = Object.fromEntries(Object.entries(files).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
   writeFileSync(lockPath, JSON.stringify(lock, null, 2) + '\n');
   return { ...s, rebaked: true };
@@ -119,7 +124,7 @@ export async function publish(dir, { root = ROOT, base = process.env.AXF_REBAKE_
     const open = await gh.get(repoPath(slug, ['pulls'], { head: `${owner}:${branch}`, state: 'open' }));
     const pr = open?.[0] ?? await gh.json('POST', repoPath(slug, ['pulls']), {
       title: msg, head: branch, base,
-      body: `Systems check Auto fix: ${rel}'s baked framework (src/axf) was behind ${base}. Copied framework/{${BAKED.join(',')}} in again and rewrote axf.lock.json; nothing else changed.`,
+      body: `Systems check Auto fix: ${rel}'s baked framework (src/axf) was behind ${base}. Copied framework/{${BAKED.join(',')}} (and libs when the app ships them) in again and rewrote axf.lock.json; nothing else changed.`,
     });
     return { ...r, pushed: true, branch, pr: pr?.html_url ?? null, number: pr?.number ?? null };
   } finally {

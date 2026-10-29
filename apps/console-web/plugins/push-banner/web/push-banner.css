@@ -1,5 +1,5 @@
 /* Push banner: same look as the other console banners (accent edge: something to ship); phone first. Theme tokens only. */
-.axp-push-banner { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-push-banner { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
 .axp-push-banner__row { display: flex; align-items: center; gap: var(--fx-space); min-width: 0 }
 .axp-push-banner__icon { display: inline-flex; color: var(--fx-accent); flex: none }
 .axp-push-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }
@@ -30,7 +30,7 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__foot { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
 .axp-push-banner__min { margin-left: auto }
 /* pull requests as entries, grouped by what's ready (Oct 22 2026) */
-.axp-push-banner.is-ready { border-color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-push-banner.is-ready { --axf-banner-tone: var(--fx-success) }
 .axp-push-banner.is-ready .axp-push-banner__icon { color: var(--fx-success) }
 .axp-push-banner__group { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
 .axp-push-banner__group-title { margin: 0; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fx-muted) }

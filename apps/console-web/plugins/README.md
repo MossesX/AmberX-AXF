@@ -41,6 +41,7 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `hub-sync` — Settings → Plugins → axHub sync: the framework's lib-hubsync with the lifecycle panel. Connect to axHub (address, project, test, sign in), choose what syncs (look always / follow / off, settings, data all or some tables), status. The console already takes its look from axHub, so here it adds its settings (`shared/settings/apps/<app>.json`) and data. Web-only, no server part; self-test `test.py`. <!-- axf-plugin:hub-sync -->
 - `plugin-switches` — a pop-up dialog listing every plugin with an on/off switch; its own switch is greyed out; asks before switching off a plugin a running plugin needs; opened from the default context menu, action `plugin-switches.open`, search, or its settings tab "Plugin switches". <!-- axf-plugin:plugin-switches -->
 - `basic-filter` — a Sort & filter dialog (search, rules on any column, match all / any, multi-level sort) attachable to any dataset (every lib-datagrid grid); attached datasets get its toolbar (default: one Sort & filter button) designed in its settings tab "Basic filter" (show / hide, preset actions in a grid with expandable rows, live floating preview); attach from there or its row in Plugin switches; web-only; self-test `test.mts`. <!-- axf-plugin:basic-filter -->
+- `brand-library` — nav → Plugins → Brand library (also View → Look → Brand library…): the framework's brand library (`framework/brand-library/`: 250 logos, 250 animated logos, 100 icon packs, 50 branding packages for AmberX + GizmoX) in tabs Logos · Animated logos · Icon packs · Branding packages, one search bar, brand + style filters, a virtualised tile wall (only visible rows are drawn); a preview pane (light / dark, 16–96 px, animation replay) with **Apply** / **Set as brand** (a branding package becomes the brand; a logo, animated logo or icon pack goes into the active brand as a derived `bl-…` package) and **Copy id**; the last brand applied is re-applied on load; server `GET /index`, `/assets/<type>`, `/closure/<type>/<id>`, `GET/PUT /config` (the library is read-only, never bundled); settings tab "Brand library"; self-test `test.py` + `test.mts`. <!-- axf-plugin:brand-library -->
 - `context-menu-designer` — Plugins → Context menu designer: create, edit, name, rename and save context menus; **chunks** (Save as chunk) are reusable pieces inserted into menus by name (items, separators, other chunks), each with its own style (font, size, weight, style, text / background / hover colours) or the menu's (Inherit); a floating live preview re-renders on every change; a saved menu becomes context-menu asset `ctxd-<id>` (Use as the context menu, or Appearance). Designs in `.axf-console/plugins/context-menu-designer/designs.json` (0600). <!-- axf-plugin:context-menu-designer -->
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
@@ -180,6 +181,17 @@ lays plugins out from these parts. Full rules: `framework/spec/THEMING.md`. CI r
 (`<Button tone size icon>`, `<IconButton>`, `<Segmented>`, `fx-chip`, `fx-tab`, `fx-menu__item`), so changing the
 app's button asset, style theme or spacing restyles the plugin too; a whole row or card you tap is marked
 `data-fx-row`. Your own class on a control only lays it out. CI runs `node framework/cli/check-controls.mjs`.
+
+**Its own theme override** (Oct 28 2026; `framework/libs/plugintheme`): every plugin gets **Settings → Plugins →
+<plugin> → Appearance** without code of its own (the console wraps each plugin with `withPluginTheme`). The Theme
+override switch and its container hold every layout / colour / style / animation token (form, token tree, JSON, copy
+from another plugin or a theme asset, reset, preview), stored as `axf.plugin.<plugin id>.look = { on, tokens }` and
+applied as CSS variables on every root of the plugin's UI, which the console marks `data-axf-plugin="<plugin id>"`
+(pages, dialogs, window and tab-group tabs, settings tab and panels). The app's theme stays the base. Switch it from
+right-click inside the plugin, the toolbar button or Plugins ▸ All plugins ▸ <plugin> ▸ Theme override. So: keep using
+theme tokens only; a plugin never sets `--fx-*` itself (the override is the user's, applied by the framework), and a
+plugin that renders into a portal outside its roots (`document.body`) should put `data-axf-plugin` on that portal root
+too if it wants the override there.
 
 ## Security rules
 

@@ -11,6 +11,8 @@ export function AccountView() {
   const p = policy.data;
   const perms = Object.keys(p.permissions);
   const current = p.roles.find((r) => r.id === state.role);
+  // Signed in (rt.bindPrincipal): the account decides the role, so the cards only show it.
+  const bound = rt.boundPrincipal();
 
   return (
     <div className="fx-stack fx-stack--lg">
@@ -24,9 +26,11 @@ export function AccountView() {
         </div>
       </header>
 
-      <Container title="Act as role" icon="user">
+      <Container title={bound ? 'Your role' : 'Act as role'} icon="user">
         <p className="fx-muted" style={{ marginTop: 0 }}>
-          Role switching is a demo affordance so you can watch menus, toolbars and buttons re-gate live.
+          {bound
+            ? <>Signed in as <strong>{bound.label}</strong>. Your role comes from your account; an admin changes it in account management.</>
+            : 'Role switching is a demo affordance so you can watch menus, toolbars and buttons re-gate live.'}
         </p>
         <div className="fx-rolegrid">
           {p.roles.map((r) => (
@@ -35,6 +39,7 @@ export function AccountView() {
               type="button"
               className={`fx-rolecard ${r.id === state.role ? 'is-active' : ''}`}
               aria-pressed={r.id === state.role}
+              disabled={!!bound && r.id !== state.role}
               onClick={() => rt.setRole(r.id)}
             >
               <span className="fx-rolecard__top">

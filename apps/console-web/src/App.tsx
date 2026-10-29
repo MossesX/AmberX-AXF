@@ -1,7 +1,7 @@
 import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InterfaceTabBar, InterfaceTabs } from './interfaceTabs';
-import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useRuntime, type ViewMap } from './axf/react';
+import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -24,6 +24,7 @@ import { library as settingsLibrary } from './axf/libs/settings';
 import { createAlertsLibrary } from './axf/libs/alerts';
 import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
 import { hubStatusLibrary } from './axf/libs/hubstatus';
+import { pluginThemeLibrary, withPluginTheme } from './axf/libs/plugintheme';
 import { library as dataGridLibrary } from './axf/libs/datagrid';
 import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
@@ -83,8 +84,11 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
     ...(m.opens ? { opens: m.opens } : {}),
     ...(m.opensUi ? { opensUi: m.opensUi } : {}),
   };
-  if (!lib.settingsTabs?.length) return out;
-  return { ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) };
+  // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
+  // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
+  const themed = (l: AxfWebLibrary) => withPluginTheme(l, { id: m.id, name: m.name });
+  if (!lib.settingsTabs?.length) return themed(out);
+  return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
 }
 
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
@@ -121,7 +125,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
     const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, ...enabled.map(underPlugins)]);
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins)]);
   }, [rt, status, loaded, managed, hostIds]);
   return { contributed };
 }
@@ -135,12 +139,18 @@ function Shell() {
   useHubAppearance();
   const plugins = usePlugins();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
+  // the tab title follows the branding package (GizmoX) and the page: "Plan · GizmoX"
+  const rtTitle = useRuntime();
+  const st = useAxfState();
+  const brandName = rtTitle.branding()?.name || rtTitle.manifest.app.name;
   const allViews: ViewMap = {
     ...plugins.contributed.views,
     ...views,
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
+  const pageTitle = allViews[st.view]?.title;
+  useEffect(() => { document.title = pageTitle && st.view !== 'home' ? `${pageTitle} · ${brandName}` : brandName; }, [pageTitle, brandName, st.view]);
   // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) sit above the page
   // (slot app.frame.banners) when the console runs on its own. As a tab in Patches the console page shows none of them:
   // Patches shows them above every tab through the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx), which

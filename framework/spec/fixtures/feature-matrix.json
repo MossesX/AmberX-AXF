@@ -1,0 +1,1299 @@
+{
+ "$axf": "feature-matrix@1",
+ "generatedBy": "framework/spec/check-feature-matrix.mjs --write",
+ "scenario": [
+  {
+   "at": "2026-10-28T19:00:00.000Z",
+   "change": {
+    "action": "seed",
+    "ref": {
+     "kind": "orchestrator",
+     "id": "demo-build"
+    },
+    "profile": "refactor",
+    "title": "Demo build",
+    "items": [
+     {
+      "id": "s1",
+      "name": "Contract",
+      "why": "cross-app data",
+      "group": "Core",
+      "minutes": 30,
+      "model": "Fable",
+      "source": {
+       "kind": "step",
+       "id": "s1"
+      }
+     },
+     {
+      "id": "s2",
+      "name": "Apply engine",
+      "group": "Core",
+      "minutes": 30,
+      "model": "Fable",
+      "source": {
+       "kind": "step",
+       "id": "s2"
+      }
+     },
+     {
+      "id": "s3",
+      "name": "Console page",
+      "group": "UI",
+      "minutes": 30,
+      "model": "Opus",
+      "source": {
+       "kind": "step",
+       "id": "s3"
+      }
+     },
+     {
+      "id": "s4",
+      "name": "Grid hooks",
+      "group": "UI",
+      "minutes": 20,
+      "model": "Opus",
+      "source": {
+       "kind": "step",
+       "id": "s4"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "at": "2026-10-28T19:01:00.000Z",
+   "change": {
+    "action": "seed",
+    "ref": {
+     "kind": "orchestrator",
+     "id": "demo-build"
+    },
+    "profile": "refactor",
+    "items": [
+     {
+      "id": "s1",
+      "name": "Contract (renamed by a reseed: ignored)"
+     },
+     {
+      "id": "s3",
+      "name": "Console page"
+     }
+    ]
+   }
+  },
+  {
+   "at": "2026-10-28T19:02:00.000Z",
+   "change": {
+    "action": "skip",
+    "matrix": "refactor:orchestrator:demo-build",
+    "item": "s4",
+    "by": "brett"
+   }
+  },
+  {
+   "at": "2026-10-28T19:03:00.000Z",
+   "change": {
+    "action": "add-item",
+    "matrix": "refactor:orchestrator:demo-build",
+    "item": {
+     "name": "Dark mode shots",
+     "why": "rebuild rule",
+     "group": "Ship",
+     "minutes": 15,
+     "model": "Opus"
+    }
+   }
+  },
+  {
+   "at": "2026-10-28T19:04:00.000Z",
+   "change": {
+    "action": "edit-item",
+    "matrix": "refactor:orchestrator:demo-build",
+    "item": "s2",
+    "data": {
+     "minutes": 25,
+     "why": "projection onto five tables"
+    }
+   }
+  },
+  {
+   "at": "2026-10-28T19:05:00.000Z",
+   "change": {
+    "action": "applied",
+    "matrix": "refactor:orchestrator:demo-build",
+    "by": "apply-engine"
+   }
+  },
+  {
+   "at": "2026-10-28T19:06:00.000Z",
+   "change": {
+    "action": "add-item",
+    "matrix": "refactor:orchestrator:demo-build",
+    "item": {
+     "id": "s4",
+     "name": "Grid hooks"
+    }
+   }
+  },
+  {
+   "at": "2026-10-28T19:07:00.000Z",
+   "change": {
+    "action": "skip",
+    "matrix": "refactor:orchestrator:demo-build",
+    "item": "s3"
+   }
+  },
+  {
+   "at": "2026-10-28T19:08:00.000Z",
+   "change": {
+    "action": "seed",
+    "ref": {
+     "kind": "pending",
+     "id": "other"
+    },
+    "profile": "main-framework",
+    "title": "Other build",
+    "items": [
+     {
+      "id": "one",
+      "name": "one",
+      "group": "",
+      "minutes": 10,
+      "model": "Opus",
+      "state": "keep",
+      "addedAt": "2026-10-28T19:08:00.000Z",
+      "source": {
+       "kind": "sub",
+       "id": "0"
+      }
+     },
+     {
+      "id": "two",
+      "name": "two",
+      "group": "",
+      "minutes": 60,
+      "model": "Opus",
+      "state": "skip",
+      "addedAt": "2026-10-28T19:08:00.000Z",
+      "source": {
+       "kind": "sub",
+       "id": "1"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "expected": {
+  "state": {
+   "$axf": "feature-matrix@1",
+   "updatedAt": "2026-10-28T19:08:00.000Z",
+   "matrices": [
+    {
+     "id": "refactor:orchestrator:demo-build",
+     "ref": {
+      "kind": "orchestrator",
+      "id": "demo-build"
+     },
+     "profile": "refactor",
+     "title": "Demo build",
+     "createdAt": "2026-10-28T19:00:00.000Z",
+     "updatedAt": "2026-10-28T19:07:00.000Z",
+     "version": 7,
+     "appliedVersion": 5,
+     "appliedAt": "2026-10-28T19:05:00.000Z",
+     "items": [
+      {
+       "id": "s1",
+       "name": "Contract",
+       "why": "cross-app data",
+       "group": "Core",
+       "minutes": 30,
+       "model": "Fable",
+       "state": "keep",
+       "addedAt": "2026-10-28T19:00:00.000Z",
+       "updatedAt": "2026-10-28T19:00:00.000Z",
+       "source": {
+        "kind": "step",
+        "id": "s1"
+       },
+       "history": [
+        {
+         "at": "2026-10-28T19:00:00.000Z",
+         "action": "added"
+        }
+       ]
+      },
+      {
+       "id": "s2",
+       "name": "Apply engine",
+       "why": "projection onto five tables",
+       "group": "Core",
+       "minutes": 25,
+       "model": "Fable",
+       "state": "keep",
+       "addedAt": "2026-10-28T19:00:00.000Z",
+       "updatedAt": "2026-10-28T19:04:00.000Z",
+       "source": {
+        "kind": "step",
+        "id": "s2"
+       },
+       "history": [
+        {
+         "at": "2026-10-28T19:00:00.000Z",
+         "action": "added"
+        },
+        {
+         "at": "2026-10-28T19:04:00.000Z",
+         "action": "why",
+         "from": "",
+         "to": "projection onto five tables"
+        },
+        {
+         "at": "2026-10-28T19:04:00.000Z",
+         "action": "minutes",
+         "from": "30",
+         "to": "25"
+        }
+       ]
+      },
+      {
+       "id": "s3",
+       "name": "Console page",
+       "why": "",
+       "group": "UI",
+       "minutes": 30,
+       "model": "Opus",
+       "state": "skip",
+       "addedAt": "2026-10-28T19:00:00.000Z",
+       "updatedAt": "2026-10-28T19:07:00.000Z",
+       "source": {
+        "kind": "step",
+        "id": "s3"
+       },
+       "history": [
+        {
+         "at": "2026-10-28T19:00:00.000Z",
+         "action": "added"
+        },
+        {
+         "at": "2026-10-28T19:07:00.000Z",
+         "action": "state",
+         "from": "keep",
+         "to": "skip"
+        }
+       ]
+      },
+      {
+       "id": "s4",
+       "name": "Grid hooks",
+       "why": "",
+       "group": "UI",
+       "minutes": 20,
+       "model": "Opus",
+       "state": "keep",
+       "addedAt": "2026-10-28T19:00:00.000Z",
+       "updatedAt": "2026-10-28T19:06:00.000Z",
+       "source": {
+        "kind": "step",
+        "id": "s4"
+       },
+       "history": [
+        {
+         "at": "2026-10-28T19:00:00.000Z",
+         "action": "added"
+        },
+        {
+         "at": "2026-10-28T19:02:00.000Z",
+         "action": "state",
+         "from": "keep",
+         "to": "skip"
+        },
+        {
+         "at": "2026-10-28T19:06:00.000Z",
+         "action": "state",
+         "from": "skip",
+         "to": "keep"
+        }
+       ]
+      },
+      {
+       "id": "dark-mode-shots",
+       "name": "Dark mode shots",
+       "why": "rebuild rule",
+       "group": "Ship",
+       "minutes": 15,
+       "model": "Opus",
+       "state": "keep",
+       "addedAt": "2026-10-28T19:03:00.000Z",
+       "updatedAt": "2026-10-28T19:03:00.000Z",
+       "source": {
+        "kind": "manual",
+        "id": ""
+       },
+       "history": [
+        {
+         "at": "2026-10-28T19:03:00.000Z",
+         "action": "added"
+        }
+       ]
+      }
+     ],
+     "history": [
+      {
+       "at": "2026-10-28T19:00:00.000Z",
+       "action": "created"
+      },
+      {
+       "at": "2026-10-28T19:00:00.000Z",
+       "action": "seeded",
+       "to": "4"
+      },
+      {
+       "at": "2026-10-28T19:02:00.000Z",
+       "action": "state",
+       "item": "s4",
+       "from": "keep",
+       "to": "skip",
+       "by": "brett"
+      },
+      {
+       "at": "2026-10-28T19:03:00.000Z",
+       "action": "add-item",
+       "item": "dark-mode-shots"
+      },
+      {
+       "at": "2026-10-28T19:04:00.000Z",
+       "action": "edit-item",
+       "item": "s2",
+       "to": "why \"\" → \"projection onto five tables\"; minutes 30 → 25"
+      },
+      {
+       "at": "2026-10-28T19:05:00.000Z",
+       "action": "applied",
+       "to": "5",
+       "by": "apply-engine"
+      },
+      {
+       "at": "2026-10-28T19:06:00.000Z",
+       "action": "restore-item",
+       "item": "s4"
+      },
+      {
+       "at": "2026-10-28T19:07:00.000Z",
+       "action": "state",
+       "item": "s3",
+       "from": "keep",
+       "to": "skip"
+      }
+     ]
+    },
+    {
+     "id": "main-framework:pending:other",
+     "ref": {
+      "kind": "pending",
+      "id": "other"
+     },
+     "profile": "main-framework",
+     "title": "Other build",
+     "createdAt": "2026-10-28T19:08:00.000Z",
+     "updatedAt": "2026-10-28T19:08:00.000Z",
+     "version": 2,
+     "appliedVersion": 0,
+     "appliedAt": "",
+     "items": [
+      {
+       "id": "one",
+       "name": "one",
+       "why": "",
+       "group": "",
+       "minutes": 10,
+       "model": "Opus",
+       "state": "keep",
+       "addedAt": "2026-10-28T19:08:00.000Z",
+       "updatedAt": "2026-10-28T19:08:00.000Z",
+       "source": {
+        "kind": "sub",
+        "id": "0"
+       },
+       "history": [
+        {
+         "at": "2026-10-28T19:08:00.000Z",
+         "action": "added"
+        }
+       ]
+      },
+      {
+       "id": "two",
+       "name": "two",
+       "why": "",
+       "group": "",
+       "minutes": 60,
+       "model": "Opus",
+       "state": "skip",
+       "addedAt": "2026-10-28T19:08:00.000Z",
+       "updatedAt": "2026-10-28T19:08:00.000Z",
+       "source": {
+        "kind": "sub",
+        "id": "1"
+       },
+       "history": [
+        {
+         "at": "2026-10-28T19:08:00.000Z",
+         "action": "added"
+        }
+       ]
+      }
+     ],
+     "history": [
+      {
+       "at": "2026-10-28T19:08:00.000Z",
+       "action": "created"
+      },
+      {
+       "at": "2026-10-28T19:08:00.000Z",
+       "action": "seeded",
+       "to": "2"
+      }
+     ]
+    }
+   ]
+  },
+  "logs": [
+   [
+    "created refactor:orchestrator:demo-build",
+    "refactor:orchestrator:demo-build: seeded 4 items"
+   ],
+   [],
+   [
+    "refactor:orchestrator:demo-build: s4 → skip"
+   ],
+   [
+    "refactor:orchestrator:demo-build: + dark-mode-shots"
+   ],
+   [
+    "refactor:orchestrator:demo-build: s2 edited (why \"\" → \"projection onto five tables\"; minutes 30 → 25)"
+   ],
+   [
+    "refactor:orchestrator:demo-build: version 5 applied"
+   ],
+   [
+    "refactor:orchestrator:demo-build: s4 back in (keep)"
+   ],
+   [
+    "refactor:orchestrator:demo-build: s3 → skip"
+   ],
+   [
+    "created main-framework:pending:other",
+    "main-framework:pending:other: seeded 2 items"
+   ]
+  ],
+  "totals": {
+   "items": 5,
+   "kept": 4,
+   "skipped": 1,
+   "keptMinutes": 90,
+   "skippedMinutes": 30,
+   "totalMinutes": 120,
+   "byModel": {
+    "Fable": {
+     "kept": 2,
+     "skipped": 0,
+     "keptMinutes": 55,
+     "skippedMinutes": 0
+    },
+    "Opus": {
+     "kept": 2,
+     "skipped": 1,
+     "keptMinutes": 35,
+     "skippedMinutes": 30
+    }
+   },
+   "groups": [
+    {
+     "label": "Core",
+     "items": 2,
+     "kept": 2,
+     "skipped": 0,
+     "keptMinutes": 55,
+     "skippedMinutes": 0
+    },
+    {
+     "label": "UI",
+     "items": 2,
+     "kept": 1,
+     "skipped": 1,
+     "keptMinutes": 20,
+     "skippedMinutes": 30
+    },
+    {
+     "label": "Ship",
+     "items": 1,
+     "kept": 1,
+     "skipped": 0,
+     "keptMinutes": 15,
+     "skippedMinutes": 0
+    }
+   ],
+   "dirty": true,
+   "applied": true
+  },
+  "grid": [
+   {
+    "id": "main-framework:pending:other",
+    "ref": {
+     "kind": "pending",
+     "id": "other"
+    },
+    "profile": "main-framework",
+    "title": "Other build",
+    "addedAt": "2026-10-28T19:08:00.000Z",
+    "updatedAt": "2026-10-28T19:08:00.000Z",
+    "version": 2,
+    "appliedVersion": 0,
+    "appliedAt": "",
+    "dirty": true,
+    "items": 2,
+    "kept": 1,
+    "skipped": 1,
+    "keptMinutes": 10,
+    "skippedMinutes": 60,
+    "cost": "10 min",
+    "byModel": {
+     "Fable": {
+      "kept": 0,
+      "skipped": 0,
+      "keptMinutes": 0,
+      "skippedMinutes": 0
+     },
+     "Opus": {
+      "kept": 1,
+      "skipped": 1,
+      "keptMinutes": 10,
+      "skippedMinutes": 60
+     }
+    }
+   },
+   {
+    "id": "refactor:orchestrator:demo-build",
+    "ref": {
+     "kind": "orchestrator",
+     "id": "demo-build"
+    },
+    "profile": "refactor",
+    "title": "Demo build",
+    "addedAt": "2026-10-28T19:00:00.000Z",
+    "updatedAt": "2026-10-28T19:07:00.000Z",
+    "version": 7,
+    "appliedVersion": 5,
+    "appliedAt": "2026-10-28T19:05:00.000Z",
+    "dirty": true,
+    "items": 5,
+    "kept": 4,
+    "skipped": 1,
+    "keptMinutes": 90,
+    "skippedMinutes": 30,
+    "cost": "1.5 h",
+    "byModel": {
+     "Fable": {
+      "kept": 2,
+      "skipped": 0,
+      "keptMinutes": 55,
+      "skippedMinutes": 0
+     },
+     "Opus": {
+      "kept": 2,
+      "skipped": 1,
+      "keptMinutes": 35,
+      "skippedMinutes": 30
+     }
+    }
+   }
+  ],
+  "validate": []
+ },
+ "apply": {
+  "before": {
+   "build": {
+    "id": "demo-build",
+    "title": "Demo build",
+    "category": "",
+    "detail": "",
+    "status": "running",
+    "hidden": false,
+    "source": "console",
+    "pendingId": "",
+    "branch": "",
+    "pr": "",
+    "createdAt": "2026-10-28T19:00:00.000Z",
+    "updatedAt": "2026-10-28T19:00:00.000Z",
+    "builtAt": "",
+    "notes": [],
+    "approvals": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "Contract",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "Core",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": true,
+      "doneAt": "2026-10-28T19:00:00.000Z",
+      "note": ""
+     },
+     {
+      "id": "s2",
+      "text": "Apply engine",
+      "model": "Fable",
+      "why": "",
+      "phase": "",
+      "group": "Core",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": ""
+     },
+     {
+      "id": "s3",
+      "text": "Console page",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "UI",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": ""
+     },
+     {
+      "id": "s4",
+      "text": "Grid hooks",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "UI",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": ""
+     }
+    ]
+   },
+   "pending": {
+    "id": "demo-build",
+    "title": "Demo build",
+    "detail": "",
+    "model": "Fable",
+    "status": "pending",
+    "notes": [],
+    "subPrompts": [
+     {
+      "text": "Contract",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "30 min",
+      "done": true,
+      "doneAt": "2026-10-28T19:00:00.000Z",
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "30 min",
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "30 min",
+      "fm": "s3"
+     },
+     {
+      "text": "Grid hooks",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "20 min",
+      "fm": "s4"
+     }
+    ],
+    "createdAt": "2026-10-28T19:00:00.000Z",
+    "builtAt": "",
+    "updatedAt": "2026-10-28T19:00:00.000Z",
+    "estimate": "2 h",
+    "source": "console"
+   },
+   "queue": {
+    "completedAt": null,
+    "completedBy": null,
+    "deps": [],
+    "estimate": "2 h",
+    "steps": [
+     {
+      "text": "Contract",
+      "estimate": "30 min",
+      "done": true,
+      "doneAt": "2026-10-28T19:00:00.000Z",
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "estimate": "30 min",
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "estimate": "30 min",
+      "fm": "s3"
+     },
+     {
+      "text": "Grid hooks",
+      "estimate": "20 min",
+      "fm": "s4"
+     }
+    ]
+   },
+   "change": {
+    "id": "chg-20261028-abcdef",
+    "kind": "build",
+    "title": "Demo build",
+    "model": "fable",
+    "status": "running",
+    "estimate": {
+     "minutes": 110,
+     "costUsd": 20
+    },
+    "steps": [
+     {
+      "text": "Contract",
+      "state": "done",
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "state": "running",
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "state": "queued",
+      "fm": "s3"
+     },
+     {
+      "text": "Grid hooks",
+      "state": "queued",
+      "fm": "s4"
+     }
+    ]
+   },
+   "feature": {
+    "id": "x.demo",
+    "title": "Demo build",
+    "status": "planned",
+    "effort": "M",
+    "acceptance": [
+     {
+      "text": "Contract",
+      "done": true,
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "done": false,
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "done": false,
+      "fm": "s3"
+     },
+     {
+      "text": "Grid hooks",
+      "done": false,
+      "fm": "s4"
+     }
+    ]
+   }
+  },
+  "after": {
+   "build": {
+    "id": "demo-build",
+    "title": "Demo build",
+    "category": "",
+    "detail": "",
+    "status": "running",
+    "hidden": false,
+    "source": "console",
+    "pendingId": "",
+    "branch": "",
+    "pr": "",
+    "createdAt": "2026-10-28T19:00:00.000Z",
+    "updatedAt": "2026-10-28T19:09:00.000Z",
+    "builtAt": "",
+    "notes": [],
+    "approvals": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "Contract",
+      "model": "Fable",
+      "why": "cross-app data",
+      "phase": "",
+      "group": "Core",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": true,
+      "doneAt": "2026-10-28T19:00:00.000Z",
+      "note": ""
+     },
+     {
+      "id": "s2",
+      "text": "Apply engine",
+      "model": "Fable",
+      "why": "projection onto five tables",
+      "phase": "",
+      "group": "Core",
+      "estimate": "25 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": ""
+     },
+     {
+      "id": "s3",
+      "text": "Console page",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "UI",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": true,
+      "done": false,
+      "doneAt": "",
+      "note": ""
+     },
+     {
+      "id": "s4",
+      "text": "Grid hooks",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "UI",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": ""
+     },
+     {
+      "id": "fm-dark-mode-shots",
+      "text": "Dark mode shots",
+      "model": "Opus",
+      "why": "rebuild rule",
+      "phase": "",
+      "group": "Ship",
+      "estimate": "15 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "done": false,
+      "doneAt": "",
+      "note": "from the feature matrix",
+      "skip": false
+     }
+    ]
+   },
+   "pending": {
+    "id": "demo-build",
+    "title": "Demo build",
+    "detail": "",
+    "model": "Fable",
+    "status": "pending",
+    "notes": [],
+    "subPrompts": [
+     {
+      "text": "Contract",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "30 min",
+      "done": true,
+      "doneAt": "2026-10-28T19:00:00.000Z",
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "25 min",
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "30 min",
+      "fm": "s3",
+      "skip": true
+     },
+     {
+      "text": "Grid hooks",
+      "at": "2026-10-28T19:00:00.000Z",
+      "estimate": "20 min",
+      "fm": "s4"
+     },
+     {
+      "text": "Dark mode shots",
+      "at": "2026-10-28T19:09:00.000Z",
+      "estimate": "15 min",
+      "fm": "dark-mode-shots"
+     }
+    ],
+    "createdAt": "2026-10-28T19:00:00.000Z",
+    "builtAt": "",
+    "updatedAt": "2026-10-28T19:09:00.000Z",
+    "estimate": "1.5 h",
+    "source": "console"
+   },
+   "queue": {
+    "completedAt": null,
+    "completedBy": null,
+    "deps": [],
+    "estimate": "1.5 h",
+    "steps": [
+     {
+      "text": "Contract",
+      "estimate": "30 min",
+      "done": true,
+      "doneAt": "2026-10-28T19:00:00.000Z",
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "estimate": "25 min",
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "estimate": "30 min",
+      "fm": "s3",
+      "skip": true
+     },
+     {
+      "text": "Grid hooks",
+      "estimate": "20 min",
+      "fm": "s4"
+     },
+     {
+      "text": "Dark mode shots",
+      "estimate": "15 min",
+      "fm": "dark-mode-shots"
+     }
+    ]
+   },
+   "change": {
+    "id": "chg-20261028-abcdef",
+    "kind": "build",
+    "title": "Demo build",
+    "model": "fable",
+    "status": "running",
+    "estimate": {
+     "minutes": 90
+    },
+    "steps": [
+     {
+      "text": "Contract",
+      "state": "done",
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "state": "running",
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "state": "skipped",
+      "fm": "s3"
+     },
+     {
+      "text": "Grid hooks",
+      "state": "queued",
+      "fm": "s4"
+     },
+     {
+      "text": "Dark mode shots",
+      "state": "queued",
+      "fm": "dark-mode-shots"
+     }
+    ],
+    "updatedAt": "2026-10-28T19:09:00.000Z"
+   },
+   "feature": {
+    "id": "x.demo",
+    "title": "Demo build",
+    "status": "planned",
+    "effort": "M",
+    "acceptance": [
+     {
+      "text": "Contract",
+      "done": true,
+      "fm": "s1"
+     },
+     {
+      "text": "Apply engine",
+      "done": false,
+      "fm": "s2"
+     },
+     {
+      "text": "Console page",
+      "done": false,
+      "fm": "s3",
+      "skip": true
+     },
+     {
+      "text": "Grid hooks",
+      "done": false,
+      "fm": "s4"
+     },
+     {
+      "text": "Dark mode shots",
+      "done": false,
+      "fm": "dark-mode-shots"
+     }
+    ],
+    "matrix": {
+     "id": "refactor:orchestrator:demo-build",
+     "version": 7,
+     "keptMinutes": 90,
+     "kept": 4,
+     "skipped": 1
+    }
+   }
+  },
+  "report": {
+   "matrix": "refactor:orchestrator:demo-build",
+   "version": 7,
+   "keptMinutes": 90,
+   "skippedMinutes": 30,
+   "targets": [
+    "build",
+    "pending",
+    "queue",
+    "change",
+    "feature"
+   ],
+   "perTarget": {
+    "build": 5,
+    "pending": 4,
+    "queue": 4,
+    "change": 3,
+    "feature": 3
+   },
+   "changes": [
+    {
+     "target": "build",
+     "id": "demo-build",
+     "path": "steps.s1.why",
+     "from": "",
+     "to": "cross-app data"
+    },
+    {
+     "target": "build",
+     "id": "demo-build",
+     "path": "steps.s2.estimate",
+     "from": "30 min",
+     "to": "25 min"
+    },
+    {
+     "target": "build",
+     "id": "demo-build",
+     "path": "steps.s2.why",
+     "from": "",
+     "to": "projection onto five tables"
+    },
+    {
+     "target": "build",
+     "id": "demo-build",
+     "path": "steps.s3.skip",
+     "from": false,
+     "to": true
+    },
+    {
+     "target": "build",
+     "id": "demo-build",
+     "path": "steps.fm-dark-mode-shots",
+     "from": null,
+     "to": "added"
+    },
+    {
+     "target": "pending",
+     "id": "demo-build",
+     "path": "steps.s2.estimate",
+     "from": "30 min",
+     "to": "25 min"
+    },
+    {
+     "target": "pending",
+     "id": "demo-build",
+     "path": "steps.s3.skip",
+     "from": null,
+     "to": true
+    },
+    {
+     "target": "pending",
+     "id": "demo-build",
+     "path": "steps.dark-mode-shots",
+     "from": null,
+     "to": "added"
+    },
+    {
+     "target": "pending",
+     "id": "demo-build",
+     "path": "estimate",
+     "from": "2 h",
+     "to": "1.5 h"
+    },
+    {
+     "target": "queue",
+     "id": "demo-build",
+     "path": "steps.s2.estimate",
+     "from": "30 min",
+     "to": "25 min"
+    },
+    {
+     "target": "queue",
+     "id": "demo-build",
+     "path": "steps.s3.skip",
+     "from": null,
+     "to": true
+    },
+    {
+     "target": "queue",
+     "id": "demo-build",
+     "path": "steps.dark-mode-shots",
+     "from": null,
+     "to": "added"
+    },
+    {
+     "target": "queue",
+     "id": "demo-build",
+     "path": "estimate",
+     "from": "2 h",
+     "to": "1.5 h"
+    },
+    {
+     "target": "change",
+     "id": "chg-20261028-abcdef",
+     "path": "steps.s3.state",
+     "from": "queued",
+     "to": "skipped"
+    },
+    {
+     "target": "change",
+     "id": "chg-20261028-abcdef",
+     "path": "steps.dark-mode-shots",
+     "from": null,
+     "to": "added"
+    },
+    {
+     "target": "change",
+     "id": "chg-20261028-abcdef",
+     "path": "estimate",
+     "from": {
+      "minutes": 110,
+      "costUsd": 20
+     },
+     "to": {
+      "minutes": 90
+     }
+    },
+    {
+     "target": "feature",
+     "id": "x.demo",
+     "path": "acceptance.s3.skip",
+     "from": null,
+     "to": true
+    },
+    {
+     "target": "feature",
+     "id": "x.demo",
+     "path": "acceptance.dark-mode-shots",
+     "from": null,
+     "to": "added"
+    },
+    {
+     "target": "feature",
+     "id": "x.demo",
+     "path": "matrix",
+     "from": null,
+     "to": {
+      "id": "refactor:orchestrator:demo-build",
+      "version": 7,
+      "keptMinutes": 90,
+      "kept": 4,
+      "skipped": 1
+     }
+    }
+   ],
+   "summary": "refactor:orchestrator:demo-build v7: 4 kept (1.5 h), 1 skipped (30 min); 19 changes across 5 targets (build 5, pending 4, queue 4, change 3, feature 3)",
+   "at": "2026-10-28T19:09:00.000Z"
+  },
+  "secondPass": {
+   "matrix": "refactor:orchestrator:demo-build",
+   "version": 7,
+   "keptMinutes": 90,
+   "skippedMinutes": 30,
+   "targets": [
+    "build",
+    "pending",
+    "queue",
+    "change",
+    "feature"
+   ],
+   "perTarget": {
+    "build": 0,
+    "pending": 0,
+    "queue": 0,
+    "change": 0,
+    "feature": 0
+   },
+   "changes": [],
+   "summary": "refactor:orchestrator:demo-build v7: 4 kept (1.5 h), 1 skipped (30 min); 0 changes across 5 targets (build 0, pending 0, queue 0, change 0, feature 0)",
+   "at": "2026-10-28T19:10:00.000Z"
+  }
+ }
+}

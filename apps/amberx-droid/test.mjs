@@ -137,7 +137,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const { readFileSync, existsSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
-  const own = { banner: 'amberx-thin', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'amberx-droid', 'app-menu': 'amberx-droid' };
+  const own = { banner: 'amberx-branded', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'amberx-droid', 'app-menu': 'amberx-droid' };
   for (const [type, id] of Object.entries(own)) {
     eq(man.defaults[type], id, `default ${type} is ${id}`);
     ok(existsSync(`${here}src/assets/${type}/${id}.json`), `ships ${type}/${id}`);
@@ -147,6 +147,75 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const libs = [...app.matchAll(/from '\.\/axf\/libs\/([a-z-]+)/g)].map((m) => m[1]).sort();
   for (const l of libs) ok(['hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
   ok(!/plugins\//.test(app), 'no console plugin is imported');
+}
+
+// Enterprise design language + branding (enterprise-branding s31, Oct 28 2026): the app names its own design package
+// and the AmberX branding package; every asset they name ships with the app, and the banner stays one line (§11).
+{
+  const { readFileSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  const read = (t, id) => JSON.parse(readFileSync(`${here}src/assets/${t}/${id}.json`, 'utf8'));
+  eq(man.defaults['design-package'], 'amberx-app-day', 'default design package is AmberX · Day');
+  eq(man.defaults.branding, 'amberx-app', 'default branding is the AmberX app branding package');
+  for (const id of ['amberx-app-day', 'amberx-app-night']) {
+    ok(existsSync(`${here}src/assets/design-package/${id}.json`), `ships design-package/${id}`);
+    const d = read('design-package', id).data;
+    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(existsSync(`${here}src/assets/${t}/${d[t]}.json`), `${id}: ${t} ${d[t]} ships`);
+    for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(existsSync(`${here}src/assets/${t}/${sid}.json`), `${id}: ${t} ${sid} ships`);
+    if (id === 'amberx-app-day') for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) eq(man.defaults[t], d[t], `default ${t} matches the default design package`);
+  }
+  const b = read('branding', 'amberx-app').data;
+  for (const [slot, mode] of Object.entries({ banner: 'lockup', toolbar: 'none', container: 'none', 'tab-group': 'none', dialog: 'mark', window: 'mark' })) eq(b.decorations[slot], mode, `brand ${slot} = ${mode} (DESIGN-LANGUAGE §10)`);
+  for (const [k, mid] of Object.entries(b.marks)) ok(existsSync(`${here}src/assets/${k === 'animated' ? 'animated-logo' : 'logo-mark'}/${mid}.json`), `branding ${k} ${mid} ships`);
+  ok(existsSync(`${here}src/assets/icon-pack/${b.iconPack}.json`), `branding icon pack ${b.iconPack} ships`);
+  eq(b.brand.name, 'AmberX', 'the brand is AmberX');
+  const banner = read('banner', 'amberx-branded').data;
+  ok(banner.height >= 24 && banner.height <= 40, 'the banner is one line, 24–40 px');
+  ok(banner.logo.show === true, 'the banner shows the brand lockup');
+  const tb = read('toolbar', 'amberx-droid').data;
+  const tbItems = tb.groups.reduce((n, g) => n + g.items.length + (g.provider ? (g.max ?? 0) : 0), 0);
+  ok(tbItems <= 12, `toolbar shows at most 12 items (${tbItems})`);
+  ok(read('nav-menu', 'amberx-droid').data.sections.every((s) => typeof s.label === 'string' && s.label), 'every nav section has an eyebrow');
+  ok(read('app-menu', 'amberx-droid').data.menus.length <= 9, 'at most 9 top menus');
+  const sw = read('theme-switch', man.defaults['theme-switch']).data;
+  ok(existsSync(`${here}src/assets/color-theme/${sw.light}.json`) && existsSync(`${here}src/assets/color-theme/${sw.dark}.json`), 'the day/night switch flips between colours the app ships');
+}
+
+// Windows (enterprise-branding s32): any page opens in a floating window on the framework's window engine, and the
+// app's dialogs, containers, tab groups and popups are the Amber Signature set the design package names.
+{
+  const { readFileSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const app = readFileSync(`${here}src/App.tsx`, 'utf8');
+  ok(app.includes('VIEW_TAB_KIND') && app.includes('registerWindowActions'), 'App registers the page window kind and its action');
+  const win = readFileSync(`${here}src/windows/ViewWindow.tsx`, 'utf8');
+  ok(win.includes("register('amberx.window'") && win.includes('windows.openFloating:'), 'amberx.window opens a floating window through the window engine');
+  const ctx = JSON.parse(readFileSync(`${here}src/assets/context-menu/amberx-droid.json`, 'utf8')).data.targets['nav-item'];
+  ok(ctx.some((i) => i.action === 'amberx.window:{payload}'), 'nav right-click offers Open in a window');
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  for (const t of ['dialog', 'container', 'tab-group', 'popup']) eq(man.defaults[t], 'amber-signature', `default ${t} is the Amber Signature one`);
+  ok(!/#[0-9a-f]{3,8}\b/i.test(readFileSync(`${here}src/windows/windows.css`, 'utf8')), 'window CSS uses tokens only');
+}
+
+// Pages (enterprise-branding s33): every page head has an eyebrow, a title and one sentence; icons exist in the
+// framework set (a missing name falls back to a box); Approvals shows skeletons while it reads and can pop out.
+{
+  const { readFileSync, readdirSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const iconSrc = readFileSync(`${here}src/axf/react/components/Icon.tsx`, 'utf8');
+  const names = new Set([...iconSrc.matchAll(/^\s+["']?([a-z0-9-]+)["']?:\s*["'`]M/gm)].map((m) => m[1]));
+  const files = [`${here}src/views/Approvals.tsx`, ...readdirSync(`${here}src/plugins`).filter((p) => !p.startsWith('_') && existsSync(`${here}src/plugins/${p}/web`))
+    .flatMap((p) => readdirSync(`${here}src/plugins/${p}/web`).filter((f) => f.endsWith('.tsx')).map((f) => `${here}src/plugins/${p}/web/${f}`))];
+  for (const f of files) {
+    const src = readFileSync(f, 'utf8');
+    for (const m of src.matchAll(/icon="([a-z0-9-]+)"/g)) ok(names.has(m[1]), `${f.split('/src/')[1]}: icon ${m[1]} exists`);
+    for (const head of src.matchAll(/<header className="fx-pagehead">([\s\S]*?)<\/header>/g)) {
+      ok(head[1].includes('fx-eyebrow') && head[1].includes('<h1'), `${f.split('/src/')[1]}: page head has an eyebrow and a title`);
+    }
+  }
+  const ap = readFileSync(`${here}src/views/Approvals.tsx`, 'utf8');
+  ok(ap.includes('aria-busy') && ap.includes("amberx.window:home"), 'Approvals: skeleton while reading, pops out into a window');
 }
 
 // An empty shell for building and testing plugins (Oct 26 2026): Approvals is its only page; voice, monitor and any
@@ -875,6 +944,98 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   }
   eq(rn.readAnswer('number', 'three please'), '3', 'runner: spoken number');
   eq(rn.readAnswer('choice', 'the medium one', ['high', 'medium', 'low']), 'medium', 'runner: choice');
+}
+
+/* ---------------------------------------------------------------- veto@1 held calls (lib-hub veto.ts + plugins/approvals) */
+{
+  const vt = await import('../../framework/libs/hub/veto.ts');
+  const ap = await import('./src/plugins/approvals/web/core.ts');
+  const ID1 = '11111111-2222-3333-4444-555555555555';
+  const ID2 = '66666666-7777-8888-9999-000000000000';
+  const NOW = Date.parse('2026-10-29T02:00:00.000Z');
+  const held = (over = {}) => ({ id: ID1, tool: 'vps.run', summary: 'vps.run with arguments {"command":"docker restart \\"web\\""}', url: `${HUB}/auth/admin/approvals/${ID1}`, status: 'held',
+    veto: { runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 180, countdownSeconds: 180 }, jobId: 'job_abc-1', denyUrl: `${HUB}/auth/api/approvals/${ID1}/deny`, streamUrl: `${HUB}/auth/api/jobs/job_abc-1/stream`, reason: { title: 'Restart web' }, ...over });
+  const plain = { id: ID2, tool: 'github.merge', summary: 'merge', url: `${HUB}/auth/admin/approvals/${ID2}`, createdAt: '', expiresAt: '' };
+  const body = JSON.stringify({ count: 2, pending: [held(), plain], held: [held()], heldCount: 1 });
+  const calls = vt.interpretVeto(HUB, body, NOW);
+  eq(calls.length, 1, 'veto: one held call (pending + held[] deduped)');
+  eq(calls[0].command, 'docker restart "web"', 'veto: command from the summary');
+  eq(calls[0].title, 'Restart web', 'veto: title from the reason');
+  eq(calls[0].denyUrl, `${HUB}/auth/api/approvals/${ID1}/deny`, 'veto: deny link rebuilt');
+  eq(calls[0].streamUrl, `${HUB}/auth/api/jobs/job_abc-1/stream`, 'veto: stream link rebuilt');
+  eq(vt.interpretVeto(HUB, JSON.stringify({ pending: [held({ denyUrl: 'https://evil.example/x' })] }), NOW).length, 0, 'veto: a link off the hub is refused');
+  eq(vt.interpretVeto(HUB, JSON.stringify({ pending: [held({ veto: undefined })] }), NOW).length, 0, 'veto: no timing = not held');
+  eq(vt.interpretVeto(HUB, 'nope', NOW).length, 0, 'veto: bad body = nothing');
+  const split = vt.splitFeed(HUB, 200, body, NOW);
+  eq(split.feed.pending.map((p) => p.id), [ID2], 'veto: held calls taken out of the approvals list');
+  eq(split.feed.count, 1, 'veto: count without the held one');
+  eq(split.held.length, 1, 'veto: held list');
+  eq(vt.splitFeed(HUB, 401, '', NOW).feed.status, 'signed-out', 'veto: 401 still signed out');
+  const c = calls[0];
+  eq(vt.secondsLeftNow(c, NOW + 10_500), 170, 'veto: local countdown');
+  eq(vt.secondsLeftNow(c, NOW + 999_000), 0, 'veto: never below 0');
+  eq([vt.vetoPhase(31), vt.vetoPhase(30), vt.vetoPhase(0)], ['held', 'warning', 'running'], 'veto: phases');
+  eq(vt.formatCountdown(179), '2:59', 'veto: 2:59');
+  {
+    let p = vt.notifyPlan([], [c], NOW);
+    eq(p.send.map((x) => x.phase), ['held'], 'notify: timer started');
+    p = vt.notifyPlan(p.sent, [c], NOW + 1000);
+    eq(p.send.length, 0, 'notify: once per phase');
+    p = vt.notifyPlan(p.sent, [c], NOW + 151_000);
+    eq(p.send.map((x) => x.phase), ['warning'], 'notify: time running out');
+    p = vt.notifyPlan(p.sent, [c], NOW + 180_000);
+    eq(p.send.map((x) => x.phase), ['running'], 'notify: running');
+    eq(vt.notifyPlan([], [c], NOW + 170_000).send.map((x) => x.phase), ['warning'], 'notify: first seen late = one card');
+  }
+  const push = vt.vetoFromPush(HUB, JSON.stringify({ type: 'veto', phase: 'warning', id: ID1, jobId: 'job_abc-1', title: 'Restart web', command: 'docker restart web', runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 30, denyUrl: `${HUB}/auth/api/approvals/${ID1}/deny`, streamUrl: `${HUB}/auth/api/jobs/job_abc-1/stream`, approvalUrl: `${HUB}/auth/admin/approvals/${ID1}` }), NOW);
+  ok(push && push.phase === 'warning' && push.call.command === 'docker restart web' && push.call.secondsLeft === 30, 'push: veto push read');
+  eq(vt.vetoFromPush(HUB, { type: 'approval', id: ID1 }, NOW), null, 'push: other pushes ignored');
+  eq(vt.vetoEvent({ event: 'countdown', data: '{"secondsLeft":12}' }), { type: 'countdown', secondsLeft: 12 }, 'stream: countdown');
+  eq(vt.vetoEvent({ event: 'output', data: '{"stream":"stderr","text":"oops"}' }), { type: 'output', stream: 'stderr', text: 'oops' }, 'stream: output');
+  eq(vt.vetoEvent({ event: 'done', data: '{"state":"ran","exitCode":0}' }), { type: 'done', state: 'ran', exitCode: 0 }, 'stream: done');
+  eq(vt.vetoEvent({ event: 'done', data: '{"exitCode":2}' }).state, 'failed', 'stream: done without state, non-zero = failed');
+  eq(vt.vetoEvent({ event: 'state', data: '{"state":"bogus"}' }), null, 'stream: unknown state dropped');
+  {
+    const frames = [];
+    const sse = 'event: countdown\ndata: {"secondsLeft":1}\n\nevent: state\ndata: {"state":"running"}\n\nevent: output\ndata: {"stream":"stdout","text":"hi"}\n\nevent: done\ndata: {"state":"ran","exitCode":0}\n\n';
+    const end = await vt.followVeto(c.streamUrl, HUB, (e) => frames.push(e.type), { fetch: async () => new Response(sse, { status: 200 }) });
+    eq([end, frames], ['ran', ['countdown', 'state', 'output', 'done']], 'stream: followed to the end');
+    let threw = false;
+    try { await vt.followVeto('https://evil.example/s', HUB, () => undefined); } catch { threw = true; }
+    ok(threw, 'stream: only the hub');
+  }
+  {
+    const sent = [];
+    const fake = async (u, i) => { sent.push([u, i?.method ?? 'GET', i?.headers?.['X-AxHub-CSRF']]); return u.endsWith('/session') ? new Response('{"signedIn":true,"csrf":"tok12345"}') : new Response('{"ok":true,"state":"denied"}', { status: 200 }); };
+    const r = await vt.denyVeto(HUB, ID1, { fetch: fake });
+    ok(r.ok && r.state === 'denied', 'deny: ok');
+    eq(sent[1], [`${HUB}/auth/api/approvals/${ID1}/deny`, 'POST', 'tok12345'], 'deny: POST with the session CSRF');
+    eq((await vt.denyVeto(HUB, 'nope', { fetch: fake })).ok, false, 'deny: only request ids');
+  }
+  const cfg = ap.alertConfig((k) => ({ [ap.K.sound]: 'ringtone', [ap.K.vibration]: 'none', [ap.K.warningSound]: 'bogus' })[k]);
+  eq([cfg.held.sound, cfg.held.vibrate, cfg.warning.sound, cfg.running.sound], ['ringtone', false, 'alarm', 'default'], 'approvals: alert config with defaults');
+  eq(ap.patternOf('pulse'), [0, 150, 100, 150, 100, 150], 'approvals: vibration pattern');
+  eq(ap.notificationText({ title: 'Restart web', command: 'docker restart web', tool: 'vps.run' }, 'held', 180).title, 'Runs in 3:00: Restart web', 'approvals: timer started text');
+  eq(ap.tonesOf('none').length, 0, 'approvals: silent = no tones');
+  {
+    const store = await import('./src/plugins/approvals/web/store.ts');
+    store.resetVeto();
+    const started = [];
+    store.setVetoHooks({ started: (t) => started.push(t.call.id) });
+    const c0 = { ...calls[0], streamUrl: null };
+    store.mergeHeld([c0], NOW);
+    eq([store.vetoState().tracks.length, started], [1, [ID1]], 'store: a held call opens a track (terminal tab)');
+    store.mergeHeld([c0], NOW + 1000);
+    eq(started.length, 1, 'store: once');
+    store.markDenied(ID1);
+    eq(store.vetoState().tracks[0].state, 'denied', 'store: denied');
+    store.closeTrack(ID1);
+    eq(store.vetoState().tracks.length, 0, 'store: a finished tab closes');
+    store.mergeHeld([c0], NOW);
+    store.mergeHeld([], NOW + 5000);
+    eq(store.vetoState().tracks[0].state, 'gone', 'store: no longer held = gone');
+    store.resetVeto();
+  }
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

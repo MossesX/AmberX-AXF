@@ -101,7 +101,7 @@ function GridView() {
 
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Changes & features</h1></div><Button icon="refresh" onClick={reload}>Reload</Button></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Changes &amp; features</h1><p className="fx-muted">Every change from the codebase log and every planned feature in one grid, newest first.</p></div><Button icon="refresh" onClick={reload}>Reload</Button></header>
       <Container title={data ? `${rows.length} rows · ${n.changes} changes · ${n.features} features` : 'Loading…'} icon="list">
         <div className="fx-row" style={{ flexWrap: 'wrap', marginBottom: 'var(--fx-space)' }}>
           <Segmented label="Show" size="sm" value={show} onChange={setShow} options={[{ value: 'all', label: 'Both' }, { value: 'changes', label: 'Changes' }, { value: 'features', label: 'Features' }]} />

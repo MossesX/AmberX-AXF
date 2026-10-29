@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "material-flow",
+  "name": "Material Flow",
+  "version": "1.0.0",
+  "description": "Raised buttons and cards, bottom sheets and stretched underline tabs in a material rhythm.",
+  "author": "AmberX AXF",
+  "tags": [
+    "material",
+    "material"
+  ],
+  "data": {
+    "slots": {
+      "button": "material-flow",
+      "container": "material-flow",
+      "slider": "material-flow",
+      "dialog": "material-flow",
+      "popup": "material-flow",
+      "tab-group": "material-flow",
+      "gauge": "ring",
+      "meter": "striped-pill"
+    },
+    "tone": "material"
+  }
+}

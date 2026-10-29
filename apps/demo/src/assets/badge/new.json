@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "badge",
+  "id": "new",
+  "name": "New",
+  "version": "1.0.0",
+  "description": "A starter badge: an accent pill that says New. Attach it to a banner with data.attach.",
+  "author": "AmberX AXF",
+  "tags": [
+    "badge"
+  ],
+  "data": {
+    "icon": "sparkles",
+    "label": "New",
+    "tone": "accent",
+    "shape": "pill",
+    "tooltip": "Something new"
+  }
+}

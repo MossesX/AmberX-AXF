@@ -47,7 +47,9 @@
     "gauge": "classic-arc",
     "meter": "striped-pill",
     "settings": "console",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "design-package": "fresh",
+    "branding": "amberx"
   },
   "hidden": [],
   "developer": {

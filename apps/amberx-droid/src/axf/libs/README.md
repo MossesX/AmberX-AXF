@@ -89,6 +89,10 @@ only ever travels in the Authorization header. Server-Sent Events are in `core/s
 2 s → 60 s back-off, `parseSseText` shared with assistant@1). Self-test: `npx -y tsx framework/spec/check-web-client.mts`.
 The `apiclient` boilerplate installs it (web-only library: `axf install` records it in the manifest, no Gradle/App.kt).
 
+## ashes (`ai.amberx.axf.ashes`): AshesUI, the live element inspector (Oct 23 2026, Opus)
+
+Right-click anywhere → **AshesUI** (a check mark while on; `ashes.toggle`, also View → AshesUI). While on, a small headless tooltip follows the pointer (touches too) with what is under it: framework component + variant, the active asset that styles it, **the plugin or library it belongs to and the model that built it**, size, colours + WCAG contrast, font, spacing, role, React component + handlers, selector. A box outlines it (margin / padding shaded). **Double-click or double-tap** opens the inspector, a draggable, resizable framework window: every element on screen in a tree (the selected one expanded and scrolled into view; search, All / Framework / Plugins filter), and its parameters in a tab group, **Grid** and **Tree** (identity, framework, owner, asset data, box, computed style by group, inline style, accessibility, content, attributes, theme tokens, React). Extras: pick mode, F freezes, arrows walk parent / child / siblings, Enter inspects, Esc turns it off, live style / attribute edits (on* attributes refused) with revert, copy selector / JSON / HTML, stats (components and owners on screen), settings under Settings → Plugins → AshesUI (tooltip fields, offset, delay, touch, box, box model, tree size, off-screen elements, tokens). Pure rules in `core.ts` (open registries: `registerComponent`, owners from `ownersFrom(plugins, libraries)` or an app's own `resolveOwner`), checked by `framework/spec/check-ashes.mts` (53). A plugin is recognised by its `axp-<folder>` classes or `data-axf-plugin`; the console passes every bundled plugin with its `builtWith.model`. Context-menu entries now take `checked` (same bindings as app-menu items) and `MenuList` draws the check mark. Android twin deferred (PORTING.md).
+
 ## Harvested from Walkthrough Studio (Oct 22 2026): dnd, tree, datagrid, workspace, recorder, docstore
 
 Six web libraries, each with **parts** (library@1: features inside the library an app includes or leaves out and configures
@@ -100,6 +104,84 @@ reads its parts in `register` (install it with `installLibraries`), and exports 
 | `dnd` (`ai.amberx.axf.dnd`) | Pointer drag-and-drop (mouse + touch grip), zones with before / after / inside markers, ghost, pop-up trash can (`startDrag`, `registerZone`, `<DragLayer/>`) | zones, touch, ghost {offset}, trash {label, overLabel, side} |
 | `tree` (`ai.amberx.axf.tree`) | `<TreeView>` (branches + leaves, folding, search highlight that keeps matches open, meters, multi-select, drag) and `<TreeSearch>` | search {placeholder}, chips, meters, drag {trash}, multi |
 | `datagrid` (`ai.amberx.axf.datagrid`) | `<DataGrid>`: categorized sub-grids with totals + meters, hideable columns (header context menu `axf-grid-header:<id>`), sort, expandable rows, status edges, drag | groups, column-menu {hidden}, sort, expand, drag {trash}, compact |
+
+**Datasets (Oct 28 2026, `libs/datagrid/datasets.ts`):** every `<DataGrid>` registers itself as a dataset (its id, columns via `sortValue` or the row field of the same id, rows) unless `dataset={false}`; other views call `useDataset({ id, label, fields, rows })`. Plugins attach transforms (`setDatasetTransform(dataset, owner, { filter, compare, active })`, filters AND-ed, sorts chained, never mutating) and draw above a grid through the slot `axf.dataset.toolbar` (props `dataset`, `label`). `getDatasetOrLast` keeps the last snapshot so a dialog opened over the page still works. First user: the Basic filter console plugin. Android twin deferred (placeholder `axf.datagrid.datasets.android`).
 | `workspace` (`ai.amberx.axf.workspace`) | `createWorkspace` + `<WorkspaceHost>`: pane areas with tabs + splitters, floating panes, layouts, maximise, default + unlimited docked / floating toolbars, `<ToolbarCustomizer>`, `registerWorkspaceMenus`, action `axf.ws:<id>:…` | areas, splitters, layouts {default}, floating-panes, maximise, toolbars {max, labels}, floating-toolbars, customizer, phone {breakpoint} |
 | `recorder` (`ai.amberx.axf.recorder`) | `useRecorder` (pointer, keys, page changes, markers, optional screen video), `<CaptureLayer>`, `<CursorLayer>`, `<Replay>`, `eventsToCues`, `frameAt` | capture-layer, same-site, keys, screen-video, replay {cursor, ripples}, cues {waitAfter} |
 | `docstore` (`ai.amberx.axf.docstore`) | `createDocStore` (this device + axHub data server, chunked under 64 KB, newest copy wins), `putBlob` / `getBlob` (IndexedDB) | device, hub {project, chunk}, blobs {db} |
+
+## axHub storage (Oct 23 2026): hubstore
+
+| Library | What it gives | Parts |
+| --- | --- | --- |
+| `hubstore` (`ai.amberx.axf.hubstore`) | Settings and app data on axHub's data server instead of this device. `HubSettings` (one `hub-settings@1` document: `load`, `get`, `set`, `patch`, per key last save wins, 409 re-merge; `mirror(rt.settings)` keeps the app's Settings screen values on axHub) and `HubData` (`table(name)` → `rows`, `get`, `put`, `remove`, `replace`; `hub-table@1`, chunked past 64 KB; `where(name)` says hub or device). The hub down is a `HubError` + state (`unauthorized` / `unreachable`), never a quiet local copy. | settings {file, mirror}, data {mode all \| some, tables, folder} |
+
+Install it with `installLibraries` (it reads `libraries.hubstore` and, with the settings part's `mirror` on, mirrors the
+app's Settings screen) or construct the classes with explicit `hub` / `project` (the console's Voice notes plugin does).
+Picking parts in Build Pilot: settings only, all data (`mode: all`), or some tables (`mode: some`, `tables: lists, notes`).
+The app's origin must be in the hub's `AXHUB_DATA_ORIGINS`.
+
+## plugintheme (`ai.amberx.axf.plugintheme`)
+
+Per-plugin theme override over the app's theme (Oct 28 2026, web only). `withPluginTheme(lib, { id, name })` wraps a
+plugin's web library: every UI root (views, dialogs, window tabs, settings tab via `SettingsTab.plugin`, panels) carries
+`data-axf-plugin="<id>"`, and the plugin's settings tab gets an Appearance panel (switch + form / token tree / JSON
+editors, copy from a plugin or theme asset, reset, preview). `pluginThemeLibrary` compiles every override that is on
+into one stylesheet, adds the right-click item, the toolbar button and actions `plugin-theme.toggle[:<id>]` /
+`plugin-theme.edit[:<id>]`. Storage: `axf.plugin.<id>.look = { on, tokens: { "--fx-…": value } }` (`./plugintheme/core.ts`).
+Self-test: `npx -y tsx framework/spec/check-plugintheme.mts`. Design notes: `_claude/memory/docs/plugin-theme-override.md`.
+
+## hubstatus (`ai.amberx.axf.hubstatus`)
+
+The axHub badge for any AXF app, no dependencies. A status widget on the banner (asset `status/axhub`, counter
+`hub.live`): **red** from the start and whenever the app isn't reading its settings live from axHub, **green** only
+while it is (Brett's rule, Oct 24 2026). Each check reads `shared/settings/appearance.json` from the hub with the
+browser's own hub session (no token, no redirects, no cache); a developer app's own hub source must be ready too, and a
+read older than two check periods doesn't count. Tap → connection details with an expandable More row and Check now;
+a pop-up note when it changes. Settings → Plugins → axHub status. Install with `installLibraries(rt, [hubStatusLibrary])`.
+Self-test: `npx -y tsx framework/spec/check-hubstatus.mts`.
+
+## approvals (`ai.amberx.axf.approvals`)
+
+Approvals in any title bar, click to decide (Opus, Oct 28 2026; Brett: "Make approvals pop up in the assistant's title
+bar, click to approve"). Built over lib-hub (`hub.ts` feed + `veto.ts` held calls); no new contract.
+
+- `libs/approvals/core.ts` (pure, Node-tested): `interpretApprovals` = one list from the feed reply: held calls first
+  (countdown, `decisions: ['deny']`, never Approve), then approvals (title / description from the caller's
+  `reason`, else "Run <tool>"; tool, age, approval link rebuilt from the id, the hub's `actions` → approve/decline,
+  `revision`). Words: `itemLine`, `badgeText`, `badgeLabel`, `formatAge`, `isUrgent` (≤ 30 s). `freshIds` / `goneIds`.
+  `decideOnHub` sends Approve / Decline (`POST /auth/api/approvals/<id>` `{action, rev}` + `X-AxHub-CSRF`) or a veto
+  Deny, and only from a page on the hub's own origin (`canDecideHere`); anything else gets `ok: false`.
+- `libs/approvals/index.ts`: `fetchApprovals` (lib-hub read rules: own session, no redirects, capped) and
+  `ApprovalsWatcher` / `approvalsWatcher(hub)`: polls every 5 s (2 s – 5 min) while the page is visible, on focus, on
+  `axf:hub-check` (`checkApprovalsNow()`), and on `push(raw)` (a hub push or a tapped notification). The hub has no
+  approvals event stream yet (placeholder `axf.approvals.live`).
+- `libs/approvals/react.tsx`: `<ApprovalsBadge hub? resolveHub? frame? />` draws nothing while nothing waits; otherwise
+  an `fx-iconbtn` with the count (warning colour for held calls, danger at ≤ 30 s, a pulse when something new arrives).
+  Click: a popover (portalled, fixed under the badge, inside the viewport) listing each item with Approve / Decline or
+  countdown + Deny, a result toast, and "All approvals on axHub". How a decision is made, first that applies: the app's
+  host `decide` (`setApprovalsHost({ hub, frame, decide, open, everyMs })`); directly on the hub's origin; the hub's
+  approval page framed in the popover when `frame` (the hub must list the app's origin in
+  `AXHUB_APPROVALS_FRAME_ANCESTORS`, as it does for the console); else the page opens (`host.open` or `window.open`).
+  An item acted on that leaves the feed gets a "decided on axHub" toast. `requestApprovalsOpen(id?)` opens the popover
+  on the badge on screen (or the next one mounted), that item first: what a notification tap calls.
+
+Used by the Dev Console's AI assistant (chat title bar, framed hub page) and the AmberX app (its assistant views; the
+phone decides in its signed-in hub web view, native Deny). Self-test: `npx -y tsx framework/spec/check-approvals.mts`.
+
+## axHub sync (Oct 24 2026): hubsync
+
+One look, settings and data for every app and device, on top of `hubstore` and the appearance source.
+
+```ts
+import { hubSyncLibrary, startHubSync } from '<axf>/libs/hubsync';
+installLibraries(rt, [settingsLibrary, hubSyncLibrary, …]);   // reads manifest libraries.hubsync + the saved connection
+// or: const sync = startHubSync(rt, { hub, project, look: 'follow', settings: true, data: ['notes'] });
+// sync.state(), sync.subscribe(fn), sync.refresh(), sync.test(), sync.settings (HubSettings), sync.data (HubData), sync.stop()
+```
+
+- **look** `required` (waits for axHub, like `developer.hub`), `follow` (same shared document, never blocks: `FollowSource`), `off`. An app that already attached a source keeps it (`look.status = 'own'`).
+- **settings**: the Settings screen values in `shared/settings/apps/<app id>.json` (secrets never).
+- **data**: `off`, `all` or a table list, in `shared/data-<app id>/`.
+- Settings → Plugins → **axHub sync**: Now (status, Sync now), Connect to axHub (address, project, Save and reconnect, Test connection, Sign in), What syncs. The connection is saved on the device (`axf.hubsync.connection`), never on the hub.
+- Android: Voice Vault's `sync/HubSync.kt` is the twin (Android framework work on hold).

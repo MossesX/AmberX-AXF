@@ -1,9 +1,13 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
-import { openFromContext } from './open';
+import { newTab, openFromContext } from './open';
+import { ConnectDialog, ConnectionDialog } from './connections';
+import { getSettings } from './api';
+import { applyProfile } from './profiles';
+import { AppearancePanel, BehaviourPanel, ProfilesPanel } from './look';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
-import { TerminalTab } from './TerminalTab';
+import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
 import { watchHeadless } from './headless';
 import './terminal.css';
@@ -11,7 +15,8 @@ import { appMenu } from './menu';
 
 /*
  * Terminal plugin (web part):
- *  - tab kind `terminal` (floating window, tabs: container / console / VPS / Claude Code, + for more)
+ *  - tab kind `terminal-host` (TerminalHost.tsx): a Windows Terminal-style window with its own tab strip, toolbar and
+ *    sessions (container / console / VPS / Claude Code); legacy `terminal` tabs open as a host with one session
  *  - "Open terminal" on every right-click / long-press (runtime contextExtras key `*:terminal`); on a container or a
  *    folder the console marks (data-fx-ctx-target axf-container / axf-container-path) it opens right there
  *  - actions terminal.open[:<target>:<payload>], terminal.new
@@ -23,20 +28,39 @@ import { appMenu } from './menu';
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Terminal',
-  version: '0.2.0',
+  version: '0.3.0',
   appMenu,
   provides: ['axf.terminal'],
   register(rt) {
     rt.actions.register('terminal.open', ([target, payload]) => openFromContext(rt, target, payload), { label: 'Open terminal', params: true });
-    rt.actions.register('terminal.new', () => openFromContext(rt), { label: 'Open a terminal' });
+    // New terminal follows Settings → Startup: a Claude Code tab on the default profile's connection, the console,
+    // or the connection picker
+    rt.actions.register('terminal.new', () => void getSettings().then((s) => {
+      if (s.startup === 'picker') return rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' });
+      if (s.startup === 'claude') {
+        const p = s.claudeProfiles.find((x) => x.id === s.defaultClaudeProfile) ?? s.claudeProfiles[0];
+        const c = p?.connection ?? 'console';
+        const via = c.startsWith('container:') ? { via: 'container' as const, container: c.slice(10) } : { via: (c === 'vps' || c === 'axhub' ? c : 'console') as 'console' };
+        return newTab(rt, { ...applyProfile(p ?? null), kind: 'claude', ...via });
+      }
+      return openFromContext(rt);
+    }, () => openFromContext(rt)), { label: 'Open a terminal' });
+    rt.actions.register('terminal.claude', () => rt.openDialog('terminal.connect', { hostId: '', mode: 'claude' }), { label: 'New Claude Code tab (pick a connection)' });
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     watchHeadless(rt); // headless Claude Code sessions on the VPS open here, window to the front (setting showHeadless)
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);
   },
-  tabs: { terminal: (t) => <TerminalTab tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },
-  settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Terminal windows: options, the VPS host key, Claude Code, Mosh / Moshi, open sessions and the session log.' }],
+  dialogs: {
+    'terminal.connect': { title: 'Open a tab', icon: 'terminal', render: (props, close) => <ConnectDialog props={props} close={close} /> },
+    'terminal.connection': { title: 'Connection', icon: 'shuffle', searchable: false, render: (props, close) => <ConnectionDialog props={props} close={close} /> },
+  },
+  tabs: { 'terminal-host': (t) => <TerminalHost tab={t} />, terminal: (t) => <TerminalHost tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },
+  settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Windows-style terminal: appearance, tabs, Claude Code profiles and connections, the VPS host key, Mosh / Moshi, open sessions and the session log.' }],
   settingsPanels: [
-    { id: 'terminal.general', tab: 'terminal', title: 'Terminal', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },
+    { id: 'terminal.appearance', tab: 'terminal', title: 'Appearance', icon: 'palette', order: 4, render: () => <AppearancePanel /> },
+    { id: 'terminal.behaviour', tab: 'terminal', title: 'Tabs & behaviour', icon: 'layout', order: 6, render: () => <BehaviourPanel /> },
+    { id: 'terminal.profiles', tab: 'terminal', title: 'Claude Code profiles', icon: 'sparkles', order: 8, render: () => <ProfilesPanel /> },
+    { id: 'terminal.general', tab: 'terminal', title: 'Sessions & shells', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },
     { id: 'terminal.vps', tab: 'terminal', title: 'VPS host', icon: 'monitor', order: 20, render: () => <div className="axp-terminal-settings"><VpsPanel /></div> },
     { id: 'terminal.claude', tab: 'terminal', title: 'Claude Code', icon: 'sparkles', order: 30, render: () => <div className="axp-terminal-settings"><ClaudePanel /></div> },
     { id: 'terminal.moshi', tab: 'terminal', title: 'Mosh & Moshi', icon: 'zap', order: 40, render: () => <div className="axp-terminal-settings"><MoshiPanel /></div> },

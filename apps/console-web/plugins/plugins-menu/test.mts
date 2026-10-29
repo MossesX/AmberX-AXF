@@ -1,6 +1,8 @@
 // @ts-nocheck: a Node test (node --experimental-strip-types), not part of the console's build
 // Plugins menu, the pure part (web/core.ts). Run: node --experimental-strip-types apps/console-web/plugins/plugins-menu/test.mts
 import { columnRows, initialPick, installAction, PARAM_TYPES, PARAM_GROUPS, pluginsSubmenu, sortCatalog, FOLDER, ladderItems, offCounter } from './web/core.ts';
+/** Mirrors framework/libs/plugintheme PLUGIN_LOOK_COUNTER (the lib's core imports framework/core, which node --experimental-strip-types cannot resolve without extensions). */
+const PLUGIN_LOOK_COUNTER = (pluginId: string) => `plugin-theme.on:${pluginId}`;
 
 let ok = 0, fail = 0;
 const check = (name: string, cond: boolean) => { if (cond) ok++; else { fail++; console.error(`✗ ${name}`); } };
@@ -62,19 +64,22 @@ check('other kinds are read-only', installAction({ ...cat[0], readOnly: true }).
 
 // the Plugins ladder (application menu)
 {
-  const list = [{ folder: 'zeta', name: 'Zeta', enabled: true, ui: 'nav:zeta', tab: 'zeta' }, { folder: 'alpha', name: 'Alpha', enabled: false }, { folder: FOLDER, name: 'Plugins menu', enabled: true, tab: 'plugins-menu' }];
+  const list = [{ folder: 'zeta', name: 'Zeta', enabled: true, ui: 'nav:zeta', tab: 'zeta', id: 'ai.amberx.axf.console.zeta' }, { folder: 'alpha', name: 'Alpha', enabled: false }, { folder: FOLDER, name: 'Plugins menu', enabled: true, tab: 'plugins-menu' }];
   const L = ladderItems(list, { style: 'check' });
   check('ladder sorted by name', L.map((x) => x.label).join() === 'Alpha (off),Plugins menu,Zeta');
   const z = L[2].items;
-  check('ladder entries', z.filter((x) => !x.separator).map((x) => x.label).join() === 'Interface,Settings,Documentation,About,Disable');
+  check('ladder entries', z.filter((x) => !x.separator).map((x) => x.label).join() === 'Interface,Settings,Documentation,About,Theme override,Disable');
   check('interface + settings actions', z[0].action === 'nav:zeta' && z[1].action === 'settings.open:zeta');
-  check('check style binds the off counter', z[5].checked === `counter:${offCounter('zeta')}` && z[5].action === 'plugins-menu.toggle:zeta');
+  check('check style binds the off counter', z[6].checked === `counter:${offCounter('zeta')}` && z[6].action === 'plugins-menu.toggle:zeta');
   const T = ladderItems(list, { style: 'toggle' });
-  check('toggle style: Enable on an off plugin, no check', T[0].items[5].label === 'Enable' && !T[0].items[5].checked);
-  check('toggle style: Disable on an on plugin', T[2].items[5].label === 'Disable');
+  check('toggle style: Enable on an off plugin, no check', T[0].items[6].label === 'Enable' && !T[0].items[6].checked);
+  check('toggle style: Disable on an on plugin', T[2].items[6].label === 'Disable');
   check('off plugin: interface greyed', !T[0].items[0].action);
-  check('self cannot switch off', !L[1].items[5].action);
-  check('offline: no switching', !ladderItems(list, { style: 'check', offline: true })[2].items[5].action);
+  check('self cannot switch off', !L[1].items[6].action);
+  check('offline: no switching', !ladderItems(list, { style: 'check', offline: true })[2].items[6].action);
+  check('theme override toggles the framework override, check mark while on', z[4].action === 'plugin-theme.toggle:ai.amberx.axf.console.zeta' && z[4].checked === 'counter:plugin-theme.on:ai.amberx.axf.console.zeta');
+  check('theme override counter = the framework library\'s', z[4].checked === `counter:${PLUGIN_LOOK_COUNTER('ai.amberx.axf.console.zeta')}`);
+  check('theme override: off plugin greyed', !T[0].items[4].action && T[0].items[4].label.includes('switched off'));
   check('docs + about', z[2].action === 'plugins-menu.info:zeta:docs' && z[3].action === 'plugins-menu.info:zeta:about');
 }
 

@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T01:50:58.252Z",
+ "updatedAt": "2026-10-29T03:15:29.557Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -52,6 +52,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -72,6 +73,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -90,6 +92,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -110,6 +113,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -128,6 +132,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -144,6 +149,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -164,6 +170,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -180,6 +187,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -196,6 +204,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -240,6 +249,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -256,6 +266,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -272,6 +283,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -290,6 +302,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -308,6 +321,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -324,6 +338,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -340,6 +355,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -358,6 +374,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -374,6 +391,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -390,6 +408,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -406,6 +425,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -424,6 +444,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -511,6 +532,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.097Z",
      "note": ""
@@ -529,6 +551,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -547,6 +570,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -565,6 +589,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -581,6 +606,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -597,6 +623,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.166Z",
      "note": ""
@@ -613,6 +640,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.238Z",
      "note": ""
@@ -629,6 +657,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.306Z",
      "note": ""
@@ -645,6 +674,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.375Z",
      "note": ""
@@ -661,6 +691,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.433Z",
      "note": ""
@@ -677,6 +708,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:55.597Z",
      "note": ""
@@ -693,6 +725,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.047Z",
      "note": ""
@@ -709,6 +742,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.101Z",
      "note": ""
@@ -725,6 +759,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.151Z",
      "note": ""
@@ -741,6 +776,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.205Z",
      "note": ""
@@ -759,6 +795,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:44:28.329Z",
      "note": ""
@@ -777,6 +814,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:46:52.502Z",
      "note": ""
@@ -793,6 +831,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:51:14.262Z",
      "note": ""
@@ -809,6 +848,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:31:42.318Z",
      "note": ""
@@ -825,6 +865,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:31:42.369Z",
      "note": ""
@@ -841,6 +882,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:34:14.770Z",
      "note": ""
@@ -857,6 +899,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:34:14.844Z",
      "note": ""
@@ -873,6 +916,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:42:08.861Z",
      "note": ""
@@ -889,6 +933,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:42:08.934Z",
      "note": ""
@@ -905,6 +950,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:47:13.405Z",
      "note": ""
@@ -921,6 +967,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:47:13.482Z",
      "note": ""
@@ -937,6 +984,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:50:08.047Z",
      "note": ""
@@ -953,6 +1001,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:50:08.100Z",
      "note": ""
@@ -969,6 +1018,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:51:10.874Z",
      "note": ""
@@ -985,6 +1035,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:55:00.852Z",
      "note": ""
@@ -1001,6 +1052,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:55:00.906Z",
      "note": ""
@@ -1017,6 +1069,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:56:06.767Z",
      "note": ""
@@ -1033,6 +1086,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1049,6 +1103,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1065,6 +1120,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1083,6 +1139,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
      "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
@@ -1101,6 +1158,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1117,6 +1175,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1133,6 +1192,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1151,6 +1211,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1167,6 +1228,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1183,6 +1245,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1199,6 +1262,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1215,6 +1279,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1231,6 +1296,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1247,6 +1313,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1310,6 +1377,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:58:54.888Z",
      "note": ""
@@ -1326,6 +1394,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:58:54.951Z",
      "note": ""
@@ -1342,6 +1411,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:03:25.215Z",
      "note": ""
@@ -1358,6 +1428,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:08:35.374Z",
      "note": ""
@@ -1374,6 +1445,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:08:35.445Z",
      "note": ""
@@ -1390,6 +1462,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.746Z",
      "note": ""
@@ -1406,6 +1479,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.816Z",
      "note": ""
@@ -1422,6 +1496,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.876Z",
      "note": ""
@@ -1438,6 +1513,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.927Z",
      "note": ""
@@ -1454,6 +1530,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.983Z",
      "note": ""
@@ -1470,6 +1547,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1486,6 +1564,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1502,6 +1581,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1518,6 +1598,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1534,6 +1615,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1580,6 +1662,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1598,6 +1681,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1614,6 +1698,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1630,6 +1715,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1646,6 +1732,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1662,6 +1749,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1706,6 +1794,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1722,6 +1811,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1738,6 +1828,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1754,6 +1845,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1818,6 +1910,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:35:41.594Z",
      "note": ""
@@ -1834,6 +1927,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:41:13.352Z",
      "note": ""
@@ -1850,6 +1944,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:45:58.111Z",
      "note": ""
@@ -1866,6 +1961,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:46:34.469Z",
      "note": ""
@@ -1882,6 +1978,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1898,6 +1995,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1914,6 +2012,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1930,6 +2029,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1946,6 +2046,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1962,6 +2063,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1978,6 +2080,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -1994,6 +2097,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2017,6 +2121,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2040,6 +2145,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2056,6 +2162,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2103,6 +2210,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2119,6 +2227,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2135,6 +2244,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2151,6 +2261,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2199,6 +2310,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2215,6 +2327,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2231,6 +2344,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2247,6 +2361,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2295,6 +2410,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2311,6 +2427,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2327,6 +2444,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2343,6 +2461,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2383,6 +2502,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.444Z",
      "note": ""
@@ -2399,6 +2519,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.492Z",
      "note": ""
@@ -2415,6 +2536,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.545Z",
      "note": ""
@@ -2431,6 +2553,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -2466,6 +2589,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:37:06.746Z",
      "note": ""
@@ -2482,6 +2606,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:37:06.797Z",
      "note": ""
@@ -2498,6 +2623,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:47:48.682Z",
      "note": ""
@@ -2514,6 +2640,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:47:48.739Z",
      "note": ""
@@ -2530,6 +2657,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:46:16.982Z",
      "note": ""
@@ -2546,6 +2674,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.655Z",
      "note": ""
@@ -2562,6 +2691,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.741Z",
      "note": ""
@@ -2578,6 +2708,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.810Z",
      "note": ""
@@ -2594,6 +2725,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.507Z",
      "note": ""
@@ -2610,6 +2742,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.574Z",
      "note": ""
@@ -2626,6 +2759,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.638Z",
      "note": ""
@@ -2642,6 +2776,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.678Z",
      "note": ""
@@ -2658,6 +2793,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.720Z",
      "note": ""
@@ -2674,6 +2810,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:41:50.166Z",
      "note": ""
@@ -2690,6 +2827,7 @@
      "checks": [],
      "session": "same",
      "agent": true,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T02:35:09.742Z",
      "note": ""
@@ -2730,6 +2868,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T03:05:25.022Z",
      "note": ""
@@ -2765,6 +2904,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.242Z",
      "note": ""
@@ -2781,6 +2921,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.296Z",
      "note": ""
@@ -2797,6 +2938,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.343Z",
      "note": ""
@@ -2813,6 +2955,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.392Z",
      "note": ""
@@ -2829,6 +2972,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.446Z",
      "note": ""
@@ -2869,6 +3013,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T05:10:31.767Z",
      "note": ""
@@ -2909,6 +3054,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T05:05:08.295Z",
      "note": ""
@@ -2949,6 +3095,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:01:41.167Z",
      "note": ""
@@ -2965,6 +3112,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:01:41.230Z",
      "note": ""
@@ -2981,6 +3129,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:11:22.287Z",
      "note": ""
@@ -3021,6 +3170,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:42:12.883Z",
      "note": ""
@@ -3037,6 +3187,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:42:12.969Z",
      "note": ""
@@ -3053,6 +3204,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:52:00.523Z",
      "note": ""
@@ -3088,6 +3240,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.823Z",
      "note": ""
@@ -3104,6 +3257,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.909Z",
      "note": ""
@@ -3120,6 +3274,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.973Z",
      "note": ""
@@ -3136,6 +3291,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:15:00.036Z",
      "note": ""
@@ -3152,6 +3308,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.310Z",
      "note": ""
@@ -3168,6 +3325,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.378Z",
      "note": ""
@@ -3184,6 +3342,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.462Z",
      "note": ""
@@ -3200,6 +3359,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.543Z",
      "note": ""
@@ -3216,6 +3376,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.619Z",
      "note": ""
@@ -3232,6 +3393,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.697Z",
      "note": ""
@@ -3248,6 +3410,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.770Z",
      "note": ""
@@ -3264,6 +3427,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.837Z",
      "note": ""
@@ -3280,6 +3444,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.898Z",
      "note": ""
@@ -3296,6 +3461,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:29:37.266Z",
      "note": ""
@@ -3340,6 +3506,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3356,6 +3523,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3372,6 +3540,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3388,6 +3557,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3404,6 +3574,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3420,6 +3591,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3436,6 +3608,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3452,6 +3625,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3492,6 +3666,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3508,6 +3683,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3524,6 +3700,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3572,6 +3749,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3588,6 +3766,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3604,6 +3783,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3620,6 +3800,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3660,6 +3841,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:41:17.287Z",
      "note": ""
@@ -3700,6 +3882,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T16:55:24.189Z",
      "note": ""
@@ -3744,6 +3927,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:20:20.040Z",
      "note": ""
@@ -3760,6 +3944,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.183Z",
      "note": ""
@@ -3776,6 +3961,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.244Z",
      "note": ""
@@ -3792,6 +3978,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.312Z",
      "note": ""
@@ -3808,6 +3995,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.380Z",
      "note": ""
@@ -3824,6 +4012,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.456Z",
      "note": ""
@@ -3840,6 +4029,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3880,6 +4070,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T16:58:54.074Z",
      "note": ""
@@ -3896,6 +4087,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:17:09.876Z",
      "note": ""
@@ -3912,6 +4104,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:20:18.551Z",
      "note": ""
@@ -3928,6 +4121,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:20:18.607Z",
      "note": ""
@@ -3944,6 +4138,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T18:14:23.585Z",
      "note": ""
@@ -3960,6 +4155,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3976,6 +4172,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -3992,6 +4189,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4008,6 +4206,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4024,6 +4223,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4040,6 +4240,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4056,6 +4257,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4100,6 +4302,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4140,6 +4343,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4156,6 +4360,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4172,6 +4377,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4188,6 +4394,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4204,6 +4411,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4220,6 +4428,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4236,6 +4445,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4252,6 +4462,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4296,6 +4507,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4312,6 +4524,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4328,6 +4541,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4344,6 +4558,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4360,6 +4575,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4404,6 +4620,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:46.881Z",
      "note": ""
@@ -4420,6 +4637,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:46.949Z",
      "note": ""
@@ -4436,6 +4654,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:47.023Z",
      "note": ""
@@ -4447,15 +4666,15 @@
    "title": "Refactor: everything left to build, one build (Oct 28 2026)",
    "category": "Refactor",
    "detail": "Brett, Oct 28 2026 15:26: \"Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.\"\n\nOne build holding every unfinished step in the Refactor profile (17 source builds, now archived with a note pointing here). Run it in ONE new session; one Fable phase, then one Opus phase (one model switch).\n\nRules for this build:\n- The feature matrix (_claude/builds/profiles/refactor/matrices.json, matrix \"refactor-all\") is the scope. Kept items are the steps below; skipped items stay in the matrix and are not built. Ticking a skipped item = add it as a step (feature-matrix Apply, once built).\n- Carry on from the existing branches and PRs; don't redo finished steps. Open PRs: basic-filter #155 (CI green, merge approval sent), windows-terminal #158, amberx-handsfree #141, enterprise-branding PR #128 + interface-roller PR #129 (stacked; Opus work on opus/enterprise-branding).\n- Enterprise-branding's refactor runs first in the Opus phase, so every plugin built after it lands on the refactored console. Every UI in this build is held to framework/spec/DESIGN-LANGUAGE.md, not just the §13 scope.\n- Patches stays paused; skip Patches in every re-bake. Android only in apps/amberx-droid.\n- Kept: 30 h 50 min (11 h 45 min Fable). Skipped by default: 10 h 25 min.\n\nSource branches: amberx-handsfree: claude/amberx-handsfree https://github.com/MossesX/AmberX-AXF/pull/141; apply-all-levels-fable: -; approval-costs: -; arch-foundation: fable/arch-foundation; axhub-github-write: -; basic-filter: claude/basic-filter #155; enterprise-branding: fable/enterprise-branding; feature-matrix: -; interface-roller: fable/interface-roller; pending-grid-view: claude/pending-grid-view; postponed-gestures: -; share-search: -; style-package-fable: fable/style-package; tools-plugin: -; trim-asset: claude/trim-asset; veto-window: -; windows-terminal: claude/windows-terminal #158\n\nMatrix page (Brett ticks keep/skip on his phone): https://claude.ai/artifact/GJ4gkXZUkjZVXkdKDT1zGS — artifact db doc matrix/refactor-all. Before each step, read it (db_get) and follow its keep/skip; if applyRequestedAt is newer than the last step, re-sync matrices.json and add/skip steps to match.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "refactor-all",
    "branch": "claude/refactor-all",
    "pr": "",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-10-29T01:50:58.251Z",
-   "builtAt": "",
+   "updatedAt": "2026-10-29T03:15:29.557Z",
+   "builtAt": "2026-10-29T03:15:29.557Z",
    "notes": [
     {
      "text": "Made from every unfinished Refactor build on Brett's stop order (15:26 EDT). Matrix: matrices.json → refactor-all.",
@@ -4476,9 +4695,32 @@
     {
      "text": "Oct 28 2026 19:19 EDT (Brett, claude.ai): approvals pop up in the assistants' title bars, click to approve — one mechanism for the console assistant and the AmberX app (both via axHub). Steps s76–s80 + matrix items assistant-approvals:s1–s5.",
      "at": "2026-10-28T23:21:28.362Z"
+    },
+    {
+     "text": "Oct 28 2026 21:35 EDT (Brett): veto approval system — Claude's VPS command request goes through Vinnie (axHub's own agent); Vinnie pushes a notification via the AmberX Android app, a 3-minute countdown shows on the approval page and in a console banner with a Deny button instead of Approve; AmberX settings for notification sound/vibration + sounds for time-running-out and running; when the timer starts a tab opens in the AmberX terminal with the countdown, then the command runs there through Vinnie. Steps s81–s86 (replaces the skipped veto-window items), 'do it now' = built in parallel with the Terminal group.",
+     "at": "2026-10-29T01:39:00.960Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-29T01:29:16.654Z"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-10-29T01:29:16.707Z"
+    },
+    {
+     "phase": 3,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-29T01:29:16.757Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -4496,6 +4738,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4512,6 +4755,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4528,6 +4772,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4546,6 +4791,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4564,6 +4810,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4580,6 +4827,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4596,6 +4844,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4615,6 +4864,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4631,6 +4881,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4647,6 +4898,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4663,6 +4915,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4679,6 +4932,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4695,6 +4949,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4711,6 +4966,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4727,6 +4983,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4743,6 +5000,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4759,9 +5017,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:00:27.285Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383"
     },
     {
      "id": "s18",
@@ -4775,9 +5034,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:00:27.336Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383"
     },
     {
      "id": "s19",
@@ -4791,9 +5051,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:00:27.389Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383"
     },
     {
      "id": "s20",
@@ -4807,9 +5068,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:00:27.439Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43"
     },
     {
      "id": "s21",
@@ -4823,9 +5085,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:00:27.492Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43"
     },
     {
      "id": "s22",
@@ -4839,9 +5102,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:00:27.542Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43"
     },
     {
      "id": "s23",
@@ -4855,9 +5119,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:22:20.263Z",
+     "note": "Fable sub-agent, branch refactor-all/wt-s23b → refactor-all/terminal (6d6d8590, 10f3bdc3): re-baked console/axhub-web/walkthrough/amberx/demo, shots + report _claude/memory/docs/rebuilds/windows-terminal-fable.md"
     },
     {
      "id": "s24",
@@ -4871,6 +5136,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:43:14.152Z",
      "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-core.mjs, fixture + check-feature-matrix.mjs; see _claude/memory/docs/feature-matrix.md on that branch"
@@ -4887,6 +5153,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:43:14.236Z",
      "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-apply.mjs + skip/fm support in orchestrator/pending/build-queue/changes cores; merge or cherry-pick that branch before s62"
@@ -4903,6 +5170,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4919,6 +5187,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4935,6 +5204,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -4951,9 +5221,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:10:51.216Z",
+     "note": "Already landed: PR #141 merged Oct 28, hands-free tests in apps/amberx-droid/test.mjs (1672 pass), README covers it, CI green on main"
     },
     {
      "id": "s27",
@@ -4967,9 +5238,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T01:29:16.807Z",
+     "note": "PR #155 merged Oct 28 (Basic filter live)"
     },
     {
      "id": "s28",
@@ -4983,9 +5255,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:28.918Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s29",
@@ -4999,9 +5272,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:28.968Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s30",
@@ -5015,9 +5289,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.018Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s31",
@@ -5033,9 +5308,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.068Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s32",
@@ -5049,9 +5325,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.122Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s33",
@@ -5065,9 +5342,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.172Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s34",
@@ -5083,9 +5361,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.222Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s35",
@@ -5099,9 +5378,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.270Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s36",
@@ -5115,9 +5395,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.335Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s37",
@@ -5131,9 +5412,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.388Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s38",
@@ -5147,9 +5429,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.439Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s39",
@@ -5163,9 +5446,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.491Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s40",
@@ -5179,9 +5463,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T03:15:29.557Z",
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
     },
     {
      "id": "s41",
@@ -5195,6 +5480,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5211,6 +5497,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5227,6 +5514,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5243,6 +5531,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5259,6 +5548,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5277,6 +5567,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5293,6 +5584,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5309,6 +5601,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5325,6 +5618,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5343,6 +5637,7 @@
      ],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5359,6 +5654,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5375,6 +5671,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5391,6 +5688,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5407,6 +5705,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5423,6 +5722,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5441,6 +5741,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5459,6 +5760,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5475,6 +5777,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5491,6 +5794,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5507,6 +5811,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5523,6 +5828,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5539,6 +5845,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5555,6 +5862,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5571,6 +5879,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5587,6 +5896,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5603,6 +5913,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5619,6 +5930,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5635,9 +5947,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T01:29:16.860Z",
+     "note": "PR #161 merged Oct 28"
     },
     {
      "id": "s72",
@@ -5651,9 +5964,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:34:58.934Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s73",
@@ -5667,9 +5981,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:34:58.987Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s74",
@@ -5683,9 +5998,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:34:59.038Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s75",
@@ -5699,9 +6015,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:34:59.089Z",
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
     },
     {
      "id": "s76",
@@ -5715,6 +6032,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": ""
@@ -5731,9 +6049,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.396Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
     },
     {
      "id": "s78",
@@ -5747,9 +6066,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.477Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
     },
     {
      "id": "s79",
@@ -5763,9 +6083,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.547Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
     },
     {
      "id": "s80",
@@ -5779,9 +6100,112 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "done": false,
-     "doneAt": "",
-     "note": ""
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:57:11.635Z",
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
+    },
+    {
+     "id": "s81",
+     "text": "[veto-approvals s1] axHub (repo MossesX/axHub, on top of PR #14 hub-runs-approved): tool policy 'veto' = the call is held for a countdown (default 180 s, per tool) and then RUN by the hub itself unless denied; states held → running → ran | denied | expired; Deny API (session, revision-checked, audited; no Approve button for veto calls); vps.run moves to veto. Vinnie = the hub's own agent module that holds, notifies and runs veto calls (packages/server/src/vinnie.ts) and streams the countdown + the command's output as a job stream (SSE) the AmberX terminal can attach to. Approval page/feed: countdown + Deny on the first screen. Tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "veto-approvals",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:09:31.017Z",
+     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'"
+    },
+    {
+     "id": "s82",
+     "text": "[veto-approvals s2] axHub: Vinnie sends the hold as a push to the AmberX Android app (push channel the app already uses) with a Deny action, a 'time running out' push at 30 s and a 'running' push when it starts; feed fields for the console banner (runsAt, secondsLeft, denyUrl, streamUrl); docs (decision log, context, roadmap), tests, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "veto-approvals",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:09:31.093Z",
+     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'"
+    },
+    {
+     "id": "s83",
+     "text": "[veto-approvals s3] AmberX app: held-call notification with Deny action; Settings → Plugins → Approvals: notification sound, vibration pattern, 'time running out' sound, 'running' sound (pickers + test buttons, tokens only); the three pushes play the chosen sounds",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "veto-approvals",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.724Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+    },
+    {
+     "id": "s84",
+     "text": "[veto-approvals s4] AmberX terminal: a Terminal view in the AmberX app (the console-terminal plugin installed in AmberX if it fits, else a tabbed terminal view); when a veto timer starts a tab opens showing the title, the command and the live countdown with a Deny button; at zero it attaches to Vinnie's job stream and shows the command running + its output",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "veto-approvals",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.785Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+    },
+    {
+     "id": "s85",
+     "text": "[veto-approvals s5] Dev Console approvals banner: held (veto) entries with live countdown + Deny (no Approve), opens the approval page; snaps, never overlaps; AXHub web app approval page: countdown + Deny first screen",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "veto-approvals",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.847Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+    },
+    {
+     "id": "s86",
+     "text": "[veto-approvals s6] Shared rule + docs: veto calls are sent once and never polled (read the job once at the end); _claude/shared/rules/RULES.md in both repos; tests, before/after shots (banner, AmberX settings, terminal tab), THREADS, PRs (axHub + AXF) + merge approvals",
+     "model": "Opus",
+     "why": "",
+     "phase": "Opus 2",
+     "group": "veto-approvals",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-29T02:01:47.901Z",
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
     }
    ]
   }

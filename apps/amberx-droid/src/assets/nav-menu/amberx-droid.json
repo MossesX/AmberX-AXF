@@ -3,16 +3,22 @@
   "type": "nav-menu",
   "id": "amberx-droid",
   "name": "AmberX navigation",
-  "version": "0.2.0",
-  "description": "AmberX, an empty shell for building and testing plugins: Approvals and Settings. Plugins (Monitor, Voice, any installed) add their own entries.",
+  "version": "3.0.0",
+  "description": "AmberX's navigation on the enterprise design language: one level, grouped by section eyebrows (Work · Voice · AI · App), the active page marked by a filled indicator. Plugin pages join the section they name (Notes, Tasks, Monitor and Web under Work; Command center, Dictate and Voice under Voice).",
   "author": "AmberX AXF",
-  "tags": [],
+  "tags": [
+    "branded",
+    "enterprise"
+  ],
   "data": {
     "style": "list",
     "header": "AmberX",
+    "density": "regular",
+    "indicator": "fill",
+    "showIcons": true,
     "sections": [
       {
-        "label": null,
+        "label": "Work",
         "items": [
           {
             "id": "home",
@@ -23,7 +29,15 @@
         ]
       },
       {
-        "label": null,
+        "label": "Voice",
+        "items": []
+      },
+      {
+        "label": "AI",
+        "items": []
+      },
+      {
+        "label": "App",
         "items": [
           {
             "id": "settings",

@@ -1,6 +1,6 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
@@ -10,6 +10,7 @@ import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
+import type { CompiledMenuItem } from '../../core/engines/appmenu';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -33,6 +34,7 @@ export function MenuBar() {
     return () => window.removeEventListener('pointerdown', close);
   }, [open]);
 
+  const menuMark = useBrandPlace('app-menu', 18);
   // Left / Right move between menus while one is open (a submenu list handles its own arrows first).
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     if (!open || !menus.length) return;
@@ -45,8 +47,9 @@ export function MenuBar() {
   return (
     <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
       <div className="fx-brand">
-        <span className="fx-brand__mark" aria-hidden="true" />
-        <span className="fx-brand__name">{rt.manifest.app.name}</span>
+        {/* the branding package names the app everywhere it shows (GizmoX for the Dev Console); the manifest name is the fallback */}
+        {menuMark?.svg ? <BrandMark slot="app-menu" height={18} /> : <span className="fx-brand__mark" aria-hidden="true" />}
+        <span className="fx-brand__name">{rt.branding()?.name || rt.manifest.app.name}</span>
       </div>
       <div className="fx-menubar__menus">
         {menus.map((m) => (
@@ -127,11 +130,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
-      {tb.data.groups.map((g) => (
-        <div key={g.id} className="fx-toolbar__group">
-          {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={tb.data.variant} />)}
-        </div>
-      ))}
+      {tb.data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={tb.data.variant} />)}
       {(arrange.on || widgets.end.length > 0) && <span className="fx-toolbar__widgets is-end" {...arrange.sideProps('end')}>{arrangedSide(arrange, 'end', widgets.end, drawWidget)}</span>}
       {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
       {tb.data.showSearch && !tb.data.search?.live && (
@@ -146,23 +145,56 @@ export function Toolbar({ views }: { views: ViewMap }) {
 }
 
 
-type ToolbarItem = { id: string; icon: string; label: string; action: string; requires?: string; badge?: string };
+type ToolbarItem = { id: string; icon: string; label: string; action: string; requires?: string; badge?: string; checked?: string };
+type ToolbarGroup = { id: string; items: ToolbarItem[]; provider?: string; max?: number; label?: string };
 
-/** One toolbar item: gated by UAC, left out when the host app does it, greyed when the host locks it. */
-function ToolbarButton({ item: it, variant }: { item: ToolbarItem; variant: string }) {
+/**
+ * One toolbar group: its fixed items, then (when it names a `provider`) the live list from the app menu's provider
+ * registry, reloaded shortly after the app's state changes so the buttons follow what's open, enabled or counted.
+ */
+function ToolbarGroupView({ group: g, variant }: { group: ToolbarGroup; variant: string }) {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const [live, setLive] = useState<CompiledMenuItem[]>([]);
+  useEffect(() => {
+    if (!g.provider) return undefined;
+    let gone = false;
+    const t = setTimeout(() => {
+      rt.loadToolbarProvider(g.provider!, g.max ?? 8).then((items) => { if (!gone) setLive(items); }).catch(() => { if (!gone) setLive([]); });
+    }, live.length ? 400 : 0);
+    return () => { gone = true; clearTimeout(t); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [g.provider, g.max, state.rev]);
+  const fromProvider = live.filter((it) => !it.separator && it.action);
+  if (!g.items.length && !fromProvider.length) return null;
+  return (
+    <div className="fx-toolbar__group" role="group" aria-label={g.label} data-axf-provider={g.provider}>
+      {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={variant} />)}
+      {fromProvider.map((it) => (
+        <ToolbarButton key={`p:${it.id}`} variant={variant} lockedNote={it.locked ? 'not available' : undefined}
+          item={{ id: it.id, icon: it.icon ?? 'chevron-right', label: it.label, action: it.action!, badge: it.badge, checked: it.checked }} />
+      ))}
+    </div>
+  );
+}
+
+/** One toolbar item: gated by UAC, left out when the host app does it, greyed when the host locks it, pressed when its `checked` binding is on. */
+function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; variant: string; lockedNote?: string }) {
   const rt = useRuntime();
   const gate = rt.gate(it.requires);
   if (gate === 'hide') return null;
   if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
   const count = it.badge ? rt.badge(it.badge) : 0;
+  const pressed = it.checked ? rt.toolbarChecked(it.checked) : null;
   // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
-  const hostLock = rt.lockedByHost({ action: it.action });
+  const hostLock = rt.lockedByHost({ action: it.action }) ?? lockedNote;
   const off = gate === 'disable' || !!hostLock;
   return (
     <button
       type="button"
-      className="fx-toolbtn"
+      className={`fx-toolbtn${pressed ? ' is-on' : ''}`}
       disabled={off}
+      aria-pressed={pressed === null ? undefined : pressed}
       title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
       aria-label={count ? `${it.label} (${count} new)` : it.label}
       onClick={() => rt.dispatch(it.action)}
@@ -184,20 +216,47 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
-  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: { id: string; items: ToolbarItem[] }[] };
+  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
   return (
     <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
-      {data.groups.map((g) => (
-        <div key={g.id} className="fx-toolbar__group">
-          {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={data.variant} />)}
-        </div>
-      ))}
+      {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
       {data.showSearch && search}
     </div>
   );
 }
 
 /* ---------------- NavMenu (nav-menu asset, oriented by the layout asset) ---------------- */
+
+/**
+ * Sections with the same eyebrow are one section (DESIGN-LANGUAGE §11: one level, grouped by eyebrow), so plugins
+ * that file their page under "Voice" join the asset's own "Voice" section instead of repeating the eyebrow. Order:
+ * first appearance wins; unlabelled sections stay separate.
+ */
+export function mergeNavSections<S extends { label?: string | null; items: NavItem[] }>(sections: S[]): S[] {
+  const out: S[] = [];
+  const byLabel = new Map<string, S>();
+  for (const s of sections) {
+    const key = s.label ? s.label.trim().toLowerCase() : '';
+    const hit = key ? byLabel.get(key) : undefined;
+    if (hit) { hit.items = [...hit.items, ...s.items.filter((it) => !hit.items.some((x) => x.view === it.view))]; continue; }
+    const copy = { ...s, items: [...s.items] };
+    out.push(copy);
+    if (key) byLabel.set(key, copy);
+  }
+  return out;
+}
+
+/** A nav item's badge: a runtime counter name (`tasks.today`) shows its count and hides at 0; any other text shows as is. */
+function NavBadge({ badge }: { badge?: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  if (!badge) return null;
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(badge)) {
+    const n = rt.badge(badge);
+    return n > 0 ? <span className="fx-nav__badge" aria-label={`${n}`}>{n > 99 ? '99+' : n}</span> : null;
+  }
+  return <span className="fx-nav__badge">{badge}</span>;
+}
 
 export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
@@ -209,7 +268,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
   return (
     <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
-      {[...nav.data.sections, ...rt.navExtras].map((sec, i) => {
+      {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
         if (!items.length) return null;
         return (
@@ -232,7 +291,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                 >
                   <Icon name={locked ? 'lock' : it.icon} size={17} />
                   <span className="fx-nav__text">{it.label}</span>
-                  {it.badge && <span className="fx-nav__badge">{it.badge}</span>}
+                  <NavBadge badge={it.badge} />
                 </button>
               );
             })}

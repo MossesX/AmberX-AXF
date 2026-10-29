@@ -45,6 +45,9 @@ export interface VoiceStatus {
   overlayAllowed: boolean;
 }
 
+/** One veto notification channel: a sound name (plugins/approvals/web/core.ts SOUNDS) and a vibration pattern (ms). */
+export interface VetoChannel { sound: string; vibration: number[]; vibrate: boolean }
+
 export interface NativeApi {
   /** GET a hub page or feed with the hub session. No redirects, capped. */
   hubGet(opts: { url: string }): Promise<{ status: number; body: string; etag?: string }>;
@@ -66,6 +69,14 @@ export interface NativeApi {
   overlayPermission(): Promise<{ allowed: boolean }>;
   /** Ask for the microphone + notifications (Android 13+) permissions. */
   permissions(): Promise<{ microphone: boolean; notifications: boolean }>;
+  /** Veto approvals (plugins/approvals): the sounds + vibration of the three notification channels (Java VetoAlerts). */
+  vetoSettings(opts: { held: VetoChannel; warning: VetoChannel; running: VetoChannel }): Promise<void>;
+  /** Deny a held call with the phone's hub session (POST /auth/api/approvals/<id>/deny, hub Origin + CSRF). Browser: ok false. */
+  vetoDeny(opts: { id: string }): Promise<{ ok: boolean; state?: string; error?: string }>;
+  /** Play one phase's notification (sound + vibration) as a test. */
+  vetoTest(opts: { phase: 'held' | 'warning' | 'running' }): Promise<void>;
+  /** A veto notification was tapped (open its terminal tab) or denied from the notification. */
+  addListener(event: 'veto', fn: (e: { id: string; action: 'open' | 'denied' | 'deny-failed'; error?: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'wake', fn: (e: { phrase: string; text: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
@@ -219,6 +230,11 @@ const web: NativeApi = {
   },
   async voiceStatus() { return { listening: webVoice.listening, microphone: webVoice.stream !== null, overlayAllowed: false }; },
   async overlayPermission() { return { allowed: false }; },
+  // Veto approvals in a browser: the approvals plugin plays its own tones and opens the hub page to deny (the hub
+  // only takes a Deny under its own Origin).
+  async vetoSettings() { /* no channels in a browser */ },
+  async vetoDeny() { return { ok: false, error: 'browser' }; },
+  async vetoTest() { /* the plugin plays tones itself */ },
   async permissions() {
     let microphone = false;
     try { (await navigator.mediaDevices?.getUserMedia({ audio: true }))?.getTracks().forEach((t) => t.stop()); microphone = true; } catch { /* refused */ }

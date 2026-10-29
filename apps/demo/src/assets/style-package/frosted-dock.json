@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "frosted-dock",
+  "name": "Frosted Dock",
+  "version": "1.0.0",
+  "description": "Glass panels with dividers, blurred side drawers and soft pills, docked and airy.",
+  "author": "AmberX AXF",
+  "tags": [
+    "frosted",
+    "glass"
+  ],
+  "data": {
+    "slots": {
+      "button": "frosted-dock",
+      "container": "frosted-dock",
+      "slider": "frosted-dock",
+      "dialog": "frosted-dock",
+      "popup": "frosted-dock",
+      "tab-group": "frosted-dock",
+      "gauge": "ring",
+      "meter": "gradient-soft"
+    },
+    "tone": "frosted"
+  }
+}

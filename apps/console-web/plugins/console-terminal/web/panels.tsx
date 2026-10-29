@@ -33,19 +33,14 @@ export function GeneralPanel() {
   return (
     <div className="fx-stack">
       <div className="fx-row fx-row--wrap">
-        <Button tone="primary" icon="terminal" onClick={() => newTab(rt, { kind: 'console' })}>Open a terminal</Button>
+        <Button tone="primary" icon="terminal" onClick={() => rt.dispatch('terminal.new')}>Open a terminal</Button>
         <span className="fx-small fx-muted">Or right-click (long-press) anywhere → Open terminal. On a container or a folder it opens right there.</span>
       </div>
       <div className={`${P}__cols`}>
-        {num('fontSize', 'Text size', 9, 28)}
         {num('idleMinutes', 'Close when idle (minutes)', 5, 1440)}
         {num('moshKeepMinutes', 'Mosh mode keeps a dropped session (minutes)', 1, 1440)}
         <label className={`${P}__field`}><span>Container shell user (empty = Container access default, root)</span><input className="fx-input" value={v.user} onChange={(e) => setD({ ...d, user: e.target.value })} placeholder="0" /></label>
       </div>
-      {tick('copyOnSelect', 'Copy on select')}
-      {tick('pasteWarn', 'Ask before pasting several lines')}
-      {tick('mouseDefault', 'New tabs start in mouse mode')}
-      {tick('moshDefault', 'New tabs start in Mosh mode')}
       {tick('showHeadless', 'Show headless Claude Code sessions here: whenever the console or axHub starts one on the VPS, it opens in a VPS tab attached to it and the terminal window comes to the front (needs the VPS host set up)')}
       {tick('showHubRuns', 'Open approved VPS commands here: once a command you approved on axHub has run, its command and output open in a read-only tab')}
       <div className="fx-row fx-row--wrap"><Button tone="primary" icon="save" disabled={!Object.keys(d).length} onClick={() => void save(d).then(() => setD({}))}>Save</Button><span className="fx-small">{msg}</span></div>

@@ -22,6 +22,7 @@ const consoleAliases = [
   { find: /^@console\/plugins$/, replacement: `${src}/console/plugins.ts` },
   { find: /^@console\/pluginLifecycle$/, replacement: `${src}/console/pluginLifecycle.tsx` },
   { find: /^@console\/changeBatch$/, replacement: join(consoleSrc, 'changeBatch.tsx') },
+  { find: /^@console\/emptyState$/, replacement: join(consoleSrc, 'emptyState.tsx') }, // branded empty states + skeletons (enterprise-branding s34)
 ];
 function consolePlugins(): { folder: string; manifest: Record<string, unknown> }[] {
   if (!existsSync(consolePluginsDir)) return [];

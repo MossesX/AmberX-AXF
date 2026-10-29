@@ -6,12 +6,14 @@
  * `axf-grid-header:<grid id>`, payload = column id) hides and shows columns; drag uses lib-dnd.
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
-import { useEffect, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
-import { Icon, IconButton, Meter, useRuntime } from '../../react';
+import { useEffect, useMemo, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
+import { Icon, IconButton, Meter, Slot, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
+import { applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, useDataset, type DatasetField } from './datasets';
+export * from './datasets';
 import './datagrid.css';
 
 export const DATAGRID_LIBRARY_ID = 'ai.amberx.axf.datagrid';
@@ -75,7 +77,25 @@ export interface DataGridProps<R> {
   /** lib-dnd zone (rows of another component can share it) */
   zone?: string;
   empty?: ReactNode;
+  /**
+   * Every grid is a dataset plugins can attach to (filters, sorts, a toolbar above it; see datasets.ts). Default: the
+   * grid's id. A string uses another dataset id; `false` keeps the grid out of the dataset registry.
+   */
+  dataset?: string | false;
 }
+
+/** A column's value for dataset filters: its sortValue, else a plain field of the row with the column's id. */
+function columnFields<R>(columns: GridColumn<R>[]): DatasetField<R>[] {
+  return columns.map((c) => ({
+    id: c.id, label: c.label,
+    value: (r: R) => {
+      if (c.sortValue) return c.sortValue(r);
+      const v = (r as Record<string, unknown> | null)?.[c.id];
+      return typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? v : null;
+    },
+  }));
+}
+const flatRows = <R,>(gs: GridGroup<R>[]): R[] => gs.flatMap((g) => [...g.rows, ...flatRows(g.groups)]);
 
 type Line<R> = { kind: 'group'; g: GridGroup<R>; depth: number } | { kind: 'row'; r: R; depth: number };
 
@@ -86,6 +106,12 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
   const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} calc(var(--fx-space) * 4)` } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
+  const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
+  const all = useMemo(() => flatRows(p.groups), [p.groups]);
+  const fields = useMemo(() => columnFields(p.columns), [p.columns]);
+  const dsInfo = { id: dsId, label: p.label ?? p.id, fields, rows: all, ...(p.rowLabel ? { rowText: (r: R) => `${p.rowLabel!(r)} ${fields.map((f) => f.value(r) ?? '').join(' ')}` } : {}) };
+  useDataset(dsInfo); // no id (dataset={false}) = not registered
+  const filtered = dsId ? datasetFiltered(dsId) : false;
 
   useEffect(() => {
     if (!config.columnMenu || !p.onToggleColumn) return;
@@ -115,7 +141,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   const walk = (g: GridGroup<R>, depth: number) => {
     if (config.groups) lines.push({ kind: 'group', g, depth });
     if (g.collapsed && config.groups) return;
-    let rows = g.rows;
+    let rows = dsId ? applyDataset(dsId, g.rows) : g.rows;
     const s = config.sort ? p.sort : null;
     const col = s ? p.columns.find((c) => c.id === s.col) : undefined;
     if (s && col?.sortValue) rows = [...rows].sort((a, b) => { const x = col.sortValue!(a), y = col.sortValue!(b); return (x < y ? -1 : x > y ? 1 : 0) * s.dir; });
@@ -127,8 +153,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     onPointerDown: (e: RPointerEvent) => startDrag(e, { kind: `${zone}:${kind}`, id, label, icon, trashable: !!(drag.trash && p.onTrash), onTrash: p.onTrash ? () => p.onTrash!({ kind, id, label }) : undefined }),
   } : {});
 
-  return (
-    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'}>
+  const grid = (
+    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (
@@ -157,8 +183,11 @@ export function DataGrid<R>(p: DataGridProps<R>) {
         <Row key={p.rowId(l.r)} p={p} r={l.r} depth={l.depth} cols={cols} dragProps={dragFor('row', p.rowId(l.r), p.rowLabel?.(l.r) ?? p.rowId(l.r), 'file')} drop={drag ? zone : undefined} />
       ))}
       {!lines.length && <div className="axf-grid-empty">{p.empty ?? 'Nothing to show.'}</div>}
+      {lines.length > 0 && filtered && !lines.some((l) => l.kind === 'row') && <div className="axf-grid-empty">No rows match the filter.</div>}
     </div>
   );
+  // plugins attached to this dataset draw above it (a toolbar, chips); nothing contributed = just the grid
+  return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{grid}</> : grid;
 }
 
 function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {

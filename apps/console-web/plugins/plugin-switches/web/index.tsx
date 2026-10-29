@@ -18,6 +18,7 @@ import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus }
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './plugin-switches.css';
 import { appMenu } from './menu';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const ID = 'ai.amberx.axf.console.plugin-switches';
 /** This plugin's folder under plugins/ — its row is the greyed-out one. */
@@ -108,7 +109,7 @@ function SwitchList() {
 
   const counts = useMemo(() => ({ on: rows?.filter((r) => r.enabled).length ?? 0, total: rows?.length ?? 0 }), [rows]);
 
-  if (!rows) return <div className="axp-plugin-switches"><p className="axp-plugin-switches__empty">Loading plugins…</p></div>;
+  if (!rows) return <div className="axp-plugin-switches"><LoadingSkeleton rows={6} label="Loading plugins" /></div>;
 
   return (
     <div className="axp-plugin-switches">

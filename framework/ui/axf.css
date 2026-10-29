@@ -68,6 +68,19 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner-group[data-floating='on'] .fx-banner-group__body { flex: 1; min-height: 0; overflow: auto; }
 /* Banner settings (Oct 22 2026): every banner sits in a frame that applies its look choices, whatever plugin drew it. */
 .fx-banner-frame[hidden] { display: none; }
+/* The plugin banner card (DESIGN-LANGUAGE §11, enterprise-branding s38): every banner a plugin draws is one card with
+   the same box: tinted surface, hairline border and a thicker leading edge in the banner's tone. A plugin sets only
+   --axf-banner-tone (its default / state tone, e.g. var(--fx-warning)); the frame's Tone setting still wins because it
+   remaps the --fx-* tones underneath. :where() keeps this at zero specificity so a plugin's layout rules apply on top. */
+.fx-banner-frame > :where(:first-child) {
+  margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); min-width: 0;
+  border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--axf-banner-tone, var(--fx-accent));
+  border-inline-start-width: calc(var(--fx-border-w) * 3);
+  background: color-mix(in srgb, var(--axf-banner-tone, var(--fx-accent)) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface));
+}
+/* rows inside a banner snap, never overlap: text shrinks first, actions keep their size and wrap under on a phone */
+.fx-banner-frame > :where(:first-child) :where([class$='__row']) { min-width: 0; }
+.fx-banner-frame > :where(:first-child) :where([class$='__row']) > :where(.fx-btn, .fx-iconbtn, a.fx-btn) { flex: none; }
 .fx-banner-snoozed { padding: 0 var(--fx-space); min-height: var(--fx-row-h); border-bottom: var(--fx-border-w) solid var(--fx-border); font-size: calc(var(--fx-font-size) * 0.9); }
 .fx-banner-frame[data-tone='accent'] { --fx-info: var(--fx-accent); --fx-success: var(--fx-accent); --fx-warning: var(--fx-accent); --fx-danger: var(--fx-accent); }
 .fx-banner-frame[data-tone='info'] { --fx-accent: var(--fx-info); --fx-success: var(--fx-info); --fx-warning: var(--fx-info); --fx-danger: var(--fx-info); --fx-accent-soft: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
@@ -830,6 +843,11 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-checkrow { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-height: var(--fx-row-h); cursor: pointer; }
 .fx-checkrow.is-disabled { cursor: not-allowed; opacity: var(--fx-opacity-disabled); }
 .fx-check { width: calc(var(--fx-font-size) * 16 / 14); height: calc(var(--fx-font-size) * 16 / 14); margin: 0; accent-color: var(--fx-accent); cursor: inherit; }
+/* a plugin UI root (plugin theme override, libs/plugintheme): carries data-axf-plugin, adds no box of its own */
+.fx-plugin-scope { display: contents; }
+.fx-colorfield__row { gap: calc(var(--fx-space) * 0.5); align-items: center; flex-wrap: nowrap; }
+.fx-colorfield__pick { flex: none; width: calc(var(--fx-row-h) * 1.2); height: var(--fx-row-h); padding: calc(var(--fx-space) * 0.25); cursor: pointer; }
+.fx-colorfield__row .fx-field__input { flex: 1; min-width: 0; }
 .fx-check:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: 2px; }
 .fx-switchrow__hint { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); }
 .fx-switch { --fx-switch-w: calc(var(--fx-font-size) * 2.6); --fx-switch-h: calc(var(--fx-font-size) * 1.45); position: relative; display: inline-flex; flex: none; }
@@ -946,6 +964,31 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-window__body { flex: 1 1 auto; min-height: 0; display: flex; padding: 6px; }
 .fx-window__body > * { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .fx-window__resize { position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); touch-action: none; }
+/* windows-terminal s17: resize from all 8 edges / corners (engine: RESIZE_EDGES, hitResizeEdge, resizeRect). The bands are
+   invisible hit areas just inside the border (the window clips at its radius); corners are squares twice the band. Wider
+   on touch. No keep-on-screen: a window may be dragged or resized past the viewport. */
+.fx-window__edge { --fx-win-handle: var(--fx-space); position: absolute; z-index: 3; touch-action: none; user-select: none; }
+@media (pointer: coarse) { .fx-window__edge { --fx-win-handle: calc(var(--fx-space) * 2); } }
+.fx-window__edge--n, .fx-window__edge--s { left: calc(var(--fx-win-handle) * 2); right: calc(var(--fx-win-handle) * 2); height: var(--fx-win-handle); }
+.fx-window__edge--e, .fx-window__edge--w { top: calc(var(--fx-win-handle) * 2); bottom: calc(var(--fx-win-handle) * 2); width: var(--fx-win-handle); }
+.fx-window__edge--n { top: 0; } .fx-window__edge--s { bottom: 0; } .fx-window__edge--w { left: 0; } .fx-window__edge--e { right: 0; }
+.fx-window__edge--ne, .fx-window__edge--nw, .fx-window__edge--se, .fx-window__edge--sw { width: calc(var(--fx-win-handle) * 2); height: calc(var(--fx-win-handle) * 2); }
+.fx-window__edge--nw { top: 0; left: 0; } .fx-window__edge--ne { top: 0; right: 0; } .fx-window__edge--sw { bottom: 0; left: 0; } .fx-window__edge--se { bottom: 0; right: 0; }
+.fx-window--standard .fx-window__edge--se { background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); }
+/* maximized: square, borderless, fills the viewport (engine: maximizedRect); handles are gone */
+.fx-window.is-maximized { border-radius: 0; box-shadow: none; }
+/* frameless (Terminal): the content draws its own title bar through useWindowFrame(); no host chrome, no body inset */
+.fx-window--frameless .fx-window__body { padding: 0; }
+/* a frameless window holding one tab shows that content's own bar only: the host's tab-group bar (its tab chip, undock
+   and split buttons) would be a second title bar above it. A second tab dropped in brings the bar back. */
+.fx-window--frameless .fx-window__body > .fx-tabgroup { border: 0; border-radius: 0; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__bar { display: none; }
+.fx-window--frameless .fx-window__body > .fx-tabgroup[data-fx-tabs='1'] > .fx-tabgroup__body { padding: 0; }
+/* s18: snap preview — a translucent accent pane where a dragged window will land (zone or split); the split target's
+   remaining half is outlined. Transparency through the themed opacities, never a fixed percentage. */
+.fx-snap-preview { position: fixed; z-index: 59; pointer-events: none; box-sizing: border-box; border-radius: var(--fx-radius-lg); border: calc(var(--fx-border-w) * 2) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); transition: left var(--fx-motion) ease, top var(--fx-motion) ease, width var(--fx-motion) ease, height var(--fx-motion) ease; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--fx-space); }
+.fx-snap-preview--target { border-style: dashed; background: transparent; }
+.fx-snap-preview__label { font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: .06em; color: var(--fx-accent); opacity: var(--fx-opacity-muted); }
 .fx-dragghost { position: fixed; z-index: 200; pointer-events: none; padding: 4px 10px; border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: 12px; box-shadow: var(--fx-shadow-md); }
 .fx-corner { position: fixed; z-index: 70; display: flex; gap: 4px; padding: 6px; }
 .fx-corner--top-left { top: 0; left: 0; } .fx-corner--top-right { top: 0; right: 0; } .fx-corner--bottom-left { bottom: 0; left: 0; } .fx-corner--bottom-right { bottom: 0; right: 0; }

@@ -1,0 +1,10 @@
+/* AmberX page windows — layout only; colours, spacing and radii are theme tokens. */
+.amberx-window { padding: calc(var(--fx-space) * 1.5); min-height: 100%; overflow: auto; }
+.amberx-window__empty { position: relative; display: grid; place-items: center; min-height: calc(var(--fx-space) * 20); padding: calc(var(--fx-space) * 2); color: var(--fx-muted); text-align: center; overflow: hidden; }
+.amberx-window__empty p { margin: 0; }
+
+/* Approvals: skeleton cards while the first read runs (DESIGN-LANGUAGE §11: skeletons, never spinners for lists) */
+.amberx-approvals__skeleton { display: grid; gap: var(--fx-space); }
+.amberx-approvals__skel { display: block; height: calc(var(--fx-space) * 12); border-radius: var(--fx-radius-md); background: var(--fx-surface2); animation: amberx-skel 1.4s ease-in-out infinite; }
+@keyframes amberx-skel { 50% { opacity: var(--fx-opacity-muted); } }
+@media (prefers-reduced-motion: reduce) { .amberx-approvals__skel { animation: none; } }

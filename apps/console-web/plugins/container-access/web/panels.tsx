@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, Segmented } from '@console/axf/react';
 import { ChangeBatchCard, type Batch } from '@console/changeBatch';
 import { batchActions, call, kb, put, when, type AuditEntry, type Container, type Entry, type Settings, type Status } from './api';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const P = 'axp-container-access';
 
@@ -94,7 +95,7 @@ export function ContainersPanel() {
   const { v, err, load } = useLoad(() => call<{ items: Container[] }>('containers').then((r) => r.items));
   const [browse, setBrowse] = useState<Container | null>(null);
   if (err) return <p className={`${P}__bad`}>{err}</p>;
-  if (!v) return <p className="fx-muted">Loading containers…</p>;
+  if (!v) return <LoadingSkeleton />;
   if (browse) return <Browser c={browse} close={() => setBrowse(null)} />;
   return (
     <div className="fx-stack">
@@ -127,7 +128,7 @@ export function ProtectionPanel() {
   const [draft, setDraft] = useState<Partial<Settings> & { protectText?: string; allowText?: string }>({});
   const [msg, setMsg] = useState('');
   if (err) return <p className={`${P}__bad`}>{err}</p>;
-  if (!s) return <p className="fx-muted">Loading…</p>;
+  if (!s) return <LoadingSkeleton />;
   const cur = { ...s.settings, ...draft };
   const protectText = draft.protectText ?? s.settings.protect.join('\n');
   const allowText = draft.allowText ?? s.settings.allow.join('\n');

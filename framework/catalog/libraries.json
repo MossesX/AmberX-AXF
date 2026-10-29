@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-27T22:30:29.851Z",
+  "generatedAt": "2026-10-29T02:38:32.627Z",
   "items": [
     {
       "$axf": "library@1",
@@ -441,6 +441,54 @@
     },
     {
       "$axf": "library@1",
+      "id": "ai.amberx.axf.approvals",
+      "module": "lib-approvals",
+      "name": "Approvals badge (axHub approvals + held calls in any title bar, click to decide)",
+      "description": "Everything axHub is waiting on, for any AXF app's title bar (Brett, Oct 28 2026: \"Make approvals pop up in the assistant's title bar, click to approve\"). One list from the hub's approvals feed with the app's own hub session (lib-hub's read rules): calls waiting for an approval (title and description from the caller's reason, tool, age, approval link, the hub's decisions) and held veto@1 calls (live countdown, Deny only, never Approve). Live: polled every 5 s while the page is visible, on focus, on the axf:hub-check event and on a push (the hub has no approvals event stream yet). The badge shows the count and draws nothing when nothing waits; its popover lists each item with Approve / Decline or Deny, a result toast and All approvals on axHub. Deciding: the app's own path (setApprovalsHost decide, e.g. the AmberX phone's hub web view and native Deny), directly from a page on the hub's own origin (POST /auth/api/approvals/<id> with CSRF, veto Deny), the hub's approval page framed inside the popover where the hub allows it (AXHUB_APPROVALS_FRAME_ANCESTORS), else the page opens. requestApprovalsOpen(id) opens the popover from a notification tap. No new contract (approval-badge@1 was skipped): built over lib-hub hub.ts + veto.ts. Built Oct 28 2026 (Opus).",
+      "features": [],
+      "dependsOn": [
+        "ai.amberx.axf.hub"
+      ],
+      "manifestKey": "libraries.approvals",
+      "params": [
+        {
+          "key": "hub",
+          "label": "axHub address",
+          "type": "text",
+          "default": "https://axhub.amberxai.com",
+          "help": "Used when the app has no hub of its own. https only."
+        },
+        {
+          "key": "everyMs",
+          "label": "Check every (ms)",
+          "type": "number",
+          "default": 5000,
+          "help": "2000–300000, while the page is visible."
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/approvals"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.approvals.live",
+          "note": "An approvals event stream from the hub (SSE / data-events) instead of polling; ApprovalsWatcher.push is the entry point."
+        },
+        {
+          "capability": "axf.approvals.contract",
+          "note": "approval-badge@1 cross-port contract + fixture (Fable step, skipped by Brett Oct 28 2026)."
+        },
+        {
+          "capability": "axf.approvals.android",
+          "note": "Compose twin — Android framework work is on hold."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
       "id": "ai.amberx.axf.ashes",
       "module": "lib-ashes",
       "name": "AshesUI (live element inspector)",
@@ -541,7 +589,7 @@
       "id": "ai.amberx.axf.datagrid",
       "module": "lib-datagrid",
       "name": "Data grid (categorized sub-grids, hideable columns, expandable rows)",
-      "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid.",
+      "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid. Every grid is also a dataset (datasets.ts, Oct 28 2026): plugins attach filters, sorts and a toolbar above it without the view knowing them.",
       "features": [],
       "dependsOn": [],
       "manifestKey": "libraries.datagrid",
@@ -613,6 +661,10 @@
         {
           "capability": "axf.datagrid.resize",
           "note": "Column resizing by dragging the header edge — not built."
+        },
+        {
+          "capability": "axf.datagrid.datasets.android",
+          "note": "Dataset registry + attachable transforms (datasets.ts) — Compose twin deferred, Android on hold."
         }
       ]
     },
@@ -1210,7 +1262,7 @@
         {
           "id": "floating-panes",
           "label": "Floating panes",
-          "description": "Any pane can float as a window you drag and resize.",
+          "description": "Any pane can float as a window on the window engine's physics: drag with snapping to the workspace edges and other panes, half / quarter zones, drop onto another pane to split it, resize from all 8 edges and corners (touch too), maximize / restore, minimize to a chip. No keep-on-screen.",
           "requires": [
             "areas"
           ]

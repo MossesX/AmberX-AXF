@@ -2,7 +2,7 @@
   "$axf": "amberx-plugin@1",
   "id": "ai.amberx.amberx.monitor",
   "name": "Background monitoring",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Watches axHub with the screen off: approval alerts, auto-approval and the wake phrase, through the Android watch service.",
   "builtWith": { "model": "opus", "builtAt": "2026-10-25" }
 }

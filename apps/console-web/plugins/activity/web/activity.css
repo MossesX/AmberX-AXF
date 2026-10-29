@@ -1,7 +1,7 @@
 /* Activity banner: same shape as the other console banners. Theme tokens only. */
-.axp-activity { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
-.axp-activity--idle { border-color: var(--fx-success) }
-.axp-activity--failed { border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-activity { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.axp-activity--idle { --axf-banner-tone: var(--fx-success) }
+.axp-activity--failed { --axf-banner-tone: var(--fx-danger) }
 .axp-activity__row { display: flex; align-items: center; gap: var(--fx-space); min-width: 0 }
 /* a row you tap (data-fx-row); `button.` outranks the framework row reset */
 button.axp-activity__summary { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }

@@ -9,6 +9,7 @@ import { Button, Chip, Icon, ModelBadge, Segmented, useRuntime } from '@console/
 import { getToken, post } from '@console/api';
 import { PLUGINS_CHANGED } from '@console/plugins';
 import type { ViewProps } from './views';
+import { EmptyState } from '@console/emptyState';
 
 export interface CatalogItem {
   kind: string; folder: string; id: string; name: string; version: string; description?: string; author?: string;
@@ -105,7 +106,7 @@ export function InstallView({ inv, onChanged }: ViewProps) {
       {note && <p className="axp-plugin-manager-install__note">{note}</p>}
       {kind !== 'console' && <p className="fx-muted fx-small">These plugins are installed from their own app (e.g. Build Pilot → Plugins → Install). Here you can see and take them out of the catalog.</p>}
 
-      {cat?.reachable && items.length === 0 && <p className="fx-muted">Nothing in the catalog for {kind === 'console' ? 'the console' : kinds.find(([k]) => k === kind)?.[1] ?? kind} yet.{kind === 'console' ? ' Publish one below.' : ''}</p>}
+      {cat?.reachable && items.length === 0 && <EmptyState icon="package" compact>Nothing in the catalog for {kind === 'console' ? 'the console' : kinds.find(([k]) => k === kind)?.[1] ?? kind} yet.{kind === 'console' ? ' Publish one below.' : ''}</EmptyState>}
       <ul className="axp-plugin-manager-install__list">
         {items.map((it) => {
           const state = it.clash ? 'clash' : !it.installed ? 'new' : newer(it.version, it.installed) ? 'update' : 'current';
