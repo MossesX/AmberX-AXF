@@ -19,7 +19,6 @@ import * as fm from '../plan/feature-matrix-core.mjs';
 import * as ap from '../plan/feature-matrix-apply.mjs';
 import * as pc from '../plan/pending-core.mjs';
 import * as qc from '../plan/build-queue-core.mjs';
-import * as oc from '../../apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FIXTURE = join(HERE, 'fixtures', 'feature-matrix.json');
@@ -55,12 +54,13 @@ function replay() {
 
 // ---- apply targets: the same build as it sits in each table
 const targets = () => ({
-  build: oc.normalizeState({ builds: [{ id: 'demo-build', title: 'Demo build', createdAt: T(0), updatedAt: T(0), steps: [
-    { id: 's1', text: 'Contract', model: 'Fable', estimate: '30 min', group: 'Core', done: true, doneAt: T(0) },
-    { id: 's2', text: 'Apply engine', model: 'Fable', estimate: '30 min', group: 'Core' },
-    { id: 's3', text: 'Console page', model: 'Opus', estimate: '30 min', group: 'UI' },
-    { id: 's4', text: 'Grid hooks', model: 'Opus', estimate: '20 min', group: 'UI' },
-  ] }] }).builds[0],
+  // an orchestrator@1 build as its core normalises it (plain data here: the contract check never imports a plugin)
+  build: { id: 'demo-build', title: 'Demo build', category: '', detail: '', status: 'running', hidden: false, source: 'console', pendingId: '', branch: '', pr: '', createdAt: T(0), updatedAt: T(0), builtAt: '', notes: [], approvals: [], steps: [
+    { id: 's1', text: 'Contract', model: 'Fable', why: '', phase: '', group: 'Core', estimate: '30 min', files: [], checks: [], session: 'same', agent: false, skip: false, done: true, doneAt: T(0), note: '' },
+    { id: 's2', text: 'Apply engine', model: 'Fable', why: '', phase: '', group: 'Core', estimate: '30 min', files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' },
+    { id: 's3', text: 'Console page', model: 'Opus', why: '', phase: '', group: 'UI', estimate: '30 min', files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' },
+    { id: 's4', text: 'Grid hooks', model: 'Opus', why: '', phase: '', group: 'UI', estimate: '20 min', files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' },
+  ] },
   pending: pc.normalize({ id: 'demo-build', title: 'Demo build', model: 'Fable', createdAt: T(0), updatedAt: T(0), estimate: '2 h', subPrompts: [
     { text: 'Contract', at: T(0), estimate: '30 min', done: true, doneAt: T(0), fm: 's1' }, { text: 'Apply engine', at: T(0), estimate: '30 min', fm: 's2' }, { text: 'Console page', at: T(0), estimate: '30 min', fm: 's3' }, { text: 'Grid hooks', at: T(0), estimate: '20 min', fm: 's4' },
   ] }, T(0)),
@@ -116,7 +116,6 @@ const a = got.apply.after;
 t('orchestrator: skipped step kept with skip flag, new kept item became a step, estimate/model follow the matrix', () => {
   assert.equal(a.build.steps.length, 5); assert.equal(a.build.steps.find((s) => s.id === 's4').skip, false); assert.equal(a.build.steps.find((s) => s.id === 's3').skip, true); assert.equal(a.build.steps.find((s) => s.id === 'fm-dark-mode-shots').skip, false);
   assert.equal(a.build.steps.find((s) => s.id === 's2').estimate, '25 min'); assert.equal(a.build.steps.find((s) => s.id === 's1').done, true);
-  assert.equal(oc.progress(a.build).minutesLeft, 60); assert.equal(oc.progress(a.build).skipped, 1); // s2 25 + s4 20 + dark 15; s3 skipped
 });
 t('pending: skip flags + fm tags on sub prompts, item estimate = kept minutes', () => { assert.equal(a.pending.subPrompts.length, 5); assert.equal(a.pending.subPrompts[2].skip, true); assert.equal(a.pending.subPrompts[4].fm, 'dark-mode-shots'); assert.equal(a.pending.subPrompts[4].skip, undefined); assert.equal(a.pending.estimate, '1.5 h'); assert.equal(pc.entryMinutes(a.pending), 90); assert.equal(a.pending.subPrompts[0].done, true); });
 t('build queue: small steps follow, record estimate = kept minutes', () => { assert.equal(a.queue.steps.length, 5); assert.equal(a.queue.steps[1].estimate, '25 min'); assert.equal(a.queue.steps[2].skip, true); assert.equal(a.queue.estimate, '1.5 h'); assert.deepEqual(qc.recordSteps(a.queue)[4], { text: 'Dark mode shots', estimate: '15 min', fm: 'dark-mode-shots' }); });
@@ -124,7 +123,7 @@ t('build manager entry: skipped steps, kept estimate, finished steps untouched',
 t('plan feature: acceptance lines carry skip + fm, matrix summary on the feature', () => { assert.equal(a.feature.acceptance.length, 5); assert.equal(a.feature.acceptance[2].skip, true); assert.equal(a.feature.acceptance[4].fm, 'dark-mode-shots'); assert.deepEqual(a.feature.matrix, { id: m.id, version: m.version, keptMinutes: 90, kept: 4, skipped: 1 }); });
 t('report says what changed, per target', () => { const r = got.apply.report; assert.equal(r.matrix, m.id); assert.equal(r.keptMinutes, 90); assert.ok(r.changes.length >= 8); assert.deepEqual([...new Set(r.changes.map((c) => c.target))].sort(), ['build', 'change', 'feature', 'pending', 'queue']); assert.match(r.summary, /5 targets/); });
 t('a skipped item never deletes anything already done', () => { const sk = fm.apply(got.expected.state, { action: 'skip', matrix: m.id, item: 's1' }, T(11)).state; const r = ap.applyAll(fm.findMatrix(sk, REF, PROFILE), targets(), T(12)); assert.equal(r.targets.build.steps[0].skip, true); assert.equal(r.targets.build.steps[0].done, true); assert.equal(r.targets.change.steps[0].state, 'done'); assert.equal(r.targets.pending.subPrompts[0].done, true); });
-t('skipped steps leave the sums and the brief', () => { assert.equal(pc.stepsProgress(a.pending).minutesLeft, 60); const ph = oc.phases(a.build); assert.equal(ph[1].minutesLeft, 35); assert.equal(ph[1].groups[0].skipped, 1); const one = { ...a.build, steps: a.build.steps.map((st) => ({ ...st, model: 'Fable' })) }; assert.match(oc.brief(one), /\[skip\] s3/); assert.match(oc.brief(one), /\[ \] fm-dark-mode-shots/); assert.match(oc.brief(one), /3 left, ~1 h/); });
+t('skipped steps leave the pending sums', () => assert.equal(pc.stepsProgress(a.pending).minutesLeft, 60)); // the orchestrator's own sums/brief are checked in its plugin test against this fixture
 
 t('a skipped item that never had a row is added nowhere', () => { const st = fm.apply(got.expected.state, { action: 'add-item', matrix: m.id, item: { name: 'Never built', minutes: 5 } }, T(11)).state; const sk = fm.apply(st, { action: 'skip', matrix: m.id, item: 'never-built' }, T(12)).state; const r = ap.applyAll(fm.findMatrix(sk, REF, PROFILE), targets(), T(13)); assert.equal(r.targets.build.steps.length, 5); assert.equal(r.targets.pending.subPrompts.length, 5); assert.equal(r.targets.change.steps.length, 5); });
 console.log(`feature-matrix@1: ${n} checks passed`);
