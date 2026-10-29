@@ -10,6 +10,7 @@
 import { Fragment, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import { AgentForm, Field, LingoForm, PersonaForm, Pick, SKILL_TEMPLATES, SkillForm, ToolForm, TrainingForm } from './forms';
+import { LoadingSkeleton } from '@console/emptyState';
 import {
   MEMORY_HELP, getCache, getStatus, post, refresh, save, subscribe,
   type Agent, type Cache, type Lingo, type Persona, type Skill, type Status, type Tool, type Training,
@@ -53,7 +54,7 @@ function NewAgentWizard({ done }: { done: (msg: string) => void }) {
   const [a, setA] = useState<Partial<Agent>>({ icon: 'user', memory: { type: 'hybrid', record: 'both' } });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
-  if (!cache) return <p className="fx-muted">Loading…</p>;
+  if (!cache) return <LoadingSkeleton />;
   const steps = ['Identity', 'Persona', 'Skills & lingo', 'Tools', 'Model', 'Memory', 'Review'];
   const only = [['identity'], ['persona'], ['skills', 'lingo'], ['tools', 'delegates', 'instructions'], ['model'], ['memory']][step] as never;
   const finish = async () => {
@@ -79,7 +80,7 @@ function NewSkillWizard({ done }: { done: (msg: string) => void }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [attach, setAttach] = useState<string[]>([]);
-  if (!cache) return <p className="fx-muted">Loading…</p>;
+  if (!cache) return <LoadingSkeleton />;
   const finish = async () => {
     setBusy(true); setErr('');
     try {
@@ -113,7 +114,7 @@ function NewToolWizard({ done }: { done: (msg: string) => void }) {
   const [out, setOut] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
-  if (!cache) return <p className="fx-muted">Loading…</p>;
+  if (!cache) return <LoadingSkeleton />;
   const doSave = async () => {
     setBusy(true); setErr('');
     try { const r = await save<Tool>('tools', { ...t, id: saved?.id }); setSaved(r); await refresh(); setStep(2); } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
@@ -161,7 +162,7 @@ function BuilderWizard({ done }: { done: (msg: string) => void }) {
   const [train, setTrain] = useState<Partial<Training> & { runNow?: boolean }>({ sources: [], schedule: 'manual', runNow: true });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
-  if (!cache) return <p className="fx-muted">Loading…</p>;
+  if (!cache) return <LoadingSkeleton />;
   const steps = ['Identity', 'Persona', 'Lingo', 'Skills', 'Tools', 'Model & memory', 'Training', 'Review'];
   const finish = async () => {
     setBusy(true); setErr('');
@@ -254,7 +255,7 @@ function TrainingWizard({ done, agentId }: { done: (msg: string) => void; agentI
   const [runNow, setRunNow] = useState(true);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
-  if (!cache) return <p className="fx-muted">Loading…</p>;
+  if (!cache) return <LoadingSkeleton />;
   const finish = async () => {
     setBusy(true); setErr('');
     try {

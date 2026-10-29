@@ -22,6 +22,7 @@ import { getToken, post } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './build-profiles.css';
 import { appMenu } from './menu';
+import { LoadingSkeleton } from '@console/emptyState';
 
 const ID = 'ai.amberx.axf.console.build-profiles';
 const FOLDER = 'build-profiles';
@@ -176,7 +177,7 @@ function NewProfile({ state }: { state: State }) {
 function Picker() {
   const s = useProfiles();
   useEffect(() => { void loadProfiles(); }, []);
-  if (!s.data) return <div className="axp-build-profiles">{s.error ? <Note tone="warning">{s.error}</Note> : <p className="fx-muted">Loading build profiles…</p>}</div>;
+  if (!s.data) return <div className="axp-build-profiles">{s.error ? <Note tone="warning">{s.error}</Note> : <LoadingSkeleton />}</div>;
   return (
     <div className="fx-stack axp-build-profiles">
       <p className="fx-small fx-muted" style={{ margin: 0 }}>

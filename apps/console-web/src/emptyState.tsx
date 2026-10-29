@@ -17,3 +17,12 @@ export function EmptyState({ icon = 'info', children, action, compact }: EmptySt
     </div>
   );
 }
+
+/** Loading placeholder (DESIGN-LANGUAGE §11: skeletons, never spinners or a bare "Loading…" for lists and panels). */
+export function LoadingSkeleton({ rows = 3, label = 'Loading' }: { rows?: number; label?: string }) {
+  return (
+    <div className="cx-skeleton" aria-busy="true" aria-label={label} role="status">
+      {Array.from({ length: rows }, (_, i) => <span key={i} className="cx-skeleton__row" />)}
+    </div>
+  );
+}

@@ -4,6 +4,7 @@ import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import { Field, Num, Text } from './forms';
 import { WIZARDS, useData } from './wizards';
 import { MEMORY_HELP, call, isDangerousTool, post, put, refresh, type Settings } from './api';
+import { LoadingSkeleton } from '@console/emptyState';
 
 function useSettings() {
   const [s, setS] = useState<Settings | null>(null);
@@ -35,7 +36,7 @@ export function ModelPanel() {
   const [key, setKey] = useState('');
   const [msg, setMsg] = useState('');
   if (err) return <p className="axp-agent-manager__bad">{err}</p>;
-  if (!s) return <p className="fx-muted">Loading…</p>;
+  if (!s) return <LoadingSkeleton />;
   const v = { ...s.llm, ...llm };
   const test = async () => { setMsg('Testing…'); try { const r = await post<{ reply: string; source: string; model: string }>('settings/test'); setMsg(`✓ ${r.source} · ${r.model}: “${r.reply}”`); } catch (e) { setMsg(`✗ ${(e as Error).message}`); } };
   return (
@@ -70,7 +71,7 @@ export function TrainingPanel() {
   const [key, setKey] = useState('');
   const [msg, setMsg] = useState('');
   if (err) return <p className="axp-agent-manager__bad">{err}</p>;
-  if (!s) return <p className="fx-muted">Loading…</p>;
+  if (!s) return <LoadingSkeleton />;
   const v = { ...s.firecrawl, ...fc };
   const test = async () => { setMsg('Testing…'); try { const r = await post<{ title: string; chars: number }>('settings/test-firecrawl', { url: 'https://example.com' }); setMsg(`✓ scraped “${r.title}” (${r.chars} chars)`); } catch (e) { setMsg(`✗ ${(e as Error).message}`); } };
   return (
@@ -97,7 +98,7 @@ export function MemoryDefaultsPanel() {
   const { s, err, saveS } = useSettings();
   const [d, setD] = useState<Record<string, unknown>>({});
   if (err) return <p className="axp-agent-manager__bad">{err}</p>;
-  if (!s) return <p className="fx-muted">Loading…</p>;
+  if (!s) return <LoadingSkeleton />;
   const v = { ...s.defaults, ...d } as Settings['defaults'];
   return (
     <div className="fx-stack">
@@ -118,7 +119,7 @@ export function SafetyPanel() {
   const { s, err, saveS } = useSettings();
   const { cache, status } = useData();
   if (err) return <p className="axp-agent-manager__bad">{err}</p>;
-  if (!s || !cache) return <p className="fx-muted">Loading…</p>;
+  if (!s || !cache) return <LoadingSkeleton />;
   const allowed = new Set(s.safety?.dangerousAgents ?? []);
   const flip = (id: string) => { const n = new Set(allowed); if (n.has(id)) n.delete(id); else n.add(id); void saveS({ safety: { dangerousAgents: [...n] } }); };
   const dangerous = cache.tools.filter((t) => isDangerousTool(t, status));

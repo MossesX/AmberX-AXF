@@ -253,3 +253,8 @@ html.axf-strip-page #root { height: auto; min-height: 0; display: block; }
 .cx-empty--compact { padding: calc(var(--fx-space) * 1.5) var(--fx-space); }
 .cx-empty .fx-brand-watermark { inset-inline-end: var(--fx-space); inset-block-end: var(--fx-space); }
 .cx-empty .fx-brand-watermark svg { height: calc(var(--fx-space) * 7); width: auto; }
+.cx-skeleton { display: grid; gap: calc(var(--fx-space) * 0.75); padding: calc(var(--fx-space) * 0.5) 0; }
+.cx-skeleton__row { display: block; height: calc(var(--fx-space) * 2.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); animation: cx-skeleton 1.4s ease-in-out infinite; }
+.cx-skeleton__row:nth-child(3n + 2) { width: 82%; } .cx-skeleton__row:nth-child(3n) { width: 64%; }
+@keyframes cx-skeleton { 50% { opacity: var(--fx-opacity-muted); } }
+@media (prefers-reduced-motion: reduce) { .cx-skeleton__row { animation: none; } }

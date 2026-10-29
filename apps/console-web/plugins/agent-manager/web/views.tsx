@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button, Chip, Icon, useEditorSync, useRuntime } from '@console/axf/react';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
+import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import {
   MEMORY_HELP, call, del, download, fmtTime, isDangerousTool, post, refresh, remove, save, streamWorkflow, validate,
   type Addon, type Agent, type Cache, type Coll, type MemItem, type MemScope, type MemStats, type Run, type Status, type Training, type Validation, type Workflow,
@@ -30,7 +31,7 @@ export function AgentManagerView() {
   return (
     <div className="axp-agent-manager fx-stack fx-stack--lg">
       <header className="fx-pagehead">
-        <div><p className="fx-eyebrow">Plugin</p><h1>Agent manager</h1></div>
+        <div><p className="fx-eyebrow">AI · agents</p><h1>Agent manager</h1><p className="fx-muted">Build agents from personas, skills and tools, train them, and run them in workflows — each with its own memory.</p></div>
         <div className="fx-row fx-row--wrap">
           <Button tone="primary" icon="rocket" onClick={() => wizard('builder')}>Agent builder</Button>
           <Button icon="user" onClick={() => wizard('agent')}>New agent</Button>
@@ -53,7 +54,7 @@ export function AgentManagerView() {
       <div className="fx-tabs axp-agent-manager__tabs" role="tablist">
         {TABS.map((t) => <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab axp-agent-manager__tab${tab === t.id ? ' is-active' : ''}`} onClick={() => setTab(t.id)}><Icon name={t.icon} size={13} /> {t.label}</button>)}
       </div>
-      {!cache ? <p className="fx-muted">Loading…</p> : (
+      {!cache ? <LoadingSkeleton /> : (
         <>
           {tab === 'agents' && <AgentsTab cache={cache} status={status} wizard={wizard} />}
           {tab === 'skills' && <CollTab coll="skills" cache={cache} status={status} wizardKind="skill" render={(v, set) => <SkillForm v={v} set={set} tools={cache.tools} />} />}
@@ -388,7 +389,7 @@ function PromptPreview({ id }: { id: string }) {
   const [err, setErr] = useState('');
   useEffect(() => { void call<Resolved>(`agents/${id}/resolved`).then(setR, (e: Error) => setErr(e.message)); }, [id]);
   if (err) return <p className="axp-agent-manager__bad">{err}</p>;
-  if (!r) return <p className="fx-muted">Loading…</p>;
+  if (!r) return <LoadingSkeleton />;
   return (
     <div className="fx-stack">
       <div className="fx-row fx-row--wrap"><Chip tone="accent">{r.memory.type} memory</Chip><Chip>{r.stats.items} items</Chip><Chip>scope {r.memory.scope}</Chip>{r.writeMode && <Chip tone="warning">write mode</Chip>}</div>
@@ -502,7 +503,7 @@ function MemoryTab({ cache }: { cache: Cache }) {
   useEffect(load, [aid, kind]);
   useEffect(() => { const t = setTimeout(load, 300); return () => clearTimeout(t); }, [q]);
   const agent = cache.agents.find((a) => a.id === aid);
-  if (!cache.agents.length) return <p className="fx-muted">No agents yet.</p>;
+  if (!cache.agents.length) return <EmptyState icon="user" compact>No agents yet — start one with the Agent builder.</EmptyState>;
   return (
     <div className="fx-stack">
       <div className="fx-row fx-row--wrap">
@@ -584,7 +585,7 @@ export function AddonsTab() {
   const importJson = async (f: File) => {
     try { const r = await post<{ warnings: string[]; stripped: boolean }>('addons/import', { bundle: JSON.parse(await f.text()) }); await load(); report(r); } catch (e) { setErr((e as Error).message); }
   };
-  if (!items) return <p className="fx-muted">Loading…</p>;
+  if (!items) return <LoadingSkeleton />;
   return (
     <div className="fx-stack">
       <p className="fx-small fx-muted">Add-ons are bundles of agents with their personas, lingo, skills, tools, workflows, training and seed memory. Uninstalling one removes exactly what it added.</p>

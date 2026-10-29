@@ -4,6 +4,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
   type AgentRef, type Config, type ContractInfo, type ConvSettings, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
@@ -188,7 +189,7 @@ export function SetupWizard() {
   const [local, setLocal] = useState<Partial<Config>>({});
   useEffect(() => { void call<{ available: boolean; items: AgentRef[] }>('agents').then(setAgents, () => setAgents({ available: false, items: [] })); }, []);
   useEffect(() => { if (cfg && !picked.length) setPicked([...new Set(cfg.profiles.map((p) => p.kind))]); }, [cfg?.profiles.length]);
-  if (!cfg || !cat) return <p className="fx-muted">Loading…</p>;
+  if (!cfg || !cat) return <LoadingSkeleton />;
   const v = { ...cfg, ...local };
   const ready = cfg.profiles.filter((p) => p.keyReady && p.enabled);
   const next = () => setStep((s) => Math.min(STEPS.length - 1, s + 1));
@@ -332,7 +333,7 @@ export function ProvidersPanel() {
   const [adding, setAdding] = useState('');
   const [busy, setBusy] = useState('');
   const [note, setNote] = useState<Record<string, string>>({});
-  if (!cfg || !cat) return <p className="fx-muted">Loading…</p>;
+  if (!cfg || !cat) return <LoadingSkeleton />;
   const test = async (p: Profile) => {
     setBusy(p.id);
     try { const r = await post<{ ms: number; reply: string }>(`profiles/${p.id}/test`, {}); setNote({ ...note, [p.id]: `✓ ${r.ms} ms · “${r.reply}”` }); }
@@ -341,7 +342,7 @@ export function ProvidersPanel() {
   };
   return (
     <div className="fx-stack">
-      {cfg.profiles.length === 0 && <p className="fx-muted">No providers yet — use the setup wizard above or add one here.</p>}
+      {cfg.profiles.length === 0 && <EmptyState icon="cloud" compact>No providers yet — use the setup wizard above or add one here.</EmptyState>}
       {cfg.profiles.map((p) => edit?.profile?.id === p.id ? (
         <ProfileForm key={p.id} kind={edit.kind} profile={p} onSaved={() => setEdit(null)} onCancel={() => setEdit(null)} />
       ) : (
@@ -389,7 +390,7 @@ export function BehaviorPanel() {
   const [saved, setSaved] = useState(false);
   const [agents, setAgents] = useState<AgentRef[] | null>(null);
   useEffect(() => { void call<{ available: boolean; items: AgentRef[] }>('agents').then((r) => setAgents(r.available ? r.items : null)); }, []);
-  if (!cfg || !cat) return <p className="fx-muted">Loading…</p>;
+  if (!cfg || !cat) return <LoadingSkeleton />;
   const v = { ...cfg, ...d, params: { ...cfg.params, ...(d.params ?? {}) }, tools: { ...cfg.tools, ...(d.tools ?? {}) } };
   const set = (p: Partial<Config>) => { setD({ ...d, ...p }); setSaved(false); };
   return (
@@ -437,7 +438,7 @@ export function PromptsPanel() {
   const [items, setItems] = useState<PromptItem[] | null>(null);
   const [sugg, setSugg] = useState('');
   useEffect(() => { if (cfg && items === null) { setItems(cfg.prompts); setSugg(cfg.suggestions.join('\n')); } }, [cfg]);
-  if (!cfg || !items) return <p className="fx-muted">Loading…</p>;
+  if (!cfg || !items) return <LoadingSkeleton />;
   const upd = (i: number, p: Partial<PromptItem>) => setItems(items.map((x, j) => (j === i ? { ...x, ...p } : x)));
   return (
     <div className="fx-stack">
@@ -464,7 +465,7 @@ export function PromptsPanel() {
 export function UsagePanel() {
   const [u, setU] = useState<Usage | null>(null);
   useEffect(() => { void call<Usage>('usage').then(setU); }, []);
-  if (!u) return <p className="fx-muted">Loading…</p>;
+  if (!u) return <LoadingSkeleton />;
   const max = Math.max(1, ...u.days.map((d) => d.input + d.output));
   return (
     <div className="fx-stack">

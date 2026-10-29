@@ -16,6 +16,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { EmptyState } from '@console/emptyState';
 
 const ID = 'ai.amberx.axf.console.ai-keys';
 const FOLDER = 'ai-keys';
@@ -106,7 +107,7 @@ function KeysDialog() {
         const rows = data.keys.filter((k) => k.kind === kd.id);
         return (
           <Section key={kd.id} title={kd.label} aside={<span className="fx-muted">{rows.length} stored</span>}>
-            {rows.length === 0 ? <p className="fx-muted" style={{ margin: 0 }}>None yet.</p> : (
+            {rows.length === 0 ? <EmptyState icon="key" compact>No keys yet — add one below; each is tested before it's saved.</EmptyState> : (
               <ul className="fx-stack" style={{ listStyle: 'none', padding: 0, margin: 0 }}>{rows.map((k) => <KeyItem key={k.id} k={k} busy={busy} run={run} />)}</ul>
             )}
           </Section>
