@@ -80,9 +80,9 @@ button.axp-build-manager__head { all: unset; box-sizing: border-box; width: 100%
 .axp-build-manager__error { margin: 0; color: var(--fx-danger) }
 
 /* banner (after the Activity banner) */
-.axp-build-manager-banner { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
-.axp-build-manager-banner.is-done { border-color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
-.axp-build-manager-banner.is-failed { border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-build-manager-banner { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-build-manager-banner.is-done { --axf-banner-tone: var(--fx-success) }
+.axp-build-manager-banner.is-failed { --axf-banner-tone: var(--fx-danger) }
 button.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); cursor: pointer }
 .axp-build-manager-banner__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
 .axp-build-manager-banner__text > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

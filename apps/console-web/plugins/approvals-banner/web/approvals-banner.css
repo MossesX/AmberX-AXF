@@ -1,5 +1,5 @@
 /* Approvals banner: same shape as the systems check banners, accent colour. Theme tokens only. */
-.axp-approvals-banner { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-approvals-banner { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
 .axp-approvals-banner__row { display: flex; align-items: center; gap: var(--fx-space); flex-wrap: wrap }
 /* a row you tap (data-fx-row); `button.` outranks the framework row reset */
 button.axp-approvals-banner__text { all: unset; flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); font-weight: 600; cursor: pointer; flex-wrap: wrap }
