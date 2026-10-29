@@ -102,6 +102,8 @@ final class HubRules {
             for (int i = 0; arr != null && i < arr.length() && out.size() < FEED_MAX_ITEMS; i++) {
                 JSONObject p = arr.optJSONObject(i);
                 if (p == null) continue;
+                // A held veto call (veto@1) isn't waiting for an approval: no alert, never auto-approved ([VetoAlerts]).
+                if ("held".equals(p.optString("status", ""))) continue;
                 String id = p.optString("id", null);
                 String url = approvalUrl(hub, id);
                 if (url == null || ids.contains(id) || !isHub(hub, p.optString("url", ""))) continue;
@@ -116,6 +118,85 @@ final class HubRules {
     }
 
     private static String cap(String s, int n) { return s.length() > n ? s.substring(0, n) : s; }
+
+    /* ---------------------------------------------------------------- veto@1 held calls (= lib-hub veto.ts) */
+
+    private static final Pattern JOB_ID = Pattern.compile("^[A-Za-z0-9_-]{1,80}$");
+    private static final Pattern SUMMARY_COMMAND = Pattern.compile("\"command\":\"((?:[^\"\\\\]|\\\\.)*)\"");
+    static final int VETO_WARNING_SECONDS = 30;
+
+    /** One held call: the hub runs it when [secondsLeft] (read at [readAt], local ms) reaches 0 unless it is denied. */
+    static final class Veto {
+        final String id, jobId, tool, title, command, url;
+        final int secondsLeft;
+        final long readAt;
+        Veto(String id, String jobId, String tool, String title, String command, String url, int secondsLeft, long readAt) {
+            this.id = id; this.jobId = jobId; this.tool = tool; this.title = title; this.command = command; this.url = url;
+            this.secondsLeft = secondsLeft; this.readAt = readAt;
+        }
+        /** Local time (ms) it runs at. */
+        long runsAtLocal() { return readAt + secondsLeft * 1000L; }
+    }
+
+    static String vetoDenyUrl(String hub, String id) {
+        return id != null && APPROVAL_ID.matcher(id).matches() ? hub + API_APPROVALS_PATH + "/" + id + "/deny" : null;
+    }
+
+    static Veto veto(String hub, JSONObject p, long now) {
+        if (p == null) return null;
+        String id = p.optString("id", null);
+        String url = approvalUrl(hub, id);
+        if (url == null) return null;
+        for (String k : new String[] { "url", "approvalUrl", "denyUrl", "streamUrl" }) {
+            if (p.has(k) && !isHub(hub, p.optString(k, ""))) return null;
+        }
+        JSONObject v = p.optJSONObject("veto");
+        if (v == null) v = p;
+        int left;
+        if (v.has("secondsLeft")) left = (int) Math.round(v.optDouble("secondsLeft", 0));
+        else {
+            try { left = (int) Math.ceil((java.time.Instant.parse(v.optString("runsAt", "")).toEpochMilli() - now) / 1000.0); }
+            catch (Exception e) { return null; }
+        }
+        left = Math.max(0, Math.min(24 * 3600, left));
+        String job = p.optString("jobId", "");
+        String tool = cap(p.optString("tool", "vps.run"), 120);
+        JSONObject reason = p.optJSONObject("reason");
+        String title = p.optString("title", reason != null ? reason.optString("title", tool) : tool);
+        String command = p.optString("command", "");
+        JSONObject args = p.optJSONObject("args");
+        if (command.isEmpty() && args != null) command = args.optString("command", "");
+        if (command.isEmpty()) {
+            Matcher m = SUMMARY_COMMAND.matcher(p.optString("summary", ""));
+            if (m.find()) command = m.group(1).replace("\\\"", "\"").replace("\\\\", "\\");
+        }
+        return new Veto(id, JOB_ID.matcher(job).matches() ? job : null, tool, cap(title.isEmpty() ? tool : title, 200), cap(command, 2000), url, left, now);
+    }
+
+    /** Every held call in a feed reply: `pending` entries with `status: "held"` + a `veto` object, and `held[]`. */
+    static List<Veto> vetoes(String hub, String body, long now) {
+        List<Veto> out = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
+        try {
+            JSONObject j = new JSONObject(body);
+            for (String key : new String[] { "pending", "held" }) {
+                JSONArray arr = j.optJSONArray(key);
+                for (int i = 0; arr != null && i < arr.length() && out.size() < FEED_MAX_ITEMS; i++) {
+                    JSONObject p = arr.optJSONObject(i);
+                    if (p == null) continue;
+                    if ("pending".equals(key) && !("held".equals(p.optString("status", "")) && p.optJSONObject("veto") != null)) continue;
+                    Veto v = veto(hub, p, now);
+                    if (v != null && ids.add(v.id)) out.add(v);
+                }
+            }
+        } catch (Exception ignored) { /* not a feed */ }
+        return out;
+    }
+
+    /** Phase of a held call [secondsLeft] before it runs: held, warning (≤ 30 s), running (0). */
+    static String vetoPhase(int secondsLeft) {
+        return secondsLeft <= 0 ? "running" : secondsLeft <= VETO_WARNING_SECONDS ? "warning" : "held";
+    }
 
     /* ---------------------------------------------------------------- Dev Console alerts (alert@1, GET <console>/api/alerts) */
 
@@ -248,6 +329,38 @@ final class HubRules {
      * Approves [id] through the hub's JSON API with the hub session (CSRF value from `/auth/api/session`, hub as Origin,
      * no redirects), the same route the hub's own pages use. True only on the hub's "approved" answer.
      */
+    /**
+     * Deny a held call (veto@1) with the phone's hub session: the session's CSRF value, then
+     * `POST /auth/api/approvals/<id>/deny` with the hub as Origin. Returns the hub's status (200 = denied), -1 when it
+     * couldn't be sent (signed out, not a request id).
+     */
+    static int deny(String hub, String id, String cookie) {
+        String url = vetoDenyUrl(hub, id);
+        if (url == null || cookie == null || !isHub(HUB, hub)) return -1;
+        try {
+            Reply session = get(hub + SESSION_PATH, cookie);
+            String csrf = session.status == 200 ? csrfFromSession(session.body) : null;
+            if (csrf == null) return -1;
+            HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+            try {
+                c.setInstanceFollowRedirects(false);
+                c.setConnectTimeout(10_000); c.setReadTimeout(10_000); c.setUseCaches(false);
+                c.setRequestMethod("POST"); c.setDoOutput(true);
+                c.setRequestProperty("Cookie", cookie);
+                c.setRequestProperty("Origin", hub);
+                c.setRequestProperty("Content-Type", "application/json");
+                c.setRequestProperty("Accept", "application/json");
+                c.setRequestProperty("X-AxHub-CSRF", csrf);
+                c.getOutputStream().write("{}".getBytes(StandardCharsets.UTF_8));
+                return c.getResponseCode();
+            } finally {
+                c.disconnect();
+            }
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
     static boolean approve(String hub, String id, String cookie) {
         String url = approvalApiUrl(hub, id);
         if (url == null || cookie == null || !isHub(HUB, hub)) return false;

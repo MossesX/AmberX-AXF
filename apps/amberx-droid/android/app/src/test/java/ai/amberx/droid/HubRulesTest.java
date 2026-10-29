@@ -83,4 +83,24 @@ public class HubRulesTest {
         assertNull(HubRules.consoleAlerts(302, ""));
         assertNull(HubRules.consoleAlerts(200, "<html>sign in</html>"));
     }
+
+    @Test public void heldVetoCalls() {
+        String held = "{\"id\":\"" + ID + "\",\"tool\":\"vps.run\",\"status\":\"held\",\"url\":\"" + HUB + "/auth/admin/approvals/" + ID + "\","
+            + "\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"uptime\\\"}\",\"jobId\":\"job_1\",\"reason\":{\"title\":\"Check uptime\"},"
+            + "\"veto\":{\"runsAt\":\"2026-10-29T02:03:00.000Z\",\"secondsLeft\":180,\"countdownSeconds\":180},"
+            + "\"denyUrl\":\"" + HUB + "/auth/api/approvals/" + ID + "/deny\"}";
+        String body = "{\"count\":1,\"pending\":[" + held + "],\"held\":[" + held + "],\"heldCount\":1}";
+        assertEquals(0, HubRules.interpret(HUB, 200, body).pending.size()); // never an approval, never auto-approved
+        List<HubRules.Veto> v = HubRules.vetoes(HUB, body, 1000L);
+        assertEquals(1, v.size());
+        assertEquals("uptime", v.get(0).command);
+        assertEquals("Check uptime", v.get(0).title);
+        assertEquals(181_000L, v.get(0).runsAtLocal());
+        assertEquals(HUB + "/auth/api/approvals/" + ID + "/deny", HubRules.vetoDenyUrl(HUB, ID));
+        assertNull(HubRules.vetoDenyUrl(HUB, "../x"));
+        assertEquals("held", HubRules.vetoPhase(31));
+        assertEquals("warning", HubRules.vetoPhase(30));
+        assertEquals("running", HubRules.vetoPhase(0));
+        assertEquals(0, HubRules.vetoes(HUB, body.replace(HUB + "/auth/api", "https://evil.example/auth/api"), 0L).size());
+    }
 }

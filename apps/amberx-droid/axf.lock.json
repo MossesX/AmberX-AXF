@@ -74,6 +74,7 @@
     "src/axf/libs/hub/index.ts": "cad1a3f25b2b4535",
     "src/axf/libs/hub/library.json": "d8feccd7a11bb165",
     "src/axf/libs/hub/menu.ts": "d3b57c2eb6f1702e",
+    "src/axf/libs/hub/veto.ts": "6e122d873d64d3fd",
     "src/axf/libs/hub/react.tsx": "782cb650b02ffd4a",
     "src/axf/libs/mcp/client.ts": "1de950f095e33a61",
     "src/axf/libs/mcp/host.ts": "9752a89d8a76759e",

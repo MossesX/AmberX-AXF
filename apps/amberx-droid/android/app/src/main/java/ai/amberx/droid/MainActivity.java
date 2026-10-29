@@ -13,6 +13,8 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     static final String EXTRA_OPEN = "ai.amberx.droid.OPEN";
     static final String EXTRA_WAKE = "ai.amberx.droid.WAKE";
+    /** A held command's notification was tapped: the web side opens its terminal tab. */
+    static final String EXTRA_VETO = "ai.amberx.droid.VETO";
     static final String EXTRA_WAKE_TEXT = "ai.amberx.droid.WAKE_TEXT";
 
     @Override

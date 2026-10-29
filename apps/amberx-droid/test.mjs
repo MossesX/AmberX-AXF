@@ -877,5 +877,78 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq(rn.readAnswer('choice', 'the medium one', ['high', 'medium', 'low']), 'medium', 'runner: choice');
 }
 
+/* ---------------------------------------------------------------- veto@1 held calls (lib-hub veto.ts + plugins/approvals) */
+{
+  const vt = await import('../../framework/libs/hub/veto.ts');
+  const ap = await import('./src/plugins/approvals/web/core.ts');
+  const ID1 = '11111111-2222-3333-4444-555555555555';
+  const ID2 = '66666666-7777-8888-9999-000000000000';
+  const NOW = Date.parse('2026-10-29T02:00:00.000Z');
+  const held = (over = {}) => ({ id: ID1, tool: 'vps.run', summary: 'vps.run with arguments {"command":"docker restart \\"web\\""}', url: `${HUB}/auth/admin/approvals/${ID1}`, status: 'held',
+    veto: { runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 180, countdownSeconds: 180 }, jobId: 'job_abc-1', denyUrl: `${HUB}/auth/api/approvals/${ID1}/deny`, streamUrl: `${HUB}/auth/api/jobs/job_abc-1/stream`, reason: { title: 'Restart web' }, ...over });
+  const plain = { id: ID2, tool: 'github.merge', summary: 'merge', url: `${HUB}/auth/admin/approvals/${ID2}`, createdAt: '', expiresAt: '' };
+  const body = JSON.stringify({ count: 2, pending: [held(), plain], held: [held()], heldCount: 1 });
+  const calls = vt.interpretVeto(HUB, body, NOW);
+  eq(calls.length, 1, 'veto: one held call (pending + held[] deduped)');
+  eq(calls[0].command, 'docker restart "web"', 'veto: command from the summary');
+  eq(calls[0].title, 'Restart web', 'veto: title from the reason');
+  eq(calls[0].denyUrl, `${HUB}/auth/api/approvals/${ID1}/deny`, 'veto: deny link rebuilt');
+  eq(calls[0].streamUrl, `${HUB}/auth/api/jobs/job_abc-1/stream`, 'veto: stream link rebuilt');
+  eq(vt.interpretVeto(HUB, JSON.stringify({ pending: [held({ denyUrl: 'https://evil.example/x' })] }), NOW).length, 0, 'veto: a link off the hub is refused');
+  eq(vt.interpretVeto(HUB, JSON.stringify({ pending: [held({ veto: undefined })] }), NOW).length, 0, 'veto: no timing = not held');
+  eq(vt.interpretVeto(HUB, 'nope', NOW).length, 0, 'veto: bad body = nothing');
+  const split = vt.splitFeed(HUB, 200, body, NOW);
+  eq(split.feed.pending.map((p) => p.id), [ID2], 'veto: held calls taken out of the approvals list');
+  eq(split.feed.count, 1, 'veto: count without the held one');
+  eq(split.held.length, 1, 'veto: held list');
+  eq(vt.splitFeed(HUB, 401, '', NOW).feed.status, 'signed-out', 'veto: 401 still signed out');
+  const c = calls[0];
+  eq(vt.secondsLeftNow(c, NOW + 10_500), 170, 'veto: local countdown');
+  eq(vt.secondsLeftNow(c, NOW + 999_000), 0, 'veto: never below 0');
+  eq([vt.vetoPhase(31), vt.vetoPhase(30), vt.vetoPhase(0)], ['held', 'warning', 'running'], 'veto: phases');
+  eq(vt.formatCountdown(179), '2:59', 'veto: 2:59');
+  {
+    let p = vt.notifyPlan([], [c], NOW);
+    eq(p.send.map((x) => x.phase), ['held'], 'notify: timer started');
+    p = vt.notifyPlan(p.sent, [c], NOW + 1000);
+    eq(p.send.length, 0, 'notify: once per phase');
+    p = vt.notifyPlan(p.sent, [c], NOW + 151_000);
+    eq(p.send.map((x) => x.phase), ['warning'], 'notify: time running out');
+    p = vt.notifyPlan(p.sent, [c], NOW + 180_000);
+    eq(p.send.map((x) => x.phase), ['running'], 'notify: running');
+    eq(vt.notifyPlan([], [c], NOW + 170_000).send.map((x) => x.phase), ['warning'], 'notify: first seen late = one card');
+  }
+  const push = vt.vetoFromPush(HUB, JSON.stringify({ type: 'veto', phase: 'warning', id: ID1, jobId: 'job_abc-1', title: 'Restart web', command: 'docker restart web', runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 30, denyUrl: `${HUB}/auth/api/approvals/${ID1}/deny`, streamUrl: `${HUB}/auth/api/jobs/job_abc-1/stream`, approvalUrl: `${HUB}/auth/admin/approvals/${ID1}` }), NOW);
+  ok(push && push.phase === 'warning' && push.call.command === 'docker restart web' && push.call.secondsLeft === 30, 'push: veto push read');
+  eq(vt.vetoFromPush(HUB, { type: 'approval', id: ID1 }, NOW), null, 'push: other pushes ignored');
+  eq(vt.vetoEvent({ event: 'countdown', data: '{"secondsLeft":12}' }), { type: 'countdown', secondsLeft: 12 }, 'stream: countdown');
+  eq(vt.vetoEvent({ event: 'output', data: '{"stream":"stderr","text":"oops"}' }), { type: 'output', stream: 'stderr', text: 'oops' }, 'stream: output');
+  eq(vt.vetoEvent({ event: 'done', data: '{"state":"ran","exitCode":0}' }), { type: 'done', state: 'ran', exitCode: 0 }, 'stream: done');
+  eq(vt.vetoEvent({ event: 'done', data: '{"exitCode":2}' }).state, 'failed', 'stream: done without state, non-zero = failed');
+  eq(vt.vetoEvent({ event: 'state', data: '{"state":"bogus"}' }), null, 'stream: unknown state dropped');
+  {
+    const frames = [];
+    const sse = 'event: countdown\ndata: {"secondsLeft":1}\n\nevent: state\ndata: {"state":"running"}\n\nevent: output\ndata: {"stream":"stdout","text":"hi"}\n\nevent: done\ndata: {"state":"ran","exitCode":0}\n\n';
+    const end = await vt.followVeto(c.streamUrl, HUB, (e) => frames.push(e.type), { fetch: async () => new Response(sse, { status: 200 }) });
+    eq([end, frames], ['ran', ['countdown', 'state', 'output', 'done']], 'stream: followed to the end');
+    let threw = false;
+    try { await vt.followVeto('https://evil.example/s', HUB, () => undefined); } catch { threw = true; }
+    ok(threw, 'stream: only the hub');
+  }
+  {
+    const sent = [];
+    const fake = async (u, i) => { sent.push([u, i?.method ?? 'GET', i?.headers?.['X-AxHub-CSRF']]); return u.endsWith('/session') ? new Response('{"signedIn":true,"csrf":"tok12345"}') : new Response('{"ok":true,"state":"denied"}', { status: 200 }); };
+    const r = await vt.denyVeto(HUB, ID1, { fetch: fake });
+    ok(r.ok && r.state === 'denied', 'deny: ok');
+    eq(sent[1], [`${HUB}/auth/api/approvals/${ID1}/deny`, 'POST', 'tok12345'], 'deny: POST with the session CSRF');
+    eq((await vt.denyVeto(HUB, 'nope', { fetch: fake })).ok, false, 'deny: only request ids');
+  }
+  const cfg = ap.alertConfig((k) => ({ [ap.K.sound]: 'ringtone', [ap.K.vibration]: 'none', [ap.K.warningSound]: 'bogus' })[k]);
+  eq([cfg.held.sound, cfg.held.vibrate, cfg.warning.sound, cfg.running.sound], ['ringtone', false, 'alarm', 'default'], 'approvals: alert config with defaults');
+  eq(ap.patternOf('pulse'), [0, 150, 100, 150, 100, 150], 'approvals: vibration pattern');
+  eq(ap.notificationText({ title: 'Restart web', command: 'docker restart web', tool: 'vps.run' }, 'held', 180).title, 'Runs in 3:00: Restart web', 'approvals: timer started text');
+  eq(ap.tonesOf('none').length, 0, 'approvals: silent = no tones');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
