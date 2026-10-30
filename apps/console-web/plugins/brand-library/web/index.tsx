@@ -17,7 +17,7 @@ import { appMenu } from './menu';
 function Page() {
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Brand library</h1><p className="fx-muted">Every logo, animated logo, icon pack and branding package the framework ships, ready to preview and apply.</p></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Brand library</h1><p className="fx-muted" title="Every logo, animated logo, icon pack and branding package the framework ships, ready to preview and apply.">Every logo, icon pack and branding package: preview and apply.</p></div></header>
       <BrandLibrary renderPreview={(p) => <Preview {...p} />} />
     </div>
   );

@@ -5,7 +5,7 @@
  * is one setting (`context-menu-designer.actions.filter`, JSON), so every open window follows a change at once.
  */
 import { useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, IconButton, Note, Segmented, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Icon, IconButton, Note, Segmented, Switch, useAxfState, useRuntime } from '@console/axf/react';
 import { ASSET_TYPES, type AxfRuntime } from '@console/axf/core';
 import { bundledPlugins } from '@console/plugins';
 import {
@@ -92,9 +92,9 @@ export function ActionsTab() {
   return (
     <div className="axp-ctxd-act">
       <div className="axp-ctxd-act__bar">
-        <TextField label="Search actions" value={q} placeholder="Name, id or plugin" onChange={(v) => { setQ(v); setLimit(PAGE); }} autoFocus />
+        <input className="fx-input" type="search" aria-label="Search actions" value={q} placeholder="Search actions: name, id or plugin" onChange={(e) => { setQ(e.target.value); setLimit(PAGE); }} autoFocus />
         <span className="axp-ctxd-act__filter">
-          <Button icon="sliders" onClick={() => rt.openDialog(FILTER_DIALOG)}>Filter</Button>
+          <Button size="sm" icon="sliders" onClick={() => rt.openDialog(FILTER_DIALOG)}>Filter</Button>
           {changed > 0 && <span className="fx-chip fx-chip--accent" aria-label={`${changed} filter choices changed`}>{changed}</span>}
         </span>
       </div>
@@ -121,7 +121,7 @@ export function ActionsTab() {
           </section>
         ))}
       </div>
-      {rows.length > limit && <Button onClick={() => setLimit((n) => n + PAGE)}>Show {Math.min(PAGE, rows.length - limit)} more</Button>}
+      {rows.length > limit && <Button size="sm" onClick={() => setLimit((n) => n + PAGE)}>Show {Math.min(PAGE, rows.length - limit)} more</Button>}
     </div>
   );
 }
@@ -147,14 +147,14 @@ export function FilterDialog({ close }: { close: () => void }) {
         const list = who.filter((o) => o.source === s.id);
         if (list.length < 2) return null;
         return (
-          <section key={s.id} className="fx-stack">
-            <strong>{s.label}: only these</strong>
+          <details key={s.id} className="axp-ctxd-filter__owners" open={list.some((o) => f.owners.includes(o.owner))}>
+            <summary><strong>{s.label}: only these</strong> <span className="axp-ctxd-muted">({list.length})</span></summary>
             <div className="axp-ctxd-filter__chips">
               {list.map((o) => (
                 <button key={o.owner || '_app'} type="button" className={`fx-chip${f.owners.includes(o.owner) ? ' is-on' : ''}`} aria-pressed={f.owners.includes(o.owner)} onClick={() => toggleOwner(o.owner)}>{o.label} · {o.count}</button>
               ))}
             </div>
-          </section>
+          </details>
         );
       })}
       {f.owners.length > 0 && <p className="axp-ctxd-muted">Showing {f.owners.length} picked owner{f.owners.length === 1 ? '' : 's'} only. <Button size="sm" tone="quiet" onClick={() => set({ owners: [] })}>Show every owner</Button></p>}
@@ -167,8 +167,8 @@ export function FilterDialog({ close }: { close: () => void }) {
       </section>
       <Segmented label="Sort" value={f.sort} options={[{ value: 'source', label: 'By source' }, { value: 'name', label: 'Name' }, { value: 'id', label: 'Action id' }]} onChange={(v) => set({ sort: v as ActionFilter['sort'] })} />
       <div className="fx-row fx-row--wrap axp-ctxd-opts">
-        <Button tone="primary" icon="check" onClick={close}>Done</Button>
-        <Button icon="refresh" disabled={filterChanges(f) === 0} onClick={() => writeFilter(rt, defaultFilter())}>Back to the defaults</Button>
+        <Button size="sm" tone="primary" icon="check" onClick={close}>Done</Button>
+        <Button size="sm" icon="refresh" disabled={filterChanges(f) === 0} onClick={() => writeFilter(rt, defaultFilter())}>Back to the defaults</Button>
         <IconButton icon="zap" label="Open the Actions window" onClick={() => { close(); openActionsWindow(rt); }} />
       </div>
     </div>
