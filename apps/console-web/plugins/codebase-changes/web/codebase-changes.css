@@ -40,22 +40,31 @@ button.axp-codebase-changes-banner__entry { all: unset; box-sizing: border-box; 
 
 /* log browser */
 .axp-codebase-changes { display: flex; flex-direction: column; gap: var(--fx-space); min-width: 0 }
-.axp-codebase-changes__intro { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
+.fx-pagehead.axp-codebase-changes__intro { display: flex; flex-direction: column; align-items: stretch; gap: calc(var(--fx-space) * 0.25) }
 .axp-codebase-changes__intro p, .axp-codebase-changes__p { margin: 0 }
 .axp-codebase-changes__h1 { margin: 0; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
 .axp-codebase-changes__h { margin: 0 }
 .axp-codebase-changes__counts { color: var(--fx-muted) }
+.axp-codebase-changes__searchbar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-width: 0 }
+.axp-codebase-changes__searchbar > .fx-input { flex: 1 1 0; min-width: 0; width: auto }
+.axp-codebase-changes__searchbar .fx-iconbtn.is-on { color: var(--fx-accent) }
 .axp-codebase-changes__filters { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 14)), 1fr)); gap: calc(var(--fx-space) * 0.5); align-items: end }
-.axp-codebase-changes__filters > input[type=search] { grid-column: 1 / -1 }
+@media (max-width: 640px) { .axp-codebase-changes__filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } }
 .axp-codebase-changes__date { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); min-width: 0 }
-.axp-codebase-changes__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4) }
-.axp-codebase-changes__row { border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
-.axp-codebase-changes__row.is-failed { border-color: var(--fx-danger) }
+.axp-codebase-changes__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-codebase-changes__row { border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-codebase-changes__row.is-failed { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-danger) }
 .axp-codebase-changes__row.is-closed { background: var(--fx-surface2) }
-button.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); min-width: 0 }
+button.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); padding: calc(var(--fx-space) * 0.45) calc(var(--fx-space) * 0.5); min-width: 0 }
 .axp-codebase-changes__head:hover { background: var(--fx-surface2) }
 .axp-codebase-changes__line { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.4); min-width: 0 }
 .axp-codebase-changes__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere }
+.axp-codebase-changes__line--title { flex-wrap: nowrap }
+.axp-codebase-changes__line--title > .axp-codebase-changes__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-codebase-changes__line--meta { flex-wrap: nowrap; overflow: hidden; gap: calc(var(--fx-space) * 0.9) }
+.axp-codebase-changes__how > summary { cursor: pointer }
+.axp-codebase-changes__how[open] > summary { margin-bottom: calc(var(--fx-space) * 0.5) }
+.axp-codebase-changes__how > p { margin-top: calc(var(--fx-space) * 0.5) }
 .axp-codebase-changes__sub { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-codebase-changes__detail { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6); padding: 0 calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 0.75); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) * 0.6) }
 .axp-codebase-changes__asked { margin: 0; padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.75); border-left: calc(var(--fx-border-w) * 3) solid var(--fx-accent); background: var(--fx-surface2); border-radius: var(--fx-radius-sm); white-space: pre-wrap; overflow-wrap: anywhere }

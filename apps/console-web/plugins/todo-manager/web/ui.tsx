@@ -12,6 +12,7 @@ import {
 } from './core';
 import { bulk, createList, deleteEntry, deleteList, exportList, loadAll, openList, saveEntry, saveTypes, toggleCheck, toggleDone, todoState, updateList, useTodo, type EntryDraft } from './store';
 import { LoadingSkeleton } from '@console/emptyState';
+import { MoreMenu } from './MoreMenu';
 
 export const ENTRY_DIALOG = 'todo-manager.entry';
 const VIEW_KEY = 'todo-manager.view';
@@ -33,7 +34,7 @@ export function TodoView({ embedded = false }: { embedded?: boolean }) {
   useEffect(() => { if (!s.types && !s.loading) void loadAll(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className={`axp-todo ${embedded ? 'is-embedded' : ''}`}>
-      {!embedded && <header className="fx-pagehead"><div><p className="fx-eyebrow">Work</p><h1>Todos</h1><p className="fx-muted">Lists of notes, to-dos and tasks with subtasks, checklists, tags and due dates — as a tree or a grid.</p></div></header>}
+      {!embedded && <header className="fx-pagehead"><div><p className="fx-eyebrow">Work</p><h1>Todos</h1><p className="fx-muted" title="Lists of notes, to-dos and tasks with subtasks, checklists, tags and due dates — as a tree or a grid.">Notes, to-dos and tasks, as a tree or a grid.</p></div></header>}
       {s.error && <Note tone="danger">{s.error}</Note>}
       <div className="axp-todo__body">
         <ListsColumn />
@@ -64,7 +65,11 @@ function ListsColumn() {
     <aside className="axp-todo__lists" aria-label="Lists">
       {/* phones: a drop-down instead of the column */}
       <div className="axp-todo__listpick">
-        <SelectField label="List" value={String(s.openId ?? '')} empty="Pick a list" options={paths.map((p) => ({ value: String(p.id), label: p.path }))} onChange={(v) => void openList(v ? Number(v) : null)} />
+        <select className="fx-input" aria-label="List" value={String(s.openId ?? '')} onChange={(e) => void openList(e.target.value ? Number(e.target.value) : null)}>
+          <option value="">Pick a list</option>
+          {paths.map((p) => <option key={p.id} value={String(p.id)}>{p.path}</option>)}
+        </select>
+        <IconButton icon="plus" label="New list" onClick={() => { const t = window.prompt('List name'); if (t?.trim()) void createList(t.trim()); }} />
       </div>
       <ul className="axp-todo__tree" role="tree">
         {childLists(s.lists, null).map((l) => <ListRow key={l.id} l={l} depth={0} />)}
@@ -101,11 +106,13 @@ function OpenList() {
   const s = useTodo();
   const [v, setView] = useView();
   const [sel, setSel] = useState<number[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
   const open = s.open!;
   const types = s.types!;
   useEffect(() => setSel([]), [open.list.id]);
   const shown = useMemo(() => sortEntries(visible(open.entries, v), v.sort, types), [open.entries, v, types]);
   const p = progress(open.entries);
+  const filtersOn = v.groupBy !== DEFAULT_VIEW.groupBy || v.sort !== DEFAULT_VIEW.sort || !!v.kind || v.showDone !== DEFAULT_VIEW.showDone;
   const newEntry = (kind: EntryKind, listId = open.list.id, parentId: number | null = null) => rt.openDialog(ENTRY_DIALOG, { kind, listId, parentId });
   const toggle = (id: number) => setSel((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
   return (
@@ -114,18 +121,25 @@ function OpenList() {
         <ListTitle l={open.list} />
         <span className="axp-todo__progress">{p.total ? `${p.done} of ${p.total} done` : `${open.entries.length} entr${open.entries.length === 1 ? 'y' : 'ies'}`}</span>
       </div>
+      {/* one bar: add (first kind up front, the rest behind ⋯), search, tree / grid, and the filters behind one toggle (compact pages, Oct 30 2026) */}
       <div className="axp-todo__bar">
-        {KINDS.map((k) => <Button key={k} size="sm" icon={types[k].icon} onClick={() => newEntry(k)}>{types[k].label}</Button>)}
-        <Button size="sm" icon="folder" onClick={() => { const t = window.prompt('Group name'); if (t?.trim()) void createList(t.trim(), open.list.id); }}>Group</Button>
+        <Button size="sm" tone="primary" icon={types.task.icon} onClick={() => newEntry('task')}>{types.task.label}</Button>
+        <MoreMenu label="Add something else" items={[
+          ...KINDS.filter((k) => k !== 'task').map((k) => ({ id: k, label: `New ${types[k].label.toLowerCase()}`, icon: types[k].icon, onSelect: () => newEntry(k) })),
+          { id: 'group', label: 'New group…', icon: 'folder', onSelect: () => { const t = window.prompt('Group name'); if (t?.trim()) void createList(t.trim(), open.list.id); } },
+        ]} />
+        <input className="fx-input axp-todo__search" type="search" aria-label="Search" value={v.q} onChange={(e) => setView({ q: e.target.value })} placeholder="Search title, text or tag" />
+        <Segmented size="sm" label="View" value={v.mode} onChange={(mode) => setView({ mode })} options={[{ value: 'tree', label: '', icon: 'list', title: 'Tree' }, { value: 'grid', label: '', icon: 'grid', title: 'Grid' }]} />
+        <IconButton icon="sliders" label={showFilters ? 'Hide filters' : 'Filters'} aria-pressed={showFilters} className={filtersOn ? 'is-on' : ''} onClick={() => setShowFilters(!showFilters)} />
       </div>
-      <div className="axp-todo__filters">
-        <TextField label="Search" type="search" value={v.q} onChange={(q) => setView({ q })} placeholder="Title, text or tag" />
-        <Segmented label="View" value={v.mode} onChange={(mode) => setView({ mode })} options={[{ value: 'tree', label: 'Tree', icon: 'list' }, { value: 'grid', label: 'Grid', icon: 'grid' }]} />
-        {v.mode === 'tree' && <SelectField label="Group by" value={v.groupBy} onChange={(g) => setView({ groupBy: g as GroupBy })} options={(['structure', 'kind', 'status', 'priority', 'tag', 'due'] as const).map((g) => ({ value: g, label: g === 'structure' ? 'Lists and groups' : g === 'due' ? 'Due date' : words(g) }))} />}
-        <SelectField label="Sort" value={v.sort} onChange={(x) => setView({ sort: x as SortBy })} options={(['manual', 'title', 'due', 'priority', 'updated'] as const).map((x) => ({ value: x, label: x === 'manual' ? 'My order' : x === 'updated' ? 'Last changed' : words(x) }))} />
-        <SelectField label="Kind" value={v.kind} empty="Every kind" onChange={(k) => setView({ kind: k as ListView['kind'] })} options={KINDS.map((k) => ({ value: k, label: types[k].label }))} />
-        <Switch label="Show done" checked={v.showDone} onChange={(showDone) => setView({ showDone })} />
-      </div>
+      {showFilters && (
+        <div className="axp-todo__filters">
+          {v.mode === 'tree' && <SelectField label="Group by" value={v.groupBy} onChange={(g) => setView({ groupBy: g as GroupBy })} options={(['structure', 'kind', 'status', 'priority', 'tag', 'due'] as const).map((g) => ({ value: g, label: g === 'structure' ? 'Lists and groups' : g === 'due' ? 'Due date' : words(g) }))} />}
+          <SelectField label="Sort" value={v.sort} onChange={(x) => setView({ sort: x as SortBy })} options={(['manual', 'title', 'due', 'priority', 'updated'] as const).map((x) => ({ value: x, label: x === 'manual' ? 'My order' : x === 'updated' ? 'Last changed' : words(x) }))} />
+          <SelectField label="Kind" value={v.kind} empty="Every kind" onChange={(k) => setView({ kind: k as ListView['kind'] })} options={KINDS.map((k) => ({ value: k, label: types[k].label }))} />
+          <Switch label="Show done" checked={v.showDone} onChange={(showDone) => setView({ showDone })} />
+        </div>
+      )}
       {sel.length > 0 && <SelectionBar ids={sel} clear={() => setSel([])} />}
       {v.mode === 'grid'
         ? <Grid entries={shown} sel={sel} toggle={toggle} />
@@ -159,8 +173,10 @@ function ListTitle({ l }: { l: TodoList }) {
       <h2>{l.title}</h2>
       <IconButton icon="edit" label="Rename" onClick={() => setEdit(true)} />
       <ToneMenu l={l} />
-      <IconButton icon="download" label="Export as Markdown" onClick={() => void exportList(l.id)} />
-      <IconButton icon="trash" label="Delete this list" onClick={() => { if (window.confirm(`Delete “${l.title}” with its groups and every entry in it?`)) void deleteList(l.id); }} />
+      <MoreMenu label="More for this list" items={[
+        { id: 'export', label: 'Export as Markdown', icon: 'download', onSelect: () => void exportList(l.id) },
+        { id: 'delete', label: 'Delete this list…', icon: 'trash', onSelect: () => { if (window.confirm(`Delete “${l.title}” with its groups and every entry in it?`)) void deleteList(l.id); } },
+      ]} />
     </div>
   );
 }
@@ -303,8 +319,10 @@ function SelectionBar({ ids, clear }: { ids: number[]; clear: () => void }) {
         <option value="">Move to…</option>
         {listPaths(s.lists).map((p) => <option key={p.id} value={p.id}>{p.path}</option>)}
       </select>
-      <Button size="sm" icon="copy" onClick={async () => after(await bulk(ids, { action: 'duplicate' }), 'duplicated')}>Duplicate</Button>
-      <Button size="sm" tone="danger" icon="trash" onClick={async () => { if (window.confirm(`Delete ${ids.length} entr${ids.length === 1 ? 'y' : 'ies'} (and their subtasks)?`)) after(await bulk(ids, { action: 'delete' }), 'deleted'); }}>Delete</Button>
+      <MoreMenu label="More for the selection" items={[
+        { id: 'dup', label: 'Duplicate', icon: 'copy', onSelect: async () => after(await bulk(ids, { action: 'duplicate' }), 'duplicated') },
+        { id: 'delete', label: 'Delete…', icon: 'trash', onSelect: async () => { if (window.confirm(`Delete ${ids.length} entr${ids.length === 1 ? 'y' : 'ies'} (and their subtasks)?`)) after(await bulk(ids, { action: 'delete' }), 'deleted'); } },
+      ]} />
       <IconButton icon="x" label="Clear the selection" onClick={clear} />
       {note && <span className="fx-muted">{note}</span>}
     </div>

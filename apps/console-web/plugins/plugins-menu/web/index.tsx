@@ -21,6 +21,7 @@ import { TabContent } from '@console/axf/libs/settings';
 import { post } from '@console/api';
 import { bundledPlugins, fetchPluginStatus, pluginApi, PLUGINS_CHANGED, type PluginStatus } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { MoreMenu } from './MoreMenu';
 import { appMenu } from './menu';
 import {
   FOLDER, ID, INFO_DIALOG, INSTALL_DIALOG, K, LADDER, PARAM_GROUPS, PARAM_TYPES, SETTINGS_DIALOG, TAB,
@@ -217,15 +218,15 @@ function SettingsBrowser({ ask }: { ask?: string }) {
       <div className="axp-plugins-menu__bar">
         <IconButton icon={collapsed ? 'chevron-right' : 'chevron-left'} label={collapsed ? 'Show the plugin list' : 'Hide the plugin list'} onClick={() => rt.settings.set(K.collapsed, !collapsed)} />
         <Segmented size="sm" label="Open as" value={mode} onChange={(v) => rt.settings.set(placementKey(ID), v)}
-          options={[{ value: 'dialog', label: 'Dialog', icon: 'box' }, { value: 'window', label: 'Floating window', icon: 'external' }]} />
+          options={[{ value: 'dialog', label: 'Dialog', icon: 'box', title: 'Open as a dialog' }, { value: 'window', label: 'Window', icon: 'external', title: 'Open as a floating window' }]} />
         <span className="axp-plugins-menu__grow" />
-        <Button size="sm" tone="ghost" icon="settings" onClick={() => choose(FOLDER)}>This browser</Button>
+        <IconButton icon="settings" label="This browser's own settings" onClick={() => choose(FOLDER)} />
       </div>
       {offline && <Note tone="warning">The console API isn't reachable: showing the bundled plugins.</Note>}
       <div className={`axp-plugins-menu__body axp-plugins-menu__body--${width}`}>
         {!collapsed && (
           <nav className="axp-plugins-menu__col" aria-label="Installed plugins">
-            {setting(rt, K.search, true) && <TextField label="Find a plugin" value={q} onChange={setQ} placeholder="Name or folder" />}
+            {setting(rt, K.search, true) && <input className="fx-input" type="search" aria-label="Find a plugin" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find a plugin" />}
             {!rows && <LoadingSkeleton />}
             <ul className="axp-plugins-menu__list">
               {list.map((r) => (
@@ -278,7 +279,7 @@ function AdvancedPlaceholders() {
   const groups = Object.entries(PARAM_GROUPS);
   return (
     <div className="fx-stack">
-      <p className="fx-muted" style={{ margin: 0 }}>Every parameter type a plugin setting can take. Greyed-out ones are placeholders: they show here so a plugin can plan for them, and switch on once the settings library renders that type.</p>
+      <p className="fx-muted" style={{ margin: 0 }} title="Greyed-out ones are placeholders: they show here so a plugin can plan for them, and switch on once the settings library renders that type.">Every parameter type a plugin setting can take; greyed out = placeholder.</p>
       {groups.map(([g, label]) => (
         <div key={g} className="axp-plugins-menu__params">
           <h4 className="axp-plugins-menu__params-title">{label}</h4>
@@ -317,7 +318,7 @@ function Installer() {
   useEffect(() => { void api.call('config').then((r) => setConfig((r as { config: Config }).config)).catch(() => setConfig(null)); }, []);
   return (
     <div className="axp-plugins-menu axp-plugins-menu--installer">
-      <Segmented label="Installer" value={tab} onChange={setTab} options={[
+      <Segmented size="sm" label="Installer" value={tab} onChange={setTab} options={[
         { value: 'browse', label: 'Browse', icon: 'search' }, { value: 'archives', label: 'Archives', icon: 'layers' }, { value: 'settings', label: 'Settings', icon: 'settings' },
       ]} />
       {tab === 'browse' && <Browse config={config} />}
@@ -356,9 +357,11 @@ function Browse({ config }: { config: Config | null }) {
   return (
     <div className="fx-stack">
       <div className="axp-plugins-menu__filters">
-        <SelectField label="Archive" value={archive} onChange={setArchive} options={[{ value: 'all', label: 'Every archive' }, ...archives.filter((a) => a.enabled).map((a) => ({ value: a.id, label: a.label }))]} />
-        <TextField label="Search" value={q} onChange={setQ} placeholder="Name, folder or words" />
-        <Button icon="refresh" onClick={() => void load(true)} disabled={loading}>{loading ? 'Reading…' : 'Search'}</Button>
+        <select className="fx-input" aria-label="Archive" value={archive} onChange={(e) => setArchive(e.target.value)}>
+          {[{ value: 'all', label: 'Every archive' }, ...archives.filter((a) => a.enabled).map((a) => ({ value: a.id, label: a.label }))].map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+        <input className="fx-input" type="search" aria-label="Search" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') void load(true); }} placeholder="Name, folder or words" />
+        <Button size="sm" icon="refresh" onClick={() => void load(true)} disabled={loading}>{loading ? 'Reading…' : 'Search'}</Button>
       </div>
       {error && <Note tone="danger">{error}</Note>}
       {data?.archives.filter((a) => !a.ok).map((a) => <Note key={a.id} tone="warning">{a.label}: {a.error}</Note>)}
@@ -439,7 +442,7 @@ function Archives() {
   if (!data) return error ? <Note tone="danger">{error}</Note> : <LoadingSkeleton />;
   return (
     <div className="fx-stack">
-      <p className="fx-muted" style={{ margin: 0 }}>Places plugins are kept. axHub is the permanent archive and needs its token. Credentials stay on the console server: this page only shows whether one is set.</p>
+      <p className="fx-muted" style={{ margin: 0 }} title="axHub is the permanent archive and needs its token. Credentials stay on the console server: this page only shows whether one is set.">Places plugins are kept. Credentials stay on the server.</p>
       <ul className="axp-plugins-menu__catalog">
         {data.archives.map((a) => (
           <li key={a.id} className="axp-plugins-menu__entry">
@@ -452,8 +455,10 @@ function Archives() {
               {!a.enabled && <Chip>off</Chip>}
               <span className="axp-plugins-menu__grow" />
               <Button size="sm" icon="check" onClick={() => void test(a)}>Test</Button>
-              <Button size="sm" tone="ghost" icon="edit" onClick={() => setEdit(edit === a.id ? null : a.id)}>Edit</Button>
-              {!a.permanent && <Button size="sm" tone="danger" icon="trash" onClick={() => void remove(a)}>Remove</Button>}
+              <MoreMenu label={`More for ${a.label}`} items={[
+                { id: 'edit', label: edit === a.id ? 'Close the editor' : 'Edit', icon: 'edit', onSelect: () => setEdit(edit === a.id ? null : a.id) },
+                !a.permanent && { id: 'remove', label: 'Remove', icon: 'trash', onSelect: () => void remove(a) },
+              ]} />
             </div>
             <p className="fx-muted axp-plugins-menu__loc">{a.location}</p>
             {a.lastTest && <Note tone={a.lastTest.ok ? 'success' : 'danger'}>{a.lastTest.ok ? a.lastTest.detail : a.lastTest.error}</Note>}
@@ -461,8 +466,10 @@ function Archives() {
           </li>
         ))}
       </ul>
-      <h3 className="axp-plugins-menu__params-title">Add an archive</h3>
-      <ArchiveForm kinds={data.kinds} authTypes={data.authTypes} onSaved={(d) => setData(d)} />
+      <details className="axp-plugins-menu__add">
+        <summary className="axp-plugins-menu__params-title">Add an archive</summary>
+        <ArchiveForm kinds={data.kinds} authTypes={data.authTypes} onSaved={(d) => setData(d)} />
+      </details>
     </div>
   );
 }
@@ -602,10 +609,10 @@ function OpenPanel() {
   const rt = useRuntime();
   return (
     <div className="fx-stack">
-      <p style={{ margin: 0 }}>Right-click or long-press anywhere → <strong>Plugins</strong>: Install, Settings, Manage, Enable, Disable.</p>
+      <p className="fx-muted" style={{ margin: 0 }}>Right-click or long-press anywhere → <strong>Plugins</strong>: Install, Settings, Manage, Enable, Disable.</p>
       <div className="fx-row fx-row--wrap">
-        <Button tone="primary" icon="settings" onClick={() => rt.openDialog(SETTINGS_DIALOG)}>Plugin settings</Button>
-        <Button icon="download" onClick={() => rt.openDialog(INSTALL_DIALOG)}>Install plugins</Button>
+        <Button size="sm" tone="primary" icon="settings" onClick={() => rt.openDialog(SETTINGS_DIALOG)}>Plugin settings</Button>
+        <Button size="sm" icon="download" onClick={() => rt.openDialog(INSTALL_DIALOG)}>Install plugins</Button>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ import { PLUGINS_CHANGED } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { label, rebuildRequest, rows as toRows, summary, type CatalogItem, type Installed, type Model, type Pending, type Row } from './core';
 import { appMenu } from './menu';
+import { MoreMenu } from './MoreMenu';
 import './plugin-update.css';
 import { EmptyState } from '@console/emptyState';
 
@@ -117,12 +118,12 @@ function PluginUpdate() {
         <div>
           <p className="fx-eyebrow">Plugins · updates</p>
           <h1>Plugin Update</h1>
-          <p className="fx-muted">Every installed plugin, the model that built it, when, and its version, checked against the plugin catalog on axHub. One copy of each plugin, always: a build by another model replaces the installed one.</p>
+          <p className="fx-muted" title="Every installed plugin, the model that built it, when, and its version, checked against the plugin catalog on axHub. One copy of each plugin, always: a build by another model replaces the installed one.">Installed plugins checked against axHub’s catalog. One copy each.</p>
         </div>
-        <Button icon="refresh" disabled={u.loading} onClick={() => void u.load()}>{u.loading ? 'Checking…' : 'Check axHub now'}</Button>
+        <Button size="sm" icon="refresh" disabled={u.loading} onClick={() => void u.load()}>{u.loading ? 'Checking…' : 'Check now'}</Button>
       </header>
       {u.error && <Note tone="danger">{u.error}</Note>}
-      {u.catalog !== 'ok' && <Note tone="warning">{u.catalogNote} Updates can’t be checked; the list shows what’s installed.</Note>}
+      {u.catalog !== 'ok' && <Note tone="warning"><span title={u.catalogNote}>Can’t reach axHub’s catalog: showing what’s installed, no update check.</span></Note>}
       {note && <Note tone={note.tone}>{note.text}</Note>}
       {list.length > 0 && <p className="fx-muted axp-plugin-update__summary">{summary(list)}{u.checkedAt ? ` · checked ${new Date(u.checkedAt).toLocaleTimeString()}` : ''}</p>}
 
@@ -137,8 +138,8 @@ function PluginUpdate() {
               </ol>
               <Checkbox checked={ask.keepData} onChange={(on) => setAsk({ ...ask, keepData: on })} label="Keep its data (settings, history) for the new build" />
               <div className="fx-row fx-row--wrap">
-                <Button tone="danger" icon="check" onClick={() => void replace(ask.row, ask.keepData)}>Remove the old build and install the new one</Button>
-                <Button tone="ghost" onClick={() => setAsk(null)}>Cancel</Button>
+                <Button size="sm" tone="danger" icon="check" onClick={() => void replace(ask.row, ask.keepData)}>Remove the old build and install the new one</Button>
+                <Button size="sm" tone="ghost" onClick={() => setAsk(null)}>Cancel</Button>
               </div>
             </>
           ) : ask.kind === 'rebuild' ? (
@@ -146,37 +147,39 @@ function PluginUpdate() {
               <strong>Rebuild {ask.row.name} with {label(ask.model)}?</strong>
               <p className="fx-muted" style={{ margin: 0 }}>A brand-new build, written from scratch on {label(ask.model)}, goes on the pending list (with its steps and an estimate) for the Build manager to run. It keeps this plugin’s folder and id, so it can only replace the {label(ask.row.model)} build, never sit next to it. When it’s published to the catalog, Replace here removes the old build and installs the new one, after you confirm.</p>
               <div className="fx-row fx-row--wrap">
-                <Button tone="primary" icon="sparkles" onClick={() => void rebuild(ask.row, ask.model)}>Park the {label(ask.model)} rebuild</Button>
-                <Button tone="ghost" onClick={() => setAsk(null)}>Cancel</Button>
+                <Button size="sm" tone="primary" icon="sparkles" onClick={() => void rebuild(ask.row, ask.model)}>Park the {label(ask.model)} rebuild</Button>
+                <Button size="sm" tone="ghost" onClick={() => setAsk(null)}>Cancel</Button>
               </div>
             </>
           ) : null}
         </div>
       )}
 
+      {/* one line per plugin: name, model, version; its main action on the right, rebuilds behind ⋯ (compact pages, Oct 30 2026) */}
       <ul className="axp-plugin-update__list">
-        {list.map((r) => (
-          <li key={r.folder} className={`fx-card axp-plugin-update__row ${r.enabled ? '' : 'is-off'}`}>
-            <div className="axp-plugin-update__head">
-              <strong>{r.name}</strong>
-              <ModelBadge model={r.model} builtAt={r.builtAt} />
-              <span className="fx-muted fx-small">v{r.version}{r.builtAt ? ` · built ${r.builtAt}` : ''} · {r.folder}{r.enabled ? '' : ' · off'}</span>
-            </div>
-            {r.error && <Note tone="danger">{r.error}</Note>}
-            <div className="fx-row fx-row--wrap axp-plugin-update__acts">
-              {r.update
-                ? <Button size="sm" tone="primary" icon="download" disabled={!!busy} onClick={() => void update(r)}>{busy === r.folder ? 'Updating…' : `Update to ${r.update}`}</Button>
-                : u.catalog === 'ok' && <span className="fx-muted fx-small">{r.inCatalog ? 'Up to date' : 'Not in the catalog'}</span>}
-              {r.replace && <Button size="sm" tone="success" icon="shuffle" disabled={!!busy} onClick={() => setAsk({ kind: 'replace', row: r, keepData: false })}>{label(r.replace.model)} build {r.replace.version}: Replace</Button>}
-              {r.rebuildWith.map((m) => {
-                const p = r.parked.find((x) => x.model === m);
-                return p
-                  ? <span key={m} className="fx-muted fx-small">{label(m)} rebuild {p.status === 'complete' ? 'built' : 'parked'} ({p.id})</span>
-                  : <Button key={m} size="sm" tone="ghost" icon="sparkles" disabled={!!busy} onClick={() => setAsk({ kind: 'rebuild', row: r, model: m })}>Rebuild with {label(m)}</Button>;
-              })}
-            </div>
-          </li>
-        ))}
+        {list.map((r) => {
+          const parked = r.rebuildWith.map((m) => ({ m, p: r.parked.find((x) => x.model === m) }));
+          return (
+            <li key={r.folder} className={`axp-plugin-update__row ${r.enabled ? '' : 'is-off'}`}>
+              <div className="axp-plugin-update__head">
+                <strong className="axp-plugin-update__name">{r.name}</strong>
+                <ModelBadge compact model={r.model} builtAt={r.builtAt} />
+                <span className="fx-muted fx-small axp-plugin-update__meta" title={`v${r.version}${r.builtAt ? ` · built ${r.builtAt}` : ''} · ${r.folder}${r.enabled ? '' : ' · off'}`}>
+                  v{r.version}{r.enabled ? '' : ' · off'}
+                  {parked.filter((x) => x.p).map((x) => ` · ${label(x.m)} rebuild ${x.p!.status === 'complete' ? 'built' : 'parked'} (${x.p!.id})`).join('')}
+                </span>
+              </div>
+              <div className="axp-plugin-update__acts">
+                {r.update
+                  ? <Button size="sm" tone="primary" icon="download" disabled={!!busy} onClick={() => void update(r)}>{busy === r.folder ? 'Updating…' : `Update to ${r.update}`}</Button>
+                  : r.replace ? null : u.catalog === 'ok' && <span className="fx-muted fx-small">{r.inCatalog ? 'Up to date' : 'Not in catalog'}</span>}
+                {r.replace && <Button size="sm" tone="success" icon="shuffle" disabled={!!busy} onClick={() => setAsk({ kind: 'replace', row: r, keepData: false })}>Replace ({label(r.replace.model)} {r.replace.version})</Button>}
+                <MoreMenu label={`More for ${r.name}`} items={parked.filter((x) => !x.p).map((x) => ({ id: x.m, label: `Rebuild with ${label(x.m)}…`, icon: 'sparkles', disabled: !!busy, onSelect: () => setAsk({ kind: 'rebuild', row: r, model: x.m }) }))} />
+              </div>
+              {r.error && <Note tone="danger">{r.error}</Note>}
+            </li>
+          );
+        })}
       </ul>
       {!list.length && !u.loading && !u.error && <EmptyState icon="package" compact>No plugins installed.</EmptyState>}
     </div>
@@ -187,8 +190,8 @@ function SettingsPanel() {
   const rt = useRuntime();
   return (
     <div className="fx-stack">
-      <p style={{ margin: 0 }}>Lists every installed plugin with the model that built it, checks axHub’s plugin catalog for new versions and for builds by another model, and parks rebuilds with another model.</p>
-      <div className="fx-row fx-row--wrap"><Button tone="primary" icon="refresh" onClick={() => rt.navigate(VIEW)}>Open Plugin Update</Button></div>
+      <p className="fx-muted" style={{ margin: 0 }} title="Lists every installed plugin with the model that built it, checks axHub’s plugin catalog for new versions and for builds by another model, and parks rebuilds with another model.">Updates, model swaps and rebuilds for installed plugins.</p>
+      <div className="fx-row"><Button size="sm" tone="primary" icon="refresh" onClick={() => rt.navigate(VIEW)}>Open Plugin Update</Button></div>
     </div>
   );
 }

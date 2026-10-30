@@ -1,15 +1,19 @@
 /* Brand library — layout only; every colour, size and radius is a theme token (framework/spec/THEMING.md). */
 .axp-brand-library { display: flex; flex-direction: column; gap: var(--fx-space); min-height: 0; }
-.axp-brand-library__filters { display: flex; flex-wrap: wrap; gap: var(--fx-space); align-items: flex-end; }
-.axp-brand-library__search { flex: 1 1 calc(var(--fx-space) * 30); min-width: 0; }
-.axp-brand-library__count { display: flex; align-items: center; gap: var(--fx-space); margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 0.86); min-height: calc(var(--fx-space) * 3.5); }
+.axp-brand-library { gap: calc(var(--fx-space) * 0.75); }
+.axp-brand-library__filters { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); align-items: center; }
+.axp-brand-library__search { flex: 1 1 calc(var(--fx-space) * 20); width: auto; min-width: 0; }
+.axp-brand-library__pick { flex: 0 1 auto; width: auto; min-width: 0; max-width: calc(var(--fx-space) * 22); }
+@media (max-width: 640px) { .axp-brand-library__search { flex-basis: 100%; } .axp-brand-library__pick { flex: 1 1 0; max-width: none; } }
+.axp-brand-library__count { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); margin-left: auto; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 0.82); white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 .axp-brand-library__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: calc(var(--fx-space) * 1.5); min-height: 0; }
 .axp-brand-library__body.has-preview { grid-template-columns: minmax(0, 1fr) minmax(calc(var(--fx-space) * 34), calc(var(--fx-space) * 44)); }
 @media (max-width: 760px) { .axp-brand-library__body.has-preview { grid-template-columns: minmax(0, 1fr); } }
 
 /* the virtual wall: a fixed-height scroller, a canvas as tall as every row, only visible rows drawn */
-.axp-brand-library__scroller { --axp-brand-library-tile: calc(var(--fx-space) * 15); position: relative; overflow-y: auto; overscroll-behavior: contain; height: min(70vh, calc(var(--fx-space) * 90)); min-height: calc(var(--fx-space) * 30); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); padding: var(--fx-space); }
+.axp-brand-library__scroller { --axp-brand-library-tile: calc(var(--fx-space) * 15); position: relative; overflow-y: auto; overscroll-behavior: contain; height: min(70vh, calc(var(--fx-space) * 90)); min-height: calc(var(--fx-space) * 30); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); padding: calc(var(--fx-space) * 0.5); }
+@media (max-width: 640px) { .axp-brand-library__scroller { --axp-brand-library-tile: calc(var(--fx-space) * 12); } .axp-brand-library__scroller.is-lg { --axp-brand-library-tile: calc(var(--fx-space) * 16); } .axp-brand-library__scroller.is-sm { --axp-brand-library-tile: calc(var(--fx-space) * 9); } }
 .axp-brand-library__scroller.is-sm { --axp-brand-library-tile: calc(var(--fx-space) * 11); }
 .axp-brand-library__scroller.is-lg { --axp-brand-library-tile: calc(var(--fx-space) * 20); }
 .axp-brand-library__canvas { position: relative; }
