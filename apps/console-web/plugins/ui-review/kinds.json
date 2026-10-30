@@ -1,0 +1,62 @@
+{
+  "$axf": "ui-review-kinds@1",
+  "readme": "UI Review sections (open registry). Add a kind here, or in kinds.json in the plugin's data folder, and it shows as its own section; an item submitted with a kind nobody listed still gets a section of its own (label made from its id). Order sorts the sections.",
+  "kinds": [
+    {
+      "id": "design-pack",
+      "label": "Design packs",
+      "icon": "palette",
+      "order": 10,
+      "desc": "Candidate design packages for the look refactor. Pick up to 3."
+    },
+    {
+      "id": "app",
+      "label": "Whole apps / programs",
+      "icon": "grid",
+      "order": 20,
+      "desc": "A new or reworked app, end to end."
+    },
+    {
+      "id": "screen",
+      "label": "Screens & pages",
+      "icon": "monitor",
+      "order": 30,
+      "desc": "One page or screen of an app or plugin."
+    },
+    {
+      "id": "settings",
+      "label": "Settings interfaces",
+      "icon": "settings",
+      "order": 40,
+      "desc": "Settings pages, plugin settings tabs, level editors."
+    },
+    {
+      "id": "dialog",
+      "label": "Dialogs & popups",
+      "icon": "box",
+      "order": 50,
+      "desc": "Dialogs, popovers, floating windows, toasts."
+    },
+    {
+      "id": "menu",
+      "label": "Menus & toolbars",
+      "icon": "menu",
+      "order": 60,
+      "desc": "Application menus, context menus, toolbars."
+    },
+    {
+      "id": "banner",
+      "label": "Banners & cards",
+      "icon": "star",
+      "order": 70,
+      "desc": "Banners, banner badges, Home cards, widgets."
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "icon": "more",
+      "order": 90,
+      "desc": "Anything that fits no other section."
+    }
+  ]
+}
