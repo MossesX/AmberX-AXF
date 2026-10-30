@@ -120,3 +120,11 @@
   .axp-ai-assistant__mark > svg, .axp-ai-assistant__mark-ring { animation: none !important }
   .axp-ai-assistant__mark.is-working .axp-ai-assistant__mark-ring { border-color: var(--fx-accent) }
 }
+
+/* the stand-in microphone (no voice plugin): a muted mic with an install popover */
+.axp-ai-assistant__micwrap { position: relative; display: inline-flex; align-self: center }
+.axp-ai-assistant__mic.is-missing { opacity: var(--fx-opacity-muted) }
+.axp-ai-assistant__micpop { position: absolute; bottom: calc(100% + var(--fx-space) * 0.5); right: 0; z-index: 30; width: max-content; max-width: min(340px, 80vw); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5);
+  padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); box-shadow: var(--fx-shadow-lg); color: var(--fx-text) }
+.axp-ai-assistant__micmsg { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start }
+.axp-ai-assistant__micbtns { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }

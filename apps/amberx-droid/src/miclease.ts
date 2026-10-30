@@ -5,7 +5,7 @@
  * the lease before it opens the microphone and releases it after, so two of them never fight over the recognizer.
  * Nobody imports anybody: whoever loads first puts the object on globalThis and everyone else uses that one, so either
  * side can be removed. A holder that forgets to release loses the lease after its time-to-live (default 2 minutes).
- * This is AmberX's copy; the Agent voice console plugin carries the same one (`plugins/agent-voice/web/lease.ts`).
+ * This is AmberX's copy; the Agent voice console plugin carries the same one in its own folder.
  * Same contract, same key: keep the two identical.
  */
 export interface MicLease {

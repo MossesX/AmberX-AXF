@@ -5,18 +5,22 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, Markdown, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, Slot, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
 import { ActivityIcon, useReportActivity } from './activity';
 import { ChatSettingsDialog } from './settings';
+import { VoiceMicStandIn } from './voicemic';
 import {
   APPROVALS_BADGE_KEY, FOLDER, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
 interface TextFile { name: string; text: string }
+
+/** The chat window used last (the one voice input goes to when several are open). */
+let lastWindow = '';
 
 const LAST = 'axf-ai-assistant:last';
 const remember = (id: string) => { try { localStorage.setItem(LAST, id); } catch { /* storage blocked */ } };
@@ -98,6 +102,46 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const settings: ConvSettings = conv?.settings ?? pending;
   const agents = status?.integrations.agents ? status.agents : [];
   const activeAgent = agents.find((a) => a.id === (settings.agentId ?? (conv ? '' : status?.defaultAgent)));
+  /*
+   * Voice bridge (Oct 29 2026): plugins that speak or listen (agent voice) follow this window through window events,
+   * never imports — `axf:assistant.agent` (the selected agent; answered again on `axf:assistant.hello`),
+   * `axf:assistant.reply` (a finished reply, in finish()), and they write to the composer with `axf:assistant.input`
+   * {text, send, partial} and pick the agent with `axf:assistant.focus` {agentId}. Only the window used last takes input.
+   */
+  const winId = useRef(`w${Math.random().toString(36).slice(2, 9)}`);
+  const agentRef = useRef({ id: '', name: '' });
+  agentRef.current = { id: activeAgent?.id ?? '', name: activeAgent?.name ?? '' };
+  const viaVoice = useRef(false);
+  const sendRef = useRef<(t?: string) => void>(() => undefined);
+  const settingsRef = useRef<(s: Partial<ConvSettings>) => Promise<void>>(async () => undefined);
+  const voiceSlot = useSlotFilled('assistant.mic');
+  const voiceProps = useMemo(() => ({ agentId: activeAgent?.id ?? '', agentName: activeAgent?.name ?? '', compact: !!compact }), [activeAgent?.id, activeAgent?.name, compact]);
+  useEffect(() => {
+    const tell = () => window.dispatchEvent(new CustomEvent('axf:assistant.agent', { detail: { window: winId.current, agentId: agentRef.current.id, agentName: agentRef.current.name, open: true } }));
+    tell();
+    window.addEventListener('axf:assistant.hello', tell);
+    return () => window.removeEventListener('axf:assistant.hello', tell);
+  }, [activeAgent?.id, activeAgent?.name]);
+  useEffect(() => {
+    lastWindow = winId.current;
+    const mine = () => lastWindow === winId.current;
+    const onInput = (e: Event) => {
+      const d = (e as CustomEvent<{ text?: string; send?: boolean; partial?: boolean }>).detail;
+      if (!d || !mine()) return;
+      const t = String(d.text ?? '');
+      if (d.send && t.trim()) { viaVoice.current = true; sendRef.current(t); } else setText(t);
+    };
+    const onFocus = (e: Event) => { const id = (e as CustomEvent<{ agentId?: string }>).detail?.agentId; if (id && mine()) void settingsRef.current({ agentId: id }); };
+    window.addEventListener('axf:assistant.input', onInput);
+    window.addEventListener('axf:assistant.focus', onFocus);
+    const w = winId.current;
+    return () => {
+      window.removeEventListener('axf:assistant.input', onInput);
+      window.removeEventListener('axf:assistant.focus', onFocus);
+      window.dispatchEvent(new CustomEvent('axf:assistant.agent', { detail: { window: w, open: false } }));
+      if (lastWindow === w) lastWindow = '';
+    };
+  }, []);
   const [writeMode, setWriteMode] = useState<WriteMode | null>(null);
   useEffect(() => {
     setWriteMode(null);
@@ -129,6 +173,11 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
    */
   const finish = async (cid: string, reply: LiveReply) => {
     abort.current = null;
+    // Voice plugins (e.g. agent voice) hear finished replies through this event; nothing here knows who listens.
+    if (!reply.error && reply.text.trim()) {
+      window.dispatchEvent(new CustomEvent('axf:assistant.reply', { detail: { agentId: agentRef.current.id, agentName: agentRef.current.name || reply.agent, text: reply.text, convId: cid, viaVoice: viaVoice.current } }));
+    }
+    viaVoice.current = false;
     if (convId.current === cid) await open(cid, false);
     void loadList();
     void statusStore.reload();
@@ -197,8 +246,8 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     return false;
   };
 
-  const send = () => {
-    let content = text.trim();
+  const send = (override?: string) => {
+    let content = (override ?? text).trim();
     if (!content && !images.length && !files.length) return;
     if (content.startsWith('/') && !files.length && !images.length && slash(content)) { setText(''); return; }
     if (files.length) content += files.map((f) => `\n\n\`\`\`${f.name}\n${f.text}\n\`\`\``).join('');
@@ -208,6 +257,9 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     setText(''); setImages([]); setFiles([]); setEditing(''); setCtx(undefined);
     void run(body, opt);
   };
+
+  sendRef.current = send;
+  settingsRef.current = updateSettings;
 
   const addFiles = async (fl: FileList | File[]) => {
     for (const f of Array.from(fl).slice(0, 8)) {
@@ -277,7 +329,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   }
 
   return (
-    <div className={`axp-ai-assistant${compact ? ' is-compact' : ''}`} onDragOver={(e) => e.preventDefault()} onDrop={onDrop}>
+    <div className={`axp-ai-assistant${compact ? ' is-compact' : ''}`} onDragOver={(e) => e.preventDefault()} onDrop={onDrop} onPointerDownCapture={() => { lastWindow = winId.current; }}>
       {showList && (
         <aside className="axp-ai-assistant__side">
           <div className="axp-ai-assistant__side-head">
@@ -340,6 +392,8 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           {/* axHub approvals + held calls (lib-approvals): nothing drawn while nothing waits; click = popover with
               Approve / Decline (the hub's own page, framed: the hub allows the console's origin) or countdown + Deny. */}
           {rt.settings.get(APPROVALS_BADGE_KEY) !== false && <ApprovalsBadge resolveHub={consoleHub} frame className="axp-ai-assistant__approvals" />}
+          {/* Title-bar extension point: e.g. the agent voice plugin's live status light + speech controls. */}
+          <Slot name="assistant.head" props={voiceProps} />
           {live && <span className="axp-ai-assistant__livepill" title="This reply runs on its host: closing the chat only detaches, and any device can follow it."><Icon name="cloud" size={12} /> live</span>}
           {writeMode && (
             <span className="axp-ai-assistant__write" title={`${activeAgent?.name ?? 'This agent'} can propose changes to these containers. Nothing changes until you approve a card; a snapshot is taken first.`}>
@@ -418,7 +472,8 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             <button type="button" className="fx-iconbtn" title="Attach the current console view as context" onClick={() => setCtx({ view: axState.view, title: document.title, selection: String(globalThis.getSelection?.() ?? '').slice(0, 4000) || undefined })}><Icon name="monitor" size={16} /></button>
             <textarea ref={inputRef} className="fx-input axp-ai-assistant__textarea" rows={compact ? 2 : 3} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={onKey} onPaste={onPaste}
               placeholder={`Message ${activeAgent?.name ?? name}…  (Enter sends · Shift+Enter new line · / for prompts · ↑ edits last)`} aria-label="Message" />
-            {live ? <Button icon="pause" onClick={stop}>Stop</Button> : <Button tone="primary" icon="play" disabled={!text.trim() && !images.length && !files.length} onClick={send}>Send</Button>}
+            {voiceSlot ? <Slot name="assistant.mic" props={voiceProps} /> : <VoiceMicStandIn agentId={activeAgent?.id ?? ''} agentName={activeAgent?.name ?? ''} />}
+            {live ? <Button icon="pause" onClick={stop}>Stop</Button> : <Button tone="primary" icon="play" disabled={!text.trim() && !images.length && !files.length} onClick={() => send()}>Send</Button>}
           </div>
           {status && status.budget > 0 && <span className="fx-small fx-muted">Today: {fmtNum(status.tokensToday)} / {fmtNum(status.budget)} tokens</span>}
         </div>
@@ -462,6 +517,7 @@ function MessageView({ m, name, isLast, busy, showUsage, onCopy, onEdit, onRegen
           {ai && showUsage && (meta.model || meta.usage) && <span className="fx-small fx-muted">{meta.model}{meta.latencyMs ? ` · ${(meta.latencyMs / 1000).toFixed(1)}s` : ''}{meta.usage ? ` · ${fmtNum(meta.usage.input)}→${fmtNum(meta.usage.output)} tok` : ''}</span>}
           <span className="axp-ai-assistant__acts">
             <button type="button" className="fx-iconbtn" title="Copy" onClick={onCopy}><Icon name="copy" size={12} /></button>
+            {ai && m.content && <Slot name="assistant.reply" props={{ agentId: meta.agentId ?? '', agentName: meta.agentName ?? '', text: m.content }} />}
             {!ai && <button type="button" className="fx-iconbtn" title="Edit and resend" disabled={busy} onClick={onEdit}><Icon name="edit" size={12} /></button>}
             {ai && isLast && <button type="button" className="fx-iconbtn" title="Regenerate" disabled={busy} onClick={onRegenerate}><Icon name="refresh" size={12} /></button>}
             {ai && isLast && (meta.interrupted || meta.stopped) && <button type="button" className="fx-iconbtn" title="Continue this reply" disabled={busy} onClick={onContinue}><Icon name="play" size={12} /></button>}
