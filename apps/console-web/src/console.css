@@ -258,3 +258,9 @@ html.axf-strip-page #root { height: auto; min-height: 0; display: block; }
 .cx-skeleton__row:nth-child(3n + 2) { width: 82%; } .cx-skeleton__row:nth-child(3n) { width: 64%; }
 @keyframes cx-skeleton { 50% { opacity: var(--fx-opacity-muted); } }
 @media (prefers-reduced-motion: reduce) { .cx-skeleton__row { animation: none; } }
+
+/* compact counts (Oct 30 2026): one tight strip of numbers instead of big tiles */
+.pd-strip { grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 6.5), 1fr)); gap: calc(var(--fx-space) * 0.5) }
+.pd-count { flex-direction: row; align-items: baseline; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
+.pd-count b { font-size: calc(var(--fx-font-size) * 1.1) }
+.pd-count span { font-size: calc(var(--fx-font-size) * 10 / 14); letter-spacing: 0.03em }
