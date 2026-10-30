@@ -46,12 +46,15 @@ try {
     await page.getByRole('menuitem', { name: 'Settings', exact: true }).first().click();
   }
   await page.waitForTimeout(500);
+  // Compact settings (Oct 30 2026): on a phone the settings open as a list of sections; tap Appearance.
+  const appearanceRow = page.locator('.axf-settings__nav', { hasText: 'Appearance' }).first();
+  if (await appearanceRow.isVisible().catch(() => false)) { await appearanceRow.click(); await page.waitForTimeout(400); }
 
   // Settings → Appearance → Assets puts each slot's picker in its own collapsible card (Oct 24 2026): open the colour
   // and style theme cards and use the picker inside each (the slot's first drop-down), not "the first select on the page".
   // Settings → Appearance keeps everything under the Design Package picker in one collapsible "Everything else"
   // container (Oct 27 2026, closed by default): open it first.
-  const rest = page.locator('[data-axf-anchor="settings-panel:axf.appearance.rest"] .fx-card__toggle').first();
+  const rest = page.locator('[data-axf-anchor="settings-panel:axf.appearance.rest"] :is(.fx-card__toggle, .axf-settings__gtoggle)').first();
   if ((await rest.count()) && (await rest.getAttribute('aria-expanded')) === 'false') { await rest.click(); await page.waitForTimeout(300); }
   const slotPicker = async (type) => {
     const card = page.locator(`[data-axf-anchor="settings-slot:${type}"]`);

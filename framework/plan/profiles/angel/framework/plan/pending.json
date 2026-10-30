@@ -1,0 +1,112 @@
+{
+ "$axf": "pending@1",
+ "updatedAt": "2026-10-29T18:34:15.248Z",
+ "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+ "items": [
+  {
+   "id": "home-cards",
+   "title": "Console Home cards: card@1 asset plugins carry, Home detects/shows/hides every card (always rendered), card layouts, cards for every data plugin",
+   "detail": "Brett, Oct 29 2026: \"Design a bunch more cards for the console home screen. If plugins with data or dynamic content don't have a card, design one for them from scratch (you decide what to display and how). Plugins can now carry cards that can be designed in the future SDK and attached to the plugin as assets. Console Home detects all card assets attached to plugins and shows or hides them, but always rendered. The card layout can show or hide all cards detected.\"\n\nDecisions (cards): profile Angel (new, this is its first build; nothing built in the asking session); Fable contract first, then Opus.\nCard designs: one per plugin with data/dynamic content (31 plugins + 5 existing Home cards). No card: _template, basic-filter, plugin-switches, plugins-menu (tools with no data of their own).\nClash check Oct 29: no open build touches Home or cards (refactor profile all complete; main-framework pending items unrelated).\n\nPopulated from the Build orchestrator (Angel profile, build home-cards). Phase 1 Fable s1–s5, phase 2 Opus s6–s18; approval at the switch.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable s1] card@1 asset type in framework/schemas/asset-types.json (+ axf schemas): id, owner (plugin id or \"console\"), title, icon, kind (stat | list | meter | chart | feed | status | actions | custom), size (s | m | l | wide | tall), data {service (plugin_services capability), path, refreshSec, live:boolean}, slots (headline, value, sub, rows, sparkline, actions), emptyState, actions (ids run through the action engine), level (Simple/Basic/Developer/Administrator), minRole (UAC), defaultVisible, order, category. Open registry: unknown kinds render the custom slot, never fail.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Fable s2] plugin@1 gets `cards: [\"cards/<id>.json\", …]` (card assets ship inside the plugin folder, so plugin-lifecycle@1 removes them on uninstall); plugin-inventory@1 engine lists each plugin's cards (framework/core/engines/plugins.ts + server/engine.py twin) so anything can detect them; future card SDK attaches cards to a plugin by writing this list.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Fable s3] home-cards@1 engine (TS reference, framework/core/engines/cards.ts): collects every card from enabled plugins + console-owned cards, applies saved visibility/order/size, level and role; hidden cards stay in the output with `hidden: true` so Home ALWAYS renders (mounts) every card and only hides it (instant show, data kept warm). Fixture spec/fixtures/home-cards.json; Kotlin twin recorded as a deferred gap in PORTING.md (Android on hold).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable s4] card-layout@1 asset type: columns per window class (compact/medium/expanded), gap + density tokens, grouping (none | plugin | category), \"show all / hide all\" default, sort (manual | category | plugin). 3 starter layouts: grid-auto, two-column-dashboard, compact-list. Hot-swap via runtime.swap('card-layout', id); tokens only (THEMING.md).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Fable s5] Placeholders for the future card SDK: `axf.cards@1` capability service (list/register/unregister cards at runtime), extension point `home.cards`, typed NotImplemented card designer entry, so a designer plugin can later author card assets and attach them to any plugin without kernel changes.",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus s6] Home renders from the home-cards engine. The 5 cards already there become console-owned card assets: Plan summary, Build summary, Coverage, Project, Recent installs & imports. Same look at the default theme.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s7] Card layout toolbar on Home (hideable): Show all · Hide all · layout picker (card-layout assets) · group by · a Cards checklist popover with one switch per detected card. Right-click a card: Hide card · Card size · Open plugin · Plugin settings. Drag to reorder. Saved per user in settings (synced through axHub like the rest).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s8] Settings → Home cards tab (with the level toolbar rule): every detected card grouped by plugin, switch + size + order, layout default; a card whose plugin is disabled shows greyed \"plugin off\".",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus s9] Cards — Build orchestrator: next step + model chip, approvals waiting (one-tap), phase progress bar per open build. Build manager: remaining work split Fable/Opus, hours + cost left, top 3 builds. Build profiles: active profile chip + pending/queue/orchestrator counts for each profile, switch button.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s10] Cards — Feature matrix: kept vs skipped minutes per build, matrices with unapplied changes (Apply button). Fable rebuilds: parked count, Fable hours left, next rebuild. Changes & features grid: latest 5 changes/features with state dots.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s11] Cards — Codebase changes: live/running entries with heartbeat age and current step. Activity: running/queued CI runs and deploys as a feed. Push banner: branches not on main per repo with PR CI dots. Main build status: last main CI result + sparkline of the last 10 runs.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s12] Cards — Approvals: calls waiting with title + one-tap Approve/Deny, veto countdowns. Systems check: pass/warn/fail meter + top 3 issues with Auto fix. Alerts bell: unread by source (CI, deploys, builds, crashes). Claude badge: AI connection state, active model, last check time.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s13] Cards — AI assistant: live sessions + last message, Open chat. Agent manager: agents (Mosses, Vinny, Molly…) with running/idle state. Molly guide: recent walkthroughs + Ask Molly. AI keys: active key per kind (masked) and how many saved.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus s14] Cards — Todo manager: overdue / due today / open by list, quick add. Voice notes: listener state + latest 3 notes. Session check-in: active Claude sessions with machine and repo. Snapshot manager: latest snapshots with one-tap Restore.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus s15] Cards — Plugin Manager: enabled/disabled/unhealthy counts. Plugin Update: updates available (Update all). Container access: master switch state + containers up/down. axHub sync: red/green live badge (hubLive rule), last sync. MCP client: connected servers + tool counts.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s16] Cards — Brand library: logo of the day (animated, tap to roll). Theme manager: current colour/style/layout + Roll button. Context menu designer: saved menus + chunks count. Project wizard: recent projects. Claude handoff: kit freshness. Terminal: open tabs and their connections. Feature assistant: last drafted features.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus s17] Lifecycle: every plugin's cards/ listed in plugin.json and removed by uninstall.mjs --all; plugin-lifecycle check --after-uninstall for each touched plugin; theme checks (check-theme, theme-swap) over every card.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus s18] Tests (engine vs fixture, hidden cards stay mounted, show/hide all, plugin off), docs (_claude/memory/docs/home-cards.md, plugins README → Cards, STATUS), before/after Home screenshots at 412 and 1280 px, re-bake console.",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-29T18:34:15.248Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-29T18:34:15.248Z",
+   "estimate": "8.5 h",
+   "source": "orchestrator"
+  }
+ ]
+}
