@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Icon, Markdown, Note, SelectField, Switch, TextField, useRuntime, BannerIcon } from '@console/axf/react';
 import { InstallerDialog } from './installer';
+import { MoreMenu } from './more';
 import {
   type ClaudeAi, type ClaudeItem, type Config, ago, api, dismissReminder, handoffSession, publish, refresh, set, until, useStore,
 } from './store';
@@ -44,31 +45,29 @@ export function HandoffView() {
   useEffect(() => { void refresh(); }, []);
   const st = s.status;
   return (
-    <div className="fx-stack fx-stack--lg axp-claude-handoff">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1><p className="fx-muted">Everything a new Claude account needs to carry this project on, kept current.</p></div></header>
-      <p className="axp-claude-handoff__lead">One prompt that moves this project to a new Claude account: it keeps working on the same repo and sets up the claude.ai Project, instructions, memory and user files from the handoff kit in <code>_claude/handoff/</code>, which this page keeps current.</p>
-
-      <Container title="Assemble the prompt" icon="rocket">
-        <div className="fx-stack">
-          <div className="axp-claude-handoff__row">
-            <Button tone="primary" icon="rocket" disabled={!!s.busy} onClick={() => rt.openDialog('claude-handoff.installer')}>Assemble prompt</Button>
-            {s.assembled && <Button icon="copy" onClick={() => copy(rt, s.assembled!.prompt, 'Prompt')}>Copy again</Button>}
-            {s.assembled?.results?.url && <Button tone="success" icon="external" onClick={() => window.open(s.assembled!.results!.url, '_blank', 'noopener,noreferrer')}>Continue handoff on axHub</Button>}
-          </div>
-          <p className="axp-claude-handoff__meta">Opens the installer: it publishes the kit when it is out of date, walks every file group by group, then hands you the prompt. Paste it into a new session on the new account (claude.ai/code works in the same repo, MossesX/AmberX-AXF: no new repo, no fork).</p>
-          {s.assembled?.note && <Note tone="warning">{s.assembled.note}</Note>}
-          {s.assembled && <TextField label="The handoff prompt" value={s.assembled.prompt} onChange={() => undefined} rows={14} mono />}
+    <div className="fx-stack axp-claude-handoff">
+      <header className="fx-pagehead axp-claude-handoff__head">
+        <div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1><p className="fx-muted axp-claude-handoff__lede" title="Everything a new Claude account needs to carry this project on, kept current.">What a new Claude account needs to carry on, kept current.</p></div>
+        <div className="axp-claude-handoff__row axp-claude-handoff__acts">
+          <Button tone="primary" icon="rocket" disabled={!!s.busy} title="Opens the installer: publishes the kit when out of date, walks every file group, then hands you the prompt" onClick={() => rt.openDialog('claude-handoff.installer')}>Assemble prompt</Button>
+          <MoreMenu label="More handoff actions" items={[
+            !!s.assembled && { label: 'Copy the prompt again', icon: 'copy', onPick: () => copy(rt, s.assembled!.prompt, 'Prompt') },
+            !!s.assembled?.results?.url && { label: 'Continue handoff on axHub', icon: 'external', onPick: () => window.open(s.assembled!.results!.url, '_blank', 'noopener,noreferrer') },
+            { label: 'Last assembly results', icon: 'clock', disabled: !st?.state.lastAssembledAt, title: "The installer's results page from the last run: groups, steps, log, prompt, what was published", onPick: () => rt.openDialog('claude-handoff.last') },
+            { label: 'Publish the kit', icon: 'upload', disabled: !!s.busy || !st?.canPublish, onPick: () => void publish() },
+            { label: 'Installer preview', icon: 'play', onPick: () => rt.navigate('claude-handoff-preview') },
+            { label: 'Handoff files…', icon: 'file', onPick: () => rt.dispatch('claude-handoff.files') },
+          ]} />
         </div>
-      </Container>
+      </header>
+      <details className="axp-claude-handoff__about">
+        <summary className="axp-claude-handoff__meta">About this page{st?.state.lastAssembledAt ? ` · last assembled ${ago(st.state.lastAssembledAt)}` : ''}</summary>
+        <p className="axp-claude-handoff__meta">One prompt that moves this project to a new Claude account: it keeps working on the same repo and sets up the claude.ai Project, instructions, memory and user files from the handoff kit in <code>_claude/handoff/</code>, which this page keeps current. <b>Assemble prompt</b> opens the installer: it publishes the kit when it is out of date, walks every file group by group, then hands you the prompt. Paste it into a new session on the new account (claude.ai/code works in the same repo, MossesX/AmberX-AXF: no new repo, no fork).</p>
+      </details>
+      {s.assembled?.note && <Note tone="warning">{s.assembled.note}</Note>}
+      {s.assembled && <details className="axp-claude-handoff__item" open><summary>The handoff prompt</summary><TextField label="The handoff prompt" value={s.assembled.prompt} onChange={() => undefined} rows={10} mono /></details>}
 
       <HandoffSession />
-
-      <Container title="Last assembly" icon="clock" actions={<Button tone="ghost" icon="eye" onClick={() => rt.openDialog('claude-handoff.last')}>Open</Button>}>
-        <div className="fx-stack">
-          <p className="axp-claude-handoff__meta">{st?.state.lastAssembledAt ? `Assembled ${ago(st.state.lastAssembledAt)}.` : 'No prompt assembled on this console yet.'} Opens the installer's results page from that run: every group and step it went through, its log, the prompt and what was published.</p>
-          <div><Button icon="eye" disabled={!st?.state.lastAssembledAt} onClick={() => rt.openDialog('claude-handoff.last')}>Open the results</Button></div>
-        </div>
-      </Container>
 
       {s.error && <Note tone="danger">{s.error}</Note>}
       {st && <KitStatus />}
@@ -98,7 +97,8 @@ function HandoffSession() {
           <Button tone="primary" icon="list" disabled={!!s.busy} onClick={() => void handoffSession(notes, true, threads)}>{s.busy === 'session' ? 'Summarising…' : 'Handoff Session'}</Button>
           {out && <Button icon="copy" onClick={() => copy(rt, out.prompt, 'Session summary')}>Copy again</Button>}
         </div>
-        <p className="axp-claude-handoff__meta">When the Project already exists on the other account: summarises everything still open here (unfinished Codebase changes entries, pending builds, open pull requests) with the standing rules and the notes below, copies it to paste into that Project, and keeps it in the kit as <code>_claude/handoff/ACTIVE-THREADS.md</code> (published when this console can). The copied prompt also has a <b>Threads to recreate</b> part: one ready first message per open thread (each unfinished change, each open PR, and each line of the open-threads list below), and it tells the other account to start one thread per entry. claude.ai threads can't be read from here, so list the ones only a thread knows below.</p>
+        <details className="axp-claude-handoff__about"><summary className="axp-claude-handoff__meta">For a Project that already exists on the other account: open work, rules and notes, copied to paste there.</summary>
+        <p className="axp-claude-handoff__meta">When the Project already exists on the other account: summarises everything still open here (unfinished Codebase changes entries, pending builds, open pull requests) with the standing rules and the notes below, copies it to paste into that Project, and keeps it in the kit as <code>_claude/handoff/ACTIVE-THREADS.md</code> (published when this console can). The copied prompt also has a <b>Threads to recreate</b> part: one ready first message per open thread (each unfinished change, each open PR, and each line of the open-threads list below), and it tells the other account to start one thread per entry. claude.ai threads can't be read from here, so list the ones only a thread knows below.</p></details>
         {!out && last?.savedAt && <p className="axp-claude-handoff__meta">Last summary made {ago(last.savedAt)}.</p>}
         {counts && <div className="axp-claude-handoff__row">
           <Chip tone={counts.changes ? 'warning' : 'success'}>{counts.changes} in progress</Chip>
@@ -108,13 +108,13 @@ function HandoffSession() {
           {out?.published?.pushed && <Chip tone="success">kit published {out.published.sha}</Chip>}
         </div>}
         {out?.note && <Note tone="warning">{out.note}</Note>}
-        <details className="axp-claude-handoff__item" open={!threads}>
+        <details className="axp-claude-handoff__item">
           <summary>Open threads to recreate on the other account</summary>
-          <TextField label="Open threads" hint="One thread per line: Title: where it stood / what it waits on. Each becomes a thread to start, with its first message. Unfinished changes and open PRs are added by themselves." value={threads} placeholder="Voice notes: PR #51 ready, mic switch waits on a model pick" onChange={(v) => setThreads(v)} rows={6} />
+          <TextField label="Open threads" hint="One thread per line: Title: where it stood / what it waits on. Each becomes a thread to start, with its first message. Unfinished changes and open PRs are added by themselves." value={threads} placeholder="Voice notes: PR #51 ready, mic switch waits on a model pick" onChange={(v) => setThreads(v)} rows={4} />
         </details>
         <details className="axp-claude-handoff__item">
           <summary>Notes for the other account (known gaps, what open threads were waiting on)</summary>
-          <TextField label="Notes" hint="One per line; added under Known gaps and notes. Secrets are redacted, but don't put any here." value={notes ?? ''} placeholder="Empty = the default notes" onChange={(v) => setNotes(v)} rows={6} />
+          <TextField label="Notes" hint="One per line; added under Known gaps and notes. Secrets are redacted, but don't put any here." value={notes ?? ''} placeholder="Empty = the default notes" onChange={(v) => setNotes(v)} rows={4} />
           <Button tone="ghost" icon="refresh" onClick={() => setNotes(null)}>Back to the default notes</Button>
         </details>
         {out && <div className="axp-claude-handoff__doc"><Markdown text={out.markdown.replace(/^<!--.*-->\n/, '')} /></div>}
@@ -175,7 +175,7 @@ function ClaudeAiItems() {
   return (
     <Container title="claude.ai items" icon="cloud" actions={<Button tone="primary" icon="save" disabled={saving} onClick={() => void save()}>Save</Button>}>
       <div className="fx-stack">
-        <p className="axp-claude-handoff__meta">Things only claude.ai knows (the Project, artifacts like the Pending Builds page, connectors, memory). A new account starts without them, so each one says how to recreate it.</p>
+        <p className="axp-claude-handoff__meta axp-claude-handoff__clip" title="Things only claude.ai knows (the Project, artifacts like the Pending Builds page, connectors, memory). A new account starts without them, so each one says how to recreate it.">Things only claude.ai knows, each with how to recreate it.</p>
         {err && <Note tone="danger">{err}</Note>}
         {data.items.map((it, i) => (
           <details key={i} className="axp-claude-handoff__item">
@@ -207,7 +207,7 @@ function Machines() {
   return (
     <Container title="~/.claude on each machine" icon="monitor">
       <div className="fx-stack">
-        <p className="axp-claude-handoff__meta">User-level Claude files (user CLAUDE.md, commands, skills, agents, settings hooks, auto-memory) live outside the repo. Each machine sends them here; the kit keeps redacted copies.</p>
+        <p className="axp-claude-handoff__meta axp-claude-handoff__clip" title="User-level Claude files (user CLAUDE.md, commands, skills, agents, settings hooks, auto-memory) live outside the repo. Each machine sends them here; the kit keeps redacted copies.">User-level Claude files each machine sends here (redacted in the kit).</p>
         {ms.length ? (
           <ul className="axp-claude-handoff__list">
             {ms.map((m) => (
@@ -221,10 +221,10 @@ function Machines() {
           </ul>
         ) : <Note>No machine has sent its files yet.</Note>}
         <div className="axp-claude-handoff__row">
-          <Button icon="copy" onClick={() => copy(rt, HOOK, 'Hook command')}>Copy: install the hook</Button>
+          <Button icon="copy" title="Run in AmberX-AXF's folder on each machine" onClick={() => copy(rt, HOOK, 'Hook command')}>Copy: install the hook</Button>
           <Button icon="copy" onClick={() => copy(rt, COLLECT, 'Command')}>Copy: send now</Button>
         </div>
-        <p className="axp-claude-handoff__meta">Run in AmberX-AXF's folder on each machine (VPS, computers). The hook sends once an hour when a Claude Code session starts; it needs <code>AXF_TOKEN</code> to reach the console from outside it.</p>
+        <p className="axp-claude-handoff__meta axp-claude-handoff__clip" title="Run in AmberX-AXF's folder on each machine (VPS, computers). The hook sends once an hour when a Claude Code session starts; it needs AXF_TOKEN to reach the console from outside it.">Run in AmberX-AXF's folder on each machine (VPS, computers); needs <code>AXF_TOKEN</code> from outside.</p>
       </div>
     </Container>
   );
@@ -251,7 +251,7 @@ function Preview() {
         {!files && <p className="axp-claude-handoff__meta">Builds the kit here without publishing, to read what a new account will get.</p>}
         {files && (
           <div className="axp-claude-handoff__row">
-            {top.map((f) => <Button key={f.path} tone={pick?.path === f.path ? 'primary' : 'neutral'} icon="file" onClick={() => void open(f.path)}>{f.path}</Button>)}
+            <SelectField label="File" value={pick?.path ?? ''} empty="Pick a file to read…" options={top.map((f) => ({ value: f.path, label: f.path }))} onChange={(v) => { if (v) void open(v); }} />
             {nested > 0 && <span className="axp-claude-handoff__meta">+ {nested} copies in context/, user/, sources/</span>}
           </div>
         )}
@@ -266,12 +266,11 @@ function Preview() {
 export function PreviewView() {
   const rt = useRuntime();
   return (
-    <div className="fx-stack fx-stack--lg axp-claude-handoff">
-      <header className="fx-pagehead">
-        <div><p className="fx-eyebrow">Tools</p><h1>Installer preview</h1><p className="fx-muted">The installer as it runs, with example data, in the look you pick.</p></div>
+    <div className="fx-stack axp-claude-handoff">
+      <header className="fx-pagehead axp-claude-handoff__head">
+        <div><p className="fx-eyebrow">Tools</p><h1>Installer preview</h1><p className="fx-muted axp-claude-handoff__lede" title="The Claude handoff installer running on this project's real files, with example machines. Nothing is published: the prompt at the end comes from a preview build. Change its layout, gauges, meters and themes with Look (also Tools → Installer look).">The installer on real files with example data; nothing is published.</p></div>
         <Button icon="palette" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>
       </header>
-      <p className="axp-claude-handoff__lead">The Claude handoff installer running on this project's real files, with example machines. Nothing is published: the prompt at the end comes from a preview build. Change its layout, gauges, meters and themes with <strong>Look</strong> (also Tools → Installer look).</p>
       <div className="axp-claude-handoff__previewbox"><InstallerDialog demo /></div>
     </div>
   );

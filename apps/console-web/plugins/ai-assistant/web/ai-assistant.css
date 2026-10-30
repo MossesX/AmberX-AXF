@@ -120,3 +120,33 @@
   .axp-ai-assistant__mark > svg, .axp-ai-assistant__mark-ring { animation: none !important }
   .axp-ai-assistant__mark.is-working .axp-ai-assistant__mark-ring { border-color: var(--fx-accent) }
 }
+
+/* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, ⋯ menus, tag dropdown, phone starts on the chat. */
+.axp-ai-assistant__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
+.axp-ai-assistant__morebtn { display: inline-flex; flex: none }
+.axp-ai-assistant__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
+.axp-ai-assistant__conv { align-items: center }
+.axp-ai-assistant__conv .axp-ai-assistant__conv-acts { display: flex; flex-direction: row; opacity: var(--fx-opacity-muted) }
+.axp-ai-assistant__conv:hover .axp-ai-assistant__conv-acts, .axp-ai-assistant__conv.is-active .axp-ai-assistant__conv-acts { opacity: 1 }
+.axp-ai-assistant__conv-main { padding: calc(var(--fx-space) * 0.375) calc(var(--fx-space) * 0.5); gap: 0 }
+.axp-ai-assistant__conv-main > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-ai-assistant__fold > summary { cursor: pointer; margin-bottom: var(--fx-space) }
+@media (max-width: 640px) {
+  .axp-ai-assistant { min-height: 72vh; border-radius: var(--fx-radius-md) }
+  .axp-ai-assistant__head { padding: calc(var(--fx-space) * 0.5); flex-wrap: nowrap }
+  .axp-ai-assistant__agent { max-width: 34vw }
+  .axp-ai-assistant__body, .axp-ai-assistant__compose { padding: calc(var(--fx-space) * 0.5) }
+  .axp-ai-assistant__avatar { display: none }
+}
+.axp-ai-assistant__strip { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.25) }
+.axp-ai-assistant__flatrow { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.75) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
+.axp-ai-assistant__flatrow > .fx-mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-ai-assistant__stepnow { display: none }
+@media (max-width: 640px) {
+  .axp-ai-assistant__stepnow { display: block }
+  .axp-ai-assistant__wizard .axp-ai-assistant__steps { display: none }
+  .axp-ai-assistant__grid { grid-template-columns: minmax(0, 1fr) }
+  .axp-ai-assistant__pick-card { flex-direction: row; flex-wrap: wrap; align-items: center; padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
+  .axp-ai-assistant__card { padding: var(--fx-space) }
+}
+.fx-pagehead > div:first-child:has(> .axp-ai-assistant__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }

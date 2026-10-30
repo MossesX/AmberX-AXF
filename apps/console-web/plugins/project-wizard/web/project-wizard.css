@@ -49,3 +49,18 @@
 .axp-project-wizard__detail th { white-space: nowrap; vertical-align: top }
 @media (max-width: 720px) { .axp-project-wizard__cards { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
 @media (max-width: 560px) { .axp-project-wizard__grid { grid-template-columns: minmax(0, 1fr) } }
+
+/* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, step label on phones, tight source picks. */
+.axp-project-wizard__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
+.axp-project-wizard__stepnow { display: none }
+.axp-project-wizard__card { padding: calc(var(--fx-space) * 0.625) var(--fx-space) }
+.axp-project-wizard__row { padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
+@media (max-width: 640px) {
+  .axp-project-wizard__stepnow { display: block }
+  .axp-project-wizard__steps { display: none }
+  .axp-project-wizard__card { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+  .axp-project-wizard__card span { display: none }
+  .axp-project-wizard__cards { gap: calc(var(--fx-space) * 0.5) }
+}
+.fx-pagehead > div:first-child:has(> .axp-project-wizard__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
+.axp-project-wizard__notice { flex-wrap: nowrap; padding: calc(var(--fx-space) * 0.5) var(--fx-space) }

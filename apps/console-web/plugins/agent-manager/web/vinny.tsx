@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Chip, useRuntime, IconButton, Note, Section, SelectField, Switch, TextField } from '@console/axf/react';
 import { call, del, post, put } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
+import { MoreMenu } from './more';
 
 type Kind = 'vps' | 'git' | 'github';
 export interface VinnyCommand {
@@ -117,18 +118,20 @@ export function VinnyCommandsDialog() {
           {shown.map((c) => edit?.id === c.id
             ? <Editor key={c.id} value={edit} onDone={(saved) => { setEdit(null); if (saved) void load(); }} />
             : (
-              <div key={c.id} className="fx-card fx-stack">
-                <div className="fx-row fx-row--wrap">
+              <div key={c.id} className="axp-agent-manager__flatrow">
+                <div className="axp-agent-manager__cmdhead">
                   <Switch label={c.name} hideLabel checked={c.enabled} onChange={(on) => void toggle(c, on)} />
-                  <strong>{c.name}</strong>
+                  <strong className="axp-agent-manager__clip">{c.name}</strong>
                   <Chip tone={c.kind === 'github' ? 'accent' : undefined}>{KIND_LABEL[c.kind]}</Chip>
                   <span className="fx-grow" />
                   <IconButton icon="play" label={`Run ${c.name} now`} onClick={() => void run(c)} disabled={!book.ready || !c.enabled} />
-                  <IconButton icon="edit" label={`Edit ${c.name}`} onClick={() => setEdit(c)} />
-                  <IconButton icon="trash" label={armed === c.id ? `Tap again to remove ${c.name}` : `Remove ${c.name}`} onClick={() => void remove(c)} />
+                  <MoreMenu label={`More for ${c.name}`} items={[
+                    { label: 'Edit', icon: 'edit', onPick: () => setEdit(c) },
+                    { label: armed === c.id ? 'Tap again to remove' : 'Remove', icon: 'trash', onPick: () => void remove(c) },
+                  ]} />
                 </div>
-                <div className="fx-row fx-row--wrap">{c.triggers.map((t) => <Chip key={t}>{t}</Chip>)}{c.fixes.map((f) => <Chip key={f} tone="success">fix: {f}</Chip>)}</div>
-                <code className="fx-small">{c.kind === 'github' ? `${c.tool} ${JSON.stringify(c.arguments ?? {})}` : c.kind === 'git' ? `cd ${c.repo} && ${c.command}` : c.command}</code>
+                <div className="axp-agent-manager__strip">{c.triggers.map((t) => <Chip key={t}>{t}</Chip>)}{c.fixes.map((f) => <Chip key={f} tone="success">fix: {f}</Chip>)}</div>
+                <code className="fx-small axp-agent-manager__clip">{c.kind === 'github' ? `${c.tool} ${JSON.stringify(c.arguments ?? {})}` : c.kind === 'git' ? `cd ${c.repo} && ${c.command}` : c.command}</code>
               </div>
             ))}
           <Button size="sm" tone="ghost" icon="refresh" onClick={() => void post('vinny/defaults').then(() => load())}>Add back the starter commands</Button>
@@ -152,8 +155,8 @@ export function VinnyCommandsDialog() {
         <div className="fx-stack">
           {book.runs.length === 0 && <span className="fx-small fx-muted">Nothing run yet.</span>}
           {[...book.runs].reverse().map((r) => (
-            <div key={r.id} className="fx-card fx-stack">
-              <div className="fx-row fx-row--wrap">
+            <div key={r.id} className="axp-agent-manager__flatrow">
+              <div className="axp-agent-manager__row">
                 <Chip tone={r.state === 'done' ? 'success' : r.state === 'failed' ? 'danger' : 'warning'}>{r.state}</Chip>
                 <strong>{r.name}</strong>
                 <span className="fx-small fx-muted">{new Date(r.at).toLocaleString()} · {r.source}</span>

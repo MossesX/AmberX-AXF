@@ -53,11 +53,12 @@ export function LookDialog() {
       return (
         <div className="axp-claude-handoff-look__pick" key={t}>
           <span className="axp-claude-handoff-look__picklabel">Color</span>
-          <div className="axp-claude-handoff-look__schemes">
-            <ThemeChips label="Light" items={light} cur={cur} onPick={(id) => pickAsset(t, id)} />
-            <ThemeChips label="Dark" items={dark} cur={cur} onPick={(id) => pickAsset(t, id)} />
-            {cur === customId(t) && <span className="axp-claude-handoff-look__rolled">Rolled colours in use</span>}
-          </div>
+          {/* one dropdown (light / dark groups) instead of a wall of theme chips (screens-compact) */}
+          <select className="fx-input" value={cur} aria-label="Color theme" onChange={(e) => pickAsset(t, e.target.value)}>
+            {cur === customId(t) && <option value={cur}>Rolled colours in use</option>}
+            <optgroup label="Light">{light.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}</optgroup>
+            <optgroup label="Dark">{dark.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}</optgroup>
+          </select>
         </div>
       );
     }
@@ -116,16 +117,6 @@ export function LookDialog() {
       </section>
     </div>
     </div>
-  );
-}
-
-function ThemeChips({ label, items, cur, onPick }: { label: string; items: { id: string; name: string }[]; cur: string; onPick: (id: string) => void }) {
-  if (!items.length) return null;
-  return (
-    <span className="axp-claude-handoff-look__chiprow">
-      <em>{label}</em>
-      {items.map((o) => <button key={o.id} type="button" className={`fx-chip${cur === o.id ? ' is-on' : ''}`} aria-pressed={cur === o.id} onClick={() => onPick(o.id)}>{o.name}</button>)}
-    </span>
   );
 }
 
