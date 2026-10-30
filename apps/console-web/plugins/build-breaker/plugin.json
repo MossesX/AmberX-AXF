@@ -1,0 +1,43 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.build-breaker",
+  "name": "Build Breaker",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Everything Brett ever asked for, in plain English (build-asks@1): one compact row per ask with its date and time, a status badge (built, in progress, pending, planned, held, removed, waiting for push / pull / deploy / approval), build time, cost and model. Grids per app and per plugin plus a timeline; search, status / model / date filters, sort, group-by; a row opens to the description, his own words, sources, branch and PR, and its feature matrix. Adds a permanent Build item to every context menu listing every build page. Data: data/asks.jsonl (seed) mirrored to the data folder; asks.mjs add | set-status | list keeps it current.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:build-breaker",
+    "settings-tab:build-breaker"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": {
+    "view": "build-breaker",
+    "label": "Build Breaker",
+    "icon": "hammer"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/build-breaker",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-29"
+  },
+  "opens": "main"
+}
