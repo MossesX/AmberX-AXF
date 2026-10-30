@@ -32,7 +32,7 @@
 .axp-agent-voice__micwrap { position: relative; display: inline-flex }
 .axp-agent-voice__micwrap.is-listening::after { content: ''; position: absolute; inset: 0; border-radius: 999px; border: var(--fx-border-w) solid var(--fx-warning); animation: axp-agent-voice-pulse 0.9s ease-in-out infinite; pointer-events: none }
 .axp-agent-voice__mic.is-missing { opacity: var(--fx-opacity-muted) }
-.axp-agent-voice__pop { position: absolute; bottom: calc(100% + var(--fx-space) * 0.5); left: 0; z-index: 30; width: max-content; max-width: min(340px, 80vw); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5);
+.axp-agent-voice__pop { position: absolute; bottom: calc(100% + var(--fx-space) * 0.5); right: 0; z-index: 82; width: max-content; max-width: min(340px, 80vw); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5);
   padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); box-shadow: var(--fx-shadow-lg); color: var(--fx-text) }
 .axp-agent-voice__popmsg { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start }
 .axp-agent-voice__popbtns { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); align-items: center }

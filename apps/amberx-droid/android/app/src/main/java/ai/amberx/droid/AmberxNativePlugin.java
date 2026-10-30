@@ -8,6 +8,9 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
+import com.getcapacitor.JSArray;
 import android.webkit.CookieManager;
 import androidx.activity.result.ActivityResult;
 import com.getcapacitor.JSObject;
@@ -48,7 +51,10 @@ public class AmberxNativePlugin extends Plugin {
         current = this;
         WatchService.channels(getContext());
         WatchService.listener = s -> notifyListeners("monitor", js(s));
-        tts = new TextToSpeech(getContext(), status -> ttsReady = status == TextToSpeech.SUCCESS);
+        tts = new TextToSpeech(getContext(), status -> {
+            ttsReady = status == TextToSpeech.SUCCESS;
+            if (ttsReady) tts.setOnUtteranceProgressListener(new Spoken());
+        });
     }
 
     @Override
@@ -258,14 +264,92 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
+    /*
+     * Speech out (Oct 29 2026, Agent voice): `speak` takes the voice, rate, pitch and volume an agent's profile picks,
+     * an utterance id (a `spoken` event {id, done, error} is sent when it finishes), `queue` (add instead of flush)
+     * and `holdMic` (hands-free wake listening steps aside while it talks, so it never hears the agent as a command).
+     * Older pages send only text + lang: same as before.
+     */
+    private volatile int holding;
+
     @PluginMethod
     public void speak(PluginCall call) {
         String text = call.getString("text", "");
         if (tts == null || !ttsReady || text.isEmpty()) { call.resolve(); return; }
         tts.setLanguage(Locale.forLanguageTag(call.getString("lang", "en-US")));
+        String voice = call.getString("voice", "");
+        if (voice != null && !voice.isEmpty()) {
+            try { for (Voice v : tts.getVoices()) if (voice.equals(v.getName())) { tts.setVoice(v); break; } } catch (Exception ignored) { /* engine without voice list */ }
+        }
+        tts.setSpeechRate(clampF(call.getFloat("rate", 1f), 0.3f, 3f));
+        tts.setPitch(clampF(call.getFloat("pitch", 1f), 0.3f, 2f));
+        Bundle params = new Bundle();
+        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, clampF(call.getFloat("volume", 1f), 0f, 1f));
+        String id = call.getString("id", "amberx");
+        if (Boolean.TRUE.equals(call.getBoolean("holdMic", false))) { holding++; WatchService.appMic(true); }
         SpeechTuning.unmuteMedia(getContext()); // "silence-all" mutes media while listening; spoken replies need it
-        tts.speak(text.length() > 2000 ? text.substring(0, 2000) : text, TextToSpeech.QUEUE_FLUSH, null, "amberx");
+        int mode = Boolean.TRUE.equals(call.getBoolean("queue", false)) ? TextToSpeech.QUEUE_ADD : TextToSpeech.QUEUE_FLUSH;
+        tts.speak(text.length() > 2000 ? text.substring(0, 2000) : text, mode, params, id);
         call.resolve();
+    }
+
+    @PluginMethod
+    public void stopSpeaking(PluginCall call) {
+        if (tts != null) tts.stop();
+        releaseHold();
+        call.resolve();
+    }
+
+    /** The phone's text-to-speech voices: id (= name), a readable name, language, quality, network. */
+    @PluginMethod
+    public void ttsVoices(PluginCall call) {
+        JSArray out = new JSArray();
+        if (tts != null && ttsReady) {
+            try {
+                for (Voice v : tts.getVoices()) {
+                    if (v.getFeatures() != null && v.getFeatures().contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)) continue;
+                    out.put(new JSObject().put("id", v.getName()).put("name", readable(v)).put("lang", v.getLocale().toLanguageTag())
+                        .put("quality", v.getQuality()).put("network", v.isNetworkConnectionRequired()));
+                }
+            } catch (Exception ignored) { /* engine without voice list */ }
+        }
+        call.resolve(new JSObject().put("voices", out));
+    }
+
+    /** Microphone permission as the page needs it for a tooltip: granted / denied / prompt. */
+    @PluginMethod
+    public void micPermission(PluginCall call) {
+        PermissionState st = getPermissionState("microphone");
+        call.resolve(new JSObject().put("state", st == PermissionState.GRANTED ? "granted" : st == PermissionState.DENIED ? "denied" : "prompt"));
+    }
+
+    private static String readable(Voice v) {
+        String n = v.getName();
+        String loc = v.getLocale().getDisplayName();
+        String q = v.getQuality() >= Voice.QUALITY_HIGH ? " · high quality" : "";
+        return loc + " — " + n.replaceAll("^[a-z]{2}-[a-z]{2}-x-", "").replaceAll("-(local|network)$", "") + q;
+    }
+
+    private static float clampF(Float v, float lo, float hi) {
+        float x = v == null || v.isNaN() ? 1f : v;
+        return Math.max(lo, Math.min(hi, x));
+    }
+
+    private void releaseHold() {
+        if (holding > 0) { holding = 0; WatchService.appMic(false); }
+    }
+
+    private class Spoken extends UtteranceProgressListener {
+        @Override public void onStart(String id) {}
+        @Override public void onDone(String id) { finished(id, null); }
+        @Override public void onError(String id) { finished(id, "speech error"); }
+        @Override public void onStop(String id, boolean interrupted) { finished(id, null); }
+        private void finished(String id, String error) {
+            if (!tts.isSpeaking()) releaseHold();
+            JSObject e = new JSObject().put("id", id).put("done", true);
+            if (error != null) e.put("error", error);
+            notifyListeners("spoken", e);
+        }
     }
 
     /* ---------------------------------------------------------------- background watch */
