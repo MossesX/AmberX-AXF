@@ -10,7 +10,7 @@ export interface MoreItem { id: string; label: string; icon?: string; disabled?:
 
 export function MoreMenu({ items, label = 'More actions', className }: { items: (MoreItem | false | null | undefined)[]; label?: string; className?: string }) {
   const root = usePortalRoot();
-  const [at, setAt] = useState<{ top: number; right: number } | null>(null);
+  const [at, setAt] = useState<{ top: number; left?: number; right?: number } | null>(null);
   const btn = useRef<HTMLSpanElement>(null);
   const pop = useRef<HTMLDivElement>(null);
   const list = items.filter(Boolean) as MoreItem[];
@@ -29,9 +29,9 @@ export function MoreMenu({ items, label = 'More actions', className }: { items: 
   if (!list.length) return null;
   return (
     <span ref={btn} className={className}>
-      <IconButton icon="more" label={label} aria-haspopup="menu" aria-expanded={!!at} onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setAt(at ? null : { top: r.bottom, right: Math.max(0, globalThis.innerWidth - r.right) }); }} />
+      <IconButton icon="more" label={label} aria-haspopup="menu" aria-expanded={!!at} onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); const w = globalThis.innerWidth; setAt(at ? null : r.right >= w / 2 ? { top: r.bottom, right: Math.max(0, w - r.right) } : { top: r.bottom, left: Math.max(0, r.left) }); }} />
       {at && createPortal(
-        <div ref={pop} className="fx-ctx fx-popover" role="menu" aria-label={label} style={{ top: at.top, right: at.right, left: 'auto' }}>
+        <div ref={pop} className="fx-ctx fx-popover" role="menu" aria-label={label} style={at.right !== undefined ? { top: at.top, right: at.right, left: 'auto' } : { top: at.top, left: at.left }}>
           <ul className="fx-menu">
             {list.map((i) => (
               <li key={i.id} className="fx-menu__li">

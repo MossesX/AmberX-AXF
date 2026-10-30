@@ -34,6 +34,7 @@
 .axp-plugins-menu__entry { border-bottom: var(--fx-border-w) solid var(--fx-border); padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.25) }
 .axp-plugins-menu__entry.is-open { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-hover) * 100%), transparent) }
 .axp-plugins-menu__entry-head { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); width: 100%; text-align: left }
+.axp-plugins-menu__entry-head > .axp-plugins-menu__name { flex: 1 1 calc(var(--fx-space) * 14) }
 .axp-plugins-menu__entry-body { padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.25) 0 }
 .axp-plugins-menu__loc { margin: calc(var(--fx-space) * 0.25) 0 0; font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); overflow-wrap: anywhere }
 .axp-plugins-menu__form { padding-top: calc(var(--fx-space) * 0.5) }

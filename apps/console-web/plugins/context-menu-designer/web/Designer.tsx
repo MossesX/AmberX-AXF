@@ -181,7 +181,8 @@ export function Designer() {
   const [sel, setSel] = useState<Path | null>(null);
   const [chunkName, setChunkName] = useState('');
   const [saveAsName, setSaveAsName] = useState('');
-  const [preview, setPreview] = useState(true);
+  // phones: the floating preview would cover the editor, so it starts hidden there (⋯ → Show preview)
+  const [preview, setPreview] = useState(() => !(typeof matchMedia === 'function' && matchMedia('(max-width: 640px)').matches));
   const [busy, setBusy] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
   const [saveAsOpen, setSaveAsOpen] = useState(false);

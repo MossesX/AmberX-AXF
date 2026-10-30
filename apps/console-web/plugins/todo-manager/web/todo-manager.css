@@ -32,7 +32,8 @@ button.axp-todo__listrow:focus-visible { outline: calc(var(--fx-border-w) * 2) s
 .axp-todo__bar > * { flex: none }
 .axp-todo__bar > .axp-todo__search { flex: 1 1 0; min-width: 0; width: auto }
 .axp-todo__bar .fx-iconbtn.is-on { color: var(--fx-accent) }
-.axp-todo__listpick { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+.axp-todo__listpick { align-items: center; gap: calc(var(--fx-space) * 0.4) }
+@media (max-width: 759px) { .axp-todo__listpick { display: flex } }
 .axp-todo__listpick > select { flex: 1; min-width: 0 }
 .axp-todo__head { justify-content: space-between }
 .axp-todo__title h2 { margin: 0; font-size: calc(var(--fx-font-size) * 16 / 14) }
