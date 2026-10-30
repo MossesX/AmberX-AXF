@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-30T13:06:42.016Z",
+ "updatedAt": "2026-10-30T16:44:13.181Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -588,6 +588,115 @@
      "skip": false,
      "done": false,
      "doneAt": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "app-compact",
+   "title": "Compact the whole app: tight page heads, smaller buttons and chips, flat cards, dense tables and grids, slimmer banners and toolbars",
+   "category": "Console",
+   "detail": "Brett, Oct 30 2026: after the compact Settings (PR #175) — 'Rest of the app too'. Same treatment everywhere: less wasted space, no walls of big buttons, no cards inside cards, tight spacing. Framework-wide (axf.css + console.css), so every app on the framework and every plugin follows; per-screen fixes after. Before/after screenshots of every main screen. Profile: Angel. Web; Android deferred.",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-30T16:37:47.955Z",
+   "updatedAt": "2026-10-30T16:44:13.181Z",
+   "builtAt": "2026-10-30T16:44:13.129Z",
+   "notes": [
+    {
+     "text": "First pass: framework frame + count strips + Plugin Manager phone layout. Per-screen button walls (orchestrator filters, catalog, tracker, asset studio) left for a follow-up pass.",
+     "at": "2026-10-30T16:44:13.180Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Before screenshots of the main screens (Home, Builds pages, Plugin Manager, Catalog, Assets, Tracker, Build Breaker, Feature matrix, Design packs) phone + desktop",
+     "model": "Opus",
+     "why": "",
+     "phase": "Frame",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T16:44:12.939Z",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Framework frame in axf.css: page head (smaller title, quiet eyebrow, actions on one line), buttons (padding, size, icon size), chips (small square-ish), segmented, tabs, fields, cards (one border, smaller padding, no dashed outlines), tables/grid rows — tokens only",
+     "model": "Opus",
+     "why": "",
+     "phase": "Frame",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T16:44:12.985Z",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "Chrome: banner, tab bar, application menu bar and toolbars slimmer; Home stat tiles and summary cards dense",
+     "model": "Opus",
+     "why": "",
+     "phase": "Frame",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T16:44:13.027Z",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Screens with button walls (orchestrator tiles + filter chips, plugin manager cards, catalog, tracker, asset studio): fold extra actions into ⋯ menus or dropdowns, compact lists",
+     "model": "Opus",
+     "why": "",
+     "phase": "Screens",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T16:44:13.079Z",
+     "note": ""
+    },
+    {
+     "id": "s5",
+     "text": "Checks (tsc, controls, theme, theme-swap, menu-reach, plugin pages), re-bake apps (Patches skipped), after screenshots, report + LOG, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "Screens",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-10-30T16:44:13.129Z",
      "note": ""
     }
    ]

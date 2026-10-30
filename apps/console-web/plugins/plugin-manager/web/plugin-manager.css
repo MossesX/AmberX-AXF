@@ -295,3 +295,9 @@
   .axp-plugin-manager-studio__phonebar { display: inline-flex }
   .axp-plugin-manager-hero__text > p:not(.axp-plugin-manager-eyebrow) { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden }
 }
+
+/* compact on phones (Oct 30 2026): no side column, one card per row */
+@media (max-width: 640px) {
+  .axp-plugin-manager-studio, .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) }
+  .axp-plugin-manager-cards, .axp-plugin-manager--studio .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-cards { grid-template-columns: minmax(0, 1fr) }
+}
