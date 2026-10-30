@@ -48,7 +48,8 @@ export function DesignPacksPage() {
       const [ix, pk] = await Promise.all([api.call<{ packs: Pack[] }>('index'), api.call<{ picked: string[] }>('picks')]);
       const list = [...(ix.packs ?? [])].sort((a, b) => b.round - a.round || a.num - b.num);
       setPacks(list); setPicked(Array.isArray(pk.picked) ? pk.picked : []); setError('');
-      setOpen((o) => (o.length || !list[0] ? o : [list[0].id]));
+      // the newest pack opens by itself on a wide screen; a phone starts with every pack as one line
+      setOpen((o) => (o.length || !list[0] || globalThis.matchMedia?.('(max-width: 640px)').matches ? o : [list[0].id]));
     } catch (e) { setError((e as Error).message); setPacks((p) => p ?? []); }
   };
   useEffect(() => { void load(); }, []);
@@ -74,7 +75,7 @@ export function DesignPacksPage() {
         <div>
           <p className="fx-eyebrow">Look refactor · {packs.length} packs · {rounds.length} rounds</p>
           <h1>Design packs</h1>
-          <p className="fx-muted">Pick {MAX_PICKS} to rebuild every default style asset from. Each new round lands at the top.</p>
+          <p className="fx-muted axp-design-packs__lede" title={`Pick ${MAX_PICKS} to rebuild every default style asset from. Each new round lands at the top.`}>Pick {MAX_PICKS} to rebuild the default look from.</p>
         </div>
         <div className="axp-design-packs__picks" aria-label={`${picked.length} of ${MAX_PICKS} picked`}>
           <span className="fx-small fx-muted">{picked.length} of {MAX_PICKS} picked</span>
@@ -86,8 +87,8 @@ export function DesignPacksPage() {
       <div className="axp-design-packs__bar" role="toolbar" aria-label="Filter packs">
         <input className="fx-input axp-design-packs__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter: name, colour, mood…" aria-label="Filter packs" />
         <Segmented size="sm" label="Scheme" value={scheme} onChange={setScheme} options={[{ value: 'all', label: 'All' }, { value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }]} />
-        <Segmented size="sm" label="Round" value={round} onChange={setRound} options={[{ value: 'all', label: 'All rounds' }, ...rounds.map((r) => ({ value: String(r), label: `Round ${r}` }))]} />
-        <Segmented size="sm" label="Show" value={only} onChange={setOnly} options={[{ value: 'all', label: 'Every pack' }, { value: 'picked', label: 'Picked' }]} />
+        <select className="fx-input axp-design-packs__sel" aria-label="Round" value={round} onChange={(e) => setRound(e.target.value)}><option value="all">All rounds</option>{rounds.map((r) => <option key={r} value={String(r)}>Round {r}</option>)}</select>
+        <select className="fx-input axp-design-packs__sel" aria-label="Show" value={only} onChange={(e) => setOnly(e.target.value as 'all' | 'picked')}><option value="all">Every pack</option><option value="picked">Picked ({picked.length})</option></select>
         <span className="fx-small fx-muted axp-design-packs__count">{rows.length} of {packs.length}</span>
       </div>
       {rows.length === 0 ? <EmptyState icon="palette">{packs.length ? 'No packs match.' : 'No design packs yet.'}</EmptyState> : (

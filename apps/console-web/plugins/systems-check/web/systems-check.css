@@ -109,3 +109,16 @@
 span.axp-systems-check-banner__text { display: block; text-overflow: ellipsis }
 .axp-systems-check-banner__words { flex: 1 1 auto; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-systems-check-cmd { margin: 0; padding: var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); white-space: pre-wrap; word-break: break-all; max-height: 40vh; overflow: auto }
+
+/* Compact (Brett, Oct 30 2026, screens-compact): the Issues / Everything switch is a framework Segmented; on a phone
+   each check is one line of title with a one-line summary under it (the full text opens with the row); tighter gaps. */
+.axp-systems-check { gap: calc(var(--fx-space) * 0.6) }
+.axp-systems-check__grid { gap: calc(var(--fx-space) * 0.5) }
+.axp-systems-check__counts { gap: calc(var(--fx-space) * 0.4) var(--fx-space) }
+.axp-systems-check-table td { padding-top: calc(var(--fx-space) * 0.4); padding-bottom: calc(var(--fx-space) * 0.4) }
+.axp-systems-check-exp > td { padding: calc(var(--fx-space) * 0.6) var(--fx-space) }
+@media (max-width: 720px) {
+  span.axp-systems-check-sumline { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: calc(100vw - var(--fx-space) * 16) }
+  .axp-systems-check-row.is-open span.axp-systems-check-sumline { white-space: normal }
+  .axp-systems-check__cards { grid-template-columns: minmax(0, 1fr) }
+}

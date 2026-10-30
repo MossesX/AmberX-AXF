@@ -131,6 +131,9 @@ function Studio(p: LayoutProps) {
             </button>
           ))}
         </nav>
+        <select className="fx-input axp-plugin-manager-select axp-plugin-manager-studio__filtersel" value={p.prefs.filter} onChange={(e) => p.set('filter', e.target.value as FilterId)} aria-label="Filter">
+          {FILTERS.map((f) => <option key={f} value={f}>{FILTER_LABEL[f]} ({p.inv.items.filter((r) => matches(r, f)).length})</option>)}
+        </select>
         <p className="axp-plugin-manager-eyebrow">Layout</p>
         <div className="axp-plugin-manager-studio__layouts">
           {LAYOUTS.map((l) => (
@@ -146,7 +149,7 @@ function Studio(p: LayoutProps) {
           <ViewPicker p={p} />
           <SortSelect value={p.prefs.sort} onChange={(v) => p.set('sort', v)} />
           <span className="axp-plugin-manager-studio__phonebar"><LayoutPicker p={p} iconsOnly /></span>
-          <Button tone="ghost" icon="refresh" disabled={p.loading} onClick={() => void p.reload()}>Refresh</Button>
+          <IconButton icon="refresh" label="Refresh" disabled={p.loading} onClick={() => void p.reload()} />
         </div>
         <Offline inv={p.inv} />
         <ViewBody view={p.prefs.view} {...viewProps(p)} />

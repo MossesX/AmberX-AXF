@@ -301,3 +301,28 @@
   .axp-plugin-manager-studio, .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) }
   .axp-plugin-manager-cards, .axp-plugin-manager--studio .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-cards { grid-template-columns: minmax(0, 1fr) }
 }
+
+/* Compact studio (Brett, Oct 30 2026, screens-compact): on a narrow screen the filter chips become one dropdown, the
+   view switch shows its icons only (names stay as tooltips), and every plugin card is one tight row: monogram · name
+   with a one-line description and meta · quick actions. Layout only. */
+.axp-plugin-manager-studio__filtersel { display: none }
+.axp-plugin-manager-studio__bar { gap: calc(var(--fx-space) * 0.5) }
+@media (max-width: 900px) {
+  .axp-plugin-manager-studio__filters { display: none }
+  .axp-plugin-manager-studio__filtersel { display: block }
+  .axp-plugin-manager-studio__rail { gap: calc(var(--fx-space) * 0.5) }
+  .axp-plugin-manager-studio { gap: calc(var(--fx-space) * 0.75) }
+}
+@media (max-width: 640px) {
+  .axp-plugin-manager-studio__bar .fx-seg__opt > span { display: none }
+  .axp-plugin-manager-studio__bar .axp-plugin-manager-search { flex-basis: 100% }
+  .axp-plugin-manager--studio .axp-plugin-manager-cards { gap: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden }
+  .axp-plugin-manager--studio .axp-plugin-manager-card { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); border: 0; border-radius: 0; box-shadow: none }
+  .axp-plugin-manager--studio .axp-plugin-manager-card + .axp-plugin-manager-card { border-top: var(--fx-border-w) solid var(--fx-border) }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__body { flex: 1 1 auto; gap: calc(var(--fx-space) * 0.15) }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__title { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__title > strong { min-width: 0; overflow: hidden; text-overflow: ellipsis }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__desc { -webkit-line-clamp: 1 }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__meta { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__actions { margin-top: 0; flex: none }
+}

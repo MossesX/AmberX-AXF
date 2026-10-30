@@ -176,3 +176,36 @@ button.axp-build-manager-banner__more-head { all: unset; box-sizing: border-box;
 button.axp-build-manager-banner__more-head { flex-wrap: nowrap; white-space: nowrap; overflow: hidden }
 .axp-build-manager-banner__more-head > * { flex-shrink: 0 }
 .axp-build-manager-banner__more-head > .axp-build-manager-banner__more-title { flex: 1 1 auto; flex-shrink: 1 }
+
+/* Compact (Brett, Oct 30 2026, screens-compact): one-line lede, actions on one line, totals as one strip of small
+   number chips, the filter toolbar as one line of inline chips, every build one line (title · chips · time) with the
+   details on tap, and the live entries' chips on one sideways-scrolling line. Layout only. */
+.axp-build-manager { gap: calc(var(--fx-space) * 0.6) }
+.axp-build-manager__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-build-manager__headacts { flex-wrap: nowrap; gap: calc(var(--fx-space) * 0.4); align-items: center }
+.axp-build-manager__totals { display: flex; flex-wrap: nowrap; gap: calc(var(--fx-space) * 0.4); overflow-x: auto; scrollbar-width: none; grid-template-columns: none }
+.axp-build-manager__total { flex: none; flex-direction: row; align-items: baseline; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.2) calc(var(--fx-space) * 0.6); white-space: nowrap; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-build-manager__total > strong { font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-build-manager__total-label { font-size: calc(var(--fx-font-size) * 10 / 14) }
+.axp-build-manager__tools { padding: calc(var(--fx-space) * 0.25); gap: calc(var(--fx-space) * 0.2); scrollbar-width: none }
+button.axp-build-manager__tool { flex: none; min-width: 0; flex-direction: row; gap: calc(var(--fx-space) * 0.3) }
+.axp-build-manager__tool-icon { position: static }
+.axp-build-manager__tool-n { position: static; min-width: 0; line-height: 1.4 }
+.axp-build-manager__tools-sep { margin: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.1) }
+.axp-build-manager__list { gap: calc(var(--fx-space) * 0.25) }
+button.axp-build-manager__head { gap: calc(var(--fx-space) * 0.2); padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.6) }
+.axp-build-manager__row:not(.is-open) .axp-build-manager__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-build-manager__chips { flex-wrap: nowrap; overflow: hidden }
+.axp-build-manager__chips > * { flex-shrink: 0 }
+.axp-build-manager__row.is-open .axp-build-manager__chips { flex-wrap: wrap }
+.axp-build-manager__start-btn { top: calc(var(--fx-space) * 0.3); right: calc(var(--fx-space) * 2) }
+.axp-build-manager__tracker { padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); gap: calc(var(--fx-space) * 0.4) }
+.axp-build-manager__live { padding: calc(var(--fx-space) * 0.35) calc(var(--fx-space) * 0.6); gap: calc(var(--fx-space) * 0.2) }
+.axp-build-manager__live-meta { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none }
+.axp-build-manager__live-meta > * { flex-shrink: 0 }
+.axp-build-manager__live-step { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-build-manager__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none }
+.axp-build-manager__filters .axp-build-manager__field { flex: none }
+@media (max-width: 640px) {
+  .axp-build-manager__filters .axp-build-manager__field { flex: 1 1 0; min-width: calc(var(--fx-font-size) * 5.5) }
+}

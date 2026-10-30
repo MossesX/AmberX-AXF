@@ -1,0 +1,22 @@
+/* Changes & features grid: layout only, theme tokens only (controls keep the framework's look). Compact, phone first
+   (Brett, Oct 30 2026): one toolbar line, flat grid (no card around it), on a phone each row is the name with a small
+   meta line (date · type · model) and its status; the wide columns come back on a wider screen. */
+.axp-changes-grid { gap: calc(var(--fx-space) * 0.6); min-width: 0 }
+.axp-changes-grid__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-changes-grid__bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-changes-grid__search { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
+.axp-changes-grid__sort { flex: none; width: auto }
+.axp-changes-grid__name { min-width: 0 }
+.axp-changes-grid__name > strong { display: block; overflow-wrap: anywhere }
+.axp-changes-grid__meta { display: none }
+.axp-changes-grid__phonehooks { display: none }
+.axp-changes-grid__line { display: flex; align-items: baseline; gap: var(--fx-space); min-width: 0 }
+.axp-changes-grid__k { flex: none; min-width: calc(var(--fx-space) * 10) }
+@media (max-width: 640px) {
+  .axp-changes-grid__table .axp-changes-grid__wide { display: none }
+  .axp-changes-grid__meta { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+  .axp-changes-grid__name > strong { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden }
+  .axp-changes-grid__phonehooks { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.4); margin-top: calc(var(--fx-space) * 0.5) }
+  .axp-changes-grid__line { flex-direction: column; gap: 0 }
+  .axp-changes-grid__k { min-width: 0 }
+}

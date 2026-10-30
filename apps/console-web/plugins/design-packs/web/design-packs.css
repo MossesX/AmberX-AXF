@@ -50,3 +50,16 @@
   .axp-design-packs__fname { font-size: 0.78em; white-space: normal; text-align: center; line-height: 1.2; }
   .axp-design-packs__stage { padding: var(--fx-space); }
 }
+
+/* Compact (Brett, Oct 30 2026): one-line lede; round and show are dropdowns beside the scheme switch; on a phone the
+   search takes its own line, the filters one line under it, and every pack is one line until tapped. Layout only. */
+.axp-design-packs { gap: calc(var(--fx-space) * 0.6); }
+.axp-design-packs__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-design-packs__bar { gap: calc(var(--fx-space) * 0.5); }
+.axp-design-packs__sel { width: auto; flex: none; }
+.axp-design-packs__hit { padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.5) var(--fx-space); min-height: 0; gap: calc(var(--fx-space) * 0.6); }
+@media (max-width: 640px) {
+  .axp-design-packs__search { flex-basis: 100%; }
+  .axp-design-packs__name { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .axp-design-packs__new { display: none; }
+}
