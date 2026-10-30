@@ -1,6 +1,6 @@
 /* Fable rebuilds — the view, the report dialog and the small hooks shown in other views. */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, ModelBadge, useRuntime } from '@console/axf/react';
+import { Button, Container, Icon, IconButton, ModelBadge, useRuntime } from '@console/axf/react';
 import { pendingPost } from '@console/api';
 import { call, getData, onData, park, refresh, setFocus, takeFocus, type Rebuild } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
@@ -33,17 +33,17 @@ export function FableView() {
         <div>
           <p className="fx-eyebrow">{(d?.items ?? []).length} on the list · {c.pending ?? 0} pending · {c.unsafe ?? 0} unsafe · {c.complete ?? 0} rebuilt</p>
           <h1>Fable rebuilds</h1>
-          <p className="fx-muted">Builds parked until Fable runs them: what each replaces, its branch, report and screenshots, and a brief to paste into a Fable session.</p>
+          <p className="fx-muted axp-fable__lede" title="Builds parked until Fable runs them: what each replaces, its branch, report and screenshots, and a brief to paste into a Fable session.">Builds parked until Fable runs them; tap one for its brief.</p>
         </div>
-        <div className="fx-row fx-row--wrap">
-          <Button icon="refresh" onClick={() => void refresh()}>Refresh</Button>
-          <Button icon="list" onClick={() => rt.navigate('pending')}>Pending builds</Button>
+        <div className="fx-row axp-fable__acts">
+          <select className="fx-input axp-fable__filter" value={filter} onChange={(e) => setFilter(e.target.value)} aria-label="Status">
+            {['open', 'pending', 'unsafe', 'complete', 'all'].map((f) => <option key={f} value={f}>{f === 'open' ? 'Not rebuilt' : f === 'all' ? 'All' : STATUS[f]}</option>)}
+          </select>
+          <IconButton icon="refresh" label="Refresh" onClick={() => void refresh()} />
+          <IconButton icon="list" label="Pending builds" onClick={() => rt.navigate('pending')} />
         </div>
       </header>
       {err && <p className="fx-small">{err}</p>}
-      <div className="axp-fable__filters" role="tablist" aria-label="Status">
-        {['open', 'pending', 'unsafe', 'complete', 'all'].map((f) => <button key={f} type="button" role="tab" aria-selected={filter === f} className={`fx-chip ${filter === f ? 'is-selected' : ''}`} onClick={() => setFilter(f)}>{f === 'open' ? 'Not rebuilt' : f === 'all' ? 'All' : STATUS[f]}</button>)}
-      </div>
       {items.length === 0 ? <div className="fx-empty">{d ? 'Nothing here.' : 'Loading…'}</div> : (
         <ul className="axp-fable__list">
           {items.map((r) => {
@@ -71,11 +71,11 @@ export function FableView() {
                       {r.log.length > 0 && <><dt>Log</dt><dd>{r.log.map((l, i) => <div key={i} className="fx-small fx-mono">{l}</div>)}</dd></>}
                       {r.notes.length > 0 && <><dt>Notes</dt><dd>{r.notes.map((n, i) => <div key={i} className="fx-small">{n.text}</div>)}</dd></>}
                     </dl>
-                    <div className="fx-row fx-row--wrap">
-                      <Button tone="primary" icon="copy" onClick={() => copy(r)}>Copy Fable brief</Button>
-                      {r.report && <Button icon="file" onClick={() => rt.openDialog('fable-rebuilds.report', { id: r.id, title: r.title })}>Differences report</Button>}
-                      {r.replaces && <Button icon="package" onClick={() => rt.dispatch(`plugin-manager.open:${r.replaces!.folder}`)}>Open {r.replaces.name}</Button>}
-                      {r.status !== 'complete' && <Button icon="check" onClick={() => void done(r)}>Mark rebuilt</Button>}
+                    <div className="fx-row fx-row--wrap axp-fable__rowacts">
+                      <Button size="sm" tone="primary" icon="copy" onClick={() => copy(r)}>Copy Fable brief</Button>
+                      {r.report && <Button size="sm" icon="file" onClick={() => rt.openDialog('fable-rebuilds.report', { id: r.id, title: r.title })}>Differences report</Button>}
+                      {r.replaces && <Button size="sm" icon="package" onClick={() => rt.dispatch(`plugin-manager.open:${r.replaces!.folder}`)}>Open {r.replaces.name}</Button>}
+                      {r.status !== 'complete' && <Button size="sm" icon="check" onClick={() => void done(r)}>Mark rebuilt</Button>}
                     </div>
                   </div>
                 )}
@@ -85,10 +85,9 @@ export function FableView() {
         </ul>
       )}
       {(d?.log.length ?? 0) > 0 && (
-        <section className="fx-card axp-fable__logcard">
-          <h3 style={{ marginTop: 0 }}>Rebuild log</h3>
+        <Container collapsible defaultOpen={false} icon="clock" title={`Rebuild log (${d!.log.length})`} className="axp-fable__logcard">
           {d!.log.map((l, i) => <div key={i} className="fx-small fx-mono axp-fable__logline">{l}</div>)}
-        </section>
+        </Container>
       )}
     </div>
   );

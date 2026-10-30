@@ -30,3 +30,14 @@
 
 .axp-feature-matrix__two { display: grid; gap: var(--fx-space); grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 14), 1fr)); }
 .axp-feature-matrix__changes { margin: 0; padding-inline-start: calc(var(--fx-space) * 2); max-height: calc(var(--fx-space) * 40); overflow: auto; overflow-wrap: anywhere; }
+
+/* Compact (Oct 30 2026): the Builds pages' toolbar button is icon-only on a phone (label stays as its tooltip / aria-label). */
+@media (max-width: 640px) { .axp-feature-matrix__open > span { display: none } }
+.axp-feature-matrix { gap: calc(var(--fx-space) * 0.6); }
+.axp-feature-matrix__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-feature-matrix__headacts { flex-wrap: nowrap; align-items: center; gap: calc(var(--fx-space) * 0.4); }
+select.fx-input.axp-feature-matrix__profile { width: auto; flex: none; }
+.axp-feature-matrix__acts { flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.4); }
+.axp-feature-matrix__totals { gap: calc(var(--fx-space) * 0.4) var(--fx-space); }
+.axp-feature-matrix__morebtn { display: inline-flex; flex: none; }
+.axp-feature-matrix__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2); }

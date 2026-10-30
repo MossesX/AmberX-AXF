@@ -1,7 +1,7 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, Slot, Switch, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, IconButton, Slot, Switch, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
@@ -764,11 +764,11 @@ export function BuildManagerView() {
         <div>
           <p className="fx-eyebrow">{t.all.count} to build · {fmt(t.all.left) || '0 min'} left · ~{usd(t.all.cost) || '$0.00'}{t.all.noEstimate ? ` · ${t.all.noEstimate} without an estimate` : ''}{t.all.needsSplit ? ` · ${t.all.needsSplit} need split` : ''}</p>
           <h1>Build manager</h1>
-          <p className="fx-muted">Everything still to build, from the pending list, the build queue and the plan, with what’s building right now.</p>
+          <p className="fx-muted axp-build-manager__lede" title="Everything still to build, from the pending list, the build queue and the plan, with what’s building right now.">Everything still to build, and what’s building now.</p>
         </div>
-        <div className="fx-row fx-row--wrap">
+        <div className="fx-row axp-build-manager__headacts">
           <Button icon="check-circle" onClick={() => setCleaning(!cleaning)} title="Take off builds that are already built or removed">Clean up{gone.length ? ` (${gone.length})` : ''}</Button>
-          <Button icon="refresh" onClick={() => { void loadList(); void loadLive(); void loadChanges(true); }}>Refresh</Button>
+          <IconButton icon="refresh" label="Refresh the list, live builds and history" onClick={() => { void loadList(); void loadLive(); void loadChanges(true); }} />
           <Slot name="builds.toolbar" props={{ page: 'build-manager' }} />
         </div>
       </header>
