@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Build Breaker console plugin: every ask Brett made (390, build-asks@1), one line each, per-app + per-plugin grids + timeline, permanent Build context menu (Opus) | review (pr-open) | `claude/build-breaker` | [#174](https://github.com/MossesX/AmberX-AXF/pull/174) | Waiting on CI + Brett's merge; then sessions keep the asks current with the plugin's `asks.mjs add / set-status` | 2026-10-29 |
 | Look refactor from scratch: design-pack rounds in the Design packs plugin (View → Design packs) until Brett picks 3, then rebuild every default style asset from them; Build Breaker plugin (every ask in history) + Build context menu (claude.ai, Opus + Fable where needed) | in-progress | `claude/design-packs`, `claude/build-breaker` | [#173](https://github.com/MossesX/AmberX-AXF/pull/173), [#174](https://github.com/MossesX/AmberX-AXF/pull/174) merged Oct 30 | Waiting on Brett's 3 picks in Design packs; then orchestrator build in the newest profile | 2026-10-29 |
 | Feature matrix UI tightened: every build and feature is one tap-to-open line (plain-English title, kept count, time, $ cost); opens to a plain description, cost, model and the technical text (claude.ai, Refactor, Opus) | done | `claude/feature-matrix-compact` | [#172](https://github.com/MossesX/AmberX-AXF/pull/172) | Merged Oct 30 2026. New items without plain text fall back to their own name (a `plain` field in feature-matrix@1 would be a Fable contract change) | 2026-10-29 |
 | Design packages do nothing + developer apps look different (orchestrator `shared-look-fix`, Refactor, Opus) | done | `fix/design-package-shared-look` | [#170](https://github.com/MossesX/AmberX-AXF/pull/170) | Console goes back to Main when a look is applied; scoped views no longer leak the GizmoX tab's slots/palette to axHub; console, AmberX, axHub web and Walkthrough Studio ship the same 26 design packages + 25 style packages with identical theme copies. Merged Oct 29 14:56 EDT. Console + apps pick it up on their next deploy | 2026-10-29 |
@@ -84,6 +85,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Build Breaker plugin
+
+- **Asked (Oct 29 2026):** a console plugin "Build Breaker" listing every ask Brett made across the whole project in plain English: page head with totals (asks, built, pending, planned, removed, waiting, time, $ by model); toolbar with search, status (multi) / model / date filters, sort, group-by, expand / collapse all, tabs All · Apps · Plugins · Timeline; an Apps container (a collapsible grid per app) and a Plugins container (a grid per plugin); one-line rows (title, date, time with ≈ when approximate, status badge with icon, time · cost · model badge) that open to the description, his own words, sources, branch / PR links and the Feature matrix; app menu Builds ▸ Build Breaker (Feature matrix already there); a permanent Build item on every context menu with every build page. Model Opus.
+- **Done:** branch `claude/build-breaker` — the plugin folder (manifest, lifecycle scripts, server `GET asks`, CLI `asks.mjs`, web page, `test.mjs`), seed `data/asks.jsonl` (390 asks), README line. Checks: tsc, check-controls, check-theme, check-plugin-pages, plugins.mjs --check (main profile), lifecycle check, self-test.
+- **Left:** CI on the PR, then Brett merges. Later sessions record new asks with the plugin's `asks.mjs add --title … --app …` and change status with `set-status <id> <status>`, then commit `data/asks.jsonl`.
+- **First message to carry on:** "Check the Build Breaker PR (branch claude/build-breaker): CI state, fix any failure, report."
 
 ### Plugin theme override + Plugins ladder — in refactor-all (was stopped by the Oct 28 STOP ORDER, since removed)
 
