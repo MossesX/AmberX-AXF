@@ -211,6 +211,28 @@ def derive(item: Callable[..., Check]) -> list[Check]:
                         details=[*shared], instructions=["node framework/cli/persist.mjs push   (seeds the shared folder from the repo copies)"], order=64))
     except Exception as e:  # noqa: BLE001
         out.append(item("shared-data-files", "data", "Shared data files (data.shared)", "unknown", str(e)[:200], order=64))
+
+    # items other plugins contribute (axf.syscheck.items@1:<name>: items() → [{id, title, status, summary, details?, autoFix?}],
+    # fix(id) → what it did); Auto fix runs the plugin's own fix
+    for svc_info in plugin_services.available():
+        name = svc_info["name"]
+        svc = plugin_services.get(name) if name.startswith("axf.syscheck.items@1:") else None
+        if svc is None:
+            continue
+        try:
+            for it in (svc.items() or [])[:50]:
+                if not isinstance(it, dict) or not isinstance(it.get("id"), str):
+                    continue
+                cid = f"plugin:{svc_info['folder']}:{it['id'][:120]}"
+                st = it.get("status") if it.get("status") in ("ok", "info", "warn", "error", "unknown") else "unknown"
+                if it.get("autoFix"):
+                    FIXES[cid] = (lambda s=svc, i=it["id"]: str(s.fix(i)))
+                row = item(cid, "plugins", str(it.get("title") or it["id"])[:120], st, str(it.get("summary") or "")[:400],
+                           details=[str(d)[:600] for d in (it.get("details") or [])][:8], fix=AUTO if cid in FIXES else None, order=73)
+                row["autoFix"] = cid in FIXES
+                out.append(row)
+        except Exception as e:  # noqa: BLE001
+            out.append(item(f"plugin:{svc_info['folder']}:items", "plugins", f"{svc_info['folder']}: checks", "unknown", f"couldn't read them: {str(e)[:160]}", order=73))
     return out
 
 

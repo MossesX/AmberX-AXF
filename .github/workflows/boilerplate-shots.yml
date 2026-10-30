@@ -4,7 +4,8 @@ name: Boilerplate screenshots
 # Android app from it (template android-compose), Gradle compiles it, an Android emulator runs it and
 # framework/cli/boilerplate-capture.py taps through each screen in the app's own navigation and saves a screenshot.
 # The last job files the verified ones into framework/boilerplates/<id>/screenshots/ + boilerplate.json
-# (framework/cli/boilerplate-shots.mjs apply) and pushes to main. The Dev Console serves them and Build Pilot shows
+# (framework/cli/boilerplate-shots.mjs apply) and pushes them to the bot/boilerplate-shots branch (its PR opens and
+# merges through the push banner). The Dev Console serves them and Build Pilot shows
 # them in each boilerplate's row. Run it by hand (Actions → Boilerplate screenshots → Run workflow) after
 # boilerplates or the Android shell change.
 
@@ -132,6 +133,7 @@ jobs:
           if git diff --cached --quiet; then echo "No changes."; exit 0; fi
           git config user.name "axf-shots[bot]"
           git config user.email "axf-shots@users.noreply.github.com"
-          git commit -q -m "Boilerplate screenshots captured (run ${{ github.run_number }}) [skip ci]" -m "$(cat /tmp/report.txt)"
-          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
-          exit 1
+          git commit -q -m "Boilerplate screenshots captured (run ${{ github.run_number }})" -m "$(cat /tmp/report.txt)"
+          # Never straight to main (Oct 30 2026, every change through a PR): its own branch; the console's push banner
+          # opens the PR, pulls main in and merges it once CI is green.
+          git push -q -f origin HEAD:refs/heads/bot/boilerplate-shots
