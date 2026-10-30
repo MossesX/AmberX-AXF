@@ -104,3 +104,4 @@
 .fx-pagehead > div:first-child:has(> .axp-agent-manager__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
 .axp-agent-manager .axp-agent-manager__tabpick { display: none }
 @media (max-width: 640px) { .axp-agent-manager .axp-agent-manager__tabs { display: none } .axp-agent-manager .axp-agent-manager__tabpick { display: block } }
+.axp-agent-manager__cmdhead { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }

@@ -58,3 +58,4 @@
   .axp-session-checkin__steps { display: none }
 }
 .fx-pagehead > div:first-child:has(> .axp-session-checkin__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
+.axp-session-checkin__notice { flex-wrap: nowrap; padding: calc(var(--fx-space) * 0.5) var(--fx-space) }

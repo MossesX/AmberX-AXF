@@ -94,7 +94,7 @@ function SessionsView() {
       {st && installed.length === 0 && (
         <div className={`${P}__notice`} role="status">
           <Icon name="info" />
-          <span className="fx-grow">The check-in isn't installed yet, so new sessions don't ask the questions. Install it from its settings.</span>
+          <span className="fx-grow fx-small" title="The check-in isn't installed yet, so new sessions don't ask the questions. Install it from its settings.">Not installed: new sessions don't ask yet.</span>
           <Button tone="primary" icon="download" onClick={() => rt.dispatch('settings.open:session-checkin')}>Install…</Button>
         </div>
       )}
