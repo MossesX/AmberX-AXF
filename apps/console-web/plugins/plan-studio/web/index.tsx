@@ -14,7 +14,7 @@ import { FOLDER, KEYS, VIEW } from './api';
 
 const ID = 'ai.amberx.axf.console.plan-studio';
 const DIALOG = 'plan-studio.capture';
-const STATUS_ASSET = 'plan-studio-capture';
+const BANNER_ASSET = 'plan-studio-capture';
 
 function OpenStudioButton() {
   const rt = useRuntime();
@@ -31,17 +31,16 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('plan-studio.open', () => rt.navigate(VIEW), { label: 'Open Plan Studio' });
     rt.actions.register('plan-studio.capture', () => rt.openDialog(DIALOG), { label: 'New plan (quick capture)' });
-    // the banner "+ Plan" (a status badge that opens quick capture; Settings → Plugins → Plan Studio hides it)
+    // the banner "+ Plan": the framework's action-button widget (opens quick capture; Settings → Plugins → Plan Studio hides it)
     const paint = () => {
       const on = rt.settings.get(KEYS.banner) !== false;
       rt.registry.register({
-        $axf: 'asset@1', type: 'status', id: STATUS_ASSET, name: 'New plan', version: '0.1.0', author: 'Plan Studio plugin',
+        $axf: 'asset@1', type: 'action-button', id: BANNER_ASSET, name: 'New plan', version: '0.1.0', author: 'Plan Studio plugin',
         description: 'Quick capture: a new plan in two taps.', tags: ['plans'],
-        data: { counter: 'plan-studio.capture', onLabel: '+ Plan', offLabel: '+ Plan', onTone: 'accent', offTone: 'accent', dot: false, link: 'plan-studio.capture' },
+        data: { icon: 'plus', label: 'Plan', action: 'plan-studio.capture', show: 'both', tone: 'neutral', tooltip: 'New plan (Plan Studio)' },
       } as never, 'app', ID);
-      rt.setBadge('plan-studio.capture', 1);
-      if (on) rt.attachToBanner({ type: 'status', id: STATUS_ASSET, at: 'right', order: 30, origin: ID });
-      else rt.detachFromBanner(`status:${STATUS_ASSET}`);
+      if (on) rt.attachToBanner({ type: 'action-button', id: BANNER_ASSET, at: 'right', order: 31, origin: ID });
+      else rt.detachFromBanner(`action-button:${BANNER_ASSET}`);
     };
     rt.settings.onChange(KEYS.banner, paint);
     paint();

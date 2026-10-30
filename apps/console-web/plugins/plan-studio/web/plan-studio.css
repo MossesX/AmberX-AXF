@@ -98,7 +98,7 @@
 .axp-plan-studio__edbar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); position: sticky; top: 0; z-index: 6; background: var(--fx-surface); padding-block: calc(var(--fx-space) * 0.4); border-bottom: var(--axp-ps-hair); }
 .axp-plan-studio__edtitle { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; }
 .axp-plan-studio__jump { display: flex; gap: calc(var(--fx-space) * 0.4); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
-.axp-plan-studio__jump > * { flex: 0 0 auto; scroll-snap-align: start; }
+.axp-plan-studio__jump > * { flex: 0 0 auto; scroll-snap-align: start; white-space: nowrap; }
 .axp-plan-studio__sec { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6); scroll-margin-top: calc(var(--fx-font-size) * 4); min-width: 0; }
 .axp-plan-studio__sech { margin: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.45); font-size: var(--fx-font-size); padding-bottom: calc(var(--fx-space) * 0.3); border-bottom: var(--axp-ps-hair); }
 .axp-plan-studio__grid2 { display: grid; grid-template-columns: 1fr; gap: calc(var(--fx-space) * 0.6) var(--fx-space); }

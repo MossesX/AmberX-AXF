@@ -101,7 +101,7 @@ function EntryRow({ e, tree, onPlanThis, onAddTo, onOpenPlan }: { e: CatalogEntr
         <button type="button" data-fx-row className="axp-plan-studio__rmain" aria-expanded={open} onClick={() => setOpen(!open)}>
           <Icon name={open ? 'chevron-down' : 'chevron-right'} size={11} />
           {!tree && <Icon name={pc.CATALOG_KINDS.find((k) => k.id === e.kind)?.icon ?? 'box'} size={12} />}
-          <span className="axp-plan-studio__rtitle">{e.name}</span>
+          <span className="axp-plan-studio__rtitle">{e.name}{e.kind === 'app' && <span className="fx-muted"> · {e.id}</span>}</span>
           <span className="axp-plan-studio__rmeta">{e.version && <span>v{e.version}</span>}<span>{e.counts.have}/{e.total}</span>{e.counts.planned > 0 && <span>{e.counts.planned} planned</span>}</span>
           <span className="axp-plan-studio__bar" aria-label={`${e.progress}% have`}><span style={{ width: `${e.progress}%` }} /></span>
         </button>
