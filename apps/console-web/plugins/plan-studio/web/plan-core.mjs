@@ -188,7 +188,7 @@ function normStep(s, i) {
     id: str(o.id, 40) || `s${i + 1}`,
     text: str(o.text ?? o.title ?? o.prompt, 2000).trim(),
     model: normModel(o.model) || 'Opus',
-    minutes: minutesOf(o.minutes ?? o.estimate),
+    minutes: minutesOf(o.minutes ?? o.estimate ?? o.est),
     dependsOn: arr(o.dependsOn ?? o.deps).map((x) => str(x, 40)).filter(Boolean),
     done: !!o.done,
     doneAt: o.done ? str(o.doneAt, 40) : '',

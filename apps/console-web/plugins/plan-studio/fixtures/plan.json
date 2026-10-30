@@ -1,0 +1,355 @@
+{
+ "$axf": "plan-fixtures@1",
+ "now": "2026-10-30T12:00:00.000Z",
+ "cases": [
+  {
+   "name": "plan@1 minimal",
+   "output": {
+    "$axf": "plan@1",
+    "id": "minimal",
+    "title": "Minimal",
+    "summary": "",
+    "goal": "",
+    "why": "",
+    "category": "",
+    "tags": [],
+    "project": "",
+    "touches": [],
+    "profile": "",
+    "status": "draft",
+    "priority": "P2",
+    "targetDate": "",
+    "owner": "",
+    "steps": [],
+    "requirements": [],
+    "acceptance": [],
+    "decisions": [],
+    "questions": [],
+    "risks": [],
+    "outOfScope": [],
+    "links": [],
+    "features": [],
+    "attachments": [],
+    "body": "",
+    "comments": [],
+    "build": null,
+    "createdAt": "2026-10-30T12:00:00.000Z",
+    "updatedAt": "2026-10-30T12:00:00.000Z",
+    "createdBy": "",
+    "version": 1,
+    "effort": {
+     "minutes": 0,
+     "left": 0
+    },
+    "cost": {
+     "usd": 0,
+     "estimated": true
+    }
+   }
+  },
+  {
+   "name": "plan@1 full, unknown fields kept",
+   "output": {
+    "$axf": "plan@1",
+    "id": "full",
+    "title": "Full plan",
+    "status": "ready",
+    "priority": "P1",
+    "category": "Product > Installer",
+    "tags": [
+     "installer",
+     "sales"
+    ],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "Contract",
+      "model": "Fable",
+      "estimate": "25 min",
+      "minutes": 25,
+      "dependsOn": [],
+      "done": false,
+      "doneAt": "",
+      "phase": ""
+     },
+     {
+      "id": "s2",
+      "text": "Build",
+      "model": "Opus",
+      "minutes": 30,
+      "dependsOn": [
+       "s1"
+      ],
+      "done": true,
+      "doneAt": "2026-10-29T10:00:00Z",
+      "phase": ""
+     }
+    ],
+    "risks": [
+     {
+      "text": "Card fees",
+      "mitigation": ""
+     }
+    ],
+    "acceptance": [
+     {
+      "text": "Installs on a fresh VPS",
+      "done": false
+     }
+    ],
+    "links": [
+     {
+      "kind": "url",
+      "ref": "https://example.com",
+      "label": ""
+     },
+     {
+      "kind": "pr",
+      "ref": "159",
+      "label": ""
+     }
+    ],
+    "futureField": {
+     "kept": true
+    },
+    "summary": "",
+    "goal": "",
+    "why": "",
+    "project": "",
+    "touches": [],
+    "profile": "",
+    "targetDate": "",
+    "owner": "",
+    "requirements": [],
+    "decisions": [],
+    "questions": [],
+    "outOfScope": [],
+    "features": [],
+    "attachments": [],
+    "body": "",
+    "comments": [],
+    "build": null,
+    "createdAt": "2026-10-30T12:00:00.000Z",
+    "updatedAt": "2026-10-30T12:00:00.000Z",
+    "createdBy": "",
+    "version": 1,
+    "effort": {
+     "minutes": 55,
+     "left": 25
+    },
+    "cost": {
+     "usd": 11.08,
+     "estimated": true
+    }
+   }
+  },
+  {
+   "name": "plan@0 draft migrates",
+   "output": {
+    "$axf": "plan@1",
+    "id": "old",
+    "title": "Old draft",
+    "summary": "From before plan@1",
+    "status": "parked",
+    "steps": [
+     {
+      "title": "One",
+      "est": "1 h",
+      "model": "Sonnet",
+      "id": "s1",
+      "text": "One",
+      "minutes": 60,
+      "dependsOn": [],
+      "done": false,
+      "doneAt": "",
+      "phase": ""
+     }
+    ],
+    "body": "first\n\nsecond",
+    "category": "Framework > Docs",
+    "migratedFrom": "plan@0",
+    "goal": "",
+    "why": "",
+    "tags": [],
+    "project": "",
+    "touches": [],
+    "profile": "",
+    "priority": "P2",
+    "targetDate": "",
+    "owner": "",
+    "requirements": [],
+    "acceptance": [],
+    "decisions": [],
+    "questions": [],
+    "risks": [],
+    "outOfScope": [],
+    "links": [],
+    "features": [],
+    "attachments": [],
+    "comments": [],
+    "build": null,
+    "createdAt": "2026-10-30T12:00:00.000Z",
+    "updatedAt": "2026-10-30T12:00:00.000Z",
+    "createdBy": "",
+    "version": 1,
+    "effort": {
+     "minutes": 60,
+     "left": 60
+    },
+    "cost": {
+     "usd": 4.2,
+     "estimated": true
+    }
+   }
+  },
+  {
+   "name": "pending@1 item migrates",
+   "output": {
+    "$axf": "plan@1",
+    "id": "docs-engine",
+    "title": "Docs engine",
+    "model": "fable",
+    "summary": "The whole thing",
+    "body": "The whole thing",
+    "status": "parked",
+    "steps": [
+     {
+      "text": "s1",
+      "estimate": "30 min",
+      "model": "Fable",
+      "id": "s1",
+      "minutes": 30,
+      "dependsOn": [],
+      "done": false,
+      "doneAt": "",
+      "phase": ""
+     },
+     {
+      "text": "s2",
+      "estimate": "20 min",
+      "done": true,
+      "model": "Fable",
+      "id": "s2",
+      "minutes": 20,
+      "dependsOn": [],
+      "doneAt": "",
+      "phase": ""
+     }
+    ],
+    "links": [
+     {
+      "kind": "related",
+      "ref": "pending:docs-engine",
+      "label": "Pending list item"
+     }
+    ],
+    "comments": [
+     {
+      "text": "parked for Fable",
+      "at": "2026-10-20T00:00:00Z",
+      "id": "c-a5gekx",
+      "by": ""
+     }
+    ],
+    "migratedFrom": "pending@1",
+    "goal": "",
+    "why": "",
+    "category": "",
+    "tags": [],
+    "project": "",
+    "touches": [],
+    "profile": "",
+    "priority": "P2",
+    "targetDate": "",
+    "owner": "",
+    "requirements": [],
+    "acceptance": [],
+    "decisions": [],
+    "questions": [],
+    "risks": [],
+    "outOfScope": [],
+    "features": [],
+    "attachments": [],
+    "build": null,
+    "createdAt": "2026-10-30T12:00:00.000Z",
+    "updatedAt": "2026-10-30T12:00:00.000Z",
+    "createdBy": "",
+    "version": 1,
+    "effort": {
+     "minutes": 50,
+     "left": 30
+    },
+    "cost": {
+     "usd": 13.75,
+     "estimated": true
+    }
+   }
+  },
+  {
+   "name": "loose note",
+   "output": {
+    "id": "loose",
+    "title": "Loose idea",
+    "summary": "Just a thought",
+    "steps": [
+     {
+      "text": "Think",
+      "id": "s1",
+      "model": "Opus",
+      "minutes": 0,
+      "dependsOn": [],
+      "done": false,
+      "doneAt": "",
+      "phase": ""
+     },
+     {
+      "text": "Write",
+      "id": "s2",
+      "model": "Opus",
+      "minutes": 0,
+      "dependsOn": [],
+      "done": false,
+      "doneAt": "",
+      "phase": ""
+     }
+    ],
+    "$axf": "plan@1",
+    "goal": "",
+    "why": "",
+    "category": "",
+    "tags": [],
+    "project": "",
+    "touches": [],
+    "profile": "",
+    "status": "draft",
+    "priority": "P2",
+    "targetDate": "",
+    "owner": "",
+    "requirements": [],
+    "acceptance": [],
+    "decisions": [],
+    "questions": [],
+    "risks": [],
+    "outOfScope": [],
+    "links": [],
+    "features": [],
+    "attachments": [],
+    "body": "",
+    "comments": [],
+    "build": null,
+    "createdAt": "2026-10-30T12:00:00.000Z",
+    "updatedAt": "2026-10-30T12:00:00.000Z",
+    "createdBy": "",
+    "version": 1,
+    "effort": {
+     "minutes": 0,
+     "left": 0
+    },
+    "cost": {
+     "usd": 0,
+     "estimated": true
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,259 @@
+{
+ "id": "clipx",
+ "title": "ClipX: clipboard manager app",
+ "status": "parked",
+ "priority": "P2",
+ "category": "Apps > ClipX",
+ "tags": [
+  "app",
+  "android",
+  "voice"
+ ],
+ "project": "clipx",
+ "profile": "refactor",
+ "summary": "A separate new app: save, sort, view, edit, archive clips; snippets, docs from clips, send to AmberX notes/tasks, AI actions and AmberX voice control. Phone capture through an Android accessibility service.",
+ "goal": "Every copy on the phone and the web lands in one searchable history, ready to reuse as snippets, docs, notes or tasks.",
+ "why": "Brett, Oct 28 2026: \"Build a clipboard manager to save, sort, manage, view, edit, archive, create snippets, create documentation, notes, tasks, etc and integrate amberx voice control stuff too.\"",
+ "steps": [
+  {
+   "id": "s1",
+   "text": "clip@1 / snippet@1 / clipdoc@1 data contracts + JSON schema + validators; link format to AmberX notes/tasks",
+   "model": "Fable",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s2",
+   "text": "Sensitive-content detector (pure, fixture) + sync rules (what never leaves the phone)",
+   "model": "Fable",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s3",
+   "text": "axf init apps/clipx (react-ts), manifest, chrome assets, design package, settings skeleton",
+   "model": "Opus",
+   "minutes": 25,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s4",
+   "text": "Server: clips/snippets/docs API on axHub _data, auth through hub sign-in, tests",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s5",
+   "text": "History grid + cards, sort/filter/search, dedupe",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s6",
+   "text": "Manage: pin, tags, folders, bulk select, archive, trash, undo",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s7",
+   "text": "Viewer + editor (markdown, code highlight, link/colour preview, versions)",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s8",
+   "text": "Snippets: library, placeholders, fill dialog, copy",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s9",
+   "text": "Docs from clips: compose, reorder, export .md, AI write-up",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s10",
+   "text": "Send to AmberX notes/tasks (shared lists), peek panel",
+   "model": "Opus",
+   "minutes": 25,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s11",
+   "text": "AI actions via the AmberX AI router (title, classify, summarise, tags)",
+   "model": "Opus",
+   "minutes": 25,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s12",
+   "text": "Voice: speech library + Clipboard category in voice-command@1, runs from ClipX and from AmberX via axHub",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s13",
+   "text": "Android shell (Capacitor) + accessibility service capture + disclosure — needs Android exception",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s14",
+   "text": "Share target, quick tile, floating bubble, ignore list, on-phone encryption",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s15",
+   "text": "Deploy: Coolify app clipx.amberxai.com, DNS + log, CI (web build, APK)",
+   "model": "Opus",
+   "minutes": 30,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  },
+  {
+   "id": "s16",
+   "text": "Tests, screenshots, README, CLAUDE.md status, THREADS.md, merge approval",
+   "model": "Opus",
+   "minutes": 25,
+   "dependsOn": [],
+   "done": false,
+   "doneAt": "",
+   "phase": ""
+  }
+ ],
+ "decisions": [
+  {
+   "text": "A separate new app, not a plugin in AmberX (working name ClipX)"
+  },
+  {
+   "text": "Phone capture through an Android accessibility service"
+  },
+  {
+   "text": "Build profile Refactor"
+  },
+  {
+   "text": "Notes + tasks go into AmberX shared lists (no second notes system)"
+  }
+ ],
+ "questions": [
+  {
+   "text": "Add ClipX as an Android exception before the Android steps (s13–s14)?",
+   "answer": ""
+  },
+  {
+   "text": "Data under amberx-axf/_data/clipx or its own project folder?",
+   "answer": ""
+  }
+ ],
+ "risks": [
+  {
+   "text": "Accessibility service review on Android",
+   "mitigation": "Disclosure screen; share target + tile as fallbacks"
+  },
+  {
+   "text": "Secrets copied by accident",
+   "mitigation": "Sensitive-content detector; never synced unless allowed"
+  }
+ ],
+ "links": [
+  {
+   "kind": "branch",
+   "ref": "claude/clipx-plan",
+   "label": "Plan branch"
+  },
+  {
+   "kind": "doc",
+   "ref": "_claude/memory/docs/clipx.md",
+   "label": "On the plan branch"
+  },
+  {
+   "kind": "pr",
+   "ref": "153",
+   "label": "voice-command@1 (build after it)"
+  }
+ ],
+ "touches": [
+  {
+   "key": "app:amberx-droid"
+  }
+ ],
+ "body": "# ClipX — clipboard manager (plan, ON HOLD)\n\n**Asked (Brett, Oct 28 2026 15:18 EDT):** \"Build a clipboard manager to save, sort, manage, view, edit, archive, create\nsnippets, create documentation, notes, tasks, etc and integrate amberx voice control stuff too.\"\n\n**Decided (cards, Oct 28 2026):**\n- A **separate new app** (not a plugin in AmberX). Working name **ClipX** (Brett can rename).\n- Phone capture through an **Android accessibility service** (catches every copy in any app; one-time Accessibility toggle).\n- Build profile **Refactor**.\n- **Held:** the STOP ORDER (Oct 28 15:26 EDT) was in force, so Brett picked \"plan + thread only\". Nothing is in the\n  orchestrator yet. When he lifts the stop: add build `clipx` to the orchestrator (Refactor) from the steps below,\n  check the queue for clashes again, then start.\n- **Needs an Android exception:** ClipX's Capacitor shell + accessibility service is Android code, and Android is on\n  hold except AmberX, Voice Vault and Patches. Ask Brett (card) to add ClipX as an exception before the Android steps.\n\n## Shape\n\n| Part | Where | Notes |\n| --- | --- | --- |\n| Web app | `apps/clipx` (react-ts template, `axf init`, own `project.manifest.json`) | AXF chrome: banner, toolbar, nav, app menu, context menu, settings interface (levels toolbar rule), design packages |\n| Server | `apps/clipx/server` (FastAPI) | clips API, AI calls with keys server-side; Coolify app at `clipx.amberxai.com` (A record to the VPS, logged in the DNS log) |\n| Android shell | `apps/clipx/android` (Capacitor, same pattern as `apps/amberx-droid`) | `ClipAccessibilityService`, share target \"Save to ClipX\", quick-settings tile, optional floating bubble (reuse AmberX `DetectionOverlay` pattern) |\n| Data | axHub `/projects/amberx-axf/_data/clipx/` (or its own project folder if Brett wants) | clips, snippets, docs, folders/tags, settings; offline cache on the phone |\n\n## Features\n\n- **Capture:** Android accessibility service (every copy, any app); share sheet; quick tile; web: paste box,\n  Ctrl+V anywhere in the app, \"read clipboard\" button (browser Clipboard API, needs focus). Source app + time kept.\n- **History:** grid (framework DataGrid) + cards view; sort (newest default), filter (type: text, link, code, colour,\n  image, file path; source app; tag; folder; pinned; archived), search; Basic filter plugin attaches when it exists.\n- **Manage:** pin, favourite, tag, folders, merge clips, split, rename/title, duplicate detection (same text = bump,\n  not a new row), bulk select (double-click multi-select like pending-grid-view), undo.\n- **View/edit:** viewer with syntax highlight for code, link preview, colour swatch; editor (text + markdown);\n  version history per clip.\n- **Archive + trash:** archive (hidden from history, searchable); trash with auto-empty after N days (setting);\n  auto-expire unpinned clips after N days (setting, default off).\n- **Snippets:** saved reusable text with placeholders (`{date}`, `{clipboard}`, `{cursor}`, custom fields asked on\n  use), folders, short keys/abbreviations, copy-to-clipboard in one tap.\n- **Documentation:** turn one or many clips into a markdown doc (ordered sections), doc library, export .md;\n  AI \"write this up\" from selected clips.\n- **Notes + tasks:** \"Send to AmberX notes / tasks\" writes into AmberX's shared lists (`amberx-notes/` on axHub) —\n  no second notes or task system (AX Notes was killed for being a duplicate). ClipX shows a read-only peek.\n- **AI (via AmberX's server AI router, `axf.llm@1`):** auto-title, classify (code / link / address / task-like),\n  summarise, suggest tags, \"make a snippet\", \"make a task\". Off by default for clips marked sensitive.\n- **Voice (AmberX voice control):** ClipX ships the shared speak+listen speech library and registers a\n  **Clipboard** category in AmberX's voice-command@1 command center (e.g. \"save that\", \"read my last clip\",\n  \"copy snippet <name>\", \"archive last clip\", \"make a task from my last clip\", \"search clips for <x>\",\n  \"pin it\", \"open ClipX\"). Commands run in ClipX directly, or from AmberX through axHub when ClipX isn't open.\n  Chains/wizards from the command center work with these commands.\n- **Privacy/security:** skip or mask likely secrets (passwords, OTP codes, card numbers, keys); ignore list of apps\n  (password managers, Voice Vault, banking) — default on; sensitive clips stay on the phone (never synced to the hub)\n  unless Brett allows it; encrypted at rest on the phone; accessibility disclosure screen; clear-all.\n- **Settings:** capture on/off per source, ignore list, retention, sync, AI, voice, appearance — under the\n  Simple/Basic/Administrator/Developer levels toolbar.\n\n## Steps (orchestrator draft, each ≤ 30 min) — ~9.5 h\n\n| # | Model | Step | Est |\n| --- | --- | --- | --- |\n| s1 | Fable | `clip@1` / `snippet@1` / `clipdoc@1` data contracts + JSON schema + validators; link format to AmberX notes/tasks | 30 |\n| s2 | Fable | Sensitive-content detector (pure, fixture) + sync rules (what never leaves the phone) | 30 |\n| s3 | Opus | `axf init apps/clipx` (react-ts), manifest, chrome assets, design package, settings skeleton | 25 |\n| s4 | Opus | Server: clips/snippets/docs API on axHub `_data`, auth through hub sign-in, tests | 30 |\n| s5 | Opus | History grid + cards, sort/filter/search, dedupe | 30 |\n| s6 | Opus | Manage: pin, tags, folders, bulk select, archive, trash, undo | 30 |\n| s7 | Opus | Viewer + editor (markdown, code highlight, link/colour preview, versions) | 30 |\n| s8 | Opus | Snippets: library, placeholders, fill dialog, copy | 30 |\n| s9 | Opus | Docs from clips: compose, reorder, export .md, AI write-up | 30 |\n| s10 | Opus | Send to AmberX notes/tasks (shared lists), peek panel | 25 |\n| s11 | Opus | AI actions via the AmberX AI router (title, classify, summarise, tags) | 25 |\n| s12 | Opus | Voice: speech library + Clipboard category in voice-command@1, runs from ClipX and from AmberX via axHub | 30 |\n| s13 | Opus | Android shell (Capacitor) + accessibility service capture + disclosure — **needs Android exception** | 30 |\n| s14 | Opus | Share target, quick tile, floating bubble, ignore list, on-phone encryption | 30 |\n| s15 | Opus | Deploy: Coolify app clipx.amberxai.com, DNS + log, CI (web build, APK) | 30 |\n| s16 | Opus | Tests, screenshots, README, CLAUDE.md status, THREADS.md, merge approval | 25 |\n\nOne model switch (Fable s1–s2 → Opus s3–s16).\n\n## Clash check (Oct 28 2026)\n\nRefactor queue had nothing touching a clipboard. Related, not clashing: AmberX notes/tasks (ClipX writes into them),\n`amberx-voice-center` PR #153 (voice-command@1 — ClipX adds a category; build after it merges), `amberx-handsfree`\nPR #141 (overlay pattern reused), Basic filter #155 (attach later). Re-check when the stop is lifted.\n",
+ "createdAt": "2026-10-30T18:30:00.000Z",
+ "updatedAt": "2026-10-30T18:30:00.000Z",
+ "createdBy": "Plan Studio import",
+ "source": "claude/clipx-plan:_claude/memory/docs/clipx.md",
+ "$axf": "plan@1",
+ "targetDate": "",
+ "owner": "",
+ "requirements": [],
+ "acceptance": [],
+ "outOfScope": [],
+ "features": [],
+ "attachments": [],
+ "comments": [],
+ "build": null,
+ "version": 1,
+ "effort": {
+  "minutes": 460,
+  "left": 460
+ },
+ "cost": {
+  "usd": 72.5,
+  "estimated": true
+ }
+}
