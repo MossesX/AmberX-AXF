@@ -1,0 +1,25 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.design-packs",
+  "name": "Design packs",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Candidate design packages for the default-look refactor, shown as one filterable grid of packs (newest round first). A row opens a large screenshot browser: screens listed on the left (a collapsible thumbnail strip on a phone), the preview on the right with previous / next that never scroll away and swipe left / right. Pick up to 3 packs; picks are saved on the console server and on axHub. Screenshots live in packs/<round>/, listed in packs/index.json.",
+  "targets": ["axf-console"],
+  "provides": ["view:design-packs", "settings-tab:design-packs"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": { "view": "design-packs", "label": "Design packs", "icon": "palette" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/design-packs",
+    "env": [],
+    "mentions": ["apps/console-web/plugins/README.md", "_claude/THREADS.md"]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-29" },
+  "opens": "main"
+}
