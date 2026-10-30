@@ -1,0 +1,419 @@
+{
+ "$axf": "feature-matrix@1",
+ "updatedAt": "2026-10-29T18:34:17.880Z",
+ "matrices": [
+  {
+   "id": "angel:orchestrator:home-cards",
+   "ref": {
+    "kind": "orchestrator",
+    "id": "home-cards"
+   },
+   "profile": "angel",
+   "title": "Console Home cards: card@1 asset plugins carry, Home detects/shows/hides every card (always rendered), card layouts, cards for every data plugin",
+   "createdAt": "2026-10-29T18:34:15.414Z",
+   "updatedAt": "2026-10-29T18:34:15.414Z",
+   "version": 2,
+   "appliedVersion": 2,
+   "appliedAt": "2026-10-29T18:34:17.880Z",
+   "items": [
+    {
+     "id": "s1",
+     "name": "card@1 asset type in framework/schemas/asset-types.json (+ axf schemas): id, owner (plugin id or \"console\"), title, icon, kind (stat | list | meter | chart | feed | status | actions | custom), size (s | m | l | wide | tall), data {service (plugin_services capability), path, refreshSec, live:boolean}",
+     "why": "",
+     "group": "Contract",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s1"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s2",
+     "name": "plugin@1 gets `cards: [\"cards/<id>.json\", …]` (card assets ship inside the plugin folder, so plugin-lifecycle@1 removes them on uninstall); plugin-inventory@1 engine lists each plugin's cards (framework/core/engines/plugins.ts + server/engine.py twin) so anything can detect them; future card SDK att",
+     "why": "",
+     "group": "Contract",
+     "minutes": 25,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s2"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s3",
+     "name": "home-cards@1 engine (TS reference, framework/core/engines/cards.ts): collects every card from enabled plugins + console-owned cards, applies saved visibility/order/size, level and role; hidden cards stay in the output with `hidden: true` so Home ALWAYS renders (mounts) every card and only hides it (",
+     "why": "",
+     "group": "Engine",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s3"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s4",
+     "name": "card-layout@1 asset type: columns per window class (compact/medium/expanded), gap + density tokens, grouping (none | plugin | category), \"show all / hide all\" default, sort (manual | category | plugin). 3 starter layouts: grid-auto, two-column-dashboard, compact-list. Hot-swap via runtime.swap('card",
+     "why": "",
+     "group": "Engine",
+     "minutes": 30,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s4"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s5",
+     "name": "Placeholders for the future card SDK: `axf.cards@1` capability service (list/register/unregister cards at runtime), extension point `home.cards`, typed NotImplemented card designer entry, so a designer plugin can later author card assets and attach them to any plugin without kernel changes.",
+     "why": "",
+     "group": "Engine",
+     "minutes": 20,
+     "model": "Fable",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s5"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s6",
+     "name": "Home renders from the home-cards engine. The 5 cards already there become console-owned card assets: Plan summary, Build summary, Coverage, Project, Recent installs & imports. Same look at the default theme.",
+     "why": "",
+     "group": "Home",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s6"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s7",
+     "name": "Card layout toolbar on Home (hideable): Show all · Hide all · layout picker (card-layout assets) · group by · a Cards checklist popover with one switch per detected card. Right-click a card: Hide card · Card size · Open plugin · Plugin settings. Drag to reorder. Saved per user in settings (synced th",
+     "why": "",
+     "group": "Home",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s7"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s8",
+     "name": "Settings → Home cards tab (with the level toolbar rule): every detected card grouped by plugin, switch + size + order, layout default; a card whose plugin is disabled shows greyed \"plugin off\".",
+     "why": "",
+     "group": "Home",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s8"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s9",
+     "name": "Cards — Build orchestrator: next step + model chip, approvals waiting (one-tap), phase progress bar per open build. Build manager: remaining work split Fable/Opus, hours + cost left, top 3 builds. Build profiles: active profile chip + pending/queue/orchestrator counts for each profile, switch button",
+     "why": "",
+     "group": "Cards: builds",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s9"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s10",
+     "name": "Cards — Feature matrix: kept vs skipped minutes per build, matrices with unapplied changes (Apply button). Fable rebuilds: parked count, Fable hours left, next rebuild. Changes & features grid: latest 5 changes/features with state dots.",
+     "why": "",
+     "group": "Cards: builds",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s10"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s11",
+     "name": "Cards — Codebase changes: live/running entries with heartbeat age and current step. Activity: running/queued CI runs and deploys as a feed. Push banner: branches not on main per repo with PR CI dots. Main build status: last main CI result + sparkline of the last 10 runs.",
+     "why": "",
+     "group": "Cards: live",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s11"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s12",
+     "name": "Cards — Approvals: calls waiting with title + one-tap Approve/Deny, veto countdowns. Systems check: pass/warn/fail meter + top 3 issues with Auto fix. Alerts bell: unread by source (CI, deploys, builds, crashes). Claude badge: AI connection state, active model, last check time.",
+     "why": "",
+     "group": "Cards: live",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s12"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s13",
+     "name": "Cards — AI assistant: live sessions + last message, Open chat. Agent manager: agents (Mosses, Vinny, Molly…) with running/idle state. Molly guide: recent walkthroughs + Ask Molly. AI keys: active key per kind (masked) and how many saved.",
+     "why": "",
+     "group": "Cards: AI",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s13"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s14",
+     "name": "Cards — Todo manager: overdue / due today / open by list, quick add. Voice notes: listener state + latest 3 notes. Session check-in: active Claude sessions with machine and repo. Snapshot manager: latest snapshots with one-tap Restore.",
+     "why": "",
+     "group": "Cards: work",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s14"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s15",
+     "name": "Cards — Plugin Manager: enabled/disabled/unhealthy counts. Plugin Update: updates available (Update all). Container access: master switch state + containers up/down. axHub sync: red/green live badge (hubLive rule), last sync. MCP client: connected servers + tool counts.",
+     "why": "",
+     "group": "Cards: system",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s15"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s16",
+     "name": "Cards — Brand library: logo of the day (animated, tap to roll). Theme manager: current colour/style/layout + Roll button. Context menu designer: saved menus + chunks count. Project wizard: recent projects. Claude handoff: kit freshness. Terminal: open tabs and their connections. Feature assistant: l",
+     "why": "",
+     "group": "Cards: design",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s16"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s17",
+     "name": "Lifecycle: every plugin's cards/ listed in plugin.json and removed by uninstall.mjs --all; plugin-lifecycle check --after-uninstall for each touched plugin; theme checks (check-theme, theme-swap) over every card.",
+     "why": "",
+     "group": "Ship",
+     "minutes": 25,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s17"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    },
+    {
+     "id": "s18",
+     "name": "Tests (engine vs fixture, hidden cards stay mounted, show/hide all, plugin off), docs (_claude/memory/docs/home-cards.md, plugins README → Cards, STATUS), before/after Home screenshots at 412 and 1280 px, re-bake console.",
+     "why": "",
+     "group": "Ship",
+     "minutes": 30,
+     "model": "Opus",
+     "state": "keep",
+     "addedAt": "2026-10-29T18:34:15.412Z",
+     "updatedAt": "2026-10-29T18:34:15.412Z",
+     "source": {
+      "kind": "step",
+      "id": "s18"
+     },
+     "history": [
+      {
+       "at": "2026-10-29T18:34:15.414Z",
+       "action": "added"
+      }
+     ]
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-10-29T18:34:15.414Z",
+     "action": "created",
+     "by": "feature-matrix"
+    },
+    {
+     "at": "2026-10-29T18:34:15.414Z",
+     "action": "seeded",
+     "to": "18",
+     "by": "feature-matrix"
+    },
+    {
+     "at": "2026-10-29T18:34:17.880Z",
+     "action": "applied",
+     "to": "2",
+     "by": "feature-matrix"
+    }
+   ]
+  }
+ ]
+}

@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, lookCss, lookChanged, normalizeLook, type SettingsLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, IconButton, LookEditor, ModelBadge, Segmented, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, IconButton, LookEditor, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
@@ -83,11 +83,16 @@ function SettingsLevelBar({ level, actions }: { level: SettingsLevel; actions?: 
   const openMenu = (el: HTMLElement) => { const r = el.getBoundingClientRect(); rt.openContext(r.left, r.bottom, SETTINGS_LEVEL_CTX); };
   return (
     <div className="axf-settings__levelbar" role="toolbar" aria-label="Settings level" data-fx-ctx-target={SETTINGS_LEVEL_CTX} data-axf-anchor="settings-levelbar">
-      <Segmented label="Settings level" value={level} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} options={SETTINGS_LEVELS.map((l) => ({ value: l, label: SETTINGS_LEVEL_LABEL[l], title: SETTINGS_LEVEL_HINT[l] }))} />
+      <label className="axf-settings__levelpick">
+        <span className="fx-muted">Level</span>
+        <select className="axf-settings__field axf-settings__field--sm" aria-label="Settings level" value={level} onChange={(e) => rt.settings.set(SETTINGS_LEVEL_KEY, e.target.value as SettingsLevel)}>
+          {SETTINGS_LEVELS.map((l) => <option key={l} value={l} title={SETTINGS_LEVEL_HINT[l]}>{SETTINGS_LEVEL_LABEL[l]}</option>)}
+        </select>
+      </label>
       <span className="fx-muted fx-look__levelhint axf-settings__levelhint">{SETTINGS_LEVEL_HINT[level]}</span>
       <span className="axf-settings__levelbar-actions">
         {actions}
-        <Button size="sm" tone="quiet" icon="edit" onClick={() => rt.openDialog(LEVEL_EDITOR_DIALOG)} title="Pick which settings each level shows">Edit levels</Button>
+        <IconButton icon="edit" label="Edit levels: pick which settings each level shows" onClick={() => rt.openDialog(LEVEL_EDITOR_DIALOG)} />
         <IconButton icon="more" label="Level toolbar menu" onClick={(e) => openMenu(e.currentTarget)} />
       </span>
     </div>
@@ -440,25 +445,39 @@ function AssetAppearancePanel() {
   );
 }
 
+/** A flat settings section: a small heading over a hairline list (no nested cards). Collapsible ones fold from the heading. */
+function FlatSection({ title, icon, collapsible = false, defaultOpen = true, anchor, className, children }: { title: ReactNode; icon?: string; collapsible?: boolean; defaultOpen?: boolean; anchor?: string; className?: string; children: ReactNode }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const shown = open || !collapsible;
+  return (
+    <section className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-open={shown ? 'true' : 'false'}>
+      {collapsible ? (
+        <button type="button" data-fx-row className="axf-settings__ghead axf-settings__gtoggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          {icon && <Icon name={icon} size={13} />}<span className="axf-settings__gtitle">{title}</span><Icon name="chevron-down" size={13} className={open ? '' : 'fx-rot--90'} />
+        </button>
+      ) : (
+        <div className="axf-settings__ghead">{icon && <Icon name={icon} size={13} />}<span className="axf-settings__gtitle">{title}</span></div>
+      )}
+      {shown && <div className="axf-settings__gbody">{children}</div>}
+    </section>
+  );
+}
+
 function GroupCard({ group }: { group: SettingsGroup }) {
   if (group.id === 'axf.appearance') {
     return (
-      <div data-axf-anchor={`settings-group:${group.id}`}>
-        <Container title={group.label} icon={group.icon ?? 'settings'}>
-          {group.description && <p className="fx-muted axf-settings__desc" style={{ marginTop: 0 }}>{group.description}</p>}
-          <div className="axf-settings__rows">{group.settings.map((s) => s.kind === 'asset_slot' ? <AssetSlotCard key={s.key} spec={s} /> : <SettingRow key={s.key} spec={s} />)}</div>
-        </Container>
-      </div>
+      <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'}>
+        {group.description && <p className="fx-muted axf-settings__desc">{group.description}</p>}
+        <div className="axf-settings__rows">{group.settings.map((s) => s.kind === 'asset_slot' ? <AssetSlotCard key={s.key} spec={s} /> : <SettingRow key={s.key} spec={s} />)}</div>
+      </FlatSection>
     );
   }
   const g = group as SettingsGroup & { collapsible?: boolean; collapsed?: boolean };
   return (
-    <div data-axf-anchor={`settings-group:${group.id}`}>
-      <Container title={group.label} icon={group.icon ?? 'settings'} collapsible={g.collapsible} defaultOpen={!g.collapsed}>
-        {group.description && <p className="fx-muted axf-settings__desc" style={{ marginTop: 0 }}>{group.description}</p>}
-        <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
-      </Container>
-    </div>
+    <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'} collapsible={g.collapsible} defaultOpen={!g.collapsed}>
+      {group.description && <p className="fx-muted axf-settings__desc">{group.description}</p>}
+      <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
+    </FlatSection>
   );
 }
 
@@ -674,10 +693,37 @@ function AboutPanel() {
 
 /* ---------------- the page ---------------- */
 
+/** Wide enough for the list + page side by side. */
+function useWide(): boolean {
+  const q = '(min-width: 900px)';
+  const mm = () => { try { return globalThis.matchMedia?.(q).matches ?? true; } catch { return true; } };
+  const [wide, setWide] = useState(mm);
+  useEffect(() => {
+    const m = globalThis.matchMedia?.(q); if (!m) return;
+    const on = () => setWide(m.matches); m.addEventListener?.('change', on); return () => m.removeEventListener?.('change', on);
+  }, []);
+  return wide;
+}
+
+/** One line of the settings list: icon, label, a one-line description, chevron. */
+function NavRow({ icon, label, desc, active, onClick }: { icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
+  return (
+    <button type="button" data-fx-row className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
+      {icon && <Icon name={icon} size={15} />}
+      <span className="axf-settings__navtext"><span className="axf-settings__navlabel">{label}</span>{desc && <span className="axf-settings__navdesc">{desc}</span>}</span>
+      <Icon name="chevron-right" size={14} className="axf-settings__navchev" />
+    </button>
+  );
+}
+/** Sections with more sub-pages than this list them as rows instead of a tab row. */
+const SUB_LIST_FROM = 5;
+
 export function SettingsView() {
   const rt = useRuntime();
   useSettingsRevision(rt);
   const ui = useSettingsUi();
+  const wide = useWide();
+  const isList = ui.layout === 'list';
   // Inside a host that manages plugins (embed@1 take `plugins`, Patches) the plugin list (Settings → Plugins itself) isn't
   // shown: the host installs and switches them. Each plugin's own settings stay, as usual (never greyed out).
   const pluginLock = rt.hostLockNote('plugins');
@@ -708,10 +754,11 @@ export function SettingsView() {
   }, []);
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   // List layout: no tab picked = the list of tabs (drill-down, with Back); the other layouts always show a tab.
-  const current = tabs.find((t) => t.id === tab) ?? (ui.layout === 'list' ? undefined : tabs[0]);
+  const current = tabs.find((t) => t.id === tab) ?? (isList && !wide ? undefined : tabs[0]);
   const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const noOverview = !!pluginLock && current?.id === 'plugins' && subs.length > 0;
   const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
+  const subList = isList && subs.length >= SUB_LIST_FROM;
   // The page's own toolbar (settings asset `toolbar` = a toolbar asset id); its search spot holds the settings search.
   const toolbarAsset = ui.toolbar ? rt.registry.list('toolbar').find((a) => a.id === ui.toolbar) : undefined;
   const toolbarSearch = !!toolbarAsset && (toolbarAsset.data as { showSearch?: boolean }).showSearch === true;
@@ -726,20 +773,21 @@ export function SettingsView() {
       ))}
     </nav>
   );
-  const body = searching ? <SearchResults query={query} tabs={all} ui={ui} /> : !current ? (
-    <div className="axf-settings__tablist" role="list">
-      {tabs.map((t) => (
-        <Button key={t.id} role="listitem" icon={t.icon} className="axf-settings__listitem" onClick={() => choose(t.id)}>
-          <span className="axf-settings__listlabel">{t.label}</span>
-          {t.description && <span className="fx-muted axf-settings__hint axf-settings__desc">{t.description}</span>}
-        </Button>
-      ))}
-    </div>
-  ) : (
+  const navList = (
+    <nav className="axf-settings__navlist" aria-label="Settings sections">
+      {tabs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
+    </nav>
+  );
+  const inSub = !!shown && !!current && shown.id !== current.id;
+  const body = searching ? <SearchResults query={query} tabs={all} ui={ui} /> : !current ? navList : (
     <div className="fx-stack axf-settings__body">
-      {ui.layout === 'list' && <div><Button size="sm" tone="quiet" icon="chevron-left" onClick={() => choose('')}>All settings</Button></div>}
-      {ui.layout === 'list' && <h2 className="axf-settings__tabtitle">{current.label}</h2>}
-      {subs.length > 0 && (
+      {isList && (
+        <div className="axf-settings__crumbs">
+          {(!wide || inSub) && <IconButton icon="chevron-left" label={inSub && subList ? `Back to ${current.label}` : 'All settings'} onClick={() => (inSub && subList ? choose(current.id) : choose(''))} />}
+          <h2 className="axf-settings__tabtitle">{inSub && subList ? <><span className="fx-muted">{current.label} ›</span> {shown!.label}</> : current.label}</h2>
+        </div>
+      )}
+      {subs.length > 0 && !subList && (
         <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
           {!noOverview && (
             <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
@@ -754,6 +802,11 @@ export function SettingsView() {
         </nav>
       )}
       {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
+      {subList && !inSub && (
+        <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label={`${current.label} sections`}>
+          {subs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
+        </nav>
+      )}
       {shown && <TabContent id={shown.id} />}
     </div>
   );
@@ -771,8 +824,14 @@ export function SettingsView() {
         } />
       )}
       {ui.levels && levelBar && <SettingsLevelBar level={level} />}
-      {ui.search && !toolbarSearch && <TextField label="Search settings" value={query} onChange={setQuery} placeholder="Search every setting" className="axf-settings__search" />}
-      {ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
+      {ui.search && !toolbarSearch && (
+        <form className="fx-search axf-settings__search" role="search" onSubmit={(e) => e.preventDefault()}>
+          <Icon name="search" size={14} />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search every setting" aria-label="Search settings" />
+        </form>
+      )}
+      {isList && wide && !searching ? <div className="axf-settings__split axf-settings__split--list">{navList}{body}</div>
+        : ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
     </div>
   );
 }
@@ -847,27 +906,37 @@ function DesignPackagePanel() {
     const r = rt.importAsset({ $axf: 'asset@1', type: 'design-package', id, name: title, version: '1.0.0', description: 'Saved from Settings → Appearance.', data: rt.captureDesignPackage(true) }, false, 'settings');
     if (r.ok) { rt.applyDesignPackage(id); setName(''); }
   };
+  const [pick, setPick] = useState('');
+  const sel = pick || applied || packages[0]?.id || '';
+  const cur = packages.find((p) => p.id === sel);
+  const cd = (cur?.data ?? {}) as unknown as Record<string, string>;
   return (
-    <div className="fx-stack">
-      <p className="fx-muted">One pick sets the style theme, colour theme, layout and behaviour theme together (and the rest of the look a package carries).</p>
-      {!packages.length && <p className="fx-muted">No design packages in this app yet. Save the current look below.</p>}
-      {packages.map((p) => {
-        const d = p.data as unknown as Record<string, string>;
-        const on = p.id === applied;
-        return (
-          <div key={p.id} className="fx-row" style={{ alignItems: 'center', gap: 'var(--fx-space)', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 14em', minWidth: 0 }}>
-              <strong>{p.name}</strong>{on && <> <Chip>In use</Chip></>}
-              <div className="fx-muted">{label('style-theme', d['style-theme'] ?? '')} · {label('color-theme', d['color-theme'] ?? '')} · {label('layout', d.layout ?? '')} · {label('behavior-theme', d['behavior-theme'] ?? '')}</div>
-            </div>
-            <Button size="sm" tone={on ? 'quiet' : 'primary'} disabled={locked} onClick={() => rt.applyDesignPackage(p.id)}>{on ? 'Apply again' : 'Apply'}</Button>
+    <div className="axf-settings__rows">
+      {!packages.length && <p className="fx-muted axf-settings__desc">No design packages in this app yet. Save the current look below.</p>}
+      {packages.length > 0 && (
+        <div className="axf-settings__row">
+          <div className="axf-settings__label">
+            <span>Design package</span>
+            <span className="fx-muted axf-settings__hint" title="One pick sets the style theme, colour theme, layout and behaviour theme together.">{cur ? `${label('style-theme', cd['style-theme'] ?? '')} · ${label('color-theme', cd['color-theme'] ?? '')} · ${label('layout', cd.layout ?? '')}` : ''}</span>
           </div>
-        );
-      })}
-      <div className="fx-row" style={{ gap: 'var(--fx-space)', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-        <div style={{ flex: '1 1 12em' }}><TextField label="Save the current look as" value={name} onChange={setName} placeholder="My look" /></div>
+          <div className="axf-settings__control axf-settings__control--pair">
+            <select className="axf-settings__field" aria-label="Design package" value={sel} disabled={locked} onChange={(e) => setPick(e.target.value)}>
+              {packages.map((p) => <option key={p.id} value={p.id}>{p.name}{p.id === applied ? ' (in use)' : ''}</option>)}
+            </select>
+            <Button size="sm" tone={sel === applied ? 'quiet' : 'primary'} disabled={locked || !sel} onClick={() => { rt.applyDesignPackage(sel); setPick(''); }}>{sel === applied ? 'Re-apply' : 'Apply'}</Button>
+          </div>
+        </div>
+      )}
+      <div className="axf-settings__row">
+        <div className="axf-settings__label"><span>Save the current look</span></div>
+        <div className="axf-settings__control axf-settings__control--pair">
+          <input className="axf-settings__field" aria-label="Name for the saved look" value={name} onChange={(e) => setName(e.target.value)} placeholder="My look" />
         <Button size="sm" disabled={locked} onClick={save}>Save</Button>
-        <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); rt.restoreDefaultAppearance(); }}>{confirm ? 'Tap again to restore' : 'Restore default appearance'}</Button>
+        </div>
+      </div>
+      <div className="axf-settings__row">
+        <div className="axf-settings__label"><span>Default appearance</span></div>
+        <div className="axf-settings__control"><Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); rt.restoreDefaultAppearance(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button></div>
       </div>
     </div>
   );
@@ -898,7 +967,7 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const allPanels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
   const panels = allPanels.filter((p) => !at || shownAtLevel(ui, p.id, at));
   const restPanels = at ? allPanels.filter((p) => !panels.includes(p)) : [];
-  const panelNode = (p: SettingsPanel, icon: string) => <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id) || undefined}>{p.render() as ReactNode}</Container></div>;
+  const panelNode = (p: SettingsPanel, icon: string) => <FlatSection anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id)} defaultOpen={!COLLAPSIBLE_PANELS.has(p.id)}><div className="axf-settings__panel">{p.render() as ReactNode}</div></FlatSection>;
   const ordered = (ps: SettingsPanel[], gs: SettingsGroup[]) => [...ps.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: panelNode(p, 'settings') })),
     ...gs.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
     .sort((a, b) => a.order - b.order || a.tie - b.tie)
@@ -911,7 +980,7 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
     <>
       {lock && panelNode(lock, 'lock')}
       {panelNode(design, 'palette')}
-      {items.length > 0 && <div data-axf-anchor="settings-panel:axf.appearance.rest"><Container title="Everything else" icon="sliders" collapsible defaultOpen={false}><div className="fx-stack">{items}</div></Container></div>}
+      {items.length > 0 && <FlatSection anchor="settings-panel:axf.appearance.rest" title="Everything else" icon="sliders" collapsible defaultOpen={false} className="axf-settings__nest"><div className="axf-settings__nested">{items}</div></FlatSection>}
     </>
   ) : items;
   const empty = !panels.length && !groups.length;
@@ -925,18 +994,14 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const rest = ordered(restPanels, restGroups);
   return (
     <>
-      <div data-axf-anchor={`settings-level:${id}:available`}>
-        <Container title="Available settings" icon="check" collapsible className="axf-settings__available">
-          {empty ? <p className="fx-muted" style={{ margin: 0 }}>{id === 'connections' && !rest.length ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : rest.length ? `Nothing at ${SETTINGS_LEVEL_LABEL[level]} here. Pick a higher level above, or add settings to this level with Edit levels.` : 'Nothing here yet.'}</p> : <div className="fx-stack">{shown}</div>}
-        </Container>
-      </div>
+      <FlatSection anchor={`settings-level:${id}:available`} title={`Available at ${SETTINGS_LEVEL_LABEL[level]}`} collapsible className="axf-settings__available axf-settings__nest">
+          {empty ? <p className="fx-muted axf-settings__desc">{id === 'connections' && !rest.length ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : rest.length ? `Nothing at ${SETTINGS_LEVEL_LABEL[level]} here. Pick a higher level above, or add settings to this level with Edit levels.` : 'Nothing here yet.'}</p> : <div className="axf-settings__nested">{shown}</div>}
+      </FlatSection>
       {rest.length > 0 && (
-        <div data-axf-anchor={`settings-level:${id}:more`}>
-          <Container title="More settings" icon="more" collapsible defaultOpen={false} className="axf-settings__rest">
-            <p className="fx-muted axf-settings__hint" style={{ marginTop: 0 }}>Not part of {SETTINGS_LEVEL_LABEL[level]}. Pick a higher level to change them, or add them to this level with Edit levels.</p>
-            <div className="fx-stack axf-settings__restbody" aria-disabled="true">{rest}</div>
-          </Container>
-        </div>
+        <FlatSection anchor={`settings-level:${id}:more`} title={`More settings (above ${SETTINGS_LEVEL_LABEL[level]})`} collapsible defaultOpen={false} className="axf-settings__rest axf-settings__nest">
+            <p className="fx-muted axf-settings__desc">Not part of {SETTINGS_LEVEL_LABEL[level]}. Pick a higher level to change them, or add them to this level with Edit levels.</p>
+            <div className="axf-settings__nested axf-settings__restbody" aria-disabled="true">{rest}</div>
+        </FlatSection>
       )}
     </>
   );
@@ -1021,6 +1086,58 @@ const CSS = `
 .axf-settings--nodesc .axf-settings__hint,.axf-settings--nodesc .axf-settings__desc{display:none}
 @media (max-width:640px){.axf-settings__split{grid-template-columns:1fr}.axf-settings--tabs-side .axf-settings__tabs{flex-direction:row;flex-wrap:wrap}}
 [data-reduced-motion] *{transition:none!important;animation:none!important}
+
+/* ---- compact settings (Oct 30 2026, Brett: short lists you tap into, dropdowns, tight spacing) ---- */
+.axf-settings{gap:calc(var(--fx-space)*1.5)!important}
+.axf-settings__title{font-size:1.25em}
+.axf-settings__navlist{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);overflow:hidden;min-width:0}
+.axf-settings__nav{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-space);padding:calc(var(--fx-space)*.9) calc(var(--fx-space)*1.25);min-width:0;color:var(--fx-text)}
+.axf-settings__nav+.axf-settings__nav{border-top:var(--fx-border-w) solid var(--fx-border)}
+.axf-settings__nav:hover{background:var(--fx-surface2)}
+.axf-settings__nav:focus-visible{outline:2px solid var(--fx-focus);outline-offset:-2px}
+.axf-settings__nav.is-on{background:var(--fx-accent-soft);color:var(--fx-accent)}
+.axf-settings__nav>svg:first-child{color:var(--fx-muted);flex:none}
+.axf-settings__nav.is-on>svg:first-child{color:var(--fx-accent)}
+.axf-settings__navtext{display:flex;flex-direction:column;min-width:0;flex:1}
+.axf-settings__navlabel{font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.axf-settings__navdesc{font-size:.82em;color:var(--fx-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.axf-settings__navchev{color:var(--fx-muted);flex:none}
+.axf-settings__split--list{grid-template-columns:minmax(calc(var(--fx-font-size)*14),calc(var(--fx-font-size)*18)) minmax(0,1fr)!important;gap:calc(var(--fx-space)*2)}
+.axf-settings__split--list>.axf-settings__navlist{position:sticky;top:0}
+.axf-settings__split--list .axf-settings__navdesc{display:none}
+.axf-settings__crumbs{display:flex;align-items:center;gap:calc(var(--fx-space)*.5);min-width:0}
+.axf-settings__tabtitle{font-size:1.1em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.axf-settings__body{gap:calc(var(--fx-space)*1.25)!important;min-width:0}
+.axf-settings__group{display:flex;flex-direction:column;gap:calc(var(--fx-space)*.5);min-width:0}
+.axf-settings__ghead{display:flex;align-items:center;gap:calc(var(--fx-space)*.6);font-size:.78em;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--fx-muted);padding:0 calc(var(--fx-space)*.25)}
+.axf-settings__gtoggle{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:calc(var(--fx-space)*.6);font-size:.78em;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--fx-muted);padding:calc(var(--fx-space)*.25)}
+.axf-settings__gtoggle:hover{color:var(--fx-text)}
+.axf-settings__gtitle{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);min-width:0}
+.axf-settings__nest>.axf-settings__gbody{border:0;background:transparent;gap:calc(var(--fx-space)*1.25)}
+.axf-settings__nested{display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.25)}
+.axf-settings__gbody>.axf-settings__desc{margin:0;padding:calc(var(--fx-space)*.75) calc(var(--fx-space)*1.25) 0;font-size:.85em}
+.axf-settings__nest>.axf-settings__gbody>.axf-settings__desc{padding:0}
+.axf-settings__panel{padding:calc(var(--fx-space)*1) calc(var(--fx-space)*1.25);min-width:0}
+.axf-settings__panel>.axf-settings__rows{margin:calc(var(--fx-space)*-1) calc(var(--fx-space)*-1.25)}
+.axf-settings__gbody>.axf-settings__rows,.axf-settings__panel>.axf-settings__rows{gap:0!important}
+.axf-settings__gbody .axf-settings__row,.axf-settings__panel>.axf-settings__rows>.axf-settings__row{padding:calc(var(--fx-space)*.8) calc(var(--fx-space)*1.25);margin:0;align-items:center;gap:var(--fx-space);flex-wrap:nowrap}
+.axf-settings__gbody .axf-settings__rows>*+*{border-top:var(--fx-border-w) solid var(--fx-border)}
+.axf-settings__gbody .axf-settings__label{min-width:0;gap:calc(var(--fx-space)*.15)}
+.axf-settings__gbody .axf-settings__label>span:first-child,.axf-settings__gbody .axf-settings__label>strong{font-weight:500}
+.axf-settings__gbody .axf-settings__hint{font-size:.8em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.axf-settings__gbody .axf-settings__control{flex:0 0 auto;min-width:0;max-width:55%;display:flex;justify-content:flex-end}
+.axf-settings__control--pair{display:flex;gap:calc(var(--fx-space)*.5);align-items:center}
+.axf-settings__control--pair .axf-settings__field{min-width:0;flex:1 1 auto}
+.axf-settings__field{padding:calc(var(--fx-space)*.45) calc(var(--fx-space)*.75)!important;font-size:.92em!important}
+.axf-settings__field--sm{padding:calc(var(--fx-space)*.3) calc(var(--fx-space)*.6)!important}
+.axf-settings__levelbar{padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*.75)!important;flex-wrap:nowrap!important;font-size:.9em}
+.axf-settings__levelpick{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.5);flex:none}
+.axf-settings__levelhint{flex:1 1 auto!important;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.88em}
+.axf-settings__search{max-width:none!important}
+.axf-settings>.axf-settings__search{flex:none;margin-left:0;width:100%;box-sizing:border-box;min-height:calc(var(--fx-font-size)*2.4)}
+.axf-settings__gbody .axf-settings__label>:not(:first-child){font-size:.8em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:640px){.axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg)){flex-direction:column;align-items:stretch;gap:calc(var(--fx-space)*.5)}.axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__label{flex:none!important}.axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__control{max-width:none!important;width:100%;flex:none!important;justify-content:flex-start}.axf-settings__gbody .axf-settings__row{flex-wrap:wrap}.axf-settings__gbody .axf-settings__label{flex:1 1 calc(var(--fx-font-size)*10)}.axf-settings__gbody .axf-settings__control{max-width:100%;flex:1 1 100%;justify-content:flex-start}.axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch){flex-wrap:nowrap}.axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) .axf-settings__control{flex:0 0 auto;max-width:60%}}
 `;
 
 function injectStyles(): void {

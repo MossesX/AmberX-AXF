@@ -3,19 +3,18 @@
   "type": "settings",
   "id": "console",
   "name": "Dev Console",
-  "version": "1.3.0",
-  "description": "The Dev Console's settings interface, shared: every app that ships it shows its settings page the same way, and a pick in one app follows to the others through axHub. Simple / Basic / Pro / Advanced levels (Oct 26 2026): Simple has the Sliders section.",
+  "version": "1.5.0",
+  "description": "The Dev Console's settings interface, shared: every app that ships it shows its settings page the same way, and a pick in one app follows to the others through axHub. Simple / Basic / Developer / Administrator levels (Oct 28 2026; Administrator shows all): Simple has the Sliders section. Compact (Oct 30 2026): a short list of sections you tap into (list + page side by side on wide screens), sections with many sub-pages list them as rows, flat hairline groups, one-line rows, dropdowns.",
   "author": "AmberX AXF",
   "tags": [
     "console",
     "shared"
   ],
   "data": {
-    "layout": "tabs-top",
-    "header": "full",
-    "search": false,
+    "layout": "list",
+    "header": "compact",
+    "search": true,
     "descriptions": true,
-    "toolbar": "settings-page",
     "levels": true,
     "defaultLevel": "basic",
     "levelOf": {
@@ -34,10 +33,10 @@
       "axf.account.role": "basic",
       "axf.plugins.libraries": "basic",
       "axf.banners": "basic",
-      "axf.asset-appearance": "pro",
-      "axf.roll": "advanced",
-      "axf.roll.assets": "advanced",
-      "axf.account.profile": "advanced"
+      "axf.asset-appearance": "developer",
+      "axf.roll": "developer",
+      "axf.roll.assets": "administrator",
+      "axf.account.profile": "administrator"
     }
   }
 }
