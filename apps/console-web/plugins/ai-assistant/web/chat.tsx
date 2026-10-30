@@ -10,6 +10,7 @@ import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBat
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
 import { ActivityIcon, useReportActivity } from './activity';
+import { MoreMenu } from './more';
 import { ChatSettingsDialog } from './settings';
 import {
   APPROVALS_BADGE_KEY, FOLDER, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
@@ -41,7 +42,8 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [archived, setArchived] = useState(false);
-  const [showList, setShowList] = useState(!compact);
+  // phones start on the chat; the conversations list slides over it from the list button
+  const [showList, setShowList] = useState(!compact && !globalThis.matchMedia?.('(max-width: 760px)').matches);
   const [conv, setConv] = useState<Conversation | null>(null);
   const [pending, setPending] = useState<ConvSettings>({});
   const [text, setText] = useState('');
@@ -58,6 +60,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const importRef = useRef<HTMLInputElement>(null);
   const name = status?.assistantName || 'Assistant';
   const activity = useReportActivity(live);
 
@@ -290,9 +293,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             <button type="button" role="tab" className={`fx-tab axp-ai-assistant__tab${archived ? ' is-active' : ''}`} aria-selected={archived} onClick={() => setArchived(true)}>Archived</button>
           </div>
           {tags.length > 0 && (
-            <div className="axp-ai-assistant__tagrow" role="group" aria-label="Filter by tag">
-              {tags.slice(0, 12).map((t) => <button key={t} type="button" className={`fx-chip axp-ai-assistant__tagchip${tag === t ? ' is-on' : ''}`} aria-pressed={tag === t} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}
-            </div>
+            <select className="fx-input" value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Filter by tag"><option value="">All tags</option>{tags.map((t) => <option key={t} value={t}>#{t}</option>)}</select>
           )}
           <div className="axp-ai-assistant__convs">
             {list.length === 0 && <p className="fx-muted fx-small">{q || tag ? 'No matches.' : 'No conversations yet.'}</p>}
@@ -314,16 +315,17 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
                   </button>
                 )}
                 <div className="axp-ai-assistant__conv-acts">
-                  <button type="button" className="fx-iconbtn" title={c.pinned ? 'Unpin' : 'Pin'} onClick={() => void client.patchConversation(c.id, { pinned: !c.pinned }).then(loadList)}><Icon name="star" size={12} /></button>
-                  <button type="button" className="fx-iconbtn" title="Rename" onClick={() => setRenaming(c.id)}><Icon name="edit" size={12} /></button>
-                  <button type="button" className="fx-iconbtn" title="Tags" onClick={() => setTagging(c.id)}><Icon name="list" size={12} /></button>
-                  <button type="button" className="fx-iconbtn" title={c.archived ? 'Unarchive' : 'Archive'} onClick={() => void client.patchConversation(c.id, { archived: !c.archived }).then(loadList)}><Icon name="box" size={12} /></button>
-                  <button type="button" className="fx-iconbtn" title="Delete" onClick={() => { if (confirm(`Delete "${c.title}"?`)) void client.deleteConversation(c.id).then(() => { if (conv?.id === c.id) newChat(); void loadList(); }); }}><Icon name="trash" size={12} /></button>
+                  <MoreMenu label={`Actions for ${c.title}`} items={[
+                    { label: c.pinned ? 'Unpin' : 'Pin', icon: 'star', onPick: () => void client.patchConversation(c.id, { pinned: !c.pinned }).then(loadList) },
+                    { label: 'Rename', icon: 'edit', onPick: () => setRenaming(c.id) },
+                    { label: 'Tags', icon: 'list', onPick: () => setTagging(c.id) },
+                    { label: c.archived ? 'Unarchive' : 'Archive', icon: 'box', onPick: () => void client.patchConversation(c.id, { archived: !c.archived }).then(loadList) },
+                    { label: 'Delete', icon: 'trash', onPick: () => { if (confirm(`Delete "${c.title}"?`)) void client.deleteConversation(c.id).then(() => { if (conv?.id === c.id) newChat(); void loadList(); }); } },
+                  ]} />
                 </div>
               </div>
             ))}
           </div>
-          <label className="axp-ai-assistant__import fx-small fx-muted"><Icon name="upload" size={12} /> Import JSON<input type="file" accept="application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) void importConv(f); e.target.value = ''; }} /></label>
         </aside>
       )}
 
@@ -352,11 +354,15 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
               {agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
           )}
-          <button type="button" className="fx-iconbtn" title="Chat settings" onClick={() => setSheet('settings')}><Icon name="sliders" size={16} /></button>
-          <button type="button" className="fx-iconbtn" title="Compare models" onClick={() => setSheet('compare')}><Icon name="layers" size={16} /></button>
-          {conv && <button type="button" className="fx-iconbtn" title="Export Markdown" onClick={() => void exportConv('md')}><Icon name="download" size={16} /></button>}
-          {conv && <button type="button" className="fx-iconbtn" title="Export JSON" onClick={() => void exportConv('json')}><Icon name="code" size={16} /></button>}
           <button type="button" className="fx-iconbtn" title="New chat" onClick={newChat}><Icon name="plus" size={16} /></button>
+          <button type="button" className="fx-iconbtn" title="Chat settings" onClick={() => setSheet('settings')}><Icon name="sliders" size={16} /></button>
+          <MoreMenu label="More chat actions" items={[
+            { label: 'Compare models', icon: 'layers', onPick: () => setSheet('compare') },
+            !!conv && { label: 'Export Markdown', icon: 'download', onPick: () => void exportConv('md') },
+            !!conv && { label: 'Export JSON', icon: 'code', onPick: () => void exportConv('json') },
+            { label: 'Import JSON…', icon: 'upload', onPick: () => importRef.current?.click() },
+          ]} />
+          <input ref={importRef} type="file" accept="application/json" hidden aria-label="Import a conversation (JSON)" onChange={(e) => { const f = e.target.files?.[0]; if (f) void importConv(f); e.target.value = ''; }} />
         </header>
 
         <div className="axp-ai-assistant__body">
@@ -416,7 +422,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             <button type="button" className="fx-iconbtn" title="Attach images or text files" onClick={() => fileRef.current?.click()}><Icon name="plus" size={16} /></button>
             <input ref={fileRef} type="file" multiple hidden onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
             <button type="button" className="fx-iconbtn" title="Attach the current console view as context" onClick={() => setCtx({ view: axState.view, title: document.title, selection: String(globalThis.getSelection?.() ?? '').slice(0, 4000) || undefined })}><Icon name="monitor" size={16} /></button>
-            <textarea ref={inputRef} className="fx-input axp-ai-assistant__textarea" rows={compact ? 2 : 3} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={onKey} onPaste={onPaste}
+            <textarea ref={inputRef} className="fx-input axp-ai-assistant__textarea" rows={2} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={onKey} onPaste={onPaste}
               placeholder={`Message ${activeAgent?.name ?? name}…  (Enter sends · Shift+Enter new line · / for prompts · ↑ edits last)`} aria-label="Message" />
             {live ? <Button icon="pause" onClick={stop}>Stop</Button> : <Button tone="primary" icon="play" disabled={!text.trim() && !images.length && !files.length} onClick={send}>Send</Button>}
           </div>

@@ -1,4 +1,4 @@
-import { Button, Container, useRuntime } from '@console/axf/react';
+import { Button, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { APPROVALS_BADGE_KEY, FOLDER, ID, type Ctx } from './api';
@@ -22,8 +22,8 @@ import { appMenu } from './menu';
 function AssistantView() {
   const s = useStatus();
   return (
-    <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">AI · assistant</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1><p className="fx-muted">Chat with the framework's assistant or a specialist agent; anything that writes asks you first.</p></div></header>
+    <div className="fx-stack">
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">AI · assistant</p><h1 className="axp-ai-assistant__h1"><ActivityIcon size={20} />{s?.assistantName ?? 'AI assistant'}</h1><p className="fx-muted axp-ai-assistant__lede" title="Chat with the framework's assistant or a specialist agent; anything that writes asks you first.">Chat with the assistant or an agent; writes ask you first.</p></div></header>
       <ChatPanel />
     </div>
   );
@@ -31,10 +31,12 @@ function AssistantView() {
 
 function WizardIntro() {
   const s = useStatus();
+  // flat inside its settings panel (no card in a card); collapsed once setup is done
   return (
-    <Container title={s?.setupComplete ? 'Setup wizard (run again any time)' : 'Setup wizard'} icon="rocket">
+    <details className="axp-ai-assistant__fold" open={s ? !s.setupComplete : false}>
+      <summary className="fx-small">{s?.setupComplete ? 'Run the setup wizard again' : 'Start the setup wizard'}</summary>
       <SetupWizard />
-    </Container>
+    </details>
   );
 }
 
@@ -84,9 +86,9 @@ export const plugin: AxfWebLibrary = {
 function QuickOpen() {
   const rt = useRuntime();
   return (
-    <div className="fx-row fx-row--wrap">
-      <Button tone="primary" icon="sparkles" onClick={() => rt.openDialog('ai-assistant.chat')}>Open chat dialog</Button>
-      <span className="fx-small fx-muted">Also: nav → Plugins → AI assistant, the action <code className="fx-mono">ai-assistant.open</code>, or from any plugin <code className="fx-mono">ai.chat.start</code>.</span>
+    <div className="fx-row">
+      <Button tone="primary" icon="sparkles" title="Also: Plugins → AI assistant, the action ai-assistant.open, or from any plugin ai.chat.start" onClick={() => rt.openDialog('ai-assistant.chat')}>Open chat dialog</Button>
+      <Button icon="external" onClick={() => rt.navigate('ai-assistant')}>Chat page</Button>
     </div>
   );
 }

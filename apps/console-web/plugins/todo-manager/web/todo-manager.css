@@ -27,12 +27,20 @@ button.axp-todo__listrow:focus-visible { outline: calc(var(--fx-border-w) * 2) s
 
 /* open list */
 .axp-todo__head, .axp-todo__title, .axp-todo__rename, .axp-todo__bar, .axp-todo__filters, .axp-todo__selbar, .axp-todo__groupacts { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+/* compact bar (Oct 30 2026): add · ⋯ · search · tree/grid · filters toggle on one line */
+.axp-todo__bar { flex-wrap: nowrap; gap: calc(var(--fx-space) * 0.4) }
+.axp-todo__bar > * { flex: none }
+.axp-todo__bar > .axp-todo__search { flex: 1 1 0; min-width: 0; width: auto }
+.axp-todo__bar .fx-iconbtn.is-on { color: var(--fx-accent) }
+.axp-todo__listpick { align-items: center; gap: calc(var(--fx-space) * 0.4) }
+@media (max-width: 759px) { .axp-todo__listpick { display: flex } }
+.axp-todo__listpick > select { flex: 1; min-width: 0 }
 .axp-todo__head { justify-content: space-between }
-.axp-todo__title h2 { margin: 0; font-size: calc(var(--fx-font-size) * 18 / 14) }
+.axp-todo__title h2 { margin: 0; font-size: calc(var(--fx-font-size) * 16 / 14) }
 .axp-todo__rename > :first-child { flex: 1; min-width: calc(var(--fx-space) * 10) }
 select.fx-input.axp-todo__tone { width: auto; min-width: 0 }
-.axp-todo__filters { align-items: flex-end }
-.axp-todo__filters > .fx-field:first-child { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0 }
+.axp-todo__filters { align-items: flex-end; padding: calc(var(--fx-space) * 0.5) 0; border-block: var(--fx-border-w) solid var(--fx-border) }
+.axp-todo__filters > .fx-field { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0 }
 .axp-todo__selbar { position: sticky; top: 0; z-index: 1; padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: var(--fx-surface) }
 .axp-todo__selbar select.fx-input { width: auto }
 

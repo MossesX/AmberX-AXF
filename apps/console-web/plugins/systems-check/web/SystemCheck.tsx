@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { BannerIcon, Button, Chip, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { BannerIcon, Button, Chip, Icon, Segmented, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
@@ -535,10 +535,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
 
       {view === 'grid' && (
         <div className="axp-systems-check__grid">
-          <div className="fx-row fx-row--wrap">
-            <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}><input type="radio" checked={filter === 'issues'} onChange={() => setFilter('issues')} /> Issues ({iss.length})</label>
-            <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}><input type="radio" checked={filter === 'all'} onChange={() => setFilter('all')} /> Everything ({r.checks.length})</label>
-          </div>
+          <Segmented size="sm" label="Show" value={filter} onChange={setFilter} options={[{ value: 'issues', label: `Issues (${iss.length})` }, { value: 'all', label: `Everything (${r.checks.length})` }]} />
           {rows.length === 0 && <p className="fx-muted">No issues: everything the console needs is configured.</p>}
           <table className="fx-table axp-systems-check-table">
             <thead><tr><th aria-label="Expand" /><th>Status</th><th>Check</th><th className="axp-systems-check-hide-sm">Service</th><th className="axp-systems-check-hide-sm">Summary</th></tr></thead>
@@ -548,7 +545,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
                   <tr className={`axp-systems-check-row ${open.has(c.id) ? 'is-open' : ''}`} onClick={() => toggle(c.id)}>
                     <td><button type="button" className="fx-iconbtn" aria-expanded={open.has(c.id)} aria-label={`Details for ${c.title}`} onClick={(e) => { e.stopPropagation(); toggle(c.id); }}><Icon name={open.has(c.id) ? 'chevron-down' : 'chevron-right'} size={14} /></button></td>
                     <td>{s.run[c.id] ? <RunBadge r={s.run[c.id]} /> : <StatusChip s={c.status} />}</td>
-                    <td><strong>{c.title}</strong>{' '}<SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-show-sm fx-small fx-muted"><br />{c.summary}</span></td>
+                    <td><strong>{c.title}</strong>{' '}<SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-show-sm fx-small fx-muted axp-systems-check-sumline">{c.summary}</span></td>
                     <td className="axp-systems-check-hide-sm">{r.services.find((x) => x.id === c.service)?.label ?? c.service}</td>
                     <td className="axp-systems-check-hide-sm fx-small">{c.summary}</td>
                   </tr>

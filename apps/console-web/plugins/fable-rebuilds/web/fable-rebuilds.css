@@ -22,3 +22,15 @@
 .axp-fable__kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
 .axp-fable__report { margin: 0; max-height: 60vh; overflow: auto; padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre-wrap; overflow-wrap: anywhere }
 .axp-fable__logline { overflow-wrap: anywhere }
+
+/* Compact (Brett, Oct 30 2026): status filter is one dropdown in the head, actions are icons, every rebuild is one line
+   (badge · title · id/date) with the details on tap, the rebuild log folds away. Layout only. */
+.axp-fable { gap: calc(var(--fx-space) * 0.6) }
+.axp-fable__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-fable__acts { flex-wrap: nowrap; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+select.fx-input.axp-fable__filter { width: auto; flex: none }
+.axp-fable__hit { gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.45) calc(var(--fx-space) * 0.6) }
+.axp-fable__row:not(.is-open) .axp-fable__title, .axp-fable__row:not(.is-open) .axp-fable__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-fable__body { gap: calc(var(--fx-space) * 0.5) }
+.axp-fable__logline + .axp-fable__logline { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) * 0.3); margin-top: calc(var(--fx-space) * 0.3) }
+.axp-fable__logcard .fx-card__body { max-height: calc(var(--fx-space) * 30); overflow: auto }

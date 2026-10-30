@@ -9,6 +9,7 @@ import pricing from '@console/axf/schemas/model-pricing.json';
 import { groupPlain, itemPlain } from './plain';
 import { clearFocus, FOLDER, KEYS, useFocus, VIEW } from './focus';
 import './feature-matrix.css';
+import { MoreMenu } from './more';
 
 /*
  * Feature matrix page (feature-matrix@1). One dataset of every build's matrix, shown as a grid of expandable rows
@@ -36,7 +37,7 @@ const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: unknown) => { 
 /** The Builds pages' toolbar button (slot builds.toolbar). */
 export function OpenMatrixButton() {
   const rt = useRuntime();
-  return <Button icon="check-circle" onClick={() => rt.navigate(VIEW)} title="Every build's keep / skip feature list">Feature matrix</Button>;
+  return <Button icon="check-circle" className="axp-feature-matrix__open" aria-label="Feature matrix" onClick={() => rt.navigate(VIEW)} title="Every build's keep / skip feature list">Feature matrix</Button>;
 }
 
 export function FeatureMatrixPage() {
@@ -70,15 +71,15 @@ export function FeatureMatrixPage() {
   if (!data) return <LoadingSkeleton rows={4} label="Loading the feature matrices" />;
   const dirty = data.rows.filter((r) => r.dirty).length;
   return (
-    <div className="fx-stack fx-stack--lg axp-feature-matrix">
+    <div className="fx-stack axp-feature-matrix">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Builds · {data.rows.length} matrices{dirty ? ` · ${dirty} need apply` : ''}{data.state.updatedAt ? ` · updated ${fmtTime(data.state.updatedAt)}` : ''}</p>
           <h1>Feature matrix</h1>
-          <p className="fx-muted">Every build's features in one list: tick to keep, untick to skip; nothing is ever deleted, and Apply pushes the result to every table the build lives in.</p>
+          <p className="fx-muted axp-feature-matrix__lede" title="Every build's features in one list: tick to keep, untick to skip; nothing is ever deleted, and Apply pushes the result to every table the build lives in.">Tick to keep, untick to skip; Apply pushes it everywhere.</p>
         </div>
-        <div className="fx-row fx-row--wrap">
-          <Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button>
+        <div className="fx-row axp-feature-matrix__headacts">
+          <IconButton icon="refresh" label="Reload" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))} />
           <Button icon="download" disabled={busy} title="The draft matrix and a matrix for every open build of the active profile (only adds)" onClick={() => act('import', { profile: data.active })}>Import open builds</Button>
         </div>
       </header>
@@ -92,7 +93,8 @@ type Show = 'all' | 'dirty' | 'applied';
 function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; busy: boolean; act: Act; focus: ReturnType<typeof useFocus>; lastReport: Report | null }) {
   const rt = useRuntime();
   const [open, setOpen] = useState<string[]>([]);
-  const [hidden, setHidden] = useState<string[]>([]);
+  // a phone starts with the build, its time cost and status only (the rest come back from the grid's column menu)
+  const [hidden, setHidden] = useState<string[]>(() => (globalThis.matchMedia?.('(max-width: 640px)').matches ? ['profile', 'added', 'kept', 'updated'] : []));
   const [sort, setSort] = useState<GridSort>(() => ({ col: String(setting(rt, KEYS.sort, 'updated')) === 'added' ? 'added' : 'updated', dir: -1 }));
   const [show, setShow] = useState<Show>('all');
   const [profile, setProfile] = useState<string>('');
@@ -110,7 +112,7 @@ function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; 
   const rows = data.rows.filter((r) => (show === 'dirty' ? r.dirty : show === 'applied' ? !r.dirty : true) && (!profile || r.profile === profile));
   const groups: GridGroup<fm.Row>[] = [{ id: 'all', title: profile ? (data.profiles.find((p) => p.id === profile)?.name ?? profile) : 'All matrices', icon: 'list', rows, groups: [], fixed: true, summary: `${rows.length} · ${mins(rows.reduce((t, r) => t + r.keptMinutes, 0))} kept` }];
   const cols: GridColumn<fm.Row>[] = [
-    { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(), render: (r) => <span className="axp-feature-matrix__title" id={`axp-fm-${r.id.replace(/[^a-z0-9-]/gi, '-')}`}><b>{r.title}</b><span className="fx-small fx-muted fx-mono"> {KIND_LABEL[r.ref.kind]} · {r.ref.id}</span></span> },
+    { id: 'title', label: 'Build', width: globalThis.matchMedia?.('(max-width: 640px)').matches ? 'minmax(calc(var(--fx-font-size) * 11), 1fr)' : 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(), render: (r) => <span className="axp-feature-matrix__title" id={`axp-fm-${r.id.replace(/[^a-z0-9-]/gi, '-')}`}><b>{r.title}</b><span className="fx-small fx-muted fx-mono"> {KIND_LABEL[r.ref.kind]} · {r.ref.id}</span></span> },
     { id: 'profile', label: 'Profile', width: 'calc(var(--fx-font-size) * 8)', sortable: true, sortValue: (r) => r.profile, render: (r) => <span className="fx-small">{data.profiles.find((p) => p.id === r.profile)?.name ?? r.profile}</span> },
     { id: 'added', label: 'Date added', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.addedAt, render: (r) => <span className="fx-small" title={fmtTime(r.addedAt)}>{fmtDate(r.addedAt)}</span> },
     { id: 'cost', label: 'Time cost', width: 'calc(var(--fx-font-size) * 5)', align: 'end', sortable: true, sortValue: (r) => r.keptMinutes, render: (r) => <span className="fx-small" title={`Fable ${mins(r.byModel.Fable.keptMinutes)} · Opus ${mins(r.byModel.Opus.keptMinutes)}`}>{mins(r.keptMinutes)}</span> },
@@ -124,7 +126,7 @@ function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; 
     <>
       <div className="fx-row fx-row--wrap axp-feature-matrix__bar" role="toolbar" aria-label="Show">
         <Segmented size="sm" label="Show" value={show} onChange={setShow} options={[{ value: 'all', label: 'All' }, { value: 'dirty', label: 'Needs apply' }, { value: 'applied', label: 'Applied' }]} />
-        {data.profiles.length > 1 && <Segmented size="sm" label="Profile" value={profile || 'any'} onChange={(v) => setProfile(v === 'any' ? '' : v)} options={[{ value: 'any', label: 'Every profile' }, ...data.profiles.map((p) => ({ value: p.id, label: p.name }))]} />}
+        {data.profiles.length > 1 && <select className="fx-input axp-feature-matrix__profile" aria-label="Profile" value={profile} onChange={(e) => setProfile(e.target.value)}><option value="">Every profile</option>{data.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select>}
       </div>
       {missing && (
         <div className="pl-note axp-feature-matrix__missing">
@@ -203,11 +205,13 @@ export function MatrixView({ m, busy, act, report }: { m: fm.Matrix; busy: boole
         ))}
       </div>
       {adding ? <ItemForm d={adding} groups={groupNames} busy={busy} onChange={setAdding} onSave={save} onCancel={() => setAdding(null)} label="Add item" /> : null}
-      <div className="fx-row fx-row--wrap">
-        {!adding && <Button icon="plus" onClick={() => setAdding(blank(groupNames[groupNames.length - 1] ?? ''))}>Add item</Button>}
-        <Button icon="file" onClick={() => setRenaming(m.title)}>Rename</Button>
-        <Button icon="clock" aria-expanded={historyOpen} onClick={() => setHistoryOpen((o) => !o)}>{historyOpen ? 'Hide history' : `History (${m.history.length})`}</Button>
-        {report && <Button icon="list" aria-expanded={showReport} onClick={() => setShowReport((o) => !o)}>{showReport ? 'Hide last Apply' : 'Last Apply'}</Button>}
+      <div className="fx-row axp-feature-matrix__acts">
+        {!adding && <Button size="sm" icon="plus" onClick={() => setAdding(blank(groupNames[groupNames.length - 1] ?? ''))}>Add item</Button>}
+        <Button size="sm" icon="clock" aria-expanded={historyOpen} onClick={() => setHistoryOpen((o) => !o)}>{historyOpen ? 'Hide history' : `History (${m.history.length})`}</Button>
+        <MoreMenu label={`More for ${m.title}`} items={[
+          { label: 'Rename', icon: 'file', onPick: () => setRenaming(m.title) },
+          report && { label: showReport ? 'Hide last Apply' : 'Last Apply', icon: 'list', onPick: () => setShowReport((o) => !o) },
+        ]} />
       </div>
       {showReport && report && <ApplyReport r={report} />}
       {historyOpen && (

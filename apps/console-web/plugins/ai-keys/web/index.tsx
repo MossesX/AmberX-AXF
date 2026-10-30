@@ -16,7 +16,6 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { EmptyState } from '@console/emptyState';
 
 const ID = 'ai.amberx.axf.console.ai-keys';
 const FOLDER = 'ai-keys';
@@ -101,13 +100,13 @@ function KeysDialog() {
 
   return (
     <div className="fx-stack">
-      <Note tone="info">The active key of each kind replaces the AI assistant's own key for that provider (Anthropic / Claude Code subscription). No active key = the assistant's own setting applies.</Note>
+      <p className="fx-small fx-muted" style={{ margin: 0 }} title="The active key of each kind replaces the AI assistant's own key for that provider (Anthropic / Claude Code subscription). No active key = the assistant's own setting applies.">The active key of each kind replaces the assistant's own key; none active = its own setting.</p>
       {error && <Note tone="danger">{error}</Note>}
       {data?.kinds.map((kd) => {
         const rows = data.keys.filter((k) => k.kind === kd.id);
         return (
           <Section key={kd.id} title={kd.label} aside={<span className="fx-muted">{rows.length} stored</span>}>
-            {rows.length === 0 ? <EmptyState icon="key" compact>No keys yet — add one below; each is tested before it's saved.</EmptyState> : (
+            {rows.length === 0 ? <p className="fx-small fx-muted" style={{ margin: 0 }}>None yet. Add one below; each is tested before it's saved.</p> : (
               <ul className="fx-stack" style={{ listStyle: 'none', padding: 0, margin: 0 }}>{rows.map((k) => <KeyItem key={k.id} k={k} busy={busy} run={run} />)}</ul>
             )}
           </Section>
@@ -116,7 +115,7 @@ function KeysDialog() {
       {vps && (
         <Section title="Claude Code on the VPS" aside={<span className="fx-muted">{vps.state}{vps.via ? ` · ${vps.via}` : ''}</span>}>
           <div className="fx-stack fx-stack--sm">
-            <p className="fx-muted" style={{ margin: 0 }}>The active pair is written to ~/.claude/.credentials.json on the VPS {vps.direct ? 'directly' : 'by Vinny through axHub (approved there)'}; if a direct write fails, Vinny takes over. No token is ever in the command.</p>
+            <p className="fx-small fx-muted" style={{ margin: 0 }} title={`The active pair is written to ~/.claude/.credentials.json on the VPS ${vps.direct ? 'directly' : 'by Vinny through axHub (approved there)'}; if a direct write fails, Vinny takes over. No token is ever in the command.`}>The active pair is written to the VPS {vps.direct ? 'directly' : 'by Vinny through axHub'}; no token is ever in the command.</p>
             {vps.state === 'failed' && vps.error && <Note tone="danger">{vps.error}</Note>}
             {vps.approval && vps.state === 'waiting' && <div className="fx-row"><Button size="sm" tone="primary" icon="external" onClick={() => window.open(vps.approval, '_blank', 'noopener')}>Approve on axHub</Button></div>}
             {vps.log.length > 0 && (
@@ -130,7 +129,7 @@ function KeysDialog() {
       )}
       <Section title="Add a key">
         <div className="fx-stack">
-          <Segmented<AddMode> label="What to add" value={mode} onChange={setMode} options={[
+          <Segmented<AddMode> size="sm" label="What to add" value={mode} onChange={setMode} options={[
             { value: 'pair', label: 'Subscription pair', icon: 'key' },
             { value: 'file', label: 'Credentials file', icon: 'file' },
             { value: 'api', label: 'API key', icon: 'key' },

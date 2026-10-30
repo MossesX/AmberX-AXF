@@ -4,11 +4,12 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
 import { call, del, post, put, type SavedTheme } from './api';
+import { MoreMenu } from './MoreMenu';
 
 const P = 'axp-theme-manager';
 type Data = Record<string, Json>;
@@ -61,6 +62,7 @@ export function ThemeManager() {
   const [path, setPath] = useState<string[]>([]); // phone drill-down
   const [err, setErr] = useState('');
   const [presets, setPresets] = useState<Record<string, string[]>>({});
+  const [savingPreset, setSavingPreset] = useState(false);
   const [pins, setPins] = useState<{ name: string; at: number; snap: Snap }[]>(() => read(LS.pins, []));
   // UI-editor rule: on open / load / focus, reload current values (active themes via rt.refreshFromSaved, own picks from storage); last save wins.
   useEditorSync({ onRefresh: () => {
@@ -154,17 +156,18 @@ export function ThemeManager() {
 
   return (
     <div className={`${P} fx-stack`}>
-      <div className={`${P}__rolls`}>
-        <Button tone="primary" icon="palette" disabled={!rollable('color-theme')} onClick={() => roll(['color-theme'])}>Roll color theme</Button>
-        <Button tone="primary" icon="type" disabled={!rollable('style-theme')} onClick={() => roll(['style-theme'])}>Roll style theme</Button>
-        <Button tone="primary" icon="layout" disabled={!rollable('layout')} onClick={() => roll(['layout'])}>Roll layout</Button>
-        <Button icon="shuffle" onClick={() => roll(types.filter(rollable))}>Roll all ticked</Button>
-      </div>
-      <div className={`${P}__bar`}>
-        <Button tone="ghost" icon="undo" disabled={hist.index <= 0} onClick={undo}>Undo</Button>
-        <Button tone="ghost" icon="redo" disabled={hist.index >= hist.history.length - 1} onClick={redo}>Redo</Button>
-        <Button tone="ghost" icon="star" disabled={!changed.length} onClick={() => setPins([{ name: `Favourite ${pins.length + 1}`, at: Date.now(), snap: snapshot() }, ...pins].slice(0, 12))}>Pin</Button>
-        <Button tone="ghost" icon="x" disabled={!changed.length} onClick={revert}>Back to the saved look</Button>
+      {/* one toolbar: the two rolls used most, undo / redo / pin, the rest behind ⋯ (compact pages, Oct 30 2026) */}
+      <div className={`${P}__bar ${P}__toolbar`} role="toolbar" aria-label="Roll">
+        <Button tone="primary" size="sm" icon="shuffle" onClick={() => roll(types.filter(rollable))}>Roll ticked</Button>
+        <Button size="sm" icon="palette" disabled={!rollable('color-theme')} onClick={() => roll(['color-theme'])}>Colours</Button>
+        <IconButton icon="undo" label="Undo" disabled={hist.index <= 0} onClick={undo} />
+        <IconButton icon="redo" label="Redo" disabled={hist.index >= hist.history.length - 1} onClick={redo} />
+        <IconButton icon="star" label="Pin this roll" disabled={!changed.length} onClick={() => setPins([{ name: `Favourite ${pins.length + 1}`, at: Date.now(), snap: snapshot() }, ...pins].slice(0, 12))} />
+        <MoreMenu label="More roll actions" items={[
+          { id: 'style', label: 'Roll style theme', icon: 'type', disabled: !rollable('style-theme'), onSelect: () => roll(['style-theme']) },
+          { id: 'layout', label: 'Roll layout', icon: 'layout', disabled: !rollable('layout'), onSelect: () => roll(['layout']) },
+          { id: 'revert', label: 'Back to the saved look', icon: 'x', disabled: !changed.length, onSelect: revert },
+        ]} />
         <span className="fx-grow" />
         {changed.length > 0 && <Chip tone="warning">unsaved: {changed.join(', ')}</Chip>}
       </div>
@@ -186,13 +189,21 @@ export function ThemeManager() {
         <section className={`${P}__treebox`}>
           <div className={`${P}__bar`}>
             <input className="fx-input fx-grow" placeholder="Filter the tree" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Filter the tree" />
+            <select className={`fx-input ${P}__tickpick`} aria-label="Tick a preset" value="" onChange={(e) => {
+              const v = e.target.value; e.target.value = '';
+              if (v === '+save') setSavingPreset(true);
+              else if (v === 'invert') setTicked(new Set(allLeafIds(tree).filter((x) => !ticked.has(x))));
+              else if (v.startsWith('p:')) setTicked(new Set(PRESETS[v.slice(2)]!(tree)));
+              else if (v.startsWith('s:')) setTicked(new Set(presets[v.slice(2)] ?? []));
+            }}>
+              <option value="">Tick…</option>
+              {Object.keys(PRESETS).map((k) => <option key={k} value={`p:${k}`}>{k}</option>)}
+              <option value="invert">invert</option>
+              {Object.keys(presets).length > 0 && <optgroup label="Saved presets">{Object.keys(presets).map((k) => <option key={k} value={`s:${k}`}>{k}</option>)}</optgroup>}
+              <option value="+save">+ save as preset…</option>
+            </select>
           </div>
-          <div className={`${P}__bar fx-small`}>
-            {Object.keys(PRESETS).map((k) => <button key={k} type="button" className="fx-chip" onClick={() => setTicked(new Set(PRESETS[k]!(tree)))}>{k}</button>)}
-            <button type="button" className="fx-chip" onClick={() => setTicked(new Set(allLeafIds(tree).filter((x) => !ticked.has(x))))}>invert</button>
-            {Object.entries(presets).map(([k, ids]) => <button key={k} type="button" className="fx-chip fx-chip--accent" onClick={() => setTicked(new Set(ids))} title="Saved preset">{k}</button>)}
-            <PresetSaver ticked={ticked} presets={presets} setPresets={setPresets} />
-          </div>
+          {savingPreset && <PresetSaver ticked={ticked} presets={presets} setPresets={setPresets} onDone={() => setSavingPreset(false)} />}
           {narrow && path.length > 0 && (
             <div className={`${P}__crumbs`}>
               <Button tone="ghost" size="sm" icon="arrow-left" onClick={() => setPath(path.slice(0, -1))}>Back</Button>
@@ -200,7 +211,7 @@ export function ThemeManager() {
             </div>
           )}
           <ul className={`${P}__tree`}>{shownNodes.map((n) => <Row key={n.id} n={n} depth={0} />)}</ul>
-          <p className="fx-small fx-muted">{ticked.size} of {allLeafIds(tree).length} values ticked · {locked.size} locked. New asset types show up here by themselves.</p>
+          <p className="fx-small fx-muted" title="New asset types show up here by themselves.">{ticked.size} of {allLeafIds(tree).length} ticked · {locked.size} locked</p>
         </section>
         <section className={`${P}__editor`}>
           {!selNode?.leaf ? <p className="fx-small fx-muted">Pick a value in the tree to see it and edit it by hand (live preview).</p> : (
@@ -247,16 +258,16 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
   );
 }
 
-function PresetSaver({ ticked, presets, setPresets }: { ticked: Set<string>; presets: Record<string, string[]>; setPresets: (p: Record<string, string[]>) => void }) {
-  const [name, setName] = useState<string | null>(null);
-  if (name === null) return <button type="button" className="fx-chip" onClick={() => setName('')}>+ save as preset</button>;
+function PresetSaver({ ticked, presets, setPresets, onDone }: { ticked: Set<string>; presets: Record<string, string[]>; setPresets: (p: Record<string, string[]>) => void; onDone: () => void }) {
+  const [name, setNameState] = useState('');
+  const setName = (v: string | null) => { if (v === null) onDone(); else setNameState(v); };
   const save = async () => { const r = await put<{ presets: Record<string, string[]> }>('presets', { ...presets, [name.trim()]: [...ticked] }); setPresets(r.presets); setName(null); };
   return (
     <form className={`${P}__bar`} onSubmit={(e) => { e.preventDefault(); if (name.trim()) void save(); }}>
       <input className={`fx-input ${P}__narrow`} autoFocus placeholder="menus only" value={name} onChange={(e) => setName(e.target.value)} aria-label="Preset name" />
-      <Button tone="primary" icon="save" disabled={!name.trim()} onClick={() => void save()}>Save</Button>
-      <Button tone="ghost" onClick={() => setName(null)}>Cancel</Button>
-      {Object.keys(presets).length > 0 && <Button tone="ghost" icon="trash" title="Delete a saved preset with this name" disabled={!presets[name.trim()]} onClick={() => { const p = { ...presets }; delete p[name.trim()]; void put<{ presets: Record<string, string[]> }>('presets', p).then((r) => { setPresets(r.presets); setName(null); }); }}>Delete</Button>}
+      <Button size="sm" tone="primary" icon="save" disabled={!name.trim()} onClick={() => void save()}>Save</Button>
+      <Button size="sm" tone="ghost" onClick={() => setName(null)}>Cancel</Button>
+      {Object.keys(presets).length > 0 && <Button size="sm" tone="ghost" icon="trash" title="Delete a saved preset with this name" disabled={!presets[name.trim()]} onClick={() => { const p = { ...presets }; delete p[name.trim()]; void put<{ presets: Record<string, string[]> }>('presets', p).then((r) => { setPresets(r.presets); setName(null); }); }}>Delete</Button>}
     </form>
   );
 }
@@ -289,7 +300,7 @@ function SaveBox({ changed, active, onSaved }: { changed: string[]; active: Snap
       <Icon name="save" size={14} />
       <input className="fx-input" placeholder="Name this look" value={name} onChange={(e) => setName(e.target.value)} aria-label="Name" />
       <input className="fx-input" placeholder="tags (comma)" value={tags} onChange={(e) => setTags(e.target.value)} aria-label="Tags" />
-      <Button tone="primary" icon="save" disabled={!name.trim()} onClick={() => void save()}>Save as asset{changed.length > 1 ? 's' : ''}</Button>
+      <Button size="sm" tone="primary" icon="save" disabled={!name.trim()} onClick={() => void save()}>Save as asset{changed.length > 1 ? 's' : ''}</Button>
       {msg && <span className="fx-small">{msg}</span>}
     </form>
   );
@@ -320,22 +331,24 @@ function SavedThemes({ onApply }: { onApply: (type: string, id: string) => void 
         <strong className="fx-grow">Saved themes</strong>
         <label className="fx-chip"><Icon name="upload" size={12} /> Import asset JSON<input type="file" accept="application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} /></label>
       </div>
-      {items && !items.length && <p className="fx-small fx-muted">Nothing saved yet. Roll something you like, then “Save as asset”. Saved themes are standard asset@1 files every AXF app and port can load.</p>}
+      {items && !items.length && <p className="fx-small fx-muted" title="Saved themes are standard asset@1 files every AXF app and port can load.">Nothing saved yet: roll something you like, then “Save as asset”.</p>}
       <ul className={`${P}__saved`}>
         {(items ?? []).map((a) => (
           <li key={key(a)}>
             {edit === key(a)
-              ? <form className={`${P}__bar fx-grow`} onSubmit={(e) => { e.preventDefault(); void rename(a); }}><input className="fx-input fx-grow" autoFocus value={name} onChange={(e) => setName(e.target.value)} aria-label="New name" /><Button tone="primary" onClick={() => void rename(a)}>Rename</Button></form>
-              : <span className="fx-grow"><strong>{a.name}</strong> <span className="fx-small fx-muted">{a.type} · {a.id}{a.tags?.length ? ` · ${a.tags.join(', ')}` : ''}</span></span>}
-            <Button tone="ghost" icon="check" onClick={() => onApply(a.type, a.id)}>Apply</Button>
-            <Button tone="ghost" icon="edit" onClick={() => { setEdit(key(a)); setName(a.name); }}>Rename</Button>
-            <Button tone="ghost" icon="copy" onClick={() => void dup(a)}>Duplicate</Button>
-            <Button tone="ghost" icon="download" onClick={() => exportOne(a)}>Export</Button>
-            <Button tone="ghost" icon="trash" onClick={() => void remove(a)}>Delete</Button>
+              ? <form className={`${P}__bar fx-grow`} onSubmit={(e) => { e.preventDefault(); void rename(a); }}><input className="fx-input fx-grow" autoFocus value={name} onChange={(e) => setName(e.target.value)} aria-label="New name" /><Button size="sm" tone="primary" onClick={() => void rename(a)}>Rename</Button></form>
+              : <span className={`${P}__savedname`} title={`${a.type} · ${a.id}${a.tags?.length ? ` · ${a.tags.join(', ')}` : ''}`}><strong>{a.name}</strong> <span className="fx-small fx-muted">{a.type}{a.tags?.length ? ` · ${a.tags.join(', ')}` : ''}</span></span>}
+            <Button size="sm" tone="ghost" icon="check" onClick={() => onApply(a.type, a.id)}>Apply</Button>
+            <MoreMenu label={`More for ${a.name}`} items={[
+              { id: 'rename', label: 'Rename', icon: 'edit', onSelect: () => { setEdit(key(a)); setName(a.name); } },
+              { id: 'dup', label: 'Duplicate', icon: 'copy', onSelect: () => void dup(a) },
+              { id: 'export', label: 'Export', icon: 'download', onSelect: () => exportOne(a) },
+              { id: 'delete', label: 'Delete', icon: 'trash', onSelect: () => void remove(a) },
+            ]} />
           </li>
         ))}
       </ul>
-      <p className="fx-small fx-muted">To edit one by hand: apply it, change values in the tree, then save under the same name.</p>
+      {!!items?.length && <p className="fx-small fx-muted">To edit one: apply it, change values in the tree, save under the same name.</p>}
     </section>
   );
 }

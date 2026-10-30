@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, ModelBadge, Segmented, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, ModelBadge, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { registerRowRefTarget, rowHooks, useDataset, useDatasetsRevision } from '@console/axf/libs/datagrid';
@@ -40,7 +40,7 @@ const sum = (asks: Ask[]) => { const t = bb.totals(asks); return [bb.fmtMinutes(
 /** The Builds pages' toolbar button (slot builds.toolbar). */
 export function OpenBreakerButton() {
   const rt = useRuntime();
-  return <Button icon="hammer" onClick={() => rt.navigate(VIEW)} title="Everything Brett asked for, one line each">Build Breaker</Button>;
+  return <Button icon="hammer" className="axp-build-breaker__open" aria-label="Build Breaker" onClick={() => rt.navigate(VIEW)} title="Everything Brett asked for, one line each">Build Breaker</Button>;
 }
 
 export function BuildBreakerPage() {
@@ -117,8 +117,14 @@ export function BuildBreakerPage() {
             <Icon name="search" size={13} />
             <input type="search" placeholder="Search what you asked, in your words…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search asks" />
           </label>
-          <Segmented size="sm" label="Date range" value={range} onChange={setRange} options={bb.RANGES.map((r) => ({ value: r.id, label: r.id === 'all' ? 'All time' : r.label }))} />
-          <Segmented size="sm" label="Model" value={model} onChange={setModel} options={[{ value: 'any', label: 'Any model' }, ...models.map((m) => ({ value: m, label: m }))]} />
+          <label className="fx-search axp-build-breaker__sel" title="Date range">
+            <Icon name="calendar" size={12} />
+            <select aria-label="Date range" value={range} onChange={(e) => setRange(e.target.value)}>{bb.RANGES.map((r) => <option key={r.id} value={r.id}>{r.id === 'all' ? 'All time' : r.label}</option>)}</select>
+          </label>
+          <label className="fx-search axp-build-breaker__sel" title="Model">
+            <Icon name="sparkles" size={12} />
+            <select aria-label="Model" value={model} onChange={(e) => setModel(e.target.value)}><option value="any">Any model</option>{models.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+          </label>
           <label className="fx-search axp-build-breaker__sel" title="Sort">
             <Icon name="list" size={12} />
             <select aria-label="Sort" value={sort} onChange={(e) => setSort(e.target.value)}>{bb.SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select>
@@ -128,8 +134,8 @@ export function BuildBreakerPage() {
             <select aria-label="Group by" value={group} onChange={(e) => setGroup(e.target.value)}>{bb.GROUPS.map((g) => <option key={g.id} value={g.id}>{g.id === 'none' ? 'No grouping' : `By ${g.label.toLowerCase()}`}</option>)}</select>
           </label>
           <span className="axp-build-breaker__fold">
-            <Button size="sm" tone="quiet" icon="chevron-down" onClick={expandAll} title="Open every grid and every row">Expand all</Button>
-            <Button size="sm" tone="quiet" icon="chevron-up" onClick={collapseAll} title="Close every grid and row">Collapse all</Button>
+            <IconButton icon="chevron-down" label="Expand all" title="Open every grid and every row" onClick={expandAll} />
+            <IconButton icon="chevron-up" label="Collapse all" title="Close every grid and row" onClick={collapseAll} />
             {filtering && <IconButton icon="x" label="Clear filters" onClick={resetFilters} />}
           </span>
         </div>
@@ -170,7 +176,7 @@ function Head({ doc }: { doc?: Doc }) {
       <div>
         <p className="fx-eyebrow">Builds{d && !Number.isNaN(d.getTime()) ? ` · gathered ${fmtDay(d)}` : ''}</p>
         <h1>Build Breaker</h1>
-        <p className="fx-muted">Everything you've asked for, in plain English: what it is, when you asked, where it stands and what it cost.</p>
+        <p className="fx-muted axp-build-breaker__lede" title="Everything you've asked for, in plain English: what it is, when you asked, where it stands and what it cost.">Everything you've asked for, one line each.</p>
       </div>
     </header>
   );
