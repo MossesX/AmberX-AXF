@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-30T12:04:43.792Z",
+ "updatedAt": "2026-10-30T12:06:02.017Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6479,16 +6479,21 @@
    "title": "Agent voice plugin: agents speak + per-agent narrator console, live status light, Assistant mic",
    "category": "Voice",
    "detail": "Brett Oct 29 2026: Build a plugin giving agents the ability to speak, with a full powerful per-agent configuration console and every bell and whistle a narrator should have. When a voice agent is selected a live status icon lights up on the main application and the Assistant window. A microphone in the Assistant window: when selected, a tooltip notes the selected agent's name is missing permission — unless the plugin isn't installed, then it says so with links to install, or a hook to install it with the agent. Powerful microphone configuration with integrated features and settings that never conflict with other listening (AmberX notes/dictation and voice/wake). Voices: both device + cloud, with hooks to its settings in multiple places. Profile: Refactor. Model: Opus (web console plugin + AmberX native seam).",
-   "status": "running",
+   "status": "waiting",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "feat/agent-voice",
    "pr": "",
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "updatedAt": "2026-10-30T12:04:43.792Z",
+   "updatedAt": "2026-10-30T12:06:02.017Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "s1-s8 done on feat/agent-voice; PR create held on axHub (approval 45ca37d6). s9 left: CI + merge approval.",
+     "at": "2026-10-30T12:06:01.970Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
