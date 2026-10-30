@@ -28,7 +28,7 @@
 .axp-fable { gap: calc(var(--fx-space) * 0.6) }
 .axp-fable__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-fable__acts { flex-wrap: nowrap; align-items: center; gap: calc(var(--fx-space) * 0.4) }
-.axp-fable__filter { width: auto; flex: none }
+select.fx-input.axp-fable__filter { width: auto; flex: none }
 .axp-fable__hit { gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.45) calc(var(--fx-space) * 0.6) }
 .axp-fable__row:not(.is-open) .axp-fable__title, .axp-fable__row:not(.is-open) .axp-fable__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-fable__body { gap: calc(var(--fx-space) * 0.5) }

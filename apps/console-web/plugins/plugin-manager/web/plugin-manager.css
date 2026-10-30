@@ -305,11 +305,11 @@
 /* Compact studio (Brett, Oct 30 2026, screens-compact): on a narrow screen the filter chips become one dropdown, the
    view switch shows its icons only (names stay as tooltips), and every plugin card is one tight row: monogram · name
    with a one-line description and meta · quick actions. Layout only. */
-.axp-plugin-manager-studio__filtersel { display: none }
+select.fx-input.axp-plugin-manager-studio__filtersel { display: none; width: auto }
 .axp-plugin-manager-studio__bar { gap: calc(var(--fx-space) * 0.5) }
 @media (max-width: 900px) {
   .axp-plugin-manager-studio__filters { display: none }
-  .axp-plugin-manager-studio__filtersel { display: block }
+  select.fx-input.axp-plugin-manager-studio__filtersel { display: block }
   .axp-plugin-manager-studio__rail { gap: calc(var(--fx-space) * 0.5) }
   .axp-plugin-manager-studio { gap: calc(var(--fx-space) * 0.75) }
 }
@@ -325,4 +325,8 @@
   .axp-plugin-manager--studio .axp-plugin-manager-card__desc { -webkit-line-clamp: 1 }
   .axp-plugin-manager--studio .axp-plugin-manager-card__meta { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
   .axp-plugin-manager--studio .axp-plugin-manager-card__actions { margin-top: 0; flex: none }
+}
+@media (max-width: 640px) {
+  .axp-plugin-manager--studio .axp-plugin-manager-card__actions .axp-plugin-manager-iconbtns { gap: 0 }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__cover { align-self: flex-start }
 }

@@ -5,7 +5,7 @@
 .axp-changes-grid__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-changes-grid__bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
 .axp-changes-grid__search { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
-.axp-changes-grid__sort { flex: none; width: auto }
+select.fx-input.axp-changes-grid__sort { flex: none; width: auto }
 .axp-changes-grid__name { min-width: 0 }
 .axp-changes-grid__name > strong { display: block; overflow-wrap: anywhere }
 .axp-changes-grid__meta { display: none }
