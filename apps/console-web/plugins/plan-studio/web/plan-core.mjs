@@ -55,6 +55,8 @@ export function slug(s, max = 48) {
   const x = str(s).toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, max).replace(/-+$/, '');
   return x || 'plan';
 }
+/** A short stable id from content (migrated comments/attachments get the same id on every read). */
+export function hid(s, n = 6) { let h = 5381; for (const ch of str(s, 20000)) h = ((h * 33) ^ ch.charCodeAt(0)) >>> 0; return h.toString(36).padStart(n, '0').slice(-n); }
 /** A short random id part (ids must survive two sessions adding plans with the same title at once). */
 export function rid(n = 6) { let s = ''; while (s.length < n) s += Math.random().toString(36).slice(2); return s.slice(0, n); }
 
@@ -214,7 +216,7 @@ function normFeature(f) {
 }
 function normAttachment(a) {
   const o = obj(a);
-  return { ...o, id: str(o.id, 40) || `a-${rid()}`, kind: ATTACH_KINDS.includes(o.kind) ? o.kind : 'file', name: str(o.name, 200), url: str(o.url, 2000), size: Number(o.size) || 0, transcript: str(o.transcript, 20000) };
+  return { ...o, id: str(o.id, 40) || `a-${hid(`${o.name}${o.url}`)}`, kind: ATTACH_KINDS.includes(o.kind) ? o.kind : 'file', name: str(o.name, 200), url: str(o.url, 2000), size: Number(o.size) || 0, transcript: str(o.transcript, 20000) };
 }
 
 /** Which old shape is this? plan@1 | plan@0 | pending@1 | loose */
@@ -280,7 +282,7 @@ export function normalize(raw, opts = {}) {
     features: arr(o.features).map(normFeature).filter((f) => f.entry && (f.feature || f.title)),
     attachments: arr(o.attachments).map(normAttachment),
     body: str(o.body, 200000),
-    comments: arr(o.comments).map((c) => ({ ...obj(c), id: str(obj(c).id, 40) || `c-${rid()}`, by: str(obj(c).by, 80), at: str(obj(c).at, 40), text: str(obj(c).text, 4000) })).filter((c) => c.text),
+    comments: arr(o.comments).map((c) => ({ ...obj(c), id: str(obj(c).id, 40) || `c-${hid(`${obj(c).at}${obj(c).text}`)}`, by: str(obj(c).by, 80), at: str(obj(c).at, 40), text: str(obj(c).text, 4000) })).filter((c) => c.text),
     build: o.build && typeof o.build === 'object' ? { ...o.build, profile: str(o.build.profile, 40), id: str(o.build.id, 80) } : null,
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,

@@ -38,7 +38,7 @@ export const FEATURE_STATES: FeatureState[]; export const PRICE_PER_MIN: Record<
 export const LISTS: Record<ListId, { label: string; item: 'text' | 'check' }>; export const LIST_IDS: ListId[];
 export const BUILT_IN_TEMPLATES: Template[]; export const SORTS: { id: string; label: string }[]; export const GROUPS: { id: string; label: string }[];
 export const CATALOG_KINDS: { id: string; label: string; icon: string }[];
-export function slug(s: string, max?: number): string; export function rid(n?: number): string;
+export function slug(s: string, max?: number): string; export function rid(n?: number): string; export function hid(s: string, n?: number): string;
 export function normPath(p: string | string[]): string; export function pathParts(p: string): string[]; export function parentPath(p: string): string; export function leafName(p: string): string;
 export function withParents(paths: string[]): string[];
 export function categoryTree(paths: string[], plans?: Plan[]): CatNode[];
