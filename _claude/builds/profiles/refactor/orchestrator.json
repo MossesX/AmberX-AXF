@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-30T11:40:27.322Z",
+ "updatedAt": "2026-10-30T11:42:13.158Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6486,7 +6486,7 @@
    "branch": "feat/agent-voice",
    "pr": "",
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "updatedAt": "2026-10-30T11:40:27.322Z",
+   "updatedAt": "2026-10-30T11:42:13.158Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -6525,8 +6525,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T11:42:13.158Z",
      "note": ""
     },
     {
