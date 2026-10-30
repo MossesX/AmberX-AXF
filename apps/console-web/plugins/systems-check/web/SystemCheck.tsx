@@ -16,7 +16,9 @@ import './systems-check.css';
 type Status = 'ok' | 'warn' | 'error' | 'info' | 'unknown';
 interface Field { key: string; label: string; secret: boolean; placeholder: string; help: string; set: boolean; value: string }
 type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string; action?: string } | null;
-export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean }
+export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean;
+  /** health@1 (Oct 30 2026): what a failure breaks, since when (ms) it's been in this state, who registered it, expiry (ms) */
+  breaks?: string; since?: number; health?: boolean; owner?: string; holding?: boolean; expiring?: boolean; expiresAt?: number }
 interface Service { id: string; label: string; icon: string; description: string }
 interface RoutineInfo { source: string; generatedAt: number; checks: number; stale: boolean }
 interface Report { at: number; services: Service[]; checks: Check[]; hostScript: string; counts: Record<Status, number>; routine?: RoutineInfo | null; aiOn?: boolean; aiNote?: string | null }
@@ -347,12 +349,14 @@ export function SystemBanner() {
   }
   if (!s.report || list.length === 0) return null;
   const errors = list.filter((c) => c.status === 'error').length;
+  const warns = list.filter((c) => c.status === 'warn').length;
+  const broken = list.filter((c) => c.status === 'error').map((c) => c.title);
   return (
     <div className={`axp-systems-check-banner ${errors ? 'is-error' : 'is-warn'}`} role="alert">
       <div className="axp-systems-check-banner__row">
         <BannerIcon icon="alert" working={s.loading || s.fixing || Object.values(s.run).includes('working')} size={20} />
         <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
-          <span className="axp-systems-check-banner__words">{openCount ? <>{openCount} setup issue{openCount === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured</> : <>All fixed</>}</span>
+          <span className="axp-systems-check-banner__words">{!openCount ? <>All fixed</> : errors ? <>{errors} broken: {broken.slice(0, 3).join(', ')}{broken.length > 3 ? '…' : ''}{warns ? ` · ${warns} to check` : ''}</> : <>{warns} to check: the console isn't fully set up</>}</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
@@ -371,6 +375,8 @@ export function SystemBanner() {
               <li key={c.id} className="axp-systems-check-banner__li">
                 <button type="button" data-fx-row className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
                   <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
+                  {c.health && c.status !== 'ok' && <span className="axp-systems-check-banner__plain fx-small">{s.runMsg[c.id] || c.summary}</span>}
+                  <WhyLine c={c} />
                 </button>
                 {s.run[c.id] === 'working' || s.run[c.id] === 'waiting' || (s.fixedUntil[c.id] && !isIssue(c))
                   ? <RunBadge r={s.fixedUntil[c.id] && !isIssue(c) ? 'done' : s.run[c.id]} />
@@ -396,6 +402,23 @@ export function useSystemCheckOnLoad() {
 
 /* ---------------- bits ---------------- */
 
+/** "since 14:02" today, "since Oct 29" before, plus how long ago: what Brett reads on a phone. */
+export function sinceText(ms?: number, now: number = Date.now()): string {
+  if (!ms) return '';
+  const mins = Math.max(0, Math.round((now - ms) / 60_000));
+  const ago = mins < 1 ? 'just now' : mins < 60 ? `${mins} min` : mins < 48 * 60 ? `${Math.round(mins / 60)} h` : `${Math.round(mins / 1440)} days`;
+  const d = new Date(ms);
+  const at = d.toDateString() === new Date(now).toDateString() ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  return `since ${at} (${ago})`;
+}
+/** One line under a broken item: what it breaks and since when. */
+export function WhyLine({ c }: { c: Check }) {
+  if (c.status !== 'error' && c.status !== 'warn') return null;
+  const since = sinceText(c.since);
+  if (!c.breaks && !since) return null;
+  return <span className="axp-systems-check-why fx-small">{c.breaks && <><strong>Breaks:</strong> {c.breaks} </>}{since && <span className="fx-muted">{since}</span>}</span>;
+}
+
 const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'Warning', error: 'Blocking', info: 'Info', unknown: 'Not checked' };
 export function StatusDot({ s }: { s: Status }) { return <span className={`axp-systems-check-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
 function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{STATUS_LABEL[s]}</Chip>; }
@@ -417,20 +440,23 @@ export function FixPanel({ c }: { c: Check }) {
   const [vals, setVals] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
+  const [anyway, setAnyway] = useState(false);
   const copy = (t: string) => navigator.clipboard?.writeText(t).then(() => rt.toast('Command copied', 'success'), () => rt.toast('Clipboard blocked', 'warning'));
-  const save = async () => {
+  // Test before save (Oct 30 2026): the server tries the key against its service first and refuses one the service
+  // turns down (nothing is saved). When the service didn't answer at all (409), "Save anyway" saves it untested.
+  const save = async (test = true) => {
     if (c.fix?.type !== 'secrets') return;
-    setBusy(true); setMsg('');
+    setBusy(true); setMsg(''); setAnyway(false);
     try {
       for (const f of c.fix.fields) {
         const v = (vals[f.key] ?? '').trim();
         if (!v) continue;
-        const r = await call<{ checks: Check[] }>('secret', { method: 'POST', body: JSON.stringify({ key: f.key, value: v }) });
+        const r = await call<{ checks: Check[] }>('secret', { method: 'POST', body: JSON.stringify({ key: f.key, value: v, test }) });
         r.checks.forEach(replace);
       }
       setVals({}); const now = snap.report?.checks.find((x) => x.id === c.id);
-      setMsg(now?.status === 'ok' ? 'Saved and verified.' : `Saved. ${now?.summary ?? ''}`);
-    } catch (e) { setMsg((e as Error).message); }
+      setMsg(now?.status === 'ok' ? 'Tested and saved: it works.' : `Saved. ${now?.summary ?? ''}`);
+    } catch (e) { const m = (e as Error).message; setMsg(m); setAnyway(/couldn.t reach|no answer/i.test(m)); }
     setBusy(false);
   };
   const clear = async (key: string) => { setBusy(true); try { (await call<{ checks: Check[] }>('secret/clear', { method: 'POST', body: JSON.stringify({ key }) })).checks.forEach(replace); setMsg('Removed.'); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
@@ -451,8 +477,9 @@ export function FixPanel({ c }: { c: Check }) {
               <span className="fx-small fx-muted">{x.help}</span>
             </label>
           ))}
-          <div className="fx-row fx-row--wrap"><Button tone="primary" icon="save" disabled={busy || !Object.values(vals).some((v) => v.trim())} onClick={() => void save()}>{busy ? 'Testing…' : 'Save & test'}</Button></div>
-          <p className="fx-small fx-muted" style={{ margin: 0 }}>Saved on the console server only (owner-only file), never sent back to the browser or committed.</p>
+          <div className="fx-row fx-row--wrap"><Button tone="primary" icon="save" disabled={busy || !Object.values(vals).some((v) => v.trim())} onClick={() => void save()}>{busy ? 'Testing…' : 'Test & save'}</Button>
+            {anyway && <Button icon="save" disabled={busy} onClick={() => void save(false)}>Save anyway</Button>}</div>
+          <p className="fx-small fx-muted" style={{ margin: 0 }}>Tested against the service first; a key it refuses isn't saved. Saved on the console server only (owner-only file), never sent back to the browser or committed.</p>
         </form>
       )}
       {f?.type === 'host' && (
@@ -475,6 +502,7 @@ function CheckBody({ c, inPrompt }: { c: Check; inPrompt?: boolean }) {
   return (
     <div className="axp-systems-check-body">
       {!inPrompt && <p style={{ margin: 0 }}>{c.summary}</p>}
+      {!inPrompt && <WhyLine c={c} />}
       {!inPrompt && s.runMsg[c.id] && <p className="fx-small axp-systems-check-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
       {c.details.length > 0 && <ul className="axp-systems-check-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
       {c.status !== 'ok' && c.fix && <><h4 className="axp-systems-check-h">Fix it here</h4><FixPanel c={c} /></>}

@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Live key + health checks in the banners (Angel `live-key-checks`): every key tested against its service every 15 min, red banner item with what broke / what it breaks / since when + Fix, health@1 registry, stuck builds, veto, CI on main, containers, disk, one push per red item to AmberX (Opus) | review (push pending) | `claude/live-key-checks` | — | Committed locally on the VPS worktree; push + PR blocked (this checkout has no git push credentials and the VPS `gh` token is invalid — the new check reports both). Then Brett's merge. Follow-up s7: push banner's token check onto health@1 after `claude/pr-only-merge` | 2026-10-30 |
 | Compact the whole app (Angel `app-compact`): framework-wide tighter page heads, buttons, chips, cards, tables; count strips; Plugin Manager one column on phones (claude.ai, Opus) | pr-open | `claude/angel-app-compact` | — | Merge; follow-up pass for per-screen button walls | 2026-10-30 |
 | Settings redesign (Angel `settings-compact`): tap-in section list, one-line level bar, flat hairline groups, dropdown design package; + Angel builds `plugin-floatable` (queued, Fable first) (claude.ai, Opus) | done (merged Oct 30) | `claude/angel-settings` (also brings the Angel profile from `angel/home-cards-queue`) | [#175](https://github.com/MossesX/AmberX-AXF/pull/175) | Merge, then next Angel build | 2026-10-30 |
 | Build Breaker console plugin: every ask Brett made (390, build-asks@1), one line each, per-app + per-plugin grids + timeline, permanent Build context menu (Opus) | review (pr-open) | `claude/build-breaker` | [#174](https://github.com/MossesX/AmberX-AXF/pull/174) | Waiting on CI + Brett's merge; then sessions keep the asks current with the plugin's `asks.mjs add / set-status` | 2026-10-29 |
@@ -88,6 +89,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Live key + health checks in the banners (Angel `live-key-checks`)
+- **Asked (Brett, voice, Oct 30 2026):** the console's GITHUB_TOKEN went dead (401) and nothing told him. Test every key and connection live (every 15 min, console start, Check now), red banner item with what broke, what it breaks, since when and a Fix (test before save / the page for a new token), amber a week before expiry, a health@1 registry any plugin can add to, stuck builds / veto denied-expired / CI on main / restarting containers / disk > 85%, one push per new red item to AmberX, shared rule. Don't edit push-banner (claude/pr-only-merge owns it).
+- **Model:** Opus. **Branch:** `claude/live-key-checks` (worktree `/root/axf-builds/claude-live-key-checks`). Orchestrator: Angel `live-key-checks` (s1–s6 done, s7 follow-up). Change log `chg-20261030-7599c63c2c`.
+- **Done:** `apps/console-web/plugins/systems-check/server/{probes,health,healthchecks}.py`, wired in `__init__.py` + `checks.py`; Keys banner red + systems banner "N broken" with Breaks/since lines; test-before-save; README, STATUS, shared rule, doc `_claude/memory/docs/live-key-checks/README.md` with screenshots. Checks: self-test 184 ✓, tsc ✓, vite build ✓, check-theme ✓, check-controls ✓, plugin-lifecycle ✓, activity/plugin-manager/alerts/plugin-catalog tests ✓.
+- **Left:** push the branch and open the PR (not merged). The VPS checkout can't push (no credentials; `gh` token invalid). From any machine with access: `git push -u origin claude/live-key-checks`, then `gh pr create --base main --head claude/live-key-checks`. Then s7 after `claude/pr-only-merge` merges.
+- **First message:** `Carry on thread "Live key + health checks" in AmberX-AXF: push branch claude/live-key-checks and open its PR (read _claude/THREADS.md → To carry on).`
 
 ### Build Breaker plugin
 

@@ -45,7 +45,7 @@ const KEY_RECHECK_EVERY_MS = 5 * 60_000;
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.systems-check',
   label: 'Systems check',
-  version: '0.2.0',
+  version: '0.3.0',
   appMenu,
   provides: ['axf.systems-check'],
   register(rt) {

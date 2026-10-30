@@ -23,6 +23,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 os.environ["AXF_SYSTEMS_CHECK_DIR"] = tempfile.mkdtemp(prefix="axf-sc-test-")
+os.environ["AXF_SYSCHECK_NO_SCHEDULE"] = "1"  # no background health runs during the test
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 import console_context as cx  # noqa: E402
 import credentials  # noqa: E402
@@ -40,6 +41,8 @@ mod = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = mod
 spec.loader.exec_module(mod)
 routine = sys.modules["axf_console_plugins.systems_check_test.routine"]
+for _k in ("git-push", "ci-main"):  # health checks that would reach the network: faked here, tested below with fake services
+    mod.REGISTRY._checks[_k]["run"] = lambda: {"status": "ok", "summary": "fake"}  # noqa: SLF001
 
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -555,6 +558,170 @@ check(mod.vps_command({"id": "x", "fix": {"type": "action"}}) is None, "no comma
 r = c.post("/p/fix-help-vinny/host-mosh")
 check(r.status_code == 409 and "Vinny" in r.json()["detail"], "Vinny not ready: says so")
 mod._vinny_svc = _old_v
+
+# ---------------------------------------------------------------- live key + health checks (health@1, Oct 30 2026)
+probes = sys.modules["axf_console_plugins.systems_check_test.probes"]
+health = sys.modules["axf_console_plugins.systems_check_test.health"]
+hc = sys.modules["axf_console_plugins.systems_check_test.healthchecks"]
+NOW = 1_800_000_000.0
+SECRET = "ghp_" + "S" * 36
+
+
+def gh_fake(user=200, scopes="repo, workflow", expiry="", repo=200, push=True, pulls=200, actions=200):
+    calls = []
+    def f(url, headers=None, method="GET", body=None, **kw):
+        calls.append(url)
+        if user == 0:
+            return 0, {}, "timed out"
+        if url.endswith("/user"):
+            h = {} if scopes is None else {"x-oauth-scopes": scopes}
+            if expiry:
+                h["github-authentication-token-expiration"] = expiry
+            return user, h, json.dumps({"login": "MossesX"}) if user == 200 else ""
+        if "/pulls" in url:
+            return pulls, {}, "[]"
+        if "/actions/runs" in url:
+            return actions, {}, "{}"
+        return repo, {}, json.dumps({"permissions": {"push": push}})
+    f.calls = calls
+    return f
+
+
+R = "MossesX/AmberX-AXF"
+g = probes.github(SECRET, R, gh_fake(), now=NOW)
+check(g["status"] == "ok" and "MossesX" in g["summary"] and SECRET not in json.dumps(g), "GitHub ok: classic token with repo + workflow, no token in the text")
+g = probes.github(SECRET, R, gh_fake(user=401), now=NOW)
+check(g["status"] == "error" and "401" in g["summary"] and g.get("dead"), "GitHub 401: red, says expired or revoked")
+g = probes.github(SECRET, R, gh_fake(scopes="repo"), now=NOW)
+check(g["status"] == "error" and "workflow" in g["summary"] and g.get("missing_scope"), "GitHub classic token missing a scope: red, names it")
+g = probes.github(SECRET, R, gh_fake(scopes=None, actions=403), now=NOW)
+check(g["status"] == "error" and "Actions" in g["summary"], "fine-grained token missing Actions: red, names it")
+g = probes.github(SECRET, R, gh_fake(scopes=None, push=False), now=NOW)
+check(g["status"] == "error" and "Contents" in g["summary"], "fine-grained token without write: red")
+g = probes.github(SECRET, R, gh_fake(scopes=None, repo=404), now=NOW)
+check(g["status"] == "error" and "can't see" in g["summary"], "token can't see the repo: red")
+soon = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(NOW + 3 * 86400 + 60))
+g = probes.github(SECRET, R, gh_fake(expiry=soon), now=NOW)
+check(g["status"] == "warn" and "3 days" in g["summary"] and g.get("expiring"), "expiring within a week: amber, says when")
+late = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(NOW + 30 * 86400))
+check(probes.github(SECRET, R, gh_fake(expiry=late), now=NOW)["status"] == "ok", "expiring in a month: ok")
+past = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(NOW - 60))
+check(probes.github(SECRET, R, gh_fake(expiry=past), now=NOW)["status"] == "error", "expired: red")
+check(probes.parse_expiry("2026-11-05 18:00:00 -0500") == probes.parse_expiry("2026-11-05 23:00:00 UTC"), "expiry header with an offset")
+g = probes.github(SECRET, R, gh_fake(user=0), now=NOW)
+check(g["status"] == "error" and g.get("unreachable"), "GitHub unreachable: red, marked unreachable")
+check(probes.github("", R, gh_fake())["status"] == "warn", "no token: amber (the Keys banner asks for it)")
+
+def simple(code):
+    return lambda url, headers=None, method="GET", body=None, **kw: (code, {}, "" if code else "refused")
+for name, fn in (("Anthropic key", lambda c: probes.anthropic_key("sk-ant-x", simple(c))), ("Claude sign-in", lambda c: probes.claude_code_token("t", simple(c))),
+                 ("OpenAI", lambda c: probes.openai_key("k", simple(c))), ("ElevenLabs", lambda c: probes.elevenlabs_key("k", simple(c))),
+                 ("ntfy", lambda c: probes.ntfy("https://ntfy.sh", "axf", "tk", simple(c)))):
+    check(fn(200)["status"] == "ok" and fn(401)["status"] == "error" and fn(0).get("unreachable"), f"{name}: ok / 401 red / unreachable")
+check(probes.ntfy("https://ntfy.sh", "", "", simple(200))["status"] == "info", "ntfy without a topic: info, not red")
+
+ci = lambda runs: probes.github_ci_main(SECRET, R, lambda *a, **k: (200, {}, json.dumps({"workflow_runs": runs})))
+check(ci([{"path": "a.yml", "name": "Android", "conclusion": "success"}, {"path": "a.yml", "name": "Android", "conclusion": "failure"}])["status"] == "ok", "CI on main: newest run per workflow counts")
+r = ci([{"path": "d.yml", "name": "Deploy", "conclusion": "failure", "html_url": "https://github.com/x/actions/runs/1"}])
+check(r["status"] == "error" and "Deploy" in r["summary"] and r["link"].startswith("https://"), "CI failing on main: red with the run link")
+
+class Usage:
+    def __init__(self, used): self.total, self.free = 100e9, (1 - used) * 100e9
+check(probes.disk("/", usage=lambda p: Usage(0.9))["status"] == "error" and probes.disk("/", usage=lambda p: Usage(0.5))["status"] == "ok", "disk over 85%: red")
+
+class Run:
+    def __init__(self, rc, err=""): self.returncode, self.stderr, self.stdout = rc, err, ""
+check(probes.git_push("/x", run=lambda *a, **k: Run(0))["status"] == "ok", "git push dry run ok")
+gp = probes.git_push("/x", run=lambda *a, **k: Run(128, "remote: Invalid username or password.\nfatal: Authentication failed for 'https://tok@github.com/x'"))
+check(gp["status"] == "error" and gp.get("dead") and "tok@" not in json.dumps(gp), "git push refused: red, credentials stripped from the output")
+
+iso = lambda ms: time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(ms / 1000)) + "Z"
+nm = NOW * 1000
+b = hc.builds_stuck([{"id": "a", "title": "Build A", "status": "running", "lastSeenAt": iso(nm - 45 * 60_000)},
+                     {"id": "b", "title": "Build B", "status": "running", "lastSeenAt": iso(nm - 5 * 60_000)},
+                     {"id": "c", "title": "Headless C", "status": "failed", "startedAt": iso(nm - 3600_000), "finishedAt": iso(nm - 3600_000 + 20_000), "result": {"summary": "go-pass ended"}}], nm)
+check(b["status"] == "error" and b["stuck"] == 1 and b["quick"] == 1 and "go-pass" in " ".join(b["details"]), "stuck builds: no heartbeat 30 min + launch that exited at once")
+check(hc.builds_stuck([{"id": "b", "status": "running", "lastSeenAt": iso(nm - 60_000)}], nm)["status"] == "ok", "a live build isn't stuck")
+v = hc.veto_calls([{"id": "host-mosh", "state": "failed", "message": "Denied on the hub", "updatedAt": NOW - 60},
+                   {"id": "x", "state": "failed", "message": "exit 1", "updatedAt": NOW - 60}], nm)
+check(v["status"] == "warn" and len(v["details"]) == 1, "veto calls denied or expired: amber, one line each")
+ct = hc.containers([{"name": "amberx-app-backup-1", "state": "restarting", "status": "Restarting (1) 5 seconds ago"}, {"name": "axf-console", "state": "running", "status": "Up 2 hours"}])
+check(ct["status"] == "error" and "amberx-app-backup-1" in ct["summary"], "container in a restart loop: red, named")
+
+# the monitor: registry, since, hold amber, one push per red episode, resolve on green
+clock = [NOW]
+pushed, resolved = [], []
+reg = health.Registry()
+state = {"status": "ok", "summary": "fine"}
+reg.register({"id": "demo", "label": "Demo key", "run": lambda: dict(state), "breaks": "the demo stops"}, "some-plugin")
+reg.register({"id": "soft", "label": "Soft", "run": lambda: {"status": "error", "summary": "x"}, "severity": "warn"}, "some-plugin")
+reg.register({"id": "absent", "label": "Absent", "run": lambda: {"status": "error", "summary": "x"}, "when": lambda: False}, "some-plugin")
+reg.register({"id": "boom", "label": "Boom", "run": lambda: 1 / 0}, "some-plugin")
+mon = health.Monitor(reg, mod.SVC.core.item, lambda: Path(os.environ["AXF_SYSTEMS_CHECK_DIR"]) / "health-test.json",
+                     raise_alert=pushed.append, resolve=resolved.extend, clock=lambda: clock[0])
+items = {i["id"]: i for i in mon.run(force=True)}
+check(set(items) == {"demo", "soft", "boom"}, "registered checks run; one whose `when` is false shows nothing")
+check(items["soft"]["status"] == "warn", "severity warn caps a failure at amber")
+check(items["boom"]["status"] == "unknown" and "itself failed" in items["boom"]["summary"], "a check that throws is reported, never fatal")
+check(items["demo"]["breaks"] == "the demo stops" and items["demo"]["owner"] == "some-plugin" and items["demo"]["health"], "item carries breaks + owner")
+state.update(status="error", summary="Demo refused (401).", unreachable=False)
+clock[0] += 60
+it = mon.annotate(mon.run(force=True))
+d = next(i for i in it if i["id"] == "demo")
+check(d["status"] == "error" and d["since"] == int(clock[0] * 1000), "red with since = when it broke")
+check(len([p for p in pushed if p["key"] == "system:demo"]) == 1 and "Breaks: the demo stops" in pushed[-1]["body"], "new red item pushed once, with what it breaks")
+for _ in range(3):
+    clock[0] += 900
+    mon.run(force=True)
+check(len([p for p in pushed if p["key"] == "system:demo"]) == 1, "no repeat pushes while it stays red")
+check(next(i for i in mon.items() if i["id"] == "demo")["status"] == "error", "still red")
+state.update(status="ok", summary="fine")
+clock[0] += 900
+mon.run(force=True)
+check("system:demo" in resolved, "green again by itself: the phone alert resolves")
+state.update(status="error", summary="Couldn't reach demo.", unreachable=True)
+clock[0] += 900
+d = next(i for i in mon.run(force=True) if i["id"] == "demo")
+check(d["status"] == "warn" and d.get("holding") and len([p for p in pushed if p["key"] == "system:demo"]) == 1, "unreachable: held amber first, not pushed")
+clock[0] += health.HOLD_S + 1
+d = next(i for i in mon.run(force=True) if i["id"] == "demo")
+check(d["status"] == "error" and len([p for p in pushed if p["key"] == "system:demo"]) == 2, "still unreachable after the hold: red, pushed (a new episode)")
+mon2 = health.Monitor(reg, mod.SVC.core.item, lambda: Path(os.environ["AXF_SYSTEMS_CHECK_DIR"]) / "health-test.json", raise_alert=pushed.append, clock=lambda: clock[0])
+clock[0] += 900
+mon2.run(force=True)
+check(len([p for p in pushed if p["key"] == "system:demo"]) == 2, "a console restart doesn't push the same red item again (state file)")
+reg.unregister_owner("some-plugin")
+check(not mon.items(), "a plugin's checks leave with it")
+check(SECRET not in Path(os.environ["AXF_SYSTEMS_CHECK_DIR"], "health-test.json").read_text(), "no secret in the state file")
+
+# the console's own registry: service, endpoints, built-ins
+svc = plugin_services.get("axf.health@1")
+check(svc is mod.REGISTRY and {"git-push", "ci-main", "builds-stuck", "disk", "push-path", "veto-calls"} <= set(svc.checks()), "axf.health@1 provided with the built-in checks")
+for k in ("git-push", "ci-main", "disk", "containers", "builds-stuck"):
+    mod.REGISTRY.checks()[k]["run"] = (lambda: {"status": "ok", "summary": "fake"})
+mod.REGISTRY._checks["disk"]["run"] = lambda: {"status": "error", "summary": "Disk is 91% full."}  # noqa: SLF001
+mod.MONITOR.last_run = 0
+h = c.post("/p/health/run").json()
+disk = next(i for i in h["items"] if i["id"] == "disk")
+check(disk["status"] == "error" and disk["breaks"] and disk["since"] and disk["fix"]["type"] == "host", "Check now runs health; red disk item has breaks, since and a fix")
+rep = c.get("/p/check?force=1").json()
+check(any(x["id"] == "disk" and x["status"] == "error" for x in rep["checks"]), "health items are in the banner report")
+check(all("since" in x for x in rep["checks"] if x["status"] in ("error", "warn")), "every banner issue says since when")
+gt = next(x for x in rep["checks"] if x["id"] == "github-token")
+check(gt.get("breaks", "").startswith("The push banner"), "GitHub token item says what it breaks")
+check(c.get("/p/health").json()["intervalSeconds"] == 900, "schedule: every 15 minutes")
+
+# test before save
+old_tc = mod.test_candidate
+mod.test_candidate = lambda key, value: {"status": "error", "summary": "GitHub refused the token (401): it's expired or revoked.", "dead": True}
+r = c.post("/p/secret", json={"key": "GITHUB_TOKEN", "value": SECRET})
+check(r.status_code == 400 and "Not saved" in r.json()["detail"] and SECRET not in r.text and not os.environ.get("GITHUB_TOKEN"), "a refused token is not saved")
+mod.test_candidate = lambda key, value: {"status": "error", "summary": "Couldn't reach GitHub.", "unreachable": True}
+r = c.post("/p/secret", json={"key": "GITHUB_TOKEN", "value": SECRET})
+check(r.status_code == 409, "service unreachable: 409, the browser offers Save anyway")
+r = c.post("/p/secret/test", json={"key": "GITHUB_TOKEN", "value": SECRET})
+check(r.status_code == 200 and r.json()["tested"] and r.json()["unreachable"] and not os.environ.get("GITHUB_TOKEN"), "secret/test tests without saving")
+mod.test_candidate = old_tc
 
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")

@@ -19,6 +19,29 @@ Credentials typed in the dialog go to the console core's credential store (`serv
 `.axf-console/secrets.env`, 0600, loaded into the console's environment at start), never back to a browser. They
 stay when this plugin is uninstalled.
 
+## Live key + health checks (health@1, Oct 30 2026)
+Brett: the console's `GITHUB_TOKEN` went dead (401) and nothing told him — "I need to see that kind of shit." Every key
+and connection is now tested against its service with one cheap read-only call (`server/probes.py`), and anything
+broken is a **red banner item** saying what broke, what it **breaks** and **since** when, with a Fix:
+- **Keys** (Keys banner): GitHub (`GET /user`; classic scopes `repo` + `workflow`, or for a fine-grained token one read
+  each of the repo with push, its pull requests and its Actions; the `github-authentication-token-expiration` header
+  turns it **amber a week ahead** and red once expired), Anthropic key, Claude sign-in (Claude Code token), Hostinger,
+  Coolify, axHub MCP token, OpenAI / ElevenLabs when set. Fix = paste a new one (**tested before it's saved**: a key the
+  service refuses isn't saved; "Save anyway" only when the service didn't answer) or **New key** (GitHub's token page
+  pre-filled with the permissions).
+- **System** (systems check banner): ntfy topic, push path to AmberX, git push credentials on the VPS checkout
+  (`git push --dry-run`), CI on main, stuck builds (change-log entries with no heartbeat for 30 min, launches that exited
+  within 2 min), hub calls denied or expired, containers in a restart loop, disk over 85%.
+- **Schedule:** the monitor (`server/health.py`) runs every 15 minutes, once when the console starts, and on Check now;
+  key checks also run live on each banner load. Answers are cached; "couldn't reach it" stays amber for 10 minutes
+  before it turns red. Items go green by themselves.
+- **Push:** each item that turns red is raised once as a console alert (`system:<id>`), which the AmberX app shows as a
+  phone notification; it resolves when green. One push per red episode (state in `health-state.json`).
+- **Registry:** any plugin adds a check through `plugin_services.get("axf.health@1").register({id, label, run, severity,
+  service, breaks, fix, links, instructions, interval}, owner=<folder>)`; `run()` returns `{status, summary, details?,
+  unreachable?, expiresAt?, link?}`. `GET health` lists them; `POST health/run` = Check now. Follow-up (after
+  `claude/pr-only-merge`): the push banner's token check moves onto health@1.
+
 ## What's new banner
 Changes since this browser last opened the console: commits on the console's clone and plugins added, updated or
 removed. **Got it** marks them seen (kept in this browser's localStorage). Can be switched off in the settings tab.
@@ -36,12 +59,12 @@ greyed out, with what's missing and a link to install or set it up (found by cap
   shows when AI is off.
 
 ## Routes (`/api/plugins/systems-check/`, console token)
-`GET check[?force=1]`, `POST check/{id}`, `POST secret`, `POST secret/clear`, `POST fix/{id}`, `GET ai`,
+`GET check[?force=1]`, `POST check/{id}`, `POST secret` (tested first), `POST secret/test`, `POST secret/clear`, `GET health`, `POST health/run`, `POST fix/{id}`, `GET ai`,
 `PUT settings`, `GET|DELETE routine`, `POST routine/run`, `GET whats-new[?summary=1]` (changes since the shared seen point, `canClear`), `POST whats-new/seen {head}` (admins only: console token or hub admin; clears it for everyone).
-Provides `axf.syscheck@1` (`run_all`) for the console's alerts.
+Provides `axf.syscheck@1` (`run_all`) for the console's alerts and `axf.health@1` (the health check registry).
 
 ## Lifecycle (plugin-lifecycle@1)
-Data: `.axf-console/plugins/systems-check/` (`settings.json`, `routine.json`, `whatsnew/`, `whatsnew-seen.json`).
+Data: `.axf-console/plugins/systems-check/` (`settings.json`, `health-state.json`, `routine.json`, `whatsnew/`, `whatsnew-seen.json`).
 ```bash
 node apps/console-web/plugins/systems-check/install.mjs
 node apps/console-web/plugins/systems-check/uninstall.mjs --all
