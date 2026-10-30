@@ -1,0 +1,12 @@
+{
+ "$axf": "plan-fixtures@1",
+ "about": "Inputs for web/plan-core.mjs normalize() (migrations); expected outputs are in fixtures/plan.json (node test.mjs --write regenerates them on purpose). now = 2026-10-30T12:00:00.000Z.",
+ "now": "2026-10-30T12:00:00.000Z",
+ "cases": [
+  { "name": "plan@1 minimal", "input": { "$axf": "plan@1", "id": "minimal", "title": "Minimal" } },
+  { "name": "plan@1 full, unknown fields kept", "input": { "$axf": "plan@1", "id": "full", "title": "Full plan", "status": "ready", "priority": "p1", "category": "Product / Installer", "tags": ["Installer", "installer", "sales"], "steps": [{ "id": "s1", "text": "Contract", "model": "fable", "estimate": "25 min" }, { "id": "s2", "text": "Build", "model": "Opus", "minutes": 30, "dependsOn": ["s1"], "done": true, "doneAt": "2026-10-29T10:00:00Z" }], "risks": ["Card fees"], "acceptance": [{ "text": "Installs on a fresh VPS", "done": false }], "links": ["https://example.com", { "kind": "pr", "ref": "159" }], "futureField": { "kept": true } } },
+  { "name": "plan@0 draft migrates", "input": { "$axf": "plan@0", "id": "old", "name": "Old draft", "description": "From before plan@1", "state": "pending", "tasks": [{ "title": "One", "est": "1 h", "model": "sonnet" }], "notes": ["first", "second"], "area": "Framework > Docs" } },
+  { "name": "pending@1 item migrates", "input": { "$axf": "pending@1", "id": "docs-engine", "title": "Docs engine", "detail": "The whole thing", "model": "fable", "subPrompts": [{ "text": "s1", "estimate": "30 min" }, { "text": "s2", "estimate": "20 min", "done": true }], "notes": [{ "text": "parked for Fable", "at": "2026-10-20T00:00:00Z" }] } },
+  { "name": "loose note", "input": { "id": "loose", "name": "Loose idea", "description": "Just a thought", "tasks": ["Think", "Write"] } }
+ ]
+}
