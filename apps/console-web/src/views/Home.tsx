@@ -1,5 +1,6 @@
 import { FRAMEWORK_VERSION } from '../axf/core';
-import { Button, Chip, Container, Icon, useAxfState, useRuntime } from '../axf/react';
+import { useEffect } from 'react';
+import { Button, Chip, Container, Icon, IconButton, useAxfState, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import { EmptyState } from '../emptyState';
 import type { Status } from '../api';
@@ -8,8 +9,19 @@ import { BuildSummaryCard } from './BuildManager';
 
 const TABS: [string, string][] = [['foundations', 'Foundations'], ['kernel', 'Kernel'], ['console', 'Console'], ['modules', 'Modules'], ['demos', 'Demos']];
 
+/** Home's ⋯ menu (context-menu target): the less-used page actions. */
+const HOME_MORE = 'cx-home.more';
+
 export function Home() {
   const rt = useRuntime();
+  useEffect(() => {
+    rt.contextExtras.set(HOME_MORE, () => ([
+      { id: 'home-terminal', label: 'Output terminal', icon: 'terminal', action: 'terminal.open' },
+      { id: 'home-export', label: 'Export plan', icon: 'copy', action: 'console.exportPlan' },
+      { id: 'home-token', label: 'Console token', icon: 'lock', action: 'dialog:token' },
+    ]));
+    return () => { rt.contextExtras.delete(HOME_MORE); };
+  }, [rt]);
   const s = useStore();
   useAxfState();
   // the branding package names the console (GizmoX); the manifest name is the fallback
@@ -20,15 +32,13 @@ export function Home() {
         <div>
           <p className="fx-eyebrow">Development console · AmberX AXF {FRAMEWORK_VERSION} · tracker {s.tracker.generatedAt.slice(0, 10) || '—'}</p>
           <h1>{brand}</h1>
-          <p className="fx-muted">Track what the framework has, assemble and install libraries, port UI kits and manage boilerplates — on every port.</p>
+          <p className="fx-muted">What the framework has, its libraries, UI kits and boilerplates, on every port.</p>
         </div>
         <div className="fx-row fx-row--wrap cx-home__actions">
           <Chip tone={s.backend ? 'success' : 'warning'}>{s.backend ? 'Engine online' : 'Engine offline'}</Chip>
           <Button icon="folder" onClick={() => rt.openDialog('project')}>{s.project || 'Open project'}</Button>
-          <Button icon="terminal" onClick={() => rt.dispatch('terminal.open')}>Terminal</Button>
-          <Button icon="copy" onClick={() => rt.dispatch('console.exportPlan')}>Export plan</Button>
-          <Button icon="lock" onClick={() => rt.openDialog('token')}>Token</Button>
           <Button tone="primary" icon="layers" onClick={() => rt.navigate('tracker')}>Tracker</Button>
+          <IconButton icon="more" label="More: terminal, export plan, token" onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(r.left, r.bottom, HOME_MORE); }} />
         </div>
       </header>
 
