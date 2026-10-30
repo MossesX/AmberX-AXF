@@ -9,12 +9,12 @@
 
 /* Sections: one line that scrolls sideways and snaps (attached things never overlap). */
 .axp-ui-review__sections { display: flex; gap: calc(var(--fx-space) / 2); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-bottom: calc(var(--fx-space) / 4); }
-.axp-ui-review__sections > * { flex: none; scroll-snap-align: start; gap: calc(var(--fx-space) / 2); }
+.axp-ui-review__sections > .fx-chip { flex: none; scroll-snap-align: start; gap: calc(var(--fx-space) / 2); white-space: nowrap; }
 .axp-ui-review__n { font-variant-numeric: tabular-nums; opacity: var(--fx-opacity-muted); }
 
 .axp-ui-review__bar { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); align-items: center; }
-.axp-ui-review__search { flex: 1 1 100%; min-width: 0; }
-.axp-ui-review__sel { flex: 1 1 calc(var(--fx-font-size) * 8); min-width: 0; width: auto; }
+.axp-ui-review__bar > .axp-ui-review__search { flex: 1 1 100%; min-width: 0; width: auto; }
+.axp-ui-review__bar > .axp-ui-review__sel { flex: 1 1 calc(var(--fx-font-size) * 7); min-width: 0; width: auto; }
 .axp-ui-review__countline { display: flex; align-items: center; justify-content: space-between; }
 
 /* Rows (grid, sub-grids, tree leaves). */
@@ -102,8 +102,8 @@
 .axp-ui-review__bulkc { flex: 1 1 calc(var(--fx-font-size) * 10); min-width: 0; }
 
 @media (min-width: 761px) {
-  .axp-ui-review__search { flex: 1 1 calc(var(--fx-font-size) * 16); }
-  .axp-ui-review__sel { flex: none; }
+  .axp-ui-review__bar > .axp-ui-review__search { flex: 1 1 calc(var(--fx-font-size) * 16); }
+  .axp-ui-review__bar > .axp-ui-review__sel { flex: 0 1 auto; }
   .axp-ui-review__detail { grid-template-columns: minmax(0, 1fr) calc(var(--fx-font-size) * 22); }
   .axp-ui-review__detail .axp-ui-review__facts { border-inline-start: var(--fx-border-w) solid var(--fx-border); }
   .axp-ui-review__browser { grid-template-columns: calc(var(--fx-font-size) * 14) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }

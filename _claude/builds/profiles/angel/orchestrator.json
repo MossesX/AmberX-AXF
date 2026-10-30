@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-30T17:59:21.358Z",
+ "updatedAt": "2026-10-30T18:25:02.744Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -706,16 +706,21 @@
    "title": "UI Review: one plugin where Brett approves every UI a build makes (Design packs renamed and widened)",
    "category": "Console",
    "detail": "Brett, Oct 30 2026 (voice, driving): rename the Design packs console plugin to UI Review (folder ui-review) and make it one all-in-one UI approval plugin. Every UI a build makes is submitted there for his approval, separated by kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Items: title, kind, app, build/branch/PR, desktop + phone shots, notes, status (waiting / approved / changes asked / rejected), his comment, history. Views: tree, collapsible grid, grid with sub-grids, gallery, compare; multi-select + bulk decisions in every view. Builds submit through review.mjs, the plugin API and rebuild-shots --submit; capability ui-review@1. Design-pack picks (MAX 3) migrate. Profile: Angel. Web only.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review",
    "pr": "",
    "createdAt": "2026-10-30T17:59:21.357Z",
-   "updatedAt": "2026-10-30T17:59:21.358Z",
+   "updatedAt": "2026-10-30T18:25:02.743Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "s1–s8 built on claude/ui-review (Opus, Oct 30). s9 waits for the push-banner build: its batch merge should call ui-review@1 holds(branch, pr). push-banner deliberately not edited here.",
+     "at": "2026-10-30T18:25:02.743Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -731,8 +736,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.027Z",
      "note": ""
     },
     {
@@ -748,8 +753,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.177Z",
      "note": ""
     },
     {
@@ -765,8 +770,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.481Z",
      "note": ""
     },
     {
@@ -782,8 +787,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.789Z",
      "note": ""
     },
     {
@@ -799,8 +804,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.169Z",
      "note": ""
     },
     {
@@ -816,8 +821,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.363Z",
      "note": ""
     },
     {
@@ -833,8 +838,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.529Z",
      "note": ""
     },
     {
@@ -850,8 +855,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.650Z",
      "note": ""
     },
     {
