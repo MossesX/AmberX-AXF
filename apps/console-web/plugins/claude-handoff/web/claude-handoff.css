@@ -164,3 +164,15 @@
 .axp-claude-handoff-banner__main > * { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis }
 .axp-claude-handoff-banner__main > .axp-claude-handoff-banner__lead { flex: 1 1 0 }
 .axp-claude-handoff-banner__acts { flex-wrap: nowrap; flex: none }
+
+/* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, ⋯ menu, long explanations folded away. */
+.axp-claude-handoff__head { align-items: center }
+.axp-claude-handoff__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
+.axp-claude-handoff__acts { flex-wrap: nowrap }
+.axp-claude-handoff__morebtn { display: inline-flex; flex: none }
+.axp-claude-handoff__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
+.axp-claude-handoff__about > summary { cursor: pointer }
+.axp-claude-handoff__about[open] > summary { margin-bottom: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
+.axp-claude-handoff__row > .fx-field { flex: 1; min-width: 0; margin: 0 }
+.fx-pagehead > div:first-child:has(> .axp-claude-handoff__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }

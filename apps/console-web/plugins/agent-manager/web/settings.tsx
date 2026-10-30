@@ -18,13 +18,13 @@ function useSettings() {
 export function WizardsPanel() {
   const rt = useRuntime();
   return (
-    <div className="axp-agent-manager__grid">
+    <div className="axp-agent-manager__wizlist">
       {Object.entries(WIZARDS).map(([k, w]) => (
-        <button key={k} type="button" data-fx-row className="axp-agent-manager__tile" onClick={() => rt.openDialog('agent-manager.wizard', { kind: k })}>
-          <span className="fx-card axp-agent-manager__tile-card"><strong><Icon name={w.icon} size={14} /> {w.title}</strong><span className="fx-small fx-muted">{w.description}</span></span>
+        <button key={k} type="button" data-fx-row className="axp-agent-manager__wizrow" title={w.description} onClick={() => rt.openDialog('agent-manager.wizard', { kind: k })}>
+          <Icon name={w.icon} size={14} /><span><strong>{w.title}</strong><span className="fx-small fx-muted">{w.description}</span></span>
         </button>
       ))}
-      <button type="button" data-fx-row className="axp-agent-manager__tile" onClick={() => rt.navigate('agent-manager')}><span className="fx-card axp-agent-manager__tile-card"><strong><Icon name="layers" size={14} /> Open the agent manager</strong><span className="fx-small fx-muted">Agents, skills, tools, memory, workflows, runs.</span></span></button>
+      <button type="button" data-fx-row className="axp-agent-manager__wizrow" onClick={() => rt.navigate('agent-manager')}><Icon name="layers" size={14} /><span><strong>Open the agent manager</strong><span className="fx-small fx-muted">Agents, skills, tools, memory, workflows, runs.</span></span></button>
     </div>
   );
 }
@@ -132,7 +132,7 @@ export function SafetyPanel() {
   };
   return (
     <div className="fx-stack">
-      <p className="fx-small fx-muted">Dangerous tools touch the VPS containers, write files or run commands. Only the agents ticked here get them, whatever their persona or skills say. Every change they propose still needs your approval on a card, with a snapshot first.</p>
+      <p className="fx-small fx-muted" title="Dangerous tools touch the VPS containers, write files or run commands. Only the agents ticked here get them, whatever their persona or skills say. Every change they propose still needs your approval on a card, with a snapshot first.">Only ticked agents get dangerous tools (containers, writes, commands); every change still needs your approval.</p>
       <div className="fx-row fx-row--wrap">
         <Chip tone={status?.services?.containers ? 'success' : undefined}>{status?.services?.containers ? 'Container access on' : 'Container access not installed'}</Chip>
         <Chip tone={status?.services?.snapshots ? 'success' : undefined}>{status?.services?.snapshots ? 'Snapshot Manager on' : 'Snapshot Manager not installed (read only)'}</Chip>
@@ -150,7 +150,7 @@ export function SafetyPanel() {
         {!cache.agents.length && <p className="fx-small fx-muted">No agents yet.</p>}
       </div>
       <p className="fx-small fx-muted">Dangerous tools: {dangerous.length ? dangerous.map((t) => t.name).join(', ') : 'none yet'}.</p>
-      <h4>Build agents</h4>
+      <strong>Build agents</strong>
       <p className="fx-small fx-muted">Build agents work in the console's AmberX-AXF checkout from the AI assistant (admins only, Claude Code provider): Edit, Write and Bash there without asking, plus git push and open PR (the GitHub token stays in the console). Merging is still yours, through a merge approval. They must be ticked above too.</p>
       <div className="fx-stack">
         {cache.agents.map((a) => (

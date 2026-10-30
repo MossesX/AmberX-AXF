@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './project-wizard.css';
@@ -81,16 +81,14 @@ function ProjectWizardView() {
   const { st, err, reload } = useStatus();
   const [wizardKey, setWizardKey] = useState(0);
   return (
-    <div className="fx-stack fx-stack--lg">
+    <div className="fx-stack">
       <header className="fx-pagehead">
         <div>
-          <p className="fx-eyebrow">Plugin · ported from xGallery</p>
+          <p className="fx-eyebrow">Projects</p>
           <h1>New project</h1>
-          <p className="fx-muted">Take a repo or a folder (or start a new AXF app), give it a home on GitHub, the VPS or a local git folder, and get it ready as a Claude project with its instructions and context files.</p>
+          <p className={`fx-muted ${P}__lede`} title="Take a repo or a folder (or start a new AXF app), give it a home on GitHub, the VPS or a local git folder, and get it ready as a Claude project with its instructions and context files.">A repo, folder or new AXF app, homed and ready as a Claude project.</p>
         </div>
-        <div className="fx-row fx-row--wrap">
-          <Button icon="refresh" onClick={() => { void reload(); setWizardKey((k) => k + 1); }}>Start over</Button>
-        </div>
+        <IconButton icon="refresh" label="Start over" onClick={() => { void reload(); setWizardKey((k) => k + 1); }} />
       </header>
       {err && <p className={`${P}__error`}>{err}</p>}
       {st && <Readiness st={st} />}
@@ -170,6 +168,7 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
   if (result?.ok) return <Done st={st} result={result} />;
   return (
     <div className="fx-stack">
+      <span className={`${P}__stepnow fx-small fx-muted`}>Step {step + 1} of {STEPS.length} · <strong>{STEPS[step]}</strong></span>
       <ol className={`${P}__steps`}>
         {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} disabled={!!busy || (i > 0 && !info)} onClick={() => (i === 4 ? void review() : setStep(i))}>{i + 1}. {s}</button></li>)}
       </ol>
@@ -208,7 +207,7 @@ function SourceStep({ st, plan, setSource, info }: { st: Status; plan: Plan; set
       <legend>Where does the project come from?</legend>
       <div className={`${P}__cards`} role="radiogroup" aria-label="Source">
         {SOURCES.map(([k, label, help, icon]) => (
-          <button key={k} type="button" role="radio" aria-checked={s.kind === k} data-fx-row disabled={off(k)} className={`${P}__card ${s.kind === k ? 'is-selected' : ''}`} onClick={() => setSource({ kind: k })}>
+          <button key={k} type="button" role="radio" aria-checked={s.kind === k} data-fx-row disabled={off(k)} title={off(k) ? 'not available here' : help} className={`${P}__card ${s.kind === k ? 'is-selected' : ''}`} onClick={() => setSource({ kind: k })}>
             <Icon name={icon} /><strong>{label}</strong><span>{off(k) ? 'not available here' : help}</span>
           </button>
         ))}

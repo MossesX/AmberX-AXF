@@ -131,7 +131,7 @@ function WherePanel() {
   const issues = s.loaded ? problems(s.settings, s.lists) : [];
   return (
     <div className="fx-stack">
-      <p style={{ margin: 0 }}>Voice notes keep their settings and lists on axHub's data server (lib-hubstore), not on this device, so every device and the listener see the same setup.</p>
+      <p className="fx-small fx-muted axp-voice-notes-lede" style={{ margin: 0 }} title="Voice notes keep their settings and lists on axHub's data server (lib-hubstore), not on this device, so every device and the listener see the same setup.">Kept on axHub, so every device and the listener share one setup.</p>
       <div className="fx-row fx-row--wrap">
         <Chip tone={s.state.status === 'ready' ? 'success' : s.state.status === 'loading' || s.state.status === 'idle' ? undefined : 'danger'}>{s.state.status === 'ready' ? 'axHub connected' : s.state.status}</Chip>
         <span className="fx-small fx-muted">{s.lists.length} list{s.lists.length === 1 ? '' : 's'}</span>
@@ -390,13 +390,13 @@ function NoteCard({ n, lists }: { n: SavedNote; lists: NoteList[] }) {
   useEffect(() => { if (!sure) return; const t = window.setTimeout(() => setSure(false), 4000); return () => window.clearTimeout(t); }, [sure]);
   const answers = Object.entries(n.answers);
   return (
-    <article className="fx-card axp-voice-notes-note">
+    <article className="axp-voice-notes-note">
       <div className="fx-row fx-row--wrap axp-voice-notes-notehead">
         <Chip tone="accent">{noteWhere(n, lists)}</Chip>
         <span className="fx-small fx-muted">{when(n.at)}{n.device ? ` · ${n.device}` : ''}</span>
         <span className="axp-voice-notes-grow" />
         <IconButton icon="copy" label="Copy the note" onClick={() => void navigator.clipboard?.writeText(n.text)} />
-        <Button size="sm" tone={sure ? 'danger' : 'quiet'} icon="trash" onClick={() => (sure ? void store.removeNote(n.id) : setSure(true))}>{sure ? 'Tap again to delete' : 'Delete'}</Button>
+        {sure ? <Button size="sm" tone="danger" icon="trash" onClick={() => void store.removeNote(n.id)}>Tap again to delete</Button> : <IconButton icon="trash" label="Delete the note" onClick={() => setSure(true)} />}
       </div>
       <p className="axp-voice-notes-text">{n.text}</p>
       {answers.length > 0 && (
@@ -422,17 +422,17 @@ function NotesPage() {
     ...(counts.none ? [{ value: 'none', label: `No list / list removed (${counts.none})` }] : []),
   ];
   return (
-    <div className="fx-stack fx-stack--lg">
+    <div className="fx-stack">
       {!rt.embedded?.page && (
         <header className="fx-pagehead">
           <div>
-            <p className="fx-eyebrow">Voice notes · {snap.notes.length} saved{snap.notesAt ? ` · fetched ${new Date(snap.notesAt).toLocaleTimeString()}` : ''}</p>
+            <p className="fx-eyebrow">Voice notes</p>
             <h1>Voice notes</h1>
-            <p className="fx-muted">The notes Voice Vault heard and saved to axHub, newest first. It fetches them again every 30 seconds while this page is open.</p>
+            <p className="fx-muted axp-voice-notes-lede" title="The notes Voice Vault heard and saved to axHub, newest first. It fetches them again every 30 seconds while this page is open.">{snap.notes.length} saved{snap.notesAt ? ` · fetched ${new Date(snap.notesAt).toLocaleTimeString()}` : ''} · from Voice Vault, newest first</p>
           </div>
-          <div className="fx-row fx-row--wrap">
-            <Button icon="refresh" disabled={snap.notesBusy} onClick={() => void store.loadNotes()}>{snap.notesBusy ? 'Fetching…' : 'Fetch now'}</Button>
-            <Button icon="settings" onClick={() => rt.dispatch('settings.open:voice-notes')}>Set up</Button>
+          <div className="fx-row axp-voice-notes-acts">
+            <IconButton icon="refresh" label={snap.notesBusy ? 'Fetching…' : 'Fetch now'} disabled={snap.notesBusy} onClick={() => void store.loadNotes()} />
+            <IconButton icon="settings" label="Set up" onClick={() => rt.dispatch('settings.open:voice-notes')} />
           </div>
         </header>
       )}

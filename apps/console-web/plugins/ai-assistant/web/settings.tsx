@@ -9,6 +9,7 @@ import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
   type AgentRef, type Config, type ContractInfo, type ConvSettings, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
 } from './api';
+import { MoreMenu } from './more';
 
 function useStore<T>(s: { get: () => T | undefined; subscribe: (f: () => void) => () => void; reload: () => Promise<T | undefined>; error: () => string }) {
   useEffect(() => { if (s.get() === undefined) void s.reload(); }, []);
@@ -201,11 +202,13 @@ export function SetupWizard() {
   };
   return (
     <div className="axp-ai-assistant__wizard fx-stack">
+      <span className="axp-ai-assistant__stepnow fx-small fx-muted">Step {step + 1} of {STEPS.length} · <strong>{STEPS[step]}</strong></span>
       <ol className="axp-ai-assistant__steps">{STEPS.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
 
       {step === 0 && (
         <div className="fx-stack">
-          <p>This wizard connects the assistant to one or more AI providers, picks defaults, and personalises it. You can re-run it any time; nothing is lost.</p>
+          <p className="fx-small">Connects one or more AI providers, picks defaults and personalises the assistant. Re-run any time; nothing is lost.</p>
+          <details className="axp-ai-assistant__fold"><summary className="fx-small">What you get</summary>
           <ul className="fx-small">
             <li>Streamed chat in a dialog (any view) or full page, with conversations, search, pin, archive, fork, export.</li>
             <li>Many providers at once, with a fallback chain if one fails, and side-by-side model comparison.</li>
@@ -213,6 +216,7 @@ export function SetupWizard() {
             <li>With the agent manager installed: chat as any agent, with its persistent memory.</li>
             <li>Replies are live sessions on the host: close the browser and come back on any device.</li>
           </ul>
+          </details>
           <p className="fx-small fx-muted">Providers come from the framework's shared registry (<code className="fx-mono">framework/schemas/ai-providers.json</code>, {cat.providers.length} kinds); every AXF app's assistant shares it.</p>
           {cfg.setupComplete && <Chip tone="success">Already set up — {ready.length} provider{ready.length === 1 ? '' : 's'} ready</Chip>}
         </div>
@@ -346,8 +350,8 @@ export function ProvidersPanel() {
       {cfg.profiles.map((p) => edit?.profile?.id === p.id ? (
         <ProfileForm key={p.id} kind={edit.kind} profile={p} onSaved={() => setEdit(null)} onCancel={() => setEdit(null)} />
       ) : (
-        <div key={p.id} className="axp-ai-assistant__card fx-stack">
-          <div className="fx-row fx-row--wrap">
+        <div key={p.id} className="axp-ai-assistant__flatrow">
+          <div className="axp-ai-assistant__strip">
             <strong className="fx-grow">{p.label}</strong>
             {cfg.defaultProfile === p.id && <Chip tone="accent">default</Chip>}
             {cfg.fallback.includes(p.id) && <Chip>fallback {cfg.fallback.indexOf(p.id) + 1}</Chip>}
@@ -357,13 +361,15 @@ export function ProvidersPanel() {
           <span className="fx-small fx-muted fx-mono">{p.kind} · {p.defaultModel || 'no model'}{p.baseUrl ? ` · ${p.baseUrl}` : ''}</span>
           {p.lastTest && <span className="fx-small fx-muted">Last test {fmtTime(p.lastTest.at)}: {p.lastTest.ok ? `ok (${p.lastTest.ms} ms)` : p.lastTest.error}</span>}
           {note[p.id] && <span className="fx-small">{note[p.id]}</span>}
-          <div className="fx-row fx-row--wrap">
+          <div className="fx-row">
             <Button icon="zap" disabled={busy === p.id} onClick={() => void test(p)}>{busy === p.id ? 'Testing…' : 'Test'}</Button>
             <Button icon="edit" onClick={() => { const k = cat.providers.find((x) => x.kind === p.kind) ?? cat.providers.find((x) => x.kind === 'custom'); if (k) setEdit({ kind: k, profile: p }); }}>Edit</Button>
-            {cfg.defaultProfile !== p.id && <Button icon="star" onClick={() => void saveConfig({ defaultProfile: p.id })}>Make default</Button>}
-            <Button icon={cfg.fallback.includes(p.id) ? 'minus' : 'plus'} onClick={() => void saveConfig({ fallback: cfg.fallback.includes(p.id) ? cfg.fallback.filter((x) => x !== p.id) : [...cfg.fallback, p.id] })}>{cfg.fallback.includes(p.id) ? 'Remove fallback' : 'Use as fallback'}</Button>
-            <Button icon={p.enabled ? 'pause' : 'play'} onClick={() => void post('profiles', { id: p.id, kind: p.kind, enabled: !p.enabled }).then(refreshAll)}>{p.enabled ? 'Disable' : 'Enable'}</Button>
-            <Button icon="trash" onClick={() => { if (confirm(`Remove ${p.label}? Its stored key is deleted.`)) void del(`profiles/${p.id}`).then(refreshAll); }}>Remove</Button>
+            <MoreMenu label={`More for ${p.label}`} items={[
+              cfg.defaultProfile !== p.id && { label: 'Make default', icon: 'star', onPick: () => void saveConfig({ defaultProfile: p.id }) },
+              { label: cfg.fallback.includes(p.id) ? 'Remove fallback' : 'Use as fallback', icon: cfg.fallback.includes(p.id) ? 'minus' : 'plus', onPick: () => void saveConfig({ fallback: cfg.fallback.includes(p.id) ? cfg.fallback.filter((x) => x !== p.id) : [...cfg.fallback, p.id] }) },
+              { label: p.enabled ? 'Disable' : 'Enable', icon: p.enabled ? 'pause' : 'play', onPick: () => void post('profiles', { id: p.id, kind: p.kind, enabled: !p.enabled }).then(refreshAll) },
+              { label: 'Remove', icon: 'trash', onPick: () => { if (confirm(`Remove ${p.label}? Its stored key is deleted.`)) void del(`profiles/${p.id}`).then(refreshAll); } },
+            ]} />
           </div>
         </div>
       ))}

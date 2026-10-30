@@ -39,3 +39,22 @@
 .axp-session-checkin__scroll { overflow-x: auto }
 .axp-session-checkin__num { width: calc(var(--fx-space) * 10) }
 @media (max-width: 560px) { .axp-session-checkin__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)) } .axp-session-checkin__when { width: calc(var(--fx-space) * 7) } }
+
+/* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, icon actions, chip strip + filter dropdown, tight rows. */
+.axp-session-checkin__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
+.axp-session-checkin__acts { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.25); flex: none }
+.axp-session-checkin__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5) }
+.axp-session-checkin__strip { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.25); min-width: 0 }
+.axp-session-checkin__filter { width: auto; max-width: 100% }
+.axp-session-checkin__list .axp-session-checkin__row { padding: calc(var(--fx-space) * 0.5) var(--fx-space) }
+@media (max-width: 640px) {
+  .axp-session-checkin__filter { flex: 1 }
+  .axp-session-checkin__effort { display: none }
+}
+.axp-session-checkin__stepnow { display: none }
+.axp-session-checkin__device { border-width: var(--fx-border-w) 0 0; border-radius: 0; padding: var(--fx-space) 0 0 }
+@media (max-width: 640px) {
+  .axp-session-checkin__stepnow { display: block }
+  .axp-session-checkin__steps { display: none }
+}
+.fx-pagehead > div:first-child:has(> .axp-session-checkin__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }

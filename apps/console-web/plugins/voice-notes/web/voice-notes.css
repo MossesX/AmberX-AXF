@@ -16,3 +16,9 @@
 .axp-voice-notes-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .axp-voice-notes-answers { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(10em, 1fr)); gap: calc(var(--fx-space) * 0.25) var(--fx-space); }
 .axp-voice-notes-answers dd { margin: 0; overflow-wrap: anywhere; }
+/* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, icon actions, flat note rows. */
+.axp-voice-notes-lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; }
+.axp-voice-notes-acts { flex-wrap: nowrap; gap: calc(var(--fx-space) * 0.25); }
+.axp-voice-notes-note { gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.75) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-voice-notes-editor { padding: var(--fx-space) 0; border-width: var(--fx-border-w) 0; border-radius: 0; }
+.fx-pagehead > div:first-child:has(> .axp-voice-notes-lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }

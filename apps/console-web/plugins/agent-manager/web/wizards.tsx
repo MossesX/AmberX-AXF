@@ -29,6 +29,7 @@ function Shell({ steps, step, setStep, children, canNext = true, onFinish, finis
   const last = step === steps.length - 1;
   return (
     <div className="axp-agent-manager__wizard fx-stack">
+      <span className="axp-agent-manager__stepnow fx-small fx-muted">Step {step + 1} of {steps.length} · <strong>{steps[step]}</strong></span>
       <ol className="axp-agent-manager__steps">{steps.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => i < step && setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
       <div className="axp-agent-manager__wizard-body">{children}</div>
       {error && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{error}</div>}
@@ -92,8 +93,8 @@ function NewSkillWizard({ done }: { done: (msg: string) => void }) {
   return (
     <Shell steps={['Template', 'Skill', 'Give to agents', 'Review']} step={step} setStep={setStep} canNext={step === 0 || !!s.name?.trim()} onFinish={() => void finish()} busy={busy} error={err}>
       {step === 0 && (
-        <div className="axp-agent-manager__grid">
-          {Object.entries(SKILL_TEMPLATES).map(([k, t]) => <button key={k} type="button" data-fx-row className="axp-agent-manager__tile" onClick={() => { setS({ ...t }); setStep(1); }}><span className="fx-card axp-agent-manager__tile-card"><strong>{t.name ?? 'Blank skill'}</strong><span className="fx-small fx-muted">{t.description ?? 'Start from scratch'}</span></span></button>)}
+        <div className="axp-agent-manager__wizlist">
+          {Object.entries(SKILL_TEMPLATES).map(([k, t]) => <button key={k} type="button" data-fx-row className="axp-agent-manager__wizrow" title={t.description ?? 'Start from scratch'} onClick={() => { setS({ ...t }); setStep(1); }}><Icon name="star" size={14} /><span><strong>{t.name ?? 'Blank skill'}</strong><span className="fx-small fx-muted">{t.description ?? 'Start from scratch'}</span></span></button>)}
         </div>
       )}
       {step === 1 && <SkillForm v={s} set={setS} tools={cache.tools} />}
