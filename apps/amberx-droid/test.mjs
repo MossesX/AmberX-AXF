@@ -949,7 +949,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 /* ---------------------------------------------------------------- veto@1 held calls (lib-hub veto.ts + plugins/approvals) */
 {
   const vt = await import('../../framework/libs/hub/veto.ts');
-  const ap = await import('./src/plugins/approvals/web/core.ts');
+  const al = await import('../console-web/plugins/approvals-banner/web/alarm.ts');
   const ID1 = '11111111-2222-3333-4444-555555555555';
   const ID2 = '66666666-7777-8888-9999-000000000000';
   const NOW = Date.parse('2026-10-29T02:00:00.000Z');
@@ -1012,11 +1012,50 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     eq(sent[1], [`${HUB}/auth/api/approvals/${ID1}/deny`, 'POST', 'tok12345'], 'deny: POST with the session CSRF');
     eq((await vt.denyVeto(HUB, 'nope', { fetch: fake })).ok, false, 'deny: only request ids');
   }
-  const cfg = ap.alertConfig((k) => ({ [ap.K.sound]: 'ringtone', [ap.K.vibration]: 'none', [ap.K.warningSound]: 'bogus' })[k]);
-  eq([cfg.held.sound, cfg.held.vibrate, cfg.warning.sound, cfg.running.sound], ['ringtone', false, 'alarm', 'default'], 'approvals: alert config with defaults');
-  eq(ap.patternOf('pulse'), [0, 150, 100, 150, 100, 150], 'approvals: vibration pattern');
-  eq(ap.notificationText({ title: 'Restart web', command: 'docker restart web', tool: 'vps.run' }, 'held', 180).title, 'Runs in 3:00: Restart web', 'approvals: timer started text');
-  eq(ap.tonesOf('none').length, 0, 'approvals: silent = no tones');
+  // decision #104: Approve now + Shelve next to Deny; a hub before #104 = Deny only
+  eq(c.actions, ['deny'], 'veto: no actions from the hub = Deny only');
+  {
+    const shelvedBody = JSON.stringify({ held: [held({ veto: { state: 'shelved', runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 80, countdownSeconds: 90, actions: ['approve-now', 'deny'] } })] });
+    const sc = vt.interpretVeto(HUB, shelvedBody, NOW)[0];
+    eq([sc.shelved, sc.actions], [true, ['deny', 'approve-now']], 'veto: shelved call with its actions');
+    eq(vt.secondsLeftNow(sc, NOW + 600_000), 80, 'veto: a shelved countdown is frozen');
+    eq(vt.notifyPlan([], [sc], NOW).send.length, 0, 'notify: a shelved call gets no notices');
+    eq(vt.vetoActionUrl(HUB, ID1, 'approve-now'), `${HUB}/auth/api/approvals/${ID1}/approve-now`, 'veto: approve-now url rebuilt');
+    eq(vt.vetoActionUrl(HUB, ID1, 'bogus'), null, 'veto: unknown action refused');
+    eq(vt.vetoFromPush(HUB, { type: 'veto', phase: 'cleared', id: ID1, runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 0, actions: [] }, NOW)?.phase, 'cleared', 'push: cleared phase read');
+    const sent = [];
+    const fake = async (u, i) => { sent.push([u, i?.method ?? 'GET']); return u.endsWith('/session') ? new Response('{"csrf":"tok12345"}') : new Response('{"ok":true,"state":"approved-now"}', { status: 200 }); };
+    const r = await vt.vetoAction(HUB, ID1, 'approve-now', { fetch: fake });
+    ok(r.ok && r.state === 'approved-now' && sent[1][0].endsWith('/approve-now') && sent[1][1] === 'POST', 'veto: approve-now posts with the session CSRF');
+    // the host seam: the phone's act first; nothing posted from a page off the hub
+    let asked = null;
+    vt.setVetoHost({ act: async (id, a) => { asked = [id, a]; return { ok: true, state: 'shelved' }; } });
+    const hr = await vt.runVetoAction(HUB, { id: ID1, url: `${HUB}/auth/admin/approvals/${ID1}` }, 'shelve');
+    eq([hr.ok, asked], [true, [ID1, 'shelve']], 'veto: actions go through the app host');
+    vt.setVetoHost({});
+  }
+  // the veto banner plugin's alarm (console plugins/approvals-banner/web/alarm.ts)
+  {
+    const K = al.ALARM_KEYS;
+    const cfg = al.alarmConfig((k) => ({ [K.volume]: 250, [K.tone]: 'custom', [K.vibration]: 'sos', [K.repeat]: '3', [K.startAt]: '10' })[k]);
+    eq([cfg.volume, cfg.tone, cfg.vibrationPattern.length > 0, cfg.repeat, cfg.startAt], [100, 'alarm', true, 3, '10'], 'alarm: clamped, custom without a file falls back');
+    eq(al.alarmDue(cfg, { secondsLeft: 11 }), false, 'alarm: not yet at 11 s');
+    eq(al.alarmDue(cfg, { secondsLeft: 10 }), true, 'alarm: due at 10 s');
+    eq(al.alarmDue(cfg, { secondsLeft: 5, shelved: true }), false, 'alarm: never for a shelved call');
+    eq(al.alarmDue(cfg, { secondsLeft: 5, approvedNow: true }), false, 'alarm: never for an approved call');
+    eq(al.alarmDue({ ...cfg, enabled: false }, { secondsLeft: 0 }), false, 'alarm: off');
+    eq(al.alarmDue({ ...cfg, startAt: 'start' }, { secondsLeft: 89 }), true, 'alarm: from the start');
+    const r = { ringSeconds: 10, repeat: 2, repeatGapSeconds: 5 };
+    eq([al.alarmLength(r), al.ringingAt(r, 3), al.ringingAt(r, 12), al.ringingAt(r, 16), al.ringingAt(r, 25)], [25, true, false, true, false], 'alarm: rings, gap, repeat, end');
+    const v = { volume: 50, louder: true, louderSeconds: 10, ringSeconds: 30, repeatGapSeconds: 0 };
+    ok(Math.abs(al.volumeAt(v, 0) - 0.1) < 1e-9 && Math.abs(al.volumeAt(v, 10) - 0.5) < 1e-9 && al.volumeAt({ ...v, louder: false }, 0) === 0.5, 'alarm: gets louder over time');
+    const nat = al.nativeAlarmConfig(al.alarmConfig(() => undefined));
+    eq([nat.startSeconds, nat.throughSilent, nat.customSound], [30, true, ''], 'alarm: phone config');
+    eq(al.nativeAlarmConfig({ ...cfg, startAt: 'start' }).startSeconds, -1, 'alarm: from the start = -1 for the phone');
+    const snd = 'data:audio/mpeg;base64,SUQzBAAAAA==';
+    eq(al.alarmConfig((k) => ({ [K.tone]: 'custom', [K.customSound]: snd })[k]).tone, 'custom', 'alarm: own sound file');
+    eq(al.alarmConfig((k) => ({ [K.tone]: 'custom', [K.customSound]: 'javascript:alert(1)' })[k]).tone, 'alarm', 'alarm: a non-audio value is refused');
+  }
   {
     const store = await import('./src/plugins/approvals/web/store.ts');
     store.resetVeto();

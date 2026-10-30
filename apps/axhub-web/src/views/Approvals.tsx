@@ -137,7 +137,7 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
     catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); onDone(); }
     finally { setBusy(false); }
   };
-  // veto@1: a held command never offers Approve (or any other action): only its countdown and Deny.
+  // veto@1: a held command shows only its countdown and Deny / Approve / Shelve (decision 104), never the usual actions.
   const held = isHeld(item);
   const quick = held ? [] : item.actions.filter((a) => (a === 'approve' ? item.whole : true));
   // Collapsed: what is being approved. Opened: what it does, then the code in its own collapsible section.

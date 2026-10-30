@@ -102,7 +102,7 @@ public class AmberxNativePlugin extends Plugin {
         if (wake != null) p.notifyListeners("wake", new JSObject().put("phrase", wake).put("text", intent.getStringExtra(MainActivity.EXTRA_WAKE_TEXT)), true);
     }
 
-    /** A held command was denied (or the Deny failed) from its notification. */
+    /** A held command was denied, approved or shelved (or that failed) from its notification. */
     static void vetoEvent(String id, String action, String error) {
         AmberxNativePlugin p = current;
         if (p == null) return;
@@ -113,29 +113,37 @@ public class AmberxNativePlugin extends Plugin {
 
     /* ---------------------------------------------------------------- veto approvals (VetoAlerts) */
 
+    /** Deny / Approve now / Shelve with the phone's hub session (the veto banner plugin through lib-hub's host seam). */
     @PluginMethod
-    public void vetoSettings(PluginCall call) {
-        VetoAlerts.configure(getContext(), call.getData());
-        call.resolve();
-    }
-
-    @PluginMethod
-    public void vetoDeny(PluginCall call) {
+    public void vetoAction(PluginCall call) {
         String id = call.getString("id", "");
-        if (HubRules.approvalUrl(HubRules.HUB, id) == null) { call.reject("Not a request id."); return; }
+        String action = call.getString("action", "");
+        if (HubRules.approvalUrl(HubRules.HUB, id) == null || !HubRules.isVetoAction(action)) { call.reject("Not a request id or action."); return; }
         io.execute(() -> {
-            int code = VetoAlerts.deny(getContext(), id);
+            int code = VetoAlerts.act(getContext(), id, action);
             JSObject r = new JSObject().put("ok", code == 200);
-            if (code == 200) r.put("state", "denied");
+            if (code == 200) r.put("state", "deny".equals(action) ? "denied" : "shelve".equals(action) ? "shelved" : "approved-now");
             else r.put("error", code < 0 ? "signed out of axHub" : "the hub answered " + code);
             call.resolve(r);
         });
     }
 
+    /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
-    public void vetoTest(PluginCall call) {
-        String phase = call.getString("phase", "held");
-        VetoAlerts.test(getContext(), "warning".equals(phase) || "running".equals(phase) ? phase : "held");
+    public void vetoAlarm(PluginCall call) {
+        VetoAlarm.configure(getContext(), call.getData());
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void vetoAlarmTest(PluginCall call) {
+        VetoAlarm.test(getContext(), call.getData());
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void vetoAlarmStop(PluginCall call) {
+        VetoAlarm.stop(getContext(), null, null);
         call.resolve();
     }
 

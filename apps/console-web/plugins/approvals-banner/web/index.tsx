@@ -19,17 +19,25 @@
  * still never approves anything itself. When the request is decided the dialog closes. "Open new approvals by
  * themselves" can be switched off in its settings (per browser).
  *
- * Held commands (veto@1, Brett Oct 28 2026): a command Claude sends through Vinnie is held by the hub for 3 minutes and
- * then run, unless Brett denies it. The feed lists those with `status: "held"`; lib-hub's `veto.ts` splits them off. Held
- * entries show a live countdown and **Deny** (no Approve/Review): Deny opens the call's approval page (the hub only takes
- * a Deny under its own Origin, so the console never sends it). They open by themselves like new requests.
+ * Held commands (veto@1, Brett Oct 28 2026): a command Claude sends through Vinnie is held by the hub for a countdown
+ * (90 s since axHub decision 104) and then run, unless Brett stops it. The feed lists those with `status: "held"`;
+ * lib-hub's `veto.ts` splits them off. Held entries show a live countdown with **Deny**, **Approve** (run it now) and
+ * **Shelve** (pause the countdown until he decides), decision 104; tapping one opens the veto screen (`approvals.veto`).
+ *
+ * The veto banner (Brett, Oct 30 2026): the veto notices, the veto screen and the alarm belong to this plugin, so they
+ * work in every app it is installed in (`targets`: the console and AmberX, whose phone app shows the AmberX web app).
+ * Actions use the app's host when it has one (AmberX's phone shell posts with its own hub session, rings the alarm on
+ * the alarm stream through silent mode and puts Deny / Approve / Shelve on its notifications), else a page on the hub's
+ * origin, else the call's page on the hub. See `veto.tsx` and `alarm.ts`.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
-import { fetchVetoFeed, formatCountdown, secondsLeftNow, VETO_WARNING_SECONDS, type VetoCall } from '@console/axf/libs/hub/veto';
+import { fetchVetoFeed, formatCountdown, onVetoHost, secondsLeftNow, vetoHost, VETO_ACTIONS, VETO_WARNING_SECONDS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
+import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
+import { act, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
@@ -55,7 +63,17 @@ function autoOpen(pending: { id: string }[]) {
   save(OPENED_KEY, [...opened].slice(-50).join(','));
   openReview(next.id);
 }
-export function openReview(id: string) { reviewing = id; runtime?.openDialog('approvals.review', { id }); }
+export function openReview(id: string) {
+  // A held call opens the veto screen (Deny / Approve / Shelve), a call waiting for an approval the hub's page.
+  if (st.held.some((c) => c.id === id)) { openVeto(id); return; }
+  reviewing = id; runtime?.openDialog('approvals.review', { id });
+}
+export function openVeto(id: string) { reviewing = id; runtime?.openDialog('approvals.veto', { id }); }
+const deps: VetoDeps = {
+  hub: () => st.hub,
+  toast: (text, kind) => runtime?.toast(text, kind, 'Approvals'),
+  refresh: () => { void checkNow(); },
+};
 const DEFAULT_HUB = HUB_DEFAULT;
 
 type Pending = HubApproval;
@@ -93,7 +111,9 @@ export async function checkNow(): Promise<void> {
     const pending = ok ? feed.pending : [];
     const held = ok ? heldNow : [];
     set({ hub, status: feed.status, count: feed.count, pending, held, approvalsUrl: feed.approvalsUrl, checkedAt: new Date().toISOString(), error: feed.error });
-    autoOpen([...held, ...pending]);
+    watch.update(held);
+    // Shelved calls wait quietly: they don't pop up again.
+    autoOpen([...held.filter((c) => !c.shelved && !c.approvedNow), ...pending]);
   } finally {
     inflight = false;
   }
@@ -105,6 +125,8 @@ function start() {
   started = true;
   void checkNow();
   setInterval(() => { if (document.visibilityState === 'visible') void checkNow(); }, POLL_MS);
+  // Notices + alarm follow the local countdown between reads (the alarm also rings with the page in the background).
+  setInterval(() => { if (st.status === 'ok') watch.update(st.held); }, 1_000);
   globalThis.addEventListener('focus', () => void checkNow());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void checkNow(); });
 }
@@ -130,19 +152,19 @@ function useTick(on: boolean) {
   useEffect(() => { if (!on) return; const t = setInterval(() => setN((n) => n + 1), 1_000); return () => clearInterval(t); }, [on]);
 }
 
-/** One held command: title, command, live countdown, Deny (opens its page on the hub, where Deny runs). No Approve. */
+/** One held command: title, command, live countdown (or shelved), Deny / Approve / Shelve. The row opens the veto screen. */
 function HeldRow({ c }: { c: VetoCall }) {
   const left = secondsLeftNow(c);
-  const urgent = left <= VETO_WARNING_SECONDS;
+  const urgent = !c.shelved && left <= VETO_WARNING_SECONDS;
   return (
     <div className="axp-approvals-banner__row axp-approvals-banner__held">
-      <BannerIcon icon="clock" working={left > 0} size={20} />
-      <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${c.title}\n${c.command}`} onClick={() => openReview(c.id)}>
-        {left > 0 ? 'Runs in' : 'Running'}
-        <span className={`axp-approvals-banner__count${urgent ? ' is-urgent' : ''}`} role="timer">{left > 0 ? formatCountdown(left) : '0:00'}</span>
+      <BannerIcon icon={c.shelved ? 'pause' : 'clock'} working={!c.shelved && left > 0} size={20} />
+      <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${c.title}\n${c.command}`} onClick={() => openVeto(c.id)}>
+        {c.shelved ? 'Shelved' : c.approvedNow ? 'Approved' : left > 0 ? 'Runs in' : 'Running'}
+        {!c.shelved && !c.approvedNow && <span className={`axp-approvals-banner__count${urgent ? ' is-urgent' : ''}`} role="timer">{left > 0 ? formatCountdown(left) : '0:00'}</span>}
         <span className="axp-approvals-banner__sum">{c.title}{c.command ? `: ${c.command}` : ''}</span>
       </button>
-      {left > 0 && <Button tone="danger" icon="x-circle" onClick={() => openReview(c.id)}>Deny</Button>}
+      <VetoButtons c={c} deps={deps} size="sm" />
     </div>
   );
 }
@@ -222,6 +244,15 @@ function ReviewDialog({ id }: { id: string }) {
   );
 }
 
+/* ---------------- the veto screen ---------------- */
+
+function VetoDialog({ id }: { id: string }) {
+  const s = useApprovals();
+  const c = s.held.find((x) => x.id === id) ?? null;
+  useEffect(() => { const t = setInterval(() => void checkNow(), 3_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
+  return <VetoScreen c={c} deps={deps} onClose={() => { if (reviewing === id) reviewing = null; runtime?.closeDialog(); }} />;
+}
+
 /* ---------------- settings ---------------- */
 
 function AutoOpenSwitch() {
@@ -239,14 +270,14 @@ function StatusPanel() {
   useEffect(() => { start(); }, []);
   const line: Record<Status, string> = {
     idle: 'Checking…',
-    ok: `${s.count ? `${s.count} waiting.` : 'Nothing is waiting.'}${s.held.length ? ` ${s.held.length} held (counting down, Deny only).` : ''}`,
+    ok: `${s.count ? `${s.count} waiting.` : 'Nothing is waiting.'}${s.held.length ? ` ${s.held.length} held (${s.held.filter((c) => c.shelved).length} shelved).` : ''}`,
     'signed-out': 'This browser isn\'t signed in to axHub, so the banner stays hidden. Sign in on the hub (the console\'s sign-in wall does it) to see approvals here.',
     'not-admin': 'Signed in to axHub, but not as an admin: approvals are for admins only.',
     unreachable: `Couldn't reach axHub${s.error ? ` (${s.error})` : ''}.`,
   };
   return (
     <div className="fx-stack">
-      <p style={{ margin: 0 }}>A banner at the top of the console while axHub has calls waiting for your approval (shell commands, deploys and anything else set to confirm). New requests open here by themselves, on the hub's own page; you approve or reject them there.</p>
+      <p style={{ margin: 0 }}>A banner at the top of the app while axHub holds a call on its countdown (veto) or has one waiting for your approval. A held call runs by itself when its countdown ends: tap Deny to stop it, Approve to run it now, or Shelve to pause the countdown until you decide. Notices and the alarm come from this plugin too.</p>
       <p className="fx-small" style={{ margin: 0 }}><strong>{line[s.status]}</strong>{s.checkedAt ? <span className="fx-muted"> · checked {ago(s.checkedAt)} · every {POLL_MS / 1000} s while the console is open</span> : null}</p>
       <AutoOpenSwitch />
       <div className="fx-row fx-row--wrap">
@@ -261,7 +292,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.3.0',
+  version: '0.4.0',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -270,7 +301,7 @@ export const plugin: AxfWebLibrary = {
         await checkNow();
         if (st.status !== 'ok') return [{ id: 'status', label: st.status === 'signed-out' ? 'Sign in to axHub to see approvals' : st.status === 'not-admin' ? 'Approvals are for hub admins' : 'axHub not reachable', icon: 'info', action: 'approvals.open' }];
         return [
-          ...st.held.map((x) => ({ id: `held:${x.id}`, label: `Held ${formatCountdown(secondsLeftNow(x))}: ${x.title}`, icon: 'clock', action: `approvals.review:${x.id}` })),
+          ...st.held.map((x) => ({ id: `held:${x.id}`, label: `${x.shelved ? 'Shelved' : `Held ${formatCountdown(secondsLeftNow(x))}`}: ${x.title}`, icon: x.shelved ? 'pause' : 'clock', action: `approvals.veto:${x.id}` })),
           ...st.pending.map((x) => ({ id: `approval:${x.id}`, label: `${x.tool}: ${shortSummary(x)}`, icon: 'shield', action: `approvals.review:${x.id}` })),
         ];
       },
@@ -278,7 +309,32 @@ export const plugin: AxfWebLibrary = {
   },
   register(rt) {
     runtime = rt;
+    watch.setup((k) => rt.settings.get(k), (id) => openVeto(id));
     start();
+    // approvals.veto:<id> — the veto screen; approvals.deny|approve-now|shelve:<id> — one action (a person's tap only)
+    rt.actions.register('approvals.veto', ([id]) => { if (id) openVeto(id); }, { label: 'Open a held call', params: true, searchable: false });
+    for (const a of VETO_ACTIONS) {
+      rt.actions.register(`approvals.${a}`, ([id]) => {
+        const c = st.held.find((x) => x.id === id);
+        if (c) void act(deps, c, a as VetoAction); else rt.toast('That call is no longer held.', 'info', 'Approvals');
+      }, { label: `${a === 'deny' ? 'Deny' : a === 'shelve' ? 'Shelve' : 'Approve'} a held call`, params: true, searchable: false });
+    }
+    // The app's native side (AmberX phone): notification taps open the veto screen; actions taken there refresh.
+    let offEvents: (() => void) | undefined;
+    const sync = syncNativeAlarm((k) => rt.settings.get(k));
+    const hook = () => {
+      offEvents?.();
+      offEvents = vetoHost().onEvent?.((e) => {
+        if (e.action === 'open') openVeto(e.id);
+        else if (e.action === 'failed') rt.toast(`That didn't go through on the phone${e.error ? ` (${e.error})` : ''}: open it on axHub.`, 'danger', 'Approvals');
+        else watch.silence(e.id);
+        void checkNow();
+      });
+      sync();
+    };
+    onVetoHost(hook);
+    hook();
+    rt.subscribe(sync);
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.review:<id> — that request on the hub's own page, in the review dialog (menu live list)
@@ -287,10 +343,32 @@ export const plugin: AxfWebLibrary = {
   banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {
     'approvals.review': { title: 'Approval waiting', icon: 'shield', render: (p) => <ReviewDialog id={typeof p.id === 'string' ? p.id : ''} /> },
+    'approvals.veto': { title: 'Held call', icon: 'clock', render: (p) => <VetoDialog id={typeof p.id === 'string' ? p.id : ''} /> },
   },
+  settings: [
+    {
+      id: 'approvals-banner.alarm', label: 'Veto alarm', icon: 'bell', tab: 'approvals-banner', order: 10,
+      description: 'Rings for a held call until you Deny, Approve or Shelve it (or it ends).',
+      settings: [
+        { key: ALARM_KEYS.enabled, label: 'Alarm', kind: 'toggle', default: ALARM_DEFAULTS.enabled },
+        { key: ALARM_KEYS.startAt, label: 'Starts', kind: 'choice', default: ALARM_DEFAULTS.startAt, options: START_AT.map(({ value, label }) => ({ value, label })) },
+        { key: ALARM_KEYS.tone, label: 'Tone', kind: 'choice', default: ALARM_DEFAULTS.tone, options: TONES.map(({ value, label }) => ({ value, label })), description: 'My own sound file: pick it below.' },
+        { key: ALARM_KEYS.volume, label: 'Volume', kind: 'slider', default: ALARM_DEFAULTS.volume, min: 0, max: 100, step: 5 },
+        { key: ALARM_KEYS.louder, label: 'Gets louder over time', kind: 'toggle', default: ALARM_DEFAULTS.louder },
+        { key: ALARM_KEYS.louderSeconds, label: 'Seconds to full volume', kind: 'number', default: ALARM_DEFAULTS.louderSeconds, min: 1, max: 120 },
+        { key: ALARM_KEYS.ringSeconds, label: 'Rings for (seconds)', kind: 'number', default: ALARM_DEFAULTS.ringSeconds, min: 1, max: 300 },
+        { key: ALARM_KEYS.repeat, label: 'Rings (1 = no repeat)', kind: 'number', default: ALARM_DEFAULTS.repeat, min: 1, max: 10 },
+        { key: ALARM_KEYS.repeatGapSeconds, label: 'Quiet between rings (seconds)', kind: 'number', default: ALARM_DEFAULTS.repeatGapSeconds, min: 0, max: 300 },
+        { key: ALARM_KEYS.vibration, label: 'Vibration', kind: 'choice', default: ALARM_DEFAULTS.vibration, options: VIBRATIONS.map(({ value, label }) => ({ value, label })) },
+        { key: ALARM_KEYS.throughSilent, label: 'Ring through silent mode (phone)', kind: 'toggle', default: ALARM_DEFAULTS.throughSilent, description: 'AmberX on Android plays it on the alarm channel, which sounds even when the phone is on silent.' },
+        { key: ALARM_KEYS.notices, label: 'Notices (timer started, 30 s left, running)', kind: 'toggle', default: true, description: 'On the phone AmberX raises them with Deny, Approve and Shelve buttons; in a browser, while this page is open.' },
+      ],
+    },
+  ],
   settingsTabs: [{ id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', order: 8, parent: 'plugins' }],
   settingsPanels: [
     { id: 'approvals-banner.status', tab: 'approvals-banner', title: 'Approvals', icon: 'shield', order: 5, render: () => <StatusPanel /> },
+    { id: 'approvals-banner.alarm.panel', tab: 'approvals-banner', title: 'Alarm sound and test', icon: 'bell', order: 11, render: () => <AlarmPanel get={(k) => runtime?.settings.get(k)} set={(k, v) => runtime?.settings.set(k, v)} /> },
     { id: 'approvals-banner.lifecycle', tab: 'approvals-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

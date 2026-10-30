@@ -86,7 +86,7 @@
     "src/axf/libs/hub/library.json": "d8feccd7a11bb165",
     "src/axf/libs/hub/menu.ts": "d3b57c2eb6f1702e",
     "src/axf/libs/hub/react.tsx": "782cb650b02ffd4a",
-    "src/axf/libs/hub/veto.ts": "320628f776d7ec90",
+    "src/axf/libs/hub/veto.ts": "3454eeb87fd8b287",
     "src/axf/libs/hubstatus/core.ts": "121c6eddd87dad65",
     "src/axf/libs/hubstatus/hubstatus.css": "a155d23ec53e5a0f",
     "src/axf/libs/hubstatus/index.tsx": "a46dad1c1b4c092f",
