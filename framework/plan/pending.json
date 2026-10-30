@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-27T19:30:00.000Z",
+ "updatedAt": "2026-10-30T13:19:44.824Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1817,31 +1817,6 @@
    "builtAt": "2026-10-22T20:44:42.448Z",
    "updatedAt": "2026-10-22T20:44:42.519Z",
    "estimate": "1.5 h",
-   "source": "chat"
-  },
-  {
-   "id": "axhub-auto-approve-all",
-   "title": "AXHub app: Approve everything except vps.run; waiting → approved notifications with alarm sound",
-   "detail": "",
-   "model": "Opus",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [
-    {
-     "text": "Approve-everything setting + vps.run exclusion in AutoApprove rules + tests",
-     "at": "",
-     "estimate": "20 min"
-    },
-    {
-     "text": "Waiting notification first, then approved notification on an alarm-sound channel",
-     "at": "",
-     "estimate": "25 min"
-    }
-   ],
-   "createdAt": "2026-10-22T20:47:38.691Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-22T20:47:38.691Z",
-   "estimate": "45 min",
    "source": "chat"
   },
   {
@@ -5054,24 +5029,28 @@
    "subPrompts": [
     {
      "text": "Core registry + persist profile layer + orchestrator per profile",
+     "at": "",
      "estimate": "30 min",
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z"
     },
     {
      "text": "Python mirror + server routes",
+     "at": "",
      "estimate": "30 min",
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z"
     },
     {
      "text": "Console plugin",
+     "at": "",
      "estimate": "30 min",
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z"
     },
     {
      "text": "Tests, docs, PR",
+     "at": "",
      "estimate": "25 min",
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z"

@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T18:57:38.777Z",
+ "updatedAt": "2026-10-30T13:20:06.624Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6470,6 +6470,76 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T18:46:29.664Z",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "veto-everywhere",
+   "title": "Veto everywhere: every axHub call that needs Brett runs after the 3-minute countdown unless denied",
+   "category": "axHub",
+   "detail": "Brett Oct 30 2026 (voice): it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/veto-everywhere",
+   "pr": "",
+   "createdAt": "2026-10-30T13:20:06.580Z",
+   "updatedAt": "2026-10-30T13:20:06.624Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "axHub: confirmAs option (core policy + hub + server env default veto) + tests (450) + decision #103 docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s2",
+     "text": "Shared rules: veto replaces approvals + retry + merge-approval rules; remove conflicting pending item axhub-auto-approve-all",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s3",
+     "text": "axHub PR + merge + redeploy (veto calls), then GitHub writes/PRs/merges run on the countdown",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
      "note": ""
     }
    ]
