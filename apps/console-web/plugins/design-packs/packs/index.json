@@ -972,6 +972,492 @@
      "device": "desktop"
     }
    ]
+  },
+  {
+   "id": "graphite-light",
+   "num": 1,
+   "name": "Graphite Light",
+   "round": 3,
+   "added": "2026-10-29T20:55:00-04:00",
+   "desc": "Linear-style light: soft grey canvas, indigo accent, 6 px radii, hairlines.",
+   "scheme": "light",
+   "swatches": [
+    "#f7f7f8",
+    "#ffffff",
+    "#1a1b1f",
+    "#5e6ad2",
+    "#2e9d62",
+    "#d1453b"
+   ],
+   "font": 13,
+   "radius": 6,
+   "files": [
+    {
+     "name": "Home",
+     "src": "r3/graphite-light-01-home-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build orchestrator",
+     "src": "r3/graphite-light-02-orchestrator-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature matrix",
+     "src": "r3/graphite-light-03-matrix-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Pending builds",
+     "src": "r3/graphite-light-04-pending-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build queue",
+     "src": "r3/graphite-light-05-queue-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Plugin manager",
+     "src": "r3/graphite-light-06-plugins-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Settings \u00b7 Appearance",
+     "src": "r3/graphite-light-07-settings-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Builds menu",
+     "src": "r3/graphite-light-08-menu-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature catalog",
+     "src": "r3/graphite-light-09-catalog-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Asset studio",
+     "src": "r3/graphite-light-10-assets-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Tracker",
+     "src": "r3/graphite-light-11-tracker-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Desktop \u00b7 Orchestrator",
+     "src": "r3/graphite-light-12-desktop-desktop.png",
+     "device": "desktop"
+    }
+   ]
+  },
+  {
+   "id": "mocha",
+   "num": 2,
+   "name": "Mocha",
+   "round": 3,
+   "added": "2026-10-29T20:55:00-04:00",
+   "desc": "Warm espresso dark, latte type, caramel accent, 6 px radii.",
+   "scheme": "dark",
+   "swatches": [
+    "#14100d",
+    "#1b1612",
+    "#efe6dc",
+    "#d9a066",
+    "#86b77a",
+    "#e06c5f"
+   ],
+   "font": 13.5,
+   "radius": 6,
+   "files": [
+    {
+     "name": "Home",
+     "src": "r3/mocha-01-home-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build orchestrator",
+     "src": "r3/mocha-02-orchestrator-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature matrix",
+     "src": "r3/mocha-03-matrix-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Pending builds",
+     "src": "r3/mocha-04-pending-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build queue",
+     "src": "r3/mocha-05-queue-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Plugin manager",
+     "src": "r3/mocha-06-plugins-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Settings \u00b7 Appearance",
+     "src": "r3/mocha-07-settings-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Builds menu",
+     "src": "r3/mocha-08-menu-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature catalog",
+     "src": "r3/mocha-09-catalog-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Asset studio",
+     "src": "r3/mocha-10-assets-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Tracker",
+     "src": "r3/mocha-11-tracker-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Desktop \u00b7 Orchestrator",
+     "src": "r3/mocha-12-desktop-desktop.png",
+     "device": "desktop"
+    }
+   ]
+  },
+  {
+   "id": "ivory-sage",
+   "num": 3,
+   "name": "Ivory Sage",
+   "round": 3,
+   "added": "2026-10-29T20:55:00-04:00",
+   "desc": "Ivory light with a sage-green accent, 6 px radii, calm and editorial.",
+   "scheme": "light",
+   "swatches": [
+    "#f6f5ef",
+    "#fdfcf8",
+    "#1f241f",
+    "#4f7a5a",
+    "#4f7a5a",
+    "#b8473b"
+   ],
+   "font": 13.5,
+   "radius": 6,
+   "files": [
+    {
+     "name": "Home",
+     "src": "r3/ivory-sage-01-home-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build orchestrator",
+     "src": "r3/ivory-sage-02-orchestrator-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature matrix",
+     "src": "r3/ivory-sage-03-matrix-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Pending builds",
+     "src": "r3/ivory-sage-04-pending-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build queue",
+     "src": "r3/ivory-sage-05-queue-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Plugin manager",
+     "src": "r3/ivory-sage-06-plugins-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Settings \u00b7 Appearance",
+     "src": "r3/ivory-sage-07-settings-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Builds menu",
+     "src": "r3/ivory-sage-08-menu-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature catalog",
+     "src": "r3/ivory-sage-09-catalog-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Asset studio",
+     "src": "r3/ivory-sage-10-assets-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Tracker",
+     "src": "r3/ivory-sage-11-tracker-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Desktop \u00b7 Orchestrator",
+     "src": "r3/ivory-sage-12-desktop-desktop.png",
+     "device": "desktop"
+    }
+   ]
+  },
+  {
+   "id": "signal",
+   "num": 4,
+   "name": "Signal",
+   "round": 3,
+   "added": "2026-10-29T20:55:00-04:00",
+   "desc": "Black and white editorial with one red signal colour, square corners.",
+   "scheme": "light",
+   "swatches": [
+    "#ffffff",
+    "#ffffff",
+    "#0a0a0a",
+    "#e5231b",
+    "#1f7a3a",
+    "#e5231b"
+   ],
+   "font": 13,
+   "radius": 2,
+   "files": [
+    {
+     "name": "Home",
+     "src": "r3/signal-01-home-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build orchestrator",
+     "src": "r3/signal-02-orchestrator-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature matrix",
+     "src": "r3/signal-03-matrix-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Pending builds",
+     "src": "r3/signal-04-pending-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build queue",
+     "src": "r3/signal-05-queue-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Plugin manager",
+     "src": "r3/signal-06-plugins-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Settings \u00b7 Appearance",
+     "src": "r3/signal-07-settings-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Builds menu",
+     "src": "r3/signal-08-menu-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature catalog",
+     "src": "r3/signal-09-catalog-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Asset studio",
+     "src": "r3/signal-10-assets-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Tracker",
+     "src": "r3/signal-11-tracker-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Desktop \u00b7 Orchestrator",
+     "src": "r3/signal-12-desktop-desktop.png",
+     "device": "desktop"
+    }
+   ]
+  },
+  {
+   "id": "aurora",
+   "num": 5,
+   "name": "Aurora",
+   "round": 3,
+   "added": "2026-10-29T20:55:00-04:00",
+   "desc": "Near-black with an emerald-to-teal accent, 8 px radii, low glow.",
+   "scheme": "dark",
+   "swatches": [
+    "#080b0a",
+    "#0d1211",
+    "#e4efeb",
+    "#34d399",
+    "#34d399",
+    "#f87171"
+   ],
+   "font": 13.5,
+   "radius": 8,
+   "files": [
+    {
+     "name": "Home",
+     "src": "r3/aurora-01-home-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build orchestrator",
+     "src": "r3/aurora-02-orchestrator-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature matrix",
+     "src": "r3/aurora-03-matrix-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Pending builds",
+     "src": "r3/aurora-04-pending-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build queue",
+     "src": "r3/aurora-05-queue-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Plugin manager",
+     "src": "r3/aurora-06-plugins-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Settings \u00b7 Appearance",
+     "src": "r3/aurora-07-settings-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Builds menu",
+     "src": "r3/aurora-08-menu-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature catalog",
+     "src": "r3/aurora-09-catalog-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Asset studio",
+     "src": "r3/aurora-10-assets-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Tracker",
+     "src": "r3/aurora-11-tracker-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Desktop \u00b7 Orchestrator",
+     "src": "r3/aurora-12-desktop-desktop.png",
+     "device": "desktop"
+    }
+   ]
+  },
+  {
+   "id": "cobalt-day",
+   "num": 6,
+   "name": "Cobalt Day",
+   "round": 3,
+   "added": "2026-10-29T20:55:00-04:00",
+   "desc": "Crisp white and cobalt with blue-grey panels, 4 px radii, dense data feel.",
+   "scheme": "light",
+   "swatches": [
+    "#f3f6fb",
+    "#ffffff",
+    "#0f1b2d",
+    "#1d4ed8",
+    "#15803d",
+    "#c62828"
+   ],
+   "font": 13,
+   "radius": 4,
+   "files": [
+    {
+     "name": "Home",
+     "src": "r3/cobalt-day-01-home-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build orchestrator",
+     "src": "r3/cobalt-day-02-orchestrator-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature matrix",
+     "src": "r3/cobalt-day-03-matrix-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Pending builds",
+     "src": "r3/cobalt-day-04-pending-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Build queue",
+     "src": "r3/cobalt-day-05-queue-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Plugin manager",
+     "src": "r3/cobalt-day-06-plugins-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Settings \u00b7 Appearance",
+     "src": "r3/cobalt-day-07-settings-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Builds menu",
+     "src": "r3/cobalt-day-08-menu-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Feature catalog",
+     "src": "r3/cobalt-day-09-catalog-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Asset studio",
+     "src": "r3/cobalt-day-10-assets-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Tracker",
+     "src": "r3/cobalt-day-11-tracker-phone.png",
+     "device": "phone"
+    },
+    {
+     "name": "Desktop \u00b7 Orchestrator",
+     "src": "r3/cobalt-day-12-desktop-desktop.png",
+     "device": "desktop"
+    }
+   ]
   }
  ]
 }
