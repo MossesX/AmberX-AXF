@@ -10,6 +10,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
 import { Button, Checkbox, Container, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { isNative, native } from '../../../native';
+import { HOLDER_LABEL, micLease } from '../../../miclease';
 import { addItem, findList, flatTree, localDay, parseIntent, type ItemKind } from '../../notes/web/core';
 import { NOTES_ID, deviceName, load as loadNotes, mutate, snapshot as notesSnapshot, useNotes } from '../../notes/web/store';
 import { aiReady, parseNote } from '../../ai/web/client';
@@ -90,8 +91,18 @@ export async function start(rt: AxfRuntime, list = '') {
     const so = joinParts(s.parts);
     set({ live: so ? `${so} ${text}` : text });
   }).catch(() => null);
+  // The page's microphone lease (mic-lease@1): the Assistant microphone and Speak a command wait while dictating.
+  const lease = micLease();
+  const ttl = (cfg.maxMinutes + 1) * 60_000;
+  if (!lease.take('dictation', ttl)) {
+    void live?.remove();
+    const who = lease.holder() ?? '';
+    set({ phase: 'idle', live: '', note: `${HOLDER_LABEL[who] ?? who} is using the microphone. Try again when it finishes.` });
+    return;
+  }
   try {
     while (!stopAsked) {
+      lease.take('dictation', ttl);
       const { text } = await native.listen({ lang: lang(rt), prompt: 'Dictating… say “stop note” to finish' });
       const r = turn(s, text ?? '', cfg, Date.now());
       s = r.session;
@@ -101,6 +112,7 @@ export async function start(rt: AxfRuntime, list = '') {
   } catch (e) {
     set({ note: e instanceof Error ? e.message : String(e) });
   }
+  lease.release('dictation');
   void live?.remove();
   beep(rt, false);
   await finish(rt, joinParts(s.parts), end);

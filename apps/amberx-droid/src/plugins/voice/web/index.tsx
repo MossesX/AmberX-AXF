@@ -13,6 +13,7 @@ import { Button, Container, Icon, IconButton, Note, SelectField, Switch, TextFie
 import { DataGrid, type GridColumn, type GridGroup } from '../../../axf/libs/datagrid';
 import './voice.css';
 import { isNative, native, type VoiceStatus } from '../../../native';
+import { withMic } from '../../../miclease';
 import { dbText, graphPoints, interpretHeard, levelOf, listens, overlayColors, pushLevel, voiceConfig, type VoiceConfig } from './handsfree';
 import { flatTree, localDay, parseIntent, type Intent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
@@ -213,7 +214,7 @@ async function nextCommand(rt: AxfRuntime): Promise<string> {
       nextHeard = (text) => { clearTimeout(timer); nextHeard = null; resolve(text); };
     });
   }
-  return (await native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') })).text;
+  return (await withMic('voice-command', () => native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') }))).text;
 }
 
 export async function listenOnce(rt: AxfRuntime) {
