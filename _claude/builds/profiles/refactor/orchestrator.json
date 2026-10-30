@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-30T13:20:06.624Z",
+ "updatedAt": "2026-10-30T13:21:26.681Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6486,9 +6486,14 @@
    "branch": "claude/veto-everywhere",
    "pr": "",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-10-30T13:20:06.624Z",
+   "updatedAt": "2026-10-30T13:21:26.680Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "PRs for axHub + AXF claude/veto-everywhere and feat/agent-voice sent as a veto call (vps.run, job be895ba4). Merging the axHub PR is Brett's (push banner Merge, or tell the session to send it); then the hub redeploys and GitHub writes go veto.",
+     "at": "2026-10-30T13:21:26.680Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
