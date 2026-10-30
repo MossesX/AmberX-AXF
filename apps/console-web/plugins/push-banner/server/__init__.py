@@ -150,10 +150,12 @@ class Pushes:
         repos = [r for r in raw.get("repos", []) if github.valid_repo(r)][:MAX_REPOS] if isinstance(raw.get("repos"), list) else []
         hidden = [h for h in raw.get("hidden", []) if isinstance(h, str) and len(h) <= 260][:MAX_HIDDEN] if isinstance(raw.get("hidden"), list) else []
         return {"repos": repos or list(DEFAULT_REPOS), "hidden": hidden, "defaults": list(DEFAULT_REPOS),
-                "claudeOnFail": raw.get("claudeOnFail") is True, "claudeShell": raw.get("claudeShell") is True}
+                "claudeOnFail": raw.get("claudeOnFail") is True, "claudeShell": raw.get("claudeShell") is True,
+                # Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"): on unless switched off.
+                "autoMerge": raw.get("autoMerge") is not False}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -170,7 +172,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -488,6 +490,38 @@ class Pushes:
         return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
 
 
+    # ---- auto-merge (Oct 30 2026): every ready PR merges by itself
+    def auto_merge(self) -> list[dict[str, Any]]:
+        """Merges every open PR in the watched repos that is ready (not a draft, GitHub can merge it, CI passed on its head
+        commit) and not hidden, through the same `merge` as the banner's button (CI re-checked, head commit pinned, never a
+        push to main). Repos without CI never auto-merge (no green result). Returns what it did; never raises."""
+        cfg = self.config()
+        if not cfg["autoMerge"] or not (self.token() or "").strip():
+            return []
+        done: list[dict[str, Any]] = []
+        try:
+            state = self.branches(force=True)
+        except Exception as e:  # noqa: BLE001 — GitHub down: try again next round
+            return [{"error": _text(str(e), 200)}]
+        for r in state.get("repos", []):
+            for p in r.get("pulls", []):
+                if not p.get("ready") or p.get("hidden") or p.get("fork") or not isinstance(p.get("number"), int):
+                    continue
+                key = f"{r['repo']}#{p['number']}"
+                try:
+                    res = self.merge({"repo": r["repo"], "number": p["number"], "confirm": key})
+                    done.append({"pr": key, "merged": bool(res.get("merged")), "title": p.get("title", "")})
+                except HTTPException as e:
+                    done.append({"pr": key, "merged": False, "why": _text(str(e.detail), 200)})
+                except Exception as e:  # noqa: BLE001
+                    done.append({"pr": key, "merged": False, "why": _text(str(e), 200)})
+        if done:
+            try:
+                storage.write_json(data_dir() / "auto-merge.json", {"$axf": "push-banner-automerge@1", "at": int(self.clock() * 1000), "last": done[:50]})
+            except OSError:
+                pass
+        return done
+
     def merge_branch(self, body: Any) -> dict[str, Any]:
         """Merge a branch without a PR that merges cleanly: re-checked here (ahead, not behind, CI passed on its newest
         commit), then through a pull request (opened, or the open one) merged with that commit pinned. Never a push to the
@@ -675,6 +709,23 @@ class Pushes:
 PUSHES = Pushes()
 CLAUDE = claudefix.Launches(lambda: PUSHES.config())
 
+AUTO_MERGE_EVERY_S = max(60, int(os.environ.get("AXF_PUSH_AUTOMERGE_S", "180") or 180))
+
+
+def _auto_merge_loop() -> None:
+    """Runs in the console server: every few minutes, merge whatever is ready (setting autoMerge, on by default).
+    No Claude session and no tokens: GitHub calls only. AXF_PUSH_AUTOMERGE=off stops the loop."""
+    while True:
+        time.sleep(AUTO_MERGE_EVERY_S)
+        try:
+            PUSHES.auto_merge()
+        except Exception:  # noqa: BLE001 — never take the server down
+            pass
+
+
+if os.environ.get("AXF_PUSH_AUTOMERGE", "").lower() != "off":
+    threading.Thread(target=_auto_merge_loop, name="push-banner-auto-merge", daemon=True).start()
+
 
 @router.get("/branches")
 def branches(refresh: bool = False) -> dict[str, Any]:
@@ -717,6 +768,18 @@ def open_pr(body: Any = Body(None)) -> dict[str, Any]:
 @router.post("/merge")
 def merge(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("merge", "Merge", body, PUSHES.merge)
+
+
+@router.post("/auto-merge")
+def auto_merge_now() -> dict[str, Any]:
+    """Run auto-merge once now (the banner's "Merge everything ready" and tests)."""
+    return {"results": PUSHES.auto_merge()}
+
+
+@router.get("/auto-merge")
+def auto_merge_last() -> dict[str, Any]:
+    raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
+    return {"on": PUSHES.config()["autoMerge"], "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at")}
 
 
 @router.post("/merge-branch")

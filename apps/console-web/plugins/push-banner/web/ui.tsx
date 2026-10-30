@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
-import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergeBranch, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, type Done, type Failed, type PullRow, type Row } from './store';
+import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergeBranch, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
 const CI_ICON: Record<string, string> = { success: 'check-circle', failure: 'x-circle', running: 'refresh', none: 'clock', unknown: 'help' };
@@ -419,7 +419,28 @@ export function PushSettings() {
         </ul>
       )}
       <div className="fx-row"><Button icon="refresh" onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button></div>
+      <AutoMergeSettings />
       <ClaudeSettings />
+    </div>
+  );
+}
+
+/** Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"): the console merges every ready PR by itself. */
+function AutoMergeSettings() {
+  const [st, setSt] = useState<{ on: boolean; everyS: number; last: { pr: string; merged: boolean; why?: string }[] } | null>(null);
+  const [err, setErr] = useState('');
+  const read = () => api.call<{ on: boolean; everyS: number; last: { pr: string; merged: boolean; why?: string }[] }>('auto-merge').then(setSt, (e: Error) => setErr(e.message));
+  useEffect(() => { void read(); }, []);
+  if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
+  const set = (on: boolean) => { setErr(''); api.put('config', { autoMerge: on }).then(read, (e: Error) => setErr(e.message)); };
+  return (
+    <div className="fx-stack">
+      <h4 className="axp-push-banner__group-title">Auto-merge</h4>
+      <Switch label="Merge ready pull requests by themselves" checked={st.on} onChange={set}
+        hint={`Every ${Math.round(st.everyS / 60)} min the console merges each open PR in the watched repos that is ready: not a draft, no conflicts, CI passed on its head commit (pinned, so a newer push waits for its own CI). Forks, hidden PRs and repos without CI never auto-merge. No Claude session, no tokens.`} />
+      <div className="fx-row"><Button size="sm" icon="play" onClick={() => { setErr(''); api.post('auto-merge', {}).then(read, (e: Error) => setErr(e.message)); }}>Merge everything ready now</Button></div>
+      {st.last.length > 0 && <ul className="axp-push-banner__list">{st.last.slice(0, 6).map((x) => <li key={x.pr} className="axp-push-banner__item"><span className="fx-small">{x.pr}: {x.merged ? 'merged' : x.why || 'not merged'}</span></li>)}</ul>}
+      {err && <p className="fx-small axp-push-banner__note is-danger">{err}</p>}
     </div>
   );
 }

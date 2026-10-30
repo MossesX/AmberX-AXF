@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-30T13:21:26.681Z",
+ "updatedAt": "2026-10-30T17:00:30.653Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6486,7 +6486,7 @@
    "branch": "claude/veto-everywhere",
    "pr": "",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-10-30T13:21:26.680Z",
+   "updatedAt": "2026-10-30T17:00:30.653Z",
    "builtAt": "",
    "notes": [
     {
@@ -6544,6 +6544,23 @@
      "agent": false,
      "skip": false,
      "done": false,
+     "doneAt": "",
+     "note": ""
+    },
+    {
+     "id": "s4",
+     "text": "Auto-merge (Brett Oct 30: 'When stuff needs to merge automatic merge'): push banner merges every ready PR every 3 min (setting on by default, 112 tests); axHub gets CI so its PRs go green; shared rules updated",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
      "doneAt": "",
      "note": ""
     }
