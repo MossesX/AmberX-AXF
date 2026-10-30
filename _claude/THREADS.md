@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Audio Extract plugin for AmberX (Angel `audio-extract`): audio out of screen recordings (lossless .m4a / WAV), batch, trim, track pick, Share → AmberX, new-recording cards, results list; built-in screen recorder with app playback audio, no mic (Opus) | review (pr-open) | `claude/audio-extract` | (PR link in GitHub) | CI builds the APK (job `amberx`, artifact `amberx-debug.apk`); then Brett merges and installs the APK. Step s7 (CI + merge) left <!-- axf-plugin:audio-extract --> | 2026-10-30 |
 | Compact the whole app (Angel `app-compact`): framework-wide tighter page heads, buttons, chips, cards, tables; count strips; Plugin Manager one column on phones (claude.ai, Opus) | pr-open | `claude/angel-app-compact` | — | Merge; follow-up pass for per-screen button walls | 2026-10-30 |
 | Settings redesign (Angel `settings-compact`): tap-in section list, one-line level bar, flat hairline groups, dropdown design package; + Angel builds `plugin-floatable` (queued, Fable first) (claude.ai, Opus) | done (merged Oct 30) | `claude/angel-settings` (also brings the Angel profile from `angel/home-cards-queue`) | [#175](https://github.com/MossesX/AmberX-AXF/pull/175) | Merge, then next Angel build | 2026-10-30 |
 | Build Breaker console plugin: every ask Brett made (390, build-asks@1), one line each, per-app + per-plugin grids + timeline, permanent Build context menu (Opus) | review (pr-open) | `claude/build-breaker` | [#174](https://github.com/MossesX/AmberX-AXF/pull/174) | Waiting on CI + Brett's merge; then sessions keep the asks current with the plugin's `asks.mjs add / set-status` | 2026-10-29 |
@@ -88,6 +89,14 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Audio Extract plugin for AmberX (Angel `audio-extract`) <!-- axf-plugin:audio-extract -->
+- **Asked (Brett, voice, Oct 30 2026):** an AmberX plugin that strips the audio out of his phone's screen recordings into an audio file; extraction from a video only, no mic, no fallbacks. Then: a built-in **Record screen** mode (MediaProjection + app playback audio, no mic) whose recordings go straight through the extractor (video + audio, or audio only). Full brief: orchestrator build `audio-extract` (Angel profile). <!-- axf-plugin:audio-extract -->
+- **Model:** Opus, one session. **Branch:** `claude/audio-extract`. <!-- axf-plugin:audio-extract -->
+- **Built:** console plugin folder `audio-extract` under apps/console-web/plugins (targets `amberx-droid` → AmberX loads it, on by default; `axf-console` only shows a note there): core + controller, bridge, fake bridge, page (Extract · Record · Files), settings, voice phrases through the new generic `globalThis.amberxVoice` seam in AmberX's voice plugin. Native: `AudioExtractPlugin.java`, `AudioExtractor.java`, `ScreenRecordService.java`, manifest (share target, mediaProjection service), one `registerPlugin` line in MainActivity. <!-- axf-plugin:audio-extract -->
+- **Decisions:** no MP3 (Android has no MP3 encoder; would mean bundling LAME — Brett's call). Last screen recording + new-recording cards read only folders granted once through Android's folder picker (no storage permission). Playback capture needs Android's record-audio permission (AmberX already holds it for voice); the mic is never opened. A non-AAC track can't become .m4a as is: it says so, pick WAV. <!-- axf-plugin:audio-extract -->
+- **Checks:** the plugin's test.mts (24), `npx -y tsx apps/amberx-droid/test.mjs`, AmberX `npx tsc --noEmit` + `npx vite build`, `node framework/cli/plugin-lifecycle.mjs check audio-extract`, check-plugin-pages, check-controls, check-theme. Java was javac-checked locally against android-35 + Capacitor 8.5.3; the real Gradle build + APK is CI job `amberx`. <!-- axf-plugin:audio-extract -->
+- **Left:** s7 — CI green on the PR, merge approval, Brett installs the new AmberX APK (CI artifact `amberx-debug.apk` / hub Apps page). First message: "Carry on thread `audio-extract` from THREADS.md (Angel profile)". <!-- axf-plugin:audio-extract -->
 
 ### Build Breaker plugin
 

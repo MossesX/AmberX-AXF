@@ -1,0 +1,10 @@
+/* Audio Extract: layout only. Every control is a framework component; sizes and colours are theme tokens. */
+.axp-audio-extract-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 20), 1fr)); gap: var(--fx-space); }
+.axp-audio-extract-big { min-height: calc(var(--fx-space) * 7); justify-content: center; }
+.axp-audio-extract-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.axp-audio-extract-row { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); padding: var(--fx-space) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-audio-extract-row:last-child { border-bottom: 0; }
+.axp-audio-extract-rowhead { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-space); min-width: 0; }
+.axp-audio-extract-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-audio-extract-error { color: var(--fx-danger); }
+.axp-audio-extract-trim { display: grid; grid-template-columns: 1fr 1fr; gap: var(--fx-space); }
