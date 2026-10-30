@@ -63,3 +63,4 @@
   .axp-project-wizard__cards { gap: calc(var(--fx-space) * 0.5) }
 }
 .fx-pagehead > div:first-child:has(> .axp-project-wizard__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
+.axp-project-wizard__notice { flex-wrap: nowrap; padding: calc(var(--fx-space) * 0.5) var(--fx-space) }

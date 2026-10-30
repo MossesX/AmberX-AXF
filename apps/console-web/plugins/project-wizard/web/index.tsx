@@ -108,8 +108,8 @@ function Readiness({ st }: { st: Status }) {
   return (
     <div className={`${P}__notice`} role="status">
       <Icon name="info" />
-      <div className="fx-grow">{issues.map((i, n) => <p key={n} style={{ margin: 0 }}>{i}</p>)}</div>
-      <Button icon="settings" onClick={() => rt.dispatch('settings.open:project-wizard')}>Settings</Button>
+      <div className="fx-grow fx-small">{issues.map((i, n) => <p key={n} style={{ margin: 0 }}>{i}</p>)}</div>
+      <IconButton icon="settings" label="Project wizard settings" onClick={() => rt.dispatch('settings.open:project-wizard')} />
     </div>
   );
 }
