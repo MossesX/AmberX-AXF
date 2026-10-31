@@ -1540,7 +1540,7 @@
   {
    "id": "grid-sort-filter",
    "title": "Every grid: sort, search, filter (compact)",
-   "detail": "Brett, Oct 30 2026 (voice): Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones).",
+   "detail": "Brett, Oct 30 2026 (voice): Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android.",
    "status": "queued",
    "branch": "claude/grid-sort-filter",
    "pr": null,
@@ -1674,6 +1674,24 @@
     },
     {
      "id": "s8",
+     "text": "Framework grid: automatic hidden Date and time column (only where none exists), header right-click to show",
+     "model": "Opus",
+     "why": null,
+     "phase": null,
+     "group": null,
+     "estimate": null,
+     "files": null,
+     "checks": null,
+     "session": null,
+     "agent": null,
+     "skip": null,
+     "done": null,
+     "doneAt": null,
+     "note": null,
+     "status": "todo"
+    },
+    {
+     "id": "s9",
      "text": "Tests + docs",
      "model": "Opus",
      "why": null,
