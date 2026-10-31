@@ -1,1058 +1,1769 @@
 {
- "$axf": "pending@1",
- "updatedAt": "2026-10-30T18:11:29.776Z",
- "artifact": "",
- "items": [
-  {
-   "id": "apply-all-levels",
-   "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
-   "detail": "Undid #107 Apply to all pane. New look@1 engine (core/engines/looktokens.ts): look, design, behaviour and tone tokens by level and category; only changed tokens stored, CSS over the inherited theme, Compact down to no space. Banner settings: collapsible Apply to all with Simple/Basic/Pro/Advanced, collapsible categories, Reset. settings-ui@1 levels; settings/console 1.3.0 tags its items; Settings → Sliders (Simple, collapsible, Reset) applied app-wide. Branch claude/apply-all-levels.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
+  "$axf": "pending@1",
+  "updatedAt": "2026-10-28T01:11:04.759Z",
+  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+  "items": [
     {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
+      "id": "apply-all-levels",
+      "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
+      "detail": "Undid #107 Apply to all pane. New look@1 engine (core/engines/looktokens.ts): look, design, behaviour and tone tokens by level and category; only changed tokens stored, CSS over the inherited theme, Compact down to no space. Banner settings: collapsible Apply to all with Simple/Basic/Pro/Advanced, collapsible categories, Reset. settings-ui@1 levels; settings/console 1.3.0 tags its items; Settings → Sliders (Simple, collapsible, Reset) applied app-wide. Branch claude/apply-all-levels.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Opus] Undo #107 pane; look@1 engine + check",
+          "at": "2026-10-27T03:19:49.625Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z"
+        },
+        {
+          "text": "[Opus] Banner Apply to all section + fallback + stylesheet",
+          "at": "2026-10-27T03:19:49.625Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z"
+        },
+        {
+          "text": "[Opus] settings-ui@1 levels + level switch + filtering",
+          "at": "2026-10-27T03:19:49.625Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z"
+        },
+        {
+          "text": "[Opus] Sliders section, asset tags, copies into every app, checks",
+          "at": "2026-10-27T03:19:49.625Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z"
+        }
+      ],
+      "createdAt": "2026-10-27T03:19:49.625Z",
+      "builtAt": "2026-10-27T03:19:49.625Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "source": "chat"
+    },
+    {
+      "id": "amberx-empty-shell",
+      "title": "AmberX as an empty shell for building and testing plugins",
+      "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Built Oct 26 2026 on Opus (claude.ai): branch claude/amberx-empty-shell, PR #118. test.mjs 157, tsc, vite build, axf validate 83 assets.",
+          "at": "2026-10-27T03:48:42.596Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Opus] Remove Hub, Apps, Manage, Asset studio, Account views and demo dialogs",
+          "at": "2026-10-27T03:48:42.596Z",
+          "estimate": "15 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z"
+        },
+        {
+          "text": "[Opus] Trim nav, app menu, toolbar, context menu assets",
+          "at": "2026-10-27T03:48:42.596Z",
+          "estimate": "15 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z"
+        },
+        {
+          "text": "[Opus] README plugin how-to, CLAUDE.md status, test.mjs shell checks",
+          "at": "2026-10-27T03:48:42.596Z",
+          "estimate": "15 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z"
+        },
+        {
+          "text": "[Opus] tsc, vite build, axf validate, PR, THREADS",
+          "at": "2026-10-27T03:48:42.596Z",
+          "estimate": "15 min",
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z"
+        }
+      ],
+      "createdAt": "2026-10-27T03:48:42.596Z",
+      "builtAt": "2026-10-27T03:48:42.596Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "source": "chat"
+    },
+    {
+      "id": "fresh-look",
+      "title": "Fresh look: new default style theme + fresh appearance package",
+      "detail": "Brett, Oct 26 2026: rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-27T04:05:32.031Z",
+      "builtAt": "2026-10-27T04:05:32.031Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "source": "chat"
+    },
+    {
+      "id": "design-package",
+      "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
+      "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold).",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Built on Opus (Brett: \"Do in opus\") on branch rebuild/design-package-opus. Fable rebuild parked as design-package-fable. Report _claude/memory/docs/rebuilds/design-package.md.",
+          "at": "2026-10-27T17:16:22.734Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "behavior-theme asset type: asset-types.json entry (group Themes, rolled), JSON schema regen, all three validators accept it",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "20 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:21.967Z"
+        },
+        {
+          "text": "Behaviour engine core/engines/behavior.ts: normalise + compile to --fx-* vars/attrs for motion, interaction, windows/dialogs, feedback; fixture spec/fixtures/behavior.json + check-behavior.mts",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.045Z"
+        },
+        {
+          "text": "Wire behaviour into the React layer + runtime: motion vars, long-press and double-tap times, dialog/window open-close-snap-stack, toasts, sound, vibration, confirm-before-delete (behaviour tokens are the fallbacks the look tokens already reference)",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.142Z"
+        },
+        {
+          "text": "Starter behaviour themes (4: calm, snappy, minimal-motion, playful) + framework default",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "20 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.227Z"
+        },
+        {
+          "text": "design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme ids; apply = 4 swaps; capture from the current look; fixture + check",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.312Z"
+        },
+        {
+          "text": "Retire appearance-package: migrate existing packages and the axf.appearance.package setting to design packages; ask Brett where the extra look settings (spacing, hidden chrome, other slot picks) go before dropping them",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.398Z"
+        },
+        {
+          "text": "Settings -> Appearance: Design Package picker (with Apply) on top; the rest of the Appearance section in one collapsible container",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.476Z"
+        },
+        {
+          "text": "Defaults + every web app's manifest names a design package and behaviour theme; re-bake console-web, axhub-web, patches-web, amberx-droid, walkthrough-studio",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.572Z"
+        },
+        {
+          "text": "PORTING.md deferred Kotlin twin, CLAUDE.md status, rebuild report + before/after web shots, THREADS.md, tests in CI",
+          "at": "2026-10-27T16:19:48.729Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T17:16:22.657Z"
+        }
+      ],
+      "createdAt": "2026-10-27T16:19:41.652Z",
+      "builtAt": "2026-10-27T17:16:22.827Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "estimate": "4.5 h",
+      "source": "chat"
+    },
+    {
+      "id": "design-packages-10",
+      "title": "10 more AmberX Design Packages",
+      "detail": "Brett, Oct 27 2026: make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Built on branch claude/design-packages-10 (on top of PR #123).",
+          "at": "2026-10-27T17:25:19.393Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-27T17:25:19.327Z",
+      "builtAt": "2026-10-27T17:25:19.327Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "source": "chat"
+    },
+    {
+      "id": "arch-foundation",
+      "title": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrator + namespacing, plugin boundary + lifecycle broker, docs",
+      "detail": "From Brett's attachment (Oct 27 2026): 5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Fable] Gap audit: map attachment items 1-3 onto what exists (asset@1 layout, color/style themes, plugin@1, AxfWebLibrary, settings, embed); write _claude/memory/docs/arch-foundation.md listing only what is new. Do not duplicate existing contracts.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "20 min"
+        },
+        {
+          "text": "[Fable] Layout & component tree contract (TS): page → widget/plugin nodes with unique ids, dimensions, bounding boxes, asset dependencies; additive to layout@ assets; fixture + checker.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] Theme contract additions: component-specific overrides on top of color/style themes (tokens only); fixture.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Fable] plugin@1 manifest additions: declared assets, default settings, layout entry points (optional fields, old manifests still valid); schema + validators.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Fable] Pydantic v2 models mirroring items 1-3 + migration engine (@model_validator(mode=\"before\")): up-cast legacy versions, fill missing fields, sanitise; never crash old apps. framework/python/axf/contracts/.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] Ingestion namespace engine: prefix every harvested plugin key as plugin_id:property (state + assets), idempotent, collision report; same rules in TS + Python, one fixture.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] Lifecycle event broker (TS): onInit / onStateChange / onThemeUpdate / onContextMenuOpen / onDestroy, typed message passing, plugins never touch global state; fixture.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] React PluginBoundary: error boundary around every mounted plugin (layout + context-menu hooks), isolate the widget, themed fallback stub, report to rt.diagnostics.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Architecture spec: add the new contracts to CLAUDE.md status + a reference layout tree in framework/spec/ARCH-FOUNDATION.md (no second .claude.md: CLAUDE.md is the project file).",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Developer guide part 1: build a new plugin (manifest, layout/theme hooks, lifecycle hooks) in apps/console-web/plugins/README.md.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Developer guide part 2: how harvesting works + how live sync works (hub appearance@1, migrations) in framework/spec/.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Tests in CI for the new checkers + Python test; THREADS.md + PORTING.md (Android twins deferred).",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "20 min"
+        }
+      ],
+      "createdAt": "2026-10-27T16:39:39.721Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T16:36:55.356Z",
+      "source": "chat"
+    },
+    {
+      "id": "enterprise-branding",
+      "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
+      "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Complete (Oct 30 2026, claude/enterprise-branding-3): all 46 orchestrator steps done. Fable s1-s12 in PR #128, Opus s13-s26 in PR #138, s27-s40 inside refactor-all (PR #166, merged Oct 29). Re-checked green on main. Report _claude/memory/docs/rebuilds/enterprise-branding-3.md.",
+          "at": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "Merged in design-package (its 9 steps are s2-s5, s29 and parts of s38). One model switch: Fable s1-s12, then Opus s13-s40.",
+          "at": "2026-10-27T16:56:46.243Z"
+        },
+        {
+          "text": "Brett, Oct 27 2026 (cards): rename the Dev Console to GizmoX in everything visible (banner, title, menus) through its branding package; code ids and URLs unchanged. Logos and animated logos are generated for both AmberX Framework and GizmoX. Plugin scope: every plugin enabled by default + every banner plugin (no preference given, default taken). Start: no preference; phase 1 waits for a Fable session.",
+          "at": "2026-10-27T16:58:56.310Z"
+        },
+        {
+          "text": "Brett, Oct 27 2026 13:05: scope = only the console, the AmberX app at amberx.amberxai.com, the plugins currently installed and enabled in Plugin switches, and the banner plugins (replaces the enabled-by-default default). Orchestrator itself first (done: categories, phases, groups, grid).",
+          "at": "2026-10-27T17:09:12.872Z"
+        },
+        {
+          "text": "Next Fable session: after s12, carry straight on into interface-roller s1-s5 (same session), then ask for the Opus switch.",
+          "at": "2026-10-27T17:17:17.563Z"
+        },
+        {
+          "text": "Oct 27 2026 17:40: PRs #123/#124 (another session, Opus) landed design-package + behavior-theme + 10 design packages + the Appearance picker. Steps s2-s5 and s30 ticked; the parked Fable rebuild (pending design-package-fable) is now group \"Design package (Fable rebuild)\" in phase 1 (s5r1-s5r6). s23 reduced to 14 more packages.",
+          "at": "2026-10-27T18:08:21.998Z"
+        },
+        {
+          "text": "s1: DESIGN-LANGUAGE.md written; the live plugin list is still waiting on axHub approval 29f6dae0 (retrying). s5r1-s5r5 done: window placement rules (stack cascade/center/remember, snap grid, minimize cursor/dock/none) wired into the WindowManager + WindowHost; Button busy/confirm props + rt.busy()/withBusy() + data-fx-busy cursor; 36 new checks in check-design-package (575).",
+          "at": "2026-10-27T18:28:33.506Z"
+        },
+        {
+          "text": "s5r6: fixtures regenerated (roll/appearance gained the brand types); the re-bake of amberx-droid, axhub-web, patches-web, walkthrough-studio and the console lock lands once at the end of the Fable phase (s12) so the React layer (s10-s11) is baked in one go.",
+          "at": "2026-10-27T18:39:55.650Z"
+        },
+        {
+          "text": "Plugin scope read live Oct 27 2026 (approval 72afb5a6): no plugins.json on the console, so every installed plugin is on — all 32 are in scope (list in DESIGN-LANGUAGE.md §13).",
+          "at": "2026-10-27T18:51:49.154Z"
+        },
+        {
+          "text": "Fable phase 1 done Oct 27 2026 (PR #128). Waiting on Brett's approval of the Fable → Opus switch.",
+          "at": "2026-10-27T19:11:51.156Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Fable] Design language brief: audit the console + AmberX (amberx.amberxai.com) chrome; write the enterprise quality bar (type ramp, spacing scale, elevation, radii, motion, density, iconography, logo placement rules) in framework/spec/DESIGN-LANGUAGE.md. Everything later is held to it.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] behavior-theme asset type: asset-types.json entry, schema regen, all validators (motion, interaction, windows & dialogs, feedback).",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] Behaviour engine core/engines/behavior.ts + fixture spec/fixtures/behavior.json + check-behavior.mts; wired as the fallbacks look tokens already reference.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme (+ optional branding); apply = swaps; capture from the current look; fixture + check.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] Retire appearance-package: migrate existing packages (amberx, fresh) and setting axf.appearance.package to design packages (old ids keep working).",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] branding@1 asset type: an extendable template of brand slots (wordmark, mark, animated mark, favicon, app icon, splash, banner art, toolbar / window / floating window / dialog / container / tab-group decorations, palette + type hooks, icon pack) with an open slot registry so new slots never need a kernel change.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] Branding engine core/engines/branding.ts: resolve a brand into tokens, CSS vars and asset refs; hot swap via rt.swap(\"branding\", id); fixture + check-branding.mts.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] logo-mark + animated-logo asset types: safe SVG data model (path data only, no script, size caps), animation from motion tokens with reduced-motion fallback; validators + fixture.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] icon-pack@1 asset type (glyph name → path, grid, stroke/fill rules, fallbacks to framework icons); Icon component reads the active pack; relation to icon-sets.json defined.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] React layer part 1: banner, toolbar and tab group read branding decorations (logo placement, accent edge, animated mark) from the engine.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] React layer part 2: windows, floating windows, dialogs and containers read branding decorations (header art, mark, accent).",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] Seeded procedural generators (framework/cli/brand-gen.mjs): logo marks × wordmark styles, animated-logo motion presets, icon-pack style transforms over the base glyph set; deterministic, every output passes the validators.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] 10 light + 10 dark colour themes (contrast-checked, theme-swap CI passes).",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] 10 layout themes.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] 10 style themes.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] 10 context-menu assets.",
+          "at": "",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Toolbars 1/2: 13 dynamically driven toolbar assets (live providers, badges, widgets).",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Toolbars 2/2: 12 more + framework/spec/TOOLBARS.md documenting every toolbar and its providers.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Style packages 1/2: 13 component style packages (buttons, containers, sliders, dialogs, tabs).",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Style packages 2/2: 12 more.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Navigation 1/2: 13 nav menus + behaviour themes paired with them.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Navigation 2/2: 12 more.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] 25 AmberX design packages built from the themes above.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Run the generators 1/2: 250 logos + 250 animated logos for the AmberX Framework and the GizmoX console; size budget + validation.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Run the generators 2/2: 100 icon packs; size budget + validation.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Branding packages: complete hot-swappable branding packages built from the generated marks, animated marks and icon packs.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Brand library console plugin 1/3: view with tabs Logos · Animated logos · Icon packs · Branding packages, virtualised grid, search, filters.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Brand library 2/3: preview pane (light/dark, sizes, animation play), Apply / Set as brand, copy id.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Brand library 3/3: settings tab, lifecycle panel, menu, tests.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Settings → Appearance: Design package + Branding pickers on top, the rest in one collapsible container.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] AmberX app 1/3: banner, toolbar, nav and app menu on the new design language + branding.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] AmberX app 2/3: windows, floating windows, dialogs, containers, tab groups.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] AmberX app 3/3: pages (Approvals, Settings, Plugins, voice, monitor) polished; test.mjs green.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Console shell refactor: frame, menu bar, nav, page heads, cards, empty states.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Console: refactor the enabled plugins 1/3.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Console: refactor the enabled plugins 2/3.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Console: refactor the enabled plugins 3/3.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Console: refactor every banner plugin (activity, build manager, codebase changes, push, approvals, systems check, keys, handoff).",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] Re-bake the web apps, defaults + manifests name a design package and branding; before/after web shots.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Opus] CI checks for every new checker, PORTING.md (Android twins deferred), rebuild report, CLAUDE.md status, THREADS.md.",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-30T18:11:29.776Z"
+        },
+        {
+          "text": "[Fable] Design language brief: audit the console + AmberX (amberx.amberxai.com) chrome; write the enterprise quality bar (type ramp, spacing scale, elevation, radii, motion, density, iconography, logo placement rules) in framework/spec/DESIGN-LANGUAGE.md. Everything later is held to it. First read, through axHub, which console plugins are installed and switched on in Plugin switches right now: that list, plus every banner plugin, is the plugin scope.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:28:33.097Z"
+        },
+        {
+          "text": "[Fable] behavior-theme asset type: asset-types.json entry, schema regen, all validators (motion, interaction, windows & dialogs, feedback).",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:08:21.998Z"
+        },
+        {
+          "text": "[Fable] Behaviour engine core/engines/behavior.ts + fixture spec/fixtures/behavior.json + check-behavior.mts; wired as the fallbacks look tokens already reference.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:08:21.998Z"
+        },
+        {
+          "text": "[Fable] design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme (+ optional branding); apply = swaps; capture from the current look; fixture + check.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:08:21.998Z"
+        },
+        {
+          "text": "[Fable] Retire appearance-package: migrate existing packages (amberx, fresh) and setting axf.appearance.package to design packages (old ids keep working).",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:08:21.998Z"
+        },
+        {
+          "text": "[Fable] Read the Opus design-package report (_claude/memory/docs/rebuilds/design-package.md) + code; list keep / change / wire in.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "20 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:28:33.166Z"
+        },
+        {
+          "text": "[Fable] Review design-package engine + runtime apply / capture / migration (core/engines/designpackage.ts); fix gaps; same type names, data format and setting keys unless the report says why.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:28:33.238Z"
+        },
+        {
+          "text": "[Fable] Review behaviour engine + CSS (core/engines/behavior.ts); refine motion / interaction mappings.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:28:33.306Z"
+        },
+        {
+          "text": "[Fable] Wire windows.stack / minimize / snap + snapGrid into the window manager.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:28:33.375Z"
+        },
+        {
+          "text": "[Fable] Wire feedback.busyCursor + confirmDelete into framework controls.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:28:33.433Z"
+        },
+        {
+          "text": "[Fable] Extend check-design-package.mts; regenerate fixtures; re-bake apps. (Picker + Everything else polish, shots and the differences report fold into the Ship phase.)",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:39:55.597Z"
+        },
+        {
+          "text": "[Fable] branding@1 asset type: an extendable template of brand slots (wordmark, mark, animated mark, favicon, app icon, splash, banner art, toolbar / window / floating window / dialog / container / tab-group decorations, palette + type hooks, icon pack) with an open slot registry so new slots never need a kernel change.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:39:25.047Z"
+        },
+        {
+          "text": "[Fable] Branding engine core/engines/branding.ts: resolve a brand into tokens, CSS vars and asset refs; hot swap via rt.swap(\"branding\", id); fixture + check-branding.mts.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:39:25.101Z"
+        },
+        {
+          "text": "[Fable] logo-mark + animated-logo asset types: safe SVG data model (path data only, no script, size caps), animation from motion tokens with reduced-motion fallback; validators + fixture.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:39:25.151Z"
+        },
+        {
+          "text": "[Fable] icon-pack@1 asset type (glyph name → path, grid, stroke/fill rules, fallbacks to framework icons); Icon component reads the active pack; relation to icon-sets.json defined.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:39:25.205Z"
+        },
+        {
+          "text": "[Fable] React layer part 1: banner, toolbar and tab group read branding decorations (logo placement, accent edge, animated mark) from the engine.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:44:28.329Z"
+        },
+        {
+          "text": "[Fable] React layer part 2: windows, floating windows, dialogs and containers read branding decorations (header art, mark, accent).",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:46:52.502Z"
+        },
+        {
+          "text": "[Fable] Seeded procedural generators (framework/cli/brand-gen.mjs): logo marks × wordmark styles, animated-logo motion presets, icon-pack style transforms over the base glyph set; deterministic, every output passes the validators.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:51:14.262Z"
+        },
+        {
+          "text": "[Opus] 10 light + 10 dark colour themes (contrast-checked, theme-swap CI passes).",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T20:31:42.318Z"
+        },
+        {
+          "text": "[Opus] 10 layout themes.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T20:31:42.369Z"
+        },
+        {
+          "text": "[Opus] 10 style themes.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T20:34:14.770Z"
+        },
+        {
+          "text": "[Opus] 10 context-menu assets.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-27T20:34:14.844Z"
+        },
+        {
+          "text": "[Opus] Toolbars 1/2: 13 dynamically driven toolbar assets (live providers, badges, widgets).",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T20:42:08.861Z"
+        },
+        {
+          "text": "[Opus] Toolbars 2/2: 12 more + framework/spec/TOOLBARS.md documenting every toolbar and its providers.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T20:42:08.934Z"
+        },
+        {
+          "text": "[Opus] Style packages 1/2: 13 component style packages (buttons, containers, sliders, dialogs, tabs).",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:47:13.405Z"
+        },
+        {
+          "text": "[Opus] Style packages 2/2: 12 more.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:47:13.482Z"
+        },
+        {
+          "text": "[Opus] Navigation 1/2: 13 nav menus + behaviour themes paired with them.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:50:08.047Z"
+        },
+        {
+          "text": "[Opus] Navigation 2/2: 12 more.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:50:08.100Z"
+        },
+        {
+          "text": "[Opus] 14 more AmberX design packages (11 exist on main: amberx + 10 from PR #124), built from the themes above, to reach 25.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:51:10.874Z"
+        },
+        {
+          "text": "[Opus] Run the generators 1/2: 250 logos + 250 animated logos for the AmberX Framework and the GizmoX console; size budget + validation.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:55:00.852Z"
+        },
+        {
+          "text": "[Opus] Run the generators 2/2: 100 icon packs; size budget + validation.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:55:00.906Z"
+        },
+        {
+          "text": "[Opus] Branding packages: complete hot-swappable branding packages built from the generated marks, animated marks and icon packs.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T21:56:06.767Z"
+        },
+        {
+          "text": "[Opus] Brand library console plugin 1/3: view with tabs Logos · Animated logos · Icon packs · Branding packages, virtualised grid, search, filters.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Brand library 2/3: preview pane (light/dark, sizes, animation play), Apply / Set as brand, copy id.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Brand library 3/3: settings tab, lifecycle panel, menu, tests.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Settings → Appearance: Design package + Branding pickers on top, the rest in one collapsible container.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:08:21.998Z"
+        },
+        {
+          "text": "[Opus] AmberX app 1/3: banner, toolbar, nav and app menu on the new design language + branding.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] AmberX app 2/3: windows, floating windows, dialogs, containers, tab groups.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] AmberX app 3/3: pages (Approvals, Settings, Plugins, voice, monitor) polished; test.mjs green.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Console shell refactor: frame, menu bar, nav, page heads, cards, empty states.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Console: refactor the enabled plugins 1/3.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Console: refactor the enabled plugins 2/3.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Console: refactor the enabled plugins 3/3.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Console: refactor every banner plugin (activity, build manager, codebase changes, push, approvals, systems check, keys, handoff).",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Re-bake the web apps, defaults + manifests name a design package and branding; before/after web shots.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] CI checks for every new checker, PORTING.md (Android twins deferred), rebuild report, CLAUDE.md status, THREADS.md.",
+          "at": "2026-10-27T16:56:46.231Z",
+          "estimate": "30 min"
+        }
+      ],
+      "createdAt": "2026-10-27T16:57:15.399Z",
+      "builtAt": "2026-10-30T18:11:29.776Z",
+      "updatedAt": "2026-10-27T21:56:06.768Z",
+      "source": "chat"
+    },
+    {
+      "id": "interface-roller",
+      "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
+      "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred.",
+      "model": "Opus",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Runs after enterprise-branding phase 1 (s1-s12), whose asset types and generators it uses. One switch: Fable s1-s5, then Opus s6-s15.",
+          "at": "2026-10-27T17:11:59.354Z"
+        },
+        {
+          "text": "Brett, Oct 27 2026 (cards): the three interface tabs go in the GizmoX console (Main = today's look). Order: enterprise-branding phase 1 first, then this build's Fable phase in the same Fable session, then one switch to Opus.",
+          "at": "2026-10-27T17:17:17.307Z"
+        },
+        {
+          "text": "Fable phase 1 done Oct 27 2026 (PR #129, stacked on #128). Next on Opus after the switch is approved.",
+          "at": "2026-10-27T19:11:51.096Z"
+        },
+        {
+          "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+          "at": "2026-10-27T22:05:00.000Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Fable] interface@1: one asset that names a whole interface: design package (style, colour, layout, behaviour), branding (logos, animated logos, icon pack), every chrome asset (banner, app menu, toolbar, nav, context menus, tab group, settings interface, dialog/window/container styles). Open slot list, so new chrome joins by itself.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:58:54.888Z"
+        },
+        {
+          "text": "[Fable] Scoped runtime: the same app drawn under several interfaces at once (one asset scope + CSS scope per interface, nothing leaks between them). Engine part + fixture.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T18:58:54.951Z"
+        },
+        {
+          "text": "[Fable] React layer: <InterfaceScope id> wraps a subtree; AppShell, menus, context menus, dialogs, floating windows and portals honour the scope.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:03:25.215Z"
+        },
+        {
+          "text": "[Fable] Interface roller engine 1/2: seeded, coherent roll of every slot (palette harmony + contrast, type pairing, radii/density/elevation, motion, layout) with a lock per part; reproducible; fixture.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:08:35.374Z"
+        },
+        {
+          "text": "[Fable] Roller 2/2: rolls structure too: app menu / toolbar / nav / context-menu arrangements built from the app's own actions (never drops one), plus a new logo, animated logo and icon pack through the brand generators.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:08:35.445Z"
+        },
+        {
+          "text": "[Opus] Interface 2 part 1: an entirely different look, feel and behaviour (design package, branding, chrome assets).",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T22:19:19.746Z"
+        },
+        {
+          "text": "[Opus] Interface 2 part 2: menus, context menus, dialogs, windows and containers worked out and checked on every page.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T22:19:19.816Z"
+        },
+        {
+          "text": "[Opus] Interface 3 part 1: a third, entirely different look, feel and behaviour.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T22:19:19.876Z"
+        },
+        {
+          "text": "[Opus] Interface 3 part 2: menus, context menus, dialogs, windows and containers worked out and checked on every page.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T22:19:19.927Z"
+        },
+        {
+          "text": "[Opus] The GizmoX console's main window becomes a tab group: Main (today's look, unchanged) · Interface 2 · Interface 3, each tab the full app under its own interface scope.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T22:19:19.983Z"
+        },
+        {
+          "text": "[Opus] Interface roller console plugin 1/2: Roll, lock parts, roll again, preview in a new tab, undo.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Roller 2/2: save as an interface@1 asset, apply to one tab or the whole app, export / import, settings tab + lifecycle.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Harvest it as framework library lib-interface-roller so every AXF web app can install it (console, AmberX, axHub web, Patches web, Walkthrough Studio); library@1 parts.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Install the library in the AmberX app and the other web apps; check each one builds and rolls.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Tests for every checker, before/after shots of the three tabs, rebuild report, PORTING.md (Android deferred), CLAUDE.md, THREADS.md.",
+          "at": "2026-10-27T17:11:59.344Z",
+          "estimate": "30 min"
+        }
+      ],
+      "createdAt": "2026-10-27T17:17:17.473Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T22:19:19.983Z",
+      "source": "chat"
+    },
+    {
+      "id": "build-orchestrator",
+      "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
+      "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Built on branch claude/build-orchestrator, PR #122.",
+          "at": "2026-10-27T16:44:18.183Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-27T16:39:39.618Z",
+      "builtAt": "2026-10-27T16:39:39.618Z",
+      "updatedAt": "2026-10-27T16:44:18.183Z",
+      "source": "chat"
+    },
+    {
+      "id": "pending-grid-view",
+      "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
+      "detail": "From Brett's attachment (Oct 27 2026). Grid next to Reload; columns 1-line summary, date added, total time estimate, cost estimate; rows expand to today's card; toolbar archive/delete/hide/unhide/open in (Build manager, Build queue, Plan); select hook with double-click multi-select. All Opus (console UI).",
+      "model": "Opus",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Opus] pending@1: optional hidden + archived fields in pending-core (apply actions hide/unhide/archive, sorts); API + MCP accept them; artifact mapping unchanged except the new fields.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Grid view toggle next to Reload in Pending builds: rows with 1-line summary, date added, total time estimate, cost estimate; every column sortable (framework DataGrid).",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Rows expand to the full card content they show today (steps, notes, actions).",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Toolbar: Archive, Delete, Hide, Unhide (greyed when nothing selected), Open in (tooltip dialog: Build manager, Build queue, Plan), all in focus where they open.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Select hook: hover tooltip \"activate multi select with double click\"; double-click flashes the top item's hover style 3 times, tooltip \"select items\", then single clicks add to the selection; checkbox column shows.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Tests (pending-core cases + view build), screenshots, THREADS.md.",
+          "at": "2026-10-27T16:36:55.356Z",
+          "estimate": "20 min"
+        }
+      ],
+      "createdAt": "2026-10-27T16:39:39.821Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T16:36:55.356Z",
+      "source": "chat"
+    },
+    {
+      "id": "build-profiles",
+      "title": "Build profiles + Build profiles console plugin",
+      "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Built on Opus, branch claude/build-profiles, PR #127.",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Opus] Core registry + persist profile layer + orchestrator per profile",
+          "at": "2026-10-27T19:00:00.000Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "[Opus] Python mirror + server routes",
+          "at": "2026-10-27T19:00:00.000Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "[Opus] Console plugin",
+          "at": "2026-10-27T19:00:00.000Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "[Opus] Tests, docs, PR",
+          "at": "2026-10-27T19:00:00.000Z",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z"
+        }
+      ],
+      "createdAt": "2026-10-27T19:00:00.000Z",
+      "builtAt": "2026-10-27T19:30:00.000Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "source": "chat"
+    },
+    {
+      "id": "amberx-appearance-lock",
+      "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
+      "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Merged in PR #126 (branch claude/amberx-appearance-lock), Oct 27 2026.",
+          "at": "2026-10-27T19:23:01.225Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-27T19:05:30.186Z",
+      "builtAt": "2026-10-27T19:23:01.118Z",
+      "updatedAt": "2026-10-27T19:23:01.225Z",
+      "source": "chat"
+    },
+    {
+      "id": "tools-plugin",
+      "title": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches web",
+      "detail": "Brett, Oct 22 2026: the Tools section is a plugin of its own, and Claude handoff depends on it.\n\n- New plugin `tools` (plugin@1 + lifecycle): it owns the Tools nav section and the top-level `tools` application menu that tool plugins add to; it provides a capability service (e.g. `axf.tools@1`) that tool plugins require.\n- Claude handoff (and any later tool plugin) declares it as a dependency (`requires`) and adds its entries through it instead of creating the section itself.\n- For Patches: the Tools plugin adds a **Tools** tab to Patches web's app tab group (next to Console / Pilot / axHub). Patches itself runs the Tools page; it is not the console page in a frame.\n- Patches web only for now (Android later).",
+      "model": "Opus",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Overlaps claude-handoff (built Oct 22 2026, PR #22: it currently creates the Tools section itself, so this build moves that out). Parked by Brett: \"Hold off on that, add to queue.\"",
+          "at": "2026-10-22T14:05:33.773Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator).",
+          "at": "2026-10-27T23:01:35.786Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Opus] Tools plugin skeleton: plugin@1, lifecycle, install/uninstall, nav section + `tools` app menu, capability service",
+          "at": "2026-10-27T23:01:35.786Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Move Claude handoff onto it: `requires` the service, contributes its entries through it, lifecycle check passes both ways",
+          "at": "2026-10-27T23:01:35.786Z",
+          "estimate": "20 min"
+        },
+        {
+          "text": "[Opus] Patches web: Tools tab in the app tab group (patches-tabs nav-menu + AppTabs), a Tools page run by Patches",
+          "at": "2026-10-27T23:01:35.786Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Tests, menu-reach, check-controls/theme, docs (CLAUDE.md status, plugins README)",
+          "at": "2026-10-27T23:01:35.786Z",
+          "estimate": "15 min"
+        }
+      ],
+      "createdAt": "2026-10-22T14:05:33.771Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T23:01:35.786Z",
+      "source": "chat"
+    },
+    {
+      "id": "amberx-web-host",
+      "title": "AmberX web app at amberx.amberxai.com + sign-in inside the Android app",
+      "detail": "",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Opus] Container + installer for amberx.amberxai.com",
+          "at": "2026-10-26T01:05:34.314Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:25:27.054Z"
+        },
+        {
+          "text": "[Opus] Shell loads the hosted app, hub sign-in in the WebView",
+          "at": "2026-10-26T01:05:34.314Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:25:27.054Z"
+        },
+        {
+          "text": "[Opus] DNS, deploy, verify",
+          "at": "2026-10-26T01:05:34.314Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:25:27.054Z"
+        }
+      ],
+      "createdAt": "2026-10-26T01:05:34.314Z",
+      "builtAt": "2026-10-27T19:25:27.054Z",
+      "updatedAt": "2026-10-27T19:25:27.054Z",
+      "source": "chat"
+    },
+    {
+      "id": "amberx-notes",
+      "title": "AmberX voice notes, lists, tasks + AI router",
+      "detail": "Orchestrator build amberx-notes, branch claude/amberx-notes. Building now (Oct 27 2026), sub-agents allowed by Brett.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
+          "at": "2026-10-28T02:35:00.000Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "Notes core: lists tree (categories, sub-lists, Inbox, Plugins root auto-filled with a list per plugin), notes/todos/tasks model, move/rename/merge, intent schema + validator, local voice-intent parser",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Notes store on axHub (lib-hubstore tables in amberx-notes/), shared read of the console Voice notes + Voice Vault tables, offline queue",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Notes page: tabs Inbox / Lists / Notes / Pinned / Search; collapsible list tree with Plugins folder; note cards; rename, move to list, merge, tags, pin, star",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Lists manager: create/rename/move/delete lists and sub-lists, drag to reorder, bulk move items between lists",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Tasks + Todo page: status, priority, due, checklist, subtasks; tabs Today / Upcoming / All / Done; grid and tree views",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Dictation: record a note hands-free (start/stop triggers, cut stop words), live transcript, review card, save to the right list",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Voice commands section: predefined commands from the codebase (every registered action + notes/tasks commands) grouped in tabs, switch each on/off, edit phrases, test pad",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Voice note commands wired: new note in X, add todo, move last note, rename list, create list under, mark done, read my tasks",
+          "at": "",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "AmberX server: FastAPI behind the axHub wall (signed headers), Dockerfile + deploy switch from static nginx",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "LLM router on framework assistant_host providers: Claude plan ↔ Claude API switch, any mainstream LLM, fallback chain, keep-alive health checks, retries, keys server-side only",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "AI connection settings: provider switch, keys (write-only), test, status badge, fallback order",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Real-time parsing: transcript → validated intent JSON (summary, list, sub-list, tasks, due, priority, tags), review then store",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Summaries, title cleanup, Ask my notes",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Integrated web component: Web tab with address bar, clip page/selection to a note",
+          "at": "",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:20:00.000Z"
+        },
+        {
+          "text": "Export (Markdown/JSON), tests, re-check, deploy, docs, THREADS",
+          "at": "",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T02:35:00.000Z"
+        }
+      ],
+      "createdAt": "2026-10-28T00:32:23.016Z",
+      "builtAt": "2026-10-28T02:35:00.000Z",
+      "updatedAt": "2026-10-28T00:32:23.016Z",
+      "source": "chat",
+      "note": ""
+    },
+    {
+      "id": "style-package-fable",
+      "title": "Style packages — Fable rebuild of style-package@1",
+      "detail": "Profile: main framework. Fable rebuild of the Opus build of style-package@1 (enterprise-branding s19–s20, branch opus/enterprise-branding). Brett, Oct 27 2026: new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Fable] Review the Opus style-package@1 contract (members registry, slots, tone) against design-package@1 and interface@1; decide what changes; write the decision into framework/spec (STYLE-PACKAGES.md).",
+          "at": "2026-10-27T21:47:04.141Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Fable] Rebuild the engine + runtime apply paths (swap, swapAll, design-package extras, interfaces, roller): pure fixture spec/fixtures/style-package.json replayed by check-style-packages.mts.",
+          "at": "2026-10-27T21:47:04.141Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] Re-tune the 25 starter control sets against DESIGN-LANGUAGE.md (distinct, coherent with the colour/style themes they pair with) and regenerate fixtures.",
+          "at": "2026-10-27T21:47:04.141Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Fable] Differences report _claude/memory/docs/rebuilds/style-package-fable.md + LOG.md line; re-bake the five web apps; checks green.",
+          "at": "2026-10-27T21:47:04.141Z",
+          "estimate": "15 min"
+        }
+      ],
+      "createdAt": "2026-10-27T21:47:04.141Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T21:47:04.147Z",
+      "source": "console"
+    },
+    {
+      "id": "builds-one-page",
+      "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
+      "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
+      "model": "Opus",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "PAUSED by Brett Oct 27 2026 18:30. Don't start s5 or later until he unpauses (set status back to running).",
+          "at": "2026-10-27T22:31:01.407Z"
+        },
+        {
+          "text": "Oct 27 18:15 Brett: folded in 'date + time on every entry, newest (last updated) first in every grid regardless of filter' as two Opus steps before tests (asked for Refactor profile; folded here since this build owns the one dataset).",
+          "at": "2026-10-27T22:23:44.299Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Fable] Design the one builds dataset in plan.json: queue order/steps/rework, parked model + notes + sub prompts, orchestrator phases/approvals, hidden/archived; status mapping pending ↔ plan; spec framework/spec/BUILDS.md",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:35:41.594Z"
+        },
+        {
+          "text": "[Fable] builds-core.mjs (pure): every view (plan, tracker, queue, pending, orchestrator) is a filter/sort over one list, with nested info per row (steps, notes, deps, linked features, phases)",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:41:13.352Z"
+        },
+        {
+          "text": "[Fable] Shims: pending-core, build-queue-core and orchestrator-core read/write through builds-core (same APIs); tracker.json generated from it; fixture spec/fixtures/builds.json + checker",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:45:58.111Z"
+        },
+        {
+          "text": "[Fable] Migration: pending.json (9 planId items attach, 91 become entries), build-queue.json, orchestrator.json → plan.json; dry-run report; persist + manifest data.shared updated",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-27T19:46:34.469Z"
+        },
+        {
+          "text": "[Opus] Run the migration (repo + hub _data), keep the old files as read-only exports for one release",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] GET/POST /api/builds, engine-rpc and MCP; pending_list/pending_change, build-queue and orchestrator routes keep working through the shims",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Builds page: one nav entry, view toolbar (Plan · Tracker · Queue · Pending · Orchestrator), shared filters, ?view= in the URL; old pages redirect to their view",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Table look (framework DataGrid) as every view's default, rows expand to the Pending card; Orchestrator view = same table with phases and steps nested",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Nested info per view: tracker → group + suggested features; queue → linked features, deps, rework; plan → acceptance, ports, deps; pending → steps, notes",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Grid columns (summary, date added, time, cost), toolbar Archive/Delete/Hide/Unhide/Open in, double-click multi-select (pending-grid-view s1-s6)",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] View switching everywhere: app menu Builds ▸ View, context menu Open in view…, shortcuts 1–5, banners open a filtered view, axf://builds?view=…, search provider",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] claude.ai Pending page maps to the new data; Build manager merge simplified (no de-dup needed)",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Every build entry carries hidden date/time fields: createdAt (set once) and updatedAt (any change: status, step tick, note, sub prompt, model, edit) on the feature build block and every step/note (at/doneAt). builds-core stamps them in apply(); the migration backfills missing ones from pending/queue/orchestrator/history dates (never blank). Kept in plan.json and every export (pending.json, build-queue.json, orchestrator.json, tracker.json, hub _data) and in the claude.ai Pending page data. Hidden: not shown as columns, only in row details / tooltip.",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "25 min"
+        },
+        {
+          "text": "[Opus] Newest first, always: every view (Plan, Tracker, Queue, Pending, Orchestrator, Remaining/Live/Built/Sessions, banners, Build manager, claude.ai Pending page) sorts by updatedAt descending regardless of filters, chips or search; the old order/status/left sorts become a secondary key or an explicit per-click column sort that resets to newest-first on reload. Steps inside a build keep their own order.",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "20 min"
+        },
+        {
+          "text": "[Opus] Tests, before/after screenshots, report + rebuild LOG, CLAUDE.md status, THREADS.md",
+          "at": "2026-10-27T19:11:22.011Z",
+          "estimate": "30 min"
+        }
+      ],
+      "createdAt": "2026-10-27T19:11:22.011Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T22:31:01.471Z",
+      "source": "chat"
+    },
+    {
+      "id": "trim-asset",
+      "title": "New asset type: trim (a layout + a colour theme in one asset)",
+      "detail": "Brett, Oct 27 2026: new asset type `trim` combining a layout asset and a colour theme asset. Decided: trim is its own swappable asset, and a design package may reference a trim instead of carrying its own layout + colour theme (both forms stay valid). Web + Python; Kotlin twin recorded in PORTING.md (Android hold).",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator). Queued in PR #130.",
+          "at": "2026-10-27T23:01:35.765Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Fable] `trim` in asset-types.json + JSON schema ({layout, colorTheme}: id or inline); design-package accepts `trim` in place of layout + colour; validators (ts + mjs), PORTING.md gap",
+          "at": "2026-10-27T19:11:22.026Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] core/engines/trim.ts: resolve a trim into layout + colour swaps; rt trim slot; design-package engine resolves trim refs; roll/hide rules; fixtures spec/fixtures/trim.json + checker",
+          "at": "2026-10-27T19:11:22.026Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Settings → Appearance Trim picker, theme manager Save as trim, 6 starter trims from existing layouts + colour themes, defaults.json",
+          "at": "2026-10-27T19:11:22.026Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Opus] Tests, screenshots, docs, CLAUDE.md status, THREADS.md",
+          "at": "2026-10-27T19:11:22.026Z",
+          "estimate": "20 min"
+        }
+      ],
+      "createdAt": "2026-10-27T19:11:22.026Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T19:11:22.026Z",
+      "source": "chat"
+    },
+    {
+      "id": "apply-all-levels-fable",
+      "title": "Look tokens + settings levels (Fable rebuild)",
+      "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Moved into Refactor (Brett, Oct 27 2026 18:57: everything unfinished since 6am goes in the orchestrator).",
+          "at": "2026-10-27T23:01:35.776Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Fable] look@1 fixture + reference engine review, replace the Opus engine",
+          "at": "2026-10-27T23:01:35.774Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] Banner Apply to all on the reviewed engine",
+          "at": "2026-10-27T23:01:35.774Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] settings-ui@1 levels review + Sliders",
+          "at": "2026-10-27T23:01:35.774Z",
+          "estimate": "30 min"
+        },
+        {
+          "text": "[Fable] Re-bake every app, before/after shots, differences report",
+          "at": "2026-10-27T23:01:35.774Z",
+          "estimate": "30 min"
+        }
+      ],
+      "createdAt": "2026-10-27T23:01:35.774Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T23:01:35.776Z",
+      "source": "pending"
+    },
+    {
+      "id": "amberx-handsfree",
+      "title": "AmberX: hands-free listening on screen + in background, ActiveX-style detection overlay (level graph, dB, quick settings)",
+      "detail": "Brett, Oct 27 2026 (claude.ai): 'It only detects words when I press speak' in AmberX (apps/amberx-droid). Cause: the native wake listener runs only while 'Watch axHub in the background' is on (default off) and pauses while the app is on screen. Fix: hands-free listening is its own setting (default on), works on screen and in the background, independent of axHub monitoring; optional always-armed (no wake phrase). Plus a detection overlay like ActiveX: floating draggable window over other apps with a moving audio-level line graph, decibel number, what was heard, and quick settings (listening on/off, always armed, hide). Colours from the app's theme tokens. Profile refactor, Opus (Brett's pick). Android exception: AmberX shell is allowed (rule Oct 25).",
+      "model": "Opus",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [
+        {
+          "text": "[Opus] WatchService: hands-free listening independent of monitoring, keeps listening on screen (wake → straight to the web side, no alert), pauses while the Speak button listens, always-armed mode, level + heard events",
+          "at": "2026-10-27T23:42:02.902Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T23:48:40.444Z"
+        },
+        {
+          "text": "[Opus] Detection overlay: TYPE_APPLICATION_OVERLAY window (draggable), level line graph, dB number, last heard, quick settings (mic, always armed, hide), overlay permission flow, theme colours from the web side",
+          "at": "2026-10-27T23:42:02.902Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T23:48:40.492Z"
+        },
+        {
+          "text": "[Opus] Voice plugin: settings (hands-free default on, always armed, overlay), native bridge methods + browser fallback, in-app live level graph + dB on the Voice page, monitor no longer owns the wake phrase",
+          "at": "2026-10-27T23:42:02.902Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-27T23:48:40.545Z"
+        },
+        {
+          "text": "[Opus] Tests (test.mjs), README, CI green, PR + merge approval",
+          "at": "2026-10-27T23:42:02.902Z",
+          "estimate": "20 min"
+        }
+      ],
+      "createdAt": "2026-10-27T23:42:02.902Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-27T23:49:00.991Z",
+      "source": "chat"
+    },
+    {
+      "id": "orch-pending-sync",
+      "title": "Orchestrator ↔ Pending builds auto-sync (Build manager follows)",
+      "detail": "Brett, Oct 27 2026 20:46: all builds go to the orchestrator, which splits them into Fable/Opus steps and sends them out to Pending builds and the Build manager; they always stay in sync. Bridge until builds-one-page (paused) merges the datasets. Every orchestrator save rewrites the profile Pending list; every Pending change (console, CLI, MCP, plugins) flows back into the orchestrator. Profile: Refactor.",
+      "model": "Opus",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Built on Opus, branch claude/orch-pending-sync, PR #143; s3 ticks when merged.",
+          "at": "2026-10-28T01:11:04.754Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "[Opus] framework/plan/orch-sync.mjs (pure): orchestratorToPending + pendingToOrchestrator on the raw shapes ([Fable]/[Opus] step prefixes, status map, notes, step ticks, removals archive the build), fixture test",
+          "at": "2026-10-28T01:07:25.673Z",
+          "estimate": "30 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:10:06.928Z"
+        },
+        {
+          "text": "[Opus] Wire both writers: orchestrator.mjs save() pushes to Pending; pending.mjs actPending() pulls into the orchestrator (covers console, engine-rpc, MCP, plugins); same build profile on both sides; no loops",
+          "at": "2026-10-28T01:07:25.673Z",
+          "estimate": "25 min",
+          "done": true,
+          "doneAt": "2026-10-28T01:10:06.991Z"
+        },
+        {
+          "text": "[Opus] Rule + docs (RULES.md, _claude/builds/README.md), CI test, PR + merge approval",
+          "at": "2026-10-28T01:07:25.673Z",
+          "estimate": "20 min"
+        }
+      ],
+      "createdAt": "2026-10-28T01:07:25.673Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-28T01:11:04.754Z",
+      "source": "chat"
     }
-   ],
-   "subPrompts": [
-    {
-     "text": "Undo #107 pane; look@1 engine + check",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": ""
-    },
-    {
-     "text": "Banner Apply to all section + fallback + stylesheet",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": ""
-    },
-    {
-     "text": "settings-ui@1 levels + level switch + filtering",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": ""
-    },
-    {
-     "text": "Sliders section, asset tags, copies into every app, checks",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": ""
-    }
-   ],
-   "createdAt": "2026-10-27T03:19:49.625Z",
-   "builtAt": "2026-10-27T03:19:49.625Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "estimate": "2 h",
-   "source": "chat"
-  },
-  {
-   "id": "amberx-empty-shell",
-   "title": "AmberX as an empty shell for building and testing plugins",
-   "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Built Oct 26 2026 on Opus (claude.ai): branch claude/amberx-empty-shell, PR #118. test.mjs 157, tsc, vite build, axf validate 83 assets.",
-     "at": "2026-10-27T03:48:42.596Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "Remove Hub, Apps, Manage, Asset studio, Account views and demo dialogs",
-     "at": "",
-     "estimate": "15 min",
-     "done": true,
-     "doneAt": ""
-    },
-    {
-     "text": "Trim nav, app menu, toolbar, context menu assets",
-     "at": "",
-     "estimate": "15 min",
-     "done": true,
-     "doneAt": ""
-    },
-    {
-     "text": "README plugin how-to, CLAUDE.md status, test.mjs shell checks",
-     "at": "",
-     "estimate": "15 min",
-     "done": true,
-     "doneAt": ""
-    },
-    {
-     "text": "tsc, vite build, axf validate, PR, THREADS",
-     "at": "",
-     "estimate": "15 min",
-     "done": true,
-     "doneAt": ""
-    }
-   ],
-   "createdAt": "2026-10-27T03:48:42.596Z",
-   "builtAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "estimate": "1 h",
-   "source": "chat"
-  },
-  {
-   "id": "fresh-look",
-   "title": "Fresh look: new default style theme + fresh appearance package",
-   "detail": "Brett, Oct 26 2026: rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-27T04:05:32.031Z",
-   "builtAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "estimate": "1 h",
-   "source": "chat"
-  },
-  {
-   "id": "design-package",
-   "title": "AmberX Design Package asset type (style + colour + layout + behaviour) + Behaviour theme asset type; replaces Appearance package",
-   "detail": "Brett, Oct 27 2026: new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold).",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Built on Opus (Brett: \"Do in opus\") on branch rebuild/design-package-opus. Fable rebuild parked as design-package-fable. Report _claude/memory/docs/rebuilds/design-package.md.",
-     "at": "2026-10-27T17:16:22.734Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "behavior-theme asset type: asset-types.json entry (group Themes, rolled), JSON schema regen, all three validators accept it",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "20 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:21.967Z"
-    },
-    {
-     "text": "Behaviour engine core/engines/behavior.ts: normalise + compile to --fx-* vars/attrs for motion, interaction, windows/dialogs, feedback; fixture spec/fixtures/behavior.json + check-behavior.mts",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.045Z"
-    },
-    {
-     "text": "Wire behaviour into the React layer + runtime: motion vars, long-press and double-tap times, dialog/window open-close-snap-stack, toasts, sound, vibration, confirm-before-delete (behaviour tokens are the fallbacks the look tokens already reference)",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.142Z"
-    },
-    {
-     "text": "Starter behaviour themes (4: calm, snappy, minimal-motion, playful) + framework default",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "20 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.227Z"
-    },
-    {
-     "text": "design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme ids; apply = 4 swaps; capture from the current look; fixture + check",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.312Z"
-    },
-    {
-     "text": "Retire appearance-package: migrate existing packages and the axf.appearance.package setting to design packages; ask Brett where the extra look settings (spacing, hidden chrome, other slot picks) go before dropping them",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.398Z"
-    },
-    {
-     "text": "Settings -> Appearance: Design Package picker (with Apply) on top; the rest of the Appearance section in one collapsible container",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.476Z"
-    },
-    {
-     "text": "Defaults + every web app's manifest names a design package and behaviour theme; re-bake console-web, axhub-web, patches-web, amberx-droid, walkthrough-studio",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.572Z"
-    },
-    {
-     "text": "PORTING.md deferred Kotlin twin, CLAUDE.md status, rebuild report + before/after web shots, THREADS.md, tests in CI",
-     "at": "2026-10-27T16:19:48.729Z",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T17:16:22.657Z"
-    }
-   ],
-   "createdAt": "2026-10-27T16:19:41.652Z",
-   "builtAt": "2026-10-27T17:16:22.827Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "estimate": "4.5 h",
-   "source": "chat"
-  },
-  {
-   "id": "design-packages-10",
-   "title": "10 more AmberX Design Packages",
-   "detail": "Brett, Oct 27 2026: make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Built on branch claude/design-packages-10 (on top of PR #123).",
-     "at": "2026-10-27T17:25:19.393Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-27T17:25:19.327Z",
-   "builtAt": "2026-10-27T17:25:19.327Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "source": "chat"
-  },
-  {
-   "id": "arch-foundation",
-   "title": "Hardened architecture foundation: layout/theme/plugin contracts, Pydantic migrator + namespacing, plugin boundary + lifecycle broker, docs",
-   "detail": "From Brett's attachment (Oct 27 2026): 5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred. Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, mixed Fable/Opus steps).",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "[Fable] Gap audit: map attachment items 1-3 onto what exists (asset@1 layout, color/style themes, plugin@1, AxfWebLibrary, settings, embed); write _claude/memory/docs/arch-foundation.md listing only what is new. Do not duplicate existing contracts.",
-     "at": "",
-     "estimate": "20 min"
-    },
-    {
-     "text": "[Fable] Layout & component tree contract (TS): page → widget/plugin nodes with unique ids, dimensions, bounding boxes, asset dependencies; additive to layout@ assets; fixture + checker.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Fable] Theme contract additions: component-specific overrides on top of color/style themes (tokens only); fixture.",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Fable] plugin@1 manifest additions: declared assets, default settings, layout entry points (optional fields, old manifests still valid); schema + validators.",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Fable] Pydantic v2 models mirroring items 1-3 + migration engine (@model_validator(mode=\"before\")): up-cast legacy versions, fill missing fields, sanitise; never crash old apps. framework/python/axf/contracts/.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Fable] Ingestion namespace engine: prefix every harvested plugin key as plugin_id:property (state + assets), idempotent, collision report; same rules in TS + Python, one fixture.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Fable] Lifecycle event broker (TS): onInit / onStateChange / onThemeUpdate / onContextMenuOpen / onDestroy, typed message passing, plugins never touch global state; fixture.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] React PluginBoundary: error boundary around every mounted plugin (layout + context-menu hooks), isolate the widget, themed fallback stub, report to rt.diagnostics.",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Opus] Architecture spec: add the new contracts to CLAUDE.md status + a reference layout tree in framework/spec/ARCH-FOUNDATION.md (no second .claude.md: CLAUDE.md is the project file).",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Opus] Developer guide part 1: build a new plugin (manifest, layout/theme hooks, lifecycle hooks) in apps/console-web/plugins/README.md.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Developer guide part 2: how harvesting works + how live sync works (hub appearance@1, migrations) in framework/spec/.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Tests in CI for the new checkers + Python test; THREADS.md + PORTING.md (Android twins deferred).",
-     "at": "",
-     "estimate": "20 min"
-    }
-   ],
-   "createdAt": "2026-10-27T16:39:39.721Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "source": "chat"
-  },
-  {
-   "id": "enterprise-branding",
-   "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
-   "detail": "Brett, Oct 27 2026: only refactor AmberX (amberx.amberxai.com) and the console (active plugins + every banner plugin) to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold). Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json).",
-   "model": "Fable",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    },
-    {
-     "text": "Complete (Oct 30 2026, claude/enterprise-branding-3): all 46 orchestrator steps done. Fable s1-s12 in PR #128, Opus s13-s26 in PR #138, s27-s40 inside refactor-all (PR #166, merged Oct 29). Re-checked green on main. Report _claude/memory/docs/rebuilds/enterprise-branding-3.md.",
-     "at": "2026-10-30T18:11:29.776Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "[Fable] Design language brief: audit the console + AmberX (amberx.amberxai.com) chrome; write the enterprise quality bar (type ramp, spacing scale, elevation, radii, motion, density, iconography, logo placement rules) in framework/spec/DESIGN-LANGUAGE.md. Everything later is held to it.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] behavior-theme asset type: asset-types.json entry, schema regen, all validators (motion, interaction, windows & dialogs, feedback).",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] Behaviour engine core/engines/behavior.ts + fixture spec/fixtures/behavior.json + check-behavior.mts; wired as the fallbacks look tokens already reference.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] design-package asset type + engine core/engines/designpackage.ts: wraps style-theme, color-theme, layout, behavior-theme (+ optional branding); apply = swaps; capture from the current look; fixture + check.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] Retire appearance-package: migrate existing packages (amberx, fresh) and setting axf.appearance.package to design packages (old ids keep working).",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] branding@1 asset type: an extendable template of brand slots (wordmark, mark, animated mark, favicon, app icon, splash, banner art, toolbar / window / floating window / dialog / container / tab-group decorations, palette + type hooks, icon pack) with an open slot registry so new slots never need a kernel change.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] Branding engine core/engines/branding.ts: resolve a brand into tokens, CSS vars and asset refs; hot swap via rt.swap(\"branding\", id); fixture + check-branding.mts.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] logo-mark + animated-logo asset types: safe SVG data model (path data only, no script, size caps), animation from motion tokens with reduced-motion fallback; validators + fixture.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] icon-pack@1 asset type (glyph name → path, grid, stroke/fill rules, fallbacks to framework icons); Icon component reads the active pack; relation to icon-sets.json defined.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] React layer part 1: banner, toolbar and tab group read branding decorations (logo placement, accent edge, animated mark) from the engine.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] React layer part 2: windows, floating windows, dialogs and containers read branding decorations (header art, mark, accent).",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Fable] Seeded procedural generators (framework/cli/brand-gen.mjs): logo marks × wordmark styles, animated-logo motion presets, icon-pack style transforms over the base glyph set; deterministic, every output passes the validators.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] 10 light + 10 dark colour themes (contrast-checked, theme-swap CI passes).",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] 10 layout themes.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] 10 style themes.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] 10 context-menu assets.",
-     "at": "",
-     "estimate": "25 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Toolbars 1/2: 13 dynamically driven toolbar assets (live providers, badges, widgets).",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Toolbars 2/2: 12 more + framework/spec/TOOLBARS.md documenting every toolbar and its providers.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Style packages 1/2: 13 component style packages (buttons, containers, sliders, dialogs, tabs).",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Style packages 2/2: 12 more.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Navigation 1/2: 13 nav menus + behaviour themes paired with them.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Navigation 2/2: 12 more.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] 25 AmberX design packages built from the themes above.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Run the generators 1/2: 250 logos + 250 animated logos for the AmberX Framework and the GizmoX console; size budget + validation.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Run the generators 2/2: 100 icon packs; size budget + validation.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Branding packages: complete hot-swappable branding packages built from the generated marks, animated marks and icon packs.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Brand library console plugin 1/3: view with tabs Logos · Animated logos · Icon packs · Branding packages, virtualised grid, search, filters.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Brand library 2/3: preview pane (light/dark, sizes, animation play), Apply / Set as brand, copy id.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Brand library 3/3: settings tab, lifecycle panel, menu, tests.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Settings → Appearance: Design package + Branding pickers on top, the rest in one collapsible container.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] AmberX app 1/3: banner, toolbar, nav and app menu on the new design language + branding.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] AmberX app 2/3: windows, floating windows, dialogs, containers, tab groups.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] AmberX app 3/3: pages (Approvals, Settings, Plugins, voice, monitor) polished; test.mjs green.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Console shell refactor: frame, menu bar, nav, page heads, cards, empty states.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Console: refactor the enabled plugins 1/3.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Console: refactor the enabled plugins 2/3.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Console: refactor the enabled plugins 3/3.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Console: refactor every banner plugin (activity, build manager, codebase changes, push, approvals, systems check, keys, handoff).",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] Re-bake the web apps, defaults + manifests name a design package and branding; before/after web shots.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    },
-    {
-     "text": "[Opus] CI checks for every new checker, PORTING.md (Android twins deferred), rebuild report, CLAUDE.md status, THREADS.md.",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-30T18:11:29.776Z"
-    }
-   ],
-   "createdAt": "2026-10-27T16:57:15.399Z",
-   "builtAt": "2026-10-30T18:11:29.776Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "source": "chat"
-  },
-  {
-   "id": "interface-roller",
-   "title": "Three complete interfaces in GizmoX tabs + an interface roller for every app",
-   "detail": "Brett, Oct 27 2026 13:10: \"Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.\" Needs enterprise-branding phase 1 (design package, behaviour, branding, logo and icon-pack types + generators) first. Web only; Android deferred. Tracked in the Build orchestrator.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "[Fable] interface@1: one asset that names a whole interface: design package (style, colour, layout, behaviour), branding (logos, animated logos, icon pack), every chrome asset (banner, app menu, toolbar, nav, context menus, tab group, settings interface, dialog/window/container styles). Open slot list, so new chrome joins by itself.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Fable] Scoped runtime: the same app drawn under several interfaces at once (one asset scope + CSS scope per interface, nothing leaks between them). Engine part + fixture.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Fable] React layer: <InterfaceScope id> wraps a subtree; AppShell, menus, context menus, dialogs, floating windows and portals honour the scope.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Fable] Interface roller engine 1/2: seeded, coherent roll of every slot (palette harmony + contrast, type pairing, radii/density/elevation, motion, layout) with a lock per part; reproducible; fixture.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Fable] Roller 2/2: rolls structure too: app menu / toolbar / nav / context-menu arrangements built from the app's own actions (never drops one), plus a new logo, animated logo and icon pack through the brand generators.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Interface 2 part 1: an entirely different look, feel and behaviour (design package, branding, chrome assets).",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Interface 2 part 2: menus, context menus, dialogs, windows and containers worked out and checked on every page.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Interface 3 part 1: a third, entirely different look, feel and behaviour.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Interface 3 part 2: menus, context menus, dialogs, windows and containers worked out and checked on every page.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] The GizmoX console's main window becomes a tab group: Main (today's look, unchanged) · Interface 2 · Interface 3, each tab the full app under its own interface scope.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Interface roller console plugin 1/2: Roll, lock parts, roll again, preview in a new tab, undo.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Roller 2/2: save as an interface@1 asset, apply to one tab or the whole app, export / import, settings tab + lifecycle.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Harvest it as framework library lib-interface-roller so every AXF web app can install it (console, AmberX, axHub web, Patches web, Walkthrough Studio); library@1 parts.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Install the library in the AmberX app and the other web apps; check each one builds and rolls.",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Opus] Tests for every checker, before/after shots of the three tabs, rebuild report, PORTING.md (Android deferred), CLAUDE.md, THREADS.md.",
-     "at": "",
-     "estimate": "30 min"
-    }
-   ],
-   "createdAt": "2026-10-27T17:17:17.473Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "source": "chat"
-  },
-  {
-   "id": "build-orchestrator",
-   "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
-   "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Built on branch claude/build-orchestrator, PR #122.",
-     "at": "2026-10-27T16:44:18.183Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-27T16:39:39.618Z",
-   "builtAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-10-27T16:44:18.183Z",
-   "estimate": "30 min",
-   "source": "chat"
-  },
-  {
-   "id": "pending-grid-view",
-   "title": "Pending builds: grid view with sortable columns, expandable rows, toolbar and double-click multi-select",
-   "detail": "From Brett's attachment (Oct 27 2026). Grid next to Reload; columns 1-line summary, date added, total time estimate, cost estimate; rows expand to today's card; toolbar archive/delete/hide/unhide/open in (Build manager, Build queue, Plan); select hook with double-click multi-select. All Opus (console UI). Tracked step by step in the Build orchestrator (_claude/builds/orchestrator.json, mixed Fable/Opus steps).",
-   "model": "Opus",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "[Opus] pending@1: optional hidden + archived fields in pending-core (apply actions hide/unhide/archive, sorts); API + MCP accept them; artifact mapping unchanged except the new fields.",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Opus] Grid view toggle next to Reload in Pending builds: rows with 1-line summary, date added, total time estimate, cost estimate; every column sortable (framework DataGrid).",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Rows expand to the full card content they show today (steps, notes, actions).",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Opus] Toolbar: Archive, Delete, Hide, Unhide (greyed when nothing selected), Open in (tooltip dialog: Build manager, Build queue, Plan), all in focus where they open.",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "[Opus] Select hook: hover tooltip \"activate multi select with double click\"; double-click flashes the top item's hover style 3 times, tooltip \"select items\", then single clicks add to the selection; checkbox column shows.",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "[Opus] Tests (pending-core cases + view build), screenshots, THREADS.md.",
-     "at": "",
-     "estimate": "20 min"
-    }
-   ],
-   "createdAt": "2026-10-27T16:39:39.821Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-27T16:39:39.821Z",
-   "source": "chat"
-  },
-  {
-   "id": "build-profiles",
-   "title": "Build profiles + Build profiles console plugin",
-   "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Built on Opus, branch claude/build-profiles, PR #127.",
-     "at": "2026-10-27T19:30:00.000Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "Core registry + persist profile layer + orchestrator per profile",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T19:30:00.000Z"
-    },
-    {
-     "text": "Python mirror + server routes",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T19:30:00.000Z"
-    },
-    {
-     "text": "Console plugin",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-27T19:30:00.000Z"
-    },
-    {
-     "text": "Tests, docs, PR",
-     "estimate": "25 min",
-     "done": true,
-     "doneAt": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "createdAt": "2026-10-27T19:00:00.000Z",
-   "builtAt": "2026-10-27T19:30:00.000Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "estimate": "2 h",
-   "source": "chat"
-  },
-  {
-   "id": "amberx-appearance-lock",
-   "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
-   "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Merged in PR #126 (branch claude/amberx-appearance-lock), Oct 27 2026.",
-     "at": "2026-10-27T19:23:01.225Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-27T19:05:30.186Z",
-   "builtAt": "2026-10-27T19:23:01.118Z",
-   "updatedAt": "2026-10-27T19:23:01.225Z",
-   "estimate": "1 h",
-   "source": "chat"
-  },
-  {
-   "id": "tools-plugin",
-   "title": "Tools plugin: the Tools section as its own plugin, with a Tools tab in Patches web",
-   "detail": "Brett, Oct 22 2026: the Tools section is a plugin of its own, and Claude handoff depends on it.\n\n- New plugin `tools` (plugin@1 + lifecycle): it owns the Tools nav section and the top-level `tools` application menu that tool plugins add to; it provides a capability service (e.g. `axf.tools@1`) that tool plugins require.\n- Claude handoff (and any later tool plugin) declares it as a dependency (`requires`) and adds its entries through it instead of creating the section itself.\n- For Patches: the Tools plugin adds a **Tools** tab to Patches web's app tab group (next to Console / Pilot / axHub). Patches itself runs the Tools page; it is not the console page in a frame.\n- Patches web only for now (Android later).",
-   "model": "Opus",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Overlaps claude-handoff (built Oct 22 2026, PR #22: it currently creates the Tools section itself, so this build moves that out). Parked by Brett: \"Hold off on that, add to queue.\"",
-     "at": "2026-10-22T14:05:33.773Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "Tools plugin skeleton: plugin@1, lifecycle, install/uninstall, nav section + `tools` app menu, capability service",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "Move Claude handoff onto it: `requires` the service, contributes its entries through it, lifecycle check passes both ways",
-     "at": "",
-     "estimate": "20 min"
-    },
-    {
-     "text": "Patches web: Tools tab in the app tab group (patches-tabs nav-menu + AppTabs), a Tools page run by Patches",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Tests, menu-reach, check-controls/theme, docs (CLAUDE.md status, plugins README)",
-     "at": "",
-     "estimate": "15 min"
-    }
-   ],
-   "createdAt": "2026-10-22T14:05:33.771Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-27T11:21:08.109Z",
-   "estimate": "1.5 h",
-   "source": "chat"
-  },
-  {
-   "id": "amberx-web-host",
-   "title": "AmberX web app at amberx.amberxai.com + sign-in inside the Android app",
-   "detail": "",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
-     "at": "2026-10-27T22:41:47.258Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "Container + installer for amberx.amberxai.com",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Shell loads the hosted app, hub sign-in in the WebView",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "DNS, deploy, verify",
-     "at": "",
-     "estimate": "30 min"
-    }
-   ],
-   "createdAt": "2026-10-26T01:05:34.314Z",
-   "builtAt": "2026-10-27T19:25:27.054Z",
-   "updatedAt": "2026-10-27T19:25:27.054Z",
-   "estimate": "1.5 h",
-   "source": "chat"
-  },
-  {
-   "id": "amberx-notes",
-   "title": "AmberX voice notes, lists, tasks + AI router",
-   "detail": "Orchestrator build amberx-notes, branch claude/amberx-notes. Building now (Oct 27 2026), sub-agents allowed by Brett.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [
-    {
-     "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
-     "at": "2026-10-28T02:35:00.000Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "Notes core: lists tree (categories, sub-lists, Inbox, Plugins root auto-filled with a list per plugin), notes/todos/tasks model, move/rename/merge, intent schema + validator, local voice-intent parser",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Notes store on axHub (lib-hubstore tables in amberx-notes/), shared read of the console Voice notes + Voice Vault tables, offline queue",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Notes page: tabs Inbox / Lists / Notes / Pinned / Search; collapsible list tree with Plugins folder; note cards; rename, move to list, merge, tags, pin, star",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Lists manager: create/rename/move/delete lists and sub-lists, drag to reorder, bulk move items between lists",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Tasks + Todo page: status, priority, due, checklist, subtasks; tabs Today / Upcoming / All / Done; grid and tree views",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Dictation: record a note hands-free (start/stop triggers, cut stop words), live transcript, review card, save to the right list",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Voice commands section: predefined commands from the codebase (every registered action + notes/tasks commands) grouped in tabs, switch each on/off, edit phrases, test pad",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Voice note commands wired: new note in X, add todo, move last note, rename list, create list under, mark done, read my tasks",
-     "at": "",
-     "estimate": "25 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "AmberX server: FastAPI behind the axHub wall (signed headers), Dockerfile + deploy switch from static nginx",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "LLM router on framework assistant_host providers: Claude plan ↔ Claude API switch, any mainstream LLM, fallback chain, keep-alive health checks, retries, keys server-side only",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "AI connection settings: provider switch, keys (write-only), test, status badge, fallback order",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Real-time parsing: transcript → validated intent JSON (summary, list, sub-list, tasks, due, priority, tags), review then store",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Summaries, title cleanup, Ask my notes",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Integrated web component: Web tab with address bar, clip page/selection to a note",
-     "at": "",
-     "estimate": "25 min",
-     "done": true,
-     "doneAt": "2026-10-28T01:20:00.000Z"
-    },
-    {
-     "text": "Export (Markdown/JSON), tests, re-check, deploy, docs, THREADS",
-     "at": "",
-     "estimate": "30 min",
-     "done": true,
-     "doneAt": "2026-10-28T02:35:00.000Z"
-    }
-   ],
-   "createdAt": "2026-10-28T00:32:23.016Z",
-   "builtAt": "2026-10-28T02:35:00.000Z",
-   "updatedAt": "2026-10-28T00:32:23.016Z",
-   "source": "chat",
-   "note": ""
-  }
- ]
+  ]
 }

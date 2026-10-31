@@ -18,6 +18,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
 import { orchestratorPath } from '../../../../framework/cli/persist.mjs';
+import { pushToPending } from '../../../../framework/cli/orch-sync.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
@@ -31,6 +32,8 @@ export function load() {
 export function save(state) {
   const f = trackerFile(); mkdirSync(dirname(f), { recursive: true });
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(state, null, 1)}\n`); renameSync(tmp, f);
+  // The orchestrator publishes every build to the profile's Pending builds list (the Build manager reads that list).
+  try { pushToPending(state); } catch (e) { process.stderr.write(`pending sync skipped: ${e.message}\n`); }
 }
 export function act(change) { const r = core.apply(load(), change); save(r.state); return r; }
 

@@ -45,10 +45,11 @@ t('labelled phases + groups + categories', () => {
   const z = c.apply(y, { action: 'update', id: 'other', category: 'New' }).state; assert.equal(z.builds[1].category, 'New');
 });
 // CLI round-trip on a scratch tracker
-const dir = mkdtempSync(join(tmpdir(), 'orch-')); process.env.AXF_ORCH_FILE = join(dir, 'o.json');
+const dir = mkdtempSync(join(tmpdir(), 'orch-')); process.env.AXF_ORCH_FILE = join(dir, 'o.json'); process.env.AXF_PENDING_FILE = join(dir, 'p.json');
 const cli = await import('./orchestrator.mjs');
 cli.act({ action: 'add', title: 'Cli', steps: [{ text: 'one', model: 'Opus', estimate: '5 min' }] });
 cli.act({ action: 'step', id: 'cli', step: 's1' });
+t('every save publishes the build to Pending builds (orch-sync)', () => { const p = JSON.parse(readFileSync(process.env.AXF_PENDING_FILE, 'utf8')); const it = p.items.find((x) => x.id === 'cli'); assert.ok(it); assert.equal(it.status, 'complete'); assert.equal(it.subPrompts[0].text, '[Opus] one'); assert.equal(it.subPrompts[0].done, true); });
 t('CLI saves the tracker', () => { const f = JSON.parse(readFileSync(process.env.AXF_ORCH_FILE, 'utf8')); assert.equal(f.$axf, 'orchestrator@1'); assert.equal(f.builds[0].status, 'complete'); });
 const repo = JSON.parse(readFileSync(new URL('../../../../_claude/builds/orchestrator.json', import.meta.url), 'utf8'));
 t('repo tracker is valid', () => { const st = c.normalizeState(repo); assert.ok(st.builds.length >= 1); for (const bb of st.builds) assert.equal(c.splitCheck(bb, st.rules).needsSplit, false, bb.id); });

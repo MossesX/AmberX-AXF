@@ -39,6 +39,7 @@ jobs:
       - run: node framework/spec/check-axf-server.mjs                # wall-signature + plugin-package fixtures still match their references
       - run: node framework/spec/check-build-steps.mjs              # small-steps rule: pending + build-queue step cores
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
+      - run: node framework/spec/check-orch-sync.mjs                # orchestrator <-> Pending builds sync (pure + real writers on temp files)
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
       - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)

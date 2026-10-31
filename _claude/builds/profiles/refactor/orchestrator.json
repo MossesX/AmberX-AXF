@@ -1,6 +1,6 @@
 {
   "$axf": "orchestrator@1",
-  "updatedAt": "2026-10-27T23:54:23.441Z",
+  "updatedAt": "2026-10-28T01:11:04.755Z",
   "rules": {
     "sameSession": true,
     "subAgents": false,
@@ -6907,6 +6907,563 @@
           "skip": false,
           "done": true,
           "doneAt": "2026-10-30T18:04:28.209Z",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "apply-all-levels",
+      "title": "Banner look Apply to all (Simple/Basic/Pro/Advanced), settings levels, Sliders section",
+      "category": "",
+      "detail": "Undid #107 Apply to all pane. New look@1 engine (core/engines/looktokens.ts): look, design, behaviour and tone tokens by level and category; only changed tokens stored, CSS over the inherited theme, Compact down to no space. Banner settings: collapsible Apply to all with Simple/Basic/Pro/Advanced, collapsible categories, Reset. settings-ui@1 levels; settings/console 1.3.0 tags its items; Settings → Sliders (Simple, collapsible, Reset) applied app-wide. Branch claude/apply-all-levels.",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "apply-all-levels",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-27T03:19:49.625Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "builtAt": "2026-10-27T03:19:49.625Z",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": [
+        {
+          "id": "s1",
+          "text": "Undo #107 pane; look@1 engine + check",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z",
+          "note": ""
+        },
+        {
+          "id": "s2",
+          "text": "Banner Apply to all section + fallback + stylesheet",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z",
+          "note": ""
+        },
+        {
+          "id": "s3",
+          "text": "settings-ui@1 levels + level switch + filtering",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z",
+          "note": ""
+        },
+        {
+          "id": "s4",
+          "text": "Sliders section, asset tags, copies into every app, checks",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:19:49.625Z",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "amberx-empty-shell",
+      "title": "AmberX as an empty shell for building and testing plugins",
+      "category": "",
+      "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "amberx-empty-shell",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-27T03:48:42.596Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "builtAt": "2026-10-27T03:48:42.596Z",
+      "notes": [
+        {
+          "text": "Built Oct 26 2026 on Opus (claude.ai): branch claude/amberx-empty-shell, PR #118. test.mjs 157, tsc, vite build, axf validate 83 assets.",
+          "at": "2026-10-27T03:48:42.596Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": [
+        {
+          "id": "s1",
+          "text": "Remove Hub, Apps, Manage, Asset studio, Account views and demo dialogs",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "15 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z",
+          "note": ""
+        },
+        {
+          "id": "s2",
+          "text": "Trim nav, app menu, toolbar, context menu assets",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "15 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z",
+          "note": ""
+        },
+        {
+          "id": "s3",
+          "text": "README plugin how-to, CLAUDE.md status, test.mjs shell checks",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "15 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z",
+          "note": ""
+        },
+        {
+          "id": "s4",
+          "text": "tsc, vite build, axf validate, PR, THREADS",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "15 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T03:48:42.596Z",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "fresh-look",
+      "title": "Fresh look: new default style theme + fresh appearance package",
+      "category": "",
+      "detail": "Brett, Oct 26 2026: rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "fresh-look",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-27T04:05:32.031Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "builtAt": "2026-10-27T04:05:32.031Z",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": []
+    },
+    {
+      "id": "design-packages-10",
+      "title": "10 more AmberX Design Packages",
+      "category": "",
+      "detail": "Brett, Oct 27 2026: make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "design-packages-10",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-27T17:25:19.327Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "builtAt": "2026-10-27T17:25:19.327Z",
+      "notes": [
+        {
+          "text": "Built on branch claude/design-packages-10 (on top of PR #123).",
+          "at": "2026-10-27T17:25:19.393Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": []
+    },
+    {
+      "id": "build-orchestrator",
+      "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
+      "category": "",
+      "detail": "Console plugin apps/console-web/plugins/build-orchestrator + tracker _claude/builds/orchestrator.json. Brett, Oct 27 2026.",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "build-orchestrator",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-27T16:39:39.618Z",
+      "updatedAt": "2026-10-27T16:44:18.183Z",
+      "builtAt": "2026-10-27T16:39:39.618Z",
+      "notes": [
+        {
+          "text": "Built on branch claude/build-orchestrator, PR #122.",
+          "at": "2026-10-27T16:44:18.183Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": []
+    },
+    {
+      "id": "build-profiles",
+      "title": "Build profiles + Build profiles console plugin",
+      "category": "",
+      "detail": "Brett, Oct 27 2026: multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "build-profiles",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-27T19:00:00.000Z",
+      "updatedAt": "2026-10-27T19:30:00.000Z",
+      "builtAt": "2026-10-27T19:30:00.000Z",
+      "notes": [
+        {
+          "text": "Built on Opus, branch claude/build-profiles, PR #127.",
+          "at": "2026-10-27T19:30:00.000Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": [
+        {
+          "id": "s1",
+          "text": "Core registry + persist profile layer + orchestrator per profile",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z",
+          "note": ""
+        },
+        {
+          "id": "s2",
+          "text": "Python mirror + server routes",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z",
+          "note": ""
+        },
+        {
+          "id": "s3",
+          "text": "Console plugin",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z",
+          "note": ""
+        },
+        {
+          "id": "s4",
+          "text": "Tests, docs, PR",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "25 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T19:30:00.000Z",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "amberx-appearance-lock",
+      "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
+      "category": "",
+      "detail": "Brett, Oct 27 2026: AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "amberx-appearance-lock",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-27T19:05:30.186Z",
+      "updatedAt": "2026-10-27T19:23:01.225Z",
+      "builtAt": "2026-10-27T19:23:01.118Z",
+      "notes": [
+        {
+          "text": "Merged in PR #126 (branch claude/amberx-appearance-lock), Oct 27 2026.",
+          "at": "2026-10-27T19:23:01.225Z"
+        },
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": []
+    },
+    {
+      "id": "amberx-web-host",
+      "title": "AmberX web app at amberx.amberxai.com + sign-in inside the Android app",
+      "category": "",
+      "detail": "",
+      "status": "complete",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "amberx-web-host",
+      "branch": "",
+      "pr": "",
+      "createdAt": "2026-10-26T01:05:34.314Z",
+      "updatedAt": "2026-10-27T19:25:27.054Z",
+      "builtAt": "2026-10-27T19:25:27.054Z",
+      "notes": [
+        {
+          "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+          "at": "2026-10-27T22:41:47.258Z"
+        },
+        {
+          "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
+          "at": "2026-10-28T00:47:31.318Z"
+        }
+      ],
+      "approvals": [],
+      "steps": [
+        {
+          "id": "s1",
+          "text": "Container + installer for amberx.amberxai.com",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T19:25:27.054Z",
+          "note": ""
+        },
+        {
+          "id": "s2",
+          "text": "Shell loads the hosted app, hub sign-in in the WebView",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T19:25:27.054Z",
+          "note": ""
+        },
+        {
+          "id": "s3",
+          "text": "DNS, deploy, verify",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-27T19:25:27.054Z",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "orch-pending-sync",
+      "title": "Orchestrator ↔ Pending builds auto-sync (Build manager follows)",
+      "category": "Builds",
+      "detail": "Brett, Oct 27 2026 20:46: all builds go to the orchestrator, which splits them into Fable/Opus steps and sends them out to Pending builds and the Build manager; they always stay in sync. Bridge until builds-one-page (paused) merges the datasets. Every orchestrator save rewrites the profile Pending list; every Pending change (console, CLI, MCP, plugins) flows back into the orchestrator. Profile: Refactor.",
+      "status": "running",
+      "hidden": false,
+      "source": "chat",
+      "pendingId": "",
+      "branch": "claude/orch-pending-sync",
+      "pr": "",
+      "createdAt": "2026-10-28T01:07:25.673Z",
+      "updatedAt": "2026-10-28T01:11:04.754Z",
+      "builtAt": "",
+      "notes": [
+        {
+          "text": "Built on Opus, branch claude/orch-pending-sync, PR #143; s3 ticks when merged.",
+          "at": "2026-10-28T01:11:04.754Z"
+        }
+      ],
+      "approvals": [],
+      "steps": [
+        {
+          "id": "s1",
+          "text": "framework/plan/orch-sync.mjs (pure): orchestratorToPending + pendingToOrchestrator on the raw shapes ([Fable]/[Opus] step prefixes, status map, notes, step ticks, removals archive the build), fixture test",
+          "model": "Opus",
+          "why": "wiring on existing contracts",
+          "phase": "",
+          "group": "",
+          "estimate": "30 min",
+          "files": [
+            "framework/plan/pending-core.mjs"
+          ],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-28T01:10:06.928Z",
+          "note": ""
+        },
+        {
+          "id": "s2",
+          "text": "Wire both writers: orchestrator.mjs save() pushes to Pending; pending.mjs actPending() pulls into the orchestrator (covers console, engine-rpc, MCP, plugins); same build profile on both sides; no loops",
+          "model": "Opus",
+          "why": "wiring on existing contracts",
+          "phase": "",
+          "group": "",
+          "estimate": "25 min",
+          "files": [
+            "framework/cli/pending.mjs",
+            "framework/cli/persist.mjs"
+          ],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": true,
+          "doneAt": "2026-10-28T01:10:06.991Z",
+          "note": ""
+        },
+        {
+          "id": "s3",
+          "text": "Rule + docs (RULES.md, _claude/builds/README.md), CI test, PR + merge approval",
+          "model": "Opus",
+          "why": "wiring on existing contracts",
+          "phase": "",
+          "group": "",
+          "estimate": "20 min",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "done": false,
+          "doneAt": "",
           "note": ""
         }
       ]

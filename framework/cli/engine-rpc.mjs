@@ -20,6 +20,7 @@ import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLi
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
 import { queueView, reorderQueue, reprocessQueue, stepQueue, stepsQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
+import { syncNow as orchSyncNow } from './orch-sync.mjs';
 import { dataPath } from './persist.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
@@ -109,7 +110,8 @@ function run() {
       const r = checkProject(safeDir(b.dir ?? '.'));
       return { dir: r.rel, manifest: r.manifest, validation: r.validation };
     }
-    case 'pending': return loadPending();
+    // catch-up first: edits that bypassed both writers (a session writing the hub copy, a git pull of the tracker)
+    case 'pending': { try { orchSyncNow().forEach(log); } catch (e) { log(`orchestrator sync skipped: ${e.message}`); } return loadPending(); }
     case 'pending-act': { const r = actPending(b.change ?? {}); r.log.forEach(log); return { state: r.state, item: r.item }; }
     case 'plan': return loadPlan();
     case 'plan-rebuild': { const p = buildPlan(); log(`plan rebuilt: ${p.features.length} features`); return { count: p.features.length }; }

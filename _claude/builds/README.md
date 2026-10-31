@@ -43,3 +43,12 @@ Approvals, Rules).
 - **Opus:** everything else (plugin UI on the framework, servers, routes, tests, docs, wiring, security work).
 
 Order steps to keep switches few: all Fable work of a build first where the dependencies allow, then Opus.
+
+## Sync with Pending builds (orch-sync)
+
+The orchestrator is the source of truth; every build in it is published to the same build profile's Pending builds
+list (steps → sub prompts prefixed `[Fable]` / `[Opus]`, next step's model → the item's model, complete/failed →
+complete/failed, open → pending), and Pending edits flow back. Automatic: `orchestrator.mjs` save → Pending,
+`framework/cli/pending.mjs` actPending → orchestrator, and the console runs a catch-up on every Pending read.
+By hand: `node framework/cli/orch-sync.mjs [--dry]`. Logic: `framework/plan/orch-sync.mjs`; tests:
+`framework/spec/check-orch-sync.mjs`. Refactor and newer profiles sync; Main framework only with `orchSync: true`. <!-- axf-plugin:build-orchestrator -->
