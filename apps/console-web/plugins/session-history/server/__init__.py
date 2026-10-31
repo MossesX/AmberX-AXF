@@ -5,6 +5,9 @@ the plugin is off, never on the console MCP).
                               {stamp, changed, runs}; with ``since`` equal to the current stamp only {stamp, changed:false},
                               so the browser can poll it every few seconds for the live grid
   GET  runs/{id}              one run
+  GET  runs/{id}/did          what it built: plain-English summary + one line per commit / uncommitted edits (item, what
+                              was wrong, files with before / after), GitHub links, its Codebase changes entries (through
+                              ``axf.changes@1``, never by folder) and its Session check-in record (session-log@1 archive)
   GET  config / PUT config    the folders read (transcripts, streams, reports) and limits
 
 The reading itself is in ``runs.py`` (pure, tested without FastAPI). The store keeps a ``killed.json`` in the plugin's
@@ -19,6 +22,9 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+import plugin_services
+
+from . import did as D
 from . import runs as R
 
 router = APIRouter()
@@ -65,6 +71,50 @@ def list_runs(since: str = "") -> dict[str, Any]:
 @router.get("/runs/{rid}")
 def get_run(rid: str) -> dict[str, Any]:
     return {"run": R.public(_get(rid))}
+
+
+CHANGES = "axf.changes@1"
+
+
+def _changes_for(run: dict[str, Any]) -> list[dict[str, Any]]:
+    svc = plugin_services.get(CHANGES)
+    if not svc or not run.get("branch"):
+        return []
+    try:
+        rows = [c for c in svc.summaries() if c.get("branch") == run["branch"]]
+    except Exception:  # noqa: BLE001 — a broken log never breaks the browser
+        return []
+    return [{k: c.get(k) for k in ("id", "title", "state", "createdAt", "model")} for c in rows[:10]]
+
+
+def _archive_roots() -> list[Path]:
+    roots = [Path("/projects/amberx-axf/_data/sessions"), R.ROOT / "sessions"]
+    if Path("/opt/axf/sessions").is_dir():
+        roots.append(Path("/opt/axf/sessions"))
+    return [r for r in dict.fromkeys(roots) if r.is_dir()]
+
+
+def _checkin_for(rid: str) -> dict[str, Any] | None:
+    """The run's session-log@1 record (Session check-in archive), matched by Claude session id; read-only."""
+    for root in _archive_roots():
+        for f in sorted(root.glob("*/*/*.json"), reverse=True)[:3000]:
+            try:
+                rec = json.loads(f.read_text("utf-8"))
+            except (OSError, ValueError):
+                continue
+            if isinstance(rec, dict) and rec.get("$axf") == "session-log@1" and rec.get("claudeSessionId") == rid:
+                loc = rec.get("location") if isinstance(rec.get("location"), dict) else {}
+                proj = rec.get("project") if isinstance(rec.get("project"), dict) else {}
+                return {"id": rec.get("id"), "startedAt": rec.get("startedAt"), "location": loc.get("answer") or loc.get("detected"),
+                        "project": proj.get("answer") or proj.get("detected"), "estimate": rec.get("estimate")}
+    return None
+
+
+@router.get("/runs/{rid}/did")
+def get_did(rid: str) -> dict[str, Any]:
+    run = _get(rid)
+    out = D.what_it_did(run, STORE.events(run))
+    return {**out, "changes": _changes_for(run), "checkin": _checkin_for(rid)}
 
 
 def _clean_config(body: Any) -> dict[str, Any]:

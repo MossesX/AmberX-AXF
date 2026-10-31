@@ -21,3 +21,16 @@ select.fx-input.axp-session-history__pick { flex: none; width: auto }
   .axp-session-history__line { flex-direction: column; gap: 0 }
   .axp-session-history__k { min-width: 0 }
 }
+.axp-session-history__summary { white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-font-size) * 18); overflow: auto }
+.axp-session-history__didlist { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__did { min-width: 0 }
+.axp-session-history__didhead { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axp-session-history__wrong { margin: 0; overflow-wrap: anywhere }
+.axp-session-history__files { margin: 0; padding-left: var(--fx-space); list-style: none }
+.axp-session-history__file { min-width: 0; overflow-wrap: anywhere }
+.axp-session-history__filebtn { border: 0; background: transparent; color: inherit; font: inherit; padding: 0; cursor: pointer; text-align: left }
+.axp-session-history__filebtn:disabled { cursor: default }
+.axp-session-history__ba { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 16), 1fr)); gap: calc(var(--fx-space) * 0.5); margin: calc(var(--fx-space) * 0.3) 0 }
+.axp-session-history__side { min-width: 0 }
+.axp-session-history__pre { margin: 0; padding: calc(var(--fx-space) * 0.5); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); overflow: auto; max-height: calc(var(--fx-font-size) * 20); white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-session-history__link { margin-right: var(--fx-space) }
