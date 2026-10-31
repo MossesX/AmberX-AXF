@@ -12,6 +12,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { facets, totals, fmtDuration, fmtTokens, fmtUsd, fmtWhen, KIND_LABEL, nextSort, STATUS_LABEL, statusTone, view, type Filter, type Kind, type Run, type Sort, type SortKey } from './core';
 import { RunDetail } from './detail';
+import { SourcesPanel } from './settings';
 import { appMenu } from './menu';
 import './session-history.css';
 
@@ -185,5 +186,8 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: VIEW, label: 'Session browser', icon: 'terminal', view: VIEW }] },
   contextMenu: [{ id: 'session-history.default', target: 'default', order: 94, items: [{ id: 'session-history', label: 'Session browser', icon: 'terminal', action: 'session-history.open' }] }],
   settingsTabs: [{ id: 'session-history', label: 'Session browser', icon: 'terminal', parent: 'plugins', order: 46, description: 'Every Claude session and agent run, live.' }],
-  settingsPanels: [{ id: 'session-history.lifecycle', tab: 'session-history', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [
+    { id: 'session-history.sources', tab: 'session-history', title: 'Where runs are read from', icon: 'folder', order: 10, render: () => <SourcesPanel /> },
+    { id: 'session-history.lifecycle', tab: 'session-history', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+  ],
 };
