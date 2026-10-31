@@ -18,10 +18,11 @@ export type Agent = { id: string; name: string; role: string; skill: string; spe
 export type Run = { jobId: string; buildId: string; stepId: string; agent: string; model: string; startedAt: string; endedAt: string; status: string; reason: string; usage: Usage | null; reportedCost: number | null; turns: number; budget: { tokens: number; maxTurns: number }; report: { summary: string } | null };
 export type Slot = { runs: number; tokens: number; usd: number; done: number; failed: number };
 export type Meter = { total: Slot; byAgent: Record<string, Slot>; byJob: Record<string, Slot>; byBuild: Record<string, Slot>; byModel: Record<string, Slot> };
-export type AgentState = { status: string; note: string; until: string; custom: { name: string; works: boolean }; history: { at: string; from: string; to: string; note: string; by: string }[] };
+export type Spend = { all: { usd: number; tokens: number; runs: number }; week: { usd: number; tokens: number; runs: number }; today: { usd: number; tokens: number; runs: number }; avgPerJob: number; jobs: number };
+export type AgentState = { cap: number; benched: string; status: string; note: string; until: string; custom: { name: string; works: boolean }; history: { at: string; from: string; to: string; note: string; by: string }[] };
 export type Swarm = { agents: Record<string, AgentState>; notices: { at: string; agent: string; text: string }[] };
 export type StatusDef = { label: string; works: boolean | 'small'; tone: string; about: string };
-export type SwarmState = { swarm: Swarm; statuses: Record<string, StatusDef>; roster: { agents: Agent[] }; skills: Record<string, { id: string; title: string; body: string }>; problems: string[]; runs: Run[]; meter: Meter; prices: Record<string, unknown>; builds: { id: string; title: string; status: string; open: number }[]; tracker: string };
+export type SwarmState = { spend: Record<string, Spend>; swarm: Swarm; statuses: Record<string, StatusDef>; roster: { agents: Agent[] }; skills: Record<string, { id: string; title: string; body: string }>; problems: string[]; runs: Run[]; meter: Meter; prices: Record<string, unknown>; builds: { id: string; title: string; status: string; open: number }[]; tracker: string };
 export type Job = { id: string; buildId: string; stepId: string; text: string; estimate: string; agent: string; skill: string; tier: string; model: string; leases: string[]; leaseKind: string; shared: string[]; budget: { tokens: number; maxTurns: number }; wave: number; after: string[] };
 type Res<T> = { ok: boolean; error?: string } & T;
 
@@ -79,21 +80,30 @@ export function SwarmPage() {
 }
 
 /** One row per agent: status dropdown + note (custom name / works, medical-leave return date). */
+type SpendSort = 'name' | 'all' | 'week' | 'today' | 'avg';
 function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {
   const notices = state.swarm.notices.slice(-5).reverse();
+  const [sort, setSort] = useState<SpendSort>(() => consoleApi.readLocal('swarm-agent-sort', 'name'));
+  useEffect(() => { consoleApi.writeLocal('swarm-agent-sort', sort); }, [sort]);
+  const val = (id: string) => { const s = state.spend[id]; return !s ? 0 : sort === 'avg' ? s.avgPerJob : sort === 'name' ? 0 : s[sort].usd; };
+  const agents = [...state.roster.agents].sort((a, b) => (sort === 'name' ? a.name.localeCompare(b.name) : val(b.id) - val(a.id)));
+  const th = (k: SpendSort, t: string) => <th className="is-num" aria-sort={sort === k ? 'descending' : 'none'}><button onClick={() => setSort(k)}>{t}{sort === k ? ' ↓' : ''}</button></th>;
   return (
     <div className="fx-stack">
       {notices.length > 0 && <div className="pl-note"><Icon name="bell" size={14} />{notices.map((n) => `${fmtTime(n.at)} ${n.text}`).join(' · ')}</div>}
       <div className="sw-scroll"><table className="sw-table">
-        <thead><tr><th>Agent</th><th>Status</th><th>Note</th></tr></thead>
-        <tbody>{state.roster.agents.map((a) => <AgentRow key={a.id} a={a} as={state.swarm.agents[a.id]!} defs={state.statuses} act={act} />)}</tbody>
+        <thead><tr><th aria-sort={sort === 'name' ? 'ascending' : 'none'}><button onClick={() => setSort('name')}>Agent</button></th><th>Status</th><th>Note</th>{th('all', 'All time')}{th('week', 'Week')}{th('today', 'Today')}{th('avg', 'Avg / job')}<th className="is-num">Weekly cap</th></tr></thead>
+        <tbody>{agents.map((a) => <AgentRow key={a.id} a={a} as={state.swarm.agents[a.id]!} sp={state.spend[a.id]} defs={state.statuses} act={act} />)}</tbody>
       </table></div>
-      <p className="fx-muted">{Object.values(state.statuses).map((d) => `${d.label}: ${d.about}`).join(' · ')}</p>
+      <p className="fx-muted">{Object.values(state.statuses).map((d) => `${d.label}: ${d.about}`).join(' · ')} A weekly cap benches the agent (Off duty) when its spend this week reaches it.</p>
     </div>
   );
 }
 
-function AgentRow({ a, as, defs, act }: { a: Agent; as: AgentState; defs: Record<string, StatusDef>; act: Act }) {
+const money = (u: { usd: number; tokens: number } | undefined) => (u ? <><b>{core.fmtUsd(u.usd)}</b><br /><span className="fx-muted">{core.fmtTokens(u.tokens)}</span></> : '—');
+function AgentRow({ a, as, sp, defs, act }: { a: Agent; as: AgentState; sp: Spend | undefined; defs: Record<string, StatusDef>; act: Act }) {
+  const [cap, setCap] = useState(String(as.cap || ''));
+  useEffect(() => { setCap(String(as.cap || '')); }, [as.cap]);
   const [pick, setPick] = useState(as.status);
   const [note, setNote] = useState(as.note);
   const [until, setUntil] = useState(as.until.slice(0, 10));
@@ -116,6 +126,9 @@ function AgentRow({ a, as, defs, act }: { a: Agent; as: AgentState; defs: Record
         </div>
       </td>
       <td><input className="fx-input" aria-label={`${a.name} note`} placeholder="Note" value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => { if (note !== as.note) void act({ action: 'note', agent: a.id, note }); }} /></td>
+      <td className="is-num">{money(sp?.all)}</td><td className="is-num">{money(sp?.week)}</td><td className="is-num">{money(sp?.today)}</td>
+      <td className="is-num">{sp?.jobs ? core.fmtUsd(sp.avgPerJob) : '—'}<br /><span className="fx-muted">{sp?.jobs ?? 0} jobs</span></td>
+      <td className="is-num"><input className="fx-input sw-num" type="number" min={0} step={1} aria-label={`${a.name} weekly cap in dollars`} placeholder="none" value={cap} onChange={(e) => setCap(e.target.value)} onBlur={() => { if (Number(cap || 0) !== as.cap) void act({ action: 'cap', agent: a.id, usd: Number(cap || 0) }); }} />{as.benched === 'cap' && <><br /><span className="sw-warn">benched</span></>}</td>
     </tr>
   );
 }

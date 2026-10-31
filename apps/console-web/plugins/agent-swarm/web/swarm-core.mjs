@@ -514,6 +514,8 @@ export function normAgentState(s) {
     note: str(o.note, 300),
     until: str(o.until, 40),
     custom: { name: str(o.custom?.name, 40), works: o.custom?.works === true },
+    cap: num(o.cap, 0, 0, 100000),
+    benched: str(o.benched, 20),
     history: (Array.isArray(o.history) ? o.history : []).slice(-200).map((h) => ({ at: str(h?.at, 40), from: str(h?.from, 40), to: str(h?.to, 40), note: str(h?.note, 300), by: str(h?.by, 40) || 'brett' })),
   };
 }
@@ -543,7 +545,7 @@ export function canWork(agent, as, job = {}, now = '') {
 function setStatus(st, id, to, note, at, by = 'brett', extra = {}) {
   const as = st.agents[id]; if (!as) throw new Error(`no agent "${id}"`);
   const from = statusLabel(as);
-  as.status = to; as.note = str(note, 300); as.until = str(extra.until, 40);
+  as.status = to; as.note = str(note, 300); as.until = str(extra.until, 40); as.benched = '';
   if (to === 'custom') as.custom = { name: str(extra.name, 40) || 'Custom', works: extra.works === true };
   as.history.push({ at, from, to: statusLabel(as), note: as.note, by });
   return `${id}: ${from} → ${statusLabel(as)}${note ? ` (${note})` : ''}`;
@@ -569,9 +571,46 @@ export function applyChange(state, change, roster, at) {
       if (c.status === 'custom' && !str(c.name, 40).trim()) throw new Error('a custom status needs a name');
       log.push(setStatus(s, c.agent, c.status, c.note, at, 'brett', c)); break;
     }
+    case 'cap': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.cap = num(c.usd, 0, 0, 100000); log.push(`${c.agent}: spend cap ${as.cap ? `${fmtUsd(as.cap)} a week` : 'off'}`); break; }
     case 'note': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.note = str(c.note, 300); log.push(`${c.agent}: note saved`); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
   s.updatedAt = at;
   return { state: s, log };
+}
+
+// ---------------------------------------------------------------- spend per agent
+
+/** Start of the week (Monday 00:00 UTC) and of the day (00:00 UTC) for an ISO time. */
+export function weekStart(at) { const d = new Date(at); const day = (d.getUTCDay() + 6) % 7; return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - day)).toISOString(); }
+export function dayStart(at) { const d = new Date(at); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).toISOString(); }
+
+/** Dollars and tokens an agent spent: all time, this week, today, and the average per job. */
+export function spendOf(runs, agentId, table, at) {
+  const w = weekStart(at); const d = dayStart(at);
+  const z = () => ({ usd: 0, tokens: 0, runs: 0 });
+  const o = { all: z(), week: z(), today: z(), avgPerJob: 0, jobs: 0 };
+  const jobs = new Set();
+  for (const r of runs ?? []) {
+    if (r.agent !== agentId) continue;
+    const usd = runCost(r, table); const tok = totTokens(r.usage); const when = r.endedAt || r.startedAt || '';
+    const add = (s) => { s.usd += usd; s.tokens += tok; s.runs += 1; };
+    add(o.all); if (when >= w) add(o.week); if (when >= d) add(o.today); jobs.add(r.jobId);
+  }
+  o.jobs = jobs.size; o.avgPerJob = jobs.size ? o.all.usd / jobs.size : 0;
+  return o;
+}
+
+/**
+ * Spend cap: an agent whose spend this week reaches its cap is benched (Off duty, by Boss) until Brett puts it back.
+ * Returns the log lines.
+ */
+export function capCheck(state, runs, table, at) {
+  const log = [];
+  for (const [id, as] of Object.entries(state.agents)) {
+    if (!(as.cap > 0) || worksOf(as) === false) continue;
+    const spent = spendOf(runs, id, table, at).week.usd;
+    if (spent >= as.cap) { log.push(setStatus(state, id, 'off-duty', `spend cap hit: ${fmtUsd(spent)} of ${fmtUsd(as.cap)} this week`, at, 'boss')); as.benched = 'cap'; }
+  }
+  return log;
 }

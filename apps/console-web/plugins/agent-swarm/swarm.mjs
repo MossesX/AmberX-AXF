@@ -10,6 +10,8 @@
  *   … pilot <buildId> [--apply]          plan + pack a build, project swarm vs one session, suggest a budget scale
  *   … act status <agent> <status> [note]  statuses: on-duty off-duty injured medical-leave probation fired custom
  *   … act --json '{"action":…}'          any change from swarm-core.mjs applyChange()
+ *   … act cap <agent> <usd>               weekly spend cap (0 = none); hitting it benches the agent
+ *   … sessions                           runs with the agent's status and spend (for the session browser)
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
@@ -53,6 +55,7 @@ export const stateFile = () => join(dataDir(), 'state.json');
 export function loadState() {
   const roster = loadRoster(); const at = new Date().toISOString();
   const st = core.normState(readJson(stateFile(), {}), roster); const t = core.tick(st, at);
+  t.log.push(...core.capCheck(st, loadRuns(), priceTable(), at));
   if (t.log.length) { st.updatedAt = at; writeJson(stateFile(), st); }
   return st;
 }
@@ -170,7 +173,9 @@ export function state() {
   const tr = loadTracker();
   const builds = (tr.builds ?? []).filter((b) => !['complete', 'archived'].includes(b.status) && !b.hidden).map((b) => ({ id: b.id, title: b.title, status: b.status, open: (b.steps ?? []).filter((x) => !x.done && !x.skip).length }));
   const swarm = loadState();
-  return { swarm, statuses: core.STATUSES, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
+  const at = new Date().toISOString();
+  const spend = Object.fromEntries(roster.agents.map((a) => [a.id, core.spendOf(runs, a.id, table, at)]));
+  return { swarm, spend, statuses: core.STATUSES, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
 /** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
@@ -226,8 +231,13 @@ export async function main(argv) {
   if (cmd === 'act') {
     let change;
     if (rest[0]?.startsWith('{')) change = JSON.parse(rest[0]);
-    else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : { action, agent, note: [a, ...more].join(' ') }; }
+    else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : action === 'cap' ? { action, agent, usd: Number(a) } : { action, agent, note: [a, ...more].join(' ') }; }
     const r = act(change); return out({ ok: true, state: state(), log: r.log }, r.log.join('\n'));
+  }
+  if (cmd === 'sessions') { // per run: the agent's status and spend, for the session browser
+    const s = state(); const by = new Map(s.roster.agents.map((a) => [a.id, a]));
+    const rows = s.runs.map((r) => ({ jobId: r.jobId, agent: r.agent, name: by.get(r.agent)?.name ?? r.agent, status: core.statusLabel(s.swarm.agents[r.agent] ?? core.normAgentState({})), run: r.status, usd: core.runCost(r, s.prices), spend: s.spend[r.agent] }));
+    return out({ ok: true, sessions: rows }, rows.map((x) => `${x.jobId.padEnd(26)} ${x.name.padEnd(12)} ${x.status.padEnd(14)} ${x.run.padEnd(7)} ${core.fmtUsd(x.usd)}`).join('\n') || 'No runs yet.');
   }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
   if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }

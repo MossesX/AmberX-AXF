@@ -163,6 +163,23 @@ t('the planner skips agents whose status says no', () => {
   assert.notEqual(p.jobs[0].agent, 'doc');
 });
 
+// s10 spend per agent + cap
+const RUNS = [
+  { agent: 'rio', jobId: 'b.s1', status: 'done', reportedCost: 2, endedAt: '2026-10-20T10:00:00.000Z' },
+  { agent: 'rio', jobId: 'b.s2', status: 'done', reportedCost: 3, endedAt: '2026-10-27T10:00:00.000Z' },
+  { agent: 'rio', jobId: 'b.s2', status: 'failed', reportedCost: 1, endedAt: '2026-10-31T08:00:00.000Z' },
+  { agent: 'doc', jobId: 'c.s1', status: 'done', reportedCost: 9, endedAt: '2026-10-31T08:00:00.000Z' },
+];
+t('week starts Monday UTC', () => { assert.equal(c.weekStart(AT), '2026-10-26T00:00:00.000Z'); assert.equal(c.dayStart(AT), '2026-10-31T00:00:00.000Z'); });
+t('spend: all time, week, today, avg per job', () => { const s = c.spendOf(RUNS, 'rio', P, AT); assert.equal(s.all.usd, 6); assert.equal(s.week.usd, 4); assert.equal(s.today.usd, 1); assert.equal(s.jobs, 2); assert.equal(s.avgPerJob, 3); });
+t('spend cap benches the agent; Brett putting it back clears the mark', () => {
+  let s = c.applyChange(c.normState({}, roster), { action: 'cap', agent: 'rio', usd: 4 }, roster, AT).state;
+  const log = c.capCheck(s, RUNS, P, AT); assert.equal(log.length, 1); assert.equal(s.agents.rio.status, 'off-duty'); assert.equal(s.agents.rio.benched, 'cap'); assert.equal(s.agents.rio.history.at(-1).by, 'boss');
+  assert.equal(c.capCheck(s, RUNS, P, AT).length, 0); // already benched
+  s = c.applyChange(s, { action: 'status', agent: 'rio', status: 'on-duty' }, roster, AT).state; assert.equal(s.agents.rio.benched, '');
+  assert.equal(c.capCheck(c.normState({}, roster), RUNS, P, AT).length, 0); // no cap, no bench
+});
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));
