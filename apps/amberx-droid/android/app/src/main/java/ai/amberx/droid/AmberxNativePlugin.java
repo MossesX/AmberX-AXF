@@ -308,6 +308,18 @@ public class AmberxNativePlugin extends Plugin {
         call.resolve();
     }
 
+    /**
+     * Screen capture (Oct 31 2026): `hide` = the "Hide sensitive screens from recordings" setting (off by default),
+     * `sensitive` = a password / key / vault screen is showing now. FLAG_SECURE is set only when both are true.
+     */
+    @PluginMethod
+    public void secureScreen(PluginCall call) {
+        SecureScreen.setHideSensitive(getContext(), Boolean.TRUE.equals(call.getBoolean("hide", false)));
+        SecureScreen.sensitive = Boolean.TRUE.equals(call.getBoolean("sensitive", false));
+        SecureScreen.apply(getActivity(), SecureScreen.sensitive);
+        call.resolve(new JSObject().put("secure", SecureScreen.sensitive && SecureScreen.hideSensitive(getContext())));
+    }
+
     /** The phone's text-to-speech voices: id (= name), a readable name, language, quality, network. */
     @PluginMethod
     public void ttsVoices(PluginCall call) {

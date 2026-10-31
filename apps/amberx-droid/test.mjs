@@ -1107,5 +1107,75 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(/amberxVoice = \{ register: registerVoiceCommands \}/.test(voiceUi), 'voice: console plugins add phrases through globalThis.amberxVoice');
 }
 
+/* ---------------------------------------------------------------- speech gate (Oct 31 2026: the "nothing in Inbox" loop) */
+{
+  const sg = await import('./src/plugins/voice/web/speechgate.ts');
+  const notes = await import('./src/plugins/notes/web/core.ts');
+  // A repeated empty refresh speaks nothing: read the empty Inbox, Voice notes and a missing list, search and remove
+  // in an empty store, ten times a minute apart (past the repeat window, so only the empty-state rule keeps it quiet).
+  const g = sg.newGate();
+  const store = notes.emptyStore();
+  notes.ensureSystemLists(store);
+  let spoken = 0;
+  for (let i = 0; i < 10; i++) {
+    for (const intent of [{ action: 'read', list: 'Inbox' }, { action: 'read', list: 'notes' }, { action: 'read', list: 'no such list' }, { action: 'search', text: 'milk' }, { action: 'remove', target: 'last' }]) {
+      const r = notes.applyIntent(store, intent, { now: new Date(Date.UTC(2026, 9, 31, 12, i)).toISOString() });
+      const now = i * 60_000;
+      if (sg.shouldSpeak(g, r.say, now).speak) { spoken += 1; sg.markSpeaking(g, r.say, now); sg.markDone(g, now + 1000); }
+    }
+  }
+  eq(spoken, 0, 'speech gate: a repeated empty refresh speaks nothing');
+  for (const t of ['Nothing in Inbox.', "There's no list called notes.", 'No steps yet.', 'The inbox is empty.', 'Inbox: nothing in it.', 'No saved notes.', 'No tags yet.', 'Nothing found.', 'Heard nothing.'])
+    ok(sg.isEmptyState(t), `speech gate: "${t}" is an empty state (never spoken)`);
+  for (const t of ['Note saved to Inbox.', 'You have 2 waiting.', 'Yes?', 'Moved “milk” to Shopping.'])
+    ok(!sg.isEmptyState(t), `speech gate: "${t}" is spoken`);
+  // Said once per change: the same sentence again (poll, refresh, re-render, loop) stays quiet; a question may repeat.
+  const h = sg.newGate();
+  ok(sg.shouldSpeak(h, 'You have 2 waiting.', 0).speak, 'speech gate: first time is said');
+  sg.markSpeaking(h, 'You have 2 waiting.', 0); sg.markDone(h, 1500);
+  ok(!sg.shouldSpeak(h, 'You have 2 waiting.', 5000).speak, 'speech gate: the same sentence again is not');
+  ok(sg.shouldSpeak(h, 'You have 3 waiting.', 6000).speak, 'speech gate: a real change is said');
+  ok(sg.shouldSpeak(h, 'You have 2 waiting.', 5000, { asked: true }).speak && sg.shouldSpeak(h, 'You have 2 waiting.', 5000, { change: true }).speak, 'speech gate: questions and fresh saves may repeat');
+  ok(!sg.shouldSpeak(h, 'Nothing in Inbox.', 9000, { asked: true }).speak, 'speech gate: an empty state is silent even as an answer');
+  ok(sg.shouldSpeak(h, 'You have 2 waiting.', 1500 + sg.REPEAT_MS).speak, 'speech gate: after a while it can be said again');
+  // No TTS ↔ mic loop: while talking, just after, and anything that sounds like what it said is AmberX's own voice.
+  const e = sg.newGate();
+  sg.markSpeaking(e, 'Moved milk to Shopping.', 10_000);
+  ok(sg.isEcho(e, 'open approvals', 10_500), 'echo: anything heard while AmberX talks is ignored');
+  sg.markDone(e, 12_000);
+  ok(sg.isEcho(e, 'anything', 12_400), 'echo: and just after');
+  ok(sg.isEcho(e, 'moved milk to shopping', 15_000), 'echo: its own sentence coming back is ignored');
+  ok(!sg.isEcho(e, 'open approvals', 15_000), 'echo: a new command is heard');
+  ok(!sg.isEcho(e, 'yes', 13_000), 'echo: a short answer is heard');
+  // The wiring: every reply goes through the gate, holds the mic, and hands-free drops its own echo.
+  const vui = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
+  ok(/shouldSpeak\(gate, text/.test(vui) && /holdMic: true/.test(vui), 'voice: say() goes through the gate and holds the mic');
+  ok((vui.match(/heardEcho\(/g) ?? []).length >= 2, 'voice: wake + heard events drop AmberX\'s own voice');
+  ok((vui.match(/native\.speak\(/g) ?? []).length === 1, 'voice: say() is the only place that speaks');
+  const dui = readFileSync(new URL('./src/plugins/dictation/web/index.tsx', import.meta.url), 'utf8');
+  ok(!/native\.speak\(/.test(dui) && /heardEcho\(/.test(dui), 'dictation: speaks through the gate and never dictates its own reply');
+  const ws = readFileSync(new URL('./android/app/src/main/java/ai/amberx/droid/WatchService.java', import.meta.url), 'utf8');
+  ok(/else if \(on && w\.recognizer != null\) \{ w\.pauseListening\(\)/.test(ws), 'android: classic hands-free stops listening while AmberX talks');
+}
+
+/* ---------------------------------------------------------------- screen capture (Oct 31 2026: "can't record due to security policy") */
+{
+  const sc = await import('./src/securescreen.ts');
+  const root = (has) => ({ querySelector: (s) => (has && s === sc.SENSITIVE_SELECTOR ? {} : null) });
+  ok(!sc.secureWanted(undefined, true) && !sc.secureWanted(false, true), 'screen: setting off (default) = never hidden, even on a password screen');
+  ok(!sc.secureWanted(true, false), 'screen: setting on, normal screen = recordable');
+  ok(sc.secureWanted(true, true), 'screen: setting on + password / key / vault screen = hidden');
+  ok(sc.isSensitive(root(true)) && !sc.isSensitive(root(false)) && !sc.isSensitive(null), 'screen: a password field makes the screen sensitive');
+  ok(sc.SENSITIVE_SELECTOR.includes('input[type="password"]'), 'screen: password inputs count');
+  eq(sc.secureScreenLibrary.settings[0].settings[0].default, false, 'screen: "Hide sensitive screens from recordings" is off by default');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  for (const f of ['MainActivity.java', 'HubWebActivity.java']) ok(!/addFlags\(WindowManager\.LayoutParams\.FLAG_SECURE\)/.test(java(f)), `android: ${f} no longer sets FLAG_SECURE`);
+  const ss = java('SecureScreen.java');
+  ok(/sensitiveScreen && hideSensitive\(a\)/.test(ss) && /getBoolean\(HIDE, false\)/.test(ss), 'android: FLAG_SECURE only when opted in and sensitive (default off)');
+  ok(/public void secureScreen\(PluginCall call\)/.test(java('AmberxNativePlugin.java')), 'android: the page reports sensitive screens');
+  const app = readFileSync(new URL('./src/App.tsx', import.meta.url), 'utf8');
+  ok(app.includes('secureScreenLibrary'), 'App installs the screen capture setting');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
