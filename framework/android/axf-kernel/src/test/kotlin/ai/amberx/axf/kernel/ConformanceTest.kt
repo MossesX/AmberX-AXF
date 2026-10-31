@@ -89,6 +89,47 @@ class ConformanceTest {
         }
     }
 
+    @Test fun `repeating slots match the reference engine`() {
+        val f = fixture("layout-repeat.json")
+        val E = ai.amberx.axf.kernel.engine.RepeatEngine
+        assertEquals((f.getValue("styles") as JsonArray).map { it.jsonPrimitive.content }, E.STYLES.map { it.id }, "repeat styles")
+        assertEquals(f.getValue("defaultStyle").jsonPrimitive.content, E.DEFAULT_STYLE.id, "default style")
+        assertEquals(f.getValue("maxColumns").jsonPrimitive.content.toInt(), E.MAX_COLUMNS, "max columns")
+        for ((k, v) in f.getValue("defaultColumns").jsonObject) assertEquals(v.jsonPrimitive.content.toInt(), E.DEFAULT_COLUMNS[ai.amberx.axf.kernel.engine.RepeatStyle.parse(k)!!], "default columns $k")
+        val layout = Layout.fromJson(JsonObject(asset("layout", "studio-dock") + ("repeat" to f.getValue("repeat"))))
+        assertEquals((f.getValue("declared") as JsonArray).map { it.jsonPrimitive.content }, E.declaredDataSets(layout), "declared data sets")
+        fun s(o: JsonObject, k: String): String? = (o[k] as? JsonPrimitive)?.takeIf { it.isString }?.content
+        for ((case, c) in f.getValue("cases").jsonObject) {
+            val sets = c.jsonObject.getValue("sets").jsonObject.toMap()
+            val active = c.jsonObject["active"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content } ?: emptyMap()
+            assertEquals((c.jsonObject.getValue("missing") as JsonArray).map { it.jsonPrimitive.content }, E.missingDataSets(layout, sets), "$case missing")
+            val want = c.jsonObject.getValue("compiled") as JsonArray
+            val got = E.compileAll(layout, sets, active)
+            assertEquals(want.size, got.size, "$case slot count")
+            for ((w, g) in want.map { it.jsonObject }.zip(got)) {
+                val at = "$case ${g.id}"
+                assertEquals(s(w, "id"), g.id, "$at id")
+                assertEquals(s(w, "region"), g.region.id, "$at region")
+                assertEquals(s(w, "dataSet"), g.dataSet, "$at dataSet")
+                assertEquals(s(w, "style"), g.style.id, "$at style")
+                assertEquals(w.getValue("columns").jsonPrimitive.content.toInt(), g.columns, "$at columns")
+                assertEquals(w.getValue("overflow").jsonPrimitive.content.toInt(), g.overflow, "$at overflow")
+                assertEquals(w.getValue("empty").jsonPrimitive.content.toBoolean(), g.empty, "$at empty")
+                assertEquals(s(w, "active"), g.active, "$at active")
+                val items = w.getValue("items") as JsonArray
+                assertEquals(items.map { s(it.jsonObject, "key") }, g.items.map { it.key }, "$at keys")
+                assertEquals(items.map { s(it.jsonObject, "label") }, g.items.map { it.label }, "$at labels")
+                assertEquals(items.map { s(it.jsonObject, "icon") }, g.items.map { it.icon }, "$at icons")
+                assertEquals(items.map { it.jsonObject.getValue("index").jsonPrimitive.content.toInt() }, g.items.map { it.index }, "$at index")
+                val fb = w["fallback"] as? JsonObject
+                assertEquals(fb == null, g.fallback == null, "$at fallback present")
+                if (fb != null) assertEquals(listOf(s(fb, "type"), s(fb, "id"), s(fb, "label")), listOf(g.fallback?.type, g.fallback?.id, g.fallback?.label), "$at fallback")
+            }
+            val vars = (c.jsonObject.getValue("vars") as JsonArray).map { v -> v.jsonObject.mapValues { it.value.jsonPrimitive.content } }
+            assertEquals(vars, got.map { E.vars(it) }, "$case vars")
+        }
+    }
+
     @Test fun `hidden slots match the reference engine`() {
         val f = fixture("hide.json")
         val types = ai.amberx.axf.kernel.asset.AssetTypeRegistry.builtin()

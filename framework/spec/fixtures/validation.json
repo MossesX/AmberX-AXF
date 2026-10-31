@@ -361,5 +361,148 @@
         "data.widgets[0].type must be one of: clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider"
       ]
     }
+  },
+  {
+    "case": "repeat-ok",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "layout",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "nav": "left",
+        "navWidth": 84,
+        "showMenubar": false,
+        "showToolbar": true,
+        "toolbarPosition": "bottom",
+        "showStatusbar": true,
+        "inspector": "left",
+        "inspectorWidth": 250,
+        "contentMaxWidth": 0,
+        "repeat": [
+          {
+            "id": "projects",
+            "dataSet": "projects",
+            "style": "cards",
+            "columns": 3,
+            "max": 6,
+            "region": "main",
+            "fallback": {
+              "type": "container",
+              "id": "empty",
+              "label": "No projects yet"
+            }
+          },
+          {
+            "id": "tabs",
+            "dataSet": "docs",
+            "style": "tabs"
+          }
+        ]
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$"
+      ]
+    }
+  },
+  {
+    "case": "repeat-not-list",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "layout",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "nav": "left",
+        "navWidth": 84,
+        "showMenubar": false,
+        "showToolbar": true,
+        "toolbarPosition": "bottom",
+        "showStatusbar": true,
+        "inspector": "left",
+        "inspectorWidth": 250,
+        "contentMaxWidth": 0,
+        "repeat": {
+          "id": "a"
+        }
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.repeat must be a list of repeating slots"
+      ]
+    }
+  },
+  {
+    "case": "repeat-bad",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "layout",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "nav": "left",
+        "navWidth": 84,
+        "showMenubar": false,
+        "showToolbar": true,
+        "toolbarPosition": "bottom",
+        "showStatusbar": true,
+        "inspector": "left",
+        "inspectorWidth": 250,
+        "contentMaxWidth": 0,
+        "repeat": [
+          {
+            "id": "a",
+            "dataSet": "x"
+          },
+          {
+            "id": "a",
+            "dataSet": "",
+            "region": "sidebar",
+            "style": "carousel",
+            "columns": 13,
+            "max": -1,
+            "fallback": {
+              "type": "ribbon",
+              "id": 3,
+              "label": true
+            }
+          },
+          "x",
+          {
+            "dataSet": "y",
+            "columns": 2.5,
+            "fallback": "none"
+          }
+        ]
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.repeat[1].id \"a\" is used twice",
+        "data.repeat[1].dataSet must be a non-empty string",
+        "data.repeat[1].region is not a layout region (one of: menubar, toolbar, nav, main, inspector, status, fab, sheet, overlay)",
+        "data.repeat[1].style must be one of: tabs, cards, grid, stacked",
+        "data.repeat[1].columns must be a whole number from 1 to 12",
+        "data.repeat[1].max must be a whole number, 0 or more",
+        "data.repeat[1].fallback.type is unknown asset type \"ribbon\"",
+        "data.repeat[1].fallback.id must be a string",
+        "data.repeat[1].fallback.label must be a string",
+        "data.repeat[2] must be an object",
+        "data.repeat[3].id must be a non-empty string",
+        "data.repeat[3].columns must be a whole number from 1 to 12",
+        "data.repeat[3].fallback must be an object"
+      ]
+    }
   }
 ]

@@ -744,6 +744,16 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-tab:hover { color: var(--fx-text); }
 .fx-tab.is-active, .fx-tab[aria-selected='true'] { color: var(--fx-text); box-shadow: inset 0 -2px 0 var(--fx-accent); }
 
+/* repeating slots (layout.repeat): one item per page data-set entry; the layout picks the style */
+.fx-repeat { min-width: 0; }
+.fx-repeat--stacked { display: flex; flex-direction: column; gap: var(--fx-space); }
+.fx-repeat--grid, .fx-repeat--cards { display: grid; grid-template-columns: repeat(var(--fx-repeat-cols, 1), minmax(0, 1fr)); gap: var(--fx-space); }
+.fx-repeat--tabs { display: flex; flex-direction: column; gap: var(--fx-space); }
+.fx-repeat__item { min-width: 0; }
+.fx-repeat__more { align-self: center; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 0.9); padding: 0 calc(var(--fx-space) * 0.5); }
+.fx-repeat--fallback { color: var(--fx-muted); padding: var(--fx-space); }
+@media (max-width: 760px) { .fx-repeat--grid, .fx-repeat--cards { grid-template-columns: minmax(0, 1fr); } }
+
 .fx-slot { display: flex; flex-direction: column; gap: var(--fx-space); }
 .fx-slot__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .fx-slot__head h2 { font-size: 1.05em; }

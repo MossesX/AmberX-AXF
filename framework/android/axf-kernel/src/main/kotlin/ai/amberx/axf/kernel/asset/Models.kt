@@ -159,6 +159,8 @@ public data class Layout(
     val mobile: MobileLayout = MobileLayout(),
     /** Region slot overrides: region name (lowercase) -> accepted asset types. Empty = the contract defaults. */
     val slots: Map<String, List<String>> = emptyMap(),
+    /** Repeating slots (`data.repeat`), raw entries; RepeatEngine cleans them against the page's data sets. */
+    val repeat: List<kotlinx.serialization.json.JsonElement> = emptyList(),
 ) {
     public companion object {
         public fun fromJson(o: JsonObject): Layout = Layout(
@@ -168,6 +170,7 @@ public data class Layout(
             inspectorWidth = o.int("inspectorWidth", 260), contentMaxWidth = o.int("contentMaxWidth", 1080),
             mobile = MobileLayout.fromJson(o.obj("mobile")),
             slots = o.obj("slots")?.entries?.mapNotNull { (k, v) -> (v as? kotlinx.serialization.json.JsonArray)?.let { a -> k to a.mapNotNull { (it as? kotlinx.serialization.json.JsonPrimitive)?.takeIf { p -> p.isString }?.content } } }?.toMap() ?: emptyMap(),
+            repeat = o.arr("repeat")?.toList() ?: emptyList(),
         )
     }
 }
