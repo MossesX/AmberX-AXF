@@ -400,3 +400,43 @@ export function applyMerge(tracker, buildId, merged, at) {
   b.updatedAt = at; t.updatedAt = at;
   return { tracker: t, lines };
 }
+
+// ---------------------------------------------------------------- cost meter
+
+/**
+ * USD per million tokens. framework/schemas/model-pricing.json is the source; Haiku isn't in it yet, so its line
+ * here is an estimate until it is (check claude.com/pricing).
+ */
+export const HAIKU_ESTIMATE = { input: 1, output: 5, cacheRead: 0.1, cacheWrite: 1.25, estimate: true };
+export function prices(pricingFile) {
+  const m = pricingFile?.models && typeof pricingFile.models === 'object' ? pricingFile.models : {};
+  return { haiku: m.haiku ?? HAIKU_ESTIMATE, sonnet: m.sonnet, opus: m.opus, fable: m.fable };
+}
+export function costOf(u, model, table) {
+  const p = table?.[model]; if (!p || !u) return 0;
+  return (u.input * p.input + u.output * p.output + u.cacheRead * (p.cacheRead ?? 0) + u.cacheWrite * (p.cacheWrite ?? 0)) / 1e6;
+}
+/** A run's dollars: what Claude Code reported when it did, else priced from its usage. */
+export const runCost = (r, table) => (Number.isFinite(r?.reportedCost) ? r.reportedCost : costOf(r?.usage, r?.model, table));
+/** What a job's budget is worth: the budget tokens priced as a typical agent run (mostly cache reads). */
+export function budgetUsd(job, table) {
+  const t = job?.budget?.tokens ?? 0;
+  return costOf({ input: t * 0.3, output: t * 0.1, cacheRead: t * 3, cacheWrite: t * 0.3 }, job?.model, table);
+}
+const totTokens = (u) => (u ? u.input + u.output + u.cacheRead + u.cacheWrite : 0);
+
+/** Tokens and dollars per agent, job and build, plus the total. */
+export function meter(runs, table) {
+  const z = () => ({ runs: 0, tokens: 0, usd: 0, done: 0, failed: 0 });
+  const out = { total: z(), byAgent: {}, byJob: {}, byBuild: {}, byModel: {} };
+  for (const r of Array.isArray(runs) ? runs : []) {
+    const usd = runCost(r, table); const tok = totTokens(r.usage); const ok = r.status === 'done';
+    for (const [k, key] of [['byAgent', r.agent], ['byJob', r.jobId], ['byBuild', r.buildId], ['byModel', r.model], ['total', null]]) {
+      const slot = key === null ? out.total : (out[k][key] ??= z());
+      slot.runs += 1; slot.tokens += tok; slot.usd += usd; if (ok) slot.done += 1; else slot.failed += 1;
+    }
+  }
+  return out;
+}
+export const fmtUsd = (v) => `$${(Number(v) || 0) < 10 ? (Number(v) || 0).toFixed(2) : Math.round(Number(v) || 0)}`;
+export const fmtTokens = (v) => { const n = Number(v) || 0; return n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : String(n); };

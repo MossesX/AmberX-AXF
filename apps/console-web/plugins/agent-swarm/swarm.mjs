@@ -6,6 +6,7 @@
  *   node apps/console-web/plugins/agent-swarm/swarm.mjs roster              the agents and their skills
  *   … plan <buildId>…                    split builds into jobs: agent, model, leases, waves (several builds share one lease table)
  *   … pack <buildId> <stepId>            one job's brief: shared prefix + skill, task, leases, snippets
+ *   … state | cost                       everything the console shows | the cost meter (agent, build, job)
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
@@ -139,6 +140,16 @@ export async function fix(buildId, stepId, opts = {}) {
   const rec = await runJob(fj, agent, brief, { cwd: wt.path, bin: opts.bin });
   return saveRun({ ...rec, branch: wt.branch, worktree: wt.path, lease: core.leaseCheck(fj, changedFiles(wt.path, into)) });
 }
+export const priceTable = () => core.prices(readJson(join(ROOT, 'framework/schemas/model-pricing.json'), {}));
+
+/** Everything the console page shows, in one read. */
+export function state() {
+  const roster = loadRoster(); const sk = loadSkills(); const runs = loadRuns(); const table = priceTable();
+  const tr = loadTracker();
+  const builds = (tr.builds ?? []).filter((b) => !['complete', 'archived'].includes(b.status) && !b.hidden).map((b) => ({ id: b.id, title: b.title, status: b.status, open: (b.steps ?? []).filter((x) => !x.done && !x.skip).length }));
+  return { roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
+    runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
+}
 export function jobOf(p, ref) { const j = p.jobs.find((x) => x.id === ref || x.stepId === ref); if (!j) throw new Error(`no open job "${ref}"`); return j; }
 
 function planText(p) {
@@ -154,6 +165,11 @@ export async function main(argv) {
   if (cmd === 'roster') {
     const r = loadRoster(); const sk = loadSkills(); const problems = core.checkRoster(r, sk);
     return out({ ok: true, roster: r, skills: sk, problems }, [...r.agents.map((a) => `${a.id.padEnd(6)} ${a.name.padEnd(12)} ${a.skill.padEnd(17)} ${a.models.join('/')}`), ...problems.map((p) => `! ${p}`)].join('\n'));
+  }
+  if (cmd === 'state') return out({ ok: true, state: state() }, JSON.stringify(state(), null, 1));
+  if (cmd === 'cost') {
+    const m = state().meter; const row = (k, v) => `${k.padEnd(28)} ${String(v.runs).padStart(4)} runs ${core.fmtTokens(v.tokens).padStart(7)} tok ${core.fmtUsd(v.usd).padStart(8)}`;
+    return out({ ok: true, meter: m }, [row('TOTAL', m.total), '— by agent', ...Object.entries(m.byAgent).map(([k, v]) => row(k, v)), '— by build', ...Object.entries(m.byBuild).map(([k, v]) => row(k, v)), '— by job', ...Object.entries(m.byJob).map(([k, v]) => row(k, v))].join('\n'));
   }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
   if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }

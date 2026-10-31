@@ -100,6 +100,19 @@ t('Boss writes the tracker after merge: ticks, agent, one note, notes lines', ()
   assert.equal(r.tracker.builds[0].steps[0].done, true); assert.match(r.tracker.builds[0].steps[0].note, /rio on sonnet: card/); assert.equal(r.tracker.builds[0].steps[1].done, undefined);
   assert.equal(r.tracker.builds[0].notes.length, 1); assert.deepEqual(r.lines, ['b.s1: STATUS: cards']); assert.equal(tr.builds[0].steps[0].done, undefined);
 });
+// s6 cost meter
+const P = c.prices({ models: { sonnet: { input: 2, output: 10, cacheRead: 0.1, cacheWrite: 2.5 }, opus: { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 } } });
+t('cost from usage, reported cost wins', () => {
+  assert.equal(c.costOf({ input: 1e6, output: 1e5, cacheRead: 1e6, cacheWrite: 0 }, 'sonnet', P), 2 + 1 + 0.1);
+  assert.equal(c.runCost({ reportedCost: 0.5, usage: { input: 1e6, output: 0, cacheRead: 0, cacheWrite: 0 }, model: 'opus' }, P), 0.5);
+  assert.equal(P.haiku.estimate, true);
+});
+t('meter per agent, job, build and model', () => {
+  const runs = [{ agent: 'rio', jobId: 'b.s1', buildId: 'b', model: 'sonnet', status: 'done', reportedCost: 1, usage: { input: 10, output: 0, cacheRead: 0, cacheWrite: 0 } }, { agent: 'rio', jobId: 'b.s1', buildId: 'b', model: 'sonnet', status: 'failed', reportedCost: 0.5, usage: null }, { agent: 'doc', jobId: 'c.s1', buildId: 'c', model: 'haiku', status: 'done', reportedCost: 0.25 }];
+  const m = c.meter(runs, P); assert.equal(m.total.usd, 1.75); assert.equal(m.byAgent.rio.runs, 2); assert.equal(m.byAgent.rio.failed, 1); assert.equal(m.byBuild.c.usd, 0.25); assert.equal(m.byJob['b.s1'].tokens, 10); assert.equal(m.byModel.haiku.done, 1);
+});
+t('formatting', () => { assert.equal(c.fmtUsd(1.234), '$1.23'); assert.equal(c.fmtUsd(123.4), '$123'); assert.equal(c.fmtTokens(1500), '2k'); assert.equal(c.fmtTokens(2.5e6), '2.5M'); });
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));

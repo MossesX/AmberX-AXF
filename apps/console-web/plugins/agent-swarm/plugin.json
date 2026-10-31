@@ -10,14 +10,21 @@
   "targets": [
     "axf-console"
   ],
-  "provides": [],
+  "provides": [
+    "view:agent-swarm",
+    "settings-tab:agent-swarm"
+  ],
   "optional": [],
   "scopes": [
     "ROUTES"
   ],
   "enabledByDefault": true,
   "banner": false,
-  "tabable": false,
+  "tabable": {
+    "view": "agent-swarm",
+    "label": "Swarm",
+    "icon": "user"
+  },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/agent-swarm",
@@ -31,5 +38,5 @@
     "model": "opus",
     "builtAt": "2026-10-31"
   },
-  "opens": false
+  "opens": "main"
 }
