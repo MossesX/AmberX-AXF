@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Agent swarm (Breakroom `agent-swarm`, 16 steps, Opus, all done): headless specialist agents, leases, runner, cost meter, cards, chat | review (pr-open) | `claude/agent-swarm` | [#196](https://github.com/MossesX/AmberX-AXF/pull/196) | Merge; Fable rebuild of s1–s3, s11, s12, s15 parked in Breakroom | 2026-10-31 |
 | Compact every plugin page (Angel `screens-compact`; lead + 3 sub-agents on branches -plugins-a/b/c) | pr-open | `claude/angel-screens-compact` | — | Merge. Next: Angel `ui-all-assets` (slimmed to typography / density / component-sizing assets; Fable s1–s2 first) | 2026-10-30 |
 | Compact the whole app (Angel `app-compact`): framework-wide tighter page heads, buttons, chips, cards, tables; count strips; Plugin Manager one column on phones (claude.ai, Opus) | done (merged Oct 30, #178) | `claude/angel-app-compact` | — | Merge; follow-up pass for per-screen button walls | 2026-10-30 |
 | Settings redesign (Angel `settings-compact`): tap-in section list, one-line level bar, flat hairline groups, dropdown design package; + Angel builds `plugin-floatable` (queued, Fable first) (claude.ai, Opus) | done (merged Oct 30) | `claude/angel-settings` (also brings the Angel profile from `angel/home-cards-queue`) | [#175](https://github.com/MossesX/AmberX-AXF/pull/175) | Merge, then next Angel build | 2026-10-30 |
