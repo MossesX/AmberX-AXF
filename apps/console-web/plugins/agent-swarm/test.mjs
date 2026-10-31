@@ -123,6 +123,16 @@ t('pilot: projections, saving and a clamped scale', () => {
   const u = c.projectRun({ budget: { maxTurns: 10 } }, 1000); assert.equal(u.cacheWrite, 1000 + 1500 * 6); assert.equal(u.output, 6 * 800);
 });
 
+// s8 persona in the cached prefix
+t('Amber persona is a few lines, in the shared prefix, and keeps code clean', () => {
+  const per = c.parseSkill(readFileSync(here('./agents/persona.md'), 'utf8'));
+  assert.ok(per.lines <= 8, `${per.lines} lines`); assert.match(per.body, /Code, code comments, commit messages/); assert.match(per.body, /no jokes about race/);
+  const pre = c.sharedPrefix({ persona: per.body }); assert.match(pre, /PERSONA\nYou talk like Amber/); assert.match(pre, /clean and professional/);
+  const job = c.planJobs(B('b', [{ text: 'React card' }]), roster).jobs[0]; const job2 = c.planJobs(B('z', [{ text: 'Update the README docs' }]), roster).jobs[0];
+  const a = c.packJob(job, { prefix: pre, skill: skills[job.skill] }); const d = c.packJob(job2, { prefix: pre, skill: skills[job2.skill] });
+  assert.ok(a.system.startsWith(pre) && d.system.startsWith(pre)); // same bytes first, so the cache hits across agents
+});
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));
