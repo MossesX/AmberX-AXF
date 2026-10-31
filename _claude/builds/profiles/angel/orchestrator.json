@@ -2092,8 +2092,8 @@
   },
   {
    "id": "transcription-engine",
-   "title": "Self-hosted transcription engine (axHub)",
-   "detail": "Brett, Oct 30 2026 (voice): his own transcription engine, no paid API. Self-hosted Whisper on the VPS as its own container behind axHub. Transcribes every recording that lands on axHub (Output Recorder chunks, screen recordings, mic) automatically, at low priority with a CPU cap so builds and apps are not slowed. Timestamps per line, tap a line to jump the audio, search every transcript, export text/SRT, send to AmberX notes.",
+   "title": "Transcription engine: on-demand, on-phone Whisper + server switch",
+   "detail": "Brett, Oct 30 2026 (voice): his own transcription engine, no paid API. ON DEMAND ONLY: nothing is transcribed automatically; a Transcribe button on any recording. DEFAULT: Whisper runs on the phone (whisper.cpp / on-device model in AmberX). SWITCH: send it to the self-hosted Whisper on axHub instead (own container, low priority, CPU cap) for bigger models or when not using the phone. Timestamps per line, tap a line to jump the audio, search all transcripts, export text/SRT, send to AmberX notes. Transcripts saved on axHub with the recording.",
    "status": "queued",
    "branch": "claude/transcription-engine",
    "pr": null,
@@ -2101,8 +2101,8 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Benchmark faster-whisper / whisper.cpp model sizes on this VPS (CPU), pick the best that keeps up",
-     "model": "Opus",
+     "text": "On-device Whisper in AmberX (whisper.cpp, model download + size picker), runs only when Transcribe is tapped",
+     "model": "Fable",
      "why": null,
      "phase": null,
      "group": null,
@@ -2119,7 +2119,7 @@
     },
     {
      "id": "s2",
-     "text": "Engine container: low-priority worker, job queue, capped CPU so builds and apps stay fast",
+     "text": "Server engine: Whisper container behind axHub, on-demand API, low priority + CPU cap; benchmark model sizes on this VPS",
      "model": "Fable",
      "why": null,
      "phase": null,
@@ -2137,8 +2137,8 @@
     },
     {
      "id": "s3",
-     "text": "axHub service: transcribe API, auto-run on every new recording, word timestamps, language detect",
-     "model": "Fable",
+     "text": "Phone/Server switch (setting + per-recording choice), progress, cancel",
+     "model": "Opus",
      "why": null,
      "phase": null,
      "group": null,
@@ -2155,7 +2155,7 @@
     },
     {
      "id": "s4",
-     "text": "Transcript viewer in AmberX + console: tap a line to jump the audio, search across all recordings",
+     "text": "Transcript viewer: tap line to jump audio, search across transcripts; saved on axHub",
      "model": "Fable",
      "why": null,
      "phase": null,
@@ -2173,7 +2173,7 @@
     },
     {
      "id": "s5",
-     "text": "Export text/SRT, send to AmberX notes; tests + docs",
+     "text": "Export text/SRT, send to notes; tests + docs",
      "model": "Opus",
      "why": null,
      "phase": null,
