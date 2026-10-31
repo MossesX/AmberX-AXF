@@ -20,3 +20,26 @@
 .sw-wave { margin: calc(var(--fx-space) * 0.75) 0 calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 0.9); font-weight: 600 }
 .sw-gone { opacity: var(--fx-opacity-disabled) }
 .sw-num { width: calc(var(--fx-font-size) * 5); text-align: right }
+.sw-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 19), 1fr)); gap: var(--fx-space) }
+.sw-card { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6); padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-card-shadow); color: var(--fx-text); cursor: pointer; text-align: left }
+.sw-card:hover { border-color: var(--fx-accent) }
+.sw-card:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus) }
+.sw-card--profile { cursor: default }
+.sw-card__head { display: flex; align-items: center; gap: var(--fx-space) }
+.sw-card__who { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--fx-space) * 0.25); min-width: 0 }
+.sw-card__who h2 { margin: 0 }
+.sw-card__line { margin: 0; font-weight: 600 }
+.sw-card__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(var(--fx-space) * 0.3) var(--fx-space); margin: 0; font-size: calc(var(--fx-font-size) * 0.88) }
+.sw-card__stats div { display: flex; justify-content: space-between; gap: calc(var(--fx-space) * 0.5) }
+.sw-card__stats dt { color: var(--fx-muted) }
+.sw-card__stats dd { margin: 0; font-variant-numeric: tabular-nums }
+.sw-card__quote { margin: 0; font-style: italic; color: var(--fx-muted) }
+.sw-avatar { flex: none; border-radius: 50% }
+.sw-avatar__bg { fill: var(--fx-accent-soft) }
+.sw-avatar__skin { fill: var(--fx-surface3); stroke: var(--fx-text); stroke-width: 1.2 }
+.sw-avatar__ink { fill: var(--fx-text) }
+.sw-avatar__line { fill: none; stroke: var(--fx-text); stroke-width: 1.6; stroke-linecap: round }
+.sw-avatar__thick { stroke-width: 3 }
+.sw-skill { white-space: pre-wrap; margin: 0; padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface2); font-size: calc(var(--fx-font-size) * 0.88) }
+.sw-feed { margin: 0; padding-left: calc(var(--fx-space) * 1.2); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35) }
+.sw-link { all: unset; cursor: pointer; color: var(--fx-accent); text-decoration: underline }

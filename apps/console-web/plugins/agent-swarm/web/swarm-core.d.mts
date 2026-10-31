@@ -12,3 +12,7 @@ export function meter(runs: any[], table: any): any;
 export function fmtUsd(v: number): string;
 export function fmtTokens(v: number): string;
 export function minutesOf(e: unknown): number | null;
+export const STATUSES: Record<string, { label: string; works: boolean | 'small'; tone: string; about: string }>;
+export function agentStats(runs: any[], agentId: string, table: any, feedSize?: number): any;
+export function avatarColors(av: any): { hair: string; shirt: string };
+export const AVATAR_TOKENS: string[];

@@ -614,3 +614,22 @@ export function capCheck(state, runs, table, at) {
   }
   return log;
 }
+
+// ---------------------------------------------------------------- cards and profiles
+
+/** What an agent's card and profile show from its runs. */
+export function agentStats(runs, agentId, table, feedSize = 10) {
+  const mine = (runs ?? []).filter((r) => r.agent === agentId);
+  const done = mine.filter((r) => r.status === 'done').length; const failed = mine.length - done;
+  const models = {}; for (const r of mine) models[r.model] = (models[r.model] ?? 0) + 1;
+  const favorite = Object.entries(models).sort((a, b) => b[1] - a[1] || MODEL_TIERS.indexOf(a[0]) - MODEL_TIERS.indexOf(b[0]))[0]?.[0] ?? '';
+  const last = mine.reduce((t, r) => ((r.endedAt || r.startedAt || '') > t ? r.endedAt || r.startedAt : t), '');
+  const feed = mine.slice(-feedSize).reverse().map((r) => ({ jobId: r.jobId, buildId: r.buildId, at: r.endedAt || r.startedAt, status: r.status, model: r.model, usd: runCost(r, table), summary: r.report?.summary ?? r.reason ?? '' }));
+  return { runs: mine.length, done, failed, successRate: mine.length ? done / mine.length : null, favoriteModel: favorite, lastSeen: last, feed };
+}
+/** Avatar palette: theme colours only, so every avatar follows the theme; the agent's hue picks its pair. */
+export const AVATAR_TOKENS = ['--fx-brand-1', '--fx-brand-2', '--fx-brand-3', '--fx-accent', '--fx-info', '--fx-success', '--fx-warning', '--fx-danger'];
+export function avatarColors(av) {
+  const i = Math.floor((av?.hue ?? 0) / 45) % AVATAR_TOKENS.length;
+  return { hair: AVATAR_TOKENS[i], shirt: AVATAR_TOKENS[(i + 3 + (av?.hair ?? 0)) % AVATAR_TOKENS.length] };
+}

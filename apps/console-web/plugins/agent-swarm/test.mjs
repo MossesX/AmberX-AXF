@@ -180,6 +180,18 @@ t('spend cap benches the agent; Brett putting it back clears the mark', () => {
   assert.equal(c.capCheck(c.normState({}, roster), RUNS, P, AT).length, 0); // no cap, no bench
 });
 
+// s11 cards + profiles
+t('card stats: jobs done, success, failures, favourite model, last seen, feed', () => {
+  const runs = [{ agent: 'rio', jobId: 'a', model: 'sonnet', status: 'done', reportedCost: 1, endedAt: '2026-10-30T00:00:00Z', report: { summary: 'ok' } }, { agent: 'rio', jobId: 'b', model: 'sonnet', status: 'failed', reportedCost: 2, endedAt: '2026-10-31T00:00:00Z', reason: 'tsc' }, { agent: 'rio', jobId: 'c', model: 'opus', status: 'done', reportedCost: 3, endedAt: '2026-10-29T00:00:00Z' }];
+  const s = c.agentStats(runs, 'rio', P); assert.equal(s.done, 2); assert.equal(s.failed, 1); assert.equal(Math.round(s.successRate * 100), 67); assert.equal(s.favoriteModel, 'sonnet'); assert.equal(s.lastSeen, '2026-10-31T00:00:00Z');
+  assert.equal(s.feed[0].jobId, 'c'); assert.equal(s.feed.length, 3); assert.equal(c.agentStats([], 'x', P).successRate, null);
+});
+t('every agent has a unique look drawn in theme colours', () => {
+  const looks = roster.agents.map((a) => { const col = c.avatarColors(a.avatar); assert.ok(c.AVATAR_TOKENS.includes(col.hair) && c.AVATAR_TOKENS.includes(col.shirt)); return JSON.stringify([a.avatar.face, a.avatar.hair, a.avatar.gear, col]); });
+  assert.equal(new Set(looks).size, looks.length);
+  for (const a of roster.agents) assert.ok(a.catchphrase && a.bio && a.specialty && a.hiredAt, a.id);
+});
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));
