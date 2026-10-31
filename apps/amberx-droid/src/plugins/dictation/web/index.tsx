@@ -140,7 +140,7 @@ export function save(rt: AxfRuntime, draft: Draft, again = false) {
   const where = notesSnapshot().view.lists[draft.list || 'inbox']?.name ?? 'Inbox';
   const msg = `${items.length === 1 ? 'Saved' : `Saved ${items.length} items`} to ${where}.`;
   rt.toast(msg, 'success', 'Dictation');
-  void native.speak({ text: msg, lang: lang(rt) }).catch(() => undefined);
+  void native.speak({ text: msg, lang: lang(rt), holdMic: true }).catch(() => undefined);
   const keep = st.preferred;
   set({ phase: 'idle', draft: null, live: '', transcript: '', note: msg });
   if (again) void start(rt, keep);
