@@ -15,6 +15,14 @@
  *    `output {stream, text}`, `done {state, exitCode}`;
  *  - pushes `{ type: "veto", phase: "held"|"warning"|"running", id, jobId, title, command, runsAt, secondsLeft, … }`;
  *  - states: held → running → ran | failed, or denied, or expired.
+ *  - axHub decision 104 (Oct 30 2026): next to Deny, **Approve now** (`POST …/approve-now`: runs at once, no more
+ *    notices) and **Shelve** (`POST …/shelve`: the countdown pauses until Approve now or Deny); `veto.state: "shelved"`,
+ *    `veto.actions` (what the owner may do now), `approveNowUrl`, `shelveUrl`; pushes add phases `shelved` and
+ *    `cleared` (denied or approved: take the notice away) and `actions`. Countdown default 90 s. A hub without 104
+ *    sends no `actions`: Deny only.
+ *  - the host seam (`setVetoHost`): an app with a native side (the AmberX phone shell) lends the veto banner plugin its
+ *    hub session for Deny / Approve now / Shelve, its alarm, and notification taps. Without one, actions run from a
+ *    page on the hub's origin, else open the call's page on the hub.
  *
  * Every link an app uses is rebuilt here from the ids (a link from the hub is used only to check it points at the hub),
  * the same rule as the approvals feed. Countdowns run on the local clock from `secondsLeft` (read time kept), so a phone
@@ -29,19 +37,26 @@ import { readSse, type SseFrame } from '../../core/sse';
 export const VETO_CONTRACT = 'veto@1';
 /** "Time running out": the second notification fires this many seconds before the call runs. */
 export const VETO_WARNING_SECONDS = 30;
-/** The hub's default countdown (3 minutes). */
-export const VETO_DEFAULT_COUNTDOWN = 180;
+/** The hub's default countdown (90 s since axHub decision 104; was 3 minutes). */
+export const VETO_DEFAULT_COUNTDOWN = 90;
 export const VETO_MAX_COUNTDOWN = 24 * 3600;
 export const VETO_COMMAND_CAP = 2000;
 export const VETO_OUTPUT_CAP = 4000;
 
-export type VetoState = 'held' | 'running' | 'ran' | 'failed' | 'denied' | 'expired';
-export const VETO_STATES: readonly VetoState[] = ['held', 'running', 'ran', 'failed', 'denied', 'expired'];
+export type VetoState = 'held' | 'shelved' | 'running' | 'ran' | 'failed' | 'denied' | 'expired';
+export const VETO_STATES: readonly VetoState[] = ['held', 'shelved', 'running', 'ran', 'failed', 'denied', 'expired'];
 export const VETO_FINAL: readonly VetoState[] = ['ran', 'failed', 'denied', 'expired'];
 export const isVetoFinal = (s: VetoState) => VETO_FINAL.includes(s);
 /** Notification phases: held (timer started), warning (≤ 30 s left), running (time is up, the hub runs it). */
 export type VetoPhase = 'held' | 'warning' | 'running';
 export const VETO_PHASES: readonly VetoPhase[] = ['held', 'warning', 'running'];
+/** Push phases (decision 104 adds `shelved`: countdown paused, and `cleared`: denied or approved, take the notice away). */
+export type VetoPushPhase = VetoPhase | 'shelved' | 'cleared';
+export const VETO_PUSH_PHASES: readonly VetoPushPhase[] = ['held', 'warning', 'running', 'shelved', 'cleared'];
+/** What the owner can do to a held call (decision 102 Deny; 104 Approve now, Shelve). */
+export type VetoAction = 'deny' | 'approve-now' | 'shelve';
+export const VETO_ACTIONS: readonly VetoAction[] = ['deny', 'approve-now', 'shelve'];
+export const VETO_ACTION_LABELS: Record<VetoAction, string> = { deny: 'Deny', 'approve-now': 'Approve', shelve: 'Shelve' };
 
 const JOB_ID = /^[A-Za-z0-9_-]{1,80}$/;
 export const isJobId = (id: unknown): id is string => typeof id === 'string' && JOB_ID.test(id);
@@ -62,10 +77,24 @@ export interface VetoCall {
   url: string;
   denyUrl: string;
   streamUrl: string | null;
+  /** Decision 104: the countdown is paused (`secondsLeft` is frozen) until Approve now or Deny. */
+  shelved: boolean;
+  /** Decision 104: approved, runs at once; no more notices. */
+  approvedNow: boolean;
+  /** What the owner may do now (a hub before 104: Deny only). */
+  actions: VetoAction[];
 }
 
 export const vetoDenyUrl = (base: string, id: unknown): string | null => (isApprovalId(id) ? `${base}/auth/api/approvals/${id}/deny` : null);
 export const vetoStreamUrl = (base: string, jobId: unknown): string | null => (isJobId(jobId) ? `${base}/auth/api/jobs/${jobId}/stream` : null);
+/** `POST` address of one owner action, rebuilt from the id (never taken from the hub's reply). */
+export const vetoActionUrl = (base: string, id: unknown, action: VetoAction): string | null =>
+  (isApprovalId(id) && VETO_ACTIONS.includes(action) ? `${base}/auth/api/approvals/${id}/${action}` : null);
+/** The actions list of an entry or push, filtered to known ones; absent = a hub before 104 = Deny only. */
+export function actionsOf(raw: unknown): VetoAction[] {
+  if (!Array.isArray(raw)) return ['deny'];
+  return VETO_ACTIONS.filter((a) => raw.includes(a));
+}
 
 const o = (v: unknown): Record<string, unknown> | null => (v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : null);
 const s = (r: Record<string, unknown> | null, k: string): string | null => (r && typeof r[k] === 'string' ? (r[k] as string) : null);
@@ -91,7 +120,7 @@ export function vetoOf(base: string, raw: unknown, now: number = Date.now()): Ve
   const url = approvalUrl(base, id);
   const denyUrl = vetoDenyUrl(base, id);
   if (!id || !url || !denyUrl) return null;
-  for (const k of ['url', 'approvalUrl', 'denyUrl', 'streamUrl']) if (typeof p[k] === 'string' && !isHub(base, p[k])) return null;
+  for (const k of ['url', 'approvalUrl', 'denyUrl', 'approveNowUrl', 'shelveUrl', 'streamUrl']) if (typeof p[k] === 'string' && !isHub(base, p[k])) return null;
   const v = o(p.veto) ?? p; // a push carries runsAt/secondsLeft at the top
   const runsAt = (s(v, 'runsAt') ?? '').slice(0, HUB_FIELD_CAPS.time);
   const left = n(v, 'secondsLeft');
@@ -103,9 +132,13 @@ export function vetoOf(base: string, raw: unknown, now: number = Date.now()): Ve
   const tool = (s(p, 'tool') ?? 'vps.run').slice(0, HUB_FIELD_CAPS.tool);
   const reason = o(p.reason);
   const title = (s(p, 'title') ?? s(reason, 'title') ?? tool).slice(0, 200);
+  const shelved = v.state === 'shelved' || p.phase === 'shelved';
+  const approvedNow = v.approvedNow === true;
+  const actions = actionsOf(Array.isArray(v.actions) ? v.actions : p.actions);
   return {
     id, jobId, tool, title, command: commandOf(p), summary: (s(p, 'summary') ?? '').slice(0, HUB_FIELD_CAPS.summary),
     runsAt, secondsLeft, countdownSeconds, readAt: now, url, denyUrl, streamUrl: vetoStreamUrl(base, jobId),
+    shelved, approvedNow, actions,
   };
 }
 
@@ -163,9 +196,9 @@ export async function fetchVetoFeed(base: string, opts: { fetch?: HubFetch; now?
 
 /* ---------------------------------------------------------------- the countdown */
 
-/** Seconds left now, on the local clock from when it was read. */
-export const secondsLeftNow = (c: Pick<VetoCall, 'secondsLeft' | 'readAt'>, now: number = Date.now()): number =>
-  Math.max(0, Math.ceil(c.secondsLeft - (now - c.readAt) / 1000));
+/** Seconds left now, on the local clock from when it was read (frozen while shelved). */
+export const secondsLeftNow = (c: Pick<VetoCall, 'secondsLeft' | 'readAt'> & { shelved?: boolean }, now: number = Date.now()): number =>
+  c.shelved ? Math.max(0, Math.ceil(c.secondsLeft)) : Math.max(0, Math.ceil(c.secondsLeft - (now - c.readAt) / 1000));
 
 export const vetoPhase = (secondsLeft: number): VetoPhase => (secondsLeft <= 0 ? 'running' : secondsLeft <= VETO_WARNING_SECONDS ? 'warning' : 'held');
 
@@ -185,6 +218,8 @@ export function notifyPlan(sent: readonly string[], calls: readonly VetoCall[], 
   const next = new Set<string>();
   const send: { call: VetoCall; phase: VetoPhase }[] = [];
   for (const c of calls) {
+    // Shelved (paused) and approved-now calls get no further countdown notices (decision 104); what was sent stays sent.
+    if (c.shelved || c.approvedNow) { for (const p of VETO_PHASES) if (was.has(`${c.id}:${p}`)) next.add(`${c.id}:${p}`); continue; }
     const phase = vetoPhase(secondsLeftNow(c, now));
     const reached = VETO_PHASES.slice(0, VETO_PHASES.indexOf(phase) + 1);
     const fresh = reached.filter((p) => !was.has(`${c.id}:${p}`));
@@ -196,16 +231,16 @@ export function notifyPlan(sent: readonly string[], calls: readonly VetoCall[], 
 
 /* ---------------------------------------------------------------- pushes */
 
-export interface VetoPush { phase: VetoPhase; call: VetoCall }
+export interface VetoPush { phase: VetoPushPhase; call: VetoCall }
 
 /** A hub push `{type: "veto", phase, id, …}` → the call and its phase; null for anything else. */
 export function vetoFromPush(base: string, raw: unknown, now: number = Date.now()): VetoPush | null {
   let p: unknown = raw;
   if (typeof raw === 'string') { try { p = JSON.parse(raw); } catch { return null; } }
   const j = o(p);
-  if (!j || j.type !== 'veto' || !VETO_PHASES.includes(j.phase as VetoPhase)) return null;
+  if (!j || j.type !== 'veto' || !VETO_PUSH_PHASES.includes(j.phase as VetoPushPhase)) return null;
   const call = vetoOf(base, j, now);
-  return call ? { phase: j.phase as VetoPhase, call } : null;
+  return call ? { phase: j.phase as VetoPushPhase, call } : null;
 }
 
 /* ---------------------------------------------------------------- the job stream */
@@ -242,14 +277,17 @@ export async function followVeto(streamUrl: string, base: string, onEvent: (e: V
   return end;
 }
 
-/* ---------------------------------------------------------------- deny */
+/* ---------------------------------------------------------------- deny, approve now, shelve */
+
+export interface VetoActionResult { ok: boolean; state?: VetoState | 'approved-now'; error?: string; opened?: boolean }
 
 /**
- * Denies a held call from a page on the hub's own origin (the AXHub web app): the session's CSRF value from
- * `/auth/api/session`, then `POST <denyUrl>`. Other origins can't (the hub checks Origin): they open `call.url`.
+ * Deny / Approve now / Shelve from a page on the hub's own origin (the AXHub web app): the session's CSRF value from
+ * `/auth/api/session`, then `POST` the action. Other origins can't (the hub checks Origin): use `runVetoAction`, which
+ * goes through the app's host (the phone's session) or opens the call's page on the hub.
  */
-export async function denyVeto(base: string, id: string, opts: { fetch?: HubFetch; csrf?: string } = {}): Promise<{ ok: boolean; state?: VetoState; error?: string }> {
-  const url = vetoDenyUrl(base, id);
+export async function vetoAction(base: string, id: string, action: VetoAction, opts: { fetch?: HubFetch; csrf?: string } = {}): Promise<VetoActionResult> {
+  const url = vetoActionUrl(base, id, action);
   if (!url) return { ok: false, error: 'Not an approval id.' };
   const f: HubFetch = opts.fetch ?? ((u, i) => fetch(u, i));
   try {
@@ -257,16 +295,76 @@ export async function denyVeto(base: string, id: string, opts: { fetch?: HubFetc
     if (!csrf) {
       const sr = await f(`${base}/auth/api/session`, { credentials: 'include', cache: 'no-store', redirect: 'error' });
       csrf = s(o(await sr.json().catch(() => null)), 'csrf') ?? undefined;
-      if (!csrf) return { ok: false, error: 'Sign in to axHub to deny it.' };
+      if (!csrf) return { ok: false, error: `Sign in to axHub to ${VETO_ACTION_LABELS[action].toLowerCase()} it.` };
     }
     const r = await f(url, { method: 'POST', credentials: 'include', cache: 'no-store', redirect: 'error', headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-AxHub-CSRF': csrf }, body: '{}' });
     const j = o(await r.json().catch(() => null));
-    const state = VETO_STATES.includes(j?.state as VetoState) ? (j!.state as VetoState) : undefined;
-    if (r.status === 200) return { ok: true, state: state ?? 'denied' };
-    return { ok: false, state, error: s(o(j?.error), 'message') ?? HUB_MESSAGES.answered.replace('{status}', String(r.status)) };
+    const raw = j?.state;
+    const state = raw === 'approved-now' ? 'approved-now' : VETO_STATES.includes(raw as VetoState) ? (raw as VetoState) : undefined;
+    if (r.status === 200) return { ok: true, state: state ?? (action === 'deny' ? 'denied' : action === 'shelve' ? 'shelved' : 'approved-now') };
+    return { ok: false, ...(state ? { state } : {}), error: s(o(j?.error), 'message') ?? HUB_MESSAGES.answered.replace('{status}', String(r.status)) };
   } catch (e) {
     return { ok: false, error: ((e as Error)?.message || HUB_MESSAGES.unreachable).slice(0, 120) };
   }
+}
+
+/** Deny (decision 102), kept for callers that only deny. */
+export async function denyVeto(base: string, id: string, opts: { fetch?: HubFetch; csrf?: string } = {}): Promise<{ ok: boolean; state?: VetoState; error?: string }> {
+  const r = await vetoAction(base, id, 'deny', opts);
+  return { ok: r.ok, ...(r.state && r.state !== 'approved-now' ? { state: r.state } : {}), ...(r.error ? { error: r.error } : {}) };
+}
+
+/* ---------------------------------------------------------------- the host seam */
+
+/** The alarm settings an app's native side plays (the veto banner plugin's settings; shape owned by that plugin). */
+export type VetoAlarmConfig = Record<string, unknown>;
+
+/**
+ * What an app with a native side lends the veto banner plugin (the AmberX phone shell, `apps/amberx-droid/src/native.ts`).
+ * Every member is optional; without a host the plugin works from the browser alone.
+ */
+export interface VetoHost {
+  /** Deny / Approve now / Shelve with the app's own hub session (hub Origin + CSRF on the native side). */
+  act?(id: string, action: VetoAction): Promise<VetoActionResult>;
+  /** The alarm settings changed (the native side rings through silent mode on the alarm stream). */
+  alarm?(cfg: VetoAlarmConfig): void;
+  /** Ring the alarm once now with these settings (Settings → Test). */
+  testAlarm?(cfg: VetoAlarmConfig): void;
+  /** Stop a ringing alarm. */
+  stopAlarm?(): void;
+  /** The native side raises the notices itself (with the app closed too): the page stays quiet. */
+  notifiesNatively?: boolean;
+  /** Notification taps / actions from the native side: `open` shows the veto screen for that call. */
+  onEvent?(fn: (e: { id: string; action: 'open' | VetoAction | 'failed'; ok?: boolean; error?: string }) => void): () => void;
+  /** Opens a hub page in the app's signed-in hub view. */
+  open?(url: string): void;
+}
+
+let host: VetoHost = {};
+const hostSubs = new Set<() => void>();
+/** An app's native side registers itself once at start (later calls replace it). */
+export function setVetoHost(h: VetoHost): void { host = h ?? {}; hostSubs.forEach((f) => f()); }
+export const vetoHost = (): VetoHost => host;
+export const onVetoHost = (f: () => void): (() => void) => { hostSubs.add(f); return () => { hostSubs.delete(f); }; };
+
+/** Is this page on the hub's own origin (so it may post an action itself)? */
+export const onHubOrigin = (base: string): boolean => {
+  try { return typeof location !== 'undefined' && new URL(base).origin === location.origin; } catch { return false; }
+};
+
+/**
+ * One owner action from any app: the host (the phone's session) first, then a page on the hub's own origin, else the
+ * call's page on the hub opens (where the buttons are). Never from an AI client: this runs only on a person's tap.
+ */
+export async function runVetoAction(base: string, c: Pick<VetoCall, 'id' | 'url'>, action: VetoAction, opts: { fetch?: HubFetch } = {}): Promise<VetoActionResult> {
+  if (host.act) {
+    const r = await host.act(c.id, action).catch((e) => ({ ok: false, error: String((e as Error)?.message ?? e) }) as VetoActionResult);
+    if (r.ok) return r;
+    if (host.open) { host.open(c.url); return { ...r, opened: true }; }
+  }
+  if (onHubOrigin(base)) return vetoAction(base, c.id, action, opts);
+  if (host.open) host.open(c.url); else globalThis.open?.(c.url, '_blank', 'noopener,noreferrer');
+  return { ok: false, opened: true };
 }
 
 /** The approvals page (for "open on the hub" links). */

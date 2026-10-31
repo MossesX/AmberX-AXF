@@ -13,6 +13,7 @@ import { registerPlugin, Capacitor, type PluginListenerHandle } from '@capacitor
 import { unmask } from './plugins/voice/web/speech';
 import { sharesHubSite } from './hosted';
 import { dbfs, type VoiceConfig } from './plugins/voice/web/handsfree';
+import { setVetoHost, type VetoState } from './axf/libs/hub/veto';
 
 export interface MonitorConfig {
   hub: string;
@@ -51,8 +52,8 @@ export interface VoiceStatus {
   phaseDetail?: string;
 }
 
-/** One veto notification channel: a sound name (plugins/approvals/web/core.ts SOUNDS) and a vibration pattern (ms). */
-export interface VetoChannel { sound: string; vibration: number[]; vibrate: boolean }
+/** An owner action on a held veto call (axHub decision 102 Deny, 104 Approve now + Shelve). */
+export type VetoActionName = 'deny' | 'approve-now' | 'shelve';
 
 export interface NativeApi {
   /** GET a hub page or feed with the hub session. No redirects, capped. */
@@ -75,14 +76,19 @@ export interface NativeApi {
   overlayPermission(): Promise<{ allowed: boolean }>;
   /** Ask for the microphone + notifications (Android 13+) permissions. */
   permissions(): Promise<{ microphone: boolean; notifications: boolean }>;
-  /** Veto approvals (plugins/approvals): the sounds + vibration of the three notification channels (Java VetoAlerts). */
-  vetoSettings(opts: { held: VetoChannel; warning: VetoChannel; running: VetoChannel }): Promise<void>;
-  /** Deny a held call with the phone's hub session (POST /auth/api/approvals/<id>/deny, hub Origin + CSRF). Browser: ok false. */
-  vetoDeny(opts: { id: string }): Promise<{ ok: boolean; state?: string; error?: string }>;
-  /** Play one phase's notification (sound + vibration) as a test. */
-  vetoTest(opts: { phase: 'held' | 'warning' | 'running' }): Promise<void>;
-  /** A veto notification was tapped (open its terminal tab) or denied from the notification. */
-  addListener(event: 'veto', fn: (e: { id: string; action: 'open' | 'denied' | 'deny-failed'; error?: string }) => void): Promise<PluginListenerHandle>;
+  /**
+   * Veto calls (the veto banner plugin, console `plugins/approvals-banner`, through lib-hub's `setVetoHost`): Deny,
+   * Approve now or Shelve with the phone's hub session (POST /auth/api/approvals/<id>/<action>, hub Origin + CSRF; Java
+   * `VetoAlerts`). Browser: ok false (the plugin opens the call on the hub).
+   */
+  vetoAction(opts: { id: string; action: VetoActionName }): Promise<{ ok: boolean; state?: string; error?: string }>;
+  /** The banner plugin's alarm settings (Java `VetoAlarm`: alarm audio stream, rings through silent mode). */
+  vetoAlarm(opts: Record<string, unknown>): Promise<void>;
+  /** Ring the alarm once now with these settings (Settings → Test). */
+  vetoAlarmTest(opts: Record<string, unknown>): Promise<void>;
+  vetoAlarmStop(): Promise<void>;
+  /** A veto notification was tapped (`open`: the veto screen) or one of its Deny / Approve / Shelve buttons ran. */
+  addListener(event: 'veto', fn: (e: { id: string; action: 'open' | 'denied' | 'approved' | 'shelved' | 'failed'; error?: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'wake', fn: (e: { phrase: string; text: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
@@ -236,11 +242,12 @@ const web: NativeApi = {
   },
   async voiceStatus() { return { listening: webVoice.listening, microphone: webVoice.stream !== null, overlayAllowed: false }; },
   async overlayPermission() { return { allowed: false }; },
-  // Veto approvals in a browser: the approvals plugin plays its own tones and opens the hub page to deny (the hub
-  // only takes a Deny under its own Origin).
-  async vetoSettings() { /* no channels in a browser */ },
-  async vetoDeny() { return { ok: false, error: 'browser' }; },
-  async vetoTest() { /* the plugin plays tones itself */ },
+  // Veto calls in a browser: the banner plugin rings its own alarm and opens the hub page for Deny / Approve / Shelve
+  // (the hub only takes them under its own Origin).
+  async vetoAction() { return { ok: false, error: 'browser' }; },
+  async vetoAlarm() { /* the plugin rings in the page */ },
+  async vetoAlarmTest() { /* the plugin rings in the page */ },
+  async vetoAlarmStop() { /* nothing rings natively */ },
   async permissions() {
     let microphone = false;
     try { (await navigator.mediaDevices?.getUserMedia({ audio: true }))?.getTracks().forEach((t) => t.stop()); microphone = true; } catch { /* refused */ }
@@ -315,4 +322,36 @@ function routeOpen(origin: string): void {
     if (u && u.origin === origin) { void native.hubOpen({ url: u.href }); return null; }
     return open(url, target, features);
   };
+}
+
+/**
+ * Lends the veto banner plugin (console `plugins/approvals-banner`, loaded here because its `targets` list AmberX) the
+ * phone's side through lib-hub's `setVetoHost`: Deny / Approve now / Shelve with the phone's hub session, the alarm on
+ * the alarm stream (through silent mode), notices raised by the watch service with Deny / Approve / Shelve buttons (with
+ * the app closed too), and notification taps that open the veto screen. In a browser it lends nothing: the plugin works
+ * from the page. Installed once from main.tsx.
+ */
+export function installVetoHost(): void {
+  if (!isNative()) return;
+  const done: Record<string, 'deny' | 'approve-now' | 'shelve'> = { denied: 'deny', approved: 'approve-now', shelved: 'shelve' };
+  setVetoHost({
+    notifiesNatively: true,
+    act: async (id, action) => {
+      const r = await native.vetoAction({ id, action });
+      const state = r.state === 'approved-now' ? 'approved-now' : (r.state as VetoState | undefined);
+      return { ok: r.ok, ...(state ? { state } : {}), ...(r.error ? { error: r.error } : {}) };
+    },
+    alarm: (cfg) => { void native.vetoAlarm(cfg).catch(() => undefined); },
+    testAlarm: (cfg) => { void native.vetoAlarmTest(cfg).catch(() => undefined); },
+    stopAlarm: () => { void native.vetoAlarmStop().catch(() => undefined); },
+    open: (url) => { void native.hubOpen({ url }).catch(() => undefined); },
+    onEvent: (fn) => {
+      const h = native.addListener('veto', (e) => {
+        if (e.action === 'open') fn({ id: e.id, action: 'open' });
+        else if (done[e.action]) fn({ id: e.id, action: done[e.action]!, ok: true });
+        else fn({ id: e.id, action: 'failed', ...(e.error ? { error: e.error } : {}) });
+      });
+      return () => { void h.then((x) => x.remove()).catch(() => undefined); };
+    },
+  });
 }
