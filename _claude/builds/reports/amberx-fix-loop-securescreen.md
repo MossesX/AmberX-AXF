@@ -18,13 +18,29 @@ token. Brett asked for this fix directly and is blocked, so it went ahead.
   framework + app asset validation, theme check and project manifests all pass. The Java side compiles only in CI
   (no JDK/SDK here): CI's `android.yml` builds the new APK.
 
-## Not pushed yet
+## Not pushed yet (land attempt, Oct 31 2026, late)
 
-The push failed: `remote: Invalid username or token` — the GitHub token on the VPS (`/root/.config/gh/hosts.yml`) is
-invalid, and this headless session had no axHub permission for a `github.*` call. Commit is on the local branch
-`claude/amberx-fix-loop-securescreen` in `/root/axf-builds/amberx-fix`. Needs a new GitHub token (github.com →
-Settings → Developer settings → token with `repo` + `workflow`), `gh auth login -h github.com`, then push, PR, merge
-origin/main, retest, push to main.
+Second session, to land it. Done:
+- Merged `origin/main` (f7170f65, #217 build profiles registry) cleanly → merge commit `c9a80e50`.
+- Retested after the merge: AmberX `test.mjs` **2037/2037**, `tsc --noEmit` clean, `check-theme` ok, `check-controls`
+  ok, framework + amberx-droid validate ok, project manifests ok, `check-profiles` ok, `check-build-steps` 44 ok,
+  plugin lifecycle ok on every lifecycle plugin (clean export of HEAD; the worktree's untracked session archives and
+  gitignored `_claude/shared` copies trip it locally only). `tracker.mjs --check` fails the same way on `origin/main`
+  itself (391 items without a status), so it isn't from this merge and was left alone.
+
+Blocked: both pushes failed again, same error:
+
+```
+$ git push origin HEAD:main
+remote: Invalid username or token. Password authentication is not supported for Git operations.
+fatal: Authentication failed for 'https://github.com/MossesX/AmberX-AXF.git/'
+```
+
+(`git push origin HEAD:refs/heads/claude/amberx-fix-loop-securescreen` → same.) No other token on the VPS; axHub
+tools are denied in headless sessions. A console banner item ("VPS GitHub token is invalid: pushes blocked") was
+raised. To land: new token (github.com → Settings → Developer settings, `repo` + `workflow`) →
+`gh auth login -h github.com` → in `/root/axf-builds/amberx-fix`: `git fetch origin && git merge origin/main`,
+`npx -y tsx apps/amberx-droid/test.mjs`, `git push origin HEAD:main` and push the branch. CI builds the APK.
 
 ## Bug 1: the voice loop ("no saved inbox / no saved notes" over and over)
 
