@@ -10,7 +10,7 @@
  * token.
  */
 import { useEffect, useState } from 'react';
-import { Button, Chip, useRuntime } from '../axf/react';
+import { Button, Chip, Icon, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { actionsOf, formatCountdown, secondsLeftNow, VETO_ACTION_LABELS, VETO_WARNING_SECONDS, type VetoAction } from '../axf/libs/hub/veto';
 import { hubPost } from '../hub/api';
@@ -65,8 +65,10 @@ export function HeldBar({ item, onDone, big }: { item: ApprovalItem; onDone: (ne
         {shelved ? 'Shelved' : approved ? 'Approved' : left > 0 ? formatCountdown(left) : '0:00'}
       </span>
       {big && <span className="axp-axhub-held__what">{shelved ? 'Paused: waits until you approve or deny it' : approved ? 'Approved: the hub is running it' : left > 0 ? 'Runs when the countdown ends' : 'Time is up: the hub is running it'}</span>}
-      {live && ACTS.filter((x) => actions.includes(x.a)).map((x) => (
-        <Button key={x.a} tone={x.tone} icon={x.icon} busy={busy === x.a} disabled={busy !== null} aria-label={`${VETO_ACTION_LABELS[x.a]}: ${item.title}`} onClick={() => void run(x)}>{VETO_ACTION_LABELS[x.a]}</Button>
+      {live && ACTS.filter((x) => actions.includes(x.a)).map((x) => (!big && x.a === 'shelve'
+        // On a row Shelve is an icon, so Deny / Approve keep their words and the title keeps some room.
+        ? <button key={x.a} type="button" className="fx-iconbtn axp-axhub-held__shelve" aria-label={`${VETO_ACTION_LABELS[x.a]}: ${item.title}`} title="Shelve: pause the countdown until you decide" disabled={busy !== null} onClick={() => void run(x)}><Icon name={x.icon} size={18} /></button>
+        : <Button key={x.a} tone={x.tone} icon={x.icon} busy={busy === x.a} disabled={busy !== null} aria-label={`${VETO_ACTION_LABELS[x.a]}: ${item.title}`} onClick={() => void run(x)}>{VETO_ACTION_LABELS[x.a]}</Button>
       ))}
     </div>
   );

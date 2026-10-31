@@ -254,7 +254,7 @@ function ApprovalsBanner() {
       <div className="axp-approvals-banner__row">
         <BannerIcon icon="shield" working={s.count > 0} size={20} />
         <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
-          {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub
+          <span className="axp-approvals-banner__head">{s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <a className="fx-btn fx-btn--neutral axp-approvals-banner__go" href={s.approvalsUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={14} /> All</a>
