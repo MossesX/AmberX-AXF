@@ -7,8 +7,6 @@
       "name": "Asset Designer (no-code)",
       "target": "axf-console",
       "description": "No-code designer for nav menus, drawers, app and context menus, toolbars, layouts, style packs and colour themes.",
-      "plan": "x.assets.designer",
-      "pending": "asset-designer",
       "model": "fable"
     },
     {
@@ -16,8 +14,6 @@
       "name": "Asset Browser",
       "target": "axf-console",
       "description": "Browse, preview and swap every asset of every type.",
-      "plan": "x.assets.browser",
-      "pending": "asset-browser",
       "model": "fable"
     },
     {

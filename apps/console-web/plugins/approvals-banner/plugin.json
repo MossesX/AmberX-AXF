@@ -23,16 +23,22 @@
   "optional": [],
   "scopes": [],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-30" },
-  "banner": ["approvals"],
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-30"
+  },
+  "banner": [
+    "approvals"
+  ],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/approvals-banner",
     "env": [],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md"
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md"
     ]
   },
-  "opens": false
+  "opens": "main"
 }
