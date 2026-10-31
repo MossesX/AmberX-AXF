@@ -1,0 +1,102 @@
+[
+ {
+  "name": "grid",
+  "steps": [
+   {
+    "eval": "AXF.navigate('ui-review')",
+    "wait": 3000
+   },
+   {
+    "click": ".axp-ui-review__hit >> nth=0",
+    "wait": 2500
+   }
+  ]
+ },
+ {
+  "name": "tree",
+  "steps": [
+   {
+    "eval": "AXF.navigate('ui-review')",
+    "wait": 3000
+   },
+   {
+    "eval": "(()=>{const s=document.querySelector('select[aria-label=View]');const set=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set;set.call(s,'tree');s.dispatchEvent(new Event('change',{bubbles:true}));})()",
+    "wait": 1500
+   },
+   {
+    "click": ".axp-ui-review__check input >> nth=2",
+    "wait": 400
+   },
+   {
+    "click": ".axp-ui-review__check input >> nth=3",
+    "wait": 400
+   }
+  ]
+ },
+ {
+  "name": "subgrids",
+  "steps": [
+   {
+    "eval": "AXF.navigate('ui-review')",
+    "wait": 3000
+   },
+   {
+    "eval": "(()=>{const s=document.querySelector('select[aria-label=View]');const set=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set;set.call(s,'groups');s.dispatchEvent(new Event('change',{bubbles:true}));})()",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "gallery",
+  "steps": [
+   {
+    "eval": "AXF.navigate('ui-review')",
+    "wait": 3000
+   },
+   {
+    "eval": "(()=>{const s=document.querySelector('select[aria-label=View]');const set=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set;set.call(s,'gallery');s.dispatchEvent(new Event('change',{bubbles:true}));})()",
+    "wait": 1500
+   },
+   {
+    "wait": 2500
+   }
+  ]
+ },
+ {
+  "name": "compare",
+  "steps": [
+   {
+    "eval": "AXF.navigate('ui-review')",
+    "wait": 3000
+   },
+   {
+    "click": ".axp-ui-review__check input >> nth=5",
+    "wait": 400
+   },
+   {
+    "click": ".axp-ui-review__check input >> nth=6",
+    "wait": 400
+   },
+   {
+    "eval": "(()=>{const s=document.querySelector('select[aria-label=View]');const set=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set;set.call(s,'compare');s.dispatchEvent(new Event('change',{bubbles:true}));})()",
+    "wait": 1500
+   },
+   {
+    "wait": 2500
+   }
+  ]
+ },
+ {
+  "name": "design-packs",
+  "steps": [
+   {
+    "eval": "AXF.navigate('design-packs')",
+    "wait": 3000
+   },
+   {
+    "click": ".axp-ui-review__hit >> nth=0",
+    "wait": 3000
+   }
+  ]
+ }
+]
