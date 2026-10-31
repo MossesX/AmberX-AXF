@@ -18,6 +18,14 @@ token. Brett asked for this fix directly and is blocked, so it went ahead.
   framework + app asset validation, theme check and project manifests all pass. The Java side compiles only in CI
   (no JDK/SDK here): CI's `android.yml` builds the new APK.
 
+## Not pushed yet
+
+The push failed: `remote: Invalid username or token` — the GitHub token on the VPS (`/root/.config/gh/hosts.yml`) is
+invalid, and this headless session had no axHub permission for a `github.*` call. Commit is on the local branch
+`claude/amberx-fix-loop-securescreen` in `/root/axf-builds/amberx-fix`. Needs a new GitHub token (github.com →
+Settings → Developer settings → token with `repo` + `workflow`), `gh auth login -h github.com`, then push, PR, merge
+origin/main, retest, push to main.
+
 ## Bug 1: the voice loop ("no saved inbox / no saved notes" over and over)
 
 ### What was wrong
