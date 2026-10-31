@@ -5,6 +5,7 @@
  *
  *   node apps/console-web/plugins/agent-swarm/swarm.mjs roster              the agents and their skills
  *   … plan <buildId>…                    split builds into jobs: agent, model, leases, waves (several builds share one lease table)
+ *   … pack <buildId> <stepId>            one job's brief: shared prefix + skill, task, leases, snippets
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -37,6 +38,23 @@ export function findBuilds(ids) {
 
 export function plan(ids, opts = {}) { return core.planJobs(findBuilds(ids), loadRoster(), opts); }
 
+/** The persona block of the shared prefix (agents/persona.md), empty when there is none. */
+export function loadPersona() { const f = join(HERE, 'agents/persona.md'); return existsSync(f) ? core.parseSkill(readFileSync(f, 'utf8')).body : ''; }
+export const prefix = () => core.sharedPrefix({ persona: loadPersona() });
+
+/** A job's brief: reads only its leased files that are plain paths (folders and globs are named, not read). */
+export function pack(job, handoffs = []) {
+  const snippets = [];
+  for (const f of job.leases) {
+    if (f.includes('*') || f.endsWith('/')) continue;
+    const abs = resolve(ROOT, f);
+    if (!abs.startsWith(`${ROOT}/`) || !existsSync(abs)) continue;
+    snippets.push(core.extractSnippet(f, readFileSync(abs, 'utf8'), job.text));
+  }
+  return core.packJob(job, { prefix: prefix(), skill: loadSkills()[job.skill], snippets, handoffs });
+}
+export function jobOf(p, ref) { const j = p.jobs.find((x) => x.id === ref || x.stepId === ref); if (!j) throw new Error(`no open job "${ref}"`); return j; }
+
 function planText(p) {
   const out = [];
   p.waves.forEach((w, i) => { out.push(`Wave ${i + 1}:`); for (const id of w) { const j = p.jobs.find((x) => x.id === id); out.push(`  ${j.id.padEnd(28)} ${j.agent.padEnd(6)} ${j.model.padEnd(7)} ${String(j.budget.tokens).padStart(7)} tok · ${j.leases.join(', ') || '(no files)'}`); } });
@@ -52,6 +70,7 @@ export async function main(argv) {
     return out({ ok: true, roster: r, skills: sk, problems }, [...r.agents.map((a) => `${a.id.padEnd(6)} ${a.name.padEnd(12)} ${a.skill.padEnd(17)} ${a.models.join('/')}`), ...problems.map((p) => `! ${p}`)].join('\n'));
   }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
+  if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }
   throw new Error(`unknown command ${cmd}`);
 }
 

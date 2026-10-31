@@ -213,3 +213,73 @@ export function planJobs(builds, roster, opts = {}) {
   for (const j of jobs) (waves[j.wave] ??= []).push(j.id);
   return { jobs, waves, warnings };
 }
+
+// ---------------------------------------------------------------- context packer
+
+export const REPORT_SCHEMA = 'swarm-report@1';
+export const REPORT_STATUSES = ['done', 'failed', 'blocked'];
+/**
+ * The shared prefix: identical bytes for every job of every agent, so prompt caching applies across the swarm.
+ * Nothing job-specific goes in here (no ids, dates, paths). The persona block is added by step s8.
+ */
+export function sharedPrefix(parts = {}) {
+  return [
+    'You are one specialist agent in the AmberX AXF agent swarm, run headless by the build orchestrator ("Boss").',
+    'WORK RULES',
+    '- Do only the job in the message. Read and edit only the leased files listed there; the snippets are all the context you get. Do not explore the repo, list folders or read CLAUDE.md.',
+    '- Never write shared files (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, framework/catalog/, framework/plan/, tracker.json, CLAUDE.md, rules). Put what they need in your report\'s "notes"; Boss writes them after the merge.',
+    '- Code, code comments and commit messages are clean and professional. No secrets anywhere.',
+    '- Commit your work in this worktree with a plain one-line message. Do not push.',
+    '- Stop when the job is done, failed or blocked. Do not start extra work.',
+    'REPORT',
+    `- End with exactly one fenced json block: {"$axf":"${REPORT_SCHEMA}","status":"done|failed|blocked","summary":"one or two lines","files":["paths you changed"],"checks":[{"name":"…","ok":true}],"notes":"lines for shared files, or empty","handoff":"what the next job should know, or empty","question":"the exact question when blocked, or empty"}`,
+    parts.persona ? `PERSONA\n${parts.persona.trim()}` : '',
+  ].filter(Boolean).join('\n');
+}
+
+const WORD = /[a-z][a-z0-9_-]{3,}/g;
+const STOP = new Set(['with', 'that', 'this', 'from', 'into', 'each', 'when', 'then', 'only', 'every', 'what', 'also', 'make', 'have', 'more', 'than', 'they', 'them', 'their', 'there', 'files', 'file', 'step']);
+export const SNIPPET = { wholeUpTo: 80, head: 12, context: 3, maxLines: 120 };
+
+/**
+ * The parts of one file a job needs: the whole file when it's short; else its head plus the lines that mention the
+ * task's words (± context), merged, capped. Returns { path, whole, lines: [[from, to]], text }.
+ */
+export function extractSnippet(path, content, task, lim = SNIPPET) {
+  const lines = str(content, 2_000_000).split('\n');
+  if (lines.length <= lim.wholeUpTo) return { path, whole: true, lines: [[1, lines.length]], text: lines.join('\n') };
+  const words = [...new Set((str(task, 8000).toLowerCase().match(WORD) ?? []).filter((w) => !STOP.has(w)))];
+  const ranges = [[0, Math.min(lim.head, lines.length) - 1]];
+  lines.forEach((l, i) => { const low = l.toLowerCase(); if (words.some((w) => low.includes(w))) ranges.push([Math.max(0, i - lim.context), Math.min(lines.length - 1, i + lim.context)]); });
+  ranges.sort((a, b) => a[0] - b[0]);
+  const merged = [];
+  for (const r of ranges) { const last = merged[merged.length - 1]; if (last && r[0] <= last[1] + 1) last[1] = Math.max(last[1], r[1]); else merged.push([...r]); }
+  const out = []; let used = 0; const kept = [];
+  for (const [a, b] of merged) {
+    if (used >= lim.maxLines) break;
+    const end = Math.min(b, a + (lim.maxLines - used) - 1);
+    out.push(`@@ lines ${a + 1}-${end + 1}`, ...lines.slice(a, end + 1)); kept.push([a + 1, end + 1]); used += end - a + 1;
+  }
+  return { path, whole: false, lines: kept, text: out.join('\n') };
+}
+
+export const tokensOf = (text) => Math.ceil(str(text, 10_000_000).length / 4);
+
+/**
+ * One job's brief. `system` = shared prefix + the agent's skill (both cacheable; the prefix is the same for all),
+ * `prompt` = the task, its leases and the snippets. Nothing else from the repo goes in.
+ */
+export function packJob(job, { prefix, skill, snippets = [], handoffs = [] } = {}) {
+  const system = `${prefix}\nSKILL: ${skill?.title ?? job.skill}\n${skill?.body ?? ''}`.trim();
+  const prompt = [
+    `JOB ${job.id} (build ${job.buildId}, step ${job.stepId})`,
+    `Task: ${job.text}`,
+    `Leased files (only these): ${job.leases.length ? job.leases.join(', ') : 'none named; ask in your report if you need one'}`,
+    job.shared?.length ? `Shared files Boss will write after merge (do not touch; put lines in notes): ${job.shared.join(', ')}` : '',
+    job.checks?.length ? `Checks to run: ${job.checks.join(' · ')}` : '',
+    `Budget: ${job.budget.tokens} tokens, ${job.budget.maxTurns} turns. Over budget = killed, so be direct.`,
+    ...handoffs.filter(Boolean).map((h) => `Handoff from an earlier job: ${str(h, 600)}`),
+    ...snippets.map((s) => `--- ${s.path}${s.whole ? '' : ' (excerpt)'} ---\n${s.text}`),
+  ].filter(Boolean).join('\n');
+  return { jobId: job.id, model: job.model, system, prompt, tokens: { system: tokensOf(system), prompt: tokensOf(prompt) } };
+}
