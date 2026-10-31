@@ -283,3 +283,77 @@ export function packJob(job, { prefix, skill, snippets = [], handoffs = [] } = {
   ].filter(Boolean).join('\n');
   return { jobId: job.id, model: job.model, system, prompt, tokens: { system: tokensOf(system), prompt: tokensOf(prompt) } };
 }
+
+// ---------------------------------------------------------------- headless runner (pure parts)
+
+/** Model ids for `claude --model`. */
+export const MODEL_IDS = { haiku: 'claude-haiku-5-5', sonnet: 'claude-sonnet-5-5', opus: 'claude-opus-5-5', fable: 'claude-fable-5-1' };
+export const RUN_STATUSES = ['done', 'failed', 'blocked', 'killed', 'error'];
+/** Cache reads cost about a tenth of fresh input, so they count a tenth against a job's token budget. */
+export const CACHE_READ_WEIGHT = 0.1;
+
+/** Arguments for one headless Claude Code run: own system prompt (no default dump), no MCP servers, only the job's tools. */
+export function claudeArgs(brief, job, agent) {
+  return [
+    '-p', brief.prompt,
+    '--model', MODEL_IDS[job.model] ?? job.model,
+    '--system-prompt', brief.system,
+    '--max-turns', String(job.budget.maxTurns),
+    '--output-format', 'stream-json', '--verbose',
+    '--allowedTools', agent.tools.join(','),
+    '--permission-mode', 'acceptEdits',
+    '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}',
+  ];
+}
+
+export const emptyUsage = () => ({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0 });
+export function addUsage(u, raw) {
+  const r = raw && typeof raw === 'object' ? raw : {};
+  u.input += Number(r.input_tokens) || 0; u.output += Number(r.output_tokens) || 0;
+  u.cacheRead += Number(r.cache_read_input_tokens) || 0; u.cacheWrite += Number(r.cache_creation_input_tokens) || 0;
+  return u;
+}
+/** Tokens charged against a job's budget. */
+export const budgetTokens = (u) => Math.round(u.input + u.output + u.cacheWrite + u.cacheRead * CACHE_READ_WEIGHT);
+
+/**
+ * Follow a stream-json run line by line. Returns the next tracker: usage so far, turns, the final result text and
+ * whether the run is over budget (the runner kills it then).
+ */
+export function trackLine(tr, line, budget) {
+  let ev; try { ev = JSON.parse(line); } catch { return tr; }
+  if (ev.type === 'assistant' && ev.message?.usage) { addUsage(tr.usage, ev.message.usage); tr.turns += 1; }
+  if (ev.type === 'result') {
+    tr.final = true; tr.text = str(ev.result, 200000); tr.isError = ev.is_error === true; tr.turns = Number(ev.num_turns) || tr.turns;
+    if (ev.usage) { tr.usage = addUsage(emptyUsage(), ev.usage); } // the result's totals replace the running sum
+    if (Number.isFinite(ev.total_cost_usd)) tr.reportedCost = ev.total_cost_usd;
+    tr.subtype = str(ev.subtype, 60);
+  }
+  tr.over = budgetTokens(tr.usage) > budget.tokens;
+  return tr;
+}
+export const newTracker = () => ({ usage: emptyUsage(), turns: 0, final: false, text: '', isError: false, over: false, reportedCost: null, subtype: '' });
+
+/** The agent's swarm-report@1: the last fenced json block in its final message. */
+export function parseReport(text) {
+  const blocks = [...str(text, 200000).matchAll(/```json\s*([\s\S]*?)```/g)];
+  for (const m of blocks.reverse()) {
+    try {
+      const r = JSON.parse(m[1]);
+      if (r && REPORT_STATUSES.includes(r.status)) {
+        return { $axf: REPORT_SCHEMA, status: r.status, summary: str(r.summary, 600), files: list(r.files, 200, 300), checks: (Array.isArray(r.checks) ? r.checks : []).slice(0, 30).map((x) => ({ name: str(x?.name, 200), ok: x?.ok === true })),
+          notes: str(r.notes, 2000), handoff: str(r.handoff, 1000), question: str(r.question, 600) };
+      }
+    } catch { /* try the one before */ }
+  }
+  return null;
+}
+
+/** How a finished run ends up: killed / error / the report's status. */
+export function runOutcome(tr, { killed = '', exitCode = 0 } = {}) {
+  const report = parseReport(tr.text);
+  if (killed) return { status: 'killed', reason: killed, report };
+  if (!tr.final || tr.isError || exitCode) return { status: 'error', reason: tr.subtype || (exitCode ? `exit ${exitCode}` : 'no result'), report };
+  if (!report) return { status: 'failed', reason: 'no swarm-report@1 block', report: null };
+  return { status: report.status, reason: '', report };
+}

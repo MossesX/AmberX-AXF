@@ -6,6 +6,7 @@
  *   node apps/console-web/plugins/agent-swarm/swarm.mjs roster              the agents and their skills
  *   … plan <buildId>…                    split builds into jobs: agent, model, leases, waves (several builds share one lease table)
  *   … pack <buildId> <stepId>            one job's brief: shared prefix + skill, task, leases, snippets
+ *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -13,6 +14,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
 import { orchestratorPath } from '../../../../framework/cli/persist.mjs';
+import { runJob, worktreeFor } from './runner.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -53,6 +55,21 @@ export function pack(job, handoffs = []) {
   }
   return core.packJob(job, { prefix: prefix(), skill: loadSkills()[job.skill], snippets, handoffs });
 }
+/** Every run, newest last (swarm-run@1 records), in the data folder. */
+export const runsFile = () => join(dataDir(), 'runs.json');
+export const loadRuns = () => { const r = readJson(runsFile(), { runs: [] }); return Array.isArray(r.runs) ? r.runs : []; };
+export function saveRun(run) { const runs = loadRuns(); runs.push(run); writeJson(runsFile(), { $axf: 'swarm-runs@1', runs: runs.slice(-5000) }); return run; }
+
+/** Plan → pack → worktree → claude -p → record. `dry` returns the brief and the command instead of running. */
+export async function run(buildId, ref, opts = {}) {
+  const job = jobOf(plan([buildId]), ref);
+  const agent = loadRoster().agents.find((a) => a.id === job.agent);
+  const brief = pack(job, opts.handoffs);
+  if (opts.dry) return { dry: true, job, brief, args: core.claudeArgs(brief, job, agent).map((a) => (a.length > 120 ? `${a.slice(0, 117)}…` : a)) };
+  const wt = opts.cwd ? { path: opts.cwd, branch: '' } : worktreeFor(ROOT, dataDir(), job, opts.base);
+  const rec = await runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
+  return saveRun({ ...rec, branch: wt.branch, worktree: wt.path });
+}
 export function jobOf(p, ref) { const j = p.jobs.find((x) => x.id === ref || x.stepId === ref); if (!j) throw new Error(`no open job "${ref}"`); return j; }
 
 function planText(p) {
@@ -71,6 +88,10 @@ export async function main(argv) {
   }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
   if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }
+  if (cmd === 'run') {
+    const [b, ref] = rest.filter((a) => !a.startsWith('--')); const r = await run(b, ref, { dry: args.includes('--dry-run') });
+    return out({ ok: true, run: r }, r.dry ? `would run: claude ${r.args.join(' ')}` : `${r.jobId} ${r.status}${r.reason ? ` (${r.reason})` : ''} · ${r.budgetTokens}/${r.budget.tokens} tokens · ${r.turns} turns${r.report ? `\n${r.report.summary}` : ''}`);
+  }
   throw new Error(`unknown command ${cmd}`);
 }
 
