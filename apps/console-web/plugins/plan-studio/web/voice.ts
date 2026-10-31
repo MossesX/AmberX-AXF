@@ -55,7 +55,7 @@ export function micLease(g: Record<string, unknown> = globalThis as unknown as R
 }
 export const HOLDER_LABEL: Record<string, string> = { dictation: 'Dictation', 'voice-command': 'Speak a command', notes: 'Voice notes', 'plan-studio': 'Plan Studio' };
 /** Who holds the microphone, in words: the known holders by name, anyone else from its id ("voice-memo" → "Voice memo"). */
-export const holderLabel = (who: string): string => HOLDER_LABEL[who] ?? (who ? who[0].toUpperCase() + who.slice(1).replace(/[-_]+/g, ' ') : 'Something else');
+export const holderLabel = (who: string): string => HOLDER_LABEL[who] ?? (who ? who.charAt(0).toUpperCase() + who.slice(1).replace(/[-_]+/g, ' ') : 'Something else');
 
 /* ---------------------------------------------------------------- what was said */
 
