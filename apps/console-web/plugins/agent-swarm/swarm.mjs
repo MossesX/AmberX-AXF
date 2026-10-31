@@ -12,6 +12,8 @@
  *   … act --json '{"action":…}'          any change from swarm-core.mjs applyChange()
  *   … act cap <agent> <usd>               weekly spend cap (0 = none); hitting it benches the agent
  *   … sessions                           runs with the agent's status and spend (for the session browser)
+ *   … chat [n] | banter [--dry-run]      the group chat | one cheap small-model batch of banter
+ *   … act chat on|off · act chat <agent> on|off · act say <text>
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
@@ -59,6 +61,10 @@ export function loadState() {
   if (t.log.length) { st.updatedAt = at; writeJson(stateFile(), st); }
   return st;
 }
+/** Load the state, change it, save it. */
+export function withState(fn) { const st = loadState(); const r = fn(st); st.updatedAt = new Date().toISOString(); writeJson(stateFile(), st); return r; }
+/** Post to the group chat (dropped when it's off). */
+export const say = (msgs) => withState((st) => core.post(st, msgs, new Date().toISOString()));
 export function act(change) {
   const r = core.applyChange(loadState(), change, loadRoster(), new Date().toISOString());
   writeJson(stateFile(), r.state); return r;
@@ -97,11 +103,39 @@ export async function run(buildId, ref, opts = {}) {
   const brief = pack(job, opts.handoffs);
   if (opts.dry) return { dry: true, job, brief, args: core.claudeArgs(brief, job, agent).map((a) => (a.length > 120 ? `${a.slice(0, 117)}…` : a)) };
   const wt = opts.cwd ? { path: opts.cwd, branch: '' } : worktreeFor(repoRoot(), dataDir(), job, opts.base);
+  const roster = loadRoster();
+  say([core.assignLine(job, roster), ...core.leaseLines({ jobs: [job, ...plan([buildId]).jobs.filter((x) => job.after.includes(x.id))] }, roster).filter((l) => l.jobId === job.id)]);
   const rec = await runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
+  chatAfterRun(rec, roster);
   const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
   const st = loadState(); const as = st.agents[agent.id];
   if (as && core.canWork(agent, as, job).notify) { st.notices.push({ at: rec.endedAt, agent: agent.id, text: `${agent.name} (probation) ran ${job.id}: ${rec.status}` }); writeJson(stateFile(), st); }
   return saveRun({ ...rec, branch: wt.branch, worktree: wt.path, lease });
+}
+
+/** The agent's report in the room, plus a coworker's reaction from the banter bank (no tokens). */
+export function chatAfterRun(rec, roster = loadRoster()) {
+  withState((st) => {
+    const at = rec.endedAt || new Date().toISOString();
+    core.post(st, core.reportLines(rec, roster), at);
+    const moment = rec.status === 'done' ? 'done' : 'failed';
+    for (const a of core.reactors(st, roster, rec.agent, 1, rec.jobId)) core.post(st, [{ from: a.id, kind: 'banter', text: core.banterLine(moment, `${rec.jobId}${a.id}`, { other: roster.agents.find((x) => x.id === rec.agent)?.name ?? rec.agent, job: rec.jobId }) }], at);
+  });
+}
+
+/** One cheap batch of banter from the small model (one turn, no tools). Nothing runs while the chat is off. */
+export async function banter(opts = {}) {
+  const st = loadState(); const roster = loadRoster();
+  if (!st.chat.enabled) return { posted: 0, usd: 0, skipped: 'the group chat is off' };
+  const prompt = core.banterPrompt(roster, st.messages, opts.n ?? 6);
+  if (opts.dry) return { dry: true, prompt };
+  const bin = opts.bin ?? process.env.AXF_CLAUDE_BIN ?? 'claude';
+  const r = spawnSync(bin, ['-p', prompt, '--model', core.MODEL_IDS.haiku, '--max-turns', '1', '--output-format', 'json', '--system-prompt', loadPersona(), '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--allowedTools', ''], { encoding: 'utf8', timeout: 120000 });
+  if (r.error) throw new Error(r.error.code === 'ENOENT' ? `Claude Code not found (${bin}); set AXF_CLAUDE_BIN` : r.error.message);
+  let res = {}; try { res = JSON.parse(r.stdout); } catch { throw new Error('banter run gave no JSON'); }
+  const lines = core.parseBanter(res.result, roster); const usd = Number(res.total_cost_usd) || 0;
+  const posted = withState((s2) => { const at = new Date().toISOString(); s2.banterSpend.push({ at, usd }); return core.post(s2, lines, at); });
+  return { posted, usd };
 }
 
 const git = (cwd, ...a) => spawnSync('git', a, { cwd, encoding: 'utf8' });
@@ -231,7 +265,8 @@ export async function main(argv) {
   if (cmd === 'act') {
     let change;
     if (rest[0]?.startsWith('{')) change = JSON.parse(rest[0]);
-    else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : action === 'cap' ? { action, agent, usd: Number(a) } : { action, agent, note: [a, ...more].join(' ') }; }
+    else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : action === 'cap' ? { action, agent, usd: Number(a) }
+        : action === 'chat' ? (agent === 'on' || agent === 'off' ? { action, enabled: agent === 'on' } : { action, agent, on: a !== 'off' }) : action === 'say' ? { action, text: rest.slice(1).join(' ') } : { action, agent, note: [a, ...more].join(' ') }; }
     const r = act(change); return out({ ok: true, state: state(), log: r.log }, r.log.join('\n'));
   }
   if (cmd === 'sessions') { // per run: the agent's status and spend, for the session browser
@@ -239,6 +274,8 @@ export async function main(argv) {
     const rows = s.runs.map((r) => ({ jobId: r.jobId, agent: r.agent, name: by.get(r.agent)?.name ?? r.agent, status: core.statusLabel(s.swarm.agents[r.agent] ?? core.normAgentState({})), run: r.status, usd: core.runCost(r, s.prices), spend: s.spend[r.agent] }));
     return out({ ok: true, sessions: rows }, rows.map((x) => `${x.jobId.padEnd(26)} ${x.name.padEnd(12)} ${x.status.padEnd(14)} ${x.run.padEnd(7)} ${core.fmtUsd(x.usd)}`).join('\n') || 'No runs yet.');
   }
+  if (cmd === 'chat') { const st = loadState(); const n = Number(rest[0]) || 30; return out({ ok: true, chat: st.chat, messages: st.messages.slice(-n) }, st.chat.enabled ? st.messages.slice(-n).map((m) => `${m.at.slice(11, 16)} ${m.from.padEnd(6)} ${m.text}`).join('\n') || 'Quiet.' : 'The group chat is off.'); }
+  if (cmd === 'banter') { const r = await banter({ dry: args.includes('--dry-run') }); return out({ ok: true, ...r }, r.dry ? r.prompt : r.skipped ?? `posted ${r.posted} lines for ${core.fmtUsd(r.usd)}`); }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
   if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }
   if (cmd === 'run') {
@@ -246,7 +283,7 @@ export async function main(argv) {
     return out({ ok: true, run: r }, r.dry ? `would run: claude ${r.args.join(' ')}` : `${r.jobId} ${r.status}${r.reason ? ` (${r.reason})` : ''} · ${r.budgetTokens}/${r.budget.tokens} tokens · ${r.turns} turns${r.report ? `\n${r.report.summary}` : ''}`);
   }
   if (cmd === 'check') { const [b, ref] = rest; const r = loadRuns().filter((x) => x.jobId === `${b}.${ref}`).pop(); if (!r) throw new Error('no run for that job yet'); const j = jobOf(plan([b], { includeDone: true }), ref); const l = core.leaseCheck(j, changedFiles(r.worktree)); return out({ ok: l.ok, lease: l }, l.ok ? 'lease clean' : `outside the lease: ${l.outside.join(', ') || '-'} · shared: ${l.shared.join(', ') || '-'}`); }
-  if (cmd === 'merge') { const r = batchMerge(rest[0], { push: args.includes('--push') }); return out({ ok: true, ...r }, `merged ${r.merged.length} into ${r.branch}${r.conflicts.length ? ` · ${r.conflicts.length} conflict(s) → merge fixer` : ''}${r.refused.length ? ` · ${r.refused.length} refused (lease)` : ''}${r.notes.length ? `\nNotes for shared files:\n${r.notes.join('\n')}` : ''}`); }
+  if (cmd === 'merge') { const r = batchMerge(rest[0], { push: args.includes('--push') }); say(core.mergeLines(r, loadRoster())); return out({ ok: true, ...r }, `merged ${r.merged.length} into ${r.branch}${r.conflicts.length ? ` · ${r.conflicts.length} conflict(s) → merge fixer` : ''}${r.refused.length ? ` · ${r.refused.length} refused (lease)` : ''}${r.notes.length ? `\nNotes for shared files:\n${r.notes.join('\n')}` : ''}`); }
   if (cmd === 'fix') { const [b, ref] = rest.filter((a) => !a.startsWith('--')); const r = await fix(b, ref, { dry: args.includes('--dry-run') }); return out({ ok: true, run: r }, r.dry ? r.brief.prompt : `${r.jobId} ${r.status}`); }
   throw new Error(`unknown command ${cmd}`);
 }

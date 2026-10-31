@@ -192,6 +192,34 @@ t('every agent has a unique look drawn in theme colours', () => {
   for (const a of roster.agents) assert.ok(a.catchphrase && a.bio && a.specialty && a.hiredAt, a.id);
 });
 
+// s12 group chat
+t('work lines come from orchestrator data, no tokens', () => {
+  const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }]), B('b', [{ text: 'More React in apps/x/web/ui.tsx' }])], roster);
+  const a = c.assignLine(p.jobs[0], roster); assert.equal(a.from, 'boss'); assert.match(a.text, /Rio React, you got a\.s1.*apps\/x\/web\/ui\.tsx.*Sonnet, budget/);
+  const l = c.leaseLines(p, roster); assert.equal(l.length, 1); assert.match(l[0].text, /waits on Rio React \(a\.s1\): both want apps\/x\/web\/ui\.tsx/);
+  const r = c.reportLines({ agent: 'rio', jobId: 'a.s1', status: 'done', report: { summary: 'card in', handoff: 'props renamed' } }, roster); assert.deepEqual(r.map((x) => x.kind), ['report', 'handoff']);
+  assert.match(c.mergeLines({ branch: 'm', merged: ['a.s1'], conflicts: [{ job: 'b.s1', files: ['x'], fixer: 'b.fix-s1' }], refused: [] }, roster)[1].text, /Merge Max, b\.s1 clashed on x/);
+});
+t('switches: global off posts nothing; an agent off stays quiet, Boss still talks', () => {
+  const s = c.normState({}, roster);
+  assert.equal(c.post(s, [{ from: 'boss', kind: 'assign', text: 'x' }, { from: 'rio', kind: 'banter', text: 'y' }], AT), 2);
+  s.chat.agents.rio = false; assert.equal(c.post(s, [{ from: 'boss', kind: 'assign', text: 'x' }, { from: 'rio', kind: 'banter', text: 'y' }], AT), 1);
+  s.chat.enabled = false; assert.equal(c.post(s, [{ from: 'boss', kind: 'assign', text: 'x' }], AT), 0);
+  assert.throws(() => c.applyChange(s, { action: 'say', text: 'hi' }, roster, AT), /off/);
+});
+t('banter bank: deterministic, filled in, never about identity', () => {
+  assert.equal(c.banterLine('fight', 'k', { other: 'Rio', file: 'ui.tsx' }), c.banterLine('fight', 'k', { other: 'Rio', file: 'ui.tsx' }));
+  assert.doesNotMatch(c.banterLine('fight', 'k', { other: 'Rio', file: 'ui.tsx' }), /\{/);
+  const all = Object.values(c.BANTER).flat().join(' '); assert.doesNotMatch(all, /\b(race|religio|gay|straight|woman|women|black|white|asian|muslim|jew|christian)\w*/i);
+  const re = c.reactors(c.normState({}, roster), roster, 'rio', 2, 'seed'); assert.equal(re.length, 2); assert.ok(re.every((a) => a.id !== 'rio'));
+});
+t('cheap banter batch: prompt + parsing keeps only real agents', () => {
+  assert.match(c.banterPrompt(roster, [{ from: 'boss', text: 'go' }], 4), /Write 4 short.*Never joke about race/s);
+  assert.deepEqual(c.parseBanter('ok [{"agent":"rio","text":"yo"},{"agent":"ghost","text":"boo"}]', roster), [{ from: 'rio', kind: 'banter', text: 'yo' }]);
+  assert.deepEqual(c.parseBanter('nope', roster), []);
+});
+t('status changes are posted by Boss', () => { const s = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'tex', status: 'off-duty', note: 'day off' }, roster, AT).state; assert.match(s.messages.at(-1).text, /Tex Tester is now Off duty: day off/); });
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));
@@ -212,6 +240,12 @@ t('every agent has a unique look drawn in theme colours', () => {
     assert.deepEqual(r.refused.map((x) => x.job), ['m.s3']); assert.deepEqual(r.notes, ['m.s1: STATUS line']);
     const tr = JSON.parse(readFileSync(tf, 'utf8')); assert.equal(tr.builds[0].steps[0].done, true); assert.notEqual(tr.builds[0].steps[1].done, true);
     assert.match(g(join(dd, 'worktrees', '_merge-m'), 'log', '--oneline', '-1'), /Swarm merge: m\.s1/);
+  });
+  const rr = await cli.run('m', 's3', { cwd: tmp, bin: okBin });
+  t('a run posts Boss\'s assignment, the agent\'s report and a coworker reaction', () => {
+    assert.equal(rr.status, 'done'); const ms = cli.loadState().messages; const kinds = ms.map((m) => m.kind);
+    assert.ok(kinds.includes('assign') && kinds.includes('report') && kinds.includes('banter'), kinds.join());
+    assert.match(ms.find((m) => m.kind === 'report').text, /Done with m\.s3\. card added/);
   });
   const f = await cli.fix('m', 's2', { dry: true });
   t('merge fixer gets the half-done merge and the conflicted files', () => { assert.equal(f.job.agent, 'max'); assert.match(f.brief.prompt, /a\.md/); assert.match(readFileSync(join(dd, 'worktrees', 'm.fix-s2', 'a.md'), 'utf8'), /<<<<<<<|>>>>>>>/); });

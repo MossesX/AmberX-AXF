@@ -524,7 +524,7 @@ export function normState(s, roster) {
   const agents = {};
   for (const a of roster?.agents ?? []) agents[a.id] = normAgentState(o.agents?.[a.id]);
   for (const [k, v] of Object.entries(o.agents ?? {})) if (!agents[k]) agents[k] = normAgentState(v); // keep history of agents taken off the roster
-  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), agents, notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
+  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), agents, chat: normChat(o.chat), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
 }
 
 export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || 'Custom' : STATUSES[as.status]?.label ?? as.status);
@@ -555,7 +555,7 @@ function setStatus(st, id, to, note, at, by = 'brett', extra = {}) {
 export function tick(state, at) {
   const log = [];
   for (const [id, as] of Object.entries(state.agents)) {
-    if (as.status === 'medical-leave' && as.until && as.until <= at) log.push(setStatus(state, id, 'on-duty', 'back from medical leave', at, 'boss'));
+    if (as.status === 'medical-leave' && as.until && as.until <= at) { log.push(setStatus(state, id, 'on-duty', 'back from medical leave', at, 'boss')); post(state, [{ from: BOSS.id, kind: 'status', text: `${id} is back from medical leave and on duty.` }], at); }
   }
   return { state, log };
 }
@@ -569,9 +569,19 @@ export function applyChange(state, change, roster, at) {
       if (!Object.hasOwn(STATUSES, c.status)) throw new Error(`unknown status "${c.status}"`);
       if (c.status === 'medical-leave' && !(str(c.until, 40) > at)) throw new Error('medical leave needs a return date in the future');
       if (c.status === 'custom' && !str(c.name, 40).trim()) throw new Error('a custom status needs a name');
-      log.push(setStatus(s, c.agent, c.status, c.note, at, 'brett', c)); break;
+      log.push(setStatus(s, c.agent, c.status, c.note, at, 'brett', c));
+      post(s, [{ from: BOSS.id, kind: 'status', text: `${nameOf(roster, c.agent)} is now ${statusLabel(s.agents[c.agent])}${c.note ? `: ${str(c.note, 200)}` : ''}.` }], at); break;
     }
     case 'cap': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.cap = num(c.usd, 0, 0, 100000); log.push(`${c.agent}: spend cap ${as.cap ? `${fmtUsd(as.cap)} a week` : 'off'}`); break; }
+    case 'chat': { // global and per-agent switches
+      if (typeof c.enabled === 'boolean') { s.chat.enabled = c.enabled; log.push(`group chat ${c.enabled ? 'on' : 'off'}`); }
+      if (c.agent) { if (!s.agents[c.agent]) throw new Error(`no agent "${c.agent}"`); s.chat.agents[c.agent] = c.on !== false; log.push(`${c.agent} chat ${c.on !== false ? 'on' : 'off'}`); }
+      break;
+    }
+    case 'say': { // Brett posts in the room (no tokens; nobody answers unless banter is asked for)
+      const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
+      if (!post(s, [{ from: 'brett', kind: 'brett', text }], at)) throw new Error('the group chat is off'); log.push('posted'); break;
+    }
     case 'note': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.note = str(c.note, 300); log.push(`${c.agent}: note saved`); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
@@ -610,7 +620,7 @@ export function capCheck(state, runs, table, at) {
   for (const [id, as] of Object.entries(state.agents)) {
     if (!(as.cap > 0) || worksOf(as) === false) continue;
     const spent = spendOf(runs, id, table, at).week.usd;
-    if (spent >= as.cap) { log.push(setStatus(state, id, 'off-duty', `spend cap hit: ${fmtUsd(spent)} of ${fmtUsd(as.cap)} this week`, at, 'boss')); as.benched = 'cap'; }
+    if (spent >= as.cap) { log.push(setStatus(state, id, 'off-duty', `spend cap hit: ${fmtUsd(spent)} of ${fmtUsd(as.cap)} this week`, at, 'boss')); as.benched = 'cap'; post(state, [{ from: BOSS.id, kind: 'status', text: `${id} hit the spend cap (${fmtUsd(spent)} of ${fmtUsd(as.cap)}). Benched.` }], at); }
   }
   return log;
 }
@@ -632,4 +642,114 @@ export const AVATAR_TOKENS = ['--fx-brand-1', '--fx-brand-2', '--fx-brand-3', '-
 export function avatarColors(av) {
   const i = Math.floor((av?.hue ?? 0) / 45) % AVATAR_TOKENS.length;
   return { hair: AVATAR_TOKENS[i], shirt: AVATAR_TOKENS[(i + 3 + (av?.hair ?? 0)) % AVATAR_TOKENS.length] };
+}
+
+// ---------------------------------------------------------------- group chat
+
+export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett'];
+/** Work kinds are built from orchestrator messages and agent reports: no tokens. */
+export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett'];
+export const CHAT_MAX = 2000;
+export const BOSS = { id: 'boss', name: 'Boss' };
+
+export function normChat(c) {
+  const o = c && typeof c === 'object' ? c : {};
+  return {
+    enabled: o.enabled !== false,
+    agents: Object.fromEntries(Object.entries(o.agents && typeof o.agents === 'object' ? o.agents : {}).map(([k, v]) => [str(k, 40), v !== false])),
+  };
+}
+const normMsg = (m, i) => ({ id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind: CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter', text: str(m?.text, 1000), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true });
+
+/** Is this agent's voice on? (Boss and Brett only need the global switch.) */
+export const chatOn = (state, from) => state.chat.enabled && (from === BOSS.id || from === 'brett' || state.chat.agents[from] !== false);
+
+/**
+ * Post messages. Global switch off = nothing is kept and no banter is asked for (zero cost). An agent switched off
+ * stays quiet; Boss still posts its work. Returns how many were posted.
+ */
+export function post(state, msgs, at) {
+  let n = 0;
+  for (const m of msgs) {
+    if (!m?.text || !chatOn(state, m.from)) continue;
+    const id = `m${Date.parse(at) || 0}-${state.messages.length}`;
+    state.messages.push(normMsg({ ...m, id, at: m.at || at }, state.messages.length)); n += 1;
+  }
+  if (state.messages.length > CHAT_MAX) state.messages.splice(0, state.messages.length - CHAT_MAX);
+  return n;
+}
+
+const fileList = (l) => (l.length ? (l.length > 3 ? `${l.slice(0, 3).join(', ')} +${l.length - 3}` : l.join(', ')) : 'no files named');
+const nameOf = (roster, id) => roster.agents.find((a) => a.id === id)?.name ?? (id === BOSS.id ? BOSS.name : id);
+
+/** Boss's assignment line: task, files, model, budget. */
+export function assignLine(job, roster) {
+  return { from: BOSS.id, kind: 'assign', jobId: job.id, text: `${nameOf(roster, job.agent)}, you got ${job.id}: ${str(job.text, 160)}. Files: ${fileList(job.leases)}. Model ${MODEL_LABEL[job.model] ?? job.model}, budget ${fmtTokens(job.budget.tokens)} tokens / ${job.budget.maxTurns} turns.` };
+}
+/** Boss's lease decisions for a plan: who waits for whom, over which files. */
+export function leaseLines(plan, roster) {
+  const out = [];
+  for (const j of plan.jobs) {
+    if (!j.after.length) continue;
+    const e = plan.jobs.find((x) => x.id === j.after[j.after.length - 1]);
+    const shared = e ? j.leases.filter((f) => e.leases.some((l) => leasesOverlap([f], [l]))) : [];
+    out.push({ from: BOSS.id, kind: 'lease', jobId: j.id, text: `${nameOf(roster, j.agent)} waits on ${nameOf(roster, e?.agent)} (${e?.id}): ${shared.length ? `both want ${fileList(shared)}` : 'same agent or no files named'}. Wave ${j.wave + 1}.` });
+  }
+  return out;
+}
+/** The agent's own report line, and its handoff when it left one. */
+export function reportLines(run, roster) {
+  const r = run.report; const who = run.agent;
+  const head = run.status === 'done' ? `Done with ${run.jobId}` : run.status === 'killed' ? `Got killed on ${run.jobId}: ${run.reason}` : run.status === 'blocked' ? `Blocked on ${run.jobId}` : `Failed ${run.jobId}${run.reason ? `: ${run.reason}` : ''}`;
+  const out = [{ from: who, kind: 'report', jobId: run.jobId, text: `${head}.${r?.summary ? ` ${r.summary}` : ''}${r?.question ? ` Q for Brett: ${r.question}` : ''}` }];
+  if (r?.handoff) out.push({ from: who, kind: 'handoff', jobId: run.jobId, text: `Handoff: ${r.handoff}` });
+  return out;
+}
+export function mergeLines(res, roster) {
+  const out = [];
+  if (res.merged.length) out.push({ from: BOSS.id, kind: 'merge', text: `Merged ${res.merged.join(', ')} into ${res.branch}.` });
+  for (const c of res.conflicts) out.push({ from: BOSS.id, kind: 'handoff', jobId: c.fixer, text: `${nameOf(roster, 'max')}, ${c.job} clashed on ${fileList(c.files)}. Clean it up (${c.fixer}).` });
+  for (const r of res.refused) out.push({ from: BOSS.id, kind: 'lease', jobId: r.job, text: `${r.job} touched files outside its lease (${fileList([...r.outside, ...r.shared])}). Not merging that.` });
+  return out;
+}
+
+/**
+ * Banter bank: zero-token lines in Amber's voice, by moment. {me} = speaker, {other} = coworker, {file}, {job}.
+ * No jokes about anyone's identity, ever. A cheap-model batch can add more (banterPrompt / parseBanter).
+ */
+export const BANTER = {
+  idle: ['Anybody else just staring at the queue like it owes us money?', 'Chillin\' till Boss throws something at me. Don\'t make it CSS.', 'Coffee\'s cold, tokens are hot. Typical Tuesday.', 'Who keeps leaving half-merged branches in the fridge?'],
+  gradle: ['Gradle\'s running. Cracking a beer, wake me up in twenty.', 'Kat, your damn Gradle build is older than my last raise.', 'I swear Gradle downloads the whole internet every time.'],
+  fight: ['{other}, get your hands off {file}, that shit\'s leased to me.', 'Boss gave me {file}. Back the hell up, {other}.', '{other} wants {file} too? Take a number, buddy.'],
+  done: ['{other} finished {job}? Took long enough, damn.', 'Nice one {other}. Don\'t let it go to your head.', 'Look at {other}, actually shipping. Who knew.'],
+  failed: ['{other} blew up {job}. Somebody check on them.', 'Rough one, {other}. Shake it off and read the error this time.', 'F in the chat for {other}\'s {job}.'],
+  raise: ['A raise for {other}? For WHAT? I fixed three conflicts this week.', 'Oh sure, {other} gets paid. Some of us actually work.', 'Congrats {other}. Drinks are on you, rich ass.'],
+  bonus: ['{other} came in under budget again. Teacher\'s pet.', 'Bonus for {other}. I\'m not jealous, you\'re jealous.'],
+  docked: ['{other} got docked. Ouch. Should\'ve stayed in your lease.', 'Pay cut for {other}? Brutal. Kinda deserved though.'],
+};
+
+/** Pick a banter line (deterministic from `seed`, so tests and replays match). */
+export function banterLine(moment, seed, vars = {}) {
+  const pool = BANTER[moment] ?? BANTER.idle;
+  let h = 0; for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return pool[h % pool.length].replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? k);
+}
+
+/** Coworkers who react to an event (not the subject; switched-on, working agents), up to `n`. */
+export function reactors(state, roster, subject, n, seed) {
+  const pool = roster.agents.filter((a) => a.id !== subject && chatOn(state, a.id) && !['fired', 'quit'].includes(state.agents[a.id]?.status));
+  let h = 0; for (const ch of String(seed)) h = (h * 33 + ch.charCodeAt(0)) >>> 0;
+  return Array.from({ length: Math.min(n, pool.length) }, (_, i) => pool[(h + i * 3) % pool.length]).filter((a, i, arr) => arr.indexOf(a) === i);
+}
+
+/** Prompt for one cheap batch of banter lines (small model, no tools, one turn). */
+export function banterPrompt(roster, recent, n = 6) {
+  const who = roster.agents.map((a) => `${a.id} (${a.name}, ${a.role}): "${a.catchphrase}"`).join('\n');
+  const lines = recent.slice(-12).map((m) => `${m.from}: ${m.text}`).join('\n');
+  return `Write ${n} short group-chat lines between these coworkers, reacting to the recent work below. Amber's voice: blunt street slang, cussing, wild, funny about the work. Never joke about race, ethnicity, religion, gender, sexuality or any other identity. One line each, under 140 characters.\nCoworkers:\n${who}\nRecent:\n${lines || '(quiet day)'}\nAnswer only JSON: [{"agent":"<id>","text":"…"}]`;
+}
+export function parseBanter(text, roster) {
+  const m = /\[[\s\S]*\]/.exec(str(text, 20000)); if (!m) return [];
+  try { return JSON.parse(m[0]).filter((x) => roster.agents.some((a) => a.id === x?.agent) && typeof x.text === 'string').slice(0, 20).map((x) => ({ from: x.agent, kind: 'banter', text: str(x.text, 200) })); }
+  catch { return []; }
 }

@@ -3,6 +3,7 @@ import { Button, Icon, useRuntime } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
 import { CrewTab } from './cards';
+import { ChatTab } from './chat';
 import { FOLDER, ModelChip, api, fmtTime, statusText, useSwarm, type Act, type Agent, type AgentState, type Job, type Res, type Slot, type Spend, type StatusDef, type SwarmState } from './ui-types';
 import './swarm.css';
 
@@ -13,7 +14,7 @@ export { FOLDER };
  * cost meter per agent, build and job. All rules are in swarm-core.mjs; the server reads through swarm.mjs.
  */
 
-const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'jobs', label: 'Jobs', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }] as const;
+const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'jobs', label: 'Jobs', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }, { id: 'chat', label: 'Group chat', icon: 'bell' }] as const;
 type Tab = (typeof TABS)[number]['id'];
 
 export function SwarmPage() {
@@ -43,6 +44,7 @@ export function SwarmPage() {
       {tab === 'agents' && <AgentsTab state={state} act={doAct} />}
       {tab === 'jobs' && <JobsTab state={state} />}
       {tab === 'cost' && <CostTab state={state} />}
+      {tab === 'chat' && <ChatTab state={state} act={doAct} />}
     </div>
   );
 }

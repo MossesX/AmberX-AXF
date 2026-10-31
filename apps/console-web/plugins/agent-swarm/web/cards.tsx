@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Chip } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
+import { AgentChat } from './chat';
 import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState } from './ui-types';
 
 /*
@@ -110,6 +111,10 @@ function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: Swarm
         <h3 className="sw-wave">Status history</h3>
         {as.history.length === 0 ? <p className="fx-muted">On duty since hiring.</p>
           : <ul className="sw-feed">{[...as.history].reverse().slice(0, 20).map((h, i) => <li key={i}><span className="fx-muted">{fmtTime(h.at)}</span> {h.from} → <b>{h.to}</b>{h.note ? ` · ${h.note}` : ''} <span className="fx-muted">({h.by})</span></li>)}</ul>}
+      </section>
+      <section className="fx-stack">
+        <h3 className="sw-wave">In the group chat</h3>
+        <AgentChat a={a} state={state} />
       </section>
       <section className="fx-stack">
         <h3 className="sw-wave">Latest runs</h3>
