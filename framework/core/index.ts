@@ -5,6 +5,7 @@ export * from './runtime';
 export * from './settings';
 export * from './engines/theme';
 export * from './engines/layout';
+export * from './engines/repeat';
 export * from './engines/components';
 export * from './engines/customize';
 export * from './engines/looktokens';
