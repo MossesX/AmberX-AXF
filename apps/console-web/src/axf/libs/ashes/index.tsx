@@ -1,19 +1,22 @@
 /**
  * AshesUI (ai.amberx.axf.ashes): a live UI inspector any AXF web app can install.
  *
- * Right-click / long-press anywhere → **AshesUI** (a check-mark toggle; setting `axf.ashes.on`). While it is on, a live
- * event listener follows the pointer and a small headless window, like a tooltip, keeps showing what the element under
- * it is: the framework component (and the asset type + active asset that styles it), the **plugin or library it belongs
- * to** (and the model that built it), size and position, colours with their contrast grade, font, spacing, role, React
- * components and handlers, a selector. A highlight box (with margin / padding shading) marks the element.
+ * Right-click / long-press anywhere → **AshesUI** (a check-mark toggle; setting `axf.ashes.on`). While it is on, the
+ * pointer model is element-inspector@1 (core/engines/inspect.ts, the same engine as the Compose `ElementInspector`):
+ * **left button only** (or the primary touch / pen; right-click still opens the menu). **Press and drag**: a small panel
+ * follows the pointer and keeps showing the element under it, live: the framework component (and the asset type + active
+ * asset that styles it), the **plugin or library it belongs to** (and the model that built it), size and position,
+ * colours with their contrast grade, font, spacing, role, React components and handlers, a selector. A highlight box
+ * (with margin / padding shading) marks the element. **Release** closes it. The press never reaches the page.
  *
- * **Double-click / double-tap** never moves or changes the tooltip: it opens the **inspector**, a draggable, resizable
- * floating window (the framework window manager, tab kind `ashes-inspector`): on the left a tree of every rendered
- * element on screen with the picked one selected, in focus and expanded to all its children; on the right a tab group
- * with two tabs, **Grid** (every parameter in a grouped grid, styles and attributes editable live) and **Tree** (the
- * same parameters as a tree). Plus: search + filters (framework components / plugin elements), pick mode, keyboard
- * walking (↑ parent, ↓ first child, ← → siblings), freeze (F), copy selector / JSON / HTML, counts per component and
- * per plugin, live edits listed with Revert all, the page re-read on every change (MutationObserver, throttled).
+ * **Double-click / double-tap** pins a panel on the element: it stays, updates live, moves by its head and resizes from its
+ * corner (inside the window); × unpins, the search button opens the **inspector**, a draggable, resizable floating window (the framework
+ * window manager, tab kind `ashes-inspector`): on the left a tree of every rendered element on screen with the picked
+ * one selected, in focus and expanded to all its children; on the right a tab group with two tabs, **Grid** (every
+ * parameter in a grouped grid, styles and attributes editable live) and **Tree** (the same parameters as a tree). Plus:
+ * search + filters (framework components / plugin elements), pick mode, keyboard walking of the pinned element (↑ parent,
+ * ↓ first child, ← → siblings, Enter inspects, Esc unpins), copy selector / JSON / HTML, counts per component and per
+ * plugin, live edits listed with Revert all, the page re-read on every change (MutationObserver, throttled).
  *
  * The app tells AshesUI who its plugins are (`createAshesLibrary({ owners })`); without that, every installed library
  * (`rt.libraries`) is known by its `axf-<name>` class prefix. Pure rules in ./core.ts.
@@ -24,9 +27,10 @@ import { Button, Chip, IconButton, Icon, ModelBadge, Note, Segmented, Switch, Te
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import {
-  componentOf, filterTree, isDoubleTap, ownersFrom, parameterRows, parameterTree, pathStep, pathTo, resolveOwner, shortLabel,
-  STYLE_PROPS, tipPosition, tooltipRows, TOOLTIP_FIELDS, treeStats, type ElNode, type ElementSnap, type KnownOwner, type Owner, type ParamNode, type Row,
+  componentOf, filterTree, ownersFrom, panelFields, parameterRows, parameterTree, pathStep, pathTo, resolveOwner, shortLabel,
+  STYLE_PROPS, tooltipRows, TOOLTIP_FIELDS, treeStats, type ElNode, type ElementSnap, type KnownOwner, type Owner, type ParamNode, type Row,
 } from './core';
+import { INSPECT_DEFAULTS, followPanel, inspectInit, inspectStep, type InspectConfig, type InspectEvent, type InspectOn, type InspectPoint, type InspectRect, type InspectState } from '../../core/engines/inspect';
 import './ashes.css';
 
 export * from './core';
@@ -57,8 +61,13 @@ function keyOf(el: Element): number {
 }
 const elOf = (k: number | null | undefined): Element | null => (k ? els.get(k)?.deref() ?? null : null);
 
-interface AshesState { hover: number | null; selected: number | null; frozen: boolean; picking: boolean; tick: number; edits: { key: number; kind: 'style' | 'attr'; name: string; before: string | null }[] }
-let state: AshesState = { hover: null, selected: null, frozen: false, picking: false, tick: 0, edits: [] };
+interface AshesState {
+  /** the element the follow panel shows (or a tree row points at) */
+  hover: number | null; selected: number | null; picking: boolean; tick: number; edits: { key: number; kind: 'style' | 'attr'; name: string; before: string | null }[];
+  /** element-inspector@1: the follow panel's anchor (null = closed), the pinned panel and its element */
+  follow: InspectPoint | null; pin: InspectRect | null; pinned: number | null;
+}
+let state: AshesState = { hover: null, selected: null, picking: false, tick: 0, edits: [], follow: null, pin: null, pinned: null };
 const subs = new Set<() => void>();
 const setState = (p: Partial<AshesState>) => { state = { ...state, ...p }; subs.forEach((f) => f()); };
 const useAshes = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => state);
@@ -209,25 +218,15 @@ function Highlight({ el, boxModel, tone }: { el: Element; boxModel: boolean; ton
   );
 }
 
-function Tooltip({ snap, x, y, frozen }: { snap: ElementSnap; x: number; y: number; frozen: boolean }) {
-  const rt = useRuntime();
-  const fields = (rt.settings.get(KEY.fields) as string[] | undefined) ?? [...TOOLTIP_FIELDS];
-  const rows = tooltipRows(snap, fields);
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ x: x + 16, y: y + 16 });
-  const offset = Number(rt.settings.get(KEY.offset) ?? 16);
-  useEffect(() => {
-    const b = ref.current?.getBoundingClientRect();
-    if (b) setPos(tipPosition(x, y, b.width, b.height, innerWidth, innerHeight, offset));
-  }, [x, y, snap, offset]);
+/** The rows a panel shows: the fields switched on in settings, and always the size. */
+function panelRows(rt: AxfRuntime, snap: ElementSnap): Row[] {
+  return tooltipRows(snap, panelFields(rt.settings.get(KEY.fields) as string[] | undefined));
+}
+
+function PanelRows({ snap, rows }: { snap: ElementSnap; rows: Row[] }) {
   const bg = snap.style['background-color'], fg = snap.style['color'];
   return (
-    <div data-ashes ref={ref} className="axf-ashes-tip" style={{ left: pos.x, top: pos.y }} role="status" aria-live="off">
-      <div className="axf-ashes-tip__head">
-        <Icon name="eye" size={12} />
-        <span className="axf-ashes-tip__title">{shortLabel(snap)}</span>
-        {frozen && <Chip tone="accent">frozen</Chip>}
-      </div>
+    <>
       {snap.owner && <div className="axf-ashes-tip__owner"><Icon name="package" size={11} /> {snap.owner.kind === 'plugin' ? 'Plugin' : 'Library'}: <strong>{snap.owner.name}</strong> <ModelBadge model={snap.owner.model} compact /></div>}
       <dl className="axf-ashes-tip__rows">
         {rows.filter((r) => r.key !== 'Belongs to' || !snap.owner).map((r) => (
@@ -240,89 +239,169 @@ function Tooltip({ snap, x, y, frozen }: { snap: ElementSnap; x: number; y: numb
           </Fragment>
         ))}
       </dl>
-      <div className="axf-ashes-tip__hint">Double-click to inspect · F freeze · ↑↓←→ walk · Esc off</div>
+    </>
+  );
+}
+
+/** The follow panel: open while the left button is held, beside the pointer (element-inspector@1 `followPanel`). */
+function Tooltip({ snap, x, y }: { snap: ElementSnap; x: number; y: number }) {
+  const rt = useRuntime();
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ x: x + 16, y: y + 16 });
+  const offset = Number(rt.settings.get(KEY.offset) ?? 16);
+  useEffect(() => {
+    const b = ref.current?.getBoundingClientRect();
+    if (b) setPos(followPanel({ x, y }, { w: b.width, h: b.height }, { w: innerWidth, h: innerHeight }, { ...INSPECT_DEFAULTS, offset }));
+  }, [x, y, snap, offset]);
+  return (
+    <div data-ashes ref={ref} className="axf-ashes-tip" style={{ left: pos.x, top: pos.y }} role="status" aria-live="off">
+      <div className="axf-ashes-tip__head">
+        <Icon name="eye" size={12} />
+        <span className="axf-ashes-tip__title">{shortLabel(snap)}</span>
+      </div>
+      <PanelRows snap={snap} rows={panelRows(rt, snap)} />
+      <div className="axf-ashes-tip__hint">Drag to look around · release closes · double-click pins</div>
     </div>
   );
 }
 
-/** The live listener: mounted (portalled to the body) while AshesUI is on. */
+/** The pinned panel (double click): stays on its element, live; drag by the head, resize from the corner. */
+function PinPanel({ snap, rect }: { snap: ElementSnap | null; rect: InspectRect }) {
+  const rt = useRuntime();
+  return (
+    <div data-ashes data-ashes-part="panel" className="axf-ashes-pin" style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h }} role="dialog" aria-label="Pinned element">
+      <div className="axf-ashes-pin__head" data-ashes-part="head">
+        <Icon name="move" size={12} />
+        <span className="axf-ashes-tip__title">{snap ? shortLabel(snap) : 'Element gone'}</span>
+        <span data-ashes-part="panel" className="axf-ashes-pin__tools">
+          <IconButton icon="search" label="Open in the inspector" size={12} onClick={() => openInspector(rt, elOf(state.pinned))} />
+          <IconButton icon="x" label="Unpin" size={12} onClick={() => inspectDo({ type: 'unpin' })} />
+        </span>
+      </div>
+      <div className="axf-ashes-pin__body">
+        {snap ? <PanelRows snap={snap} rows={panelRows(rt, snap)} /> : <p className="fx-muted">The pinned element left the page.</p>}
+      </div>
+      <span className="axf-ashes-pin__resize" data-ashes-part="resize" aria-hidden />
+    </div>
+  );
+}
+
+/* element-inspector@1 state (core/engines/inspect.ts): one per page, driven by the live listener */
+let insp: InspectState = inspectInit({ w: typeof innerWidth === 'number' ? innerWidth : 1024, h: typeof innerHeight === 'number' ? innerHeight : 768 });
+let inspCfg: InspectConfig = INSPECT_DEFAULTS;
+const hitAt = (p: { x: number; y: number }): Element | null => document.elementsFromPoint(p.x, p.y).find((e) => !isOurs(e)) ?? null;
+/** Feed one event to the pointer model and publish what changed. */
+function inspectDo(e: InspectEvent) {
+  const r = inspectStep(insp, e, inspCfg);
+  insp = r.state;
+  const patch: Partial<AshesState> = {};
+  if (r.look) { const el = hitAt(r.look); if (el) patch.hover = keyOf(el); }
+  if (r.pinned) { const el = hitAt(r.pinned); patch.pinned = el ? keyOf(el) : null; }
+  if (!insp.pin && state.pinned !== null) patch.pinned = null;
+  if (insp.follow !== state.follow) patch.follow = insp.follow;
+  if (insp.pin?.panel !== state.pin) patch.pin = insp.pin?.panel ?? null;
+  if (!insp.follow && state.hover !== null && !('hover' in patch)) patch.hover = null;
+  if (Object.keys(patch).length) setState(patch);
+  return r;
+}
+function inspectReset() {
+  insp = inspectInit({ w: innerWidth, h: innerHeight });
+  setState({ hover: null, follow: null, pin: null, pinned: null, picking: false });
+}
+
+/** The live listener: mounted (portalled to the body) while AshesUI is on. Left press only (element-inspector@1). */
 function AshesLive({ opts }: { opts: AshesOptions }) {
   const rt = useRuntime();
   useAxfState();
   const s = useAshes();
-  const [pt, setPt] = useState({ x: 0, y: 0 });
   const [snap, setSnap] = useState<ElementSnap | null>(null);
-  const lastTap = useRef<{ t: number; x: number; y: number } | null>(null);
+  const [pinSnap, setPinSnap] = useState<ElementSnap | null>(null);
   const raf = useRef(0);
   const delay = Number(rt.settings.get(KEY.delay) ?? 0);
   const touchMode = rt.settings.get(KEY.touch) !== false;
-
-  const look = useCallback((x: number, y: number) => {
-    if (state.frozen) return;
-    const stack = document.elementsFromPoint(x, y).filter((e) => !isOurs(e));
-    const el = stack[0];
-    if (!el) return;
-    setPt({ x, y });
-    const k = keyOf(el);
-    if (k !== state.hover) setState({ hover: k });
-  }, []);
+  inspCfg = { ...INSPECT_DEFAULTS, offset: Number(rt.settings.get(KEY.offset) ?? INSPECT_DEFAULTS.offset) };
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
-    const move = (e: PointerEvent) => {
-      if (e.pointerType === 'touch' && !touchMode) return;
-      cancelAnimationFrame(raf.current);
-      if (timer) clearTimeout(timer);
-      const run = () => { raf.current = requestAnimationFrame(() => look(e.clientX, e.clientY)); };
-      if (delay > 0) timer = setTimeout(run, delay); else run();
+    let swallowClick = false;
+    const skip = (e: PointerEvent) => e.pointerType === 'touch' && !touchMode;
+    const partOf = (t: EventTarget | null): InspectOn | 'ours' => {
+      const el = t instanceof Element ? t : null;
+      if (!isOurs(el)) return 'page';
+      const part = el!.closest('[data-ashes-part]')?.getAttribute('data-ashes-part');
+      return part === 'head' || part === 'resize' || part === 'panel' ? part : 'ours';
+    };
+    const feed = (type: 'down' | 'move' | 'up' | 'cancel', e: PointerEvent) => {
+      const on = partOf(e.target);
+      if (on === 'ours' && type === 'down') return null; // the inspector window, pick bar: theirs
+      return inspectDo({ type, t: e.timeStamp, x: e.clientX, y: e.clientY, button: e.button, primary: e.isPrimary, on: on === 'ours' ? 'page' : on });
     };
     const down = (e: PointerEvent) => {
-      if (isOurs(e.target as Element)) return;
-      if (state.picking) { e.preventDefault(); e.stopPropagation(); const el = document.elementsFromPoint(e.clientX, e.clientY).find((x) => !isOurs(x)); if (el) openInspector(rt, el); setState({ picking: false }); return; }
-      if (e.pointerType !== 'mouse') {
-        look(e.clientX, e.clientY);
-        const now = { t: Date.now(), x: e.clientX, y: e.clientY };
-        if (isDoubleTap(lastTap.current, now)) { e.preventDefault(); const el = elOf(state.hover); if (el) openInspector(rt, el); lastTap.current = null; } else lastTap.current = now;
-      }
+      if (skip(e)) return;
+      if (state.picking && !isOurs(e.target as Element)) { e.preventDefault(); e.stopPropagation(); const el = hitAt({ x: e.clientX, y: e.clientY }); if (el) openInspector(rt, el); setState({ picking: false }); swallowClick = true; return; }
+      const r = feed('down', e);
+      if (!r) return;
+      if (r.consume) { e.preventDefault(); e.stopPropagation(); getSelection()?.removeAllRanges(); swallowClick = true; }
+      else if (insp.grab) e.preventDefault(); // dragging the pinned panel never selects text
     };
-    const dbl = (e: MouseEvent) => {
-      if (isOurs(e.target as Element)) return;
-      e.preventDefault(); e.stopPropagation();
-      getSelection()?.removeAllRanges();
-      const el = elOf(state.hover) ?? (e.target as Element);
-      if (el) openInspector(rt, el);
+    const move = (e: PointerEvent) => {
+      if (skip(e) || (!insp.pressed && !insp.grab)) return;
+      if (insp.grab) { feed('move', e); return; }
+      cancelAnimationFrame(raf.current);
+      if (timer) clearTimeout(timer);
+      const run = () => { raf.current = requestAnimationFrame(() => feed('move', e)); };
+      if (delay > 0) timer = setTimeout(run, delay); else run();
     };
+    const up = (e: PointerEvent) => { if (skip(e)) return; const r = feed('up', e); if (r?.consume) { e.preventDefault(); e.stopPropagation(); } };
+    const cancel = (e: PointerEvent) => { if (!skip(e)) feed('cancel', e); };
+    const click = (e: MouseEvent) => { if (swallowClick) { swallowClick = false; if (!isOurs(e.target as Element)) { e.preventDefault(); e.stopPropagation(); } } };
+    const dbl = (e: MouseEvent) => { if (!isOurs(e.target as Element)) { e.preventDefault(); e.stopPropagation(); getSelection()?.removeAllRanges(); } };
+    const resize = () => inspectDo({ type: 'viewport', w: innerWidth, h: innerHeight });
     const key = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t && (t.isContentEditable || /^(input|textarea|select)$/i.test(t.tagName))) return;
-      const cur = elOf(state.hover);
-      const go = (el: Element | null | undefined) => { if (el && !isOurs(el)) { e.preventDefault(); setState({ hover: keyOf(el), frozen: true }); const r = el.getBoundingClientRect(); setPt({ x: r.left + r.width / 2, y: r.bottom }); } };
-      if (e.key === 'Escape') { if (state.picking) setState({ picking: false }); else if (state.frozen) setState({ frozen: false }); else rt.settings.set(KEY.on, false); }
-      else if (e.key === 'f' || e.key === 'F') setState({ frozen: !state.frozen });
-      else if (e.key === 'ArrowUp' && e.altKey === false && cur) go(cur.parentElement);
+      const cur = elOf(state.pinned);
+      const go = (el: Element | null | undefined) => { if (el && !isOurs(el)) { e.preventDefault(); setState({ pinned: keyOf(el) }); } };
+      if (e.key === 'Escape') { if (state.picking) setState({ picking: false }); else if (insp.pin) inspectDo({ type: 'unpin' }); else rt.settings.set(KEY.on, false); }
+      else if (e.key === 'ArrowUp' && cur) go(cur.parentElement);
       else if (e.key === 'ArrowDown' && cur) go(cur.firstElementChild);
       else if (e.key === 'ArrowLeft' && cur) go(cur.previousElementSibling);
       else if (e.key === 'ArrowRight' && cur) go(cur.nextElementSibling);
       else if (e.key === 'Enter' && cur) { e.preventDefault(); openInspector(rt, cur); }
     };
-    addEventListener('pointermove', move, { capture: true, passive: true });
+    if (touchMode) document.documentElement.classList.add('axf-ashes-on'); // touch drags inspect instead of scrolling
+    resize();
     addEventListener('pointerdown', down, { capture: true });
+    addEventListener('pointermove', move, { capture: true, passive: true });
+    addEventListener('pointerup', up, { capture: true });
+    addEventListener('pointercancel', cancel, { capture: true });
+    addEventListener('click', click, { capture: true });
     addEventListener('dblclick', dbl, { capture: true });
     addEventListener('keydown', key, { capture: true });
+    addEventListener('resize', resize);
     return () => {
-      removeEventListener('pointermove', move, { capture: true });
+      document.documentElement.classList.remove('axf-ashes-on');
       removeEventListener('pointerdown', down, { capture: true });
+      removeEventListener('pointermove', move, { capture: true });
+      removeEventListener('pointerup', up, { capture: true });
+      removeEventListener('pointercancel', cancel, { capture: true });
+      removeEventListener('click', click, { capture: true });
       removeEventListener('dblclick', dbl, { capture: true });
       removeEventListener('keydown', key, { capture: true });
+      removeEventListener('resize', resize);
       cancelAnimationFrame(raf.current); if (timer) clearTimeout(timer);
     };
-  }, [rt, look, delay, touchMode]);
+  }, [rt, delay, touchMode]);
 
-  // dynamic data: re-read the hovered element on every move, scroll, resize and page change
+  // dynamic data: re-read the followed and the pinned element on every move, scroll, resize and page change
   useEffect(() => {
-    const el = elOf(s.hover);
+    const el = s.follow ? elOf(s.hover) : null;
     setSnap(el && el.isConnected ? snapshot(rt, el, opts, false) : null);
-  }, [s.hover, s.tick, pt, rt, opts]);
+  }, [s.hover, s.follow, s.tick, rt, opts]);
+  useEffect(() => {
+    const el = s.pin ? elOf(s.pinned) : null;
+    setPinSnap(el && el.isConnected ? snapshot(rt, el, opts, false) : null);
+  }, [s.pinned, s.pin, s.tick, rt, opts]);
   useEffect(() => {
     let t: ReturnType<typeof setTimeout> | null = null;
     const bump = () => { if (t) return; t = setTimeout(() => { t = null; setState({ tick: state.tick + 1 }); }, 250); };
@@ -334,20 +413,22 @@ function AshesLive({ opts }: { opts: AshesOptions }) {
   }, []);
 
   const hoverEl = elOf(s.hover);
+  const pinEl = s.pin ? elOf(s.pinned) : null;
   const selEl = elOf(s.selected);
   const showBox = rt.settings.get(KEY.box) !== false;
   const boxModel = rt.settings.get(KEY.boxModel) !== false;
   return createPortal(
     <div data-ashes className="axf-ashes">
-      {showBox && selEl && selEl !== hoverEl && selEl.isConnected && <Highlight el={selEl} boxModel={false} tone="selected" />}
+      {showBox && selEl && selEl !== hoverEl && selEl !== pinEl && selEl.isConnected && <Highlight el={selEl} boxModel={false} tone="selected" />}
+      {showBox && pinEl && pinEl !== hoverEl && pinEl.isConnected && <Highlight el={pinEl} boxModel={false} tone="selected" />}
       {showBox && hoverEl && hoverEl.isConnected && <Highlight el={hoverEl} boxModel={boxModel} tone="hover" />}
-      {snap && <Tooltip snap={snap} x={pt.x} y={pt.y} frozen={s.frozen} />}
+      {s.pin && <PinPanel snap={pinSnap} rect={s.pin} />}
+      {snap && s.follow && <Tooltip snap={snap} x={s.follow.x} y={s.follow.y} />}
       {s.picking && <div data-ashes className="axf-ashes-pickbar">Tap or click an element to inspect it · Esc cancels</div>}
     </div>,
     document.body,
   );
 }
-
 /** The inspector's tree-hover highlight works even while AshesUI's tooltip is off. */
 function InspectorHighlight() {
   const s = useAshes();
@@ -561,7 +642,7 @@ function Inspector() {
           </div>
         </div>
         <div className="axf-ashes-insp__right">
-          {!snap && <Note tone="info">Pick an element in the tree, or double-click one on the page while AshesUI is on.</Note>}
+          {!snap && <Note tone="info">Pick an element in the tree, or pin one on the page (double-click while AshesUI is on) and open it here.</Note>}
           {snap && <>
             <header className="axf-ashes-insp__head">
               <strong>{shortLabel(snap)}</strong>
@@ -608,7 +689,7 @@ function OverviewPanel() {
   return (
     <div className="fx-stack">
       <Switch label="AshesUI is on" hint="Also in the right-click / long-press menu everywhere (AshesUI ✓)." checked={on} onChange={(v) => rt.settings.set(KEY.on, v)} />
-      <p className="fx-muted" style={{ margin: 0 }}>While it's on, a small window follows the pointer with what's under it. Double-click (or double-tap) opens the inspector: every element on screen in a tree, every parameter in a grid or a tree. Keys: F freezes, arrows walk the page, Enter inspects, Esc turns it off.</p>
+      <p className="fx-muted" style={{ margin: 0 }}>While it's on, press and drag with the left button (or a finger): a small window follows with what's under it, and closes when you let go. Double-click (or double-tap) pins it on that element: drag it by its top, resize it from its corner, open the full inspector from it. Keys: arrows walk the pinned element, Enter inspects, Esc unpins, then turns AshesUI off.</p>
       <div className="fx-row fx-row--wrap"><Button icon="eye" onClick={() => openInspector(rt, null)}>Open the inspector</Button></div>
     </div>
   );
@@ -623,12 +704,12 @@ export function createAshesLibrary(opts: AshesOptions = {}): AxfWebLibrary {
     builtWith: { model: 'opus', builtAt: '2026-10-23' },
     register(rt) {
       rt.actions.register('ashes.toggle', () => rt.settings.set(KEY.on, rt.settings.get(KEY.on) !== true), { label: 'AshesUI on / off' });
-      rt.actions.register('ashes.inspect', () => openInspector(rt, elOf(state.hover)), { label: 'AshesUI inspector' });
+      rt.actions.register('ashes.inspect', () => openInspector(rt, elOf(state.pinned ?? state.hover)), { label: 'AshesUI inspector' });
       rt.actions.register('ashes.pick', () => { rt.settings.set(KEY.on, true); setState({ picking: true }); }, { label: 'AshesUI: pick an element' });
-      rt.actions.register('ashes.freeze', () => setState({ frozen: !state.frozen }), { label: 'AshesUI: freeze the tooltip' });
+      rt.actions.register('ashes.unpin', () => inspectDo({ type: 'unpin' }), { label: 'AshesUI: unpin the pinned panel' });
       // on every right-click / long-press menu, whatever the target
       rt.contextExtras.set('*:ashes', () => [{ id: 'ashes', label: 'AshesUI', icon: 'eye', action: 'ashes.toggle', checked: `setting:${KEY.on}` }]);
-      rt.settings.onChange(KEY.on, (v) => { if (v !== true) setState({ hover: null, frozen: false, picking: false }); });
+      rt.settings.onChange(KEY.on, (v) => { if (v !== true) inspectReset(); });
     },
     tabs: { [ASHES_TAB]: () => <Inspector /> },
     slots: { 'app.frame.top': [{ id: 'ashes.live', order: 999, render: () => <AshesMount opts={opts} /> }] },
@@ -637,10 +718,10 @@ export function createAshesLibrary(opts: AshesOptions = {}): AxfWebLibrary {
     settings: [
       { id: 'ashes.tooltip', label: 'Tooltip', icon: 'info', tab: 'ashes', order: 10, settings: [
         { key: KEY.on, label: 'AshesUI on', kind: 'toggle', default: false },
-        { key: KEY.fields, label: 'Show in the tooltip', kind: 'multi_choice', default: [...TOOLTIP_FIELDS], options: TOOLTIP_FIELDS.map((f) => ({ value: f, label: f[0]!.toUpperCase() + f.slice(1) })) },
+        { key: KEY.fields, label: 'Show in the panels (size always)', kind: 'multi_choice', default: [...TOOLTIP_FIELDS], options: TOOLTIP_FIELDS.map((f) => ({ value: f, label: f[0]!.toUpperCase() + f.slice(1) })) },
         { key: KEY.offset, label: 'Distance from the pointer', kind: 'slider', default: 16, min: 4, max: 48, step: 2 },
-        { key: KEY.delay, label: 'Wait before updating (ms)', kind: 'slider', default: 0, min: 0, max: 400, step: 20 },
-        { key: KEY.touch, label: 'Follow touches too (phones)', kind: 'toggle', default: true },
+        { key: KEY.delay, label: 'Wait before updating while dragging (ms)', kind: 'slider', default: 0, min: 0, max: 400, step: 20 },
+        { key: KEY.touch, label: 'Inspect touches too (phones)', kind: 'toggle', default: true },
       ] },
       { id: 'ashes.highlight', label: 'Highlight', icon: 'layers', tab: 'ashes', order: 20, settings: [
         { key: KEY.box, label: 'Outline the element', kind: 'toggle', default: true },

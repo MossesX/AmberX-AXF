@@ -28,6 +28,7 @@ import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITE
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
+import { INSPECT_DEFAULTS, INSPECT_VERSION, clampPanel, followPanel, inspectInit, inspectStep, movePanel, pinPanel, resizePanel, type InspectConfig, type InspectEvent } from '../core/engines/inspect';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
@@ -1389,5 +1390,40 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     frames: ['standard', 'frameless'], frameDefault: 'standard',
     rect: r, hits, resizes, maximize,
     snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
+  });
+}
+
+// element-inspector@1 (core/engines/inspect.ts): the inspector's pointer model; the kernel's InspectEngine replays it.
+{
+  const vp = { w: 1000, h: 700 };
+  const P = (type: 'down' | 'move' | 'up' | 'cancel', t: number, x: number, y: number, more: Partial<{ button: number; primary: boolean; on: 'page' | 'panel' | 'head' | 'resize' }> = {}): InspectEvent => ({ type, t, x, y, ...more });
+  const scenarios: { name: string; config?: Partial<InspectConfig>; viewport?: { w: number; h: number }; events: InspectEvent[] }[] = [
+    { name: 'press, drag, release', events: [P('move', 0, 10, 10), P('down', 10, 100, 100), P('move', 20, 140, 120), P('move', 30, 600, 400), P('up', 40, 600, 400), P('move', 50, 650, 450)] },
+    { name: 'left only', events: [P('down', 0, 100, 100, { button: 2 }), P('move', 10, 120, 120), P('up', 20, 120, 120, { button: 2 }), P('down', 30, 100, 100, { button: 1 }), P('down', 40, 100, 100, { primary: false }), P('down', 50, 100, 100, { button: 0 }), P('up', 60, 100, 100, { button: 2 }), P('move', 70, 110, 105), P('up', 80, 110, 105)] },
+    { name: 'double click pins', events: [P('down', 0, 200, 200), P('up', 60, 200, 200), P('down', 200, 205, 203), P('up', 260, 205, 203), P('down', 1000, 300, 300), P('move', 1010, 320, 310), P('up', 1020, 320, 310)] },
+    { name: 'too slow or too far is no double', events: [P('down', 0, 200, 200), P('up', 50, 200, 200), P('down', 400, 200, 200), P('up', 450, 200, 200), P('down', 600, 260, 200), P('up', 650, 260, 200)] },
+    { name: 'a third press after a double starts over', events: [P('down', 0, 50, 50), P('up', 10, 50, 50), P('down', 100, 50, 50), P('up', 110, 50, 50), P('down', 200, 50, 50), P('up', 210, 50, 50)] },
+    { name: 'pin near the corner flips and clamps', events: [P('down', 0, 990, 690), P('up', 10, 990, 690), P('down', 100, 990, 690), P('up', 110, 990, 690)] },
+    { name: 'drag the pinned panel by its head', events: [P('down', 0, 100, 100), P('up', 10, 100, 100), P('down', 100, 100, 100), P('up', 110, 100, 100), P('down', 500, 130, 130, { on: 'head' }), P('move', 510, 330, 230), P('move', 520, 2000, -500), P('up', 530, 2000, -500), P('move', 540, 10, 10)] },
+    { name: 'resize the pinned panel from its corner', events: [P('down', 0, 100, 100), P('up', 10, 100, 100), P('down', 100, 100, 100), P('up', 110, 100, 100), P('down', 500, 436, 396, { on: 'resize' }), P('move', 510, 536, 446), P('move', 520, 136, 116), P('move', 530, 5000, 5000), P('up', 540, 5000, 5000)] },
+    { name: 'panel body and head without a pin do nothing', events: [P('down', 0, 10, 10, { on: 'panel' }), P('down', 10, 10, 10, { on: 'head' }), P('up', 20, 10, 10)] },
+    { name: 'unpin, cancel, viewport', events: [P('down', 0, 600, 400), P('up', 10, 600, 400), P('down', 100, 600, 400), P('up', 110, 600, 400), { type: 'viewport', w: 500, h: 360 }, P('down', 200, 50, 50), P('cancel', 210, 50, 50), P('move', 220, 60, 60), { type: 'unpin' }, P('down', 300, 50, 50, { on: 'head' })] },
+    { name: 'custom config', config: { doubleMs: 500, doubleDist: 4, offset: 8, panel: { w: 240, h: 160 }, min: { w: 100, h: 80 } }, viewport: { w: 400, h: 300 }, events: [P('down', 0, 100, 100), P('up', 10, 100, 100), P('down', 450, 103, 102), P('up', 460, 103, 102), P('down', 600, 250, 250, { on: 'resize' }), P('move', 610, 0, 0), P('up', 620, 0, 0)] },
+  ];
+  const runs = scenarios.map((sc) => {
+    const cfg: InspectConfig = { ...INSPECT_DEFAULTS, ...sc.config };
+    let s = inspectInit(sc.viewport ?? vp);
+    const steps = sc.events.map((e) => { const r = inspectStep(s, e, cfg); s = r.state; return { event: e, ...r }; });
+    return { name: sc.name, ...(sc.config ? { config: sc.config } : {}), viewport: sc.viewport ?? vp, steps };
+  });
+  const sizes = [{ w: 300, h: 200 }, { w: 120, h: 60 }];
+  const points = [{ x: 10, y: 10 }, { x: 990, y: 10 }, { x: 10, y: 690 }, { x: 990, y: 690 }, { x: 500, y: 350 }, { x: 0, y: 0 }];
+  write('element-inspector.json', {
+    contract: INSPECT_VERSION, defaults: INSPECT_DEFAULTS, viewport: vp, scenarios: runs,
+    follow: points.flatMap((at) => sizes.map((size) => ({ at, size, out: followPanel(at, size, vp) }))),
+    clamp: [{ x: -50, y: -50, w: 300, h: 200 }, { x: 900, y: 650, w: 300, h: 200 }, { x: 10, y: 10, w: 50, h: 50 }, { x: 0, y: 0, w: 5000, h: 5000 }].map((r) => ({ in: r, out: clampPanel(r, vp) })),
+    move: [[10, 10], [-500, 0], [0, 900]].map(([dx, dy]) => ({ from: { x: 100, y: 100, w: 300, h: 200 }, dx, dy, out: movePanel({ x: 100, y: 100, w: 300, h: 200 }, dx!, dy!, vp) })),
+    resize: [[50, 20], [-500, -500], [5000, 5000]].map(([dw, dh]) => ({ from: { x: 600, y: 400, w: 300, h: 200 }, dw, dh, out: resizePanel({ x: 600, y: 400, w: 300, h: 200 }, dw!, dh!, vp) })),
+    pin: points.map((at) => ({ at, out: pinPanel(at, vp) })),
   });
 }

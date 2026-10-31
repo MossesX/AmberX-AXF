@@ -5,7 +5,7 @@
  *   npx -y tsx framework/spec/check-ashes.mts
  */
 import {
-  componentOf, contrast, contrastGrade, filterTree, isDoubleTap, ownersFrom, ownerText, parameterRows, parameterTree, parseColor,
+  componentOf, contrast, contrastGrade, filterTree, isDoubleTap, ownersFrom, ownerText, panelFields, parameterRows, parameterTree, parseColor,
   pathStep, pathTo, registerComponent, resolveOwner, selectorOf, shortLabel, tipPosition, tooltipRows, treeStats,
   type ElNode, type ElementSnap,
 } from '../libs/ashes/core';
@@ -20,6 +20,11 @@ check(componentOf(['fx-iconbtn', 'fx-btn'])?.name === 'IconButton', 'the more sp
 check(componentOf(['my-thing']) === null, 'a plain element is no component');
 registerComponent({ cls: 'axf-gizmo', name: 'Gizmo', kind: 'widget' });
 check(componentOf(['axf-gizmo'])?.name === 'Gizmo', 'an app can register its own component');
+
+// --- inspector panel fields (element-inspector@1: current fields + size)
+check(panelFields(undefined).includes('size') && panelFields(undefined).length === 12, 'by default every tooltip field, size included');
+check(JSON.stringify(panelFields(['owner', 'component'])) === JSON.stringify(['owner', 'component', 'size']), 'the fields on in settings, in order, then the size');
+check(JSON.stringify(panelFields(['size', 'font', 'font', 'nope'])) === JSON.stringify(['size', 'font']), 'size kept where it is, repeats and unknown fields dropped');
 
 // --- owners
 const known = ownersFrom(

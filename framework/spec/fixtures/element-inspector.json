@@ -1,0 +1,3039 @@
+{
+  "contract": "element-inspector@1",
+  "defaults": {
+    "doubleMs": 320,
+    "doubleDist": 24,
+    "offset": 16,
+    "margin": 4,
+    "panel": {
+      "w": 320,
+      "h": 280
+    },
+    "min": {
+      "w": 200,
+      "h": 120
+    }
+  },
+  "viewport": {
+    "w": 1000,
+    "h": 700
+  },
+  "scenarios": [
+    {
+      "name": "press, drag, release",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "move",
+            "t": 0,
+            "x": 10,
+            "y": 10
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 10,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": {
+              "t": 10,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 100,
+            "y": 100
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 20,
+            "x": 140,
+            "y": 120
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 140,
+              "y": 120
+            },
+            "last": {
+              "t": 10,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 140,
+            "y": 120
+          },
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 30,
+            "x": 600,
+            "y": 400
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 600,
+              "y": 400
+            },
+            "last": {
+              "t": 10,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 600,
+            "y": 400
+          },
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 40,
+            "x": 600,
+            "y": 400
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 10,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 50,
+            "x": 650,
+            "y": 450
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 10,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        }
+      ]
+    },
+    {
+      "name": "left only",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 100,
+            "y": 100,
+            "button": 2
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 10,
+            "x": 120,
+            "y": 120
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 20,
+            "x": 120,
+            "y": 120,
+            "button": 2
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 30,
+            "x": 100,
+            "y": 100,
+            "button": 1
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 40,
+            "x": 100,
+            "y": 100,
+            "primary": false
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 50,
+            "x": 100,
+            "y": 100,
+            "button": 0
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": {
+              "t": 50,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 100,
+            "y": 100
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 60,
+            "x": 100,
+            "y": 100,
+            "button": 2
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": {
+              "t": 50,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 70,
+            "x": 110,
+            "y": 105
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 110,
+              "y": 105
+            },
+            "last": {
+              "t": 50,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 110,
+            "y": 105
+          },
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 80,
+            "x": 110,
+            "y": 105
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 50,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        }
+      ]
+    },
+    {
+      "name": "double click pins",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 200,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 200,
+              "y": 200
+            },
+            "last": {
+              "t": 0,
+              "x": 200,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 200,
+            "y": 200
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 60,
+            "x": 200,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 200,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 200,
+            "x": 205,
+            "y": 203
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 205,
+              "y": 203
+            },
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 205,
+                "y": 203
+              },
+              "panel": {
+                "x": 221,
+                "y": 219,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 205,
+            "y": 203
+          },
+          "pinned": {
+            "x": 205,
+            "y": 203
+          },
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 260,
+            "x": 205,
+            "y": 203
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 205,
+                "y": 203
+              },
+              "panel": {
+                "x": 221,
+                "y": 219,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 1000,
+            "x": 300,
+            "y": 300
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 300,
+              "y": 300
+            },
+            "last": {
+              "t": 1000,
+              "x": 300,
+              "y": 300
+            },
+            "pin": {
+              "at": {
+                "x": 205,
+                "y": 203
+              },
+              "panel": {
+                "x": 221,
+                "y": 219,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 300,
+            "y": 300
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 1010,
+            "x": 320,
+            "y": 310
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 320,
+              "y": 310
+            },
+            "last": {
+              "t": 1000,
+              "x": 300,
+              "y": 300
+            },
+            "pin": {
+              "at": {
+                "x": 205,
+                "y": 203
+              },
+              "panel": {
+                "x": 221,
+                "y": 219,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 320,
+            "y": 310
+          },
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 1020,
+            "x": 320,
+            "y": 310
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 1000,
+              "x": 300,
+              "y": 300
+            },
+            "pin": {
+              "at": {
+                "x": 205,
+                "y": 203
+              },
+              "panel": {
+                "x": 221,
+                "y": 219,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        }
+      ]
+    },
+    {
+      "name": "too slow or too far is no double",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 200,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 200,
+              "y": 200
+            },
+            "last": {
+              "t": 0,
+              "x": 200,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 200,
+            "y": 200
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 50,
+            "x": 200,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 200,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 400,
+            "x": 200,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 200,
+              "y": 200
+            },
+            "last": {
+              "t": 400,
+              "x": 200,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 200,
+            "y": 200
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 450,
+            "x": 200,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 400,
+              "x": 200,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 600,
+            "x": 260,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 260,
+              "y": 200
+            },
+            "last": {
+              "t": 600,
+              "x": 260,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 260,
+            "y": 200
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 650,
+            "x": 260,
+            "y": 200
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 600,
+              "x": 260,
+              "y": 200
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        }
+      ]
+    },
+    {
+      "name": "a third press after a double starts over",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 50,
+              "y": 50
+            },
+            "last": {
+              "t": 0,
+              "x": 50,
+              "y": 50
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 50,
+            "y": 50
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 10,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 50,
+              "y": 50
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 100,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 50,
+              "y": 50
+            },
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 50,
+                "y": 50
+              },
+              "panel": {
+                "x": 66,
+                "y": 66,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 50,
+            "y": 50
+          },
+          "pinned": {
+            "x": 50,
+            "y": 50
+          },
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 110,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 50,
+                "y": 50
+              },
+              "panel": {
+                "x": 66,
+                "y": 66,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 200,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 50,
+              "y": 50
+            },
+            "last": {
+              "t": 200,
+              "x": 50,
+              "y": 50
+            },
+            "pin": {
+              "at": {
+                "x": 50,
+                "y": 50
+              },
+              "panel": {
+                "x": 66,
+                "y": 66,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 50,
+            "y": 50
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 210,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 200,
+              "x": 50,
+              "y": 50
+            },
+            "pin": {
+              "at": {
+                "x": 50,
+                "y": 50
+              },
+              "panel": {
+                "x": 66,
+                "y": 66,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        }
+      ]
+    },
+    {
+      "name": "pin near the corner flips and clamps",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 990,
+            "y": 690
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 990,
+              "y": 690
+            },
+            "last": {
+              "t": 0,
+              "x": 990,
+              "y": 690
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 990,
+            "y": 690
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 10,
+            "x": 990,
+            "y": 690
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 990,
+              "y": 690
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 100,
+            "x": 990,
+            "y": 690
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 990,
+              "y": 690
+            },
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 990,
+                "y": 690
+              },
+              "panel": {
+                "x": 654,
+                "y": 394,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 990,
+            "y": 690
+          },
+          "pinned": {
+            "x": 990,
+            "y": 690
+          },
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 110,
+            "x": 990,
+            "y": 690
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 990,
+                "y": 690
+              },
+              "panel": {
+                "x": 654,
+                "y": 394,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        }
+      ]
+    },
+    {
+      "name": "drag the pinned panel by its head",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": {
+              "t": 0,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 100,
+            "y": 100
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 10,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 100,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 100,
+            "y": 100
+          },
+          "pinned": {
+            "x": 100,
+            "y": 100
+          },
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 110,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 500,
+            "x": 130,
+            "y": 130,
+            "on": "head"
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": {
+              "kind": "move",
+              "x": 130,
+              "y": 130,
+              "from": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 510,
+            "x": 330,
+            "y": 230
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 316,
+                "y": 216,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": {
+              "kind": "move",
+              "x": 130,
+              "y": 130,
+              "from": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 520,
+            "x": 2000,
+            "y": -500
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 676,
+                "y": 4,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": {
+              "kind": "move",
+              "x": 130,
+              "y": 130,
+              "from": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 530,
+            "x": 2000,
+            "y": -500
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 676,
+                "y": 4,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 540,
+            "x": 10,
+            "y": 10
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 676,
+                "y": 4,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        }
+      ]
+    },
+    {
+      "name": "resize the pinned panel from its corner",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": {
+              "t": 0,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 100,
+            "y": 100
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 10,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 100,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 100,
+            "y": 100
+          },
+          "pinned": {
+            "x": 100,
+            "y": 100
+          },
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 110,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 500,
+            "x": 436,
+            "y": 396,
+            "on": "resize"
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": {
+              "kind": "resize",
+              "x": 436,
+              "y": 396,
+              "from": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 510,
+            "x": 536,
+            "y": 446
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 420,
+                "h": 330
+              }
+            },
+            "grab": {
+              "kind": "resize",
+              "x": 436,
+              "y": 396,
+              "from": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 520,
+            "x": 136,
+            "y": 116
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 200,
+                "h": 120
+              }
+            },
+            "grab": {
+              "kind": "resize",
+              "x": 436,
+              "y": 396,
+              "from": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 530,
+            "x": 5000,
+            "y": 5000
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 880,
+                "h": 580
+              }
+            },
+            "grab": {
+              "kind": "resize",
+              "x": 436,
+              "y": 396,
+              "from": {
+                "x": 116,
+                "y": 116,
+                "w": 320,
+                "h": 280
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 540,
+            "x": 5000,
+            "y": 5000
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 100,
+                "y": 100
+              },
+              "panel": {
+                "x": 116,
+                "y": 116,
+                "w": 880,
+                "h": 580
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        }
+      ]
+    },
+    {
+      "name": "panel body and head without a pin do nothing",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 10,
+            "y": 10,
+            "on": "panel"
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 10,
+            "x": 10,
+            "y": 10,
+            "on": "head"
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 20,
+            "x": 10,
+            "y": 10
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        }
+      ]
+    },
+    {
+      "name": "unpin, cancel, viewport",
+      "viewport": {
+        "w": 1000,
+        "h": 700
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 600,
+            "y": 400
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 600,
+              "y": 400
+            },
+            "last": {
+              "t": 0,
+              "x": 600,
+              "y": 400
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 600,
+            "y": 400
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 10,
+            "x": 600,
+            "y": 400
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 600,
+              "y": 400
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 100,
+            "x": 600,
+            "y": 400
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": true,
+            "follow": {
+              "x": 600,
+              "y": 400
+            },
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 600,
+                "y": 400
+              },
+              "panel": {
+                "x": 616,
+                "y": 416,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 600,
+            "y": 400
+          },
+          "pinned": {
+            "x": 600,
+            "y": 400
+          },
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 110,
+            "x": 600,
+            "y": 400
+          },
+          "state": {
+            "viewport": {
+              "w": 1000,
+              "h": 700
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 600,
+                "y": 400
+              },
+              "panel": {
+                "x": 616,
+                "y": 416,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "viewport",
+            "w": 500,
+            "h": 360
+          },
+          "state": {
+            "viewport": {
+              "w": 500,
+              "h": 360
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 600,
+                "y": 400
+              },
+              "panel": {
+                "x": 176,
+                "y": 76,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 200,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 500,
+              "h": 360
+            },
+            "pressed": true,
+            "follow": {
+              "x": 50,
+              "y": 50
+            },
+            "last": {
+              "t": 200,
+              "x": 50,
+              "y": 50
+            },
+            "pin": {
+              "at": {
+                "x": 600,
+                "y": 400
+              },
+              "panel": {
+                "x": 176,
+                "y": 76,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 50,
+            "y": 50
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "cancel",
+            "t": 210,
+            "x": 50,
+            "y": 50
+          },
+          "state": {
+            "viewport": {
+              "w": 500,
+              "h": 360
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 200,
+              "x": 50,
+              "y": 50
+            },
+            "pin": {
+              "at": {
+                "x": 600,
+                "y": 400
+              },
+              "panel": {
+                "x": 176,
+                "y": 76,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 220,
+            "x": 60,
+            "y": 60
+          },
+          "state": {
+            "viewport": {
+              "w": 500,
+              "h": 360
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 200,
+              "x": 50,
+              "y": 50
+            },
+            "pin": {
+              "at": {
+                "x": 600,
+                "y": 400
+              },
+              "panel": {
+                "x": 176,
+                "y": 76,
+                "w": 320,
+                "h": 280
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "unpin"
+          },
+          "state": {
+            "viewport": {
+              "w": 500,
+              "h": 360
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 200,
+              "x": 50,
+              "y": 50
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 300,
+            "x": 50,
+            "y": 50,
+            "on": "head"
+          },
+          "state": {
+            "viewport": {
+              "w": 500,
+              "h": 360
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 200,
+              "x": 50,
+              "y": 50
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        }
+      ]
+    },
+    {
+      "name": "custom config",
+      "config": {
+        "doubleMs": 500,
+        "doubleDist": 4,
+        "offset": 8,
+        "panel": {
+          "w": 240,
+          "h": 160
+        },
+        "min": {
+          "w": 100,
+          "h": 80
+        }
+      },
+      "viewport": {
+        "w": 400,
+        "h": 300
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "down",
+            "t": 0,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 400,
+              "h": 300
+            },
+            "pressed": true,
+            "follow": {
+              "x": 100,
+              "y": 100
+            },
+            "last": {
+              "t": 0,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": {
+            "x": 100,
+            "y": 100
+          },
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 10,
+            "x": 100,
+            "y": 100
+          },
+          "state": {
+            "viewport": {
+              "w": 400,
+              "h": 300
+            },
+            "pressed": false,
+            "follow": null,
+            "last": {
+              "t": 0,
+              "x": 100,
+              "y": 100
+            },
+            "pin": null,
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 450,
+            "x": 103,
+            "y": 102
+          },
+          "state": {
+            "viewport": {
+              "w": 400,
+              "h": 300
+            },
+            "pressed": true,
+            "follow": {
+              "x": 103,
+              "y": 102
+            },
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 103,
+                "y": 102
+              },
+              "panel": {
+                "x": 111,
+                "y": 110,
+                "w": 240,
+                "h": 160
+              }
+            },
+            "grab": null
+          },
+          "look": {
+            "x": 103,
+            "y": 102
+          },
+          "pinned": {
+            "x": 103,
+            "y": 102
+          },
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 460,
+            "x": 103,
+            "y": 102
+          },
+          "state": {
+            "viewport": {
+              "w": 400,
+              "h": 300
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 103,
+                "y": 102
+              },
+              "panel": {
+                "x": 111,
+                "y": 110,
+                "w": 240,
+                "h": 160
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": true
+        },
+        {
+          "event": {
+            "type": "down",
+            "t": 600,
+            "x": 250,
+            "y": 250,
+            "on": "resize"
+          },
+          "state": {
+            "viewport": {
+              "w": 400,
+              "h": 300
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 103,
+                "y": 102
+              },
+              "panel": {
+                "x": 111,
+                "y": 110,
+                "w": 240,
+                "h": 160
+              }
+            },
+            "grab": {
+              "kind": "resize",
+              "x": 250,
+              "y": 250,
+              "from": {
+                "x": 111,
+                "y": 110,
+                "w": 240,
+                "h": 160
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "move",
+            "t": 610,
+            "x": 0,
+            "y": 0
+          },
+          "state": {
+            "viewport": {
+              "w": 400,
+              "h": 300
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 103,
+                "y": 102
+              },
+              "panel": {
+                "x": 111,
+                "y": 110,
+                "w": 100,
+                "h": 80
+              }
+            },
+            "grab": {
+              "kind": "resize",
+              "x": 250,
+              "y": 250,
+              "from": {
+                "x": 111,
+                "y": 110,
+                "w": 240,
+                "h": 160
+              }
+            }
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        },
+        {
+          "event": {
+            "type": "up",
+            "t": 620,
+            "x": 0,
+            "y": 0
+          },
+          "state": {
+            "viewport": {
+              "w": 400,
+              "h": 300
+            },
+            "pressed": false,
+            "follow": null,
+            "last": null,
+            "pin": {
+              "at": {
+                "x": 103,
+                "y": 102
+              },
+              "panel": {
+                "x": 111,
+                "y": 110,
+                "w": 100,
+                "h": 80
+              }
+            },
+            "grab": null
+          },
+          "look": null,
+          "pinned": null,
+          "consume": false
+        }
+      ]
+    }
+  ],
+  "follow": [
+    {
+      "at": {
+        "x": 10,
+        "y": 10
+      },
+      "size": {
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 26,
+        "y": 26
+      }
+    },
+    {
+      "at": {
+        "x": 10,
+        "y": 10
+      },
+      "size": {
+        "w": 120,
+        "h": 60
+      },
+      "out": {
+        "x": 26,
+        "y": 26
+      }
+    },
+    {
+      "at": {
+        "x": 990,
+        "y": 10
+      },
+      "size": {
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 674,
+        "y": 26
+      }
+    },
+    {
+      "at": {
+        "x": 990,
+        "y": 10
+      },
+      "size": {
+        "w": 120,
+        "h": 60
+      },
+      "out": {
+        "x": 854,
+        "y": 26
+      }
+    },
+    {
+      "at": {
+        "x": 10,
+        "y": 690
+      },
+      "size": {
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 26,
+        "y": 474
+      }
+    },
+    {
+      "at": {
+        "x": 10,
+        "y": 690
+      },
+      "size": {
+        "w": 120,
+        "h": 60
+      },
+      "out": {
+        "x": 26,
+        "y": 614
+      }
+    },
+    {
+      "at": {
+        "x": 990,
+        "y": 690
+      },
+      "size": {
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 674,
+        "y": 474
+      }
+    },
+    {
+      "at": {
+        "x": 990,
+        "y": 690
+      },
+      "size": {
+        "w": 120,
+        "h": 60
+      },
+      "out": {
+        "x": 854,
+        "y": 614
+      }
+    },
+    {
+      "at": {
+        "x": 500,
+        "y": 350
+      },
+      "size": {
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 516,
+        "y": 366
+      }
+    },
+    {
+      "at": {
+        "x": 500,
+        "y": 350
+      },
+      "size": {
+        "w": 120,
+        "h": 60
+      },
+      "out": {
+        "x": 516,
+        "y": 366
+      }
+    },
+    {
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "size": {
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 16,
+        "y": 16
+      }
+    },
+    {
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "size": {
+        "w": 120,
+        "h": 60
+      },
+      "out": {
+        "x": 16,
+        "y": 16
+      }
+    }
+  ],
+  "clamp": [
+    {
+      "in": {
+        "x": -50,
+        "y": -50,
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 4,
+        "y": 4,
+        "w": 300,
+        "h": 200
+      }
+    },
+    {
+      "in": {
+        "x": 900,
+        "y": 650,
+        "w": 300,
+        "h": 200
+      },
+      "out": {
+        "x": 696,
+        "y": 496,
+        "w": 300,
+        "h": 200
+      }
+    },
+    {
+      "in": {
+        "x": 10,
+        "y": 10,
+        "w": 50,
+        "h": 50
+      },
+      "out": {
+        "x": 10,
+        "y": 10,
+        "w": 200,
+        "h": 120
+      }
+    },
+    {
+      "in": {
+        "x": 0,
+        "y": 0,
+        "w": 5000,
+        "h": 5000
+      },
+      "out": {
+        "x": 4,
+        "y": 4,
+        "w": 992,
+        "h": 692
+      }
+    }
+  ],
+  "move": [
+    {
+      "from": {
+        "x": 100,
+        "y": 100,
+        "w": 300,
+        "h": 200
+      },
+      "dx": 10,
+      "dy": 10,
+      "out": {
+        "x": 110,
+        "y": 110,
+        "w": 300,
+        "h": 200
+      }
+    },
+    {
+      "from": {
+        "x": 100,
+        "y": 100,
+        "w": 300,
+        "h": 200
+      },
+      "dx": -500,
+      "dy": 0,
+      "out": {
+        "x": 4,
+        "y": 100,
+        "w": 300,
+        "h": 200
+      }
+    },
+    {
+      "from": {
+        "x": 100,
+        "y": 100,
+        "w": 300,
+        "h": 200
+      },
+      "dx": 0,
+      "dy": 900,
+      "out": {
+        "x": 100,
+        "y": 496,
+        "w": 300,
+        "h": 200
+      }
+    }
+  ],
+  "resize": [
+    {
+      "from": {
+        "x": 600,
+        "y": 400,
+        "w": 300,
+        "h": 200
+      },
+      "dw": 50,
+      "dh": 20,
+      "out": {
+        "x": 600,
+        "y": 400,
+        "w": 350,
+        "h": 220
+      }
+    },
+    {
+      "from": {
+        "x": 600,
+        "y": 400,
+        "w": 300,
+        "h": 200
+      },
+      "dw": -500,
+      "dh": -500,
+      "out": {
+        "x": 600,
+        "y": 400,
+        "w": 200,
+        "h": 120
+      }
+    },
+    {
+      "from": {
+        "x": 600,
+        "y": 400,
+        "w": 300,
+        "h": 200
+      },
+      "dw": 5000,
+      "dh": 5000,
+      "out": {
+        "x": 600,
+        "y": 400,
+        "w": 396,
+        "h": 296
+      }
+    }
+  ],
+  "pin": [
+    {
+      "at": {
+        "x": 10,
+        "y": 10
+      },
+      "out": {
+        "x": 26,
+        "y": 26,
+        "w": 320,
+        "h": 280
+      }
+    },
+    {
+      "at": {
+        "x": 990,
+        "y": 10
+      },
+      "out": {
+        "x": 654,
+        "y": 26,
+        "w": 320,
+        "h": 280
+      }
+    },
+    {
+      "at": {
+        "x": 10,
+        "y": 690
+      },
+      "out": {
+        "x": 26,
+        "y": 394,
+        "w": 320,
+        "h": 280
+      }
+    },
+    {
+      "at": {
+        "x": 990,
+        "y": 690
+      },
+      "out": {
+        "x": 654,
+        "y": 394,
+        "w": 320,
+        "h": 280
+      }
+    },
+    {
+      "at": {
+        "x": 500,
+        "y": 350
+      },
+      "out": {
+        "x": 516,
+        "y": 366,
+        "w": 320,
+        "h": 280
+      }
+    },
+    {
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "out": {
+        "x": 16,
+        "y": 16,
+        "w": 320,
+        "h": 280
+      }
+    }
+  ]
+}

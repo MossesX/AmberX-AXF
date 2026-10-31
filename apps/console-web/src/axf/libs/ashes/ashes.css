@@ -16,6 +16,14 @@
 .axf-ashes-tip__rows dd { margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--fx-font-mono) }
 .axf-ashes-tip__hint { margin-top: calc(var(--fx-space) * 0.35); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 10 / 14) }
 .axf-ashes-swatch { display: inline-block; width: calc(var(--fx-font-size) * 0.8); height: calc(var(--fx-font-size) * 0.8); margin-right: calc(var(--fx-space) * 0.25); vertical-align: middle; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm) }
+/* element-inspector@1: the pinned panel (double click) takes the pointer; head drags it, the corner resizes it */
+.axf-ashes-pin { position: fixed; display: flex; flex-direction: column; box-sizing: border-box; pointer-events: auto; border: var(--fx-border-w) solid var(--fx-accent); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); box-shadow: var(--fx-shadow-md); font-size: calc(var(--fx-font-size) * 12 / 14); line-height: 1.35; overflow: hidden }
+.axf-ashes-pin__head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.35) calc(var(--fx-space) * 0.5); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); cursor: move; user-select: none; touch-action: none }
+.axf-ashes-pin__tools { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.2); cursor: default }
+.axf-ashes-pin__body { flex: 1; min-height: 0; overflow: auto; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.65) }
+.axf-ashes-pin__resize { position: absolute; right: 0; bottom: 0; width: calc(var(--fx-space) * 1.5); height: calc(var(--fx-space) * 1.5); cursor: nwse-resize; touch-action: none; background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%) }
+/* while AshesUI follows touches, a finger drag inspects instead of scrolling */
+html.axf-ashes-on * { touch-action: none !important }
 .axf-ashes-pickbar { position: fixed; left: 50%; top: var(--fx-space); transform: translateX(-50%); padding: calc(var(--fx-space) * 0.4) var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-accent); color: var(--fx-accent-text); box-shadow: var(--fx-shadow-md); font-size: calc(var(--fx-font-size) * 12 / 14) }
 
 .axf-ashes-tip .is-accent, .axf-ashes-insp .is-accent { color: var(--fx-accent) }

@@ -3,21 +3,21 @@
   "id": "ai.amberx.axf.ashes",
   "module": "lib-ashes",
   "name": "AshesUI (live element inspector)",
-  "description": "A live inspector for any AXF app, switched on from the context menu (AshesUI, with a check mark while on). While on, a small headless tooltip follows the pointer and shows what is under it: framework component, active asset, the plugin or library it belongs to (and which model built it), size, colours with contrast, font, theme tokens, role. Double-click or double-tap opens a draggable, resizable inspector window: every element on screen in a tree (the selected one expanded and in view), its parameters in two tabs (Grid and Tree), live style and attribute edits with revert, copy selector / JSON / HTML, pick mode, keyboard walking, freeze, filters (all / framework / plugins) and stats. Built Oct 23 2026 (Opus).",
+  "description": "A live inspector for any AXF app, switched on from the context menu (AshesUI, with a check mark while on). While on, the pointer model is element-inspector@1 (core/engines/inspect.ts, same engine as the Compose ElementInspector): left button only; press and drag and a small panel follows the pointer showing what is under it, live (framework component, active asset, the plugin or library it belongs to and which model built it, size, colours with contrast, font, role); release closes it. Double-click or double-tap pins a panel on the element that drags by its head and resizes from its corner, and opens a draggable, resizable inspector window: every element on screen in a tree (the selected one expanded and in view), its parameters in two tabs (Grid and Tree), live style and attribute edits with revert, copy selector / JSON / HTML, pick mode, keyboard walking, freeze, filters (all / framework / plugins) and stats. Built Oct 23 2026 (Opus); pointer model element-inspector@1 Oct 31 2026.",
   "features": [],
   "dependsOn": [],
   "manifestKey": "libraries.ashes",
   "params": [],
   "parts": [
-    { "id": "tooltip", "label": "Live tooltip", "description": "A small window that follows the pointer with what's under it.", "params": [ { "key": "delay", "label": "Delay before it updates (ms)", "type": "number", "min": 0, "max": 400, "default": 0 }, { "key": "offset", "label": "Distance from the pointer (px)", "type": "number", "min": 4, "max": 48, "default": 16 } ] },
+    { "id": "tooltip", "label": "Live panel", "description": "Left press and drag: a small window follows the pointer with what's under it; release closes it; double-click pins it (drag, resize).", "params": [ { "key": "delay", "label": "Delay before it updates (ms)", "type": "number", "min": 0, "max": 400, "default": 0 }, { "key": "offset", "label": "Distance from the pointer (px)", "type": "number", "min": 4, "max": 48, "default": 16 } ] },
     { "id": "highlight", "label": "Highlight box", "description": "Outlines the element under the pointer, with margin and padding shading.", "params": [ { "key": "boxModel", "label": "Show margin and padding", "type": "boolean", "default": true } ] },
-    { "id": "inspector", "label": "Inspector window", "description": "Double-click or double-tap opens the element tree with every parameter in a Grid and a Tree tab.", "params": [ { "key": "maxNodes", "label": "Most elements in the tree", "type": "number", "min": 200, "max": 20000, "default": 3000 } ] },
+    { "id": "inspector", "label": "Inspector window", "description": "Opened from the pinned panel: the element tree with every parameter in a Grid and a Tree tab.", "params": [ { "key": "maxNodes", "label": "Most elements in the tree", "type": "number", "min": 200, "max": 20000, "default": 3000 } ] },
     { "id": "edits", "label": "Live edits", "description": "Change an element's style and attributes in the grid; every change can be reverted.", "requires": ["inspector"] },
     { "id": "owners", "label": "Plugin and library owners", "description": "Says which plugin or library an element belongs to, and which model built it (the app passes its plugin list)." }
   ],
   "ports": { "web": { "status": "compiled", "dir": "libs/ashes" } },
   "placeholders": [
-    { "capability": "axf.ashes.android", "note": "Compose port (semantics tree + layout inspector) — Android on hold." },
+    { "capability": "axf.ashes.android", "note": "Compose pointer model + panels built (axf-devtools ElementInspector, element-inspector@1); semantics-tree walking and the inspector window not built." },
     { "capability": "axf.ashes.remote", "note": "Inspect an app running in another tab or device (embed@1 message channel) — not built." },
     { "capability": "axf.ashes.record", "note": "Save edits as an asset@1 patch to the element's asset — not built." }
   ]

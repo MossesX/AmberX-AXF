@@ -223,6 +223,12 @@ export interface Row { group: string; key: string; value: string; editable?: 'st
 export const TOOLTIP_FIELDS = ['component', 'owner', 'asset', 'size', 'colors', 'contrast', 'font', 'spacing', 'role', 'handlers', 'react', 'selector'] as const;
 export type TooltipField = (typeof TOOLTIP_FIELDS)[number];
 
+/** The fields an inspector panel shows (element-inspector@1): the ones on in settings, in order, and always the size. */
+export function panelFields(fields: readonly string[] | undefined): string[] {
+  const on = (fields ?? TOOLTIP_FIELDS).filter((f, i, all) => (TOOLTIP_FIELDS as readonly string[]).includes(f) && all.indexOf(f) === i);
+  return on.includes('size') ? on : [...on, 'size'];
+}
+
 export function tooltipRows(s: ElementSnap, fields: readonly string[] = TOOLTIP_FIELDS): Row[] {
   const out: Row[] = [];
   const on = (f: TooltipField) => fields.includes(f);
