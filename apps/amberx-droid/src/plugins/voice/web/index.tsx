@@ -132,8 +132,25 @@ const useVoice = () => useSyncExternalStore((f) => { subs.add(f); return () => {
 
 const str = (v: unknown, d: string) => (typeof v === 'string' && v.trim() ? v.trim() : d);
 
+/** What AmberX said last and when: hands-free drops anything it hears that is just that reply coming back (echo). */
+let lastSaid = { text: '', at: 0 };
+const ECHO_MS = 12000;
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+/** True when `heard` is (part of) the reply AmberX spoke in the last few seconds. */
+export function isEcho(heard: string, now = Date.now()): boolean {
+  if (!lastSaid.text || now - lastSaid.at > ECHO_MS) return false;
+  const h = norm(heard); const s = norm(lastSaid.text);
+  if (!h || !s) return false;
+  // a short answer ("inbox", "yes") to a spoken question is never an echo; only most of the reply coming back is
+  return h.includes(s) || (s.includes(h) && h.split(' ').length >= 3 && h.length >= s.length * 0.5);
+}
+
 export async function say(rt: AxfRuntime, text: string) {
-  if (rt.settings.get(K.speak) !== false && text) await native.speak({ text, lang: str(rt.settings.get(K.lang), 'en-US') }).catch(() => undefined);
+  if (rt.settings.get(K.speak) === false || !text) return;
+  lastSaid = { text, at: Date.now() };
+  // holdMic: hands-free steps aside while AmberX talks, so it never hears its own reply as a new note or command
+  await native.speak({ text, lang: str(rt.settings.get(K.lang), 'en-US'), holdMic: true }).catch(() => undefined);
+  lastSaid = { text, at: Date.now() };
 }
 
 async function runCommand(rt: AxfRuntime, c: VoiceCommand): Promise<{ did: string; ok: boolean }> {
@@ -186,6 +203,7 @@ export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
   const at = new Date().toISOString();
   let turn: Turn;
   if (!heard) turn = { at, heard: heardRaw, did: 'Heard nothing.', ok: false };
+  else if (isEcho(heard)) turn = { at, heard, did: 'Ignored: that was my own reply.', ok: false };
   else {
     const notes = notesOn(rt);
     const local = notes ? parseIntent(heard) : null;
