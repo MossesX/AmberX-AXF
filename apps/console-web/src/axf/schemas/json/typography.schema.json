@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/typography.schema.json",
+  "title": "AmberX AXF Typography asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "typography"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "scale": {
+          "type": "object",
+          "properties": {
+            "xs": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 1,
+              "default": 0.76,
+              "description": "em"
+            },
+            "sm": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 1,
+              "default": 0.86,
+              "description": "em"
+            },
+            "md": {
+              "type": "number",
+              "minimum": 0.8,
+              "maximum": 1.25,
+              "default": 1,
+              "description": "em"
+            },
+            "lg": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 2,
+              "default": 1.15,
+              "description": "em"
+            },
+            "xl": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 3,
+              "default": 1.35,
+              "description": "em"
+            }
+          }
+        },
+        "headings": {
+          "type": "object",
+          "properties": {
+            "h1": {
+              "type": "number",
+              "minimum": 0.9,
+              "maximum": 4,
+              "default": 1.42,
+              "description": "em"
+            },
+            "h2": {
+              "type": "number",
+              "minimum": 0.9,
+              "maximum": 3,
+              "default": 1.2,
+              "description": "em"
+            },
+            "h3": {
+              "type": "number",
+              "minimum": 0.7,
+              "maximum": 2,
+              "default": 0.92,
+              "description": "em"
+            },
+            "h4": {
+              "type": "number",
+              "minimum": 0.7,
+              "maximum": 1.5,
+              "default": 0.85,
+              "description": "em"
+            },
+            "tracking": {
+              "type": "number",
+              "minimum": -0.1,
+              "maximum": 0.2,
+              "default": -0.02,
+              "description": "em"
+            }
+          }
+        },
+        "weights": {
+          "type": "object",
+          "properties": {
+            "body": {
+              "type": "number",
+              "minimum": 300,
+              "maximum": 700,
+              "default": 400,
+              "description": "number"
+            },
+            "medium": {
+              "type": "number",
+              "minimum": 400,
+              "maximum": 700,
+              "default": 550,
+              "description": "number"
+            },
+            "strong": {
+              "type": "number",
+              "minimum": 500,
+              "maximum": 900,
+              "default": 600,
+              "description": "number"
+            }
+          }
+        },
+        "line": {
+          "type": "object",
+          "properties": {
+            "tight": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 1.5,
+              "default": 1.2,
+              "description": "number"
+            },
+            "normal": {
+              "type": "number",
+              "minimum": 1.1,
+              "maximum": 2,
+              "default": 1.45,
+              "description": "number"
+            },
+            "loose": {
+              "type": "number",
+              "minimum": 1.2,
+              "maximum": 2.4,
+              "default": 1.65,
+              "description": "number"
+            }
+          }
+        },
+        "eyebrow": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 1,
+              "default": 0.68,
+              "description": "em"
+            },
+            "weight": {
+              "type": "number",
+              "minimum": 400,
+              "maximum": 900,
+              "default": 600,
+              "description": "number"
+            },
+            "tracking": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.3,
+              "default": 0.06,
+              "description": "em"
+            },
+            "case": {
+              "enum": [
+                "upper",
+                "normal"
+              ],
+              "default": "upper"
+            }
+          }
+        },
+        "mono": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.2,
+              "default": 0.92,
+              "description": "em"
+            }
+          }
+        }
+      }
+    }
+  }
+}

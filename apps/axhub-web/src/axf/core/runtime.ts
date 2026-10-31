@@ -8,6 +8,7 @@ import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
+import { scaleThemeVars } from './engines/scale';
 import { layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
@@ -1668,6 +1669,8 @@ export class AxfRuntime {
     const vars: VarMap = {
       ...colorThemeVars(color),
       ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
+      // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
+      ...scaleThemeVars({ typography: this.assetOrNull('typography' as AssetType)?.data, density: this.assetOrNull('density' as AssetType)?.data, sizing: this.assetOrNull('sizing' as AssetType)?.data }),
       ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it

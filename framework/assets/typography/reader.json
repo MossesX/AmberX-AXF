@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "typography",
+  "id": "reader",
+  "name": "Reader",
+  "version": "1.0.0",
+  "description": "Larger, calmer text for reading: a 1.1 base scale, generous line heights, plain-case eyebrows.",
+  "author": "AmberX AXF",
+  "tags": [
+    "reader",
+    "roomy"
+  ],
+  "data": {
+    "scale": {
+      "xs": 0.8,
+      "sm": 0.9,
+      "md": 1.05,
+      "lg": 1.25,
+      "xl": 1.6
+    },
+    "headings": {
+      "h1": 1.8,
+      "h2": 1.4,
+      "h3": 1.1,
+      "h4": 1
+    },
+    "weights": {
+      "body": 400,
+      "medium": 500,
+      "strong": 650
+    },
+    "line": {
+      "tight": 1.3,
+      "normal": 1.6,
+      "loose": 1.85
+    },
+    "eyebrow": {
+      "size": 0.75,
+      "weight": 600,
+      "tracking": 0.02,
+      "case": "normal"
+    },
+    "mono": {
+      "size": 0.95
+    }
+  }
+}

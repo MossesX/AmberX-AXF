@@ -6,6 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
+import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { compileLayout, layoutVars } from '../core/engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
@@ -46,6 +47,26 @@ write('theme.json', Object.fromEntries([
   ...load('color-theme').map((a) => [`color-theme:${a.id}`, colorThemeVars(a.data)]),
   ...load('style-theme').map((a) => [`style-theme:${a.id}`, styleThemeVars(a.data)]),
 ]));
+// Scale assets (typography@1, density@1, sizing@1; core/engines/scale.ts): defaults, every starter's tokens, clamping, errors.
+write('scale.json', {
+  types: [...SCALE_TYPES],
+  defaults: Object.fromEntries(SCALE_TYPES.map((t) => [t, normalizeScale(t, null)])),
+  defaultVars: scaleThemeVars({}),
+  starters: Object.fromEntries(SCALE_TYPES.flatMap((t) => load(t).map((a) => [`${t}:${a.id}`, { normalized: normalizeScale(t, a.data), vars: scaleVars(t, a.data) }]))),
+  normalized: {
+    'typography:partial': normalizeScale('typography', { headings: { h1: 3 }, eyebrow: { case: 'normal' }, unknown: { x: 1 } }),
+    'density:clamped': normalizeScale('density', { gap: { xl: 99, xs: -1 }, row: { list: 'tall' } }),
+    'sizing:bad-enum': normalizeScale('sizing', { chip: { radius: 'round', height: 2 }, pageHead: { descriptionLines: 3.7 } }),
+    'sizing:not-an-object': normalizeScale('sizing', 'nope'),
+  },
+  errors: {
+    'typography:ok': scaleErrors('typography', { headings: { h1: 3 }, eyebrow: { case: 'normal' }, unknown: { x: 1 } }),
+    'density:out-of-range': scaleErrors('density', { gap: { xl: 99 }, row: { list: 'tall' } }),
+    'sizing:bad-enum-and-int': scaleErrors('sizing', { chip: { radius: 'round' }, pageHead: { descriptionLines: 3.7 }, card: 'big' }),
+    'sizing:not-an-object': scaleErrors('sizing', 'nope'),
+    'other-type': scaleErrors('button', { shape: 'rounded' }),
+  },
+});
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));
 // Slot contract cases: a region that refuses its chrome drops out of the grid on every port.
 const base = load('layout').find((a) => a.id === 'studio-dock')?.data ?? load('layout')[0].data;

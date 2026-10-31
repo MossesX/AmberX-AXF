@@ -39,6 +39,9 @@
     "animated-logo": false,
     "icon-pack": false,
     "branding": true,
+    "typography": true,
+    "density": true,
+    "sizing": true,
     "uac-policy": false
   },
   "cases": {
@@ -405,6 +408,22 @@
           "amberx",
           "gizmox-brand-006",
           "gizmox"
+        ],
+        "typography": [
+          "classic",
+          "compact",
+          "reader"
+        ],
+        "density": [
+          "classic",
+          "compact",
+          "dense",
+          "roomy"
+        ],
+        "sizing": [
+          "classic",
+          "compact",
+          "touch"
         ]
       }
     },
@@ -775,6 +794,22 @@
           "amberx",
           "gizmox-brand-006",
           "gizmox"
+        ],
+        "typography": [
+          "classic",
+          "compact",
+          "reader"
+        ],
+        "density": [
+          "classic",
+          "compact",
+          "dense",
+          "roomy"
+        ],
+        "sizing": [
+          "classic",
+          "compact",
+          "touch"
         ]
       }
     },
@@ -1151,6 +1186,22 @@
           "amberx",
           "gizmox-brand-006",
           "gizmox"
+        ],
+        "typography": [
+          "classic",
+          "compact",
+          "reader"
+        ],
+        "density": [
+          "classic",
+          "compact",
+          "dense",
+          "roomy"
+        ],
+        "sizing": [
+          "classic",
+          "compact",
+          "touch"
         ]
       }
     },
@@ -1521,6 +1572,22 @@
           "amberx",
           "gizmox-brand-006",
           "gizmox"
+        ],
+        "typography": [
+          "classic",
+          "compact",
+          "reader"
+        ],
+        "density": [
+          "classic",
+          "compact",
+          "dense",
+          "roomy"
+        ],
+        "sizing": [
+          "classic",
+          "compact",
+          "touch"
         ]
       }
     },
@@ -1863,6 +1930,22 @@
           "amberx",
           "gizmox-brand-006",
           "gizmox"
+        ],
+        "typography": [
+          "classic",
+          "compact",
+          "reader"
+        ],
+        "density": [
+          "classic",
+          "compact",
+          "dense",
+          "roomy"
+        ],
+        "sizing": [
+          "classic",
+          "compact",
+          "touch"
         ]
       }
     },
@@ -2233,6 +2316,22 @@
           "amberx",
           "gizmox-brand-006",
           "gizmox"
+        ],
+        "typography": [
+          "classic",
+          "compact",
+          "reader"
+        ],
+        "density": [
+          "classic",
+          "compact",
+          "dense",
+          "roomy"
+        ],
+        "sizing": [
+          "classic",
+          "compact",
+          "touch"
         ]
       }
     }

@@ -21,6 +21,7 @@ export * from './engines/brand';
 export * from './engines/interface';
 export * from './engines/roller';
 export * from './engines/behavior';
+export * from './engines/scale';
 export * from './engines/appearance';
 export * from './engines/banner';
 export * from './engines/bannerhide';
