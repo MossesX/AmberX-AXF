@@ -52,46 +52,6 @@
    "source": "chat"
   },
   {
-   "id": "apply-all-levels-fable",
-   "title": "Look tokens + settings levels (Fable rebuild)",
-   "detail": "Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks).",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "look@1 fixture + reference engine review, replace the Opus engine",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Banner Apply to all on the reviewed engine",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "settings-ui@1 levels review + Sliders",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Re-bake every app, before/after shots, differences report",
-     "at": "",
-     "estimate": "30 min"
-    }
-   ],
-   "createdAt": "2026-10-27T03:19:49.693Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "estimate": "2 h",
-   "source": "chat"
-  },
-  {
    "id": "amberx-empty-shell",
    "title": "AmberX as an empty shell for building and testing plugins",
    "detail": "apps/amberx-droid: keep banner, toolbar, nav menu, app menu, a basic context menu, settings interface, theme/layout/style assets, voice plugin, Approvals page + alerts, the whole monitor plugin and native WatchService; remove Hub, Apps, Manage pages and trim the chrome assets; README plugin how-to.",
@@ -247,73 +207,6 @@
    "builtAt": "2026-10-27T17:16:22.827Z",
    "updatedAt": "2026-10-27T19:30:00.000Z",
    "estimate": "4.5 h",
-   "source": "chat"
-  },
-  {
-   "id": "design-package-fable",
-   "title": "AmberX Design Package + Behaviour theme: Fable rebuild",
-   "detail": "Fable rebuild of the Opus build on rebuild/design-package-opus (Fable suggested, Opus chosen). Starts by reading _claude/memory/docs/rebuilds/design-package.md and replacing the Opus build in place: same type names (design-package, behavior-theme), data format and setting keys unless the report says why. Wire the stored-only behaviour fields (windows.stack/minimize/snap, feedback.busyCursor) into the window manager, review the Settings → Appearance picker + Everything else container, screenshots before/after, differences report.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Merged into enterprise-branding (Oct 27 2026); build it there.",
-     "at": "2026-10-27T16:57:15.500Z"
-    },
-    {
-     "text": "Folded into orchestrator build enterprise-branding, phase 1, group \"Design package (Fable rebuild)\" (Oct 27 2026). Build it there.",
-     "at": "2026-10-27T18:08:22.147Z"
-    },
-    {
-     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
-     "at": "2026-10-27T19:30:00.000Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "Read the Opus report + code; list what to keep, change, wire in",
-     "at": "",
-     "estimate": "20 min"
-    },
-    {
-     "text": "Review design-package engine + runtime apply/capture/migration; fix gaps",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Review behaviour engine + CSS; refine motion/interaction mappings",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Wire windows.stack / minimize / snap + snapGrid into the window manager",
-     "at": "",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Wire feedback.busyCursor + confirmDelete into framework controls",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "Settings → Appearance picker + Everything else container polish",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "Extend check-design-package.mts; regenerate fixtures; re-bake apps",
-     "at": "",
-     "estimate": "25 min"
-    },
-    {
-     "text": "Before/after screenshots, differences report, LOG line, PR",
-     "at": "",
-     "estimate": "25 min"
-    }
-   ],
-   "createdAt": "2026-10-27T17:16:22.917Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
    "source": "chat"
   },
   {
