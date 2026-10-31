@@ -22,6 +22,12 @@ export const MODEL_GUIDE = {
   Opus: 'Everything else: plugin UI on the framework, servers, routes, tests, docs, wiring, security work.',
 };
 
+/**
+ * Every brief carries the asset-conformance rule (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the
+ * asset system"): code a build writes, by hand or generated, takes every look value from hot-swappable assets.
+ */
+export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
+
 const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
 /** A step still to do: not done and not skipped by the build's feature matrix. */
@@ -199,6 +205,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     `Continue build "${build.title}" (${build.id})${build.category ? ` [${build.category}]` : ''} — ${p.name}, model ${p.model}.`,
     n.needsApproval ? `STOP: this phase switches ${p.from} → ${p.model}. Ask Brett to approve the switch (card) before any work: orchestrator.mjs act approve ${build.id} ${p.index}.` : '',
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
+    `Look: ${ASSET_RULE}`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),

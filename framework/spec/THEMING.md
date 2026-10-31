@@ -88,11 +88,19 @@ plugin's UI has to be built from parts the engines and the designer understand.
    is not built yet; until it is, plugins use the app's active assets.*
 5. Deliberate exceptions (a colour picker's default *value*, say) carry a `theme-ok` comment on the line.
 
-Checked automatically: `node framework/cli/check-theme.mjs` (runs in CI). Libraries, plugins and the console's
-own UI get every rule: literal colours, fixed transparency, hard-coded sizes, `var()` fallbacks, unknown `--fx-*` names and
-defining `--fx-*`. The framework's React/CSS, other app UIs and the app templates get the colour and
-transparency rules, so swapping a colour or style theme restyles them too. (`apps/demo` is untouched
-`axf init` output on an older baked framework and is skipped until it is re-baked.)
+Checked automatically: `node framework/cli/check-theme.mjs` (runs in CI). Since the asset-conform build (Oct 31 2026,
+shared rule "Handwritten code conforms to the asset system") **every** web UI gets every rule, handwritten or generated:
+libraries, plugins, the framework's React and CSS, every app's own UI (`apps/demo` included), the app templates,
+boilerplates and library templates. Rules: literal colours, fixed transparency, hard-coded sizes (px, rem, em spacing),
+border widths (`--fx-border-w`), literal fonts (`--fx-font*`), `var()` fallbacks, unknown `--fx-*` names and defining
+`--fx-*`; each finding names file:line and the token to use (`node framework/cli/scale-adopt.mjs <path>` writes most of
+them in). Kotlin Compose files get the same treatment: no `Color(0x…)`, `.sp` text sizes, `.dp` spacing / radii or raw
+Material controls (use `Axf.colors` / `Axf.type` / `Axf.space` / `Axf.shapes` and the `Axf*` controls).
+Exempt: token/asset definition files (framework/core engines, `framework/ui/axf.css`'s own `--fx-*` defaults and optional
+component-token fallbacks, axf-ui's `theme/` package, the controls in `axf-ui/components`). Frozen code (Android on hold,
+Patches paused) is held to `framework/spec/conform-baseline.json`, which may only shrink (`--update-baseline`).
+`node framework/cli/check-controls.mjs` holds every web `<button>` to the framework controls the same way. `axf init`
+runs the theme check on what it generates and refuses to finish on a finding.
 
 ### Naming principles for plugin UIs
 

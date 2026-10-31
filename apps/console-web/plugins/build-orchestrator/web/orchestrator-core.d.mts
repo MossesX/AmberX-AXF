@@ -23,5 +23,6 @@ export function splitCheck(build: any, rules?: any): { needsSplit: boolean; reas
 export function derivedStatus(build: any, rules?: any): string;
 export function counts(builds: any[]): Record<string, number>;
 export function sortBuilds(list: any[], sort?: string, dir?: 'asc' | 'desc', rules?: any): any[];
+export const ASSET_RULE: string;
 export function brief(build: any, rules?: any): string;
 export function apply(state: any, change: any): { state: any; build?: any; log: string[] };

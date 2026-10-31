@@ -277,7 +277,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
       <div className="bm-step__head">
         {draggable ? <span className="bm-grip" title="Drag to reorder"><Icon name="menu" size={14} /></span> : <span className="bm-grip is-fixed"><Icon name="lock" size={12} /></span>}
         <span className="bm-pos">{s.position}</span>
-        <button className="bm-step__title" onClick={onToggle} aria-expanded={open}>
+        <button data-fx-row className="bm-step__title" onClick={onToggle} aria-expanded={open}>
           <Icon name={open ? 'chevron-down' : 'chevron-right'} size={14} />
           <span className="fx-grow"><span>{s.title}</span><span className="fx-muted fx-small fx-mono"> {s.id}</span></span>
         </button>

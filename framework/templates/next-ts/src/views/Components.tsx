@@ -54,7 +54,7 @@ export function Components() {
       </Container>
 
       <div className="gallery-stage">
-        <div className="fx-row" style={{ marginBottom: 12 }}>
+        <div className="fx-row" style={{ marginBottom: 'var(--fx-dens-gap-2xl)' }}>
           <Chip tone="accent">{container.name}</Chip>
           <span className="fx-muted fx-small">Containers over a busy background (shows off glass)</span>
           <span className="fx-grow" />
@@ -120,14 +120,14 @@ export function Components() {
           border: var(--fx-border-w) solid var(--fx-border); }
         .gallery-stat { display: flex; align-items: baseline; gap: var(--fx-dens-gap-xl); }
         .gallery-stat strong { font-family: var(--fx-font-display); font-size: var(--fx-type-scale-2xl); }
-        .gallery-bar { height: 6px; border-radius: 99px; background: var(--fx-surface3); overflow: hidden; margin-top: var(--fx-dens-gap-2xl); }
+        .gallery-bar { height: 6px; border-radius: var(--fx-radius-lg); background: var(--fx-surface3); overflow: hidden; margin-top: var(--fx-dens-gap-2xl); }
         .gallery-bar span { display: block; height: 100%; background: var(--fx-accent); }
         .gallery-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-md); }
         .gallery-list li { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); }
         .gallery-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: var(--fx-type-scale-sm);
-          background: var(--fx-accent-soft); color: var(--fx-accent); border: 2px solid var(--fx-surface); }
+          background: var(--fx-accent-soft); color: var(--fx-accent); border: calc(var(--fx-border-w) * 2) solid var(--fx-surface); }
         .gallery-ctx { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-lg); text-align: center; padding: var(--fx-dens-gap-4xl) var(--fx-dens-gap-3xl);
-          border: 1.5px dashed var(--fx-border); border-radius: var(--fx-radius-md); color: var(--fx-text); }
+          border: calc(var(--fx-border-w) * 1.5) dashed var(--fx-border); border-radius: var(--fx-radius-md); color: var(--fx-text); }
         .gallery-ctx svg { color: var(--fx-accent); }
       `}</style>
     </div>

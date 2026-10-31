@@ -4,7 +4,7 @@
 /* a row you tap (data-fx-row); `button.` outranks the framework row reset */
 button.axp-approvals-banner__text { all: unset; flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font-weight: 600; cursor: pointer; flex-wrap: wrap }
 .axp-approvals-banner__text:focus-visible, .axp-approvals-banner__more:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
-.axp-approvals-banner__sum { font-weight: 400; color: var(--fx-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+.axp-approvals-banner__sum { font-weight: 400; color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
 .axp-approvals-banner__go { text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
 .axp-approvals-banner__tool { font-weight: 600; white-space: nowrap }
 .axp-approvals-review__frame { width: 100%; height: min(70vh, calc(var(--fx-row-h) * 24)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
@@ -20,7 +20,7 @@ button.axp-approvals-banner__text { flex-wrap: nowrap; white-space: nowrap; over
 
 /* Held commands (veto@1): a live countdown + Deny, one line; the countdown never shrinks, the summary gives way first. */
 .axp-approvals-banner__row + .axp-approvals-banner__row { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md) }
-.axp-approvals-banner__count { flex: 0 0 auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; color: var(--fx-warning) }
+.axp-approvals-banner__count { flex: 0 0 auto; font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; color: var(--fx-warning) }
 .axp-approvals-banner__count.is-urgent { color: var(--fx-danger) }
 
 /* Veto screen + banner actions (Deny / Approve / Shelve): layout only; controls are the framework's. */

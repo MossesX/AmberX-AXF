@@ -89,7 +89,7 @@ button.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 1
 .axp-codebase-changes__tests tr.is-fail td { color: var(--fx-danger) }
 .axp-codebase-changes__none, .axp-codebase-changes__err { margin: 0 }
 .axp-codebase-changes__err { color: var(--fx-danger) }
-.axp-codebase-changes__cmd { margin: 0; padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all }
+.axp-codebase-changes__cmd { margin: 0; padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all }
 /* "_" under the entries' ✕ column: folds the banner to its summary (Oct 21 2026) */
 .axp-codebase-changes-banner__min { margin-left: auto; margin-right: calc(var(--fx-space) * 0.25 + var(--fx-border-w)) }
 /* timers on active entries; stuck ones (no word / 30+ min) in the warning colour with a trash can */

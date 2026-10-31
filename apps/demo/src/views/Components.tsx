@@ -54,7 +54,7 @@ export function Components() {
       </Container>
 
       <div className="gallery-stage">
-        <div className="fx-row" style={{ marginBottom: 12 }}>
+        <div className="fx-row" style={{ marginBottom: 'var(--fx-dens-gap-2xl)' }}>
           <Chip tone="accent">{container.name}</Chip>
           <span className="fx-muted fx-small">Containers over a busy background (shows off glass)</span>
           <span className="fx-grow" />
@@ -111,23 +111,23 @@ export function Components() {
       </Container>
 
       <style>{`
-        .gallery-stage { position: relative; padding: calc(var(--fx-space) * 2); border-radius: var(--fx-radius-lg); overflow: hidden;
+        .gallery-stage { position: relative; padding: var(--fx-dens-gap-3xl); border-radius: var(--fx-radius-lg); overflow: hidden;
           background:
-            radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--fx-accent) 55%, transparent), transparent 45%),
-            radial-gradient(circle at 85% 30%, color-mix(in srgb, var(--fx-info) 50%, transparent), transparent 45%),
-            radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--fx-success) 40%, transparent), transparent 50%),
+            radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 90%), transparent), transparent 45%),
+            radial-gradient(circle at 85% 30%, color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 80%), transparent), transparent 45%),
+            radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 65%), transparent), transparent 50%),
             var(--fx-surface2);
           border: var(--fx-border-w) solid var(--fx-border); }
-        .gallery-stat { display: flex; align-items: baseline; gap: 8px; }
-        .gallery-stat strong { font-family: var(--fx-font-display); font-size: 1.8em; }
-        .gallery-bar { height: 6px; border-radius: 99px; background: var(--fx-surface3); overflow: hidden; margin-top: 10px; }
+        .gallery-stat { display: flex; align-items: baseline; gap: var(--fx-dens-gap-xl); }
+        .gallery-stat strong { font-family: var(--fx-font-display); font-size: var(--fx-type-scale-2xl); }
+        .gallery-bar { height: 6px; border-radius: var(--fx-radius-lg); background: var(--fx-surface3); overflow: hidden; margin-top: var(--fx-dens-gap-2xl); }
         .gallery-bar span { display: block; height: 100%; background: var(--fx-accent); }
-        .gallery-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: .92em; }
-        .gallery-list li { display: flex; align-items: center; gap: 8px; }
-        .gallery-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .85em;
-          background: var(--fx-accent-soft); color: var(--fx-accent); border: 2px solid var(--fx-surface); }
-        .gallery-ctx { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 28px 16px;
-          border: 1.5px dashed var(--fx-border); border-radius: var(--fx-radius-md); color: var(--fx-text); }
+        .gallery-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-md); }
+        .gallery-list li { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); }
+        .gallery-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: var(--fx-type-scale-sm);
+          background: var(--fx-accent-soft); color: var(--fx-accent); border: calc(var(--fx-border-w) * 2) solid var(--fx-surface); }
+        .gallery-ctx { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-lg); text-align: center; padding: var(--fx-dens-gap-4xl) var(--fx-dens-gap-3xl);
+          border: calc(var(--fx-border-w) * 1.5) dashed var(--fx-border); border-radius: var(--fx-radius-md); color: var(--fx-text); }
         .gallery-ctx svg { color: var(--fx-accent); }
       `}</style>
     </div>

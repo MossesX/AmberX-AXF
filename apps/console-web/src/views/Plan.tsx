@@ -179,7 +179,7 @@ export function Plan() {
       <Slot name="plan.top" props={{ features }} />
 
       <div className="pl-bar" role="img" aria-label="Features by status">
-        {api.PLAN_STATUSES.map((s) => counts[s] ? <button key={s} className={`pl-bar__seg is-${s} ${f.statuses.has(s) ? 'is-on' : ''}`} style={{ flexGrow: counts[s] }} title={`${s}: ${counts[s]} (${Math.round((counts[s]! / total) * 100)}%)`} onClick={() => toggleStatus(s)}><span>{s} {counts[s]}</span></button> : null)}
+        {api.PLAN_STATUSES.map((s) => counts[s] ? <button key={s} data-fx-row className={`pl-bar__seg is-${s} ${f.statuses.has(s) ? 'is-on' : ''}`} style={{ flexGrow: counts[s] }} title={`${s}: ${counts[s]} (${Math.round((counts[s]! / total) * 100)}%)`} onClick={() => toggleStatus(s)}><span>{s} {counts[s]}</span></button> : null)}
       </div>
 
       <div className="pl-tools">
@@ -215,7 +215,7 @@ export function Plan() {
 function Row({ x, a, sel, onSel }: { x: PlanFeature; a: Analysis; sel: string | null; onSel: (id: string) => void }) {
   const w = warnCount(x, a);
   return (
-    <button className={`pl-row ${sel === x.id ? 'is-selected' : ''}`} onClick={() => onSel(x.id)} data-fx-ctx-target="axf-plan-feature" data-fx-ctx-payload={x.id}>
+    <button data-fx-row className={`pl-row ${sel === x.id ? 'is-selected' : ''}`} onClick={() => onSel(x.id)} data-fx-ctx-target="axf-plan-feature" data-fx-ctx-payload={x.id}>
       <span className={`pl-dot is-${x.status}`} title={x.status} />
       <span className="pl-row__main"><span className="pl-row__title">{x.title}</span><span className="fx-muted fx-small fx-mono">{x.id}{x.kind !== 'feature' ? ` · ${x.kind}` : ''}</span></span>
       <span className="pl-ports">{api.PORTS.map((p) => <span key={p} className={`pl-port is-${x.ports[p]?.status ?? 'none'}`} title={`${p}: ${x.ports[p]?.status ?? 'not applicable'}`}>{p[0]!.toUpperCase()}</span>)}</span>
@@ -238,7 +238,7 @@ function GroupedList({ features, a, sel, onSel }: { features: PlanFeature[]; a: 
   const groups = useMemo(() => { const m = new Map<string, PlanFeature[]>(); for (const x of features) { const k = x.group ? `${x.area} › ${x.group}` : x.area; m.set(k, [...(m.get(k) ?? []), x]); } return [...m.entries()]; }, [features]);
   return <div className="pl-groups">{groups.map(([g, xs]) => (
     <section key={g} className="pl-group">
-      <button className="pl-group__head" onClick={() => setClosed((s) => { const n = new Set(s); if (n.has(g)) n.delete(g); else n.add(g); return n; })}>
+      <button data-fx-row className="pl-group__head" onClick={() => setClosed((s) => { const n = new Set(s); if (n.has(g)) n.delete(g); else n.add(g); return n; })}>
         <Icon name={closed.has(g) ? 'chevron-right' : 'chevron-down'} /> <span className="fx-grow" style={{ textAlign: 'left' }}>{g}</span>
         <span className="fx-badge">{xs.filter((x) => x.status === 'built').length}/{xs.length} built</span>
       </button>
@@ -285,7 +285,7 @@ function Section({ title, icon, count, children, actions }: { title: string; ico
   const [open, setOpen] = useState(true);
   return (
     <section className="pl-sec">
-      <div className="pl-sec__head"><button className="pl-sec__toggle" onClick={() => setOpen(!open)}><Icon name={open ? 'chevron-down' : 'chevron-right'} /> <Icon name={icon} /> {title}{count != null && <span className="fx-badge">{count}</span>}</button><span className="fx-grow" />{open && actions}</div>
+      <div className="pl-sec__head"><button data-fx-row className="pl-sec__toggle" onClick={() => setOpen(!open)}><Icon name={open ? 'chevron-down' : 'chevron-right'} /> <Icon name={icon} /> {title}{count != null && <span className="fx-badge">{count}</span>}</button><span className="fx-grow" />{open && actions}</div>
       {open && <div className="pl-sec__body">{children}</div>}
     </section>
   );
@@ -379,12 +379,12 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
       <Section title="Dependencies" icon="branch" count={d.dependsOn.length + dependents.length}>
         <p className="fx-eyebrow">Needs</p>
         {d.dependsOn.length === 0 && <p className="fx-muted fx-small">Nothing.</p>}
-        {d.dependsOn.map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status ?? 'missing'}`} /><button className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status ?? 'not in plan'}</span><button className="fx-iconbtn" aria-label="Remove dependency" onClick={() => patch({ dependsOn: d.dependsOn.filter((y) => y !== id) })}><Icon name="x" size={14} /></button></div>; })}
+        {d.dependsOn.map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status ?? 'missing'}`} /><button data-fx-row className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status ?? 'not in plan'}</span><button className="fx-iconbtn" aria-label="Remove dependency" onClick={() => patch({ dependsOn: d.dependsOn.filter((y) => y !== id) })}><Icon name="x" size={14} /></button></div>; })}
         <input className="fx-input" placeholder="Add a dependency — search the plan…" value={depQ} onChange={(e) => setDepQ(e.target.value)} />
-        {depMatches.map((x) => <button key={x.id} className="pl-dep pl-dep--add" onClick={() => { patch({ dependsOn: [...d.dependsOn, x.id] }); setDepQ(''); }}><Icon name="plus" size={14} /> {x.title} <span className="fx-muted fx-small fx-mono">{x.id}</span></button>)}
+        {depMatches.map((x) => <button key={x.id} data-fx-row className="pl-dep pl-dep--add" onClick={() => { patch({ dependsOn: [...d.dependsOn, x.id] }); setDepQ(''); }}><Icon name="plus" size={14} /> {x.title} <span className="fx-muted fx-small fx-mono">{x.id}</span></button>)}
         <p className="fx-eyebrow" style={{ marginTop: 'var(--fx-dens-gap-2xl)' }}>Needed by</p>
-        {dependents.length === 0 ? <p className="fx-muted fx-small">Nothing depends on this yet.</p> : dependents.map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status}`} /><button className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status}</span></div>; })}
-        {kids.length > 0 && <><p className="fx-eyebrow" style={{ marginTop: 'var(--fx-dens-gap-2xl)' }}>Linked catalog features ({progressOf(kids, an)}% built)</p>{kids.slice(0, 40).map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status}`} /><button className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status}</span></div>; })}</>}
+        {dependents.length === 0 ? <p className="fx-muted fx-small">Nothing depends on this yet.</p> : dependents.map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status}`} /><button data-fx-row className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status}</span></div>; })}
+        {kids.length > 0 && <><p className="fx-eyebrow" style={{ marginTop: 'var(--fx-dens-gap-2xl)' }}>Linked catalog features ({progressOf(kids, an)}% built)</p>{kids.slice(0, 40).map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status}`} /><button data-fx-row className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status}</span></div>; })}</>}
       </Section>
 
       <Section title="Acceptance" icon="check-circle" count={d.acceptance.length}>
@@ -396,7 +396,7 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
         {d.screenshots.length === 0 ? <p className="fx-muted fx-small">No screenshots yet. Add one, or paste an image here.</p> : (
           <div className="pl-shots">{d.screenshots.map((sh, i) => (
             <figure key={i} className="pl-shot">
-              <button className="pl-shot__img" onClick={() => setShot(api.planMediaUrl(sh.src))} aria-label={`Open ${sh.caption}`}><img src={api.planMediaUrl(sh.src)} alt={sh.caption} loading="lazy" /></button>
+              <button data-fx-row className="pl-shot__img" onClick={() => setShot(api.planMediaUrl(sh.src))} aria-label={`Open ${sh.caption}`}><img src={api.planMediaUrl(sh.src)} alt={sh.caption} loading="lazy" /></button>
               <figcaption><input className="fx-input pl-mini" value={sh.caption} onChange={(e) => patch({ screenshots: d.screenshots.map((x, k) => (k === i ? { ...x, caption: e.target.value } : x)) })} /><button className="fx-iconbtn" aria-label="Remove screenshot" onClick={() => patch({ screenshots: d.screenshots.filter((_, k) => k !== i) })}><Icon name="x" size={14} /></button></figcaption>
             </figure>))}</div>)}
         <div className="pl-paste" tabIndex={0} onPaste={(e) => { const file = [...e.clipboardData.files].find((x) => x.type.startsWith('image/')); if (file) { e.preventDefault(); addShot(file); } }}>Paste an image here</div>

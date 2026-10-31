@@ -181,7 +181,9 @@ A plugin's UI must conform to the theme engines: theme tokens only (no colour li
 `var()` fallbacks), the framework's layout primitives, and the naming scheme (`axp-<folder>` prefix, BEM
 parts named for what they are, shared `is-*` states, never define `--fx-*`). The future plugin designer
 lays plugins out from these parts. Full rules: `framework/spec/THEMING.md`. CI runs
-`node framework/cli/check-theme.mjs` over every plugin.
+`node framework/cli/check-theme.mjs` over every plugin. The plugin template (`_template/`) is generated code and is
+held to the same rule: a plugin made from it starts asset-conformant (shared rule "Handwritten code conforms to the
+asset system", Oct 31 2026).
 
 **A plugin inherits the app's style** (Oct 22 2026): every button, tab, chip and toggle is a framework control
 (`<Button tone size icon>`, `<IconButton>`, `<Segmented>`, `fx-chip`, `fx-tab`, `fx-menu__item`), so changing the

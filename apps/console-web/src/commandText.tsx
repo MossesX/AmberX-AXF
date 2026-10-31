@@ -43,7 +43,7 @@ export function useCopy() {
 
 export function CopyLink({ text, label = 'Copy', what }: { text: string; label?: string; what?: string }) {
   const copy = useCopy();
-  return <button type="button" className="cl-copy" onClick={() => copy(text, what)} aria-label={`${label}: ${text}`}><Icon name="copy" size={12} />{label}</button>;
+  return <button type="button" data-fx-row className="cl-copy" onClick={() => copy(text, what)} aria-label={`${label}: ${text}`}><Icon name="copy" size={12} />{label}</button>;
 }
 
 /** One step: prose stays prose, every command becomes code + a Copy link. */

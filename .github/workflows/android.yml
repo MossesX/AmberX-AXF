@@ -45,10 +45,12 @@ jobs:
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
       - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
       - run: node framework/cli/axf.mjs libraries
-      - name: Libraries and plugins conform to the theme engines
+      - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
         run: node framework/cli/check-theme.mjs
-      - name: Plugin and library controls are framework controls (they inherit the app's style)
+      - name: Asset conformance — every web button is a framework control (apps, plugins, libraries, templates)
         run: node framework/cli/check-controls.mjs
+      - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
+        run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
         run: node framework/cli/check-plugin-pages.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
