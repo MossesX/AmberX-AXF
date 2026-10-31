@@ -55,7 +55,9 @@ export interface ApprovalGrid {
   page: number;
   pages: number;
   total: number;
+  /** Pending requests only: held veto calls are `heldCount` (add both for what waits, `waitingCount`). */
   waiting: number;
+  heldCount?: number;
   postponed: number;
   items: ApprovalItem[];
   auto: AutoState;

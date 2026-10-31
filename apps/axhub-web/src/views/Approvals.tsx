@@ -8,11 +8,11 @@
  * refused) — never with a token, so an AI client can't approve its own call. Approve sits on a row only when the row
  * shows the complete call; a longer one opens its page first.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { hubPost } from '../hub/api';
-import { relTime } from '../hub/core';
+import { relTime, waitingCount, waitingTitle } from '../hub/core';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
 import { HUB } from '../hub/useHub';
@@ -34,8 +34,14 @@ function ApprovalsGrid() {
   const status = params.status ?? 'all';
   const [page, setPage] = useState(1);
   const path = `/auth/api/approvals?status=${encodeURIComponent(status)}&page=${page}`;
-  const grid = useHubJson<ApprovalGrid>(path, 10_000);
+  const [fast, setFast] = useState(false);
+  // A held call counts down: read the hub every 3 s while one is on the page, so a run or a Deny elsewhere shows quickly.
+  const grid = useHubJson<ApprovalGrid>(path, fast ? 3_000 : 10_000);
   const g = grid.data;
+  const anyHeld = !!g && g.items.some(isHeld);
+  useEffect(() => setFast(anyHeld), [anyHeld]);
+  // Pending requests + held calls counting down (the hub's `waiting` is pending only): matches the banner's count.
+  const waiting = waitingCount(g);
 
   const after = async () => { await grid.reload(); checkHubNow(); };
 
@@ -44,7 +50,7 @@ function ApprovalsGrid() {
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">axHub · {HUB.replace(/^https:\/\//, '')}</p>
-          <h1>{g ? (g.waiting === 0 ? 'Nothing waiting' : `${g.waiting} waiting`) : 'Approvals'}</h1>
+          <h1>{g ? waitingTitle(waiting) : 'Approvals'}</h1>
           <p className="fx-muted">
             Every call that changes something waits here for you. Approve or decline it here; a long call opens its own
             page so you see all of it first.
@@ -127,35 +133,41 @@ export async function act(item: ApprovalItem, action: ApprovalAction, extra: Rec
 }
 
 /**
- * Approve / Deny on the collapsed row (Brett, Oct 30 2026): big targets, red Deny (the hub's decline) and green Approve;
- * Approve sends straight away only when the row has the complete call, else it opens the request's page first.
+ * Deny / Approve now on the collapsed row (Brett, Oct 30 + 31 2026): one pair, the same size, big targets, red Deny (the
+ * hub's decline) and green Approve now; Approve now sends straight away only when the row has the complete call, else
+ * it opens the request's page with Approve now picked (the whole call first, then one tap).
  */
 function RowDecide({ item, busy, run }: { item: ApprovalItem; busy: boolean; run: (a: ApprovalAction) => void }) {
   const rt = useRuntime();
   const can = (a: ApprovalAction) => item.actions.includes(a);
   if (!can('approve') && !can('decline')) return <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>;
   return (
-    <div className="axp-axhub-decide">
+    <div className="axp-axhub-pair">
       {can('decline') && <Button tone="danger" icon="x-circle" disabled={busy} aria-label={`Deny: ${item.title}`} onClick={() => run('decline')}>Deny</Button>}
       {can('approve') && (item.whole
-        ? <Button tone="success" icon="check" disabled={busy} aria-label={`Approve: ${item.title}`} onClick={() => run('approve')}>Approve</Button>
-        : <Button tone="success" icon="chevron-right" disabled={busy} aria-label={`Approve: ${item.title} (see the whole call first)`} title="The call is long: see all of it first" onClick={() => go(rt, 'approval', { id: item.id })}>Approve…</Button>)}
+        ? <Button tone="success" icon="check" disabled={busy} aria-label={`Approve now: ${item.title}`} onClick={() => run('approve')}>Approve now</Button>
+        : <Button tone="success" icon="chevron-right" disabled={busy} aria-label={`Approve now: ${item.title} (see the whole call first)`} title="The call is long: see all of it first" onClick={() => go(rt, 'approval', { id: item.id, do: 'approve' })}>Approve now</Button>)}
     </div>
   );
 }
 
 /** One request, collapsed: what is being approved and its Approve / Deny (or countdown); opened: the call, times, the rest. */
-export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () => void }) {
+export function ApprovalRow({ item: fromGrid, onDone }: { item: ApprovalItem; onDone: () => void }) {
   const rt = useRuntime();
   const [busy, setBusy] = useState(false);
+  // The hub's reply to a tap shows at once (Running, Approved, Used, Denied …) until the grid's next read is newer.
+  const [reply, setReply] = useState<ApprovalItem | null>(null);
+  useEffect(() => setReply(null), [fromGrid.id, fromGrid.revision, fromGrid.status]);
+  const item = reply && reply.id === fromGrid.id ? reply : fromGrid;
+  const done = (next?: ApprovalItem) => { if (next) setReply(next); onDone(); };
   const run = async (a: ApprovalAction) => {
     if (a === 'postpone') { go(rt, 'approval', { id: item.id, postpone: '1' }); return; }
     setBusy(true);
-    try { const r = await act(item, a); rt.toast(r.message || 'Done.', a === 'approve' ? 'success' : 'info'); onDone(); }
+    try { const r = await act(item, a); setReply(r.item ?? null); rt.toast(r.message || 'Done.', a === 'approve' ? 'success' : 'info'); onDone(); }
     catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); onDone(); }
     finally { setBusy(false); }
   };
-  // veto@1: a held command shows only its countdown and Deny / Approve / Shelve (decision 104), never the usual actions.
+  // veto@1: a held command shows only its countdown and Deny / Approve now / Shelve (decision 104), never the usual actions.
   const held = isHeld(item);
   // Approve / Deny sit on the collapsed row; the rest (postpone, ignore, revoke, reopen) inside.
   const quick = held ? [] : item.actions.filter((a) => a !== 'approve' && a !== 'decline');
@@ -165,7 +177,7 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
       className="axp-axhub-row"
       title={item.title}
       icon={item.status === 'pending' ? 'shield' : item.status === 'postponed' || held ? 'clock' : 'check'}
-      actions={held ? <HeldBar item={item} onDone={onDone} /> : <RowDecide item={item} busy={busy} run={(a) => void run(a)} />}
+      actions={held ? <HeldBar item={item} onDone={done} /> : <RowDecide item={item} busy={busy} run={(a) => void run(a)} />}
       collapsible
       defaultOpen={false}
     >

@@ -71,9 +71,9 @@ export function useHubJson<T>(path: string | null, everyMs = 0): Loaded<T> {
       if (n === seq.current) setLoading(false);
     }
   }, [path]);
+  // A new address starts empty; a new pace (fast while something counts down) keeps what is shown.
+  useEffect(() => { setData(null); void reload(); }, [reload]);
   useEffect(() => {
-    setData(null);
-    void reload();
     if (!everyMs) return;
     const t = setInterval(() => { if (document.visibilityState === 'visible') void reload(); }, everyMs);
     return () => clearInterval(t);
