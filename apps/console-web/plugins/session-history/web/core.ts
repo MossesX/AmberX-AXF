@@ -122,3 +122,41 @@ export function facets(runs: Run[]): { statuses: string[]; models: string[] } {
   for (const r of runs) { st.add(r.status); const f = family(r.model); if (f) mo.add(f); }
   return { statuses: [...st].sort(), models: [...mo].sort() };
 }
+
+export interface ModelTotal { model: string; runs: number; tokens: number; usd: number; turns: number }
+export interface Totals { runs: number; tokens: number; usd: number; unpriced: number; running: number; byModel: ModelTotal[] }
+
+/**
+ * Totals of the shown rows plus a per-model breakdown. A run's per-model split comes from its turns' usage; when its
+ * total is exact (the result's or the report's), the split is scaled so the models add up to that total. A run
+ * without per-model usage counts under its own model.
+ */
+export function totals(runs: Run[]): Totals {
+  const by = new Map<string, ModelTotal>();
+  const t: Totals = { runs: 0, tokens: 0, usd: 0, unpriced: 0, running: 0, byModel: [] };
+  const slot = (m: string) => { let x = by.get(m); if (!x) by.set(m, (x = { model: m, runs: 0, tokens: 0, usd: 0, turns: 0 })); return x; };
+  for (const r of runs) {
+    if (!r) continue;
+    t.runs++;
+    t.tokens += num(r.tokensTotal);
+    if (r.status === 'running') t.running++;
+    if (typeof r.usd === 'number' && Number.isFinite(r.usd)) t.usd += r.usd; else t.unpriced++;
+    const parts = Object.entries(r.models ?? {});
+    if (!parts.length) {
+      const x = slot(family(r.model) || 'unknown');
+      x.runs++; x.tokens += num(r.tokensTotal); x.usd += num(r.usd); x.turns += num(r.turns);
+      continue;
+    }
+    const usageSum = parts.reduce((s, [, m]) => s + num(m.usd), 0);
+    const scale = typeof r.usd === 'number' && usageSum > 0 ? r.usd / usageSum : 1;
+    for (const [k, m] of parts) {
+      const x = slot(family(m.model ?? k) || k);
+      x.runs++;
+      x.tokens += Object.values(m.tokens ?? {}).reduce((s: number, v) => s + num(v), 0);
+      x.usd += num(m.usd) * scale;
+      x.turns += num(m.turns);
+    }
+  }
+  t.byModel = [...by.values()].sort((a, b) => b.usd - a.usd || a.model.localeCompare(b.model));
+  return t;
+}

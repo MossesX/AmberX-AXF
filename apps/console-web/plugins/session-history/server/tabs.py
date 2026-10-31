@@ -51,7 +51,17 @@ def context(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def tools(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Every tool call; ``usd`` = its even share of the turn that issued it (estimated)."""
     results = {e.get("toolId"): e for e in events if e.get("kind") == "tool_result" and e.get("toolId")}
+    turn_usd: dict[int, float] = {}
+    calls: dict[int, int] = {}
+    for e in events:
+        if e.get("role") == "assistant":
+            t = int(e.get("turn") or 0)
+            if isinstance(e.get("usd"), (int, float)):
+                turn_usd[t] = turn_usd.get(t, 0.0) + float(e["usd"])
+            if e.get("kind") == "tool_use":
+                calls[t] = calls.get(t, 0) + 1
     out = []
     for e in events:
         if e.get("kind") != "tool_use":
@@ -62,6 +72,7 @@ def tools(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "n": e["n"], "turn": e.get("turn"), "at": e.get("at"), "tool": e.get("tool"), "summary": tool_summary(e.get("tool") or "", e.get("input")),
             "input": e.get("input"), "result": text if len(text) <= RESULT_MAX else f"{text[:RESULT_MAX]}\n… [{len(text) - RESULT_MAX} more characters]",
             "isError": bool(r.get("isError")), "done": bool(r), "sidechain": bool(e.get("sidechain")),
+            "usd": round(turn_usd[t] / calls[t], 6) if (t := int(e.get("turn") or 0)) in turn_usd and calls.get(t) else None,
         })
     return out
 

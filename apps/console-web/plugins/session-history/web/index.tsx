@@ -10,7 +10,7 @@ import { Button, Chip, IconButton, ModelBadge, Segmented } from '@console/axf/re
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { facets, fmtDuration, fmtTokens, fmtUsd, fmtWhen, KIND_LABEL, nextSort, STATUS_LABEL, statusTone, view, type Filter, type Kind, type Run, type Sort, type SortKey } from './core';
+import { facets, totals, fmtDuration, fmtTokens, fmtUsd, fmtWhen, KIND_LABEL, nextSort, STATUS_LABEL, statusTone, view, type Filter, type Kind, type Run, type Sort, type SortKey } from './core';
 import { RunDetail } from './detail';
 import { appMenu } from './menu';
 import './session-history.css';
@@ -83,6 +83,7 @@ function BrowserView() {
   const rows = useMemo(() => (runs ? view(runs, filter, sort) : []), [runs, q, kind, status, model, sort]);
   const fac = useMemo(() => facets(runs ?? []), [runs]);
   const running = useMemo(() => (runs ?? []).filter((r) => r.status === 'running').length, [runs]);
+  const sum = useMemo(() => totals(rows), [rows]);
   const toggle = (id: string) => setOpen((s) => { const x = new Set(s); if (x.has(id)) x.delete(id); else x.add(id); return x; });
 
   return (
@@ -150,6 +151,22 @@ function BrowserView() {
             })}
           </tbody>
         </table></div>
+      ) : null}
+      {rows.length ? (
+        <footer className="axp-session-history__totals" aria-label="Totals of the shown runs">
+          <div className="axp-session-history__total">
+            <strong>Total</strong>
+            <span className="fx-small">{sum.runs} runs{sum.running ? ` · ${sum.running} running` : ''} · {fmtTokens(sum.tokens)} tokens</span>
+            <strong className="axp-session-history__num" title={sum.unpriced ? `${sum.unpriced} runs have no usage recorded` : 'Sum of every shown run’s cost'}>{fmtUsd(sum.usd)}{sum.unpriced ? ' +?' : ''}</strong>
+          </div>
+          {sum.byModel.map((m) => (
+            <div key={m.model} className="axp-session-history__total fx-small">
+              <span>{m.model === 'unknown' ? <span className="fx-muted">unknown model</span> : <ModelBadge model={m.model} compact />}</span>
+              <span className="fx-muted">{m.runs} runs · {m.turns} turns · {fmtTokens(m.tokens)} tokens</span>
+              <span className="axp-session-history__num">{fmtUsd(m.usd)}</span>
+            </div>
+          ))}
+        </footer>
       ) : null}
       {rows.length > limit ? <Button size="sm" onClick={() => setLimit((l) => l + 200)}>Show more ({rows.length - limit} left)</Button> : null}
     </div>

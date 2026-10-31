@@ -6,7 +6,8 @@
     before / after hunks from ``git show`` (or, when the checkout is gone, the run's own Edit calls in that window)
   * one line for edits made after the last commit (not committed)
   * the report's own ``changes`` ({item, wrong, before, after, files}) when an agent wrote them
-Each line carries the turn range that produced it, so the price step can put an estimated cost on it.
+Each line carries the turn range that produced it and an estimated price: the tokens of those turns at model-pricing@1
+prices (``usd``, always shown as "est."). A reported change without turns is priced by the turns that edited its files.
 """
 from __future__ import annotations
 
@@ -155,6 +156,33 @@ def _place(made: list[dict[str, Any]], events: list[dict[str, Any]], cwd: str) -
     made.sort(key=lambda c: c["n"] if isinstance(c.get("n"), int) else 1 << 30)
 
 
+def turn_costs(events: list[dict[str, Any]]) -> dict[int, float]:
+    out: dict[int, float] = {}
+    for e in events:
+        if e.get("role") == "assistant" and isinstance(e.get("usd"), (int, float)):
+            out[int(e.get("turn") or 0)] = out.get(int(e.get("turn") or 0), 0.0) + float(e["usd"])
+    return out
+
+
+def price_lines(lines: list[dict[str, Any]], events: list[dict[str, Any]]) -> None:
+    """Put an estimated ``usd`` on every line: the cost of the turns that produced it."""
+    costs = turn_costs(events)
+    by_file: dict[str, set[int]] = {}
+    for e in events:
+        if e.get("kind") == "tool_use" and isinstance(e.get("input"), dict) and e["input"].get("file_path"):
+            by_file.setdefault(str(e["input"]["file_path"]), set()).add(int(e.get("turn") or 0))
+    for ln in lines:
+        tr = ln.get("turns")
+        if isinstance(tr, list) and len(tr) == 2 and all(isinstance(x, int) for x in tr):
+            turns = set(range(tr[0], tr[1] + 1))
+        else:
+            paths = [str(f.get("path") or "") for f in ln.get("files") or []]
+            turns = {t for fp, ts in by_file.items() for p in paths if p and (fp == p or fp.endswith("/" + p)) for t in ts}
+        priced = [costs[t] for t in turns if t in costs]
+        ln["usd"] = round(sum(priced), 6) if priced else None
+        ln["turnCount"] = len(turns) if turns else 0
+
+
 def last_reply(events: list[dict[str, Any]]) -> str:
     for e in reversed(events):
         if e.get("kind") == "text" and e.get("role") == "assistant" and not e.get("sidechain") and (e.get("text") or "").strip():
@@ -211,6 +239,7 @@ def what_it_did(run: dict[str, Any], events: list[dict[str, Any]]) -> dict[str, 
         if gh and p and not p.startswith("/") and run.get("branch"):
             f["url"] = f"{gh}/blob/{run['branch']}/{p}"
 
+    price_lines(lines, events)
     prs = list(dict.fromkeys(([run["pr"]] if run.get("pr") else []) + [m.group(0) for e in events if e.get("kind") in ("tool_result", "text") for m in PR_URL.finditer(e.get("text") or "")]))[:5]
     return {
         "summary": redact(summary, 4000), "lines": lines,

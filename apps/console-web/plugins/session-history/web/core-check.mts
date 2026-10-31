@@ -1,5 +1,5 @@
 /** Self-test of web/core.ts: npx -y tsx apps/console-web/plugins/session-history/web/core-check.mts (prints JSON last). */
-import { facets, family, fmtDuration, fmtTokens, fmtUsd, fmtWhen, matches, nextSort, statusTone, view } from './core';
+import { facets, family, totals, fmtDuration, fmtTokens, fmtUsd, fmtWhen, matches, nextSort, statusTone, view } from './core';
 import type { Run } from './core';
 
 const out: [string, boolean][] = [];
@@ -36,6 +36,19 @@ check('usd', fmtUsd(1.234) === '$1.23' && fmtUsd(0.5) === '$0.500' && fmtUsd(0.0
 check('duration', fmtDuration(5000) === '5s' && fmtDuration(95_000) === '1m 35s' && fmtDuration(7_500_000) === '2h 5m' && fmtDuration(null) === '—');
 check('when', fmtWhen('2026-10-31T04:50:00Z', true, 2026) === 'Oct 31, 04:50' && fmtWhen('2025-01-02T03:04:00Z', true, 2026) === 'Jan 2 2025, 03:04' && fmtWhen(null) === '—');
 check('facets', JSON.stringify(facets(runs)) === JSON.stringify({ statuses: ['ended', 'killed-budget', 'running'], models: ['fable', 'haiku', 'opus'] }));
+
+const mixed: Run[] = [
+  { ...base, id: 'm', usd: 10, costFrom: 'result', tokensTotal: 300, turns: 3, models: { opus: { model: 'claude-opus-5-5', turns: 2, tokens: { input: 100, output: 100 }, usd: 3 }, haiku: { model: 'claude-haiku-5-5', turns: 1, tokens: { input: 100 }, usd: 1 } } },
+  { ...base, id: 'n', usd: null, costFrom: null, model: 'claude-sonnet-5-5', tokensTotal: 50, turns: 1, models: {} },
+  { ...base, id: 'o', usd: 2, model: 'claude-opus-5-5', status: 'running', tokensTotal: 10, turns: 1, models: { opus: { model: 'claude-opus-5-5', turns: 1, tokens: { output: 10 }, usd: 2 } } },
+];
+const tt = totals(mixed);
+check('totals: runs, tokens, usd, unpriced, running', tt.runs === 3 && tt.tokens === 360 && tt.usd === 12 && tt.unpriced === 1 && tt.running === 1);
+const om = tt.byModel.find((m) => m.model === 'opus'), hm = tt.byModel.find((m) => m.model === 'haiku'), sm = tt.byModel.find((m) => m.model === 'sonnet');
+check('per-model split scaled to the exact total', om?.usd === 9.5 && hm?.usd === 2.5 && om.runs === 2 && om.turns === 3 && om.tokens === 210);
+check('run without per-model usage counts under its model', sm?.runs === 1 && sm.usd === 0 && sm.tokens === 50);
+check('models by cost, dearest first', tt.byModel[0]?.model === 'opus');
+check('per-model sums to the total', Math.abs(tt.byModel.reduce((s, m) => s + m.usd, 0) - tt.usd) < 1e-9);
 
 for (const [n, ok] of out) console.log(`  ${ok ? '✓' : '✗'} ${n}`);
 console.log(JSON.stringify({ total: out.length, failed: out.filter(([, ok]) => !ok).map(([n]) => n) }));

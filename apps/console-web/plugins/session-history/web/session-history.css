@@ -58,3 +58,6 @@ select.fx-input.axp-session-history__pick { flex: none; width: auto }
 .axp-session-history__wl.is-dim { color: var(--fx-muted) }
 .axp-session-history__wl.is-error { color: var(--fx-danger) }
 .axp-session-history__kill { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+.axp-session-history__totals { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); padding-top: calc(var(--fx-space) * 0.5); border-top: calc(var(--fx-border-w) * 2) solid var(--fx-border) }
+.axp-session-history__total { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__total > :last-child { margin-left: auto }

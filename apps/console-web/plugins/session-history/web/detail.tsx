@@ -87,13 +87,19 @@ export function DidLineView({ l, price }: { l: DidLine; price?: ReactNode }) {
   );
 }
 
+/** "$0.42 est." next to a what-it-did line: the tokens of the turns that produced it. */
+function LinePrice({ l }: { l: DidLine & { turnCount?: number } }) {
+  if (l.usd == null) return <span className="fx-small fx-muted axp-session-history__price" title="No priced turns for this line">— est.</span>;
+  return <span className="fx-small axp-session-history__price" title={`Estimated: the tokens of the ${l.turnCount ?? '?'} turns that produced this, at model-pricing@1 prices`}>{fmtUsd(l.usd, true)}</span>;
+}
+
 export function WhatItDid({ run, did }: { run: Run; did: Did }) {
   const prs = (did.links.prs ?? []).map(safeUrl).filter(Boolean) as string[];
   const branch = safeUrl(did.links.branch);
   return (
     <div className="fx-stack">
       {did.summary ? <div className="axp-session-history__summary fx-small">{did.summary}</div> : <p className="fx-small fx-muted">No summary: the run hasn’t said what it did{run.status === 'running' ? ' yet' : ''}.</p>}
-      {did.lines.length ? <ol className="axp-session-history__didlist">{did.lines.map((l, i) => <DidLineView key={`${l.sha ?? l.kind}:${i}`} l={l} />)}</ol> : <p className="fx-small fx-muted">No commits or file edits.</p>}
+      {did.lines.length ? <ol className="axp-session-history__didlist">{did.lines.map((l, i) => <DidLineView key={`${l.sha ?? l.kind}:${i}`} l={l} price={<LinePrice l={l} />} />)}</ol> : <p className="fx-small fx-muted">No commits or file edits.</p>}
       {prs.length || branch ? <Line k="Links"><span className="fx-small">{prs.map((u) => <a key={u} href={u} target="_blank" rel="noreferrer" className="axp-session-history__link">PR #{u.split('/').pop()}</a>)}{branch ? <a href={branch} target="_blank" rel="noreferrer" className="axp-session-history__link">branch {run.branch}</a> : null}</span></Line> : null}
       {did.changes.length ? <Line k="Changes log"><span className="fx-small">{did.changes.map((c) => <span key={c.id} className="axp-session-history__link">{c.title || c.id} <Chip>{c.state ?? 'open'}</Chip></span>)}</span></Line> : null}
       {did.checkin ? <Line k="Check-in"><span className="fx-small">{did.checkin.location ?? '?'}{did.checkin.project ? ` · ${did.checkin.project}` : ''} <span className="fx-mono fx-muted">{did.checkin.id}</span></span></Line> : null}
