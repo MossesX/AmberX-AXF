@@ -7,7 +7,7 @@ import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState }
 
 /*
  * Crew: one card per agent (avatar, name, role, specialty, status, hire date, spend, jobs, success rate, failures,
- * avg cost per job, favourite model, last seen, catchphrase). Tap a card for the profile: bio, skill, spend cap,
+ * avg cost per job, favourite model, last seen, catchphrase, salary, spent, left, bonuses). Tap a card for the profile: bio, skill, pay,
  * status history and a feed of the latest runs with their cost. Everything is inside the console; no outside
  * social accounts.
  */

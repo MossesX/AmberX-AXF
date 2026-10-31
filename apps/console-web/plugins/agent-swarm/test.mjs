@@ -311,6 +311,25 @@ t('live preview follows the sliders; color by vibe shades darker to the ceiling'
   assert.ok(c.vibeShade(10, 500) < c.vibeShade(250, 500)); assert.equal(c.vibeShade(500, 500), 1); assert.equal(c.vibeShade(600, 500), 1); assert.ok(c.vibeShade(1, 500) > 0);
 });
 
+// s16 contracts and wiring
+t('the type file only names exports the core has', () => {
+  const dts = readFileSync(here('./web/swarm-core.d.mts'), 'utf8');
+  for (const m of dts.matchAll(/export (?:const|function) (\w+)/g)) assert.ok(m[1] in c, m[1]);
+});
+t('server part compiles and only reads through the CLI', () => {
+  const r = spawnSync('python3', ['-m', 'py_compile', new URL('./server/__init__.py', import.meta.url).pathname], { encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr);
+  const py = readFileSync(here('./server/__init__.py'), 'utf8'); assert.match(py, /swarm\.mjs/); assert.doesNotMatch(py, /shell=True|_run\("(run|banter|merge|fix|pilot)"/); // a page request never spends tokens
+});
+t('CLI answers --json errors as JSON', () => {
+  const r = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'nope', '--json'], { encoding: 'utf8' });
+  assert.equal(r.status, 1); assert.deepEqual(JSON.parse(r.stdout), { ok: false, error: 'unknown command nope' });
+});
+t('manifest: lifecycle, builtWith, page and settings tab', () => {
+  const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
+  assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm']); assert.equal(m.tabable.view, 'agent-swarm');
+});
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));

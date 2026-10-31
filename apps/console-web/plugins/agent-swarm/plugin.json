@@ -32,7 +32,9 @@
       "AXF_SWARM_DIR",
       "AXF_CLAUDE_BIN"
     ],
-    "mentions": []
+    "mentions": [
+      "_claude/memory/STATUS.md"
+    ]
   },
   "builtWith": {
     "model": "opus",
