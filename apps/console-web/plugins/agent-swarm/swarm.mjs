@@ -7,6 +7,9 @@
  *   … plan <buildId>…                    split builds into jobs: agent, model, leases, waves (several builds share one lease table)
  *   … pack <buildId> <stepId>            one job's brief: shared prefix + skill, task, leases, snippets
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
+ *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
+ *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
+ *   … fix <buildId> <stepId> [--dry-run] hand a merge conflict to the merge fixer
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -14,11 +17,14 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
 import { orchestratorPath } from '../../../../framework/cli/persist.mjs';
+import { spawnSync } from 'node:child_process';
 import { runJob, worktreeFor } from './runner.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
 export const trackerFile = () => process.env.AXF_ORCH_FILE || orchestratorPath();
+/** The checkout the swarm works on (AXF_SWARM_REPO overrides, for tests). */
+export const repoRoot = () => process.env.AXF_SWARM_REPO || ROOT;
 export const dataDir = () => process.env.AXF_SWARM_DIR || join(ROOT, '.axf-console/plugins/agent-swarm');
 
 export function readJson(f, fallback) { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return fallback; } }
@@ -49,8 +55,8 @@ export function pack(job, handoffs = []) {
   const snippets = [];
   for (const f of job.leases) {
     if (f.includes('*') || f.endsWith('/')) continue;
-    const abs = resolve(ROOT, f);
-    if (!abs.startsWith(`${ROOT}/`) || !existsSync(abs)) continue;
+    const abs = resolve(repoRoot(), f);
+    if (!abs.startsWith(`${repoRoot()}/`) || !existsSync(abs)) continue;
     snippets.push(core.extractSnippet(f, readFileSync(abs, 'utf8'), job.text));
   }
   return core.packJob(job, { prefix: prefix(), skill: loadSkills()[job.skill], snippets, handoffs });
@@ -66,9 +72,72 @@ export async function run(buildId, ref, opts = {}) {
   const agent = loadRoster().agents.find((a) => a.id === job.agent);
   const brief = pack(job, opts.handoffs);
   if (opts.dry) return { dry: true, job, brief, args: core.claudeArgs(brief, job, agent).map((a) => (a.length > 120 ? `${a.slice(0, 117)}…` : a)) };
-  const wt = opts.cwd ? { path: opts.cwd, branch: '' } : worktreeFor(ROOT, dataDir(), job, opts.base);
+  const wt = opts.cwd ? { path: opts.cwd, branch: '' } : worktreeFor(repoRoot(), dataDir(), job, opts.base);
   const rec = await runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
-  return saveRun({ ...rec, branch: wt.branch, worktree: wt.path });
+  const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
+  return saveRun({ ...rec, branch: wt.branch, worktree: wt.path, lease });
+}
+
+const git = (cwd, ...a) => spawnSync('git', a, { cwd, encoding: 'utf8' });
+/** Files a worktree changed since it branched (committed or not). */
+export function changedFiles(cwd, base = 'HEAD') {
+  const mb = git(cwd, 'merge-base', base === 'HEAD' ? 'HEAD@{upstream}' : base, 'HEAD');
+  const from = mb.status === 0 ? mb.stdout.trim() : git(cwd, 'rev-list', '--max-parents=0', 'HEAD').stdout.trim().split('\n')[0];
+  const a = git(cwd, 'diff', '--name-only', from).stdout; const u = git(cwd, 'ls-files', '--others', '--exclude-standard').stdout;
+  return [...new Set(`${a}\n${u}`.split('\n').map((x) => x.trim()).filter(Boolean))];
+}
+
+/** Merge state per build (what's in, what conflicted), in the data folder. */
+export const mergesFile = () => join(dataDir(), 'merges.json');
+
+/**
+ * Batch merge: every done, lease-clean job of the build, in wave order, into the build's merge branch (its own
+ * worktree, so the main checkout is never touched). A conflict is aborted and handed to the merge fixer. Then
+ * Boss writes the shared files: the tracker ticks and one note. --push pushes the merge branch.
+ */
+export function batchMerge(buildId, opts = {}) {
+  const b = findBuilds([buildId])[0];
+  const p = plan([buildId], { includeDone: true });
+  const ms = readJson(mergesFile(), {}); const st = (ms[buildId] ??= { merged: [], conflicts: [] });
+  const queue = core.mergeQueue(p, loadRuns(), st.merged);
+  const branch = opts.into || b.branch || `swarm/${buildId}/merge`;
+  const dir = join(dataDir(), 'worktrees', `_merge-${buildId}`);
+  if (!existsSync(dir)) { const has = git(repoRoot(), 'rev-parse', '--verify', '--quiet', branch).status === 0; const r = has ? git(repoRoot(), 'worktree', 'add', dir, branch) : git(repoRoot(), 'worktree', 'add', '-b', branch, dir, opts.base || 'HEAD'); if (r.status) throw new Error(r.stderr.trim()); }
+  const merged = []; const conflicts = []; const refused = [];
+  for (const q of queue) {
+    const lease = core.leaseCheck(q.job, changedFiles(q.run.worktree, branch));
+    if (!lease.ok) { refused.push({ job: q.job.id, outside: lease.outside, shared: lease.shared }); continue; }
+    const r = git(dir, 'merge', '--no-ff', '-m', `Swarm merge: ${q.job.id} (${q.job.agent})`, q.run.branch);
+    if (r.status !== 0) {
+      const files = git(dir, 'diff', '--name-only', '--diff-filter=U').stdout.split('\n').filter(Boolean);
+      git(dir, 'merge', '--abort');
+      const fix = core.fixerJob(q.job, files, loadRoster(), merged.map((m) => m.job.id).join(', '));
+      conflicts.push({ job: q.job.id, files, fixer: fix.id }); continue;
+    }
+    merged.push(q); st.merged.push(q.job.id);
+  }
+  st.conflicts = conflicts; writeJson(mergesFile(), ms);
+  let lines = [];
+  if (merged.length && !opts.noShared) { const r = core.applyMerge(loadTracker(), buildId, merged, new Date().toISOString()); writeJson(trackerFile(), r.tracker); lines = r.lines; }
+  if (opts.push && merged.length) { const r = git(dir, 'push', '-u', 'origin', branch); if (r.status) throw new Error(r.stderr.trim()); }
+  return { branch, merged: merged.map((m) => m.job.id), conflicts, refused, notes: lines };
+}
+
+/** Hand a conflict to the merge fixer: its worktree holds the half-done merge, then the fixer runs there. */
+export async function fix(buildId, stepId, opts = {}) {
+  const ms = readJson(mergesFile(), {}); const c = ms[buildId]?.conflicts?.find((x) => x.job === `${buildId}.${stepId}`);
+  if (!c) throw new Error(`no conflict recorded for ${buildId}.${stepId}`);
+  const p = plan([buildId], { includeDone: true }); const job = jobOf(p, stepId);
+  const fj = core.fixerJob(job, c.files, loadRoster());
+  const b = findBuilds([buildId])[0]; const into = b.branch || `swarm/${buildId}/merge`;
+  const wt = worktreeFor(repoRoot(), dataDir(), fj, into);
+  const src = loadRuns().filter((r) => r.jobId === job.id).pop();
+  git(wt.path, 'merge', '--no-commit', '--no-ff', src.branch);
+  const agent = loadRoster().agents.find((a) => a.id === fj.agent);
+  const brief = pack(fj, [src.report?.handoff ?? '']);
+  if (opts.dry) return { dry: true, job: fj, brief };
+  const rec = await runJob(fj, agent, brief, { cwd: wt.path, bin: opts.bin });
+  return saveRun({ ...rec, branch: wt.branch, worktree: wt.path, lease: core.leaseCheck(fj, changedFiles(wt.path, into)) });
 }
 export function jobOf(p, ref) { const j = p.jobs.find((x) => x.id === ref || x.stepId === ref); if (!j) throw new Error(`no open job "${ref}"`); return j; }
 
@@ -92,6 +161,9 @@ export async function main(argv) {
     const [b, ref] = rest.filter((a) => !a.startsWith('--')); const r = await run(b, ref, { dry: args.includes('--dry-run') });
     return out({ ok: true, run: r }, r.dry ? `would run: claude ${r.args.join(' ')}` : `${r.jobId} ${r.status}${r.reason ? ` (${r.reason})` : ''} · ${r.budgetTokens}/${r.budget.tokens} tokens · ${r.turns} turns${r.report ? `\n${r.report.summary}` : ''}`);
   }
+  if (cmd === 'check') { const [b, ref] = rest; const r = loadRuns().filter((x) => x.jobId === `${b}.${ref}`).pop(); if (!r) throw new Error('no run for that job yet'); const j = jobOf(plan([b], { includeDone: true }), ref); const l = core.leaseCheck(j, changedFiles(r.worktree)); return out({ ok: l.ok, lease: l }, l.ok ? 'lease clean' : `outside the lease: ${l.outside.join(', ') || '-'} · shared: ${l.shared.join(', ') || '-'}`); }
+  if (cmd === 'merge') { const r = batchMerge(rest[0], { push: args.includes('--push') }); return out({ ok: true, ...r }, `merged ${r.merged.length} into ${r.branch}${r.conflicts.length ? ` · ${r.conflicts.length} conflict(s) → merge fixer` : ''}${r.refused.length ? ` · ${r.refused.length} refused (lease)` : ''}${r.notes.length ? `\nNotes for shared files:\n${r.notes.join('\n')}` : ''}`); }
+  if (cmd === 'fix') { const [b, ref] = rest.filter((a) => !a.startsWith('--')); const r = await fix(b, ref, { dry: args.includes('--dry-run') }); return out({ ok: true, run: r }, r.dry ? r.brief.prompt : `${r.jobId} ${r.status}`); }
   throw new Error(`unknown command ${cmd}`);
 }
 

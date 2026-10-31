@@ -170,7 +170,7 @@ export function budgetFor(agent, step, tune = {}) {
  * Split builds into jobs (one per open step) and order them so no two jobs that lease the same file run at once.
  * Builds are orchestrator@1 builds; several at once share one lease table, so many builds run side by side.
  *   opts.eligible(agent, job) → true when the agent may take the job (statuses, pay); default: everyone.
- *   opts.tune → { scale } budget multiplier.
+ *   opts.tune → { scale } budget multiplier. opts.includeDone → plan done steps too (checks and merges after the tick).
  * Returns { jobs, waves, warnings }. A job's `wave` is when it may start; `after` lists the jobs it waits for.
  */
 export function planJobs(builds, roster, opts = {}) {
@@ -178,7 +178,7 @@ export function planJobs(builds, roster, opts = {}) {
   const jobs = []; const warnings = [];
   for (const b of Array.isArray(builds) ? builds : [builds]) {
     for (const s of b.steps ?? []) {
-      if (s.done === true || s.skip === true) continue;
+      if ((s.done === true && !opts.includeDone) || s.skip === true) continue;
       const files = stepFiles(s);
       const pool = roster.agents.filter((a) => eligible(a, { stepId: s.id, buildId: b.id, estimate: s.estimate }));
       const want = requiredTier(s, null); // agents that can reach the job's tier come first
@@ -356,4 +356,47 @@ export function runOutcome(tr, { killed = '', exitCode = 0 } = {}) {
   if (!tr.final || tr.isError || exitCode) return { status: 'error', reason: tr.subtype || (exitCode ? `exit ${exitCode}` : 'no result'), report };
   if (!report) return { status: 'failed', reason: 'no swarm-report@1 block', report: null };
   return { status: report.status, reason: '', report };
+}
+
+// ---------------------------------------------------------------- leases, shared files, batch merge
+
+/** Pre-push / pre-merge check: every changed file is inside the job's lease, and no shared file is touched. */
+export function leaseCheck(job, changed, shared = SHARED_FILES) {
+  const files = list(changed, 5000, 400);
+  const sharedHit = files.filter((f) => isShared(f, shared));
+  const outside = job.leaseKind === 'all' ? [] : files.filter((f) => !isShared(f, shared) && !job.leases.some((l) => l === f || globMatch(l, f)));
+  return { ok: !sharedHit.length && !outside.length, outside, shared: sharedHit, files };
+}
+
+/** Jobs ready for the batch merge, in plan order: run done, lease clean, not merged yet. */
+export function mergeQueue(plan, runs, merged = []) {
+  const last = new Map(); for (const r of runs) last.set(r.jobId, r);
+  return plan.jobs.filter((j) => { const r = last.get(j.id); return r && r.status === 'done' && r.lease?.ok !== false && !merged.includes(j.id); }).map((j) => ({ job: j, run: last.get(j.id) }));
+}
+
+/** A merge-fixer job for a conflict between a merged job and the one that wouldn't merge. */
+export function fixerJob(job, files, roster, withJob = '') {
+  const a = roster.agents.find((x) => x.skill === 'merge-fixer') ?? roster.agents[0];
+  return { $axf: 'swarm-job@1', id: `${job.buildId}.fix-${job.stepId}`, buildId: job.buildId, stepId: `fix-${job.stepId}`, text: `Resolve the merge conflict from ${job.id}${withJob ? ` against ${withJob}` : ''}: ${files.join(', ')}`,
+    estimate: '15 min', agent: a.id, skill: a.skill, tier: 'sonnet', model: pickModel(a, 'sonnet').model, match: 0, leases: list(files, 200, 400), leaseKind: 'files', shared: [], budget: budgetFor(a, { estimate: '15 min' }), checks: job.checks, wave: job.wave, after: [job.id], fixes: job.id };
+}
+
+/**
+ * What the orchestrator writes to the shared files after a batch merge: tick each merged step on the tracker
+ * (orchestrator@1) with the report's summary, add one build note for the batch, and collect the reports' notes
+ * lines for the session to put in THREADS / STATUS. Pure: returns a new tracker and the lines.
+ */
+export function applyMerge(tracker, buildId, merged, at) {
+  const t = JSON.parse(JSON.stringify(tracker ?? { builds: [] }));
+  const b = (t.builds ?? []).find((x) => x.id === buildId);
+  if (!b) throw new Error(`no build "${buildId}" on the tracker`);
+  const lines = [];
+  for (const { job, run } of merged) {
+    const s = (b.steps ?? []).find((x) => x.id === job.stepId);
+    if (s) { s.done = true; s.doneAt = at; s.agent = job.agent; s.note = str(`${job.agent} on ${job.model}: ${run.report?.summary ?? 'merged'}`, 1000); }
+    if (run.report?.notes) lines.push(`${job.id}: ${run.report.notes}`);
+  }
+  if (merged.length) (b.notes ??= []).push({ text: `Swarm batch merge: ${merged.map((m) => m.job.stepId).join(', ')}`, at });
+  b.updatedAt = at; t.updatedAt = at;
+  return { tracker: t, lines };
 }
