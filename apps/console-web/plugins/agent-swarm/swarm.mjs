@@ -8,6 +8,8 @@
  *   … pack <buildId> <stepId>            one job's brief: shared prefix + skill, task, leases, snippets
  *   … state | cost                       everything the console shows | the cost meter (agent, build, job)
  *   … pilot <buildId> [--apply]          plan + pack a build, project swarm vs one session, suggest a budget scale
+ *   … act status <agent> <status> [note]  statuses: on-duty off-duty injured medical-leave probation fired custom
+ *   … act --json '{"action":…}'          any change from swarm-core.mjs applyChange()
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
@@ -46,7 +48,24 @@ export function findBuilds(ids) {
   return ids.map((id) => { const b = (t.builds ?? []).find((x) => x.id === id); if (!b) throw new Error(`no build "${id}" in ${trackerFile()}`); return b; });
 }
 
-export function plan(ids, opts = {}) { return core.planJobs(findBuilds(ids), loadRoster(), opts); }
+/** Swarm state (swarm-state@1): statuses, history, pay, chat. Time-driven changes are applied on every read. */
+export const stateFile = () => join(dataDir(), 'state.json');
+export function loadState() {
+  const roster = loadRoster(); const at = new Date().toISOString();
+  const st = core.normState(readJson(stateFile(), {}), roster); const t = core.tick(st, at);
+  if (t.log.length) { st.updatedAt = at; writeJson(stateFile(), st); }
+  return st;
+}
+export function act(change) {
+  const r = core.applyChange(loadState(), change, loadRoster(), new Date().toISOString());
+  writeJson(stateFile(), r.state); return r;
+}
+/** Only agents whose status (and, later, pay) lets them work get jobs. */
+export function eligibility(st = loadState()) {
+  const at = new Date().toISOString();
+  return (a, job) => core.canWork(a, st.agents[a.id] ?? core.normAgentState({}), job, at).ok;
+}
+export function plan(ids, opts = {}) { return core.planJobs(findBuilds(ids), loadRoster(), { eligible: eligibility(), ...opts }); }
 
 /** The persona block of the shared prefix (agents/persona.md), empty when there is none. */
 export function loadPersona() { const f = join(HERE, 'agents/persona.md'); return existsSync(f) ? core.parseSkill(readFileSync(f, 'utf8')).body : ''; }
@@ -77,6 +96,8 @@ export async function run(buildId, ref, opts = {}) {
   const wt = opts.cwd ? { path: opts.cwd, branch: '' } : worktreeFor(repoRoot(), dataDir(), job, opts.base);
   const rec = await runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
   const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
+  const st = loadState(); const as = st.agents[agent.id];
+  if (as && core.canWork(agent, as, job).notify) { st.notices.push({ at: rec.endedAt, agent: agent.id, text: `${agent.name} (probation) ran ${job.id}: ${rec.status}` }); writeJson(stateFile(), st); }
   return saveRun({ ...rec, branch: wt.branch, worktree: wt.path, lease });
 }
 
@@ -148,7 +169,8 @@ export function state() {
   const roster = loadRoster(); const sk = loadSkills(); const runs = loadRuns(); const table = priceTable();
   const tr = loadTracker();
   const builds = (tr.builds ?? []).filter((b) => !['complete', 'archived'].includes(b.status) && !b.hidden).map((b) => ({ id: b.id, title: b.title, status: b.status, open: (b.steps ?? []).filter((x) => !x.done && !x.skip).length }));
-  return { roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
+  const swarm = loadState();
+  return { swarm, statuses: core.STATUSES, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
 /** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
@@ -200,6 +222,12 @@ export async function main(argv) {
     const r = pilot(rest.find((a) => !a.startsWith('--')), { apply: args.includes('--apply') });
     const lines = r.jobs.map((j) => `${j.id.padEnd(22)} ${j.agent.padEnd(6)} ${j.model.padEnd(7)} brief ${core.fmtTokens(j.brief).padStart(5)} · projected ${core.fmtTokens(core.budgetTokens(j.usage)).padStart(5)} (${core.fmtUsd(j.usd)}) · budget ${core.fmtTokens(j.budget)} → need ${core.fmtTokens(j.need)}`);
     return out({ ok: true, pilot: r }, [...lines, `Swarm: ${core.fmtTokens(r.swarm.tokens)} budget-tokens, ${core.fmtUsd(r.swarm.usd)}`, `One session (${r.single.minutes} min): ${core.fmtTokens(r.single.tokens)} budget-tokens, ${core.fmtUsd(r.single.usd)}`, `Saving: ${Math.round(r.saving * 100)}% · suggested budget scale ${r.scale}${args.includes('--apply') ? ' (saved on the roster)' : ' (--apply to save)'}`].join('\n'));
+  }
+  if (cmd === 'act') {
+    let change;
+    if (rest[0]?.startsWith('{')) change = JSON.parse(rest[0]);
+    else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : { action, agent, note: [a, ...more].join(' ') }; }
+    const r = act(change); return out({ ok: true, state: state(), log: r.log }, r.log.join('\n'));
   }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
   if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }

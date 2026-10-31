@@ -133,6 +133,36 @@ t('Amber persona is a few lines, in the shared prefix, and keeps code clean', ()
   assert.ok(a.system.startsWith(pre) && d.system.startsWith(pre)); // same bytes first, so the cache hits across agents
 });
 
+// s9 statuses
+const AT = '2026-10-31T12:00:00.000Z';
+t('statuses gate work; probation takes small jobs and notifies', () => {
+  const a = roster.agents[0]; const S = (o) => c.normAgentState(o);
+  assert.equal(c.canWork(a, S({}), {}).ok, true);
+  for (const st of ['off-duty', 'injured', 'medical-leave', 'fired']) assert.equal(c.canWork(a, S({ status: st }), {}).ok, false, st);
+  assert.deepEqual(c.canWork(a, S({ status: 'probation' }), { estimate: '10 min' }), { ok: true, why: '', notify: true });
+  assert.equal(c.canWork(a, S({ status: 'probation' }), { estimate: '30 min' }).ok, false);
+  assert.equal(c.canWork(a, S({ status: 'custom', custom: { name: 'Coffee run', works: true } }), {}).ok, true);
+  assert.match(c.canWork(a, S({ status: 'custom', custom: { name: 'Coffee run', works: false } }), {}).why, /Coffee run/);
+});
+t('status change keeps history; bad changes refused', () => {
+  let s = c.normState({}, roster);
+  s = c.applyChange(s, { action: 'status', agent: 'rio', status: 'injured', note: 'tsc keeps failing' }, roster, AT).state;
+  assert.equal(s.agents.rio.status, 'injured'); assert.deepEqual([s.agents.rio.history[0].from, s.agents.rio.history[0].to], ['On duty', 'Injured']);
+  assert.throws(() => c.applyChange(s, { action: 'status', agent: 'rio', status: 'medical-leave' }, roster, AT), /return date/);
+  assert.throws(() => c.applyChange(s, { action: 'status', agent: 'rio', status: 'custom' }, roster, AT), /name/);
+  assert.throws(() => c.applyChange(s, { action: 'status', agent: 'nobody', status: 'fired' }, roster, AT), /no agent/);
+});
+t('medical leave ends by itself', () => {
+  let s = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'kat', status: 'medical-leave', until: '2026-11-02T00:00:00.000Z' }, roster, AT).state;
+  assert.equal(c.tick(s, '2026-11-01T00:00:00.000Z').log.length, 0);
+  const r = c.tick(s, '2026-11-02T00:00:01.000Z'); assert.equal(r.state.agents.kat.status, 'on-duty'); assert.equal(r.state.agents.kat.history.at(-1).by, 'boss');
+});
+t('the planner skips agents whose status says no', () => {
+  const s = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'doc', status: 'fired' }, roster, AT).state;
+  const p = c.planJobs(B('b', [{ text: 'Update the README docs' }]), roster, { eligible: (a, j) => c.canWork(a, s.agents[a.id], j).ok });
+  assert.notEqual(p.jobs[0].agent, 'doc');
+});
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));

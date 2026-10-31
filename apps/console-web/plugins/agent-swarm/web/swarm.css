@@ -18,3 +18,4 @@
 .sw-leases { font-size: calc(var(--fx-font-size) * 0.8); color: var(--fx-muted); overflow-wrap: anywhere }
 .sw-warn { color: var(--fx-warning) }
 .sw-wave { margin: calc(var(--fx-space) * 0.75) 0 calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 0.9); font-weight: 600 }
+.sw-gone { opacity: var(--fx-opacity-disabled) }

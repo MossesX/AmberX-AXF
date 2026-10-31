@@ -18,7 +18,10 @@ export type Agent = { id: string; name: string; role: string; skill: string; spe
 export type Run = { jobId: string; buildId: string; stepId: string; agent: string; model: string; startedAt: string; endedAt: string; status: string; reason: string; usage: Usage | null; reportedCost: number | null; turns: number; budget: { tokens: number; maxTurns: number }; report: { summary: string } | null };
 export type Slot = { runs: number; tokens: number; usd: number; done: number; failed: number };
 export type Meter = { total: Slot; byAgent: Record<string, Slot>; byJob: Record<string, Slot>; byBuild: Record<string, Slot>; byModel: Record<string, Slot> };
-export type SwarmState = { roster: { agents: Agent[] }; skills: Record<string, { id: string; title: string; body: string }>; problems: string[]; runs: Run[]; meter: Meter; prices: Record<string, unknown>; builds: { id: string; title: string; status: string; open: number }[]; tracker: string };
+export type AgentState = { status: string; note: string; until: string; custom: { name: string; works: boolean }; history: { at: string; from: string; to: string; note: string; by: string }[] };
+export type Swarm = { agents: Record<string, AgentState>; notices: { at: string; agent: string; text: string }[] };
+export type StatusDef = { label: string; works: boolean | 'small'; tone: string; about: string };
+export type SwarmState = { swarm: Swarm; statuses: Record<string, StatusDef>; roster: { agents: Agent[] }; skills: Record<string, { id: string; title: string; body: string }>; problems: string[]; runs: Run[]; meter: Meter; prices: Record<string, unknown>; builds: { id: string; title: string; status: string; open: number }[]; tracker: string };
 export type Job = { id: string; buildId: string; stepId: string; text: string; estimate: string; agent: string; skill: string; tier: string; model: string; leases: string[]; leaseKind: string; shared: string[]; budget: { tokens: number; maxTurns: number }; wave: number; after: string[] };
 type Res<T> = { ok: boolean; error?: string } & T;
 
@@ -33,16 +36,24 @@ export function useSwarm() {
     catch (e) { setError((e as Error).message); }
   };
   useEffect(() => { void load(); }, []);
-  return { state, error, load, setState };
+  /** One change through swarm.mjs act; the answer carries the fresh state. */
+  const act = async (change: Record<string, unknown>) => {
+    try { const r = await api.post<Res<{ state: SwarmState; log: string[] }>>('act', change); if (!r.ok) throw new Error(r.error); setState(r.state); return r.log; }
+    catch (e) { setError((e as Error).message); return null; }
+  };
+  return { state, error, load, setState, act };
 }
+export type Act = (change: Record<string, unknown>) => Promise<string[] | null>;
+export const statusText = (as: AgentState, defs: Record<string, StatusDef>) => (as.status === 'custom' ? as.custom.name || 'Custom' : defs[as.status]?.label ?? as.status);
 
-const TABS = [{ id: 'jobs', label: 'Jobs', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }] as const;
+const TABS = [{ id: 'agents', label: 'Agents', icon: 'user' }, { id: 'jobs', label: 'Jobs', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }] as const;
 type Tab = (typeof TABS)[number]['id'];
 
 export function SwarmPage() {
   const rt = useRuntime();
-  const { state, error, load } = useSwarm();
-  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('swarm-tab', 'jobs'));
+  const { state, error, load, act } = useSwarm();
+  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('swarm-tab', 'agents'));
+  const doAct: Act = async (c) => { const l = await act(c); for (const x of l ?? []) rt.terminal.log('swarm', x, 'ok'); return l; };
   useEffect(() => { consoleApi.writeLocal('swarm-tab', tab); }, [tab]);
   if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
   return (
@@ -60,9 +71,52 @@ export function SwarmPage() {
       <div className="fx-tabs" role="tablist" aria-label="Agent swarm">
         {TABS.map((t) => <button key={t.id} role="tab" className="fx-tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}><Icon name={t.icon} size={14} />{t.label}</button>)}
       </div>
+      {tab === 'agents' && <AgentsTab state={state} act={doAct} />}
       {tab === 'jobs' && <JobsTab state={state} />}
       {tab === 'cost' && <CostTab state={state} />}
     </div>
+  );
+}
+
+/** One row per agent: status dropdown + note (custom name / works, medical-leave return date). */
+function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {
+  const notices = state.swarm.notices.slice(-5).reverse();
+  return (
+    <div className="fx-stack">
+      {notices.length > 0 && <div className="pl-note"><Icon name="bell" size={14} />{notices.map((n) => `${fmtTime(n.at)} ${n.text}`).join(' · ')}</div>}
+      <div className="sw-scroll"><table className="sw-table">
+        <thead><tr><th>Agent</th><th>Status</th><th>Note</th></tr></thead>
+        <tbody>{state.roster.agents.map((a) => <AgentRow key={a.id} a={a} as={state.swarm.agents[a.id]!} defs={state.statuses} act={act} />)}</tbody>
+      </table></div>
+      <p className="fx-muted">{Object.values(state.statuses).map((d) => `${d.label}: ${d.about}`).join(' · ')}</p>
+    </div>
+  );
+}
+
+function AgentRow({ a, as, defs, act }: { a: Agent; as: AgentState; defs: Record<string, StatusDef>; act: Act }) {
+  const [pick, setPick] = useState(as.status);
+  const [note, setNote] = useState(as.note);
+  const [until, setUntil] = useState(as.until.slice(0, 10));
+  const [name, setName] = useState(as.custom.name);
+  const [works, setWorks] = useState(as.custom.works);
+  useEffect(() => { setPick(as.status); setNote(as.note); setUntil(as.until.slice(0, 10)); setName(as.custom.name); setWorks(as.custom.works); }, [as]);
+  const needsMore = pick === 'medical-leave' || pick === 'custom';
+  const save = (status = pick) => act({ action: 'status', agent: a.id, status, note, until: until ? new Date(`${until}T09:00:00`).toISOString() : '', name, works });
+  return (
+    <tr className={as.status === 'fired' ? 'sw-gone' : ''}>
+      <td><b>{a.name}</b><br /><span className="fx-muted">{a.role}</span></td>
+      <td>
+        <div className="sw-bar">
+          <select className="fx-input sw-bar__pick" aria-label={`${a.name} status`} value={pick} onChange={(e) => { setPick(e.target.value); if (e.target.value !== 'medical-leave' && e.target.value !== 'custom') void save(e.target.value); }}>
+            {Object.entries(defs).map(([k, d]) => <option key={k} value={k}>{k === 'custom' && as.status === 'custom' ? statusText(as, defs) : d.label}</option>)}
+          </select>
+          {pick === 'medical-leave' && <input className="fx-input sw-bar__pick" type="date" aria-label="Back on" value={until} onChange={(e) => setUntil(e.target.value)} />}
+          {pick === 'custom' && <><input className="fx-input sw-bar__pick" aria-label="Status name" placeholder="Name it" value={name} onChange={(e) => setName(e.target.value)} /><label className="fx-checkrow"><input type="checkbox" className="fx-check" checked={works} onChange={(e) => setWorks(e.target.checked)} /><span className="fx-checkrow__label">Gets work</span></label></>}
+          {needsMore && <Button size="sm" onClick={() => void save()}>Set</Button>}
+        </div>
+      </td>
+      <td><input className="fx-input" aria-label={`${a.name} note`} placeholder="Note" value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => { if (note !== as.note) void act({ action: 'note', agent: a.id, note }); }} /></td>
+    </tr>
   );
 }
 

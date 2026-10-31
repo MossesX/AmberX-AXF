@@ -489,3 +489,89 @@ export function pilotReport(build, plan, briefs, table, heuristic, loadTokens, s
   const scale = Math.round(Math.min(2, Math.max(0.25, median)) * 100) / 100;
   return { build: build.id, jobs, swarm, single, saving: single.usd ? 1 - swarm.usd / single.usd : 0, scale, shape };
 }
+
+// ---------------------------------------------------------------- swarm state (swarm-state@1) and statuses
+
+/**
+ * Statuses an agent can have. `works`: true = gets work, false = skipped, 'small' = small jobs only.
+ * Custom statuses are named by Brett with their own `works`.
+ */
+export const STATUSES = {
+  'on-duty': { label: 'On duty', works: true, tone: 'success', about: 'Gets work.' },
+  'off-duty': { label: 'Off duty', works: false, tone: '', about: 'Skipped; keeps everything.' },
+  injured: { label: 'Injured', works: false, tone: 'danger', about: 'Keeps failing: no new jobs, flagged for a fix.' },
+  'medical-leave': { label: 'Medical leave', works: false, tone: 'warning', about: 'Benched until a date, then back on duty by itself.' },
+  probation: { label: 'Probation', works: 'small', tone: 'warning', about: 'Small jobs only; Brett is notified every run.' },
+  fired: { label: 'Fired', works: false, tone: 'danger', about: 'Never assigned again; kept greyed in history.' },
+  custom: { label: 'Custom', works: false, tone: 'accent', about: 'Brett names it and picks whether it gets work.' },
+};
+export const SMALL_JOB_MINUTES = 15;
+
+export function normAgentState(s) {
+  const o = s && typeof s === 'object' ? s : {};
+  return {
+    status: Object.hasOwn(STATUSES, o.status) ? o.status : 'on-duty',
+    note: str(o.note, 300),
+    until: str(o.until, 40),
+    custom: { name: str(o.custom?.name, 40), works: o.custom?.works === true },
+    history: (Array.isArray(o.history) ? o.history : []).slice(-200).map((h) => ({ at: str(h?.at, 40), from: str(h?.from, 40), to: str(h?.to, 40), note: str(h?.note, 300), by: str(h?.by, 40) || 'brett' })),
+  };
+}
+export function normState(s, roster) {
+  const o = s && typeof s === 'object' ? s : {};
+  const agents = {};
+  for (const a of roster?.agents ?? []) agents[a.id] = normAgentState(o.agents?.[a.id]);
+  for (const [k, v] of Object.entries(o.agents ?? {})) if (!agents[k]) agents[k] = normAgentState(v); // keep history of agents taken off the roster
+  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), agents, notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
+}
+
+export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || 'Custom' : STATUSES[as.status]?.label ?? as.status);
+const worksOf = (as) => (as.status === 'custom' ? as.custom.works : STATUSES[as.status]?.works);
+
+/** Can this agent take this job now? { ok, why, notify } (`notify` = Brett hears about the run: probation). */
+export function canWork(agent, as, job = {}, now = '') {
+  const w = worksOf(as);
+  if (w === true) return { ok: true, why: '', notify: false };
+  if (w === 'small') {
+    const m = minutesOf(job.estimate) ?? 20;
+    return m <= SMALL_JOB_MINUTES ? { ok: true, why: '', notify: true } : { ok: false, why: `${statusLabel(as)}: small jobs only (≤ ${SMALL_JOB_MINUTES} min)`, notify: false };
+  }
+  return { ok: false, why: `${statusLabel(as)}${as.until ? ` until ${as.until.slice(0, 10)}` : ''}`, notify: false };
+}
+
+/** Set a status, keeping history. Returns the log line. */
+function setStatus(st, id, to, note, at, by = 'brett', extra = {}) {
+  const as = st.agents[id]; if (!as) throw new Error(`no agent "${id}"`);
+  const from = statusLabel(as);
+  as.status = to; as.note = str(note, 300); as.until = str(extra.until, 40);
+  if (to === 'custom') as.custom = { name: str(extra.name, 40) || 'Custom', works: extra.works === true };
+  as.history.push({ at, from, to: statusLabel(as), note: as.note, by });
+  return `${id}: ${from} → ${statusLabel(as)}${note ? ` (${note})` : ''}`;
+}
+
+/** Time-driven changes: medical leave that has ended goes back on duty. Returns { state, log }. */
+export function tick(state, at) {
+  const log = [];
+  for (const [id, as] of Object.entries(state.agents)) {
+    if (as.status === 'medical-leave' && as.until && as.until <= at) log.push(setStatus(state, id, 'on-duty', 'back from medical leave', at, 'boss'));
+  }
+  return { state, log };
+}
+
+/** One change to the swarm state. Returns { state, log } or throws with a plain message. */
+export function applyChange(state, change, roster, at) {
+  const s = normState(state, roster); const c = change && typeof change === 'object' ? change : {};
+  const log = [];
+  switch (c.action) {
+    case 'status': {
+      if (!Object.hasOwn(STATUSES, c.status)) throw new Error(`unknown status "${c.status}"`);
+      if (c.status === 'medical-leave' && !(str(c.until, 40) > at)) throw new Error('medical leave needs a return date in the future');
+      if (c.status === 'custom' && !str(c.name, 40).trim()) throw new Error('a custom status needs a name');
+      log.push(setStatus(s, c.agent, c.status, c.note, at, 'brett', c)); break;
+    }
+    case 'note': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.note = str(c.note, 300); log.push(`${c.agent}: note saved`); break; }
+    default: throw new Error(`unknown action ${c.action}`);
+  }
+  s.updatedAt = at;
+  return { state: s, log };
+}
