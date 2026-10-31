@@ -23,7 +23,7 @@ import { Button, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
 import { HUB_DEFAULT, normalizeHub } from '../hub/hub';
 import { formatCountdown } from '../hub/veto';
 import {
-  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, freshIds, goneIds, goneMessage, isUrgent, itemLine,
+  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, freshIds, goneIds, goneMessage, isUrgent, itemLine, rowOrder,
   approvalsWatcher, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult,
 } from './index';
 import './approvals.css';
@@ -272,9 +272,10 @@ function Row({ item, busy, onDecide }: { item: ApprovalItem; busy: string; onDec
         {item.command && <code className="fx-mono fx-small axf-approvals__cmd" title={item.command}>{item.command}</code>}
       </div>
       <div className="axf-approvals__actions">
-        {item.decisions.map((d) => (
-          <Button key={d} size="sm" tone={d === 'approve' ? 'primary' : d === 'deny' ? 'danger' : 'neutral'} icon={d === 'approve' ? 'check' : d === 'deny' ? 'x-circle' : 'x'}
-            busy={busy === `${item.id}:${d}`} disabled={!!busy || (d === 'deny' && left === 0)} onClick={() => onDecide(d)}>{DECISION_LABELS[d]}</Button>
+        {/* Approve / Deny on every row (Brett, Oct 30 2026): big targets, green and red, the safe one first. */}
+        {rowOrder(item.decisions).map((d) => (
+          <Button key={d} tone={d === 'approve' ? 'success' : 'danger'} icon={d === 'approve' ? (item.kind === 'held' ? 'play' : 'check') : d === 'deny' ? 'x-circle' : 'x'}
+            busy={busy === `${item.id}:${d}`} disabled={!!busy || (item.kind === 'held' && left === 0)} onClick={() => onDecide(d)}>{DECISION_LABELS[d]}</Button>
         ))}
       </div>
     </li>

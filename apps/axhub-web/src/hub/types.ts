@@ -32,8 +32,12 @@ export interface ApprovalItem {
   decidedBy?: string;
   postponed?: { kind: string; waitingFor: string; until?: string; since: string; lastCheck?: string; lastNote?: string; nextReminder?: string; reminders: number };
   history: { at: string; from: string; to: string; by: string; note?: string }[];
-  /** Held commands (veto@1): `status: "held"`, run by the hub when the countdown ends unless denied (no Approve). */
-  veto?: { runsAt: string; secondsLeft: number; countdownSeconds: number };
+  /**
+   * Held commands (veto@1): `status: "held"`, run by the hub when the countdown ends unless denied. Since axHub decision
+   * 104 also Approve now (run at once) and Shelve (`state: "shelved"`: the countdown paused until he decides); `actions`
+   * is what applies now (absent on an older hub: Deny only).
+   */
+  veto?: { runsAt: string; secondsLeft: number; countdownSeconds: number; state?: string; approvedNow?: boolean; actions?: ('deny' | 'approve-now' | 'shelve')[] };
   jobId?: string;
   denyUrl?: string;
   streamUrl?: string;

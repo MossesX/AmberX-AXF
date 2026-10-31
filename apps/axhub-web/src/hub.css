@@ -10,3 +10,21 @@
 .axp-axhub-held__count.is-urgent { color: var(--fx-danger); }
 .axp-axhub-held--big .axp-axhub-held__count { font-size: calc(var(--fx-font-size) * 2); }
 .axp-axhub-held__what { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0; color: var(--fx-muted); }
+
+/* Approve / Deny on every row (Brett, Oct 30 2026): shown on the collapsed row, big targets from the theme's spacing
+   (about 32 px, 44 px on a phone) that never shrink; the title is cut first (one line, ellipsis). Colours are the
+   buttons' tones. Layout only. */
+.axp-axhub-row > .fx-card__head { flex-wrap: wrap; }
+.axp-axhub-row > .fx-card__head h3 { flex: 1 1 0; min-width: calc(var(--fx-space) * 12); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* the buttons never shrink; when the title would go under its minimum they move under it, still on the collapsed row */
+.axp-axhub-row > .fx-card__head > .fx-card__actions { flex: 0 0 auto; margin-left: auto; }
+.axp-axhub-row .axp-axhub-held > .axp-axhub-held__shelve { flex: 0 0 auto; min-width: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); }
+.axp-axhub-decide { display: flex; align-items: center; gap: var(--fx-space); }
+.axp-axhub-decide > .fx-btn, .axp-axhub-row .axp-axhub-held > .fx-btn { min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-width: calc(var(--fx-space) * 10); justify-content: center; }
+@media (max-width: 720px) {
+  .axp-axhub-decide > .fx-btn, .axp-axhub-row .axp-axhub-held > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+  .axp-axhub-row .axp-axhub-held > .axp-axhub-held__shelve { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem); min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+}
+@media (max-width: 480px) {
+  .axp-axhub-decide > .fx-btn, .axp-axhub-row .axp-axhub-held > .fx-btn { min-width: calc(var(--fx-space) * 9); }
+}

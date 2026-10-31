@@ -6,11 +6,13 @@ import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { App } from './App';
 import { HUB } from './hub/useHub';
-import { routeHubFetch } from './native';
+import { installVetoHost, routeHubFetch } from './native';
 import './axf/ui/axf.css';
 
 // Inside the Android shell, hub reads go through the native side (the hub session lives in Android's cookie store).
 routeHubFetch(HUB);
+// The veto banner plugin's phone side: Deny / Approve / Shelve with the phone's session, the alarm, notification taps.
+installVetoHost();
 
 // Every JSON file under src/assets is registered as a hot-swappable asset.
 const assetModules = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });

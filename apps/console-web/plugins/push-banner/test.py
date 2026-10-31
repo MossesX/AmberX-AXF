@@ -22,6 +22,7 @@ REPO = HERE.parents[3]
 TOKEN = "ghp_" + "P" * 36
 os.environ["AXF_PUSH_BANNER_DIR"] = tempfile.mkdtemp(prefix="axf-push-test-")
 os.environ["GITHUB_TOKEN"] = TOKEN
+os.environ["AXF_PUSH_AUTOMERGE"] = "off"  # no background loop in the test
 
 # ---------------------------------------------------------------- fake GitHub (one repo, MossesX/AmberX-AXF)
 R = "/repos/MossesX/AmberX-AXF"
@@ -327,6 +328,22 @@ path, body = STATE["merged"][-1]
 check(m["merged"] is True and path == R + "/pulls/18/merge", "green + mergeable: merged through the PR")
 check(body == {"merge_method": "merge", "sha": "aaa111"}, "merge commit, pinned to the head that passed CI")
 check(not any(s["method"] == "PUT" and "/git/refs" in s["path"] for s in SEEN), "main is never pushed to directly")
+
+# ---------------------------------------------------------------- auto-merge (Oct 30 2026)
+STATE["merged"].clear()
+check(c.get("/p/auto-merge").json()["on"] is True, "auto-merge is on by default")
+STATE["checks"]["aaa111"] = [{"status": "in_progress", "conclusion": None}]
+r = c.post("/p/auto-merge").json()["results"]
+check(not STATE["merged"] and not any(x.get("merged") for x in r), "auto-merge: nothing while CI runs")
+STATE["checks"]["aaa111"] = [{"status": "completed", "conclusion": "success"}]
+r = c.post("/p/auto-merge").json()["results"]
+check([x["pr"] for x in r if x.get("merged")] == ["MossesX/AmberX-AXF#18"], "auto-merge: the green PR merges, the fork and the draft don't")
+check(STATE["merged"][-1][1] == {"merge_method": "merge", "sha": "aaa111"}, "auto-merge: pinned to the head that passed CI")
+check(c.get("/p/auto-merge").json()["last"][0]["pr"] == "MossesX/AmberX-AXF#18", "auto-merge: last results kept")
+STATE["merged"].clear()
+check(c.put("/p/config", json={"autoMerge": False}).json()["autoMerge"] is False, "auto-merge can be switched off")
+check(c.post("/p/auto-merge").json()["results"] == [] and not STATE["merged"], "auto-merge off: nothing merges")
+c.put("/p/config", json={"autoMerge": True})
 
 cfg = c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:feat/b"]}).json()
 out = c.get("/p/branches").json()

@@ -51,7 +51,7 @@ function Detail() {
           {item && <p className="fx-muted">Asked {when(item.createdAt)} by {item.callerId}{item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}</p>}
           {/* Brett (Oct 27 2026): the decision buttons are on the first screen, right under the title, before any
               description or code, so Approve never needs a scroll on a phone. */}
-          {/* veto@1: a held command has no Approve; the countdown and Deny take the actions' place, first screen. */}
+          {/* veto@1: a held command shows its countdown with Deny / Approve / Shelve (decision 104) in place of the usual actions, on the first screen. */}
           {item && held && <HeldBar big item={item} onDone={(next) => { if (next) res.setData({ item: next, auto: res.data!.auto }); else void res.reload(); }} />}
           {item && !held && <div className="fx-row fx-row--wrap" data-axf-anchor="approval-actions">
             <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>

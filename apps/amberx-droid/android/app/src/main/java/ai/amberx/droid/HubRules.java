@@ -125,21 +125,50 @@ final class HubRules {
     private static final Pattern SUMMARY_COMMAND = Pattern.compile("\"command\":\"((?:[^\"\\\\]|\\\\.)*)\"");
     static final int VETO_WARNING_SECONDS = 30;
 
+    /** The owner's actions on a held call (decision 102 Deny; 104 Approve now, Shelve), in button order. */
+    static final String[] VETO_ACTIONS = { "deny", "approve-now", "shelve" };
+
     /** One held call: the hub runs it when [secondsLeft] (read at [readAt], local ms) reaches 0 unless it is denied. */
     static final class Veto {
         final String id, jobId, tool, title, command, url;
         final int secondsLeft;
         final long readAt;
+        /** Decision 104: countdown paused until Approve now or Deny; approved (runs at once, no more notices). */
+        final boolean shelved, approvedNow;
+        /** What the owner may do now (a hub before 104: Deny only). */
+        final List<String> actions;
         Veto(String id, String jobId, String tool, String title, String command, String url, int secondsLeft, long readAt) {
-            this.id = id; this.jobId = jobId; this.tool = tool; this.title = title; this.command = command; this.url = url;
-            this.secondsLeft = secondsLeft; this.readAt = readAt;
+            this(id, jobId, tool, title, command, url, secondsLeft, readAt, false, false, java.util.Collections.singletonList("deny"));
         }
-        /** Local time (ms) it runs at. */
+        Veto(String id, String jobId, String tool, String title, String command, String url, int secondsLeft, long readAt, boolean shelved, boolean approvedNow, List<String> actions) {
+            this.id = id; this.jobId = jobId; this.tool = tool; this.title = title; this.command = command; this.url = url;
+            this.secondsLeft = secondsLeft; this.readAt = readAt; this.shelved = shelved; this.approvedNow = approvedNow; this.actions = actions;
+        }
+        /** Local time (ms) it runs at (while shelved: when it would have, had it not been). */
         long runsAtLocal() { return readAt + secondsLeft * 1000L; }
+        boolean can(String action) { return actions.contains(action); }
     }
 
-    static String vetoDenyUrl(String hub, String id) {
-        return id != null && APPROVAL_ID.matcher(id).matches() ? hub + API_APPROVALS_PATH + "/" + id + "/deny" : null;
+    static boolean isVetoAction(String action) {
+        for (String a : VETO_ACTIONS) if (a.equals(action)) return true;
+        return false;
+    }
+
+    /** `POST` address of one owner action, rebuilt from the id; null for anything else. */
+    static String vetoActionUrl(String hub, String id, String action) {
+        return id != null && APPROVAL_ID.matcher(id).matches() && isVetoAction(action) ? hub + API_APPROVALS_PATH + "/" + id + "/" + action : null;
+    }
+
+    static String vetoDenyUrl(String hub, String id) { return vetoActionUrl(hub, id, "deny"); }
+
+    /** The actions list of an entry, filtered and in button order; absent = Deny only. */
+    static List<String> vetoActionsOf(JSONArray a) {
+        List<String> out = new ArrayList<>();
+        if (a == null) { out.add("deny"); return out; }
+        Set<String> got = new HashSet<>();
+        for (int i = 0; i < a.length(); i++) got.add(a.optString(i, ""));
+        for (String x : VETO_ACTIONS) if (got.contains(x)) out.add(x);
+        return out;
     }
 
     static Veto veto(String hub, JSONObject p, long now) {
@@ -147,7 +176,7 @@ final class HubRules {
         String id = p.optString("id", null);
         String url = approvalUrl(hub, id);
         if (url == null) return null;
-        for (String k : new String[] { "url", "approvalUrl", "denyUrl", "streamUrl" }) {
+        for (String k : new String[] { "url", "approvalUrl", "denyUrl", "approveNowUrl", "shelveUrl", "streamUrl" }) {
             if (p.has(k) && !isHub(hub, p.optString(k, ""))) return null;
         }
         JSONObject v = p.optJSONObject("veto");
@@ -170,7 +199,12 @@ final class HubRules {
             Matcher m = SUMMARY_COMMAND.matcher(p.optString("summary", ""));
             if (m.find()) command = m.group(1).replace("\\\"", "\"").replace("\\\\", "\\");
         }
-        return new Veto(id, JOB_ID.matcher(job).matches() ? job : null, tool, cap(title.isEmpty() ? tool : title, 200), cap(command, 2000), url, left, now);
+        boolean shelved = "shelved".equals(v.optString("state", "")) || "shelved".equals(p.optString("phase", ""));
+        boolean approvedNow = v.optBoolean("approvedNow", false);
+        JSONArray acts = v.optJSONArray("actions");
+        if (acts == null) acts = p.optJSONArray("actions");
+        return new Veto(id, JOB_ID.matcher(job).matches() ? job : null, tool, cap(title.isEmpty() ? tool : title, 200), cap(command, 2000), url, left, now,
+            shelved, approvedNow, vetoActionsOf(acts));
     }
 
     /** Every held call in a feed reply: `pending` entries with `status: "held"` + a `veto` object, and `held[]`. */
@@ -334,8 +368,15 @@ final class HubRules {
      * `POST /auth/api/approvals/<id>/deny` with the hub as Origin. Returns the hub's status (200 = denied), -1 when it
      * couldn't be sent (signed out, not a request id).
      */
-    static int deny(String hub, String id, String cookie) {
-        String url = vetoDenyUrl(hub, id);
+    static int deny(String hub, String id, String cookie) { return act(hub, id, "deny", cookie); }
+
+    /**
+     * Deny, Approve now or Shelve a held call (decisions 102, 104) with the phone's hub session: the session's CSRF value,
+     * then `POST /auth/api/approvals/<id>/<action>` with the hub as Origin. The hub's status (200 = done), -1 when it
+     * couldn't be sent (signed out, not a request id, not an action).
+     */
+    static int act(String hub, String id, String action, String cookie) {
+        String url = vetoActionUrl(hub, id, action);
         if (url == null || cookie == null || !isHub(HUB, hub)) return -1;
         try {
             Reply session = get(hub + SESSION_PATH, cookie);
