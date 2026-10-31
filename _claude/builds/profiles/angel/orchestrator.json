@@ -1019,7 +1019,7 @@
    "id": "element-inspector",
    "title": "Element inspector (Android first)",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "queued",
+   "status": "complete",
    "branch": "claude/element-inspector",
    "pr": null,
    "profile": "angel",
@@ -1034,13 +1034,13 @@
      "estimate": null,
      "files": null,
      "checks": null,
-     "session": null,
+     "session": "claude/element-inspector",
      "agent": null,
      "skip": null,
-     "done": null,
-     "doneAt": null,
-     "note": null,
-     "status": "todo"
+     "done": true,
+     "doneAt": "2026-10-31T06:00:00.000Z",
+     "note": "Built on Opus (step pinned Fable): engine core/engines/inspect.ts + kernel InspectEngine",
+     "status": "done"
     },
     {
      "id": "s2",
@@ -1052,13 +1052,13 @@
      "estimate": null,
      "files": null,
      "checks": null,
-     "session": null,
+     "session": "claude/element-inspector",
      "agent": null,
      "skip": null,
-     "done": null,
-     "doneAt": null,
+     "done": true,
+     "doneAt": "2026-10-31T06:00:00.000Z",
      "note": null,
-     "status": "todo"
+     "status": "done"
     },
     {
      "id": "s3",
@@ -1070,13 +1070,13 @@
      "estimate": null,
      "files": null,
      "checks": null,
-     "session": null,
+     "session": "claude/element-inspector",
      "agent": null,
      "skip": null,
-     "done": null,
-     "doneAt": null,
+     "done": true,
+     "doneAt": "2026-10-31T06:00:00.000Z",
      "note": null,
-     "status": "todo"
+     "status": "done"
     },
     {
      "id": "s4",
@@ -1088,16 +1088,18 @@
      "estimate": null,
      "files": null,
      "checks": null,
-     "session": null,
+     "session": "claude/element-inspector",
      "agent": null,
      "skip": null,
-     "done": null,
-     "doneAt": null,
+     "done": true,
+     "doneAt": "2026-10-31T06:00:00.000Z",
      "note": null,
-     "status": "todo"
+     "status": "done"
     }
    ],
-   "notes": []
+   "notes": [
+    "Oct 31 2026: all steps built in one Opus session on claude/element-inspector (s1-s3 were pinned Fable; a Fable review/rebuild is Brett's call)."
+   ]
   },
   {
    "id": "context-menu-editor",

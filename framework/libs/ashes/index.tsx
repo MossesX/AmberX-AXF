@@ -27,7 +27,7 @@ import { Button, Chip, IconButton, Icon, ModelBadge, Note, Segmented, Switch, Te
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import {
-  componentOf, filterTree, ownersFrom, parameterRows, parameterTree, pathStep, pathTo, resolveOwner, shortLabel,
+  componentOf, filterTree, ownersFrom, panelFields, parameterRows, parameterTree, pathStep, pathTo, resolveOwner, shortLabel,
   STYLE_PROPS, tooltipRows, TOOLTIP_FIELDS, treeStats, type ElNode, type ElementSnap, type KnownOwner, type Owner, type ParamNode, type Row,
 } from './core';
 import { INSPECT_DEFAULTS, followPanel, inspectInit, inspectStep, type InspectConfig, type InspectEvent, type InspectOn, type InspectPoint, type InspectRect, type InspectState } from '../../core/engines/inspect';
@@ -220,8 +220,7 @@ function Highlight({ el, boxModel, tone }: { el: Element; boxModel: boolean; ton
 
 /** The rows a panel shows: the fields switched on in settings, and always the size. */
 function panelRows(rt: AxfRuntime, snap: ElementSnap): Row[] {
-  const fields = (rt.settings.get(KEY.fields) as string[] | undefined) ?? [...TOOLTIP_FIELDS];
-  return tooltipRows(snap, fields.includes('size') ? fields : [...fields, 'size']);
+  return tooltipRows(snap, panelFields(rt.settings.get(KEY.fields) as string[] | undefined));
 }
 
 function PanelRows({ snap, rows }: { snap: ElementSnap; rows: Row[] }) {
@@ -719,10 +718,10 @@ export function createAshesLibrary(opts: AshesOptions = {}): AxfWebLibrary {
     settings: [
       { id: 'ashes.tooltip', label: 'Tooltip', icon: 'info', tab: 'ashes', order: 10, settings: [
         { key: KEY.on, label: 'AshesUI on', kind: 'toggle', default: false },
-        { key: KEY.fields, label: 'Show in the tooltip', kind: 'multi_choice', default: [...TOOLTIP_FIELDS], options: TOOLTIP_FIELDS.map((f) => ({ value: f, label: f[0]!.toUpperCase() + f.slice(1) })) },
+        { key: KEY.fields, label: 'Show in the panels (size always)', kind: 'multi_choice', default: [...TOOLTIP_FIELDS], options: TOOLTIP_FIELDS.map((f) => ({ value: f, label: f[0]!.toUpperCase() + f.slice(1) })) },
         { key: KEY.offset, label: 'Distance from the pointer', kind: 'slider', default: 16, min: 4, max: 48, step: 2 },
-        { key: KEY.delay, label: 'Wait before updating (ms)', kind: 'slider', default: 0, min: 0, max: 400, step: 20 },
-        { key: KEY.touch, label: 'Follow touches too (phones)', kind: 'toggle', default: true },
+        { key: KEY.delay, label: 'Wait before updating while dragging (ms)', kind: 'slider', default: 0, min: 0, max: 400, step: 20 },
+        { key: KEY.touch, label: 'Inspect touches too (phones)', kind: 'toggle', default: true },
       ] },
       { id: 'ashes.highlight', label: 'Highlight', icon: 'layers', tab: 'ashes', order: 20, settings: [
         { key: KEY.box, label: 'Outline the element', kind: 'toggle', default: true },
