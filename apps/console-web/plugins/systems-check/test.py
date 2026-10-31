@@ -701,9 +701,11 @@ for k in ("git-push", "ci-main", "disk", "containers", "builds-stuck"):
     mod.REGISTRY.checks()[k]["run"] = (lambda: {"status": "ok", "summary": "fake"})
 mod.REGISTRY._checks["disk"]["run"] = lambda: {"status": "error", "summary": "Disk is 91% full."}  # noqa: SLF001
 mod.MONITOR.last_run = 0
+check(c.put("/p/settings", json={"autoFix": {"disk": "ask"}}).json()["autoFix"] == {"disk": "ask"}, "auto-fix setting saved per check")
 h = c.post("/p/health/run").json()
 disk = next(i for i in h["items"] if i["id"] == "disk")
 check(disk["status"] == "error" and disk["breaks"] and disk["since"] and disk["fix"]["type"] == "host", "Check now runs health; red disk item has breaks, since and a fix")
+check(disk.get("autoFixMode") == "ask" and disk.get("autoFixLabel") and not disk.get("autofix"), "ask first: red with its Auto fix offered, nothing run")
 rep = c.get("/p/check?force=1").json()
 check(any(x["id"] == "disk" and x["status"] == "error" for x in rep["checks"]), "health items are in the banner report")
 check(all("since" in x for x in rep["checks"] if x["status"] in ("error", "warn")), "every banner issue says since when")
@@ -722,6 +724,140 @@ check(r.status_code == 409, "service unreachable: 409, the browser offers Save a
 r = c.post("/p/secret/test", json={"key": "GITHUB_TOKEN", "value": SECRET})
 check(r.status_code == 200 and r.json()["tested"] and r.json()["unreachable"] and not os.environ.get("GITHUB_TOKEN"), "secret/test tests without saving")
 mod.test_candidate = old_tc
+
+# ---------------------------------------------------------------- auto-fix (Oct 30 2026: "fix it yourself")
+clock = [NOW]
+pushed, recorded = [], []
+reg = health.Registry()
+st = {"k": {"status": "error", "summary": "Key k is dead."}}
+modes: dict[str, str] = {}
+fixres = {"r": {"state": "done", "message": "rotated"}}
+holds = [True]
+
+
+def fixer() -> dict:
+    out = dict(fixres["r"])
+    if out.get("heal"):
+        st["k"] = {"status": "ok", "summary": "fine"}
+    return out
+
+
+reg.register({"id": "k", "label": "Key k", "run": lambda: dict(st["k"]), "autoFix": {"label": "Rotate k", "run": fixer, "mitigated": lambda: holds[0]}}, "p2")
+sf = Path(os.environ["AXF_SYSTEMS_CHECK_DIR"]) / "health-af.json"
+mon = health.Monitor(reg, mod.SVC.core.item, lambda: sf, raise_alert=pushed.append, clock=lambda: clock[0], background=False,
+                     mode_of=lambda cid: modes.get(cid, "auto"), recheck=lambda cid: mon.annotate(mon.run_ids([cid])), record=recorded.append)
+k = lambda _=None: next(i for i in mon.annotate(mon.items()) if i["id"] == "k")  # noqa: E731 — the state now (fixes run after the pass)
+fixres["r"] = {"state": "done", "message": "rotated", "heal": True}
+mon.run(force=True)
+check(k(mon.items())["status"] == "ok" and not pushed and len(mon.history()) == 1 and recorded[0]["state"] == "done", "red → auto-fix first → fixed: green, never pushed, in the history + change log")
+st["k"] = {"status": "error", "summary": "Key k is dead."}
+fixres["r"] = {"state": "failed", "message": "no spare key"}
+clock[0] += 60
+it = k(mon.run(force=True))
+check(it["status"] == "error" and "Auto fix tried" in it["summary"] and len(pushed) == 1, "fix failed: red, says what was tried, pushed once")
+clock[0] += 60
+mon.run(force=True)
+check(len(pushed) == 1 and len(mon.history()) == 2, "still red: not fixed again, not pushed again in the same episode")
+st["k"] = {"status": "ok", "summary": "fine"}
+clock[0] += 60
+mon.run(force=True)
+st["k"] = {"status": "error", "summary": "Key k is dead."}
+fixres["r"] = {"state": "started", "message": "sent as a veto call", "waitS": 300, "jobId": "job-1"}
+clock[0] += 60
+it = k(mon.run(force=True))
+check(it["status"] == "warn" and it.get("fixing") and "Auto fix is on it" in it["summary"] and len(pushed) == 1 and not recorded[-1:] == [None], "veto fix counting down: amber, not pushed")
+check(it["autofix"]["jobId"] == "job-1", "the veto job id is on the item")
+clock[0] += 400
+it = k(mon.run(force=True))
+check(it["status"] == "error" and len(pushed) == 2, "veto fix ran but still broken: red, pushed")
+st["k"] = {"status": "ok", "summary": "fine"}
+clock[0] += 60
+mon.run(force=True)
+st["k"] = {"status": "error", "summary": "Key k is dead."}
+fixres["r"] = {"state": "done", "message": "routed around it", "mitigated": True}
+clock[0] += 60
+it = k(mon.run(force=True))
+check(it["status"] == "warn" and it.get("workaround") and "Worked around" in it["summary"] and len(pushed) == 2, "worked around: amber while it holds")
+holds[0] = False
+clock[0] += 60
+it = k(mon.run(force=True))
+check(it["status"] == "error" and len(pushed) == 3, "workaround stops holding: red, pushed")
+holds[0] = True
+st["k"] = {"status": "ok", "summary": "fine"}
+clock[0] += 60
+mon.run(force=True)
+modes["k"] = "off"
+st["k"] = {"status": "error", "summary": "Key k is dead."}
+n = len(mon.history())
+clock[0] += 60
+it = k(mon.run(force=True))
+check(it["status"] == "error" and len(mon.history()) == n and it["autoFixMode"] == "off", "auto-fix off: red, nothing run")
+modes["k"] = "ask"
+fixres["r"] = {"state": "done", "message": "rotated", "heal": True}
+mon.autofix_now("k", by="test")
+check(k(mon.items())["status"] == "ok" and mon.history()[-1]["by"] == "test", "ask first: the Auto fix button runs it")
+fixres["r"] = {"state": "done"}
+reg.register({"id": "boom2", "label": "Boom", "run": lambda: {"status": "error", "summary": "x"}, "autoFix": lambda: 1 / 0}, "p2")
+mon.run(force=True)
+it = next(i for i in mon.annotate(mon.items()) if i["id"] == "boom2")
+check(it["status"] == "error" and mon.history()[-1]["state"] == "failed", "a fix that throws is a failed attempt, red")
+check(SECRET not in sf.read_text(), "no secret in the auto-fix state")
+
+# veto calls for VPS fixes: never polled
+held = 'held: true\n{"status": "held", "job_id": "0f9c1a2b-1111-2222-3333-444455556666", "runsAt": %d}' % int((NOW + 180) * 1000)
+r = hc.veto_fix("df -h /", lambda tool, a: {"ok": held}, now=NOW)
+check(r["state"] == "started" and 180 < r["waitS"] < 400 and r["jobId"].startswith("0f9c1a2b"), "veto call: started, re-checked after the countdown")
+r = hc.veto_fix("df -h /", lambda tool, a: {"confirm": "abc"}, now=NOW)
+check(r["state"] == "started" and r["link"].endswith("/approvals/abc"), "approval needed: started, with the one-tap link")
+check(hc.veto_fix("x", lambda t, a: {"ok": "exit 0\nok"})["state"] == "done", "ran and passed: done")
+check(hc.veto_fix("x", lambda t, a: {"ok": "boom\nexit 1"})["state"] == "failed", "ran and failed: failed")
+check("autoFix" not in str(mod.REGISTRY.checks()["disk"]) or mod.REGISTRY.autofix("disk")["label"].startswith("Clear"), "disk carries its veto auto-fix")
+check(mod.REGISTRY.autofix("builds-stuck") is not None and mod.REGISTRY.autofix("github-token") is not None, "stuck builds + dead GitHub token have auto-fixes")
+check(mod.MONITOR._mode("builds-stuck") == "ask" and mod.MONITOR._mode("github-token") == "auto", "marking builds stalled closes entries (Brett's call): ask first by default; GitHub route: on")  # noqa: SLF001
+
+# github@1: GitHub through axHub (fake hub)
+from axf_server import github_hub, http as fhttp  # noqa: E402
+
+
+class FakeHub:
+    def __init__(self, mode: str = "ok") -> None:
+        self.mode, self.calls = mode, []
+
+    def __call__(self, rq):
+        if self.mode == "down":
+            raise fhttp.HttpError("refused")
+        m = json.loads(rq.body)
+        if m["method"] == "initialize":
+            return fhttp.Response(200, {"content-type": "application/json", "mcp-session-id": "s"}, json.dumps({"jsonrpc": "2.0", "id": m["id"], "result": {}}).encode(), rq.url)
+        a = m["params"]["arguments"]
+        self.calls.append(a["tool"])
+        text = json.dumps({"login": "MossesX"}) if a["tool"] == "github.users/get-authenticated" else json.dumps({"workflow_runs": [{"name": "CI", "path": "ci.yml", "conclusion": "failure", "html_url": "https://github.com/x/y/actions/runs/1", "head_sha": "abcdef1"}]})
+        return fhttp.Response(200, {"content-type": "application/json"}, json.dumps({"jsonrpc": "2.0", "id": m["id"], "result": {"content": [{"type": "text", "text": text}]}}).encode(), rq.url)
+
+
+g = mod.GITHUB
+g.hub = github_hub.HubLink("https://hub.test", lambda: "HUB-xyz", transport=FakeHub())
+g._status = None  # noqa: SLF001
+check(c.put("/p/github", json={"route": "local"}).json()["route"] == "local", "route saved: local first")
+r = c.get("/p/github?refresh=1").json()
+check(r["ok"] and r["login"] == "MossesX" and "HUB-xyz" not in json.dumps(r), "GitHub through axHub works (fake hub), no token shown")
+sw = mod.REGISTRY.autofix("github-token")["run"]()
+check(sw["state"] == "done" and sw["mitigated"] and g.route() == "hub" and "axHub" in sw["message"], "dead console token: auto-fix switches GitHub to the hub route")
+check(mod.REGISTRY.autofix("github-token")["mitigated"](), "worked around while the hub route works")
+hubitem = mod.REGISTRY.checks()["github-hub"]["run"]()
+check(hubitem["status"] == "ok" and "MossesX" in hubitem["summary"], "github-hub check: ok through the fake hub")
+ci = probes.github_ci_main_via(g.client(token=lambda: ""), "MossesX/AmberX-AXF")
+check(ci["status"] == "error" and "CI" in ci["summary"] and any("axHub" in d for d in ci["details"]), "CI on main read through axHub")
+g.hub = github_hub.HubLink("https://hub.test", lambda: "HUB-xyz", transport=FakeHub("down"))
+g._status = None  # noqa: SLF001
+sw = mod.REGISTRY.autofix("github-token")["run"]()
+check(sw["state"] == "failed" and "doesn't work either" in sw["message"], "hub down too: the auto-fix fails, the item stays red")
+check(mod.REGISTRY.checks()["github-hub"]["run"]()["status"] == "error", "github-hub check: red (shown amber) when the hub route is down")
+check(plugin_services.get("axf.github@1") is g, "axf.github@1 provided")
+r = c.post("/p/health/autofix/nope")
+check(r.status_code == 404, "auto-fix endpoint: unknown check 404")
+h = c.get("/p/health").json()
+check(any(f["id"] == "github-token" for f in h["autoFixes"]) and isinstance(h["history"], list), "health lists the auto-fixes and the history")
 
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")

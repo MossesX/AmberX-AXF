@@ -4,6 +4,11 @@ Keys: Claude sign-in (Claude Code token), OpenAI and ElevenLabs keys when set, n
 credentials on the VPS checkout. System: CI on main, stuck builds, veto calls denied or expired, containers restarting,
 disk over 85%. The GitHub, Anthropic, Hostinger, Coolify and axHub keys stay built-in checks (checks.py) and are tested
 live on every banner load; the monitor gives them `since`, `breaks` and the push too.
+
+Auto-fixes (Oct 30 2026, "fix it yourself"): a dead console GitHub token → GitHub goes through axHub (github@1, the
+hub's own token; worked around until a new local token is saved); disk over 85% → the
+Docker clean-up as a veto call on the VPS (Brett can stop it on the countdown); stuck builds → marked stalled, ask
+first by default (it closes change-log entries, his call). The rest need his hands or a choice.
 """
 from __future__ import annotations
 
@@ -112,7 +117,38 @@ def containers(items: list[dict[str, Any]]) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- registration
 
-def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callable[[], list[dict[str, Any]]]) -> None:
+DISK_FIX = "docker builder prune -af --filter until=72h && docker image prune -af --filter until=168h && df -h /"
+_RUNS_AT = re.compile(r'"?runsAt"?\s*[:=]\s*"?([0-9T:.\-Z+]{10,40}|\d{10,13})')
+_JOB_ID = re.compile(r'"?job_?[iI]d"?\s*[:=]\s*"?([0-9a-f-]{8,64})')
+
+
+def veto_fix(command: str, call: Callable[..., dict[str, Any]], now: float | None = None) -> dict[str, Any]:
+    """Send one fixed VPS command through axHub as a veto call (Vinnie runs it after the countdown unless Brett denies
+    it). Never polled: the monitor checks again once it should have run."""
+    now = time.time() if now is None else now
+    r = call("vps.run", {"command": command, "timeout_seconds": 600})
+    if "confirm" in r:
+        return {"state": "started", "message": "Waiting for your approval on axHub.", "waitS": 30 * 60,
+                "link": f"https://axhub.amberxai.com/auth/admin/approvals/{r['confirm']}"}
+    text = str(r.get("ok") or "")
+    if re.search(r"^exit 0\b", text, re.M):
+        return {"state": "done", "message": "Ran on the VPS."}
+    if re.search(r"^exit -?\d+", text, re.M):
+        return {"state": "failed", "message": "The VPS command failed: " + " / ".join([ln for ln in text.strip().splitlines() if ln.strip()][-2:])[:200]}
+    wait = 5 * 60.0
+    m = _RUNS_AT.search(text)
+    if m:
+        v = m.group(1)
+        at = (float(v) / (1000 if len(v) > 11 else 1)) if v.isdigit() else (_ms(v) or 0) / 1000
+        if at > now:
+            wait = at - now + 120
+    j = _JOB_ID.search(text)
+    return {"state": "started", "message": "Sent as a veto call: it runs after the countdown unless you deny it.", "waitS": min(wait, 30 * 60),
+            **({"jobId": j.group(1)} if j else {})}
+
+
+def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callable[[], list[dict[str, Any]]],
+                      github_svc: Any = None, vps_call: Callable[..., dict[str, Any]] | None = None) -> None:
     tok = lambda: os.environ.get("GITHUB_TOKEN", "")  # noqa: E731
 
     reg.register({"id": "claude-code-token", "label": "Claude sign-in (Claude Code)", "service": "claude", "order": 22,
@@ -156,8 +192,10 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
                   "instructions": ["On the VPS: gh auth login (or store a token with git's credential helper), then gh auth setup-git.",
                                    "The check runs git push --dry-run, which signs in and stops before sending anything."]}, OWNER)
 
-    reg.register({"id": "ci-main", "label": "CI on main", "service": "github", "order": 14, "when": lambda: bool(tok()),
-                  "run": lambda: probes.github_ci_main(tok(), repo),
+    gh_ci = github_svc.client(user_agent="axf-console-health") if github_svc is not None else None
+    reg.register({"id": "ci-main", "label": "CI on main", "service": "github", "order": 14,
+                  "when": lambda: bool(tok()) or (github_svc is not None and github_svc.hub.configured()),
+                  "run": lambda: probes.github_ci_main_via(gh_ci, repo) if gh_ci is not None else probes.github_ci_main(tok(), repo),
                   "links": [{"label": "Actions on main", "url": f"https://github.com/{repo}/actions?query=branch%3Amain"}],
                   "instructions": ["Open the failing run, fix it on a branch, merge the fix."]}, OWNER)
 
@@ -188,8 +226,44 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
                   "instructions": ["Read the container's last log lines (Fix runs docker logs through axHub), fix the cause, then redeploy it in Coolify."]}, OWNER)
 
     reg.register({"id": "disk", "label": "Disk space", "service": "vps", "order": 36, "run": lambda: probes.disk("/"),
-                  "fix": {"type": "host", "command": "docker builder prune -af --filter until=72h && docker image prune -af --filter until=168h && df -h /"},
-                  "instructions": ["Fix clears Docker build cache older than 3 days and unused images older than a week (you approve it on axHub)."]}, OWNER)
+                  "fix": {"type": "host", "command": DISK_FIX},
+                  **({"autoFix": {"label": "Clear old Docker build cache and images", "run": lambda: veto_fix(DISK_FIX, vps_call)}} if vps_call else {}),
+                  "instructions": ["Auto fix clears Docker build cache older than 3 days and unused images older than a week, as a veto call (deny it on the countdown to stop it)."]}, OWNER)
+
+    # Ask first by default: marking stalled closes change-log entries, and closing one is Brett's call (repo rule).
+    reg.add_autofix("builds-stuck", {"label": "Mark the stuck builds stalled", "mode": "ask", "run": lambda: {"state": "done", "message": fix_builds_stuck()}}, OWNER)
+
+    if github_svc is not None:
+        register_github(reg, github_svc)
+
+
+def register_github(reg: Registry, svc: Any) -> None:
+    """github@1: the hub route's own check, and the dead console token's auto-fix (switch to the hub route)."""
+    def hub_check() -> dict[str, Any]:
+        st = svc.status(refresh=True)
+        if st.get("ok"):
+            who = f" as {st['login']}" if st.get("login") else ""
+            return {"status": "ok", "summary": f"GitHub through axHub works{who} (route: {'axHub first' if st.get('route') == 'hub' else 'local token first'})."}
+        return {"status": "error", "summary": f"GitHub through axHub doesn't work: {st.get('why') or 'no answer'}.",
+                "breaks": "If the console's own GitHub token dies too, the console can't reach GitHub at all."}
+    reg.register({"id": "github-hub", "label": "GitHub through axHub", "service": "github", "order": 12, "severity": "warn",
+                  "when": lambda: svc.hub.configured(), "run": hub_check,
+                  "links": [{"label": "axHub services", "url": "https://axhub.amberxai.com/#/services"}],
+                  "instructions": ["axHub → Services → github: check its token there (it stays in the hub vault)."]}, OWNER)
+
+    def switch() -> dict[str, Any]:
+        st = svc.status(refresh=True)
+        if not st.get("ok"):
+            return {"state": "failed", "message": f"GitHub through axHub doesn't work either ({st.get('why') or 'no answer'})"}
+        before = svc.route()
+        if before != "hub":
+            svc.set_route("hub", by="auto-fix")
+        who = f" as {st['login']}" if st.get("login") else ""
+        return {"state": "done", "mitigated": True,
+                "message": f"console GitHub calls go through axHub{who} ({'switched from the local token' if before != 'hub' else 'already the route'}). "
+                           "Helpers not on github@1 yet (push banner) still need a new local token."}
+    reg.add_autofix("github-token", {"label": "Send GitHub calls through axHub", "run": switch,
+                                     "mitigated": lambda: svc.route() == "hub" and bool(svc.status().get("ok"))}, OWNER)
 
 
 def fix_builds_stuck() -> str:

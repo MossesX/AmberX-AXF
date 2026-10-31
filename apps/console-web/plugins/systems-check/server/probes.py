@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from typing import Any, Callable
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import http as axf_http
+from axf_server import github as axf_github, http as axf_http
 
 Fetch = Callable[..., tuple[int, dict[str, str], str]]
 Probe = dict[str, Any]
@@ -142,6 +142,24 @@ def github_ci_main(token: str, repo: str, f: Fetch = fetch) -> Probe:
         runs = json.loads(body).get("workflow_runs") or []
     except ValueError:
         return p("unknown", "GitHub's Actions answer was cut short.")
+    return ci_main_from_runs(runs)
+
+
+def github_ci_main_via(gh: Any, repo: str) -> Probe:
+    """CI on main through a github@1 client (axHub first, so a dead local token doesn't blind it)."""
+    try:
+        runs = gh.workflow_runs(repo, branch="main", status="completed", per_page=40)
+    except axf_github.GitHubError as e:
+        if e.status == 0:
+            return p("error", f"Couldn't read CI on main: {str(e)[:120]}", unreachable=True)
+        return p("unknown", f"GitHub answered {e.status} for the Actions runs (see the GitHub token check).")
+    r = ci_main_from_runs(runs)
+    if getattr(gh, "last_route", "") == "axhub":
+        r["details"] = [*r.get("details", []), "Read through axHub (github@1)."]
+    return r
+
+
+def ci_main_from_runs(runs: list[dict[str, Any]]) -> Probe:
     latest: dict[str, dict[str, Any]] = {}
     for r in runs:
         latest.setdefault(str(r.get("path") or r.get("name")), r)

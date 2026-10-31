@@ -13,6 +13,14 @@ of the banners. I need to see that kind of shit.").
   * **Push**: each item that turns red is raised once as a console alert (key `system:<id>`, the same key the alerts
     poller uses, so it's never two), which the AmberX app shows as a phone notification; it resolves when it's green.
 
+  * **Auto-fix** (Brett, Oct 30 2026: "Why do I have to tell you to fix something when you have the tools to do it?"):
+    a check may carry `autoFix` ({run, label, mitigated?}; built-in checks get one with `add_autofix`). When it turns
+    red, the monitor runs the fix first (in the background; VPS commands go as a veto call, so Brett can stop them on
+    the countdown), shows the item amber while it works, re-checks, and shows red (and pushes) only if it's still
+    broken. A fix that works around the fault (e.g. GitHub through axHub while the local token is dead) keeps the item
+    amber, saying so, for as long as `mitigated()` holds. Per check: auto (default) | ask (red with an Auto fix
+    button) | off. Every attempt goes into the history (`fixes` in the state file) and the axHub change log.
+
 No secret ever reaches a summary, a detail, the state file or the log.
 """
 from __future__ import annotations
@@ -33,6 +41,9 @@ FIRST_RUN_S = 20       # after the console starts, once its routes are up
 MIN_FORCE_S = 30
 HOLD_S = 10 * 60       # "couldn't reach it" stays amber this long before it turns red
 STATUSES = ("ok", "warn", "error", "info", "unknown")
+AUTOFIX_MODES = ("auto", "ask", "off")
+AUTOFIX_WAIT_S = 5 * 60   # how long an auto-fix may keep an item amber when it doesn't say (run → re-check)
+HISTORY_KEEP = 50
 
 # What each check's failure breaks, in plain words (shown on the banner item and in the push). Plugins pass their own.
 BREAKS: dict[str, str] = {
@@ -66,6 +77,7 @@ class Registry:
 
     def __init__(self) -> None:
         self._checks: dict[str, dict[str, Any]] = {}
+        self._fixes: dict[str, dict[str, Any]] = {}
         self._lock = threading.RLock()
         self.monitor: "Monitor | None" = None
 
@@ -80,17 +92,43 @@ class Registry:
                                  "fix": spec.get("fix"), "links": list(spec.get("links") or []), "instructions": list(spec.get("instructions") or []),
                                  "interval": max(60, int(spec.get("interval") or INTERVAL_S)), "order": int(spec.get("order") or 80),
                                  "owner": owner or str(spec.get("owner") or ""), "when": spec.get("when")}
+        if spec.get("autoFix") is not None:
+            self.add_autofix(cid, spec["autoFix"], owner)
         return cid
+
+    def add_autofix(self, cid: str, fix: dict[str, Any] | Callable[[], Any], owner: str = "") -> None:
+        """An auto-fix for any check id (registered here or built in): {run, label, mitigated?, mode?} or just run().
+        `mode` is its default (auto unless the fix does something only Brett should decide, e.g. closing entries).
+        run() answers {state: done | started | failed, message, mitigated?: bool, waitS?: seconds} (or a message)."""
+        spec = fix if isinstance(fix, dict) else {"run": fix}
+        if not callable(spec.get("run")):
+            raise ValueError("an auto-fix needs a run() function")
+        with self._lock:
+            self._fixes[cid] = {"run": spec["run"], "label": str(spec.get("label") or "Auto fix")[:80],
+                                "mode": spec.get("mode") if spec.get("mode") in AUTOFIX_MODES else "auto",  # its default
+                                "mitigated": spec.get("mitigated") if callable(spec.get("mitigated")) else None, "owner": owner}
+
+    def autofix(self, cid: str) -> dict[str, Any] | None:
+        with self._lock:
+            return self._fixes.get(cid)
+
+    def autofixes(self) -> dict[str, dict[str, Any]]:
+        with self._lock:
+            return dict(self._fixes)
 
     def unregister(self, cid: str) -> None:
         with self._lock:
             self._checks.pop(cid, None)
+            self._fixes.pop(cid, None)
         if self.monitor:
             self.monitor.forget(cid)
 
     def unregister_owner(self, owner: str) -> None:
         for cid in [k for k, v in self.checks().items() if v["owner"] == owner]:
             self.unregister(cid)
+        with self._lock:
+            for cid in [k for k, v in self._fixes.items() if v["owner"] == owner]:
+                self._fixes.pop(cid, None)
 
     def checks(self) -> dict[str, dict[str, Any]]:
         with self._lock:
@@ -107,8 +145,14 @@ class Registry:
 class Monitor:
     def __init__(self, registry: Registry, item: Callable[..., Item], state_file: Callable[[], Path], *,
                  raise_alert: Callable[[dict[str, Any]], Any] = lambda a: None, resolve: Callable[[list[str]], Any] = lambda k: None,
-                 log: Callable[..., None] = lambda *a, **k: None, clock: Callable[[], float] = time.time) -> None:
+                 log: Callable[..., None] = lambda *a, **k: None, clock: Callable[[], float] = time.time,
+                 mode_of: Callable[[str], str] = lambda cid: "auto", recheck: Callable[[str], Any] = lambda cid: None,
+                 record: Callable[[dict[str, Any]], Any] = lambda f: None, background: bool = True) -> None:
         self.reg = registry
+        self.mode_of = mode_of      # the per-check auto-fix setting
+        self.recheck = recheck      # run one check again (built-in or registered) after its fix
+        self.record = record        # the axHub change log (axf.changes@1)
+        self.background = background  # False in the self-test: fixes run inline
         registry.monitor = self
         self.item = item
         self.state_file = state_file
@@ -119,6 +163,7 @@ class Monitor:
         self._lock = threading.RLock()
         self._results: dict[str, tuple[float, Item]] = {}
         self._mem: dict[str, dict[str, Any]] | None = None
+        self._hist: list[dict[str, Any]] | None = None
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
         self.last_run = 0.0
@@ -218,11 +263,12 @@ class Monitor:
         if self._mem is None:
             raw = storage.read_json(self.state_file(), {})
             self._mem = {k: v for k, v in (raw.get("checks") or {}).items() if isinstance(v, dict)} if isinstance(raw, dict) else {}
+            self._hist = [f for f in (raw.get("fixes") or []) if isinstance(f, dict)][-HISTORY_KEEP:] if isinstance(raw, dict) else []
         return self._mem
 
     def _save(self) -> None:
         try:
-            storage.write_json(self.state_file(), {"$axf": "systems-check-health-state@1", "checks": self._mem or {}}, indent=1)
+            storage.write_json(self.state_file(), {"$axf": "systems-check-health-state@1", "checks": self._mem or {}, "fixes": self._hist or []}, indent=1)
         except OSError:
             pass
 
@@ -232,6 +278,7 @@ class Monitor:
         now = self.clock()
         pushes: list[Item] = []
         resolved: list[str] = []
+        starts: list[tuple[str, str]] = []
         with self._lock:
             mem = self._load()
             changed = False
@@ -253,7 +300,8 @@ class Monitor:
                         resolved.append(f"system:{cid}")  # green again: the phone alert closes
                     # one push per red episode: only green (or info) starts a new one, flapping red ↔ amber doesn't
                     keep = bool(m) and st not in ("ok", "info")
-                    m = {"status": st, "since": now, "pushed": keep and m.get("pushed", False), "wasRed": keep and m.get("wasRed", False)}
+                    m = {"status": st, "since": now, "pushed": keep and m.get("pushed", False), "wasRed": keep and m.get("wasRed", False),
+                         **({"autofix": m["autofix"]} if keep and m.get("autofix") else {})}
                     mem[cid] = m
                     changed = True
                 it["since"] = int(m["since"] * 1000)
@@ -262,6 +310,11 @@ class Monitor:
                     it["holding"] = True
                     it["summary"] = f"{it['summary']} Checking again before it turns red."
                     continue
+                if it.get("status") == "error":
+                    started = self._autofix_gate(cid, it, m, now)
+                    if started:
+                        changed = True
+                        starts.append(started)
                 if it.get("status") == "error" and not m.get("pushed"):
                     m["pushed"] = True
                     m["pushedAt"] = now
@@ -272,6 +325,8 @@ class Monitor:
                     changed = True
             if changed:
                 self._save()
+        for cid, title in starts:
+            self._start_autofix(cid, title)
         for it in pushes:
             self._push(it)
         if resolved:
@@ -291,3 +346,127 @@ class Monitor:
             self.log("system", f"health: {it.get('title')} is red, pushed to AmberX", "warn")
         except Exception as e:  # noqa: BLE001 — a push that fails is retried on the next red episode
             self.log("system", f"health: couldn't push {it.get('id')}: {str(e)[:120]}", "warn")
+
+
+    # ---------------------------------------------------- auto-fix: fix it first, red only if it's still broken
+
+    def _autofix_gate(self, cid: str, it: Item, m: dict[str, Any], now: float) -> tuple[str, str] | None:
+        """Called (under the lock) for a red item. Starts its auto-fix once per red episode (mode auto), keeps the item
+        amber while the fix works or while its workaround holds, and says on the item what was tried. Returns
+        (cid, title) when a fix should start now."""
+        fx = self.reg.autofix(cid)
+        if not fx:
+            return None
+        mode = self._mode(cid)
+        it["autoFixMode"] = mode
+        it["autoFixLabel"] = fx["label"]
+        af = m.get("autofix")
+        out = None
+        if not af and mode == "auto":
+            af = m["autofix"] = {"state": "running", "at": now, "until": now + AUTOFIX_WAIT_S, "label": fx["label"], "message": "Starting…"}
+            out = (cid, str(it.get("title") or cid))
+        if not af:
+            return None
+        it["autofix"] = {k: af.get(k) for k in ("state", "label", "message", "mitigated", "jobId", "link")} | {"at": int(af["at"] * 1000)}
+        mitigated = False
+        if af.get("state") == "done" and af.get("mitigated"):
+            try:
+                mitigated = fx["mitigated"]() if fx["mitigated"] else True
+            except Exception:  # noqa: BLE001 — can't tell: treat as not holding
+                mitigated = False
+        if af.get("state") in ("running", "started") and now < float(af.get("until") or 0):
+            it["status"] = "warn"
+            it["fixing"] = True
+            it["summary"] = f"{it['summary']} Auto fix is on it: {af.get('message') or fx['label']}"
+        elif mitigated:
+            it["status"] = "warn"
+            it["workaround"] = True
+            it["summary"] = f"{it['summary']} Worked around: {af.get('message') or fx['label']}"
+        else:
+            it["summary"] = f"{it['summary']} Auto fix tried ({af.get('message') or af.get('state')}) — still broken."
+        return out
+
+    def _mode(self, cid: str) -> str:
+        """The saved setting for this check, else its fix's default, else auto."""
+        try:
+            m = self.mode_of(cid)
+        except Exception:  # noqa: BLE001
+            m = None
+        if m in AUTOFIX_MODES:
+            return m
+        fx = self.reg.autofix(cid)
+        return fx["mode"] if fx else "auto"
+
+    def autofix_now(self, cid: str, by: str = "console") -> dict[str, Any]:
+        """Run a check's auto-fix now (the Auto fix button, any mode but off already decided by the caller)."""
+        fx = self.reg.autofix(cid)
+        if not fx:
+            raise KeyError(f"{cid} has no auto-fix")
+        now = self.clock()
+        with self._lock:
+            mem = self._load()
+            m = mem.setdefault(cid, {"status": "error", "since": now, "pushed": False, "wasRed": False})
+            m["autofix"] = {"state": "running", "at": now, "until": now + AUTOFIX_WAIT_S, "label": fx["label"], "message": "Starting…", "by": by}
+            self._save()
+        self._start_autofix(cid, cid, by)
+        return self.autofix_state(cid) or {}
+
+    def autofix_state(self, cid: str) -> dict[str, Any] | None:
+        with self._lock:
+            af = (self._load().get(cid) or {}).get("autofix")
+            return dict(af) if af else None
+
+    def history(self) -> list[dict[str, Any]]:
+        with self._lock:
+            self._load()
+            return list(self._hist or [])
+
+    def _start_autofix(self, cid: str, title: str, by: str = "health") -> None:
+        if self.background:
+            threading.Thread(target=self._run_autofix, args=(cid, title, by), name=f"autofix-{cid}", daemon=True).start()
+        else:
+            self._run_autofix(cid, title, by)
+
+    def _run_autofix(self, cid: str, title: str, by: str) -> None:
+        fx = self.reg.autofix(cid)
+        if not fx:
+            return
+        try:
+            r = fx["run"]()
+            r = r if isinstance(r, dict) else {"state": "done", "message": str(r or "done")}
+        except Exception as e:  # noqa: BLE001 — a fix that throws is a failed attempt, reported
+            r = {"state": "failed", "message": f"the fix itself failed: {str(e)[:160]}"}
+        state = r.get("state") if r.get("state") in ("done", "started", "failed") else "done"
+        now = self.clock()
+        wait = float(r.get("waitS") or 0)
+        with self._lock:
+            m = self._load().setdefault(cid, {"status": "error", "since": now, "pushed": False, "wasRed": False})
+            af = m.get("autofix") or {"at": now, "label": fx["label"]}
+            af.update(state=state, message=str(r.get("message") or state)[:300], mitigated=bool(r.get("mitigated")),
+                      until=now + (wait or (AUTOFIX_WAIT_S if state == "started" else 0)), finishedAt=now if state != "started" else None)
+            for k in ("jobId", "link"):
+                if r.get(k):
+                    af[k] = str(r[k])[:300]
+            m["autofix"] = af
+            entry = {"at": int(now * 1000), "check": cid, "title": title[:160], "label": fx["label"], "state": state,
+                     "message": af["message"], "by": by, "mitigated": af["mitigated"]}
+            self._hist = [*(self._hist or []), entry][-HISTORY_KEEP:]
+            self._save()
+        self.log("system", f"auto-fix {cid}: {state} — {af['message']}", "ok" if state == "done" else "info" if state == "started" else "warn")
+        try:
+            self.record(entry)
+        except Exception:  # noqa: BLE001 — the change log never breaks a fix
+            pass
+        if state == "started":  # a veto call or an approval: check again once it has had time to run (never polled)
+            if self.background:
+                t = threading.Timer(max(30.0, af["until"] - now + 5), self._recheck, args=(cid,))
+                t.daemon = True
+                t.start()
+            return
+        self._recheck(cid)
+
+    def _recheck(self, cid: str) -> None:
+        try:
+            self.recheck(cid)
+        except Exception as e:  # noqa: BLE001
+            self.log("system", f"auto-fix {cid}: couldn't check again: {str(e)[:120]}", "warn")

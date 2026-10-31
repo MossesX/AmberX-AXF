@@ -18,7 +18,10 @@ interface Field { key: string; label: string; secret: boolean; placeholder: stri
 type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string; action?: string } | null;
 export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean;
   /** health@1 (Oct 30 2026): what a failure breaks, since when (ms) it's been in this state, who registered it, expiry (ms) */
-  breaks?: string; since?: number; health?: boolean; owner?: string; holding?: boolean; expiring?: boolean; expiresAt?: number }
+  breaks?: string; since?: number; health?: boolean; owner?: string; holding?: boolean; expiring?: boolean; expiresAt?: number;
+  /** health@1 auto-fix (Oct 30 2026): the check's fix and its setting, what was tried this episode, fixing now / worked around */
+  autoFixLabel?: string; autoFixMode?: 'auto' | 'ask' | 'off'; fixing?: boolean; workaround?: boolean;
+  autofix?: { state: 'running' | 'started' | 'done' | 'failed'; label: string; message: string; at: number; mitigated?: boolean; jobId?: string; link?: string } }
 interface Service { id: string; label: string; icon: string; description: string }
 interface RoutineInfo { source: string; generatedAt: number; checks: number; stale: boolean }
 interface Report { at: number; services: Service[]; checks: Check[]; hostScript: string; counts: Record<Status, number>; routine?: RoutineInfo | null; aiOn?: boolean; aiNote?: string | null }
@@ -461,6 +464,12 @@ export function FixPanel({ c }: { c: Check }) {
   };
   const clear = async (key: string) => { setBusy(true); try { (await call<{ checks: Check[] }>('secret/clear', { method: 'POST', body: JSON.stringify({ key }) })).checks.forEach(replace); setMsg('Removed.'); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
   const again = async () => { setBusy(true); try { const n = await recheck(c.id); setMsg(n.status === 'ok' ? 'Passes now.' : n.summary); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
+  // health@1 auto-fix: runs on the server in the background; the item shows amber while it works, then checks again
+  const healthFix = async () => {
+    setBusy(true);
+    try { await call(`health/autofix/${c.id}`, { method: 'POST' }); setMsg(`${c.autoFixLabel}: started. It checks again by itself.`); setTimeout(() => void recheck(c.id).catch(() => undefined), 8000); } catch (e) { setMsg((e as Error).message); }
+    setBusy(false);
+  };
   const f = c.fix;
   return (
     <div className="axp-systems-check-fix">
@@ -490,7 +499,8 @@ export function FixPanel({ c }: { c: Check }) {
       )}
       {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(f.action || `settings.open:${f.tab}`)}>{f.label}</Button>}
       <div className="fx-row fx-row--wrap">
-        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={fixIcon(c)} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
+        {c.status !== 'ok' && c.autoFixLabel && c.autoFixMode !== 'off' && !c.fixing && <Button tone="primary" icon="zap" disabled={busy} onClick={() => void healthFix()}>{c.autoFixLabel}</Button>}
+        {c.status !== 'ok' && autoFixLabel(c) && <Button tone={c.autoFixLabel ? undefined : 'primary'} icon={fixIcon(c)} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
         <Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}
       </div>
     </div>
@@ -503,6 +513,7 @@ function CheckBody({ c, inPrompt }: { c: Check; inPrompt?: boolean }) {
     <div className="axp-systems-check-body">
       {!inPrompt && <p style={{ margin: 0 }}>{c.summary}</p>}
       {!inPrompt && <WhyLine c={c} />}
+      {!inPrompt && c.autofix && <p className="fx-small axp-systems-check-runmsg" style={{ margin: 0 }}><Chip tone={c.workaround ? 'warning' : c.autofix.state === 'done' ? 'success' : c.autofix.state === 'failed' ? 'danger' : 'warning'}>{c.workaround ? 'worked around' : c.fixing ? 'auto-fixing' : `auto-fix ${c.autofix.state}`}</Chip> {c.autofix.label}: {c.autofix.message}{c.autofix.link && <> · <a href={c.autofix.link} target="_blank" rel="noopener noreferrer">open on axHub</a></>}</p>}
       {!inPrompt && s.runMsg[c.id] && <p className="fx-small axp-systems-check-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
       {c.details.length > 0 && <ul className="axp-systems-check-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
       {c.status !== 'ok' && c.fix && <><h4 className="axp-systems-check-h">Fix it here</h4><FixPanel c={c} /></>}

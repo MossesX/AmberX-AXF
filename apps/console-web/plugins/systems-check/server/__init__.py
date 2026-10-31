@@ -17,6 +17,8 @@ every item `since` and `breaks`, and pushes each new red item once to AmberX thr
                                     tested against its service first and not saved when refused (test: false = save anyway)
   POST secret/test                  test a key without saving it
   GET  health | POST health/run     health@1 (Oct 30 2026): every registered live check and its latest answer; run now
+  POST health/autofix/{id}         run a check's auto-fix now (Auto fix button; "ask first" checks)
+  GET  github | PUT github         github@1: does GitHub through axHub work, and the route (hub | local)
   POST fix/{id}                     run a check's automatic fix
   POST mosses/{id} | GET mosses     Auto fix for every other check: handed to Mosses as a task (he runs commands through
                                     axHub, each approved); GET says whether he can take one and, if not, exactly why
@@ -49,7 +51,7 @@ import console_context as cx
 import plugin_services
 from credentials import CREDENTIALS
 
-from . import claudefix, derive, health, healthchecks, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
+from . import claudefix, derive, githubsvc, health, healthchecks, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
 from .checks import HOST_SCRIPT, SERVICES, SysCheck, _http, github_token_page
 
 router = APIRouter()
@@ -143,13 +145,37 @@ KEY_CHECKS = ("console-token", "github-token", "github-repo", "anthropic-key", "
 
 # health@1 (Oct 30 2026): any plugin registers a live check; the monitor runs them every 15 minutes, on console start
 # and on Check now, remembers since when each is broken, and pushes each new red item once (console alert → AmberX).
+def _recheck(cid: str) -> None:
+    SVC.invalidate()
+    SVC.run_one(cid)
+
+
+def _record_fix(f: dict[str, Any]) -> None:
+    """Every auto-fix attempt also goes into the axHub change log (Build manager), as a finished fix entry."""
+    svc = plugin_services.get("axf.changes@1")
+    if svc is None or f.get("state") == "started":  # a veto call still counting down is recorded when it's re-checked
+        return
+    svc.open({"kind": "fix", "title": f"Auto fix: {f.get('title') or f.get('check')}"[:160],
+              "asked": f"Systems check auto-fix ({f.get('label')}) for {f.get('check')}, by {f.get('by')}.",
+              "result": {"state": "done" if f.get("state") == "done" else "failed", "summary": str(f.get("message") or "")[:600]}}, by="systems-check")
+
+
+def _vps_call(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
+    """A VPS command for an auto-fix: through Vinny (veto countdown), else Mosses (approval). Answers at once."""
+    return mosses.call(tool, arguments, None, 30)
+
+
 REGISTRY = health.Registry()
 MONITOR = health.Monitor(REGISTRY, lambda *a, **k: SVC.core.item(*a, **k), lambda: store.data_dir() / "health-state.json",
-                         raise_alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys), log=cx.log)
+                         raise_alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys), log=cx.log,
+                         mode_of=lambda cid: store.settings()["autoFix"].get(cid), recheck=_recheck, record=_record_fix)
 SVC = Service()
-healthchecks.register_builtins(REGISTRY, root=cx.ROOT, repo=cx.GITHUB_REPO, hub_jobs=lambda: [*HOSTFIX.all(), *TASKS.all()])
+GITHUB = githubsvc.GitHubService(log=cx.log)
+healthchecks.register_builtins(REGISTRY, root=cx.ROOT, repo=cx.GITHUB_REPO, hub_jobs=lambda: [*HOSTFIX.all(), *TASKS.all()],
+                               github_svc=GITHUB, vps_call=_vps_call)
 plugin_services.provide("axf.syscheck@1", SVC, FOLDER)
 plugin_services.provide(health.CAPABILITY, REGISTRY, FOLDER)
+plugin_services.provide(githubsvc.github_hub.CAPABILITY, GITHUB, FOLDER)
 if not os.environ.get("AXF_SYSCHECK_NO_SCHEDULE"):
     MONITOR.start()
 
@@ -192,8 +218,11 @@ def check_one(cid: str) -> dict[str, Any]:
 def health_list() -> dict[str, Any]:
     """health@1: every registered check (who added it, severity, how often) and its latest answer."""
     regs = [{k: v for k, v in c.items() if k in ("id", "label", "owner", "severity", "service", "interval", "breaks")} for c in REGISTRY.checks().values()]
+    modes = store.settings()["autoFix"]
+    fixes = [{"id": k, "label": v["label"], "owner": v["owner"], "mode": modes.get(k, v["mode"]), "default": v["mode"]} for k, v in REGISTRY.autofixes().items()]
     return {"version": health.VERSION, "checks": sorted(regs, key=lambda c: c["id"]), "items": MONITOR.annotate(MONITOR.items()),
-            "lastRun": int(MONITOR.last_run * 1000), "intervalSeconds": health.INTERVAL_S}
+            "lastRun": int(MONITOR.last_run * 1000), "intervalSeconds": health.INTERVAL_S,
+            "autoFixes": sorted(fixes, key=lambda f: f["id"]), "history": MONITOR.history()[::-1]}
 
 
 @router.post("/health/run")
@@ -202,6 +231,35 @@ def health_run() -> dict[str, Any]:
     items = MONITOR.run(force=True)
     SVC.invalidate()
     return {"items": MONITOR.annotate(items), "lastRun": int(MONITOR.last_run * 1000)}
+
+
+@router.post("/health/autofix/{cid:path}")
+def health_autofix(cid: str) -> dict[str, Any]:
+    """Run a check's auto-fix now (any mode but off). It runs in the background; the banner shows it amber meanwhile."""
+    if not REGISTRY.autofix(cid):
+        raise HTTPException(404, "this check has no auto-fix")
+    if store.settings()["autoFix"].get(cid) == "off":
+        raise HTTPException(409, "auto-fix is off for this check (Settings → Plugins → Systems check)")
+    st = MONITOR.autofix_now(cid, by="console")
+    SVC.invalidate()
+    return {"id": cid, "autofix": st}
+
+
+class RouteReq(BaseModel):
+    route: str = Field(pattern=r"^(hub|local)$")
+
+
+@router.get("/github")
+def github_status(refresh: bool = False) -> dict[str, Any]:
+    """github@1: the route and whether GitHub through axHub works (never the hub's or the console's token)."""
+    return {**GITHUB.status(refresh), "local": bool(os.environ.get("GITHUB_TOKEN"))}
+
+
+@router.put("/github")
+def github_route(req: RouteReq) -> dict[str, Any]:
+    GITHUB.set_route(req.route, by="settings")
+    SVC.invalidate()
+    return github_status()
 
 
 class SecretReq(BaseModel):

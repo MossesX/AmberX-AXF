@@ -42,6 +42,26 @@ broken is a **red banner item** saying what broke, what it **breaks** and **sinc
   unreachable?, expiresAt?, link?}`. `GET health` lists them; `POST health/run` = Check now. Follow-up (after
   `claude/pr-only-merge`): the push banner's token check moves onto health@1.
 
+## Fix it yourself: auto-fix + GitHub through axHub (Oct 30 2026)
+Brett: "Why do I have to tell you to fix something when you have the tools to do it?"
+- **Auto-fix:** a health@1 check may carry `autoFix: {label, run, mitigated?}` (built-in checks get one with
+  `REGISTRY.add_autofix(id, …)`). When it turns red the monitor runs the fix first, in the background, shows the item
+  amber ("Auto fix is on it"), checks again, and shows red (and pushes) only if it's still broken. `run()` answers
+  `{state: done | started | failed, message, mitigated?, waitS?, jobId?, link?}`: `started` = a veto call or approval
+  that runs later (never polled; one re-check once it should have run). `mitigated` = worked around (the item stays
+  amber, saying so, while `mitigated()` holds). Per check (Settings → Plugins → Systems check → **Fix it yourself**):
+  **On** (default) / **Ask first** (red, with its Auto fix button: `POST health/autofix/{id}`) / **Off**. Every attempt
+  is in the history (`GET health` → `history`) and opens a finished fix entry in the axHub change log.
+- **Auto-fixes today:** dead console GitHub token → GitHub goes through axHub (worked around until a new local token is
+  saved); disk over 85% → Docker clean-up as a veto call (Vinny, else Mosses); stuck builds → marked stalled, **ask first** by default (it closes change-log entries, which is Brett's call).
+- **github@1** (`axf.github@1`, `server/githubsvc.py` on the framework lib `axf_server.github_hub`):
+  `client(user_agent=…)` is a drop-in `GitHubClient` that sends every read the hub has a tool for to axHub's github
+  service with the console's AXHUB_TOKEN (the hub's GitHub token stays in its vault) and falls back to the local
+  GITHUB_TOKEN when the hub can't be reached, has no tool for the call (merge, branch delete, check-runs, downloads) or
+  its own token is refused; or the other way round (route `local`). `GET github` / `PUT github {route}`; check
+  `github-hub` (amber when the hub route is down). CI on main reads through it. Follow-up (build `claude/pr-only-merge`,
+  Angel `live-key-checks` s12): the push banner, auto-merge and branch cleanup build their client from `axf.github@1`.
+
 ## What's new banner
 Changes since this browser last opened the console: commits on the console's clone and plugins added, updated or
 removed. **Got it** marks them seen (kept in this browser's localStorage). Can be switched off in the settings tab.
