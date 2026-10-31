@@ -8,6 +8,7 @@ import {
 } from './core';
 import { deleteDesign, getDesigns, isLoaded, loadDesigns, loadError, saveDesign, subscribe } from './store';
 import { openActionsWindow, setPickTarget } from './ActionsWindow';
+import { MoreMenu } from './MoreMenu';
 import type { ActionRow } from './actions';
 import type { AxfRuntime } from '@console/axf/core';
 
@@ -180,13 +181,15 @@ export function Designer() {
   const [sel, setSel] = useState<Path | null>(null);
   const [chunkName, setChunkName] = useState('');
   const [saveAsName, setSaveAsName] = useState('');
-  const [preview, setPreview] = useState(true);
+  // phones: the floating preview would cover the editor, so it starts hidden there (⋯ → Show preview)
+  const [preview, setPreview] = useState(() => !(typeof matchMedia === 'function' && matchMedia('(max-width: 640px)').matches));
   const [busy, setBusy] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
+  const [saveAsOpen, setSaveAsOpen] = useState(false);
 
   useEffect(() => { if (!isLoaded()) void loadDesigns(rt); }, [rt]);
 
-  const open = (d: Design) => { setDraft(normalizeDesign(d)); setDirty(false); setSel(null); setConfirmDel(false); setSaveAsName(''); };
+  const open = (d: Design) => { setDraft(normalizeDesign(d)); setDirty(false); setSel(null); setConfirmDel(false); setSaveAsName(''); setSaveAsOpen(false); };
   const change = (patch: Partial<Design>) => { setDraft((d) => (d ? { ...d, ...patch } : d)); setDirty(true); };
   const setItems = (items: Entry[]) => change({ items });
 
@@ -300,12 +303,11 @@ export function Designer() {
       <aside className="axp-ctxd-side fx-stack">
         {loadError() && <Note tone="danger">{loadError()}</Note>}
         <Container title="Menus" icon="list" actions={<Button size="sm" icon="plus" onClick={() => create('menu')}>New</Button>}><ListRows list={menus} /></Container>
-        <Container title="Chunks" icon="layers" actions={<Button size="sm" icon="plus" onClick={() => create('chunk')}>New</Button>}>
-          <p className="axp-ctxd-muted">Pieces you insert into menus by name. A chunk can hold items, separators and other chunks.</p>
+        <Container title="Chunks" icon="layers" actions={<Button size="sm" icon="plus" onClick={() => create('chunk')} title="Pieces you insert into menus by name. A chunk can hold items, separators and other chunks.">New</Button>}>
           <ListRows list={chunks} />
         </Container>
-        <Container title="This app’s menus" icon="menu" collapsible>
-          <p className="axp-ctxd-muted">The context menus the app has now. Load one to edit a copy here.</p>
+        <Container title="This app’s menus" icon="menu" collapsible defaultOpen={false}>
+          <p className="axp-ctxd-muted axp-ctxd-hint">The context menus the app has now. Load one to edit a copy here.</p>
           <AppMenus active={active ?? ''} all={all} onLoad={loadMenu} />
         </Container>
       </aside>
@@ -327,20 +329,26 @@ export function Designer() {
                 </div>
               )}
               {errors.length > 0 && <Note tone="warning">{errors.join(' ')}</Note>}
-              <div className="fx-row fx-row--wrap axp-ctxd-opts">
-                <Button tone="primary" icon="save" disabled={busy || errors.length > 0} onClick={() => void save()}>Save</Button>
-                {draft.kind === 'menu' && saved && <Button icon="check" disabled={busy || dirty || active === assetId} onClick={use}>{active === assetId ? 'In use' : 'Use as the context menu'}</Button>}
-                <Button icon="copy" onClick={duplicate}>Duplicate</Button>
-                <Button icon="eye" onClick={() => setPreview((p) => !p)}>{preview ? 'Hide preview' : 'Show preview'}</Button>
-                {!confirmDel
-                  ? <Button tone="danger" icon="trash" disabled={busy} onClick={() => setConfirmDel(true)}>Delete</Button>
-                  : <Button tone="danger" icon="trash" disabled={busy} onClick={() => void remove()}>Tap again to delete</Button>}
+              {/* Save + Use up front, the rest behind ⋯ (compact pages, Oct 30 2026) */}
+              <div className="fx-row axp-ctxd-opts axp-ctxd-acts">
+                <Button size="sm" tone="primary" icon="save" disabled={busy || errors.length > 0} onClick={() => void save()}>Save</Button>
+                {draft.kind === 'menu' && saved && <Button size="sm" icon="check" disabled={busy || dirty || active === assetId} onClick={use}>{active === assetId ? 'In use' : 'Use as the context menu'}</Button>}
+                {confirmDel && <Button size="sm" tone="danger" icon="trash" disabled={busy} onClick={() => void remove()}>Tap again to delete</Button>}
+                <MoreMenu label="More for this design" items={[
+                  { id: 'dup', label: 'Duplicate', icon: 'copy', onSelect: duplicate },
+                  { id: 'preview', label: preview ? 'Hide preview' : 'Show preview', icon: 'eye', onSelect: () => setPreview((p) => !p) },
+                  { id: 'chunk', label: 'Save as chunk…', icon: 'layers', onSelect: () => setSaveAsOpen(true) },
+                  { id: 'delete', label: 'Delete…', icon: 'trash', disabled: busy, onSelect: () => setConfirmDel(true) },
+                ]} />
               </div>
               {draft.kind === 'chunk' && saved && usedBy(draft.id, all).length > 0 && <p className="axp-ctxd-muted">Used in: {usedBy(draft.id, all).map((d) => d.name).join(', ')}</p>}
-              <div className="fx-row fx-row--wrap axp-ctxd-opts">
-                <TextField label="Save as chunk" value={saveAsName} placeholder="Chunk name" onChange={setSaveAsName} />
-                <Button icon="layers" disabled={busy || !saveAsName.trim()} onClick={() => void saveAsChunk()}>Save as chunk</Button>
-              </div>
+              {(saveAsOpen || saveAsName) && (
+                <div className="fx-row axp-ctxd-opts axp-ctxd-acts">
+                  <input className="fx-input axp-ctxd-grow" aria-label="Save as chunk" value={saveAsName} placeholder="Chunk name" autoFocus onChange={(e) => setSaveAsName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') void saveAsChunk(); }} />
+                  <Button size="sm" icon="layers" disabled={busy || !saveAsName.trim()} onClick={() => void saveAsChunk()}>Save as chunk</Button>
+                  <IconButton icon="x" label="Cancel" onClick={() => { setSaveAsName(''); setSaveAsOpen(false); }} />
+                </div>
+              )}
             </Container>
 
             <Container title="Style" icon="palette" collapsible>
@@ -349,22 +357,21 @@ export function Designer() {
             </Container>
 
             <Container title="Entries" icon="list">
-              <div className="fx-row fx-row--wrap axp-ctxd-opts">
+              <div className="fx-row axp-ctxd-opts axp-ctxd-acts">
                 <Button size="sm" icon="plus" onClick={() => add({ kind: 'item', label: 'New item' })}>Item</Button>
-                <Button size="sm" icon="minus" onClick={() => add({ kind: 'separator' })}>Separator</Button>
-                {selEntry?.kind === 'item' && <Button size="sm" icon="chevron-right" disabled={(sel?.length ?? 0) >= 4} onClick={() => add({ kind: 'item', label: 'New item' }, true)}>Item inside</Button>}
+                <Button size="sm" icon="zap" onClick={() => openActionsWindow(rt)}>Actions…</Button>
                 {sel && <IconButton icon="chevron-up" label="Move up" onClick={() => { setItems(moveAt(draft.items, sel, -1)); setSel([...sel.slice(0, -1), Math.max(0, (sel.at(-1) ?? 0) - 1)]); }} />}
                 {sel && <IconButton icon="chevron-down" label="Move down" onClick={() => { const n = (sel.length > 1 ? (getAt(draft.items, sel.slice(0, -1)) as Extract<Entry, { kind: 'item' }>).items?.length ?? 0 : draft.items.length); setItems(moveAt(draft.items, sel, 1)); setSel([...sel.slice(0, -1), Math.min(n - 1, (sel.at(-1) ?? 0) + 1)]); }} />}
                 {sel && <IconButton icon="trash" label="Remove" onClick={() => { setItems(removeAt(draft.items, sel)); setSel(null); }} />}
-                <Button size="sm" icon="zap" onClick={() => openActionsWindow(rt)}>Actions…</Button>
+                <MoreMenu label="More entries" items={[
+                  { id: 'sep', label: 'Separator', icon: 'minus', onSelect: () => add({ kind: 'separator' }) },
+                  selEntry?.kind === 'item' && { id: 'inside', label: 'Item inside', icon: 'chevron-right', disabled: (sel?.length ?? 0) >= 4, onSelect: () => add({ kind: 'item', label: 'New item' }, true) },
+                ]} />
               </div>
-              <div className="fx-row fx-row--wrap axp-ctxd-opts">
-                <label className="axp-ctxd-chunkpick">
-                  <span className="axp-ctxd-muted">Insert a chunk by name</span>
-                  <input className="fx-input" list="axp-ctxd-chunks" value={chunkName} placeholder="Chunk name" onChange={(e) => setChunkName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') insertChunk(); }} />
-                  <datalist id="axp-ctxd-chunks">{chunks.filter((c) => c.id !== draft.id).map((c) => <option key={c.id} value={c.name} />)}</datalist>
-                </label>
-                <Button size="sm" icon="layers" disabled={!chunkName.trim()} onClick={insertChunk}>Insert chunk</Button>
+              <div className="fx-row axp-ctxd-opts axp-ctxd-acts">
+                <input className="fx-input axp-ctxd-grow" aria-label="Insert a chunk by name" title="Insert a chunk by name" list="axp-ctxd-chunks" value={chunkName} placeholder="Insert a chunk by name" onChange={(e) => setChunkName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') insertChunk(); }} />
+                <datalist id="axp-ctxd-chunks">{chunks.filter((c) => c.id !== draft.id).map((c) => <option key={c.id} value={c.name} />)}</datalist>
+                <Button size="sm" icon="layers" disabled={!chunkName.trim()} onClick={insertChunk}>Insert</Button>
               </div>
               {draft.items.length ? <EntryRows entries={draft.items} path={[]} selected={sel} onSelect={setSel} all={peers} /> : <p className="axp-ctxd-muted">Empty. Add an item, a separator or a chunk.</p>}
               {selEntry && <div className="axp-ctxd-edit"><EntryEditor entry={selEntry} all={peers} onPick={() => openActionsWindow(rt)} onChange={(patch) => sel && setItems(updateAt(draft.items, sel, patch))} /></div>}

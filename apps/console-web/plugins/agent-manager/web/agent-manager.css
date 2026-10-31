@@ -66,3 +66,43 @@
 .axp-agent-manager__diff .is-del { color: var(--fx-danger) }
 /* Vinny's commands dialog: run output (layout only) */
 .axp-agent-manager__out { max-height: 12em; overflow: auto; white-space: pre-wrap; word-break: break-word; margin: 0; }
+
+/* Compact layout (Angel screens-compact, Oct 30 2026): one-line head, ⋯ menus, chip strips, flat lists, phone-first. */
+.axp-agent-manager__head { align-items: center }
+.axp-agent-manager__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0 }
+.axp-agent-manager__acts { flex-wrap: nowrap; align-items: center }
+.axp-agent-manager__morebtn { display: inline-flex; flex: none }
+.axp-agent-manager__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
+.axp-agent-manager__strip { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.25) }
+.axp-agent-manager__tabpick { display: none; width: 100% }
+.axp-agent-manager__flat { display: flex; flex-direction: column; border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-agent-manager__flatrow { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.75) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
+.axp-agent-manager__flatrow summary { cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-agent-manager__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
+.axp-agent-manager__wizlist { display: flex; flex-direction: column }
+.axp-agent-manager__wizrow { display: flex; align-items: center; gap: var(--fx-space); width: 100%; padding: calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 0.5); text-align: left; background: transparent; border: 0; border-bottom: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); font: inherit; cursor: pointer; min-width: 0 }
+.axp-agent-manager__wizrow:hover { background: var(--fx-surface2) }
+.axp-agent-manager__wizrow > span { display: flex; flex-direction: column; min-width: 0 }
+.axp-agent-manager__wizrow .fx-small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+@media (max-width: 640px) {
+  .axp-agent-manager__tabs { display: none }
+  .axp-agent-manager__tabpick { display: block }
+  .axp-agent-manager__list, .axp-agent-manager__editor { padding: 0; border: 0; background: transparent; border-radius: 0 }
+  .axp-agent-manager__list { max-height: 34vh; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+  .axp-agent-manager__item { padding: calc(var(--fx-space) * 0.5) }
+  .axp-agent-manager__split { gap: var(--fx-space) }
+  .axp-agent-manager__card { padding: var(--fx-space) 0; border-width: 0 0 var(--fx-border-w); border-radius: 0; background: transparent }
+  .axp-agent-manager__cols { grid-template-columns: minmax(0, 1fr) }
+}
+.axp-agent-manager__stepnow { display: none }
+@media (max-width: 640px) {
+  .axp-agent-manager__stepnow { display: block }
+  .axp-agent-manager__wizard .axp-agent-manager__steps { display: none }
+  .axp-agent-manager__wizard-body { max-height: 58vh }
+}
+.axp-agent-manager__item { align-items: flex-start; width: 100% }
+.fx-pagehead > div:first-child:has(> .axp-agent-manager__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
+.axp-agent-manager .axp-agent-manager__tabpick { display: none }
+@media (max-width: 640px) { .axp-agent-manager .axp-agent-manager__tabs { display: none } .axp-agent-manager .axp-agent-manager__tabpick { display: block } }
+.axp-agent-manager__cmdhead { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-agent-manager__item > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }

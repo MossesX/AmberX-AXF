@@ -38,7 +38,7 @@ export const plugin: AxfWebLibrary = {
       keywords: ['context menu', 'right-click', 'chunk', 'menu designer'],
       render: () => (
         <div className="fx-stack fx-stack--lg">
-          <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Context menu designer</h1><p className="fx-muted">Design right-click menus from reusable chunks, preview them live, and save them as context-menu assets.</p></div></header>
+          <header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Context menu designer</h1><p className="fx-muted" title="Design right-click menus from reusable chunks, preview them live, and save them as context-menu assets.">Right-click menus from reusable chunks, previewed live.</p></div></header>
           <Designer />
         </div>
       ),
@@ -59,8 +59,8 @@ function OpenPanel() {
   const rt = useRuntime();
   return (
     <div className="fx-stack">
-      <p style={{ marginTop: 0 }}>Menus and chunks you design are saved on the console server and follow you to every browser.</p>
-      <Button icon="menu" onClick={() => rt.dispatch('context-menu-designer.open')}>Open the designer</Button>
+      <p className="fx-muted" style={{ margin: 0 }}>Menus and chunks are saved on the console server, in every browser.</p>
+      <div className="fx-row"><Button size="sm" icon="menu" onClick={() => rt.dispatch('context-menu-designer.open')}>Open the designer</Button></div>
     </div>
   );
 }

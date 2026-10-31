@@ -2,8 +2,9 @@
  * The Agent manager view: tabs for agents (with playground, prompt preview, memory, export), skills, personas & lingo,
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Button, Chip, Icon, useEditorSync, useRuntime } from '@console/axf/react';
+import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -29,28 +30,32 @@ export function AgentManagerView() {
   useEditorSync({ onRefresh: () => { void refresh().catch(() => undefined); } });
   const wizard = (kind: string, agentId?: string) => rt.openDialog('agent-manager.wizard', { kind, agentId });
   return (
-    <div className="axp-agent-manager fx-stack fx-stack--lg">
-      <header className="fx-pagehead">
-        <div><p className="fx-eyebrow">AI · agents</p><h1>Agent manager</h1><p className="fx-muted">Build agents from personas, skills and tools, train them, and run them in workflows — each with its own memory.</p></div>
-        <div className="fx-row fx-row--wrap">
+    <div className="axp-agent-manager fx-stack">
+      <header className="fx-pagehead axp-agent-manager__head">
+        <div><p className="fx-eyebrow">AI · agents</p><h1>Agent manager</h1><p className="fx-muted axp-agent-manager__lede" title="Build agents from personas, skills and tools, train them, and run them in workflows — each with its own memory.">Agents from personas, skills and tools, each with its own memory.</p></div>
+        <div className="fx-row axp-agent-manager__acts">
           <Button tone="primary" icon="rocket" onClick={() => wizard('builder')}>Agent builder</Button>
-          <Button icon="user" onClick={() => wizard('agent')}>New agent</Button>
-          <Button icon="star" onClick={() => wizard('skill')}>New skill</Button>
-          <Button icon="zap" onClick={() => wizard('tool')}>New tool</Button>
-          <Button icon="download" onClick={() => wizard('training')}>Training</Button>
-          <Button tone="ghost" icon="upload" title="Everything you made, as one agent-addon@1 bundle (no memory, no keys)" onClick={() => void call('export').then((b) => download('agent-library.addon.json', b))}>Export library</Button>
+          <MoreMenu label="More: new skill, tool, training, export" items={[
+            { label: 'New agent', icon: 'user', onPick: () => wizard('agent') },
+            { label: 'New skill', icon: 'star', onPick: () => wizard('skill') },
+            { label: 'New tool', icon: 'zap', onPick: () => wizard('tool') },
+            { label: 'New training job', icon: 'download', onPick: () => wizard('training') },
+            { label: 'Export library', icon: 'upload', title: 'Everything you made, as one agent-addon@1 bundle (no memory, no keys)', onPick: () => void call('export').then((b) => download('agent-library.addon.json', b)) },
+          ]} />
         </div>
       </header>
       {err && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{err}</div>}
       {status && (
-        <div className="fx-row fx-row--wrap">
+        <div className="axp-agent-manager__strip">
           <Chip tone={status.llm.source === 'assistant' ? 'success' : status.llm.ready ? 'accent' : 'warning'}>{status.llm.source === 'assistant' ? 'models from the AI assistant' : status.llm.ready ? `own model: ${status.llm.model}` : 'no model set up'}</Chip>
           <Chip tone={status.firecrawl ? 'success' : undefined}>{status.firecrawl ? 'Firecrawl ready' : 'Firecrawl not set'}</Chip>
           {status.trainingRunning.length > 0 && <Chip tone="accent">training: {status.trainingRunning.join(', ')}</Chip>}
           {status.services?.containers && <Chip tone={status.services.snapshots ? 'warning' : undefined}>{status.services.snapshots ? 'container write mode available' : 'containers: read only (no Snapshot Manager)'}</Chip>}
-          <span className="fx-small fx-muted">{status.counts.agents} agents · {status.counts.skills} skills · {status.counts.tools} tools · {status.addons.installed}/{status.addons.available} add-ons · {status.contract}</span>
+          <Chip>{status.counts.agents} agents</Chip><Chip>{status.counts.skills} skills</Chip><Chip>{status.counts.tools} tools</Chip><Chip>{status.addons.installed}/{status.addons.available} add-ons</Chip>
+          <span className="fx-small fx-muted">{status.contract}</span>
         </div>
       )}
+      <select className="fx-input axp-agent-manager__tabpick" value={tab} onChange={(e) => setTab(e.target.value as Tab)} aria-label="Section">{TABS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select>
       <div className="fx-tabs axp-agent-manager__tabs" role="tablist">
         {TABS.map((t) => <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab axp-agent-manager__tab${tab === t.id ? ' is-active' : ''}`} onClick={() => setTab(t.id)}><Icon name={t.icon} size={13} /> {t.label}</button>)}
       </div>
@@ -87,6 +92,7 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
   const [busy, setBusy] = useState(false);
   const [tag, setTag] = useState('');
   const [describe, setDescribe] = useState(false);
+  const importRef = useRef<HTMLInputElement>(null);
   const check = useLiveCheck(coll, draft);
   const lib = LIB.includes(coll);
   const allTags = [...new Set(items.flatMap((i) => (i.tags as string[] | undefined) ?? []))].sort();
@@ -108,13 +114,18 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
         <div className="fx-row fx-row--wrap">
           <strong className="fx-grow">{label}s ({items.length})</strong>
           <Button icon="plus" onClick={() => { setSel(''); setDraft({ ...blank }); setMsg(''); }}>New</Button>
-          {wizardKind && <Button icon="rocket" onClick={() => rt.openDialog('agent-manager.wizard', { kind: wizardKind })}>Wizard</Button>}
-          {lib && coll !== 'agents' && <Button icon="sparkles" onClick={() => setDescribe(!describe)}>Describe it</Button>}
-          {lib && <ImportButton coll={coll} onDone={(it) => { void refresh(); open(it); }} />}
+          <MoreMenu label={`More ways to add a ${label.toLowerCase()}`} items={[
+            !!wizardKind && { label: 'Wizard…', icon: 'rocket', onPick: () => rt.openDialog('agent-manager.wizard', { kind: wizardKind }) },
+            lib && coll !== 'agents' && { label: describe ? 'Hide “Describe it”' : 'Describe it (AI draft)', icon: 'sparkles', onPick: () => setDescribe(!describe) },
+            lib && { label: 'Import JSON…', icon: 'upload', title: 'Import an exported item (JSON)', onPick: () => importRef.current?.click() },
+          ]} />
+          {lib && <ImportButton coll={coll} inputRef={importRef} onDone={(it) => { void refresh(); open(it); }} />}
         </div>
         {describe && <DescribeIt coll={coll} onDraft={(it, warnings) => { setSel(''); setDraft(it); setMsg(warnings.length ? `Review before saving: ${warnings.join('; ')}` : ''); setDescribe(false); }} />}
-        <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter" aria-label="Filter" />
-        {allTags.length > 0 && <div className="axp-agent-manager__picks">{allTags.map((t) => <button key={t} type="button" className={`fx-chip axp-agent-manager__pick${tag === t ? ' is-on' : ''}`} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}</div>}
+        <div className="axp-agent-manager__row">
+          <input className="fx-input fx-grow" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter" aria-label="Filter" />
+          {allTags.length > 0 && <select className="fx-input axp-agent-manager__narrow" value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Tag"><option value="">all tags</option>{allTags.map((t) => <option key={t} value={t}>#{t}</option>)}</select>}
+        </div>
         {shown.map((it) => (
           <button key={String(it.id)} type="button" data-fx-row className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
             <strong>{String(it.name ?? it.id)}{coll === 'tools' && isDangerousTool(it as { dangerous?: boolean; kind?: string; config?: Record<string, unknown> }, status) ? <Chip tone="warning">dangerous</Chip> : null}{it.forkedFrom ? <Chip>fork</Chip> : null}</strong>
@@ -134,9 +145,11 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
             <CheckNote check={check} />
             <div className="fx-row fx-row--wrap">
               <Button tone="primary" icon="save" disabled={busy || check?.ok === false} onClick={() => void doSave()}>Save</Button>
-              {draft.id && <Button icon="trash" onClick={() => void doDelete()}>Delete</Button>}
-              {lib && draft.id && <Button tone="ghost" icon="copy" onClick={() => void post<{ item: Rec }>(`c/${coll}/${draft.id}/duplicate`).then((r) => { void refresh(); open(r.item); rt.toast('Duplicated', 'success'); }, (e: Error) => setMsg(e.message))}>Duplicate</Button>}
-              {lib && draft.id && <Button tone="ghost" icon="download" onClick={() => void call(`c/${coll}/${draft.id}/export`).then((b) => download(`${draft.id}.${coll.slice(0, -1)}.json`, b))}>Export</Button>}
+              <MoreMenu label={`More for this ${label.toLowerCase()}`} items={[
+                lib && !!draft.id && { label: 'Duplicate', icon: 'copy', onPick: () => void post<{ item: Rec }>(`c/${coll}/${draft.id}/duplicate`).then((r) => { void refresh(); open(r.item); rt.toast('Duplicated', 'success'); }, (e: Error) => setMsg(e.message)) },
+                lib && !!draft.id && { label: 'Export', icon: 'download', onPick: () => void call(`c/${coll}/${draft.id}/export`).then((b) => download(`${draft.id}.${coll.slice(0, -1)}.json`, b)) },
+                !!draft.id && { label: 'Delete', icon: 'trash', onPick: () => void doDelete() },
+              ]} />
             </div>
             {lib && draft.id && <LibraryPanel coll={coll} item={draft} onChanged={(it) => { void refresh(); if (it) open(it); }} />}
             {extra?.(draft)}
@@ -263,12 +276,11 @@ function DescribeIt({ coll, onDraft }: { coll: Coll; onDraft: (it: Rec, warnings
   );
 }
 
-function ImportButton({ coll, onDone }: { coll: Coll; onDone: (it: Rec) => void }) {
+function ImportButton({ coll, onDone, inputRef }: { coll: Coll; onDone: (it: Rec) => void; inputRef: RefObject<HTMLInputElement> }) {
   const rt = useRuntime();
   return (
-    <label className="axp-agent-manager__file fx-small" title="Import an exported item (JSON)">
-      <Icon name="upload" size={13} /> Import
-      <input type="file" accept="application/json" hidden onChange={(e) => {
+    <>
+      <input ref={inputRef} type="file" accept="application/json" hidden aria-label="Import an exported item (JSON)" onChange={(e) => {
         const f = e.target.files?.[0]; e.target.value = '';
         if (!f) return;
         void f.text().then((t) => post<{ item: Rec; warnings: string[] }>(`c/${coll}/import`, { item: JSON.parse(t) })).then((r) => {
@@ -276,7 +288,7 @@ function ImportButton({ coll, onDone }: { coll: Coll; onDone: (it: Rec) => void 
           onDone(r.item);
         }, (err: Error) => rt.toast(err.message, 'danger'));
       }} />
-    </label>
+    </>
   );
 }
 
@@ -302,7 +314,7 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
   return (
     <section className="axp-agent-manager__split">
       <div className="axp-agent-manager__list fx-stack">
-        <div className="fx-row fx-row--wrap"><strong className="fx-grow">Agents ({cache.agents.length})</strong><Button icon="rocket" onClick={() => wizard('builder')}>Build</Button></div>
+        <div className="axp-agent-manager__row"><strong className="fx-grow">Agents ({cache.agents.length})</strong><Button icon="rocket" onClick={() => wizard('builder')}>Build</Button></div>
         {cache.agents.length > 4 && <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter agents" aria-label="Filter agents" />}
         {shown.map((a) => (
           <button key={a.id} type="button" data-fx-row className={`axp-agent-manager__item${sel === a.id ? ' is-active' : ''}`} onClick={() => open(a)}>
@@ -329,11 +341,13 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
                 <CheckNote check={check} />
                 <div className="fx-row fx-row--wrap">
                   <Button tone="primary" icon="save" disabled={check?.ok === false} onClick={() => void doSave()}>Save</Button>
-                  {draft.id && <Button icon="copy" onClick={() => void post<{ item: Agent }>(`agents/${draft.id}/clone`).then(async (r) => { await refresh(); open(r.item); })}>Clone</Button>}
-                  {draft.id && <Button icon="download" onClick={() => void call(`agents/${draft.id}/export`).then((b) => download(`${draft.id}.agent-addon.json`, b))}>Export</Button>}
                   {draft.id && <Button icon="download" onClick={() => wizard('training', draft.id)}>Train…</Button>}
-                  {draft.id && <Button tone="ghost" icon="shield" title="Which agents get dangerous tools (Settings → Plugins → Agent manager → Safety)" onClick={() => rt.dispatch('settings.open:agent-manager')}>{dangerous.has(draft.id) ? 'Dangerous tools: allowed' : 'Dangerous tools: off'}</Button>}
-                  {draft.id && <Button icon="trash" onClick={() => { if (confirm(`Delete ${draft.name}? Its memory and training jobs go too.`)) void remove('agents', draft.id!).then(async () => { setDraft(null); setSel(''); await refresh(); }); }}>Delete</Button>}
+                  {draft.id && <MoreMenu label="More for this agent" items={[
+                    { label: 'Clone', icon: 'copy', onPick: () => void post<{ item: Agent }>(`agents/${draft.id}/clone`).then(async (r) => { await refresh(); open(r.item); }) },
+                    { label: 'Export', icon: 'download', onPick: () => void call(`agents/${draft.id}/export`).then((b) => download(`${draft.id}.agent-addon.json`, b)) },
+                    { label: dangerous.has(draft.id) ? 'Dangerous tools: allowed…' : 'Dangerous tools: off…', icon: 'shield', title: 'Which agents get dangerous tools (Settings → Plugins → Agent manager → Safety)', onPick: () => rt.dispatch('settings.open:agent-manager') },
+                    { label: 'Delete', icon: 'trash', onPick: () => { if (confirm(`Delete ${draft.name}? Its memory and training jobs go too.`)) void remove('agents', draft.id!).then(async () => { setDraft(null); setSel(''); await refresh(); }); } },
+                  ]} />}
                 </div>
               </>
             )}
@@ -514,7 +528,7 @@ function MemoryTab({ cache }: { cache: Cache }) {
       {err && <p className="axp-agent-manager__bad">{err}</p>}
       {data && (
         <>
-          <div className="fx-row fx-row--wrap">
+          <div className="axp-agent-manager__strip">
             <Chip tone="accent">{agent?.memory?.type ?? 'hybrid'}</Chip><Chip>scope {data.scope}</Chip><Chip>{data.stats.items} items</Chip>
             {Object.entries(data.stats.byKind).map(([k, n]) => <Chip key={k}>{k}: {n}</Chip>)}
             {data.stats.vectors > 0 && <Chip tone="success">{data.stats.vectors} embedded</Chip>}
@@ -539,9 +553,12 @@ function MemoryTab({ cache }: { cache: Cache }) {
             ))}
             {!data.items.length && <p className="fx-small fx-muted">{q ? 'Nothing matches.' : 'Empty — chat with the agent, or train it.'}</p>}
           </div>
-          <div className="fx-row fx-row--wrap">
-            {['episode', 'knowledge', 'fact'].map((k) => <Button key={k} icon="trash" onClick={() => { if (confirm(`Forget every ${k}?`)) void post(`memory/${aid}/clear`, { kind: k }).then(load); }}>Clear {k}s</Button>)}
-            <Button icon="trash" onClick={() => { if (confirm(`Erase all of ${agent?.name}'s memory?`)) void post(`memory/${aid}/clear`).then(load); }}>Erase all</Button>
+          <div className="axp-agent-manager__row">
+            <span className="fx-small fx-muted fx-grow">Clear memory</span>
+            <MoreMenu label="Clear memory" icon="trash" items={[
+              ...['episode', 'knowledge', 'fact'].map((k) => ({ label: `Clear ${k}s`, icon: 'trash', onPick: () => { if (confirm(`Forget every ${k}?`)) void post(`memory/${aid}/clear`, { kind: k }).then(load); } })),
+              { label: 'Erase all', icon: 'trash', onPick: () => { if (confirm(`Erase all of ${agent?.name}'s memory?`)) void post(`memory/${aid}/clear`).then(load); } },
+            ]} />
           </div>
         </>
       )}
@@ -588,13 +605,13 @@ export function AddonsTab() {
   if (!items) return <LoadingSkeleton />;
   return (
     <div className="fx-stack">
-      <p className="fx-small fx-muted">Add-ons are bundles of agents with their personas, lingo, skills, tools, workflows, training and seed memory. Uninstalling one removes exactly what it added.</p>
+      <p className="fx-small fx-muted" title="Add-ons are bundles of agents with their personas, lingo, skills, tools, workflows, training and seed memory.">Bundles of agents and their parts. Uninstalling one removes exactly what it added.</p>
       {err && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{err}</div>}
-      <div className="axp-agent-manager__grid">
+      <div className="axp-agent-manager__flat">
         {items.map((a) => (
-          <div key={a.id} className="axp-agent-manager__card fx-stack">
-            <div className="fx-row fx-row--wrap"><Icon name={a.icon || 'package'} size={18} /><strong className="fx-grow">{a.name}</strong>{a.installed ? <Chip tone="success">installed</Chip> : <Chip>{a.source}</Chip>}{a.updateAvailable && <Chip tone="warning">update {a.version}</Chip>}</div>
-            <p className="fx-small">{a.description}</p>
+          <div key={a.id} className="axp-agent-manager__flatrow">
+            <div className="axp-agent-manager__row"><Icon name={a.icon || 'package'} size={16} /><strong className="fx-grow">{a.name}</strong>{a.installed ? <Chip tone="success">installed</Chip> : <Chip>{a.source}</Chip>}{a.updateAvailable && <Chip tone="warning">update {a.version}</Chip>}</div>
+            <span className="fx-small axp-agent-manager__clip" title={a.description}>{a.description}</span>
             <span className="fx-small fx-muted">{a.agents?.length ? `agents: ${a.agents.map((x) => x.name).join(', ')} · ` : ''}{Object.entries(a.provides).filter(([, n]) => n).map(([k, n]) => `${n} ${k}`).join(' · ')} · v{a.installedVersion ?? a.version}</span>
             {!!a.risks?.length && <span className="fx-small"><Icon name="alert" size={12} /> {a.risks.join('; ')}</span>}
             <div className="fx-row fx-row--wrap">
@@ -607,7 +624,7 @@ export function AddonsTab() {
           </div>
         ))}
       </div>
-      <div className="axp-agent-manager__card fx-stack">
+      <div className="axp-agent-manager__flat fx-stack">
         <strong>Add more</strong>
         <div className="axp-agent-manager__row">
           <input className="fx-input fx-mono fx-grow" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…/my-agent.addon.json" aria-label="Add-on URL" />
@@ -626,10 +643,10 @@ function RunsTab({ cache }: { cache: Cache }) {
   useEffect(() => { void call<{ items: Run[] }>(`runs?kind=${kind}`).then((r) => setItems(r.items)); }, [kind]);
   const agentName = useMemo(() => Object.fromEntries(cache.agents.map((a) => [a.id, a.name])), [cache.agents]);
   return (
-    <div className="fx-stack">
+    <div className="fx-stack axp-agent-manager__flat">
       <select className="fx-input axp-agent-manager__narrow" value={kind} onChange={(e) => setKind(e.target.value)} aria-label="Run kind"><option value="">all runs</option><option value="workflow">workflows</option><option value="training">training</option><option value="playground">playground</option></select>
       {items.map((r) => (
-        <details key={r.id} className="axp-agent-manager__card">
+        <details key={r.id} className="axp-agent-manager__flatrow">
           <summary><Chip>{r.kind}</Chip> {r.name ?? agentName[r.agentId ?? ''] ?? r.workflowId ?? r.agentId} · <span className="fx-small fx-muted">{fmtTime(r.at)}{r.status ? ` · ${r.status}` : ''}{r.added !== undefined ? ` · ${r.added} chunks` : ''}</span></summary>
           {r.input && <><strong className="fx-small">Input</strong><pre className="axp-agent-manager__out">{r.input}</pre></>}
           {r.output && <><strong className="fx-small">Output</strong><pre className="axp-agent-manager__out">{r.output}</pre></>}

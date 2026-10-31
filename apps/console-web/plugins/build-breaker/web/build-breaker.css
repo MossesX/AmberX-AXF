@@ -81,3 +81,11 @@
 .axp-build-breaker__sources { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-space); border-top: var(--axp-bb-hair); padding-top: calc(var(--fx-space) * 0.7); }
 .axp-build-breaker__sources ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2); font-size: var(--axp-bb-xs); }
 .axp-build-breaker__actions { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); }
+
+/* Compact (Oct 30 2026): the Builds pages' toolbar button is icon-only on a phone (label stays as its tooltip / aria-label). */
+@media (max-width: 640px) { .axp-build-breaker__open > span { display: none; } }
+/* Compact (Oct 30 2026): one-line lede; date range and model are dropdowns like sort / group; expand / collapse are icons. */
+.axp-build-breaker__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-build-breaker__bar { gap: calc(var(--fx-space) * 0.4); }
+.axp-build-breaker__tools { gap: calc(var(--fx-space) * 0.4); }
+@media (max-width: 640px) { .axp-build-breaker .axp-build-breaker__search { flex-basis: 100%; } }

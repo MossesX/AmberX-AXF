@@ -1,6 +1,7 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, IconButton, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { MoreMenu } from './MoreMenu';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
@@ -210,10 +211,12 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
       )}
       <div className="axp-codebase-changes__line">
         {e.closed
-          ? <Button tone="neutral" icon="undo" disabled={busy} onClick={() => void act(() => reopenEntry(e.id))}>Show in the banner again</Button>
-          : <Button tone="neutral" icon="x" disabled={busy} onClick={() => void act(() => closeEntry(e.id))}>Close (everywhere)</Button>}
-        <Button tone="neutral" icon="copy" onClick={() => { void loadResume(e.id).then((x) => navigator.clipboard?.writeText(x.prompt)).then(() => rt.toast('Resume prompt copied: paste it into a new Claude session', 'info'), (x: Error) => rt.toast(x.message, 'warning')); }}>Copy resume prompt</Button>
-        <Button tone="neutral" icon="copy" onClick={() => { void navigator.clipboard?.writeText(e.id).then(() => rt.toast('Id copied', 'info'), () => undefined); }}>Copy id</Button>
+          ? <Button size="sm" tone="neutral" icon="undo" disabled={busy} onClick={() => void act(() => reopenEntry(e.id))}>Show in the banner again</Button>
+          : <Button size="sm" tone="neutral" icon="x" disabled={busy} onClick={() => void act(() => closeEntry(e.id))}>Close (everywhere)</Button>}
+        <Button size="sm" tone="neutral" icon="copy" onClick={() => { void loadResume(e.id).then((x) => navigator.clipboard?.writeText(x.prompt)).then(() => rt.toast('Resume prompt copied: paste it into a new Claude session', 'info'), (x: Error) => rt.toast(x.message, 'warning')); }}>Copy resume prompt</Button>
+        <MoreMenu label="More for this entry" items={[
+          { id: 'id', label: 'Copy id', icon: 'copy', onSelect: () => { void navigator.clipboard?.writeText(e.id).then(() => rt.toast('Id copied', 'info'), () => undefined); } },
+        ]} />
       </div>
     </div>
   );
@@ -225,19 +228,19 @@ function Row({ s, open, onToggle, onChanged }: { s: Summary; open: boolean; onTo
   return (
     <li ref={ref} className={`axp-codebase-changes__row is-${s.state}${s.closed ? ' is-closed' : ''}`} data-axf-anchor={`codebase-changes:${s.id}`}>
       <button type="button" data-fx-row className="axp-codebase-changes__head" aria-expanded={open} onClick={onToggle}>
-        <span className="axp-codebase-changes__line">
+        {/* title line + one meta line; the result summary is in the detail (compact pages, Oct 30 2026) */}
+        <span className="axp-codebase-changes__line axp-codebase-changes__line--title" title={s.result?.summary || undefined}>
           <KindBadge kind={s.kind} />
           <span className="axp-codebase-changes__title">{s.title}</span>
+          <StateBadge state={s.state} />
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
         </span>
-        <span className="axp-codebase-changes__line">
-          <StateBadge state={s.state} />
+        <span className="axp-codebase-changes__line axp-codebase-changes__line--meta">
           <span className="axp-codebase-changes__meta">{when(s.createdAt)}</span>
           <StepsCount s={s.steps} />
           {s.repos[0] && <span className="axp-codebase-changes__meta">{s.repos[0]}</span>}
           {!s.closed && <span className="axp-codebase-changes__meta is-accent" title="Showing in the banner"><Icon name="bell" size={11} /> in banner</span>}
         </span>
-        {!open && s.result?.summary && <span className="axp-codebase-changes__sub">{s.result.summary}</span>}
       </button>
       {open && <EntryDetail id={s.id} onChanged={onChanged} />}
     </li>
@@ -252,6 +255,7 @@ export function ChangesView() {
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState<string>('');
+  const [showFilters, setShowFilters] = useState(false);
   const fRef = useRef(f);
   fRef.current = f;
 
@@ -278,33 +282,40 @@ export function ChangesView() {
   const kinds = [...new Set(['build', 'edit', 'remove', 'fix', 'other', ...Object.keys(c?.byKind ?? {})])];
   const up = (p: Partial<Filters>) => setF((x) => ({ ...x, ...p }));
   const filtered = JSON.stringify(f) !== JSON.stringify(NO_FILTERS);
+  const nFilters = (['kind', 'state', 'open', 'repo', 'from', 'to'] as const).filter((k) => f[k] !== NO_FILTERS[k]).length;
   return (
     <div className="axp-codebase-changes">
       <header className="fx-pagehead axp-codebase-changes__intro">
         <div>
           <p className="fx-eyebrow">Builds</p>
           <h1 className="axp-codebase-changes__h1"><Icon name="branch" size={20} /> Codebase changes</h1>
-          <p className="fx-muted">Every request to build, edit, remove or fix something, with its steps and result. Kept on axHub; closing an entry only takes it out of the banner.</p>
+          <p className="fx-muted" title="Every request to build, edit, remove or fix something, with its steps and result. Kept on axHub; closing an entry only takes it out of the banner.">Every build, edit, removal and fix, with its steps and result.</p>
         {c && <p className="fx-small axp-codebase-changes__counts"><strong>{c.total}</strong> in the log · <strong>{c.open}</strong> in the banner{Object.entries(c.byState).map(([k, v]) => ` · ${v} ${(STATE_LABEL[k] ?? k).toLowerCase()}`).join('')}</p>}
       </div>
       </header>
-      <div className="axp-codebase-changes__filters" role="search">
+      {/* search + one Filters toggle; the six filters open below it (compact pages, Oct 30 2026) */}
+      <div className="axp-codebase-changes__searchbar" role="search">
         <input className="fx-input" type="search" placeholder="Search titles, requests, results…" aria-label="Search the log" value={f.q} onChange={(e) => up({ q: e.target.value })} />
-        <select className="fx-input" aria-label="Kind" value={f.kind} onChange={(e) => up({ kind: e.target.value })}><option value="">Every kind</option>{kinds.map((k) => <option key={k} value={k}>{kindLabel(k)}{c?.byKind[k] ? ` (${c.byKind[k]})` : ''}</option>)}</select>
-        <select className="fx-input" aria-label="State" value={f.state} onChange={(e) => up({ state: e.target.value })}><option value="">Every state</option>{['running', 'done', 'partial', 'failed', 'cancelled'].map((k) => <option key={k} value={k}>{STATE_LABEL[k]}</option>)}</select>
-        <select className="fx-input" aria-label="Banner" value={f.open} onChange={(e) => up({ open: e.target.value as Filters['open'] })}><option value="">Open and closed</option><option value="open">In the banner</option><option value="closed">Closed</option></select>
-        <input className="fx-input" placeholder="Repo (owner/name)" aria-label="Repo" value={f.repo} onChange={(e) => up({ repo: e.target.value })} />
-        <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">From</span><input className="fx-input" type="date" value={f.from} onChange={(e) => up({ from: e.target.value })} /></label>
-        <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">To</span><input className="fx-input" type="date" value={f.to} onChange={(e) => up({ to: e.target.value })} /></label>
-        {filtered && <Button size="sm" tone="quiet" icon="x" onClick={() => setF(NO_FILTERS)}>Clear</Button>}
+        <IconButton icon="sliders" label={showFilters ? 'Hide filters' : `Filters${nFilters ? ` (${nFilters} on)` : ''}`} aria-pressed={showFilters} className={nFilters ? 'is-on' : ''} onClick={() => setShowFilters(!showFilters)} />
+        {filtered && <IconButton icon="x" label="Clear the search and filters" onClick={() => setF(NO_FILTERS)} />}
       </div>
+      {showFilters && (
+        <div className="axp-codebase-changes__filters">
+          <select className="fx-input" aria-label="Kind" value={f.kind} onChange={(e) => up({ kind: e.target.value })}><option value="">Every kind</option>{kinds.map((k) => <option key={k} value={k}>{kindLabel(k)}{c?.byKind[k] ? ` (${c.byKind[k]})` : ''}</option>)}</select>
+          <select className="fx-input" aria-label="State" value={f.state} onChange={(e) => up({ state: e.target.value })}><option value="">Every state</option>{['running', 'done', 'partial', 'failed', 'cancelled'].map((k) => <option key={k} value={k}>{STATE_LABEL[k]}</option>)}</select>
+          <select className="fx-input" aria-label="Banner" value={f.open} onChange={(e) => up({ open: e.target.value as Filters['open'] })}><option value="">Open and closed</option><option value="open">In the banner</option><option value="closed">Closed</option></select>
+          <input className="fx-input" placeholder="Repo (owner/name)" aria-label="Repo" value={f.repo} onChange={(e) => up({ repo: e.target.value })} />
+          <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">From</span><input className="fx-input" type="date" value={f.from} onChange={(e) => up({ from: e.target.value })} /></label>
+          <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">To</span><input className="fx-input" type="date" value={f.to} onChange={(e) => up({ to: e.target.value })} /></label>
+        </div>
+      )}
       {err && <p className="fx-small axp-codebase-changes__err">{err}</p>}
       {!err && page && !items.length && <p className="fx-small fx-muted axp-codebase-changes__none">{filtered ? 'Nothing matches these filters.' : 'No changes recorded yet. Once the Claude Code hook is installed (Settings → Plugins → Codebase changes), every request to build, edit, remove or fix something shows up here.'}</p>}
       <ul className="axp-codebase-changes__list">
         {items.map((i) => <Row key={i.id} s={i} open={expanded === i.id} onToggle={() => setExpanded(expanded === i.id ? '' : i.id)} onChanged={() => void reload(fRef.current)} />)}
       </ul>
       <div className="axp-codebase-changes__line">
-        {page?.nextCursor && <Button tone="neutral" icon="chevron-down" disabled={loading} onClick={() => void more()}>Load more ({page.total - items.length} left)</Button>}
+         {page?.nextCursor && <Button size="sm" tone="neutral" icon="chevron-down" disabled={loading} onClick={() => void more()}>Load more ({page.total - items.length} left)</Button>}
         {loading && <span className="axp-codebase-changes__meta">Loading…</span>}
         {page && !page.nextCursor && items.length > 0 && <span className="axp-codebase-changes__meta">{items.length} of {page.total}</span>}
       </div>
@@ -325,17 +336,18 @@ export function SettingsSummary() {
   const here = w?.where === 'hub' ? 'on axHub (the shared data folder)' : w?.where === 'env' ? 'in the folder AXF_CHANGES_DIR names' : 'in this clone\'s changes/ folder (no hub volume here)';
   return (
     <div className="fx-stack">
-      <p className="axp-codebase-changes__p">Every time Claude is asked to build, edit, remove or fix something, an entry is opened with what was asked; Claude fills in its steps and the result. Open entries show in the <strong>Codebase changes</strong> banner on every load until you close them (closing clears them on every device). The full log stays under Builds → Codebase changes.</p>
-      <p className="fx-small axp-codebase-changes__p"><strong>{s.loaded ? `${s.openTotal} in the banner now.` : s.error ? `Couldn’t check: ${s.error}` : 'Checking…'}</strong></p>
+      <p className="fx-small axp-codebase-changes__p" title="Every time Claude is asked to build, edit, remove or fix something, an entry is opened with what was asked; Claude fills in its steps and the result. Open entries show in the Codebase changes banner on every load until you close them (closing clears them on every device). The full log stays under Builds → Codebase changes."><strong>{s.loaded ? `${s.openTotal} in the banner now.` : s.error ? `Couldn’t check: ${s.error}` : 'Checking…'}</strong> Every request to Claude to change code gets an entry; open ones show in the banner.</p>
       <h4 className="axp-codebase-changes__h">Where the log lives</h4>
       {err ? <p className="fx-small axp-codebase-changes__err">{err}</p> : !w ? <p className="fx-small fx-muted axp-codebase-changes__p">Checking…</p> : (
         <p className="fx-small axp-codebase-changes__p">Kept {here}: <code>{w.path}</code>{w.where === 'hub' ? '' : <>; the main copy is <code>{w.hubPath}</code> on axHub</>}. One file per entry, never deleted by uninstalling the plugin.</p>
       )}
-      <h4 className="axp-codebase-changes__h">Claude Code hook (once per machine)</h4>
+      <details className="axp-codebase-changes__how">
+      <summary className="axp-codebase-changes__h">Claude Code hook (once per machine)</summary>
       <p className="fx-small axp-codebase-changes__p">Run this on the VPS (and any other machine where Claude Code works on these repos), so every request opens an entry by itself:</p>
       <pre className="axp-codebase-changes__cmd">node {script} hooks install</pre>
       <p className="fx-small fx-muted axp-codebase-changes__p">Check with <code>hooks status</code>, remove with <code>hooks remove</code>. On a machine without the hub folder, set <code>AXF_TOKEN</code> (the console token) so entries go through the console; otherwise they wait in <code>~/.axf-changes/queue</code> until <code>flush</code> can send them.</p>
       <p className="fx-small fx-muted axp-codebase-changes__p">Recording by hand: <code>node {script} open "Title" --kind build --step "first step"</code>, then <code>step last "first step" --state done</code> and <code>result last --state done --summary "…" --commit &lt;sha&gt;</code>.</p>
+      </details>
     </div>
   );
 }

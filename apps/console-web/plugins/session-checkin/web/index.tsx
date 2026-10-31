@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
@@ -78,36 +78,37 @@ function SessionsView() {
   const installed = installedTargets(st);
 
   return (
-    <div className="fx-stack fx-stack--lg">
+    <div className="fx-stack">
       <header className="fx-pagehead">
         <div>
-          <p className="fx-eyebrow">Session archive{rows ? ` · ${rows.length} session${rows.length === 1 ? '' : 's'}` : ''}</p>
+          <p className="fx-eyebrow">Session archive{rows ? ` · ${rows.length}` : ''}</p>
           <h1>Sessions</h1>
-          <p className="fx-muted">Every session check-in, newest first. Pick one to see what was detected, what was picked and what the baseline build costs.</p>
+          <p className={`fx-muted ${P}__lede`} title="Every session check-in, newest first. Pick one to see what was detected, what was picked and what the baseline build costs.">Every session check-in, newest first. Tap one for details.</p>
         </div>
-        <div className="fx-row fx-row--wrap">
-          <Button icon="refresh" onClick={load}>Refresh</Button>
-          <Button icon="settings" onClick={() => rt.dispatch('settings.open:session-checkin')}>Check-in settings</Button>
+        <div className={`${P}__acts`}>
+          <IconButton icon="refresh" label="Refresh" onClick={load} />
+          <IconButton icon="settings" label="Check-in settings" onClick={() => rt.dispatch('settings.open:session-checkin')} />
         </div>
       </header>
 
       {st && installed.length === 0 && (
         <div className={`${P}__notice`} role="status">
           <Icon name="info" />
-          <span className="fx-grow">The check-in isn't installed yet, so new sessions don't ask the questions. Install it from its settings.</span>
+          <span className="fx-grow fx-small" title="The check-in isn't installed yet, so new sessions don't ask the questions. Install it from its settings.">Not installed: new sessions don't ask yet.</span>
           <Button tone="primary" icon="download" onClick={() => rt.dispatch('settings.open:session-checkin')}>Install…</Button>
         </div>
       )}
       {err && <p className={`${P}__error`}>{err}</p>}
 
-      <div className={`${P}__tiles`}>
-        <div className={`${P}__tile`}><strong>{rows?.length ?? '…'}</strong><span>sessions</span></div>
-        <div className={`${P}__tile`}><strong className={mismatches ? 'is-warning' : ''}>{rows ? mismatches : '…'}</strong><span>flagged</span></div>
-        <div className={`${P}__tile`}><strong>{money(base?.estimates?.[usual.model]?.[usual.effort])}</strong><span>baseline, {modelLabel(usual.model)} · {usual.effort}</span></div>
-      </div>
-
-      <div className={`${P}__filters`} role="group" aria-label="Filter sessions">
-        {FILTERS.map(([id, label]) => <button key={id} type="button" className={`fx-chip ${filter === id ? 'is-on' : ''}`} aria-pressed={filter === id} onClick={() => setFilter(id)}>{label}</button>)}
+      <div className={`${P}__bar`}>
+        <div className={`${P}__strip`}>
+          <Chip>{rows?.length ?? '…'} sessions</Chip>
+          <Chip tone={mismatches ? 'warning' : undefined}>{rows ? mismatches : '…'} flagged</Chip>
+          <span title={`Baseline build cost, ${modelLabel(usual.model)} · ${usual.effort}`}><Chip>{money(base?.estimates?.[usual.model]?.[usual.effort])} · {modelLabel(usual.model).split(' ')[0]} {usual.effort}</Chip></span>
+        </div>
+        <select className={`fx-input ${P}__filter`} value={filter} onChange={(e) => setFilter(e.target.value as Filter)} aria-label="Filter sessions">
+          {FILTERS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+        </select>
       </div>
 
       {rows && shown.length === 0 && <p className="fx-muted">{rows.length ? 'No sessions match this filter.' : 'No check-ins archived yet. They appear here after the next new Claude Code session with the check-in installed.'}</p>}
@@ -262,6 +263,7 @@ function InstallWizard() {
 
   return (
     <div className="fx-stack">
+      <span className={`${P}__stepnow fx-small fx-muted`}>Step {step + 1} of {STEPS.length} · <strong>{STEPS[step]}</strong></span>
       <ol className={`${P}__steps`}>
         {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} onClick={() => void go(i)} disabled={busy}>{i + 1}. {s}</button></li>)}
       </ol>

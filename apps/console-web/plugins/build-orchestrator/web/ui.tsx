@@ -66,7 +66,7 @@ export function OrchestratorPage() {
         <div>
           <p className="fx-eyebrow">Build orchestrator · {state.builds.length} builds{state.updatedAt ? ` · updated ${fmtTime(state.updatedAt)}` : ''}</p>
           <h1>Build orchestrator</h1>
-          <p className="fx-muted">Every build broken into small steps on Fable or Opus. A model switch waits for your approval. One session, no sub-agents unless a step says so. Tracker: <span className="fx-mono">_claude/builds/orchestrator.json</span>.</p>
+          <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/orchestrator.json">Every build in small Fable / Opus steps; a model switch waits for your approval.</p>
         </div>
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
@@ -106,7 +106,6 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
   const cats = core.categories(state.builds.filter((b) => b.status !== 'archived'));
   const counts = core.counts(state.builds) as Record<string, number>;
   const hiddenCount = state.builds.filter((b) => b.hidden).length;
-  const pickSort = (k: string) => { if (k === sort) setDir((d) => (d === 'asc' ? 'desc' : 'asc')); else { setSort(k); setDir(k === 'status' || k === 'next' ? 'asc' : 'desc'); } };
   return (
     <>
       <div className="pd-strip" role="group" aria-label="Filter by status">
@@ -116,19 +115,21 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
           </button>
         ))}
       </div>
-      <div className="pd-sortbar" role="group" aria-label="Category">
+      <div className="oc-bar" role="toolbar" aria-label="Show">
         <Segmented size="sm" label="View" value={view} onChange={setView} options={[{ value: 'grid', label: 'Grid', icon: 'grid' }, { value: 'list', label: 'List', icon: 'list' }]} />
-        <span className="fx-small fx-muted">Category</span>
-        {cats.map((c) => <button data-fx-row key={c.name} className="pd-sort" aria-pressed={cat === c.name} onClick={() => setCat((x) => (x === c.name ? '' : c.name))}>{c.name} <span className="fx-muted">{c.count}</span></button>)}
-      </div>
-      <div className="pd-sortbar" role="group" aria-label="Sort">
-        {view === 'list' && <span className="fx-small fx-muted">Sort by</span>}
-        {view === 'list' && core.SORTS.map((k) => (
-          <button data-fx-row key={k} className="pd-sort" aria-pressed={sort === k} onClick={() => pickSort(k)} title={sort === k ? 'Click again to reverse' : undefined}>
-            {(core.SORT_LABEL as Record<string, string>)[k]}{sort === k && <Icon name={dir === 'asc' ? 'chevron-up' : 'chevron-down'} size={13} />}
-          </button>
-        ))}
-        {core.MODELS.map((m) => <button data-fx-row key={m} className="pd-sort" aria-pressed={model === m} onClick={() => setModel((x) => (x === m ? '' : m))}>Next on {m}</button>)}
+        <select className="fx-input oc-bar__pick" aria-label="Category" value={cat} onChange={(e) => setCat(e.target.value)}>
+          <option value="">All categories</option>
+          {cats.map((c) => <option key={c.name} value={c.name}>{c.name} ({c.count})</option>)}
+        </select>
+        <select className="fx-input oc-bar__pick" aria-label="Next step on" value={model} onChange={(e) => setModel(e.target.value)}>
+          <option value="">Any model next</option>
+          {core.MODELS.map((m) => <option key={m} value={m}>Next on {m}</option>)}
+        </select>
+        {view === 'list' && (
+          <select className="fx-input oc-bar__pick" aria-label="Sort by" value={`${sort}:${dir}`} onChange={(e) => { const [k, d] = e.target.value.split(':'); setSort(k!); setDir(d as 'asc' | 'desc'); }}>
+            {core.SORTS.flatMap((k) => (['asc', 'desc'] as const).map((d) => <option key={`${k}:${d}`} value={`${k}:${d}`}>{(core.SORT_LABEL as Record<string, string>)[k]} {d === 'asc' ? '↑' : '↓'}</option>))}
+          </select>
+        )}
         {hiddenCount > 0 && <button data-fx-row className="pd-sort" aria-pressed={showHidden} onClick={() => setShowHidden((v) => !v)}><Icon name={showHidden ? 'eye' : 'minimize'} size={13} />Hidden ({hiddenCount})</button>}
         {filter && <button data-fx-row className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{(core.STATUS_LABEL as Record<string, string>)[filter]} only</button>}
       </div>
