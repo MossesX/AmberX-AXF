@@ -187,6 +187,11 @@ public class AudioExtractPlugin extends Plugin {
             if (list != null) uris.addAll(list);
         }
         i.setAction(Intent.ACTION_MAIN); // handled: a re-created activity doesn't take it twice
+        offer(uris);
+    }
+
+    /** Files handed over like Share → AmberX (also Audio Output Recorder's "Send to Audio Extract"). */
+    void offer(List<Uri> uris) {
         if (uris.isEmpty()) return;
         misc.execute(() -> {
             JSArray videos = new JSArray();

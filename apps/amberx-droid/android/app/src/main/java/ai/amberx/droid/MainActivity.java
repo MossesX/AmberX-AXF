@@ -21,6 +21,7 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle state) {
         registerPlugin(AmberxNativePlugin.class);
         registerPlugin(AudioExtractPlugin.class); // Audio Extract (apps/console-web/plugins/audio-extract)
+        registerPlugin(OutputRecorderPlugin.class); // Audio Output Recorder (apps/console-web/plugins/output-recorder)
         super.onCreate(state);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE); // approvals and hub pages are never captured
         getWindow().getDecorView().post(() -> AmberxNativePlugin.deliver(getIntent()));
