@@ -52,34 +52,57 @@ export function CrewTab({ state, stats, act, onFeed }: { state: SwarmState; stat
   if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} onBack={() => pick('')} onFeed={onFeed} />;
   return (
     <div className="sw-cards" role="list">
-      {state.roster.agents.map((x) => <Card key={x.id} a={x} state={state} st={stats[x.id]!} onOpen={() => pick(x.id)} />)}
+      {state.roster.agents.map((x) => <Card key={x.id} a={x} state={state} st={stats[x.id]!} act={act} onOpen={() => pick(x.id)} />)}
     </div>
   );
 }
 
-function Card({ a, state, st, onOpen }: { a: Agent; state: SwarmState; st: Stats; onOpen: () => void }) {
+const BENCHED = ['quit', 'fired', 'suspended'];
+function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: Stats; act: Act; onOpen: () => void }) {
   const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id];
   return (
-    <button role="listitem" className={`sw-card ${as.status === 'fired' ? 'sw-gone' : ''}`} onClick={onOpen} aria-label={`${a.name}, open profile`}>
-      <div className="sw-card__head">
-        <Avatar a={a} />
-        <div className="sw-card__who"><b>{a.name}</b><span className="fx-muted">{a.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
-      </div>
-      <p className="sw-card__line">{a.specialty}</p>
-      <dl className="sw-card__stats">
-        <div><dt>Hired</dt><dd>{fmtDay(a.hiredAt)}</dd></div>
-        <div><dt>All time</dt><dd>{core.fmtUsd(sp?.all.usd ?? 0)}</dd></div>
-        <div><dt>Week</dt><dd>{core.fmtUsd(sp?.week.usd ?? 0)}</dd></div>
-        <div><dt>Today</dt><dd>{core.fmtUsd(sp?.today.usd ?? 0)}</dd></div>
-        <div><dt>Jobs done</dt><dd>{st.done}</dd></div>
-        <div><dt>Success</dt><dd>{st.successRate == null ? '—' : `${Math.round(st.successRate * 100)}%`}</dd></div>
-        <div><dt>Failures</dt><dd>{st.failed}</dd></div>
-        <div><dt>Avg / job</dt><dd>{sp?.jobs ? core.fmtUsd(sp.avgPerJob) : '—'}</dd></div>
-        <div><dt>Favourite</dt><dd>{st.favoriteModel ? <ModelChip m={st.favoriteModel} /> : <ModelChip m={a.models[0]!} />}</dd></div>
-        <div><dt>Last seen</dt><dd>{st.lastSeen ? fmtTime(st.lastSeen) : 'never'}</dd></div>
-      </dl>
-      <p className="sw-card__quote">“{a.catchphrase}”</p>
-    </button>
+    <article role="listitem" className={`sw-card ${as.status === 'fired' ? 'sw-gone' : ''}`}>
+      <button className="sw-card__open" onClick={onOpen} aria-label={`${a.name}, open profile`}>
+        <div className="sw-card__head">
+          <Avatar a={a} />
+          <div className="sw-card__who"><b>{a.name}</b><span className="fx-muted">{a.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
+        </div>
+        <p className="sw-card__line">{a.specialty}</p>
+        <dl className="sw-card__stats">
+          <div><dt>Hired</dt><dd>{fmtDay(a.hiredAt)}</dd></div>
+          <div><dt>All time</dt><dd>{core.fmtUsd(sp?.all.usd ?? 0)}</dd></div>
+          <div><dt>Week</dt><dd>{core.fmtUsd(sp?.week.usd ?? 0)}</dd></div>
+          <div><dt>Today</dt><dd>{core.fmtUsd(sp?.today.usd ?? 0)}</dd></div>
+          <div><dt>Jobs done</dt><dd>{st.done}</dd></div>
+          <div><dt>Success</dt><dd>{st.successRate == null ? '—' : `${Math.round(st.successRate * 100)}%`}</dd></div>
+          <div><dt>Failures</dt><dd>{st.failed}</dd></div>
+          <div><dt>Avg / job</dt><dd>{sp?.jobs ? core.fmtUsd(sp.avgPerJob) : '—'}</dd></div>
+          <div><dt>Favourite</dt><dd>{st.favoriteModel ? <ModelChip m={st.favoriteModel} /> : <ModelChip m={a.models[0]!} />}</dd></div>
+          <div><dt>Last seen</dt><dd>{st.lastSeen ? fmtTime(st.lastSeen) : 'never'}</dd></div>
+        </dl>
+        <p className="sw-card__quote">“{a.catchphrase}”</p>
+      </button>
+      {BENCHED.includes(as.status) && <div className="sw-bar"><Button size="sm" icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button>{as.note && <span className="fx-muted">{as.note}</span>}</div>}
+    </article>
+  );
+}
+
+const DURATIONS = [{ h: 1, label: '1 hour' }, { h: 4, label: '4 hours' }, { h: 24, label: '1 day' }, { h: 72, label: '3 days' }, { h: 168, label: '1 week' }];
+function Discipline({ a, state, act }: { a: Agent; state: SwarmState; act: Act }) {
+  const as = state.swarm.agents[a.id]!;
+  const [hours, setHours] = useState(24);
+  const [reason, setReason] = useState('');
+  return (
+    <section className="fx-stack">
+      <h3 className="sw-wave">Discipline</h3>
+      <p className="fx-muted">Failed jobs in a row: {as.failStreak} of {state.swarm.rules.rageQuitAfter} before a rage-quit.</p>
+      {BENCHED.includes(as.status) ? <div className="sw-bar"><Button icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button><span className="fx-muted">{statusText(as, state.statuses)}{as.until ? ` until ${fmtTime(as.until)}` : ''}{as.note ? ` · ${as.note}` : ''}</span></div>
+        : <form className="sw-bar" onSubmit={(e) => { e.preventDefault(); void act({ action: 'suspend', agent: a.id, until: new Date(Date.now() + hours * 3600e3).toISOString(), reason }).then((l) => { if (l) setReason(''); }); }}>
+          <select className="fx-input sw-bar__pick" aria-label="Suspend for" value={hours} onChange={(e) => setHours(Number(e.target.value))}>{DURATIONS.map((d) => <option key={d.h} value={d.h}>{d.label}</option>)}</select>
+          <input className="fx-input sw-grow" aria-label="Reason" placeholder="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+          <Button type="submit" disabled={!reason.trim()}>Suspend</Button>
+        </form>}
+    </section>
   );
 }
 
@@ -107,6 +130,7 @@ function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: Swarm
         <input id={`cap-${a.id}`} className="fx-input sw-num" type="number" min={0} value={cap} placeholder="none" onChange={(e) => setCap(e.target.value)} />
         <Button size="sm" onClick={() => void act({ action: 'cap', agent: a.id, usd: Number(cap || 0) })}>Save</Button>
       </section>
+      <Discipline a={a} state={state} act={act} />
       <section className="fx-stack">
         <h3 className="sw-wave">Status history</h3>
         {as.history.length === 0 ? <p className="fx-muted">On duty since hiring.</p>

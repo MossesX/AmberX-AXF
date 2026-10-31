@@ -504,7 +504,12 @@ export const STATUSES = {
   probation: { label: 'Probation', works: 'small', tone: 'warning', about: 'Small jobs only; Brett is notified every run.' },
   fired: { label: 'Fired', works: false, tone: 'danger', about: 'Never assigned again; kept greyed in history.' },
   custom: { label: 'Custom', works: false, tone: 'accent', about: 'Brett names it and picks whether it gets work.' },
+  suspended: { label: 'Suspended', works: false, tone: 'danger', about: 'No jobs until the suspension ends, then back on duty by itself.' },
+  quit: { label: 'Quit', works: false, tone: 'danger', about: 'Rage-quit after too many failed jobs in a row; Rehire puts it back.' },
 };
+/** Statuses Brett sets from the dropdown; Suspended and Quit come from Suspend and rage-quit. */
+export const PICKABLE = ['on-duty', 'off-duty', 'injured', 'medical-leave', 'probation', 'fired', 'custom'];
+export const DEFAULT_RULES = { rageQuitAfter: 3 };
 export const SMALL_JOB_MINUTES = 15;
 
 export function normAgentState(s) {
@@ -515,6 +520,7 @@ export function normAgentState(s) {
     until: str(o.until, 40),
     custom: { name: str(o.custom?.name, 40), works: o.custom?.works === true },
     cap: num(o.cap, 0, 0, 100000),
+    failStreak: num(o.failStreak, 0, 0, 1000) | 0,
     benched: str(o.benched, 20),
     history: (Array.isArray(o.history) ? o.history : []).slice(-200).map((h) => ({ at: str(h?.at, 40), from: str(h?.from, 40), to: str(h?.to, 40), note: str(h?.note, 300), by: str(h?.by, 40) || 'brett' })),
   };
@@ -524,7 +530,8 @@ export function normState(s, roster) {
   const agents = {};
   for (const a of roster?.agents ?? []) agents[a.id] = normAgentState(o.agents?.[a.id]);
   for (const [k, v] of Object.entries(o.agents ?? {})) if (!agents[k]) agents[k] = normAgentState(v); // keep history of agents taken off the roster
-  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), agents, chat: normChat(o.chat), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
+  const rules = { rageQuitAfter: num(o.rules?.rageQuitAfter, DEFAULT_RULES.rageQuitAfter, 1, 50) | 0 };
+  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
 }
 
 export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || 'Custom' : STATUSES[as.status]?.label ?? as.status);
@@ -555,6 +562,7 @@ function setStatus(st, id, to, note, at, by = 'brett', extra = {}) {
 export function tick(state, at) {
   const log = [];
   for (const [id, as] of Object.entries(state.agents)) {
+    if (as.status === 'suspended' && as.until && as.until <= at) { log.push(setStatus(state, id, 'on-duty', 'suspension over', at, 'boss')); post(state, [{ from: BOSS.id, kind: 'discipline', text: `${id}'s suspension is over. Back on duty.` }], at); }
     if (as.status === 'medical-leave' && as.until && as.until <= at) { log.push(setStatus(state, id, 'on-duty', 'back from medical leave', at, 'boss')); post(state, [{ from: BOSS.id, kind: 'status', text: `${id} is back from medical leave and on duty.` }], at); }
   }
   return { state, log };
@@ -566,7 +574,7 @@ export function applyChange(state, change, roster, at) {
   const log = [];
   switch (c.action) {
     case 'status': {
-      if (!Object.hasOwn(STATUSES, c.status)) throw new Error(`unknown status "${c.status}"`);
+      if (!PICKABLE.includes(c.status)) throw new Error(c.status === 'suspended' || c.status === 'quit' ? `use ${c.status === 'quit' ? 'rehire' : 'suspend'} for that` : `unknown status "${c.status}"`);
       if (c.status === 'medical-leave' && !(str(c.until, 40) > at)) throw new Error('medical leave needs a return date in the future');
       if (c.status === 'custom' && !str(c.name, 40).trim()) throw new Error('a custom status needs a name');
       log.push(setStatus(s, c.agent, c.status, c.note, at, 'brett', c));
@@ -582,6 +590,20 @@ export function applyChange(state, change, roster, at) {
       const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
       if (!post(s, [{ from: 'brett', kind: 'brett', text }], at)) throw new Error('the group chat is off'); log.push('posted'); break;
     }
+    case 'suspend': {
+      const until = str(c.until, 40); const reason = str(c.reason, 300).trim();
+      if (!(until > at)) throw new Error('a suspension needs an end in the future');
+      if (!reason) throw new Error('say why');
+      log.push(setStatus(s, c.agent, 'suspended', reason, at, 'brett', { until }));
+      post(s, [{ from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, c.agent)} is suspended until ${until.slice(0, 16).replace('T', ' ')} UTC. Reason: ${reason}.` }], at); break;
+    }
+    case 'rehire': {
+      const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`);
+      if (as.status === 'on-duty') throw new Error('already on duty');
+      log.push(setStatus(s, c.agent, 'on-duty', str(c.note, 300) || 'rehired', at)); as.failStreak = 0;
+      post(s, [{ from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, c.agent)} is rehired and back on duty. Don't make me regret it.` }], at); break;
+    }
+    case 'rules': { if (c.rageQuitAfter != null) s.rules.rageQuitAfter = num(c.rageQuitAfter, 3, 1, 50) | 0; log.push(`rage-quit after ${s.rules.rageQuitAfter} failed jobs in a row`); break; }
     case 'note': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.note = str(c.note, 300); log.push(`${c.agent}: note saved`); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
@@ -752,4 +774,23 @@ export function parseBanter(text, roster) {
   const m = /\[[\s\S]*\]/.exec(str(text, 20000)); if (!m) return [];
   try { return JSON.parse(m[0]).filter((x) => roster.agents.some((a) => a.id === x?.agent) && typeof x.text === 'string').slice(0, 20).map((x) => ({ from: x.agent, kind: 'banter', text: str(x.text, 200) })); }
   catch { return []; }
+}
+
+// ---------------------------------------------------------------- discipline
+
+/**
+ * Book a finished run on its agent: a done job resets the failure streak; failed, killed and errored jobs add to it
+ * (blocked doesn't count: it's a question, not a failure). At the rage-quit limit the agent quits itself and says so.
+ * Returns the log lines.
+ */
+export function recordRun(state, run, roster, at) {
+  const as = state.agents[run.agent]; if (!as) return [];
+  const log = [];
+  if (run.status === 'done') as.failStreak = 0;
+  else if (run.status !== 'blocked') as.failStreak += 1;
+  if (as.failStreak >= state.rules.rageQuitAfter && !['quit', 'fired'].includes(as.status)) {
+    log.push(setStatus(state, run.agent, 'quit', `rage-quit after ${as.failStreak} failed jobs in a row`, at, run.agent));
+    post(state, [{ from: run.agent, kind: 'discipline', text: `That's ${as.failStreak} in a row. I'm DONE with this shit. I quit.` }, { from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, run.agent)} rage-quit. No jobs till Brett rehires.` }], at);
+  }
+  return log;
 }

@@ -1,6 +1,7 @@
 // Types for swarm-core.mjs (loose on purpose: ui.tsx narrows them to its own types).
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const MODEL_TIERS: string[];
+export const PICKABLE: string[];
 export const MODEL_LABEL: Record<string, string>;
 export const SHARED_FILES: string[];
 export function planJobs(builds: any, roster: any, opts?: any): { jobs: any[]; waves: string[][]; warnings: string[] };

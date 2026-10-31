@@ -56,3 +56,6 @@
 .sw-msg__badge.is-brett { background: var(--fx-accent); color: var(--fx-accent-text) }
 .sw-msg.is-assign .sw-msg__body, .sw-msg.is-lease .sw-msg__body, .sw-msg.is-merge .sw-msg__body { border-color: var(--fx-info) }
 .sw-msg.is-report .sw-msg__body, .sw-msg.is-handoff .sw-msg__body { border-color: var(--fx-success) }
+.sw-card { cursor: default }
+.sw-card__open { all: unset; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6); cursor: pointer }
+.sw-card__open:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus) }

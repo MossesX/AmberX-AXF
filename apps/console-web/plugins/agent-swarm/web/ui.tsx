@@ -61,9 +61,14 @@ function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {
   return (
     <div className="fx-stack">
       {notices.length > 0 && <div className="pl-note"><Icon name="bell" size={14} />{notices.map((n) => `${fmtTime(n.at)} ${n.text}`).join(' · ')}</div>}
+      <div className="sw-bar">
+        <label className="fx-muted" htmlFor="sw-rq">Rage-quit after</label>
+        <input id="sw-rq" className="fx-input sw-num" type="number" min={1} max={50} defaultValue={state.swarm.rules.rageQuitAfter} key={state.swarm.rules.rageQuitAfter} onBlur={(e) => { const v = Number(e.target.value); if (v && v !== state.swarm.rules.rageQuitAfter) void act({ action: 'rules', rageQuitAfter: v }); }} />
+        <span className="fx-muted">failed jobs in a row</span>
+      </div>
       <div className="sw-scroll"><table className="sw-table">
         <thead><tr><th aria-sort={sort === 'name' ? 'ascending' : 'none'}><button onClick={() => setSort('name')}>Agent</button></th><th>Status</th><th>Note</th>{th('all', 'All time')}{th('week', 'Week')}{th('today', 'Today')}{th('avg', 'Avg / job')}<th className="is-num">Weekly cap</th></tr></thead>
-        <tbody>{agents.map((a) => <AgentRow key={a.id} a={a} as={state.swarm.agents[a.id]!} sp={state.spend[a.id]} defs={state.statuses} act={act} />)}</tbody>
+        <tbody>{agents.map((a) => <AgentRow key={a.id} a={a} as={state.swarm.agents[a.id]!} sp={state.spend[a.id]} defs={state.statuses} pickable={state.pickable} act={act} />)}</tbody>
       </table></div>
       <p className="fx-muted">{Object.values(state.statuses).map((d) => `${d.label}: ${d.about}`).join(' · ')} A weekly cap benches the agent (Off duty) when its spend this week reaches it.</p>
     </div>
@@ -71,7 +76,7 @@ function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {
 }
 
 const money = (u: { usd: number; tokens: number } | undefined) => (u ? <><b>{core.fmtUsd(u.usd)}</b><br /><span className="fx-muted">{core.fmtTokens(u.tokens)}</span></> : '—');
-function AgentRow({ a, as, sp, defs, act }: { a: Agent; as: AgentState; sp: Spend | undefined; defs: Record<string, StatusDef>; act: Act }) {
+function AgentRow({ a, as, sp, defs, pickable, act }: { a: Agent; as: AgentState; sp: Spend | undefined; defs: Record<string, StatusDef>; pickable: string[]; act: Act }) {
   const [cap, setCap] = useState(String(as.cap || ''));
   useEffect(() => { setCap(String(as.cap || '')); }, [as.cap]);
   const [pick, setPick] = useState(as.status);
@@ -88,7 +93,7 @@ function AgentRow({ a, as, sp, defs, act }: { a: Agent; as: AgentState; sp: Spen
       <td>
         <div className="sw-bar">
           <select className="fx-input sw-bar__pick" aria-label={`${a.name} status`} value={pick} onChange={(e) => { setPick(e.target.value); if (e.target.value !== 'medical-leave' && e.target.value !== 'custom') void save(e.target.value); }}>
-            {Object.entries(defs).map(([k, d]) => <option key={k} value={k}>{k === 'custom' && as.status === 'custom' ? statusText(as, defs) : d.label}</option>)}
+            {Object.entries(defs).map(([k, d]) => <option key={k} value={k} disabled={!pickable.includes(k)}>{k === 'custom' && as.status === 'custom' ? statusText(as, defs) : d.label}</option>)}
           </select>
           {pick === 'medical-leave' && <input className="fx-input sw-bar__pick" type="date" aria-label="Back on" value={until} onChange={(e) => setUntil(e.target.value)} />}
           {pick === 'custom' && <><input className="fx-input sw-bar__pick" aria-label="Status name" placeholder="Name it" value={name} onChange={(e) => setName(e.target.value)} /><label className="fx-checkrow"><input type="checkbox" className="fx-check" checked={works} onChange={(e) => setWorks(e.target.checked)} /><span className="fx-checkrow__label">Gets work</span></label></>}

@@ -220,6 +220,24 @@ t('cheap banter batch: prompt + parsing keeps only real agents', () => {
 });
 t('status changes are posted by Boss', () => { const s = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'tex', status: 'off-duty', note: 'day off' }, roster, AT).state; assert.match(s.messages.at(-1).text, /Tex Tester is now Off duty: day off/); });
 
+// s13 discipline
+t('suspend: timed, with a reason, back on duty by itself, posted', () => {
+  assert.throws(() => c.applyChange(c.normState({}, roster), { action: 'suspend', agent: 'rio', until: '2026-11-01T00:00:00Z' }, roster, AT), /why/);
+  assert.throws(() => c.applyChange(c.normState({}, roster), { action: 'status', agent: 'rio', status: 'suspended' }, roster, AT), /use suspend/);
+  const s = c.applyChange(c.normState({}, roster), { action: 'suspend', agent: 'rio', until: '2026-11-01T00:00:00.000Z', reason: 'pushed to main' }, roster, AT).state;
+  assert.equal(s.agents.rio.status, 'suspended'); assert.equal(c.canWork(roster.agents[1], s.agents.rio).ok, false); assert.match(s.messages.at(-1).text, /suspended until 2026-11-01 00:00 UTC\. Reason: pushed to main/);
+  const t2 = c.tick(s, '2026-11-01T00:00:01.000Z'); assert.equal(t2.state.agents.rio.status, 'on-duty'); assert.equal(t2.state.agents.rio.history.length, 2);
+});
+t('rage-quit after N failed jobs in a row; blocked does not count; done resets', () => {
+  const s = c.applyChange(c.normState({}, roster), { action: 'rules', rageQuitAfter: 2 }, roster, AT).state;
+  c.recordRun(s, { agent: 'py', status: 'failed' }, roster, AT); c.recordRun(s, { agent: 'py', status: 'done' }, roster, AT); assert.equal(s.agents.py.failStreak, 0);
+  c.recordRun(s, { agent: 'py', status: 'failed' }, roster, AT); c.recordRun(s, { agent: 'py', status: 'blocked' }, roster, AT); assert.equal(s.agents.py.status, 'on-duty');
+  assert.equal(c.recordRun(s, { agent: 'py', status: 'killed' }, roster, AT).length, 1); assert.equal(s.agents.py.status, 'quit');
+  assert.ok(s.messages.some((m) => m.from === 'py' && /I quit/.test(m.text))); assert.equal(s.agents.py.history.at(-1).by, 'py');
+  const r = c.applyChange(s, { action: 'rehire', agent: 'py' }, roster, AT).state; assert.equal(r.agents.py.status, 'on-duty'); assert.equal(r.agents.py.failStreak, 0); assert.match(r.messages.at(-1).text, /rehired/);
+  assert.equal(c.normState({}, roster).rules.rageQuitAfter, 3);
+});
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));
