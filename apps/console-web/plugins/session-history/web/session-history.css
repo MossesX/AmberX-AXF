@@ -34,3 +34,20 @@ select.fx-input.axp-session-history__pick { flex: none; width: auto }
 .axp-session-history__side { min-width: 0 }
 .axp-session-history__pre { margin: 0; padding: calc(var(--fx-space) * 0.5); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); overflow: auto; max-height: calc(var(--fx-font-size) * 20); white-space: pre-wrap; overflow-wrap: anywhere }
 .axp-session-history__link { margin-right: var(--fx-space) }
+.axp-session-history__text { white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-font-size) * 30); overflow: auto }
+.axp-session-history__more { border: 0; background: transparent; color: var(--fx-accent); cursor: pointer; padding: 0 0 0 calc(var(--fx-space) * 0.5); font: inherit }
+.axp-session-history__pager { display: flex; align-items: center; gap: var(--fx-space) }
+.axp-session-history__turns, .axp-session-history__tools { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__turn { border-bottom: var(--fx-border-w) solid var(--fx-border); padding-bottom: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-session-history__turnhead { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axp-session-history__in, .axp-session-history__out { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); margin-top: calc(var(--fx-space) * 0.3); min-width: 0 }
+.axp-session-history__out { padding-left: var(--fx-space); border-left: calc(var(--fx-border-w) * 2) solid var(--fx-accent) }
+.axp-session-history__ev { min-width: 0 }
+.axp-session-history__price { font-variant-numeric: tabular-nums; white-space: nowrap }
+.axp-session-history__tool { min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--fx-space) * 0.4) }
+.axp-session-history__toolbtn { border: 0; background: transparent; color: inherit; font: inherit; padding: 0; cursor: pointer; text-align: left; min-width: 0; flex: 1 1 calc(var(--fx-font-size) * 16); overflow-wrap: anywhere }
+.axp-session-history__toolbody { flex-basis: 100%; min-width: 0 }
+.axp-session-history__chat { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__msg { min-width: 0; max-width: 92%; padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.axp-session-history__msg--you { align-self: flex-end }
+.axp-session-history__msg--claude { align-self: flex-start }

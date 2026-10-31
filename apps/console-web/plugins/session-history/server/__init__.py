@@ -8,6 +8,8 @@ the plugin is off, never on the console MCP).
   GET  runs/{id}/did          what it built: plain-English summary + one line per commit / uncommitted edits (item, what
                               was wrong, files with before / after), GitHub links, its Codebase changes entries (through
                               ``axf.changes@1``, never by folder) and its Session check-in record (session-log@1 archive)
+  GET  runs/{id}/events?tab=context|tools|conversation&offset=&limit=
+                              the expanded row's tabs (see ``tabs.py``), paged
   GET  config / PUT config    the folders read (transcripts, streams, reports) and limits
 
 The reading itself is in ``runs.py`` (pure, tested without FastAPI). The store keeps a ``killed.json`` in the plugin's
@@ -26,6 +28,7 @@ import plugin_services
 
 from . import did as D
 from . import runs as R
+from . import tabs as T
 
 router = APIRouter()
 FOLDER = "session-history"
@@ -115,6 +118,14 @@ def get_did(rid: str) -> dict[str, Any]:
     run = _get(rid)
     out = D.what_it_did(run, STORE.events(run))
     return {**out, "changes": _changes_for(run), "checkin": _checkin_for(rid)}
+
+
+@router.get("/runs/{rid}/events")
+def get_events(rid: str, tab: str = "context", offset: int = 0, limit: int = 100) -> dict[str, Any]:
+    if tab not in T.TABS:
+        raise HTTPException(400, f"tab is one of {', '.join(T.TABS)}")
+    run = _get(rid)
+    return T.page(STORE.events(run), tab, offset, limit)
 
 
 def _clean_config(body: Any) -> dict[str, Any]:

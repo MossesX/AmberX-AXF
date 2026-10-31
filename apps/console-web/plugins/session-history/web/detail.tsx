@@ -2,6 +2,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Chip } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
+import { ContextTab, ConversationTab, ToolsTab, type Tab } from './tabs';
 import { fmtDuration, fmtTokens, fmtUsd, fmtWhen, KIND_LABEL, type Kind, type Run } from './core';
 
 const FOLDER = 'session-history';
@@ -99,12 +100,26 @@ export function WhatItDid({ run, did }: { run: Run; did: Did }) {
   );
 }
 
+type DetailTab = 'did' | Tab;
+
 export function RunDetail({ run }: { run: Run }) {
-  const { data, error } = useJson<Did>(`runs/${encodeURIComponent(run.id)}/did`);
+  const [tab, setTab] = useState<DetailTab>('did');
+  const version = `${run.lastAt ?? ''}:${run.status}`;
+  const { data, error } = useJson<Did>(tab === 'did' ? `runs/${encodeURIComponent(run.id)}/did?v=${encodeURIComponent(version)}` : null);
+  const tabs: { id: DetailTab; label: string }[] = [
+    { id: 'did', label: 'What it did' }, { id: 'context', label: 'Context' }, { id: 'tools', label: `Tools (${run.tools})` },
+    ...(run.kind === 'session' ? [{ id: 'conversation' as const, label: 'Conversation' }] : []),
+  ];
   return (
     <div className="fx-stack">
       <RunFacts run={run} />
-      {error ? <p className="fx-small fx-muted">Couldn’t read what it did ({error}).</p> : !data ? <p className="fx-small fx-muted">Reading its commits and edits…</p> : <WhatItDid run={run} did={data} />}
+      <div className="fx-tabs" role="tablist" aria-label="Run detail">
+        {tabs.map((t) => <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab${tab === t.id ? ' is-active' : ''}`} onClick={() => setTab(t.id)}>{t.label}</button>)}
+      </div>
+      {tab === 'did' ? (error ? <p className="fx-small fx-muted">Couldn’t read what it did ({error}).</p> : !data ? <p className="fx-small fx-muted">Reading its commits and edits…</p> : <WhatItDid run={run} did={data} />) : null}
+      {tab === 'context' ? <ContextTab runId={run.id} version={version} /> : null}
+      {tab === 'tools' ? <ToolsTab runId={run.id} version={version} /> : null}
+      {tab === 'conversation' ? <ConversationTab runId={run.id} version={version} /> : null}
     </div>
   );
 }
