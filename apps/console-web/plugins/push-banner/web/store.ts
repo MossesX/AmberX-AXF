@@ -4,7 +4,7 @@ import { pluginApi } from '@console/plugins';
 
 export const ID = 'ai.amberx.axf.console.push-banner';
 export const FOLDER = 'push-banner';
-export const VERSION = '0.3.0';
+export const VERSION = '0.4.0';
 export const BANNER_KEY = 'push-banner.banner';
 const POLL_MS = 120_000;
 
