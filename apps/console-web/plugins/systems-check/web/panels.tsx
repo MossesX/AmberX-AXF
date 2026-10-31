@@ -1,6 +1,6 @@
 /* Settings → Plugins → Systems check: AI switches (with what's missing + install links), the saved AI routine, banners. */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Icon, Switch, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, SelectField, Switch, useRuntime } from '@console/axf/react';
 import * as api from '@console/api';
 import { loadSystemCheck, refreshRoutine } from './SystemCheck';
 import { loadWhatsNew } from './WhatsNew';
@@ -218,6 +218,54 @@ export function BannersPanel() {
         {wn?.canClear && <Button tone="ghost" icon="check" onClick={() => void reset()}>Clear What’s new for everyone</Button>}
       </div>
       {wn?.seen?.at ? <p className="fx-small fx-muted">Last cleared {new Date(wn.seen.at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}{wn.seen.by ? ` by ${wn.seen.by}` : ''}.{wn.canClear ? '' : ' Only an admin can clear it.'}</p> : null}
+    </div>
+  );
+}
+
+/* ---------------- Fix it yourself (Oct 30 2026): auto-fix per check, the GitHub route, the history ---------------- */
+
+interface AutoFix { id: string; label: string; owner: string; mode: 'auto' | 'ask' | 'off'; default: 'auto' | 'ask' | 'off' }
+interface FixEntry { at: number; check: string; title: string; label: string; state: 'done' | 'started' | 'failed'; message: string; by: string; mitigated?: boolean }
+interface Health { autoFixes: AutoFix[]; history: FixEntry[] }
+interface GitHubRoute { ok: boolean; route: 'hub' | 'local'; login?: string; why?: string; local: boolean }
+
+const MODES = [{ value: 'auto', label: 'On: fix it first, then tell me' }, { value: 'ask', label: 'Ask first (show the Auto fix button)' }, { value: 'off', label: 'Off' }];
+
+export function AutoFixPanel() {
+  const [h, setH] = useState<Health | null>(null);
+  const [g, setG] = useState<GitHubRoute | null>(null);
+  const [err, setErr] = useState('');
+  const load = () => Promise.all([call<Health>('health').then(setH), call<GitHubRoute>('github').then(setG)]).then(() => setErr(''), (e: Error) => setErr(e.message));
+  useEffect(() => { void load(); }, []);
+  if (err) return <p className="axp-systems-check-bad">{err}</p>;
+  if (!h || !g) return <p className="fx-muted">Loading…</p>;
+  const mode = async (id: string, v: string) => { try { await call('settings', { method: 'PUT', body: JSON.stringify({ autoFix: { [id]: v } }) }); await load(); } catch (e) { setErr((e as Error).message); } };
+  const route = async (v: string) => { try { setG(await call<GitHubRoute>('github', { method: 'PUT', body: JSON.stringify({ route: v }) })); } catch (e) { setErr((e as Error).message); } };
+  const test = async () => { try { setG(await call<GitHubRoute>('github?refresh=1')); } catch (e) { setErr((e as Error).message); } };
+  return (
+    <div className="fx-stack">
+      <p className="fx-small fx-muted" style={{ margin: 0 }}>When a check turns red and it has a fix the console can run, the fix runs first (commands on the VPS go as a veto call you can stop on the countdown), the check runs again, and only what's still broken shows red and reaches your phone.</p>
+      <SelectField label="GitHub route (github@1)" value={g.route} onChange={(v) => void route(v)}
+        options={[{ value: 'hub', label: 'Through axHub first, local token as fallback' }, { value: 'local', label: 'Local GITHUB_TOKEN first, axHub as fallback' }]}
+        hint={g.ok ? `GitHub through axHub works${g.login ? ` (as ${g.login})` : ''}. The hub's GitHub token stays in the hub vault.` : `GitHub through axHub doesn't work right now: ${g.why ?? 'no answer'}.`} />
+      <div className="fx-row fx-row--wrap"><Button icon="refresh" onClick={() => void test()}>Test the hub route</Button>
+        <Chip tone={g.ok ? 'success' : 'danger'}>{g.ok ? 'axHub route ok' : 'axHub route down'}</Chip><Chip tone={g.local ? undefined : 'warning'}>{g.local ? 'local token set' : 'no local token'}</Chip></div>
+      {h.autoFixes.map((f) => (
+        <SelectField key={f.id} label={`${f.id}: ${f.label}`} value={f.mode} options={MODES} onChange={(v) => void mode(f.id, v)} hint={f.default !== 'auto' ? `Default: ${MODES.find((m) => m.value === f.default)?.label ?? f.default}.` : undefined} />
+      ))}
+      {h.history.length > 0 && (
+        <>
+          <h4 className="axp-systems-check-h">Auto-fix history</h4>
+          <ul className="axp-systems-check-routine">
+            {h.history.slice(0, 20).map((e) => (
+              <li key={`${e.at}-${e.check}`}>
+                <Chip tone={e.state === 'done' ? 'success' : e.state === 'failed' ? 'danger' : 'warning'}>{e.mitigated ? 'worked around' : e.state}</Chip> <strong>{e.title}</strong>
+                <span className="fx-muted"> · {e.message} · {new Date(e.at).toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }

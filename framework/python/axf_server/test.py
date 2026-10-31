@@ -35,7 +35,7 @@ from typing import Callable  # noqa: E402
 HERE = Path(__file__).resolve().parent
 PY = HERE.parent
 sys.path.insert(0, str(PY))
-from axf_server import console_client, credentials, github, http, plugin_package, storage, wall  # noqa: E402
+from axf_server import console_client, credentials, github, github_hub, http, plugin_package, storage, wall  # noqa: E402
 
 FIX = PY.parent / "spec" / "fixtures"
 n = 0
@@ -590,5 +590,115 @@ with tempfile.TemporaryDirectory() as td:
     check(out.returncode != 0 and not out.stdout.strip(), "git never sends it to another host")
     out = subprocess.run(["git", "config", "--get", "http.followRedirects"], cwd=td, env=env, capture_output=True, text=True)
     check(out.stdout.strip() == "false", "git follows no redirects with it")
+
+# ---------------------------------------------------------------- github@1: GitHub through axHub (fake hub, fake GitHub)
+gh_hub = github_hub
+check(gh_hub.match_route("GET", "/repos/MossesX/AmberX-AXF/pulls/12") == ("pulls/get", {"owner": "MossesX", "repo": "AmberX-AXF", "pull_number": "12"}), "route: pulls/get")
+check(gh_hub.match_route("GET", "/repos/o/r/contents/a/b.md") == ("repos/get-content", {"owner": "o", "repo": "r", "path": "a/b.md"}), "route: {+path} takes the rest")
+check(gh_hub.match_route("GET", "/repos/o/r/branches/claude%2Fx")[1]["branch"] == "claude/x", "route: encoded branch decoded")
+check(gh_hub.match_route("PUT", "/repos/o/r/pulls/1/merge") is None, "route: merge isn't on the hub (local token)")
+check(gh_hub.match_route("GET", "/repos/o/r/commits/abc/check-runs") is None, "route: check-runs isn't on the hub")
+check(gh_hub.match_route("GET", "/user") == ("users/get-authenticated", {}), "route: /user")
+check(gh_hub.hub_args({"pull_number": "3"}, "per_page=5&state=all&exclude_pull_requests=true") == {"pull_number": 3, "per_page": 5, "state": "all", "exclude_pull_requests": True}, "args typed")
+data, nxt = gh_hub.parse_hub_text('[{"n": 1}]More pages are available. Call again with the same arguments plus next: state="all", per_page=1, page=2 · last: state="all", per_page=1, page=179.')
+check(data == [{"n": 1}] and nxt == 2, "hub trailer: JSON + next page")
+check(gh_hub.parse_hub_text('{"login": "MossesX"}') == ({"login": "MossesX"}, None), "hub answer without trailer")
+
+
+class FakeHub:
+    """axHub's /mcp: initialize, then call → github.<tool>. mode: ok | hub401 | down | gh401 | gh404 | confirm."""
+
+    def __init__(self, mode: str = "ok") -> None:
+        self.mode, self.calls, self.inits, self.auth = mode, [], 0, set()
+
+    def __call__(self, rq: http.Request) -> http.Response:
+        self.auth.add(rq.headers.get("authorization", ""))
+        if self.mode == "down":
+            raise http.HttpError("connection refused")
+        if self.mode == "hub401":
+            return http.Response(401, {}, b"{}", rq.url)
+        msg = json.loads(rq.body or b"{}")
+        if msg["method"] == "initialize":
+            self.inits += 1
+            return http.Response(200, {"content-type": "application/json", "mcp-session-id": "s1"}, json.dumps({"jsonrpc": "2.0", "id": msg["id"], "result": {}}).encode(), rq.url)
+        a = msg["params"]["arguments"]
+        self.calls.append((a["tool"], a["arguments"], a.get("hold")))
+        def res(text: str, err: bool = False) -> http.Response:
+            return http.Response(200, {"content-type": "application/json"}, json.dumps({"jsonrpc": "2.0", "id": msg["id"], "result": {"content": [{"type": "text", "text": text}], "isError": err}}).encode(), rq.url)
+        if self.mode == "gh401":
+            return res(json.dumps({"error": {"code": "unauthorized", "message": '"github" answered HTTP 401', "details": {"status": 401}}}), True)
+        if self.mode == "gh404":
+            return res(json.dumps({"error": {"code": "not_found", "message": '"github" answered HTTP 404 (text from the service): {}', "details": {"status": 404}}}), True)
+        if self.mode == "confirm":
+            return res(json.dumps({"error": {"code": "confirmation_required", "message": "needs approval", "details": {"confirmationId": "x"}}}), True)
+        page = a["arguments"].get("page", 1)
+        trailer = f"More pages are available. Call again with the same arguments plus next: page={page + 1} · last: page=2." if page == 1 else ""
+        return res(json.dumps([{"number": page}]) + trailer)
+
+
+def fake_github(status: int) -> Callable[[http.Request], http.Response]:
+    seen: list[str] = []
+    def t(rq: http.Request) -> http.Response:
+        seen.append(rq.url)
+        return http.Response(status, {"content-type": "application/json"}, json.dumps({"message": "Bad credentials" if status == 401 else "ok", "local": True}).encode(), rq.url)
+    t.seen = seen  # type: ignore[attr-defined]
+    return t
+
+
+def hubclient(hub: FakeHub, gh_status: int = 200, token: str = "LOCAL-tok-123456", route: str = "hub", hub_token: str = "HUB-tok-abcdef"):
+    gt = fake_github(gh_status)
+    c = gh_hub.HubGitHubClient(lambda: token, hub=gh_hub.HubLink("https://hub.test", lambda: hub_token, transport=hub), route=lambda: route,
+                               transport=gt, user_agent="axf-test")
+    return c, gt
+
+
+h = FakeHub()
+c, gt = hubclient(h)
+got = c.paginate(github.repo_path("MossesX/AmberX-AXF", "pulls", query={"state": "all", "per_page": 1}))
+check(got == [{"number": 1}, {"number": 2}] and c.last_route == "axhub" and not gt.seen, "hub route: paginate through the hub, local token unused")
+check(h.calls[0] == ("github.pulls/list", {"owner": "MossesX", "repo": "AmberX-AXF", "state": "all", "per_page": 1}, False), "hub call: tool, typed args, hold false")
+check(h.inits == 1, "one MCP session for both pages")
+check(h.auth == {"Bearer HUB-tok-abcdef"}, "the hub sees only the hub token")
+r = c.call("PUT", github.repo_path("o/r", "pulls", 1, "merge"), {"merge_method": "squash"})
+check(r.headers.get("x-axf-route") == "local" and c.last_fallback.startswith("the hub has no tool") and len(gt.seen) == 1, "no hub route: local token")
+c, gt = hubclient(FakeHub("down"))
+check(c.get("/user") == {"message": "ok", "local": True} and c.last_route == "local" and "reach axHub" in c.last_fallback, "hub down: local fallback")
+c, gt = hubclient(FakeHub("hub401"))
+c.get("/user")
+check(c.last_route == "local" and "hub token" in c.last_fallback, "hub refuses the console's hub token: local fallback")
+c, gt = hubclient(FakeHub("gh401"))
+c.get("/user")
+check(c.last_route == "local" and "axHub's GitHub token" in c.last_fallback, "hub's GitHub token refused: local fallback")
+c, gt = hubclient(FakeHub("gh404"))
+try:
+    c.get(github.repo_path("o/r", "pulls", 9))
+    check(False, "hub 404 is GitHub's answer")
+except github.GitHubError as e:
+    check(e.status == 404 and not gt.seen, "hub 404 is GitHub's answer (no second try)")
+c, gt = hubclient(FakeHub("confirm"))
+c.get("/user")
+check(c.last_route == "local" and "approval" in c.last_fallback, "hub holds for approval: local instead")
+c, gt = hubclient(FakeHub("down"), token="")
+try:
+    c.get("/user")
+    check(False, "no route works: error")
+except github.GitHubError as e:
+    check("GITHUB_TOKEN isn't set" in str(e) and "LOCAL" not in str(e), "hub down and no local token: plain error")
+# local first: dead local token (today's 401) → the hub answers
+h = FakeHub()
+c, gt = hubclient(h, gh_status=401, route="local")
+check(c.get("/user") == [{"number": 1}] and c.last_route == "axhub" and len(gt.seen) == 1 and "refused (401)" in c.last_fallback, "local route, local 401: hub answers")
+c, gt = hubclient(FakeHub(), route="local")
+c.get("/user")
+check(c.last_route == "local" and not c.last_fallback, "local route, local ok: hub unused")
+c, gt = hubclient(FakeHub("down"), gh_status=401, route="local")
+try:
+    c.get("/user")
+    check(False, "both dead: error")
+except github.GitHubError as e:
+    check(e.status == 401, "both dead: GitHub's local 401 stands")
+c, gt = hubclient(FakeHub(), route="bogus")
+check(c.route() == "hub", "unknown route setting = hub")
+check(gh_hub.HubGitHubClient(lambda: "", hub=gh_hub.HubLink("https://hub.test", lambda: "t")).has_token(), "hub configured counts as a token")
 
 print(f"axf_server self-test ok: {n} checks")

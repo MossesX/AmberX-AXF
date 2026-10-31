@@ -7,11 +7,18 @@ Three sources of checks, all in one report:
      project manifest, the shared data files) — found by reading the code, no AI;
   3. the saved AI routine (routine.py): with "Use AI" on, Mosses reads the codebase and adds checks, saved so they keep
      running when AI is off.
-Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the console's alerts.
+Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the console's alerts, and ``axf.health@1``
+(health.py: any plugin registers a live check; the monitor runs them every 15 minutes, on start and on Check now, gives
+every item `since` and `breaks`, and pushes each new red item once to AmberX through the console alerts).
 
   GET  check[?force=1&ai=1]         every check (cached 60 s unless forced); ai=1 refreshes the routine first when allowed
   POST check/{id}                   re-run one check
-  POST secret | secret/clear        save / remove a console credential (core credential store; never returned)
+  POST secret | secret/clear        save / remove a console credential (core credential store; never returned); a key is
+                                    tested against its service first and not saved when refused (test: false = save anyway)
+  POST secret/test                  test a key without saving it
+  GET  health | POST health/run     health@1 (Oct 30 2026): every registered live check and its latest answer; run now
+  POST health/autofix/{id}         run a check's auto-fix now (Auto fix button; "ask first" checks)
+  GET  github | PUT github         github@1: does GitHub through axHub work, and the route (hub | local)
   POST fix/{id}                     run a check's automatic fix
   POST mosses/{id} | GET mosses     Auto fix for every other check: handed to Mosses as a task (he runs commands through
                                     axHub, each approved); GET says whether he can take one and, if not, exactly why
@@ -44,8 +51,8 @@ import console_context as cx
 import plugin_services
 from credentials import CREDENTIALS
 
-from . import claudefix, derive, hostfix, mosses, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
-from .checks import HOST_SCRIPT, SERVICES, SysCheck
+from . import claudefix, derive, githubsvc, health, healthchecks, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
+from .checks import HOST_SCRIPT, SERVICES, SysCheck, _http, github_token_page
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -60,6 +67,7 @@ class Service:
 
     def __init__(self) -> None:
         self.core = SysCheck(cx.ROOT, cx.current_token, cx.persist_root, cx.PLUGINS, cx.log, cx.GITHUB_REPO)
+        self.core.fixes["builds-stuck"] = healthchecks.fix_builds_stuck
         self._cache: tuple[float, list[dict[str, Any]]] | None = None
 
     def activity(self) -> list[dict[str, Any]]:
@@ -95,22 +103,33 @@ class Service:
             ids = [c for c in KEY_CHECKS if c in self.core.checks]
             with ThreadPoolExecutor(max_workers=8) as ex:
                 fresh = dict(zip(ids, ex.map(self.core.run_one, ids)))
-            items = sorted([fresh.get(c["id"], c) for c in self._cache[1]], key=lambda c: (c["order"], c["id"]))
+            # health@1 answers come from the monitor's cache (it runs every 15 minutes, on start and on Check now)
+            hl = {c["id"]: c for c in MONITOR.run(force=False)}
+            items = [fresh.get(c["id"], hl.pop(c["id"], c)) for c in self._cache[1] if not c.get("health") or c["id"] in hl or c["id"] in fresh]
+            items = sorted([*items, *hl.values()], key=lambda c: (c["order"], c["id"]))
+            MONITOR.annotate(items)
             self._cache = (self._cache[0], items)
             return items
         items = self.core.run_all(force=True)
+        items += MONITOR.run(force=force)
         try:
             items += derive.derive(self.core.item)
         except Exception as e:  # noqa: BLE001
             items.append(self.core.item("derived", "plugins", "Codebase checks", "unknown", f"couldn't read the codebase: {str(e)[:160]}", order=70))
         items += routine.run_saved(self.core.item)
         items.sort(key=lambda c: (c["order"], c["id"]))
+        MONITOR.annotate(items)
         self._cache = (time.time(), items)
         return items
 
     def run_one(self, cid: str) -> dict[str, Any]:
         if cid in self.core.checks:
-            return self.core.run_one(cid)
+            return MONITOR.annotate([self.core.run_one(cid)])[0]
+        if cid in REGISTRY.checks():
+            hit = MONITOR.run_ids([cid])
+            if not hit:
+                raise KeyError(f"no check {cid}")
+            return MONITOR.annotate(hit)[0]
         hit = next((c for c in self.run_all(force=True) if c["id"] == cid), None)
         if not hit:
             raise KeyError(f"no check {cid}")
@@ -124,8 +143,41 @@ class Service:
 # Checks that test a key or token against its service: run live on every banner load (`GET /check?keys=1`).
 KEY_CHECKS = ("console-token", "github-token", "github-repo", "anthropic-key", "claude-credits", "hostinger-token", "coolify", "axhub")
 
+# health@1 (Oct 30 2026): any plugin registers a live check; the monitor runs them every 15 minutes, on console start
+# and on Check now, remembers since when each is broken, and pushes each new red item once (console alert → AmberX).
+def _recheck(cid: str) -> None:
+    SVC.invalidate()
+    SVC.run_one(cid)
+
+
+def _record_fix(f: dict[str, Any]) -> None:
+    """Every auto-fix attempt also goes into the axHub change log (Build manager), as a finished fix entry."""
+    svc = plugin_services.get("axf.changes@1")
+    if svc is None or f.get("state") == "started":  # a veto call still counting down is recorded when it's re-checked
+        return
+    svc.open({"kind": "fix", "title": f"Auto fix: {f.get('title') or f.get('check')}"[:160],
+              "asked": f"Systems check auto-fix ({f.get('label')}) for {f.get('check')}, by {f.get('by')}.",
+              "result": {"state": "done" if f.get("state") == "done" else "failed", "summary": str(f.get("message") or "")[:600]}}, by="systems-check")
+
+
+def _vps_call(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
+    """A VPS command for an auto-fix: through Vinny (veto countdown), else Mosses (approval). Answers at once."""
+    return mosses.call(tool, arguments, None, 30)
+
+
+REGISTRY = health.Registry()
+MONITOR = health.Monitor(REGISTRY, lambda *a, **k: SVC.core.item(*a, **k), lambda: store.data_dir() / "health-state.json",
+                         raise_alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys), log=cx.log,
+                         mode_of=lambda cid: store.settings()["autoFix"].get(cid), recheck=_recheck, record=_record_fix)
 SVC = Service()
+GITHUB = githubsvc.GitHubService(log=cx.log)
+healthchecks.register_builtins(REGISTRY, root=cx.ROOT, repo=cx.GITHUB_REPO, hub_jobs=lambda: [*HOSTFIX.all(), *TASKS.all()],
+                               github_svc=GITHUB, vps_call=_vps_call)
 plugin_services.provide("axf.syscheck@1", SVC, FOLDER)
+plugin_services.provide(health.CAPABILITY, REGISTRY, FOLDER)
+plugin_services.provide(githubsvc.github_hub.CAPABILITY, GITHUB, FOLDER)
+if not os.environ.get("AXF_SYSCHECK_NO_SCHEDULE"):
+    MONITOR.start()
 
 
 def _ai_allowed(kind: str) -> bool:
@@ -162,9 +214,58 @@ def check_one(cid: str) -> dict[str, Any]:
     return c
 
 
+@router.get("/health")
+def health_list() -> dict[str, Any]:
+    """health@1: every registered check (who added it, severity, how often) and its latest answer."""
+    regs = [{k: v for k, v in c.items() if k in ("id", "label", "owner", "severity", "service", "interval", "breaks")} for c in REGISTRY.checks().values()]
+    modes = store.settings()["autoFix"]
+    fixes = [{"id": k, "label": v["label"], "owner": v["owner"], "mode": modes.get(k, v["mode"]), "default": v["mode"]} for k, v in REGISTRY.autofixes().items()]
+    return {"version": health.VERSION, "checks": sorted(regs, key=lambda c: c["id"]), "items": MONITOR.annotate(MONITOR.items()),
+            "lastRun": int(MONITOR.last_run * 1000), "intervalSeconds": health.INTERVAL_S,
+            "autoFixes": sorted(fixes, key=lambda f: f["id"]), "history": MONITOR.history()[::-1]}
+
+
+@router.post("/health/run")
+def health_run() -> dict[str, Any]:
+    """Check now: every health check runs again."""
+    items = MONITOR.run(force=True)
+    SVC.invalidate()
+    return {"items": MONITOR.annotate(items), "lastRun": int(MONITOR.last_run * 1000)}
+
+
+@router.post("/health/autofix/{cid:path}")
+def health_autofix(cid: str) -> dict[str, Any]:
+    """Run a check's auto-fix now (any mode but off). It runs in the background; the banner shows it amber meanwhile."""
+    if not REGISTRY.autofix(cid):
+        raise HTTPException(404, "this check has no auto-fix")
+    if store.settings()["autoFix"].get(cid) == "off":
+        raise HTTPException(409, "auto-fix is off for this check (Settings → Plugins → Systems check)")
+    st = MONITOR.autofix_now(cid, by="console")
+    SVC.invalidate()
+    return {"id": cid, "autofix": st}
+
+
+class RouteReq(BaseModel):
+    route: str = Field(pattern=r"^(hub|local)$")
+
+
+@router.get("/github")
+def github_status(refresh: bool = False) -> dict[str, Any]:
+    """github@1: the route and whether GitHub through axHub works (never the hub's or the console's token)."""
+    return {**GITHUB.status(refresh), "local": bool(os.environ.get("GITHUB_TOKEN"))}
+
+
+@router.put("/github")
+def github_route(req: RouteReq) -> dict[str, Any]:
+    GITHUB.set_route(req.route, by="settings")
+    SVC.invalidate()
+    return github_status()
+
+
 class SecretReq(BaseModel):
     key: str = Field(pattern=r"^[A-Z][A-Z0-9_]{1,63}$")
     value: str = Field(min_length=1, max_length=500)
+    test: bool = True     # test against the service before saving (Oct 30 2026); false = "Save anyway"
 
 
 class ClearReq(BaseModel):
@@ -172,8 +273,41 @@ class ClearReq(BaseModel):
 
 
 def _related(key: str) -> list[str]:
-    return {"GITHUB_TOKEN": ["github-token"], "ANTHROPIC_API_KEY": ["anthropic-key"], "HOSTINGER_API_TOKEN": ["hostinger-token"],
+    return {"GITHUB_TOKEN": ["github-token", "ci-main"], "ANTHROPIC_API_KEY": ["anthropic-key"], "HOSTINGER_API_TOKEN": ["hostinger-token"],
             "COOLIFY_URL": ["coolify"], "COOLIFY_TOKEN": ["coolify"], "AXHUB_URL": ["axhub"], "AXHUB_TOKEN": ["axhub"], "MOSHI_SSH_PUBKEY": ["moshi-key"]}.get(key, [])
+
+
+def test_candidate(key: str, value: str) -> dict[str, Any] | None:
+    """Test a key before it's saved: the same cheap read-only call its check makes, with the new value. None = this
+    credential has no live test (a URL, a public key). Never returns or logs the value."""
+    if key == "GITHUB_TOKEN":
+        return probes.github(value, cx.GITHUB_REPO)
+    if key == "ANTHROPIC_API_KEY":
+        return probes.anthropic_key(value)
+    if key == "HOSTINGER_API_TOKEN":
+        code, _, _ = _http("https://developers.hostinger.com/api/vps/v1/virtual-machines", {"authorization": f"Bearer {value}", "accept": "application/json"})
+        return probes.p("ok", "Hostinger accepted it.") if code == 200 else probes.p("error", f"Hostinger refused it ({code}).", dead=True) if code in (401, 403) else probes.unreachable("Hostinger", code)
+    if key == "AXHUB_TOKEN":
+        url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
+        body = b'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"axf-console","version":"1"}}}'
+        code, _, _ = _http(f"{url}/mcp", {"authorization": f"Bearer {value}", "content-type": "application/json", "accept": "application/json, text/event-stream"}, "POST", body)
+        return probes.p("ok", "axHub accepted it.") if code == 200 else probes.p("error", f"axHub refused it ({code}).", dead=True) if code in (401, 403) else probes.unreachable("axHub", code)
+    if key == "COOLIFY_TOKEN":
+        url = (os.environ.get("COOLIFY_URL") or "").rstrip("/")
+        if not url:
+            return None
+        code, _, _ = _http(f"{url}/api/v1/version", {"authorization": f"Bearer {value}"})
+        return probes.p("ok", "Coolify accepted it.") if code == 200 else probes.p("error", f"Coolify refused it ({code}).", dead=True) if code in (401, 403) else probes.unreachable("Coolify", code)
+    return None
+
+
+@router.post("/secret/test")
+def secret_test(req: SecretReq) -> dict[str, Any]:
+    """Test a key without saving it."""
+    if req.key not in CREDENTIALS:
+        raise HTTPException(400, f"{req.key} isn't a credential the console stores")
+    r = test_candidate(req.key, req.value.strip())
+    return {"key": req.key, "tested": r is not None, **({k: r[k] for k in ("status", "summary", "unreachable") if k in r} if r else {})}
 
 
 @router.post("/secret")
@@ -184,10 +318,15 @@ def set_secret(req: SecretReq) -> dict[str, Any]:
     value = req.value.strip()
     if "\n" in value or "\r" in value or not re.match(meta["pattern"], value):
         raise HTTPException(400, f"That doesn't look right for {meta['label']} (expected: {meta['placeholder']}).")
+    if req.test and meta["secret"]:
+        t = test_candidate(req.key, value)
+        # refused or missing what the console needs = not saved; a service that didn't answer can still be saved anyway
+        if t and t["status"] == "error":
+            raise HTTPException(409 if t.get("unreachable") else 400, f"Not saved: {t['summary']}")
     SVC.core.store.set(req.key, value.rstrip("/") if not meta["secret"] else value)
     SVC.invalidate()
     cx.log("system", f"{meta['label']} saved (server-side, owner-only)", "ok")
-    return {"ok": True, "key": req.key, "checks": [SVC.core.run_one(c) for c in _related(req.key)]}
+    return {"ok": True, "key": req.key, "checks": [SVC.run_one(c) for c in _related(req.key) if c in SVC.core.checks or c in REGISTRY.checks()]}
 
 
 @router.post("/secret/clear")
@@ -197,7 +336,7 @@ def clear_secret(req: ClearReq) -> dict[str, Any]:
     SVC.core.store.clear(req.key)
     SVC.invalidate()
     cx.log("system", f"{CREDENTIALS[req.key]['label']} removed", "warn")
-    return {"ok": True, "checks": [SVC.core.run_one(c) for c in _related(req.key)]}
+    return {"ok": True, "checks": [SVC.run_one(c) for c in _related(req.key) if c in SVC.core.checks or c in REGISTRY.checks()]}
 
 
 @router.post("/fix/{cid}")
@@ -446,9 +585,7 @@ def _create_page(key: str) -> str:
     import os
     import urllib.parse as up
     if key == "GITHUB_TOKEN":
-        q = {"name": "AXF Dev Console", "description": "AmberX AXF Dev Console on the VPS: clone updates, CI downloads, Build Pilot APKs, plugin publishing",
-             "target_name": "MossesX", "expires_in": "90", "contents": "write", "actions": "write", "metadata": "read"}
-        return "https://github.com/settings/personal-access-tokens/new?" + up.urlencode(q)
+        return github_token_page()
     if key == "ANTHROPIC_API_KEY":
         return "https://console.anthropic.com/settings/keys"
     if key == "HOSTINGER_API_TOKEN":

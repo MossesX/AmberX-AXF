@@ -25,7 +25,7 @@ class CredStore(_FrameworkCredStore):
 # What can be stored. `secret` values are masked everywhere; `pattern` is a light format check (never a guarantee).
 CREDENTIALS: dict[str, dict[str, Any]] = {
     "GITHUB_TOKEN": {"label": "GitHub token", "secret": True, "pattern": r"^(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})$",
-                     "placeholder": "github_pat_… or ghp_…", "help": "Fine-grained token for MossesX/AmberX-AXF: Contents read/write, Actions read."},
+                     "placeholder": "github_pat_… or ghp_…", "help": "Fine-grained token for MossesX/AmberX-AXF: Contents, Pull requests, Actions and Workflows read/write (classic: repo + workflow)."},
     "ANTHROPIC_API_KEY": {"label": "Anthropic API key", "secret": True, "pattern": r"^sk-ant-[A-Za-z0-9_\-]{20,}$",
                           "placeholder": "sk-ant-…", "help": "From console.anthropic.com → API keys. Used by API-key features and claude-pick's API mode."},
     "HOSTINGER_API_TOKEN": {"label": "Hostinger API token", "secret": True, "pattern": r"^[A-Za-z0-9_\-\.|:=+/]{20,512}$",

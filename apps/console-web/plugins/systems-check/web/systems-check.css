@@ -122,3 +122,11 @@ span.axp-systems-check-banner__text { display: block; text-overflow: ellipsis }
   .axp-systems-check-row.is-open span.axp-systems-check-sumline { white-space: normal }
   .axp-systems-check__cards { grid-template-columns: minmax(0, 1fr) }
 }
+/* Live key + health checks (Oct 30 2026): a broken item says what it breaks and since when on a second line (on phones
+   what broke gets its own line too, since the summary column is hidden there). Each line stays one line with an ellipsis
+   (the Oct 26 one-line rule); tapping the item opens it whole. Layout only. */
+.axp-systems-check-banner__item:has(.axp-systems-check-why) { flex-wrap: wrap; row-gap: 0 }
+.axp-systems-check-banner__item > .axp-systems-check-why, .axp-systems-check-banner__item > .axp-systems-check-banner__plain { flex: 1 1 100%; display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-left: calc(var(--fx-space) * 1.25) }
+.axp-systems-check-body > .axp-systems-check-why, .axp-systems-check-keys__item > .axp-systems-check-why { display: block; overflow-wrap: anywhere }
+.axp-systems-check-banner__item > .axp-systems-check-banner__plain { display: none }
+@media (max-width: 720px) { .axp-systems-check-banner__item > .axp-systems-check-banner__plain { display: block } }
