@@ -1101,5 +1101,11 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   for (const k of ['K.mode', 'K.sensitivity', 'K.triggerTone']) ok(ui.includes(`key: ${k},`), `voice: ${k} is a setting`);
 }
 
+/* ---------------------------------------------------------------- console plugins' voice phrases (generic seam) */
+{
+  const voiceUi = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
+  ok(/amberxVoice = \{ register: registerVoiceCommands \}/.test(voiceUi), 'voice: console plugins add phrases through globalThis.amberxVoice');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
