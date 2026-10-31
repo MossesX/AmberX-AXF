@@ -1307,6 +1307,56 @@
         "accentFromBrand": "boolean: brand1 becomes the accent (default false)"
       }
     },
+    "typography": {
+      "label": "Typography",
+      "group": "Themes",
+      "icon": "type",
+      "description": "Text sizes everywhere (typography@1, engine core/engines/scale.ts): a size scale (xs–xl) and headings h1–h4 in em of the style theme's font size, weights, line heights, the eyebrow (size, weight, tracking, case) and mono text. Every field has a default equal to the framework's own look, so an asset may set only what it changes; the stylesheet and the components read only the compiled --fx-type-* tokens. One of the three scale assets (typography, density, sizing) that make \"change it in one place, changes it everywhere\" (Brett, Oct 30 2026). Rules: core/engines/scale-rules.mjs.",
+      "required": [],
+      "optional_fields": {
+        "scale": "{ xs, sm, md, lg, xl } em of the font size",
+        "headings": "{ h1, h2, h3, h4 } em; tracking em",
+        "weights": "{ body, medium, strong } 300–900",
+        "line": "{ tight, normal, loose } line heights",
+        "eyebrow": "{ size em, weight, tracking em, case: upper | normal }",
+        "mono": "{ size em }"
+      },
+      "optional": true
+    },
+    "density": {
+      "label": "Density",
+      "group": "Themes",
+      "icon": "sliders",
+      "description": "Spacing everywhere (density@1, engine core/engines/scale.ts): gaps (xs–xl) and paddings (control, card, page, row, cell) as multiples of the style theme's space unit, row heights (list, table, menu, control) as multiples of the font size. Compact vs roomy is one pick. Defaults = the framework's own look; compiles to --fx-dens-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
+      "required": [],
+      "optional_fields": {
+        "gap": "{ xs, sm, md, lg, xl } × --fx-space",
+        "pad": "{ control, card, page, row, cell } × --fx-space",
+        "row": "{ list, table, menu, control } × --fx-font-size"
+      },
+      "optional": true
+    },
+    "sizing": {
+      "label": "Component sizing",
+      "group": "Themes",
+      "icon": "grid",
+      "description": "How big each kind of piece is (sizing@1, engine core/engines/scale.ts): buttons, icon buttons, chips, fields, tabs, segmented controls, cards, list rows, count strips, tables and page heads — heights × the font size, paddings × the space unit, fonts in em, radii as sm | md | lg | pill. Defaults = the framework's own look; compiles to --fx-size-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
+      "required": [],
+      "optional_fields": {
+        "button": "{ height ×font, padX ×space, font em, icon em }",
+        "iconButton": "{ size ×font }",
+        "chip": "{ height ×font, padX ×space, font em, radius: sm | md | pill }",
+        "field": "{ height ×font, padX ×space, font em }",
+        "tab": "{ padY ×space, padX ×space, font em }",
+        "segment": "{ padY, padX ×space, font em }",
+        "card": "{ pad ×space, headFont em, radius: sm | md | lg }",
+        "listRow": "{ minHeight ×font, padX ×space, metaFont em }",
+        "countStrip": "{ number em, label em, pad ×space }",
+        "table": "{ padY, padX ×space, font em }",
+        "pageHead": "{ descriptionFont em, descriptionLines 1–6 }"
+      },
+      "optional": true
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

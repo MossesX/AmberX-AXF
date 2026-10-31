@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "typography",
+  "id": "compact",
+  "name": "Compact",
+  "version": "1.0.0",
+  "description": "The framework's own text sizes (Oct 30 2026): 1.42em page titles, a quiet 0.68em eyebrow, 0.88em buttons. Every value is the default, so this asset changes nothing.",
+  "author": "AmberX AXF",
+  "tags": [
+    "compact",
+    "default"
+  ],
+  "data": {
+    "scale": {
+      "xs": 0.76,
+      "sm": 0.86,
+      "md": 1,
+      "lg": 1.15,
+      "xl": 1.35
+    },
+    "headings": {
+      "h1": 1.42,
+      "h2": 1.2,
+      "h3": 0.92,
+      "h4": 0.85,
+      "tracking": -0.02
+    },
+    "weights": {
+      "body": 400,
+      "medium": 550,
+      "strong": 600
+    },
+    "line": {
+      "tight": 1.2,
+      "normal": 1.45,
+      "loose": 1.65
+    },
+    "eyebrow": {
+      "size": 0.68,
+      "weight": 600,
+      "tracking": 0.06,
+      "case": "upper"
+    },
+    "mono": {
+      "size": 0.92
+    }
+  }
+}

@@ -34,5 +34,8 @@
   "badge": "new",
   "settings": "standard",
   "interface": "fresh",
+  "typography": "compact",
+  "density": "compact",
+  "sizing": "compact",
   "uac-policy": "standard"
 }

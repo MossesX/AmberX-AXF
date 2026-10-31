@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/density.schema.json",
+  "title": "AmberX AXF Density asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "density"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "gap": {
+          "type": "object",
+          "properties": {
+            "xs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "default": 0.25,
+              "description": "× --fx-space"
+            },
+            "sm": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "default": 0.5,
+              "description": "× --fx-space"
+            },
+            "md": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3,
+              "default": 0.75,
+              "description": "× --fx-space"
+            },
+            "lg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4,
+              "default": 1.5,
+              "description": "× --fx-space"
+            },
+            "xl": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 6,
+              "default": 1.75,
+              "description": "× --fx-space"
+            }
+          }
+        },
+        "pad": {
+          "type": "object",
+          "properties": {
+            "control": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "default": 0.55,
+              "description": "× --fx-space"
+            },
+            "card": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4,
+              "default": 1.6,
+              "description": "× --fx-space"
+            },
+            "page": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 6,
+              "default": 2,
+              "description": "× --fx-space"
+            },
+            "row": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3,
+              "default": 0.8,
+              "description": "× --fx-space"
+            },
+            "cell": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3,
+              "default": 0.75,
+              "description": "× --fx-space"
+            }
+          }
+        },
+        "row": {
+          "type": "object",
+          "properties": {
+            "list": {
+              "type": "number",
+              "minimum": 1.5,
+              "maximum": 5,
+              "default": 2.75,
+              "description": "× --fx-font-size"
+            },
+            "table": {
+              "type": "number",
+              "minimum": 1.5,
+              "maximum": 5,
+              "default": 2.4,
+              "description": "× --fx-font-size"
+            },
+            "menu": {
+              "type": "number",
+              "minimum": 1.5,
+              "maximum": 5,
+              "default": 2.2,
+              "description": "× --fx-font-size"
+            },
+            "control": {
+              "type": "number",
+              "minimum": 1.5,
+              "maximum": 4,
+              "default": 2.2,
+              "description": "× --fx-font-size"
+            }
+          }
+        }
+      }
+    }
+  }
+}

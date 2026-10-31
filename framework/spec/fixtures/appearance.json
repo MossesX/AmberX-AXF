@@ -38,7 +38,10 @@
     "logo-mark",
     "animated-logo",
     "icon-pack",
-    "branding"
+    "branding",
+    "typography",
+    "density",
+    "sizing"
   ],
   "parsed": {
     "full": {

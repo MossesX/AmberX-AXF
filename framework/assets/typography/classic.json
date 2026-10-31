@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "typography",
+  "id": "classic",
+  "name": "Classic",
+  "version": "1.0.0",
+  "description": "The look before Oct 30 2026: 2em page titles, a loud accent eyebrow with wide tracking, 0.93em buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "classic",
+    "roomy"
+  ],
+  "data": {
+    "scale": {
+      "xs": 0.76,
+      "sm": 0.85,
+      "md": 1,
+      "lg": 1.2,
+      "xl": 1.5
+    },
+    "headings": {
+      "h1": 2,
+      "h2": 1.5,
+      "h3": 1,
+      "h4": 0.9,
+      "tracking": -0.01
+    },
+    "weights": {
+      "body": 400,
+      "medium": 500,
+      "strong": 600
+    },
+    "line": {
+      "tight": 1.2,
+      "normal": 1.5,
+      "loose": 1.7
+    },
+    "eyebrow": {
+      "size": 0.76,
+      "weight": 700,
+      "tracking": 0.14,
+      "case": "upper"
+    },
+    "mono": {
+      "size": 0.95
+    }
+  }
+}

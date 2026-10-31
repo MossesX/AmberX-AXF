@@ -1,0 +1,323 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/sizing.schema.json",
+  "title": "AmberX AXF Component sizing asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "sizing"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "button": {
+          "type": "object",
+          "properties": {
+            "height": {
+              "type": "number",
+              "minimum": 1.5,
+              "maximum": 3.5,
+              "default": 2.1,
+              "description": "× --fx-font-size"
+            },
+            "padX": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 3,
+              "default": 1.2,
+              "description": "× --fx-space"
+            },
+            "font": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.2,
+              "default": 0.88,
+              "description": "em"
+            },
+            "icon": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.5,
+              "default": 1,
+              "description": "em"
+            }
+          }
+        },
+        "iconButton": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number",
+              "minimum": 1.2,
+              "maximum": 3,
+              "default": 1.75,
+              "description": "× --fx-font-size"
+            }
+          }
+        },
+        "chip": {
+          "type": "object",
+          "properties": {
+            "height": {
+              "type": "number",
+              "minimum": 1.1,
+              "maximum": 2.5,
+              "default": 1.6,
+              "description": "× --fx-font-size"
+            },
+            "padX": {
+              "type": "number",
+              "minimum": 0.2,
+              "maximum": 2,
+              "default": 0.9,
+              "description": "× --fx-space"
+            },
+            "font": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1,
+              "default": 0.78,
+              "description": "em"
+            },
+            "radius": {
+              "enum": [
+                "sm",
+                "md",
+                "pill"
+              ],
+              "default": "sm"
+            }
+          }
+        },
+        "field": {
+          "type": "object",
+          "properties": {
+            "height": {
+              "type": "number",
+              "minimum": 1.6,
+              "maximum": 3.2,
+              "default": 2.2,
+              "description": "× --fx-font-size"
+            },
+            "padX": {
+              "type": "number",
+              "minimum": 0.2,
+              "maximum": 2,
+              "default": 0.75,
+              "description": "× --fx-space"
+            },
+            "font": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.2,
+              "default": 0.92,
+              "description": "em"
+            }
+          }
+        },
+        "tab": {
+          "type": "object",
+          "properties": {
+            "padY": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "default": 0.8,
+              "description": "× --fx-space"
+            },
+            "padX": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 3,
+              "default": 1.2,
+              "description": "× --fx-space"
+            },
+            "font": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.2,
+              "default": 0.9,
+              "description": "em"
+            }
+          }
+        },
+        "segment": {
+          "type": "object",
+          "properties": {
+            "padY": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "default": 0.4,
+              "description": "× --fx-space"
+            },
+            "padX": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 3,
+              "default": 1.1,
+              "description": "× --fx-space"
+            },
+            "font": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.2,
+              "default": 0.86,
+              "description": "em"
+            }
+          }
+        },
+        "card": {
+          "type": "object",
+          "properties": {
+            "pad": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4,
+              "default": 1.6,
+              "description": "× --fx-space"
+            },
+            "headFont": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.3,
+              "default": 0.92,
+              "description": "em"
+            },
+            "radius": {
+              "enum": [
+                "sm",
+                "md",
+                "lg"
+              ],
+              "default": "md"
+            }
+          }
+        },
+        "listRow": {
+          "type": "object",
+          "properties": {
+            "minHeight": {
+              "type": "number",
+              "minimum": 1.5,
+              "maximum": 5,
+              "default": 2.75,
+              "description": "× --fx-font-size"
+            },
+            "padX": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3,
+              "default": 1.25,
+              "description": "× --fx-space"
+            },
+            "metaFont": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1,
+              "default": 0.82,
+              "description": "em"
+            }
+          }
+        },
+        "countStrip": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "number",
+              "minimum": 0.8,
+              "maximum": 3,
+              "default": 1.1,
+              "description": "em"
+            },
+            "label": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 1,
+              "default": 0.71,
+              "description": "em"
+            },
+            "pad": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "default": 0.5,
+              "description": "× --fx-space"
+            }
+          }
+        },
+        "table": {
+          "type": "object",
+          "properties": {
+            "padY": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3,
+              "default": 0.75,
+              "description": "× --fx-space"
+            },
+            "padX": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3,
+              "default": 1.25,
+              "description": "× --fx-space"
+            },
+            "font": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.2,
+              "default": 0.9,
+              "description": "em"
+            }
+          }
+        },
+        "pageHead": {
+          "type": "object",
+          "properties": {
+            "descriptionFont": {
+              "type": "number",
+              "minimum": 0.6,
+              "maximum": 1.2,
+              "default": 0.92,
+              "description": "em"
+            },
+            "descriptionLines": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6,
+              "default": 2,
+              "description": "number"
+            }
+          }
+        }
+      }
+    }
+  }
+}

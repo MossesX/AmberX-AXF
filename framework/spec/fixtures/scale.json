@@ -1,0 +1,996 @@
+{
+  "types": [
+    "typography",
+    "density",
+    "sizing"
+  ],
+  "defaults": {
+    "typography": {
+      "scale": {
+        "xs": 0.76,
+        "sm": 0.86,
+        "md": 1,
+        "lg": 1.15,
+        "xl": 1.35
+      },
+      "headings": {
+        "h1": 1.42,
+        "h2": 1.2,
+        "h3": 0.92,
+        "h4": 0.85,
+        "tracking": -0.02
+      },
+      "weights": {
+        "body": 400,
+        "medium": 550,
+        "strong": 600
+      },
+      "line": {
+        "tight": 1.2,
+        "normal": 1.45,
+        "loose": 1.65
+      },
+      "eyebrow": {
+        "size": 0.68,
+        "weight": 600,
+        "tracking": 0.06,
+        "case": "upper"
+      },
+      "mono": {
+        "size": 0.92
+      }
+    },
+    "density": {
+      "gap": {
+        "xs": 0.25,
+        "sm": 0.5,
+        "md": 0.75,
+        "lg": 1.5,
+        "xl": 1.75
+      },
+      "pad": {
+        "control": 0.55,
+        "card": 1.6,
+        "page": 2,
+        "row": 0.8,
+        "cell": 0.75
+      },
+      "row": {
+        "list": 2.75,
+        "table": 2.4,
+        "menu": 2.2,
+        "control": 2.2
+      }
+    },
+    "sizing": {
+      "button": {
+        "height": 2.1,
+        "padX": 1.2,
+        "font": 0.88,
+        "icon": 1
+      },
+      "iconButton": {
+        "size": 1.75
+      },
+      "chip": {
+        "height": 1.6,
+        "padX": 0.9,
+        "font": 0.78,
+        "radius": "sm"
+      },
+      "field": {
+        "height": 2.2,
+        "padX": 0.75,
+        "font": 0.92
+      },
+      "tab": {
+        "padY": 0.8,
+        "padX": 1.2,
+        "font": 0.9
+      },
+      "segment": {
+        "padY": 0.4,
+        "padX": 1.1,
+        "font": 0.86
+      },
+      "card": {
+        "pad": 1.6,
+        "headFont": 0.92,
+        "radius": "md"
+      },
+      "listRow": {
+        "minHeight": 2.75,
+        "padX": 1.25,
+        "metaFont": 0.82
+      },
+      "countStrip": {
+        "number": 1.1,
+        "label": 0.71,
+        "pad": 0.5
+      },
+      "table": {
+        "padY": 0.75,
+        "padX": 1.25,
+        "font": 0.9
+      },
+      "pageHead": {
+        "descriptionFont": 0.92,
+        "descriptionLines": 2
+      }
+    }
+  },
+  "defaultVars": {
+    "--fx-type-scale-xs": "0.76em",
+    "--fx-type-scale-sm": "0.86em",
+    "--fx-type-scale-md": "1em",
+    "--fx-type-scale-lg": "1.15em",
+    "--fx-type-scale-xl": "1.35em",
+    "--fx-type-headings-h1": "1.42em",
+    "--fx-type-headings-h2": "1.2em",
+    "--fx-type-headings-h3": "0.92em",
+    "--fx-type-headings-h4": "0.85em",
+    "--fx-type-headings-tracking": "-0.02em",
+    "--fx-type-weights-body": "400",
+    "--fx-type-weights-medium": "550",
+    "--fx-type-weights-strong": "600",
+    "--fx-type-line-tight": "1.2",
+    "--fx-type-line-normal": "1.45",
+    "--fx-type-line-loose": "1.65",
+    "--fx-type-eyebrow-size": "0.68em",
+    "--fx-type-eyebrow-weight": "600",
+    "--fx-type-eyebrow-tracking": "0.06em",
+    "--fx-type-mono-size": "0.92em",
+    "--fx-type-eyebrow-case": "uppercase",
+    "--fx-dens-gap-xs": "calc(var(--fx-space) * 0.25)",
+    "--fx-dens-gap-sm": "calc(var(--fx-space) * 0.5)",
+    "--fx-dens-gap-md": "calc(var(--fx-space) * 0.75)",
+    "--fx-dens-gap-lg": "calc(var(--fx-space) * 1.5)",
+    "--fx-dens-gap-xl": "calc(var(--fx-space) * 1.75)",
+    "--fx-dens-pad-control": "calc(var(--fx-space) * 0.55)",
+    "--fx-dens-pad-card": "calc(var(--fx-space) * 1.6)",
+    "--fx-dens-pad-page": "calc(var(--fx-space) * 2)",
+    "--fx-dens-pad-row": "calc(var(--fx-space) * 0.8)",
+    "--fx-dens-pad-cell": "calc(var(--fx-space) * 0.75)",
+    "--fx-dens-row-list": "calc(var(--fx-font-size) * 2.75)",
+    "--fx-dens-row-table": "calc(var(--fx-font-size) * 2.4)",
+    "--fx-dens-row-menu": "calc(var(--fx-font-size) * 2.2)",
+    "--fx-dens-row-control": "calc(var(--fx-font-size) * 2.2)",
+    "--fx-size-button-height": "calc(var(--fx-font-size) * 2.1)",
+    "--fx-size-button-pad-x": "calc(var(--fx-space) * 1.2)",
+    "--fx-size-button-font": "0.88em",
+    "--fx-size-button-icon": "1em",
+    "--fx-size-icon-button-size": "calc(var(--fx-font-size) * 1.75)",
+    "--fx-size-chip-height": "calc(var(--fx-font-size) * 1.6)",
+    "--fx-size-chip-pad-x": "calc(var(--fx-space) * 0.9)",
+    "--fx-size-chip-font": "0.78em",
+    "--fx-size-field-height": "calc(var(--fx-font-size) * 2.2)",
+    "--fx-size-field-pad-x": "calc(var(--fx-space) * 0.75)",
+    "--fx-size-field-font": "0.92em",
+    "--fx-size-tab-pad-y": "calc(var(--fx-space) * 0.8)",
+    "--fx-size-tab-pad-x": "calc(var(--fx-space) * 1.2)",
+    "--fx-size-tab-font": "0.9em",
+    "--fx-size-segment-pad-y": "calc(var(--fx-space) * 0.4)",
+    "--fx-size-segment-pad-x": "calc(var(--fx-space) * 1.1)",
+    "--fx-size-segment-font": "0.86em",
+    "--fx-size-card-pad": "calc(var(--fx-space) * 1.6)",
+    "--fx-size-card-head-font": "0.92em",
+    "--fx-size-list-row-min-height": "calc(var(--fx-font-size) * 2.75)",
+    "--fx-size-list-row-pad-x": "calc(var(--fx-space) * 1.25)",
+    "--fx-size-list-row-meta-font": "0.82em",
+    "--fx-size-count-strip-number": "1.1em",
+    "--fx-size-count-strip-label": "0.71em",
+    "--fx-size-count-strip-pad": "calc(var(--fx-space) * 0.5)",
+    "--fx-size-table-pad-y": "calc(var(--fx-space) * 0.75)",
+    "--fx-size-table-pad-x": "calc(var(--fx-space) * 1.25)",
+    "--fx-size-table-font": "0.9em",
+    "--fx-size-page-head-description-font": "0.92em",
+    "--fx-size-page-head-description-lines": "2",
+    "--fx-size-chip-radius": "var(--fx-radius-sm)",
+    "--fx-size-card-radius": "var(--fx-radius-md)"
+  },
+  "starters": {
+    "typography:classic": {
+      "normalized": {
+        "scale": {
+          "xs": 0.76,
+          "sm": 0.85,
+          "md": 1,
+          "lg": 1.2,
+          "xl": 1.5
+        },
+        "headings": {
+          "h1": 2,
+          "h2": 1.5,
+          "h3": 1,
+          "h4": 0.9,
+          "tracking": -0.01
+        },
+        "weights": {
+          "body": 400,
+          "medium": 500,
+          "strong": 600
+        },
+        "line": {
+          "tight": 1.2,
+          "normal": 1.5,
+          "loose": 1.7
+        },
+        "eyebrow": {
+          "size": 0.76,
+          "weight": 700,
+          "tracking": 0.14,
+          "case": "upper"
+        },
+        "mono": {
+          "size": 0.95
+        }
+      },
+      "vars": {
+        "--fx-type-scale-xs": "0.76em",
+        "--fx-type-scale-sm": "0.85em",
+        "--fx-type-scale-md": "1em",
+        "--fx-type-scale-lg": "1.2em",
+        "--fx-type-scale-xl": "1.5em",
+        "--fx-type-headings-h1": "2em",
+        "--fx-type-headings-h2": "1.5em",
+        "--fx-type-headings-h3": "1em",
+        "--fx-type-headings-h4": "0.9em",
+        "--fx-type-headings-tracking": "-0.01em",
+        "--fx-type-weights-body": "400",
+        "--fx-type-weights-medium": "500",
+        "--fx-type-weights-strong": "600",
+        "--fx-type-line-tight": "1.2",
+        "--fx-type-line-normal": "1.5",
+        "--fx-type-line-loose": "1.7",
+        "--fx-type-eyebrow-size": "0.76em",
+        "--fx-type-eyebrow-weight": "700",
+        "--fx-type-eyebrow-tracking": "0.14em",
+        "--fx-type-mono-size": "0.95em",
+        "--fx-type-eyebrow-case": "uppercase"
+      }
+    },
+    "typography:compact": {
+      "normalized": {
+        "scale": {
+          "xs": 0.76,
+          "sm": 0.86,
+          "md": 1,
+          "lg": 1.15,
+          "xl": 1.35
+        },
+        "headings": {
+          "h1": 1.42,
+          "h2": 1.2,
+          "h3": 0.92,
+          "h4": 0.85,
+          "tracking": -0.02
+        },
+        "weights": {
+          "body": 400,
+          "medium": 550,
+          "strong": 600
+        },
+        "line": {
+          "tight": 1.2,
+          "normal": 1.45,
+          "loose": 1.65
+        },
+        "eyebrow": {
+          "size": 0.68,
+          "weight": 600,
+          "tracking": 0.06,
+          "case": "upper"
+        },
+        "mono": {
+          "size": 0.92
+        }
+      },
+      "vars": {
+        "--fx-type-scale-xs": "0.76em",
+        "--fx-type-scale-sm": "0.86em",
+        "--fx-type-scale-md": "1em",
+        "--fx-type-scale-lg": "1.15em",
+        "--fx-type-scale-xl": "1.35em",
+        "--fx-type-headings-h1": "1.42em",
+        "--fx-type-headings-h2": "1.2em",
+        "--fx-type-headings-h3": "0.92em",
+        "--fx-type-headings-h4": "0.85em",
+        "--fx-type-headings-tracking": "-0.02em",
+        "--fx-type-weights-body": "400",
+        "--fx-type-weights-medium": "550",
+        "--fx-type-weights-strong": "600",
+        "--fx-type-line-tight": "1.2",
+        "--fx-type-line-normal": "1.45",
+        "--fx-type-line-loose": "1.65",
+        "--fx-type-eyebrow-size": "0.68em",
+        "--fx-type-eyebrow-weight": "600",
+        "--fx-type-eyebrow-tracking": "0.06em",
+        "--fx-type-mono-size": "0.92em",
+        "--fx-type-eyebrow-case": "uppercase"
+      }
+    },
+    "typography:reader": {
+      "normalized": {
+        "scale": {
+          "xs": 0.8,
+          "sm": 0.9,
+          "md": 1.05,
+          "lg": 1.25,
+          "xl": 1.6
+        },
+        "headings": {
+          "h1": 1.8,
+          "h2": 1.4,
+          "h3": 1.1,
+          "h4": 1,
+          "tracking": -0.02
+        },
+        "weights": {
+          "body": 400,
+          "medium": 500,
+          "strong": 650
+        },
+        "line": {
+          "tight": 1.3,
+          "normal": 1.6,
+          "loose": 1.85
+        },
+        "eyebrow": {
+          "size": 0.75,
+          "weight": 600,
+          "tracking": 0.02,
+          "case": "normal"
+        },
+        "mono": {
+          "size": 0.95
+        }
+      },
+      "vars": {
+        "--fx-type-scale-xs": "0.8em",
+        "--fx-type-scale-sm": "0.9em",
+        "--fx-type-scale-md": "1.05em",
+        "--fx-type-scale-lg": "1.25em",
+        "--fx-type-scale-xl": "1.6em",
+        "--fx-type-headings-h1": "1.8em",
+        "--fx-type-headings-h2": "1.4em",
+        "--fx-type-headings-h3": "1.1em",
+        "--fx-type-headings-h4": "1em",
+        "--fx-type-headings-tracking": "-0.02em",
+        "--fx-type-weights-body": "400",
+        "--fx-type-weights-medium": "500",
+        "--fx-type-weights-strong": "650",
+        "--fx-type-line-tight": "1.3",
+        "--fx-type-line-normal": "1.6",
+        "--fx-type-line-loose": "1.85",
+        "--fx-type-eyebrow-size": "0.75em",
+        "--fx-type-eyebrow-weight": "600",
+        "--fx-type-eyebrow-tracking": "0.02em",
+        "--fx-type-mono-size": "0.95em",
+        "--fx-type-eyebrow-case": "none"
+      }
+    },
+    "density:classic": {
+      "normalized": {
+        "gap": {
+          "xs": 0.25,
+          "sm": 0.5,
+          "md": 1,
+          "lg": 1.5,
+          "xl": 3
+        },
+        "pad": {
+          "control": 1,
+          "card": 2,
+          "page": 2.5,
+          "row": 1,
+          "cell": 1
+        },
+        "row": {
+          "list": 3,
+          "table": 2.6,
+          "menu": 2.4,
+          "control": 2.4
+        }
+      },
+      "vars": {
+        "--fx-dens-gap-xs": "calc(var(--fx-space) * 0.25)",
+        "--fx-dens-gap-sm": "calc(var(--fx-space) * 0.5)",
+        "--fx-dens-gap-md": "calc(var(--fx-space) * 1)",
+        "--fx-dens-gap-lg": "calc(var(--fx-space) * 1.5)",
+        "--fx-dens-gap-xl": "calc(var(--fx-space) * 3)",
+        "--fx-dens-pad-control": "calc(var(--fx-space) * 1)",
+        "--fx-dens-pad-card": "calc(var(--fx-space) * 2)",
+        "--fx-dens-pad-page": "calc(var(--fx-space) * 2.5)",
+        "--fx-dens-pad-row": "calc(var(--fx-space) * 1)",
+        "--fx-dens-pad-cell": "calc(var(--fx-space) * 1)",
+        "--fx-dens-row-list": "calc(var(--fx-font-size) * 3)",
+        "--fx-dens-row-table": "calc(var(--fx-font-size) * 2.6)",
+        "--fx-dens-row-menu": "calc(var(--fx-font-size) * 2.4)",
+        "--fx-dens-row-control": "calc(var(--fx-font-size) * 2.4)"
+      }
+    },
+    "density:compact": {
+      "normalized": {
+        "gap": {
+          "xs": 0.25,
+          "sm": 0.5,
+          "md": 0.75,
+          "lg": 1.5,
+          "xl": 1.75
+        },
+        "pad": {
+          "control": 0.55,
+          "card": 1.6,
+          "page": 2,
+          "row": 0.8,
+          "cell": 0.75
+        },
+        "row": {
+          "list": 2.75,
+          "table": 2.4,
+          "menu": 2.2,
+          "control": 2.2
+        }
+      },
+      "vars": {
+        "--fx-dens-gap-xs": "calc(var(--fx-space) * 0.25)",
+        "--fx-dens-gap-sm": "calc(var(--fx-space) * 0.5)",
+        "--fx-dens-gap-md": "calc(var(--fx-space) * 0.75)",
+        "--fx-dens-gap-lg": "calc(var(--fx-space) * 1.5)",
+        "--fx-dens-gap-xl": "calc(var(--fx-space) * 1.75)",
+        "--fx-dens-pad-control": "calc(var(--fx-space) * 0.55)",
+        "--fx-dens-pad-card": "calc(var(--fx-space) * 1.6)",
+        "--fx-dens-pad-page": "calc(var(--fx-space) * 2)",
+        "--fx-dens-pad-row": "calc(var(--fx-space) * 0.8)",
+        "--fx-dens-pad-cell": "calc(var(--fx-space) * 0.75)",
+        "--fx-dens-row-list": "calc(var(--fx-font-size) * 2.75)",
+        "--fx-dens-row-table": "calc(var(--fx-font-size) * 2.4)",
+        "--fx-dens-row-menu": "calc(var(--fx-font-size) * 2.2)",
+        "--fx-dens-row-control": "calc(var(--fx-font-size) * 2.2)"
+      }
+    },
+    "density:dense": {
+      "normalized": {
+        "gap": {
+          "xs": 0.15,
+          "sm": 0.35,
+          "md": 0.5,
+          "lg": 1,
+          "xl": 1.25
+        },
+        "pad": {
+          "control": 0.4,
+          "card": 1.1,
+          "page": 1.25,
+          "row": 0.5,
+          "cell": 0.5
+        },
+        "row": {
+          "list": 2.2,
+          "table": 2,
+          "menu": 2,
+          "control": 2
+        }
+      },
+      "vars": {
+        "--fx-dens-gap-xs": "calc(var(--fx-space) * 0.15)",
+        "--fx-dens-gap-sm": "calc(var(--fx-space) * 0.35)",
+        "--fx-dens-gap-md": "calc(var(--fx-space) * 0.5)",
+        "--fx-dens-gap-lg": "calc(var(--fx-space) * 1)",
+        "--fx-dens-gap-xl": "calc(var(--fx-space) * 1.25)",
+        "--fx-dens-pad-control": "calc(var(--fx-space) * 0.4)",
+        "--fx-dens-pad-card": "calc(var(--fx-space) * 1.1)",
+        "--fx-dens-pad-page": "calc(var(--fx-space) * 1.25)",
+        "--fx-dens-pad-row": "calc(var(--fx-space) * 0.5)",
+        "--fx-dens-pad-cell": "calc(var(--fx-space) * 0.5)",
+        "--fx-dens-row-list": "calc(var(--fx-font-size) * 2.2)",
+        "--fx-dens-row-table": "calc(var(--fx-font-size) * 2)",
+        "--fx-dens-row-menu": "calc(var(--fx-font-size) * 2)",
+        "--fx-dens-row-control": "calc(var(--fx-font-size) * 2)"
+      }
+    },
+    "density:roomy": {
+      "normalized": {
+        "gap": {
+          "xs": 0.5,
+          "sm": 0.75,
+          "md": 1.25,
+          "lg": 2,
+          "xl": 3.5
+        },
+        "pad": {
+          "control": 1.1,
+          "card": 2.5,
+          "page": 3,
+          "row": 1.25,
+          "cell": 1.25
+        },
+        "row": {
+          "list": 3.4,
+          "table": 3,
+          "menu": 2.8,
+          "control": 2.8
+        }
+      },
+      "vars": {
+        "--fx-dens-gap-xs": "calc(var(--fx-space) * 0.5)",
+        "--fx-dens-gap-sm": "calc(var(--fx-space) * 0.75)",
+        "--fx-dens-gap-md": "calc(var(--fx-space) * 1.25)",
+        "--fx-dens-gap-lg": "calc(var(--fx-space) * 2)",
+        "--fx-dens-gap-xl": "calc(var(--fx-space) * 3.5)",
+        "--fx-dens-pad-control": "calc(var(--fx-space) * 1.1)",
+        "--fx-dens-pad-card": "calc(var(--fx-space) * 2.5)",
+        "--fx-dens-pad-page": "calc(var(--fx-space) * 3)",
+        "--fx-dens-pad-row": "calc(var(--fx-space) * 1.25)",
+        "--fx-dens-pad-cell": "calc(var(--fx-space) * 1.25)",
+        "--fx-dens-row-list": "calc(var(--fx-font-size) * 3.4)",
+        "--fx-dens-row-table": "calc(var(--fx-font-size) * 3)",
+        "--fx-dens-row-menu": "calc(var(--fx-font-size) * 2.8)",
+        "--fx-dens-row-control": "calc(var(--fx-font-size) * 2.8)"
+      }
+    },
+    "sizing:classic": {
+      "normalized": {
+        "button": {
+          "height": 2.5,
+          "padX": 1.75,
+          "font": 0.93,
+          "icon": 1.1
+        },
+        "iconButton": {
+          "size": 1.9
+        },
+        "chip": {
+          "height": 1.8,
+          "padX": 1.25,
+          "font": 0.86,
+          "radius": "pill"
+        },
+        "field": {
+          "height": 2.5,
+          "padX": 1,
+          "font": 1
+        },
+        "tab": {
+          "padY": 1,
+          "padX": 1.5,
+          "font": 1
+        },
+        "segment": {
+          "padY": 0.5,
+          "padX": 1.25,
+          "font": 0.92
+        },
+        "card": {
+          "pad": 2,
+          "headFont": 1,
+          "radius": "lg"
+        },
+        "listRow": {
+          "minHeight": 3.2,
+          "padX": 1.5,
+          "metaFont": 0.85
+        },
+        "countStrip": {
+          "number": 1.5,
+          "label": 0.79,
+          "pad": 1
+        },
+        "table": {
+          "padY": 1,
+          "padX": 1.25,
+          "font": 0.9
+        },
+        "pageHead": {
+          "descriptionFont": 1,
+          "descriptionLines": 6
+        }
+      },
+      "vars": {
+        "--fx-size-button-height": "calc(var(--fx-font-size) * 2.5)",
+        "--fx-size-button-pad-x": "calc(var(--fx-space) * 1.75)",
+        "--fx-size-button-font": "0.93em",
+        "--fx-size-button-icon": "1.1em",
+        "--fx-size-icon-button-size": "calc(var(--fx-font-size) * 1.9)",
+        "--fx-size-chip-height": "calc(var(--fx-font-size) * 1.8)",
+        "--fx-size-chip-pad-x": "calc(var(--fx-space) * 1.25)",
+        "--fx-size-chip-font": "0.86em",
+        "--fx-size-field-height": "calc(var(--fx-font-size) * 2.5)",
+        "--fx-size-field-pad-x": "calc(var(--fx-space) * 1)",
+        "--fx-size-field-font": "1em",
+        "--fx-size-tab-pad-y": "calc(var(--fx-space) * 1)",
+        "--fx-size-tab-pad-x": "calc(var(--fx-space) * 1.5)",
+        "--fx-size-tab-font": "1em",
+        "--fx-size-segment-pad-y": "calc(var(--fx-space) * 0.5)",
+        "--fx-size-segment-pad-x": "calc(var(--fx-space) * 1.25)",
+        "--fx-size-segment-font": "0.92em",
+        "--fx-size-card-pad": "calc(var(--fx-space) * 2)",
+        "--fx-size-card-head-font": "1em",
+        "--fx-size-list-row-min-height": "calc(var(--fx-font-size) * 3.2)",
+        "--fx-size-list-row-pad-x": "calc(var(--fx-space) * 1.5)",
+        "--fx-size-list-row-meta-font": "0.85em",
+        "--fx-size-count-strip-number": "1.5em",
+        "--fx-size-count-strip-label": "0.79em",
+        "--fx-size-count-strip-pad": "calc(var(--fx-space) * 1)",
+        "--fx-size-table-pad-y": "calc(var(--fx-space) * 1)",
+        "--fx-size-table-pad-x": "calc(var(--fx-space) * 1.25)",
+        "--fx-size-table-font": "0.9em",
+        "--fx-size-page-head-description-font": "1em",
+        "--fx-size-page-head-description-lines": "6",
+        "--fx-size-chip-radius": "999px",
+        "--fx-size-card-radius": "var(--fx-radius-lg)"
+      }
+    },
+    "sizing:compact": {
+      "normalized": {
+        "button": {
+          "height": 2.1,
+          "padX": 1.2,
+          "font": 0.88,
+          "icon": 1
+        },
+        "iconButton": {
+          "size": 1.75
+        },
+        "chip": {
+          "height": 1.6,
+          "padX": 0.9,
+          "font": 0.78,
+          "radius": "sm"
+        },
+        "field": {
+          "height": 2.2,
+          "padX": 0.75,
+          "font": 0.92
+        },
+        "tab": {
+          "padY": 0.8,
+          "padX": 1.2,
+          "font": 0.9
+        },
+        "segment": {
+          "padY": 0.4,
+          "padX": 1.1,
+          "font": 0.86
+        },
+        "card": {
+          "pad": 1.6,
+          "headFont": 0.92,
+          "radius": "md"
+        },
+        "listRow": {
+          "minHeight": 2.75,
+          "padX": 1.25,
+          "metaFont": 0.82
+        },
+        "countStrip": {
+          "number": 1.1,
+          "label": 0.71,
+          "pad": 0.5
+        },
+        "table": {
+          "padY": 0.75,
+          "padX": 1.25,
+          "font": 0.9
+        },
+        "pageHead": {
+          "descriptionFont": 0.92,
+          "descriptionLines": 2
+        }
+      },
+      "vars": {
+        "--fx-size-button-height": "calc(var(--fx-font-size) * 2.1)",
+        "--fx-size-button-pad-x": "calc(var(--fx-space) * 1.2)",
+        "--fx-size-button-font": "0.88em",
+        "--fx-size-button-icon": "1em",
+        "--fx-size-icon-button-size": "calc(var(--fx-font-size) * 1.75)",
+        "--fx-size-chip-height": "calc(var(--fx-font-size) * 1.6)",
+        "--fx-size-chip-pad-x": "calc(var(--fx-space) * 0.9)",
+        "--fx-size-chip-font": "0.78em",
+        "--fx-size-field-height": "calc(var(--fx-font-size) * 2.2)",
+        "--fx-size-field-pad-x": "calc(var(--fx-space) * 0.75)",
+        "--fx-size-field-font": "0.92em",
+        "--fx-size-tab-pad-y": "calc(var(--fx-space) * 0.8)",
+        "--fx-size-tab-pad-x": "calc(var(--fx-space) * 1.2)",
+        "--fx-size-tab-font": "0.9em",
+        "--fx-size-segment-pad-y": "calc(var(--fx-space) * 0.4)",
+        "--fx-size-segment-pad-x": "calc(var(--fx-space) * 1.1)",
+        "--fx-size-segment-font": "0.86em",
+        "--fx-size-card-pad": "calc(var(--fx-space) * 1.6)",
+        "--fx-size-card-head-font": "0.92em",
+        "--fx-size-list-row-min-height": "calc(var(--fx-font-size) * 2.75)",
+        "--fx-size-list-row-pad-x": "calc(var(--fx-space) * 1.25)",
+        "--fx-size-list-row-meta-font": "0.82em",
+        "--fx-size-count-strip-number": "1.1em",
+        "--fx-size-count-strip-label": "0.71em",
+        "--fx-size-count-strip-pad": "calc(var(--fx-space) * 0.5)",
+        "--fx-size-table-pad-y": "calc(var(--fx-space) * 0.75)",
+        "--fx-size-table-pad-x": "calc(var(--fx-space) * 1.25)",
+        "--fx-size-table-font": "0.9em",
+        "--fx-size-page-head-description-font": "0.92em",
+        "--fx-size-page-head-description-lines": "2",
+        "--fx-size-chip-radius": "var(--fx-radius-sm)",
+        "--fx-size-card-radius": "var(--fx-radius-md)"
+      }
+    },
+    "sizing:touch": {
+      "normalized": {
+        "button": {
+          "height": 2.8,
+          "padX": 1.75,
+          "font": 0.95,
+          "icon": 1.15
+        },
+        "iconButton": {
+          "size": 2.4
+        },
+        "chip": {
+          "height": 2,
+          "padX": 1.25,
+          "font": 0.86,
+          "radius": "pill"
+        },
+        "field": {
+          "height": 2.8,
+          "padX": 1,
+          "font": 1
+        },
+        "tab": {
+          "padY": 1.1,
+          "padX": 1.6,
+          "font": 1
+        },
+        "segment": {
+          "padY": 0.7,
+          "padX": 1.4,
+          "font": 0.95
+        },
+        "card": {
+          "pad": 2,
+          "headFont": 1,
+          "radius": "lg"
+        },
+        "listRow": {
+          "minHeight": 3.5,
+          "padX": 1.5,
+          "metaFont": 0.85
+        },
+        "countStrip": {
+          "number": 1.3,
+          "label": 0.75,
+          "pad": 0.75
+        },
+        "table": {
+          "padY": 1,
+          "padX": 1.25,
+          "font": 0.95
+        },
+        "pageHead": {
+          "descriptionFont": 0.95,
+          "descriptionLines": 3
+        }
+      },
+      "vars": {
+        "--fx-size-button-height": "calc(var(--fx-font-size) * 2.8)",
+        "--fx-size-button-pad-x": "calc(var(--fx-space) * 1.75)",
+        "--fx-size-button-font": "0.95em",
+        "--fx-size-button-icon": "1.15em",
+        "--fx-size-icon-button-size": "calc(var(--fx-font-size) * 2.4)",
+        "--fx-size-chip-height": "calc(var(--fx-font-size) * 2)",
+        "--fx-size-chip-pad-x": "calc(var(--fx-space) * 1.25)",
+        "--fx-size-chip-font": "0.86em",
+        "--fx-size-field-height": "calc(var(--fx-font-size) * 2.8)",
+        "--fx-size-field-pad-x": "calc(var(--fx-space) * 1)",
+        "--fx-size-field-font": "1em",
+        "--fx-size-tab-pad-y": "calc(var(--fx-space) * 1.1)",
+        "--fx-size-tab-pad-x": "calc(var(--fx-space) * 1.6)",
+        "--fx-size-tab-font": "1em",
+        "--fx-size-segment-pad-y": "calc(var(--fx-space) * 0.7)",
+        "--fx-size-segment-pad-x": "calc(var(--fx-space) * 1.4)",
+        "--fx-size-segment-font": "0.95em",
+        "--fx-size-card-pad": "calc(var(--fx-space) * 2)",
+        "--fx-size-card-head-font": "1em",
+        "--fx-size-list-row-min-height": "calc(var(--fx-font-size) * 3.5)",
+        "--fx-size-list-row-pad-x": "calc(var(--fx-space) * 1.5)",
+        "--fx-size-list-row-meta-font": "0.85em",
+        "--fx-size-count-strip-number": "1.3em",
+        "--fx-size-count-strip-label": "0.75em",
+        "--fx-size-count-strip-pad": "calc(var(--fx-space) * 0.75)",
+        "--fx-size-table-pad-y": "calc(var(--fx-space) * 1)",
+        "--fx-size-table-pad-x": "calc(var(--fx-space) * 1.25)",
+        "--fx-size-table-font": "0.95em",
+        "--fx-size-page-head-description-font": "0.95em",
+        "--fx-size-page-head-description-lines": "3",
+        "--fx-size-chip-radius": "999px",
+        "--fx-size-card-radius": "var(--fx-radius-lg)"
+      }
+    }
+  },
+  "normalized": {
+    "typography:partial": {
+      "scale": {
+        "xs": 0.76,
+        "sm": 0.86,
+        "md": 1,
+        "lg": 1.15,
+        "xl": 1.35
+      },
+      "headings": {
+        "h1": 3,
+        "h2": 1.2,
+        "h3": 0.92,
+        "h4": 0.85,
+        "tracking": -0.02
+      },
+      "weights": {
+        "body": 400,
+        "medium": 550,
+        "strong": 600
+      },
+      "line": {
+        "tight": 1.2,
+        "normal": 1.45,
+        "loose": 1.65
+      },
+      "eyebrow": {
+        "size": 0.68,
+        "weight": 600,
+        "tracking": 0.06,
+        "case": "normal"
+      },
+      "mono": {
+        "size": 0.92
+      }
+    },
+    "density:clamped": {
+      "gap": {
+        "xs": 0,
+        "sm": 0.5,
+        "md": 0.75,
+        "lg": 1.5,
+        "xl": 6
+      },
+      "pad": {
+        "control": 0.55,
+        "card": 1.6,
+        "page": 2,
+        "row": 0.8,
+        "cell": 0.75
+      },
+      "row": {
+        "list": 2.75,
+        "table": 2.4,
+        "menu": 2.2,
+        "control": 2.2
+      }
+    },
+    "sizing:bad-enum": {
+      "button": {
+        "height": 2.1,
+        "padX": 1.2,
+        "font": 0.88,
+        "icon": 1
+      },
+      "iconButton": {
+        "size": 1.75
+      },
+      "chip": {
+        "height": 2,
+        "padX": 0.9,
+        "font": 0.78,
+        "radius": "sm"
+      },
+      "field": {
+        "height": 2.2,
+        "padX": 0.75,
+        "font": 0.92
+      },
+      "tab": {
+        "padY": 0.8,
+        "padX": 1.2,
+        "font": 0.9
+      },
+      "segment": {
+        "padY": 0.4,
+        "padX": 1.1,
+        "font": 0.86
+      },
+      "card": {
+        "pad": 1.6,
+        "headFont": 0.92,
+        "radius": "md"
+      },
+      "listRow": {
+        "minHeight": 2.75,
+        "padX": 1.25,
+        "metaFont": 0.82
+      },
+      "countStrip": {
+        "number": 1.1,
+        "label": 0.71,
+        "pad": 0.5
+      },
+      "table": {
+        "padY": 0.75,
+        "padX": 1.25,
+        "font": 0.9
+      },
+      "pageHead": {
+        "descriptionFont": 0.92,
+        "descriptionLines": 4
+      }
+    },
+    "sizing:not-an-object": {
+      "button": {
+        "height": 2.1,
+        "padX": 1.2,
+        "font": 0.88,
+        "icon": 1
+      },
+      "iconButton": {
+        "size": 1.75
+      },
+      "chip": {
+        "height": 1.6,
+        "padX": 0.9,
+        "font": 0.78,
+        "radius": "sm"
+      },
+      "field": {
+        "height": 2.2,
+        "padX": 0.75,
+        "font": 0.92
+      },
+      "tab": {
+        "padY": 0.8,
+        "padX": 1.2,
+        "font": 0.9
+      },
+      "segment": {
+        "padY": 0.4,
+        "padX": 1.1,
+        "font": 0.86
+      },
+      "card": {
+        "pad": 1.6,
+        "headFont": 0.92,
+        "radius": "md"
+      },
+      "listRow": {
+        "minHeight": 2.75,
+        "padX": 1.25,
+        "metaFont": 0.82
+      },
+      "countStrip": {
+        "number": 1.1,
+        "label": 0.71,
+        "pad": 0.5
+      },
+      "table": {
+        "padY": 0.75,
+        "padX": 1.25,
+        "font": 0.9
+      },
+      "pageHead": {
+        "descriptionFont": 0.92,
+        "descriptionLines": 2
+      }
+    }
+  },
+  "errors": {
+    "typography:ok": [],
+    "density:out-of-range": [
+      "data.gap.xl must be a number from 0 to 6",
+      "data.row.list must be a number from 1.5 to 5"
+    ],
+    "sizing:bad-enum-and-int": [
+      "data.card must be an object",
+      "data.pageHead.descriptionLines must be a whole number",
+      "data.chip.radius must be one of sm, md, pill"
+    ],
+    "sizing:not-an-object": [
+      "data must be an object"
+    ],
+    "other-type": []
+  }
+}

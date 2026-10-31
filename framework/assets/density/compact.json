@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "density",
+  "id": "compact",
+  "name": "Compact",
+  "version": "1.0.0",
+  "description": "The framework's own spacing (Oct 30 2026): tight gaps, 0.55-space control padding, 2.75-line list rows. Every value is the default.",
+  "author": "AmberX AXF",
+  "tags": [
+    "compact",
+    "default"
+  ],
+  "data": {
+    "gap": {
+      "xs": 0.25,
+      "sm": 0.5,
+      "md": 0.75,
+      "lg": 1.5,
+      "xl": 1.75
+    },
+    "pad": {
+      "control": 0.55,
+      "card": 1.6,
+      "page": 2,
+      "row": 0.8,
+      "cell": 0.75
+    },
+    "row": {
+      "list": 2.75,
+      "table": 2.4,
+      "menu": 2.2,
+      "control": 2.2
+    }
+  }
+}
