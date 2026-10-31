@@ -7,6 +7,7 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { compileLayout, layoutVars } from '../core/engines/layout';
+import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
@@ -63,6 +64,34 @@ write('layout-slots.json', Object.fromEntries([...Object.entries({
     'hidden-all-chrome': ['app-menu', 'toolbar', 'nav-menu', 'context-menu'],
   }).map(([k, hidden]) => [k, { slots: {}, hidden, compiled: compileLayout({ ...base, slots: {} }, hidden) }]),
 ]));
+// Repeating slots (core/engines/repeat.ts): a layout's slots against the data sets a page declares.
+const repeatDefs = [
+  { id: 'docs', dataSet: 'docs', style: 'tabs' },
+  { id: 'projects', dataSet: 'projects', style: 'cards', columns: 3, max: 2, fallback: { type: 'container', id: 'empty-projects', label: 'No projects yet' } },
+  { id: 'gallery', dataSet: 'images', style: 'grid', region: 'inspector' },
+  { id: 'feed', dataSet: 'feed', fallback: { label: 'Nothing new' } },
+  { id: 'docs', dataSet: 'other' },
+  { id: '', dataSet: 'x' },
+  { id: 'odd', dataSet: 'docs', style: 'carousel', region: 'sidebar', columns: 99, max: -2 },
+  { id: 'wide', dataSet: 'images', style: 'grid', columns: 2.5 },
+];
+const repeatCases: Record<string, { sets: Record<string, unknown[]>; active?: Record<string, string> }> = {
+  'all-declared': { sets: { docs: [{ id: 'a', label: 'Alpha', icon: 'file' }, { key: 'b', title: 'Beta' }], projects: [{ id: 'p1', label: 'One' }, { id: 'p2' }, { id: 'p3' }], images: ['x.png', 'y.png', 7], feed: [{ label: 'Hi' }] } },
+  'none-declared': { sets: {} },
+  'empty-sets': { sets: { docs: [], projects: [], images: [], feed: [] } },
+  'messy-entries': { sets: { docs: [{ id: 'a' }, { id: 'a', label: 'dup' }, null, true, '', '  ', { label: 'no key' }, 3, 3], images: [{ key: 'k', id: 'ignored', label: '  ' }] } },
+  'tab-picked': { sets: { docs: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] }, active: { docs: 'c' } },
+  'tab-picked-gone': { sets: { docs: [{ id: 'a' }, { id: 'b' }] }, active: { docs: 'z' } },
+};
+write('layout-repeat.json', {
+  styles: REPEAT_STYLES, defaultStyle: REPEAT_DEFAULT_STYLE, maxColumns: REPEAT_MAX_COLUMNS, defaultColumns: REPEAT_DEFAULT_COLUMNS,
+  repeat: repeatDefs,
+  declared: declaredDataSets({ repeat: repeatDefs as never }),
+  cases: Object.fromEntries(Object.entries(repeatCases).map(([k, c]) => {
+    const compiled = compileRepeats({ repeat: repeatDefs as never }, c.sets, c.active);
+    return [k, { ...c, missing: missingDataSets({ repeat: repeatDefs as never }, c.sets), compiled, vars: compiled.map(repeatVars) }];
+  })),
+});
 // Which types can be hidden, and which overrides count (non-hideable types never hide).
 write('hide.json', {
   hideable: hideableTypes(),
@@ -400,6 +429,10 @@ write('validation.json', [
   { case: 'banner-attach-bad', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'button', id: 'x', at: 'left' }, { type: 'badge', id: 'new', at: 'top' }] } } },
   { case: 'banner-attach-ok', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'search-bar', id: 'everything', at: 'center' }] } } },
   { case: 'toolbar-widgets-bad', raw: { $axf: 'asset@1', type: 'toolbar', id: 'xx', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, widgets: [{ type: 'badge', id: 'new', at: 'start' }] } } },
+  // Repeating slots (layout.repeat): same messages on every port.
+  { case: 'repeat-ok', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: [{ id: 'projects', dataSet: 'projects', style: 'cards', columns: 3, max: 6, region: 'main', fallback: { type: 'container', id: 'empty', label: 'No projects yet' } }, { id: 'tabs', dataSet: 'docs', style: 'tabs' }] } } },
+  { case: 'repeat-not-list', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: { id: 'a' } } } },
+  { case: 'repeat-bad', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: [{ id: 'a', dataSet: 'x' }, { id: 'a', dataSet: '', region: 'sidebar', style: 'carousel', columns: 13, max: -1, fallback: { type: 'ribbon', id: 3, label: true } }, 'x', { dataSet: 'y', columns: 2.5, fallback: 'none' }] } } },
 ].map((c) => ({ ...c, result: validateAsset(c.raw) })));
 // Randomize rolls: which slots a roll touches and which assets it may pick (context menus are opt-in).
 const rollCases: Record<string, { slots?: Record<string, boolean>; assets?: Record<string, boolean> }> = {
