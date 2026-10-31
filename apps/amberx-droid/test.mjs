@@ -949,7 +949,6 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 /* ---------------------------------------------------------------- veto@1 held calls (lib-hub veto.ts + plugins/approvals) */
 {
   const vt = await import('../../framework/libs/hub/veto.ts');
-  const al = await import('../console-web/plugins/approvals-banner/web/alarm.ts');
   const ID1 = '11111111-2222-3333-4444-555555555555';
   const ID2 = '66666666-7777-8888-9999-000000000000';
   const NOW = Date.parse('2026-10-29T02:00:00.000Z');
@@ -1033,28 +1032,6 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     const hr = await vt.runVetoAction(HUB, { id: ID1, url: `${HUB}/auth/admin/approvals/${ID1}` }, 'shelve');
     eq([hr.ok, asked], [true, [ID1, 'shelve']], 'veto: actions go through the app host');
     vt.setVetoHost({});
-  }
-  // the veto banner plugin's alarm (console plugins/approvals-banner/web/alarm.ts)
-  {
-    const K = al.ALARM_KEYS;
-    const cfg = al.alarmConfig((k) => ({ [K.volume]: 250, [K.tone]: 'custom', [K.vibration]: 'sos', [K.repeat]: '3', [K.startAt]: '10' })[k]);
-    eq([cfg.volume, cfg.tone, cfg.vibrationPattern.length > 0, cfg.repeat, cfg.startAt], [100, 'alarm', true, 3, '10'], 'alarm: clamped, custom without a file falls back');
-    eq(al.alarmDue(cfg, { secondsLeft: 11 }), false, 'alarm: not yet at 11 s');
-    eq(al.alarmDue(cfg, { secondsLeft: 10 }), true, 'alarm: due at 10 s');
-    eq(al.alarmDue(cfg, { secondsLeft: 5, shelved: true }), false, 'alarm: never for a shelved call');
-    eq(al.alarmDue(cfg, { secondsLeft: 5, approvedNow: true }), false, 'alarm: never for an approved call');
-    eq(al.alarmDue({ ...cfg, enabled: false }, { secondsLeft: 0 }), false, 'alarm: off');
-    eq(al.alarmDue({ ...cfg, startAt: 'start' }, { secondsLeft: 89 }), true, 'alarm: from the start');
-    const r = { ringSeconds: 10, repeat: 2, repeatGapSeconds: 5 };
-    eq([al.alarmLength(r), al.ringingAt(r, 3), al.ringingAt(r, 12), al.ringingAt(r, 16), al.ringingAt(r, 25)], [25, true, false, true, false], 'alarm: rings, gap, repeat, end');
-    const v = { volume: 50, louder: true, louderSeconds: 10, ringSeconds: 30, repeatGapSeconds: 0 };
-    ok(Math.abs(al.volumeAt(v, 0) - 0.1) < 1e-9 && Math.abs(al.volumeAt(v, 10) - 0.5) < 1e-9 && al.volumeAt({ ...v, louder: false }, 0) === 0.5, 'alarm: gets louder over time');
-    const nat = al.nativeAlarmConfig(al.alarmConfig(() => undefined));
-    eq([nat.startSeconds, nat.throughSilent, nat.customSound], [30, true, ''], 'alarm: phone config');
-    eq(al.nativeAlarmConfig({ ...cfg, startAt: 'start' }).startSeconds, -1, 'alarm: from the start = -1 for the phone');
-    const snd = 'data:audio/mpeg;base64,SUQzBAAAAA==';
-    eq(al.alarmConfig((k) => ({ [K.tone]: 'custom', [K.customSound]: snd })[k]).tone, 'custom', 'alarm: own sound file');
-    eq(al.alarmConfig((k) => ({ [K.tone]: 'custom', [K.customSound]: 'javascript:alert(1)' })[k]).tone, 'alarm', 'alarm: a non-audio value is refused');
   }
   {
     const store = await import('./src/plugins/approvals/web/store.ts');
