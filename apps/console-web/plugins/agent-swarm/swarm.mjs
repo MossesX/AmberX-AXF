@@ -15,6 +15,7 @@
  *   … chat [n] | banter [--dry-run]      the group chat | one cheap small-model batch of banter
  *   … act chat on|off · act chat <agent> on|off · act say <text>
  *   … act suspend <agent> <hours> <reason> · act rehire <agent> · act rules <rage-quit N>
+ *   … act preset business|crew|breakroom|rails · act vibe <1-500> · act --json '{"action":"chat-settings",…}'
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
@@ -121,14 +122,15 @@ export function chatAfterRun(rec, roster = loadRoster()) {
     core.post(st, core.reportLines(rec, roster), at);
     core.recordRun(st, rec, roster, at, priceTable());
     const moment = rec.status === 'done' ? 'done' : 'failed';
-    for (const a of core.reactors(st, roster, rec.agent, 1, rec.jobId)) core.post(st, [{ from: a.id, kind: 'banter', text: core.banterLine(moment, `${rec.jobId}${a.id}`, { other: roster.agents.find((x) => x.id === rec.agent)?.name ?? rec.agent, job: rec.jobId }) }], at);
+    for (const a of core.reactors(st, roster, rec.agent, core.reactCount(st, at), rec.jobId)) core.post(st, [{ from: a.id, kind: 'banter', text: core.banterLine(moment, `${rec.jobId}${a.id}`, { other: roster.agents.find((x) => x.id === rec.agent)?.name ?? rec.agent, job: rec.jobId }) }], at);
   });
 }
 
 /** One cheap batch of banter from the small model (one turn, no tools). Nothing runs while the chat is off. */
 export async function banter(opts = {}) {
   const st = loadState(); const roster = loadRoster();
-  if (!st.chat.enabled) return { posted: 0, usd: 0, skipped: 'the group chat is off' };
+  const allowed = core.banterAllowed(st, new Date().toISOString());
+  if (!allowed.ok) return { posted: 0, usd: 0, skipped: allowed.why };
   const prompt = core.banterPrompt(roster, st.messages, opts.n ?? 6);
   if (opts.dry) return { dry: true, prompt };
   const bin = opts.bin ?? process.env.AXF_CLAUDE_BIN ?? 'claude';
@@ -212,7 +214,7 @@ export function state() {
   const at = new Date().toISOString();
   const spend = Object.fromEntries(roster.agents.map((a) => [a.id, core.spendOf(runs, a.id, table, at)]));
   const pay = Object.fromEntries(roster.agents.map((a) => [a.id, core.payOf(a, swarm.agents[a.id], runs, table, at)]));
-  return { swarm, spend, pay, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
+  return { swarm, spend, pay, banterToday: core.banterAllowed(swarm, at).today, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
 /** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
@@ -270,7 +272,7 @@ export async function main(argv) {
     if (rest[0]?.startsWith('{')) change = JSON.parse(rest[0]);
     else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : action === 'salary' || action === 'topup' ? { action, agent, usd: Number(a), note: more.join(' ') }
         : action === 'chat' ? (agent === 'on' || agent === 'off' ? { action, enabled: agent === 'on' } : { action, agent, on: a !== 'off' }) : action === 'say' ? { action, text: rest.slice(1).join(' ') }
-        : action === 'suspend' ? { action, agent, until: new Date(Date.now() + (Number(a) || 24) * 3600e3).toISOString(), reason: more.join(' ') } : action === 'rehire' ? { action, agent } : action === 'rules' ? { action, rageQuitAfter: Number(agent) } : { action, agent, note: [a, ...more].join(' ') }; }
+        : action === 'suspend' ? { action, agent, until: new Date(Date.now() + (Number(a) || 24) * 3600e3).toISOString(), reason: more.join(' ') } : action === 'rehire' ? { action, agent } : action === 'preset' ? { action: 'chat-settings', preset: agent } : action === 'vibe' ? { action: 'chat-settings', values: { vibe: Number(agent) } } : action === 'rules' ? { action, rageQuitAfter: Number(agent) } : { action, agent, note: [a, ...more].join(' ') }; }
     const r = act(change); return out({ ok: true, state: state(), log: r.log }, r.log.join('\n'));
   }
   if (cmd === 'sessions') { // per run: the agent's status and spend, for the session browser

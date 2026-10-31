@@ -59,3 +59,20 @@
 .sw-card { cursor: default }
 .sw-card__open { all: unset; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6); cursor: pointer }
 .sw-card__open:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus) }
+/* color by vibe: one theme colour, mixed over the surface by the opacity tint scaled by the vibe (light → darkest at the ceiling) */
+.sw-room.is-accent { --sw-base: var(--fx-accent) }
+.sw-room.is-info { --sw-base: var(--fx-info) }
+.sw-room.is-success { --sw-base: var(--fx-success) }
+.sw-room.is-warning { --sw-base: var(--fx-warning) }
+.sw-room.is-danger { --sw-base: var(--fx-danger) }
+.sw-room.is-brand-1 { --sw-base: var(--fx-brand-1) }
+.sw-room.is-brand-2 { --sw-base: var(--fx-brand-2) }
+.sw-room.is-brand-3 { --sw-base: var(--fx-brand-3) }
+.sw-room.is-vibe .sw-msg__body { background: color-mix(in srgb, var(--sw-base) calc(var(--fx-opacity-tint) * var(--sw-vibe, 0) * 600%), var(--fx-surface)) }
+.sw-swatch { display: inline-block; width: calc(var(--fx-font-size) * 1.4); height: calc(var(--fx-font-size) * 1.4); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border) }
+.sw-swatch.is-accent { background: var(--fx-accent) } .sw-swatch.is-info { background: var(--fx-info) } .sw-swatch.is-success { background: var(--fx-success) } .sw-swatch.is-warning { background: var(--fx-warning) }
+.sw-swatch.is-danger { background: var(--fx-danger) } .sw-swatch.is-brand-1 { background: var(--fx-brand-1) } .sw-swatch.is-brand-2 { background: var(--fx-brand-2) } .sw-swatch.is-brand-3 { background: var(--fx-brand-3) }
+.sw-slider { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2) }
+.sw-slider p { margin: 0; font-size: calc(var(--fx-font-size) * 0.85) }
+.sw-preview { padding: var(--fx-space); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }
+.sw-preview > p { margin: 0 0 calc(var(--fx-space) * 0.4) }

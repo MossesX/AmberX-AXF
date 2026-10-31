@@ -243,9 +243,10 @@ t('salary is the weekly budget: spent, left, broke stops work, top-up and payday
   assert.equal(c.normAgentState({ cap: 30 }).salary, 30); assert.equal(c.normAgentState({}).salary, null); // old cap becomes the salary
 });
 t('raises and docks are posted, coworkers react', () => {
-  let s = c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'doc', usd: 9, note: 'great docs' }, roster, AT).state;
+  let s = c.applyChange(c.normState({ chatSettings: c.PRESETS.breakroom }, roster), { action: 'salary', agent: 'doc', usd: 9, note: 'great docs' }, roster, AT).state;
   assert.equal(s.agents.doc.pay[0].kind, 'raise'); assert.match(s.messages.find((m) => m.kind === 'pay').text, /Doc Holli gets a raise: \$5\.00 → \$9\.00 a week\. great docs/);
   assert.ok(s.messages.filter((m) => m.kind === 'banter').length >= 1);
+  const quiet = c.applyChange(c.normState({ chatSettings: c.PRESETS.business }, roster), { action: 'salary', agent: 'doc', usd: 9 }, roster, AT).state; assert.equal(quiet.messages.filter((m) => m.kind === 'banter').length, 0);
   s = c.applyChange(s, { action: 'salary', agent: 'doc', usd: 3 }, roster, AT).state; assert.equal(s.agents.doc.pay[1].kind, 'dock'); assert.ok(s.messages.some((m) => /got docked/.test(m.text)));
   assert.throws(() => c.applyChange(s, { action: 'salary', agent: 'doc', usd: 3 }, roster, AT), /same salary/);
 });
@@ -254,6 +255,60 @@ t('finishing under budget earns a bonus and a jealous coworker', () => {
   c.recordRun(s, { agent: 'rio', jobId: 'b.s1', status: 'done', model: 'sonnet', budget: { tokens: 100000, maxTurns: 10 }, reportedCost: 0.05 }, roster, AT, P);
   assert.equal(s.agents.rio.bonuses.length, 1); assert.ok(s.agents.rio.bonuses[0].usd > 0); assert.ok(s.messages.some((m) => /under budget\. Bonus/.test(m.text)));
   c.recordRun(s, { agent: 'rio', jobId: 'b.s2', status: 'done', model: 'sonnet', budget: { tokens: 1000, maxTurns: 10 }, reportedCost: 50 }, roster, AT, P); assert.equal(s.agents.rio.bonuses.length, 1);
+});
+
+// s15 chat settings suite
+const CS = (o = {}) => c.normChatSettings(o);
+t('vibe scores: plain work lines low, wild banter high', () => {
+  const work = c.scoreVibe(c.assignLine(c.planJobs(B('b', [{ text: 'React card' }]), roster).jobs[0], roster).text, 'assign');
+  assert.ok(work <= 20, `work ${work}`);
+  const chill = c.scoreVibe('Gradle\'s running. Cracking a beer, wake me up in twenty.'); const wild = c.scoreVibe('Oh sure, TEX gets a raise. For WHAT? I fixed three damn conflicts, rich ass!!');
+  assert.ok(chill < 100 && wild > 250, `${chill} ${wild}`); assert.ok(c.scoreVibe('x'.repeat(10) + ' fuck '.repeat(20)) <= 500);
+});
+t('the vibe is a hard ceiling: cleaned, calmed, else dropped; work never dropped', () => {
+  const wild = { from: 'rio', kind: 'banter', text: 'Oh sure, TEX gets a raise. For WHAT? I fixed three damn conflicts, rich ass!!' };
+  const off = CS(c.PRESETS.rails); assert.equal(c.vibeFilter(wild, off).text, wild.text);
+  const mid = CS({ ...c.PRESETS.breakroom, vibe: 120 }); const m = c.vibeFilter(wild, mid); assert.ok(m === null || m.vibe <= 120);
+  assert.equal(c.vibeFilter(wild, CS(c.PRESETS.business)), null);
+  const work = c.vibeFilter({ from: 'py', kind: 'discipline', text: 'That\'s 3 in a row. I\'m DONE with this shit. I quit.' }, CS(c.PRESETS.business));
+  assert.ok(work && !/shit|DONE/.test(work.text) && work.toned, work?.text);
+  for (const k of ['assign', 'report', 'lease']) assert.ok(c.vibeFilter({ from: 'boss', kind: k, text: 'Rio, you got b.s1.' }, CS({ vibe: 1 })));
+});
+t('cussing slider: clean, mild, filthy', () => {
+  const t0 = 'Damn, that shit is fucking broken, hell.';
+  assert.equal(c.cleanCussing(t0, 0), 'Darn, that stuff is freaking broken, heck.'); assert.equal(c.cleanCussing(t0, 50), 'Damn, that stuff is freaking broken, hell.'); assert.equal(c.cleanCussing(t0, 100), t0);
+});
+t('drama slider drops fights and jealousy; identity jokes always dropped', () => {
+  const fight = { from: 'rio', kind: 'banter', text: 'Tex, get your hands off ui.tsx.' };
+  assert.equal(c.vibeFilter(fight, CS({ ...c.PRESETS.rails, drama: 10 })), null); assert.ok(c.vibeFilter(fight, CS(c.PRESETS.rails)));
+  assert.equal(c.vibeFilter({ from: 'rio', kind: 'banter', text: 'a joke about religion' }, CS(c.PRESETS.rails)), null);
+});
+t('per-agent overrides beat the room', () => {
+  const cs = CS({ ...c.PRESETS.rails, overrides: { doc: { vibe: 1, cussing: 0 } } });
+  const line = { kind: 'banter', text: 'Damn, nice one.' };
+  assert.equal(c.vibeFilter({ ...line, from: 'rio' }, cs).text, 'Damn, nice one.'); assert.notEqual(c.vibeFilter({ ...line, from: 'doc' }, cs)?.text, 'Damn, nice one.');
+});
+t('chattiness sets reactions; daily banter budget makes it quiet when hit', () => {
+  assert.equal(c.reactionsFor(CS(c.PRESETS.business)), 0); assert.equal(c.reactionsFor(CS(c.PRESETS.crew)), 1); assert.equal(c.reactionsFor(CS(c.PRESETS.rails)), 2);
+  const s = c.normState({ chatSettings: { ...c.PRESETS.breakroom, banterBudget: 0.1 } }, roster);
+  assert.equal(c.banterAllowed(s, AT).ok, true); s.banterSpend.push({ at: AT, usd: 0.2 });
+  assert.match(c.banterAllowed(s, AT).why, /quiet till tomorrow/); assert.equal(c.reactCount(s, AT), 0); assert.equal(c.banterAllowed(s, '2026-11-01T01:00:00.000Z').ok, true);
+  assert.match(c.banterAllowed(c.normState({ chatSettings: c.PRESETS.crew }, roster), AT).why, /chattiness/);
+});
+t('presets, custom presets, overrides through applyChange', () => {
+  let s = c.normState({}, roster); assert.equal(s.chatSettings.preset, 'crew'); assert.equal(s.chatSettings.vibe, 100);
+  s = c.applyChange(s, { action: 'chat-settings', preset: 'rails' }, roster, AT).state; assert.equal(s.chatSettings.vibe, 500);
+  s = c.applyChange(s, { action: 'chat-settings', values: { vibe: 333, drama: 5 } }, roster, AT).state; assert.equal(s.chatSettings.preset, 'custom');
+  s = c.applyChange(s, { action: 'chat-settings', save: 'Friday' }, roster, AT).state; s = c.applyChange(s, { action: 'chat-settings', preset: 'business' }, roster, AT).state;
+  s = c.applyChange(s, { action: 'chat-settings', preset: 'Friday' }, roster, AT).state; assert.deepEqual([s.chatSettings.vibe, s.chatSettings.drama], [333, 5]);
+  s = c.applyChange(s, { action: 'chat-settings', agent: 'kat', override: { vibe: 10 } }, roster, AT).state; assert.equal(c.settingsFor(s.chatSettings, 'kat').vibe, 10);
+  s = c.applyChange(s, { action: 'chat-settings', agent: 'kat', override: null }, roster, AT).state; assert.equal(s.chatSettings.overrides.kat, undefined);
+  assert.throws(() => c.applyChange(s, { action: 'chat-settings', save: 'rails' }, roster, AT), /another preset name/);
+});
+t('live preview follows the sliders; color by vibe shades darker to the ceiling', () => {
+  assert.notEqual(c.previewLine(CS(c.PRESETS.rails)).text, c.previewLine(CS(c.PRESETS.crew)).text);
+  assert.doesNotMatch(c.previewLine(CS({ ...c.PRESETS.breakroom, cussing: 0 })).text, /shit|hell/);
+  assert.ok(c.vibeShade(10, 500) < c.vibeShade(250, 500)); assert.equal(c.vibeShade(500, 500), 1); assert.equal(c.vibeShade(600, 500), 1); assert.ok(c.vibeShade(1, 500) > 0);
 });
 
 // batch merge end to end on a scratch repo
@@ -277,6 +332,7 @@ t('finishing under budget earns a bonus and a jealous coworker', () => {
     const tr = JSON.parse(readFileSync(tf, 'utf8')); assert.equal(tr.builds[0].steps[0].done, true); assert.notEqual(tr.builds[0].steps[1].done, true);
     assert.match(g(join(dd, 'worktrees', '_merge-m'), 'log', '--oneline', '-1'), /Swarm merge: m\.s1/);
   });
+  cli.act({ action: 'chat-settings', preset: 'rails' }); // every reaction gets through
   const rr = await cli.run('m', 's3', { cwd: tmp, bin: okBin });
   t('a run posts Boss\'s assignment, the agent\'s report and a coworker reaction', () => {
     assert.equal(rr.status, 'done'); const ms = cli.loadState().messages; const kinds = ms.map((m) => m.kind);

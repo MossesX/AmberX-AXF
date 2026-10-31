@@ -535,7 +535,7 @@ export function normState(s, roster) {
   for (const a of roster?.agents ?? []) agents[a.id] = normAgentState(o.agents?.[a.id]);
   for (const [k, v] of Object.entries(o.agents ?? {})) if (!agents[k]) agents[k] = normAgentState(v); // keep history of agents taken off the roster
   const rules = { rageQuitAfter: num(o.rules?.rageQuitAfter, DEFAULT_RULES.rageQuitAfter, 1, 50) | 0 };
-  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
+  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), chatSettings: normChatSettings(o.chatSettings), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
 }
 
 export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || 'Custom' : STATUSES[as.status]?.label ?? as.status);
@@ -592,7 +592,7 @@ export function applyChange(state, change, roster, at) {
       const kind = to > from ? 'raise' : 'dock'; as.salary = to; as.pay.push({ at, kind, from, to, note: str(c.note, 200) });
       log.push(`${c.agent}: ${kind === 'raise' ? 'raise' : 'docked'} ${fmtUsd(from)} → ${fmtUsd(to)} a week`);
       post(s, [{ from: BOSS.id, kind: 'pay', text: kind === 'raise' ? `${a.name} gets a raise: ${fmtUsd(from)} → ${fmtUsd(to)} a week.${c.note ? ` ${str(c.note, 200)}` : ''}` : `${a.name} got docked: ${fmtUsd(from)} → ${fmtUsd(to)} a week.${c.note ? ` ${str(c.note, 200)}` : ''}` }], at);
-      for (const r of reactors(s, roster, a.id, 2, `${at}${a.id}`)) post(s, [{ from: r.id, kind: 'banter', text: banterLine(kind === 'raise' ? 'raise' : 'docked', `${at}${r.id}`, { other: a.name }) }], at);
+      for (const r of reactors(s, roster, a.id, reactCount(s, at), `${at}${a.id}`)) post(s, [{ from: r.id, kind: 'banter', text: banterLine(kind === 'raise' ? 'raise' : 'docked', `${at}${r.id}`, { other: a.name }) }], at);
       break;
     }
     case 'topup': {
@@ -605,6 +605,23 @@ export function applyChange(state, change, roster, at) {
       if (typeof c.enabled === 'boolean') { s.chat.enabled = c.enabled; log.push(`group chat ${c.enabled ? 'on' : 'off'}`); }
       if (c.agent) { if (!s.agents[c.agent]) throw new Error(`no agent "${c.agent}"`); s.chat.agents[c.agent] = c.on !== false; log.push(`${c.agent} chat ${c.on !== false ? 'on' : 'off'}`); }
       break;
+    }
+    case 'chat-settings': { // sliders, overrides, banter budget, presets
+      const cs = s.chatSettings;
+      if (c.preset) { const p = PRESETS[c.preset] ?? cs.saved.find((x) => x.name === c.preset); if (!p) throw new Error(`no preset "${c.preset}"`); for (const k of SLIDERS) cs[k] = p[k]; cs.preset = c.preset; log.push(`chat preset ${p.label ?? p.name}`); }
+      const vals = c.values && typeof c.values === 'object' ? c.values : {};
+      for (const k of SLIDERS) if (vals[k] != null) { cs[k] = k === 'vibe' ? Math.round(num(vals[k], cs[k], VIBE.min, VIBE.max)) : slider(vals[k], cs[k]); cs.preset = 'custom'; }
+      if (c.banterBudget != null) cs.banterBudget = num(c.banterBudget, cs.banterBudget, 0, 1000);
+      if (c.agent) {
+        if (!s.agents[c.agent]) throw new Error(`no agent "${c.agent}"`);
+        if (c.override === null) delete cs.overrides[c.agent];
+        else { const o = { ...(cs.overrides[c.agent] ?? {}) }; for (const k of SLIDERS) if (c.override?.[k] != null) o[k] = k === 'vibe' ? Math.round(num(c.override[k], 100, VIBE.min, VIBE.max)) : slider(c.override[k], 50); else if (c.override && k in c.override) delete o[k]; cs.overrides[c.agent] = o; }
+        log.push(`${c.agent}: chat overrides ${c.override === null ? 'cleared' : 'saved'}`);
+      }
+      if (c.save) { const name = str(c.save, 40).trim(); if (!name || PRESETS[name]) throw new Error('pick another preset name'); cs.saved = [...cs.saved.filter((x) => x.name !== name), { name, ...Object.fromEntries(SLIDERS.map((k) => [k, cs[k]])) }]; cs.preset = name; log.push(`preset "${name}" saved`); }
+      if (c.forget) { cs.saved = cs.saved.filter((x) => x.name !== c.forget); log.push(`preset "${c.forget}" removed`); }
+      if (!log.length) log.push('chat settings saved');
+      s.chatSettings = normChatSettings(cs); break;
     }
     case 'say': { // Brett posts in the room (no tokens; nobody answers unless banter is asked for)
       const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
@@ -725,8 +742,10 @@ export const chatOn = (state, from) => state.chat.enabled && (from === BOSS.id |
  */
 export function post(state, msgs, at) {
   let n = 0;
-  for (const m of msgs) {
-    if (!m?.text || !chatOn(state, m.from)) continue;
+  for (const raw of msgs) {
+    if (!raw?.text || !chatOn(state, raw.from)) continue;
+    const m = state.chatSettings ? vibeFilter(raw, state.chatSettings) : raw; // over the ceiling = toned down or dropped
+    if (!m) continue;
     const id = `m${Date.parse(at) || 0}-${state.messages.length}`;
     state.messages.push(normMsg({ ...m, id, at: m.at || at }, state.messages.length)); n += 1;
   }
@@ -825,7 +844,7 @@ export function recordRun(state, run, roster, at, table = null) {
       const usd = Math.round((cap - cost) * 100) / 100; as.bonuses.push({ at, jobId: run.jobId, usd });
       const name = nameOf(roster, run.agent); log.push(`${run.agent}: bonus ${fmtUsd(usd)}`);
       post(state, [{ from: BOSS.id, kind: 'pay', text: `${name} finished ${run.jobId} for ${fmtUsd(cost)}, ${fmtUsd(usd)} under budget. Bonus.` }], at);
-      for (const r of reactors(state, roster, run.agent, 1, `${run.jobId}bonus`)) post(state, [{ from: r.id, kind: 'banter', text: banterLine('bonus', `${run.jobId}${r.id}`, { other: name }) }], at);
+      for (const r of reactors(state, roster, run.agent, reactCount(state, at), `${run.jobId}bonus`)) post(state, [{ from: r.id, kind: 'banter', text: banterLine('bonus', `${run.jobId}${r.id}`, { other: name }) }], at);
     }
   }
   if (run.status === 'done') as.failStreak = 0;
@@ -835,4 +854,124 @@ export function recordRun(state, run, roster, at, table = null) {
     post(state, [{ from: run.agent, kind: 'discipline', text: `That's ${as.failStreak} in a row. I'm DONE with this shit. I quit.` }, { from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, run.agent)} rage-quit. No jobs till Brett rehires.` }], at);
   }
   return log;
+}
+
+// ---------------------------------------------------------------- chat settings: vibe ceiling, sliders, presets
+
+/** Vibe 1–500: 1 = straight to the point, no sarcasm; 100 = chill; 250 = full Amber; 500 = off the rails. */
+export const VIBE = { min: 1, max: 500, chill: 100, amber: 250 };
+export const SLIDERS = ['vibe', 'chattiness', 'cussing', 'drama'];
+export const PRESETS = {
+  business: { label: 'All business', vibe: 1, chattiness: 0, cussing: 0, drama: 0 },
+  crew: { label: 'Work crew', vibe: 100, chattiness: 35, cussing: 30, drama: 20 },
+  breakroom: { label: 'Break room', vibe: 250, chattiness: 65, cussing: 70, drama: 60 },
+  rails: { label: 'Off the rails', vibe: 500, chattiness: 100, cussing: 100, drama: 100 },
+};
+export const DEFAULT_PRESET = 'crew';
+/** Theme colours Brett can pick as the base for color-by-vibe. */
+export const VIBE_COLORS = ['accent', 'info', 'success', 'warning', 'danger', 'brand-1', 'brand-2', 'brand-3'];
+
+const slider = (v, d, max = 100) => Math.round(num(v, d, 0, max));
+export function normChatSettings(o) {
+  const x = o && typeof o === 'object' ? o : {};
+  const base = PRESETS[DEFAULT_PRESET];
+  const vals = (v, d) => ({ vibe: Math.round(num(v?.vibe, d.vibe, VIBE.min, VIBE.max)), chattiness: slider(v?.chattiness, d.chattiness), cussing: slider(v?.cussing, d.cussing), drama: slider(v?.drama, d.drama) });
+  const overrides = {};
+  for (const [k, v] of Object.entries(x.overrides && typeof x.overrides === 'object' ? x.overrides : {})) {
+    const o2 = {}; for (const s of SLIDERS) if (v && v[s] != null && Number.isFinite(Number(v[s]))) o2[s] = s === 'vibe' ? Math.round(num(v[s], 100, VIBE.min, VIBE.max)) : slider(v[s], 50);
+    if (Object.keys(o2).length) overrides[str(k, 40)] = o2;
+  }
+  return {
+    ...vals(x, base), preset: str(x.preset, 40) || DEFAULT_PRESET, overrides,
+    banterBudget: num(x.banterBudget, 0.5, 0, 1000),
+    saved: (Array.isArray(x.saved) ? x.saved : []).slice(0, 30).map((p) => ({ name: str(p?.name, 40), ...vals(p, base) })).filter((p) => p.name),
+  };
+}
+/** The sliders that apply to one speaker: global, then its own overrides. */
+export const settingsFor = (cs, from) => ({ ...cs, ...(cs.overrides?.[from] ?? {}) });
+
+const CUSS = [
+  { re: /\bfuck(ing|in'|ed|er)?\b/gi, level: 2, clean: (m) => (/ing|in'/i.test(m) ? 'freaking' : 'freak') },
+  { re: /\bshit(ty)?\b/gi, level: 2, clean: (m) => (/ty$/i.test(m) ? 'crappy' : 'stuff') },
+  { re: /\bbitch\w*\b/gi, level: 2, clean: () => 'complain' },
+  { re: /\bass\b/gi, level: 1, clean: () => 'butt' },
+  { re: /\bdamn(ed)?\b/gi, level: 1, clean: () => 'darn' },
+  { re: /\bhell\b/gi, level: 1, clean: () => 'heck' },
+  { re: /\bcrap\b/gi, level: 1, clean: () => 'junk' },
+];
+const SARCASM = [/\boh sure\b/i, /\bwho knew\b/i, /\btook (?:you )?long enough\b/i, /\bteacher'?s pet\b/i, /\btypical\b/i, /\bnot jealous\b/i, /\bdon'?t let it go to your head\b/i, /\bactually (?:work|shipping)\b/i, /\bkinda deserved\b/i];
+const DRAMA = [/\bjealous\b/i, /\bback (?:the \w+ )?off\b|\bback the \w+ up\b/i, /\bget your hands off\b/i, /\bfor what\b/i, /\bdeserved\b/i, /\brich\b/i, /\bi quit\b/i, /\bregret\b/i, /\bclashed\b/i, /\bblew up\b/i, /\btake a number\b/i, /\bF in the chat\b/i];
+const SLANG = [/\byo\b/i, /\bbro\b/i, /\bain'?t\b/i, /\by'all\b/i, /\bbuddy\b/i, /\bgonna\b/i];
+/** Topics a joke may never be about, whatever the settings. */
+const IDENTITY = /\b(race|racial|ethnic\w*|religio\w*|muslim\w*|christian\w*|jew(ish)?|hindu\w*|gay|lesbian|trans\w*gender|transgender|queer|gender|sexuality|black people|white people|asian\w*|latin[oa]s?|immigrant\w*)\b/i;
+
+/** A message's vibe score, 1–500, from its words (no model). Work messages built by Boss score low. */
+export function scoreVibe(text, kind = 'banter') {
+  const t = str(text, 2000);
+  let s = WORK_KINDS.includes(kind) && kind !== 'brett' ? 1 : 40;
+  for (const c of CUSS) s += (t.match(c.re)?.length ?? 0) * (c.level === 2 ? 70 : 30);
+  s += (t.match(/\b[A-Z]{3,}\b/g) ?? []).filter((w) => !/^(API|CSS|TSX|MCP|JSON|UTC|CLI|USD|PR|CI|URL|SDK)$/.test(w)).length * 25;
+  s += Math.min(5, (t.match(/!/g) ?? []).length) * 12;
+  s += SARCASM.filter((r) => r.test(t)).length * 45;
+  s += DRAMA.filter((r) => r.test(t)).length * 40;
+  s += SLANG.filter((r) => r.test(t)).length * 8;
+  return Math.max(VIBE.min, Math.min(VIBE.max, Math.round(s)));
+}
+/** Cussing slider 0–100: under 34 every cuss word is cleaned, under 67 the strong ones. */
+export function cleanCussing(text, cussing) {
+  const keep = cussing >= 67 ? 2 : cussing >= 34 ? 1 : 0;
+  let t = str(text, 2000);
+  for (const c of CUSS) if (c.level > keep) t = t.replace(c.re, (m) => { const r = c.clean(m); return m[0] === m[0].toUpperCase() ? r[0].toUpperCase() + r.slice(1) : r; });
+  return t;
+}
+/** Tone a line down: no shouting, no pile of exclamation marks, no sarcastic asides. */
+export function calmDown(text) {
+  let t = str(text, 2000).replace(/\b([A-Z]{3,})\b/g, (w) => (/^(API|CSS|TSX|MCP|JSON|UTC|CLI|USD|CI|URL|SDK)$/.test(w) ? w : w.toLowerCase())).replace(/!+/g, '.').replace(/\.\.+/g, '.');
+  // a sarcastic sentence goes as a whole (cutting just the phrase leaves nonsense)
+  return t.split(/(?<=[.?])\s+/).filter((x) => !SARCASM.some((r) => r.test(x))).join(' ').trim();
+}
+
+/**
+ * Run one message through the speaker's settings. Returns the message to show (with `vibe` and `toned`) or null
+ * when it's dropped. The vibe setting is a hard ceiling: a line above it is cleaned, then calmed; banter still
+ * above is dropped. Work lines are never dropped (only toned down). Brett's own lines are scored, never changed.
+ * Identity jokes are dropped whatever the settings; drama lines need the drama slider.
+ */
+export function vibeFilter(msg, cs) {
+  const k = msg.kind; const set = settingsFor(cs, msg.from);
+  if (k === 'brett') return { ...msg, vibe: scoreVibe(msg.text, k), toned: false };
+  const work = WORK_KINDS.includes(k);
+  if (!work && IDENTITY.test(msg.text)) return null;
+  if (!work && set.drama < 30 && DRAMA.some((r) => r.test(msg.text))) return null;
+  let text = cleanCussing(msg.text, set.cussing); let score = scoreVibe(text, k);
+  if (score > set.vibe) { text = calmDown(cleanCussing(text, 0)); score = scoreVibe(text, k); }
+  if ((score > set.vibe || !text) && !work) return null;
+  return { ...msg, text, vibe: Math.min(score, set.vibe), toned: text !== msg.text };
+}
+
+/** How many coworkers react to an event at this chattiness (0 = assignments only). */
+export const reactionsFor = (cs) => (cs.chattiness < 20 ? 0 : cs.chattiness < 60 ? 1 : 2);
+/** Paid banter is allowed today: chattiness up, chat on, today's banter spend under the daily budget. */
+export function banterAllowed(state, at) {
+  const cs = state.chatSettings; const d = dayStart(at);
+  const today = state.banterSpend.filter((b) => b.at >= d).reduce((t, b) => t + b.usd, 0);
+  if (!state.chat.enabled) return { ok: false, why: 'the group chat is off', today };
+  if (cs.chattiness < 40) return { ok: false, why: 'chattiness is too low for paid banter', today };
+  if (today >= cs.banterBudget) return { ok: false, why: `today's banter budget (${fmtUsd(cs.banterBudget)}) is spent; quiet till tomorrow`, today };
+  return { ok: true, why: '', today };
+}
+
+/** The live preview line: one sample per moment, run through the settings as they are now. */
+export function previewLine(cs, from = 'rio', seed = 'preview') {
+  const raw = cs.vibe > 300 ? 'Oh sure, TEX gets a raise. For WHAT? I fixed three damn conflicts this week, rich ass!!' : cs.vibe > 150 ? 'Boss gave me ui.tsx. Back the hell up, Tex, that shit\'s leased to me.' : 'Gradle\'s running. Cracking a beer, wake me up in twenty.';
+  const m = vibeFilter({ from, kind: 'banter', text: raw }, cs);
+  return m ?? { from, kind: 'banter', text: '(dropped: above the vibe ceiling)', vibe: null, toned: true, dropped: true, seed };
+}
+/** Color by vibe: how strong the tint is, 0–1 (light near 1, darkest at the ceiling). */
+export const vibeShade = (score, ceiling) => (score == null ? 0 : Math.max(0.08, Math.min(1, score / Math.max(1, ceiling))));
+/** Coworker reactions per event: by chattiness, none once today's banter budget is spent (quiet when hit). */
+export function reactCount(state, at) {
+  const cs = state.chatSettings; if (!cs) return 1;
+  const d = dayStart(at); const today = state.banterSpend.filter((b) => b.at >= d).reduce((t, b) => t + b.usd, 0);
+  return cs.banterBudget > 0 && today >= cs.banterBudget ? 0 : reactionsFor(cs);
 }

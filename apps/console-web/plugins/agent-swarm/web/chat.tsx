@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Button, Switch } from '@console/axf/react';
+import * as core from './swarm-core.mjs';
 import { Avatar } from './cards';
+import { KEYS, useSetting } from './chat-settings';
 import { fmtTime, type Act, type Agent, type ChatMsg, type SwarmState } from './ui-types';
 
 /*
@@ -9,11 +11,11 @@ import { fmtTime, type Act, type Agent, type ChatMsg, type SwarmState } from './
  * off for everyone (nothing posted, nothing spent), and one per agent.
  */
 
-export function Bubble({ m, agents }: { m: ChatMsg; agents: Map<string, Agent> }) {
+export function Bubble({ m, agents, ceiling }: { m: ChatMsg; agents: Map<string, Agent>; ceiling?: number }) {
   const a = agents.get(m.from);
   const who = a?.name ?? (m.from === 'boss' ? 'Boss' : m.from === 'brett' ? 'Brett' : m.from);
   return (
-    <li className={`sw-msg is-${m.kind} ${m.from === 'brett' ? 'is-mine' : ''}`}>
+    <li className={`sw-msg is-${m.kind} ${m.from === 'brett' ? 'is-mine' : ''}`} style={ceiling ? ({ '--sw-vibe': core.vibeShade(m.vibe, ceiling) } as CSSProperties) : undefined} title={m.vibe != null ? `vibe ${m.vibe}${m.toned ? ' · toned down' : ''}` : undefined}>
       {a ? <Avatar a={a} size={32} /> : <span className={`sw-msg__badge is-${m.from}`} aria-hidden="true">{who.slice(0, 1)}</span>}
       <div className="sw-msg__body">
         <div className="sw-msg__head"><b>{who}</b><span className="fx-muted">{fmtTime(m.at)}{m.kind !== 'banter' && m.kind !== 'brett' ? ` · ${m.kind}` : ''}</span></div>
@@ -30,6 +32,8 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
   const msgs = state.swarm.messages.slice(-200);
   useEffect(() => { end.current?.scrollIntoView({ block: 'end' }); }, [msgs.length]);
   const on = state.swarm.chat.enabled;
+  const colorBy = useSetting<boolean>(KEYS.colorByVibe, false);
+  const base = useSetting<string>(KEYS.vibeColor, 'accent');
   return (
     <div className="fx-stack">
       <div className="sw-bar">
@@ -38,9 +42,9 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
       <div className="sw-bar" role="group" aria-label="Agents in the chat">
         {state.roster.agents.map((a) => <Switch key={a.id} label={a.name} checked={state.swarm.chat.agents[a.id] !== false} disabled={!on} onChange={(v) => void act({ action: 'chat', agent: a.id, on: v })} />)}
       </div>
-      <div className="sw-room">
+      <div className={`sw-room ${colorBy ? `is-vibe is-${base}` : ''}`} data-fx-ctx-target="agent-swarm-chat">
         {msgs.length === 0 ? <p className="fx-empty">Quiet in here. Messages show up as Boss hands out jobs.</p>
-          : <ul className="sw-msgs">{msgs.map((m) => <Bubble key={m.id} m={m} agents={agents} />)}</ul>}
+          : <ul className="sw-msgs">{msgs.map((m) => <Bubble key={m.id} m={m} agents={agents} ceiling={colorBy ? state.swarm.chatSettings.vibe : undefined} />)}</ul>}
         <div ref={end} />
       </div>
       <form className="sw-bar" onSubmit={(e) => { e.preventDefault(); if (!text.trim()) return; void act({ action: 'say', text }).then((l) => { if (l) setText(''); }); }}>
