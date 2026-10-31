@@ -50,3 +50,11 @@ framework controls + assets. Test: swapping any asset restyles the code with no 
 - Build manager / orchestrator self-tests: 128 + 19 (new: briefs carry the rule, verify runs both checks).
 
 Environment notes: on this VPS `tracker --check` must run with `AXF_DATA_DIR=off` (the hub's data differs from the repo snapshot), session-checkin's test needs the headless `CLAUDE_CODE_ENTRYPOINT` unset, and the lifecycle check trips on files the session-start sync drops into a worktree (`sessions/archive`, `apps/*/_claude/shared`); none of these happen in CI.
+
+## Push
+
+`git push origin HEAD:main` and `git push origin HEAD:claude/asset-conform` both failed: this VPS has no GitHub
+credentials ("Invalid username or token"). The work is committed on `claude/asset-conform` in
+`/root/axf-builds/asset-conform`, and a console banner item (`blocked:push:asset-conform`) says how to push it. The brief
+asked for a direct push to main, but Brett's Oct 30 rule is that every change goes through a PR. Pushing the branch and
+letting the push banner open the PR satisfies both.
