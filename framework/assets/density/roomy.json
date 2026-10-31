@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "density",
+  "id": "roomy",
+  "name": "Roomy",
+  "version": "1.0.0",
+  "description": "Spacious: wide gaps and paddings, tall rows \u2014 for big screens and touch.",
+  "author": "AmberX AXF",
+  "tags": [
+    "roomy",
+    "touch"
+  ],
+  "data": {
+    "gap": {
+      "xs": 0.5,
+      "sm": 0.75,
+      "md": 1.25,
+      "lg": 2,
+      "xl": 3.5
+    },
+    "pad": {
+      "control": 1.1,
+      "card": 2.5,
+      "page": 3,
+      "row": 1.25,
+      "cell": 1.25
+    },
+    "row": {
+      "list": 3.4,
+      "table": 3,
+      "menu": 2.8,
+      "control": 2.8
+    }
+  }
+}
