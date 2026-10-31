@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-31T05:27:48.057Z",
+ "updatedAt": "2026-10-31T05:28:50.204Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -18,9 +18,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/agent-swarm",
-   "pr": "",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
    "createdAt": "2026-10-31T05:27:46.906Z",
-   "updatedAt": "2026-10-31T05:27:47.976Z",
+   "updatedAt": "2026-10-31T05:28:50.204Z",
    "builtAt": "2026-10-31T05:27:47.976Z",
    "notes": [
     {
