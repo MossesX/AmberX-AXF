@@ -1,6 +1,6 @@
 {
  "$axf": "build-profiles@1",
- "updatedAt": "2026-10-29T18:33:29.974Z",
+ "updatedAt": "2026-10-31T12:18:00.000Z",
  "active": "refactor",
  "profiles": [
   {
@@ -20,9 +20,25 @@
   {
    "id": "angel",
    "name": "Angel",
-   "description": "Started Oct 29 2026 with the Home cards build. Builds go to the orchestrator first and are dished out from there.",
-   "createdAt": "2026-10-29T18:33:29.972Z",
-   "updatedAt": "2026-10-29T18:33:29.972Z",
+   "description": "Angel profile (created Oct 29 2026 with home-cards): newest builds incl. batch-manager, element-inspector, context-menu-editor, layout-repeating-slots, approval-row-buttons, session-history, grid-sort-filter, plugin-cleanup, audio-output-recorder, audio-mic-filters, transcription-engine, ui-all-assets.",
+   "createdAt": "2026-10-29T18:34:15.248Z",
+   "updatedAt": "2026-10-31T11:58:00.000Z",
+   "catalog": false
+  },
+  {
+   "id": "breakroom",
+   "name": "Breakroom",
+   "description": "Breakroom profile: agent-swarm (headless specialist agents, Boss orchestrator, group chat, HR statuses, discipline, salary = token budget, agent-card@1 ID cards, vibe settings).",
+   "createdAt": "2026-10-29T18:34:17.880Z",
+   "updatedAt": "2026-10-31T11:58:00.000Z",
+   "catalog": false
+  },
+  {
+   "id": "urgent",
+   "name": "Urgent",
+   "description": "Urgent profile (Brett, Oct 31 2026): master data cleanup + live progress bars. On hold until Brett says go.",
+   "createdAt": "2026-10-31T12:18:00.000Z",
+   "updatedAt": "2026-10-31T12:18:00.000Z",
    "catalog": false
   }
  ]
