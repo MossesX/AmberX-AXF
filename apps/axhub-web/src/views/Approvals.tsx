@@ -126,7 +126,25 @@ export async function act(item: ApprovalItem, action: ApprovalAction, extra: Rec
   return hubPost<ActionReply>(`/auth/api/approvals/${item.id}`, { action, rev: item.revision, ...extra });
 }
 
-/** One request, collapsed: tool, status, the call (whole or cut), times, and its buttons. */
+/**
+ * Approve / Deny on the collapsed row (Brett, Oct 30 2026): big targets, red Deny (the hub's decline) and green Approve;
+ * Approve sends straight away only when the row has the complete call, else it opens the request's page first.
+ */
+function RowDecide({ item, busy, run }: { item: ApprovalItem; busy: boolean; run: (a: ApprovalAction) => void }) {
+  const rt = useRuntime();
+  const can = (a: ApprovalAction) => item.actions.includes(a);
+  if (!can('approve') && !can('decline')) return <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>;
+  return (
+    <div className="axp-axhub-decide">
+      {can('decline') && <Button tone="danger" icon="x-circle" disabled={busy} aria-label={`Deny: ${item.title}`} onClick={() => run('decline')}>Deny</Button>}
+      {can('approve') && (item.whole
+        ? <Button tone="success" icon="check" disabled={busy} aria-label={`Approve: ${item.title}`} onClick={() => run('approve')}>Approve</Button>
+        : <Button tone="success" icon="chevron-right" disabled={busy} aria-label={`Approve: ${item.title} (see the whole call first)`} title="The call is long: see all of it first" onClick={() => go(rt, 'approval', { id: item.id })}>Approve…</Button>)}
+    </div>
+  );
+}
+
+/** One request, collapsed: what is being approved and its Approve / Deny (or countdown); opened: the call, times, the rest. */
 export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () => void }) {
   const rt = useRuntime();
   const [busy, setBusy] = useState(false);
@@ -139,13 +157,15 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
   };
   // veto@1: a held command shows only its countdown and Deny / Approve / Shelve (decision 104), never the usual actions.
   const held = isHeld(item);
-  const quick = held ? [] : item.actions.filter((a) => (a === 'approve' ? item.whole : true));
+  // Approve / Deny sit on the collapsed row; the rest (postpone, ignore, revoke, reopen) inside.
+  const quick = held ? [] : item.actions.filter((a) => a !== 'approve' && a !== 'decline');
   // Collapsed: what is being approved. Opened: what it does, then the code in its own collapsible section.
   return (
     <Container
+      className="axp-axhub-row"
       title={item.title}
       icon={item.status === 'pending' ? 'shield' : item.status === 'postponed' || held ? 'clock' : 'check'}
-      actions={held ? <HeldBar item={item} onDone={onDone} /> : <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>}
+      actions={held ? <HeldBar item={item} onDone={onDone} /> : <RowDecide item={item} busy={busy} run={(a) => void run(a)} />}
       collapsible
       defaultOpen={false}
     >
@@ -164,7 +184,7 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
         {held && <HeldChip item={item} />}
         <div className="fx-row fx-row--wrap">
           {quick.map((a) => (
-            <Button key={a} size="sm" disabled={busy} tone={a === 'approve' ? 'success' : a === 'decline' || a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
+            <Button key={a} size="sm" disabled={busy} tone={a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
               {ACTION_LABELS[a]}
             </Button>
           ))}

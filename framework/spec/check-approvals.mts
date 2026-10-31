@@ -7,7 +7,7 @@
 import { ApprovalsWatcher, clampPoll, fetchApprovals } from '../libs/approvals/index.ts';
 import {
   allowed, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, decisionUrl, decisionsOf,
-  formatAge, freshIds, goneIds, goneMessage, interpretApprovals, isUrgent, itemLine, ageSeconds, commandOfSummary,
+  formatAge, freshIds, goneIds, goneMessage, interpretApprovals, isUrgent, itemLine, ageSeconds, commandOfSummary, rowOrder, DECISION_LABELS,
 } from '../libs/approvals/core.ts';
 
 let ok = 0, fail = 0;
@@ -108,7 +108,17 @@ const fake = (replies: Record<string, { status: number; json?: unknown; text?: s
   const r = await decideOnHub(HUB, st.items[1]!, 'approve', { fetch: f, origin: 'https://console.amberxai.com' });
   check(!r.ok && calls.length === 0, 'another origin sends nothing');
   const h = await decideOnHub(HUB, st.items[0]!, 'approve', { fetch: f, origin: HUB });
-  check(!h.ok && h.message.includes('only be denied') && calls.length === 0, 'Approve on a held call is refused before any call');
+  check(!h.ok && h.message.includes("doesn't offer Approve") && calls.length === 0, 'Approve on a held call the hub offers no approve-now for is refused before any call');
+}
+{
+  // decision 104: a held call whose veto actions list approve-now gets Approve (run it now) next to Deny, Deny first
+  const h2 = interpretApprovals(HUB, 200, body([{ ...held(H1), veto: { ...held(H1).veto, actions: ['deny', 'approve-now', 'shelve'] } }]), T).items[0]!;
+  check(h2.decisions.join() === 'deny,approve', 'held + approve-now: Deny and Approve');
+  check(rowOrder(['approve', 'decline']).join() === 'decline,approve' && rowOrder(h2.decisions).join() === 'deny,approve', 'rows put the safe one first');
+  check(DECISION_LABELS.decline === 'Deny' && DECISION_LABELS.approve === 'Approve', 'rows read Approve / Deny');
+  const { f, calls } = fake({ '/auth/api/session': { status: 200, json: { csrf: 'tok' } }, [`/auth/api/approvals/${H1}/approve-now`]: { status: 200, json: { state: 'approved-now' } } });
+  const r = await decideOnHub(HUB, h2, 'approve', { fetch: f, origin: HUB });
+  check(r.ok && calls.some((c) => c.url.endsWith(`/approvals/${H1}/approve-now`)) && !calls.some((c) => c.url.endsWith('/deny')), 'Approve on a held call posts approve-now');
 }
 {
   const { f } = fake({ '/auth/api/session': { status: 200, json: { csrf: 'tok' } }, [`/auth/api/approvals/${H1}/deny`]: { status: 200, json: { state: 'denied' } } });

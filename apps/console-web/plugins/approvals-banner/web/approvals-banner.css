@@ -3,16 +3,10 @@
 .axp-approvals-banner__row { display: flex; align-items: center; gap: var(--fx-space); flex-wrap: wrap }
 /* a row you tap (data-fx-row); `button.` outranks the framework row reset */
 button.axp-approvals-banner__text { all: unset; flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); font-weight: 600; cursor: pointer; flex-wrap: wrap }
-.axp-approvals-banner__text:focus-visible, .axp-approvals-banner__item:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-approvals-banner__text:focus-visible, .axp-approvals-banner__more:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-approvals-banner__sum { font-weight: 400; color: var(--fx-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: calc(var(--fx-font-size) * 12 / 14); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
 .axp-approvals-banner__go { text-decoration: none; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
-.axp-approvals-banner__list { list-style: none; margin: 0; padding: 0; border-top: var(--fx-border-w) solid var(--fx-border); max-height: calc(var(--fx-row-h) * 8); overflow: auto }
-button.axp-approvals-banner__item { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; align-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.25); color: var(--fx-text); text-decoration: none; border-radius: var(--fx-radius-sm); min-width: 0 }
-.axp-approvals-banner__item:hover { background: var(--fx-surface2) }
 .axp-approvals-banner__tool { font-weight: 600; white-space: nowrap }
-.axp-approvals-banner__cmd { flex: 1; min-width: 0; color: var(--fx-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: calc(var(--fx-font-size) * 12 / 14); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-.axp-approvals-banner__when { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: nowrap }
-@media (max-width: 720px) { .axp-approvals-banner__when { display: none } }
 .axp-approvals-review__frame { width: 100%; height: min(70vh, calc(var(--fx-row-h) * 24)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
 
 /* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an
@@ -21,17 +15,28 @@ button.axp-approvals-banner__item { all: unset; box-sizing: border-box; width: 1
 button.axp-approvals-banner__text { flex-wrap: nowrap; white-space: nowrap; overflow: hidden }
 .axp-approvals-banner__text > * { flex-shrink: 0 }
 .axp-approvals-banner__text > .axp-approvals-banner__sum { flex: 1 1 0; min-width: 0 }
-button.axp-approvals-banner__item { flex-wrap: nowrap; white-space: nowrap; overflow: hidden }
 .axp-approvals-banner__tool { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis }
 
 /* Held commands (veto@1): a live countdown + Deny, one line; the countdown never shrinks, the summary gives way first. */
-.axp-approvals-banner__held + .axp-approvals-banner__held, .axp-approvals-banner__held + .axp-approvals-banner__row { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) * 0.5) }
+.axp-approvals-banner__row + .axp-approvals-banner__row { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) * 0.5) }
 .axp-approvals-banner__count { flex: 0 0 auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; color: var(--fx-warning) }
 .axp-approvals-banner__count.is-urgent { color: var(--fx-danger) }
-.axp-approvals-banner__held > .fx-btn { flex: 0 0 auto }
 
 /* Veto screen + banner actions (Deny / Approve / Shelve): layout only; controls are the framework's. */
 .axp-approvals-banner__acts { gap: var(--fx-space); flex-wrap: nowrap; }
+
+/* Approve / Deny on every row (Brett, Oct 30 2026): on collapsed rows too, big targets (a full row high), green / red
+   from the button tones; the buttons never shrink, the title and command give way first, then the countdown words. */
+.axp-approvals-banner__row > .axp-approvals-banner__acts { flex: 0 0 auto }
+.axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn { min-height: var(--fx-row-h); min-width: calc(var(--fx-row-h) * 2.4); justify-content: center }
+.axp-approvals-banner__shelve { min-width: var(--fx-row-h); min-height: var(--fx-row-h) }
+.axp-approvals-banner__row > .fx-iconbtn { flex: 0 0 auto }
+.axp-approvals-banner__pending .axp-approvals-banner__text { font-weight: 400 }
+button.axp-approvals-banner__more { all: unset; cursor: pointer; padding-left: calc(var(--fx-space) * 3.5) }
+@media (max-width: 480px) {
+  .axp-approvals-banner__row > .axp-approvals-banner__acts > .fx-btn { min-width: calc(var(--fx-row-h) * 2) }
+  .axp-approvals-banner__runs { display: none }
+}
 .axp-veto-screen__time { display: flex; align-items: baseline; gap: var(--fx-space); flex-wrap: wrap; }
 .axp-veto-screen__count { font-size: calc(var(--fx-font-size) * 2.4); font-variant-numeric: tabular-nums; font-weight: 700; }
 .axp-veto-screen__count.is-urgent { color: var(--fx-danger); }

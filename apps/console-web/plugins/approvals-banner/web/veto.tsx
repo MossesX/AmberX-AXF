@@ -22,7 +22,8 @@ import {
 import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, type AlarmConfig } from './alarm';
 
 const ACTION_ICON: Record<VetoAction, string> = { deny: 'x-circle', 'approve-now': 'play', shelve: 'pause' };
-const ACTION_TONE: Record<VetoAction, 'danger' | 'primary' | 'neutral'> = { deny: 'danger', 'approve-now': 'primary', shelve: 'neutral' };
+/** Green Approve, red Deny (Brett, Oct 30 2026: "Approve/Deny on every row … green/red"). */
+const ACTION_TONE: Record<VetoAction, 'danger' | 'success' | 'neutral'> = { deny: 'danger', 'approve-now': 'success', shelve: 'neutral' };
 const DONE_TEXT: Record<VetoAction, string> = {
   deny: 'Denied: it will not run.',
   'approve-now': 'Approved: axHub runs it now.',
@@ -49,16 +50,20 @@ export async function act(d: VetoDeps, c: VetoCall, action: VetoAction): Promise
   return r.ok;
 }
 
-/** Deny / Approve / Shelve buttons for one call (only the ones the hub allows now). */
-export function VetoButtons({ c, deps, size = 'md', onDone }: { c: VetoCall; deps: VetoDeps; size?: 'sm' | 'md'; onDone?: () => void }) {
+/**
+ * Deny / Approve / Shelve buttons for one call (only the ones the hub allows now). `row`: a banner row, where Deny and
+ * Approve keep their words as big targets and Shelve is an icon, so the title gives way first on a phone.
+ */
+export function VetoButtons({ c, deps, row, onDone }: { c: VetoCall; deps: VetoDeps; row?: boolean; onDone?: () => void }) {
   const [busy, setBusy] = useState<VetoAction | null>(null);
   const left = secondsLeftNow(c);
   if (!c.shelved && left <= 0) return null;
+  const run = (a: VetoAction) => { setBusy(a); void act(deps, c, a).then((ok) => { setBusy(null); if (ok) onDone?.(); }); };
   return (
     <div className="fx-row fx-row--wrap axp-approvals-banner__acts">
-      {ORDER.filter((a) => c.actions.includes(a)).map((a) => (
-        <Button key={a} size={size} tone={ACTION_TONE[a]} icon={ACTION_ICON[a]} busy={busy === a} disabled={busy !== null}
-          onClick={() => { setBusy(a); void act(deps, c, a).then((ok) => { setBusy(null); if (ok) onDone?.(); }); }}>
+      {ORDER.filter((a) => c.actions.includes(a)).map((a) => (row && a === 'shelve'
+        ? <button key={a} type="button" className="fx-iconbtn axp-approvals-banner__shelve" aria-label={`Shelve: ${c.title}`} title="Shelve: pause the countdown until you decide" disabled={busy !== null} onClick={() => run(a)}><Icon name={ACTION_ICON[a]} size={18} /></button>
+        : <Button key={a} tone={ACTION_TONE[a]} icon={ACTION_ICON[a]} busy={busy === a} disabled={busy !== null} aria-label={`${VETO_ACTION_LABELS[a]}: ${c.title}`} onClick={() => run(a)}>
           {VETO_ACTION_LABELS[a]}
         </Button>
       ))}

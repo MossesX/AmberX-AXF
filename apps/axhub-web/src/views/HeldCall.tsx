@@ -36,13 +36,14 @@ export async function actHeld(id: string, action: VetoAction): Promise<{ message
 }
 export const denyHeld = (id: string) => actHeld(id, 'deny');
 
-const ACTS: { a: VetoAction; icon: string; tone: 'danger' | 'primary' | 'neutral'; done: string }[] = [
+/** Green Approve, red Deny (Brett, Oct 30 2026). */
+const ACTS: { a: VetoAction; icon: string; tone: 'danger' | 'success' | 'neutral'; done: string }[] = [
   { a: 'deny', icon: 'x-circle', tone: 'danger', done: 'Denied: it will not run.' },
-  { a: 'approve-now', icon: 'play', tone: 'primary', done: 'Approved: the hub runs it now.' },
+  { a: 'approve-now', icon: 'play', tone: 'success', done: 'Approved: the hub runs it now.' },
   { a: 'shelve', icon: 'pause', tone: 'neutral', done: 'Shelved: the countdown is paused until you approve or deny it.' },
 ];
 
-/** Countdown (or shelved) + Deny / Approve / Shelve as the hub allows. `big` on the request's own page. */
+/** Countdown (or shelved) + Deny / Approve / Shelve as the hub allows: big targets on a row too; `big` on the request's own page. */
 export function HeldBar({ item, onDone, big }: { item: ApprovalItem; onDone: (next?: ApprovalItem) => void; big?: boolean }) {
   const rt = useRuntime();
   const [busy, setBusy] = useState<VetoAction | null>(null);
@@ -65,7 +66,7 @@ export function HeldBar({ item, onDone, big }: { item: ApprovalItem; onDone: (ne
       </span>
       {big && <span className="axp-axhub-held__what">{shelved ? 'Paused: waits until you approve or deny it' : approved ? 'Approved: the hub is running it' : left > 0 ? 'Runs when the countdown ends' : 'Time is up: the hub is running it'}</span>}
       {live && ACTS.filter((x) => actions.includes(x.a)).map((x) => (
-        <Button key={x.a} tone={x.tone} icon={x.icon} size={big ? 'md' : 'sm'} busy={busy === x.a} disabled={busy !== null} onClick={() => void run(x)}>{VETO_ACTION_LABELS[x.a]}</Button>
+        <Button key={x.a} tone={x.tone} icon={x.icon} busy={busy === x.a} disabled={busy !== null} aria-label={`${VETO_ACTION_LABELS[x.a]}: ${item.title}`} onClick={() => void run(x)}>{VETO_ACTION_LABELS[x.a]}</Button>
       ))}
     </div>
   );

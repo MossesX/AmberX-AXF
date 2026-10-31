@@ -38,6 +38,8 @@ import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval,
 import { fetchVetoFeed, formatCountdown, onVetoHost, secondsLeftNow, vetoHost, VETO_ACTIONS, VETO_WARNING_SECONDS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
 import { act, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
+import { approvalsHost } from '@console/axf/libs/approvals/react';
+import type { ApprovalDecision, ApprovalItem } from '@console/axf/libs/approvals';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
@@ -160,14 +162,63 @@ function HeldRow({ c }: { c: VetoCall }) {
     <div className="axp-approvals-banner__row axp-approvals-banner__held">
       <BannerIcon icon={c.shelved ? 'pause' : 'clock'} working={!c.shelved && left > 0} size={20} />
       <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${c.title}\n${c.command}`} onClick={() => openVeto(c.id)}>
-        {c.shelved ? 'Shelved' : c.approvedNow ? 'Approved' : left > 0 ? 'Runs in' : 'Running'}
+        {c.shelved ? 'Shelved' : c.approvedNow ? 'Approved' : left > 0 ? <span className="axp-approvals-banner__runs">Runs in</span> : 'Running'}
         {!c.shelved && !c.approvedNow && <span className={`axp-approvals-banner__count${urgent ? ' is-urgent' : ''}`} role="timer">{left > 0 ? formatCountdown(left) : '0:00'}</span>}
         <span className="axp-approvals-banner__sum">{c.title}{c.command ? `: ${c.command}` : ''}</span>
       </button>
-      <VetoButtons c={c} deps={deps} size="sm" />
+      <VetoButtons c={c} deps={deps} row />
     </div>
   );
 }
+
+/**
+ * Approve / Deny for a call waiting for an approval (Brett, Oct 30 2026: on every row). The hub takes a decision only
+ * from its own pages (Origin + CSRF), so the app's own deciding path goes first (AmberX: the signed-in hub web view);
+ * otherwise the hub's page opens in the review dialog, where the tap is confirmed. The console never approves itself.
+ */
+async function decidePending(p: Pending, d: ApprovalDecision) {
+  const decide = approvalsHost().decide;
+  if (!decide) { openReview(p.id); return; }
+  const item: ApprovalItem = {
+    kind: 'approval', id: p.id, tool: p.tool, title: `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
+    createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null,
+  };
+  try {
+    const r = await decide(item, d);
+    if (!r.opened) runtime?.toast(r.message, r.ok ? 'success' : 'danger', 'Approvals');
+  } catch (e) { runtime?.toast((e as Error)?.message || 'Something went wrong.', 'danger', 'Approvals'); }
+  void checkNow();
+}
+
+/** Deny (red) and Approve (green), big targets that never shrink: the row's text gives way first. */
+function PendingButtons({ p }: { p: Pending }) {
+  const [busy, setBusy] = useState<ApprovalDecision | null>(null);
+  const run = (d: ApprovalDecision) => { setBusy(d); void decidePending(p, d).finally(() => setBusy(null)); };
+  return (
+    <div className="fx-row axp-approvals-banner__acts">
+      <Button tone="danger" icon="x-circle" busy={busy === 'decline'} disabled={busy !== null} aria-label={`Deny: ${p.tool}`} onClick={() => run('decline')}>Deny</Button>
+      <Button tone="success" icon="check" busy={busy === 'approve'} disabled={busy !== null} aria-label={`Approve: ${p.tool}`} onClick={() => run('approve')}>Approve</Button>
+    </div>
+  );
+}
+
+/** One call waiting for an approval: tool + command (cut first), then Deny / Approve. The text opens the review. */
+function PendingRow({ p, hide }: { p: Pending; hide?: () => void }) {
+  return (
+    <div className="axp-approvals-banner__row axp-approvals-banner__pending">
+      <BannerIcon icon="shield" working size={20} />
+      <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${p.tool}\n${shortSummary(p)}`} onClick={() => openReview(p.id)}>
+        <span className="axp-approvals-banner__tool">{p.tool}</span>
+        <span className="axp-approvals-banner__sum">{shortSummary(p)}</span>
+      </button>
+      <PendingButtons p={p} />
+      {hide && <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>}
+    </div>
+  );
+}
+
+/** Calls waiting for an approval shown as rows while the banner is collapsed (all of them once it's opened). */
+const COLLAPSED_ROWS = 3;
 
 function ApprovalsBanner() {
   const s = useApprovals();
@@ -184,8 +235,19 @@ function ApprovalsBanner() {
       </div>
     );
   }
-  const first = s.pending[0];
-  const review = s.count === 1 && first ? first.url : s.approvalsUrl;
+  const hide = () => set({ hiddenIds: ids });
+  // One call waiting: its own row with Deny / Approve and the hide button. More: a summary row (open / close, all on
+  // the hub, hide), then one row each with Deny / Approve, the first few while collapsed and all once opened.
+  if (s.count === 1 && s.pending.length === 1) {
+    return (
+      <div className="axp-approvals-banner" role="alert">
+        {s.held.map((c) => <HeldRow key={c.id} c={c} />)}
+        <PendingRow p={s.pending[0]!} hide={hide} />
+      </div>
+    );
+  }
+  const shown = open ? s.pending : s.pending.slice(0, COLLAPSED_ROWS);
+  const more = s.count - shown.length;
   return (
     <div className="axp-approvals-banner" role="alert">
       {s.held.map((c) => <HeldRow key={c.id} c={c} />)}
@@ -193,26 +255,16 @@ function ApprovalsBanner() {
         <BannerIcon icon="shield" working={s.count > 0} size={20} />
         <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub
-          {first && s.count === 1 ? <span className="axp-approvals-banner__sum">{first.tool}: {shortSummary(first)}</span> : null}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
-        {first ? <Button tone="primary" icon="shield" onClick={() => openReview(first.id)}>Review</Button>
-          : <a className="fx-btn fx-btn--primary axp-approvals-banner__go" href={review} target="_blank" rel="noopener noreferrer"><Icon name="external" size={14} /> Review</a>}
-        <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={() => set({ hiddenIds: ids })}><Icon name="x" size={16} /></button>
+        <a className="fx-btn fx-btn--neutral axp-approvals-banner__go" href={s.approvalsUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={14} /> All</a>
+        <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>
       </div>
-      {open && (
-        <ul className="axp-approvals-banner__list">
-          {s.pending.map((p) => (
-            <li key={p.id}>
-              <button type="button" data-fx-row className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
-                <span className="axp-approvals-banner__tool">{p.tool}</span>
-                <span className="axp-approvals-banner__cmd">{shortSummary(p)}</span>
-                <span className="axp-approvals-banner__when">{ago(p.createdAt)}</span>
-              </button>
-            </li>
-          ))}
-          {s.count > s.pending.length && <li className="fx-muted fx-small">…and {s.count - s.pending.length} more on the hub.</li>}
-        </ul>
+      {shown.map((p) => <PendingRow key={p.id} p={p} />)}
+      {more > 0 && (
+        <button type="button" data-fx-row className="axp-approvals-banner__more fx-small fx-muted" onClick={() => (open || s.pending.length <= shown.length ? globalThis.open(s.approvalsUrl, '_blank', 'noopener') : setOpen(true))}>
+          …and {more} more{open || s.pending.length <= shown.length ? ' on the hub' : ''}
+        </button>
       )}
     </div>
   );
@@ -292,7 +344,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.4.0',
+  version: '0.5.0',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
