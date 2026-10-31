@@ -49,6 +49,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Settings redesign (Angel `settings-compact`): tap-in section list, one-line level bar, flat hairline groups, dropdown design package; + Angel builds `plugin-floatable` (queued, Fable first) (claude.ai, Opus) | pr-open | `claude/angel-settings` (also brings the Angel profile from `angel/home-cards-queue`) | [#175](https://github.com/MossesX/AmberX-AXF/pull/175) | Merge, then next Angel build | 2026-10-30 |
 | Live key + health checks in the banners (Angel `live-key-checks`): every key tested against its service every 15 min, red banner item with what broke / what it breaks / since when + Fix, health@1 registry, stuck builds, veto, CI on main, containers, disk, one push per red item to AmberX; **+ Fix it yourself** (Oct 31): health@1 auto-fix first, red only if still broken (on / ask first / off per check), github@1 = GitHub through axHub with local-token fallback, rule in shared RULES + CLAUDE.md (Opus) | review (push pending) | `claude/live-key-checks` | — | Push + PR (this VPS checkout has no push credentials). Then Brett's merge. Follow-ups: s7 push banner's token check onto health@1 and s12 push banner / auto-merge / branch cleanup on `axf.github@1`, both for `claude/pr-only-merge`; axHub: add merge + delete-ref to its github service | 2026-10-31 |
 | UI Review plugin (Angel `ui-review`): Design packs renamed + widened into one UI approval plugin — sections per kind (open registry), tree / grid / sub-grids / gallery / compare, bulk Approve / Ask changes / Reject, `review.mjs submit`, `rebuild-shots --submit`, capability `ui-review@1` (launched build, Opus) | review (pr-open) | `claude/ui-review` | see GitHub (opened through the push banner) | Brett reviews + merges. Follow-up queued (orchestrator `ui-review` s9): push banner's batch merge holds PRs whose ui-review@1 state is waiting / changes / rejected — push-banner NOT touched here because another build is changing it | 2026-10-30 |
+| Plan Studio (Angel `plan-studio`): plan@1 plans entered by hand, categories, 6 views, Catalog of every plugin/app/library with have/planned features, plain-English AI, AmberX voice planning, Turn into a build; Docs Studio + Selling It + ClipX imported parked (Opus) | review (push + PR waiting on a veto call) | `claude/plans` | — (veto call opens it) | Veto call pushes `claude/plans`, opens the PR, closes draft #159 ("Moved to Plan Studio as the parked plan Docs Studio", branch kept). Then CI → merge approval. Don't merge yourself | 2026-10-30 |
 | Compact the whole app (Angel `app-compact`): framework-wide tighter page heads, buttons, chips, cards, tables; count strips; Plugin Manager one column on phones (claude.ai, Opus) | pr-open | `claude/angel-app-compact` | — | Merge; follow-up pass for per-screen button walls | 2026-10-30 |
 | Settings redesign (Angel `settings-compact`): tap-in section list, one-line level bar, flat hairline groups, dropdown design package; + Angel builds `plugin-floatable` (queued, Fable first) (claude.ai, Opus) | done (merged Oct 30) | `claude/angel-settings` (also brings the Angel profile from `angel/home-cards-queue`) | [#175](https://github.com/MossesX/AmberX-AXF/pull/175) | Merge, then next Angel build | 2026-10-30 |
 | Build Breaker console plugin: every ask Brett made (390, build-asks@1), one line each, per-app + per-plugin grids + timeline, permanent Build context menu (Opus) | review (pr-open) | `claude/build-breaker` | [#174](https://github.com/MossesX/AmberX-AXF/pull/174) | Waiting on CI + Brett's merge; then sessions keep the asks current with the plugin's `asks.mjs add / set-status` | 2026-10-29 |
@@ -137,6 +138,26 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - **Left:** CI on the PR, Brett's merge. On the VPS the picks move into the UI Review data folder by themselves on the console's first start after deploy. **Follow-up s9 (Opus, ~20 min, after the push-banner build lands):** the push banner's batch merge (and single merge) asks `plugin_services.get("ui-review@1").holds(branch, pr)` and keeps a held PR out of the batch with a "UI review waiting / changes / rejected" reason.
 - **Checks:** the plugin's `test.py` and `test.mts` (README in its folder lists them), console `npx tsc --noEmit` + `npx vite build`, `node framework/cli/check-theme.mjs`, `check-controls.mjs`, `check-plugin-pages.mjs`, `node framework/cli/plugin-lifecycle.mjs check ui-review`, `npx tsx apps/console-web/scripts/menu-reach.mts`.
 - **First message to carry on:** "Check the UI Review PR (branch claude/ui-review): CI state, fix any failure, report. Then, if the push-banner build has merged, do orchestrator ui-review s9 (AXF_BUILD_PROFILE=angel)."
+### Plan Studio (`plan-studio`, Angel, Opus)
+
+**Asked (Brett, Oct 30 2026, voice):** a planning studio to store and view every plan, entered by hand with all the info,
+categorized; every plugin and app listed with its features checked off as have or planned (full brief: the orchestrator
+build `plan-studio` in the Angel profile and `_claude/memory/docs/plan-studio/README.md`). + plain-English AI (14:20) +
+AmberX voice planning (14:22).
+**Branch `claude/plans`:** all 12 steps built and committed (plugin `apps/console-web/plugins/plan-studio`, seeds, tests,
+docs, screenshots, shared rule "put it in a plan for later"). The build sandbox had no GitHub credentials, so the push
+was sent as one veto call (vps.run: `git push` from `/root/axf-builds/claude-plans`, `gh pr create`, `gh pr close 159`).
+**Left:** (1) if the veto call failed or was denied: from the VPS shell, `cd /root/axf-builds/claude-plans && git push -u
+origin claude/plans`, open the PR (title "Plan Studio: every plan in one place + Catalog + plain-English AI + AmberX
+voice planning"), close draft PR #159 with the comment "Moved to Plan Studio as the parked plan Docs Studio" (keep the
+branch). (2) CI green → merge approval (shared rule). (3) After merge: submit the screenshots to UI Review; `claude-sync
+sync` (shared RULES.md changed). (4) The console seeds the three plans into the hub's `_data/plan-studio/` on install
+(amberx-selling-it.json is already there).
+**Checks:** `python3 apps/console-web/plugins/plan-studio/test.py`, console `npx tsc --noEmit && npx vite build`,
+`npx -y tsx apps/amberx-droid/test.mjs`, `node framework/cli/check-theme.mjs`, `check-controls.mjs`,
+`check-plugin-pages.mjs`, `plugin-lifecycle.mjs check plan-studio`, `npx -y tsx apps/console-web/scripts/menu-reach.mts`.
+**First message:** `Carry on Plan Studio (Angel, orchestrator plan-studio) in AmberX-AXF on branch claude/plans: read
+THREADS.md "Plan Studio", push if not pushed, open the PR, close #159 as moved, then merge approval once CI passes.`
 
 ### Build Breaker plugin
 

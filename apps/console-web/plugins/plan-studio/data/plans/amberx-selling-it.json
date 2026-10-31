@@ -1,0 +1,58 @@
+{
+ "id": "amberx-selling-it",
+ "title": "AmberX — Selling It: Product + Installer Plan",
+ "status": "parked",
+ "priority": "P2",
+ "category": "Product > Installer",
+ "tags": [
+  "product",
+  "installer",
+  "sales"
+ ],
+ "project": "amberx-axf",
+ "summary": "The product + installer plan from the claude.ai artifact. Its full text could not be read from this session: open the artifact and paste it into Notes (or tell the plan AI \"fill this in from my note\").",
+ "questions": [
+  {
+   "text": "Paste the artifact text into Notes so the steps, prices and installer flow are here",
+   "answer": ""
+  }
+ ],
+ "links": [
+  {
+   "kind": "url",
+   "ref": "https://claude.ai/artifact/MGWAVAP3kfMEZtN6L5TqWf",
+   "label": "The plan on claude.ai"
+  }
+ ],
+ "body": "## Source\n\nclaude.ai artifact: https://claude.ai/artifact/MGWAVAP3kfMEZtN6L5TqWf\n\n_The importing session (Claude Code, VPS, Oct 30 2026) could not read claude.ai artifacts. Paste the plan here._\n",
+ "createdAt": "2026-10-30T18:30:00.000Z",
+ "updatedAt": "2026-10-30T18:30:00.000Z",
+ "createdBy": "Plan Studio import",
+ "source": "https://claude.ai/artifact/MGWAVAP3kfMEZtN6L5TqWf (not readable from the importing session)",
+ "steps": [],
+ "$axf": "plan@1",
+ "goal": "",
+ "why": "",
+ "touches": [],
+ "profile": "",
+ "targetDate": "",
+ "owner": "",
+ "requirements": [],
+ "acceptance": [],
+ "decisions": [],
+ "risks": [],
+ "outOfScope": [],
+ "features": [],
+ "attachments": [],
+ "comments": [],
+ "build": null,
+ "version": 1,
+ "effort": {
+  "minutes": 0,
+  "left": 0
+ },
+ "cost": {
+  "usd": 0,
+  "estimated": true
+ }
+}

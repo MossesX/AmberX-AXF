@@ -1,0 +1,48 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.plan-studio",
+  "name": "Plan Studio",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every plan in one place (plan@1: JSON + a Markdown body). Enter plans by hand in a full sectioned editor (templates, autosave, quick capture), file them in nested categories, and view them as a tree, grid, sub-grids, board, roadmap or reader. Plain-English AI edits plans as a diff to apply or undo, and AmberX talks plans through by voice. Turn a plan into an orchestrator build and follow its progress. The Catalog lists every plugin, app, library, framework module and axHub with its features checked off as have, partial, planned or idea. Plans live in the hub's shared data (plan-studio/), so claude.ai and VPS sessions read and write them through axhub.memory_read / memory_write; plans.mjs is the CLI.",
+  "targets": [
+    "axf-console",
+    "amberx-droid"
+  ],
+  "provides": [
+    "view:plan-studio",
+    "settings-tab:plan-studio",
+    "service:plans@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "axf.llm@1",
+    "axf.agent-voice@1"
+  ],
+  "banner": false,
+  "tabable": {
+    "view": "plan-studio",
+    "label": "Plan Studio",
+    "icon": "layout"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/plan-studio",
+    "env": [],
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      "_claude/shared/rules/RULES.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-30"
+  },
+  "opens": "main"
+}
