@@ -71,3 +71,15 @@ only a pink **Deny**, no Approve now, and the page head said "Nothing waiting" w
 - The console's approvals-banner veto strip (`apps/console-web/plugins/approvals-banner/web/veto.tsx`) also uses the
   hub's `actions`. It shows Approve as soon as the hub is redeployed, so no code change is needed there.
 - AmberX native notice buttons: out of scope (Android shell); the hub's #105 `?do=` redirect lands on the request page above.
+
+## Push and deploy
+
+- Committed as `ae513a64` on `claude/approve-now-web`. `git fetch && git merge origin/main`: already up to date (main is
+  still `f7170f65`), so the test run above holds.
+- **`git push origin HEAD:main` failed:** "Invalid username or token". This VPS has no GitHub credentials for headless
+  runs, so retrying won't help. Raised as banner item `blocked:push-approve-now-web`. The console's own token was not
+  borrowed.
+- **axhub-web redeploy:** `apps/axhub-web/deploy/install.sh` builds from `main` in `/opt/axhub-web`, and its cron pulls
+  main every 5 minutes and re-runs itself. It redeploys by itself once this commit reaches main; running it now would
+  rebuild the old code.
+- **axHub server redeploy** (the real fix for the missing button): banner item `blocked:axhub-redeploy`.
