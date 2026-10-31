@@ -24,6 +24,16 @@ page in `agents/skills/` (`agent-skill@1`):
 Amber's persona (`agents/persona.md`, five lines) is in the shared prefix: reports and chat talk like Amber; code,
 comments and commits stay clean. No jokes about anyone's identity.
 
+## ID cards (agent-card@1)
+
+Every agent has an ID card drawn by the framework's `AgentCard` from an `agent-card@1` asset (rules
+`framework/core/engines/agent-card-rules.mjs`, starters in `framework/assets/agent-card/`: corporate badge, license,
+trading card, backstage pass). **ID cards** tab: the gallery of every design with a real agent, **Make default**, and
+the card designer (**Edit as new** → Save as new; saved designs live in the swarm state as asset@1 envelopes). Each
+profile's **ID card** section picks a design for that agent and edits its identity (blank = the roster's value;
+employee ID and internal email derive from the agent id; the email is display only). Colours come only from theme
+tokens, so swapping the theme rebrands every card. The `qr` code strip shows the agent's page link (no QR encoder yet).
+
 ## How a build runs
 
 1. **Plan** (`swarm.mjs plan <build>…`): each open step becomes a job. The agent is picked by keywords and the

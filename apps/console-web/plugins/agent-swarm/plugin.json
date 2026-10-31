@@ -33,7 +33,8 @@
       "AXF_CLAUDE_BIN"
     ],
     "mentions": [
-      "_claude/memory/STATUS.md"
+      "_claude/memory/STATUS.md",
+      "install_steps.md"
     ]
   },
   "builtWith": {
