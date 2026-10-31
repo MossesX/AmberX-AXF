@@ -59,7 +59,7 @@ export function CrewTab({ state, stats, act, onFeed }: { state: SwarmState; stat
 
 const BENCHED = ['quit', 'fired', 'suspended'];
 function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: Stats; act: Act; onOpen: () => void }) {
-  const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id];
+  const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id]; const pay = state.pay[a.id];
   return (
     <article role="listitem" className={`sw-card ${as.status === 'fired' ? 'sw-gone' : ''}`}>
       <button className="sw-card__open" onClick={onOpen} aria-label={`${a.name}, open profile`}>
@@ -70,6 +70,10 @@ function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: 
         <p className="sw-card__line">{a.specialty}</p>
         <dl className="sw-card__stats">
           <div><dt>Hired</dt><dd>{fmtDay(a.hiredAt)}</dd></div>
+          <div><dt>Salary</dt><dd>{core.fmtUsd(pay?.salary ?? a.salary)}/wk</dd></div>
+          <div><dt>Spent (week)</dt><dd>{core.fmtUsd(pay?.spent ?? 0)}</dd></div>
+          <div><dt>Left</dt><dd className={pay?.broke ? 'sw-warn' : ''}>{pay?.broke ? 'broke' : core.fmtUsd(pay?.left ?? a.salary)}</dd></div>
+          <div><dt>Bonuses</dt><dd>{core.fmtUsd(pay?.bonus ?? 0)}</dd></div>
           <div><dt>All time</dt><dd>{core.fmtUsd(sp?.all.usd ?? 0)}</dd></div>
           <div><dt>Week</dt><dd>{core.fmtUsd(sp?.week.usd ?? 0)}</dd></div>
           <div><dt>Today</dt><dd>{core.fmtUsd(sp?.today.usd ?? 0)}</dd></div>
@@ -84,6 +88,33 @@ function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: 
       </button>
       {BENCHED.includes(as.status) && <div className="sw-bar"><Button size="sm" icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button>{as.note && <span className="fx-muted">{as.note}</span>}</div>}
     </article>
+  );
+}
+
+function PaySection({ a, state, act }: { a: Agent; state: SwarmState; act: Act }) {
+  const as = state.swarm.agents[a.id]!; const pay = state.pay[a.id];
+  const [salary, setSalary] = useState(String(pay?.salary ?? a.salary));
+  const [note, setNote] = useState('');
+  const [top, setTop] = useState('5');
+  const next = Number(salary);
+  return (
+    <section className="fx-stack">
+      <h3 className="sw-wave">Pay</h3>
+      <p className="fx-muted">Salary {core.fmtUsd(pay?.salary ?? a.salary)} a week is the agent's budget. This week: spent {core.fmtUsd(pay?.spent ?? 0)}{pay?.topups ? `, topped up ${core.fmtUsd(pay.topups)}` : ''}, {pay?.broke ? <b className="sw-warn">broke till {fmtDay(pay.payday)}</b> : `${core.fmtUsd(pay?.left ?? 0)} left`}. Payday {pay ? fmtDay(pay.payday) : '—'}.</p>
+      <form className="sw-bar" onSubmit={(e) => { e.preventDefault(); void act({ action: 'salary', agent: a.id, usd: next, note }).then((l) => { if (l) setNote(''); }); }}>
+        <label className="fx-muted" htmlFor={`sal-${a.id}`}>New salary ($/week)</label>
+        <input id={`sal-${a.id}`} className="fx-input sw-num" type="number" min={0} value={salary} onChange={(e) => setSalary(e.target.value)} />
+        <input className="fx-input sw-grow" aria-label="Why" placeholder="Why (posted in the chat)" value={note} onChange={(e) => setNote(e.target.value)} />
+        <Button type="submit" disabled={!Number.isFinite(next) || next === (pay?.salary ?? a.salary)}>{next > (pay?.salary ?? a.salary) ? 'Give raise' : 'Dock pay'}</Button>
+      </form>
+      <form className="sw-bar" onSubmit={(e) => { e.preventDefault(); void act({ action: 'topup', agent: a.id, usd: Number(top) }); }}>
+        <label className="fx-muted" htmlFor={`top-${a.id}`}>Top up this week ($)</label>
+        <input id={`top-${a.id}`} className="fx-input sw-num" type="number" min={1} value={top} onChange={(e) => setTop(e.target.value)} />
+        <Button type="submit" disabled={!(Number(top) > 0)}>Top up</Button>
+      </form>
+      {as.bonuses.length > 0 && <p>Bonuses (bragging rights, not real money): <b>{core.fmtUsd(pay?.bonus ?? 0)}</b> over {as.bonuses.length} jobs; this week {core.fmtUsd(pay?.bonusWeek ?? 0)}.</p>}
+      {as.pay.length > 0 && <ul className="sw-feed">{[...as.pay].reverse().slice(0, 10).map((p, i) => <li key={i}><span className="fx-muted">{fmtTime(p.at)}</span> {p.kind === 'raise' ? 'Raise' : 'Docked'} {core.fmtUsd(p.from)} → <b>{core.fmtUsd(p.to)}</b>{p.note ? ` · ${p.note}` : ''}</li>)}</ul>}
+    </section>
   );
 }
 
@@ -108,7 +139,6 @@ function Discipline({ a, state, act }: { a: Agent; state: SwarmState; act: Act }
 
 function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: SwarmState; st: Stats; act: Act; onBack: () => void; onFeed: (jobId: string) => void }) {
   const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill];
-  const [cap, setCap] = useState(String(as.cap || ''));
   return (
     <div className="fx-stack">
       <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button></div>
@@ -125,11 +155,7 @@ function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: Swarm
         <h3 className="sw-wave">Skill: {skill?.title ?? a.skill}</h3>
         <pre className="sw-skill">{skill?.body ?? 'No skill file.'}</pre>
       </section>
-      <section className="sw-bar">
-        <label className="fx-muted" htmlFor={`cap-${a.id}`}>Weekly spend cap ($)</label>
-        <input id={`cap-${a.id}`} className="fx-input sw-num" type="number" min={0} value={cap} placeholder="none" onChange={(e) => setCap(e.target.value)} />
-        <Button size="sm" onClick={() => void act({ action: 'cap', agent: a.id, usd: Number(cap || 0) })}>Save</Button>
-      </section>
+      <PaySection a={a} state={state} act={act} />
       <Discipline a={a} state={state} act={act} />
       <section className="fx-stack">
         <h3 className="sw-wave">Status history</h3>

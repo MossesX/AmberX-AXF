@@ -172,13 +172,6 @@ const RUNS = [
 ];
 t('week starts Monday UTC', () => { assert.equal(c.weekStart(AT), '2026-10-26T00:00:00.000Z'); assert.equal(c.dayStart(AT), '2026-10-31T00:00:00.000Z'); });
 t('spend: all time, week, today, avg per job', () => { const s = c.spendOf(RUNS, 'rio', P, AT); assert.equal(s.all.usd, 6); assert.equal(s.week.usd, 4); assert.equal(s.today.usd, 1); assert.equal(s.jobs, 2); assert.equal(s.avgPerJob, 3); });
-t('spend cap benches the agent; Brett putting it back clears the mark', () => {
-  let s = c.applyChange(c.normState({}, roster), { action: 'cap', agent: 'rio', usd: 4 }, roster, AT).state;
-  const log = c.capCheck(s, RUNS, P, AT); assert.equal(log.length, 1); assert.equal(s.agents.rio.status, 'off-duty'); assert.equal(s.agents.rio.benched, 'cap'); assert.equal(s.agents.rio.history.at(-1).by, 'boss');
-  assert.equal(c.capCheck(s, RUNS, P, AT).length, 0); // already benched
-  s = c.applyChange(s, { action: 'status', agent: 'rio', status: 'on-duty' }, roster, AT).state; assert.equal(s.agents.rio.benched, '');
-  assert.equal(c.capCheck(c.normState({}, roster), RUNS, P, AT).length, 0); // no cap, no bench
-});
 
 // s11 cards + profiles
 t('card stats: jobs done, success, failures, favourite model, last seen, feed', () => {
@@ -236,6 +229,31 @@ t('rage-quit after N failed jobs in a row; blocked does not count; done resets',
   assert.ok(s.messages.some((m) => m.from === 'py' && /I quit/.test(m.text))); assert.equal(s.agents.py.history.at(-1).by, 'py');
   const r = c.applyChange(s, { action: 'rehire', agent: 'py' }, roster, AT).state; assert.equal(r.agents.py.status, 'on-duty'); assert.equal(r.agents.py.failStreak, 0); assert.match(r.messages.at(-1).text, /rehired/);
   assert.equal(c.normState({}, roster).rules.rageQuitAfter, 3);
+});
+
+// s14 salary
+t('salary is the weekly budget: spent, left, broke stops work, top-up and payday', () => {
+  const rio = roster.agents.find((a) => a.id === 'rio');
+  let s = c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'rio', usd: 4 }, roster, AT).state;
+  let p = c.payOf(rio, s.agents.rio, RUNS, P, AT); assert.deepEqual([p.salary, p.spent, p.left, p.broke], [4, 4, 0, true]); assert.equal(p.payday, '2026-11-02T00:00:00.000Z');
+  assert.match(c.canWork(rio, s.agents.rio, {}, AT, p).why, /broke till payday \(2026-11-02\)/);
+  assert.deepEqual(c.payCheck(s, roster, RUNS, P, AT).map((l) => l.split(':')[0]), ['rio', 'doc']); assert.ok(s.messages.some((m) => m.from === 'rio' && /I'm broke/.test(m.text))); assert.equal(c.payCheck(s, roster, RUNS, P, AT).length, 0); // said once a period
+  s = c.applyChange(s, { action: 'topup', agent: 'rio', usd: 5 }, roster, AT).state; p = c.payOf(rio, s.agents.rio, RUNS, P, AT); assert.equal(p.left, 5); assert.equal(p.broke, false);
+  assert.equal(c.payOf(rio, s.agents.rio, RUNS, P, '2026-11-02T01:00:00.000Z').broke, false); // payday: new period
+  assert.equal(c.normAgentState({ cap: 30 }).salary, 30); assert.equal(c.normAgentState({}).salary, null); // old cap becomes the salary
+});
+t('raises and docks are posted, coworkers react', () => {
+  let s = c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'doc', usd: 9, note: 'great docs' }, roster, AT).state;
+  assert.equal(s.agents.doc.pay[0].kind, 'raise'); assert.match(s.messages.find((m) => m.kind === 'pay').text, /Doc Holli gets a raise: \$5\.00 → \$9\.00 a week\. great docs/);
+  assert.ok(s.messages.filter((m) => m.kind === 'banter').length >= 1);
+  s = c.applyChange(s, { action: 'salary', agent: 'doc', usd: 3 }, roster, AT).state; assert.equal(s.agents.doc.pay[1].kind, 'dock'); assert.ok(s.messages.some((m) => /got docked/.test(m.text)));
+  assert.throws(() => c.applyChange(s, { action: 'salary', agent: 'doc', usd: 3 }, roster, AT), /same salary/);
+});
+t('finishing under budget earns a bonus and a jealous coworker', () => {
+  const s = c.normState({}, roster);
+  c.recordRun(s, { agent: 'rio', jobId: 'b.s1', status: 'done', model: 'sonnet', budget: { tokens: 100000, maxTurns: 10 }, reportedCost: 0.05 }, roster, AT, P);
+  assert.equal(s.agents.rio.bonuses.length, 1); assert.ok(s.agents.rio.bonuses[0].usd > 0); assert.ok(s.messages.some((m) => /under budget\. Bonus/.test(m.text)));
+  c.recordRun(s, { agent: 'rio', jobId: 'b.s2', status: 'done', model: 'sonnet', budget: { tokens: 1000, maxTurns: 10 }, reportedCost: 50 }, roster, AT, P); assert.equal(s.agents.rio.bonuses.length, 1);
 });
 
 // batch merge end to end on a scratch repo

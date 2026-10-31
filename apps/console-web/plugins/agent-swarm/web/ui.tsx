@@ -4,7 +4,7 @@ import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
 import { CrewTab } from './cards';
 import { ChatTab } from './chat';
-import { FOLDER, ModelChip, api, fmtTime, statusText, useSwarm, type Act, type Agent, type AgentState, type Job, type Res, type Slot, type Spend, type StatusDef, type SwarmState } from './ui-types';
+import { FOLDER, ModelChip, api, fmtTime, statusText, useSwarm, type Act, type Agent, type AgentState, type Job, type Pay, type Res, type Slot, type Spend, type StatusDef, type SwarmState } from './ui-types';
 import './swarm.css';
 
 export { FOLDER };
@@ -67,18 +67,18 @@ function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {
         <span className="fx-muted">failed jobs in a row</span>
       </div>
       <div className="sw-scroll"><table className="sw-table">
-        <thead><tr><th aria-sort={sort === 'name' ? 'ascending' : 'none'}><button onClick={() => setSort('name')}>Agent</button></th><th>Status</th><th>Note</th>{th('all', 'All time')}{th('week', 'Week')}{th('today', 'Today')}{th('avg', 'Avg / job')}<th className="is-num">Weekly cap</th></tr></thead>
-        <tbody>{agents.map((a) => <AgentRow key={a.id} a={a} as={state.swarm.agents[a.id]!} sp={state.spend[a.id]} defs={state.statuses} pickable={state.pickable} act={act} />)}</tbody>
+        <thead><tr><th aria-sort={sort === 'name' ? 'ascending' : 'none'}><button onClick={() => setSort('name')}>Agent</button></th><th>Status</th><th>Note</th>{th('all', 'All time')}{th('week', 'Week')}{th('today', 'Today')}{th('avg', 'Avg / job')}<th className="is-num">Salary / week</th></tr></thead>
+        <tbody>{agents.map((a) => <AgentRow key={a.id} a={a} as={state.swarm.agents[a.id]!} sp={state.spend[a.id]} defs={state.statuses} pickable={state.pickable} pay={state.pay[a.id]} act={act} />)}</tbody>
       </table></div>
-      <p className="fx-muted">{Object.values(state.statuses).map((d) => `${d.label}: ${d.about}`).join(' · ')} A weekly cap benches the agent (Off duty) when its spend this week reaches it.</p>
+      <p className="fx-muted">{Object.values(state.statuses).map((d) => `${d.label}: ${d.about}`).join(' · ')} Salary is the agent's weekly budget: spent it all = broke, no new jobs till payday (Monday) or a top-up. A higher salary is a raise, a lower one docks it.</p>
     </div>
   );
 }
 
 const money = (u: { usd: number; tokens: number } | undefined) => (u ? <><b>{core.fmtUsd(u.usd)}</b><br /><span className="fx-muted">{core.fmtTokens(u.tokens)}</span></> : '—');
-function AgentRow({ a, as, sp, defs, pickable, act }: { a: Agent; as: AgentState; sp: Spend | undefined; defs: Record<string, StatusDef>; pickable: string[]; act: Act }) {
-  const [cap, setCap] = useState(String(as.cap || ''));
-  useEffect(() => { setCap(String(as.cap || '')); }, [as.cap]);
+function AgentRow({ a, as, sp, pay, defs, pickable, act }: { a: Agent; as: AgentState; sp: Spend | undefined; pay: Pay | undefined; defs: Record<string, StatusDef>; pickable: string[]; act: Act }) {
+  const [salary, setSalary] = useState(String(pay?.salary ?? a.salary));
+  useEffect(() => { setSalary(String(pay?.salary ?? a.salary)); }, [pay?.salary, a.salary]);
   const [pick, setPick] = useState(as.status);
   const [note, setNote] = useState(as.note);
   const [until, setUntil] = useState(as.until.slice(0, 10));
@@ -103,7 +103,9 @@ function AgentRow({ a, as, sp, defs, pickable, act }: { a: Agent; as: AgentState
       <td><input className="fx-input" aria-label={`${a.name} note`} placeholder="Note" value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => { if (note !== as.note) void act({ action: 'note', agent: a.id, note }); }} /></td>
       <td className="is-num">{money(sp?.all)}</td><td className="is-num">{money(sp?.week)}</td><td className="is-num">{money(sp?.today)}</td>
       <td className="is-num">{sp?.jobs ? core.fmtUsd(sp.avgPerJob) : '—'}<br /><span className="fx-muted">{sp?.jobs ?? 0} jobs</span></td>
-      <td className="is-num"><input className="fx-input sw-num" type="number" min={0} step={1} aria-label={`${a.name} weekly cap in dollars`} placeholder="none" value={cap} onChange={(e) => setCap(e.target.value)} onBlur={() => { if (Number(cap || 0) !== as.cap) void act({ action: 'cap', agent: a.id, usd: Number(cap || 0) }); }} />{as.benched === 'cap' && <><br /><span className="sw-warn">benched</span></>}</td>
+      <td className="is-num"><input className="fx-input sw-num" type="number" min={0} step={1} aria-label={`${a.name} weekly salary in dollars`} value={salary} onChange={(e) => setSalary(e.target.value)} onBlur={() => { if (Number(salary) !== pay?.salary) void act({ action: 'salary', agent: a.id, usd: Number(salary) }); }} />
+        <br /><span className={pay?.broke ? 'sw-warn' : 'fx-muted'}>{pay ? (pay.broke ? 'broke' : `${core.fmtUsd(pay.left)} left`) : ''}</span>
+        {pay?.broke && <><br /><Button size="sm" onClick={() => void act({ action: 'topup', agent: a.id, usd: Math.max(1, Math.round((pay.salary || 10) / 2)) })}>Top up {core.fmtUsd(Math.max(1, Math.round((pay.salary || 10) / 2)))}</Button></>}</td>
     </tr>
   );
 }

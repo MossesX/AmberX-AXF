@@ -519,9 +519,13 @@ export function normAgentState(s) {
     note: str(o.note, 300),
     until: str(o.until, 40),
     custom: { name: str(o.custom?.name, 40), works: o.custom?.works === true },
-    cap: num(o.cap, 0, 0, 100000),
+    // salary = the weekly token budget in dollars (replaced the plain spend cap: an old cap becomes the salary); null = the roster's
+    salary: Number.isFinite(Number(o.salary)) && o.salary !== null && o.salary !== '' ? num(o.salary, 0, 0, 100000) : Number(o.cap) > 0 ? num(o.cap, 0, 0, 100000) : null,
+    topups: (Array.isArray(o.topups) ? o.topups : []).slice(-100).map((x) => ({ at: str(x?.at, 40), usd: num(x?.usd, 0, 0, 100000) })),
+    pay: (Array.isArray(o.pay) ? o.pay : []).slice(-100).map((x) => ({ at: str(x?.at, 40), kind: x?.kind === 'dock' ? 'dock' : 'raise', from: num(x?.from, 0), to: num(x?.to, 0), note: str(x?.note, 200) })),
+    bonuses: (Array.isArray(o.bonuses) ? o.bonuses : []).slice(-200).map((x) => ({ at: str(x?.at, 40), jobId: str(x?.jobId, 120), usd: num(x?.usd, 0) })),
+    brokeSaid: str(o.brokeSaid, 40),
     failStreak: num(o.failStreak, 0, 0, 1000) | 0,
-    benched: str(o.benched, 20),
     history: (Array.isArray(o.history) ? o.history : []).slice(-200).map((h) => ({ at: str(h?.at, 40), from: str(h?.from, 40), to: str(h?.to, 40), note: str(h?.note, 300), by: str(h?.by, 40) || 'brett' })),
   };
 }
@@ -538,8 +542,9 @@ export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || '
 const worksOf = (as) => (as.status === 'custom' ? as.custom.works : STATUSES[as.status]?.works);
 
 /** Can this agent take this job now? { ok, why, notify } (`notify` = Brett hears about the run: probation). */
-export function canWork(agent, as, job = {}, now = '') {
+export function canWork(agent, as, job = {}, now = '', pay = null) {
   const w = worksOf(as);
+  if (w !== false && pay?.broke) return { ok: false, why: `broke till payday (${pay.payday.slice(0, 10)})`, notify: false };
   if (w === true) return { ok: true, why: '', notify: false };
   if (w === 'small') {
     const m = minutesOf(job.estimate) ?? 20;
@@ -552,7 +557,7 @@ export function canWork(agent, as, job = {}, now = '') {
 function setStatus(st, id, to, note, at, by = 'brett', extra = {}) {
   const as = st.agents[id]; if (!as) throw new Error(`no agent "${id}"`);
   const from = statusLabel(as);
-  as.status = to; as.note = str(note, 300); as.until = str(extra.until, 40); as.benched = '';
+  as.status = to; as.note = str(note, 300); as.until = str(extra.until, 40);
   if (to === 'custom') as.custom = { name: str(extra.name, 40) || 'Custom', works: extra.works === true };
   as.history.push({ at, from, to: statusLabel(as), note: as.note, by });
   return `${id}: ${from} → ${statusLabel(as)}${note ? ` (${note})` : ''}`;
@@ -580,7 +585,22 @@ export function applyChange(state, change, roster, at) {
       log.push(setStatus(s, c.agent, c.status, c.note, at, 'brett', c));
       post(s, [{ from: BOSS.id, kind: 'status', text: `${nameOf(roster, c.agent)} is now ${statusLabel(s.agents[c.agent])}${c.note ? `: ${str(c.note, 200)}` : ''}.` }], at); break;
     }
-    case 'cap': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.cap = num(c.usd, 0, 0, 100000); log.push(`${c.agent}: spend cap ${as.cap ? `${fmtUsd(as.cap)} a week` : 'off'}`); break; }
+    case 'salary': { // raise or dock, posted by Boss, with coworker reactions
+      const a = roster.agents.find((x) => x.id === c.agent); const as = s.agents[c.agent]; if (!a || !as) throw new Error(`no agent "${c.agent}"`);
+      const from = as.salary ?? a.salary; const to = num(c.usd, from, 0, 100000);
+      if (to === from) throw new Error('that is the same salary');
+      const kind = to > from ? 'raise' : 'dock'; as.salary = to; as.pay.push({ at, kind, from, to, note: str(c.note, 200) });
+      log.push(`${c.agent}: ${kind === 'raise' ? 'raise' : 'docked'} ${fmtUsd(from)} → ${fmtUsd(to)} a week`);
+      post(s, [{ from: BOSS.id, kind: 'pay', text: kind === 'raise' ? `${a.name} gets a raise: ${fmtUsd(from)} → ${fmtUsd(to)} a week.${c.note ? ` ${str(c.note, 200)}` : ''}` : `${a.name} got docked: ${fmtUsd(from)} → ${fmtUsd(to)} a week.${c.note ? ` ${str(c.note, 200)}` : ''}` }], at);
+      for (const r of reactors(s, roster, a.id, 2, `${at}${a.id}`)) post(s, [{ from: r.id, kind: 'banter', text: banterLine(kind === 'raise' ? 'raise' : 'docked', `${at}${r.id}`, { other: a.name }) }], at);
+      break;
+    }
+    case 'topup': {
+      const a = roster.agents.find((x) => x.id === c.agent); const as = s.agents[c.agent]; if (!a || !as) throw new Error(`no agent "${c.agent}"`);
+      const usd = num(c.usd, 0, 0, 100000); if (!usd) throw new Error('top up by more than $0');
+      as.topups.push({ at, usd }); as.brokeSaid = ''; log.push(`${c.agent}: topped up ${fmtUsd(usd)}`);
+      post(s, [{ from: BOSS.id, kind: 'pay', text: `Brett topped ${a.name} up by ${fmtUsd(usd)} this week.` }], at); break;
+    }
     case 'chat': { // global and per-agent switches
       if (typeof c.enabled === 'boolean') { s.chat.enabled = c.enabled; log.push(`group chat ${c.enabled ? 'on' : 'off'}`); }
       if (c.agent) { if (!s.agents[c.agent]) throw new Error(`no agent "${c.agent}"`); s.chat.agents[c.agent] = c.on !== false; log.push(`${c.agent} chat ${c.on !== false ? 'on' : 'off'}`); }
@@ -634,15 +654,28 @@ export function spendOf(runs, agentId, table, at) {
 }
 
 /**
- * Spend cap: an agent whose spend this week reaches its cap is benched (Off duty, by Boss) until Brett puts it back.
- * Returns the log lines.
+ * Pay for this pay period (Monday 00:00 UTC to the next Monday): the salary is the agent's weekly budget in dollars,
+ * plus any top-ups this week. Broke = spent it all: no new jobs until payday or a top-up.
  */
-export function capCheck(state, runs, table, at) {
+export function payOf(agent, as, runs, table, at) {
+  const start = weekStart(at); const payday = new Date(Date.parse(start) + 7 * 864e5).toISOString();
+  const salary = as?.salary ?? agent?.salary ?? 0;
+  const topups = (as?.topups ?? []).filter((x) => x.at >= start).reduce((t, x) => t + x.usd, 0);
+  const spent = spendOf(runs, agent?.id, table, at).week.usd;
+  const left = salary + topups - spent;
+  const bonus = (as?.bonuses ?? []).reduce((t, x) => t + x.usd, 0);
+  return { salary, topups, spent, left, broke: left <= 0, periodStart: start, payday, bonus, bonusWeek: (as?.bonuses ?? []).filter((x) => x.at >= start).reduce((t, x) => t + x.usd, 0) };
+}
+
+/** Broke agents say so in the chat, once per pay period. Returns the log lines. */
+export function payCheck(state, roster, runs, table, at) {
   const log = [];
-  for (const [id, as] of Object.entries(state.agents)) {
-    if (!(as.cap > 0) || worksOf(as) === false) continue;
-    const spent = spendOf(runs, id, table, at).week.usd;
-    if (spent >= as.cap) { log.push(setStatus(state, id, 'off-duty', `spend cap hit: ${fmtUsd(spent)} of ${fmtUsd(as.cap)} this week`, at, 'boss')); as.benched = 'cap'; post(state, [{ from: BOSS.id, kind: 'status', text: `${id} hit the spend cap (${fmtUsd(spent)} of ${fmtUsd(as.cap)}). Benched.` }], at); }
+  for (const a of roster.agents) {
+    const as = state.agents[a.id]; const p = payOf(a, as, runs, table, at);
+    if (p.broke && as.brokeSaid < p.periodStart && worksOf(as) !== false) {
+      as.brokeSaid = at; log.push(`${a.id}: broke till ${p.payday.slice(0, 10)}`);
+      post(state, [{ from: a.id, kind: 'pay', text: `I'm broke. Spent ${fmtUsd(p.spent)} of ${fmtUsd(p.salary + p.topups)} this week, so no more jobs till payday (${p.payday.slice(0, 10)}) unless Brett tops me up.` }], at);
+    }
   }
   return log;
 }
@@ -783,9 +816,18 @@ export function parseBanter(text, roster) {
  * (blocked doesn't count: it's a question, not a failure). At the rage-quit limit the agent quits itself and says so.
  * Returns the log lines.
  */
-export function recordRun(state, run, roster, at) {
+export function recordRun(state, run, roster, at, table = null) {
   const as = state.agents[run.agent]; if (!as) return [];
   const log = [];
+  if (run.status === 'done' && table && run.budget) { // under budget = a bonus (bragging rights, not real money)
+    const cap = budgetUsd({ budget: run.budget, model: run.model }, table); const cost = runCost(run, table);
+    if (cost < cap) {
+      const usd = Math.round((cap - cost) * 100) / 100; as.bonuses.push({ at, jobId: run.jobId, usd });
+      const name = nameOf(roster, run.agent); log.push(`${run.agent}: bonus ${fmtUsd(usd)}`);
+      post(state, [{ from: BOSS.id, kind: 'pay', text: `${name} finished ${run.jobId} for ${fmtUsd(cost)}, ${fmtUsd(usd)} under budget. Bonus.` }], at);
+      for (const r of reactors(state, roster, run.agent, 1, `${run.jobId}bonus`)) post(state, [{ from: r.id, kind: 'banter', text: banterLine('bonus', `${run.jobId}${r.id}`, { other: name }) }], at);
+    }
+  }
   if (run.status === 'done') as.failStreak = 0;
   else if (run.status !== 'blocked') as.failStreak += 1;
   if (as.failStreak >= state.rules.rageQuitAfter && !['quit', 'fired'].includes(as.status)) {

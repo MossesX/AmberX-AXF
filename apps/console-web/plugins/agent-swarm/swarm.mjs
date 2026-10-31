@@ -10,7 +10,7 @@
  *   … pilot <buildId> [--apply]          plan + pack a build, project swarm vs one session, suggest a budget scale
  *   … act status <agent> <status> [note]  statuses: on-duty off-duty injured medical-leave probation fired custom
  *   … act --json '{"action":…}'          any change from swarm-core.mjs applyChange()
- *   … act cap <agent> <usd>               weekly spend cap (0 = none); hitting it benches the agent
+ *   … act salary <agent> <usd> [note]     weekly salary = budget (higher = raise, lower = docked) · act topup <agent> <usd>
  *   … sessions                           runs with the agent's status and spend (for the session browser)
  *   … chat [n] | banter [--dry-run]      the group chat | one cheap small-model batch of banter
  *   … act chat on|off · act chat <agent> on|off · act say <text>
@@ -58,7 +58,7 @@ export const stateFile = () => join(dataDir(), 'state.json');
 export function loadState() {
   const roster = loadRoster(); const at = new Date().toISOString();
   const st = core.normState(readJson(stateFile(), {}), roster); const t = core.tick(st, at);
-  t.log.push(...core.capCheck(st, loadRuns(), priceTable(), at));
+  t.log.push(...core.payCheck(st, roster, loadRuns(), priceTable(), at));
   if (t.log.length) { st.updatedAt = at; writeJson(stateFile(), st); }
   return st;
 }
@@ -70,10 +70,10 @@ export function act(change) {
   const r = core.applyChange(loadState(), change, loadRoster(), new Date().toISOString());
   writeJson(stateFile(), r.state); return r;
 }
-/** Only agents whose status (and, later, pay) lets them work get jobs. */
+/** Only agents whose status and pay let them work get jobs (broke = no new jobs till payday or a top-up). */
 export function eligibility(st = loadState()) {
-  const at = new Date().toISOString();
-  return (a, job) => core.canWork(a, st.agents[a.id] ?? core.normAgentState({}), job, at).ok;
+  const at = new Date().toISOString(); const runs = loadRuns(); const table = priceTable();
+  return (a, job) => { const as = st.agents[a.id] ?? core.normAgentState({}); return core.canWork(a, as, job, at, core.payOf(a, as, runs, table, at)).ok; };
 }
 export function plan(ids, opts = {}) { return core.planJobs(findBuilds(ids), loadRoster(), { eligible: eligibility(), ...opts }); }
 
@@ -119,7 +119,7 @@ export function chatAfterRun(rec, roster = loadRoster()) {
   withState((st) => {
     const at = rec.endedAt || new Date().toISOString();
     core.post(st, core.reportLines(rec, roster), at);
-    core.recordRun(st, rec, roster, at);
+    core.recordRun(st, rec, roster, at, priceTable());
     const moment = rec.status === 'done' ? 'done' : 'failed';
     for (const a of core.reactors(st, roster, rec.agent, 1, rec.jobId)) core.post(st, [{ from: a.id, kind: 'banter', text: core.banterLine(moment, `${rec.jobId}${a.id}`, { other: roster.agents.find((x) => x.id === rec.agent)?.name ?? rec.agent, job: rec.jobId }) }], at);
   });
@@ -211,7 +211,8 @@ export function state() {
   const swarm = loadState();
   const at = new Date().toISOString();
   const spend = Object.fromEntries(roster.agents.map((a) => [a.id, core.spendOf(runs, a.id, table, at)]));
-  return { swarm, spend, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
+  const pay = Object.fromEntries(roster.agents.map((a) => [a.id, core.payOf(a, swarm.agents[a.id], runs, table, at)]));
+  return { swarm, spend, pay, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
 /** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
@@ -267,7 +268,7 @@ export async function main(argv) {
   if (cmd === 'act') {
     let change;
     if (rest[0]?.startsWith('{')) change = JSON.parse(rest[0]);
-    else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : action === 'cap' ? { action, agent, usd: Number(a) }
+    else { const [action, agent, a, ...more] = rest; change = action === 'status' ? { action, agent, status: a, note: more.join(' ') } : action === 'salary' || action === 'topup' ? { action, agent, usd: Number(a), note: more.join(' ') }
         : action === 'chat' ? (agent === 'on' || agent === 'off' ? { action, enabled: agent === 'on' } : { action, agent, on: a !== 'off' }) : action === 'say' ? { action, text: rest.slice(1).join(' ') }
         : action === 'suspend' ? { action, agent, until: new Date(Date.now() + (Number(a) || 24) * 3600e3).toISOString(), reason: more.join(' ') } : action === 'rehire' ? { action, agent } : action === 'rules' ? { action, rageQuitAfter: Number(agent) } : { action, agent, note: [a, ...more].join(' ') }; }
     const r = act(change); return out({ ok: true, state: state(), log: r.log }, r.log.join('\n'));
