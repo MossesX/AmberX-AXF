@@ -53,7 +53,9 @@ export function micLease(g: Record<string, unknown> = globalThis as unknown as R
   g[LEASE_KEY] = made;
   return made;
 }
-export const HOLDER_LABEL: Record<string, string> = { dictation: 'Dictation', 'voice-command': 'Speak a command', 'agent-voice': 'The Assistant microphone', notes: 'Voice notes', 'plan-studio': 'Plan Studio' };
+export const HOLDER_LABEL: Record<string, string> = { dictation: 'Dictation', 'voice-command': 'Speak a command', notes: 'Voice notes', 'plan-studio': 'Plan Studio' };
+/** Who holds the microphone, in words: the known holders by name, anyone else from its id ("voice-memo" → "Voice memo"). */
+export const holderLabel = (who: string): string => HOLDER_LABEL[who] ?? (who ? who[0].toUpperCase() + who.slice(1).replace(/[-_]+/g, ' ') : 'Something else');
 
 /* ---------------------------------------------------------------- what was said */
 
@@ -100,7 +102,7 @@ export async function runConversation(io: VoiceIo, handle: TurnHandler, { maxTur
   const say = async (text: string) => { ev('said', text); await io.speak(text); };
   if (!io.lease.take(OWNER)) {
     const who = io.lease.holder() ?? '';
-    await say(`${HOLDER_LABEL[who] ?? 'Something else'} is using the microphone. Try again when it's finished.`);
+    await say(`${holderLabel(who)} is using the microphone. Try again when it's finished.`);
     return { turns: 0, ended: 'busy' };
   }
   io.lease.release(OWNER);

@@ -131,7 +131,7 @@ export async function discover({ root = ROOT, seen = [], matrices = [], plans = 
     if (!mx) continue;
     for (const t of p.touches) {
       const e = entries.get(t.key); if (!e) continue;
-      for (const it of mx.items ?? []) if (it.state !== 'skip') e.features.push({ id: `matrix:${mx.id}:${it.id}`, title: it.name, state: p.status === 'done' ? 'have' : 'planned', source: 'feature-matrix', plan: p.id, build: `${p.build.profile}:${p.build.id}` });
+      for (const it of mx.items ?? []) if (it.state !== 'skip') e.features.push({ id: `matrix:${mx.id}:${it.id}`, title: it.name, state: p.status === 'done' ? 'have' : 'planned', source: 'feature matrix', plan: p.id, build: `${p.build.profile}:${p.build.id}` });
     }
   }
   for (const k of seen) if (!entries.has(k)) add({ key: k, kind: k.split(':')[0], id: k.split(':').slice(1).join(':'), name: k.split(':').slice(1).join(':'), version: '', status: 'gone', description: 'Was in the catalog before; not found any more (removed or renamed).', folder: '', features: [] });

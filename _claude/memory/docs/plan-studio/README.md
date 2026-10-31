@@ -4,7 +4,7 @@ Brett (voice, Oct 30): a planning studio to store and view every plan, entered b
 app listed with its features checked off as have or planned. Plus (14:20) plain-English AI that edits plans, and
 (14:22) voice planning in AmberX "like I'm talking to you".
 
-Plugin: `apps/console-web/plugins/plan-studio/` (plugin-lifecycle@1; targets `axf-console` + `amberx-droid`).
+Plugin: `apps/console-web/plugins/plan-studio/` (plugin-lifecycle@1; targets `axf-console` + `amberx-droid`). <!-- axf-plugin:plan-studio -->
 
 ## What's in it
 
@@ -22,7 +22,7 @@ Plugin: `apps/console-web/plugins/plan-studio/` (plugin-lifecycle@1; targets `ax
 Where plans live: the hub's shared data `/projects/amberx-axf/_data/plan-studio/` (`plans/<id>.json`,
 `history/<id>.json`, `categories.json`, `templates.json`, `views.json`, `catalog-seen.json`). claude.ai sessions:
 `axhub.memory_read` / `memory_write`, project `amberx-axf`, area `data`, path `plan-studio/plans/<id>.json`. Off the hub
-it's the plugin data folder `.axf-console/plugins/plan-studio/`.
+it's the plugin data folder `.axf-console/plugins/plan-studio/`. <!-- axf-plugin:plan-studio -->
 
 Quick capture: banner **+ Plan**, Builds ▸ New plan…, right-click ▸ New plan…, the global search ("New plan").
 
@@ -48,8 +48,8 @@ plan is done; `tracker.mjs` regenerates).
 
 ## Checks
 
-`python3 apps/console-web/plugins/plan-studio/test.py` (15 server checks, then `test.mjs`: 26 checks) ·
-`npx -y tsx apps/console-web/plugins/plan-studio/test.mjs` · console `tsc --noEmit` + `vite build` · AmberX `tsc`,
+`python3 apps/console-web/plugins/plan-studio/test.py` (15 server checks, then `test.mjs`: 26 checks) · <!-- axf-plugin:plan-studio -->
+`npx -y tsx apps/console-web/plugins/plan-studio/test.mjs` · console `tsc --noEmit` + `vite build` · AmberX `tsc`, <!-- axf-plugin:plan-studio -->
 `test.mjs` (1990/1990), `vite build` (bundles plan-studio) and a typecheck of the plugin against AmberX's baked
 framework · `check-theme`, `check-controls`, `check-plugin-pages`, `plugin-lifecycle check plan-studio`, `menu-reach`,
 `plugins.mjs --check` (main profile).

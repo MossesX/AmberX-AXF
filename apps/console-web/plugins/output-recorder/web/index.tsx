@@ -20,6 +20,7 @@ import {
   type Recording,
 } from './core';
 import { createController, type Controller } from './store';
+import { appMenu } from './menu';
 import './output-recorder.css';
 
 let ctl: Controller | null = null;
@@ -182,6 +183,7 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-31' },
   provides: ['axf.output-recorder'],
   views: { 'output-recorder': { title: 'Audio out', icon: 'play', keywords: ['audio', 'record', 'recorder', 'phone audio', 'playback', 'axhub', 'recordings'], render: () => <OutputRecorderView /> } },
+  appMenu,
   nav: { label: 'Media', items: [{ id: 'output-recorder', label: 'Audio out', icon: 'play', view: 'output-recorder' }] },
   settingsTabs: [{ id: 'output-recorder', label: 'Audio Output Recorder', icon: 'play', order: 41, parent: 'plugins', description: 'Quality, chunk length, what the phone keeps while offline, and where recordings go on axHub.' }],
   settings: [

@@ -62,6 +62,13 @@ def _ai_key(kind: str) -> str:
         return ""
 
 
+def _keys_fix(label: str) -> dict[str, Any]:
+    """The keys plugin's settings tab + dialog, from its capability (axf.ai-keys@1), never by folder name."""
+    svc = plugin_services.get("axf.ai-keys@1")
+    tab, action = getattr(svc, "settings_tab", "") or "plugins", getattr(svc, "open_action", "")
+    return {"type": "settings", "tab": tab, "label": label, **({"action": action} if action else {})}
+
+
 def _claude_token() -> str:
     return _ai_key("claude-code") or os.environ.get("CLAUDE_CODE_OAUTH_TOKEN", "")
 
@@ -153,7 +160,7 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
 
     reg.register({"id": "claude-code-token", "label": "Claude sign-in (Claude Code)", "service": "claude", "order": 22,
                   "when": lambda: bool(_claude_token()), "run": lambda: probes.claude_code_token(_claude_token()),
-                  "fix": {"type": "settings", "tab": "ai-keys", "label": "Sign in again", "action": "ai-keys.open"},
+                  "fix": _keys_fix("Sign in again"),
                   "instructions": ["Settings → Plugins → AI keys: add a fresh Claude sign-in (or run claude /login on the VPS)."]}, OWNER)
     reg.register({"id": "openai-key", "label": "OpenAI key", "service": "claude", "order": 27,
                   "when": lambda: bool(os.environ.get("OPENAI_API_KEY")), "run": lambda: probes.openai_key(os.environ.get("OPENAI_API_KEY", "")),

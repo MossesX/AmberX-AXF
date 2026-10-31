@@ -360,3 +360,69 @@ Not fixed there, so I'll fix them (fix-it-yourself rule). Reading how the lifecy
 [2m  ↳ 58: svc = plugin_services.get("axf.ai-keys@1")[0m
 Committing progress first, then fixing main's red CI items (lifecycle stale refs + menu-reach) one by one.
 [36m▸ Bash: git worktree remove --force /tmp/main-check; git add -A -- . ':!.brief.md' ':!assets.jsonl' && git commit -q -m "Angel ui-all-assets s3–s5 …[0m
+[2m  ↳ 202fa1ce Angel ui-all-assets s3–s5 (Opus): every console screen, plugin page, lib, AmberX, axhub-web, Walkthrough and template reads the sc…[0m
+[36m▸ Bash: sed -n 50,72p apps/console-web/plugins/systems-check/server/healthchecks.py | cut -c1-200; grep -rn "ai-keys@1" apps/console-web/plugins/ai…[0m
+[2m  ↳ def _ms(iso: Any) -> float | None:[0m
+[36m▸ Bash: sed -n 453,480p apps/console-web/plugins/ai-keys/server/__init__.py 2>/dev/null | cut -c1-200 || ls apps/console-web/plugins/ai-keys/server…[0m
+[2m  ↳ class KeysService:[0m
+[36m▸ Bash: grep -rn "settings_tab\|open_action" apps/console-web/plugins/systems-check/server/*.py | head; grep -n "def register\b\|\"fix\"\]\|\.get(\…[0m
+[2m  ↳ apps/console-web/plugins/systems-check/server/checks.py:206: tab = getattr(llm, "settings_tab", "") or "plugins"[0m
+[36m▸ Bash: grep -n "fix" apps/console-web/plugins/systems-check/server/health.py | head -20[0m
+[2m  ↳ 5: breaks, fix, links, instructions, interval})`. `run()` answers a probe dict (status ok | warn | error | info |[0m
+[36m▸ Bash: python3 - <<'EOF' p='apps/console-web/plugins/systems-check/server/healthchecks.py' s=open(p).read() old=''' "fix": {"type": "settings", "t…[0m
+[2m  ↳ 30: let who: string | null = null;[0m
+Fixed agent-voice and ai-keys refs. Now feature-matrix, plan-studio docs and push-banner refs.
+[36m▸ Bash: for f in agent-voice ai-keys feature-matrix plan-studio push-banner; do node framework/cli/plugin-lifecycle.mjs check $f 2>&1 | cut -c1-230…[0m
+[2m  ↳ ✗ agent-voice:[0m
+[36m▸ Bash: grep -rn "'feature-matrix'\|\"feature-matrix\"" apps/console-web/plugins/plan-studio apps/amberx-droid/src 2>/dev/null | grep -v "catalog.m…[0m
+[2m  ↳ (Bash completed with no output)[0m
+[36m▸ Bash: grep -rn "source" apps/console-web/plugins/plan-studio/catalog.mjs | grep -n "source: '" | head -8 | cut -c1-200; grep -rn "\.source ===\|s…[0m
+[2m  ↳ 1:61: if (m) out.push({ id: `app-plugin:${f}`, title: m.name ?? f, state: 'have', source: 'app plugins', description: m.description ?? '' }…[0m
+[36m▸ Bash: python3 - <<'EOF' import json,re def sub(p,old,new,count=1): s=open(p).read(); assert old in s,(p,old); open(p,'w').write(s.replace(old,new…[0m
+[2m  ↳ 2 4 1[0m
+All plugin lifecycle checks pass. Checking the plugin.json diffs didn't reformat anything else.
+[36m▸ Bash: git diff apps/console-web/plugins/push-banner/plugin.json apps/console-web/plugins/plan-studio/plugin.json[0m
+[2m  ↳ diff --git a/apps/console-web/plugins/plan-studio/plugin.json b/apps/console-web/plugins/plan-studio/plugin.json[0m
+Now menu-reach: audio-extract and output-recorder need a `web/menu.ts`. Looking at an existing one.
+[36m▸ Bash: ls apps/console-web/plugins/*/web/menu.ts | head -3; cat apps/console-web/plugins/voice-notes/web/menu.ts 2>/dev/null || cat $(ls apps/cons…[0m
+[2m  ↳ apps/console-web/plugins/_template/web/menu.ts[0m
+[36m▸ Bash: sed -n 355,380p apps/console-web/plugins/audio-extract/web/index.tsx | cut -c1-220; grep -n "appMenu" -A6 apps/console-web/plugins/output-r…[0m
+[2m  ↳ { key: K.videoMbps, label: 'Video bitrate (Mbps)', kind: 'number', default: 8, min: 1, max: 40, step: 1 },[0m
+[36m▸ Bash: grep -n "nav:" apps/console-web/plugins/audio-extract/web/index.tsx | cut -c1-200; grep -n "^import\|appMenu" apps/console-web/plugins/outp…[0m
+[2m  ↳ 326: { id: 'audio-extract.open', phrases: [...VOICE.open], action: 'nav:audio-extract', owner: 'Audio Extract' },[0m
+[36m▸ Bash: cat > apps/console-web/plugins/audio-extract/web/menu.ts <<'EOF' /** Application-menu entries for Audio Extract (pure data: scripts/menu-re…[0m
+[2m  ↳ menu-reach: framework stand-ins with no console handler, reached through View › Toolbar items: file.new, edit.copy, edit.delete, file.expor…[0m
+menu-reach green. Checking whether the tracker / plugins / session-checkin failures are just this machine (they pass on CI).
+[36m▸ Bash: node framework/cli/profiles.mjs current 2>&1 | tail -1; AXF_BUILD_PROFILE=main-framework node framework/cli/tracker.mjs --check 2>&1 | tail…[0m
+[2m  ↳ Refactor (refactor)[0m
+[36m▸ Bash: AXF_BUILD_PROFILE=main-framework node framework/cli/tracker.mjs --check >/dev/null 2>&1; echo tracker=$?; env -u CLAUDE_CODE_SESSION_ATTEND…[0m
+[2m  ↳ tracker=0[0m
+Those were environment (profile and Claude session vars). The two remaining ones need Node 22 for `--experimental-strip-types`; running their parts with tsx instead.
+[36m▸ Bash: for p in context-menu-designer plugin-update; do ls apps/console-web/plugins/$p/test.mts apps/console-web/plugins/$p/web/*.test.* 2>/dev/nu…[0m
+[2m  ↳ apps/console-web/plugins/context-menu-designer/test.mts[0m
+[36m▸ Bash: for p in context-menu-designer plugin-update; do npx -y tsx apps/console-web/plugins/$p/test.mts 2>&1 | tail -1; done; PATH=/tmp/psvenv/bin…[0m
+[2m  ↳ 52 checks passed[0m
+Only the Node-version line fails there. Re-running the whole block with CI-like env (profile main-framework, no Claude session vars).
+[36m▸ Bash: sed -i 's|^export PATH=/tmp/psvenv/bin:$PATH|export PATH=/tmp/psvenv/bin:$PATH AXF_BUILD_PROFILE=main-framework; unset CLAUDECODE CLAUDE_CO…[0m
+[2m  ↳ export PATH=/tmp/psvenv/bin:$PATH AXF_BUILD_PROFILE=main-framework; unset CLAUDECODE CLAUDE_CODE_ENTRYPOINT CLAUDE_CODE_SESSION_ATTENDED CL…[0m
+[36m▸ Bash: bash /tmp/webtests.sh > /tmp/webtests.log 2>&1; grep "^FAIL\|^DONE" /tmp/webtests.log[0m
+[2m  ↳ Command running in background with ID: bi9xr5fe7. Output is being written to: /tmp/claude-0/-home-axfbuild-wt-assets/8d625ff8-a2ed-4363-8c9…[0m
+While tests run, writing the report. Gathering per-plugin change counts.
+[36m▸ Bash: git diff --numstat origin/main -- apps/console-web/plugins apps/console-web/src framework/libs framework/ui apps/amberx-droid/src apps/axhu…[0m
+[2m  ↳ 5 apps/amberx-droid/src/plugins/approvals/web/terminal.css;7 apps/amberx-droid/src/plugins/commands/web/commands.css;1 apps/amberx-droid/sr…[0m
+[36m▸ Bash: tail -4 _claude/memory/docs/rebuilds/LOG.md | cut -c1-300; ls _claude/builds/reports/ | head[0m
+[2m  ↳ | 2026-10-29 | feature-matrix plugin (refactor-all s62–s67: matrices grid, matrix view, Apply, row hooks in every builds grid, Builds ▸ Fea…[0m
+Writing the report and the log line.
+[36m▸ Write: /home/axfbuild/wt-assets/_claude/builds/reports/ui-all-assets-2026-10-31.md[0m
+[2m  ↳ File created successfully at: /home/axfbuild/wt-assets/_claude/builds/reports/ui-all-assets-2026-10-31.md (file state is current in your co…[0m
+[36m▸ Bash: echo "| 2026-10-31 | ui-all-assets s3–s5 (Angel) | Opus | claude/ui-all-assets | [report](../../../builds/reports/ui-all-assets-2026-10-31.…[0m
+[2m  ↳ 33:## Active[0m
+[36m▸ Bash: python3 - <<'EOF' p='_claude/THREADS.md' s=open(p).read() old=[l for l in s.split('\n') if l.startswith('| One place changes everything (An…[0m
+[2m  ↳ 1[0m
+[36m▸ Bash: until grep -q "^DONE" /tmp/webtests.log; do sleep 10; done; grep "^FAIL\|^DONE" /tmp/webtests.log[0m
+[2m  ↳ FAIL: python apps/console-web/plugins/codebase-changes/test.py[0m
+Only environment failures left (git ownership as root; Node 20). Verifying codebase-changes as the repo's owner user.
+[36m▸ Bash: timeout 300 su axfbuild -s /bin/bash -c "cd /home/axfbuild/wt-assets && AXF_BUILD_PROFILE=main-framework PATH=/tmp/psvenv/bin:\$PATH python…[0m
+[2m  ↳ 0[0m
+Green as the owner user. Committing, fixing file ownership (this session ran as root), then push.
+[36m▸ Bash: git add -A -- . ':!.brief.md' ':!assets.jsonl' && git commit -q -m "ui-all-assets: report + log + threads; main's red CI fixed (lifecycle s…[0m

@@ -16,6 +16,7 @@ import {
   FOLDER, FORMATS, ID, K, VOICE, batchProgress, checkTrim, createController, formatSize, formatTime, readSettings, recActive, recLabel, trackLabel,
   formatProblem, type AudioFile, type AudioFormat, type AudioTrack, type Controller, type Job, type Video,
 } from './core';
+import { appMenu } from './menu';
 import './audio-extract.css';
 
 /* ---------------------------------------------------------------- one controller per page */
@@ -364,10 +365,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'audio-extract.chip', tab: 'audio-extract', title: 'Floating chip', icon: 'monitor', render: () => <OverlayPanel /> },
     { id: 'audio-extract.lifecycle', tab: 'audio-extract', title: 'Install & uninstall', icon: 'package', render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
-  appMenu: [{ id: 'audio-extract', menu: 'axhub', items: [
-    { id: 'audio-extract.latest', label: 'Extract audio from last screen recording', icon: 'download', action: 'audio-extract.latest' },
-    { id: 'audio-extract.record', label: 'Record screen', icon: 'monitor', action: 'audio-extract.record' },
-  ] }],
+  appMenu,
   register(rt) {
     const bridge = nativeBridge();
     ctl = createController(bridge, {
