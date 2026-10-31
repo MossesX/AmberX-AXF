@@ -62,7 +62,7 @@ function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: 
   const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id]; const pay = state.pay[a.id];
   return (
     <article role="listitem" className={`sw-card ${as.status === 'fired' ? 'sw-gone' : ''}`}>
-      <button className="sw-card__open" onClick={onOpen} aria-label={`${a.name}, open profile`}>
+      <button type="button" data-fx-row className="sw-card__open" onClick={onOpen} aria-label={`${a.name}, open profile`}>
         <div className="sw-card__head">
           <Avatar a={a} />
           <div className="sw-card__who"><b>{a.name}</b><span className="fx-muted">{a.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
@@ -169,7 +169,7 @@ function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: Swarm
       <section className="fx-stack">
         <h3 className="sw-wave">Latest runs</h3>
         {st.feed.length === 0 ? <p className="fx-muted">No runs yet.</p>
-          : <ul className="sw-feed">{st.feed.map((f, i) => <li key={i}><button className="sw-link" onClick={() => onFeed(f.jobId)}>{f.jobId}</button> <span className="fx-muted">{fmtTime(f.at)}</span> <ModelChip m={f.model} /> {f.status} · <b>{core.fmtUsd(f.usd)}</b>{f.summary ? ` · ${f.summary}` : ''}</li>)}</ul>}
+          : <ul className="sw-feed">{st.feed.map((f, i) => <li key={i}><button type="button" className="fx-btn fx-btn--sm fx-btn--quiet" onClick={() => onFeed(f.jobId)}>{f.jobId}</button> <span className="fx-muted">{fmtTime(f.at)}</span> <ModelChip m={f.model} /> {f.status} · <b>{core.fmtUsd(f.usd)}</b>{f.summary ? ` · ${f.summary}` : ''}</li>)}</ul>}
       </section>
     </div>
   );

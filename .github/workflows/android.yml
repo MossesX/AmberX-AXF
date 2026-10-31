@@ -24,6 +24,8 @@ jobs:
   engine:
     name: Build engine sweep (Node)
     runs-on: ubuntu-latest
+    env:
+      AXF_BUILD_PROFILE: main-framework   # the sweep checks the base profile's data whatever profile Brett has saved
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
