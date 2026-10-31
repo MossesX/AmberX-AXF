@@ -19,6 +19,29 @@ t('models sort cheapest first', () => assert.deepEqual(c.normAgent({ id: 'x', mo
 t('bad roster is reported', () => { const r = c.normRoster({ agents: [{ id: 'A b', skill: 'none' }, { id: 'A b' }] }); const p = c.checkRoster(r, skills); assert.ok(p.some((x) => /lowercase/.test(x)) && p.some((x) => /twice/.test(x)) && p.some((x) => /no skill file/.test(x))); });
 t('long skill is flagged', () => { const s = c.parseSkill(`---\n$axf: agent-skill@1\nid: big\n---\n${'line\n'.repeat(80)}`); assert.match(c.checkRoster({ agents: [] }, { big: s })[0], /one page/); });
 
+// ID cards (agent-card@1 designs, per-agent identity + design)
+t('ID cards: identity edits, per-agent design, default, save as new, remove', () => {
+  const at = '2026-10-31T10:00:00.000Z';
+  let s = c.normState({}, roster);
+  assert.deepEqual(s.cards, { default: '', designs: [] });
+  s = c.applyChange(s, { action: 'identity', agent: 'kat', fields: { name: 'Kat K.', hiredAt: '2026-11-01', email: '' } }, roster, at).state;
+  const idn = c.cardIdentity(roster.agents.find((a) => a.id === 'kat'), s.agents.kat, 'On duty');
+  assert.equal(idn.name, 'Kat K.'); assert.equal(idn.hiredAt, '2026-11-01'); assert.equal(idn.role, 'Android engineer'); assert.equal(idn.page, 'axf://agent-swarm/kat');
+  assert.throws(() => c.applyChange(s, { action: 'identity', agent: 'kat', fields: { hiredAt: 'soon' } }, roster, at), /YYYY-MM-DD/);
+  assert.throws(() => c.applyChange(s, { action: 'identity', agent: 'kat', fields: { photo: 'javascript:alert(1)' } }, roster, at), /image link/);
+  s = c.applyChange(s, { action: 'card-save', taken: ['corporate-badge'], asset: { id: 'my-pass', name: 'My pass', data: { design: 'backstage', front: ['name', 'status'], labels: { status: 'Access' }, evil: '<script>' } } }, roster, at).state;
+  assert.deepEqual(s.cards.designs[0].data, { design: 'backstage', front: ['name', 'status'], labels: { status: 'Access' } });
+  assert.equal(s.cards.designs[0].type, 'agent-card');
+  assert.throws(() => c.applyChange(s, { action: 'card-save', taken: ['corporate-badge'], asset: { id: 'corporate-badge', name: 'x' } }, roster, at), /already a design/);
+  s = c.applyChange(s, { action: 'card-default', design: 'my-pass', name: 'My pass' }, roster, at).state;
+  assert.equal(c.cardFor(s, 'rio'), 'my-pass'); assert.ok(s.messages.at(-1).text.includes('New ID cards'));
+  s = c.applyChange(s, { action: 'card', agent: 'kat', design: 'license' }, roster, at).state;
+  assert.equal(c.cardFor(s, 'kat'), 'license');
+  s = c.applyChange(s, { action: 'card-delete', design: 'my-pass' }, roster, at).state;
+  assert.equal(s.cards.default, ''); assert.equal(c.cardFor(s, 'rio'), ''); assert.equal(c.cardFor(s, 'kat'), 'license');
+  assert.deepEqual(c.normState(JSON.parse(JSON.stringify(s)), roster).agents.kat.identity.name, 'Kat K.');
+});
+
 // s2 planner
 const B = (id, steps) => ({ id, steps: steps.map((s, i) => ({ id: `s${i + 1}`, model: 'Opus', estimate: '20 min', ...s })) });
 t('glob and leases', () => { assert.ok(c.globMatch('**/*.tsx', 'a/b/c.tsx')); assert.ok(c.globMatch('apps/x/', 'apps/x/y.ts')); assert.ok(!c.globMatch('*.tsx', 'a/b.tsx')); assert.ok(c.leasesOverlap(['apps/x/'], ['apps/x/a.ts'])); assert.ok(!c.leasesOverlap(['a.ts'], ['b.ts'])); });

@@ -527,15 +527,50 @@ export function normAgentState(s) {
     brokeSaid: str(o.brokeSaid, 40),
     failStreak: num(o.failStreak, 0, 0, 1000) | 0,
     history: (Array.isArray(o.history) ? o.history : []).slice(-200).map((h) => ({ at: str(h?.at, 40), from: str(h?.from, 40), to: str(h?.to, 40), note: str(h?.note, 300), by: str(h?.by, 40) || 'brett' })),
+    // ID card: identity fields Brett edited (blank = the roster's) and a per-agent card design ('' = the default design)
+    identity: Object.fromEntries(IDENTITY_FIELDS.map((k) => [k, str(o.identity?.[k], k === 'photo' ? 600 : 200).trim()])),
+    card: CARD_ID.test(str(o.card, 48)) ? str(o.card, 48) : '',
   };
 }
+// ---------------------------------------------------------------- ID cards (agent-card@1 designs; rules framework/core/engines/agent-card-rules.mjs)
+
+/** Identity fields an ID card shows that Brett may edit per agent (blank = the roster's value or a derived one). */
+export const IDENTITY_FIELDS = ['name', 'role', 'specialty', 'photo', 'employeeId', 'email', 'hiredAt', 'catchphrase', 'signature'];
+const CARD_ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
+const CARD_KEYS = ['design', 'orientation', 'logo', 'surface', 'accent', 'finish', 'photo', 'code', 'front', 'back', 'labels'];
+/** A saved card design, kept as an asset@1 envelope; data keeps only the agent-card keys (the renderer normalizes the rest). */
+export function normCardDesign(d) {
+  const o = d && typeof d === 'object' ? d : {};
+  const raw = o.data && typeof o.data === 'object' && !Array.isArray(o.data) ? o.data : {};
+  const data = {};
+  for (const k of CARD_KEYS) {
+    const v = raw[k];
+    if (k === 'front' || k === 'back') { if (Array.isArray(v)) data[k] = list(v, 12, 24); }
+    else if (k === 'labels') { if (v && typeof v === 'object' && !Array.isArray(v)) data[k] = Object.fromEntries(Object.entries(v).slice(0, 13).map(([lk, lv]) => [str(lk, 24), str(lv, 24)]).filter(([lk, lv]) => lk && lv)); }
+    else if (typeof v === 'string') data[k] = str(v, 24);
+  }
+  return { $axf: 'asset@1', type: 'agent-card', id: str(o.id, 48), name: str(o.name, 60) || str(o.id, 48), version: str(o.version, 20) || '1.0.0', author: str(o.author, 60) || 'Brett', data };
+}
+export function normCards(c) {
+  const o = c && typeof c === 'object' ? c : {};
+  return { default: CARD_ID.test(str(o.default, 48)) ? str(o.default, 48) : '', designs: (Array.isArray(o.designs) ? o.designs : []).slice(0, 50).map(normCardDesign).filter((d) => CARD_ID.test(d.id)) };
+}
+/** The identity a card shows: the roster's agent with Brett's edits on top, plus its status words. */
+export function cardIdentity(agent, as, statusWord = '') {
+  const id = as?.identity ?? {};
+  const pick = (k) => id[k] || agent?.[k] || '';
+  return { id: agent?.id ?? '', name: pick('name'), role: pick('role'), specialty: pick('specialty'), photo: id.photo || '', employeeId: id.employeeId || '', email: id.email || '', hiredAt: pick('hiredAt'), status: statusWord, catchphrase: pick('catchphrase'), signature: id.signature || '', page: `axf://agent-swarm/${agent?.id ?? ''}` };
+}
+/** Which design an agent's card uses: its own pick, else the swarm's default, else '' (the app's active agent-card asset). */
+export const cardFor = (state, agentId) => state.agents[agentId]?.card || state.cards.default || '';
+
 export function normState(s, roster) {
   const o = s && typeof s === 'object' ? s : {};
   const agents = {};
   for (const a of roster?.agents ?? []) agents[a.id] = normAgentState(o.agents?.[a.id]);
   for (const [k, v] of Object.entries(o.agents ?? {})) if (!agents[k]) agents[k] = normAgentState(v); // keep history of agents taken off the roster
   const rules = { rageQuitAfter: num(o.rules?.rageQuitAfter, DEFAULT_RULES.rageQuitAfter, 1, 50) | 0 };
-  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), chatSettings: normChatSettings(o.chatSettings), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })) };
+  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), chatSettings: normChatSettings(o.chatSettings), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })), cards: normCards(o.cards) };
 }
 
 export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || 'Custom' : STATUSES[as.status]?.label ?? as.status);
@@ -641,6 +676,38 @@ export function applyChange(state, change, roster, at) {
       post(s, [{ from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, c.agent)} is rehired and back on duty. Don't make me regret it.` }], at); break;
     }
     case 'rules': { if (c.rageQuitAfter != null) s.rules.rageQuitAfter = num(c.rageQuitAfter, 3, 1, 50) | 0; log.push(`rage-quit after ${s.rules.rageQuitAfter} failed jobs in a row`); break; }
+    case 'identity': { // ID card fields; blank = back to the roster's / derived value
+      const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`);
+      const f = c.fields && typeof c.fields === 'object' ? c.fields : {};
+      if (f.hiredAt && !/^\d{4}-\d{2}-\d{2}$/.test(str(f.hiredAt, 20))) throw new Error('hire date must be YYYY-MM-DD');
+      if (f.photo && !/^(https?:\/\/|data:image\/|\/)/.test(str(f.photo, 600))) throw new Error('photo must be an image link');
+      for (const k of IDENTITY_FIELDS) if (k in f) as.identity[k] = str(f[k], k === 'photo' ? 600 : 200).trim();
+      log.push(`${c.agent}: ID card details saved`); break;
+    }
+    case 'card': { // per-agent design ('' = the default)
+      const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`);
+      const id = str(c.design, 48); if (id && !CARD_ID.test(id)) throw new Error('not a card design id');
+      as.card = id; log.push(`${c.agent}: card design ${id || 'default'}`); break;
+    }
+    case 'card-default': {
+      const id = str(c.design, 48); if (id && !CARD_ID.test(id)) throw new Error('not a card design id');
+      s.cards.default = id; log.push(`default card design ${id || "the app's"}`);
+      post(s, [{ from: BOSS.id, kind: 'status', text: `New ID cards for everybody${id ? ` (${str(c.name, 60) || id})` : ''}. Smile, assholes.` }], at); break;
+    }
+    case 'card-save': { // Save as new: a new design asset (never overwrites a starter id)
+      const d = normCardDesign(c.asset);
+      if (!CARD_ID.test(d.id)) throw new Error('give the design an id (lowercase letters, digits, dashes)');
+      if ((c.taken ?? []).includes(d.id)) throw new Error(`"${d.id}" is already a design: pick another id`);
+      s.cards.designs = [...s.cards.designs.filter((x) => x.id !== d.id), d].slice(-50);
+      log.push(`card design "${d.name}" saved`); break;
+    }
+    case 'card-delete': {
+      const id = str(c.design, 48); const before = s.cards.designs.length;
+      s.cards.designs = s.cards.designs.filter((x) => x.id !== id); if (s.cards.designs.length === before) throw new Error(`no saved design "${id}"`);
+      if (s.cards.default === id) s.cards.default = '';
+      for (const as of Object.values(s.agents)) if (as.card === id) as.card = '';
+      log.push(`card design "${id}" removed`); break;
+    }
     case 'note': { const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`); as.note = str(c.note, 300); log.push(`${c.agent}: note saved`); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }

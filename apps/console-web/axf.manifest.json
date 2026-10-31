@@ -52,7 +52,8 @@
     "branding": "gizmox",
     "typography": "compact",
     "density": "compact",
-    "sizing": "compact"
+    "sizing": "compact",
+    "agent-card": "corporate-badge"
   },
   "hidden": [
     "toolbar",

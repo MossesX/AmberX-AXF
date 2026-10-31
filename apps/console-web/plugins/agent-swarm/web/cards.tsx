@@ -3,6 +3,7 @@ import { Button, Chip } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
 import { AgentChat } from './chat';
+import { CardSection } from './idcards';
 import { ModelChip, fmtTime, statusText, type Act, type Agent, type SwarmState } from './ui-types';
 
 /*
@@ -59,17 +60,17 @@ export function CrewTab({ state, stats, act, onFeed }: { state: SwarmState; stat
 
 const BENCHED = ['quit', 'fired', 'suspended'];
 function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: Stats; act: Act; onOpen: () => void }) {
-  const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id]; const pay = state.pay[a.id];
+  const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id]; const pay = state.pay[a.id]; const idn = core.cardIdentity(a, as);
   return (
     <article role="listitem" className={`sw-card ${as.status === 'fired' ? 'sw-gone' : ''}`}>
-      <button type="button" data-fx-row className="sw-card__open" onClick={onOpen} aria-label={`${a.name}, open profile`}>
+      <button type="button" data-fx-row className="sw-card__open" onClick={onOpen} aria-label={`${idn.name}, open profile`}>
         <div className="sw-card__head">
           <Avatar a={a} />
-          <div className="sw-card__who"><b>{a.name}</b><span className="fx-muted">{a.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
+          <div className="sw-card__who"><b>{idn.name}</b><span className="fx-muted">{idn.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
         </div>
-        <p className="sw-card__line">{a.specialty}</p>
+        <p className="sw-card__line">{idn.specialty}</p>
         <dl className="sw-card__stats">
-          <div><dt>Hired</dt><dd>{fmtDay(a.hiredAt)}</dd></div>
+          <div><dt>Hired</dt><dd>{fmtDay(idn.hiredAt)}</dd></div>
           <div><dt>Salary</dt><dd>{core.fmtUsd(pay?.salary ?? a.salary)}/wk</dd></div>
           <div><dt>Spent (week)</dt><dd>{core.fmtUsd(pay?.spent ?? 0)}</dd></div>
           <div><dt>Left</dt><dd className={pay?.broke ? 'sw-warn' : ''}>{pay?.broke ? 'broke' : core.fmtUsd(pay?.left ?? a.salary)}</dd></div>
@@ -84,7 +85,7 @@ function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: 
           <div><dt>Favourite</dt><dd>{st.favoriteModel ? <ModelChip m={st.favoriteModel} /> : <ModelChip m={a.models[0]!} />}</dd></div>
           <div><dt>Last seen</dt><dd>{st.lastSeen ? fmtTime(st.lastSeen) : 'never'}</dd></div>
         </dl>
-        <p className="sw-card__quote">“{a.catchphrase}”</p>
+        <p className="sw-card__quote">“{idn.catchphrase}”</p>
       </button>
       {BENCHED.includes(as.status) && <div className="sw-bar"><Button size="sm" icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button>{as.note && <span className="fx-muted">{as.note}</span>}</div>}
     </article>
@@ -138,23 +139,24 @@ function Discipline({ a, state, act }: { a: Agent; state: SwarmState; act: Act }
 }
 
 function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: SwarmState; st: Stats; act: Act; onBack: () => void; onFeed: (jobId: string) => void }) {
-  const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill];
+  const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill]; const idn = core.cardIdentity(a, as);
   return (
     <div className="fx-stack">
       <div className="sw-bar"><Button icon="undo" onClick={onBack}>Crew</Button></div>
       <div className="sw-card sw-card--profile">
         <div className="sw-card__head">
           <Avatar a={a} size={88} />
-          <div className="sw-card__who"><h2>{a.name}</h2><span className="fx-muted">{a.role} · hired {fmtDay(a.hiredAt)}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
+          <div className="sw-card__who"><h2>{idn.name}</h2><span className="fx-muted">{idn.role} · {idn.specialty} · hired {fmtDay(idn.hiredAt)}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
         </div>
         <p>{a.bio}</p>
-        <p className="sw-card__quote">“{a.catchphrase}”</p>
+        <p className="sw-card__quote">“{idn.catchphrase}”</p>
         <p className="fx-muted">Models {a.models.map((m) => core.MODEL_LABEL[m] ?? m).join(' · ')} · up to {a.maxTurns} turns · tools {a.tools.join(', ')}</p>
       </div>
       <section className="fx-stack">
         <h3 className="sw-wave">Skill: {skill?.title ?? a.skill}</h3>
         <pre className="sw-skill">{skill?.body ?? 'No skill file.'}</pre>
       </section>
+      <CardSection state={state} a={a} st={st} act={act} photo={<Avatar a={a} size={120} />} />
       <PaySection a={a} state={state} act={act} />
       <Discipline a={a} state={state} act={act} />
       <section className="fx-stack">

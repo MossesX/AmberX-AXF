@@ -21,3 +21,7 @@ export const PRESETS: Record<string, { label: string; vibe: number; chattiness: 
 export const VIBE_COLORS: string[];
 export function previewLine(cs: any, from?: string, seed?: string): any;
 export function vibeShade(score: number | null, ceiling: number): number;
+export const IDENTITY_FIELDS: string[];
+export function normCardDesign(d: any): any;
+export function cardIdentity(agent: any, as: any, statusWord?: string): { id: string; name: string; role: string; specialty: string; photo: string; employeeId: string; email: string; hiredAt: string; status: string; catchphrase: string; signature: string; page: string };
+export function cardFor(state: any, agentId: string): string;

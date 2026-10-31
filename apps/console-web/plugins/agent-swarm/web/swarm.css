@@ -74,3 +74,12 @@
 .sw-slider p { margin: 0; font-size: var(--fx-type-root-sm) }
 .sw-preview { padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }
 .sw-preview > p { margin: 0 0 var(--fx-dens-gap-sm) }
+/* ID cards: gallery, designer, per-agent card (the cards themselves are the framework's .fx-idcard) */
+.sw-idcards { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); align-items: flex-start }
+.sw-idcards__item { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); max-width: 100% }
+.sw-idcards__item figcaption { max-width: calc(var(--fx-space) * 34) }
+.sw-designer { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 30)), 1fr)); gap: var(--fx-dens-gap-lg); align-items: start }
+.sw-enums { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 12), 1fr)); gap: var(--fx-dens-gap-sm) }
+.sw-enum { gap: var(--fx-dens-gap-2xs) }
+.sw-fields { margin: 0; padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.fx-idcard__photo img { width: 100%; height: 100%; object-fit: cover }

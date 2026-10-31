@@ -3,7 +3,8 @@ import { Button, Icon, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
-import { CrewTab } from './cards';
+import { Avatar, CrewTab } from './cards';
+import { CardsTab } from './idcards';
 import { ChatTab } from './chat';
 import { ChatSettingsTab } from './chat-settings';
 import { FOLDER, ModelChip, api, fmtTime, statusText, useSwarm, type Act, type Agent, type AgentState, type Job, type Pay, type Res, type Slot, type Spend, type StatusDef, type SwarmState } from './ui-types';
@@ -16,7 +17,7 @@ export { FOLDER };
  * cost meter per agent, build and job. All rules are in swarm-core.mjs; the server reads through swarm.mjs.
  */
 
-const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'jobs', label: 'Jobs', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }, { id: 'chat', label: 'Group chat', icon: 'bell' }, { id: 'chat-settings', label: 'Chat settings', icon: 'sliders' }] as const;
+const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'cards', label: 'ID cards', icon: 'star' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'jobs', label: 'Jobs', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }, { id: 'chat', label: 'Group chat', icon: 'bell' }, { id: 'chat-settings', label: 'Chat settings', icon: 'sliders' }] as const;
 type Tab = (typeof TABS)[number]['id'];
 
 export function SwarmPage() {
@@ -43,6 +44,7 @@ export function SwarmPage() {
         {TABS.map((t) => <button key={t.id} role="tab" className="fx-tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}><Icon name={t.icon} size={14} />{t.label}</button>)}
       </div>
       {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} onFeed={() => setTab('cost')} />}
+      {tab === 'cards' && <CardsTab state={state} stats={stats} act={doAct} photo={(a) => <Avatar a={a} size={120} />} />}
       {tab === 'agents' && <AgentsTab state={state} act={doAct} />}
       {tab === 'jobs' && <JobsTab state={state} />}
       {tab === 'cost' && <CostTab state={state} />}
