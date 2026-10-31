@@ -65,7 +65,14 @@ export interface NativeApi {
   hubSignOut(opts: { hub: string }): Promise<void>;
   /** One utterance; resolves with what was heard ('' when nothing). */
   listen(opts: { lang: string; prompt?: string }): Promise<{ text: string }>;
-  speak(opts: { text: string; lang: string }): Promise<void>;
+  /** Say something. Agent voice (Oct 29 2026) adds the voice, rate, pitch, volume, an utterance id (a `spoken` event
+   * follows when it ends), `queue` and `holdMic` (hands-free steps aside while it talks). Older callers: text + lang. */
+  speak(opts: { text: string; lang: string; voice?: string; rate?: number; pitch?: number; volume?: number; id?: string; queue?: boolean; holdMic?: boolean }): Promise<void>;
+  stopSpeaking(): Promise<void>;
+  /** The phone's text-to-speech voices (Android); the browser's voices in the fallback. */
+  ttsVoices(): Promise<{ voices: { id: string; name: string; lang: string; quality?: number; network?: boolean }[] }>;
+  /** Microphone permission without asking: granted / denied / prompt. */
+  micPermission(): Promise<{ state: 'granted' | 'denied' | 'prompt' }>;
   monitorStart(opts: MonitorConfig): Promise<MonitorStatus>;
   monitorStop(): Promise<MonitorStatus>;
   monitorStatus(): Promise<MonitorStatus>;
@@ -93,6 +100,7 @@ export interface NativeApi {
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
   /** what hands-free is hearing (only while AmberX is on screen) */
+  addListener(event: 'spoken', fn: (e: { id: string; done: boolean; error?: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'heard', fn: (e: { text: string; final: boolean; source?: 'listen' }) => void): Promise<PluginListenerHandle>;
   /** input level in dB (Android: recognizer RMS dB; browser: dBFS), about ten a second while on screen */
   addListener(event: 'level', fn: (e: { db: number; source?: 'android' | 'web' }) => void): Promise<PluginListenerHandle>;
@@ -215,13 +223,29 @@ const web: NativeApi = {
       rec.start();
     }).then(back, (e) => { back(null); throw e; });
   },
-  async speak({ text, lang }) {
+  async speak({ text, lang, voice, rate, pitch, volume, id, queue }) {
     const synth = globalThis.speechSynthesis;
     if (!synth || !text) return;
-    synth.cancel();
+    if (!queue) synth.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
+    if (voice) { const v = synth.getVoices().find((x) => x.voiceURI === voice || x.name === voice); if (v) u.voice = v; }
+    if (rate) u.rate = rate;
+    if (pitch) u.pitch = pitch;
+    if (volume !== undefined) u.volume = volume;
     await new Promise<void>((done) => { u.onend = () => done(); u.onerror = () => done(); synth.speak(u); });
+    if (id) emit('spoken', { id, done: true });
+  },
+  async stopSpeaking() { globalThis.speechSynthesis?.cancel(); },
+  async ttsVoices() {
+    const synth = globalThis.speechSynthesis;
+    return { voices: (synth?.getVoices() ?? []).map((v) => ({ id: v.voiceURI, name: v.name, lang: v.lang, network: !v.localService })) };
+  },
+  async micPermission() {
+    try {
+      const p = await (navigator as Navigator & { permissions?: { query(o: { name: string }): Promise<{ state: string }> } }).permissions?.query({ name: 'microphone' });
+      return { state: (p?.state === 'granted' || p?.state === 'denied' ? p.state : 'prompt') as 'granted' | 'denied' | 'prompt' };
+    } catch { return { state: 'prompt' as const }; }
   },
   async monitorStart() {
     // In a browser the page itself is the monitor (plugins/monitor/web polls while it's open); this only records it.

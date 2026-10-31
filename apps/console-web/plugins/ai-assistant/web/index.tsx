@@ -43,7 +43,7 @@ function WizardIntro() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'AI assistant',
-  version: '0.2.1',
+  version: '0.2.2',
   appMenu,
   provides: ['axf.ai-assistant', 'axf.llm@1', 'axf.live-sessions@1'],
   register(rt) {
