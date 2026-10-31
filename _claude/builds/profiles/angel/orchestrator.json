@@ -1021,7 +1021,7 @@
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
    "status": "complete",
    "branch": "claude/element-inspector",
-   "pr": null,
+   "pr": 192,
    "profile": "angel",
    "steps": [
     {
