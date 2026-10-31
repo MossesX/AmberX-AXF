@@ -159,6 +159,30 @@ export interface LayoutData {
   contentMaxWidth: number;
   /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
   slots?: Partial<Record<string, string[]>>;
+  /** repeating slots: one item per entry of a data set the page declares (core/engines/repeat.ts) */
+  repeat?: RepeatSlotDef[];
+}
+
+/** Repeating slot styles (asset-types.json layout.repeat.styles). Append-only. */
+export type RepeatStyle = 'tabs' | 'cards' | 'grid' | 'stacked';
+/** What draws when the page's data set is missing or empty: an asset by type (+ id), or a plain label. */
+export interface RepeatFallback {
+  type?: string;
+  id?: string;
+  label?: string;
+}
+export interface RepeatSlotDef {
+  id: string;
+  /** name of the data set the page declares (`PageDataSets`) */
+  dataSet: string;
+  /** slot region it sits in (default main) */
+  region?: string;
+  style?: RepeatStyle;
+  /** grid / cards columns, 1-12 */
+  columns?: number;
+  /** items shown at most; 0 = all */
+  max?: number;
+  fallback?: RepeatFallback;
 }
 
 /** Shared density / surface vocabulary for chrome assets (toolbar, nav-menu, app-menu). */

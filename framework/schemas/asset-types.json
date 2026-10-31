@@ -163,7 +163,18 @@
         }
       },
       "optional_fields": {
-        "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types."
+        "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types.",
+        "repeat": "list of repeating slots (engine core/engines/repeat.ts): { id, dataSet, region? (a slot region, default main), style? (`repeat.styles`, default stacked), columns? (1-12, grid/cards; default grid 3, cards 2), max? (0 = all), fallback? { type?, id?, label? } }. The slot draws one item per entry of the data set the page declares under `dataSet`; when the page declares none or it is empty, the fallback slot draws instead."
+      },
+      "repeat": {
+        "styles": [
+          "tabs",
+          "cards",
+          "grid",
+          "stacked"
+        ],
+        "default": "stacked",
+        "maxColumns": 12
       }
     },
     "app-menu": {

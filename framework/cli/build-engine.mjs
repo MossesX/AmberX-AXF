@@ -85,6 +85,7 @@ export function validateAsset(raw) {
     if (isObj(raw.data[k])) for (const nk of keys) if (!(nk in raw.data[k])) errors.push(`data.${k}.${nk} is required`);
   }
   if (raw.type === 'layout' && 'slots' in raw.data) errors.push(...validateSlots(raw.data.slots));
+  if (raw.type === 'layout' && 'repeat' in raw.data) errors.push(...validateRepeat(raw.data.repeat));
   if (raw.type === 'app-menu' && Array.isArray(raw.data.menus)) {
     raw.data.menus.forEach((m, i) => {
       if (!isObj(m)) return;
@@ -289,6 +290,37 @@ export function validateSlots(slots) {
     if (!Array.isArray(types)) { errors.push(`data.slots.${r} must be a list of asset types`); continue; }
     for (const t of types) if (typeof t !== 'string' || !spec.types[t]) errors.push(`data.slots.${r} accepts unknown asset type "${String(t)}"`);
   }
+  return errors;
+}
+
+/** Repeating slots (layout.repeat); same messages as validateRepeat in core/validate.ts and AssetValidator.kt. */
+export function validateRepeat(repeat) {
+  const { slots: { regions }, repeat: { styles, maxColumns } } = spec.types.layout;
+  if (!Array.isArray(repeat)) return ['data.repeat must be a list of repeating slots'];
+  const errors = [];
+  const seen = new Set();
+  const whole = (v, min, max = Infinity) => typeof v === 'number' && Number.isInteger(v) && v >= min && v <= max;
+  repeat.forEach((r, i) => {
+    const at = `data.repeat[${i}]`;
+    if (!isObj(r)) { errors.push(`${at} must be an object`); return; }
+    if (typeof r.id !== 'string' || !r.id.trim()) errors.push(`${at}.id must be a non-empty string`);
+    else if (seen.has(r.id)) errors.push(`${at}.id "${r.id}" is used twice`);
+    else seen.add(r.id);
+    if (typeof r.dataSet !== 'string' || !r.dataSet.trim()) errors.push(`${at}.dataSet must be a non-empty string`);
+    if ('region' in r && !regions.includes(r.region)) errors.push(`${at}.region is not a layout region (one of: ${regions.join(', ')})`);
+    if ('style' in r && !styles.includes(r.style)) errors.push(`${at}.style must be one of: ${styles.join(', ')}`);
+    if ('columns' in r && !whole(r.columns, 1, maxColumns)) errors.push(`${at}.columns must be a whole number from 1 to ${maxColumns}`);
+    if ('max' in r && !whole(r.max, 0)) errors.push(`${at}.max must be a whole number, 0 or more`);
+    if ('fallback' in r) {
+      const f = r.fallback;
+      if (!isObj(f)) errors.push(`${at}.fallback must be an object`);
+      else {
+        if ('type' in f && (typeof f.type !== 'string' || !spec.types[f.type])) errors.push(`${at}.fallback.type is unknown asset type "${String(f.type)}"`);
+        if ('id' in f && typeof f.id !== 'string') errors.push(`${at}.fallback.id must be a string`);
+        if ('label' in f && typeof f.label !== 'string') errors.push(`${at}.fallback.label must be a string`);
+      }
+    }
+  });
   return errors;
 }
 
