@@ -11,6 +11,7 @@
  *   … migrate --dry [--report <file>]                      what the migration would do (report, nothing written)
  *   … migrate --apply                                       build the store from every older data set (once)
  *   … verify                                                every build, step, status and note of the old files is in the store
+ *   … export                                                regenerate the old files (read-only exports of the store)
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
@@ -18,10 +19,10 @@
  *   --json on any command prints JSON.
  *
  * AXF_BUILDS_STORE=<file> points at another store (tests); its journal goes next to it.
- * The old per-profile files (orchestrator.json, pending.json, build-queue.json) are kept READ-ONLY for one release
- * as the migration's source; nothing writes them any more.
+ * The old per-profile files (orchestrator.json, pending.json, build-queue.json) stay for one release as READ-ONLY
+ * exports of the store (see exportAll); nothing but the store writes them, and a direct edit is taken into the store.
  */
-import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,7 +47,7 @@ function lock(f) {
 }
 
 export function storeExists() { return existsSync(storeFile()); }
-export function loadStore() {
+function readStore() {
   const f = storeFile();
   if (!existsSync(f)) {
     if (process.env.AXF_BUILDS_STORE) return core.emptyStore();
@@ -55,6 +56,80 @@ export function loadStore() {
   }
   return core.normalizeStore(JSON.parse(readFileSync(f, 'utf8')));
 }
+/** The store. If an old file was written directly since the last export, that write is taken into the store first. */
+export function loadStore() {
+  if (exportsOn() && foreignWrites().length) return withStore((s) => s, { by: 'foreign-write', action: 'absorb' }).store;
+  return readStore();
+}
+
+// ------------------------------------------------------------------ the old files as read-only exports
+/*
+ * The pre-store files stay where every older reader looks for them (Pending page on the hub, plugins, other sessions'
+ * checkouts), but they are generated from the store after every write: read-only exports, like tracker.json.
+ * A file changed by anything else since the last export (an old checkout, a hand edit, a git merge) is a foreign write:
+ * it is absorbed into the store (journalled as `foreign-write`) before the next export, so it is never overwritten
+ * unseen. Exports are off for test stores (AXF_BUILDS_STORE) unless AXF_BUILDS_EXPORT=1; AXF_BUILDS_EXPORT=0 turns them off.
+ */
+const exportsOn = () => process.env.AXF_BUILDS_EXPORT === '1' || (!process.env.AXF_BUILDS_STORE && process.env.AXF_BUILDS_EXPORT !== '0');
+const exportsFile = () => `${storeFile()}.exports.json`; // per machine (paths differ), not committed
+const EXPORT_NOTE = 'builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.';
+function exportTargets() {
+  const hub = persistRoot();
+  const data = (id, r) => join(hub ?? REPO_ROOT, profileRel(id, r));
+  return readProfiles().profiles.flatMap((p) => [
+    { kind: 'orchestrator', profile: p.id, file: orchestratorPath(p.id) },
+    { kind: 'pending', profile: p.id, file: data(p.id, 'framework/plan/pending.json') },
+    { kind: 'queue', profile: p.id, file: data(p.id, 'framework/plan/build-queue.json') },
+  ]);
+}
+const sig = (f) => { try { const st = statSync(f); return `${st.size}:${Math.floor(st.mtimeMs)}`; } catch { return ''; } };
+const readExports = () => readJson(exportsFile()) ?? {};
+function foreignWrites() {
+  const ex = readExports();
+  return exportTargets().filter((t) => ex[t.file] && sig(t.file) && sig(t.file) !== ex[t.file].sig);
+}
+function absorbForeign(store, log) {
+  let s = store;
+  for (const t of foreignWrites()) {
+    const j = readJson(t.file); if (!j) continue;
+    if (t.kind === 'orchestrator' && Array.isArray(j.builds)) s = core.absorbOrchestrator(s, t.profile, j, { by: 'foreign-write' });
+    if (t.kind === 'pending' && Array.isArray(j.items)) s = core.absorbPending(s, t.profile, j);
+    if (t.kind === 'queue' && Array.isArray(j.order)) s = core.absorbQueue(s, t.profile, j, epicsOf(t.profile));
+    log.push(`${rel(t.file)} was changed outside the store: taken in`);
+  }
+  return s;
+}
+function epicsOf(profile) {
+  const hub = persistRoot(); const r = profileRel(profile, 'framework/plan/plan.json');
+  return ((hub ? readJson(join(hub, r)) : null) ?? readJson(join(REPO_ROOT, r)))?.features ?? [];
+}
+function exportAll(store) {
+  const ex = readExports();
+  for (const t of exportTargets()) {
+    const doc = t.kind === 'orchestrator' ? core.projectOrchestrator(store, t.profile) : t.kind === 'pending' ? core.projectPending(store, t.profile) : core.projectQueue(store, t.profile);
+    if (!doc) continue;
+    if (t.kind === 'orchestrator' && !doc.builds.length && !existsSync(t.file)) continue;
+    const text = `${JSON.stringify({ $export: EXPORT_NOTE, ...doc }, null, 1)}\n`;
+    let old = ''; try { old = readFileSync(t.file, 'utf8'); } catch { /* new */ }
+    if (old !== text) writeKeepingOwner(t.file, text);
+    ex[t.file] = { sig: sig(t.file), kind: t.kind, profile: t.profile, rev: store.rev };
+  }
+  writeFileSync(exportsFile(), `${JSON.stringify(ex, null, 1)}\n`);
+}
+/**
+ * Write in place, so an existing file keeps its owner and mode (the hub's files belong to the console's user; a
+ * root session must not lock it out). A new file (and new folders) get the owner of the nearest existing folder.
+ */
+function writeKeepingOwner(f, text) {
+  let d = dirname(f); const made = [];
+  while (!existsSync(d)) { made.unshift(d); d = dirname(d); }
+  for (const m of made) mkdirSync(m);
+  const fresh = !existsSync(f);
+  writeFileSync(f, text);
+  if (process.getuid?.() === 0) { try { const st = statSync(d); for (const x of [...made, ...(fresh ? [f] : [])]) chownSync(x, st.uid, st.gid); if (fresh) chmodSync(f, 0o664); } catch { /* best effort */ } }
+}
+/** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
+export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 
 function journal(entry) {
   const d = journalDir(); mkdirSync(d, { recursive: true });
@@ -70,8 +145,8 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   if (!changes.length && !draftChanged && !metaChanged) return { store: before, changes: [], rev: before.rev };
   after.rev = (before.rev ?? 0) + 1; after.updatedAt = now;
   const f = storeFile(); mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(after, null, 1)}\n`); renameSync(tmp, f);
-  journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: c.before, after: c.after })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
+  const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(core.compactStore(after), null, 1)}\n`); renameSync(tmp, f);
+  journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
   return { store: after, changes, rev: after.rev };
 }
 
@@ -80,11 +155,16 @@ export function withStore(fn, meta = {}) {
   const f = storeFile();
   const unlock = lock(f);
   try {
-    const before = loadStore();
-    const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(before))));
+    const before = readStore();
+    const foreign = [];
+    const base = exportsOn() ? absorbForeign(core.normalizeStore(JSON.parse(JSON.stringify(before))), foreign) : before;
+    if (foreign.length) saveStore(before, base, { by: 'foreign-write', action: 'absorb', note: foreign.join('; ') });
+    const start = foreign.length ? readStore() : before;
+    const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
     const next = r && r.$axf ? r : r.store;
-    const saved = saveStore(before, next, meta);
-    return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev };
+    const saved = saveStore(start, next, meta);
+    if (exportsOn()) exportAll(saved.store);
+    return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };
   } finally { unlock(); }
 }
 
@@ -142,7 +222,7 @@ export function migrateNow({ dry = false, by = 'migration', sources = gatherSour
     const f = storeFile();
     if (existsSync(f) && !process.env.AXF_BUILDS_STORE) throw new Error(`${STORE_REL} exists already: the migration runs once (use restore/history for changes)`);
     const unlock = lock(f);
-    try { saveStore(core.emptyStore(), store, { by, action: 'migrate', note: `migrated ${store.builds.length} builds from ${sources.profiles.length} profiles` }); } finally { unlock(); }
+    try { const r = saveStore(core.emptyStore(), store, { by, action: 'migrate', note: `migrated ${store.builds.length} builds from ${sources.profiles.length} profiles` }); if (exportsOn()) exportAll(r.store); } finally { unlock(); }
   }
   return { store, report, sources };
 }
@@ -199,6 +279,7 @@ async function main(argv) {
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${dryRunMarkdown(r)}\n`); }
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
+  if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
   if (cmd === 'verify') {
     const checks = core.verifyNothingLost(gatherSources({ history: false }), loadStore());
     const bad = checks.filter((c) => !c.ok);

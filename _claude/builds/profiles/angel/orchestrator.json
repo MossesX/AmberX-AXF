@@ -1,6 +1,7 @@
 {
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-31T09:07:22.074Z",
+ "updatedAt": "2026-10-31T23:45:10.702Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -45,7 +46,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-129shgj"
     },
     {
      "id": "s2",
@@ -67,7 +69,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-pdlcj9"
     },
     {
      "id": "s3",
@@ -89,7 +92,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-z0yq1z"
     },
     {
      "id": "s4",
@@ -111,7 +115,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-pjw8kd"
     },
     {
      "id": "s5",
@@ -130,7 +135,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-p1i8pv"
     },
     {
      "id": "s6",
@@ -151,7 +157,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-egbvcd"
     },
     {
      "id": "s7",
@@ -170,7 +177,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-f4y0nz"
     },
     {
      "id": "s8",
@@ -189,7 +197,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-156gnyt"
     },
     {
      "id": "s9",
@@ -210,7 +219,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1bhyt5v"
     },
     {
      "id": "s10",
@@ -231,7 +241,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-dilgww"
     },
     {
      "id": "s11",
@@ -253,7 +264,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1dmd4l5"
     },
     {
      "id": "s12",
@@ -275,7 +287,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ho7621"
     },
     {
      "id": "s13",
@@ -297,7 +310,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-hjczh9"
     },
     {
      "id": "s14",
@@ -319,7 +333,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1nra5md"
     },
     {
      "id": "s15",
@@ -342,7 +357,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-5bcp69"
     },
     {
      "id": "s16",
@@ -367,7 +383,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-111v6v5"
     },
     {
      "id": "s17",
@@ -389,7 +406,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1d785al"
     },
     {
      "id": "s18",
@@ -411,7 +429,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-uakl6d"
     }
    ]
   },
@@ -450,7 +469,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T13:06:41.715Z",
-     "note": ""
+     "note": "",
+     "uid": "st-22fb07"
     },
     {
      "id": "s2",
@@ -467,7 +487,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T13:06:41.761Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1f5j9gp"
     },
     {
      "id": "s3",
@@ -484,7 +505,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T13:06:41.810Z",
-     "note": ""
+     "note": "",
+     "uid": "st-p45tsr"
     },
     {
      "id": "s4",
@@ -501,7 +523,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T13:06:41.867Z",
-     "note": ""
+     "note": "",
+     "uid": "st-4mhpg9"
     },
     {
      "id": "s5",
@@ -518,7 +541,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T13:06:41.915Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1eq6qjb"
     },
     {
      "id": "s6",
@@ -535,7 +559,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T13:06:41.971Z",
-     "note": ""
+     "note": "",
+     "uid": "st-zp6q29"
     }
    ]
   },
@@ -571,7 +596,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-h1al3c"
     },
     {
      "id": "s2",
@@ -588,7 +614,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-f5m2zu"
     }
    ]
   },
@@ -629,7 +656,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T16:44:12.939Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1lc9fql"
     },
     {
      "id": "s2",
@@ -646,7 +674,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T16:44:12.985Z",
-     "note": ""
+     "note": "",
+     "uid": "st-nj74nf"
     },
     {
      "id": "s3",
@@ -663,7 +692,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T16:44:13.027Z",
-     "note": ""
+     "note": "",
+     "uid": "st-pevmqx"
     },
     {
      "id": "s4",
@@ -680,7 +710,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T16:44:13.079Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1yem923"
     },
     {
      "id": "s5",
@@ -697,7 +728,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T16:44:13.129Z",
-     "note": ""
+     "note": "",
+     "uid": "st-11g8qcl"
     }
    ]
   },
@@ -733,7 +765,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T21:21:37.348Z",
-     "note": ""
+     "note": "",
+     "uid": "st-189xb27"
     },
     {
      "id": "s2",
@@ -750,7 +783,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T21:21:37.402Z",
-     "note": ""
+     "note": "",
+     "uid": "st-vgu44x"
     },
     {
      "id": "s3",
@@ -767,7 +801,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T21:21:37.447Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1vbntur"
     },
     {
      "id": "s4",
@@ -784,7 +819,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T21:21:37.499Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1jmj1pd"
     },
     {
      "id": "s5",
@@ -801,7 +837,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T21:21:37.559Z",
-     "note": ""
+     "note": "",
+     "uid": "st-ltgqm7"
     }
    ]
   },
@@ -851,7 +888,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T00:37:05.077Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1rgbo1y"
     },
     {
      "id": "s2",
@@ -870,7 +908,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T00:37:05.128Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1dpkydw"
     },
     {
      "id": "s3",
@@ -887,7 +926,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T09:07:21.860Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1427kv6"
     },
     {
      "id": "s4",
@@ -904,7 +944,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T09:07:21.935Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1dja2cs"
     },
     {
      "id": "s5",
@@ -921,7 +962,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T09:07:22.006Z",
-     "note": ""
+     "note": "",
+     "uid": "st-cb8bgu"
     }
    ]
   },
@@ -957,7 +999,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-qzrn8i"
     },
     {
      "id": "s2",
@@ -974,7 +1017,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-13vys5s"
     },
     {
      "id": "s3",
@@ -991,7 +1035,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-3y14fy"
     },
     {
      "id": "s4",
@@ -1008,7 +1053,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-fn5wlc"
     },
     {
      "id": "s5",
@@ -1025,7 +1071,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-g2i61m"
     },
     {
      "id": "s6",
@@ -1042,7 +1089,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-qnojf4"
     },
     {
      "id": "s7",
@@ -1059,7 +1107,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-q244hq"
     },
     {
      "id": "s8",
@@ -1076,7 +1125,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-2hzluo"
     }
    ]
   },
@@ -1112,7 +1162,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-itwi0"
     },
     {
      "id": "s2",
@@ -1129,7 +1180,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1xo9gdm"
     },
     {
      "id": "s3",
@@ -1146,7 +1198,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-nkkfak"
     },
     {
      "id": "s4",
@@ -1163,7 +1216,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1oyx27m"
     }
    ]
   },
@@ -1199,7 +1253,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-yk8q5f"
     },
     {
      "id": "s2",
@@ -1216,7 +1271,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-lo1l85"
     },
     {
      "id": "s3",
@@ -1233,7 +1289,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-vbeyqv"
     },
     {
      "id": "s4",
@@ -1250,7 +1307,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-luch99"
     },
     {
      "id": "s5",
@@ -1267,7 +1325,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-lbyher"
     }
    ]
   },
@@ -1303,7 +1362,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-ah7hs6"
     },
     {
      "id": "s2",
@@ -1320,7 +1380,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1vrku38"
     },
     {
      "id": "s3",
@@ -1337,7 +1398,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1m47gki"
     },
     {
      "id": "s4",
@@ -1354,7 +1416,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1vl9y24"
     }
    ]
   },
@@ -1390,7 +1453,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-7kfjae"
     },
     {
      "id": "s2",
@@ -1407,7 +1471,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-tc9yes"
     }
    ]
   },
@@ -1443,7 +1508,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-19nylsn"
     },
     {
      "id": "s2",
@@ -1460,7 +1526,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-o2c2o9"
     },
     {
      "id": "s3",
@@ -1477,7 +1544,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1x22ozf"
     },
     {
      "id": "s4",
@@ -1494,7 +1562,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-cpfvg9"
     },
     {
      "id": "s5",
@@ -1511,7 +1580,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1mt4wjb"
     },
     {
      "id": "s6",
@@ -1528,7 +1598,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-17s4w29"
     },
     {
      "id": "s7",
@@ -1545,7 +1616,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-91c277"
     }
    ]
   },
@@ -1581,7 +1653,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1jcplk8"
     },
     {
      "id": "s2",
@@ -1598,7 +1671,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-iatj2i"
     },
     {
      "id": "s3",
@@ -1615,7 +1689,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1788jyk"
     },
     {
      "id": "s4",
@@ -1632,7 +1707,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-19429oy"
     },
     {
      "id": "s5",
@@ -1649,7 +1725,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-164fctk"
     },
     {
      "id": "s6",
@@ -1666,7 +1743,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1x9r79e"
     },
     {
      "id": "s7",
@@ -1683,7 +1761,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-waz2ro"
     },
     {
      "id": "s8",
@@ -1700,7 +1779,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-y3oui2"
     },
     {
      "id": "s9",
@@ -1717,7 +1797,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1o52a60"
     },
     {
      "id": "s10",
@@ -1734,7 +1815,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1cf43mt"
     },
     {
      "id": "s11",
@@ -1751,7 +1833,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-185dsly"
     },
     {
      "id": "s12",
@@ -1768,7 +1851,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-143jr52"
     }
    ]
   },
@@ -1804,7 +1888,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-f6lzj2"
     },
     {
      "id": "s2",
@@ -1821,7 +1906,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-rzp6gc"
     },
     {
      "id": "s3",
@@ -1838,7 +1924,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-r7z34q"
     },
     {
      "id": "s4",
@@ -1855,7 +1942,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-16gftw"
     },
     {
      "id": "s5",
@@ -1872,7 +1960,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-q3vgpy"
     },
     {
      "id": "s6",
@@ -1889,7 +1978,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-5j8m0c"
     }
    ]
   },
@@ -1925,7 +2015,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1xkfl9n"
     },
     {
      "id": "s2",
@@ -1942,7 +2033,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1krcecd"
     },
     {
      "id": "s3",
@@ -1959,7 +2051,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-m0jkhb"
     },
     {
      "id": "s4",
@@ -1976,7 +2069,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-cjh2zp"
     },
     {
      "id": "s5",
@@ -1993,7 +2087,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1kf9aiz"
     }
    ]
   },
@@ -2029,7 +2124,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-197t7lu"
     },
     {
      "id": "s2",
@@ -2046,7 +2142,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mlf7qo"
     },
     {
      "id": "s3",
@@ -2063,7 +2160,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-ltp4f2"
     },
     {
      "id": "s4",
@@ -2080,7 +2178,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-xitwkg"
     },
     {
      "id": "s5",
@@ -2097,7 +2196,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1xt2nlm"
     }
    ]
   },
@@ -2133,7 +2233,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-o7lojv"
     },
     {
      "id": "s2",
@@ -2150,7 +2251,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-beihml"
     },
     {
      "id": "s3",
@@ -2167,7 +2269,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-btv0jz"
     },
     {
      "id": "s4",
@@ -2184,7 +2287,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-2p63gl"
     },
     {
      "id": "s5",
@@ -2201,7 +2305,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1akyazv"
     }
    ]
   },
@@ -2242,7 +2347,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:52:13.330Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1t7kysy"
     },
     {
      "id": "s2",
@@ -2259,7 +2365,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:52:13.387Z",
-     "note": ""
+     "note": "",
+     "uid": "st-16f1ajk"
     },
     {
      "id": "s3",
@@ -2276,7 +2383,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:52:13.440Z",
-     "note": ""
+     "note": "",
+     "uid": "st-6axyfi"
     },
     {
      "id": "s4",
@@ -2293,7 +2401,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:52:13.495Z",
-     "note": ""
+     "note": "",
+     "uid": "st-i02qkw"
     },
     {
      "id": "s5",
@@ -2310,7 +2419,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:52:13.544Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1iabhm2"
     },
     {
      "id": "s6",
@@ -2327,7 +2437,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:52:13.598Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1svhuzk"
     },
     {
      "id": "s7",
@@ -2344,7 +2455,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1s3rrny"
     },
     {
      "id": "s8",
@@ -2361,7 +2473,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T00:46:05.408Z",
-     "note": ""
+     "note": "",
+     "uid": "st-14dfd0w"
     },
     {
      "id": "s9",
@@ -2378,7 +2491,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T00:46:05.466Z",
-     "note": ""
+     "note": "",
+     "uid": "st-12u4fbm"
     },
     {
      "id": "s10",
@@ -2395,7 +2509,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T00:46:05.528Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1qm7dc3"
     },
     {
      "id": "s11",
@@ -2412,7 +2527,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T00:46:05.582Z",
-     "note": ""
+     "note": "",
+     "uid": "st-u2x3k"
     },
     {
      "id": "s12",
@@ -2429,7 +2545,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-orpd6k"
     }
    ]
   },
@@ -2470,7 +2587,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:01.027Z",
-     "note": ""
+     "note": "",
+     "uid": "st-z65uiv"
     },
     {
      "id": "s2",
@@ -2487,7 +2605,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:01.177Z",
-     "note": ""
+     "note": "",
+     "uid": "st-debfeh"
     },
     {
      "id": "s3",
@@ -2504,7 +2623,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:01.481Z",
-     "note": ""
+     "note": "",
+     "uid": "st-n1osx7"
     },
     {
      "id": "s4",
@@ -2521,7 +2641,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:01.789Z",
-     "note": ""
+     "note": "",
+     "uid": "st-11wdxd5"
     },
     {
      "id": "s5",
@@ -2538,7 +2659,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:02.169Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1cbc59j"
     },
     {
      "id": "s6",
@@ -2555,7 +2677,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:02.363Z",
-     "note": ""
+     "note": "",
+     "uid": "st-xac4sh"
     },
     {
      "id": "s7",
@@ -2572,7 +2695,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:02.529Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1xefgwj"
     },
     {
      "id": "s8",
@@ -2589,7 +2713,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:25:02.650Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1lsemr5"
     },
     {
      "id": "s9",
@@ -2606,7 +2731,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-q7957r"
     }
    ]
   },
@@ -2647,7 +2773,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:32.903Z",
-     "note": ""
+     "note": "",
+     "uid": "st-nq5ev0"
     },
     {
      "id": "s2",
@@ -2664,7 +2791,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:32.954Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1lj7py6"
     },
     {
      "id": "s3",
@@ -2681,7 +2809,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.008Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1b49i1s"
     },
     {
      "id": "s4",
@@ -2698,7 +2827,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.063Z",
-     "note": ""
+     "note": "",
+     "uid": "st-b065xq"
     },
     {
      "id": "s5",
@@ -2715,7 +2845,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.115Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1cssf0"
     },
     {
      "id": "s6",
@@ -2732,7 +2863,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.170Z",
-     "note": ""
+     "note": "",
+     "uid": "st-x77wcm"
     },
     {
      "id": "s7",
@@ -2749,7 +2881,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.218Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1v0a7fs"
     },
     {
      "id": "s8",
@@ -2766,7 +2899,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.269Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1lcwtx2"
     },
     {
      "id": "s9",
@@ -2783,7 +2917,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.318Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1ijflfw"
     },
     {
      "id": "s10",
@@ -2800,7 +2935,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.363Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1o02eq9"
     },
     {
      "id": "s11",
@@ -2817,7 +2953,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.413Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1e5z5hm"
     },
     {
      "id": "s12",
@@ -2834,7 +2971,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T19:00:33.460Z",
-     "note": ""
+     "note": "",
+     "uid": "st-12aan22"
     }
    ]
   },
@@ -2875,7 +3013,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T22:16:02.117Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1qvsaeq"
     },
     {
      "id": "s2",
@@ -2892,7 +3031,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T22:16:02.224Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1438m5c"
     },
     {
      "id": "s3",
@@ -2909,7 +3049,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T22:16:02.378Z",
-     "note": ""
+     "note": "",
+     "uid": "st-3z5a1a"
     },
     {
      "id": "s4",
@@ -2926,7 +3067,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T22:16:02.456Z",
-     "note": ""
+     "note": "",
+     "uid": "st-foa26o"
     },
     {
      "id": "s5",
@@ -2943,7 +3085,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T22:16:02.587Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1fyit7u"
     },
     {
      "id": "s6",
@@ -2960,7 +3103,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T22:16:02.668Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1qjp6lc"
     },
     {
      "id": "s7",
@@ -2977,7 +3121,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1prz39q"
     }
    ]
   }

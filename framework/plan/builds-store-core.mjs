@@ -158,6 +158,16 @@ export function normalizeStore(s) {
   };
 }
 
+/** The form written to disk: the default breakdown is left out while it equals the steps (not rearranged). */
+export function compactStore(store) {
+  return { ...store, builds: store.builds.map(compactBuild) };
+}
+export function compactBuild(b) {
+  if (!b || b.rearranged) return b;
+  const { defaultSteps, ...rest } = b;
+  return rest;
+}
+
 /** Builds of one profile (not deleted), in that profile's order. */
 export function buildsOf(store, profile, { withDeleted = false } = {}) {
   return store.builds.filter((b) => b.profiles.includes(profile) && (withDeleted || !b.deleted))
@@ -313,7 +323,7 @@ export function itemOfBuild(b, now = nowIso()) {
     notes: b.notes.map((n) => ({ text: n.text, at: n.at || now })),
     subPrompts: b.steps.map((s) => ({
       text: prefix ? `[${stepModel(s.model)}] ${plain(s.text)}` : s.text,
-      at: at[s.uid] || s.createdAt || b.createdAt || now,
+      at: at[s.uid] ?? (s.createdAt || b.createdAt || now),
       ...(s.estimate ? { estimate: s.estimate } : {}),
       ...(s.done ? { done: true, doneAt: s.doneAt || b.updatedAt || now } : {}),
       ...(s.skip ? { skip: true } : {}),
@@ -325,12 +335,12 @@ export function itemOfBuild(b, now = nowIso()) {
     source: p.source || b.source || 'console',
   };
   if (p.planId || b.planRef) item.planId = p.planId || b.planRef;
-  if (p.estimate && (!b.steps.length || p.keepEstimate)) item.estimate = p.estimate;
+  if (p.estimate) item.estimate = p.estimate;
   return item;
 }
 
-/** Which builds the Pending list shows: every build of the profile except plan epics with no pending record. */
-const onPendingList = (b) => b.kind !== 'epic' || !!b.pending;
+/** Which builds the Pending list shows: every build of the profile except plan epics with no pending record and recovered ones. */
+const onPendingList = (b) => (b.kind !== 'epic' || !!b.pending) && !b.pending?.recovered; // recovered-from-history builds stay archived, off the list
 
 export function projectPending(store, profile) {
   const m = store.meta.pending?.[profile] ?? {};
@@ -348,7 +358,7 @@ export function buildFromItem(it, profile, { now = nowIso(), seed = '', order = 
     profiles: [profile], order: { [profile]: order },
     steps: subs.map((p, k) => ({
       id: `s${k + 1}`, text: prefixSteps ? plain(p.text) : str(p.text), model: stepModel(PREFIX.exec(str(p.text))?.[1] ?? it.model), estimate: str(p.estimate),
-      done: p.done === true || done, doneAt: p.done === true || done ? p.doneAt || it.builtAt || now : '', skip: p.skip === true, fm: p.fm,
+      done: p.done === true, doneAt: p.done === true ? p.doneAt || it.builtAt || now : '', skip: p.skip === true, fm: p.fm,
       createdAt: p.at || it.createdAt || now,
     })),
   }, { now, seed: seed ? `${seed}/pending` : '' });
@@ -358,7 +368,7 @@ export function buildFromItem(it, profile, { now = nowIso(), seed = '', order = 
 }
 function pendingMeta(it, b, prefixSteps) {
   const stepAt = {};
-  (it.subPrompts ?? []).forEach((p, k) => { if (b.steps[k] && p.at) stepAt[b.steps[k].uid] = p.at; });
+  (it.subPrompts ?? []).forEach((p, k) => { if (b.steps[k]) stepAt[b.steps[k].uid] = str(p.at); }); // '' kept: the item had no date
   return {
     model: MODELS.includes(it.model) || it.model === 'Sonnet' ? it.model : 'Opus', status: str(it.status) || 'pending', estimate: str(it.estimate),
     source: str(it.source), planId: str(it.planId), createdAt: str(it.createdAt), builtAt: str(it.builtAt), prefixSteps, stepAt,
@@ -604,7 +614,7 @@ export function migrate(sources, { now = nowIso() } = {}) {
       if (byId.has(it.id) || store.builds.some((b) => b.pendingId === it.id)) continue;
       const b = buildFromItem(it, P.id, { now, seed: `${P.id}/history`, order: nextOrder(store, P.id), file: `${h.file}@${h.commit}` });
       b.notes.push({ text: `Recovered from git history (${h.file} at ${h.commit}); it was in no current list, so it is archived, not active. Reopen it if it is still wanted.`, at: now });
-      b.pending.status = it.status; b.status = 'archived';
+      b.pending.status = it.status; b.pending.recovered = true; b.status = 'archived';
       put(b); pr.recovered += 1; report.recovered.push({ id: it.id, profile: P.id, from: `${h.file}@${h.commit}`, title: it.title });
     }
   }
@@ -677,7 +687,7 @@ export function addDraftOp(store, profile, op, { now = nowIso(), by = 'console' 
   const s = clone(store);
   const d = s.drafts[profile] ?? { ops: [], updatedAt: now, by };
   // try it on a copy first: an op that can't apply is refused now, not at Apply time
-  applyOps(s, profile, [...d.ops, op], { now, by, dry: true });
+  applyOps(clone(s), profile, [...d.ops, op], { now, by, dry: true });
   d.ops.push(op); d.updatedAt = now; d.by = by;
   s.drafts[profile] = d;
   return s;
