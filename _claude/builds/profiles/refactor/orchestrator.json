@@ -1,6 +1,6 @@
 {
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-29T18:57:38.777Z",
+ "updatedAt": "2026-10-30T18:10:38.409Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -456,15 +456,15 @@
    "title": "Enterprise design + hot-swappable branding: branding engine, design packages, behaviour themes, 700+ generated brand assets, AmberX app + GizmoX console refactor",
    "category": "Design & branding",
    "detail": "Brett, Oct 27 2026: only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-   "status": "archived",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
-   "branch": "fable/enterprise-branding",
-   "pr": "",
+   "branch": "claude/refactor-all",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
-   "builtAt": "",
+   "updatedAt": "2026-10-30T18:10:38.409Z",
+   "builtAt": "2026-10-30T18:10:38.408Z",
    "notes": [
     {
      "text": "Merged in design-package (its 9 steps are s2-s5, s29 and parts of s38). One model switch: Fable s1-s12, then Opus s13-s40.",
@@ -505,6 +505,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Oct 30 2026 (Opus, claude/enterprise-branding-3): s27-s40 were built inside refactor-all (refactor-all s28-s40 = these steps, numbering one ahead) and merged in PR #166 on Oct 29; ticked here. Re-checked on main 1b4ecd5a: amberx test.mjs 1990/1990, brand-library test.mts 20/20, check-plugin-pages, check-theme, check-brand 205, check-design-language 427, check-design-package 1161 all green. Rebuild report _claude/memory/docs/rebuilds/enterprise-branding-3.md.",
+     "at": "2026-10-30T18:10:38.319Z"
     }
    ],
    "approvals": [
@@ -1087,8 +1091,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:36.658Z",
      "note": ""
     },
     {
@@ -1104,8 +1108,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:36.850Z",
      "note": ""
     },
     {
@@ -1121,8 +1125,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.028Z",
      "note": ""
     },
     {
@@ -1159,8 +1163,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.157Z",
      "note": ""
     },
     {
@@ -1176,8 +1180,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.295Z",
      "note": ""
     },
     {
@@ -1193,8 +1197,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.377Z",
      "note": ""
     },
     {
@@ -1212,8 +1216,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.473Z",
      "note": ""
     },
     {
@@ -1229,8 +1233,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.585Z",
      "note": ""
     },
     {
@@ -1246,8 +1250,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.826Z",
      "note": ""
     },
     {
@@ -1263,8 +1267,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:37.941Z",
      "note": ""
     },
     {
@@ -1280,8 +1284,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:38.064Z",
      "note": ""
     },
     {
@@ -1297,8 +1301,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:38.153Z",
      "note": ""
     },
     {
@@ -1314,8 +1318,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-30T18:10:38.239Z",
      "note": ""
     }
    ]
