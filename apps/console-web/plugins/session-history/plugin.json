@@ -1,0 +1,36 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.session-history",
+  "name": "Session browser",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every Claude Code session and every headless agent run in one live grid: agent, build, job, model, status (running, done, failed, killed for budget), tokens, dollars, duration, started. A row opens to what it built (from real commits and file edits, before / after, with an estimated price per line), its Context (everything that went in and what came back, cost per turn), Tools (every command and file edit, cost per command) and Conversation; watch a running run live and kill it. Totals and a per-model breakdown at the bottom. Reads Claude Code transcripts, headless stream logs and agent-run@1 reports; links to the Codebase changes log and the Session check-in archive.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:session-history",
+    "settings-tab:session-history"
+  ],
+  "optional": [
+    "service:axf.changes@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-31", "branch": "claude/session-history" },
+  "banner": false,
+  "tabable": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/session-history",
+    "env": [],
+    "mentions": [
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": "main"
+}
