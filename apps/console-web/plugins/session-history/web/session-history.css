@@ -51,3 +51,10 @@ select.fx-input.axp-session-history__pick { flex: none; width: auto }
 .axp-session-history__msg { min-width: 0; max-width: 92%; padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
 .axp-session-history__msg--you { align-self: flex-end }
 .axp-session-history__msg--claude { align-self: flex-start }
+.axp-session-history__watchbar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-session-history__watch { max-height: calc(var(--fx-font-size) * 32); min-height: calc(var(--fx-font-size) * 8); overflow: auto; padding: calc(var(--fx-space) * 0.5); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
+.axp-session-history__wl { white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-session-history__wl.is-tool { color: var(--fx-accent) }
+.axp-session-history__wl.is-dim { color: var(--fx-muted) }
+.axp-session-history__wl.is-error { color: var(--fx-danger) }
+.axp-session-history__kill { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }

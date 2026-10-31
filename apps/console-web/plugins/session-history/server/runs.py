@@ -387,7 +387,8 @@ def sniff_stream(path: Path) -> str | None:
 DEFAULT_CONFIG: dict[str, Any] = {
     "transcripts": ["~/.claude/projects"],
     "streams": [str(ROOT), "~/b"],
-    "reports": [str(ROOT / ".axf-console" / "agent-runs"), str(ROOT / ".axf-console" / "plugins" / "agent-swarm" / "runs")],
+    # agent-run@1 files (one run each) and the agent swarm's runs.json (swarm-runs@1) in these folders
+    "reports": [str(ROOT / ".axf-console" / "agent-runs"), str(ROOT / ".axf-console" / "plugins" / "agent-swarm")],
     "sessionArchive": "auto",
     "maxRuns": 2000,
 }
@@ -429,7 +430,7 @@ class Store:
         for r in dict.fromkeys(self.config.get("reports") or []):
             base = _expand(r)
             if base.is_dir():
-                yield from base.glob("*.json")
+                yield from (f for f in base.glob("*.json") if f.name == "runs.json" or not f.name.startswith(("config", "state", "roster", "killed")))
 
     # --- reading
     def _acc(self, path: Path, fmt: str) -> Acc:
@@ -440,24 +441,29 @@ class Store:
         a.refresh()
         return a
 
-    def _report(self, path: Path) -> dict[str, Any] | None:
+    def _reports(self, path: Path) -> list[dict[str, Any]]:
+        """agent-run@1 (one run) or swarm-runs@1 (the agent swarm's runs.json, many) → normalised report records."""
         try:
             m = path.stat().st_mtime
         except OSError:
-            return None
+            return []
         hit = self.reports.get(str(path))
         if hit and hit[0] == m:
             return hit[1]
         try:
-            r = json.loads(path.read_text("utf-8"))
+            raw = json.loads(path.read_text("utf-8"))
         except (OSError, ValueError):
-            return None
-        if not isinstance(r, dict) or r.get("$axf") != "agent-run@1":
-            return None
-        r["_file"] = str(path)
-        r["_mtime"] = m
-        self.reports[str(path)] = (m, r)
-        return r
+            raw = None
+        if isinstance(raw, dict) and raw.get("$axf") == "agent-run@1":
+            recs = [dict(raw)]
+        elif isinstance(raw, dict) and raw.get("$axf") == "swarm-runs@1" and isinstance(raw.get("runs"), list):
+            recs = [from_swarm(r) for r in raw["runs"][-5000:] if isinstance(r, dict) and r.get("$axf") == "swarm-run@1"]
+        else:
+            recs = []
+        for r in recs:
+            r["_file"], r["_mtime"] = str(path), m
+        self.reports[str(path)] = (m, recs)
+        return recs
 
     def killed(self) -> dict[str, Any]:
         try:
@@ -502,13 +508,14 @@ class Store:
             if RUN_ID.match(sid):
                 slot(sid)["stream"] = s
         for p in self.report_files():
-            r = self._report(p)
-            if not r:
-                continue
-            sig.update(f"{p}:{r['_mtime']}".encode())
-            sid = str(r.get("sessionId") or f"run-{r.get('id') or p.stem}")
-            if RUN_ID.match(sid):
-                slot(sid)["report"] = r
+            recs = self._reports(p)
+            if recs:
+                sig.update(f"{p}:{recs[0]['_mtime']}:{len(recs)}".encode())
+            for r in recs:
+                sid = str(r.get("sessionId") or "") or attach(by_sid, r) or f"run-{r.get('id') or p.stem}"
+                sid = re.sub(r"[^\w.-]", "_", sid)[:100]
+                if RUN_ID.match(sid):
+                    slot(sid)["report"] = r
         for gone in set(self.accs) - live_paths:
             self.accs.pop(gone, None)
         k = self.killed()
@@ -566,6 +573,44 @@ class Store:
         return evs
 
 
+def from_swarm(r: dict[str, Any]) -> dict[str, Any]:
+    """swarm-run@1 (the agent swarm's runner, runs.json) → the report fields this store reads (agent-run@1 shape)."""
+    st, reason = str(r.get("status") or ""), str(r.get("reason") or "")
+    status = {"done": "done", "failed": "failed", "blocked": "failed", "error": "failed"}.get(st)
+    if st == "killed":
+        status = "killed-budget" if ("budget" in reason or "time limit" in reason) else "killed"
+    u = r.get("usage") if isinstance(r.get("usage"), dict) else {}
+    rep = r.get("report") if isinstance(r.get("report"), dict) else {}
+    budget = r.get("budget") if isinstance(r.get("budget"), dict) else {}
+    return {
+        "$axf": "agent-run@1", "from": "swarm-run@1", "id": f"{r.get('jobId') or '?'}@{r.get('startedAt') or ''}",
+        "agent": r.get("agent"), "build": r.get("buildId"), "job": r.get("stepId") or r.get("jobId"), "model": r.get("model"),
+        "status": status or "stopped", "reason": reason, "startedAt": r.get("startedAt"), "endedAt": r.get("endedAt"),
+        "worktree": r.get("cwd") or "", "costUsd": r.get("reportedCost") if isinstance(r.get("reportedCost"), (int, float)) else None,
+        "usage": {k: int(u.get(k) or 0) for k in ("input", "output", "cacheRead", "cacheWrite")},
+        "budget": {k: budget[k] for k in ("tokens", "usd", "turns", "maxTurns") if isinstance(budget.get(k), (int, float))} or None,
+        "summary": rep.get("summary"), "files": rep.get("files"),
+        "changes": [{"item": rep.get("summary"), "files": rep.get("files") or [], "wrong": rep.get("question") or ""}] if rep.get("summary") and rep.get("files") else None,
+    }
+
+
+def attach(by_sid: dict[str, dict[str, Any]], r: dict[str, Any]) -> str:
+    """A report without a session id belongs to the transcript / stream that ran in its folder while it ran."""
+    cwd = str(r.get("worktree") or "").rstrip("/")
+    lo, hi = parse_ts(r.get("startedAt")), parse_ts(r.get("endedAt"))
+    if not cwd or lo is None:
+        return ""
+    for sid, v in by_sid.items():
+        if v.get("report"):
+            continue
+        for part in (v.get("transcript"), v.get("stream")):
+            if not part or str(part.get("cwd") or "").rstrip("/") != cwd or part.get("firstAt") is None:
+                continue
+            if lo - 90 <= part["firstAt"] <= (hi if hi is not None else lo + 86400) + 90:
+                return sid
+    return ""
+
+
 def _result_status(res: dict[str, Any]) -> str:
     sub = str(res.get("subtype") or "")
     if "max_turns" in sub or "budget" in sub:
@@ -614,7 +659,8 @@ def merge(v: dict[str, Any], killed: dict[str, Any] | None, now: float) -> dict[
         tokens = {k: int(r["usage"].get(k) or 0) for k in ("input", "output", "cacheRead", "cacheWrite")}
 
     headless = bool(s) or main.get("entrypoint") in ("sdk-cli", "sdk-ts", "sdk-py") or bool(res)
-    kind = "agent" if r else ("headless" if headless else "session")
+    swarm = main.get("entrypoint") == "axf-swarm" or "/agent-swarm/worktrees/" in str(main.get("cwd") or "")
+    kind = "agent" if (r or swarm) else ("headless" if headless else "session")
 
     pid = r.get("pid")
     alive = _pid_alive(pid) if pid else None
@@ -632,7 +678,11 @@ def merge(v: dict[str, Any], killed: dict[str, Any] | None, now: float) -> dict[
         status = "ended" if kind == "session" else "stopped"
 
     branch = str(r.get("branch") or main.get("branch") or "")
-    build = str(r.get("build") or (branch[len("claude/"):] if branch.startswith("claude/") else ""))
+    build = str(r.get("build") or "")
+    job = str(r.get("job") or "")
+    if not build and branch.startswith(("claude/", "swarm/")):
+        parts = branch.split("/")
+        build, job = parts[1], job or ("/".join(parts[2:]) if parts[0] == "swarm" else "")
     duration = None
     if res and isinstance(res.get("durationMs"), (int, float)):
         duration = int(res["durationMs"])
@@ -642,7 +692,7 @@ def merge(v: dict[str, Any], killed: dict[str, Any] | None, now: float) -> dict[
     title = str(r.get("title") or main.get("title") or "")
     return {
         "id": v["id"], "kind": kind, "title": title or v["id"],
-        "agent": str(r.get("agent") or ""), "build": build, "job": str(r.get("job") or ""),
+        "agent": str(r.get("agent") or ""), "build": build, "job": job,
         "model": str(r.get("model") or main.get("model") or ""), "status": status,
         "tokens": tokens, "tokensTotal": tokens_total(tokens), "usd": usd, "costFrom": cost_from,
         "usageUsd": usage_usd, "models": models,
@@ -652,7 +702,7 @@ def merge(v: dict[str, Any], killed: dict[str, Any] | None, now: float) -> dict[
         "budget": r.get("budget") if isinstance(r.get("budget"), dict) else None,
         "pid": pid if isinstance(pid, int) else None, "tmux": str(r.get("tmux") or "") or None,
         "pr": r.get("pr") if isinstance(r.get("pr"), str) else None, "commits": [c for c in (r.get("commits") or []) if isinstance(c, str)][:200],
-        "report": {k: r.get(k) for k in ("summary", "changes") if r.get(k) is not None} or None,
+        "report": {k: r.get(k) for k in ("summary", "changes", "reason") if r.get(k)} or None,
         "killed": killed, "resultText": (res or {}).get("text") or "",
         "files": {"transcript": (t or {}).get("file"), "stream": (s or {}).get("file"), "report": r.get("_file")},
         "_result": res,

@@ -10,6 +10,9 @@ the plugin is off, never on the console MCP).
                               ``axf.changes@1``, never by folder) and its Session check-in record (session-log@1 archive)
   GET  runs/{id}/events?tab=context|tools|conversation&offset=&limit=
                               the expanded row's tabs (see ``tabs.py``), paged
+  GET  runs/{id}/tail?offset=  watch: the run's new events since a byte offset of its live file (-1 = the last few)
+  POST runs/{id}/kill         {confirm: <id>} stop a running headless / agent run (see ``kill.py`` for how the process
+                              is found; never a guess), recorded in killed.json
   GET  config / PUT config    the folders read (transcripts, streams, reports) and limits
 
 The reading itself is in ``runs.py`` (pure, tested without FastAPI). The store keeps a ``killed.json`` in the plugin's
@@ -27,6 +30,7 @@ from fastapi import APIRouter, HTTPException, Request
 import plugin_services
 
 from . import did as D
+from . import kill as K
 from . import runs as R
 from . import tabs as T
 
@@ -126,6 +130,41 @@ def get_events(rid: str, tab: str = "context", offset: int = 0, limit: int = 100
         raise HTTPException(400, f"tab is one of {', '.join(T.TABS)}")
     run = _get(rid)
     return T.page(STORE.events(run), tab, offset, limit)
+
+
+@router.get("/runs/{rid}/tail")
+def get_tail(rid: str, offset: int = -1) -> dict[str, Any]:
+    run = _get(rid)
+    path = K.live_file(run)
+    if not path:
+        raise HTTPException(404, "this run has no live file")
+    return {**K.tail(path, offset), "status": run["status"], "usd": run.get("usd"), "tokensTotal": run.get("tokensTotal")}
+
+
+@router.post("/runs/{rid}/kill")
+async def post_kill(rid: str, request: Request) -> dict[str, Any]:
+    run = _get(rid)
+    try:
+        body = await request.json()
+    except ValueError:
+        body = {}
+    if not isinstance(body, dict) or body.get("confirm") != rid:
+        raise HTTPException(400, "confirm with the run id")
+    if run["kind"] == "session":
+        raise HTTPException(400, "only headless and agent runs can be stopped from here")
+    if run["status"] != "running":
+        raise HTTPException(409, f"the run isn't running ({run['status']})")
+    target = K.find_target(run)
+    if target.get("error"):
+        raise HTTPException(409, target["error"])
+    res = K.kill(target)
+    if not res.get("ok"):
+        raise HTTPException(500, res.get("error") or "could not stop it")
+    by = str(request.headers.get("x-axf-user") or "console")
+    how = f"{target['how']} {target.get('pid') or target.get('tmux')}"
+    STORE.mark_killed(rid, by, how)
+    STORE.scan()
+    return {"ok": True, "how": how, "run": R.public(STORE.run(rid) or run)}
 
 
 def _clean_config(body: Any) -> dict[str, Any]:
