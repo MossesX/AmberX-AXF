@@ -1,6 +1,6 @@
 {
   "$axf": "orchestrator@1",
-  "updatedAt": "2026-10-30T12:06:02.017Z",
+  "updatedAt": "2026-10-30T18:04:28.290Z",
   "rules": {
     "sameSession": true,
     "subAgents": false,
@@ -6832,6 +6832,81 @@
           "skip": false,
           "done": false,
           "doneAt": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "pr-only-merge",
+      "title": "Every change through a PR, pulled up to date with main before it merges (push banner 0.5.0)",
+      "category": "git",
+      "detail": "Brett Oct 30 2026 (voice): \"I want everything to need a PR and to pull against main before it is merged.\" Push banner 0.5.0: autoPr (a PR for every branch ahead of main), no direct merge-branch, auto-merge oldest first, pull main in when behind and wait for CI on the new head, one merge per round, branch protection on main (or a systems check item with Auto fix).",
+      "status": "complete",
+      "hidden": false,
+      "source": "console",
+      "pendingId": "",
+      "branch": "claude/pr-only-merge",
+      "pr": "",
+      "createdAt": "2026-10-30T17:55:48.511Z",
+      "updatedAt": "2026-10-30T18:04:28.290Z",
+      "builtAt": "2026-10-30T18:04:28.210Z",
+      "notes": [
+        {
+          "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
+          "at": "2026-10-30T18:04:28.290Z"
+        }
+      ],
+      "approvals": [],
+      "steps": [
+        {
+          "id": "s1",
+          "text": "Server: autoPr round, merge-branch refused, behind -> pull -> wait -> merge, one merge per round, oldest first",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "skip": false,
+          "done": true,
+          "doneAt": "2026-10-30T18:04:28.053Z",
+          "note": ""
+        },
+        {
+          "id": "s2",
+          "text": "Branch protection on main (set when the token can; systems check item with Auto fix otherwise) + web (Open PR instead of Merge, autoPr switch)",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "30",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "skip": false,
+          "done": true,
+          "doneAt": "2026-10-30T18:04:28.131Z",
+          "note": ""
+        },
+        {
+          "id": "s3",
+          "text": "test.py + checks (tsc, check-theme, check-controls, lifecycle), rules, README, THREADS, PR",
+          "model": "Opus",
+          "why": "",
+          "phase": "",
+          "group": "",
+          "estimate": "25",
+          "files": [],
+          "checks": [],
+          "session": "same",
+          "agent": false,
+          "skip": false,
+          "done": true,
+          "doneAt": "2026-10-30T18:04:28.209Z",
           "note": ""
         }
       ]

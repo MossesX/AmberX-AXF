@@ -161,12 +161,6 @@ export const mergePr = (r: { key: string; repo: string; number: number; base: st
   return m.merged ? `Merged PR #${n} into ${r.base}.` : `GitHub didn't merge PR #${n}.`;
 });
 
-/** Merge a branch without a PR that merges cleanly (the server re-checks it, opens its PR and merges that, head pinned). */
-export const mergeBranch = (r: Row) => act(r.key, async () => {
-  const m = await api.post<{ merged: boolean; number: number }>('merge-branch', { repo: r.repo, branch: r.name, confirm: `${r.repo}:${r.name}` });
-  return m.merged ? `Merged ${r.name} into ${r.base} (#${m.number}).` : `Opened #${m.number}, but GitHub didn't merge it.`;
-});
-
 /** Pull the default branch into a PR's branch, or into a branch without a PR (never touches the default branch). */
 export const pullMain = (r: { key: string; repo: string; number?: number; branch?: string; base: string }) => act(r.key, async () => {
   const body = r.number ? { repo: r.repo, number: r.number, confirm: `${r.repo}#${r.number}` } : { repo: r.repo, branch: r.branch, confirm: `${r.repo}:${r.branch}` };
