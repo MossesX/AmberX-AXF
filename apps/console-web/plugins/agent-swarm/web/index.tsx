@@ -3,6 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, SwarmCostChip, SwarmPage } from './ui';
 import { COLOR_BY_VIBE_ACTION, KEYS } from './chat-settings';
 import { VIBE_COLORS } from './swarm-core.mjs';
+import { appMenu } from './menu';
 
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.agent-swarm',
@@ -12,6 +13,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },
   views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },
+  appMenu,
   nav: { label: 'Builds', items: [{ id: 'agent-swarm', label: 'Agent swarm', icon: 'user', view: 'agent-swarm' }] },
   // the orchestrator's (and every Builds page's) toolbar shows what the swarm has spent
   slots: { 'builds.toolbar': [{ id: 'agent-swarm.cost', order: 30, render: () => <SwarmCostChip /> }] },
