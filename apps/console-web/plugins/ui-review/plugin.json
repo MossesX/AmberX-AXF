@@ -1,0 +1,25 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.ui-review",
+  "name": "UI Review",
+  "version": "0.2.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Each item carries its app, build, branch and PR, desktop + phone screenshots, notes, a status (waiting, approved, changes asked, rejected), his comment and its history. Views: tree, collapsible grid, grid with sub-grids, gallery and side-by-side compare, all with multi-select and bulk Approve / Ask changes / Reject. Builds submit through review.mjs, POST /api/plugins/ui-review/submit or rebuild-shots --submit; other plugins read the per-branch / per-PR state through the ui-review@1 capability. Design packs (formerly their own plugin) are one section: pick up to 3.",
+  "targets": ["axf-console"],
+  "provides": ["view:ui-review", "view:design-packs", "settings-tab:ui-review", "service:ui-review@1"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": { "view": "ui-review", "label": "UI Review", "icon": "eye" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/ui-review",
+    "env": ["AXF_UI_REVIEW_DIR", "AXF_CONSOLE_URL"],
+    "mentions": ["apps/console-web/plugins/README.md", "_claude/shared/rules/RULES.md"]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-30", "replaces": ["ai.amberx.axf.console.design-packs"] },
+  "opens": "main"
+}

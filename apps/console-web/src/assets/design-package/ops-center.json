@@ -19,7 +19,10 @@
       "slots": {
         "style-package": "command-deck",
         "toolbar": "ops-monitor",
-        "nav-menu": "ops-monitor"
+        "nav-menu": "ops-monitor",
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
       }
     }
   }

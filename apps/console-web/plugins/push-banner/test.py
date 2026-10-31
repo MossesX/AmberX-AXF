@@ -22,6 +22,7 @@ REPO = HERE.parents[3]
 TOKEN = "ghp_" + "P" * 36
 os.environ["AXF_PUSH_BANNER_DIR"] = tempfile.mkdtemp(prefix="axf-push-test-")
 os.environ["GITHUB_TOKEN"] = TOKEN
+os.environ["AXF_PUSH_AUTOMERGE"] = "off"  # no background loop in the test
 
 # ---------------------------------------------------------------- fake GitHub (one repo, MossesX/AmberX-AXF)
 R = "/repos/MossesX/AmberX-AXF"
@@ -29,7 +30,7 @@ SEEN: list[dict] = []
 STATE = {
     "branches": ["main", "site", "feat/a", "feat/b", "old/merged"],
     "ahead": {"feat/a": 3, "feat/b": 1, "old/merged": 0},
-    "pulls": [{"number": 18, "title": "Feature A", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/18", "draft": False, "updated_at": "2026-10-22T07:00:00Z",
+    "pulls": [{"number": 18, "title": "Feature A", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/18", "draft": False, "updated_at": "2026-10-22T07:00:00Z", "created_at": "2026-10-20T07:00:00Z",
                "base": {"ref": "main"}, "user": {"login": "MossesX"}, "head": {"ref": "feat/a", "sha": "aaa111", "repo": {"full_name": "MossesX/AmberX-AXF"}}},
               {"number": 7, "title": "From a fork", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/7", "draft": False, "updated_at": "2026-10-22T08:00:00Z",
                "base": {"ref": "main"}, "user": {"login": "someone"}, "head": {"ref": "patch-1", "sha": "fff999", "repo": {"full_name": "someone/AmberX-AXF"}}},
@@ -39,6 +40,9 @@ STATE = {
     "mergeable": True,
     "merged": [],
     "created": [],
+    "behind": {"feat/a": 0},  # anything else is 2 behind main
+    "closed": [],
+    "protection": None,  # None = not protected (404), "forbidden" = the token may not read it (403), else the protection
 }
 
 
@@ -66,6 +70,11 @@ class Fake(BaseHTTPRequestHandler):
             return self._send(200, {"default_branch": "main"})
         if p == R + "/branches":
             return self._send(200, [{"name": b} for b in STATE["branches"]])
+        if p == R + "/branches/main/protection":
+            pr = STATE["protection"]
+            return self._send(404, {"message": "Branch not protected"}) if pr is None else self._send(403, {"message": "Resource not accessible by personal access token"}) if pr == "forbidden" else self._send(200, pr)
+        if p == R + "/pulls" and q.get("state") == ["closed"]:
+            return self._send(200, STATE["closed"])
         if p == R + "/pulls":
             pulls = STATE["pulls"]
             if "head" in q:
@@ -80,7 +89,8 @@ class Fake(BaseHTTPRequestHandler):
             return self._send(200, {**x, "state": "open", "mergeable": STATE["mergeable"]} if x else {"message": "Not Found"})
         if p.startswith(R + "/compare/"):
             head = p.split("...", 1)[1]
-            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": STATE.get("behind", {}).get(head, 2), "commits": [{"sha": "x"}], "files": []})
+            head = next((x["head"]["ref"] for x in STATE["pulls"] if x["head"]["sha"] == head), head)  # a PR's head commit = its branch
+            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": STATE["behind"].get(head, 2), "commits": [{"sha": "x"}], "files": []})
         if p == R + "/commits":
             b = q["sha"][0]
             return self._send(200, [{"sha": f"{b}-head", "commit": {"message": f"Last on {b}\n\nbody", "committer": {"date": "2026-10-22T06:00:00Z" if b == "feat/b" else "2026-10-21T06:00:00Z"}}}])
@@ -107,11 +117,31 @@ class Fake(BaseHTTPRequestHandler):
         p = unquote(urlsplit(self.path).path)
         b = self._body()
         SEEN.append({"method": "PUT", "path": p, "body": b})
+        if p == R + "/branches/main/protection":
+            if STATE.get("protect_put") == 403:
+                return self._send(403, {"message": "Upgrade to GitHub Pro or make this repository public to enable this feature."})
+            STATE["protection_put"] = b
+            STATE["protection"] = {"required_status_checks": {**b["required_status_checks"]}, "required_pull_request_reviews": b["required_pull_request_reviews"],
+                                   "enforce_admins": {"enabled": b["enforce_admins"]}}
+            return self._send(200, STATE["protection"])
         if p.endswith("/update-branch"):
             STATE.setdefault("updated", []).append((p, b))
+            n = int(p.split("/")[-2])
+            if n in STATE.get("conflict_prs", ()):
+                return self._send(422, {"message": "merge conflict between base and head"})
+            x = next((x for x in STATE["pulls"] if x["number"] == n), None)
+            if x and STATE["behind"].get(x["head"]["ref"], 2) > 0:  # GitHub merges main in: a new head commit, nothing behind any more, CI starts again on it
+                x["head"]["sha"] = x["head"]["sha"] + "u"
+                STATE["behind"][x["head"]["ref"]] = 0
             return self._send(202, {"message": "Updating pull request branch."})
         if p.endswith("/merge"):
             STATE["merged"].append((p, b))
+            if STATE.get("merge_closes"):  # merged: it leaves the open PRs and its branch is on main
+                n = int(p.split("/")[-2])
+                x = next((x for x in STATE["pulls"] if x["number"] == n), None)
+                if x:
+                    STATE["pulls"].remove(x)
+                    STATE["ahead"][x["head"]["ref"]] = 0
             return self._send(200, {"merged": True, "sha": "merge123"})
         self._send(404, {"message": "Not Found"})
 
@@ -281,7 +311,8 @@ names = [b["name"] for b in repo["branches"]]
 check(repo["base"] == "main" and not repo["error"], "base = the repo's default branch")
 check(names == ["feat/b", "feat/a"], "only branches ahead of main, newest first (site, main and merged ones left out)")
 a = next(b for b in repo["branches"] if b["name"] == "feat/a")
-check(a["ahead"] == 3 and a["behind"] == 2 and a["subject"] == "Last on feat/a", "ahead/behind and the last commit's subject")
+check(a["ahead"] == 3 and a["behind"] == 0 and a["subject"] == "Last on feat/a", "ahead/behind and the last commit's subject")
+check(next(b for b in repo["branches"] if b["name"] == "feat/b")["behind"] == 2, "…and how far behind main it is")
 check(a["pr"] and a["pr"]["number"] == 18 and a["pr"]["ci"] == "success", "its open PR and the PR's CI")
 check(a["url"] == "https://github.com/MossesX/AmberX-AXF/compare/main...feat/a", "compare link on github.com")
 check(any(s["path"] == R + "/compare/main...feat/a" for s in SEEN), "compare asked with the branch name quoted as one ref")
@@ -328,6 +359,141 @@ check(m["merged"] is True and path == R + "/pulls/18/merge", "green + mergeable:
 check(body == {"merge_method": "merge", "sha": "aaa111"}, "merge commit, pinned to the head that passed CI")
 check(not any(s["method"] == "PUT" and "/git/refs" in s["path"] for s in SEEN), "main is never pushed to directly")
 
+# ---------------------------------------------------------------- auto-merge (Oct 30 2026; 0.5.0 every change through a PR, up to date with main)
+import copy  # noqa: E402
+SAVED = copy.deepcopy({k: STATE[k] for k in ("pulls", "branches", "ahead", "behind", "checks")})
+AM = lambda: c.post("/p/auto-merge").json()["results"]  # noqa: E731
+STATE["merged"].clear()
+st = c.get("/p/auto-merge").json()
+check(st["on"] is True and st["autoPr"] is True, "auto-merge and autoPr are on by default")
+STATE["branches"] += ["go-pass"]
+STATE["ahead"]["go-pass"] = 1
+STATE["checks"]["aaa111"] = [{"status": "in_progress", "conclusion": None}]
+n_created = len(STATE["created"])
+r = AM()
+check(not STATE["merged"] and not any(x.get("merged") for x in r), "auto-merge: nothing while CI runs")
+made = [x["head"] for x in STATE["created"][n_created:]]
+check(made == ["feat/b"] and any(x.get("branch") == "MossesX/AmberX-AXF:feat/b" and x.get("opened") == 19 for x in r), "autoPr: the branch without a PR gets one")
+check(not any(h in ("main", "site", "go-pass", "gh-pages") for h in made), "autoPr: never main, site or go-pass")
+check(c.put("/p/config", json={"autoPr": "yes"}).status_code == 400 and c.put("/p/config", json={"autoPr": False}).json()["autoPr"] is False, "autoPr is a true/false setting")
+n_created = len(STATE["created"])
+AM()
+check(len(STATE["created"]) == n_created, "autoPr off: no PRs opened")
+c.put("/p/config", json={"autoPr": True})
+STATE["checks"]["aaa111"] = [{"status": "completed", "conclusion": "success"}]
+r = AM()
+check([x["pr"] for x in r if x.get("merged")] == ["MossesX/AmberX-AXF#18"], "auto-merge: the green, up-to-date PR merges; the fork and the draft don't")
+check(STATE["merged"][-1][1] == {"merge_method": "merge", "sha": "aaa111"}, "auto-merge: pinned to the head that passed CI")
+check(any(x.get("pr") == "MossesX/AmberX-AXF#18" for x in c.get("/p/auto-merge").json()["last"]), "auto-merge: last results kept")
+
+# behind main → pull main in (head pinned) → wait for CI on the new head → merge
+STATE["merged"].clear()
+STATE["behind"]["feat/a"] = 3
+clock["t"] += 999
+p18 = next(p for p in c.get("/p/branches?refresh=true").json()["repos"][0]["pulls"] if p["number"] == 18)
+check(p18["ready"] is False, "a PR behind main isn't ready to merge (green CI or not)")
+m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+check(m.status_code == 409 and "behind" in m.json()["detail"] and not STATE["merged"], "Merge by hand refuses a PR behind main too")
+r = AM()
+check(not STATE["merged"] and STATE["updated"][-1] == (R + "/pulls/18/update-branch", {"expected_head_sha": "aaa111"}), "behind: main pulled in first, head pinned; no merge")
+check(any(x.get("pr") == "MossesX/AmberX-AXF#18" and x.get("pulled") for x in r), "behind: the round says it pulled and waits")
+STATE["checks"]["aaa111u"] = [{"status": "in_progress", "conclusion": None}]
+n_up = len(STATE["updated"])
+r = AM()
+check(not STATE["merged"] and len(STATE["updated"]) == n_up and any("waiting" in (x.get("why") or "") for x in r), "new head: waits while CI runs on it")
+STATE["checks"]["aaa111u"] = [{"status": "completed", "conclusion": "success"}]
+r = AM()
+check(STATE["merged"] and STATE["merged"][-1][1] == {"merge_method": "merge", "sha": "aaa111u"}, "CI green on the new head, 0 behind: merged, pinned to the new head")
+
+# oldest first, one merge per round; the next one is brought up to date with the new main first
+def pr(n, ref, sha, created):
+    return {"number": n, "title": f"PR {n}", "html_url": f"https://github.com/MossesX/AmberX-AXF/pull/{n}", "draft": False, "updated_at": "2026-10-29T07:00:00Z",
+            "created_at": created, "base": {"ref": "main"}, "user": {"login": "MossesX"}, "head": {"ref": ref, "sha": sha, "repo": {"full_name": "MossesX/AmberX-AXF"}}}
+STATE["merged"].clear()
+STATE["merge_closes"] = True
+STATE["pulls"] = [pr(20, "feat/c", "ccc333", "2026-10-25T00:00:00Z"), pr(18, "feat/a", "aaa111u", "2026-10-20T07:00:00Z")]
+STATE["branches"] += ["feat/c"]
+STATE["ahead"].update({"feat/c": 1, "feat/a": 3})
+STATE["behind"].update({"feat/c": 0, "feat/a": 0})
+STATE["checks"]["ccc333"] = [{"status": "completed", "conclusion": "success"}]
+r = AM()
+check([p[0] for p in STATE["merged"]] == [R + "/pulls/18/merge"], "two ready PRs: only the oldest merges this round")
+STATE["behind"]["feat/c"] = 1  # main moved on under it
+r = AM()
+check(len(STATE["merged"]) == 1 and STATE["updated"][-1] == (R + "/pulls/20/update-branch", {"expected_head_sha": "ccc333"}), "next round: the next PR gets the new main pulled in, not merged")
+STATE["checks"]["ccc333u"] = [{"status": "completed", "conclusion": "success"}]
+r = AM()
+check(STATE["merged"][-1] == (R + "/pulls/20/merge", {"merge_method": "merge", "sha": "ccc333u"}), "…and merges once CI on its new head is green")
+
+# a pull that conflicts: Pull failed (Repair / Fix with Claude live there), skipped until it gets a new commit; the next PR goes
+STATE["merged"].clear()
+STATE["pulls"] = [pr(21, "feat/d", "ddd555", "2026-10-01T00:00:00Z"), pr(22, "feat/e", "eee666", "2026-10-02T00:00:00Z")]
+STATE["branches"] += ["feat/d", "feat/e"]
+STATE["ahead"].update({"feat/d": 1, "feat/e": 1})
+STATE["behind"].update({"feat/d": 4, "feat/e": 0})
+STATE["checks"].update({"ddd555": [{"status": "completed", "conclusion": "success"}], "eee666": [{"status": "completed", "conclusion": "success"}]})
+STATE["conflict_prs"] = {21}
+r = AM()
+fl = {d["key"]: d for d in c.get("/p/branches").json()["failed"]}
+check("MossesX/AmberX-AXF:#21" in fl and any(x.get("pr") == "MossesX/AmberX-AXF#21" and x.get("pulled") is False for x in r), "conflicting pull: lands in Pull failed")
+check(STATE["merged"] == [(R + "/pulls/22/merge", {"merge_method": "merge", "sha": "eee666"})], "…and the next PR gets its turn in the same round")
+n_up = len(STATE["updated"])
+AM()
+check(len(STATE["updated"]) == n_up, "a failed pull isn't retried every round")
+STATE["pulls"][0]["head"]["sha"] = "ddd556"
+STATE["checks"]["ddd556"] = [{"status": "completed", "conclusion": "success"}]
+STATE["conflict_prs"] = set()
+AM()
+check(STATE["updated"][-1][0] == R + "/pulls/21/update-branch" and "MossesX/AmberX-AXF:#21" not in {d["key"] for d in c.get("/p/branches").json()["failed"]}, "a new commit (the fix): pulled again, off Pull failed")
+STATE["merge_closes"] = False
+STATE.update(copy.deepcopy(SAVED))
+STATE["merged"].clear()
+
+check(c.put("/p/config", json={"autoMerge": False}).json()["autoMerge"] is False, "auto-merge can be switched off")
+check(c.post("/p/auto-merge").json()["results"] == [] and not STATE["merged"], "auto-merge off: nothing merges")
+c.put("/p/config", json={"autoMerge": True})
+
+# ---------------------------------------------------------------- branch protection on main (0.5.0)
+STATE["closed"] = [{"number": 5, "merged_at": "2026-10-29T00:00:00Z", "head": {"sha": "m1"}}, {"number": 4, "merged_at": "2026-10-28T00:00:00Z", "head": {"sha": "m2"}},
+                   {"number": 3, "merged_at": None, "head": {"sha": "m3"}}]
+STATE["checks"].update({"m1": [{"name": "Build engine sweep (Node)", "status": "completed", "conclusion": "success"}, {"name": "Kernel", "status": "completed", "conclusion": "success"}],
+                        "m2": [{"name": "Build engine sweep (Node)", "status": "completed", "conclusion": "success"}], "m3": [{"name": "Other"}]})
+STATE["protection"] = None
+res = c.post("/p/protection").json()["repos"]["MossesX/AmberX-AXF"]
+put = STATE["protection_put"]
+check(res["state"] == "protected" and put["required_status_checks"] == {"strict": True, "contexts": ["Build engine sweep (Node)"]},
+      "protection: branches must be up to date, and the CI check every merged PR ran is required")
+check(put["required_pull_request_reviews"] == {"required_approving_review_count": 0} and put["enforce_admins"] is True and put["restrictions"] is None,
+      "protection: a PR is required (no reviewer needed), admins included")
+STATE.pop("protection_put")
+c.post("/p/protection")
+check("protection_put" not in STATE, "protection already there: left alone")
+STATE["protection"] = {"required_status_checks": {"strict": False, "contexts": ["X"]}, "enforce_admins": {"enabled": False},
+                       "required_pull_request_reviews": {"required_approving_review_count": 1, "dismiss_stale_reviews": True}, "allow_force_pushes": {"enabled": False}}
+c.post("/p/protection")
+put = STATE["protection_put"]
+check(put["required_status_checks"] == {"strict": True, "contexts": ["X"]} and put["required_pull_request_reviews"] == {"required_approving_review_count": 1, "dismiss_stale_reviews": True}
+      and put["enforce_admins"] is False and put["allow_force_pushes"] is False, "protection: never loosened (its checks, reviews and switches kept; up to date added)")
+import plugin_services as ps  # noqa: E402
+svc = ps.get("axf.syscheck.items@1:push-protection")
+check(svc is not None and svc.items()[0]["status"] == "ok", "systems check item: protected = ok")
+STATE["protection"] = "forbidden"
+res = c.post("/p/protection").json()["repos"]["MossesX/AmberX-AXF"]
+it = svc.items()[0]
+check(res["state"] == "cannot" and it["status"] == "warn" and it["autoFix"] is True and any("Administration" in d for d in it["details"]),
+      "token can't set it: a systems check item with Auto fix that says what the token needs")
+try:
+    svc.fix(it["id"])
+    raised = False
+except mod.HTTPException:
+    raised = True
+check(raised, "Auto fix while it still can't: says so")
+STATE["protection"], STATE["protect_put"] = None, 403
+res = c.post("/p/protection").json()["repos"]["MossesX/AmberX-AXF"]
+check(res["state"] == "cannot" and "GitHub Pro" in res["error"], "GitHub refuses (private repo, free plan): its words are kept")
+STATE.pop("protect_put")
+check("protected" in svc.fix(it["id"]) and svc.items()[0]["status"] == "ok", "Auto fix once the token may: protected")
+
 cfg = c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:feat/b"]}).json()
 out = c.get("/p/branches").json()
 check(next(b for b in out["repos"][0]["branches"] if b["name"] == "feat/b")["hidden"] is True, "hidden branches are marked (shared setting)")
@@ -367,7 +533,7 @@ check(c.get("/p/branches").json()["done"] == [], "finished entries expire after 
 # ---- branches without a PR that merge cleanly (not behind main)
 STATE["branches"] += ["cleanx", "waitx"]
 STATE["ahead"].update({"cleanx": 2, "waitx": 1})
-STATE["behind"] = {"cleanx": 0, "waitx": 0}
+STATE["behind"].update({"cleanx": 0, "waitx": 0})
 STATE["checks"]["cleanx-head"] = [{"status": "completed", "conclusion": "success", "name": "CI"}]
 STATE["checks"]["waitx-head"] = [{"status": "in_progress", "conclusion": None, "name": "CI"}]
 clock["t"] += 999
@@ -376,22 +542,11 @@ check(bs["cleanx"].get("clean") is True and bs["cleanx"]["canMerge"] is True and
 check(bs["waitx"].get("clean") is True and bs["waitx"]["canMerge"] is False and bs["waitx"]["ci"] == "running", "clean: CI still running = listed, Merge waits")
 check(not bs["feat/b"].get("clean"), "clean: a branch behind main isn't listed as clean")
 M = "/p/merge-branch"
-check(c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx"}).status_code == 400, "merge-branch: needs the typed confirm")
-check(c.post(M, json={"repo": "x/y", "branch": "cleanx", "confirm": "x/y:cleanx"}).status_code == 400, "merge-branch: only watched repos")
-check(c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"}).status_code == 400, "merge-branch: never the default branch")
-r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "waitx", "confirm": "MossesX/AmberX-AXF:waitx"})
-check(r.status_code == 409 and "running" in r.json()["detail"], "merge-branch: refused while CI runs")
-STATE["behind"]["cleanx"] = 1
-r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx", "confirm": "MossesX/AmberX-AXF:cleanx"})
-check(r.status_code == 409 and "behind" in r.json()["detail"], "merge-branch: re-checked: behind main now = refused")
-STATE["behind"]["cleanx"] = 0
 n_created, n_merged = len(STATE["created"]), len(STATE["merged"])
 r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx", "confirm": "MossesX/AmberX-AXF:cleanx"})
-check(r.status_code == 200 and r.json()["merged"] is True and r.json()["number"] == 19, "merge-branch: merged through its new PR")
-check(len(STATE["created"]) == n_created + 1 and STATE["created"][-1]["head"] == "cleanx" and STATE["created"][-1]["base"] == "main", "merge-branch: opened a PR cleanx → main")
-check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][1] == {"merge_method": "merge", "sha": "cleanx-head"}, "merge-branch: merged with the head commit pinned")
-check(not any(s["method"] in ("PUT", "POST") and s["path"].endswith("/git/refs/heads/main") for s in SEEN), "merge-branch: never writes main directly")
-check("MossesX/AmberX-AXF:cleanx" in [d["key"] for d in c.get("/p/branches").json()["done"]], "merge-branch: shows in Done")
+check(r.status_code == 409 and "open a PR" in r.json()["detail"], "merge-branch: no direct merges, it says to open a PR")
+check(len(STATE["created"]) == n_created and len(STATE["merged"]) == n_merged, "merge-branch: opens nothing, merges nothing")
+check(not any(s["method"] in ("PUT", "POST") and s["path"].endswith("/git/refs/heads/main") for s in SEEN), "never writes main directly")
 
 # ---- Pull failed group + Repair (Oct 23 2026)
 c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})

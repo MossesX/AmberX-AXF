@@ -40,7 +40,7 @@ function TokenReset() {
     navigator.clipboard?.writeText(fresh).then(() => rt.toast('Token copied', 'success'), () => rt.toast('Select the token and copy it manually', 'warning'));
   };
   return (
-    <div className="fx-stack" style={{ borderTop: 'var(--fx-border-w) solid var(--fx-border)', paddingTop: 'var(--fx-space)' }}>
+    <div className="fx-stack" style={{ borderTop: 'var(--fx-border-w) solid var(--fx-border)', paddingTop: 'var(--fx-dens-gap-xl)' }}>
       <p className="fx-muted" style={{ margin: 0 }}>On the server the token is saved in <code>/opt/axf/.axf-console/env</code>.</p>
       {step === 'idle' && <div><Button icon="refresh" disabled={!getToken()} onClick={() => setStep('confirm')}>Reset token</Button></div>}
       {(step === 'confirm' || step === 'busy') && (

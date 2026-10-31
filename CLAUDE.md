@@ -7,6 +7,8 @@ Cross-platform app framework where every UI piece (theme, layout, menu, toolbar,
 @_claude/shared/rules/RULES.md
 @_claude/rules/RULES.md
 
+**Fix it yourself (Brett, Oct 30 2026):** when something is broken and the tools at hand can fix it (a dead key, a stuck or crashed build, a failed launch, CI red, a restarting container, missing config), fix it straight away as a veto call with a plain reason, then tell him what was fixed. Never ask whether to fix it; ask only when it needs his hands (a new token on github.com, paying, a device) or a real choice, and then put it in a banner item with the exact steps.
+
 **Threads and builds (read on every load):** `_claude/THREADS.md` lists every thread, its state, branch, PR and queued items. Read it first, pick up from it, and update + commit it whenever a thread starts, changes, opens or merges a PR, or queues an item. All build work lives in the repo (branches, PRs, this log), never only in chat.
 
 Everything else Claude should know is in `_claude/` (axhub-projects@1, see `_claude/README.md`): `rules/`, `instructions/`, `memory/` (decisions in `memory/decisions.md`, specs in `memory/docs/`) and `shared/` for all projects. It syncs with the hub's `/projects/amberx-axf/_claude/` (and `shared/` with `/projects/_shared/_claude/`); the `claude-sync start` SessionStart hook syncs and loads it. Edit it, run `claude-sync sync`, commit.
@@ -125,3 +127,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 - **GitHub:** account `MossesX`. A new repo must exist on GitHub before a session can push to it.
 - **Server:** a Hostinger VPS running **Coolify**. Coolify's Traefik proxy owns ports 80/443, so new web apps go behind it as Coolify apps (no separate nginx). His domain is `amberxai.com`.
 - **axHub:** his connector hub on the VPS (repo `MossesX/axHub`). If the axHub MCP server is configured in this Claude Code install, use its `list_services`, `describe_service` and `call` tools to reach his other services instead of asking him for credentials.
+
+## Persona
+
+@_claude/persona.md

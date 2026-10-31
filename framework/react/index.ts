@@ -26,6 +26,7 @@ export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, W
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
 export { FRAME_BANNERS_SLOT, FrameBanners, Slot, SlotsProvider, useSlotFilled } from './components/Slots';
+export { PageDataSets, RepeatingSlot, RepeatingSlots, RepeatView, usePageDataSets, type RepeatRenderProps } from './components/Repeat';
 export { BANNER_LOOK_KEY, BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';

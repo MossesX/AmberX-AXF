@@ -15,12 +15,13 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/pending-core.mjs';
 import { dataPath } from './persist.mjs';
 import { loadPricing } from './model-pricing.mjs';
+import { pullIntoOrchestrator } from './orch-sync.mjs';
 
 const PRICING = loadPricing();
 const usd = (model, min) => (min ? core.formatUsd(core.costForMinutes(model, min, PRICING)) : '');
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export const PENDING = dataPath('framework/plan/pending.json');
+export const PENDING = process.env.AXF_PENDING_FILE || dataPath('framework/plan/pending.json'); // AXF_PENDING_FILE: tests
 
 export function loadPending() { return core.normalizeState(existsSync(PENDING) ? JSON.parse(readFileSync(PENDING, 'utf8')) : core.emptyPending()); }
 export function savePending(s) { writeFileSync(PENDING, JSON.stringify(s, null, 1) + '\n'); }
@@ -28,8 +29,13 @@ export function savePending(s) { writeFileSync(PENDING, JSON.stringify(s, null, 
 /** Apply one action (see pending-core apply) and save. */
 export function actPending(action, now = new Date().toISOString()) {
   const r = core.apply(loadPending(), action, now);
-  savePending(r.state);
-  return r;
+  // Every Pending change flows into the build profile's orchestrator, which publishes the list back (orch-sync, Oct 27 2026).
+  let state = r.state;
+  try { const s = pullIntoOrchestrator(r.state, action); state = s.pending; r.log = [...(r.log ?? []), ...s.log]; }
+  catch (e) { r.log = [...(r.log ?? []), `orchestrator sync skipped: ${e.message}`]; }
+  savePending(state);
+  const item = r.item ? state.items.find((x) => x.id === r.item.id) ?? r.item : r.item;
+  return { ...r, state, item };
 }
 
 const OPEN = (it) => it.status !== 'complete';

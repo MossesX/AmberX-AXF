@@ -200,7 +200,7 @@ export function Plan() {
       {!loaded ? <div className="fx-empty">Loading the plan…</div> : error ? <div className="fx-empty">Couldn't load the plan: {error}. Run <code>node framework/cli/plan.mjs</code>, then <code>npm run sync</code>.</div> : (
         <div className="pl-main">
           <div className="pl-results">
-            <p className="fx-muted fx-small" style={{ margin: '0 0 calc(var(--fx-space) * 0.75)' }}>{visible.length} shown{f.q.trim() ? ` matching “${f.q.trim()}” in every feature` : ''}</p>
+            <p className="fx-muted fx-small" style={{ margin: '0 0 var(--fx-dens-gap-lg)' }}>{visible.length} shown{f.q.trim() ? ` matching “${f.q.trim()}” in every feature` : ''}</p>
             {visible.length === 0 ? <div className="fx-empty">No feature matches these filters.</div>
               : mode === 'board' ? <Board features={visible} a={a} sel={sel} onSel={setSel} />
               : mode === 'epics' && !f.q.trim() ? <EpicList features={visible} a={a} sel={sel} onSel={setSel} />
@@ -270,7 +270,7 @@ function Board({ features, a, sel, onSel }: { features: PlanFeature[]; a: Analys
         {xs.slice(0, 200).map((x) => (
           <div key={x.id} className={`pl-card ${sel === x.id ? 'is-selected' : ''}`} draggable onDragStart={() => setDrag(x.id)} onClick={() => onSel(x.id)}>
             <div className="pl-row__title">{x.title}</div>
-            <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}><ModelChip model={x.model} reason={x.modelReason} /><span className="pl-prio">{x.priority}</span><span className="fx-muted fx-small">{x.area}</span>{warnCount(x, a) > 0 && <span className="pl-warn"><Icon name="alert" size={12} />{warnCount(x, a)}</span>}</div>
+            <div className="fx-row fx-row--wrap" style={{ gap: 'var(--fx-dens-gap-md)' }}><ModelChip model={x.model} reason={x.modelReason} /><span className="pl-prio">{x.priority}</span><span className="fx-muted fx-small">{x.area}</span>{warnCount(x, a) > 0 && <span className="pl-warn"><Icon name="alert" size={12} />{warnCount(x, a)}</span>}</div>
           </div>))}
         {xs.length > 200 && <p className="fx-muted fx-small">+{xs.length - 200} more — filter to narrow</p>}
       </div>); })}</div>
@@ -331,7 +331,7 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
     <div className="pl-d">
       <div className="pl-d__head">
         <input className="pl-d__title" value={d.title} onChange={(e) => patch({ title: e.target.value })} aria-label="Title" />
-        <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}>
+        <div className="fx-row fx-row--wrap" style={{ gap: 'var(--fx-dens-gap-lg)' }}>
           <span className="fx-mono fx-small fx-muted">{d.id}</span><Chip>{d.kind}</Chip><Chip>{d.source}</Chip>
           {d.epic && <button className="fx-chip" onClick={() => go(d.epic!)}>epic: {an.byId.get(d.epic)?.title ?? d.epic}</button>}
           {d.parent && <button className="fx-chip" onClick={() => go(d.parent!)}>parent: {an.byId.get(d.parent)?.title ?? d.parent}</button>}
@@ -382,9 +382,9 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
         {d.dependsOn.map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status ?? 'missing'}`} /><button className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status ?? 'not in plan'}</span><button className="fx-iconbtn" aria-label="Remove dependency" onClick={() => patch({ dependsOn: d.dependsOn.filter((y) => y !== id) })}><Icon name="x" size={14} /></button></div>; })}
         <input className="fx-input" placeholder="Add a dependency — search the plan…" value={depQ} onChange={(e) => setDepQ(e.target.value)} />
         {depMatches.map((x) => <button key={x.id} className="pl-dep pl-dep--add" onClick={() => { patch({ dependsOn: [...d.dependsOn, x.id] }); setDepQ(''); }}><Icon name="plus" size={14} /> {x.title} <span className="fx-muted fx-small fx-mono">{x.id}</span></button>)}
-        <p className="fx-eyebrow" style={{ marginTop: 'calc(var(--fx-space) * 1.25)' }}>Needed by</p>
+        <p className="fx-eyebrow" style={{ marginTop: 'var(--fx-dens-gap-2xl)' }}>Needed by</p>
         {dependents.length === 0 ? <p className="fx-muted fx-small">Nothing depends on this yet.</p> : dependents.map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status}`} /><button className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status}</span></div>; })}
-        {kids.length > 0 && <><p className="fx-eyebrow" style={{ marginTop: 'calc(var(--fx-space) * 1.25)' }}>Linked catalog features ({progressOf(kids, an)}% built)</p>{kids.slice(0, 40).map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status}`} /><button className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status}</span></div>; })}</>}
+        {kids.length > 0 && <><p className="fx-eyebrow" style={{ marginTop: 'var(--fx-dens-gap-2xl)' }}>Linked catalog features ({progressOf(kids, an)}% built)</p>{kids.slice(0, 40).map((id) => { const x = an.byId.get(id); return <div key={id} className="pl-dep"><span className={`pl-dot is-${x?.status}`} /><button className="pl-link" onClick={() => go(id)}>{x?.title ?? id}</button><span className="fx-muted fx-small">{x?.status}</span></div>; })}</>}
       </Section>
 
       <Section title="Acceptance" icon="check-circle" count={d.acceptance.length}>

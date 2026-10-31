@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "typography",
+  "id": "standard",
+  "name": "Standard",
+  "version": "1.0.0",
+  "description": "The Oct 30 2026 text sizes, one step roomier than compact: 1.42em page titles, 0.68em eyebrow, 0.88em-ish controls.",
+  "author": "AmberX AXF",
+  "tags": [
+    "standard"
+  ],
+  "data": {
+    "scale": {
+      "2xs": 0.68,
+      "xs": 0.76,
+      "sm": 0.86,
+      "md": 0.93,
+      "lg": 1.1,
+      "xl": 1.35,
+      "2xl": 2
+    },
+    "headings": {
+      "h1": 1.42,
+      "h2": 1.2,
+      "h3": 0.92,
+      "h4": 0.85,
+      "tracking": -0.02
+    },
+    "weights": {
+      "body": 400,
+      "medium": 550,
+      "strong": 600
+    },
+    "line": {
+      "tight": 1.2,
+      "normal": 1.45,
+      "loose": 1.65
+    },
+    "eyebrow": {
+      "size": 0.68,
+      "weight": 600,
+      "tracking": 0.06,
+      "case": "upper"
+    },
+    "mono": {
+      "size": 0.92
+    }
+  }
+}

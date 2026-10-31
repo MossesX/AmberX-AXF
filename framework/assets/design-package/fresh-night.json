@@ -13,6 +13,13 @@
     "style-theme": "fresh",
     "color-theme": "fresh-dark",
     "layout": "classic-ide",
-    "behavior-theme": "standard"
+    "behavior-theme": "standard",
+    "extras": {
+      "slots": {
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      }
+    }
   }
 }

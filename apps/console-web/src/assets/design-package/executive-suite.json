@@ -19,7 +19,10 @@
       "slots": {
         "style-package": "executive-soft",
         "toolbar": "brand-bar",
-        "nav-menu": "executive-overview"
+        "nav-menu": "executive-overview",
+        "typography": "standard",
+        "density": "standard",
+        "sizing": "standard"
       },
       "spacing": "regular"
     }

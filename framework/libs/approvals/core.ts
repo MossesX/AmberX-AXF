@@ -11,13 +11,13 @@
  *    the approval page (in a frame where the hub allows it, `AXHUB_APPROVALS_FRAME_ANCESTORS`) or hands the decision to
  *    its own deciding path (the AmberX phone: the signed-in hub web view, native Deny).
  *
- * Held (veto) calls never offer Approve: only a countdown and Deny.
+ * Held (veto) calls offer Deny, and Approve (run it now, veto@1 `approve-now`, decision 104) when the hub lists it.
  *
  * Every link is rebuilt from the ids (lib-hub rule); nothing here holds a token. Node tests import this file directly
  * (`framework/spec/check-approvals.mts`). Kotlin twin: none (Android framework work is on hold; recorded in PORTING.md).
  */
 import { HUB_FIELD_CAPS, HUB_MESSAGES, approvalsUrl, hubOrigin, isApprovalId, type HubFeedStatus, type HubFetch } from '../hub/hub';
-import { denyVeto, formatCountdown, secondsLeftNow, splitFeed, type VetoCall } from '../hub/veto';
+import { formatCountdown, secondsLeftNow, splitFeed, vetoAction, type VetoCall } from '../hub/veto';
 
 export const APPROVALS_LIBRARY_ID = 'ai.amberx.axf.approvals';
 /** Default poll period while the page is visible (the console banner and AmberX read the feed every 5 s too). */
@@ -33,7 +33,8 @@ export const APPROVALS_OPEN_EVENT = 'axf:approvals-open';
 
 export type ApprovalKind = 'approval' | 'held';
 export type ApprovalDecision = 'approve' | 'decline' | 'deny';
-export const DECISION_LABELS: Record<ApprovalDecision, string> = { approve: 'Approve', decline: 'Decline', deny: 'Deny' };
+/** Approve / Deny on every row (Brett, Oct 30 2026): a decline reads Deny too. */
+export const DECISION_LABELS: Record<ApprovalDecision, string> = { approve: 'Approve', decline: 'Deny', deny: 'Deny' };
 
 /** One thing the hub is waiting on: a call waiting for an approval, or a held (veto) call counting down. */
 export interface ApprovalItem {
@@ -50,7 +51,7 @@ export interface ApprovalItem {
   expiresAt: string;
   /** The approval page on the hub (rebuilt from the id). */
   url: string;
-  /** What can be decided: approvals approve/decline (as the hub lists them), held calls deny only. */
+  /** What can be decided: approvals approve/decline (as the hub lists them), held calls deny (+ approve = run it now). */
   decisions: ApprovalDecision[];
   /** The hub's revision for the decide route (null when the feed didn't send one). */
   revision: number | null;
@@ -109,6 +110,13 @@ export function commandOfSummary(summary: string): string {
   return m ? m[1]!.replace(/\\"/g, '"').replace(/\\\\/g, '\\') : '';
 }
 
+/** A held call's decisions from its veto actions: Deny, and Approve when the hub offers `approve-now` (deny first). */
+export const heldDecisions = (c: Pick<VetoCall, 'actions'>): ApprovalDecision[] =>
+  [...(c.actions.includes('deny') ? ['deny' as const] : []), ...(c.actions.includes('approve-now') ? ['approve' as const] : [])];
+
+/** Row order (Brett, Oct 30 2026: Approve / Deny on every row): the safe one first, so Deny / Decline sit left of Approve. */
+export const rowOrder = (ds: readonly ApprovalDecision[]): ApprovalDecision[] => [...ds.filter((d) => d !== 'approve'), ...ds.filter((d) => d === 'approve')];
+
 /** Approve/decline as the hub lists them for this entry (both when it sent no list), approve first. */
 export function decisionsOf(actions: readonly string[] | null): ApprovalDecision[] {
   if (!actions) return ['approve', 'decline'];
@@ -131,7 +139,7 @@ export function interpretApprovals(base: string, status: number, body: string, n
     const e = ex.get(c.id);
     items.push({
       kind: 'held', id: c.id, tool: c.tool, title: e?.title || c.title || `Run ${c.tool}`, description: e?.description ?? '',
-      summary: c.summary, command: c.command, createdAt: '', expiresAt: c.runsAt, url: c.url, decisions: ['deny'], revision: e?.revision ?? null, veto: c,
+      summary: c.summary, command: c.command, createdAt: '', expiresAt: c.runsAt, url: c.url, decisions: heldDecisions(c), revision: e?.revision ?? null, veto: c,
     });
   }
   for (const p of feed.pending) {
@@ -210,7 +218,7 @@ export interface DecideResult {
   opened?: boolean;
 }
 
-/** May this decision be made on this item at all (held calls: deny only; approvals: what the hub lists)? */
+/** May this decision be made on this item at all (held calls: deny / approve-now as the hub lists; approvals: likewise)? */
 export const allowed = (item: ApprovalItem, d: ApprovalDecision): boolean => item.decisions.includes(d);
 
 /**
@@ -218,12 +226,13 @@ export const allowed = (item: ApprovalItem, d: ApprovalDecision): boolean => ite
  * route with the session's CSRF value. Other origins get `ok: false` (they open the page instead).
  */
 export async function decideOnHub(base: string, item: ApprovalItem, d: ApprovalDecision, opts: { fetch?: HubFetch; csrf?: string; origin?: string } = {}): Promise<DecideResult> {
-  if (!allowed(item, d)) return { ok: false, message: item.kind === 'held' ? 'A held command can only be denied.' : `The hub doesn't offer ${DECISION_LABELS[d]} for this one.` };
+  if (!allowed(item, d)) return { ok: false, message: item.kind === 'held' ? `The hub doesn't offer ${DECISION_LABELS[d]} for this held command now.` : `The hub doesn't offer ${DECISION_LABELS[d]} for this one.` };
   const origin = opts.origin ?? (globalThis as { location?: { origin?: string } }).location?.origin;
   if (!canDecideHere(base, origin)) return { ok: false, message: 'Only a page on axHub can decide; open it there.' };
-  if (d === 'deny') {
-    const r = await denyVeto(base, item.id, { fetch: opts.fetch, csrf: opts.csrf });
-    return r.ok ? { ok: true, message: `Denied: ${item.title}` } : { ok: false, message: r.error ?? 'The hub refused.' };
+  if (item.kind === 'held') {
+    // veto@1: Deny stops it, Approve runs it now (decision 104); both on the hub's own routes.
+    const r = await vetoAction(base, item.id, d === 'approve' ? 'approve-now' : 'deny', { fetch: opts.fetch, csrf: opts.csrf });
+    return r.ok ? { ok: true, message: `${d === 'approve' ? 'Approved, running now' : 'Denied'}: ${item.title}` } : { ok: false, message: r.error ?? 'The hub refused.' };
   }
   const url = decisionUrl(base, item.id);
   if (!url) return { ok: false, message: 'Not an approval id.' };

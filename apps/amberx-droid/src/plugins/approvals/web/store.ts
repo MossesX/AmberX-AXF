@@ -61,7 +61,10 @@ function onEvent(id: string, e: VetoEvent) {
   patch(id, (t) => {
     switch (e.type) {
       case 'countdown': return { ...t, left: e.secondsLeft, call: { ...t.call, secondsLeft: e.secondsLeft, readAt: Date.now() } };
-      case 'state': return addLines({ ...t, state: e.state, left: e.state === 'held' ? t.left : 0 }, [line('note', stateNote(e.state))]);
+      // Shelved (decision 104) stays a held track with the call marked shelved, so the next read keeps it current.
+      case 'state': return e.state === 'shelved'
+        ? addLines({ ...t, call: { ...t.call, shelved: true } }, [line('note', stateNote('shelved'))])
+        : addLines({ ...t, state: e.state, left: e.state === 'held' ? t.left : 0, call: { ...t.call, shelved: false } }, [line('note', stateNote(e.state))]);
       case 'output': return addLines(t, e.text.split('\n').filter((x, i, a) => x || i < a.length - 1).map((x) => line(e.stream, x)));
       case 'done': return addLines({ ...t, state: e.state, exitCode: e.exitCode, left: 0 }, [line('note', `${stateNote(e.state)}${e.exitCode === null ? '' : ` (exit ${e.exitCode})`}`)]);
     }
@@ -70,6 +73,7 @@ function onEvent(id: string, e: VetoEvent) {
 
 export const stateNote = (s: TrackState): string => ({
   held: 'Held: runs when the countdown ends unless you deny it.',
+  shelved: 'Shelved: the countdown is paused until you approve or deny it.',
   running: 'Running now.',
   ran: 'Ran.',
   failed: 'Failed.',
@@ -119,7 +123,7 @@ export function mergeHeld(held: VetoCall[], now: number = Date.now()) {
       const t: Track = { call: c, state: 'held', left: secondsLeftNow(c, now), exitCode: null, lines: [line('note', `Held: ${c.title}`), line('note', `$ ${c.command || c.tool}`)], streaming: false, startedAt: now };
       tracks.push(t);
       started.push(t);
-    } else if (tracks[i]!.state === 'held') {
+    } else if (tracks[i]!.state === 'held' || tracks[i]!.state === 'shelved') {
       tracks[i] = { ...tracks[i]!, call: c, left: secondsLeftNow(c, now) };
     }
   }

@@ -56,6 +56,14 @@ SERVICES = [
 HOST_SCRIPT = "bash /opt/axf/deploy/console-doctor.sh"
 
 
+def github_token_page() -> str:
+    """GitHub's new fine-grained token page, pre-filled with what the console needs (template URL, Oct 20 2026)."""
+    import urllib.parse as up
+    q = {"name": "AXF Dev Console", "description": "AmberX AXF Dev Console on the VPS: push banner, auto-merge, branch cleanup, CI downloads, plugin publishing",
+         "target_name": "MossesX", "expires_in": "90", "contents": "write", "pull_requests": "write", "actions": "write", "workflows": "write", "metadata": "read"}
+    return "https://github.com/settings/personal-access-tokens/new?" + up.urlencode(q)
+
+
 def _http(url: str, headers: dict[str, str] | None = None, method: str = "GET", body: bytes | None = None, timeout: float = 7) -> tuple[int, dict[str, str], str]:
     """One check request (axf_server.http): https only (plain http only to this machine), redirects never followed (the
     keys being checked must not travel to another host; a 3xx is the answer), 4 KB read. Network trouble → (0, {}, why)."""
@@ -152,25 +160,22 @@ class SysCheck:
     # -------------------------------------------------------- GitHub
 
     def c_github_token(self) -> Check:
+        """Live (Oct 30 2026): GET /user, the scopes or permissions the console's GitHub helpers need, and the expiry
+        header (amber a week ahead, red once expired). probes.github does the calls; no token in any text."""
+        from . import probes
         tok = os.environ.get("GITHUB_TOKEN", "")
-        base = dict(fix=self.secret_fix("GITHUB_TOKEN"), links=[{"label": "Create a fine-grained token", "url": DOCS["github_pat"]}, {"label": "GitHub docs: personal access tokens", "url": DOCS["github_pat_docs"]}],
-                    instructions=["github.com → Settings → Developer settings → Fine-grained tokens → Generate new token.", "Repository access: only MossesX/AmberX-AXF.",
-                                  "Permissions: Contents → Read and write, Actions → Read, Metadata → Read.", "Paste it here; it is saved on the server only."], order=10)
-        if not tok:
-            return self.item("github-token", "github", "GitHub token", "warn", "Not set: CI downloads (APK, Maven) and publishing settings to every clone won't work.", **base)
-        if not github.valid_repo(self.repo):
+        base = dict(fix=self.secret_fix("GITHUB_TOKEN"), links=[{"label": "Make a new token (pre-filled)", "url": github_token_page()}, {"label": "GitHub docs: personal access tokens", "url": DOCS["github_pat_docs"]}],
+                    instructions=["Make a new fine-grained token (the link pre-fills it): Repository access → only MossesX/AmberX-AXF.",
+                                  "Permissions: Contents, Pull requests, Actions and Workflows → Read and write; Metadata → Read.",
+                                  "Paste it here: it's tested before it's saved, and saved on the server only."], order=10)
+        if tok and not github.valid_repo(self.repo):
             return self.item("github-token", "github", "GitHub token", "error", f"AXF_GITHUB_REPO isn't owner/name ({self.repo[:60]!r}).", **base)
-        # lib-github: token to api.github.com only, no redirects, 4 KB read, 7 s
-        code, hdr = github.GitHubClient(tok, user_agent="axf-console-syscheck").check_token(self.repo, timeout=7)
-        if code == 200:
-            scopes = hdr.get("x-oauth-scopes")
-            note = f"classic token, scopes: {scopes}" if scopes else "fine-grained token (write access is confirmed on its first push)"
-            return self.item("github-token", "github", "GitHub token", "ok", f"Valid and can read {self.repo}; {note}.", **base)
-        if code in (401, 403):
-            return self.item("github-token", "github", "GitHub token", "error", f"GitHub refused it ({code}): expired, revoked or missing access to {self.repo}.", **base)
-        if code == 404:
-            return self.item("github-token", "github", "GitHub token", "error", f"The token can't see {self.repo} (404): add the repo to the token's access.", **base)
-        return self.item("github-token", "github", "GitHub token", "unknown", f"Couldn't reach GitHub ({code or 'network'}).", **base)
+        r = probes.github(tok, self.repo)
+        c = self.item("github-token", "github", "GitHub token", r["status"], r["summary"], details=r.get("details") or [], **base)
+        for k in ("unreachable", "expiresAt", "expiring"):
+            if r.get(k):
+                c[k] = r[k]
+        return c
 
     def c_github_repo(self) -> Check:
         r = subprocess.run(["git", "-c", "safe.directory=*", "-C", str(self.root), "remote", "get-url", "origin"], capture_output=True, text=True, timeout=10)
@@ -376,7 +381,12 @@ class SysCheck:
         if not fn:
             raise HTTPException(404, f"no check {cid}")
         try:
-            return fn()
+            c = fn()
+            # A key whose service didn't answer is a problem too (Oct 30 2026): red, held amber by the health monitor
+            # for a few minutes first so one network blip doesn't page Brett.
+            if c.get("status") == "unknown" and cid in LIVE_KEY_IDS and str(c.get("summary", "")).startswith("Couldn't reach"):
+                c["status"], c["unreachable"] = "error", True
+            return c
         except Exception as e:  # noqa: BLE001 — a broken check is reported, never fatal
             return self.item(cid, "console", cid, "unknown", f"The check itself failed: {str(e)[:200]}")
 
@@ -388,6 +398,9 @@ class SysCheck:
         out.sort(key=lambda c: (c["order"], c["id"]))
         self._cache = (time.time(), out)
         return out
+
+
+LIVE_KEY_IDS = frozenset({"github-token", "anthropic-key", "hostinger-token", "coolify", "axhub"})
 
 
 # VPS-host checks reported by deploy/console-doctor.sh (ids must match the script).

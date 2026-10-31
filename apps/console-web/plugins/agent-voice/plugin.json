@@ -1,0 +1,48 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.agent-voice",
+  "name": "Agent voice",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Agents speak: a per-agent voice and narrator console (device voices on the phone or browser, cloud voices from OpenAI or ElevenLabs with keys kept on the server; speed, pitch, volume, presets, read modes, code / link / number / emoji rules, pauses, emphasis, intro and outro, chime, pronunciations, permissions, try-it preview, import/export). A live status light on the banner and in the Assistant title bar while the selected agent is a voice agent (ready, speaking, listening, paused). A microphone in the Assistant window that says which agent is missing which permission (one-tap fix), with tap / hold / toggle modes, live text, send and cancel phrases, spoken punctuation, barge-in and conversation mode, sharing the microphone with AmberX hands-free listening, dictation and Speak a command through the page's mic lease (mic-lease@1) so they never conflict. Hooks to its settings in the app menu (Plugins, View), right-click, the banner light, the Assistant title bar and search.",
+  "targets": [
+    "axf-console",
+    "axf-web-app",
+    "amberx-droid"
+  ],
+  "provides": [
+    "view:agent-voice",
+    "settings-tab:agent-voice",
+    "action:agent-voice.open",
+    "service:axf.agent-voice@1"
+  ],
+  "optional": [
+    "service:axf.agents@1"
+  ],
+  "scopes": [
+    "ROUTES",
+    "NETWORK"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": { "view": "agent-voice", "label": "Agent voice", "icon": "mic" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/agent-voice",
+    "env": [
+      "OPENAI_API_KEY",
+      "ELEVENLABS_API_KEY",
+      "AXF_AGENT_VOICE_DIR",
+      "AXF_AGENT_VOICE_CACHE_MB",
+      "AXF_AGENT_VOICE_TIMEOUT"
+    ],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-30" },
+  "opens": "main"
+}

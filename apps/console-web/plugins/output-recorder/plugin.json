@@ -1,0 +1,32 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.output-recorder",
+  "name": "Audio Output Recorder",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Records everything the phone plays while it is on (AudioPlaybackCapture, never the microphone), in timestamped 30-minute chunks sent to axHub; each chunk stays on the phone until axHub confirms it, queued and retried while offline, within a small local cap. One switch in AmberX plus a quick-settings tile; Android asks for consent every start and shows a notification while recording. Calls and apps that block capture can't be recorded. The recordings list (play, share, delete, send to Audio Extract) shows in AmberX and on the console.",
+  "targets": [
+    "amberx-droid",
+    "axf-console"
+  ],
+  "provides": [
+    "view:output-recorder",
+    "settings-tab:output-recorder"
+  ],
+  "scopes": [],
+  "enabledByDefault": false,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-31" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/output-recorder",
+    "env": [],
+    "mentions": [
+      "_claude/THREADS.md"
+    ]
+  },
+  "opens": "main"
+}

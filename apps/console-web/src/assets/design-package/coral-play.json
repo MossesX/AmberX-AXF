@@ -14,6 +14,13 @@
     "style-theme": "fresh",
     "color-theme": "coral-studio",
     "layout": "focus-top",
-    "behavior-theme": "playful"
+    "behavior-theme": "playful",
+    "extras": {
+      "slots": {
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      }
+    }
   }
 }

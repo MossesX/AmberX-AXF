@@ -48,11 +48,14 @@ export const ASSET_TYPES = [
   'animated-logo',
   'icon-pack',
   'branding',
+  'typography',
+  'density',
+  'sizing',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -159,6 +162,30 @@ export interface LayoutData {
   contentMaxWidth: number;
   /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
   slots?: Partial<Record<string, string[]>>;
+  /** repeating slots: one item per entry of a data set the page declares (core/engines/repeat.ts) */
+  repeat?: RepeatSlotDef[];
+}
+
+/** Repeating slot styles (asset-types.json layout.repeat.styles). Append-only. */
+export type RepeatStyle = 'tabs' | 'cards' | 'grid' | 'stacked';
+/** What draws when the page's data set is missing or empty: an asset by type (+ id), or a plain label. */
+export interface RepeatFallback {
+  type?: string;
+  id?: string;
+  label?: string;
+}
+export interface RepeatSlotDef {
+  id: string;
+  /** name of the data set the page declares (`PageDataSets`) */
+  dataSet: string;
+  /** slot region it sits in (default main) */
+  region?: string;
+  style?: RepeatStyle;
+  /** grid / cards columns, 1-12 */
+  columns?: number;
+  /** items shown at most; 0 = all */
+  max?: number;
+  fallback?: RepeatFallback;
 }
 
 /** Shared density / surface vocabulary for chrome assets (toolbar, nav-menu, app-menu). */
@@ -486,6 +513,9 @@ export interface AssetDataMap {
   'animated-logo': AnimatedLogoData;
   'icon-pack': IconPackData;
   'branding': BrandingData;
+  typography: import('./engines/scale').TypographyData;
+  density: import('./engines/scale').DensityData;
+  sizing: import('./engines/scale').SizingData;
   'uac-policy': UACPolicyData;
 }
 
@@ -493,7 +523,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

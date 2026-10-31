@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
-import { FixPanel, StatusDot, call, guidedOrder, isKeyIssue, issues, loadSystemCheck, useSys, type Check } from './SystemCheck';
+import { FixPanel, StatusDot, WhyLine, call, guidedOrder, isKeyIssue, issues, loadSystemCheck, useSys, type Check } from './SystemCheck';
 
 /*
+ * Live keys (Oct 30 2026, Brett: the GITHUB_TOKEN went dead and nothing told him): every key is tested against its
+ * service, so a dead, expired or under-scoped key turns this banner red and says what broke, what it breaks and since
+ * when, with Fix (paste a new one: tested before it's saved) and the page where a new one is made. A key expiring within a
+ * week shows amber. It goes away by itself once the key works again.
+ *
  * Keys banner: when the console loads and a key or password it needs is missing (or the service refuses it), a banner
  * names them. Tapping it opens the `keys-needed` dialog, which asks for exactly those keys, one form each, and tests
  * each one as it's saved. Values go to the console server only (owner-only file) and never come back to the browser.
@@ -15,11 +20,18 @@ export function KeysBanner() {
   const [open, setOpen] = useBannerLaunchOpen();
   const need = useMemo(() => issues(s.report).filter(isKeyIssue), [s.report]);
   if (s.unauthorized || need.length === 0) return null;
+  const dead = need.filter((c) => c.status === 'error');
+  const tone = dead.length ? 'is-error' : 'is-warn';
+  const first = dead[0];
   const names = need.map((c) => c.title).join(', ');
-  const count = need.length === 1 ? 'A key is needed' : `${need.length} keys are needed`;
+  const count = dead.length
+    ? (dead.length === 1 ? `${first!.title} is broken` : `${dead.length} keys are broken`)
+    : need.every((c) => c.expiring) ? (need.length === 1 ? `${need[0]!.title} expires soon` : `${need.length} keys expire soon`)
+    : need.length === 1 ? 'A key is needed' : `${need.length} keys are needed`;
+  const make = (first ?? need[0])?.links.find((l) => /new|create|make/i.test(l.label));
   if (!open) {
     return (
-      <div className="axp-systems-check-banner is-warn is-min" role="alert">
+      <div className={`axp-systems-check-banner ${tone} is-min`} role="alert">
         <div className="axp-systems-check-banner__row">
           <BannerIcon icon="key" working={s.loading} size={20} />
           <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={false} onClick={() => setOpen(true)}>
@@ -30,15 +42,29 @@ export function KeysBanner() {
     );
   }
   return (
-    <div className="axp-systems-check-banner is-warn" role="alert">
+    <div className={`axp-systems-check-banner ${tone}`} role="alert">
       <div className="axp-systems-check-banner__row">
         <BannerIcon icon="key" working={s.loading} size={20} />
         <button type="button" data-fx-row className="axp-systems-check-banner__text" onClick={() => rt.openDialog('keys-needed', {})}>
-          <span className="axp-systems-check-banner__words">{count}: {names}</span>
+          <span className="axp-systems-check-banner__words">{dead.length === 1 || (need.length === 1 && need[0]!.status === 'warn' && need[0]!.expiring) ? count : `${count}: ${names}`}</span>
         </button>
-        <Button tone="primary" icon="key" onClick={() => rt.openDialog('keys-needed', {})}>Add {need.length === 1 ? 'it' : 'them'}</Button>
+        <Button tone="primary" icon="key" onClick={() => rt.openDialog('keys-needed', {})}>{dead.length ? 'Fix' : `Add ${need.length === 1 ? 'it' : 'them'}`}</Button>
+        {make && <Button icon="external" onClick={() => { const w = window.open(make.url, '_blank', 'noopener,noreferrer'); if (w) w.opener = null; }}>New key</Button>}
         <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>
       </div>
+      {need.some((c) => c.status === 'error' || c.expiring) && (
+        <ul className="axp-systems-check-banner__list">
+          {need.filter((c) => c.status === 'error' || c.expiring).map((c) => (
+            <li key={c.id} className="axp-systems-check-banner__li">
+              <button type="button" data-fx-row className="axp-systems-check-banner__item" onClick={() => rt.openDialog('keys-needed', {})}>
+                <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><span className="axp-systems-check-banner__sum">{c.summary}</span>
+                <span className="axp-systems-check-banner__plain fx-small">{c.summary}</span>
+                <WhyLine c={c} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -61,6 +87,7 @@ export function KeysDialog() {
         <section key={c.id} className="fx-card axp-systems-check-keys__item">
           <h3 className="axp-systems-check-h" style={{ marginTop: 0 }}><StatusDot s={c.status} /> {c.title}</h3>
           <p className="fx-small" style={{ margin: 0 }}>{c.summary}</p>
+          <WhyLine c={c} />
           {c.links.length > 0 && <p className="fx-small" style={{ margin: 0 }}>{c.links.map((l, i) => <span key={l.url}>{i ? ' · ' : ''}<a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></span>)}</p>}
           {(c.status === 'error' || c.status === 'warn') && <KeyAutoFix c={c} ai={ai} />}
           <FixPanel c={c} />

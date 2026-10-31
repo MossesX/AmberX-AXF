@@ -66,7 +66,7 @@ export function LibraryTemplates() {
           <button key={t.id} className={`lt-card ${cur?.id === t.id ? 'is-selected' : ''}`} onClick={() => setSel(t.id)}>
             <span className="lt-card__icon"><Icon name={t.icon} size={20} /></span>
             <span className="lt-card__body"><strong>{t.name}</strong><span className="fx-muted fx-small">{t.description}</span>
-              <span className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}>{t.produces.map((p) => <span key={p} className="fx-badge">{p}</span>)}</span></span>
+              <span className="fx-row fx-row--wrap" style={{ gap: 'var(--fx-dens-gap-md)' }}>{t.produces.map((p) => <span key={p} className="fx-badge">{p}</span>)}</span></span>
           </button>))}</div>
         {cur && <Container title={cur.name} icon={cur.icon} actions={<Button tone="primary" icon="plus" onClick={() => rt.openDialog('newlib', { template: cur.id })}>Use template</Button>}>
           <p className="fx-muted" style={{ marginTop: 0 }}>{cur.description}</p>
@@ -135,7 +135,7 @@ export function NewLibraryDialog({ templateId, close }: { templateId: string; cl
       <p className="fx-mono fx-small fx-muted" style={{ margin: 0 }}>{slug ? `lib-${slug} · ai.amberx.axf.${slug.replace(/-/g, '.')} · ${pascal(slug)}Module · view "${slug}"` : 'module name appears here'}{exists ? ' — already exists' : ''}</p>
       <label className="fx-field">Description<input id="newlib-desc" className="fx-input" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t?.description} /></label>
       <div><p className="fx-eyebrow">Ports</p><div className="fx-row fx-row--wrap">{PORTS.map((p) => <button key={p} className={`fx-chip ${ports.has(p) ? 'is-selected' : ''}`} onClick={() => setPorts((x) => { const n = new Set(x); if (n.has(p)) n.delete(p); else n.add(p); return n; })}>{p}</button>)}</div></div>
-      {t && t.params.length > 0 && <div className="fx-stack" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><p className="fx-eyebrow" style={{ margin: 0 }}>Parameters</p>{t.params.map((p) => <label key={p.key} className="fx-field">{p.label}<input id={`newlib-p-${p.key}`} className="fx-input fx-mono" value={params[p.key] ?? ''} onChange={(e) => setParams({ ...params, [p.key]: e.target.value })} />{p.help && <span className="fx-muted fx-small">{p.help}</span>}</label>)}</div>}
+      {t && t.params.length > 0 && <div className="fx-stack" style={{ gap: 'var(--fx-dens-gap-lg)' }}><p className="fx-eyebrow" style={{ margin: 0 }}>Parameters</p>{t.params.map((p) => <label key={p.key} className="fx-field">{p.label}<input id={`newlib-p-${p.key}`} className="fx-input fx-mono" value={params[p.key] ?? ''} onChange={(e) => setParams({ ...params, [p.key]: e.target.value })} />{p.help && <span className="fx-muted fx-small">{p.help}</span>}</label>)}</div>}
       <div><p className="fx-eyebrow">Catalog features it covers</p>
         <div className="fx-row fx-row--wrap">{[...features].map((f) => <button key={f} className="fx-chip is-selected" onClick={() => setFeatures((x) => { const n = new Set(x); n.delete(f); return n; })}>{f} ×</button>)}</div>
         <input id="newlib-features" className="fx-input" placeholder="Search the catalog…" value={fq} onChange={(e) => setFq(e.target.value)} />

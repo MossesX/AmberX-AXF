@@ -13,6 +13,7 @@ import { Button, Container, Icon, IconButton, Note, SelectField, Switch, TextFie
 import { DataGrid, type GridColumn, type GridGroup } from '../../../axf/libs/datagrid';
 import './voice.css';
 import { isNative, native, type VoiceStatus } from '../../../native';
+import { withMic } from '../../../miclease';
 import { dbText, graphPoints, interpretHeard, levelOf, listens, overlayColors, pushLevel, voiceConfig, type VoiceConfig } from './handsfree';
 import { flatTree, localDay, parseIntent, type Intent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
@@ -78,6 +79,11 @@ export function registerVoiceCommands(module: string, commands: PluginVoiceComma
   pluginRev += 1; pluginSubs.forEach((f) => f());
   return () => { fromPlugins.delete(module); pluginRev += 1; pluginSubs.forEach((f) => f()); };
 }
+/**
+ * Console plugins loaded into AmberX can't import this file, so the page carries the same registry for them:
+ * `globalThis.amberxVoice.register(module, commands)` (set when this module loads, before any library registers).
+ */
+(globalThis as { amberxVoice?: { register: typeof registerVoiceCommands } }).amberxVoice = { register: registerVoiceCommands };
 const usePluginRev = () => useSyncExternalStore((f) => { pluginSubs.add(f); return () => { pluginSubs.delete(f); }; }, () => pluginRev);
 
 /** Every page the app has right now (from the search index the React layer fills). */
@@ -213,7 +219,7 @@ async function nextCommand(rt: AxfRuntime): Promise<string> {
       nextHeard = (text) => { clearTimeout(timer); nextHeard = null; resolve(text); };
     });
   }
-  return (await native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') })).text;
+  return (await withMic('voice-command', () => native.listen({ lang: str(rt.settings.get(K.lang), 'en-US') }))).text;
 }
 
 export async function listenOnce(rt: AxfRuntime) {

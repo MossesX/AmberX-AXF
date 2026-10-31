@@ -27,7 +27,7 @@ export const GROUPS: Record<string, Plain> = {
   postponed_gestures: { title: 'Drag a window from anywhere', does: 'Move a window by grabbing any part of it, not just the title bar.' },
   plugin_theme_override: { title: 'Per-plugin look + Plugins menu', does: 'Give any plugin its own colours and style, and reach every plugin from one Plugins menu.' },
   assistant_approvals: { title: 'Approve from the assistant', does: 'Approval requests pop up in the AI assistant\'s title bar with a one-tap Approve.' },
-  veto_approvals: { title: 'Veto approvals', does: 'Commands run by themselves after 3 minutes unless you tap Deny; AmberX alerts you.' },
+  veto_approvals: { title: 'Veto approvals', does: 'Commands run by themselves after 90 seconds unless you tap Deny (or Approve to run now, Shelve to pause); AmberX alerts you.' },
   amberx_voice_wake: { title: 'AmberX silent wake word', does: 'AmberX listens silently for its wake phrase, with no system beep.' },
 };
 
@@ -136,7 +136,7 @@ export const ITEMS: Record<string, Plain> = {
   'assistant-approvals:s3': { title: 'In the console assistant', does: 'Approval badge in the console assistant\'s title bar.' },
   'assistant-approvals:s4': { title: 'In the AmberX assistant', does: 'Same badge in AmberX; tap Approve from your phone.' },
   'assistant-approvals:s5': { title: 'Tests + ship', does: 'Checks, screenshots, merge.' },
-  'veto-approvals:s1': { title: 'Hold then run', does: 'axHub holds a command 3 minutes, then runs it unless you deny.' },
+  'veto-approvals:s1': { title: 'Hold then run', does: 'axHub holds a command 90 seconds, then runs it unless you deny.' },
   'veto-approvals:s2': { title: 'Phone alerts', does: 'Vinnie sends AmberX alerts with a Deny button.' },
   'veto-approvals:s3': { title: 'AmberX alert settings', does: 'Pick sounds and vibration for these alerts.' },
   'veto-approvals:s4': { title: 'Live terminal tab', does: 'A terminal tab shows the countdown, then the command running.' },

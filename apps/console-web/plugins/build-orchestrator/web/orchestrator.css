@@ -1,31 +1,31 @@
 /* Build orchestrator: layout only plus model chips; every control is a framework control (fx-*, pd-* from the console). */
-.oc-model { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: 0 calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); font: inherit; font-size: calc(var(--fx-font-size) * 0.85); line-height: 1.6; color: var(--fx-text); background: transparent }
+.oc-model { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); font: inherit; font-size: var(--fx-type-root-sm); line-height: 1.6; color: var(--fx-text); background: transparent }
 button.oc-model { cursor: pointer }
 .oc-model.is-fable { color: var(--fx-accent); border-color: var(--fx-accent) }
 .oc-model.is-opus { color: var(--fx-info); border-color: var(--fx-info) }
 .oc-badge.is-running { color: var(--fx-accent) }
 .oc-badge.is-waiting, .oc-badge.is-blocked { color: var(--fx-warning) }
 .oc-badge.is-archived { color: var(--fx-muted) }
-.oc-count { margin-left: calc(var(--fx-space) * 0.5); padding: 0 calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-lg); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-accent); font-size: calc(var(--fx-font-size) * 0.8) }
-.oc-gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
-.oc-flag { font-size: calc(var(--fx-font-size) * 0.8); color: var(--fx-muted) }
-.oc-steptools { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); margin-left: auto }
+.oc-count { margin-left: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-lg); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-accent); font-size: var(--fx-type-root-xs) }
+.oc-gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
+.oc-flag { font-size: var(--fx-type-root-xs); color: var(--fx-muted) }
+.oc-steptools { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); margin-left: auto }
 .pd-entry:has(.oc-steptools) { align-items: center }
-.oc-group { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
-.oc-group__head { margin: calc(var(--fx-space) * 0.5) 0 0; font-size: calc(var(--fx-font-size) * 0.9); font-weight: 600 }
+.oc-group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.oc-group__head { margin: var(--fx-dens-gap-md) 0 0; font-size: var(--fx-type-root-md); font-weight: 600 }
 .oc-grid { overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
 .oc-subgrid { overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
-.oc-cell-title { display: flex; flex-direction: column; min-width: 0; gap: calc(var(--fx-space) * 0.1) }
+.oc-cell-title { display: flex; flex-direction: column; min-width: 0; gap: var(--fx-dens-gap-2xs) }
 .oc-cell-title > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-.oc-detail { display: flex; flex-direction: column; gap: var(--fx-space) }
+.oc-detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl) }
 .oc-embedded { box-shadow: none }
 .oc-done { text-decoration: line-through; color: var(--fx-muted) }
-.oc-stepdetail { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4) }
+.oc-stepdetail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
 .oc-stepdetail p { margin: 0; overflow-wrap: anywhere }
 .oc-cell-title { width: 100% }
 .oc-grid .axf-grid-cell, .oc-subgrid .axf-grid-cell { white-space: nowrap }
 
 /* one compact toolbar (Oct 30 2026): view, category, next model, sort — dropdowns instead of chip rows */
-.oc-bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
-.oc-bar__pick { width: auto; min-width: 0; flex: 0 1 auto; max-width: 100%; padding: calc(var(--fx-space) * 0.35) calc(var(--fx-space) * 0.6); font-size: 0.88em }
+.oc-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.oc-bar__pick { width: auto; min-width: 0; flex: 0 1 auto; max-width: 100%; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-sm) }
 @media (max-width: 640px) { .oc-bar__pick { flex: 1 1 calc(var(--fx-font-size) * 9) } }

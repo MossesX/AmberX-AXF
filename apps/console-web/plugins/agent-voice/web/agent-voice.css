@@ -1,0 +1,38 @@
+/* Agent voice plugin. Theme tokens only, axp-agent-voice prefix (framework/spec/THEMING.md). Layout only: controls are the framework's. */
+.axp-agent-voice__h1 { display: flex; align-items: center; gap: var(--fx-dens-gap-xl) }
+.axp-agent-voice__headbtns, .axp-agent-voice__chips, .axp-agent-voice__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: center }
+.axp-agent-voice__split { display: grid; grid-template-columns: minmax(200px, 260px) minmax(0, 1fr); gap: var(--fx-dens-gap-xl); align-items: start }
+@media (max-width: 720px) { .axp-agent-voice__split { grid-template-columns: minmax(0, 1fr) } }
+.axp-agent-voice__agents { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-agent-voice__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: 70vh; overflow: auto }
+.axp-agent-voice__agent { display: flex; align-items: center; gap: var(--fx-dens-gap-md); justify-content: flex-start; text-align: left; width: 100% }
+.axp-agent-voice__agent.is-on { outline: var(--fx-border-w) solid var(--fx-accent) }
+.axp-agent-voice__agentname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-agent-voice__detail { min-width: 0 }
+.axp-agent-voice__title { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-agent-voice__pronadd { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--fx-dens-gap-md); align-items: end }
+.axp-agent-voice__pronrow { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-agent-voice__key { display: flex; flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-md) }
+.axp-agent-voice__chunks { margin: 0; padding-left: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-agent-voice__kind { font-size: var(--fx-type-root-xs); color: var(--fx-muted); text-transform: uppercase; letter-spacing: 0.04em }
+
+/* the live light: a dot whose colour and pulse follow the state */
+.axp-agent-voice__light { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-agent-voice__dot { display: inline-block; border-radius: 999px; background: var(--fx-muted); flex: none }
+.axp-agent-voice__light--ready .axp-agent-voice__dot { background: var(--fx-success) }
+.axp-agent-voice__light--speaking .axp-agent-voice__dot { background: var(--fx-accent); animation: axp-agent-voice-pulse 1s ease-in-out infinite }
+.axp-agent-voice__light--listening .axp-agent-voice__dot { background: var(--fx-warning); animation: axp-agent-voice-pulse 0.7s ease-in-out infinite }
+.axp-agent-voice__light--paused .axp-agent-voice__dot { background: var(--fx-muted) }
+.axp-agent-voice__light--error .axp-agent-voice__dot { background: var(--fx-danger) }
+@keyframes axp-agent-voice-pulse { 50% { opacity: var(--fx-opacity-muted); transform: scale(1.35) } }
+@media (prefers-reduced-motion: reduce) { .axp-agent-voice__dot { animation: none !important } }
+
+/* the Assistant title bar + mic */
+.axp-agent-voice__head { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axp-agent-voice__micwrap { position: relative; display: inline-flex }
+.axp-agent-voice__micwrap.is-listening::after { content: ''; position: absolute; inset: 0; border-radius: 999px; border: var(--fx-border-w) solid var(--fx-warning); animation: axp-agent-voice-pulse 0.9s ease-in-out infinite; pointer-events: none }
+.axp-agent-voice__mic.is-missing { opacity: var(--fx-opacity-muted) }
+.axp-agent-voice__pop { position: absolute; bottom: calc(100% + var(--fx-space) * 0.5); right: 0; z-index: 82; width: max-content; max-width: min(340px, 80vw); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md);
+  padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); box-shadow: var(--fx-shadow-lg); color: var(--fx-text) }
+.axp-agent-voice__popmsg { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-start }
+.axp-agent-voice__popbtns { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: center }

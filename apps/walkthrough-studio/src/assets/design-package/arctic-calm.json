@@ -13,6 +13,13 @@
     "style-theme": "soft-studio",
     "color-theme": "arctic-daylight",
     "layout": "classic-ide",
-    "behavior-theme": "calm"
+    "behavior-theme": "calm",
+    "extras": {
+      "slots": {
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      }
+    }
   }
 }

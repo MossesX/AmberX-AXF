@@ -2,31 +2,43 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.approvals-banner",
   "name": "Approvals banner",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner at the top of the console whenever axHub has calls waiting for your approval (shell commands, deploys and anything else set to confirm). Shows how many and what they are; Review opens the request on the hub, where you approve or reject it. Only for admins signed in to axHub; it never approves anything itself. Held commands (veto@1: the hub runs them after a 3-minute countdown unless denied) show a live countdown and Deny instead of Review; Deny opens the call on the hub, where it runs.",
+  "description": "The veto banner: a banner at the top of the app whenever axHub holds a call on its countdown (veto@1: it runs by itself after 90 s unless you stop it) or has one waiting for approval. Held calls show a live countdown with Deny, Approve (run it now) and Shelve (pause the countdown until you decide); tapping one opens the veto screen. Its notices (timer started, 30 s left, running) and a configurable alarm (tone or your own sound, volume, louder over time, how long, repeats, vibration, when it starts, through silent mode on the phone) work in every app it is installed in: the console and AmberX. Only for admins signed in to axHub; it acts only on your tap.",
   "targets": [
-    "axf-console"
+    "axf-console",
+    "amberx-droid"
   ],
   "provides": [
     "banner:approvals",
-    "settings-tab:approvals-banner"
+    "settings-tab:approvals-banner",
+    "dialog:approvals.veto",
+    "action:approvals.veto",
+    "action:approvals.deny",
+    "action:approvals.approve-now",
+    "action:approvals.shelve"
   ],
   "optional": [],
   "scopes": [],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-28" },
-  "banner": ["approvals"],
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-30"
+  },
+  "banner": [
+    "approvals"
+  ],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/approvals-banner",
     "env": [],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md"
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md"
     ]
   },
-  "opens": false
+  "opens": "main"
 }

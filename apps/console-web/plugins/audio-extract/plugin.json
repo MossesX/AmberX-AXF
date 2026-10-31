@@ -1,0 +1,32 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.audio-extract",
+  "name": "Audio Extract",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Pulls the audio out of videos on the phone into audio files (screen recordings first): the original AAC copied out as .m4a with no re-encode, or WAV when picked. Pick videos (batch), Share to AmberX, the last screen recording by voice, new screen recordings offered as they appear; trim, track pick, progress, cancel; results list with play, rename, share, delete. Plus a screen recorder with the sound apps play (no microphone) whose recordings go straight through the extractor. Runs in AmberX on Android (native AudioExtract plugin); shows a note anywhere else.",
+  "targets": [
+    "amberx-droid",
+    "axf-console"
+  ],
+  "provides": [
+    "view:audio-extract",
+    "settings-tab:audio-extract"
+  ],
+  "scopes": [],
+  "enabledByDefault": false,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-30" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/audio-extract",
+    "env": [],
+    "mentions": [
+      "_claude/THREADS.md"
+    ]
+  },
+  "opens": "main"
+}

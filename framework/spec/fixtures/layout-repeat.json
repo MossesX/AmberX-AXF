@@ -1,0 +1,1108 @@
+{
+  "styles": [
+    "tabs",
+    "cards",
+    "grid",
+    "stacked"
+  ],
+  "defaultStyle": "stacked",
+  "maxColumns": 12,
+  "defaultColumns": {
+    "tabs": 1,
+    "cards": 2,
+    "grid": 3,
+    "stacked": 1
+  },
+  "repeat": [
+    {
+      "id": "docs",
+      "dataSet": "docs",
+      "style": "tabs"
+    },
+    {
+      "id": "projects",
+      "dataSet": "projects",
+      "style": "cards",
+      "columns": 3,
+      "max": 2,
+      "fallback": {
+        "type": "container",
+        "id": "empty-projects",
+        "label": "No projects yet"
+      }
+    },
+    {
+      "id": "gallery",
+      "dataSet": "images",
+      "style": "grid",
+      "region": "inspector"
+    },
+    {
+      "id": "feed",
+      "dataSet": "feed",
+      "fallback": {
+        "label": "Nothing new"
+      }
+    },
+    {
+      "id": "docs",
+      "dataSet": "other"
+    },
+    {
+      "id": "",
+      "dataSet": "x"
+    },
+    {
+      "id": "odd",
+      "dataSet": "docs",
+      "style": "carousel",
+      "region": "sidebar",
+      "columns": 99,
+      "max": -2
+    },
+    {
+      "id": "wide",
+      "dataSet": "images",
+      "style": "grid",
+      "columns": 2.5
+    }
+  ],
+  "declared": [
+    "docs",
+    "projects",
+    "images",
+    "feed"
+  ],
+  "cases": {
+    "all-declared": {
+      "sets": {
+        "docs": [
+          {
+            "id": "a",
+            "label": "Alpha",
+            "icon": "file"
+          },
+          {
+            "key": "b",
+            "title": "Beta"
+          }
+        ],
+        "projects": [
+          {
+            "id": "p1",
+            "label": "One"
+          },
+          {
+            "id": "p2"
+          },
+          {
+            "id": "p3"
+          }
+        ],
+        "images": [
+          "x.png",
+          "y.png",
+          7
+        ],
+        "feed": [
+          {
+            "label": "Hi"
+          }
+        ]
+      },
+      "missing": [],
+      "compiled": [
+        {
+          "id": "docs",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "tabs",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "Alpha",
+              "icon": "file",
+              "index": 0,
+              "data": {
+                "id": "a",
+                "label": "Alpha",
+                "icon": "file"
+              }
+            },
+            {
+              "key": "b",
+              "label": "Beta",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "key": "b",
+                "title": "Beta"
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": "a"
+        },
+        {
+          "id": "projects",
+          "region": "main",
+          "dataSet": "projects",
+          "style": "cards",
+          "columns": 3,
+          "items": [
+            {
+              "key": "p1",
+              "label": "One",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "id": "p1",
+                "label": "One"
+              }
+            },
+            {
+              "key": "p2",
+              "label": "p2",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "id": "p2"
+              }
+            }
+          ],
+          "overflow": 1,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "gallery",
+          "region": "inspector",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [
+            {
+              "key": "x.png",
+              "label": "x.png",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "value": "x.png"
+              }
+            },
+            {
+              "key": "y.png",
+              "label": "y.png",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "value": "y.png"
+              }
+            },
+            {
+              "key": "7",
+              "label": "7",
+              "icon": null,
+              "index": 2,
+              "data": {
+                "value": 7
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "feed",
+          "region": "main",
+          "dataSet": "feed",
+          "style": "stacked",
+          "columns": 1,
+          "items": [
+            {
+              "key": "0",
+              "label": "Hi",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "label": "Hi"
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "odd",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "stacked",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "Alpha",
+              "icon": "file",
+              "index": 0,
+              "data": {
+                "id": "a",
+                "label": "Alpha",
+                "icon": "file"
+              }
+            },
+            {
+              "key": "b",
+              "label": "Beta",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "key": "b",
+                "title": "Beta"
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "wide",
+          "region": "main",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [
+            {
+              "key": "x.png",
+              "label": "x.png",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "value": "x.png"
+              }
+            },
+            {
+              "key": "y.png",
+              "label": "y.png",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "value": "y.png"
+              }
+            },
+            {
+              "key": "7",
+              "label": "7",
+              "icon": null,
+              "index": 2,
+              "data": {
+                "value": 7
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        }
+      ],
+      "vars": [
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        }
+      ]
+    },
+    "none-declared": {
+      "sets": {},
+      "missing": [
+        "docs",
+        "projects",
+        "images",
+        "feed"
+      ],
+      "compiled": [
+        {
+          "id": "docs",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "tabs",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "projects",
+          "region": "main",
+          "dataSet": "projects",
+          "style": "cards",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "type": "container",
+            "id": "empty-projects",
+            "label": "No projects yet"
+          },
+          "active": null
+        },
+        {
+          "id": "gallery",
+          "region": "inspector",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "feed",
+          "region": "main",
+          "dataSet": "feed",
+          "style": "stacked",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "label": "Nothing new"
+          },
+          "active": null
+        },
+        {
+          "id": "odd",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "stacked",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "wide",
+          "region": "main",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        }
+      ],
+      "vars": [
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        }
+      ]
+    },
+    "empty-sets": {
+      "sets": {
+        "docs": [],
+        "projects": [],
+        "images": [],
+        "feed": []
+      },
+      "missing": [],
+      "compiled": [
+        {
+          "id": "docs",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "tabs",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "projects",
+          "region": "main",
+          "dataSet": "projects",
+          "style": "cards",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "type": "container",
+            "id": "empty-projects",
+            "label": "No projects yet"
+          },
+          "active": null
+        },
+        {
+          "id": "gallery",
+          "region": "inspector",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "feed",
+          "region": "main",
+          "dataSet": "feed",
+          "style": "stacked",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "label": "Nothing new"
+          },
+          "active": null
+        },
+        {
+          "id": "odd",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "stacked",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "wide",
+          "region": "main",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        }
+      ],
+      "vars": [
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        }
+      ]
+    },
+    "messy-entries": {
+      "sets": {
+        "docs": [
+          {
+            "id": "a"
+          },
+          {
+            "id": "a",
+            "label": "dup"
+          },
+          null,
+          true,
+          "",
+          "  ",
+          {
+            "label": "no key"
+          },
+          3,
+          3
+        ],
+        "images": [
+          {
+            "key": "k",
+            "id": "ignored",
+            "label": "  "
+          }
+        ]
+      },
+      "missing": [
+        "projects",
+        "feed"
+      ],
+      "compiled": [
+        {
+          "id": "docs",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "tabs",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "a",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "id": "a"
+              }
+            },
+            {
+              "key": "6",
+              "label": "no key",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "label": "no key"
+              }
+            },
+            {
+              "key": "3",
+              "label": "3",
+              "icon": null,
+              "index": 2,
+              "data": {
+                "value": 3
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": "a"
+        },
+        {
+          "id": "projects",
+          "region": "main",
+          "dataSet": "projects",
+          "style": "cards",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "type": "container",
+            "id": "empty-projects",
+            "label": "No projects yet"
+          },
+          "active": null
+        },
+        {
+          "id": "gallery",
+          "region": "inspector",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [
+            {
+              "key": "k",
+              "label": "k",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "key": "k",
+                "id": "ignored",
+                "label": "  "
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "feed",
+          "region": "main",
+          "dataSet": "feed",
+          "style": "stacked",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "label": "Nothing new"
+          },
+          "active": null
+        },
+        {
+          "id": "odd",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "stacked",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "a",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "id": "a"
+              }
+            },
+            {
+              "key": "6",
+              "label": "no key",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "label": "no key"
+              }
+            },
+            {
+              "key": "3",
+              "label": "3",
+              "icon": null,
+              "index": 2,
+              "data": {
+                "value": 3
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "wide",
+          "region": "main",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [
+            {
+              "key": "k",
+              "label": "k",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "key": "k",
+                "id": "ignored",
+                "label": "  "
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        }
+      ],
+      "vars": [
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        }
+      ]
+    },
+    "tab-picked": {
+      "sets": {
+        "docs": [
+          {
+            "id": "a"
+          },
+          {
+            "id": "b"
+          },
+          {
+            "id": "c"
+          }
+        ]
+      },
+      "active": {
+        "docs": "c"
+      },
+      "missing": [
+        "projects",
+        "images",
+        "feed"
+      ],
+      "compiled": [
+        {
+          "id": "docs",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "tabs",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "a",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "id": "a"
+              }
+            },
+            {
+              "key": "b",
+              "label": "b",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "id": "b"
+              }
+            },
+            {
+              "key": "c",
+              "label": "c",
+              "icon": null,
+              "index": 2,
+              "data": {
+                "id": "c"
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": "c"
+        },
+        {
+          "id": "projects",
+          "region": "main",
+          "dataSet": "projects",
+          "style": "cards",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "type": "container",
+            "id": "empty-projects",
+            "label": "No projects yet"
+          },
+          "active": null
+        },
+        {
+          "id": "gallery",
+          "region": "inspector",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "feed",
+          "region": "main",
+          "dataSet": "feed",
+          "style": "stacked",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "label": "Nothing new"
+          },
+          "active": null
+        },
+        {
+          "id": "odd",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "stacked",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "a",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "id": "a"
+              }
+            },
+            {
+              "key": "b",
+              "label": "b",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "id": "b"
+              }
+            },
+            {
+              "key": "c",
+              "label": "c",
+              "icon": null,
+              "index": 2,
+              "data": {
+                "id": "c"
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "wide",
+          "region": "main",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        }
+      ],
+      "vars": [
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        }
+      ]
+    },
+    "tab-picked-gone": {
+      "sets": {
+        "docs": [
+          {
+            "id": "a"
+          },
+          {
+            "id": "b"
+          }
+        ]
+      },
+      "active": {
+        "docs": "z"
+      },
+      "missing": [
+        "projects",
+        "images",
+        "feed"
+      ],
+      "compiled": [
+        {
+          "id": "docs",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "tabs",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "a",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "id": "a"
+              }
+            },
+            {
+              "key": "b",
+              "label": "b",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "id": "b"
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": "a"
+        },
+        {
+          "id": "projects",
+          "region": "main",
+          "dataSet": "projects",
+          "style": "cards",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "type": "container",
+            "id": "empty-projects",
+            "label": "No projects yet"
+          },
+          "active": null
+        },
+        {
+          "id": "gallery",
+          "region": "inspector",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        },
+        {
+          "id": "feed",
+          "region": "main",
+          "dataSet": "feed",
+          "style": "stacked",
+          "columns": 1,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {
+            "label": "Nothing new"
+          },
+          "active": null
+        },
+        {
+          "id": "odd",
+          "region": "main",
+          "dataSet": "docs",
+          "style": "stacked",
+          "columns": 1,
+          "items": [
+            {
+              "key": "a",
+              "label": "a",
+              "icon": null,
+              "index": 0,
+              "data": {
+                "id": "a"
+              }
+            },
+            {
+              "key": "b",
+              "label": "b",
+              "icon": null,
+              "index": 1,
+              "data": {
+                "id": "b"
+              }
+            }
+          ],
+          "overflow": 0,
+          "empty": false,
+          "fallback": null,
+          "active": null
+        },
+        {
+          "id": "wide",
+          "region": "main",
+          "dataSet": "images",
+          "style": "grid",
+          "columns": 3,
+          "items": [],
+          "overflow": 0,
+          "empty": true,
+          "fallback": {},
+          "active": null
+        }
+      ],
+      "vars": [
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "1"
+        },
+        {
+          "--fx-repeat-cols": "3"
+        }
+      ]
+    }
+  }
+}

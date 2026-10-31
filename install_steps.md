@@ -346,6 +346,25 @@ On claude.ai in a browser → **Settings → Connectors**:
 
 ---
 
+### Replace the GitHub token (when it dies or expires)
+
+Signs: the push banner or auto-merge says 401 / Bad credentials, builds finish but say "pushed: no", or the
+health banner shows GitHub red. axHub has its own GitHub token in its vault; this one is the console's and the
+server's git push.
+
+1. Open https://github.com/settings/personal-access-tokens/new
+2. Name `AXF console`, expiration 90 days, resource owner **MossesX**.
+3. Repository access: **All repositories**.
+4. Repository permissions, **Read and write**: Contents, Pull requests, Actions, Workflows (needed when a branch
+   changes workflow files), and optionally Administration (lets batch merge protect main).
+5. **Generate token** and copy it. Never paste it into a chat.
+6. Console -> **Keys** banner -> GitHub token -> paste -> Save.
+7. Done. Git push on the VPS reads the same token through `/usr/local/bin/axf-git-cred` (set as the credential
+   helper for /opt/axf and every build worktree), so stuck build branches can be pushed straight away. Tell Claude
+   "done" and it pushes them and opens the PRs.
+
+---
+
 ## Part G: Deploys and checks
 
 ### Step 24. Automatic deploys

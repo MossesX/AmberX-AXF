@@ -38,7 +38,9 @@ jobs:
       - run: node framework/spec/check-plugin-catalog.mjs            # plugin-catalog@1: pack, publish, verify, install guards
       - run: node framework/spec/check-axf-server.mjs                # wall-signature + plugin-package fixtures still match their references
       - run: node framework/spec/check-build-steps.mjs              # small-steps rule: pending + build-queue step cores
+      - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
+      - run: node framework/spec/check-orch-sync.mjs                # orchestrator <-> Pending builds sync (pure + real writers on temp files)
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
       - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
@@ -132,6 +134,7 @@ jobs:
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
+            npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
