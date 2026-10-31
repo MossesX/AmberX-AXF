@@ -113,6 +113,16 @@ t('meter per agent, job, build and model', () => {
 });
 t('formatting', () => { assert.equal(c.fmtUsd(1.234), '$1.23'); assert.equal(c.fmtUsd(123.4), '$123'); assert.equal(c.fmtTokens(1500), '2k'); assert.equal(c.fmtTokens(2.5e6), '2.5M'); });
 
+// s7 pilot
+t('roster tune scales planned budgets', () => { const j = c.planJobs(B('b', [{ text: 'React card', estimate: '30 min' }]), roster).jobs[0]; assert.equal(j.budget.tokens, Math.round(roster.agents.find((a) => a.id === j.agent).tokenBudget * roster.tune.scale)); assert.ok(roster.tune.scale >= 0.25 && roster.tune.scale <= 2); });
+t('pilot: projections, saving and a clamped scale', () => {
+  const b = B('p', [{ text: 'React card in apps/x/web/ui.tsx', estimate: '30 min' }, { text: 'Update the README docs', estimate: '10 min' }]);
+  const p = c.planJobs(b, roster, { tune: { scale: 1 } }); const briefs = Object.fromEntries(p.jobs.map((j) => [j.id, { system: 500, prompt: 300 }]));
+  const r = c.pilotReport(b, p, briefs, P, null, 8000);
+  assert.equal(r.jobs.length, 2); assert.equal(r.single.minutes, 40); assert.ok(r.swarm.usd > 0 && r.single.usd > r.swarm.usd); assert.ok(r.scale >= 0.25 && r.scale <= 2);
+  const u = c.projectRun({ budget: { maxTurns: 10 } }, 1000); assert.equal(u.cacheWrite, 1000 + 1500 * 6); assert.equal(u.output, 6 * 800);
+});
+
 // batch merge end to end on a scratch repo
 {
   const repo = mkdtempSync(join(tmpdir(), 'swarm-repo-'));

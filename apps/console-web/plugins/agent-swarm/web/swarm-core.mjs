@@ -49,7 +49,8 @@ export function normAgent(a) {
 
 export function normRoster(r) {
   const o = r && typeof r === 'object' ? r : {};
-  return { $axf: 'swarm-roster@1', agents: (Array.isArray(o.agents) ? o.agents : []).map(normAgent) };
+  const tune = o.tune && typeof o.tune === 'object' ? { scale: num(o.tune.scale, 1, 0.25, 2), basis: str(o.tune.basis, 300) } : { scale: 1, basis: '' };
+  return { $axf: 'swarm-roster@1', tune, agents: (Array.isArray(o.agents) ? o.agents : []).map(normAgent) };
 }
 
 /** agent-skill@1: a markdown file with `---` front matter (`id`, `title`) and a body under one page. */
@@ -196,7 +197,7 @@ export function planJobs(builds, roster, opts = {}) {
       // no named files: lease the agent's whole area, so the job is sequenced against anything in it
       const area = leases.length ? leases : a.paths.filter((p) => !p.startsWith('**'));
       jobs.push({ $axf: 'swarm-job@1', id, buildId: b.id, stepId: s.id, text: str(s.text, 2000), estimate: str(s.estimate, 20), agent: a.id, skill: a.skill, tier, model: pick.model, match: hit.score,
-        leases: area, leaseKind: leases.length ? 'files' : area.length ? 'area' : 'all', shared, budget: budgetFor(a, s, opts.tune), checks: list(s.checks, 20, 300), wave: 0, after: [] });
+        leases: area, leaseKind: leases.length ? 'files' : area.length ? 'area' : 'all', shared, budget: budgetFor(a, s, opts.tune ?? roster.tune), checks: list(s.checks, 20, 300), wave: 0, after: [] });
     }
   }
   // overlap sequencing, in order: a job waits for every earlier job it overlaps with ('all' overlaps everything)
@@ -440,3 +441,51 @@ export function meter(runs, table) {
 }
 export const fmtUsd = (v) => `$${(Number(v) || 0) < 10 ? (Number(v) || 0).toFixed(2) : Math.round(Number(v) || 0)}`;
 export const fmtTokens = (v) => { const n = Number(v) || 0; return n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : String(n); };
+
+// ---------------------------------------------------------------- pilot: swarm vs one session
+
+/**
+ * Shape of a typical headless job run, used to project a job's tokens before (or without) a live run, and the
+ * share of its max turns it uses. Replace with measured numbers from real runs (swarm.mjs pilot --measured).
+ */
+export const RUN_SHAPE = { turnShare: 0.6, growthPerTurn: 1500, outputPerTurn: 800 };
+
+/** Projected usage of one job: its brief is written to the cache once, then read back on every turn as context grows. */
+export function projectRun(job, briefTokens, shape = RUN_SHAPE) {
+  const T = Math.max(1, Math.round(job.budget.maxTurns * shape.turnShare));
+  const g = shape.growthPerTurn;
+  return { input: T * 200, output: T * shape.outputPerTurn, cacheWrite: briefTokens + g * T, cacheRead: T * briefTokens + (g * T * (T - 1)) / 2 };
+}
+
+/**
+ * Projected usage of the same build done in one session: model-pricing.json's per-minute heuristic over the
+ * build's estimate, plus the always-loaded context (CLAUDE.md, rules, THREADS) read back once per minute.
+ */
+export function projectSession(build, heuristic, loadTokens = 0) {
+  const min = (build.steps ?? []).filter((s) => !s.done && !s.skip).reduce((t, s) => t + (minutesOf(s.estimate) ?? 20), 0);
+  const h = heuristic?.tokensPerMinute ?? { input: 5000, output: 3000, cacheRead: 300000, cacheWrite: 0 };
+  return { minutes: min, usage: { input: h.input * min, output: h.output * min, cacheRead: (h.cacheRead + loadTokens) * min, cacheWrite: (h.cacheWrite ?? 0) * min + loadTokens } };
+}
+
+/**
+ * Compare the swarm with one session for a build and suggest a budget scale: each job's budget should hold its
+ * projected run with 50% headroom; the scale is the median of projected×1.5 / assigned, clamped 0.25–2.
+ */
+export function pilotReport(build, plan, briefs, table, heuristic, loadTokens, shape = RUN_SHAPE) {
+  const jobs = plan.jobs.map((j) => {
+    const b = briefs[j.id] ?? { system: 0, prompt: 0 };
+    const u = projectRun(j, b.system + b.prompt, shape);
+    return { id: j.id, agent: j.agent, model: j.model, brief: b.system + b.prompt, usage: u, usd: costOf(u, j.model, table), budget: j.budget.tokens, need: Math.round(budgetTokens(u) * 1.5) };
+  });
+  const swarm = jobs.reduce((t, j) => ({ tokens: t.tokens + budgetTokens(j.usage), usd: t.usd + j.usd }), { tokens: 0, usd: 0 });
+  const modelOf = (s) => (s.model === 'Fable' ? 'fable' : 'opus');
+  const open = (build.steps ?? []).filter((s) => !s.done && !s.skip);
+  const single = open.reduce((t, s) => {
+    const p = projectSession({ steps: [s] }, heuristic, loadTokens);
+    return { minutes: t.minutes + p.minutes, tokens: t.tokens + budgetTokens(p.usage), usd: t.usd + costOf(p.usage, modelOf(s), table) };
+  }, { minutes: 0, tokens: 0, usd: 0 });
+  const ratios = jobs.map((j) => j.need / Math.max(1, j.budget)).sort((a, b) => a - b);
+  const median = ratios.length ? ratios[Math.floor(ratios.length / 2)] : 1;
+  const scale = Math.round(Math.min(2, Math.max(0.25, median)) * 100) / 100;
+  return { build: build.id, jobs, swarm, single, saving: single.usd ? 1 - swarm.usd / single.usd : 0, scale, shape };
+}

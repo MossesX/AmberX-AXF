@@ -7,13 +7,14 @@
  *   … plan <buildId>…                    split builds into jobs: agent, model, leases, waves (several builds share one lease table)
  *   … pack <buildId> <stepId>            one job's brief: shared prefix + skill, task, leases, snippets
  *   … state | cost                       everything the console shows | the cost meter (agent, build, job)
+ *   … pilot <buildId> [--apply]          plan + pack a build, project swarm vs one session, suggest a budget scale
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
  *   … fix <buildId> <stepId> [--dry-run] hand a merge conflict to the merge fixer
  *   --json on any command prints JSON (the console server uses this).
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { existsSync, statSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
@@ -57,7 +58,7 @@ export function pack(job, handoffs = []) {
   for (const f of job.leases) {
     if (f.includes('*') || f.endsWith('/')) continue;
     const abs = resolve(repoRoot(), f);
-    if (!abs.startsWith(`${repoRoot()}/`) || !existsSync(abs)) continue;
+    if (!abs.startsWith(`${repoRoot()}/`) || !existsSync(abs) || !statSync(abs).isFile()) continue;
     snippets.push(core.extractSnippet(f, readFileSync(abs, 'utf8'), job.text));
   }
   return core.packJob(job, { prefix: prefix(), skill: loadSkills()[job.skill], snippets, handoffs });
@@ -150,6 +151,30 @@ export function state() {
   return { roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
+/** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
+export function sessionLoadTokens() {
+  return ['CLAUDE.md', '_claude/shared/rules/RULES.md', '_claude/rules/RULES.md', '_claude/THREADS.md'].reduce((t, f) => { try { return t + core.tokensOf(readFileSync(join(ROOT, f), 'utf8')); } catch { return t; } }, 0);
+}
+
+/** Pilot: plan + pack every job of a build (no run), project both ways, suggest a budget scale. --apply saves it on the roster. */
+export function pilot(buildId, opts = {}) {
+  const b = findBuilds([buildId])[0];
+  const p = core.planJobs([b], loadRoster(), { tune: { scale: 1 } });
+  const briefs = Object.fromEntries(p.jobs.map((j) => [j.id, pack(j).tokens]));
+  const pricing = readJson(join(ROOT, 'framework/schemas/model-pricing.json'), {});
+  const r = core.pilotReport(b, p, briefs, core.prices(pricing), pricing.heuristic, sessionLoadTokens());
+  writeJson(join(dataDir(), `pilot-${buildId}.json`), { at: new Date().toISOString(), ...r });
+  if (opts.apply) {
+    const f = join(HERE, 'agents/roster.json'); const raw = readJson(f, {});
+    // a dry pilot only projects; never cut budgets below half until real runs are measured
+    const scale = opts.measured ? r.scale : Math.max(0.5, r.scale);
+    raw.tune = { scale, basis: `pilot ${opts.measured ? 'measured' : 'dry run'} on ${buildId} (${new Date().toISOString().slice(0, 10)}): suggested ${r.scale}, swarm ${core.fmtUsd(r.swarm.usd)} vs one session ${core.fmtUsd(r.single.usd)}${opts.measured ? '' : '; floored at 0.5 until runs are measured'}` };
+    // one-line edit so the hand-kept layout of roster.json stays as it is
+    const line = ` "tune": ${JSON.stringify(raw.tune)},`; const text = readFileSync(f, 'utf8');
+    writeFileSync(f, /^ "tune": .*,$/m.test(text) ? text.replace(/^ "tune": .*,$/m, line) : text.replace(/^( "about": .*,)$/m, `$1\n${line}`));
+  }
+  return r;
+}
 export function jobOf(p, ref) { const j = p.jobs.find((x) => x.id === ref || x.stepId === ref); if (!j) throw new Error(`no open job "${ref}"`); return j; }
 
 function planText(p) {
@@ -170,6 +195,11 @@ export async function main(argv) {
   if (cmd === 'cost') {
     const m = state().meter; const row = (k, v) => `${k.padEnd(28)} ${String(v.runs).padStart(4)} runs ${core.fmtTokens(v.tokens).padStart(7)} tok ${core.fmtUsd(v.usd).padStart(8)}`;
     return out({ ok: true, meter: m }, [row('TOTAL', m.total), '— by agent', ...Object.entries(m.byAgent).map(([k, v]) => row(k, v)), '— by build', ...Object.entries(m.byBuild).map(([k, v]) => row(k, v)), '— by job', ...Object.entries(m.byJob).map(([k, v]) => row(k, v))].join('\n'));
+  }
+  if (cmd === 'pilot') {
+    const r = pilot(rest.find((a) => !a.startsWith('--')), { apply: args.includes('--apply') });
+    const lines = r.jobs.map((j) => `${j.id.padEnd(22)} ${j.agent.padEnd(6)} ${j.model.padEnd(7)} brief ${core.fmtTokens(j.brief).padStart(5)} · projected ${core.fmtTokens(core.budgetTokens(j.usage)).padStart(5)} (${core.fmtUsd(j.usd)}) · budget ${core.fmtTokens(j.budget)} → need ${core.fmtTokens(j.need)}`);
+    return out({ ok: true, pilot: r }, [...lines, `Swarm: ${core.fmtTokens(r.swarm.tokens)} budget-tokens, ${core.fmtUsd(r.swarm.usd)}`, `One session (${r.single.minutes} min): ${core.fmtTokens(r.single.tokens)} budget-tokens, ${core.fmtUsd(r.single.usd)}`, `Saving: ${Math.round(r.saving * 100)}% · suggested budget scale ${r.scale}${args.includes('--apply') ? ' (saved on the roster)' : ' (--apply to save)'}`].join('\n'));
   }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
   if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }

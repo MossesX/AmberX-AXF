@@ -1,6 +1,7 @@
 {
  "$axf": "swarm-roster@1",
  "about": "Specialist agents for the Build orchestrator. Each agent (agent@1) has one skill file (agents/skills/<skill>.md, under one page), the models it may run on (cheapest first), the tools it gets, and per-job limits. Runtime state (status, pay, history, chat) lives in the plugin's data folder, never here.",
+ "tune": {"scale":0.5,"basis":"pilot dry run on ui-all-assets (2026-10-31): suggested 0.36, swarm $2.98 vs one session $31; floored at 0.5 until runs are measured"},
  "agents": [
   {
    "$axf": "agent@1", "id": "kat", "name": "Kotlin Kat", "role": "Android engineer", "skill": "kotlin-compose",
