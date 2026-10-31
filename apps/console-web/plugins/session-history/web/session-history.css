@@ -1,0 +1,63 @@
+/* Session browser: layout only, theme tokens only (controls keep the framework's look). Phone first: one toolbar line,
+   each row is the run's title with a meta line and its status + cost; the wide columns come back on a wider screen. */
+.axp-session-history { gap: calc(var(--fx-space) * 0.6); min-width: 0 }
+.axp-session-history__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-session-history__headbtns { display: flex; gap: calc(var(--fx-space) * 0.3) }
+.axp-session-history__bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-session-history__search { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
+select.fx-input.axp-session-history__pick { flex: none; width: auto }
+.axp-session-history__sort { border: 0; background: transparent; color: inherit; font: inherit; padding: 0; cursor: pointer; white-space: nowrap }
+.axp-session-history__num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums }
+.fx-table th.axp-session-history__num { text-align: right }
+.axp-session-history__name { min-width: 0; max-width: calc(var(--fx-font-size) * 34) }
+.axp-session-history__name > strong { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere }
+.axp-session-history__meta { display: none }
+.axp-session-history__line { display: flex; align-items: baseline; gap: var(--fx-space); min-width: 0 }
+.axp-session-history__k { flex: none; min-width: calc(var(--fx-space) * 9) }
+.axp-session-history__detail { min-width: 0 }
+@media (max-width: 640px) {
+  .axp-session-history__table .axp-session-history__wide { display: none }
+  .axp-session-history__meta { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+  .axp-session-history__line { flex-direction: column; gap: 0 }
+  .axp-session-history__k { min-width: 0 }
+}
+.axp-session-history__summary { white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-font-size) * 18); overflow: auto }
+.axp-session-history__didlist { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__did { min-width: 0 }
+.axp-session-history__didhead { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axp-session-history__wrong { margin: 0; overflow-wrap: anywhere }
+.axp-session-history__files { margin: 0; padding-left: var(--fx-space); list-style: none }
+.axp-session-history__file { min-width: 0; overflow-wrap: anywhere }
+.axp-session-history__filebtn { border: 0; background: transparent; color: inherit; font: inherit; padding: 0; cursor: pointer; text-align: left }
+.axp-session-history__filebtn:disabled { cursor: default }
+.axp-session-history__ba { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 16), 1fr)); gap: calc(var(--fx-space) * 0.5); margin: calc(var(--fx-space) * 0.3) 0 }
+.axp-session-history__side { min-width: 0 }
+.axp-session-history__pre { margin: 0; padding: calc(var(--fx-space) * 0.5); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); overflow: auto; max-height: calc(var(--fx-font-size) * 20); white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-session-history__link { margin-right: var(--fx-space) }
+.axp-session-history__text { white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-font-size) * 30); overflow: auto }
+.axp-session-history__more { border: 0; background: transparent; color: var(--fx-accent); cursor: pointer; padding: 0 0 0 calc(var(--fx-space) * 0.5); font: inherit }
+.axp-session-history__pager { display: flex; align-items: center; gap: var(--fx-space) }
+.axp-session-history__turns, .axp-session-history__tools { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__turn { border-bottom: var(--fx-border-w) solid var(--fx-border); padding-bottom: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-session-history__turnhead { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axp-session-history__in, .axp-session-history__out { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); margin-top: calc(var(--fx-space) * 0.3); min-width: 0 }
+.axp-session-history__out { padding-left: var(--fx-space); border-left: calc(var(--fx-border-w) * 2) solid var(--fx-accent) }
+.axp-session-history__ev { min-width: 0 }
+.axp-session-history__price { font-variant-numeric: tabular-nums; white-space: nowrap }
+.axp-session-history__tool { min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--fx-space) * 0.4) }
+.axp-session-history__toolbtn { border: 0; background: transparent; color: inherit; font: inherit; padding: 0; cursor: pointer; text-align: left; min-width: 0; flex: 1 1 calc(var(--fx-font-size) * 16); overflow-wrap: anywhere }
+.axp-session-history__toolbody { flex-basis: 100%; min-width: 0 }
+.axp-session-history__chat { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__msg { min-width: 0; max-width: 92%; padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.axp-session-history__msg--you { align-self: flex-end }
+.axp-session-history__msg--claude { align-self: flex-start }
+.axp-session-history__watchbar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-session-history__watch { max-height: calc(var(--fx-font-size) * 32); min-height: calc(var(--fx-font-size) * 8); overflow: auto; padding: calc(var(--fx-space) * 0.5); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
+.axp-session-history__wl { white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-session-history__wl.is-tool { color: var(--fx-accent) }
+.axp-session-history__wl.is-dim { color: var(--fx-muted) }
+.axp-session-history__wl.is-error { color: var(--fx-danger) }
+.axp-session-history__kill { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+.axp-session-history__totals { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); padding-top: calc(var(--fx-space) * 0.5); border-top: calc(var(--fx-border-w) * 2) solid var(--fx-border) }
+.axp-session-history__total { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--fx-space) * 0.6) }
+.axp-session-history__total > :last-child { margin-left: auto }
