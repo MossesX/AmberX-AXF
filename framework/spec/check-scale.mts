@@ -42,9 +42,11 @@ ok(specTypes.indexOf('typography') < specTypes.indexOf('uac-policy'), 'uac-polic
 eq(normalizeScale('typography', null), DEFAULT_TYPOGRAPHY, 'typography defaults');
 eq(normalizeScale('density', undefined), DEFAULT_DENSITY, 'density defaults');
 eq(normalizeScale('sizing', {}), DEFAULT_SIZING, 'sizing defaults');
-eq(DEFAULT_TYPOGRAPHY.headings!.h1, 1.42, 'page title 1.42em (Oct 30 compact frame)');
+eq(DEFAULT_TYPOGRAPHY.headings!.h1, 1.3, 'page title 1.3em (Oct 31 tighter compact frame)');
+eq(Object.keys(DEFAULT_TYPOGRAPHY.scale!), ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'], 'seven text steps')
 eq(DEFAULT_SIZING.chip!.radius, 'sm', 'chips square-ish by default');
-eq(DEFAULT_DENSITY.gap!.md, 0.75, 'fx-row gap 0.75 space');
+eq(DEFAULT_DENSITY.gap!.md, 0.4, 'gap md 0.4 space (compact)');
+eq(Object.keys(DEFAULT_DENSITY.gap!), ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'], 'nine spacing steps');
 for (const t of SCALE_TYPES) {
   for (const [path, [def, min, max]] of Object.entries(SCALE_FIELDS[t])) ok(def >= min && def <= max, `${t}.${path} default ${def} inside [${min}, ${max}]`);
   for (const [path, allowed] of Object.entries(SCALE_ENUMS[t])) ok(allowed.length >= 2, `${t}.${path} enum has choices`);
@@ -54,7 +56,7 @@ for (const t of SCALE_TYPES) {
 const partial = normalizeScale('typography', { headings: { h1: 3 }, eyebrow: { case: 'normal' }, unknown: { x: 1 }, scale: { sm: 'big' } });
 eq(partial.headings!.h1, 3, 'set value kept');
 eq(partial.eyebrow!.case, 'normal', 'enum kept');
-eq(partial.scale!.sm, 0.86, 'bad value → default');
+eq(partial.scale!.sm, 0.82, 'bad value → default');
 ok(!('unknown' in partial), 'unknown group dropped');
 eq(normalizeScale('density', { gap: { xl: 99, xs: -1 } }).gap, { ...DEFAULT_DENSITY.gap, xl: 6, xs: 0 }, 'numbers clamp into range');
 eq(normalizeScale('sizing', { pageHead: { descriptionLines: 3.7 } }).pageHead!.descriptionLines, 4, 'int fields round');
@@ -71,12 +73,14 @@ eq(scaleErrors('button', { shape: 'x' }), [], 'other types: not this validator')
 
 /* ---- tokens: regular names, one per field, every unit compiles ---- */
 const vars = scaleThemeVars({});
-const fieldCount = SCALE_TYPES.reduce((s, t) => s + Object.keys(SCALE_FIELDS[t]).length + Object.keys(SCALE_ENUMS[t]).length, 0);
-eq(Object.keys(vars).length, fieldCount, 'one token per field');
+const rootCount = Object.keys(SCALE_FIELDS.typography).filter((p) => p.startsWith('scale.')).length;
+const fieldCount = SCALE_TYPES.reduce((s, t) => s + Object.keys(SCALE_FIELDS[t]).length + Object.keys(SCALE_ENUMS[t]).length, 0) + rootCount;
+eq(Object.keys(vars).length, fieldCount, 'one token per field (+ a root-anchored twin per text step)');
+eq(vars['--fx-type-root-sm'], 'calc(var(--fx-font-size) * 0.82)', 'root-anchored text step');
 for (const t of SCALE_TYPES) for (const k of Object.keys(scaleVars(t, null))) ok(k.startsWith(`--fx-${SCALE_PREFIX[t]}-`) && /^--fx-[a-z]+(-[a-z0-9]+)+$/.test(k), `${k} is a regular kebab token`);
 eq(scaleToken('sizing', 'iconButton.size'), '--fx-size-icon-button-size', 'camelCase fields kebab in tokens');
-eq(vars['--fx-type-headings-h1'], '1.42em', 'em unit');
-eq(vars['--fx-dens-gap-md'], 'calc(var(--fx-space) * 0.75)', 'space unit');
+eq(vars['--fx-type-headings-h1'], '1.3em', 'em unit');
+eq(vars['--fx-dens-gap-md'], 'calc(var(--fx-space) * 0.4)', 'space unit');
 eq(vars['--fx-size-button-height'], 'calc(var(--fx-font-size) * 2.1)', 'font unit');
 eq(vars['--fx-type-weights-strong'], '600', 'plain number');
 eq(vars['--fx-size-page-head-description-lines'], '2', 'int');

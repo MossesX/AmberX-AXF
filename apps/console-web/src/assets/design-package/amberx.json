@@ -41,7 +41,10 @@
         "spacer": "gap",
         "divider": "rule",
         "badge": "new",
-        "settings": "standard"
+        "settings": "standard",
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
       },
       "spacing": "tight",
       "hidden": {

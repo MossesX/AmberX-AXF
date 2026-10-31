@@ -3,7 +3,7 @@
   "type": "density",
   "id": "classic",
   "name": "Classic",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The spacing before Oct 30 2026: roomier gaps and card padding, 3-space section gaps.",
   "author": "AmberX AXF",
   "tags": [
@@ -11,11 +11,15 @@
   ],
   "data": {
     "gap": {
-      "xs": 0.25,
-      "sm": 0.5,
-      "md": 1,
-      "lg": 1.5,
-      "xl": 3
+      "2xs": 0.15,
+      "xs": 0.3,
+      "sm": 0.45,
+      "md": 0.6,
+      "lg": 0.9,
+      "xl": 1.2,
+      "2xl": 1.75,
+      "3xl": 2.5,
+      "4xl": 3.5
     },
     "pad": {
       "control": 1,

@@ -3,8 +3,8 @@
   "type": "sizing",
   "id": "compact",
   "name": "Compact",
-  "version": "1.0.0",
-  "description": "The framework's own component sizes (Oct 30 2026): 2.1-line buttons, small square-cornered chips, md-radius cards, 2-line page descriptions. Every value is the default.",
+  "version": "1.1.0",
+  "description": "The framework's own component sizes (Oct 31 2026, tighter): 2.1-line buttons (still a finger's height), small chips, 1.1-space cards, 2.3-line list rows, 2-line page descriptions. Every value is the default.",
   "author": "AmberX AXF",
   "tags": [
     "compact",
@@ -13,56 +13,56 @@
   "data": {
     "button": {
       "height": 2.1,
-      "padX": 1.2,
-      "font": 0.88,
+      "padX": 0.9,
+      "font": 0.86,
       "icon": 1
     },
     "iconButton": {
       "size": 1.75
     },
     "chip": {
-      "height": 1.6,
-      "padX": 0.9,
-      "font": 0.78,
+      "height": 1.4,
+      "padX": 0.6,
+      "font": 0.74,
       "radius": "sm"
     },
     "field": {
-      "height": 2.2,
-      "padX": 0.75,
-      "font": 0.92
-    },
-    "tab": {
-      "padY": 0.8,
-      "padX": 1.2,
+      "height": 2.1,
+      "padX": 0.6,
       "font": 0.9
     },
-    "segment": {
-      "padY": 0.4,
-      "padX": 1.1,
+    "tab": {
+      "padY": 0.5,
+      "padX": 0.85,
       "font": 0.86
     },
+    "segment": {
+      "padY": 0.3,
+      "padX": 0.8,
+      "font": 0.82
+    },
     "card": {
-      "pad": 1.6,
-      "headFont": 0.92,
+      "pad": 1.1,
+      "headFont": 0.9,
       "radius": "md"
     },
     "listRow": {
-      "minHeight": 2.75,
-      "padX": 1.25,
-      "metaFont": 0.82
+      "minHeight": 2.3,
+      "padX": 0.85,
+      "metaFont": 0.8
     },
     "countStrip": {
-      "number": 1.1,
-      "label": 0.71,
-      "pad": 0.5
+      "number": 1,
+      "label": 0.68,
+      "pad": 0.35
     },
     "table": {
-      "padY": 0.75,
-      "padX": 1.25,
-      "font": 0.9
+      "padY": 0.45,
+      "padX": 0.75,
+      "font": 0.86
     },
     "pageHead": {
-      "descriptionFont": 0.92,
+      "descriptionFont": 0.88,
       "descriptionLines": 2
     }
   }

@@ -39,39 +39,67 @@
         "gap": {
           "type": "object",
           "properties": {
+            "2xs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.1,
+              "description": "× --fx-space"
+            },
             "xs": {
               "type": "number",
               "minimum": 0,
               "maximum": 2,
-              "default": 0.25,
+              "default": 0.2,
               "description": "× --fx-space"
             },
             "sm": {
               "type": "number",
               "minimum": 0,
               "maximum": 2,
-              "default": 0.5,
+              "default": 0.3,
               "description": "× --fx-space"
             },
             "md": {
               "type": "number",
               "minimum": 0,
               "maximum": 3,
-              "default": 0.75,
+              "default": 0.4,
               "description": "× --fx-space"
             },
             "lg": {
               "type": "number",
               "minimum": 0,
               "maximum": 4,
-              "default": 1.5,
+              "default": 0.6,
               "description": "× --fx-space"
             },
             "xl": {
               "type": "number",
               "minimum": 0,
               "maximum": 6,
-              "default": 1.75,
+              "default": 0.8,
+              "description": "× --fx-space"
+            },
+            "2xl": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 6,
+              "default": 1.2,
+              "description": "× --fx-space"
+            },
+            "3xl": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 8,
+              "default": 1.6,
+              "description": "× --fx-space"
+            },
+            "4xl": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10,
+              "default": 2.4,
               "description": "× --fx-space"
             }
           }
@@ -83,35 +111,35 @@
               "type": "number",
               "minimum": 0,
               "maximum": 2,
-              "default": 0.55,
+              "default": 0.45,
               "description": "× --fx-space"
             },
             "card": {
               "type": "number",
               "minimum": 0,
               "maximum": 4,
-              "default": 1.6,
+              "default": 1.1,
               "description": "× --fx-space"
             },
             "page": {
               "type": "number",
               "minimum": 0,
               "maximum": 6,
-              "default": 2,
+              "default": 1.25,
               "description": "× --fx-space"
             },
             "row": {
               "type": "number",
               "minimum": 0,
               "maximum": 3,
-              "default": 0.8,
+              "default": 0.55,
               "description": "× --fx-space"
             },
             "cell": {
               "type": "number",
               "minimum": 0,
               "maximum": 3,
-              "default": 0.75,
+              "default": 0.5,
               "description": "× --fx-space"
             }
           }
@@ -123,28 +151,28 @@
               "type": "number",
               "minimum": 1.5,
               "maximum": 5,
-              "default": 2.75,
+              "default": 2.3,
               "description": "× --fx-font-size"
             },
             "table": {
               "type": "number",
               "minimum": 1.5,
               "maximum": 5,
-              "default": 2.4,
+              "default": 2.1,
               "description": "× --fx-font-size"
             },
             "menu": {
               "type": "number",
               "minimum": 1.5,
               "maximum": 5,
-              "default": 2.2,
+              "default": 2,
               "description": "× --fx-font-size"
             },
             "control": {
               "type": "number",
               "minimum": 1.5,
               "maximum": 4,
-              "default": 2.2,
+              "default": 2.1,
               "description": "× --fx-font-size"
             }
           }

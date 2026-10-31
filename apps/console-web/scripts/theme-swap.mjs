@@ -7,7 +7,8 @@
  * Opens Settings (the settings library plus every installed plugin's settings panels), switches through every
  * colour theme and records each visible element's text, background and border colour. Any colour that stays the
  * same in every theme is hard-coded and fails the check. It then switches style themes and checks that the
- * transparency tokens (--fx-opacity-*) follow. Needs the `playwright` package and a Chromium.
+ * transparency tokens (--fx-opacity-*) follow, then picks every typography / density / sizing asset and checks the sizes
+ * on screen follow too (Angel build ui-all-assets). Needs the `playwright` package and a Chromium.
  */
 import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -116,6 +117,32 @@ try {
     }
     if (seen.size < 2) { log('✗ transparency tokens did not change between style themes'); failed = true; }
   }
+  // Scale assets (typography@1, density@1, sizing@1; Angel build ui-all-assets): every pick must move the sizes on screen.
+  const sizes = (props) => page.evaluate((props) => {
+    const out = {};
+    [...document.querySelectorAll('body *')].forEach((e, i) => {
+      if (e.offsetParent === null) return;
+      const cs = getComputedStyle(e);
+      const v = props.map((p) => cs.getPropertyValue(p)).join(' ');
+      if (!/[1-9]/.test(v)) return;
+      out[i] = v;
+    });
+    return out;
+  }, props);
+  // [CSS properties to watch, share of sized elements that must follow]: sizing owns only some pieces (buttons, chips, tabs, tables, cards)
+  const SCALE = { typography: [['font-size'], 0.2], density: [['row-gap', 'column-gap', 'padding-top', 'padding-left'], 0.5], sizing: [['padding-top', 'padding-left', 'min-height', 'font-size'], 0.1] };
+  for (const [type, [props, share]] of Object.entries(SCALE)) {
+    const picker = await slotPicker(type);
+    const ids = (await picker.count()) ? await picker.locator('option').evaluateAll((o) => o.map((x) => x.value)) : [];
+    if (ids.length < 2) { log(`✗ no ${type} picker with two or more assets`); failed = true; continue; }
+    const shots = [];
+    for (const id of ids) { await picker.selectOption(id); await page.waitForTimeout(300); shots.push(await sizes(props)); }
+    await picker.selectOption(ids.includes('compact') ? 'compact' : ids[0]);
+    const keys = Object.keys(shots[0]).filter((k) => shots.every((s) => k in s));
+    const moved = keys.filter((k) => new Set(shots.map((s) => s[k])).size > 1).length;
+    log(`${type} ${ids.join(', ')}: ${moved} of ${keys.length} sized elements follow the pick`);
+    if (moved < Math.max(5, keys.length * share)) { log(`  ✗ ${type}: too few sizes follow the asset (hard-coded sizes left?)`); failed = true; }
+  }
   if (errors.length) { log(`✗ page errors:\n  ${errors.join('\n  ')}`); failed = true; }
   await browser.close();
 } catch (err) {
@@ -124,6 +151,6 @@ try {
 } finally {
   server.kill();
 }
-console.log(failed ? '✗ theme swap check failed' : '✓ every colour and transparency follows the active themes');
+console.log(failed ? "✗ theme swap check failed" : "✓ every colour, transparency and size follows the active themes and scale assets");
 if (failed) annotate(lines.filter((l) => l.includes('✗')).slice(0, 30).join('\n') || 'failed');
 process.exit(failed ? 1 : 0);

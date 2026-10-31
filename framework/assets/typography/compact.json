@@ -3,8 +3,8 @@
   "type": "typography",
   "id": "compact",
   "name": "Compact",
-  "version": "1.0.0",
-  "description": "The framework's own text sizes (Oct 30 2026): 1.42em page titles, a quiet 0.68em eyebrow, 0.88em buttons. Every value is the default, so this asset changes nothing.",
+  "version": "1.1.0",
+  "description": "The framework's own text sizes (Oct 31 2026, tighter): 0.9em body text in pieces, 1.3em page titles, a quiet 0.66em eyebrow, 0.86em buttons. Every value is the default.",
   "author": "AmberX AXF",
   "tags": [
     "compact",
@@ -12,17 +12,19 @@
   ],
   "data": {
     "scale": {
-      "xs": 0.76,
-      "sm": 0.86,
-      "md": 1,
-      "lg": 1.15,
-      "xl": 1.35
+      "2xs": 0.66,
+      "xs": 0.74,
+      "sm": 0.82,
+      "md": 0.9,
+      "lg": 1.06,
+      "xl": 1.26,
+      "2xl": 1.7
     },
     "headings": {
-      "h1": 1.42,
-      "h2": 1.2,
-      "h3": 0.92,
-      "h4": 0.85,
+      "h1": 1.3,
+      "h2": 1.12,
+      "h3": 0.9,
+      "h4": 0.84,
       "tracking": -0.02
     },
     "weights": {
@@ -32,17 +34,17 @@
     },
     "line": {
       "tight": 1.2,
-      "normal": 1.45,
-      "loose": 1.65
+      "normal": 1.4,
+      "loose": 1.6
     },
     "eyebrow": {
-      "size": 0.68,
+      "size": 0.66,
       "weight": 600,
       "tracking": 0.06,
       "case": "upper"
     },
     "mono": {
-      "size": 0.92
+      "size": 0.88
     }
   }
 }

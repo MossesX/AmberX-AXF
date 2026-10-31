@@ -1,26 +1,26 @@
 /* Theme manager plugin. Theme tokens only, axp-theme-manager prefix (framework/spec/THEMING.md). */
-.axp-theme-manager__bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-theme-manager__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-theme-manager__bad { color: var(--fx-danger); margin: 0 }
-.axp-theme-manager__warn { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; margin: 0; padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-theme-manager__main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-space); align-items: start }
+.axp-theme-manager__warn { display: flex; gap: var(--fx-dens-gap-md); align-items: center; margin: 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning); font-size: var(--fx-type-root-md) }
+.axp-theme-manager__main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-dens-gap-xl); align-items: start }
 @media (max-width: 760px) { .axp-theme-manager__main { grid-template-columns: 1fr } }
-.axp-theme-manager__treebox, .axp-theme-manager__editor { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
+.axp-theme-manager__treebox, .axp-theme-manager__editor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
 .axp-theme-manager__tree { list-style: none; margin: 0; padding: 0; max-height: 60vh; overflow: auto }
 .axp-theme-manager__tree .axp-theme-manager__tree { max-height: none; overflow: visible }
-.axp-theme-manager__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); min-width: 0 }
+.axp-theme-manager__row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); min-width: 0 }
 .axp-theme-manager__row:hover { background: var(--fx-surface2) }
 .axp-theme-manager__row.is-sel { background: var(--fx-accent-soft) }
-.axp-theme-manager__twisty { all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); cursor: pointer; font-size: calc(var(--fx-font-size) * 13 / 14); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-height: calc(var(--fx-row-h) * 0.9) }
+.axp-theme-manager__twisty { all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-md); cursor: pointer; font-size: var(--fx-type-root-md); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-height: calc(var(--fx-row-h) * 0.9) }
 .axp-theme-manager__swatch { flex: none; width: calc(var(--fx-space) * 1.25); height: calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border) }
 .axp-theme-manager__narrow { width: auto; max-width: 160px }
-.axp-theme-manager__crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
-.axp-theme-manager__opt { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center }
-.axp-theme-manager__pins { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
-.axp-theme-manager__pin { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.125) }
-.axp-theme-manager__save { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-warning); background: var(--fx-surface2) }
+.axp-theme-manager__crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
+.axp-theme-manager__opt { display: flex; gap: var(--fx-dens-gap-md); align-items: center }
+.axp-theme-manager__pins { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
+.axp-theme-manager__pin { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs) }
+.axp-theme-manager__save { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-warning); background: var(--fx-surface2) }
 .axp-theme-manager__save .fx-input { width: auto; flex: 1; min-width: 120px }
 .axp-theme-manager__saved { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column }
-.axp-theme-manager__saved li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); min-width: 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-theme-manager__saved li { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); min-width: 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
 .axp-theme-manager__saved li:last-child { border-bottom: 0 }
 .axp-theme-manager__savedname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 
@@ -31,6 +31,6 @@
 .axp-theme-manager__lock:not(.is-active) { opacity: var(--fx-opacity-muted) }
 
 /* compact toolbar (Oct 30 2026): one row of rolls + undo / redo / pin + ⋯; the tick presets are one drop-down */
-.axp-theme-manager__toolbar { gap: calc(var(--fx-space) * 0.4) }
+.axp-theme-manager__toolbar { gap: var(--fx-dens-gap-sm) }
 .axp-theme-manager__tickpick { width: auto; flex: none; max-width: min(45%, calc(var(--fx-space) * 20)) }
 .axp-theme-manager__bar > .fx-input.fx-grow { min-width: 0; flex: 1 1 0 }

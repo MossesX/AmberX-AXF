@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "density",
+  "id": "standard",
+  "name": "Standard",
+  "version": "1.0.0",
+  "description": "The Oct 30 2026 spacing: 0.125–3-space gap steps, 1.6-space card padding, 2.75-line list rows.",
+  "author": "AmberX AXF",
+  "tags": [
+    "standard"
+  ],
+  "data": {
+    "gap": {
+      "2xs": 0.125,
+      "xs": 0.25,
+      "sm": 0.4,
+      "md": 0.5,
+      "lg": 0.75,
+      "xl": 1,
+      "2xl": 1.5,
+      "3xl": 2,
+      "4xl": 3
+    },
+    "pad": {
+      "control": 0.55,
+      "card": 1.6,
+      "page": 2,
+      "row": 0.8,
+      "cell": 0.75
+    },
+    "row": {
+      "list": 2.75,
+      "table": 2.4,
+      "menu": 2.2,
+      "control": 2.2
+    }
+  }
+}

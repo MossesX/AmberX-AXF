@@ -13,6 +13,13 @@
     "style-theme": "glass-orbit",
     "color-theme": "midnight-ink",
     "layout": "studio-dock",
-    "behavior-theme": "calm"
+    "behavior-theme": "calm",
+    "extras": {
+      "slots": {
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      }
+    }
   }
 }

@@ -1,58 +1,58 @@
 /* Agent manager plugin. Theme tokens only, axp-agent-manager prefix (framework/spec/THEMING.md). */
 .axp-agent-manager__dialog { width: min(820px, 92vw); max-width: 100% }
 .axp-agent-manager__tabs { flex-wrap: wrap }
-.axp-agent-manager__tab { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-agent-manager__tab { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md) }
 
-.axp-agent-manager__split { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: calc(var(--fx-space) * 2); align-items: start }
-.axp-agent-manager__list { padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); max-height: 75vh; overflow: auto }
-.axp-agent-manager__item { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); text-align: left; padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid transparent; background: transparent; color: var(--fx-text); font: inherit; cursor: pointer }
+.axp-agent-manager__split { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: var(--fx-dens-gap-3xl); align-items: start }
+.axp-agent-manager__list { padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); max-height: 75vh; overflow: auto }
+.axp-agent-manager__item { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); text-align: left; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid transparent; background: transparent; color: var(--fx-text); font: inherit; cursor: pointer }
 .axp-agent-manager__item:hover { background: var(--fx-surface) }
 .axp-agent-manager__item.is-active { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
-.axp-agent-manager__item strong { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
-.axp-agent-manager__editor { min-width: 0; padding: calc(var(--fx-space) * 1.5); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
-.axp-agent-manager__h { margin: 0; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-agent-manager__item strong { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-agent-manager__editor { min-width: 0; padding: var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-agent-manager__h { margin: 0; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md) }
 .axp-agent-manager__seg { flex-wrap: nowrap }
 
-.axp-agent-manager__field { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14); color: var(--fx-muted); min-width: 0 }
+.axp-agent-manager__field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-root-md); color: var(--fx-muted); min-width: 0 }
 .axp-agent-manager__field > span:first-child { color: var(--fx-text) }
-.axp-agent-manager__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--fx-space) }
-.axp-agent-manager__row { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; flex-wrap: wrap }
+.axp-agent-manager__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--fx-dens-gap-xl) }
+.axp-agent-manager__row { display: flex; gap: var(--fx-dens-gap-md); align-items: center; flex-wrap: wrap }
 .axp-agent-manager__row > .fx-input { width: auto; min-width: 0 }
 .axp-agent-manager__narrow { width: auto; max-width: 220px }
-.axp-agent-manager__toggle { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-agent-manager__example { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: calc(var(--fx-space) * 0.5); align-items: start }
-.axp-agent-manager__picks { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
-.axp-agent-manager__pick { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25) }
+.axp-agent-manager__toggle { display: flex; gap: var(--fx-dens-gap-md); align-items: center; font-size: var(--fx-type-root-md) }
+.axp-agent-manager__example { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--fx-dens-gap-md); align-items: start }
+.axp-agent-manager__picks { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
+.axp-agent-manager__pick { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
 
-.axp-agent-manager__card { padding: calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
+.axp-agent-manager__card { padding: var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
 .axp-agent-manager__card summary { cursor: pointer }
 .axp-agent-manager__card p { margin: 0 }
-.axp-agent-manager__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--fx-space) }
+.axp-agent-manager__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--fx-dens-gap-xl) }
 .axp-agent-manager__tile { display: flex; align-items: stretch; width: 100% }
-.axp-agent-manager__tile-card { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space) }
+.axp-agent-manager__tile-card { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xl) }
 .axp-agent-manager__tile:hover .axp-agent-manager__tile-card { border-color: var(--fx-accent) }
-.axp-agent-manager__tile strong { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
-.axp-agent-manager__file { cursor: pointer; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-agent-manager__tile strong { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-agent-manager__file { cursor: pointer; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md) }
 
-.axp-agent-manager__note { display: flex; gap: var(--fx-space); align-items: center; padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
+.axp-agent-manager__note { display: flex; gap: var(--fx-dens-gap-xl); align-items: center; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); font-size: var(--fx-type-root-md); overflow-wrap: anywhere }
 .axp-agent-manager__note.is-warn { border-color: var(--fx-warning) }
 .axp-agent-manager__bad { color: var(--fx-danger); margin: 0 }
-.axp-agent-manager__out { margin: 0; padding: var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 16); overflow: auto }
-.axp-agent-manager__trace summary { cursor: pointer; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-agent-manager__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: calc(var(--fx-space) * 0.5) var(--fx-space); margin: 0 }
+.axp-agent-manager__out { margin: 0; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 16); overflow: auto }
+.axp-agent-manager__trace summary { cursor: pointer; font-size: var(--fx-type-root-md) }
+.axp-agent-manager__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); margin: 0 }
 .axp-agent-manager__facts dt { color: var(--fx-muted) }
 .axp-agent-manager__facts dd { margin: 0; overflow-wrap: anywhere }
 
-.axp-agent-manager__chat { display: flex; flex-direction: column; gap: var(--fx-space); max-height: 50vh; overflow: auto; padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }
-.axp-agent-manager__bubble { align-self: flex-start; max-width: 88%; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
+.axp-agent-manager__chat { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); max-height: 50vh; overflow: auto; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }
+.axp-agent-manager__bubble { align-self: flex-start; max-width: 88%; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
 .axp-agent-manager__bubble.is-user { align-self: flex-end; background: var(--fx-accent-soft); border-color: transparent }
 .axp-agent-manager__bubble p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere }
-.axp-agent-manager__mem { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); max-height: 60vh; overflow: auto }
-.axp-agent-manager__memitem { padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
-.axp-agent-manager__memitem p { margin: calc(var(--fx-space) * 0.5) 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-agent-manager__mem { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); max-height: 60vh; overflow: auto }
+.axp-agent-manager__memitem { padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-agent-manager__memitem p { margin: var(--fx-dens-gap-md) 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--fx-type-root-md) }
 
-.axp-agent-manager__steps { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); list-style: none; margin: 0; padding: 0 }
-.axp-agent-manager__wizard-body { max-height: 62vh; overflow: auto; padding-right: calc(var(--fx-space) * 0.5) }
+.axp-agent-manager__steps { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); list-style: none; margin: 0; padding: 0 }
+.axp-agent-manager__wizard-body { max-height: 62vh; overflow: auto; padding-right: var(--fx-dens-gap-md) }
 .axp-agent-manager__wizard-nav { justify-content: space-between }
 
 @media (max-width: 760px) {
@@ -60,8 +60,8 @@
   .axp-agent-manager__list { max-height: 40vh }
   .axp-agent-manager__example { grid-template-columns: minmax(0, 1fr) }
 }
-.axp-agent-manager__uses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
-.axp-agent-manager__uses li { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); overflow-wrap: anywhere }
+.axp-agent-manager__uses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-agent-manager__uses li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); overflow-wrap: anywhere }
 .axp-agent-manager__diff .is-add { color: var(--fx-success) }
 .axp-agent-manager__diff .is-del { color: var(--fx-danger) }
 /* Vinny's commands dialog: run output (layout only) */
@@ -73,14 +73,14 @@
 .axp-agent-manager__acts { flex-wrap: nowrap; align-items: center }
 .axp-agent-manager__morebtn { display: inline-flex; flex: none }
 .axp-agent-manager__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2) }
-.axp-agent-manager__strip { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.25) }
+.axp-agent-manager__strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) }
 .axp-agent-manager__tabpick { display: none; width: 100% }
 .axp-agent-manager__flat { display: flex; flex-direction: column; border-top: var(--fx-border-w) solid var(--fx-border) }
-.axp-agent-manager__flatrow { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.75) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
+.axp-agent-manager__flatrow { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-lg) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
 .axp-agent-manager__flatrow summary { cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-agent-manager__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
 .axp-agent-manager__wizlist { display: flex; flex-direction: column }
-.axp-agent-manager__wizrow { display: flex; align-items: center; gap: var(--fx-space); width: 100%; padding: calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 0.5); text-align: left; background: transparent; border: 0; border-bottom: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); font: inherit; cursor: pointer; min-width: 0 }
+.axp-agent-manager__wizrow { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); width: 100%; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-md); text-align: left; background: transparent; border: 0; border-bottom: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); font: inherit; cursor: pointer; min-width: 0 }
 .axp-agent-manager__wizrow:hover { background: var(--fx-surface2) }
 .axp-agent-manager__wizrow > span { display: flex; flex-direction: column; min-width: 0 }
 .axp-agent-manager__wizrow .fx-small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
@@ -89,9 +89,9 @@
   .axp-agent-manager__tabpick { display: block }
   .axp-agent-manager__list, .axp-agent-manager__editor { padding: 0; border: 0; background: transparent; border-radius: 0 }
   .axp-agent-manager__list { max-height: 34vh; border-bottom: var(--fx-border-w) solid var(--fx-border) }
-  .axp-agent-manager__item { padding: calc(var(--fx-space) * 0.5) }
-  .axp-agent-manager__split { gap: var(--fx-space) }
-  .axp-agent-manager__card { padding: var(--fx-space) 0; border-width: 0 0 var(--fx-border-w); border-radius: 0; background: transparent }
+  .axp-agent-manager__item { padding: var(--fx-dens-gap-md) }
+  .axp-agent-manager__split { gap: var(--fx-dens-gap-xl) }
+  .axp-agent-manager__card { padding: var(--fx-dens-gap-xl) 0; border-width: 0 0 var(--fx-border-w); border-radius: 0; background: transparent }
   .axp-agent-manager__cols { grid-template-columns: minmax(0, 1fr) }
 }
 .axp-agent-manager__stepnow { display: none }
@@ -104,5 +104,5 @@
 .fx-pagehead > div:first-child:has(> .axp-agent-manager__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
 .axp-agent-manager .axp-agent-manager__tabpick { display: none }
 @media (max-width: 640px) { .axp-agent-manager .axp-agent-manager__tabs { display: none } .axp-agent-manager .axp-agent-manager__tabpick { display: block } }
-.axp-agent-manager__cmdhead { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-agent-manager__cmdhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-agent-manager__item > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }

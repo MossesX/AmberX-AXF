@@ -5,14 +5,15 @@
  * build engine, so both validators are one function; this file is the typed face the runtime and React use.
  *
  * Compiled tokens (pure, identical on every port):
- *   typography → --fx-type-scale-{xs,sm,md,lg,xl}, --fx-type-headings-{h1..h4,tracking}, --fx-type-weights-{body,medium,strong},
+ *   typography → --fx-type-scale-{2xs,xs,sm,md,lg,xl,2xl} (em) + --fx-type-root-{2xs…2xl} (× --fx-font-size), --fx-type-headings-{h1..h4,tracking}, --fx-type-weights-{body,medium,strong},
  *                --fx-type-line-{tight,normal,loose}, --fx-type-eyebrow-{size,weight,tracking,case}, --fx-type-mono-size
- *   density    → --fx-dens-gap-{xs..xl}, --fx-dens-pad-{control,card,page,row,cell}, --fx-dens-row-{list,table,menu,control}
+ *   density    → --fx-dens-gap-{2xs,xs,sm,md,lg,xl,2xl,3xl,4xl}, --fx-dens-pad-{control,card,page,row,cell}, --fx-dens-row-{list,table,menu,control}
  *   sizing     → --fx-size-button-*, --fx-size-icon-button-size, --fx-size-chip-*, --fx-size-field-*, --fx-size-tab-*,
  *                --fx-size-segment-*, --fx-size-card-*, --fx-size-list-row-*, --fx-size-count-strip-*, --fx-size-table-*,
  *                --fx-size-page-head-*
- * Every token has a default equal to today's look, so apps without the assets render unchanged. The stylesheet and the
- * components read only these tokens for sizes (adopted in the Opus phase of Angel build `ui-all-assets`).
+ * Every token has a default: the compact look (Oct 31 2026, tighter than the Oct 30 frame; `standard` starters keep that).
+ * axf.css, the console, every plugin and app stylesheet read only these tokens for text sizes and spacing (adopted in
+ * the Opus phase of Angel build `ui-all-assets`; framework/cli/scale-adopt.mjs moves new ones, check-theme `scale` flags them).
  */
 import { SCALE_TYPES, isScaleType, normalizeScale, scaleErrors, scaleToken, scaleVars, type ScaleData, type ScaleType } from './scale-rules.mjs';
 

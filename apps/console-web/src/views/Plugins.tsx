@@ -36,7 +36,7 @@ export function PluginsPanel() {
         const s = status?.find((x) => x.folder === p.folder);
         const enabled = s ? s.enabled : p.manifest.enabledByDefault !== false;
         return (
-          <div key={p.folder} className="fx-stack" style={{ borderTop: 'var(--fx-border-w) solid var(--fx-border)', paddingTop: 'calc(var(--fx-space) * 1.5)' }}>
+          <div key={p.folder} className="fx-stack" style={{ borderTop: 'var(--fx-border-w) solid var(--fx-border)', paddingTop: 'var(--fx-dens-gap-2xl)' }}>
             <strong>{p.manifest.name}</strong> <span className="fx-muted">{p.manifest.version}</span>
             {p.manifest.description && <p className="fx-muted" style={{ margin: 0 }}>{p.manifest.description}</p>}
             <p className="fx-mono fx-small" style={{ margin: 0 }}>{p.manifest.id} · plugins/{p.folder}</p>

@@ -51,7 +51,10 @@
     "uac-policy": "standard",
     "design-package": "amberx-app-day",
     "branding": "amberx-app",
-    "style-package": "amber-signature"
+    "style-package": "amber-signature",
+    "typography": "compact",
+    "density": "compact",
+    "sizing": "compact"
   },
   "hidden": [],
   "developer": {

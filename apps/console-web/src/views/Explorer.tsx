@@ -114,7 +114,7 @@ export function ElementExplorer({ kitId }: { kitId: string }) {
   return (
     <div className="cx-explorer">
       <div className="cx-explorer__tree">
-        <div className="fx-muted fx-small" style={{ padding: 'calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75)' }}>Kit <span className="fx-mono">{kitId}</span> · {ELEMENTS.length} elements · drag an element or category to undock it</div>
+        <div className="fx-muted fx-small" style={{ padding: 'var(--fx-dens-gap-md) var(--fx-dens-gap-lg)' }}>Kit <span className="fx-mono">{kitId}</span> · {ELEMENTS.length} elements · drag an element or category to undock it</div>
         {CATEGORIES.map((c) => { const items = ELEMENTS.filter((e) => e.category === c); return (
           <div key={c}>
             <div className="cx-node cx-node--cat" title={`${items.length} elements`} draggable onDragStart={(e) => e.dataTransfer.setData('text/axf-undock', JSON.stringify({ kind: 'element-category', payload: c, title: c, kitId }))} onClick={() => toggle(c)}><Icon name={open.has(c) ? 'chevron-down' : 'chevron-right'} /> {c} <span className="fx-badge">{items.length}</span></div>
@@ -144,7 +144,7 @@ function ElementDetails({ e, available }: { e: ElementSpec; available: boolean }
       {open.has('params') && e.params.map((pr) => <ParamRow key={pr.key} p={pr} available={available} />)}
       <div className="cx-node cx-node--cat" onClick={() => toggle('flags')} title="Element options / flags (on/off at their default state)"><Icon name={open.has('flags') ? 'chevron-down' : 'chevron-right'} /> Element options / flags <span className="fx-badge">{e.flags.length}</span></div>
       {open.has('flags') && e.flags.map((fl) => <FlagRow key={fl.key} f={fl} available={available} />)}
-      {open.has('flags') && e.flags.length === 0 && <div className="fx-muted fx-small" style={{ padding: 'calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 3)' }}>No flags.</div>}
+      {open.has('flags') && e.flags.length === 0 && <div className="fx-muted fx-small" style={{ padding: 'var(--fx-dens-gap-xs) var(--fx-dens-gap-4xl)' }}>No flags.</div>}
     </div>
   );
 }
@@ -256,7 +256,7 @@ function ElementGrid({ kitId, covers }: { kitId: string; covers: Set<string> | n
               <div className="cx-strip" onScroll={(ev) => { const el = ev.currentTarget; const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth)); if (i !== idx) setVisible((v) => ({ ...v, [c]: i })); }}>
                 {items.map((it) => <div key={it.kind} className={`cx-strip__cell ${!covers || covers.has(it.kind) ? '' : 'is-disabled'}`}><div className="fx-muted fx-small">{it.label}</div><ElementPreview kind={it.kind} /></div>)}
               </div>
-              <div className="fx-row fx-row--wrap" style={{ margin: 'calc(var(--fx-space) * 0.5) 0' }}>{items.map((it, i) => <button key={it.kind} className={`fx-chip ${i === idx ? 'is-selected' : ''}`} onClick={() => setVisible((v) => ({ ...v, [c]: i }))}>{it.label}</button>)}</div>
+              <div className="fx-row fx-row--wrap" style={{ margin: 'var(--fx-dens-gap-md) 0' }}>{items.map((it, i) => <button key={it.kind} className={`fx-chip ${i === idx ? 'is-selected' : ''}`} onClick={() => setVisible((v) => ({ ...v, [c]: i }))}>{it.label}</button>)}</div>
               <div className="cx-subgrid">
                 {e.tokens.map(([tok, what]) => <div key={tok} className="cx-subgrid__cell"><TokenRow token={tok} what={what} available={!covers || covers.has(e.kind)} /></div>)}
                 {e.params.map((pr) => <div key={pr.key} className="cx-subgrid__cell"><ParamRow p={pr} available={!covers || covers.has(e.kind)} /></div>)}

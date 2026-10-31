@@ -39,39 +39,53 @@
         "scale": {
           "type": "object",
           "properties": {
+            "2xs": {
+              "type": "number",
+              "minimum": 0.4,
+              "maximum": 1,
+              "default": 0.66,
+              "description": "em"
+            },
             "xs": {
               "type": "number",
               "minimum": 0.5,
               "maximum": 1,
-              "default": 0.76,
+              "default": 0.74,
               "description": "em"
             },
             "sm": {
               "type": "number",
               "minimum": 0.5,
               "maximum": 1,
-              "default": 0.86,
+              "default": 0.82,
               "description": "em"
             },
             "md": {
               "type": "number",
-              "minimum": 0.8,
+              "minimum": 0.7,
               "maximum": 1.25,
-              "default": 1,
+              "default": 0.9,
               "description": "em"
             },
             "lg": {
               "type": "number",
-              "minimum": 1,
+              "minimum": 0.9,
               "maximum": 2,
-              "default": 1.15,
+              "default": 1.06,
               "description": "em"
             },
             "xl": {
               "type": "number",
               "minimum": 1,
               "maximum": 3,
-              "default": 1.35,
+              "default": 1.26,
+              "description": "em"
+            },
+            "2xl": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 4,
+              "default": 1.7,
               "description": "em"
             }
           }
@@ -83,28 +97,28 @@
               "type": "number",
               "minimum": 0.9,
               "maximum": 4,
-              "default": 1.42,
+              "default": 1.3,
               "description": "em"
             },
             "h2": {
               "type": "number",
               "minimum": 0.9,
               "maximum": 3,
-              "default": 1.2,
+              "default": 1.12,
               "description": "em"
             },
             "h3": {
               "type": "number",
               "minimum": 0.7,
               "maximum": 2,
-              "default": 0.92,
+              "default": 0.9,
               "description": "em"
             },
             "h4": {
               "type": "number",
               "minimum": 0.7,
               "maximum": 1.5,
-              "default": 0.85,
+              "default": 0.84,
               "description": "em"
             },
             "tracking": {
@@ -156,14 +170,14 @@
               "type": "number",
               "minimum": 1.1,
               "maximum": 2,
-              "default": 1.45,
+              "default": 1.4,
               "description": "number"
             },
             "loose": {
               "type": "number",
               "minimum": 1.2,
               "maximum": 2.4,
-              "default": 1.65,
+              "default": 1.6,
               "description": "number"
             }
           }
@@ -175,7 +189,7 @@
               "type": "number",
               "minimum": 0.5,
               "maximum": 1,
-              "default": 0.68,
+              "default": 0.66,
               "description": "em"
             },
             "weight": {
@@ -208,7 +222,7 @@
               "type": "number",
               "minimum": 0.6,
               "maximum": 1.2,
-              "default": 0.92,
+              "default": 0.88,
               "description": "em"
             }
           }

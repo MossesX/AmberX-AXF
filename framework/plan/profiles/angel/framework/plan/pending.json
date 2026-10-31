@@ -1,112 +1,1102 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-29T18:34:15.248Z",
+ "updatedAt": "2026-10-31T09:07:22.078Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
    "id": "home-cards",
    "title": "Console Home cards: card@1 asset plugins carry, Home detects/shows/hides every card (always rendered), card layouts, cards for every data plugin",
-   "detail": "Brett, Oct 29 2026: \"Design a bunch more cards for the console home screen. If plugins with data or dynamic content don't have a card, design one for them from scratch (you decide what to display and how). Plugins can now carry cards that can be designed in the future SDK and attached to the plugin as assets. Console Home detects all card assets attached to plugins and shows or hides them, but always rendered. The card layout can show or hide all cards detected.\"\n\nDecisions (cards): profile Angel (new, this is its first build; nothing built in the asking session); Fable contract first, then Opus.\nCard designs: one per plugin with data/dynamic content (31 plugins + 5 existing Home cards). No card: _template, basic-filter, plugin-switches, plugins-menu (tools with no data of their own).\nClash check Oct 29: no open build touches Home or cards (refactor profile all complete; main-framework pending items unrelated).\n\nPopulated from the Build orchestrator (Angel profile, build home-cards). Phase 1 Fable s1–s5, phase 2 Opus s6–s18; approval at the switch.",
+   "detail": "Brett, Oct 29 2026: \"Design a bunch more cards for the console home screen. If plugins with data or dynamic content don't have a card, design one for them from scratch (you decide what to display and how). Plugins can now carry cards that can be designed in the future SDK and attached to the plugin as assets. Console Home detects all card assets attached to plugins and shows or hides them, but always rendered. The card layout can show or hide all cards detected.\"\n\nDecisions (cards): profile Angel (new, this is its first build; nothing built in the asking session); Fable contract first, then Opus.\nCard designs: one per plugin with data/dynamic content (31 plugins + 5 existing Home cards). No card: _template, basic-filter, plugin-switches, plugins-menu (tools with no data of their own).\nClash check Oct 29: no open build touches Home or cards (refactor profile all complete; main-framework pending items unrelated).",
    "model": "Fable",
    "status": "pending",
    "notes": [],
    "subPrompts": [
     {
-     "text": "[Fable s1] card@1 asset type in framework/schemas/asset-types.json (+ axf schemas): id, owner (plugin id or \"console\"), title, icon, kind (stat | list | meter | chart | feed | status | actions | custom), size (s | m | l | wide | tall), data {service (plugin_services capability), path, refreshSec, live:boolean}, slots (headline, value, sub, rows, sparkline, actions), emptyState, actions (ids run through the action engine), level (Simple/Basic/Developer/Administrator), minRole (UAC), defaultVisible, order, category. Open registry: unknown kinds render the custom slot, never fail.",
-     "at": "",
+     "text": "[Fable] card@1 asset type in framework/schemas/asset-types.json (+ axf schemas): id, owner (plugin id or \"console\"), title, icon, kind (stat | list | meter | chart | feed | status | actions | custom), size (s | m | l | wide | tall), data {service (plugin_services capability), path, refreshSec, live:boolean}, slots (headline, value, sub, rows, sparkline, actions), emptyState, actions (ids run through the action engine), level (Simple/Basic/Developer/Administrator), minRole (UAC), defaultVisible, order, category. Open registry: unknown kinds render the custom slot, never fail.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "25 min"
     },
     {
-     "text": "[Fable s2] plugin@1 gets `cards: [\"cards/<id>.json\", …]` (card assets ship inside the plugin folder, so plugin-lifecycle@1 removes them on uninstall); plugin-inventory@1 engine lists each plugin's cards (framework/core/engines/plugins.ts + server/engine.py twin) so anything can detect them; future card SDK attaches cards to a plugin by writing this list.",
-     "at": "",
+     "text": "[Fable] plugin@1 gets `cards: [\"cards/<id>.json\", …]` (card assets ship inside the plugin folder, so plugin-lifecycle@1 removes them on uninstall); plugin-inventory@1 engine lists each plugin's cards (framework/core/engines/plugins.ts + server/engine.py twin) so anything can detect them; future card SDK attaches cards to a plugin by writing this list.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "25 min"
     },
     {
-     "text": "[Fable s3] home-cards@1 engine (TS reference, framework/core/engines/cards.ts): collects every card from enabled plugins + console-owned cards, applies saved visibility/order/size, level and role; hidden cards stay in the output with `hidden: true` so Home ALWAYS renders (mounts) every card and only hides it (instant show, data kept warm). Fixture spec/fixtures/home-cards.json; Kotlin twin recorded as a deferred gap in PORTING.md (Android on hold).",
-     "at": "",
+     "text": "[Fable] home-cards@1 engine (TS reference, framework/core/engines/cards.ts): collects every card from enabled plugins + console-owned cards, applies saved visibility/order/size, level and role; hidden cards stay in the output with `hidden: true` so Home ALWAYS renders (mounts) every card and only hides it (instant show, data kept warm). Fixture spec/fixtures/home-cards.json; Kotlin twin recorded as a deferred gap in PORTING.md (Android on hold).",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Fable s4] card-layout@1 asset type: columns per window class (compact/medium/expanded), gap + density tokens, grouping (none | plugin | category), \"show all / hide all\" default, sort (manual | category | plugin). 3 starter layouts: grid-auto, two-column-dashboard, compact-list. Hot-swap via runtime.swap('card-layout', id); tokens only (THEMING.md).",
-     "at": "",
+     "text": "[Fable] card-layout@1 asset type: columns per window class (compact/medium/expanded), gap + density tokens, grouping (none | plugin | category), \"show all / hide all\" default, sort (manual | category | plugin). 3 starter layouts: grid-auto, two-column-dashboard, compact-list. Hot-swap via runtime.swap('card-layout', id); tokens only (THEMING.md).",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Fable s5] Placeholders for the future card SDK: `axf.cards@1` capability service (list/register/unregister cards at runtime), extension point `home.cards`, typed NotImplemented card designer entry, so a designer plugin can later author card assets and attach them to any plugin without kernel changes.",
-     "at": "",
+     "text": "[Fable] Placeholders for the future card SDK: `axf.cards@1` capability service (list/register/unregister cards at runtime), extension point `home.cards`, typed NotImplemented card designer entry, so a designer plugin can later author card assets and attach them to any plugin without kernel changes.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "20 min"
     },
     {
-     "text": "[Opus s6] Home renders from the home-cards engine. The 5 cards already there become console-owned card assets: Plan summary, Build summary, Coverage, Project, Recent installs & imports. Same look at the default theme.",
-     "at": "",
+     "text": "[Opus] Home renders from the home-cards engine. The 5 cards already there become console-owned card assets: Plan summary, Build summary, Coverage, Project, Recent installs & imports. Same look at the default theme.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s7] Card layout toolbar on Home (hideable): Show all · Hide all · layout picker (card-layout assets) · group by · a Cards checklist popover with one switch per detected card. Right-click a card: Hide card · Card size · Open plugin · Plugin settings. Drag to reorder. Saved per user in settings (synced through axHub like the rest).",
-     "at": "",
+     "text": "[Opus] Card layout toolbar on Home (hideable): Show all · Hide all · layout picker (card-layout assets) · group by · a Cards checklist popover with one switch per detected card. Right-click a card: Hide card · Card size · Open plugin · Plugin settings. Drag to reorder. Saved per user in settings (synced through axHub like the rest).",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s8] Settings → Home cards tab (with the level toolbar rule): every detected card grouped by plugin, switch + size + order, layout default; a card whose plugin is disabled shows greyed \"plugin off\".",
-     "at": "",
+     "text": "[Opus] Settings → Home cards tab (with the level toolbar rule): every detected card grouped by plugin, switch + size + order, layout default; a card whose plugin is disabled shows greyed \"plugin off\".",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "25 min"
     },
     {
-     "text": "[Opus s9] Cards — Build orchestrator: next step + model chip, approvals waiting (one-tap), phase progress bar per open build. Build manager: remaining work split Fable/Opus, hours + cost left, top 3 builds. Build profiles: active profile chip + pending/queue/orchestrator counts for each profile, switch button.",
-     "at": "",
+     "text": "[Opus] Cards — Build orchestrator: next step + model chip, approvals waiting (one-tap), phase progress bar per open build. Build manager: remaining work split Fable/Opus, hours + cost left, top 3 builds. Build profiles: active profile chip + pending/queue/orchestrator counts for each profile, switch button.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s10] Cards — Feature matrix: kept vs skipped minutes per build, matrices with unapplied changes (Apply button). Fable rebuilds: parked count, Fable hours left, next rebuild. Changes & features grid: latest 5 changes/features with state dots.",
-     "at": "",
+     "text": "[Opus] Cards — Feature matrix: kept vs skipped minutes per build, matrices with unapplied changes (Apply button). Fable rebuilds: parked count, Fable hours left, next rebuild. Changes & features grid: latest 5 changes/features with state dots.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s11] Cards — Codebase changes: live/running entries with heartbeat age and current step. Activity: running/queued CI runs and deploys as a feed. Push banner: branches not on main per repo with PR CI dots. Main build status: last main CI result + sparkline of the last 10 runs.",
-     "at": "",
+     "text": "[Opus] Cards — Codebase changes: live/running entries with heartbeat age and current step. Activity: running/queued CI runs and deploys as a feed. Push banner: branches not on main per repo with PR CI dots. Main build status: last main CI result + sparkline of the last 10 runs.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s12] Cards — Approvals: calls waiting with title + one-tap Approve/Deny, veto countdowns. Systems check: pass/warn/fail meter + top 3 issues with Auto fix. Alerts bell: unread by source (CI, deploys, builds, crashes). Claude badge: AI connection state, active model, last check time.",
-     "at": "",
+     "text": "[Opus] Cards — Approvals: calls waiting with title + one-tap Approve/Deny, veto countdowns. Systems check: pass/warn/fail meter + top 3 issues with Auto fix. Alerts bell: unread by source (CI, deploys, builds, crashes). Claude badge: AI connection state, active model, last check time.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s13] Cards — AI assistant: live sessions + last message, Open chat. Agent manager: agents (Mosses, Vinny, Molly…) with running/idle state. Molly guide: recent walkthroughs + Ask Molly. AI keys: active key per kind (masked) and how many saved.",
-     "at": "",
+     "text": "[Opus] Cards — AI assistant: live sessions + last message, Open chat. Agent manager: agents (Mosses, Vinny, Molly…) with running/idle state. Molly guide: recent walkthroughs + Ask Molly. AI keys: active key per kind (masked) and how many saved.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "25 min"
     },
     {
-     "text": "[Opus s14] Cards — Todo manager: overdue / due today / open by list, quick add. Voice notes: listener state + latest 3 notes. Session check-in: active Claude sessions with machine and repo. Snapshot manager: latest snapshots with one-tap Restore.",
-     "at": "",
+     "text": "[Opus] Cards — Todo manager: overdue / due today / open by list, quick add. Voice notes: listener state + latest 3 notes. Session check-in: active Claude sessions with machine and repo. Snapshot manager: latest snapshots with one-tap Restore.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "25 min"
     },
     {
-     "text": "[Opus s15] Cards — Plugin Manager: enabled/disabled/unhealthy counts. Plugin Update: updates available (Update all). Container access: master switch state + containers up/down. axHub sync: red/green live badge (hubLive rule), last sync. MCP client: connected servers + tool counts.",
-     "at": "",
+     "text": "[Opus] Cards — Plugin Manager: enabled/disabled/unhealthy counts. Plugin Update: updates available (Update all). Container access: master switch state + containers up/down. axHub sync: red/green live badge (hubLive rule), last sync. MCP client: connected servers + tool counts.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s16] Cards — Brand library: logo of the day (animated, tap to roll). Theme manager: current colour/style/layout + Roll button. Context menu designer: saved menus + chunks count. Project wizard: recent projects. Claude handoff: kit freshness. Terminal: open tabs and their connections. Feature assistant: last drafted features.",
-     "at": "",
+     "text": "[Opus] Cards — Brand library: logo of the day (animated, tap to roll). Theme manager: current colour/style/layout + Roll button. Context menu designer: saved menus + chunks count. Project wizard: recent projects. Claude handoff: kit freshness. Terminal: open tabs and their connections. Feature assistant: last drafted features.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     },
     {
-     "text": "[Opus s17] Lifecycle: every plugin's cards/ listed in plugin.json and removed by uninstall.mjs --all; plugin-lifecycle check --after-uninstall for each touched plugin; theme checks (check-theme, theme-swap) over every card.",
-     "at": "",
+     "text": "[Opus] Lifecycle: every plugin's cards/ listed in plugin.json and removed by uninstall.mjs --all; plugin-lifecycle check --after-uninstall for each touched plugin; theme checks (check-theme, theme-swap) over every card.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "25 min"
     },
     {
-     "text": "[Opus s18] Tests (engine vs fixture, hidden cards stay mounted, show/hide all, plugin off), docs (_claude/memory/docs/home-cards.md, plugins README → Cards, STATUS), before/after Home screenshots at 412 and 1280 px, re-bake console.",
-     "at": "",
+     "text": "[Opus] Tests (engine vs fixture, hidden cards stay mounted, show/hide all, plugin off), docs (_claude/memory/docs/home-cards.md, plugins README → Cards, STATUS), before/after Home screenshots at 412 and 1280 px, re-bake console.",
+     "at": "2026-10-29T18:34:09.323Z",
      "estimate": "30 min"
     }
    ],
    "createdAt": "2026-10-29T18:34:15.248Z",
    "builtAt": "",
-   "updatedAt": "2026-10-29T18:34:15.248Z",
-   "estimate": "8.5 h",
+   "updatedAt": "2026-10-29T18:34:09.324Z",
    "source": "orchestrator"
+  },
+  {
+   "id": "settings-compact",
+   "title": "Settings redesign: short lists you tap into, dropdowns instead of button walls, tight spacing (starts the whole-app de-clutter)",
+   "detail": "Brett, Oct 30 2026 (voice, then 'Go' in text): the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Before screenshots of every Settings page (phone + desktop) and a list of what wastes space",
+     "at": "2026-10-30T13:01:42.736Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.715Z"
+    },
+    {
+     "text": "[Opus] Settings home = a short list of sections you tap into (phone: one list, back arrow; desktop: list left, page right); plugin settings as one list under Plugins",
+     "at": "2026-10-30T13:01:42.736Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.761Z"
+    },
+    {
+     "text": "[Opus] Choices with more than 3 options become one dropdown; 2–3 options stay a small segmented control; toggles are compact rows",
+     "at": "2026-10-30T13:01:42.736Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.810Z"
+    },
+    {
+     "text": "[Opus] Tight rows: label and control on one line, description under an info tap; groups are plain headed lists, not big cards",
+     "at": "2026-10-30T13:01:42.736Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.867Z"
+    },
+    {
+     "text": "[Opus] Appearance: every asset picker (design pack, style pack, themes, layout…) becomes a compact dropdown row with a small preview instead of a wall of cards/buttons",
+     "at": "2026-10-30T13:01:42.736Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.915Z"
+    },
+    {
+     "text": "[Opus] Level toolbar shrinks to one dropdown; checks (tsc, controls, theme, theme-swap, menu-reach); after screenshots; report + LOG; PR",
+     "at": "2026-10-30T13:01:42.736Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T13:06:41.971Z"
+    }
+   ],
+   "createdAt": "2026-10-30T13:01:42.736Z",
+   "builtAt": "2026-10-30T13:06:41.972Z",
+   "updatedAt": "2026-10-30T13:06:42.016Z",
+   "source": "console"
+  },
+  {
+   "id": "plugin-floatable",
+   "title": "Plugin manifest field 'floatable': can the plugin open as a floating window",
+   "detail": "Brett, Oct 30 2026 (voice): a field in plugin manifests that declares whether the plugin is floatable, like 'tabable'. Profile: Angel.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] plugin@1 `floatable`: false (default) | true (its first page) | {view, label, icon, width, height}; schema, plugins.mjs --check and the console loader validate it like `tabable`; PORTING note (Android deferred)",
+     "at": "2026-10-30T13:01:42.796Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] Console honours it: 'Open floating' on the plugin's menu entries, right-click and Plugin Manager opens the view in a floating window (window host); set floatable on every plugin with a page; checks; PR",
+     "at": "2026-10-30T13:01:42.796Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-30T13:01:42.796Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-30T13:01:42.797Z",
+   "source": "console"
+  },
+  {
+   "id": "app-compact",
+   "title": "Compact the whole app: tight page heads, smaller buttons and chips, flat cards, dense tables and grids, slimmer banners and toolbars",
+   "detail": "Brett, Oct 30 2026: after the compact Settings (PR #175) — 'Rest of the app too'. Same treatment everywhere: less wasted space, no walls of big buttons, no cards inside cards, tight spacing. Framework-wide (axf.css + console.css), so every app on the framework and every plugin follows; per-screen fixes after. Before/after screenshots of every main screen. Profile: Angel. Web; Android deferred.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "First pass: framework frame + count strips + Plugin Manager phone layout. Per-screen button walls (orchestrator filters, catalog, tracker, asset studio) left for a follow-up pass.",
+     "at": "2026-10-30T16:44:13.180Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Before screenshots of the main screens (Home, Builds pages, Plugin Manager, Catalog, Assets, Tracker, Build Breaker, Feature matrix, Design packs) phone + desktop",
+     "at": "2026-10-30T16:37:47.955Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-30T16:44:12.939Z"
+    },
+    {
+     "text": "[Opus] Framework frame in axf.css: page head (smaller title, quiet eyebrow, actions on one line), buttons (padding, size, icon size), chips (small square-ish), segmented, tabs, fields, cards (one border, smaller padding, no dashed outlines), tables/grid rows — tokens only",
+     "at": "2026-10-30T16:37:47.955Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T16:44:12.985Z"
+    },
+    {
+     "text": "[Opus] Chrome: banner, tab bar, application menu bar and toolbars slimmer; Home stat tiles and summary cards dense",
+     "at": "2026-10-30T16:37:47.955Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T16:44:13.027Z"
+    },
+    {
+     "text": "[Opus] Screens with button walls (orchestrator tiles + filter chips, plugin manager cards, catalog, tracker, asset studio): fold extra actions into ⋯ menus or dropdowns, compact lists",
+     "at": "2026-10-30T16:37:47.955Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T16:44:13.079Z"
+    },
+    {
+     "text": "[Opus] Checks (tsc, controls, theme, theme-swap, menu-reach, plugin pages), re-bake apps (Patches skipped), after screenshots, report + LOG, PR",
+     "at": "2026-10-30T16:37:47.955Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T16:44:13.129Z"
+    }
+   ],
+   "createdAt": "2026-10-30T16:37:47.955Z",
+   "builtAt": "2026-10-30T16:44:13.129Z",
+   "updatedAt": "2026-10-30T16:44:13.181Z",
+   "source": "console"
+  },
+  {
+   "id": "screens-compact",
+   "title": "Compact screens pass 2: orchestrator filters, Home actions, catalog, tracker, asset studio — button walls into dropdowns and ⋯ menus",
+   "detail": "Brett, Oct 30 2026: 'More compact screens' after app-compact (PR #178). Per-screen: replace rows/walls of buttons and filter chips with one dropdown or a ⋯ menu, shorten page descriptions, tighten lists. Profile: Angel. Web only.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Before screenshots: Home, Build orchestrator, Catalog, Tracker, Asset studio, Build queue (phone + desktop)",
+     "at": "2026-10-30T17:25:36.020Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-30T21:21:37.348Z"
+    },
+    {
+     "text": "[Opus] Build orchestrator: tabs + Grid/List + category chips + Next on Fable/Opus become one compact toolbar (category dropdown, view toggle, next-model dropdown)",
+     "at": "2026-10-30T17:25:36.020Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T21:21:37.402Z"
+    },
+    {
+     "text": "[Opus] Home: page actions row (Open project, Terminal, Export plan, Token, Tracker) → 2 main buttons + ⋯ menu; summary cards denser",
+     "at": "2026-10-30T17:25:36.020Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T21:21:37.447Z"
+    },
+    {
+     "text": "[Opus] Catalog + Tracker: filter chip rows → one dropdown each; item rows one line with status chip; Asset studio slot chips → dropdown",
+     "at": "2026-10-30T17:25:36.020Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T21:21:37.499Z"
+    },
+    {
+     "text": "[Opus] Checks, after screenshots, report + LOG, PR",
+     "at": "2026-10-30T17:25:36.020Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T21:21:37.559Z"
+    }
+   ],
+   "createdAt": "2026-10-30T17:25:36.020Z",
+   "builtAt": "2026-10-30T21:21:37.560Z",
+   "updatedAt": "2026-10-30T21:21:37.559Z",
+   "source": "console"
+  },
+  {
+   "id": "ui-all-assets",
+   "title": "One place changes everything: typography, density and component-sizing assets that every app and plugin reads",
+   "detail": "Brett, Oct 30 2026: 'Any part of the UI that needs to be an asset in order to be changed, make an asset out of it… change it in one place, changes it everywhere. I want the whole framework and all the apps and plugins built on it to follow the same code.' Slimmed by Brett (voice, then 'Run that now' in text): three broad asset types instead of one per piece — typography (text sizes, weights, line spacing), density (spacing, padding, row heights, gaps; compact vs roomy is one pick), component sizing (page heads, list rows, chips, count strips, tables). Each app gets one update to read them; after that every change comes live from axHub. Includes moving the Oct 30 compact frame (axf.css compact block, settings compact CSS, console count strips) and the MCP servers pages (framework/libs/mcp) onto them. Profile: Angel. Android twins deferred.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Oct 31 2026 (Opus, headless): s3–s5 on claude/ui-all-assets — compact defaults tightened, 7 text + 9 spacing steps, root text twins, scale-adopt codemod moved ~1,720 sizes in 80 files (axf.css, console, all plugin pages, libs, AmberX, axhub-web, Walkthrough, templates), check-theme rule scale, theme-swap swaps the three types, 26 design packages name them, report _claude/builds/reports/ui-all-assets-2026-10-31.md",
+     "at": "2026-10-31T09:07:22.073Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Fable] Contract: three asset types in asset-types.json — typography, density, component-sizing — with JSON schemas, validators (ts + mjs), fixtures; design-package/style-package accept them as slots; open registries so later pieces add fields, never types",
+     "at": "2026-10-30T17:31:49.428Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T00:37:05.077Z"
+    },
+    {
+     "text": "[Fable] Engine + live sync: compile the three types to --fx-* tokens (TS reference engine, fixtures, hot-swap), add them to the shared look on axHub so a change reaches every app live; PORTING.md records Kotlin twins as deferred",
+     "at": "2026-10-30T17:31:49.428Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T00:37:05.128Z"
+    },
+    {
+     "text": "[Opus] Adopt: axf.css (incl. the Oct 30 compact block), settings library, console.css, framework React components and libs (incl. framework/libs/mcp pages) read only the new tokens — no sizes decided in code",
+     "at": "2026-10-30T17:31:49.428Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T09:07:21.860Z"
+    },
+    {
+     "text": "[Opus] Plugins: per-plugin sizes that duplicate a shared piece switch to the new tokens (all plugins); starter assets (compact = Oct 30 look, standard, roomy) for each type; design packages reference them; Settings → Appearance gets the three pickers",
+     "at": "2026-10-30T17:31:49.428Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T09:07:21.935Z"
+    },
+    {
+     "text": "[Opus] Checks (check-theme flags hard-coded sizes; theme-swap swaps the three types), re-bake every app once (Patches paused), before/after screenshots, report + LOG, PR",
+     "at": "2026-10-30T17:31:49.428Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T09:07:22.006Z"
+    }
+   ],
+   "createdAt": "2026-10-30T17:31:49.428Z",
+   "builtAt": "2026-10-31T09:07:22.007Z",
+   "updatedAt": "2026-10-31T09:07:22.074Z",
+   "source": "console"
+  },
+  {
+   "id": "batch-manager",
+   "title": "PR browser + Batch Manager",
+   "detail": "Brett, Oct 30 2026 (voice): Grid of push batches with live badges, Merge/Hold on rows, expandable PR sub-grid, failing check + Fix. Dense: small type, small badges, no clutter. Left click opens review, right click menu. PR BROWSER (Brett, Oct 31): a tab listing every open PR across AmberX-AXF, axHub and Build-Pilot. One dense line per PR with everything: number, title, branch, built by (agent/session), live checks badge, behind main, mergeable/conflict, in which batch, age, cost. Expand a row: every check with its error lines, files changed, commits, description, linked build/plan, and actions: Fix, Merge (via batch), Add to batch, Close. Sort/search/filter like every grid; live updates. ROW LEAD (Brett): every row starts with the PR number + a plain-English line of what it does (e.g. '#187 Audio Extract: pulls audio out of screen recordings, no mic'), written from the actual diff not just the title; badges follow on the same line. SCREENSHOTS (Brett): every PR gets BEFORE (main) and AFTER (PR branch) screenshots of the screens it touches, captured automatically by CI/headless browser (web) and emulator (Android); small before/after thumbnails on the row, side-by-side or slider compare in the expanded view, stored with the PR. SCREENSHOT CORRECTION (Brett): do NOT build a new capture system - REUSE the existing pre-build and post-build screenshots the framework already takes (find them first). BEFORE = the existing pre-build screenshot. AFTER: if the PR/build is not done yet, show a PREDICTED screenshot (rendered mockup of the expected result from the build spec + diff so far, clearly badged 'Predicted'); as soon as the build finishes, the real post-build screenshot replaces it automatically (badge 'Real'), live, no refresh. FEATURE SHOTS (Brett): the existing pre/post-build screenshots are NOT enough - they must show the ACTUAL FEATURE the PR built. Per PR, build a feature map from the diff (changed plugins, components, routes, menus, dialogs -> the screens and states that show them). Drive the existing capture tooling to navigate to each one, open it (expand the row, open the dialog/menu, switch the tab, put it in the right state with demo data), and shoot it: BEFORE on main, AFTER on the PR branch. Each shot cropped to the feature plus a full-screen version, web + Android. Brand-new UI has no before: show a 'New' card. Every feature shot shows Predicted (mockup from spec + diff) until the build is done, then the real shot replaces it live. Captions say which feature each shot is. Missed features (no shot) flagged on the row.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Batch data + live feed",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] PR browser tab: every open PR across 3 repos, one-line rows with all statuses, expandable details + actions",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Feature screenshots per PR: feature map from diff, navigate + open each built feature, before (main) / after (branch), cropped + full, web + Android; Predicted until done, real swaps in live",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Plain-English lead line per PR generated from its diff, shown first on every row",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Batch grid + badges",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] PR sub-grid + Fix",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Dense phone pass",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "element-inspector",
+   "title": "Element inspector (Android first)",
+   "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Pointer model",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Panel + pin/drag/resize",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Compose port, then web",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "context-menu-editor",
+   "title": "C+click context-menu map + pinned items",
+   "detail": "Brett, Oct 30 2026 (voice): Hold C + click: shows which menu fires there and its file. Drag an element into the map to save it; saves the action/destination, not the element. Pinned top: Build profiles submenu, Settings, user picks.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Menu resolver + source file",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] C+click overlay + map",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Drag-to-pin action capture",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Pinned section",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "layout-repeating-slots",
+   "title": "Layouts: repeating slots",
+   "detail": "Brett, Oct 30 2026 (voice): Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Schema",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Web engine + renderer",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Android engine + Compose",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Fixtures + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "approval-row-buttons",
+   "title": "Approve/Deny on every row",
+   "detail": "Brett, Oct 30 2026 (voice): Visible on collapsed rows, big targets, green/red, title truncates first. Console, AmberX, axHub. On claude/veto-complete (#179).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Inline buttons x3 apps",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Phone pass + tests",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "session-history",
+   "title": "Session browser: Claude sessions + headless agent runs, live",
+   "detail": "Brett, Oct 30 2026 (voice): a full-blown session browser for regular Claude sessions AND every headless agent run, monitoring in real time. Live grid, collapsible rows like every other grid: agent, build, job, model, status badge (running, done, failed, killed for budget), tokens, dollars, duration, started time; updates live. Expand a row: plain-English rundown of what it built and exactly what changed (item, what was wrong, before/after), taken from real commits and file changes. Tabs: Context (all text that flowed into its context and what it said back), Tools (every command and file edit), Conversation for regular sessions. Watch a running agent live and kill it. Links to PR/commit/file. Sort, search, filter. Built on Session check-in archive + Codebase changes log + the agent-swarm runner's JSON reports and stream logs. Prices everywhere: the row shows the run's exact total cost (from usage). Expanded 'what it did' shows a price next to every line (estimated: tokens of the turns that produced that change, labelled 'est.'). Context tab: cost per turn; Tools tab: cost per command. Totals at the bottom plus a per-model breakdown.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Run store: ingest Claude sessions + headless agent stream logs/reports, live feed",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Live grid: collapsible rows, badges, tokens/cost, sort/search/filter",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Row detail: plain-English what it built + exact before/after changes from commits",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Context, Tools and Conversation tabs",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Live watch + kill for running agents",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Prices: exact run total on the row, est. price per what-it-did line, cost per turn/command, per-model totals",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "grid-sort-filter",
+   "title": "Framework grid: built-in sort, search, filter + Date and time column",
+   "detail": "Brett, Oct 30 2026 (voice): Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android. UPDATE (Brett): build BOTH into the framework grid. Sort/search/filter live in the framework (not the Basic filter plugin); smart per-grid defaults, right-click on/off, All grids list and hover offer all framework features. Date and time column is ensured at first render: if a grid renders without one, the framework adds the hidden column then. New grids get everything automatically. CI check flags any table not built on the framework grid.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Inventory every grid + custom table",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Framework grid: header sort + multi-sort",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Compact search/filter row + chips; Basic filter on by default",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Move custom tables onto the grid",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Android Compose grid parity",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Per-grid filter switch: grid/header context menu, All grids list (focus + highlight), default for new grids",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Per-grid default decision (with reason) + hover/long-press offer to enable",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Framework grid: automatic hidden Date and time column (only where none exists), header right-click to show",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Move Basic filter into the framework grid (web + Compose); migrate saved filters",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] First-render ensure: add hidden Date and time column when missing",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] CI check: flag tables not on the framework grid",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "plugin-cleanup",
+   "title": "Merge overlapping plugins",
+   "detail": "Brett, Oct 30 2026 (voice): First a merge map so no feature is lost, then: Build Breaker + Changes & features grid + Codebase changes banner -> one; Plugin switches + Plugin Update + Plugins menu -> Plugin Manager; Main build status -> Activity banner; retire Design packs after UI Review (#184); console Todo manager on the shared AmberX notes store; Voice notes vs Dictation; AmberX Voice control vs Voice command center. Uninstall scripts for removed plugins. Also retire the Basic filter plugin once grid-sort-filter moves filtering into the framework (migrate its saved filters).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Merge map: every feature mapped to its new home",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Build tracking merge",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Plugin management merge",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Banners + Design packs retire",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Notes/tasks + voice overlaps",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Uninstalls, catalog, tests",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "audio-output-recorder",
+   "title": "AmberX Audio Output Recorder -> axHub (no mic)",
+   "detail": "Brett, Oct 30 2026 (voice): AmberX plugin that records all audio the phone outputs while it is on, saved to the server on axHub. One switch + quick-settings tile. Playback capture only, NEVER the microphone. Android 10+; system consent prompt each start and a notification while recording. Calls and opt-out apps (DRM) cannot be captured. 30-minute timestamped chunks, each uploaded to axHub; keep the local file until axHub confirms, queue and retry when offline, small local cap. Built on the capture engine from claude/audio-extract (PR #187).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Capture service: AudioPlaybackCapture via MediaProjection, foreground notification, no mic",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Switch in AmberX + quick-settings tile; consent prompt flow",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] 30-min timestamped chunks uploaded to axHub (same store as AmberX notes); local copy kept until upload confirmed; offline queue + retry; local cap",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Recordings list from axHub: play, share, delete, send to Audio Extract; also visible in the console",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "audio-mic-filters",
+   "title": "AmberX audio: opt-in mic + filters (both recorders)",
+   "detail": "Brett, Oct 30 2026 (voice): add an optional microphone to BOTH the Audio Extract screen recorder and the Output Recorder: a switch, off by default, never used as a fallback, visible indicator while on (this replaces the earlier no-mic rule for these two recorders only when the user turns it on). Add sophisticated filters you can run on any recording and re-save: noise reduction/cancellation, voice boost, EQ, loudness leveling, hum and hiss removal, silence trim; preview, presets, Save as new, original never overwritten. Runs after audio-output-recorder, on its branch.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Opt-in mic switch in screen recorder + Output Recorder (off by default, no fallback, clear indicator when on)",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Mix mic + playback when both on; separate tracks if possible",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Filters engine: noise reduction, voice boost, EQ, leveling, hum/hiss removal, silence trim",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Filters panel: preview, presets, Save as new (original untouched), batch apply",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Saved results go to axHub like other recordings; tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "transcription-engine",
+   "title": "Transcription engine: on-demand, on-phone Whisper + server switch",
+   "detail": "Brett, Oct 30 2026 (voice): his own transcription engine, no paid API. ON DEMAND ONLY: nothing is transcribed automatically; a Transcribe button on any recording. DEFAULT: Whisper runs on the phone (whisper.cpp / on-device model in AmberX). SWITCH: send it to the self-hosted Whisper on axHub instead (own container, low priority, CPU cap) for bigger models or when not using the phone. Timestamps per line, tap a line to jump the audio, search all transcripts, export text/SRT, send to AmberX notes. Transcripts saved on axHub with the recording.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] On-device Whisper in AmberX (whisper.cpp, model download + size picker), runs only when Transcribe is tapped",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Server engine: Whisper container behind axHub, on-demand API, low priority + CPU cap; benchmark model sizes on this VPS",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Phone/Server switch (setting + per-recording choice), progress, cancel",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Fable] Transcript viewer: tap line to jump audio, search across transcripts; saved on axHub",
+     "at": "2026-10-31T09:07:21.792Z"
+    },
+    {
+     "text": "[Opus] Export text/SRT, send to notes; tests + docs",
+     "at": "2026-10-31T09:07:21.792Z"
+    }
+   ],
+   "createdAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "source": "console"
+  },
+  {
+   "id": "live-key-checks",
+   "title": "Live key + health checks in the banners: every key tested against its service every 15 min, red banner item with a fix, health@1 registry, push to AmberX",
+   "detail": "Brett, Oct 30 2026 (voice): the console's GITHUB_TOKEN went dead (401) and nothing told him. 'You need to make sure things like that go into one of the banners. I need to see that kind of shit.' Live checks (GitHub /user + scopes + expiry, axHub MCP, Anthropic/Claude, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push creds), red banner items with what broke / what it breaks / since when / Fix, amber a week before expiry, health@1 registry, stuck builds, veto denied/expired, CI on main, restarting containers, disk >85%, one push per new red item. Profile: Angel. Web/Python only.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "s1-s6 done on claude/live-key-checks (Opus): health@1, live probes, system checks, red banners, test-before-save, push once to AmberX, shared rule; self-test 184, tsc/vite/check-theme/check-controls/lifecycle green. s7 waits on claude/pr-only-merge.",
+     "at": "2026-10-30T18:52:13.649Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Read systems-check + keys banner; health@1 registry (server: register, run, severity, fix) + scheduler (15 min, console start, Check now) + cached results with since-times",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:52:13.330Z"
+    },
+    {
+     "text": "[Opus] Live key checks on health@1: GitHub /user + scopes + expiry header, axHub MCP, Anthropic/Claude Code, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push credentials",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:52:13.387Z"
+    },
+    {
+     "text": "[Opus] System health on health@1: stuck builds (change-log no heartbeat 30 min, headless launch exited at once), veto denied/expired, CI failing on main, container restarting, disk over 85%",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:52:13.440Z"
+    },
+    {
+     "text": "[Opus] Banner UI: red/amber items with what broke, what it breaks, since when, Fix / Auto fix (test-before-save field or token page); framework controls + tokens only",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:52:13.495Z"
+    },
+    {
+     "text": "[Opus] Push every new red item to AmberX once (existing push path); rule in shared RULES.md",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:52:13.544Z"
+    },
+    {
+     "text": "[Opus] Tests with fake services (ok, 401, missing scope, expiring, unreachable); console tsc + vite build, check-theme, check-controls, plugin-lifecycle; screenshots",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:52:13.598Z"
+    },
+    {
+     "text": "[Opus] Follow-up (after claude/pr-only-merge lands): move push-banner's token check onto health@1",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Fix it yourself: rule in shared RULES.md (near the top) + CLAUDE.md",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-31T00:46:05.408Z"
+    },
+    {
+     "text": "[Opus] health@1 autoFix: run it first when a check goes red (veto for host commands), re-check, red only if still broken; per-check setting auto / ask first / off; history + change log",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T00:46:05.466Z"
+    },
+    {
+     "text": "[Opus] github@1: GitHub through axHub (framework lib axf_server.github_hub + capability), hub first, local GITHUB_TOKEN fallback (or reversed by setting); dead console token autoFix = switch to the hub route",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T00:46:05.528Z"
+    },
+    {
+     "text": "[Opus] Tests with a fake hub (routes, fallback, pagination, auto-fix flows); UI setting + history; tsc, vite build, check-theme, check-controls, lifecycle",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-31T00:46:05.582Z"
+    },
+    {
+     "text": "[Opus] Follow-up (claude/pr-only-merge): push banner builds its client from axf.github@1 (hub route) instead of GITHUB_TOKEN",
+     "at": "2026-10-30T18:21:59.378Z",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-10-30T18:21:59.378Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-31T00:46:05.582Z",
+   "source": "console"
+  },
+  {
+   "id": "ui-review",
+   "title": "UI Review: one plugin where Brett approves every UI a build makes (Design packs renamed and widened)",
+   "detail": "Brett, Oct 30 2026 (voice, driving): rename the Design packs console plugin to UI Review (folder ui-review) and make it one all-in-one UI approval plugin. Every UI a build makes is submitted there for his approval, separated by kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Items: title, kind, app, build/branch/PR, desktop + phone shots, notes, status (waiting / approved / changes asked / rejected), his comment, history. Views: tree, collapsible grid, grid with sub-grids, gallery, compare; multi-select + bulk decisions in every view. Builds submit through review.mjs, the plugin API and rebuild-shots --submit; capability ui-review@1. Design-pack picks (MAX 3) migrate. Profile: Angel. Web only.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "s1–s8 built on claude/ui-review (Opus, Oct 30). s9 waits for the push-banner build: its batch merge should call ui-review@1 holds(branch, pr). push-banner deliberately not edited here.",
+     "at": "2026-10-30T18:25:02.743Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Rename: new folder ui-review (plugin.json, install/uninstall, hooks), move packs/, migrate picks from the old data folder, drop the old folder + README line; View → Design packs stays as a shortcut",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.027Z"
+    },
+    {
+     "text": "[Opus] Data model review-item@1 + open kinds registry (kinds.json), pure core (filters, sort waiting-first, grouping, counts, bulk decisions, history) shared by web, CLI and tests",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.177Z"
+    },
+    {
+     "text": "[Opus] Server routes (items, submit, decide, bulk, shots, picks, state per branch/PR) + capability ui-review@1 via plugin_services",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.481Z"
+    },
+    {
+     "text": "[Opus] review.mjs CLI (submit / list / decide / state) and rebuild-shots.mjs --submit option",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:01.789Z"
+    },
+    {
+     "text": "[Opus] Web UI: page head, section strip with counts, filters/search/sort, bulk bar; tree + collapsible grid views",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.169Z"
+    },
+    {
+     "text": "[Opus] Web UI: grid with sub-grids, gallery, compare, item detail (shots, notes, comment, history), Design packs section with Pick flow",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.363Z"
+    },
+    {
+     "text": "[Opus] Tests (test.py, test.mts) + tsc, vite build, check-theme, check-controls, check-plugin-pages, plugin-lifecycle check, menu-reach",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.529Z"
+    },
+    {
+     "text": "[Opus] Screenshots of every view (rebuild-shots.mjs), rule line in shared RULES.md, THREADS + push-banner follow-up note, PR through the push banner",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T18:25:02.650Z"
+    },
+    {
+     "text": "[Opus] Follow-up (after the push-banner build lands): the batch merge holds PRs whose ui-review@1 state is waiting or rejected",
+     "at": "2026-10-30T17:59:21.357Z",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-10-30T17:59:21.357Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-30T18:25:02.743Z",
+   "source": "console"
+  },
+  {
+   "id": "plan-studio",
+   "title": "Plan Studio: store, enter and view every plan (plan@1), Catalog of every plugin/app/library with have/planned features, plain-English AI and AmberX voice planning",
+   "detail": "Brett, Oct 30 2026 (voice): a planning studio to store and view all plans, entered by hand, categorized; every plugin and app listed with its features checked off as have or planned. + plain-English AI command box (Oct 30 ~14:20) + AmberX voice conversation mode (Oct 30 ~14:22). Profile Angel, Opus, one session. Branch claude/plans. Web/TS/Python only; AmberX is its Capacitor web shell (allowed exception). Don't touch push-banner, approvals/veto, design-packs/ui-review, enterprise-branding, agent-voice files.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on claude/plans (12/12 steps). Push + PR + closing #159 sent as a veto call (no GitHub credentials in the sandbox). Report: _claude/memory/docs/plan-studio/README.md",
+     "at": "2026-10-30T19:00:33.519Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] plan@1 contract: JSON Schema, normalize + migrate (v0 → plan@1), categories tree ops (add/rename/move/merge), totals from steps, diff/versions, Markdown import/export, fixtures",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:32.903Z"
+    },
+    {
+     "text": "[Opus] Store + CLI plans.mjs (add|list|show|status|import|export|categories), data folder mirrored to axHub _data (plan-studio/), capability plans@1",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:32.954Z"
+    },
+    {
+     "text": "[Opus] Catalog discovery: every console plugin, app in apps/, framework library and axHub, with features from the Feature matrix / tracker.json / catalog.json; gone marks; planned features written back through the plugin's overlay",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.008Z"
+    },
+    {
+     "text": "[Opus] Server part (FastAPI routes: plans, plan, save, versions, restore, catalog, feature, turn-into-build, import, export)",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.063Z"
+    },
+    {
+     "text": "[Opus] Studio home: tree with multi-select, grid with expandable panes, sub-grids (category/status/project/tag/priority), board by status (drag), roadmap, reader; search, filters, sort, saved views, counts, bulk actions",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.115Z"
+    },
+    {
+     "text": "[Opus] Plan editor: sectioned, autosave drafts, templates (7 + user), quick capture (+ banner, menu, search, right-click), categories editor, Markdown preview + outline, history diff/restore, comments, duplicate check",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.170Z"
+    },
+    {
+     "text": "[Opus] Catalog views: tree with checkboxes, expandable grid, sub-grids, coverage matrix; filters (gaps, planned, profile); Plan this on a feature",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.218Z"
+    },
+    {
+     "text": "[Opus] Turn into a build: pick profile, preview steps, orchestrator add, link both ways, live progress, done when the build completes; Import/export Markdown + JSON",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.269Z"
+    },
+    {
+     "text": "[Opus] Plain-English AI: command box on every plan + home, edit parser (rules first, assistant@1 for the rest), diff apply/undo, questions, AI history entries, tests with fixed model replies",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.318Z"
+    },
+    {
+     "text": "[Opus] AmberX: target amberx-droid, voice conversation loop (mic-lease@1, agent-voice@1 else native speak), undo by voice, confirm big edits, tests with fake speech",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.363Z"
+    },
+    {
+     "text": "[Opus] Imports: Docs Studio (15 steps, Framework > Docs, parked), AmberX Selling It (Product > Installer), other parked plans; close draft PR #159 with the note",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.413Z"
+    },
+    {
+     "text": "[Opus] Checks + ship: tests, console tsc + vite build, check-theme, check-controls, check-plugin-pages, lifecycle check, menu-reach, screenshots, shared rule, THREADS, PR",
+     "at": "2026-10-30T18:21:11.429Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T19:00:33.460Z"
+    }
+   ],
+   "createdAt": "2026-10-30T18:21:11.429Z",
+   "builtAt": "2026-10-30T19:00:33.461Z",
+   "updatedAt": "2026-10-30T19:00:38.179Z",
+   "source": "console"
+  },
+  {
+   "id": "audio-extract",
+   "title": "Audio Extract plugin for AmberX: pull the audio out of screen recordings (lossless .m4a, optional MP3/WAV), plus a built-in screen recorder with playback audio (no mic)",
+   "detail": "Brett, Oct 30 2026 (voice): strip the audio out of his phone screen recordings into an audio file; extraction from a video file only, no live mic, no fallbacks. Then: add a Record screen mode (MediaProjection + playback capture, foreground service, chip, countdown) whose recordings go straight through the extractor. Profile: Angel. Opus, one session.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Built on claude/audio-extract (Opus). Web: console plugin audio-extract (targets amberx-droid). Native: AudioExtractPlugin/AudioExtractor/ScreenRecordService. javac-checked locally vs android-35 + Capacitor 8.5.3; APK from CI job amberx. No MP3 (Android has no MP3 encoder); screen-recording folders are SAF grants (no storage permission).",
+     "at": "2026-10-30T22:16:02.736Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Plugin skeleton audio-extract (amberx-plugin@1, lifecycle install/uninstall, enabled by default) + bridge contract",
+     "at": "2026-10-30T21:56:25.813Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-30T22:16:02.117Z"
+    },
+    {
+     "text": "[Opus] Extractor core: job queue, batch, progress, cancel, trim, track pick, naming, settings model + fake bridge",
+     "at": "2026-10-30T21:56:25.813Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T22:16:02.224Z"
+    },
+    {
+     "text": "[Opus] Recorder state machine idle/countdown/recording/paused/extracting/done + voice commands",
+     "at": "2026-10-30T21:56:25.813Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T22:16:02.378Z"
+    },
+    {
+     "text": "[Opus] UI: Extract page (pick, share-in, new-recording card, results list play/rename/share/delete), Record panel, settings",
+     "at": "2026-10-30T21:56:25.813Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T22:16:02.456Z"
+    },
+    {
+     "text": "[Opus] Native: AudioExtractPlugin.java (MediaExtractor+MediaMuxer lossless, MediaCodec MP3-less WAV/re-encode, MediaStore out, SAF pick, watcher)",
+     "at": "2026-10-30T21:56:25.813Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T22:16:02.587Z"
+    },
+    {
+     "text": "[Opus] Native: ScreenRecordService (MediaProjection, MediaRecorder video + AudioPlaybackCapture, notification Pause/Stop, chip) + manifest + share intent",
+     "at": "2026-10-30T21:56:25.813Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-30T22:16:02.668Z"
+    },
+    {
+     "text": "[Opus] Tests: tsc, test.mjs, plugin-lifecycle check; THREADS, PR",
+     "at": "2026-10-30T21:56:25.813Z",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-10-30T21:56:25.813Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-30T22:16:02.736Z",
+   "source": "console"
   }
  ]
 }

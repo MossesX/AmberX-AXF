@@ -19,7 +19,10 @@
       "slots": {
         "style-package": "calm-reader",
         "nav-menu": "text-only",
-        "context-menu": "reader-minimal"
+        "context-menu": "reader-minimal",
+        "typography": "reader",
+        "density": "standard",
+        "sizing": "standard"
       },
       "spacing": "regular"
     }

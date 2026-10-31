@@ -6,6 +6,7 @@ export const SCALE_TYPES: readonly ScaleType[];
 export const SCALE_FRAME: Record<ScaleType, string>;
 export const SCALE_PREFIX: Record<ScaleType, string>;
 export const SCALE_FIELDS: Record<ScaleType, Record<string, ScaleField>>;
+export const SCALE_ROOT_GROUPS: Record<ScaleType, readonly string[]>;
 export const SCALE_ENUMS: Record<ScaleType, Record<string, readonly string[]>>;
 export const SCALE_ENUM_DEFAULTS: Record<ScaleType, Record<string, string>>;
 export const SCALE_ENUM_VALUES: Record<string, Record<string, string>>;

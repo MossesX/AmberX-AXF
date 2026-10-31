@@ -411,8 +411,18 @@ const DP = [
   ['amberx-signature-night', 'AmberX Signature Night', 'geometric', 'carbon-amber', 'signature-dock', 'amber', { 'style-package': 'amber-signature', toolbar: 'amberx-signature', 'nav-menu': 'amber-signature' }, null, ['dark', 'brand', 'amber'], 'The AmberX house look after dark: molten gold on carbon, with the same signature set.'],
   ['gizmox-console', 'GizmoX Console', 'terminal-pro', 'obsidian', 'console-pro', 'gizmo', { 'style-package': 'gizmo-console', toolbar: 'developer-ops', 'nav-menu': 'gizmo-console', 'context-menu': 'developer-tools' }, 'tight', ['dark', 'brand', 'developer'], 'The GizmoX development console: monospace headings on Obsidian, the console frame, developer toolbar and menus.'],
 ];
+// The scale assets every package names (Angel build ui-all-assets, Oct 31 2026): compact unless the package's look needs more room.
+const DP_SCALE = {
+  'kiosk-display': { typography: 'standard', density: 'roomy', sizing: 'touch' },
+  'touch-tablet': { density: 'roomy', sizing: 'touch' },
+  'data-desk': { density: 'dense' },
+  'humanist-reader': { typography: 'reader', density: 'standard', sizing: 'standard' },
+  'swiss-editorial': { typography: 'reader' },
+  'executive-suite': { typography: 'standard', density: 'standard', sizing: 'standard' },
+};
+const scaleSlots = (id) => ({ typography: 'compact', density: 'compact', sizing: 'compact', ...(DP_SCALE[id] ?? {}) });
 const designPackageAssets = () => DP.map(([id, name, style, color, layout, behavior, slots, spacing, tags, description]) => env('design-package', { id, name, tags, description },
-  { 'style-theme': style, 'color-theme': color, layout, 'behavior-theme': behavior, extras: { slots, ...(spacing ? { spacing } : {}) } }));
+  { 'style-theme': style, 'color-theme': color, layout, 'behavior-theme': behavior, extras: { slots: { ...slots, ...scaleSlots(id) }, ...(spacing ? { spacing } : {}) } }));
 
 function toolbarDoc() {
   const PROVIDERS = { views: 'every page the app registers (`nav:<view>`)', nav: 'the active navigation menu’s items', settings: 'every settings tab, plugins’ included (`settings.open:<tab>`)', windows: 'every open floating window (`windows.restore:<id>`)', dialogs: 'every registered dialog (`dialog:<id>`)', chrome: 'show/hide toggles for every bar and menu, drawn pressed while shown' };

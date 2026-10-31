@@ -6,120 +6,120 @@
  */
 .axp-plugin-manager { --axp-plugin-manager-gap: var(--fx-space); --axp-plugin-manager-pad: calc(var(--fx-space) * 1.25); display: block; min-width: 0; color: var(--fx-text) }
 .axp-plugin-manager.is-embedded { width: min(calc(var(--fx-space) * 130), 94vw); max-height: 80vh; overflow: auto }
-.axp-plugin-manager-eyebrow { margin: 0; font-size: calc(var(--fx-font-size) * 11 / 14); letter-spacing: .08em; text-transform: uppercase; color: var(--fx-muted); font-weight: 600 }
-.axp-plugin-manager-h { margin: calc(var(--fx-space) * 0.5) 0 0; font-size: calc(var(--fx-font-size) * 12 / 14); letter-spacing: .06em; text-transform: uppercase; color: var(--fx-muted) }
-.axp-plugin-manager-count { display: inline-flex; align-items: center; justify-content: center; min-width: calc(var(--fx-space) * 1.5); padding: 0 calc(var(--fx-space) * 0.4); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14); font-variant-numeric: tabular-nums }
+.axp-plugin-manager-eyebrow { margin: 0; font-size: var(--fx-type-root-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--fx-muted); font-weight: 600 }
+.axp-plugin-manager-h { margin: var(--fx-dens-gap-md) 0 0; font-size: var(--fx-type-root-sm); letter-spacing: .06em; text-transform: uppercase; color: var(--fx-muted) }
+.axp-plugin-manager-count { display: inline-flex; align-items: center; justify-content: center; min-width: calc(var(--fx-space) * 1.5); padding: 0 var(--fx-dens-gap-sm); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); font-size: var(--fx-type-root-xs); font-variant-numeric: tabular-nums }
 .axp-plugin-manager-dot { display: inline-block; flex: none; width: calc(var(--fx-space) * 0.6); height: calc(var(--fx-space) * 0.6); border-radius: 999px; background: var(--fx-muted) }
 .axp-plugin-manager-dot.is-ok { background: var(--fx-success) } .axp-plugin-manager-dot.is-partial { background: var(--fx-warning) }
 .axp-plugin-manager-dot.is-error, .axp-plugin-manager-dot.is-blocked { background: var(--fx-danger) } .axp-plugin-manager-dot.is-off { background: var(--fx-border) }
-.axp-plugin-manager-empty { padding: calc(var(--fx-space) * 3); text-align: center; color: var(--fx-muted) }
-.axp-plugin-manager-offline { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: 0 0 var(--fx-space); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-iconbtns { display: inline-flex; gap: calc(var(--fx-space) * 0.35) }
+.axp-plugin-manager-empty { padding: var(--fx-dens-gap-4xl); text-align: center; color: var(--fx-muted) }
+.axp-plugin-manager-offline { display: flex; align-items: center; gap: var(--fx-dens-gap-md); margin: 0 0 var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: var(--fx-type-root-md) }
+.axp-plugin-manager-iconbtns { display: inline-flex; gap: var(--fx-dens-gap-sm) }
 .fx-input.axp-plugin-manager-select { width: auto; min-width: 0; flex: none }
-.axp-plugin-manager-meta { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-plugin-manager-meta { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-muted); font-size: var(--fx-type-root-sm) }
 .axp-plugin-manager-meta.is-warn { color: var(--fx-warning) }
-.axp-plugin-manager-tag { font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted); white-space: pre }
+.axp-plugin-manager-tag { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); color: var(--fx-muted); white-space: pre }
 .axp-plugin-manager-tag.is-active, .axp-plugin-manager-tag.is-ok { color: var(--fx-success) }
 .axp-plugin-manager-tag.is-error, .axp-plugin-manager-tag.is-blocked { color: var(--fx-danger) } .axp-plugin-manager-tag.is-partial { color: var(--fx-warning) }
 
 /* ---------- controls: segmented, search ---------- */
-.axp-plugin-manager-search { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; padding: 0 calc(var(--fx-space) * 0.75); height: var(--fx-row-h); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-muted) }
+.axp-plugin-manager-search { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; padding: 0 var(--fx-dens-gap-lg); height: var(--fx-row-h); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-muted) }
 .axp-plugin-manager-search:focus-within { border-color: var(--fx-accent) }
 .axp-plugin-manager-search__input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fx-text); font: inherit }
 
 /* ---------- monogram ---------- */
-.axp-plugin-manager-mono { display: inline-flex; flex: none; align-items: center; justify-content: center; width: calc(var(--fx-space) * 2.5); height: calc(var(--fx-space) * 2.5); border-radius: var(--fx-radius-md); background: var(--fx-accent-soft); color: var(--fx-accent); font-family: var(--fx-font-display); font-weight: 700; font-size: calc(var(--fx-font-size) * 12 / 14); letter-spacing: .02em }
-.axp-plugin-manager-mono--sm { width: calc(var(--fx-space) * 1.9); height: calc(var(--fx-space) * 1.9); font-size: calc(var(--fx-font-size) * 10 / 14); border-radius: var(--fx-radius-sm) }
-.axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 4); height: calc(var(--fx-space) * 4); font-size: calc(var(--fx-font-size) * 18 / 14); border-radius: var(--fx-radius-lg) }
+.axp-plugin-manager-mono { display: inline-flex; flex: none; align-items: center; justify-content: center; width: calc(var(--fx-space) * 2.5); height: calc(var(--fx-space) * 2.5); border-radius: var(--fx-radius-md); background: var(--fx-accent-soft); color: var(--fx-accent); font-family: var(--fx-font-display); font-weight: 700; font-size: var(--fx-type-root-sm); letter-spacing: .02em }
+.axp-plugin-manager-mono--sm { width: calc(var(--fx-space) * 1.9); height: calc(var(--fx-space) * 1.9); font-size: var(--fx-type-root-2xs); border-radius: var(--fx-radius-sm) }
+.axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 4); height: calc(var(--fx-space) * 4); font-size: var(--fx-type-root-xl); border-radius: var(--fx-radius-lg) }
 .axp-plugin-manager-mono.is-off { background: var(--fx-surface2); color: var(--fx-muted) }
 .axp-plugin-manager-mono.is-error, .axp-plugin-manager-mono.is-blocked { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger) }
 .axp-plugin-manager-mono.is-partial { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-warning) }
 
 /* ---------- cards view ---------- */
 .axp-plugin-manager-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 20)), 1fr)); gap: var(--axp-plugin-manager-gap) }
-.axp-plugin-manager-card { position: relative; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); min-width: 0; padding: var(--axp-plugin-manager-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); transition: border-color var(--fx-motion), box-shadow var(--fx-motion), transform var(--fx-motion) }
+.axp-plugin-manager-card { position: relative; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; padding: var(--axp-plugin-manager-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); transition: border-color var(--fx-motion), box-shadow var(--fx-motion), transform var(--fx-motion) }
 .axp-plugin-manager-card:hover { border-color: var(--fx-accent); box-shadow: var(--fx-shadow-md) }
 .axp-plugin-manager-card.is-selected { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) }
 .axp-plugin-manager-card.is-disabled .axp-plugin-manager-card__body { opacity: var(--fx-opacity-muted) }
 .axp-plugin-manager-card__hit[data-fx-row] { position: absolute; inset: 0; border: 0; background: transparent; border-radius: inherit; cursor: pointer }
-.axp-plugin-manager-card__cover { display: flex; align-items: center; gap: var(--fx-space); pointer-events: none }
-.axp-plugin-manager-card__body { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); min-width: 0; pointer-events: none }
-.axp-plugin-manager-card__title { display: flex; align-items: baseline; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
-.axp-plugin-manager-card__version { color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 11 / 14) }
-.axp-plugin-manager-card__desc { margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 13 / 14); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden }
-.axp-plugin-manager-card__meta { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); flex-wrap: wrap }
+.axp-plugin-manager-card__cover { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); pointer-events: none }
+.axp-plugin-manager-card__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; pointer-events: none }
+.axp-plugin-manager-card__title { display: flex; align-items: baseline; gap: var(--fx-dens-gap-md); flex-wrap: wrap }
+.axp-plugin-manager-card__version { color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs) }
+.axp-plugin-manager-card__desc { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-md); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden }
+.axp-plugin-manager-card__meta { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); flex-wrap: wrap }
 .axp-plugin-manager-card__actions { position: relative; margin-top: auto }
 
 /* ---------- table view ---------- */
 .axp-plugin-manager-tablewrap { overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
-.axp-plugin-manager-table { width: 100%; border-collapse: collapse; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-table th, .axp-plugin-manager-table td { padding: calc(var(--fx-space) * 0.55) calc(var(--fx-space) * 0.75); text-align: left; border-bottom: var(--fx-border-w) solid var(--fx-border); white-space: nowrap }
+.axp-plugin-manager-table { width: 100%; border-collapse: collapse; font-size: var(--fx-type-root-md) }
+.axp-plugin-manager-table th, .axp-plugin-manager-table td { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); text-align: left; border-bottom: var(--fx-border-w) solid var(--fx-border); white-space: nowrap }
 .axp-plugin-manager-table th { position: sticky; top: 0; background: var(--fx-surface2); z-index: 1 }
 .axp-plugin-manager-table .is-num { text-align: right; font-variant-numeric: tabular-nums }
-.axp-plugin-manager-th[data-fx-row] { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); cursor: pointer; font-weight: 600; color: var(--fx-muted) }
+.axp-plugin-manager-th[data-fx-row] { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer; font-weight: 600; color: var(--fx-muted) }
 .axp-plugin-manager-tr { cursor: pointer }
 .axp-plugin-manager-tr:hover { background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-hover) * 100%), transparent) }
 .axp-plugin-manager-tr.is-selected { background: var(--fx-accent-soft) }
-.axp-plugin-manager-namecell { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.6) }
+.axp-plugin-manager-namecell { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-lg) }
 
 /* ---------- master-detail view ---------- */
 .axp-plugin-manager-md { display: grid; grid-template-columns: minmax(calc(var(--fx-space) * 14), calc(var(--fx-space) * 18)) minmax(0, 1fr); gap: var(--axp-plugin-manager-gap); min-height: calc(var(--fx-row-h) * 12) }
-.axp-plugin-manager-md__list { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2); padding: calc(var(--fx-space) * 0.4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); align-self: start; max-height: 75vh; overflow: auto }
-.axp-plugin-manager-md__item[data-fx-row] { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.5); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer }
+.axp-plugin-manager-md__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); align-self: start; max-height: 75vh; overflow: auto }
+.axp-plugin-manager-md__item[data-fx-row] { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer }
 .axp-plugin-manager-md__item:hover { background: var(--fx-surface2) }
 .axp-plugin-manager-md__item.is-selected { background: var(--fx-accent-soft) }
 .axp-plugin-manager-md__name { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-plugin-manager-md__pane { min-width: 0; padding: var(--axp-plugin-manager-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
 
 /* ---------- detail pane ---------- */
-.axp-plugin-manager-detail { display: flex; flex-direction: column; gap: var(--fx-space); min-width: 0 }
-.axp-plugin-manager-detail__head { display: flex; align-items: flex-start; gap: var(--fx-space); flex-wrap: wrap }
-.axp-plugin-manager-detail__title { flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4) }
-.axp-plugin-manager-detail__title h2 { margin: 0; font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); letter-spacing: var(--fx-tracking); font-size: calc(var(--fx-font-size) * 20 / 14) }
+.axp-plugin-manager-detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); min-width: 0 }
+.axp-plugin-manager-detail__head { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-xl); flex-wrap: wrap }
+.axp-plugin-manager-detail__title { flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-plugin-manager-detail__title h2 { margin: 0; font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); letter-spacing: var(--fx-tracking); font-size: var(--fx-type-root-xl) }
 .axp-plugin-manager-detail__title p { margin: 0; overflow-wrap: anywhere }
 .axp-plugin-manager-detail__body { min-width: 0; overflow-wrap: anywhere }
 .axp-plugin-manager-detail__head > .axp-plugin-manager-actions { flex-basis: 100% }
 .axp-plugin-manager-studio__phonebar { display: none }
-.axp-plugin-manager-tabs { display: flex; gap: calc(var(--fx-space) * 0.25); overflow-x: auto; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-plugin-manager-tabs { display: flex; gap: var(--fx-dens-gap-xs); overflow-x: auto; border-bottom: var(--fx-border-w) solid var(--fx-border) }
 .axp-plugin-manager-desc { margin: 0; line-height: 1.5 }
-.axp-plugin-manager-error { margin: 0; padding: calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger) }
-.axp-plugin-manager-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: calc(var(--fx-space) * 0.4) var(--fx-space); margin: 0 }
+.axp-plugin-manager-error { margin: 0; padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger) }
+.axp-plugin-manager-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); margin: 0 }
 .axp-plugin-manager-facts__row { display: contents }
-.axp-plugin-manager-facts dt { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-facts dd { margin: 0; overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-depgroup { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
-.axp-plugin-manager-depgroup__label { margin: calc(var(--fx-space) * 0.4) 0 0; font-weight: 600; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-dep { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-left: calc(var(--fx-border-w) * 3) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
+.axp-plugin-manager-facts dt { color: var(--fx-muted); font-size: var(--fx-type-root-md) }
+.axp-plugin-manager-facts dd { margin: 0; overflow-wrap: anywhere; font-size: var(--fx-type-root-md) }
+.axp-plugin-manager-depgroup { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-plugin-manager-depgroup__label { margin: var(--fx-dens-gap-sm) 0 0; font-weight: 600; font-size: var(--fx-type-root-md) }
+.axp-plugin-manager-dep { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-left: calc(var(--fx-border-w) * 3) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axp-plugin-manager-dep.is-success { border-left-color: var(--fx-success) } .axp-plugin-manager-dep.is-warning { border-left-color: var(--fx-warning) }
 .axp-plugin-manager-dep.is-danger { border-left-color: var(--fx-danger) } .axp-plugin-manager-dep.is-accent { border-left-color: var(--fx-accent) }
-.axp-plugin-manager-dep__top { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
+.axp-plugin-manager-dep__top { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap }
 .axp-plugin-manager-dep__name { font-weight: 600 }
-.axp-plugin-manager-dep__detail { margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-clash { padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
-.axp-plugin-manager-clash p { margin: calc(var(--fx-space) * 0.3) 0 0 }
+.axp-plugin-manager-dep__detail { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-md) }
+.axp-plugin-manager-clash { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
+.axp-plugin-manager-clash p { margin: var(--fx-dens-gap-xs) 0 0 }
 .axp-plugin-manager-clash.is-error { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-plugin-manager-clash.is-warn { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-plugin-manager-entry { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); flex-wrap: wrap; padding: calc(var(--fx-space) * 0.5) 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
-.axp-plugin-manager-inline { display: flex; flex-direction: column; gap: var(--fx-space); padding: var(--fx-space); border: var(--fx-border-w) dashed var(--fx-accent); border-radius: var(--fx-radius-md) }
-.axp-plugin-manager-inline__panel h4 { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); margin: 0 0 calc(var(--fx-space) * 0.5) }
-.axp-plugin-manager-log { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow: auto; font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
-.axp-plugin-manager-log__line { display: grid; grid-template-columns: max-content calc(var(--fx-space) * 3.5) minmax(0, 1fr); gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.3) calc(var(--fx-space) * 0.6); border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-plugin-manager-entry { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; padding: var(--fx-dens-gap-md) 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-plugin-manager-inline { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) dashed var(--fx-accent); border-radius: var(--fx-radius-md) }
+.axp-plugin-manager-inline__panel h4 { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); margin: 0 0 var(--fx-dens-gap-md) }
+.axp-plugin-manager-log { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow: auto; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
+.axp-plugin-manager-log__line { display: grid; grid-template-columns: max-content calc(var(--fx-space) * 3.5) minmax(0, 1fr); gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); border-bottom: var(--fx-border-w) solid var(--fx-border) }
 .axp-plugin-manager-log__time { color: var(--fx-muted) }
 .axp-plugin-manager-log__line.is-error .axp-plugin-manager-log__level { color: var(--fx-danger) } .axp-plugin-manager-log__line.is-warn .axp-plugin-manager-log__level { color: var(--fx-warning) }
 .axp-plugin-manager-log__line.is-ok .axp-plugin-manager-log__level { color: var(--fx-success) }
 .axp-plugin-manager-log__text { overflow-wrap: anywhere }
-.axp-plugin-manager-files { list-style: none; margin: 0; padding: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-files li { display: flex; justify-content: space-between; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.3) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-wrap: anywhere }
+.axp-plugin-manager-files { list-style: none; margin: 0; padding: 0; font-size: var(--fx-type-root-md) }
+.axp-plugin-manager-files li { display: flex; justify-content: space-between; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-wrap: anywhere }
 
 /* ---------- dependency graph ---------- */
-.axp-plugin-manager-graph { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); min-width: 0 }
-.axp-plugin-manager-graph__legend { display: flex; gap: var(--fx-space); flex-wrap: wrap; font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted) }
-.axp-plugin-manager-graph__legend span { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+.axp-plugin-manager-graph { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0 }
+.axp-plugin-manager-graph__legend { display: flex; gap: var(--fx-dens-gap-xl); flex-wrap: wrap; font-size: var(--fx-type-root-sm); color: var(--fx-muted) }
+.axp-plugin-manager-graph__legend span { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
 .axp-plugin-manager-swatch { display: inline-block; width: calc(var(--fx-space) * 1.5); height: 0; border-top: calc(var(--fx-border-w) * 2) solid var(--fx-muted) }
 .axp-plugin-manager-swatch.is-provides { border-top-color: var(--fx-success) } .axp-plugin-manager-swatch.is-requires { border-top-color: var(--fx-accent) }
 .axp-plugin-manager-swatch.is-optional { border-top-style: dashed } .axp-plugin-manager-swatch.is-broken { border-top-color: var(--fx-danger) }
 .axp-plugin-manager-graph__scroll { overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
-.axp-plugin-manager-graph__svg { display: block; font-family: var(--fx-font); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-plugin-manager-graph__svg { display: block; font-family: var(--fx-font); font-size: var(--fx-type-root-sm) }
 .axp-plugin-manager-edge { fill: none; stroke: var(--fx-muted); stroke-width: 1.5; transition: opacity var(--fx-motion) }
 .axp-plugin-manager-edge.is-provides { stroke: var(--fx-success) } .axp-plugin-manager-edge.is-requires { stroke: var(--fx-accent); stroke-width: 2 }
 .axp-plugin-manager-edge.is-optional { stroke-dasharray: 5 4 } .axp-plugin-manager-edge.is-broken { stroke: var(--fx-danger) }
@@ -135,54 +135,54 @@
 .axp-plugin-manager-node__dot { fill: var(--fx-muted) }
 .axp-plugin-manager-node.is-ok .axp-plugin-manager-node__dot { fill: var(--fx-success) } .axp-plugin-manager-node.is-partial .axp-plugin-manager-node__dot { fill: var(--fx-warning) }
 .axp-plugin-manager-node.is-error .axp-plugin-manager-node__dot, .axp-plugin-manager-node.is-blocked .axp-plugin-manager-node__dot { fill: var(--fx-danger) }
-.axp-plugin-manager-graph__info { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); flex-wrap: wrap; padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
+.axp-plugin-manager-graph__info { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
 
 /* =================================================================== 1. STUDIO */
-.axp-plugin-manager-studio { display: grid; grid-template-columns: calc(var(--fx-space) * 15) minmax(0, 1fr); gap: calc(var(--fx-space) * 1.5); align-items: start }
+.axp-plugin-manager-studio { display: grid; grid-template-columns: calc(var(--fx-space) * 15) minmax(0, 1fr); gap: var(--fx-dens-gap-2xl); align-items: start }
 .axp-plugin-manager-studio.has-drawer { grid-template-columns: calc(var(--fx-space) * 15) minmax(0, 1fr) minmax(calc(var(--fx-space) * 22), calc(var(--fx-space) * 30)) }
-.axp-plugin-manager-studio__rail { position: sticky; top: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
-.axp-plugin-manager-studio__title { margin: 0 0 calc(var(--fx-space) * 0.5); font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); letter-spacing: var(--fx-tracking); font-size: calc(var(--fx-font-size) * 24 / 14) }
-.axp-plugin-manager-studio__filters, .axp-plugin-manager-studio__layouts { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2); margin-bottom: var(--fx-space) }
-.fx-chip.axp-plugin-manager-studio__filter { display: flex; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5) }
-.axp-plugin-manager-studio__layout[data-fx-row] { display: flex; justify-content: flex-start; align-items: flex-start; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.7); border-radius: var(--fx-radius-md); color: var(--fx-text) }
-.axp-plugin-manager-studio__layout > span { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.1); min-width: 0 }
+.axp-plugin-manager-studio__rail { position: sticky; top: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-plugin-manager-studio__title { margin: 0 0 var(--fx-dens-gap-md); font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); letter-spacing: var(--fx-tracking); font-size: var(--fx-type-root-2xl) }
+.axp-plugin-manager-studio__filters, .axp-plugin-manager-studio__layouts { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); margin-bottom: var(--fx-dens-gap-xl) }
+.fx-chip.axp-plugin-manager-studio__filter { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-md) }
+.axp-plugin-manager-studio__layout[data-fx-row] { display: flex; justify-content: flex-start; align-items: flex-start; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); color: var(--fx-text) }
+.axp-plugin-manager-studio__layout > span { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0 }
 .axp-plugin-manager-studio__layout:hover { background: var(--fx-surface2) }
 .axp-plugin-manager-studio__layout.is-active { background: var(--fx-accent-soft); color: var(--fx-accent) }
-.axp-plugin-manager-studio__main { display: flex; flex-direction: column; gap: var(--fx-space); min-width: 0 }
-.axp-plugin-manager-studio__bar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); flex-wrap: wrap }
+.axp-plugin-manager-studio__main { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); min-width: 0 }
+.axp-plugin-manager-studio__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); flex-wrap: wrap }
 .axp-plugin-manager-studio__drawer { position: sticky; top: 0; max-height: calc(100vh - var(--fx-space) * 8); overflow: auto; padding: var(--axp-plugin-manager-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-shadow-md) }
 .axp-plugin-manager-studio__close { float: right }
 .axp-plugin-manager--studio .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 16)), 1fr)) }
 
 /* =================================================================== 2. MISSION CONTROL */
 .axp-plugin-manager--mission { --axp-plugin-manager-gap: calc(var(--fx-space) * 0.6); --axp-plugin-manager-pad: calc(var(--fx-space) * 0.75) }
-.axp-plugin-manager-mission { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75) }
-.axp-plugin-manager-mission__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--fx-space); flex-wrap: wrap; padding-bottom: calc(var(--fx-space) * 0.75); border-bottom: calc(var(--fx-border-w) * 2) solid var(--fx-text) }
-.axp-plugin-manager-mission__title { margin: 0; font-family: var(--fx-font-display); font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: calc(var(--fx-font-size) * 26 / 14); line-height: 1 }
-.axp-plugin-manager-mission__controls { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
-.axp-plugin-manager-mission__tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 8), 1fr)); gap: calc(var(--fx-space) * 0.5) }
-.axp-plugin-manager-tile, .axp-plugin-manager-tile[data-fx-row] { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--fx-space) * 0.2); padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); color: var(--fx-text); font: inherit; cursor: pointer; text-align: left }
+.axp-plugin-manager-mission { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-plugin-manager-mission__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--fx-dens-gap-xl); flex-wrap: wrap; padding-bottom: var(--fx-dens-gap-lg); border-bottom: calc(var(--fx-border-w) * 2) solid var(--fx-text) }
+.axp-plugin-manager-mission__title { margin: 0; font-family: var(--fx-font-display); font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: var(--fx-type-root-2xl); line-height: 1 }
+.axp-plugin-manager-mission__controls { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap }
+.axp-plugin-manager-mission__tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 8), 1fr)); gap: var(--fx-dens-gap-md) }
+.axp-plugin-manager-tile, .axp-plugin-manager-tile[data-fx-row] { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); color: var(--fx-text); font: inherit; cursor: pointer; text-align: left }
 .axp-plugin-manager-tile:hover { border-color: var(--fx-text) }
 .axp-plugin-manager-tile.is-active { background: var(--fx-text); color: var(--fx-bg); border-color: var(--fx-text) }
 .axp-plugin-manager-tile.is-active .axp-plugin-manager-tile__label { color: var(--fx-bg) }
-.axp-plugin-manager-tile__value { font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 26 / 14); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums }
-.axp-plugin-manager-tile__label { font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: .08em; color: var(--fx-muted) }
+.axp-plugin-manager-tile__value { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-2xl); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums }
+.axp-plugin-manager-tile__label { font-size: var(--fx-type-root-xs); text-transform: uppercase; letter-spacing: .08em; color: var(--fx-muted) }
 .axp-plugin-manager-tile.is-success .axp-plugin-manager-tile__value { color: var(--fx-success) } .axp-plugin-manager-tile.is-danger .axp-plugin-manager-tile__value { color: var(--fx-danger) }
 .axp-plugin-manager-tile.is-warning .axp-plugin-manager-tile__value { color: var(--fx-warning) }
 .axp-plugin-manager-tile.is-active .axp-plugin-manager-tile__value { color: var(--fx-bg) }
 .axp-plugin-manager-mission__meter { height: calc(var(--fx-space) * 0.35); background: var(--fx-surface2); overflow: hidden }
 .axp-plugin-manager-mission__meter > span { display: block; height: 100%; background: var(--fx-success); transition: width var(--fx-motion) }
-.axp-plugin-manager-mission__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(calc(var(--fx-space) * 16), calc(var(--fx-space) * 22)); gap: calc(var(--fx-space) * 0.75); align-items: start }
-.axp-plugin-manager-mission__board { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6); min-width: 0 }
-.axp-plugin-manager-mission__boardbar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); flex-wrap: wrap; text-transform: uppercase; letter-spacing: .06em; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-plugin-manager-mission__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(calc(var(--fx-space) * 16), calc(var(--fx-space) * 22)); gap: var(--fx-dens-gap-lg); align-items: start }
+.axp-plugin-manager-mission__board { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0 }
+.axp-plugin-manager-mission__boardbar { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; text-transform: uppercase; letter-spacing: .06em; font-size: var(--fx-type-root-sm) }
 .axp-plugin-manager-mission__boardbar .axp-plugin-manager-search { text-transform: none; letter-spacing: 0; flex: 0 1 calc(var(--fx-space) * 16) }
 .axp-plugin-manager-mission__focus { padding: var(--axp-plugin-manager-pad); border: var(--fx-border-w) solid var(--fx-text); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
-.axp-plugin-manager-mission__signals { position: sticky; top: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); max-height: calc(100vh - var(--fx-space) * 8); overflow: auto }
-.axp-plugin-manager-signal, .axp-plugin-manager-signal[data-fx-row] { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); margin: 0; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); border: 0; border-left: calc(var(--fx-border-w) * 3) solid var(--fx-muted); border-radius: 0 var(--fx-radius-sm) var(--fx-radius-sm) 0; background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere }
+.axp-plugin-manager-mission__signals { position: sticky; top: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); max-height: calc(100vh - var(--fx-space) * 8); overflow: auto }
+.axp-plugin-manager-signal, .axp-plugin-manager-signal[data-fx-row] { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); margin: 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: 0; border-left: calc(var(--fx-border-w) * 3) solid var(--fx-muted); border-radius: 0 var(--fx-radius-sm) var(--fx-radius-sm) 0; background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere }
 .axp-plugin-manager-signal.is-danger { border-left-color: var(--fx-danger) } .axp-plugin-manager-signal.is-warning { border-left-color: var(--fx-warning) }
 .axp-plugin-manager-signal.is-accent { border-left-color: var(--fx-accent) }
-.axp-plugin-manager-signal.is-ok { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.4); border-left-color: var(--fx-success); cursor: default }
-.axp-plugin-manager-mission__bus { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.35) }
+.axp-plugin-manager-signal.is-ok { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-sm); border-left-color: var(--fx-success); cursor: default }
+.axp-plugin-manager-mission__bus { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
 .axp-plugin-manager--mission .axp-plugin-manager-card { border-radius: var(--fx-radius-sm); box-shadow: none; flex-direction: row; align-items: center; flex-wrap: wrap }
 .axp-plugin-manager--mission .axp-plugin-manager-card__body { flex: 1 1 calc(var(--fx-space) * 12) }
 .axp-plugin-manager--mission .axp-plugin-manager-card__desc { -webkit-line-clamp: 1 }
@@ -191,29 +191,29 @@
 .axp-plugin-manager--mission .axp-plugin-manager-card.is-partial { border-left: calc(var(--fx-border-w) * 4) solid var(--fx-warning) }
 .axp-plugin-manager--mission .axp-plugin-manager-card.is-ok { border-left: calc(var(--fx-border-w) * 4) solid var(--fx-success) }
 .axp-plugin-manager--mission .axp-plugin-manager-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 26)), 1fr)) }
-.axp-plugin-manager--mission .axp-plugin-manager-table th { text-transform: uppercase; letter-spacing: .06em; font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-plugin-manager--mission .axp-plugin-manager-table th { text-transform: uppercase; letter-spacing: .06em; font-size: var(--fx-type-root-xs) }
 
 /* =================================================================== 3. TERMINAL */
-.axp-plugin-manager--terminal { --axp-plugin-manager-gap: 0; --axp-plugin-manager-pad: calc(var(--fx-space) * 0.6); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-plugin-manager--terminal { --axp-plugin-manager-gap: 0; --axp-plugin-manager-pad: calc(var(--fx-space) * 0.6); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-md) }
 .axp-plugin-manager--terminal * { font-family: var(--fx-font-mono) }
 .axp-plugin-manager-term { display: flex; flex-direction: column; min-height: calc(var(--fx-row-h) * 14); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface3); color: var(--fx-text); box-shadow: var(--fx-shadow-lg) }
-.axp-plugin-manager-term__titlebar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); flex-wrap: wrap; padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.75); background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted) }
-.axp-plugin-manager-term__lights { display: inline-flex; gap: calc(var(--fx-space) * 0.35) }
+.axp-plugin-manager-term__titlebar { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); flex-wrap: wrap; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted) }
+.axp-plugin-manager-term__lights { display: inline-flex; gap: var(--fx-dens-gap-sm) }
 .axp-plugin-manager-term__lights i { width: calc(var(--fx-space) * 0.7); height: calc(var(--fx-space) * 0.7); border-radius: 999px; background: var(--fx-danger) }
 .axp-plugin-manager-term__lights i:nth-child(2) { background: var(--fx-warning) } .axp-plugin-manager-term__lights i:nth-child(3) { background: var(--fx-success) }
-.axp-plugin-manager-term__screen { flex: 1; display: flex; flex-direction: column; gap: var(--fx-space); padding: var(--fx-space); overflow: auto; max-height: 70vh }
+.axp-plugin-manager-term__screen { flex: 1; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); overflow: auto; max-height: 70vh }
 .axp-plugin-manager-term__out { display: flex; flex-direction: column }
 .axp-plugin-manager-term__line { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.45 }
 .axp-plugin-manager-term__line.is-in { color: var(--fx-accent) } .axp-plugin-manager-term__line.is-err { color: var(--fx-danger) }
-.axp-plugin-manager-term__prompt { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.6) var(--fx-space); border-top: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.axp-plugin-manager-term__prompt { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-top: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
 .axp-plugin-manager-term__ps1 { color: var(--fx-success); white-space: nowrap }
 .axp-plugin-manager-term__input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fx-text); font: inherit; caret-color: var(--fx-accent) }
-.axp-plugin-manager-term__detail { padding-top: var(--fx-space); border-top: var(--fx-border-w) dashed var(--fx-border) }
+.axp-plugin-manager-term__detail { padding-top: var(--fx-dens-gap-xl); border-top: var(--fx-border-w) dashed var(--fx-border) }
 .axp-plugin-manager--terminal .axp-plugin-manager-cards { grid-template-columns: 1fr; border-top: var(--fx-border-w) dashed var(--fx-border) }
-.axp-plugin-manager--terminal .axp-plugin-manager-card { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.4) 0; border: 0; border-bottom: var(--fx-border-w) dashed var(--fx-border); border-radius: 0; background: transparent; box-shadow: none }
+.axp-plugin-manager--terminal .axp-plugin-manager-card { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-sm) 0; border: 0; border-bottom: var(--fx-border-w) dashed var(--fx-border); border-radius: 0; background: transparent; box-shadow: none }
 .axp-plugin-manager--terminal .axp-plugin-manager-card:hover, .axp-plugin-manager--terminal .axp-plugin-manager-card.is-selected { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); box-shadow: none }
 .axp-plugin-manager--terminal .axp-plugin-manager-card__cover { display: none }
-.axp-plugin-manager--terminal .axp-plugin-manager-card__body { flex: 1 1 calc(var(--fx-space) * 14); flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: var(--fx-space) }
+.axp-plugin-manager--terminal .axp-plugin-manager-card__body { flex: 1 1 calc(var(--fx-space) * 14); flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: var(--fx-dens-gap-xl) }
 .axp-plugin-manager--terminal .axp-plugin-manager-card__desc { -webkit-line-clamp: 1; flex: 1 1 calc(var(--fx-space) * 12) }
 .axp-plugin-manager--terminal .axp-plugin-manager-card__actions { margin: 0 }
 .axp-plugin-manager--terminal .axp-plugin-manager-mono { border-radius: 0; background: transparent; color: var(--fx-accent) }
@@ -223,52 +223,52 @@
 .axp-plugin-manager--terminal .axp-plugin-manager-table th { background: var(--fx-surface3); color: var(--fx-accent) }
 .axp-plugin-manager--terminal .axp-plugin-manager-table th, .axp-plugin-manager--terminal .axp-plugin-manager-table td { border-bottom-style: dashed }
 .axp-plugin-manager--terminal .axp-plugin-manager-node__box { rx: 0 }
-.axp-plugin-manager--terminal .axp-plugin-manager-detail__title h2 { font-size: calc(var(--fx-font-size) * 16 / 14) }
+.axp-plugin-manager--terminal .axp-plugin-manager-detail__title h2 { font-size: var(--fx-type-root-lg) }
 .axp-plugin-manager--terminal .axp-plugin-manager-detail__title h2::before { content: '# '; color: var(--fx-muted) }
 
 /* =================================================================== 4. CATALOG */
 .axp-plugin-manager--catalog { --axp-plugin-manager-gap: calc(var(--fx-space) * 1.5); --axp-plugin-manager-pad: calc(var(--fx-space) * 1.5) }
-.axp-plugin-manager-cat { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 1.5) }
-.axp-plugin-manager-cat__top { display: flex; align-items: center; gap: var(--fx-space); flex-wrap: wrap }
-.axp-plugin-manager-cat__brand { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: 0; font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); font-size: calc(var(--fx-font-size) * 20 / 14); letter-spacing: var(--fx-tracking) }
+.axp-plugin-manager-cat { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl) }
+.axp-plugin-manager-cat__top { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); flex-wrap: wrap }
+.axp-plugin-manager-cat__brand { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); margin: 0; font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); font-size: var(--fx-type-root-xl); letter-spacing: var(--fx-tracking) }
 .axp-plugin-manager-cat__top .axp-plugin-manager-search { border-radius: 999px; flex: 1 1 calc(var(--fx-space) * 18) }
-.axp-plugin-manager-hero { display: flex; align-items: center; gap: calc(var(--fx-space) * 2); flex-wrap: wrap; padding: calc(var(--fx-space) * 2.5); border-radius: var(--fx-radius-lg); background: linear-gradient(135deg, var(--fx-accent-soft), var(--fx-surface2)); box-shadow: var(--fx-shadow-md) }
-.axp-plugin-manager-hero .axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 7); height: calc(var(--fx-space) * 7); font-size: calc(var(--fx-font-size) * 30 / 14); border-radius: calc(var(--fx-radius-lg) * 1.5); background: var(--fx-accent); color: var(--fx-accent-text); box-shadow: var(--fx-shadow-lg) }
-.axp-plugin-manager-hero__text { flex: 1 1 calc(var(--fx-space) * 18); min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
-.axp-plugin-manager-hero__text h2 { margin: 0; font-family: var(--fx-font-display); font-weight: 800; letter-spacing: var(--fx-tracking); font-size: calc(var(--fx-font-size) * 30 / 14); line-height: 1.1 }
+.axp-plugin-manager-hero { display: flex; align-items: center; gap: var(--fx-dens-gap-3xl); flex-wrap: wrap; padding: var(--fx-dens-gap-3xl); border-radius: var(--fx-radius-lg); background: linear-gradient(135deg, var(--fx-accent-soft), var(--fx-surface2)); box-shadow: var(--fx-shadow-md) }
+.axp-plugin-manager-hero .axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 7); height: calc(var(--fx-space) * 7); font-size: var(--fx-type-root-2xl); border-radius: calc(var(--fx-radius-lg) * 1.5); background: var(--fx-accent); color: var(--fx-accent-text); box-shadow: var(--fx-shadow-lg) }
+.axp-plugin-manager-hero__text { flex: 1 1 calc(var(--fx-space) * 18); min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-plugin-manager-hero__text h2 { margin: 0; font-family: var(--fx-font-display); font-weight: 800; letter-spacing: var(--fx-tracking); font-size: var(--fx-type-root-2xl); line-height: 1.1 }
 .axp-plugin-manager-hero__text p { margin: 0; line-height: 1.5 }
-.axp-plugin-manager-cat__pills { display: flex; gap: calc(var(--fx-space) * 0.5); overflow-x: auto; padding-bottom: calc(var(--fx-space) * 0.25) }
+.axp-plugin-manager-cat__pills { display: flex; gap: var(--fx-dens-gap-md); overflow-x: auto; padding-bottom: var(--fx-dens-gap-xs) }
 .fx-chip.axp-plugin-manager-pill { flex: none }
-.axp-plugin-manager-shelf { display: flex; flex-direction: column; gap: var(--fx-space) }
-.axp-plugin-manager-shelf__title { margin: 0; font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); font-size: calc(var(--fx-font-size) * 18 / 14) }
+.axp-plugin-manager-shelf { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl) }
+.axp-plugin-manager-shelf__title { margin: 0; font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); font-size: var(--fx-type-root-xl) }
 .axp-plugin-manager--catalog .axp-plugin-manager-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 15)), 1fr)) }
 .axp-plugin-manager--catalog .axp-plugin-manager-card { padding: 0; overflow: hidden; border: 0; box-shadow: var(--fx-shadow-md) }
 .axp-plugin-manager--catalog .axp-plugin-manager-card:hover { transform: translateY(calc(var(--fx-border-w) * -2)); box-shadow: var(--fx-shadow-lg) }
-.axp-plugin-manager--catalog .axp-plugin-manager-card__cover { justify-content: center; padding: calc(var(--fx-space) * 2) 0; background: linear-gradient(160deg, var(--fx-accent-soft), var(--fx-surface2)) }
-.axp-plugin-manager--catalog .axp-plugin-manager-card__body, .axp-plugin-manager--catalog .axp-plugin-manager-card__actions { padding: 0 var(--fx-space) }
-.axp-plugin-manager--catalog .axp-plugin-manager-card__actions { padding-bottom: var(--fx-space) }
-.axp-plugin-manager--catalog .axp-plugin-manager-card__title strong { font-family: var(--fx-font-display); font-size: calc(var(--fx-font-size) * 16 / 14) }
-.axp-plugin-manager-cat--product { gap: var(--fx-space) }
-.axp-plugin-manager-cat--product .axp-plugin-manager-detail__head { padding: calc(var(--fx-space) * 1.5); border-radius: var(--fx-radius-lg); background: linear-gradient(135deg, var(--fx-accent-soft), var(--fx-surface2)) }
-.axp-plugin-manager--catalog .axp-plugin-manager-tabs { border-bottom: 0; gap: calc(var(--fx-space) * 0.4) }
+.axp-plugin-manager--catalog .axp-plugin-manager-card__cover { justify-content: center; padding: var(--fx-dens-gap-3xl) 0; background: linear-gradient(160deg, var(--fx-accent-soft), var(--fx-surface2)) }
+.axp-plugin-manager--catalog .axp-plugin-manager-card__body, .axp-plugin-manager--catalog .axp-plugin-manager-card__actions { padding: 0 var(--fx-dens-gap-xl) }
+.axp-plugin-manager--catalog .axp-plugin-manager-card__actions { padding-bottom: var(--fx-dens-gap-xl) }
+.axp-plugin-manager--catalog .axp-plugin-manager-card__title strong { font-family: var(--fx-font-display); font-size: var(--fx-type-root-lg) }
+.axp-plugin-manager-cat--product { gap: var(--fx-dens-gap-xl) }
+.axp-plugin-manager-cat--product .axp-plugin-manager-detail__head { padding: var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-lg); background: linear-gradient(135deg, var(--fx-accent-soft), var(--fx-surface2)) }
+.axp-plugin-manager--catalog .axp-plugin-manager-tabs { border-bottom: 0; gap: var(--fx-dens-gap-sm) }
 
 /* ---------- narrow desktop: studio drawer takes the rail's room ---------- */
 /* Install view: the plugin catalog */
-.axp-plugin-manager-install__head { justify-content: space-between; align-items: center; gap: var(--fx-space) }
-.axp-plugin-manager-install__list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.75) }
-.axp-plugin-manager-install__item { display: grid; gap: calc(var(--fx-space) * 0.5) }
+.axp-plugin-manager-install__head { justify-content: space-between; align-items: center; gap: var(--fx-dens-gap-xl) }
+.axp-plugin-manager-install__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--fx-dens-gap-lg) }
+.axp-plugin-manager-install__item { display: grid; gap: var(--fx-dens-gap-md) }
 .axp-plugin-manager-install__item p { margin: 0 }
-.axp-plugin-manager-install__confirm { padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-plugin-manager-install__confirm { padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-plugin-manager-install__confirm p { margin: 0 }
-.axp-plugin-manager-install__confirm label { display: grid; gap: calc(var(--fx-space) * 0.35) }
-.axp-plugin-manager-install__note { margin: 0; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-plugin-manager-install__confirm label { display: grid; gap: var(--fx-dens-gap-sm) }
+.axp-plugin-manager-install__note { margin: 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-plugin-manager-install__share code { word-break: break-all }
 
 @media (max-width: 1500px) {
   .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) minmax(calc(var(--fx-space) * 20), calc(var(--fx-space) * 26)) }
   .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__rail { grid-column: 1 / -1; position: static; flex-direction: row; overflow-x: auto; align-items: center }
   .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__rail .axp-plugin-manager-eyebrow, .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__layouts { display: none }
-  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__title { margin: 0 var(--fx-space) 0 0; font-size: calc(var(--fx-font-size) * 18 / 14) }
+  .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__title { margin: 0 var(--fx-dens-gap-xl) 0 0; font-size: var(--fx-type-root-xl) }
   .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__filters { flex-direction: row; margin: 0 }
   .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__filter { white-space: nowrap }
   .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__phonebar { display: inline-flex }
@@ -279,7 +279,7 @@
   .axp-plugin-manager-studio, .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) }
   .axp-plugin-manager-studio__rail { position: static; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; align-items: center }
   .axp-plugin-manager-studio__rail .axp-plugin-manager-eyebrow, .axp-plugin-manager-studio__layouts { display: none }
-  .axp-plugin-manager-studio__title { margin: 0 var(--fx-space) 0 0; font-size: calc(var(--fx-font-size) * 18 / 14) }
+  .axp-plugin-manager-studio__title { margin: 0 var(--fx-dens-gap-xl) 0 0; font-size: var(--fx-type-root-xl) }
   .axp-plugin-manager-studio__filters { flex-direction: row; margin: 0 }
   .fx-chip.axp-plugin-manager-studio__filter { white-space: nowrap }
   .axp-plugin-manager-studio__drawer { position: static; max-height: none; order: -1 }
@@ -288,9 +288,9 @@
   .axp-plugin-manager-md { grid-template-columns: minmax(0, 1fr) }
   .axp-plugin-manager-md__list { flex-direction: row; overflow-x: auto; max-height: none }
   .axp-plugin-manager-md__item[data-fx-row] { flex: none }
-  .axp-plugin-manager-hero { padding: calc(var(--fx-space) * 1.25); gap: var(--fx-space) }
-  .axp-plugin-manager-hero .axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 4.5); height: calc(var(--fx-space) * 4.5); font-size: calc(var(--fx-font-size) * 20 / 14) }
-  .axp-plugin-manager-hero__text h2 { font-size: calc(var(--fx-font-size) * 22 / 14) }
+  .axp-plugin-manager-hero { padding: var(--fx-dens-gap-2xl); gap: var(--fx-dens-gap-xl) }
+  .axp-plugin-manager-hero .axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 4.5); height: calc(var(--fx-space) * 4.5); font-size: var(--fx-type-root-xl) }
+  .axp-plugin-manager-hero__text h2 { font-size: var(--fx-type-root-xl) }
   .axp-plugin-manager-term__ps1 { display: none }
   .axp-plugin-manager-studio__phonebar { display: inline-flex }
   .axp-plugin-manager-hero__text > p:not(.axp-plugin-manager-eyebrow) { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden }
@@ -306,20 +306,20 @@
    view switch shows its icons only (names stay as tooltips), and every plugin card is one tight row: monogram · name
    with a one-line description and meta · quick actions. Layout only. */
 select.fx-input.axp-plugin-manager-studio__filtersel { display: none; width: auto }
-.axp-plugin-manager-studio__bar { gap: calc(var(--fx-space) * 0.5) }
+.axp-plugin-manager-studio__bar { gap: var(--fx-dens-gap-md) }
 @media (max-width: 900px) {
   .axp-plugin-manager-studio__filters { display: none }
   select.fx-input.axp-plugin-manager-studio__filtersel { display: block }
-  .axp-plugin-manager-studio__rail { gap: calc(var(--fx-space) * 0.5) }
-  .axp-plugin-manager-studio { gap: calc(var(--fx-space) * 0.75) }
+  .axp-plugin-manager-studio__rail { gap: var(--fx-dens-gap-md) }
+  .axp-plugin-manager-studio { gap: var(--fx-dens-gap-lg) }
 }
 @media (max-width: 640px) {
   .axp-plugin-manager-studio__bar .fx-seg__opt > span { display: none }
   .axp-plugin-manager-studio__bar .axp-plugin-manager-search { flex-basis: 100% }
   .axp-plugin-manager--studio .axp-plugin-manager-cards { gap: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden }
-  .axp-plugin-manager--studio .axp-plugin-manager-card { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); border: 0; border-radius: 0; box-shadow: none }
+  .axp-plugin-manager--studio .axp-plugin-manager-card { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: 0; border-radius: 0; box-shadow: none }
   .axp-plugin-manager--studio .axp-plugin-manager-card + .axp-plugin-manager-card { border-top: var(--fx-border-w) solid var(--fx-border) }
-  .axp-plugin-manager--studio .axp-plugin-manager-card__body { flex: 1 1 auto; gap: calc(var(--fx-space) * 0.15) }
+  .axp-plugin-manager--studio .axp-plugin-manager-card__body { flex: 1 1 auto; gap: var(--fx-dens-gap-2xs) }
   .axp-plugin-manager--studio .axp-plugin-manager-card__title { flex-wrap: nowrap; overflow: hidden; white-space: nowrap }
   .axp-plugin-manager--studio .axp-plugin-manager-card__title > strong { min-width: 0; overflow: hidden; text-overflow: ellipsis }
   .axp-plugin-manager--studio .axp-plugin-manager-card__desc { -webkit-line-clamp: 1 }

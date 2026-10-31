@@ -14,6 +14,13 @@
     "style-theme": "sharp-terminal",
     "color-theme": "graphite-lime",
     "layout": "classic-ide",
-    "behavior-theme": "snappy"
+    "behavior-theme": "snappy",
+    "extras": {
+      "slots": {
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      }
+    }
   }
 }

@@ -3,7 +3,7 @@
   "type": "typography",
   "id": "reader",
   "name": "Reader",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Larger, calmer text for reading: a 1.1 base scale, generous line heights, plain-case eyebrows.",
   "author": "AmberX AXF",
   "tags": [
@@ -12,11 +12,13 @@
   ],
   "data": {
     "scale": {
-      "xs": 0.8,
+      "2xs": 0.74,
+      "xs": 0.82,
       "sm": 0.9,
-      "md": 1.05,
-      "lg": 1.25,
-      "xl": 1.6
+      "md": 1,
+      "lg": 1.2,
+      "xl": 1.6,
+      "2xl": 2.2
     },
     "headings": {
       "h1": 1.8,

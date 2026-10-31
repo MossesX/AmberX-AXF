@@ -3,8 +3,8 @@
   "type": "density",
   "id": "roomy",
   "name": "Roomy",
-  "version": "1.0.0",
-  "description": "Spacious: wide gaps and paddings, tall rows \u2014 for big screens and touch.",
+  "version": "1.1.0",
+  "description": "Spacious: wide gaps and paddings, tall rows — for big screens and touch.",
   "author": "AmberX AXF",
   "tags": [
     "roomy",
@@ -12,11 +12,15 @@
   ],
   "data": {
     "gap": {
-      "xs": 0.5,
-      "sm": 0.75,
-      "md": 1.25,
-      "lg": 2,
-      "xl": 3.5
+      "2xs": 0.2,
+      "xs": 0.4,
+      "sm": 0.6,
+      "md": 0.8,
+      "lg": 1.1,
+      "xl": 1.4,
+      "2xl": 2,
+      "3xl": 2.8,
+      "4xl": 4
     },
     "pad": {
       "control": 1.1,

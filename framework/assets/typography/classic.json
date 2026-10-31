@@ -3,7 +3,7 @@
   "type": "typography",
   "id": "classic",
   "name": "Classic",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The look before Oct 30 2026: 2em page titles, a loud accent eyebrow with wide tracking, 0.93em buttons.",
   "author": "AmberX AXF",
   "tags": [
@@ -12,11 +12,13 @@
   ],
   "data": {
     "scale": {
-      "xs": 0.76,
-      "sm": 0.85,
-      "md": 1,
-      "lg": 1.2,
-      "xl": 1.5
+      "2xs": 0.7,
+      "xs": 0.78,
+      "sm": 0.86,
+      "md": 0.95,
+      "lg": 1.15,
+      "xl": 1.5,
+      "2xl": 2
     },
     "headings": {
       "h1": 2,

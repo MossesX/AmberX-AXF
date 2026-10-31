@@ -1,13 +1,13 @@
 /* Alerts library. Theme tokens only, axf-alerts prefix (framework/spec/THEMING.md). */
 .axf-alerts__error { color: var(--fx-danger); margin: 0; overflow-wrap: anywhere }
-.axf-alerts__filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
+.axf-alerts__filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
 .axf-alerts__filters .fx-input { width: auto }
-.axf-alerts__chips { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axf-alerts__chips { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
 .axf-alerts__list { display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
 .axf-alerts__item + .axf-alerts__item { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axf-alerts__item.is-unread { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
 .axf-alerts__item.is-resolved { opacity: var(--fx-opacity-muted) }
-.axf-alerts__row { display: flex; align-items: center; gap: var(--fx-space); width: 100%; padding: var(--fx-space) calc(var(--fx-space) * 1.25); border: 0; background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
+.axf-alerts__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); width: 100%; padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); border: 0; background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
 .axf-alerts__row:hover { background: var(--fx-surface2) }
 .axf-alerts__sev { display: inline-flex; flex: none }
 .axf-alerts__sev.is-info { color: var(--fx-accent) }
@@ -17,16 +17,16 @@
 .axf-alerts__main { display: flex; flex-direction: column; flex: 1; min-width: 0 }
 .axf-alerts__title { font-weight: 600; overflow-wrap: anywhere }
 .axf-alerts__item.is-unread .axf-alerts__title { font-weight: 700 }
-.axf-alerts__sub { font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted) }
-.axf-alerts__detail { display: flex; flex-direction: column; gap: var(--fx-space); padding: 0 calc(var(--fx-space) * 1.25) calc(var(--fx-space) * 1.25); overflow-wrap: anywhere }
-.axf-alerts__body { margin: 0; padding: var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 10); overflow: auto }
+.axf-alerts__sub { font-size: var(--fx-type-root-sm); color: var(--fx-muted) }
+.axf-alerts__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: 0 var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl); overflow-wrap: anywhere }
+.axf-alerts__body { margin: 0; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 10); overflow: auto }
 .axf-alerts__scroll { overflow-x: auto }
 .axf-alerts__min { width: auto; min-width: calc(var(--fx-space) * 9) }
 .axf-alerts__min.is-inherited { color: var(--fx-muted) }
 .axf-alerts__muted-th { font-weight: 500; color: var(--fx-muted) }
-.axf-alerts__choice { display: flex; align-items: flex-start; gap: var(--fx-space); cursor: pointer }
-.axf-alerts__choice input { margin-top: calc(var(--fx-space) * 0.25) }
-.axf-alerts__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fx-space) }
-.axf-alerts__field { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14); color: var(--fx-muted); min-width: 0 }
+.axf-alerts__choice { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-xl); cursor: pointer }
+.axf-alerts__choice input { margin-top: var(--fx-dens-gap-xs) }
+.axf-alerts__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl) }
+.axf-alerts__field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-root-md); color: var(--fx-muted); min-width: 0 }
 .axf-alerts__field .fx-input { color: var(--fx-text) }
 @media (max-width: 560px) { .axf-alerts__grid { grid-template-columns: minmax(0, 1fr) } }
