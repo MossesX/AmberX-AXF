@@ -3691,7 +3691,9 @@
     },
     {
      "text": "[Opus] Script ch3 engines + ch4 two ports",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:45:09.902Z"
     },
     {
      "text": "[Opus] Script ch5 build engine + CLI",
@@ -3752,7 +3754,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:44:38.285Z",
+   "updatedAt": "2026-11-01T22:45:09.902Z",
    "source": "console"
   }
  ]
