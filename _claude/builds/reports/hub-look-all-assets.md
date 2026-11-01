@@ -32,17 +32,18 @@ Contract notes: the fixture `spec/fixtures/appearance.json` is unchanged (16 KB 
 
 - `asset-types.json` types carry `shared` (default true); `job-type` is `false` (agent job data, not UI).
 - Shared set = every `framework/assets` file of a shared type + its dependency closure (`app-assets.mjs`) + extra
-  roots in `framework/schemas/shared-assets.json` (none needed today). **470 assets.**
+  roots in `framework/schemas/shared-assets.json` (none needed today). **468 assets.**
 - `framework/cli/shared-assets.mjs` bakes it into `src/axf/assets` of each listed app (rebake does it too and records
   the hashes in `axf.lock.json`; CI's re-bake steps call `bake .`). `check` fails CI when an app misses one, holds its
   own copy of a shared id, or its main.tsx doesn't load the baked set.
 - Apps load `src/axf/assets`, then `src/assets` (truly their own: app menu, nav, toolbar, context menu, help,
   access policy, AmberX's mic status), then `src/assets-overrides` (shared ids the app tunes, same id).
-- A shared asset may name an app's own chrome (AmberX's day/night packages pick AmberX's toolbar and nav): other apps
-  skip that one slot, as for any package.
+- AmberX's own day/night design packages stay AmberX's own: they pick AmberX's toolbar and navigation, and every
+  framework package must name only framework assets (check-style-packages). Picked in AmberX, the hub still carries
+  every slot they set, so the other apps follow the look; only the package marker itself is AmberX's.
 
 Moved into `framework/assets` (were in one app only): `banner/amberx-branded`, `branding/amberx-app`,
-`design-package/amberx-app-day`, `design-package/amberx-app-night`, `theme-switch/amberx-day-night` (from AmberX),
+`theme-switch/amberx-day-night` (from AmberX),
 `layout/axhub-console` (from axHub web; AmberX's copy only differed in its name, "AmberX (console)" → "AXHub
 (console)"). The three apps' newer `banner/amberx-thin` (with the day/night switch) stays an override in each app:
 the framework copy is pinned by the banner/roll fixtures and the Kotlin kernel tests, so changing it is a contract
@@ -60,11 +61,11 @@ that layout wasn't shipped).
 
 | App | Registered before | Registered after | Own (src/assets) | Overrides | Shareable assets it lacked before |
 |---|---|---|---|---|---|
-| Dev Console | 415 | 477 | 7 | 19 | 62 |
-| axHub web | 384 | 475 | 5 | 1 | 92 |
-| AmberX | 396 | 475 | 5 | 1 | 85 |
+| Dev Console | 415 | 475 | 7 | 19 | 62 |
+| axHub web | 384 | 473 | 5 | 1 | 92 |
+| AmberX | 396 | 475 | 7 | 1 | 85 |
 
-(Registered = distinct type/id the app loads; after = 470 shared + its own. `shared-assets.mjs appAssetFiles`.)
+(Registered = distinct type/id the app loads; after = 468 shared + its own. `shared-assets.mjs appAssetFiles`.)
 
 ## Checks
 
