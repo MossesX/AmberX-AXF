@@ -30,13 +30,13 @@ import org.json.JSONObject;
 /**
  * The native half of the Audio Output Recorder plugin (`apps/console-web/plugins/output-recorder`, web seam
  * `web/bridge.ts`); every method there has its twin here. Records what the phone plays ({@link OutputRecordService}),
- * never the microphone; chunks go to axHub ({@link OutputRecordUploader}).
+ * plus the mic only when "Record my mic too" is on; chunks go to axHub ({@link OutputRecordUploader}).
  *
  * Recordings on axHub are listed, played and deleted by the web page itself (the hub data server, like Notes); this
  * side only does what needs the phone: start/stop with Android's consent, the local queue, and `fetch` (a recording
  * from axHub saved to Music/AmberX Recorder so it can be shared or handed to Audio Extract).
  */
-@CapacitorPlugin(name = "OutputRecorder")
+@CapacitorPlugin(name = "OutputRecorder", permissions = { @com.getcapacitor.annotation.Permission(alias = "microphone", strings = { android.Manifest.permission.RECORD_AUDIO }) })
 public class OutputRecorderPlugin extends Plugin {
     static final String MUSIC_DIR = Environment.DIRECTORY_MUSIC + "/AmberX Recorder";
     private final ExecutorService io = Executors.newSingleThreadExecutor();
@@ -45,6 +45,7 @@ public class OutputRecorderPlugin extends Plugin {
     public void load() {
         OutputRecordService.listener = e -> notifyListeners("recorder", e, true);
         OutputRecordUploader.kick(getContext()); // AmberX opened: send whatever waited
+        AxppLink.ensure(getContext()); // axHub can drive the recorder (amberx.recorder_*, axHub decision #108)
     }
 
     @Override
@@ -65,6 +66,8 @@ public class OutputRecorderPlugin extends Plugin {
             JSObject r = OutputRecordService.status();
             o.put("running", r.getBool("running"));
             o.put("startedAt", r.getString("startedAt"));
+            o.put("mic", r.getBool("mic"));
+            o.put("micBusy", r.getString("micBusy"));
             o.put("settings", settingsJson());
             call.resolve(o);
         });
@@ -84,6 +87,21 @@ public class OutputRecorderPlugin extends Plugin {
         call.resolve();
     }
 
+    /**
+     * "Record my mic too" was switched on: asks for Android's audio permission now if it isn't there yet (the only time
+     * it's asked for the mic). Resolves {granted}.
+     */
+    @PluginMethod
+    public void micPermission(PluginCall call) {
+        if (getPermissionState("microphone") == com.getcapacitor.PermissionState.GRANTED) { call.resolve(new JSObject().put("granted", true)); return; }
+        requestPermissionForAlias("microphone", call, "micPermissionDone");
+    }
+
+    @com.getcapacitor.annotation.PermissionCallback
+    private void micPermissionDone(PluginCall call) {
+        call.resolve(new JSObject().put("granted", getPermissionState("microphone") == com.getcapacitor.PermissionState.GRANTED));
+    }
+
     /** Saves the page's settings for the recorder and the tile (they apply from the next start). */
     @PluginMethod
     public void configure(PluginCall call) {
@@ -101,6 +119,7 @@ public class OutputRecorderPlugin extends Plugin {
         o.put("whenFull", s.whenFull);
         o.put("skipSilent", s.skipSilent);
         o.put("project", s.project);
+        o.put("mic", s.mic);
         return o;
     }
 

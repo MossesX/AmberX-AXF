@@ -1,0 +1,46 @@
+/* Walkthrough plugin: layout only (THEMING.md); controls are framework controls, every size and colour is a theme token. */
+.axp-walkthrough { min-width: 0; }
+.axp-walkthrough__player { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-xl); min-width: 0; }
+@media (min-width: 900px) {
+  .axp-walkthrough__player { grid-template-columns: minmax(0, auto) minmax(calc(var(--fx-space) * 30), 1fr); align-items: start; }
+}
+.axp-walkthrough__stage { display: flex; justify-content: center; min-width: 0; }
+/* the recording is a phone screen (9:20): as tall as the screen allows, never wider than the page */
+.axp-walkthrough__video {
+  display: block; max-width: 100%; max-height: 72vh; aspect-ratio: 9 / 20; object-fit: contain; background: var(--fx-bg);
+  border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg);
+}
+.axp-walkthrough__side { min-width: 0; gap: var(--fx-dens-gap-lg); }
+.axp-walkthrough__now { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-walkthrough__time { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+
+.axp-walkthrough__bar {
+  position: relative; height: calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-sm); overflow: visible;
+  background: color-mix(in srgb, var(--fx-muted) calc(var(--fx-opacity-tint) * 100%), transparent);
+}
+.axp-walkthrough__fill { position: absolute; inset: 0 auto 0 0; border-radius: var(--fx-radius-sm); background: var(--fx-accent); pointer-events: none; }
+.axp-walkthrough__tick {
+  position: absolute; top: 50%; width: calc(var(--fx-space) * 1.5); height: calc(var(--fx-space) * 1.5); margin: 0; padding: 0;
+  transform: translate(-50%, -50%); border-radius: 999px; cursor: pointer;
+  border: var(--fx-border-w) solid var(--fx-surface); background: var(--fx-text);
+}
+.axp-walkthrough__tick.is-on { background: var(--fx-accent); }
+.axp-walkthrough__tick:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); }
+
+.axp-walkthrough__index { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; max-height: 60vh; overflow: auto; }
+.axp-walkthrough__chapter { border-radius: var(--fx-radius-md); min-width: 0; }
+.axp-walkthrough__chapter.is-on { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-walkthrough__chapterhead { align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-walkthrough__jump {
+  display: flex; flex: 1 1 auto; align-items: baseline; gap: var(--fx-dens-gap-lg); min-width: 0; text-align: start;
+  padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: 0; border-radius: var(--fx-radius-sm);
+  background: transparent; color: var(--fx-text); font: inherit; cursor: pointer;
+}
+.axp-walkthrough__jump:hover { background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-hover) * 100%), transparent); }
+.axp-walkthrough__jump:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); }
+.axp-walkthrough__stamp { flex: 0 0 auto; min-width: calc(var(--fx-space) * 4); font-variant-numeric: tabular-nums; }
+.axp-walkthrough__segments { margin: 0; padding-block-end: var(--fx-dens-gap-md); padding-inline-start: var(--fx-dens-gap-3xl); list-style: none; display: flex; flex-direction: column; }
+.axp-walkthrough__skeleton {
+  height: calc(var(--fx-space) * 40); border-radius: var(--fx-radius-lg);
+  background: color-mix(in srgb, var(--fx-muted) calc(var(--fx-opacity-tint) * 100%), transparent);
+}

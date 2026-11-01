@@ -66,7 +66,7 @@ export function Home() {
             <button key={t} type="button" data-fx-row className="home-slot" onClick={() => rt.swap(t, 'next')} title={`Tap to swap ${assetTypeSpecs[t].label}`}>
               <Icon name={assetTypeSpecs[t].icon} size={15} />
               <span className="fx-muted fx-small">{assetTypeSpecs[t].label}</span>
-              <strong>{rt.asset(t).name}</strong>
+              <strong>{rt.asset(t)?.name ?? 'none'}</strong>
             </button>
           ))}
         </div>

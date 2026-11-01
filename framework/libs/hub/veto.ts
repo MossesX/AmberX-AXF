@@ -211,11 +211,12 @@ export const formatCountdown = (sec: number): string => {
 /**
  * Which notifications to send now: for each held call, every phase it has reached that wasn't sent yet (`sent` holds
  * `<id>:<phase>`). A call first seen already in its warning time gets one notification for that phase, not two. Returns the
- * notifications and the new sent list (ids no longer held drop out, except those that reached running).
+ * notifications and the new sent list. Entries stay after a call leaves the list (oldest dropped past 600), so a read
+ * that misses a call (hub hiccup, signed out for a moment) never makes it ring again: one notice per phase per call.
  */
 export function notifyPlan(sent: readonly string[], calls: readonly VetoCall[], now: number = Date.now()): { send: { call: VetoCall; phase: VetoPhase }[]; sent: string[] } {
   const was = new Set(sent);
-  const next = new Set<string>();
+  const next = new Set<string>(sent);
   const send: { call: VetoCall; phase: VetoPhase }[] = [];
   for (const c of calls) {
     // Shelved (paused) and approved-now calls get no further countdown notices (decision 104); what was sent stays sent.

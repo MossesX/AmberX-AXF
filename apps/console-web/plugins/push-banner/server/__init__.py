@@ -41,12 +41,18 @@ one round every 3 minutes (settings autoMerge + autoPr, both on by default):
   1. autoPr: every branch ahead of main without an open PR gets one (main, site, go-pass, gh-pages and hidden ones never);
   2. ready PRs go oldest first, one at a time per repo: a PR behind its base gets the base pulled in (head pinned) and
      waits for CI on its new head; it merges only when it is 0 behind, mergeable, not a draft and CI passed on the
-     pinned head. At most one merge per round, so the next PR is brought up to date with the new main first. A pull
+     pinned head, and its UI Review (ui-review@1) isn't waiting, asking for changes or rejected (a held PR is skipped,
+     the next one gets its turn; Merge refuses it too). At most one merge per round, so the next PR is brought up to
+     date with the new main first. A pull
      that conflicts lands in "Pull failed" (and Fix with Claude when that is on) and is skipped until it is retried;
   3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
      may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
 
-main is never pushed to: a branch reaches main only through its PR. GitHub is read through lib-github
+main is never pushed to: a branch reaches main only through its PR. GitHub is reached through `axf.github@1` (the
+systems check's capability: axHub first, the local GITHUB_TOKEN as the fallback, Settings → Plugins → Systems check →
+GitHub route), so the banner still lists branches while the local token is dead; writes (PRs, merges, branch updates
+and deletes, protection) and check-runs have no hub route and use the local token. Its own live check, "Push banner
+reaches GitHub", is on `axf.health@1` (ensure_health). Without the capability it is plain lib-github
 (`axf_server.github`): the token goes to the API origin only, API calls never follow a redirect, answers are size-capped,
 errors scrubbed. Nothing here returns the token, and everything GitHub says is data (the browser renders it as text).
 """
@@ -79,6 +85,12 @@ ALWAYS_HIDDEN = {"site", "gh-pages"}
 NO_AUTO_PR = ALWAYS_HIDDEN | {"main", "master", "go-pass"}
 PROTECT_EVERY_S = 6 * 3600
 CACHE_S = 120
+GITHUB_CAP = "axf.github@1"   # GitHub through axHub first, local GITHUB_TOKEN fallback (systems check, githubsvc.py)
+HEALTH_CAP = "axf.health@1"   # the banners' live checks (systems check, health.py)
+HEALTH_ID = "push-banner-github"
+UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
+UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
+NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
 MAX_BRANCHES = 150  # per repo, newest first by GitHub's listing
 MAX_HIDDEN = 300
@@ -199,8 +211,31 @@ class Pushes:
 
     # ---- GitHub
     def gh(self) -> github.GitHubClient:
+        """The client from axf.github@1 (axHub first, the local GITHUB_TOKEN as the fallback; Settings → Plugins →
+        Systems check → GitHub route), else a plain local-token client when the capability isn't installed. Reads the
+        hub has a route for go through axHub; writes (open a PR, merge, update a branch, delete a branch, protection)
+        and check-runs have no hub route, so they still use the local token."""
+        svc = claudefix.plugin_services.get(GITHUB_CAP)
+        if svc is not None:
+            try:
+                return svc.client(user_agent="axf-console-push-banner", token=self.token, timeout=12, max_bytes=8_000_000)
+            except Exception:  # noqa: BLE001 — a broken capability never stops the banner: local token below
+                pass
         return github.GitHubClient(self.token, base_url=github.api_base_from_env(), user_agent="axf-console-push-banner",
                                    timeout=12, max_bytes=8_000_000)
+
+    def has_local(self) -> bool:
+        return bool((self.token() or "").strip())
+
+    def can_read(self) -> bool:
+        """Some route can read GitHub: the local token, or axHub through axf.github@1."""
+        if self.has_local():
+            return True
+        svc = claudefix.plugin_services.get(GITHUB_CAP)
+        try:
+            return bool(svc is not None and svc.hub.configured())
+        except Exception:  # noqa: BLE001
+            return False
 
     def _checks(self, gh: github.GitHubClient, repo: str, sha: str) -> list[dict[str, Any]]:
         data = gh.get(github.repo_path(repo, "commits", sha, "check-runs", query={"per_page": 100}))
@@ -325,8 +360,8 @@ class Pushes:
             cached = self._cache[2] if not force and self._cache and self._cache[1] == key and now - self._cache[0] < CACHE_S else None
         if cached is not None:
             return {**cached, "done": self.done(), "failed": self.failed()}
-        if not (self.token() or "").strip():
-            out = {"checkedAt": int(now * 1000), "repos": [], "error": "GITHUB_TOKEN isn't set on the console server"}  # done comes below
+        if not self.can_read():
+            out = {"checkedAt": int(now * 1000), "repos": [], "error": NO_ROUTE}  # done comes below
         else:
             gh = self.gh()
             hidden = set(cfg["hidden"])
@@ -462,8 +497,21 @@ class Pushes:
             if isinstance(open_, list) and open_ and isinstance(open_[0], dict):
                 p = open_[0]
                 return {"number": p.get("number"), "url": _safe_url(p.get("html_url")), "existing": True}
+            head = self._head(gh, repo, branch)
+            head_sha = _text(head.get("sha"), 40)
+            # Duplicate PRs after a squash merge (Oct 31 2026, #217 → #218): main got a NEW commit, so the old branch still
+            # counts "commits ahead". A branch whose exact head was already merged, or whose tree equals the base's, has
+            # nothing to push: no PR.
+            closed = gh.get(github.repo_path(repo, "pulls", query={"state": "closed", "head": f"{owner}:{branch}", "base": base, "per_page": 10}))
+            for c in closed if isinstance(closed, list) else []:
+                if isinstance(c, dict) and c.get("merged_at") and head_sha and _text((c.get("head") or {}).get("sha"), 40) == head_sha:
+                    raise HTTPException(409, f"nothing new on {branch}: PR #{c.get('number')} already merged this exact commit")
+            tree = ((head.get("commit") or {}).get("tree") or {}).get("sha") if isinstance(head.get("commit"), dict) else None
+            base_tree = ((self._head(gh, repo, base).get("commit") or {}).get("tree") or {}).get("sha") if tree else None
+            if tree and base_tree and tree == base_tree:
+                raise HTTPException(409, f"nothing to push: {branch} has the same files as {base}")
             cmp = gh.get(compare_path(repo, base, branch))
-            last = self._head(gh, repo, branch).get("commit") or {}
+            last = head.get("commit") or {}
             title = _text(str(last.get("message") or "").split("\n")[0], 120) or branch
             p = gh.json("POST", github.repo_path(repo, "pulls"), {
                 "title": title, "head": branch, "base": base,
@@ -473,6 +521,19 @@ class Pushes:
             raise HTTPException(502, _text(str(e))) from None
         self._forget()
         return {"number": p.get("number") if isinstance(p, dict) else None, "url": _safe_url(p.get("html_url")) if isinstance(p, dict) else "", "existing": False}
+
+    def ui_hold(self, repo: str, number: int, branch: str) -> str:
+        """The UI Review state that holds this PR ('' = free to merge). ui-review@1 items carry a branch and a PR number
+        but no repo, so PR numbers count only for the console's own repo; other repos match by branch. Without the
+        UI Review plugin nothing is held."""
+        svc = claudefix.plugin_services.get(UI_REVIEW_CAP)
+        if svc is None or not (branch or number):
+            return ""
+        try:
+            st = svc.state(branch, number if repo == UI_REVIEW_REPO else None)
+        except Exception:  # noqa: BLE001 — UI Review broken: don't merge blind
+            return "unknown"
+        return str(st.get("state") or "waiting") if st.get("holds") else ""
 
     def merge(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
@@ -491,6 +552,9 @@ class Pushes:
                 raise HTTPException(409, "that PR isn't open")
             if p.get("draft") is True:
                 raise HTTPException(409, "that PR is a draft")
+            held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200))
+            if held:
+                raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
             task = self._task(repo, p, "merge", "merge it")
             sha = _text((p.get("head") or {}).get("sha"), 40)
             pbase = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200) or "main"
@@ -517,6 +581,15 @@ class Pushes:
         merged = bool(isinstance(r, dict) and r.get("merged"))
         base = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200)
         if merged:
+            # the merged head branch goes (Oct 31 2026: a left-over branch was re-opened as a duplicate PR); same-repo only,
+            # never the base or the never-PR branches; best effort (a token without the right just leaves it)
+            ref = _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)
+            same = (((p.get("head") or {}).get("repo") or {}).get("full_name") or "").lower() == repo.lower() if isinstance(p.get("head"), dict) else False
+            if same and valid_branch(ref) and ref != base and ref not in NO_AUTO_PR and ref not in ALWAYS_HIDDEN:
+                try:
+                    gh.json("DELETE", github.repo_path(repo, "git", "refs", "heads", ref))
+                except Exception:  # noqa: BLE001
+                    pass
             self._remember({"key": f"{repo}:#{number}", "kind": "merged", "repo": repo, "base": base, "number": number,
                             "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Merged #{number} into {base or 'main'}."})
         return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
@@ -529,7 +602,7 @@ class Pushes:
         behind (then it waits for CI on the new head), wait while its CI runs, or merge it through `merge` (CI re-checked,
         head pinned, 0 behind). At most one merge per round. Then branch protection, at most every 6 h. Never raises."""
         cfg = self.config()
-        if not cfg["autoMerge"] or not (self.token() or "").strip():
+        if not cfg["autoMerge"] or not self.has_local():  # merging has no hub route: the local token
             return []
         done: list[dict[str, Any]] = []
         try:
@@ -563,6 +636,10 @@ class Pushes:
                 line = {"pr": key, "title": p.get("title", "")}
                 if p.get("ci") in ("failure", "none", "unknown"):
                     continue  # nothing to do until it is fixed (or, without CI, never)
+                held = self.ui_hold(repo, p["number"], p.get("head") or "")
+                if held:  # waiting on Brett in UI Review: the next PR gets its turn
+                    done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
+                    continue
                 try:
                     behind = self._behind(gh, repo, base, p["sha"]) if p.get("sha") else None
                 except (github.GitHubError, ValueError):
@@ -679,7 +756,7 @@ class Pushes:
         now = self.clock()
         if not force and isinstance(cur.get("at"), (int, float)) and now - cur["at"] / 1000 < PROTECT_EVERY_S and set(cur["repos"]) >= set(self.config()["repos"]):
             return cur
-        if not (self.token() or "").strip():
+        if not self.has_local():  # protection is a write: the local token
             return cur
         gh = self.gh()
         repos: dict[str, Any] = {}
@@ -839,7 +916,7 @@ class ProtectionChecks:
     these items and runs `fix` for Auto fix."""
 
     def items(self) -> list[dict[str, Any]]:
-        if not (PUSHES.token() or "").strip():
+        if not PUSHES.has_local():
             return []
         cur = PUSHES.protection()
         out = []
@@ -879,12 +956,64 @@ claudefix.plugin_services.provide("axf.syscheck.items@1:push-protection", Protec
 AUTO_MERGE_EVERY_S = max(60, int(os.environ.get("AXF_PUSH_AUTOMERGE_S", "180") or 180))
 
 
+def health_probe(p: "Pushes") -> dict[str, Any]:
+    """health@1 run(): can the push banner read GitHub, and through which route; can it write (PRs, merges)?"""
+    if not p.can_read():
+        return {"status": "error", "summary": f"Push banner: {NO_ROUTE}."}
+    gh = p.gh()
+    try:
+        me = gh.get("/user", timeout=10)
+    except github.GitHubError as e:
+        # a GitHub App installation token (github-app@1) may not read /user (403): any authenticated read proves the route
+        try:
+            if e.status != 403:
+                raise
+            me = {"login": "the GitHub App"} if gh.get("/rate_limit", timeout=10) is not None else None
+        except github.GitHubError:
+            return {"status": "error", "summary": f"Push banner can't read GitHub: {_text(str(e), 200)}."}
+    route = "axHub" if getattr(gh, "last_route", "") == "axhub" else "the console's GITHUB_TOKEN"
+    who = f" as {me['login']}" if isinstance(me, dict) and me.get("login") else ""
+    if not p.has_local():
+        return {"status": "warn", "summary": f"Push banner reads GitHub through {route}{who}, but GITHUB_TOKEN isn't set: "
+                                             "opening PRs, merging and auto-merge are off until it is.",
+                "breaks": "Ready PRs don't merge by themselves and branches get no PR."}
+    return {"status": "ok", "summary": f"Push banner reads GitHub through {route}{who}; PRs and merges use the console's GITHUB_TOKEN "
+                                       "(tested by the GitHub token item)."}
+
+
+_health_done = False
+
+
+def ensure_health() -> bool:
+    """Registers the push banner's check on axf.health@1 once the systems check provides it (plugins load in any order,
+    so this runs again from the auto-merge loop and every branches read until it lands). Without it: nothing."""
+    global _health_done
+    if _health_done:
+        return True
+    reg = claudefix.plugin_services.get(HEALTH_CAP)
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": HEALTH_ID, "label": "Push banner reaches GitHub", "service": "github", "order": 14, "severity": "error",
+                      "run": lambda: health_probe(PUSHES),
+                      "breaks": "The push banner can't list branches, open PRs or auto-merge ready PRs.",
+                      "links": [{"label": "GitHub → Fine-grained tokens", "url": "https://github.com/settings/personal-access-tokens"}],
+                      "instructions": ["Reads go through axHub when the console has AXHUB_TOKEN (Settings → Plugins → Systems check → GitHub route).",
+                                       "PRs, merges and branch protection need the console's GITHUB_TOKEN (Contents, Pull requests, "
+                                       "Administration: read and write); set it and tap Check now."]}, "push-banner")
+    except Exception:  # noqa: BLE001 — the banner works without its health item
+        return False
+    _health_done = True
+    return True
+
+
 def _auto_merge_loop() -> None:
     """Runs in the console server: every few minutes, merge whatever is ready (setting autoMerge, on by default).
     No Claude session and no tokens: GitHub calls only. AXF_PUSH_AUTOMERGE=off stops the loop."""
     while True:
         time.sleep(AUTO_MERGE_EVERY_S)
         try:
+            ensure_health()
             PUSHES.auto_merge()
         except Exception:  # noqa: BLE001 — never take the server down
             pass
@@ -896,6 +1025,7 @@ if os.environ.get("AXF_PUSH_AUTOMERGE", "").lower() != "off":
 
 @router.get("/branches")
 def branches(refresh: bool = False) -> dict[str, Any]:
+    ensure_health()
     return PUSHES.branches(force=refresh)
 
 

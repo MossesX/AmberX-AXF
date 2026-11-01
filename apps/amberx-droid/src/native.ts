@@ -14,6 +14,7 @@ import { unmask } from './plugins/voice/web/speech';
 import { sharesHubSite } from './hosted';
 import { dbfs, type VoiceConfig } from './plugins/voice/web/handsfree';
 import { setVetoHost, type VetoState } from './axf/libs/hub/veto';
+import { FATAL_RECOGNITION, QUICK_END_MS, restartDelay } from './listeners';
 
 export interface MonitorConfig {
   hub: string;
@@ -69,6 +70,11 @@ export interface NativeApi {
    * follows when it ends), `queue` and `holdMic` (hands-free steps aside while it talks). Older callers: text + lang. */
   speak(opts: { text: string; lang: string; voice?: string; rate?: number; pitch?: number; volume?: number; id?: string; queue?: boolean; holdMic?: boolean }): Promise<void>;
   stopSpeaking(): Promise<void>;
+  /** The Quiet switch (`sound.tsx`): no speech, no alarm, silent notifications until it is switched off. */
+  quiet(opts: { quiet: boolean }): Promise<{ quiet: boolean }>;
+  /** Screen capture (Oct 31 2026, `securescreen.ts`): hidden from recordings only when `hide` (the opt-in setting) and
+   * `sensitive` (a password / key / vault screen is showing). Browser: nothing to do. */
+  secureScreen(opts: { hide: boolean; sensitive: boolean }): Promise<{ secure: boolean }>;
   /** The phone's text-to-speech voices (Android); the browser's voices in the fallback. */
   ttsVoices(): Promise<{ voices: { id: string; name: string; lang: string; quality?: number; network?: boolean }[] }>;
   /** Microphone permission without asking: granted / denied / prompt. */
@@ -96,7 +102,8 @@ export interface NativeApi {
   vetoAlarmStop(): Promise<void>;
   /** A veto notification was tapped (`open`: the veto screen) or one of its Deny / Approve / Shelve buttons ran. */
   addListener(event: 'veto', fn: (e: { id: string; action: 'open' | 'denied' | 'approved' | 'shelved' | 'failed'; error?: string }) => void): Promise<PluginListenerHandle>;
-  addListener(event: 'wake', fn: (e: { phrase: string; text: string }) => void): Promise<PluginListenerHandle>;
+  /** `id` + `at` (ms): the page runs each wake hit once and drops stale ones (older APKs send neither). */
+  addListener(event: 'wake', fn: (e: { phrase: string; text: string; id?: string; at?: number }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
   /** what hands-free is hearing (only while AmberX is on screen) */
@@ -126,7 +133,12 @@ const Recognition = (globalThis as unknown as { SpeechRecognition?: new () => Re
  * Browser hands-free: while the page is open and visible, continuous Web Speech recognition (restarted when it stops)
  * reports what it hears; every final result goes out as `wake` (the voice plugin decides whether it held a wake phrase or
  * is armed). An analyser on the microphone reports the level in dBFS. No overlay in a browser.
+ *
+ * Restarts back off (Nov 1 2026): Chrome on Android plays its "ding" every time recognition starts, and a recognizer
+ * that can't get the microphone (the AmberX app holds it) ends at once, so the old instant restart dinged non-stop.
+ * `restartDelay` waits longer after every quick end, and a refused or missing microphone stops it for good.
  */
+let webSeq = 0;
 const webVoice: { cfg: VoiceConfig | null; rec: Rec | null; stream: MediaStream | null; ctx: AudioContext | null; timer: ReturnType<typeof setInterval> | null; listening: boolean } =
   { cfg: null, rec: null, stream: null, ctx: null, timer: null, listening: false };
 
@@ -155,10 +167,20 @@ async function webVoiceStart(cfg: VoiceConfig) {
     const text = cfg.swears === false ? raw : unmask(raw);
     if (!last || !text) return;
     emit('heard', { text, final: last.isFinal });
-    if (last.isFinal) emit('wake', { phrase: '', text });
+    if (last.isFinal) emit('wake', { phrase: '', text, id: `web-${Date.now().toString(36)}-${++webSeq}`, at: Date.now() });
   };
-  rec.onerror = () => undefined;
-  rec.onend = () => { if (webVoice.rec === rec && document.visibilityState === 'visible') { try { rec.start(); } catch { /* starting */ } } };
+  let startedAt = Date.now();
+  let quick = 0;
+  let fatal = false;
+  rec.onerror = (e) => { if (FATAL_RECOGNITION.includes(e.error)) fatal = true; };
+  rec.onend = () => {
+    if (webVoice.rec !== rec || document.visibilityState !== 'visible') return;
+    if (fatal) { webVoice.listening = false; emit('monitor', { listening: false }); return; }
+    quick = Date.now() - startedAt < QUICK_END_MS ? quick + 1 : 0;
+    const wait = restartDelay(quick);
+    if (wait === null) { webVoice.listening = false; emit('monitor', { listening: false }); return; }
+    setTimeout(() => { if (webVoice.rec === rec && document.visibilityState === 'visible') { try { startedAt = Date.now(); rec.start(); } catch { /* starting */ } } }, wait);
+  };
   webVoice.rec = rec;
   try { rec.start(); webVoice.listening = true; } catch { webVoice.listening = false; }
   try {
@@ -237,6 +259,8 @@ const web: NativeApi = {
     if (id) emit('spoken', { id, done: true });
   },
   async stopSpeaking() { globalThis.speechSynthesis?.cancel(); },
+  async quiet({ quiet }) { if (quiet) globalThis.speechSynthesis?.cancel(); return { quiet }; },
+  async secureScreen() { return { secure: false }; },
   async ttsVoices() {
     const synth = globalThis.speechSynthesis;
     return { voices: (synth?.getVoices() ?? []).map((v) => ({ id: v.voiceURI, name: v.name, lang: v.lang, network: !v.localService })) };

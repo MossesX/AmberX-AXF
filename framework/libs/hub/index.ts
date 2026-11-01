@@ -17,6 +17,7 @@ import { HUB_DEFAULT, fetchHubFeed, normalizeHub, approvalsUrl, type HubFeed, ty
 
 export * from './hub';
 export * from './apps';
+export * from './source';
 
 export interface HubWatchState extends HubFeed {
   /** 'idle' until the first answer. */
@@ -37,12 +38,17 @@ export interface HubWatcherOptions {
 }
 
 /** Polls the approvals feed and keeps the latest state. One check at a time. */
+/** Failed reads in a row before the watcher reports the hub unreachable over a list it already shows. */
+export const HUB_MISSES_SHOWN = 2;
+
 export class HubWatcher {
   state: HubWatchState;
   private subs = new Set<() => void>();
   private timer: ReturnType<typeof setInterval> | null = null;
   private inflight = false;
   private resolved = false;
+  /** Reads in a row that couldn't reach the hub since the last good one. */
+  private misses = 0;
   private readonly opts: HubWatcherOptions;
   private readonly onVisible = () => { if (this.visible()) void this.check(); };
 
@@ -66,6 +72,11 @@ export class HubWatcher {
         if (this.opts.resolveHub) { try { hub = normalizeHub(await this.opts.resolveHub()) ?? hub; } catch { /* keep */ } }
       }
       const feed = await fetchHubFeed(hub, { fetch: this.opts.fetch });
+      // One read that can't reach the hub keeps the list on screen as it is (a blip, the next poll retries); the second in
+      // a row says so. Swapping the list for an "unreachable" note and back on every blip flashed the approvals screen
+      // (Brett, Nov 1 2026). Signed out / not admin are answers, not blips: they show at once.
+      this.misses = feed.status === 'unreachable' ? this.misses + 1 : 0;
+      if (feed.status === 'unreachable' && this.misses < HUB_MISSES_SHOWN && this.state.phase === 'checked' && this.state.status === 'ok') return this.state;
       this.set({ ...feed, phase: 'checked', hub, checkedAt: new Date().toISOString() });
       this.opts.onCheck?.(this.state);
       return this.state;

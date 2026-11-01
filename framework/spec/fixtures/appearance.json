@@ -41,7 +41,9 @@
     "branding",
     "typography",
     "density",
-    "sizing"
+    "sizing",
+    "agent-card",
+    "job-type"
   ],
   "parsed": {
     "full": {

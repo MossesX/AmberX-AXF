@@ -18,7 +18,7 @@ every item `since` and `breaks`, and pushes each new red item once to AmberX thr
   POST secret/test                  test a key without saving it
   GET  health | POST health/run     health@1 (Oct 30 2026): every registered live check and its latest answer; run now
   POST health/autofix/{id}         run a check's auto-fix now (Auto fix button; "ask first" checks)
-  GET  github | PUT github         github@1: does GitHub through axHub work, and the route (hub | local)
+  GET  github | PUT github         github@1: does GitHub through axHub work, and the route (hub | local | auto)
   POST fix/{id}                     run a check's automatic fix
   POST mosses/{id} | GET mosses     Auto fix for every other check: handed to Mosses as a task (he runs commands through
                                     axHub, each approved); GET says whether he can take one and, if not, exactly why
@@ -166,6 +166,8 @@ def _vps_call(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
 
 
 REGISTRY = health.Registry()
+# Plugins' auto-fixes may run one fixed VPS command the same way (veto call through Vinny, else Mosses).
+REGISTRY.vps_run = lambda command: healthchecks.veto_fix(command, _vps_call)
 MONITOR = health.Monitor(REGISTRY, lambda *a, **k: SVC.core.item(*a, **k), lambda: store.data_dir() / "health-state.json",
                          raise_alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys), log=cx.log,
                          mode_of=lambda cid: store.settings()["autoFix"].get(cid), recheck=_recheck, record=_record_fix)
@@ -246,13 +248,14 @@ def health_autofix(cid: str) -> dict[str, Any]:
 
 
 class RouteReq(BaseModel):
-    route: str = Field(pattern=r"^(hub|local)$")
+    route: str = Field(pattern=r"^(hub|local|auto)$")
 
 
 @router.get("/github")
 def github_status(refresh: bool = False) -> dict[str, Any]:
     """github@1: the route and whether GitHub through axHub works (never the hub's or the console's token)."""
-    return {**GITHUB.status(refresh), "local": bool(os.environ.get("GITHUB_TOKEN"))}
+    return {**GITHUB.status(refresh), "local": bool(os.environ.get("GITHUB_TOKEN")), "saved": store.settings().get("githubRoute", "auto"),
+            "app": os.environ.get("AXF_GITHUB_TOKEN_SOURCE") == "app"}
 
 
 @router.put("/github")

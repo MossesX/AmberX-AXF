@@ -5,6 +5,7 @@ import { HubAppearanceSource } from '../../react/hubAppearance';
 import type { AppearanceSource, AxfRuntime } from '../../core/runtime';
 import type { AppearanceSourceState } from '../../core/engines/appearance';
 import { HubData, HubSettings, type HubState } from '../hubstore';
+import { HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY } from '../../core/engines/help-rules.mjs';
 import { CONNECTION_KEY, dataFolderFor, describeSync, followState, resolveHubSync, settingsFileFor, type HubSyncConfig } from './core';
 
 /** A look source that never makes the app wait: the runtime always sees `ready`; `real()` keeps what the hub said. */
@@ -94,7 +95,7 @@ export class HubSync {
       const s = new HubSettings({ hub: c.hub, project: c.project, file: settingsFileFor(this.appId), appId: this.appId, fetchImpl: this.opts.fetchImpl });
       this.hubSettings = s;
       s.subscribe(() => this.emit());
-      void s.load().then(() => { if (this.hubSettings === s) this.offMirror = s.mirror(this.rt.settings, (k) => k !== CONNECTION_KEY); })
+      void s.load().then(() => { if (this.hubSettings === s) this.offMirror = s.mirror(this.rt.settings, (k) => mirrored(this.rt, k)); })
         .catch((e) => this.rt.terminal.warn('hubsync', `settings stay on this device until axHub answers: ${(e as Error).message}`));
     }
     this.hubData = c.data === 'off' ? new HubData({ deviceOnly: true })
@@ -155,3 +156,11 @@ export function savedConnection(rt: AxfRuntime): unknown {
   try { return JSON.parse(raw); } catch { return null; }
 }
 
+/**
+ * Settings that follow you to every device through the hub: all but the connection itself, settings declared
+ * `scope: 'device'`, and Help mode's own (on / off, intros, seen screens are per device; Brett, Nov 1 2026).
+ */
+const DEVICE_ONLY = new Set([CONNECTION_KEY, HELP_MODE_KEY, HELP_INTROS_KEY, HELP_SEEN_KEY]);
+function mirrored(rt: AxfRuntime, key: string): boolean {
+  return !DEVICE_ONLY.has(key) && rt.settings.spec(key)?.scope !== 'device';
+}

@@ -458,6 +458,15 @@ r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}, ca
 check(r["status"] == "ok", "wait=true (a model): waits for the approval, then runs")
 r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}, call=hub(["confirm", "reject"]), delays=lambda: [0], sleep=lambda s: None))
 check(r["status"] == "error" and r["message"] == "Rejected on the hub.", "rejected on the hub → an error the model can read")
+# axHub 109: the agent's name rides on its calls (X-Axhub-Session agent:<name>), console outside an agent
+from axf_server import hub_session as hs_  # noqa: E402
+said = []
+def hub_said(tool, arguments, conf=None, timeout=None, reason=None):
+    said.append(hs_.headers().get("x-axhub-session"))
+    return {"ok": "exit 0"}
+ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "wait": False}, {"agent": {"name": "Vinny"}}, call=hub_said)
+ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "wait": False}, {}, call=hub_said)
+check(said == ["agent:Vinny", "console"] and hs_.headers().get("x-axhub-session") == "console", "axhub_call says agent:<name> for an agent, console otherwise")
 check(json.loads(ht.run({"tool": "rm -rf", "arguments": {}}, {}))["status"] == "error", "the tool name must be service.tool")
 check(json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x" * 4000}}, {}))["status"] == "error", "arguments too long for an approval are refused")
 check(json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "confirmation_id": "nope"}, {}))["status"] == "error", "a bad approval id is refused")

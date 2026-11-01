@@ -11,10 +11,11 @@ import type { AxfRuntime } from '../../../axf/core';
 import { Button, Checkbox, Container, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { isNative, native } from '../../../native';
 import { HOLDER_LABEL, micLease } from '../../../miclease';
+import { mayMakeSound } from '../../../sound';
 import { addItem, findList, flatTree, localDay, parseIntent, type ItemKind } from '../../notes/web/core';
 import { NOTES_ID, deviceName, load as loadNotes, mutate, snapshot as notesSnapshot, useNotes } from '../../notes/web/store';
 import { aiReady, parseNote } from '../../ai/web/client';
-import { registerVoiceCommands } from '../../voice/web/index';
+import { heardEcho, registerVoiceCommands, say } from '../../voice/web/index';
 import {
   DEFAULT_START, DEFAULT_STOP, clampMinutes, draftFromIntent, draftFromText, draftToItems, joinParts, newSession, phrases, turn,
   type Draft, type EndReason, type Session,
@@ -47,7 +48,7 @@ const lang = (rt: AxfRuntime) => { const v = rt.settings.get(K.lang); return typ
 
 /** Two short tones (up = start, down = stop) through Web Audio; silent where it isn't there. */
 function beep(rt: AxfRuntime, up: boolean) {
-  if (rt.settings.get(K.beep) === false) return;
+  if (rt.settings.get(K.beep) === false || !mayMakeSound()) return;
   try {
     const Ctx = (globalThis as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext }).AudioContext ?? (globalThis as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Ctx) return;
@@ -104,7 +105,8 @@ export async function start(rt: AxfRuntime, list = '') {
     while (!stopAsked) {
       lease.take('dictation', ttl);
       const { text } = await native.listen({ lang: lang(rt), prompt: 'Dictating… say “stop note” to finish' });
-      const r = turn(s, text ?? '', cfg, Date.now());
+      // AmberX's own voice (a spoken reply still in the room) is never dictated.
+      const r = turn(s, heardEcho(text ?? '') ? '' : text ?? '', cfg, Date.now());
       s = r.session;
       set({ live: joinParts(s.parts) });
       if (r.end) { end = r.end; break; }
@@ -140,10 +142,11 @@ export function save(rt: AxfRuntime, draft: Draft, again = false) {
   const where = notesSnapshot().view.lists[draft.list || 'inbox']?.name ?? 'Inbox';
   const msg = `${items.length === 1 ? 'Saved' : `Saved ${items.length} items`} to ${where}.`;
   rt.toast(msg, 'success', 'Dictation');
-  void native.speak({ text: msg, lang: lang(rt) }).catch(() => undefined);
   const keep = st.preferred;
   set({ phase: 'idle', draft: null, live: '', transcript: '', note: msg });
-  if (again) void start(rt, keep);
+  // Through the speech gate (said once, mic held), and the next dictation starts only after it has been said, so it
+  // never writes "Saved to Inbox" down as the next note (the Oct 31 2026 loop).
+  void say(rt, msg, { change: true }).then(() => { if (again) void start(rt, keep); });
 }
 
 /* ---------------------------------------------------------------- views */

@@ -30,7 +30,7 @@ from fastapi import APIRouter, HTTPException, Request
 import console_context as cx
 import plugin_services
 
-from . import complete
+from . import complete, health
 from .feed import SOURCES, Feed
 
 router = APIRouter()
@@ -53,31 +53,59 @@ def _services() -> list[tuple[str, Any]]:
     return out
 
 
+STORE_REL = Path("_claude") / "builds" / "store.json"
+
+
+def builds_store_file() -> Path:
+    """The one builds store (builds@1), found the way framework/cli/builds-store.mjs finds it: AXF_BUILDS_STORE, else
+    AXF_DATA_DIR/_claude/builds/store.json, else the repo's _claude/builds/store.json."""
+    if os.environ.get("AXF_BUILDS_STORE"):
+        return Path(os.environ["AXF_BUILDS_STORE"])
+    d = os.environ.get("AXF_DATA_DIR")
+    if d and d != "off":
+        return Path(d) / STORE_REL
+    return cx.ROOT / STORE_REL
+
+
+def build_status(store: Any, pid: str) -> str:
+    """A build's pending status in a builds@1 store: its `pending.status` (pending / unsafe / complete …), else its
+    status; "missing" when it isn't there or was deleted."""
+    for b in store.get("builds", []) if isinstance(store, dict) else []:
+        if isinstance(b, dict) and pid in (b.get("id"), b.get("pendingId")):
+            if b.get("deleted"):
+                return "missing"
+            pend = b.get("pending") if isinstance(b.get("pending"), dict) else {}
+            return str(pend.get("status") or b.get("status") or "pending")
+    return "missing"
+
+
 def _pending_status(pid: str) -> str | None:
-    """A pending build's status (framework/plan/pending.json in the shared data folder, else the repo copy)."""
-    for base in (cx.persist_root(), cx.ROOT):
-        if base is None:
-            continue
-        try:
-            data = json.loads((Path(base) / "framework" / "plan" / "pending.json").read_text("utf-8"))
-        except (OSError, ValueError):
-            continue
-        for it in data.get("items", []) if isinstance(data, dict) else []:
-            if isinstance(it, dict) and it.get("id") == pid:
-                return str(it.get("status") or "pending")
-        return "missing"
-    return None
+    """A pending build's status, read from the builds store (Nov 1 2026; the old framework/plan/pending.json is only a
+    read-only export of it). None when the store can't be read."""
+    try:
+        return build_status(json.loads(builds_store_file().read_text("utf-8")), pid)
+    except (OSError, ValueError):
+        return None
 
 
 FEED = Feed(data_dir(), cx.ROOT, default_repos=[r for r in (cx.GITHUB_REPO or "MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot") if r],
             services=_services, live_sessions=lambda: plugin_services.get("axf.live-sessions@1"),
-            holds_file=Path(__file__).resolve().parents[1] / "holds.json", pending_status=_pending_status)
+            holds_file=Path(__file__).resolve().parents[1] / "holds.json", pending_status=_pending_status,
+            github_client=lambda: _github_client())
+
+
+def _github_client() -> Any:
+    """axf.github@1 (systems check): reads through axHub, the local token only as fallback. None without it."""
+    svc = plugin_services.get("axf.github@1")
+    return svc.client(user_agent="axf-console-activity", timeout=12, max_bytes=4_000_000) if svc is not None else None
 
 COMPLETE = complete.Completer(data_dir(), FEED.snapshot, FEED.config, FEED.dismiss,
                               changes=lambda: plugin_services.get(complete.CHANGES),
                               raise_alert=lambda a: cx.raise_alert(a))
 if os.environ.get("AXF_ACTIVITY_WATCH") != "off":
     complete.start_watcher(COMPLETE)
+
+health.ensure(FEED, data_dir(), changes=lambda: plugin_services.get(complete.CHANGES))
 
 
 class Service:
@@ -108,6 +136,7 @@ def _who(request: Request) -> str:
 
 @router.get("/items")
 def items() -> dict[str, Any]:
+    health.ensure(FEED, data_dir(), changes=lambda: plugin_services.get(complete.CHANGES))  # once the systems check is up
     return FEED.snapshot()
 
 

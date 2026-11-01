@@ -8,7 +8,9 @@
 import { useEffect, useState } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
 import { Button, Note, Section, useRuntime, type AxfWebLibrary } from '../../../axf/react';
-import { approvalUrl, isHub, loginUrl, seenPlan } from '../../../axf/libs/hub';
+import { approvalUrl, isHub, loginUrl } from '../../../axf/libs/hub';
+import { DingGate, deviceStore } from '../../../listeners';
+import { mayMakeSound } from '../../../sound';
 import { hubWatcher } from '../../../axf/libs/hub/react';
 import { HUB } from '../../../hub/useHub';
 import { isNative, native, reportWebMonitor, type MonitorStatus } from '../../../native';
@@ -56,23 +58,28 @@ async function stop(rt: AxfRuntime) {
   await native.monitorStop().catch(() => undefined);
 }
 
-/** Browser only: this tab alerts on new approvals while it's open (Android's service does it natively). */
+/**
+ * Browser only: alerts on new approvals while it's open (Android's service does it natively). One notice per NEW
+ * approval on this device: the seen ids are kept (a reopen or another tab never alerts again), the first read after
+ * opening isn't news, an empty list ("All clear") never alerts, and only the device's sound owner alerts (`DingGate`).
+ */
 function watchInPage(rt: AxfRuntime) {
   const w = hubWatcher(HUB);
-  let seen: string[] = [];
-  let first = true;
+  const gate = new DingGate(deviceStore(), 'amberx.monitor.seen');
   return w.subscribe(() => {
     const s = w.state;
     if (s.phase !== 'checked') return;
     reportWebMonitor({ lastCheck: new Date().toISOString(), status: s.status, waiting: s.count });
-    const plan = seenPlan(seen, s.pending.map((p) => p.id));
-    seen = plan.next;
-    if (first) { first = false; return; } // what was there when the page opened isn't news
+    // Only a good read says what is waiting: a failed one (empty list) must not make everything "new" on the next.
+    if (s.status !== 'ok') return;
+    const v = gate.read(s.pending.map((p) => p.id), Date.now(), mayMakeSound());
+    // A second new one within the ding gap still shows, silently.
+    if (!v.ding && v.why !== 'too-soon') return;
     if (rt.settings.get(K.on) !== true || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-    for (const p of s.pending.filter((x) => plan.fresh.includes(x.id))) {
+    for (const p of s.pending.filter((x) => v.fresh.includes(x.id))) {
       // Auto-approval needs the hub's own form under its Origin: only the Android service can post it. Here it's a note.
       const auto = autoApproves(rt.settings.get(K.autoApprove) === true, rt.settings.get(K.autoApproveAll) === true, rt.settings.get(K.autoApproveTools), p.tool);
-      const n = new Notification(`Approval waiting: ${p.tool}`, { body: auto ? `${p.summary}\n(Auto-approval runs on the Android app.)` : p.summary, tag: p.id });
+      const n = new Notification(`Approval waiting: ${p.tool}`, { body: auto ? `${p.summary}\n(Auto-approval runs on the Android app.)` : p.summary, tag: p.id, silent: !v.ding });
       n.onclick = () => { window.focus(); window.open(p.url, '_blank', 'noopener,noreferrer'); };
     }
   });

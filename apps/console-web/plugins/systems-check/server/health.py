@@ -76,6 +76,8 @@ class Registry:
     version = VERSION
 
     def __init__(self) -> None:
+        # vps_run(command) → an auto-fix answer: one fixed command on the VPS as a veto call (set by the systems check)
+        self.vps_run: Callable[[str], dict[str, Any]] | None = None
         self._checks: dict[str, dict[str, Any]] = {}
         self._fixes: dict[str, dict[str, Any]] = {}
         self._lock = threading.RLock()

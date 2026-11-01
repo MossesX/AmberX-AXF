@@ -1,11 +1,13 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as core from './review-core.mjs';
+import * as cf from './conform.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
 import { FOLDER, GROUP_BYS, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
 import { ShotBrowser } from './shots';
+import { ScreenshotsTab } from './screenshots';
 import { CompareView, GalleryView, GridView, GroupsView, TreeView } from './views';
 import './ui-review.css';
 
@@ -116,8 +118,11 @@ function BulkBar({ n, onClear }: { n: number; onClear: () => void }) {
   );
 }
 
-export function UiReviewPage({ section }: { section?: string }) {
+type Tab = 'review' | 'shots';
+export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?: Tab }) {
   const rt = useRuntime();
+  const [tab, setTabRaw] = useState<Tab>(() => (section ? 'review' : tabProp ?? (setting<string>(rt, KEYS.tab, 'review') === 'shots' ? 'shots' : 'review')));
+  const [shotCount, setShotCount] = useState<number | null>(null);
   const [data, setData] = useState<Loaded | null>(null);
   const [error, setError] = useState('');
   const [kind, setKindRaw] = useState<string>(() => section ?? setting(rt, KEYS.section, ''));
@@ -133,7 +138,9 @@ export function UiReviewPage({ section }: { section?: string }) {
   const remember = <T,>(k: string, f: (v: T) => void) => (v: T) => { f(v); save(rt, k, v); };
   const setKind = remember(KEYS.section, setKindRaw), setView = remember(KEYS.view, setViewRaw), setSort = remember(KEYS.sort, setSortRaw);
   const setGroupBy = remember(KEYS.groupBy, setGroupByRaw), setStatus = remember(KEYS.status, setStatusRaw), setDevice = remember(KEYS.device, setDeviceRaw);
-  useEffect(() => { if (section) setKindRaw(section); }, [section]);
+  const setTab = remember(KEYS.tab, setTabRaw);
+  useEffect(() => { if (section) { setKindRaw(section); setTabRaw('review'); } }, [section]);
+  useEffect(() => { if (tabProp && !section) setTabRaw(tabProp); }, [tabProp]);
 
   const load = async () => {
     try { setData(await api.call<Loaded>('items')); setError(''); }
@@ -141,7 +148,8 @@ export function UiReviewPage({ section }: { section?: string }) {
   };
   useEffect(() => { void load(); }, []);
 
-  const all = useMemo(() => (data ? [...data.items.map((x) => core.normItem(x).item), ...core.packItems(data.packs, data.overlay)] : []), [data]);
+  // served as ui-review-item@1; the views work on the queue's shape (conform.mjs converts)
+  const all = useMemo(() => (data ? [...data.items.map((x) => core.normItem(cf.storedToReview(x)).item), ...core.packItems(data.packs, data.overlay)] : []), [data]);
   const kinds = useMemo(() => (data ? core.mergeKinds(data.kinds.base, data.kinds.extra, all) : []), [data, all]);
   const counts = useMemo(() => core.counts(all), [all]);
   const appList = useMemo(() => core.apps(all), [all]);
@@ -179,20 +187,23 @@ export function UiReviewPage({ section }: { section?: string }) {
       <div className="fx-stack axp-ui-review">
         <header className="fx-pagehead">
           <div>
-            <p className="fx-eyebrow">Approvals · {c.waiting} waiting · {c.total} in all</p>
+            <p className="fx-eyebrow">Approvals · {c.waiting} waiting · {c.total} in all{shotCount !== null ? ` · ${shotCount} screenshots` : ''}</p>
             <h1>UI Review</h1>
-            <p className="fx-muted">Every UI a build makes waits here for your OK, sorted by kind.</p>
+            <p className="fx-muted">{tab === 'shots' ? 'Screenshots from checks, live captures, PRs and your uploads. Not waiting for approval.' : 'Every UI a build makes waits here for your OK, sorted by kind.'}</p>
           </div>
           <div className="axp-ui-review__headacts">
-            {showPicks && (
+            {tab === 'review' && showPicks && (
               <span className="axp-ui-review__picks" aria-label={`${picked.length} of ${core.MAX_PICKS} design packs picked`}>
                 <span className="fx-small fx-muted">{picked.length}/{core.MAX_PICKS} picked</span>
                 <span className="axp-ui-review__dots">{Array.from({ length: core.MAX_PICKS }, (_, i) => <i key={i} className={i < picked.length ? 'is-on' : ''} />)}</span>
               </span>
             )}
-            <IconButton icon="refresh" label="Reload" onClick={() => void load()} />
+            {tab === 'review' && <IconButton icon="refresh" label="Reload" onClick={() => void load()} />}
           </div>
         </header>
+        <Segmented<Tab> label="UI Review tabs" value={tab} onChange={setTab} className="axp-ui-review__tabs"
+          options={[{ value: 'review', label: `Review · ${c.waiting} waiting`, icon: 'eye' }, { value: 'shots', label: shotCount !== null ? `Screenshots · ${shotCount}` : 'Screenshots', icon: 'monitor' }]} />
+        {tab === 'shots' ? <ScreenshotsTab onCount={setShotCount} /> : <>
         {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
 
         <nav className="axp-ui-review__sections" aria-label="Sections">
@@ -230,6 +241,7 @@ export function UiReviewPage({ section }: { section?: string }) {
           : <GridView items={rows} />}
 
         {sel.length > 0 && <BulkBar n={sel.length} onClear={() => setSel([])} />}
+        </>}
       </div>
     </Ctx.Provider>
   );

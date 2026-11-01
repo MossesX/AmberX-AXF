@@ -65,7 +65,10 @@ node framework/cli/project.mjs validate --all       # every project manifest (al
 node framework/cli/claude-project.mjs [dir] --dry-run --yes   # what claude-project would do in a folder
 node framework/spec/check-project-fixtures.mjs      # JS validator vs reference fixtures
 node framework/spec/check-build-steps.mjs           # small-steps rule: pending + build-queue cores (40 checks)
+node framework/spec/check-builds-store.mjs          # builds@1 store: migration loses nothing, projections, reorder, rename, harvest, apply/discard
+node framework/cli/builds-store.mjs [verify|history <id>|restore <id> <rev>]   # the one builds store
 node framework/cli/rebake.mjs [status|apply <app>]  # apps whose baked src/axf is behind the framework; re-bake one
+node framework/cli/watch-live.mjs targets|list      # Watch live: apps this checkout touches / live previews (axf focus <app> [route] [selector])
 node framework/cli/pending.mjs --steps | --check-steps        # pending builds with their steps; what still needs splitting
 node framework/cli/build-queue.mjs --steps | --check-steps    # same for the build queue
 claude-sync status                                  # Claude files + shared data sync with the hub
@@ -105,9 +108,12 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 - **Interop:** the kernel never knows a protocol. Protocols are modules contributing a `ProtocolAdapter`. Exposure is default-deny, and a remote caller can never exceed the local UAC role. Wire error codes never change meaning (see INTEROP.md).
 - **React/TS port:** the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.
 - `axf init` **bakes** `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.
+- **One builds store (Oct 31 2026):** every build of every profile is one record in `_claude/builds/store.json` (builds@1, owned by the orchestrator; profiles are a field, Pending a status, the queue an order). Every write is versioned (`_claude/builds/journal/`); the old orchestrator/pending/build-queue files are read-only exports. `node framework/cli/builds-store.mjs verify | history <id> | restore <id> <rev>`.
 - Feature status lives in `framework/catalog/status.json`. Build order and completion live in `framework/plan/build-queue.json`, which the MCP tools `build_next` and `build_step` drive. Update both, then run `tracker.mjs`, whenever something lands.
+- **Agent cap (Nov 1 2026):** every headless `claude -p` on the VPS (deploy/claude-headless.sh, so axHub build_start and console launches; the agent swarm) takes a slot from `framework/cli/agent-slots.mjs` first: max running agents (default 6), memory floor (2 GB), extras queue and start by themselves (`queued at position N`). Wrap heavy steps (pnpm/vite builds, docker test runs, Playwright) in `node framework/cli/agent-slots.mjs heavy -- <cmd>` (default 3 at once). Settings: Settings → Plugins → Agent cap; `agent-slots.mjs status`. <!-- axf-plugin:agent-slots -->
 - Model policy: per step in the Build orchestrator (Fable for contracts/engines/migrations/cross-app GUI behaviour, Opus otherwise); approval only at a model switch.
 - No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.
+- **GitHub goes through the GitHub App (Nov 1 2026):** get tokens from the broker `framework/cli/github-token.mjs` (`installation` | `user` | `token` | `repo create`), never a new personal token; the console keeps `GITHUB_TOKEN` on the app's installation token, the old PAT is only the fallback. Setup: Settings → Plugins → GitHub. <!-- axf-plugin:github-app -->
 
 ## Related repos
 

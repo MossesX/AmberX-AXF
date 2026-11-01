@@ -1,0 +1,115 @@
+{
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
+ "$axf": "pending@1",
+ "updatedAt": "2026-10-31T23:38:22.887Z",
+ "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+ "items": [
+  {
+   "id": "urgent-builds",
+   "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
+   "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
+     "at": "2026-11-01T00:37:27.395Z"
+    },
+    {
+     "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
+     "at": "2026-11-01T02:26:59.880Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Dry-run migration report: inventory every profile's orchestrator, pending (repo + hub), build queue, plan epics and git history; what merges, dedupes, conflicts; _claude/builds/reports/urgent-migration-dryrun.md",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T23:38:22.885Z"
+    },
+    {
+     "text": "[Opus] builds@1 store core (pure): build + step records with rev, profile field, order, default snapshot, legacy origins; migrate(); projections to orchestrator@1 / pending@1 / build-queue@1 and absorb back",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T23:45:09.695Z"
+    },
+    {
+     "text": "[Opus] Store IO: _claude/builds/store.json + append-only journal (every write versioned, soft delete), run the migration for real",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T23:45:10.007Z"
+    },
+    {
+     "text": "[Opus] Rewire writers: orchestrator.mjs, pending.mjs, build-queue.mjs read/write the store; old files read-only; orch-sync bridge retired",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-31T23:45:10.314Z"
+    },
+    {
+     "text": "[Opus] Remove Console init regenerate-from-plan (BuildManager console:init sync) and fix syncQueue first-run so a queue is only created when missing",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-31T23:45:10.671Z"
+    },
+    {
+     "text": "[Opus] One Builds plugin: Builds page with switchable views (Builds, Steps, Pending, Queue) on the store; server routes; deep links",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-01T00:01:36.016Z"
+    },
+    {
+     "text": "[Opus] Steps view: grid of step records, scope one build / whole profile, expandable rows, multi-select, drag reorder steps and builds",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-01T00:01:36.442Z"
+    },
+    {
+     "text": "[Opus] Steps view: divide a step, harvest selected steps into a new build or split into N builds (dialog with default names), Restore default",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-01T00:01:36.856Z"
+    },
+    {
+     "text": "[Opus] Draft until Apply: saved draft with pending-change count, Apply / Discard; rename builds, steps and profiles inline (Enter/Esc, empty refused, id unchanged)",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-01T00:01:37.240Z"
+    },
+    {
+     "text": "[Opus] Live progress bars per build, per step and per profile; banner percentage with animation while active",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-01T00:01:37.657Z"
+    },
+    {
+     "text": "[Opus] Tests: migration (nothing lost), reorder, rename, apply/discard; full local CI block + theme/controls/lifecycle checks",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-01T00:36:04.420Z"
+    },
+    {
+     "text": "[Opus] Report _claude/builds/reports/urgent-builds.md, THREADS.md, merge main, push",
+     "at": "2026-10-31T23:31:50.472Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:26:59.508Z"
+    }
+   ],
+   "createdAt": "2026-10-31T23:31:50.472Z",
+   "builtAt": "2026-11-01T02:26:59.508Z",
+   "updatedAt": "2026-11-01T02:26:59.880Z",
+   "source": "console"
+  }
+ ]
+}

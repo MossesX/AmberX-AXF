@@ -29,7 +29,7 @@ import threading
 from pathlib import Path
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import http as axf_http
+from axf_server import http as axf_http, hub_session
 
 import plugin_services
 
@@ -59,6 +59,7 @@ def _hub() -> tuple[str, str]:
 def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str, Any], timeout: float) -> tuple[dict[str, Any], str | None]:
     body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()
     headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
+    headers.update(hub_session.headers())  # axHub 109: `agent:<name>` inside an agent's call, else `console`
     if session:
         headers["mcp-session-id"] = session
     try:  # https only, never follows a redirect: the token goes nowhere else
@@ -249,8 +250,10 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
     approved = conf if isinstance(conf, str) else ""
     why = hub_reason(args.get("reason"), args.get("description"), tool)
     extra: dict[str, Any] = {"reason": why} if why else {}
+    agent = str((ctx.get("agent") or {}).get("name") or "")
     try:
-        r = call(tool, arguments, conf, timeout, **extra)
+        with hub_session.acting_as(hub_session.agent_session(agent) if agent else hub_session.CONSOLE):
+            r = call(tool, arguments, conf, timeout, **extra)
         if "confirm" in r and wait:
             cid = r["confirm"]
             approved = cid
@@ -261,7 +264,8 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
                     return json.dumps({"status": "error", "message": "The approval expired."})
                 sleep(next(waits, 60.0))
                 try:
-                    r = call(tool, arguments, cid, timeout, **extra)
+                    with hub_session.acting_as(hub_session.agent_session(agent) if agent else hub_session.CONSOLE):
+                        r = call(tool, arguments, cid, timeout, **extra)
                 except HubError as e:
                     m = str(e).lower()
                     return json.dumps({"status": "error", "message": "Rejected on the hub." if "reject" in m else "The approval expired." if "expired" in m else str(e)})

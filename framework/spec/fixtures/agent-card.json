@@ -1,0 +1,594 @@
+{
+  "sample": {
+    "identity": {
+      "id": "kat",
+      "name": "Kotlin Kat",
+      "role": "Android engineer",
+      "specialty": "Kotlin kernel twins and Jetpack Compose screens",
+      "hiredAt": "2026-10-31",
+      "status": "On duty",
+      "catchphrase": "Gradle's cookin', grab me a cold one.",
+      "signature": "K. Kat",
+      "page": "axf://agent-swarm/kat"
+    },
+    "stats": {
+      "jobs": 42,
+      "successRate": 93.4,
+      "spend": 12.5,
+      "favoriteModel": "Sonnet"
+    }
+  },
+  "defaults": {
+    "design": "badge",
+    "orientation": "vertical",
+    "logo": "banner",
+    "surface": "surface",
+    "accent": "accent",
+    "finish": "flat",
+    "photo": "large",
+    "code": "barcode",
+    "front": [
+      "name",
+      "role",
+      "specialty",
+      "employeeId"
+    ],
+    "back": [],
+    "labels": {}
+  },
+  "starters": {
+    "backstage-pass": {
+      "normalized": {
+        "design": "backstage",
+        "orientation": "vertical",
+        "logo": "corner",
+        "surface": "inverse",
+        "accent": "brand-2",
+        "finish": "neon",
+        "photo": "small",
+        "code": "qr",
+        "front": [
+          "status",
+          "name",
+          "role",
+          "catchphrase"
+        ],
+        "back": [
+          "specialty",
+          "employeeId",
+          "hiredAt"
+        ],
+        "labels": {
+          "status": "Access"
+        }
+      },
+      "model": {
+        "design": "backstage",
+        "orientation": "vertical",
+        "logo": "corner",
+        "surface": "inverse",
+        "accent": "brand-2",
+        "finish": "neon",
+        "photo": "small",
+        "front": [
+          {
+            "id": "status",
+            "label": "Access",
+            "value": "On duty"
+          },
+          {
+            "id": "name",
+            "label": "Name",
+            "value": "Kotlin Kat"
+          },
+          {
+            "id": "role",
+            "label": "Role",
+            "value": "Android engineer"
+          },
+          {
+            "id": "catchphrase",
+            "label": "Catchphrase",
+            "value": "Gradle's cookin', grab me a cold one."
+          }
+        ],
+        "back": [
+          {
+            "id": "specialty",
+            "label": "Specialty",
+            "value": "Kotlin kernel twins and Jetpack Compose screens"
+          },
+          {
+            "id": "employeeId",
+            "label": "Employee ID",
+            "value": "AX-2671"
+          },
+          {
+            "id": "hiredAt",
+            "label": "Hired",
+            "value": "2026-10-31"
+          }
+        ],
+        "code": {
+          "kind": "qr",
+          "value": "axf://agent-swarm/kat",
+          "bars": []
+        }
+      }
+    },
+    "corporate-badge": {
+      "normalized": {
+        "design": "badge",
+        "orientation": "vertical",
+        "logo": "banner",
+        "surface": "surface",
+        "accent": "accent",
+        "finish": "flat",
+        "photo": "large",
+        "code": "barcode",
+        "front": [
+          "name",
+          "role",
+          "specialty",
+          "employeeId"
+        ],
+        "back": [
+          "email",
+          "hiredAt",
+          "status",
+          "signature"
+        ],
+        "labels": {}
+      },
+      "model": {
+        "design": "badge",
+        "orientation": "vertical",
+        "logo": "banner",
+        "surface": "surface",
+        "accent": "accent",
+        "finish": "flat",
+        "photo": "large",
+        "front": [
+          {
+            "id": "name",
+            "label": "Name",
+            "value": "Kotlin Kat"
+          },
+          {
+            "id": "role",
+            "label": "Role",
+            "value": "Android engineer"
+          },
+          {
+            "id": "specialty",
+            "label": "Specialty",
+            "value": "Kotlin kernel twins and Jetpack Compose screens"
+          },
+          {
+            "id": "employeeId",
+            "label": "Employee ID",
+            "value": "AX-2671"
+          }
+        ],
+        "back": [
+          {
+            "id": "email",
+            "label": "Email",
+            "value": "kat@agents.axf"
+          },
+          {
+            "id": "hiredAt",
+            "label": "Hired",
+            "value": "2026-10-31"
+          },
+          {
+            "id": "status",
+            "label": "Status",
+            "value": "On duty"
+          },
+          {
+            "id": "signature",
+            "label": "Signature",
+            "value": "K. Kat"
+          }
+        ],
+        "code": {
+          "kind": "barcode",
+          "value": "AX-2671",
+          "bars": [
+            2,
+            1,
+            1,
+            1,
+            3,
+            1,
+            3,
+            1,
+            2,
+            1,
+            3,
+            1,
+            1,
+            2,
+            3,
+            1,
+            3,
+            1,
+            1,
+            1,
+            1,
+            2,
+            1,
+            1,
+            2,
+            2,
+            1,
+            1,
+            2,
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    "license": {
+      "normalized": {
+        "design": "license",
+        "orientation": "horizontal",
+        "logo": "watermark",
+        "surface": "raised",
+        "accent": "brand-1",
+        "finish": "hologram",
+        "photo": "small",
+        "code": "none",
+        "front": [
+          "name",
+          "employeeId",
+          "role",
+          "specialty",
+          "hiredAt",
+          "status",
+          "signature"
+        ],
+        "back": [
+          "email",
+          "catchphrase"
+        ],
+        "labels": {
+          "employeeId": "ID No.",
+          "hiredAt": "Issued"
+        }
+      },
+      "model": {
+        "design": "license",
+        "orientation": "horizontal",
+        "logo": "watermark",
+        "surface": "raised",
+        "accent": "brand-1",
+        "finish": "hologram",
+        "photo": "small",
+        "front": [
+          {
+            "id": "name",
+            "label": "Name",
+            "value": "Kotlin Kat"
+          },
+          {
+            "id": "employeeId",
+            "label": "ID No.",
+            "value": "AX-2671"
+          },
+          {
+            "id": "role",
+            "label": "Role",
+            "value": "Android engineer"
+          },
+          {
+            "id": "specialty",
+            "label": "Specialty",
+            "value": "Kotlin kernel twins and Jetpack Compose screens"
+          },
+          {
+            "id": "hiredAt",
+            "label": "Issued",
+            "value": "2026-10-31"
+          },
+          {
+            "id": "status",
+            "label": "Status",
+            "value": "On duty"
+          },
+          {
+            "id": "signature",
+            "label": "Signature",
+            "value": "K. Kat"
+          }
+        ],
+        "back": [
+          {
+            "id": "email",
+            "label": "Email",
+            "value": "kat@agents.axf"
+          },
+          {
+            "id": "catchphrase",
+            "label": "Catchphrase",
+            "value": "Gradle's cookin', grab me a cold one."
+          }
+        ],
+        "code": {
+          "kind": "none",
+          "value": "",
+          "bars": []
+        }
+      }
+    },
+    "trading-card": {
+      "normalized": {
+        "design": "trading",
+        "orientation": "vertical",
+        "logo": "corner",
+        "surface": "surface",
+        "accent": "accent",
+        "finish": "foil",
+        "photo": "large",
+        "code": "none",
+        "front": [
+          "name",
+          "specialty",
+          "catchphrase"
+        ],
+        "back": [
+          "jobs",
+          "successRate",
+          "spend",
+          "favoriteModel",
+          "hiredAt"
+        ],
+        "labels": {}
+      },
+      "model": {
+        "design": "trading",
+        "orientation": "vertical",
+        "logo": "corner",
+        "surface": "surface",
+        "accent": "accent",
+        "finish": "foil",
+        "photo": "large",
+        "front": [
+          {
+            "id": "name",
+            "label": "Name",
+            "value": "Kotlin Kat"
+          },
+          {
+            "id": "specialty",
+            "label": "Specialty",
+            "value": "Kotlin kernel twins and Jetpack Compose screens"
+          },
+          {
+            "id": "catchphrase",
+            "label": "Catchphrase",
+            "value": "Gradle's cookin', grab me a cold one."
+          }
+        ],
+        "back": [
+          {
+            "id": "jobs",
+            "label": "Jobs",
+            "value": "42"
+          },
+          {
+            "id": "successRate",
+            "label": "Success rate",
+            "value": "93%"
+          },
+          {
+            "id": "spend",
+            "label": "Spend",
+            "value": "$13"
+          },
+          {
+            "id": "favoriteModel",
+            "label": "Favorite model",
+            "value": "Sonnet"
+          },
+          {
+            "id": "hiredAt",
+            "label": "Hired",
+            "value": "2026-10-31"
+          }
+        ],
+        "code": {
+          "kind": "none",
+          "value": "",
+          "bars": []
+        }
+      }
+    }
+  },
+  "normalized": {
+    "unknown-dropped": {
+      "design": "badge",
+      "orientation": "vertical",
+      "logo": "banner",
+      "surface": "surface",
+      "accent": "accent",
+      "finish": "flat",
+      "photo": "large",
+      "code": "barcode",
+      "front": [
+        "name"
+      ],
+      "back": [],
+      "labels": {
+        "name": "Who"
+      }
+    },
+    "not-an-object": {
+      "design": "badge",
+      "orientation": "vertical",
+      "logo": "banner",
+      "surface": "surface",
+      "accent": "accent",
+      "finish": "flat",
+      "photo": "large",
+      "code": "barcode",
+      "front": [
+        "name",
+        "role",
+        "specialty",
+        "employeeId"
+      ],
+      "back": [],
+      "labels": {}
+    }
+  },
+  "models": {
+    "no-identity": {
+      "design": "badge",
+      "orientation": "vertical",
+      "logo": "banner",
+      "surface": "surface",
+      "accent": "accent",
+      "finish": "flat",
+      "photo": "large",
+      "front": [
+        {
+          "id": "name",
+          "label": "Name",
+          "value": "—"
+        },
+        {
+          "id": "employeeId",
+          "label": "Employee ID",
+          "value": "—"
+        },
+        {
+          "id": "jobs",
+          "label": "Jobs",
+          "value": "—"
+        }
+      ],
+      "back": [],
+      "code": {
+        "kind": "barcode",
+        "value": "—",
+        "bars": [
+          2,
+          1,
+          1,
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          1,
+          1
+        ]
+      }
+    },
+    "qr-page": {
+      "design": "badge",
+      "orientation": "vertical",
+      "logo": "banner",
+      "surface": "surface",
+      "accent": "accent",
+      "finish": "flat",
+      "photo": "large",
+      "front": [
+        {
+          "id": "email",
+          "label": "Email",
+          "value": "kat@agents.axf"
+        }
+      ],
+      "back": [],
+      "code": {
+        "kind": "qr",
+        "value": "axf://agent-swarm/kat",
+        "bars": []
+      }
+    }
+  },
+  "employeeIds": {
+    "kat": "AX-2671",
+    "rio": "AX-0881",
+    "boss": "AX-7756",
+    "Doc-Dee": "AX-1378"
+  },
+  "bars": {
+    "AX-0042": [
+      2,
+      1,
+      1,
+      1,
+      3,
+      1,
+      3,
+      1,
+      2,
+      1,
+      3,
+      1,
+      1,
+      2,
+      3,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      1,
+      1,
+      3,
+      1,
+      1,
+      1,
+      2,
+      1,
+      1
+    ],
+    "": [
+      2,
+      1,
+      1,
+      1,
+      2,
+      1,
+      1
+    ]
+  },
+  "errors": {
+    "ok": [],
+    "bad-enums": [
+      "data.design must be one of: badge, license, trading, backstage",
+      "data.finish must be one of: flat, foil, hologram, neon",
+      "data.code must be one of: barcode, qr, none"
+    ],
+    "bad-fields": [
+      "data.front[1] is not a card field (one of: name, role, specialty, employeeId, email, hiredAt, status, catchphrase, signature, jobs, successRate, spend, favoriteModel)",
+      "data.back must be a list of card fields",
+      "data.labels.bogus is not a card field",
+      "data.labels.name must be text up to 24 characters"
+    ],
+    "too-many": [
+      "data.front has more than 12 fields"
+    ],
+    "not-an-object": [
+      "data must be an object"
+    ],
+    "other-type": []
+  }
+}

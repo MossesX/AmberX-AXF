@@ -18,6 +18,7 @@
  */
 import { HUB_FIELD_CAPS, HUB_MESSAGES, approvalsUrl, hubOrigin, isApprovalId, type HubFeedStatus, type HubFetch } from '../hub/hub';
 import { formatCountdown, secondsLeftNow, splitFeed, vetoAction, type VetoCall } from '../hub/veto';
+import { parseSource, type HubSource } from '../hub/source';
 
 export const APPROVALS_LIBRARY_ID = 'ai.amberx.axf.approvals';
 /** Default poll period while the page is visible (the console banner and AmberX read the feed every 5 s too). */
@@ -57,6 +58,10 @@ export interface ApprovalItem {
   revision: number | null;
   /** Held calls: the countdown (seconds left at `readAt`, local clock). */
   veto: VetoCall | null;
+  /** The feed entry as the hub sent it, for the expanded row's extra fields (who asked, effect, timeline); details.ts reads it. */
+  entry?: Record<string, unknown> | null;
+  /** Who asked (axHub decision 109): Claude.ai / Claude Code / Headless / Console / Agent / System + name; null on older hubs. */
+  source: HubSource | null;
 }
 
 export type ApprovalsStatus = 'idle' | HubFeedStatus;
@@ -81,14 +86,14 @@ const o = (v: unknown): Record<string, unknown> | null => (v && typeof v === 'ob
 const s = (r: Record<string, unknown> | null, k: string): string | null => (r && typeof r[k] === 'string' ? (r[k] as string) : null);
 const oneLine = (t: string, cap: number) => t.replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, cap);
 
-interface Extra { title: string; description: string; actions: string[] | null; revision: number | null }
+interface Extra { title: string; description: string; actions: string[] | null; revision: number | null; source: HubSource | null; createdAt: string; entry: Record<string, unknown> }
 
 /** The decision fields of each feed entry, by id (the hub's `title`/`reason`, `actions`, `revision`). */
 function extras(body: string): Map<string, Extra> {
   const out = new Map<string, Extra>();
   let j: Record<string, unknown> | null = null;
   try { j = o(JSON.parse(body)); } catch { return out; }
-  for (const e of Array.isArray(j?.pending) ? (j!.pending as unknown[]) : []) {
+  for (const e of [...(Array.isArray(j?.pending) ? (j!.pending as unknown[]) : []), ...(Array.isArray(j?.held) ? (j!.held as unknown[]) : [])]) {
     const p = o(e);
     const id = s(p, 'id');
     if (!p || !id || out.has(id)) continue;
@@ -99,6 +104,9 @@ function extras(body: string): Map<string, Extra> {
       description: (s(p, 'description') ?? s(reason, 'description') ?? '').trim().slice(0, APPROVALS_DESCRIPTION_CAP),
       actions: Array.isArray(p.actions) ? p.actions.filter((a): a is string => typeof a === 'string') : null,
       revision: rev,
+      source: parseSource(p.source),
+      createdAt: (s(p, 'createdAt') ?? '').slice(0, 64),
+      entry: p,
     });
   }
   return out;
@@ -139,7 +147,8 @@ export function interpretApprovals(base: string, status: number, body: string, n
     const e = ex.get(c.id);
     items.push({
       kind: 'held', id: c.id, tool: c.tool, title: e?.title || c.title || `Run ${c.tool}`, description: e?.description ?? '',
-      summary: c.summary, command: c.command, createdAt: '', expiresAt: c.runsAt, url: c.url, decisions: heldDecisions(c), revision: e?.revision ?? null, veto: c,
+      summary: c.summary, command: c.command, createdAt: e?.createdAt ?? '', expiresAt: c.runsAt, url: c.url, decisions: heldDecisions(c), revision: e?.revision ?? null, veto: c,
+      source: e?.source ?? null, entry: e?.entry ?? null,
     });
   }
   for (const p of feed.pending) {
@@ -148,6 +157,7 @@ export function interpretApprovals(base: string, status: number, body: string, n
       kind: 'approval', id: p.id, tool: p.tool, title: e?.title || `Run ${p.tool}`.slice(0, APPROVALS_TITLE_CAP), description: e?.description ?? '',
       summary: p.summary, command: commandOfSummary(p.summary).slice(0, HUB_FIELD_CAPS.summary), createdAt: p.createdAt, expiresAt: p.expiresAt,
       url: p.url, decisions: decisionsOf(e?.actions ?? null), revision: e?.revision ?? null, veto: null,
+      source: e?.source ?? null, entry: e?.entry ?? null,
     });
   }
   return { status: 'ok', hub: base, count: Math.max(feed.count + held.length, items.length), items, approvalsUrl: feed.approvalsUrl, error: '', checkedAt: now };
@@ -175,6 +185,19 @@ export function itemLine(item: ApprovalItem, now: number = Date.now()): string {
   const left = countdownOf(item, now);
   if (left !== null) return left > 0 ? `Runs in ${formatCountdown(left)}` : 'Running';
   return `${item.tool}${item.createdAt ? ` · ${formatAge(ageSeconds(item.createdAt, now))} ago` : ''}`;
+}
+
+/**
+ * The row's times (axHub 109 rows, Brett Nov 1 2026): when it was asked ("3 min ago", '' when unknown) and its countdown
+ * ("Runs in 2:40" / "Running" for a held call, "12 min left" / "Expired" for an approval, '' when unknown).
+ */
+export function rowTimes(item: Pick<ApprovalItem, 'createdAt' | 'expiresAt' | 'veto'>, now: number = Date.now()): { asked: string; countdown: string } {
+  const asked = item.createdAt && Number.isFinite(Date.parse(item.createdAt)) ? `${formatAge(ageSeconds(item.createdAt, now))} ago` : '';
+  if (item.veto) { const left = secondsLeftNow(item.veto, now); return { asked, countdown: left > 0 ? `Runs in ${formatCountdown(left)}` : 'Running' }; }
+  const t = Date.parse(item.expiresAt);
+  if (!Number.isFinite(t)) return { asked, countdown: '' };
+  const left = Math.floor((t - now) / 1000);
+  return { asked, countdown: left <= 0 ? 'Expired' : left < 60 ? `${left} s left` : `${formatAge(left)} left` };
 }
 
 /** The badge's words: "3 waiting", "1 held · 2:40". Empty when nothing is waiting (nothing is drawn then). */

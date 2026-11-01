@@ -346,7 +346,7 @@ On claude.ai in a browser → **Settings → Connectors**:
 
 ---
 
-### Replace the GitHub token (when it dies or expires)
+### Replace the GitHub token (when it dies or expires; only the fallback once Part F2 is done)
 
 Signs: the push banner or auto-merge says 401 / Bad credentials, builds finish but say "pushed: no", or the
 health banner shows GitHub red. axHub has its own GitHub token in its vault; this one is the console's and the
@@ -362,6 +362,25 @@ server's git push.
 7. Done. Git push on the VPS reads the same token through `/usr/local/bin/axf-git-cred` (set as the credential
    helper for /opt/axf and every build worktree), so stuck build branches can be pushed straight away. Tell Claude
    "done" and it pushes them and opens the PRs.
+
+---
+
+## Part F2: GitHub App (no more tokens) <!-- axf-plugin:github-app -->
+
+Personal tokens die (expiry, revokes, 401s) and a fine-grained one can't create repos. The console makes its own
+private GitHub App instead and mints its tokens from the app's key, so nothing expires for good. Three taps, once:
+
+1. Console → **Settings → Plugins → GitHub** → **Create GitHub App** → on GitHub tap **Create GitHub App** (name
+   taken? add a suffix in the console's name field and tap Create again).
+2. GitHub opens the install page by itself: pick **All repositories** → **Install**.
+3. Back in the console: **Authorize as Brett** → **Authorize** on GitHub (lets the console create repos).
+
+That's it. The GitHub App item in the systems check goes green. git on the VPS (`/usr/local/bin/axf-git-cred`), `gh`
+(`/usr/local/bin/gh`), the push banner, CI reads, the activity feed and every console plugin now use the app; the old
+token stays as the fallback until you delete it (Keys banner). New repos: `axf repo create <name> --private`.
+Credentials live on the console server only, in `/opt/axf/.axf-console/github-app/` (owner-only). If the app is ever
+deleted or its key revoked, the GitHub App item turns red: tap Fix and do the three taps again.
+VPS helpers (once per server, root): `sh framework/deploy/install-github-helpers.sh`.
 
 ---
 
@@ -413,3 +432,228 @@ From then on:
   `https://axhub.<domain>/auth/admin/approvals`).
 - To move work to another Claude account, use the handoff
   ([install_instructions §11](install_instructions.md#11-handing-off-sessions)).
+
+---
+
+## Part I: How to set up the agent swarm
+
+The agent swarm (console → Builds → **Agent swarm**, plugin `apps/console-web/plugins/agent-swarm`) runs builds as
+small headless jobs, each on the cheapest model that can do it. It ships switched on with eight agents. Everything
+below is in the console; the same actions work from the shell with
+`node apps/console-web/plugins/agent-swarm/swarm.mjs …` (run in `/opt/axf`, or `docker exec axf-console …`). <!-- axf-plugin:agent-swarm -->
+
+### Step 27. Check the crew (and hire more)
+
+1. Open **Agent swarm → Crew**. Each card shows the agent's specialty, hire date, status, salary and spend.
+2. To hire another agent, add an `agent@1` entry to `agents/roster.json` (id, name, role, `skill`, specialty,
+   keywords, paths, models cheapest first, tools, `maxTurns`, `tokenBudget`, `salary`, `hiredAt`, avatar,
+   catchphrase, bio). Then give it a one-page skill file `agents/skills/<skill>.md` (`agent-skill@1`, under 50 lines).
+3. Check it: `node apps/console-web/plugins/agent-swarm/swarm.mjs roster` (no problems listed = hired), then commit <!-- axf-plugin:agent-swarm -->
+   and push. The new agent appears on Crew after the console redeploys.
+
+### Step 28. Statuses
+
+**Agents** tab, the agent's row: pick a status from the dropdown and add a note.
+
+| Status | Gets work? |
+| --- | --- |
+| On duty | yes |
+| Off duty | no, keeps everything |
+| Injured | no; flagged for a fix |
+| Medical leave | no until the date you set, then back on duty by itself |
+| Probation | small jobs only (15 min or less); you're told every run |
+| Fired | never again; kept greyed in history |
+| Custom | you name it and tick whether it gets work |
+
+**Discipline** is on each profile (tap a card): **Suspend** for a time with a reason; **Rehire** brings back a
+suspended, fired or quit agent. Agents rage-quit by themselves after a run of failed jobs; set how many on the
+Agents tab (**Rage-quit after**, default 3). Shell: `swarm.mjs act status <agent> off-duty "<note>"`,
+`swarm.mjs act suspend <agent> <hours> <reason>`, `swarm.mjs act rehire <agent>`.
+
+### Step 29. Salaries
+
+A salary is the agent's **weekly budget in dollars**. When it's spent the agent is broke and takes no new jobs until
+payday (Monday, UTC) or a top-up.
+
+- Change it on the Agents tab (**Salary / week**) or on the profile's **Pay** section. Higher = a raise, lower = docked;
+  Boss posts it in the group chat.
+- **Top up** gives a broke agent more for this week only.
+- Finishing a job under its budget earns a bonus on the card (bragging rights, not money).
+- Shell: `swarm.mjs act salary <agent> <usd> "<why>"`, `swarm.mjs act topup <agent> <usd>`.
+
+### Step 30. The group chat switch
+
+1. **Agent swarm → Group chat**: the switch at the top turns the chat on or off for everybody; each agent has its own
+   switch too. Off = nothing is posted and banter costs nothing.
+2. **Chat settings**: the vibe slider (1 = straight to the point, 500 = off the rails) is a hard ceiling; anything
+   above it is toned down or dropped. Chattiness, cussing and drama sliders, per-agent overrides, a daily banter
+   budget and presets (All business, Work crew, Break room, Off the rails, or save your own).
+3. **Color by vibe**: a setting (also on the chat's right-click menu) that shades messages by their vibe score.
+4. Shell: `swarm.mjs act chat on|off`, `swarm.mjs act chat <agent> off`, `swarm.mjs act preset crew` (business, crew, breakroom, rails),
+   `swarm.mjs act vibe 100`.
+
+### Step 31. ID cards
+
+**Agent swarm → ID cards** shows every card design (corporate badge, license, trading card, backstage pass, plus any
+you save) with a real agent in the current theme. **Make default** picks the design everyone gets; **Edit as new**
+opens the designer (fields per side, labels, logo place, finish) and saves a new design. On a profile, **ID card**
+picks a design for that agent and edits their card details (name, role, specialty, photo link, employee ID, internal
+email, hire date, catchphrase, signature). Cards take their colours from the theme, so a theme switch rebrands them.
+
+## Part J: Jobs and the crew
+
+Recurring work (walkthrough videos, site checks, screenshots, landing builds, banner cleanup, voice QA) is done by
+hired agents who each own a **job type**, not by anonymous one-off builds. Job types are `job-type@1` assets in
+`framework/assets/job-type/`; the crew is in the agent swarm's roster. Console → Builds → **Agent swarm → Jobs**. <!-- axf-plugin:agent-swarm -->
+
+### Step 32. Meet the crew
+
+| Agent | Owns | Model | Trigger |
+| --- | --- | --- | --- |
+| Reel Rhonda | AmberX walkthrough video (`amberx-walkthrough`) | Sonnet | on demand |
+| Ping Paulie | Site health check (`site-check`, read-only) | Sonnet | every 6 h |
+| Snap Sully | UI Review screenshots (`ui-screenshots`) | Sonnet | on demand |
+| Landin' Lenny | Land a finished build (`land-build`) | Opus | event `build.finished` |
+| Janitor Joey | Banner cleanup (`banner-cleanup`) | Sonnet | daily 09:00 UTC |
+| Earl the Ear | Voice listener QA (`listener-qa`) | Sonnet | event `amberx.voice-regression` |
+
+They are normal swarm agents: ID cards, statuses, salaries (weekly budgets) and the group chat all work the same
+(Part I). They never get build steps from the planner (`jobsOnly`). Each card lists the jobs the agent owns.
+
+### Step 33. Run a job
+
+1. **Agent swarm → Jobs**: one card per job type with its owner, trigger, last run, next scheduled run and cost.
+2. Tap **Run**, fill the inputs (blank = the default), **Preview brief** to see exactly what the agent gets, then
+   **Start**. The run opens in the console's Terminal as `axf-<agent>-<job>`.
+3. From a shell (or any Claude session): `node framework/cli/agent-job.mjs <job-type> --input key=value` (run in `/opt/axf`,
+   or `docker exec axf-console …`). `--dry-run` prints the brief and the command; `list` shows everything.
+4. A run is refused (exit 3, reason printed) when the owner is off duty, benched or broke, or its pay left this week
+   is under the run's cap. Fix it on the Agents tab (status, salary, top up), then run again.
+
+### Step 34. Schedules and events
+
+- `node framework/cli/agent-job.mjs due --run` starts every scheduled job that is due. To run it on its own, add a
+  cron line on the VPS, e.g. `*/30 * * * * cd /opt/axf && node framework/cli/agent-job.mjs due --run`.
+- `node framework/cli/agent-job.mjs event build.finished --run --input branch=<b>` starts the jobs an event triggers.
+- Finished runs are booked on the agent (stats, spend, report in the chat) the next time Jobs is opened, or with
+  `agent-job.mjs sweep`. Each run's final report is kept in the swarm's data folder (`job-reports/<run>.md`).
+
+### Step 35. A new kind of job
+
+1. Copy a file in `framework/assets/job-type/`, give it a new `id`, the owning `specialty`, model, budget, trigger,
+   brief (with `{{input}}` placeholders) and outputs (a UI Review group name must carry `{{when}}`).
+2. `node framework/cli/axf.mjs validate --framework` must pass.
+3. If nobody has that specialty, **Jobs** shows **Unassigned job** with **Hire**: one tap adds an agent who owns it
+   (`agent-job.mjs hire <job-type>` does the same). Rename them on their ID card.
+## Part K: The Chat viewer (every session, searchable, as audio)
+
+The Chat viewer (console → Plugins → **Chat viewer** or Apps → **Chats**; AmberX → **Chats**; plugin
+`apps/console-web/plugins/chat-viewer`) keeps every Claude session as a transcript: claude.ai text and voice chats,
+Claude Code sessions and headless build sessions. Details: the plugin's `README.md`. <!-- axf-plugin:chat-viewer -->
+
+### Step 36. Let the console see the session folders
+
+Re-run the console installer on the VPS once (`bash deploy/install-console.sh` in `/opt/axf`, or the console's
+redeploy). It mounts, read-only, `/root/.claude/projects`, `/home/axfbuild/.claude/projects`, `/root/axf-builds` and
+each `/home/axfbuild/wt-*` into the console (`deploy/host.sh` of the plugin). Open the viewer: it checks for updates on
+load and lists the Claude Code and build sessions it found. Settings → Plugins → Chat viewer shows each folder with
+a tick or a cross. <!-- axf-plugin:chat-viewer -->
+
+### Step 37. Bring in your claude.ai chats
+
+1. On claude.ai (phone or computer): **Settings → Privacy → Export data**. claude.ai emails a download link; open it
+   and download the zip.
+2. In the viewer tap **Import export** and pick the zip (or the `conversations.json` inside it). Text and voice chats
+   are added; importing a newer export later adds new chats and updates continued or changed ones (old copies kept as
+   versions). Exports over 12 MB need the console (AmberX's forwarder caps uploads at 12 MB).
+3. Between exports, say **"sync my chats"** in a claude.ai chat: it writes each new or updated conversation to the hub
+   drop folder (`sessions/claude-ai/<uuid>.json`), and the viewer picks them up on its next check (shared rule).
+
+The viewer never logs in to claude.ai and never uses your cookies.
+
+### Step 38. Free voices for audio export
+
+Settings → Plugins → Chat viewer → **Set up free voices (Piper)** (once, a few minutes): installs Piper in the
+plugin's data folder and downloads the two voices (Brett = Ryan, Amber = Amy; change them there). Then in any session
+tap **Audio → Make audio**; the file lands on the hub (`_data/chat-viewer/audio/`) with a player and a download link.
+For OpenAI or ElevenLabs voices instead, paste the key in the same settings (it stays on the console server).
+
+## Part L: Help mode
+
+Help mode makes every AmberX app explain itself: tooltips on every button, menu item, switch, slider, tab, column and
+banner, a short intro the first time you open a screen, and a **What is this?** panel with the longer story. Off means
+no tooltips and no clutter. It's in the framework, so the console, every plugin page, axHub web, AmberX web and
+Walkthrough Studio all have it (Patches is paused and gets it when it's re-baked).
+
+### Step 39. Turn it on
+
+Any of these, in any app:
+
+- the **?** at the right of the menu bar (it lights up while Help mode is on);
+- **F1** (or **Ctrl+Shift+H** where the browser keeps F1);
+- **Help → Help mode** in the app menu;
+- **Settings → About → Help mode**;
+- AmberX: say "help mode on" / "help mode off" (also "show me the tooltips" / "hide the tooltips").
+
+It's remembered per device, so the phone and the desktop can differ.
+
+### Step 40. Read a tooltip
+
+- **Desktop:** hover any control. The tooltip opens beside it (never on top of it), so you can still click it.
+- **Phone:** every control gets a small **?** badge; tap the badge. Or long-press the control itself (the control is
+  not tapped).
+- Tap anywhere else (or Escape) to close it. A normal tap on a control still does its job.
+- **What is this?** in a tooltip opens a small panel: the longer explanation, a thing to try, and related screens
+  (tap one to go there).
+- A control nobody has written help for yet says **No help yet** and shows its help id; it's on the coverage list.
+
+### Step 41. Screen intros
+
+The first time you open a screen with Help mode on, a 2–4 step intro points at its main parts. **Next** / **Back**,
+**Skip**, or tick **Don't show intros again** to stop them everywhere. **Help → Show this screen's intro** replays one;
+**Help → Show all screen intros again** (or the Settings action) brings them all back.
+
+### Step 42. Write help (for builds and plugins)
+
+- Help is an asset (help@1): packs of entries `{ target, title, text, more?, tryIt?, link?, related? }` plus `intros`.
+  The framework's pack is `framework/assets/help/framework.json` (copied into every app with
+  `node framework/cli/help-coverage.mjs --sync`); apps add `src/assets/help/*.json`; each console plugin ships its own
+  `help.json` beside `plugin.json` (it goes away when the plugin is uninstalled).
+- `target` is the control's help id: `action:<spec>` for anything with an action, `view:<id>` for a screen,
+  `banner:<id>`, `menu:<id>`, `column:<label>`, otherwise the label in lower-case with dashes ("Approve now (3)" →
+  `approve-now`). Put `data-help="<id>"` on a control to name it outright.
+- `node framework/cli/help-coverage.mjs` shows coverage per app; `--missing <scope>` lists what still says "No help yet";
+  `--draft <scope>` writes drafts from the code (edit them into plain English and drop `draft`); `--report <file>` writes
+  the report. CI runs `--check` and fails if coverage drops below `framework/spec/help-coverage.json`
+  (`--update` raises it after you add help).
+
+---
+
+## Part M: AXP backup
+
+The AXP streaming stack's code lives only on the VPS: `/opt/amberx/xchat` (xchat.amberxai.com: `axp-xchat`,
+`axp-xchat-media`), `/opt/axp-devstudio` (`axp-devstudio`) and `/opt/axp-demo` (demo.amberxai.com: `axp-demo`,
+`axp-demo-api`). A nightly job copies the code (never data, media, logs, build output or secrets) to private repos
+`MossesX/axp-xchat`, `MossesX/axp-devstudio` and `MossesX/axp-demo`. Scripts and units: `deploy/axp-backup/`.
+
+### Step 32. Install the backup
+
+1. Copy the scripts: `mkdir -p /root/axp-backup/bin && cp deploy/axp-backup/{backup.sh,finish.sh,excludes.txt} /root/axp-backup/bin/ && chmod +x /root/axp-backup/bin/*.sh`.
+   Each backup checkout gets `deploy/axp-backup/gitignore.template` as its `.gitignore`.
+2. Units: `cp deploy/axp-backup/systemd/* /etc/systemd/system/ && systemctl daemon-reload`.
+3. The three repos must exist on GitHub, **Private**, empty (no README). The gh token can't create repos, so make them
+   at github.com/new. Until they exist, `axp-backup-finish.timer` checks every 15 minutes, then pushes the first backup,
+   turns `axp-backup.timer` on and turns itself off (`systemctl enable --now axp-backup-finish.timer`).
+4. By hand: `/root/axp-backup/bin/backup.sh` (`--no-push` = copy, scan and commit only).
+
+### Step 33. What it does each night (03:30 UTC)
+
+- **Copy:** `rsync` from each live folder to `/root/axp-backup/<repo>` with `excludes.txt` (node_modules, .next, dist,
+  build output, `.env*`, keys and certs, `secrets*`, databases, dumps, backups, `uploads/ media/ recordings/ storage/
+  data/ seed-data/ .prod-accounts/ logs/`, `*.log`, `*.ndjson`, `*.bak*`, video and audio). The live folders are only
+  read, never git-initialised. Each checkout keeps its own `.env.example` with variable names only.
+- **Checks before a commit:** media over 1 MB outside `public/`, a gitleaks secret scan (`zricethezav/gitleaks` in
+  Docker, values redacted; known test values are listed in the checkout's `.gitleaksignore`) and a 200 MB size cap.
+- **Commit + push** only when something changed (author Claude).
+- **Failures** (copy, scan hit, size, push) become a red console banner item (`system:axp-backup-<repo>`); a later
+  clean run resolves it. Log: `/root/axp-backup/backup.log`, `journalctl -u axp-backup`.

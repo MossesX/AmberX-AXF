@@ -1,6 +1,7 @@
 /**
- * Audio Output Recorder (web part). In AmberX: one switch that records everything the phone plays (never the
- * microphone) into 30-minute chunks sent to axHub, plus a quick-settings tile ("Record audio out") doing the same.
+ * Audio Output Recorder (web part). In AmberX: one switch that records everything the phone plays into 30-minute
+ * chunks sent to axHub, plus a quick-settings tile ("Record audio out") doing the same. Opt-in "Record my mic too"
+ * (off by default) adds the phone's mic as a second track: left = mic, right = playback.
  * Everywhere (AmberX and the Dev Console): the recordings on axHub, to play, share (download on the console), delete,
  * or send to Audio Extract (AmberX).
  *
@@ -16,7 +17,7 @@ import { Button, Container, Note, Switch, useRuntime, type AxfWebLibrary } from 
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { nativeBridge } from './bridge';
 import {
-  DEFAULTS, FOLDER, ID, K, KBPS, UPLOAD_LABEL, VOICE, byDay, capHours, chunkBytes, chunkName, formatSize, formatTime, hubHours, hubOf, readSettings,
+  DEFAULTS, FOLDER, ID, K, KBPS, MIC_BUSY_LABEL, UPLOAD_LABEL, VOICE, byGroup, capHours, chunkBytes, chunkName, formatSize, formatTime, hubHours, hubOf, micLine, readSettings,
   type Recording,
 } from './core';
 import { createController, type Controller } from './store';
@@ -53,6 +54,8 @@ function Recorder() {
   const s = useStore();
   const r = s.rec;
   const cfg = settingsOf(rt);
+  // what this recording does (a start from axHub may choose the mic itself), else what the next one will do
+  const micNow = r.running ? r.mic : cfg.mic;
   const upTone = r.upload === 'idle' || r.upload === 'uploading' ? 'fx-chip--success' : r.upload === 'offline' ? 'fx-chip--warning' : 'fx-chip--danger';
   return (
     <Container title="Record what the phone plays" icon="play">
@@ -62,6 +65,7 @@ function Recorder() {
           hint={r.running ? <>Recording for <Elapsed since={r.startedAt} />. Stop here, from the notification, or with the “Record audio out” tile.</> : 'Android asks you to allow capture each time it starts.'} />
         {r.note && <p className="fx-small fx-muted">{r.note}</p>}
         <div className="axp-output-recorder-status">
+          {r.running && <span className={`fx-chip ${r.mic && !r.micBusy ? 'fx-chip--success' : r.mic ? 'fx-chip--warning' : ''}`}>{r.mic ? (r.micBusy ? `${micLine(true, true)} · ${MIC_BUSY_LABEL[r.micBusy]}` : micLine(true, false)) : 'Playback only · mic off'}</span>}
           <span className={`fx-chip ${upTone}`}>{UPLOAD_LABEL[r.upload]}</span>
           <span className="fx-small fx-muted">
             {r.waiting ? `${r.waiting} chunk${r.waiting === 1 ? '' : 's'} on the phone (${formatSize(r.waitingBytes)} of ${formatSize(r.capBytes)})` : 'Nothing waiting on the phone'}
@@ -85,8 +89,11 @@ function Recorder() {
         )}
         {(r.waiting > 0 || r.upload !== 'idle') && <div className="fx-row fx-row--wrap"><Button size="sm" icon="upload" onClick={() => void c.retry()}>Send now</Button></div>}
         <Note tone="info">
-          Only the sound apps play, never the microphone. Calls can’t be captured, and apps that block capture (DRM video, some music apps)
-          record as silence. Each {cfg.chunkMin}-minute chunk ({formatSize(chunkBytes(cfg))} at {cfg.kbps} kbps {cfg.channels === 1 ? 'mono' : 'stereo'}) goes
+          {micNow
+            ? <>The sound apps play plus your mic, as two tracks (left = mic, right = playback). The mic picks up anyone in the room. If another app holds the mic (the Claude app’s voice mode, a call), the mic side stays silent and the gap is marked. </>
+            : <>Only the sound apps play; your mic is off (Settings → Record my mic too). </>}
+          Calls can’t be captured, and apps that block capture (DRM video, some music apps)
+          record as silence. Each {cfg.chunkMin}-minute chunk ({formatSize(chunkBytes(cfg))} at {cfg.kbps} kbps {micNow || cfg.channels === 2 ? 'stereo' : 'mono'}) goes
           to axHub and stays on the phone until axHub confirms it; the phone holds up to {cfg.capMb} MB (about {Math.floor(capHours(cfg))} h) while offline.
         </Note>
       </div>
@@ -105,7 +112,7 @@ function RecordingRow({ r }: { r: Recording }) {
     <li className="axp-output-recorder-row">
       <div className="axp-output-recorder-rowhead">
         <span className="axp-output-recorder-name">{Number.isNaN(time.getTime()) ? r.name : time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-        <span className="fx-small fx-muted">{formatTime(r.durationMs)} · {formatSize(r.bytes)}{r.device ? ` · ${r.device}` : ''}</span>
+        <span className="fx-small fx-muted">{formatTime(r.durationMs)} · {formatSize(r.bytes)}{r.mic ? ' · playback + mic' : ''}{r.device ? ` · ${r.device}` : ''}</span>
       </div>
       {s.playing?.id === r.id && <audio className="axp-output-recorder-audio" src={s.playing.url} controls autoPlay onEnded={() => c.stopPlaying()} />}
       <div className="fx-row fx-row--wrap fx-row--end">
@@ -126,15 +133,15 @@ function HubList() {
   const s = useStore();
   const rt = useRuntime();
   useEffect(() => { if (!s.hub.loaded && !s.hub.loading) void c.refreshHub(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const days = byDay(s.hub.items);
+  const days = byGroup(s.hub.items);
   return (
     <Container title={`On axHub · ${settingsOf(rt).project}`} icon="cloud" actions={<Button size="sm" tone="quiet" icon="refresh" busy={s.hub.loading} onClick={() => void c.refreshHub()}>Refresh</Button>}>
       {s.hub.error ? <Note tone="warning">{s.hub.error}</Note>
         : !s.hub.loaded ? <p className="fx-muted">Loading…</p>
           : !days.length ? <p className="fx-muted">No recordings on axHub yet.</p>
             : days.map((d) => (
-              <div key={d.day} className="fx-stack">
-                <p className="fx-eyebrow">{d.day}</p>
+              <div key={d.key} className="fx-stack">
+                <p className="fx-eyebrow">{d.group ? `Session · ${d.label}` : d.label}</p>
                 <ul className="axp-output-recorder-list">{d.items.map((r) => <RecordingRow key={r.id} r={r} />)}</ul>
               </div>
             ))}
@@ -150,7 +157,7 @@ function OutputRecorderView() {
         <div>
           <p className="fx-eyebrow">Audio Output Recorder</p>
           <h1>Audio out</h1>
-          <p className="fx-muted">Everything the phone plays, recorded while it’s on and kept on axHub. No microphone.</p>
+          <p className="fx-muted">Everything the phone plays, recorded while it’s on and kept on axHub. Your mic only when you turn it on.</p>
         </div>
       </header>
       {c.native() ? <Recorder /> : <Note tone="info">Recording runs in the AmberX app on Android (switch or the “Record audio out” quick-settings tile). Here you can play, download and delete what it sent to axHub.</Note>}
@@ -179,8 +186,8 @@ const SETTING_KEYS = Object.values(K);
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Audio Output Recorder',
-  version: '0.1.0',
-  builtWith: { model: 'opus', builtAt: '2026-10-31' },
+  version: '0.2.0',
+  builtWith: { model: 'opus', builtAt: '2026-11-01' },
   provides: ['axf.output-recorder'],
   views: { 'output-recorder': { title: 'Audio out', icon: 'play', keywords: ['audio', 'record', 'recorder', 'phone audio', 'playback', 'axhub', 'recordings'], render: () => <OutputRecorderView /> } },
   appMenu,
@@ -193,6 +200,14 @@ export const plugin: AxfWebLibrary = {
         { key: K.channels, label: 'Channels', kind: 'choice', default: '1', options: [{ value: '1', label: 'Mono (half the size)' }, { value: '2', label: 'Stereo' }] },
         { key: K.chunkMin, label: 'Chunk length (minutes)', kind: 'number', default: DEFAULTS.chunkMin, min: 5, max: 60, step: 5 },
         { key: K.skipSilent, label: 'Skip silent chunks', kind: 'toggle', default: true, description: 'A chunk with no sound at all is not kept or sent.' },
+      ],
+    },
+    {
+      id: 'output-recorder.mic', label: 'Microphone', icon: 'mic', tab: 'output-recorder', settings: [
+        {
+          key: K.mic, label: 'Record my mic too', kind: 'toggle', default: false,
+          description: 'Your mic picks up anyone in the room. Off by default. Adds your mic as a second track (left = mic, right = what the phone plays), so whole sessions have both sides. Android asks for the microphone the first time you turn this on. A start from axHub can choose for itself (its approval then says “Playback + MIC”). Stop just the mic from the recording notification. If another app holds the mic (the Claude app’s voice mode, a call), it records playback only and marks the gap.',
+        },
       ],
     },
     {
@@ -225,7 +240,12 @@ export const plugin: AxfWebLibrary = {
       { id: 'output-recorder.open', phrases: [...VOICE.open], action: 'nav:output-recorder', owner: 'Audio out' },
     ]);
     if (!bridge) return;
-    for (const k of SETTING_KEYS) rt.settings.onChange(k, () => void c.configure({}));
+    for (const k of SETTING_KEYS) if (k !== K.mic) rt.settings.onChange(k, () => void c.configure({}));
+    rt.settings.onChange(K.mic, () => void (async () => {
+      const on = settingsOf(rt).mic;
+      if (on && !(await c.micToggled(true))) { rt.settings.set(K.mic, false); return; } // refused: stays off
+      await c.configure({});
+    })());
     void c.attach().catch((e) => rt.terminal.log('output-recorder', `attach failed: ${e instanceof Error ? e.message : String(e)}`));
   },
 };

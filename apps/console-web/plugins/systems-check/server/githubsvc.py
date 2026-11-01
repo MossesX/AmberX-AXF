@@ -10,7 +10,8 @@ Settings → Plugins → Systems check → GitHub route). The hub's GitHub token
   status(refresh=False)           does the hub route work right now? (GET /user through axHub; cached 5 min)
   client(user_agent, token=None)  the client (token: a callable for the local fallback, default GITHUB_TOKEN)
 
-The push banner, auto-merge, branch cleanup and CI helpers switch to it in their own build (claude/pr-only-merge).
+The push banner (listing, auto-merge, branch cleanup) builds its client from it (Nov 1 2026); its writes have no hub
+route and use the local token.
 """
 from __future__ import annotations
 
@@ -40,12 +41,17 @@ class GitHubService:
 
     # ---- route
     def route(self) -> str:
-        return store.settings().get("githubRoute", "hub")
+        """hub | local; "auto" (the default since Nov 1 2026) = the local token first while it is the GitHub App's
+        (github-app@1: minted, never dies), else axHub first."""
+        saved = store.settings().get("githubRoute")
+        if saved in github_hub.ROUTE_MODES:
+            return saved
+        return "local" if os.environ.get("AXF_GITHUB_TOKEN_SOURCE") == "app" else "hub"
 
     def set_route(self, mode: str, by: str = "console") -> str:
-        if mode not in github_hub.ROUTE_MODES:
-            raise ValueError("route is hub or local")
-        before = self.route()
+        if mode not in (*github_hub.ROUTE_MODES, "auto"):
+            raise ValueError("route is hub, local or auto")
+        before = store.settings().get("githubRoute")
         store.save_settings({"githubRoute": mode})
         if before != mode:
             self.log("system", f"GitHub route: {before} → {mode} ({by})", "info")

@@ -14,7 +14,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, lookCss, lookChanged, normalizeLook, type SettingsLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, attachable, collectionType, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, lookCss, lookChanged, normalizeLook, type SettingsLevel, type LookValues, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, IconButton, LookEditor, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
@@ -1160,7 +1160,7 @@ function appearanceGroup(rt: AxfRuntime): SettingsGroup {
     tab: 'appearance',
     order: 10,
     description: 'Pick the active asset for each slot. Change how each one looks in Asset appearance below.',
-    settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0 && !attachable(t)).map((t) => ({
+    settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0 && !attachable(t) && !collectionType(t)).map((t) => ({
       key: `axf.slot.${t}`,
       label: assetTypeSpecs[t].label,
       kind: 'asset_slot' as const,
@@ -1235,6 +1235,20 @@ export const library: AxfWebLibrary = {
         { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, requires: 'assets.swap', description: 'Percent of the normal size.' },
         { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, requires: 'assets.swap', description: 'Off reduces motion.' },
         LEVEL_BAR_SETTING,
+      ],
+    },
+    {
+      // Help mode (Brett, Nov 1 2026): the same switch as the ? in the menu bar, F1 and Help → Help mode; per device
+      id: 'axf.help',
+      label: 'Help mode',
+      icon: 'help',
+      tab: 'about',
+      order: 5,
+      description: 'Tooltips on every button, menu, switch and tab, plus a short intro the first time you open each screen. Off = no tooltips, no clutter.',
+      settings: [
+        { key: HELP_MODE_KEY, label: 'Help mode', kind: 'toggle', default: false, scope: 'device', description: 'Hover a control (or tap its ? on a phone, or long-press it) to see what it does. Shortcut: F1.' },
+        { key: HELP_INTROS_KEY, label: 'Screen intros', kind: 'toggle', default: true, scope: 'device', description: 'While Help mode is on, a 2–4 step tour the first time you open a screen.' },
+        { key: 'axf.help.intros.reset', label: 'Show all screen intros again', kind: 'action', target: HELP_ACTIONS.resetIntros, icon: 'refresh' },
       ],
     },
   ],

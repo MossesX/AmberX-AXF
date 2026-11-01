@@ -227,6 +227,10 @@
       "type": "string",
       "pattern": "^(view|dialog):[a-z0-9][a-z0-9._-]{0,63}$",
       "description": "which of its UIs moves with opens (default: its first page, else its first dialog)"
+    },
+    "help": {
+      "type": "string",
+      "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."
     }
   }
 }

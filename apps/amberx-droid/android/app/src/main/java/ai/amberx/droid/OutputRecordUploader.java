@@ -211,6 +211,16 @@ final class OutputRecordUploader {
             index.put("partBytes", PART_BYTES);
             index.put("sha256", sha);
             index.put("uploadedAt", OutputRecordService.iso(System.currentTimeMillis()));
+            // a session started from axHub (decision #108): its group on axHub, the session and its note
+            for (String k : new String[] { "group", "session", "note" }) if (!m.optString(k).isEmpty()) index.put(k, m.optString(k));
+            if (m.optInt("part") > 0) index.put("part", m.optInt("part"));
+            // two-track chunk (the opt-in mic): left = mic, right = playback, and when the mic side was silent
+            if (m.optBoolean("mic")) {
+                index.put("mic", true);
+                if (m.optJSONObject("tracks") != null) index.put("tracks", m.optJSONObject("tracks"));
+                if (m.optJSONArray("micBusy") != null) index.put("micBusy", m.optJSONArray("micBusy"));
+                index.put("micBusyMs", m.optLong("micBusyMs"));
+            }
             index.put("deleted", false);
             put(project, indexPath(id), index.toString(), cookie);
             // confirmed only by reading the index back
@@ -223,6 +233,7 @@ final class OutputRecordUploader {
                 throw new Stop("offline", "axHub’s copy of " + id + " didn’t match: sending it again.");
             }
             OutputRecordQueue.removeLocal(c, id);
+            OutputRecordQueue.sessionUploaded(c, m.optString("session"));
             JSObject e = new JSObject();
             e.put("id", id);
             OutputRecordService.emit("uploaded", e);

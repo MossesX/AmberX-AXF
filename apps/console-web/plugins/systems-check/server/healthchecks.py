@@ -268,7 +268,7 @@ def register_github(reg: Registry, svc: Any) -> None:
         who = f" as {st['login']}" if st.get("login") else ""
         return {"state": "done", "mitigated": True,
                 "message": f"console GitHub calls go through axHub{who} ({'switched from the local token' if before != 'hub' else 'already the route'}). "
-                           "Helpers not on github@1 yet (push banner) still need a new local token."}
+                           "Writes with no hub route (the push banner's PRs, merges and auto-merge) still need a new local token."}
     reg.add_autofix("github-token", {"label": "Send GitHub calls through axHub", "run": switch,
                                      "mitigated": lambda: svc.route() == "hub" and bool(svc.status().get("ok"))}, OWNER)
 

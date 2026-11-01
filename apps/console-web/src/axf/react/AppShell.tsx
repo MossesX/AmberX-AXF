@@ -13,6 +13,7 @@ import { Banner } from './components/Banner';
 import { FrameBanners, Slot } from './components/Slots';
 import { WaitingForHub } from './components/Waiting';
 import { Note } from './components/Forms';
+import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
 import { placedParts } from './placement';
 
@@ -72,8 +73,9 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   }, [state.view, keepKey]);
   const keptNow = keep.filter((id) => views[id] && (kept.includes(id) || id === state.view));
 
-  // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered.
-  if (state.appearance && state.appearance.status !== 'ready') {
+  // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered the first
+  // time (or says this browser may not read the look). A later re-read that fails keeps the app on screen (Nov 1 2026).
+  if (state.appearance && rt.appearanceBlocking()) {
     return (
       <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
         <div className="fx-shell fx-shell--waiting"><main className="fx-region fx-main" style={{ gridArea: 'main' }}><div className="fx-main__inner"><WaitingForHub state={state.appearance} hub={rt.appearanceHub?.()} /></div></main></div>
@@ -97,6 +99,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </main>
           <DialogHost dialogs={allDialogs} />
           <ToastHost />
+          <HelpLayer />
         </div>
       </div>
       </TabRenderersProvider>
@@ -162,6 +165,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
       <ToastHost />
       <ContextMenuHost />
       <FloatingWindowsHost />
+      {/* Help mode (components/Help.tsx): tooltips on every control, screen intros, What is this?; nothing while it's off */}
+      <HelpLayer />
     </div>
     <Slot name="app.frame.cover" />
     </div>

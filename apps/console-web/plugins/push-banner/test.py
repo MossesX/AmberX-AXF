@@ -68,6 +68,8 @@ class Fake(BaseHTTPRequestHandler):
         SEEN.append({"method": "GET", "path": p, "auth": self.headers.get("Authorization", "")})
         if p == R:
             return self._send(200, {"default_branch": "main"})
+        if p == "/user":
+            return self._send(200, {"login": "MossesX"})
         if p == R + "/branches":
             return self._send(200, [{"name": b} for b in STATE["branches"]])
         if p == R + "/branches/main/protection":
@@ -338,6 +340,12 @@ check(r["existing"] is False and r["number"] == 19 and STATE["created"][-1]["hea
 check(STATE["created"][-1]["title"] == "Last on feat/b", "the PR is titled from the last commit")
 check(c.post("/p/pr", json={"repo": "MossesX/Other", "branch": "feat/b"}).status_code == 400, "a repo that isn't watched is refused")
 check(c.post("/p/pr", json={"repo": "MossesX/AmberX-AXF", "branch": "main"}).status_code == 400, "no PR from main into main")
+# duplicate PRs after a squash merge (Oct 31 2026, #217 → #218): the exact head was merged already → no new PR
+STATE["closed"] = [{"number": 17, "merged_at": "2026-10-31T18:55:00Z", "base": {"ref": "main"}, "head": {"ref": "feat/b", "sha": "feat/b-head", "repo": {"full_name": "MossesX/AmberX-AXF"}}}]
+n_created = len(STATE["created"])
+d = c.post("/p/pr", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b"})
+check(d.status_code == 409 and "already merged" in d.json()["detail"] and len(STATE["created"]) == n_created, "no duplicate PR for a branch whose exact head was merged")
+STATE["closed"] = []
 
 m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18})
 check(m.status_code == 400, "merge needs the typed confirm")
@@ -586,4 +594,77 @@ os.environ["GITHUB_TOKEN"] = ""
 clock["t"] += 999
 out = c.get("/p/branches").json()
 check("GITHUB_TOKEN" in out["error"] and out["repos"] == [], "no token: says so instead of failing")
+
+# axf.github@1 (hub first, local fallback) and the banner's own health@1 item (live-key-checks s7 + s12)
+class FakeHubLink:
+    def __init__(self, on): self.on = on
+    def configured(self): return self.on
+class FakeGitHub:  # stands in for the systems check's githubsvc: answers as if axHub read GitHub for us
+    def __init__(self): self.hub, self.made = FakeHubLink(True), []
+    def client(self, user_agent="", token=None, **kw):
+        self.made.append((user_agent, token))
+        gh = mod.github.GitHubClient(lambda: TOKEN, base_url=os.environ["GITHUB_API_URL"], user_agent=user_agent, **kw)
+        gh.last_route = "axhub"
+        return gh
+class FakeHealth:
+    def __init__(self): self.specs = {}
+    def register(self, spec, owner=""): self.specs[spec["id"]] = (spec, owner); return spec["id"]
+fg, fh = FakeGitHub(), FakeHealth()
+plugin_services.provide("axf.github@1", fg, "fake-github")
+clock["t"] += 999
+out = c.get("/p/branches").json()
+check(not out["error"] and out["repos"] and fg.made and fg.made[-1][0] == "axf-console-push-banner", "no local token: reads through axf.github@1 (axHub) instead of failing")
+check(fg.made[-1][1] == mod.PUSHES.token, "axf.github@1 client gets the local token as its fallback")
+check(mod.PUSHES.auto_merge() == [], "no local token: auto-merge stays off (merges have no hub route)")
+check(mod.ensure_health() is False, "health@1 not provided yet: nothing registered, tried again later")
+plugin_services.provide("axf.health@1", fh, "fake-health")
+check(mod.ensure_health() and mod.HEALTH_ID in fh.specs and fh.specs[mod.HEALTH_ID][1] == "push-banner", "health@1: push banner registers its own GitHub check")
+spec_ = fh.specs[mod.HEALTH_ID][0]
+r = spec_["run"]()
+check(r["status"] == "warn" and "axHub" in r["summary"] and "GITHUB_TOKEN" in r["summary"], "health: reads via axHub, writes off without a local token = amber")
+os.environ["GITHUB_TOKEN"] = TOKEN
+r = spec_["run"]()
+check(r["status"] == "ok" and "as MossesX" in r["summary"], "health: both routes = green")
+os.environ["GITHUB_TOKEN"] = ""
+fg.hub.on = False
+r = spec_["run"]()
+check(r["status"] == "error" and "AXHUB_TOKEN" in r["summary"], "health: no route at all = red, says which keys")
+plugin_services.withdraw("fake-github")
+plugin_services.withdraw("fake-health")
+
+# UI Review holds the batch merge (ui-review s9): waiting / changes / rejected = skipped, the next PR gets its turn
+class FakeReview:
+    def __init__(self): self.st, self.asked = {}, []
+    def state(self, branch="", pr=None):
+        self.asked.append((branch, pr))
+        s = self.st.get(branch) or self.st.get(pr) or "none"
+        return {"state": s, "holds": s not in ("none", "approved")}
+fr = FakeReview()
+plugin_services.provide("ui-review@1", fr, "fake-ui-review")
+os.environ["GITHUB_TOKEN"] = TOKEN
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "" and fr.asked[-1] == ("feat/a", 18), "UI Review: nothing submitted = free")
+fr.st["feat/a"] = "waiting"
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "waiting", "UI Review waiting = held")
+check(mod.PUSHES.ui_hold("MossesX/axHub", 18, "other") == "" and fr.asked[-1] == ("other", None), "other repos: matched by branch only (PR numbers are AmberX-AXF's)")
+r = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+check(r.status_code == 409 and "UI Review" in r.json()["detail"], "Merge refuses a PR held by UI Review")
+fr.st["feat/a"] = "rejected"
+x18 = next(x for x in STATE["pulls"] if x["number"] == 18)
+STATE["checks"][x18["head"]["sha"]] = [{"status": "completed", "conclusion": "success", "name": "CI"}]  # green: only UI Review stops it
+STATE["behind"]["feat/a"] = 0
+n_merged = len(STATE["merged"])
+clock["t"] += 999
+res = mod.PUSHES.auto_merge()
+hit = [x for x in res if x.get("pr") == "MossesX/AmberX-AXF#18"]
+check(hit and hit[0].get("held") == "rejected" and len(STATE["merged"]) == n_merged, "auto-merge: a rejected PR is skipped, not merged")
+fr.st["feat/a"] = "approved"
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "UI Review approved = free again")
+clock["t"] += 999
+res = mod.PUSHES.auto_merge()
+check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][0] == R + "/pulls/18/merge", "auto-merge: approved in UI Review = merges")
+def boom(*a, **k): raise RuntimeError("broken")
+fr.state = boom
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "unknown", "UI Review broken: held, never merged blind")
+plugin_services.withdraw("fake-ui-review")
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "no UI Review plugin: nothing held")
 print(f"push-banner: {ok} checks passed")

@@ -1,0 +1,249 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "plugins-menu-help",
+  "name": "plugins-menu help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:plugins-menu. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:plugins-menu",
+    "entries": [
+      {
+        "target": "documentation",
+        "title": "Documentation",
+        "text": "Shows the “Documentation” part of this screen. Part of Plugins menu.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "about",
+        "title": "About",
+        "text": "Shows the “About” part of this screen. Part of Plugins menu.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "open-its-interface",
+        "title": "Open its interface",
+        "text": "Opens its interface. Part of Plugins menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "its-settings",
+        "title": "Its settings",
+        "text": "Opens the its settings. Part of Plugins menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "dialog",
+        "title": "Dialog",
+        "text": "Shows the “Dialog” part of this screen. Part of Plugins menu.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "window",
+        "title": "Window",
+        "text": "Shows the “Window” part of this screen. Part of Plugins menu.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "this-browsers-own-settings",
+        "title": "This browser's own settings",
+        "text": "Opens the this browser's own settings. Part of Plugins menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "browse",
+        "title": "Browse",
+        "text": "Shows the “Browse” part of this screen. Part of Plugins menu.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "archives",
+        "title": "Archives",
+        "text": "Shows the “Archives” part of this screen. Part of Plugins menu.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "version",
+        "title": "Version",
+        "text": "Where you set “Version”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "keep-the-old-builds-data",
+        "title": "Keep the old build's data",
+        "text": "Turns “Keep the old build's data” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "location",
+        "title": "Location",
+        "text": "Where you set “Location”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "credentials",
+        "title": "Credentials",
+        "text": "Where you set “Credentials”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "token",
+        "title": "Token",
+        "text": "Where you set “Token”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "user",
+        "title": "User",
+        "text": "Where you set “User”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "password",
+        "title": "Password",
+        "text": "Where you set “Password”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "header-name",
+        "title": "Header name",
+        "text": "Where you set “Header name”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "header-value",
+        "title": "Header value",
+        "text": "Where you set “Header value”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "use-this-archive",
+        "title": "Use this archive",
+        "text": "Turns “Use this archive” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "clear-the-credential",
+        "title": "Clear the credential",
+        "text": "Clears the credential. Part of Plugins menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "commit-installs-to-github",
+        "title": "Commit installs to GitHub",
+        "text": "Turns “Commit installs to GitHub” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "keep-the-old-builds-data-when-replacing",
+        "title": "Keep the old build's data when replacing",
+        "text": "Turns “Keep the old build's data when replacing” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "list-plugins-that-are-already-installed",
+        "title": "List plugins that are already installed",
+        "text": "Turns “List plugins that are already installed” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "list-build-pilot-plugins-too",
+        "title": "List Build Pilot plugins too",
+        "text": "Turns “List Build Pilot plugins too” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "read-the-archives-when-the-installer-opens",
+        "title": "Read the archives when the installer opens",
+        "text": "Turns “Read the archives when the installer opens” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "type-the-folder-name-to-confirm",
+        "title": "Type the folder name to confirm",
+        "text": "Turns “Type the folder name to confirm” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "sort-by",
+        "title": "Sort by",
+        "text": "Where you set “Sort by”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "plugins-per-page",
+        "title": "Plugins per page",
+        "text": "Where you set “Plugins per page”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "archive-shown-first",
+        "title": "Archive shown first",
+        "text": "Where you set “Archive shown first”. Change it and the app uses the new value. Part of Plugins menu.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "plugin-settings",
+        "title": "Plugin settings",
+        "text": "Opens the plugin settings. Part of Plugins menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "install-plugins",
+        "title": "Install plugins",
+        "text": "Installs plugins. Part of Plugins menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "plugins-menu",
+        "title": "Plugins menu",
+        "text": "Shows the “Plugins menu” part of this screen. Part of Plugins menu.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:plugins-menu.install",
+        "title": "Install it",
+        "text": "Installs it. Part of AI assistant.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

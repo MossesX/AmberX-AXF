@@ -3,7 +3,7 @@
  * on axHub. No React; the page subscribes, test.mts drives it with a fake bridge and a fake hub.
  */
 import type { LocalChunk, OutputRecorderBridge, Handle } from './bridge';
-import { HubRecordings, REC_IDLE, recReduce, type NativeEvent, type RecState, type Recording, type Settings } from './core';
+import { HubRecordings, REC_IDLE, recReduce, type NativeEvent, type RecState, type Recording, type Settings } from './core.ts';
 
 export interface State {
   rec: RecState;
@@ -42,6 +42,11 @@ export interface Controller {
   retry(): Promise<void>;
   discard(id: string): Promise<void>;
   configure(s: Partial<Settings>): Promise<void>;
+  /**
+   * "Record my mic too" changed. Turned on: Android's audio permission is asked for (only now, and only if it isn't
+   * there yet); false = refused, so the caller turns the setting back off.
+   */
+  micToggled(on: boolean): Promise<boolean>;
   play(r: Recording): Promise<void>;
   stopPlaying(): void;
   share(r: Recording): Promise<void>;
@@ -122,6 +127,15 @@ export function createController(bridge: OutputRecorderBridge | null, hooks: Hoo
     async configure(s) {
       if (!bridge) return;
       try { await bridge.configure({ ...hooks.settings(), ...s }); } catch { /* applies at the next start anyway */ }
+    },
+
+    async micToggled(on) {
+      if (!on || !bridge) return true; // off needs nothing; the console has no mic to record
+      try {
+        const { granted } = await bridge.micPermission();
+        if (!granted) toast('Android didn’t allow the microphone, so “Record my mic too” stays off.', 'warning');
+        return granted;
+      } catch (e) { toast(`Couldn’t ask for the microphone: ${msg(e)}`, 'warning'); return false; }
     },
 
     async play(r) {

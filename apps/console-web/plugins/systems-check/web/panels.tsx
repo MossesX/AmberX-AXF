@@ -227,7 +227,7 @@ export function BannersPanel() {
 interface AutoFix { id: string; label: string; owner: string; mode: 'auto' | 'ask' | 'off'; default: 'auto' | 'ask' | 'off' }
 interface FixEntry { at: number; check: string; title: string; label: string; state: 'done' | 'started' | 'failed'; message: string; by: string; mitigated?: boolean }
 interface Health { autoFixes: AutoFix[]; history: FixEntry[] }
-interface GitHubRoute { ok: boolean; route: 'hub' | 'local'; login?: string; why?: string; local: boolean }
+interface GitHubRoute { ok: boolean; route: 'hub' | 'local'; saved?: 'hub' | 'local' | 'auto'; app?: boolean; login?: string; why?: string; local: boolean }
 
 const MODES = [{ value: 'auto', label: 'On: fix it first, then tell me' }, { value: 'ask', label: 'Ask first (show the Auto fix button)' }, { value: 'off', label: 'Off' }];
 
@@ -245,8 +245,8 @@ export function AutoFixPanel() {
   return (
     <div className="fx-stack">
       <p className="fx-small fx-muted" style={{ margin: 0 }}>When a check turns red and it has a fix the console can run, the fix runs first (commands on the VPS go as a veto call you can stop on the countdown), the check runs again, and only what's still broken shows red and reaches your phone.</p>
-      <SelectField label="GitHub route (github@1)" value={g.route} onChange={(v) => void route(v)}
-        options={[{ value: 'hub', label: 'Through axHub first, local token as fallback' }, { value: 'local', label: 'Local GITHUB_TOKEN first, axHub as fallback' }]}
+      <SelectField label="GitHub route (github@1)" value={g.saved ?? g.route} onChange={(v) => void route(v)}
+        options={[{ value: 'auto', label: `Automatic: the GitHub App's token first when it's set up, else axHub (now: ${g.route === 'local' ? 'local' : 'axHub'})` }, { value: 'hub', label: 'Through axHub first, local token as fallback' }, { value: 'local', label: 'Local GITHUB_TOKEN first, axHub as fallback' }]}
         hint={g.ok ? `GitHub through axHub works${g.login ? ` (as ${g.login})` : ''}. The hub's GitHub token stays in the hub vault.` : `GitHub through axHub doesn't work right now: ${g.why ?? 'no answer'}.`} />
       <div className="fx-row fx-row--wrap"><Button icon="refresh" onClick={() => void test()}>Test the hub route</Button>
         <Chip tone={g.ok ? 'success' : 'danger'}>{g.ok ? 'axHub route ok' : 'axHub route down'}</Chip><Chip tone={g.local ? undefined : 'warning'}>{g.local ? 'local token set' : 'no local token'}</Chip></div>

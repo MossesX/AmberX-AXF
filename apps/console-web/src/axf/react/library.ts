@@ -37,6 +37,12 @@ export interface AxfWebLibrary {
   /** Custom settings UI for any tab; `render` returns React content. */
   settingsPanels?: SettingsPanel[];
   /**
+   * The library's own help (help@1 data: `{ entries, intros }`), shipped with it so a new plugin brings its help along
+   * (Help mode, Brett Nov 1 2026). Added to the help index while the library is installed. Console plugins may keep it
+   * in `help.json` beside plugin.json instead (plugin.json `help`); the coverage CI counts both.
+   */
+  help?: import('../core/engines/help').HelpData;
+  /**
    * Context-menu items, per target (`default` = the app-wide right-click / long-press menu). Added after the
    * context-menu asset's items and removed with the library, so a plugin's link never outlives the plugin.
    */
@@ -156,6 +162,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
+    if (l.help) rt.addHelp(`lib:${l.id}`, l.help);
     placeLibrary(rt, l);
     if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push(installedLibraryRecord(l));
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);

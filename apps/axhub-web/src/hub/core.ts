@@ -37,7 +37,10 @@ export function parseRoute(hash: string): Route {
     return { view: 'home', params: (APPROVAL_FILTERS as readonly string[]).includes(status) && status !== 'all' ? { status } : {} };
   }
   if (a === 'approvals' && b === 'log' && parts.length === 2) return { view: 'approvals-log', params: {} };
-  if (a === 'approvals' && b && APPROVAL_ID_RE.test(b) && parts.length === 2) return { view: 'approval', params: { id: b } };
+  if (a === 'approvals' && b && APPROVAL_ID_RE.test(b) && parts.length === 2) {
+    const pick = pickOf(query.get('do'));
+    return { view: 'approval', params: pick ? { id: b, do: pick } : { id: b } };
+  }
   if (a === 'handoff' && !b) return { view: 'handoff', params: {} };
   if (a === 'handoff' && b && RUN_ID_RE.test(b) && parts.length === 2) {
     const file = query.get('file') ?? '';
@@ -55,7 +58,8 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
     case 'approvals-log':
       return '#/approvals/log';
     case 'approval':
-      return APPROVAL_ID_RE.test(params.id ?? '') ? `#/approvals/${params.id}` : '#/approvals';
+      if (!APPROVAL_ID_RE.test(params.id ?? '')) return '#/approvals';
+      return pickOf(params.do) ? `#/approvals/${params.id}?do=${params.do}` : `#/approvals/${params.id}`;
     case 'handoff-run':
       if (!RUN_ID_RE.test(params.id ?? '')) return '#/handoff';
       return params.file && safeFilePath(params.file) ? `#/handoff/${params.id}?file=${encodeURIComponent(params.file)}` : `#/handoff/${params.id}`;
@@ -68,6 +72,47 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
 export function safeFilePath(p: string): boolean {
   return p.length > 0 && p.length <= 300 && !p.startsWith('/') && !p.includes('\\') && !p.split('/').some((s) => s === '' || s === '.' || s === '..');
 }
+
+/* ─────────────────────────────────────────────────────────── waiting rows */
+
+/** A button a notice can pick (`?do=` on the request's address, axHub decision 105): the page opens with it picked. */
+export const PICKS = ['deny', 'approve-now', 'shelve', 'approve'] as const;
+export type NoticePick = (typeof PICKS)[number];
+/** `?do=` → the picked button, or "" (anything else is ignored). `approve` is the same as `approve-now` on a held call. */
+export const pickOf = (raw: string | null | undefined): NoticePick | '' => ((PICKS as readonly string[]).includes(raw ?? '') ? (raw as NoticePick) : '');
+
+type HeldView = { status: string; veto?: { state?: string; approvedNow?: boolean; actions?: string[] } };
+type HeldAction = 'deny' | 'approve-now' | 'shelve';
+
+/**
+ * What a held (veto) call offers now, in the order shown: Deny, Approve now, Shelve. The hub's `veto.actions` when it
+ * sends them (decision 104); a hub from before 104 sends none, and gets Deny + Approve now (the app tries
+ * `/approve-now`, then `/approve`, decision 105) — Approve now is never left off a call still counting down.
+ */
+export function heldActions(item: HeldView): HeldAction[] {
+  if (item.status !== 'held' || !item.veto) return [];
+  const order: HeldAction[] = ['deny', 'approve-now', 'shelve'];
+  const raw = item.veto.actions;
+  if (Array.isArray(raw)) return order.filter((a) => raw.includes(a));
+  return item.veto.approvedNow ? ['deny'] : ['deny', 'approve-now'];
+}
+
+/** The routes Approve now tries on a held call, in order: decision 104's own, then 105's plain `/approve`. */
+export const approveNowPaths = (id: string): string[] => (APPROVAL_ID_RE.test(id) ? [`/auth/api/approvals/${id}/approve-now`, `/auth/api/approvals/${id}/approve`] : []);
+
+/**
+ * How many requests wait on the owner: the hub's `waiting` counts pending requests only, so the held calls counting
+ * down (`heldCount`, or the held rows on the page from a hub that doesn't send it) are added (decision 102: both wait).
+ */
+export function waitingCount(grid: { waiting?: number; heldCount?: number; items?: HeldView[] } | null | undefined): number {
+  if (!grid) return 0;
+  const pending = Number.isFinite(grid.waiting) ? Math.max(0, grid.waiting!) : 0;
+  const held = Number.isFinite(grid.heldCount) ? Math.max(0, grid.heldCount!) : (grid.items ?? []).filter((i) => i.status === 'held' && !!i.veto).length;
+  return pending + held;
+}
+
+/** The page title for that count. */
+export const waitingTitle = (n: number): string => (n <= 0 ? 'Nothing waiting' : `${n} waiting`);
 
 /** The hub's sign-in page, coming back to this exact page (the hub only returns to its own host). */
 export function signInUrl(hub: string, here: string): string {
@@ -195,4 +240,122 @@ export function stepGroups(steps: HandoffStepView[]): { name: string; steps: Han
   const groups = new Map<string, HandoffStepView[]>();
   for (const s of steps) groups.set(s.group, [...(groups.get(s.group) ?? []), s]);
   return [...groups].map(([name, list]) => ({ name, steps: list, done: list.filter((s) => s.done).length }));
+}
+
+/* ---------------------------------------------------------------- refreshes that keep the page (Nov 1 2026) */
+
+/**
+ * Brett, Nov 1 2026: the approvals screen flashed "Reading the hub" over and over while a countdown ran. A page shows its
+ * loading line only before its first answer; later reads update what is on screen in place.
+ */
+export const showReading = (data: unknown, error: string): boolean => data === null && !error;
+
+/** Failed reads in a row before a page that already shows data says the hub can't be reached (one blip stays quiet). */
+export const MISSES_SHOWN = 2;
+
+/** The error a page shows: at once when nothing is on screen yet, else only once `misses` reads in a row failed. */
+export const shownError = (hasData: boolean, error: string, misses: number): string =>
+  !error ? '' : !hasData || misses >= MISSES_SHOWN ? error : '';
+
+/**
+ * A session re-read (tab back in view, an expired CSRF value) that couldn't reach the hub (no answer, 5xx, 429) keeps the
+ * signed-in page as it is: swapping it for an error note and back remounted every page under it.
+ */
+export const keepSessionOnFailure = (phase: string, status: number): boolean =>
+  phase === 'ready' && (status === 0 || status === 429 || status >= 500);
+
+/** Same JSON = same answer: kept as the old value so nothing under it re-renders. */
+export const sameJson = (a: unknown, b: unknown): boolean => {
+  if (a === b) return true;
+  try { return JSON.stringify(a) === JSON.stringify(b); } catch { return false; }
+};
+
+/* ─────────────────────────────────────────────────────────── who asked (axHub decision 109) */
+
+/** The badge order for the source filter and the sort: people first, then unattended, then the hub. */
+export const SOURCE_ORDER = ['claude_ai', 'claude_code', 'headless', 'console', 'agent', 'system', 'unknown'] as const;
+export const SOURCE_LABEL: Record<string, string> = {
+  claude_ai: 'Claude.ai', claude_code: 'Claude Code', headless: 'Headless', console: 'Console', agent: 'Agent', system: 'System', unknown: 'Unknown',
+};
+
+interface SourceRow { source?: { kind: string; label: string; who: string } }
+
+/** A row's source kind ('unknown' when the hub sent none or a kind this page doesn't know). */
+export const sourceKind = (r: SourceRow): string => (r.source && Object.hasOwn(SOURCE_LABEL, r.source.kind) ? r.source.kind : 'unknown');
+/** A row's who: the session, build or agent name ('' when it adds nothing beyond the badge). */
+export const sourceWho = (r: SourceRow): string => (r.source && r.source.who && r.source.who !== r.source.label ? r.source.who : '');
+
+/** The source filter chips: every kind on the page, in badge order, with its count. */
+export function sourceChips(rows: readonly SourceRow[]): { kind: string; label: string; count: number }[] {
+  const n = new Map<string, number>();
+  for (const r of rows) n.set(sourceKind(r), (n.get(sourceKind(r)) ?? 0) + 1);
+  return SOURCE_ORDER.filter((k) => n.has(k)).map((k) => ({ kind: k, label: SOURCE_LABEL[k]!, count: n.get(k)! }));
+}
+
+interface TimedRow { status: string; createdAt: string; expiresAt: string; showExpires?: boolean; veto?: { secondsLeft: number; state?: string } }
+
+/**
+ * Sort key of the countdown column: seconds until it runs (held) or expires (waiting); shelved after those; decided
+ * requests last (Infinity).
+ */
+export function countdownKey(r: TimedRow, now: number = Date.now()): number {
+  if (r.status === 'held' && r.veto) return r.veto.state === 'shelved' ? 1e9 + r.veto.secondsLeft : r.veto.secondsLeft;
+  if (r.showExpires) { const t = Date.parse(r.expiresAt); return Number.isFinite(t) ? Math.max(0, (t - now) / 1000) : 1e10; }
+  return Number.POSITIVE_INFINITY;
+}
+
+/** Sort key of the Requested column: when it was asked (ms; unknown = 0). */
+export const requestedKey = (r: Pick<TimedRow, 'createdAt'>): number => { const t = Date.parse(r.createdAt); return Number.isFinite(t) ? t : 0; };
+
+/** Next column sort after a header tap: same column flips, a new one starts ascending, `null` = the hub's order. */
+export function nextSort(cur: { col: string; dir: 1 | -1 } | null, col: string | null): { col: string; dir: 1 | -1 } | null {
+  if (col === null) return null;
+  return cur && cur.col === col ? { col, dir: cur.dir === 1 ? -1 : 1 } : { col, dir: 1 };
+}
+
+/**
+ * The hub's reply to a tap shows at once (Running, Denied, Approved …) until the grid's next read changes that row; a
+ * reply is kept with the revision + status of the row it answered.
+ */
+export interface KeptReply<T> { base: string; item: T }
+export const replyBase = (r: { revision: number; status: string }): string => `${r.revision}:${r.status}`;
+export function shownRow<T extends { id: string; revision: number; status: string }>(fromGrid: T, kept: KeptReply<T> | undefined): T {
+  return kept && kept.base === replyBase(fromGrid) && (kept.item as { id: string }).id === fromGrid.id ? kept.item : fromGrid;
+}
+
+/* ─────────────────────────────────────────────────────────── approvals log: calls that needed no approval */
+
+/** One log entry, as far as these helpers read it (the hub sends about sixty fields; see the log page). */
+export type LogEntryView = Record<string, unknown>;
+
+/**
+ * A call that ran without asking (axHub decision 110: fixed-purpose tools on `allow`, e.g. vps.build_start / build_land
+ * / build_stop / build_list) is logged so the history shows it, but there is no approval request behind it, so the
+ * request page would open empty. The log shows its details inline instead.
+ */
+export const ranWithoutApproval = (e: LogEntryView): boolean =>
+  typeof e.status === 'string' && e.status.endsWith('without approval');
+
+const txt = (v: unknown): string => (typeof v === 'string' ? v.trim() : typeof v === 'number' && Number.isFinite(v) ? String(v) : '');
+
+/** The inline details of such a call: tool, arguments, who ran it, when, and the result (rows with nothing are left out). */
+export function directRunRows(e: LogEntryView): { key: string; label: string; value: string; time?: boolean; mono?: boolean }[] {
+  const tool = txt(e.qualifiedTool) || [txt(e.service), txt(e.tool)].filter(Boolean).join('.');
+  const keys = Array.isArray(e.argumentKeys) ? e.argumentKeys.filter((k): k is string => typeof k === 'string') : [];
+  const args = txt(e.command) || txt(e.summary) || (keys.length ? keys.join(', ') : '(no arguments)');
+  const source = txt(e.source);
+  const who = [Object.hasOwn(SOURCE_LABEL, source) ? SOURCE_LABEL[source] : source, txt(e.sourceSession), txt(e.callerName) || txt(e.callerId)]
+    .filter((v, i, a) => v && a.indexOf(v) === i).join(' · ');
+  const ms = typeof e.runMs === 'number' && Number.isFinite(e.runMs) ? e.runMs : null;
+  const result = [txt(e.resultStatus) || (e.status === 'failed without approval' ? 'error' : 'ok'), txt(e.errorCode),
+    txt(e.jobId) ? `job ${txt(e.jobId)}` : '', ms === null ? '' : ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(1)} s`].filter(Boolean).join(' · ');
+  const rows: { key: string; label: string; value: string; time?: boolean; mono?: boolean }[] = [
+    { key: 'tool', label: 'Tool', value: txt(e.toolTitle) && txt(e.toolTitle) !== tool ? `${tool} — ${txt(e.toolTitle)}` : tool, mono: true },
+    { key: 'arguments', label: 'Arguments', value: args, mono: true },
+    { key: 'who', label: 'Ran by', value: who },
+    { key: 'when', label: 'When', value: txt(e.ranAt) || txt(e.createdAt), time: true },
+    { key: 'result', label: 'Result', value: result },
+    { key: 'why', label: 'Approval', value: txt(e.decidedBy) || 'no approval needed (policy allow)' },
+  ];
+  return rows.filter((r) => r.value);
 }

@@ -1,0 +1,60 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ui-review-help",
+  "name": "ui-review help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:ui-review. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ui-review",
+    "entries": [
+      {
+        "target": "reopen",
+        "title": "Reopen",
+        "text": "Puts a decided item back in the waiting list.",
+        "kind": "button"
+      },
+      {
+        "target": "waiting",
+        "title": "Waiting",
+        "text": "Items still waiting for your decision.",
+        "kind": "button"
+      },
+      {
+        "target": "show-the-screens-list",
+        "title": "Screens list",
+        "text": "Shows or hides the list of screens beside the pictures.",
+        "kind": "toggle"
+      },
+      {
+        "target": "previous-screen",
+        "title": "Previous screen",
+        "text": "The picture of the screen before this one.",
+        "kind": "button"
+      },
+      {
+        "target": "next-screen",
+        "title": "Next screen",
+        "text": "The picture of the next screen.",
+        "kind": "button"
+      },
+      {
+        "target": "previous-screen-in-every-column",
+        "title": "Previous screen, every column",
+        "text": "Steps every column back one screen together, so phone and desktop stay lined up.",
+        "kind": "button"
+      },
+      {
+        "target": "next-screen-in-every-column",
+        "title": "Next screen, every column",
+        "text": "Steps every column on one screen together, so phone and desktop stay lined up.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

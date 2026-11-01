@@ -1,0 +1,47 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.agent-swarm",
+  "name": "Agent swarm",
+  "version": "0.2.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Headless specialist agents for the Build orchestrator. A roster of agents with one-page skills (Kotlin/Compose, React UI, Python server, plugin manifests, assets/themes, tests, docs, merge-fixer); a job planner that splits a build into jobs with file leases, overlap sequencing and the cheapest capable model; a context packer (minimal brief, cached shared prefix with Amber's persona); a headless runner (claude -p with model, max turns, token budget, allowed tools, own worktree, kill on overrun, JSON report); orchestrator-owned shared files, pre-push lease check and batch merge; cost meter per agent, job and build. Agent jobs: recurring job types (job-type@1) owned by hired agents, routed by framework/cli/agent-job.mjs (owner, duty, budget, brief, headless launch, run on the agent). Breakroom: agent cards and profiles, a Jobs view, statuses, salaries, discipline and a group chat with a vibe-ceiling settings suite.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:agent-swarm",
+    "settings-tab:agent-swarm",
+    "service:agent-jobs@1"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": {
+    "view": "agent-swarm",
+    "label": "Swarm",
+    "icon": "user"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/agent-swarm",
+    "env": [
+      "AXF_SWARM_DIR",
+      "AXF_CLAUDE_BIN"
+    ],
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      "_claude/rules/RULES.md",
+      "install_steps.md"
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-31"
+  },
+  "opens": "main"
+}

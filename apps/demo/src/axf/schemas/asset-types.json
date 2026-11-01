@@ -1368,6 +1368,128 @@
       },
       "optional": true
     },
+    "agent-card": {
+      "label": "Agent card",
+      "group": "Widgets",
+      "icon": "user",
+      "description": "An agent's ID card (agent-card@1, rules core/engines/agent-card-rules.mjs): the design family (corporate badge, license, trading card, backstage pass), orientation, where the brand logo sits, which theme roles colour it, finish, photo size, code strip and the fields on each side. Colours and sizes come only from the active colour and style themes, so a theme swap rebrands every card. The active agent-card asset is the default design; apps may override it per agent. Every field has a default.",
+      "required": [],
+      "enums": {
+        "design": [
+          "badge",
+          "license",
+          "trading",
+          "backstage"
+        ],
+        "orientation": [
+          "vertical",
+          "horizontal"
+        ],
+        "logo": [
+          "banner",
+          "watermark",
+          "corner",
+          "none"
+        ],
+        "surface": [
+          "surface",
+          "raised",
+          "inverse",
+          "accent"
+        ],
+        "accent": [
+          "accent",
+          "brand-1",
+          "brand-2",
+          "brand-3",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "finish": [
+          "flat",
+          "foil",
+          "hologram",
+          "neon"
+        ],
+        "photo": [
+          "large",
+          "small",
+          "none"
+        ],
+        "code": [
+          "barcode",
+          "qr",
+          "none"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "front": "card field ids, in order (name, role, specialty, employeeId, email, hiredAt, status, catchphrase, signature, jobs, successRate, spend, favoriteModel); up to 12",
+        "back": "card field ids for the back (flip); empty = no back",
+        "labels": "{ field: label } to rename a field on this design (up to 24 characters)"
+      }
+    },
+    "job-type": {
+      "label": "Job type",
+      "group": "Agents",
+      "icon": "layers",
+      "description": "A recurring kind of work a hired swarm agent owns (job-type@1, rules core/engines/job-type-rules.mjs): the owning specialty (an agent skill id), default model, token budget per run, trigger (on demand, schedule, event), the brief template the agent gets ({{placeholders}} from declared inputs and built-ins) and where its outputs go (report path, UI Review group name with a timestamp). Routed by framework/cli/agent-job.mjs. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "specialty",
+        "budget",
+        "trigger",
+        "brief"
+      ],
+      "enums": {
+        "model": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "fable"
+        ]
+      },
+      "nested": {
+        "budget": [
+          "tokens"
+        ],
+        "trigger": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "model": "default model for a run (haiku, sonnet, opus, fable); default sonnet",
+        "readOnly": "true = the job changes nothing, only reports",
+        "tools": "tool names the run gets (default: the owning agent's tools; read-only jobs get read tools only)",
+        "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",
+        "command": "a command the job runs (e.g. a re-record command), shown in the brief",
+        "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
+      }
+    },
+    "help": {
+      "label": "Help",
+      "group": "System",
+      "icon": "help",
+      "description": "Plain-English help for Help mode (help@1, rules core/engines/help-rules.mjs, engine core/engines/help.ts): a pack of entries, each explaining one control or screen by its help id (target: action:<spec>, view:<id>, banner:<id>, menu:<id>, column:<slug> or the label slug; <screen>/<id> overrides on one screen) with a title, text (what it does, when to use it, what happens if you tap it), an optional longer `more` for the What is this? panel, a `tryIt` step, a `link` and `related` ids; plus short screen intros (2–4 steps, walkthrough@1 step shape). Not a slot you pick: every help asset an app has is in force at once (framework, app, each plugin's help.json), later packs win, a written entry always beats a draft. Shown only while Help mode is on (setting axf.help.mode, per device).",
+      "required": [],
+      "collection": true,
+      "optional_fields": {
+        "scope": "string — where the pack belongs (framework, an app id, plugin:<folder>)",
+        "entries": "[{ id?, target, title, text, more?, tryIt?, link?: path | https URL | { label, href }, related?: [help ids], kind?, draft? }]",
+        "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1–6) }]"
+      },
+      "optional": true
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",
@@ -1387,11 +1509,12 @@
     }
   },
   "rollDefaults": {
-    "_doc": "Randomize rolls. slot = the slot takes part in a roll (randomize all); asset = default for an asset's own `roll` flag. Types may override with their own `roll` block. uac-policy is never rolled.",
+    "_doc": "Randomize rolls. slot = the slot takes part in a roll (randomize all); asset = default for an asset's own `roll` flag. Types may override with their own `roll` block. uac-policy is never rolled. help is never rolled (every help asset is in force at once).",
     "slot": true,
     "asset": true,
     "never": [
-      "uac-policy"
+      "uac-policy",
+      "help"
     ]
   },
   "hideDefaults": {

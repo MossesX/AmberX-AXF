@@ -1,0 +1,13 @@
+/* Agent cap (agent-slots plugin): layout only; controls come from the framework (fx-btn, Chip, TextField). */
+.axp-slots__summary { font-weight: normal; opacity: var(--fx-opacity-muted); white-space: nowrap; }
+.axp-slots__summary.is-full { opacity: 1; color: var(--fx-warning); }
+.axp-slots__meta { margin: 0 0 var(--fx-dens-gap-md) 0; }
+.axp-slots__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-slots__row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-slots__row:last-child { border-bottom: 0; }
+.axp-slots__pos { font-variant-numeric: tabular-nums; min-width: 2.5em; color: var(--fx-muted); }
+.axp-slots__name { display: flex; flex-direction: column; flex: 1 1 12em; min-width: 0; overflow-wrap: anywhere; }
+.axp-slots__acts { display: flex; gap: var(--fx-dens-gap-sm); }
+.axp-slots__num { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.axp-slots__num > :first-child { flex: 1 1 14em; }
+.axp-slots__running { margin-top: var(--fx-dens-gap-md); }

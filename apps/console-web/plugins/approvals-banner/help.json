@@ -1,0 +1,72 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "approvals-banner-help",
+  "name": "approvals-banner help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:approvals-banner. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:approvals-banner",
+    "entries": [
+      {
+        "target": "and-more",
+        "title": "…and more",
+        "text": "More calls are waiting than fit here. Tap for the full list.",
+        "kind": "button"
+      },
+      {
+        "target": "gets-louder-over-time",
+        "title": "Gets louder over time",
+        "text": "The alarm starts soft and builds up, so it doesn't make you jump.",
+        "kind": "field"
+      },
+      {
+        "target": "seconds-to-full-volume",
+        "title": "Seconds to full volume",
+        "text": "How long the alarm takes to reach full volume.",
+        "kind": "field"
+      },
+      {
+        "target": "rings-for-seconds",
+        "title": "Rings for",
+        "text": "How long each ring lasts, in seconds.",
+        "kind": "field"
+      },
+      {
+        "target": "rings-no-repeat",
+        "title": "Rings",
+        "text": "How many times it rings. 1 = once, no repeat.",
+        "kind": "field"
+      },
+      {
+        "target": "quiet-between-rings-seconds",
+        "title": "Quiet between rings",
+        "text": "Seconds of silence between rings.",
+        "kind": "field"
+      },
+      {
+        "target": "ring-through-silent-mode-phone",
+        "title": "Ring through silent mode",
+        "text": "On the phone, rings even when it's on silent. For calls you really can't miss.",
+        "kind": "field"
+      },
+      {
+        "target": "approvals-banner",
+        "title": "Approvals banner",
+        "text": "Its settings: notices, the alarm, when it shows.",
+        "kind": "tab"
+      },
+      {
+        "target": "allow-notifications",
+        "title": "Allow notifications",
+        "text": "Lets this browser show a notice when a call starts its countdown.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

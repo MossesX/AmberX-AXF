@@ -41,6 +41,22 @@ export interface ApprovalItem {
   jobId?: string;
   denyUrl?: string;
   streamUrl?: string;
+  /**
+   * Who asked (axHub decision 109): `kind` + badge `label` (Claude.ai / Claude Code / Headless / Console / Agent /
+   * System / Unknown), `who` (session, build or agent name), the MCP client. Absent on an older hub.
+   */
+  source?: ApprovalSourceView;
+}
+
+export interface ApprovalSourceView {
+  kind: string;
+  label: string;
+  who: string;
+  session?: string;
+  client?: string;
+  clientVersion?: string;
+  auth?: string;
+  oauthClient?: string;
 }
 
 export interface AutoState {
@@ -55,7 +71,9 @@ export interface ApprovalGrid {
   page: number;
   pages: number;
   total: number;
+  /** Pending requests only: held veto calls are `heldCount` (add both for what waits, `waitingCount`). */
   waiting: number;
+  heldCount?: number;
   postponed: number;
   items: ApprovalItem[];
   auto: AutoState;
@@ -83,4 +101,9 @@ export const EFFECT_TONE: Record<ApprovalItem['effect'], 'danger' | 'success' | 
 
 export const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
   pending: 'accent', held: 'warning', running: 'accent', ran: 'success', failed: 'danger', denied: undefined, approved: 'success', consumed: 'success', rejected: 'danger', revoked: 'danger', postponed: 'warning', ignored: undefined, expired: undefined,
+};
+
+/** Source badge tones (axHub decision 109): people-driven sources accent, unattended ones warning, the console success. */
+export const SOURCE_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
+  claude_ai: 'accent', claude_code: 'accent', headless: 'warning', console: 'success', agent: 'warning', system: undefined, unknown: undefined,
 };

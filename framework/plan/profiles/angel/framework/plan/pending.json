@@ -1,4 +1,5 @@
 {
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "pending@1",
  "updatedAt": "2026-10-31T09:07:22.078Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
@@ -652,34 +653,53 @@
    "id": "audio-output-recorder",
    "title": "AmberX Audio Output Recorder -> axHub (no mic)",
    "detail": "Brett, Oct 30 2026 (voice): AmberX plugin that records all audio the phone outputs while it is on, saved to the server on axHub. One switch + quick-settings tile. Playback capture only, NEVER the microphone. Android 10+; system consent prompt each start and a notification while recording. Calls and opt-out apps (DRM) cannot be captured. 30-minute timestamped chunks, each uploaded to axHub; keep the local file until axHub confirms, queue and retry when offline, small local cap. Built on the capture engine from claude/audio-extract (PR #187).",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Leftovers check against main (e46b8079, 08f84bf3, PR #194 merged): s1 OutputRecordService (AudioPlaybackCapture via MediaProjection, setAudioPlaybackCaptureConfig only = never the mic, foreground notification type mediaProjection); s2 output-recorder switch + OutputRecordTile quick-settings tile + OutputRecordStartActivity consent; s3 30-min chunks, OutputRecordUploader/Queue (local copy until axHub confirms, offline retry, local cap with drop-oldest/stop); s4 recordings on axHub (play, share/download, delete, send to Audio Extract) in AmberX and the console; s5 test.mts 18/18 on Node 22 + README + RecorderControlTest. All ticked; nothing missing. Java compiles only in CI.",
+     "at": "2026-11-01T02:37:02.141Z"
+    },
+    {
+     "text": "s3-s5 recorded done with a plain step update, NOT a model-switch approval: the Fable→Opus gate is for starting a phase, and this work had already shipped in PR #194 (e46b8079). No approval was recorded for Brett.",
+     "at": "2026-11-01T02:37:21.093Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] Capture service: AudioPlaybackCapture via MediaProjection, foreground notification, no mic",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-01T02:36:59.574Z"
     },
     {
      "text": "[Fable] Switch in AmberX + quick-settings tile; consent prompt flow",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:00.146Z"
     },
     {
      "text": "[Opus] 30-min timestamped chunks uploaded to axHub (same store as AmberX notes); local copy kept until upload confirmed; offline queue + retry; local cap",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:25.023Z"
     },
     {
      "text": "[Opus] Recordings list from axHub: play, share, delete, send to Audio Extract; also visible in the console",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:25.023Z"
     },
     {
      "text": "[Opus] Tests + docs",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:25.023Z"
     }
    ],
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "builtAt": "2026-11-01T02:37:25.448Z",
+   "updatedAt": "2026-11-01T02:37:25.448Z",
    "source": "console"
   },
   {
@@ -755,11 +775,15 @@
    "title": "Live key + health checks in the banners: every key tested against its service every 15 min, red banner item with a fix, health@1 registry, push to AmberX",
    "detail": "Brett, Oct 30 2026 (voice): the console's GITHUB_TOKEN went dead (401) and nothing told him. 'You need to make sure things like that go into one of the banners. I need to see that kind of shit.' Live checks (GitHub /user + scopes + expiry, axHub MCP, Anthropic/Claude, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push creds), red banner items with what broke / what it breaks / since when / Fix, amber a week before expiry, health@1 registry, stuck builds, veto denied/expired, CI on main, restarting containers, disk >85%, one push per new red item. Profile: Angel. Web/Python only.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "s1-s6 done on claude/live-key-checks (Opus): health@1, live probes, system checks, red banners, test-before-save, push once to AmberX, shared rule; self-test 184, tsc/vite/check-theme/check-controls/lifecycle green. s7 waits on claude/pr-only-merge.",
      "at": "2026-10-30T18:52:13.649Z"
+    },
+    {
+     "text": "s7+s12 done by Leftovers (claude/leftovers): push banner builds its client from axf.github@1 (reads through axHub, local GITHUB_TOKEN fallback; writes still local), lists branches with no local token, and registers its own health@1 check push-banner-github (red no route / amber reads only / green). push-banner test.py 132→141, systems-check 216/216.",
+     "at": "2026-11-01T02:34:25.216Z"
     }
    ],
    "subPrompts": [
@@ -808,7 +832,9 @@
     {
      "text": "[Opus] Follow-up (after claude/pr-only-merge lands): move push-banner's token check onto health@1",
      "at": "2026-10-30T18:21:59.378Z",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:34:24.360Z"
     },
     {
      "text": "[Opus] Fix it yourself: rule in shared RULES.md (near the top) + CLAUDE.md",
@@ -841,12 +867,14 @@
     {
      "text": "[Opus] Follow-up (claude/pr-only-merge): push banner builds its client from axf.github@1 (hub route) instead of GITHUB_TOKEN",
      "at": "2026-10-30T18:21:59.378Z",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:34:24.794Z"
     }
    ],
    "createdAt": "2026-10-30T18:21:59.378Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-31T00:46:05.582Z",
+   "builtAt": "2026-11-01T02:34:24.794Z",
+   "updatedAt": "2026-11-01T02:34:25.216Z",
    "source": "console"
   },
   {
@@ -854,11 +882,15 @@
    "title": "UI Review: one plugin where Brett approves every UI a build makes (Design packs renamed and widened)",
    "detail": "Brett, Oct 30 2026 (voice, driving): rename the Design packs console plugin to UI Review (folder ui-review) and make it one all-in-one UI approval plugin. Every UI a build makes is submitted there for his approval, separated by kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Items: title, kind, app, build/branch/PR, desktop + phone shots, notes, status (waiting / approved / changes asked / rejected), his comment, history. Views: tree, collapsible grid, grid with sub-grids, gallery, compare; multi-select + bulk decisions in every view. Builds submit through review.mjs, the plugin API and rebuild-shots --submit; capability ui-review@1. Design-pack picks (MAX 3) migrate. Profile: Angel. Web only.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "s1–s8 built on claude/ui-review (Opus, Oct 30). s9 waits for the push-banner build: its batch merge should call ui-review@1 holds(branch, pr). push-banner deliberately not edited here.",
      "at": "2026-10-30T18:25:02.743Z"
+    },
+    {
+     "text": "s9 done by Leftovers: push banner auto-merge skips and Merge refuses PRs whose ui-review@1 state holds (waiting/changes/rejected; error = held); PR numbers only for AmberX-AXF, other repos by branch. push-banner test 141→150.",
+     "at": "2026-11-01T02:36:07.977Z"
     }
    ],
    "subPrompts": [
@@ -921,12 +953,14 @@
     {
      "text": "[Opus] Follow-up (after the push-banner build lands): the batch merge holds PRs whose ui-review@1 state is waiting or rejected",
      "at": "2026-10-30T17:59:21.357Z",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:36:07.629Z"
     }
    ],
    "createdAt": "2026-10-30T17:59:21.357Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-30T18:25:02.743Z",
+   "builtAt": "2026-11-01T02:36:07.629Z",
+   "updatedAt": "2026-11-01T02:36:07.977Z",
    "source": "console"
   },
   {
@@ -1037,11 +1071,15 @@
    "title": "Audio Extract plugin for AmberX: pull the audio out of screen recordings (lossless .m4a, optional MP3/WAV), plus a built-in screen recorder with playback audio (no mic)",
    "detail": "Brett, Oct 30 2026 (voice): strip the audio out of his phone screen recordings into an audio file; extraction from a video file only, no live mic, no fallbacks. Then: add a Record screen mode (MediaProjection + playback capture, foreground service, chip, countdown) whose recordings go straight through the extractor. Profile: Angel. Opus, one session.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "Built on claude/audio-extract (Opus). Web: console plugin audio-extract (targets amberx-droid). Native: AudioExtractPlugin/AudioExtractor/ScreenRecordService. javac-checked locally vs android-35 + Capacitor 8.5.3; APK from CI job amberx. No MP3 (Android has no MP3 encoder); screen-recording folders are SAF grants (no storage permission).",
      "at": "2026-10-30T22:16:02.736Z"
+    },
+    {
+     "text": "s7 closed by Leftovers: claude/audio-extract is on main; test.mts 24/24, AmberX test.mjs 2045/2045 + tsc (Node 22), plugin-lifecycle clean. The new AmberX APK comes from CI (amberx-debug.apk).",
+     "at": "2026-11-01T02:36:26.239Z"
     }
    ],
    "subPrompts": [
@@ -1090,12 +1128,14 @@
     {
      "text": "[Opus] Tests: tsc, test.mjs, plugin-lifecycle check; THREADS, PR",
      "at": "2026-10-30T21:56:25.813Z",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:36:25.826Z"
     }
    ],
    "createdAt": "2026-10-30T21:56:25.813Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-30T22:16:02.736Z",
+   "builtAt": "2026-11-01T02:36:25.826Z",
+   "updatedAt": "2026-11-01T02:36:26.239Z",
    "source": "console"
   }
  ]

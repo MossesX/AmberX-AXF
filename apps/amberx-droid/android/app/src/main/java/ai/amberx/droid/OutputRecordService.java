@@ -38,9 +38,18 @@ import org.json.JSONObject;
  * into timestamped chunks (30 minutes by default) and handed to {@link OutputRecordUploader} for axHub.
  *
  * Source: AudioPlaybackCapture through MediaProjection (Android 10+), the same capture path as Audio Extract's screen
- * recorder ({@link ScreenRecordService}, PR #187) without the screen. **Never the microphone:** the AudioRecord is built
- * only with {@code setAudioPlaybackCaptureConfig}, never with an audio source, so Android can't hand it the mic. Android
- * files playback capture under the RECORD_AUDIO permission, which is why that permission is asked for.
+ * recorder ({@link ScreenRecordService}, PR #187) without the screen. The playback AudioRecord is built only with
+ * {@code setAudioPlaybackCaptureConfig}, never with an audio source. Android files playback capture under the
+ * RECORD_AUDIO permission, which is why that permission is asked for.
+ *
+ * Opt-in microphone (Nov 1 2026): only when "Record my mic too" is on or the approved axHub start said `mic: true`
+ * ({@link OutputRecordQueue#micWanted}), a second AudioRecord on the mic (VOICE_RECOGNITION: not a privacy-sensitive
+ * source, so it never silences the Claude app's own mic; echo canceller and noise suppressor added when the phone has
+ * them) is read alongside, and the chunk is written as stereo on one timeline: **left = mic, right = playback**
+ * ({@link TwoTrack}). When Android won't hand the mic over or silences it (another app holds it), the left side is
+ * silence, the span goes in the chunk's `micBusy` metadata and a notification says so: it never fails the recording.
+ * The mic stops at once from the notification (Stop mic) and is released whenever the recording stops. It is a plain
+ * capture: no recognizer and no new listener (events still go to the one {@link #listener}).
  * What can't be captured: calls (voice-communication audio is never offered to capture) and apps that opt out
  * (DRM video, some music apps): those parts are silent.
  *
@@ -51,17 +60,27 @@ import org.json.JSONObject;
  * Encoding: the 48 kHz stereo capture → AAC-LC (mono downmix by default, 32 kbps) → one MediaMuxer per chunk. The
  * encoder runs straight through; at a chunk boundary the muxer is closed and a new one opened (every AAC frame is a
  * sync frame, so any frame can start a file). A chunk that was silent all through is dropped when "skip silent" is on.
+ *
+ * Sessions from axHub (decision #108, {@link AxppLink}): a start through `amberx.recorder_start` sets a session first
+ * ({@link OutputRecordQueue#setSession}); while it is set the notification says "Recording: <session>", each kept part
+ * is named {@code "<session> - <YYYY-MM-DD HH-mm> - partN"} ({@link RecorderControl#partName}) and goes to axHub with the
+ * session's group, and stopping (switch, tile, notification Stop, `recorder_stop`) ends the session. Still never the
+ * microphone: a session changes names only.
  */
 public class OutputRecordService extends Service {
     interface Listener { void on(JSObject e); }
 
     static final String ACTION_START = "ai.amberx.droid.outrec.START";
     static final String ACTION_STOP = "ai.amberx.droid.outrec.STOP";
+    static final String ACTION_STOP_MIC = "ai.amberx.droid.outrec.STOP_MIC";
     static final String EXTRA_CODE = "code";
     static final String EXTRA_DATA = "data";
     static final String EXTRA_REASON = "reason";
     private static final String CHANNEL = "amberx-output-recorder";
     private static final int NOTIFICATION = 7311;
+    private static final int NOTE_MIC_BUSY = 7312;
+    /** frames per block the two-track pump hands the encoder (~43 ms) */
+    private static final int BLOCK = 2048;
     private static final int RATE = 48_000;
     /** |sample| at or under this the whole chunk = silent (16-bit full scale is 32767). */
     private static final int SILENCE = 64;
@@ -71,11 +90,26 @@ public class OutputRecordService extends Service {
     static volatile long startedAtMs;
     /** the chunk being written (so a cleanup never removes it) */
     private static volatile File current;
+    /** the session part being written, e.g. "Build - 2026-11-01 10-00 - part2" (null outside a session) */
+    static volatile String currentName;
+    /** the mic track is part of this recording (asked for, and not stopped from the notification) */
+    static volatile boolean micOn;
+    /** why the mic side is silent right now (TwoTrack.BUSY_*), null while it records */
+    static volatile String micBusy;
     private static final SecureRandom RNG = new SecureRandom();
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private MediaProjection projection;
     private AudioRecord capture;
+    /** the opt-in mic (null when off, refused or stopped) */
+    private AudioRecord mic;
+    private Thread micReader, playReader;
+    private final TwoTrack.Ring micRing = new TwoTrack.Ring(TwoTrack.RING_FRAMES);
+    private final TwoTrack.Ring playRing = new TwoTrack.Ring(TwoTrack.RING_FRAMES);
+    /** the mic reader is delivering frames (it keeps the clock while it does) */
+    private volatile boolean micLive;
+    private volatile boolean micStop;
+    private final TwoTrack.Busy busy = new TwoTrack.Busy();
     private MediaCodec encoder;
     private MediaFormat outFormat;
     private MediaMuxer muxer;
@@ -101,6 +135,7 @@ public class OutputRecordService extends Service {
         String a = intent == null ? null : intent.getAction();
         if (ACTION_START.equals(a)) start(intent);
         else if (ACTION_STOP.equals(a)) stop(intent.getStringExtra(EXTRA_REASON));
+        else if (ACTION_STOP_MIC.equals(a)) stopMic();
         else if (!running) stopSelf();
         return START_NOT_STICKY;
     }
@@ -126,6 +161,9 @@ public class OutputRecordService extends Service {
         JSObject o = new JSObject();
         o.put("running", running);
         o.put("startedAt", running && startedAtMs > 0 ? iso(startedAtMs) : null);
+        o.put("currentFile", running ? currentName : null);
+        o.put("mic", running && micOn);
+        o.put("micBusy", running && micOn && micBusy != null ? micBusy : null);
         return o;
     }
 
@@ -144,27 +182,44 @@ public class OutputRecordService extends Service {
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL) == null) {
             NotificationChannel ch = new NotificationChannel(CHANNEL, "Audio output recorder", NotificationManager.IMPORTANCE_LOW);
-            ch.setDescription("Shown while AmberX records the sound the phone plays (never the microphone)");
+            ch.setDescription("Shown while AmberX records the sound the phone plays (and your mic, only when you turned that on)");
             nm.createNotificationChannel(ch);
         }
         Intent open = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent stop = PendingIntent.getService(this, 1, new Intent(this, OutputRecordService.class).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(this, CHANNEL) : new Notification.Builder(this);
-        return b.setSmallIcon(android.R.drawable.ic_btn_speak_now)
-            .setContentTitle("Recording what the phone plays")
+        b.setSmallIcon(android.R.drawable.ic_btn_speak_now)
+            .setContentTitle(sessionTitle())
             .setContentText(text)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setContentIntent(PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT))
-            .addAction(new Notification.Action.Builder(null, "Stop", stop).build())
-            .build();
+            .addAction(new Notification.Action.Builder(null, "Stop", stop).build());
+        if (micOn) {
+            // the mic stops at once from here, the playback recording goes on
+            PendingIntent stopMic = PendingIntent.getService(this, 2, new Intent(this, OutputRecordService.class).setAction(ACTION_STOP_MIC), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+            b.addAction(new Notification.Action.Builder(null, "Stop mic", stopMic).build());
+        }
+        return b.build();
+    }
+
+    /** When the session's recording started (every part name carries it); the chunk's own start if not known yet. */
+    private static long sessionStart(JSONObject session, long fallback) {
+        long t = session.optLong("startedAt", 0);
+        return t > 0 ? t : fallback;
+    }
+
+    private String sessionTitle() {
+        JSONObject s = OutputRecordQueue.session(this);
+        if (micOn) return s == null ? "Recording: playback + mic" : "Recording: " + s.optString("name") + " (playback + mic)";
+        return s == null ? "Recording what the phone plays" : "Recording: " + s.optString("name");
     }
 
     private void tick() {
         main.removeCallbacks(tick);
         if (!running || stopping) return;
         int waiting = OutputRecordQueue.list(this).size();
-        String text = clock(System.currentTimeMillis() - startedAtMs) + (waiting > 0 ? " · " + waiting + " waiting for axHub" : " · no microphone");
+        String text = clock(System.currentTimeMillis() - startedAtMs) + (waiting > 0 ? " · " + waiting + " waiting for axHub" : "") + " · " + TwoTrack.micLine(micOn, micBusy != null);
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION, notification(text));
         main.postDelayed(tick, 15_000);
     }
@@ -176,10 +231,24 @@ public class OutputRecordService extends Service {
         running = true;
         stopping = false;
         endReason = null;
+        micStop = false;
+        micLive = false;
+        micBusy = null;
+        // the mic only when asked for (setting or the approved start's `mic`) and Android's audio permission is there
+        boolean wantMic = OutputRecordQueue.micWanted(this);
+        micOn = wantMic;
+        boolean micAllowed = wantMic && checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED;
         Notification n = notification("Starting…");
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) startForeground(NOTIFICATION, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
-            else throw new IllegalStateException("Recording what the phone plays needs Android 10 or newer.");
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) throw new IllegalStateException("Recording what the phone plays needs Android 10 or newer.");
+            boolean fgMic = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && micAllowed) {
+                // Android 11+ lets a service use the mic only as a "microphone" foreground service started from the app
+                try { startForeground(NOTIFICATION, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION | ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE); fgMic = true; }
+                catch (RuntimeException refused) { /* not allowed now (started from the background): playback only, marked */ }
+            }
+            if (!fgMic) startForeground(NOTIFICATION, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+            if (micAllowed && !fgMic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) micAllowed = false;
             Intent data = intent.getParcelableExtra(EXTRA_DATA);
             MediaProjectionManager mpm = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             projection = data == null ? null : mpm.getMediaProjection(intent.getIntExtra(EXTRA_CODE, 0), data);
@@ -188,7 +257,7 @@ public class OutputRecordService extends Service {
                 @Override public void onStop() { stop("Android ended the capture."); }
             }, main);
             OutputRecordQueue.Settings s = OutputRecordQueue.settings(this);
-            channels = s.channels;
+            channels = micOn ? 2 : s.channels; // with the mic: always two tracks, left = mic, right = playback
             kbps = s.kbps;
             skipSilent = s.skipSilent;
             chunkUs = s.chunkMin * 60L * 1_000_000L;
@@ -196,11 +265,23 @@ public class OutputRecordService extends Service {
             openCapture();
             encoder.start();
             capture.startRecording();
+            if (micOn) {
+                if (!micAllowed) micBusy(TwoTrack.BUSY_UNAVAILABLE, "Android didn’t allow the mic for this recording");
+                else openMic();
+            }
             startedAtMs = System.currentTimeMillis();
-            pump = new Thread(this::pump, "amberx-outrec");
+            OutputRecordQueue.sessionStarted(this, startedAtMs);
+            AxppLink.cancelPrompt(this);
+            if (micOn) {
+                playReader = new Thread(this::readPlayback, "amberx-outrec-play");
+                playReader.start();
+                pump = new Thread(this::pumpTwoTrack, "amberx-outrec");
+            } else pump = new Thread(this::pump, "amberx-outrec");
             pump.start();
             JSObject e = new JSObject();
             e.put("startedAt", iso(startedAtMs));
+            e.put("mic", micOn);
+            if (micBusy != null) e.put("micBusy", micBusy);
             emit("recording", e);
             OutputRecordTile.refresh(this);
             main.post(tick);
@@ -231,6 +312,127 @@ public class OutputRecordService extends Service {
         encoder.configure(f, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
     }
 
+    /* ------------------------------------------------------------------ the opt-in mic (second track) */
+
+    /**
+     * Opens the mic next to the playback capture. Android may refuse it (another app holds the mic, e.g. the Claude
+     * app's voice mode) or hand it over silenced: either way the recording goes on with the mic side silent and marked.
+     */
+    @SuppressLint("MissingPermission") // checked in start() before this is called
+    private void openMic() {
+        try {
+            int min = AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+            AudioFormat af = new AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(RATE).setChannelMask(AudioFormat.CHANNEL_IN_MONO).build();
+            // VOICE_RECOGNITION: not privacy-sensitive, so it never takes the mic away from a call or the Claude app
+            AudioRecord m = new AudioRecord.Builder().setAudioSource(android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION)
+                .setAudioFormat(af).setBufferSizeInBytes(Math.max(min * 4, 32 * 1024)).build();
+            if (m.getState() != AudioRecord.STATE_INITIALIZED) { m.release(); micBusy(TwoTrack.BUSY_UNAVAILABLE, "Android didn’t hand over the mic"); return; }
+            int sid = m.getAudioSessionId();
+            try { if (android.media.audiofx.AcousticEchoCanceler.isAvailable()) { android.media.audiofx.AcousticEchoCanceler a = android.media.audiofx.AcousticEchoCanceler.create(sid); if (a != null) a.setEnabled(true); } } catch (RuntimeException ignored) { /* no AEC on this phone */ }
+            try { if (android.media.audiofx.NoiseSuppressor.isAvailable()) { android.media.audiofx.NoiseSuppressor ns = android.media.audiofx.NoiseSuppressor.create(sid); if (ns != null) ns.setEnabled(true); } } catch (RuntimeException ignored) { /* none */ }
+            m.startRecording();
+            if (m.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) { m.release(); micBusy(TwoTrack.BUSY_UNAVAILABLE, "the mic is in use by another app"); return; }
+            mic = m;
+            micLive = true;
+            micReader = new Thread(this::readMic, "amberx-outrec-mic");
+            micReader.start();
+        } catch (Exception e) {
+            micBusy(TwoTrack.BUSY_UNAVAILABLE, "the mic couldn’t open: " + e.getMessage());
+        }
+    }
+
+    /** Mic → its ring; checks every second whether Android silences it (another app took the mic). */
+    private void readMic() {
+        short[] buf = new short[BLOCK];
+        long lastCheck = 0;
+        AudioRecord m = mic;
+        try {
+            while (!stopping && !micStop && m != null) {
+                int n = m.read(buf, 0, buf.length);
+                if (n < 0) { if (!micStop && !stopping) micBusy(TwoTrack.BUSY_ERROR, "the mic stopped delivering (" + n + ")"); break; }
+                if (n > 0) micRing.write(buf, 0, n);
+                long t = System.currentTimeMillis();
+                if (t - lastCheck >= 1000) {
+                    lastCheck = t;
+                    android.media.AudioRecordingConfiguration cfg = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? m.getActiveRecordingConfiguration() : null;
+                    boolean silenced = cfg != null && cfg.isClientSilenced();
+                    if (silenced && micBusy == null) micBusy(TwoTrack.BUSY_SILENCED, "another app is using the mic");
+                    else if (!silenced && TwoTrack.BUSY_SILENCED.equals(micBusy)) micBack();
+                }
+            }
+        } catch (RuntimeException e) {
+            if (!micStop && !stopping) micBusy(TwoTrack.BUSY_ERROR, "the mic stopped: " + e.getMessage());
+        }
+        micLive = false;
+        releaseMic();
+    }
+
+    /** Playback → its ring (two-track mode: the pump mixes it with the mic). */
+    private void readPlayback() {
+        byte[] pcm = new byte[BLOCK * 4];
+        short[] mono = new short[BLOCK];
+        AudioRecord cap = capture;
+        try {
+            while (!stopping && cap != null) {
+                int n = cap.read(pcm, 0, pcm.length);
+                if (n < 0) { if (!stopping && endReason == null) endReason = "Recording stopped: playback capture ended (" + n + ")."; stopping = true; break; }
+                int f = TwoTrack.toMono(pcm, n, 2, mono);
+                if (f > 0) playRing.write(mono, 0, f);
+            }
+        } catch (RuntimeException e) {
+            if (!stopping && endReason == null) endReason = "Recording stopped: " + e.getMessage();
+            stopping = true;
+        }
+    }
+
+    /** The mic side is silent from now (reason = TwoTrack.BUSY_*): marked in the chunk, said in a notification. */
+    private void micBusy(String reason, String why) {
+        if (reason.equals(micBusy)) return;
+        micBusy = reason;
+        JSObject e = new JSObject();
+        e.put("reason", reason);
+        e.put("message", why);
+        emit("micBusy", e);
+        if (!TwoTrack.BUSY_OFF.equals(reason)) {
+            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(this, CHANNEL) : new Notification.Builder(this);
+            nm.notify(NOTE_MIC_BUSY, b.setSmallIcon(android.R.drawable.ic_btn_speak_now)
+                .setContentTitle("Mic busy: recording playback only")
+                .setContentText("AmberX can’t record your mic right now (" + why + "). What the phone plays is still recorded; the gap is marked.")
+                .setAutoCancel(true).build());
+        }
+        main.post(tick);
+    }
+
+    private void micBack() {
+        if (micBusy == null) return;
+        micBusy = null;
+        emit("micBack", null);
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTE_MIC_BUSY);
+        main.post(tick);
+    }
+
+    /** Stop mic (the notification): the mic is let go at once; the playback recording goes on, the mic side silent. */
+    private void stopMic() {
+        if (!running || !micOn) return;
+        micStop = true;
+        micBusy(TwoTrack.BUSY_OFF, "turned off from the notification");
+        micOn = false; // the notification and status say mic off from here
+        releaseMic();
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTE_MIC_BUSY);
+        main.post(tick);
+    }
+
+    /** Lets go of the mic (idempotent; the reader thread ends on its own). */
+    private synchronized void releaseMic() {
+        AudioRecord m = mic;
+        mic = null;
+        micLive = false;
+        if (m == null) return;
+        try { m.stop(); } catch (RuntimeException ignored) { /* not started */ }
+        try { m.release(); } catch (RuntimeException ignored) { /* gone */ }
+    }
+
     /* ------------------------------------------------------------------ pump: capture → AAC → chunk files */
 
     private void pump() {
@@ -256,6 +458,61 @@ public class OutputRecordService extends Service {
                             if (ib != null && len > 0) { ib.clear(); put = Math.min(len, ib.remaining()); ib.put(src, 0, put); }
                             long pts = frames * 1_000_000L / RATE;
                             frames += put / (2L * channels);
+                            encoder.queueInputBuffer(ii, 0, put, pts, end ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0);
+                            if (end) eosSent = true;
+                        }
+                    }
+                }
+                int oi = encoder.dequeueOutputBuffer(info, eosSent ? 10_000 : 0);
+                if (oi == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) outFormat = encoder.getOutputFormat();
+                else if (oi >= 0) {
+                    ByteBuffer b = encoder.getOutputBuffer(oi);
+                    if (b != null && info.size > 0 && (info.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) == 0) write(b, info);
+                    encoder.releaseOutputBuffer(oi, false);
+                    if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) break;
+                } else if (eosSent && oi == MediaCodec.INFO_TRY_AGAIN_LATER) break;
+            }
+        } catch (Exception e) {
+            if (endReason == null) endReason = "Recording stopped: " + e.getMessage();
+        }
+        closeChunk();
+        release();
+        main.post(this::finish);
+    }
+
+    /**
+     * Two-track pump: blocks of {@link #BLOCK} frames, left = mic, right = playback, on the clock of the mic while it
+     * delivers (it always does, silence included) and playback's otherwise; mic busy spans are kept per chunk.
+     */
+    private void pumpTwoTrack() {
+        short[] micBuf = new short[BLOCK];
+        short[] playBuf = new short[BLOCK];
+        byte[] pcm = new byte[BLOCK * 4];
+        long frames = 0;
+        boolean eosSent = false;
+        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+        try {
+            while (true) {
+                if (!eosSent) {
+                    boolean micClock = micLive;
+                    boolean ready = (micClock ? micRing : playRing).await(BLOCK, 250);
+                    boolean end = stopping;
+                    if (ready || end) {
+                        int len = 0;
+                        if (ready) {
+                            len = TwoTrack.mixBlock(micRing, playRing, micClock, BLOCK, micBuf, playBuf, pcm);
+                            peak = TwoTrack.peak(playBuf, BLOCK, TwoTrack.peak(micBuf, BLOCK, peak));
+                            long atMs = chunkStartUs < 0 ? 0 : Math.max(0, frames * 1_000_000L / RATE - chunkStartUs) / 1000;
+                            String b = micBusy;
+                            if (b != null) busy.start(atMs, b); else busy.end(atMs);
+                        }
+                        int ii = encoder.dequeueInputBuffer(10_000);
+                        if (ii >= 0) {
+                            ByteBuffer ib = encoder.getInputBuffer(ii);
+                            int put = 0;
+                            if (ib != null && len > 0) { ib.clear(); put = Math.min(len, ib.remaining()); ib.put(pcm, 0, put); }
+                            long pts = frames * 1_000_000L / RATE;
+                            frames += put / 4L;
                             encoder.queueInputBuffer(ii, 0, put, pts, end ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0);
                             if (end) eosSent = true;
                         }
@@ -332,6 +589,8 @@ public class OutputRecordService extends Service {
         chunkId = newId(chunkStartWall);
         File f = OutputRecordQueue.part(this, chunkId);
         current = f;
+        JSONObject session = OutputRecordQueue.session(this);
+        currentName = session == null ? null : RecorderControl.partName(session.optString("name"), sessionStart(session, chunkStartWall), session.optInt("parts") + 1, TimeZone.getDefault());
         muxer = new MediaMuxer(f.getAbsolutePath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         track = muxer.addTrack(outFormat);
         muxer.start();
@@ -347,9 +606,11 @@ public class OutputRecordService extends Service {
         try { muxer.release(); } catch (RuntimeException ignored) { /* already gone */ }
         muxer = null;
         current = null;
+        currentName = null;
         long durMs = Math.max(0, lastUs) / 1000;
         boolean silent = peak <= SILENCE;
         if (!ok || (skipSilent && silent)) {
+            if (playReader != null) { try { busy.close(durMs); } catch (Exception ignored) { /* spans of a dropped chunk */ } }
             part.delete();
             if (ok) { JSObject e = new JSObject(); e.put("id", id); emit("silent", e); }
             return;
@@ -367,6 +628,22 @@ public class OutputRecordService extends Service {
             meta.put("channels", channels);
             meta.put("device", Build.MANUFACTURER + " " + Build.MODEL);
             meta.put("uploadedParts", 0);
+            if (playReader != null) { // two-track chunk: which side is whom, and when the mic side was silent
+                org.json.JSONArray spans = busy.close(durMs);
+                meta.put("mic", true);
+                meta.put("tracks", TwoTrack.tracks());
+                meta.put("micBusy", spans);
+                meta.put("micBusyMs", TwoTrack.Busy.total(spans));
+            }
+            JSONObject session = OutputRecordQueue.session(this);
+            if (session != null) {
+                int n = OutputRecordQueue.nextPart(this);
+                meta.put("name", RecorderControl.partName(session.optString("name"), sessionStart(session, chunkStartWall), n, TimeZone.getDefault()));
+                meta.put("session", session.optString("name"));
+                meta.put("group", session.optString("group"));
+                meta.put("part", n);
+                if (!session.optString("note").isEmpty()) meta.put("note", session.optString("note"));
+            }
             OutputRecordQueue.writeMeta(this, id, meta);
             JSObject e = new JSObject();
             e.put("id", id);
@@ -379,10 +656,15 @@ public class OutputRecordService extends Service {
     }
 
     private void release() {
+        micStop = true;
+        releaseMic(); // the mic is never held past the recording
+        try { if (playReader != null) playReader.join(500); } catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
         try { if (capture != null) { capture.stop(); capture.release(); } } catch (RuntimeException ignored) { /* gone */ }
         try { if (encoder != null) { encoder.stop(); encoder.release(); } } catch (RuntimeException ignored) { /* gone */ }
         capture = null;
         encoder = null;
+        micRing.clear();
+        playRing.clear();
     }
 
     /* ------------------------------------------------------------------ stop */
@@ -399,6 +681,11 @@ public class OutputRecordService extends Service {
     private void finish() {
         running = false;
         startedAtMs = 0;
+        micOn = false;
+        micBusy = null;
+        playReader = null;
+        micReader = null;
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTE_MIC_BUSY);
         try { if (projection != null) projection.stop(); } catch (RuntimeException ignored) { /* already stopped */ }
         projection = null;
         pump = null;
@@ -406,6 +693,7 @@ public class OutputRecordService extends Service {
         JSObject e = new JSObject();
         if (endReason != null) e.put("reason", endReason);
         emit("stopped", e);
+        OutputRecordQueue.clearSession(this);
         stopForeground(STOP_FOREGROUND_REMOVE);
         OutputRecordTile.refresh(this);
         OutputRecordUploader.kick(this);
@@ -418,8 +706,12 @@ public class OutputRecordService extends Service {
         JSObject e = new JSObject();
         e.put("message", message);
         emit("error", e);
+        OutputRecordQueue.clearSession(this);
         running = false;
         startedAtMs = 0;
+        micOn = false;
+        micBusy = null;
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTE_MIC_BUSY);
         try { if (projection != null) projection.stop(); } catch (RuntimeException ignored) { /* never started */ }
         projection = null;
         stopForeground(STOP_FOREGROUND_REMOVE);

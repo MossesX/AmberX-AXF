@@ -42,6 +42,9 @@
     "typography": true,
     "density": true,
     "sizing": true,
+    "agent-card": false,
+    "job-type": false,
+    "help": false,
     "uac-policy": false
   },
   "cases": {

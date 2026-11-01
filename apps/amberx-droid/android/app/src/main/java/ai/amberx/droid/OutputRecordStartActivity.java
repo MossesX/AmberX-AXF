@@ -15,7 +15,8 @@ import com.getcapacitor.JSObject;
  * The one consent flow for Audio Output Recorder, used by the AmberX switch and the quick-settings tile alike
  * (MediaProjection consent needs an activity, and a tile has none). No window of its own (translucent): it asks
  * Android, in order, for
- *   1. the audio permission (RECORD_AUDIO) once — Android files playback capture under it; the mic is never opened,
+ *   1. the audio permission (RECORD_AUDIO) once — Android files playback capture under it; the mic is opened only
+ *      when "Record my mic too" (or the approved start's `mic: true`) asks for it,
  *   2. notifications (Android 13+) once — the recording notification and its Stop button,
  *   3. capture consent — every start, Android's own "Start recording or casting?" prompt,
  * then starts {@link OutputRecordService} and closes. Anything refused ends the flow with an `error` event and a reason.
@@ -48,7 +49,7 @@ public class OutputRecordStartActivity extends Activity {
     public void onRequestPermissionsResult(int code, String[] perms, int[] results) {
         super.onRequestPermissionsResult(code, perms, results);
         // Without the audio permission Android hands over no playback at all: stop here (never fall back to anything else).
-        if (!granted(Manifest.permission.RECORD_AUDIO)) { refuse("Android’s audio permission is needed to capture what apps play (the microphone is never used)."); return; }
+        if (!granted(Manifest.permission.RECORD_AUDIO)) { refuse("Android’s audio permission is needed to capture what apps play (your mic is only recorded when you turned that on)."); return; }
         consent(); // notifications refused: it still records, the notification just can't show
     }
 
@@ -74,6 +75,8 @@ public class OutputRecordStartActivity extends Activity {
     private void refuse(String message) { refuse(message, "error"); }
 
     private void refuse(String message, String state) {
+        OutputRecordQueue.clearSession(this); // a session from axHub that never started doesn't name a later recording
+        AxppLink.consentRefused(this, message);
         JSObject e = new JSObject();
         e.put("message", message);
         OutputRecordService.emit(state, e);

@@ -44,15 +44,25 @@ t('labelled phases + groups + categories', () => {
   assert.match(c.brief(x.builds[0]), /— G1 —/); assert.equal(c.sortBuilds(y.builds, 'title')[0].title, 'L');
   const z = c.apply(y, { action: 'update', id: 'other', category: 'New' }).state; assert.equal(z.builds[1].category, 'New');
 });
-// CLI round-trip on a scratch tracker
-const dir = mkdtempSync(join(tmpdir(), 'orch-')); process.env.AXF_ORCH_FILE = join(dir, 'o.json'); process.env.AXF_PENDING_FILE = join(dir, 'p.json');
+t('rename keeps the id; an empty name is refused', () => {
+  let x = c.apply(c.emptyState(), { action: 'add', title: 'R', steps }).state;
+  x = c.apply(x, { action: 'rename', id: 'r', title: 'New name' }).state; assert.equal(x.builds[0].id, 'r'); assert.equal(x.builds[0].title, 'New name');
+  x = c.apply(x, { action: 'rename-step', id: 'r', step: 's2', title: 'Step name' }).state; assert.equal(x.builds[0].steps[1].title, 'Step name'); assert.equal(x.builds[0].steps[1].text, 'contract');
+  assert.throws(() => c.apply(x, { action: 'rename', id: 'r', title: ' ' }), /needs a name/);
+});
+// CLI round-trip on a scratch builds store (builds@1): the orchestrator writes the store, the Pending list is its projection
+const dir = mkdtempSync(join(tmpdir(), 'orch-')); process.env.AXF_BUILDS_STORE = join(dir, 'store.json'); delete process.env.AXF_ORCH_FILE; delete process.env.AXF_PENDING_FILE;
 const cli = await import('./orchestrator.mjs');
+const { loadPending } = await import('../../../../framework/cli/pending.mjs');
 cli.act({ action: 'add', title: 'Cli', steps: [{ text: 'one', model: 'Opus', estimate: '5 min' }] });
 cli.act({ action: 'step', id: 'cli', step: 's1' });
-t('every save publishes the build to Pending builds (orch-sync)', () => { const p = JSON.parse(readFileSync(process.env.AXF_PENDING_FILE, 'utf8')); const it = p.items.find((x) => x.id === 'cli'); assert.ok(it); assert.equal(it.status, 'complete'); assert.equal(it.subPrompts[0].text, '[Opus] one'); assert.equal(it.subPrompts[0].done, true); });
-t('CLI saves the tracker', () => { const f = JSON.parse(readFileSync(process.env.AXF_ORCH_FILE, 'utf8')); assert.equal(f.$axf, 'orchestrator@1'); assert.equal(f.builds[0].status, 'complete'); });
-const repo = JSON.parse(readFileSync(new URL('../../../../_claude/builds/orchestrator.json', import.meta.url), 'utf8'));
-t('repo tracker is valid', () => { const st = c.normalizeState(repo); assert.ok(st.builds.length >= 1); for (const bb of st.builds) assert.equal(c.splitCheck(bb, st.rules).needsSplit, false, bb.id); });
+t('every change shows on Pending builds at once (one store, no sync)', () => { const it = loadPending().items.find((x) => x.id === 'cli'); assert.ok(it); assert.equal(it.status, 'complete'); assert.equal(it.subPrompts[0].text, '[Opus] one'); assert.equal(it.subPrompts[0].done, true); });
+t('CLI saves the store (versioned)', () => { const f = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.equal(f.$axf, 'builds@1'); assert.ok(f.rev >= 2); assert.equal(f.builds.find((b) => b.id === 'cli').status, 'complete'); });
+// the orchestrator's own builds in the real store keep the small-steps rule (Pending-only items are warned about by pending.mjs --check-steps)
+const store = JSON.parse(readFileSync(new URL('../../../../_claude/builds/store.json', import.meta.url), 'utf8'));
+// same scope as before the store: the Main framework orchestrator's builds, plus builds added through the orchestrator since
+const own = store.builds.filter((x) => !x.deleted && ((x.legacy ?? []).some((l) => l.file === '_claude/builds/orchestrator.json') || (!x.pending && x.kind !== 'epic' && !(x.legacy ?? []).length && x.steps.length)));
+t('repo store: orchestrator builds are valid and small-stepped', () => { assert.equal(store.$axf, 'builds@1'); const st = c.normalizeState({ builds: own }); assert.ok(st.builds.length >= 1); for (const bb of st.builds) assert.equal(c.splitCheck(bb, st.rules).needsSplit, false, bb.id); });
 // feature-matrix@1 Apply engine output (framework/spec/fixtures/feature-matrix.json): skipped steps leave sums, next and the brief
 const fmx = JSON.parse(readFileSync(new URL('../../../../framework/spec/fixtures/feature-matrix.json', import.meta.url), 'utf8'));
 t('matrix-applied build: skipped step leaves progress, phases and the brief', () => {

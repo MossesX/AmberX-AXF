@@ -1,0 +1,92 @@
+/* Agent swarm: layout only; every control is a framework control (fx-*). Colours, sizes and transparency are tokens. */
+.sw-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.sw-bar__pick { width: auto; min-width: 0; flex: 0 1 auto; max-width: 100% }
+.sw-table { width: 100%; border-collapse: collapse; font-size: var(--fx-type-root-md) }
+.sw-table th, .sw-table td { text-align: left; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); border-bottom: var(--fx-border-w) solid var(--fx-border); vertical-align: top }
+.sw-table th { color: var(--fx-muted); font-weight: 600; white-space: nowrap }
+.sw-table td.is-num, .sw-table th.is-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap }
+.sw-scroll { overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.sw-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 9), 1fr)); gap: var(--fx-dens-gap-xl) }
+.sw-tile { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.sw-tile b { font-size: var(--fx-type-root-xl) }
+.sw-tile span { color: var(--fx-muted); font-size: var(--fx-type-root-sm) }
+.sw-model { display: inline-block; padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); font-size: var(--fx-type-root-sm) }
+.sw-model.is-fable { color: var(--fx-accent); border-color: var(--fx-accent) }
+.sw-model.is-opus { color: var(--fx-info); border-color: var(--fx-info) }
+.sw-model.is-haiku { color: var(--fx-success); border-color: var(--fx-success) }
+.sw-leases { font-size: var(--fx-type-root-xs); color: var(--fx-muted); overflow-wrap: anywhere }
+.sw-warn { color: var(--fx-warning) }
+.sw-wave { margin: var(--fx-dens-gap-lg) 0 var(--fx-dens-gap-xs); font-size: var(--fx-type-root-md); font-weight: 600 }
+.sw-gone { opacity: var(--fx-opacity-disabled) }
+.sw-num { width: calc(var(--fx-font-size) * 5); text-align: right }
+.sw-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 19), 1fr)); gap: var(--fx-dens-gap-xl) }
+.sw-card { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-card-shadow); color: var(--fx-text); cursor: pointer; text-align: left }
+.sw-card:hover { border-color: var(--fx-accent) }
+.sw-card:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus) }
+.sw-card--profile { cursor: default }
+.sw-card__head { display: flex; align-items: center; gap: var(--fx-dens-gap-xl) }
+.sw-card__who { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.sw-card__who h2 { margin: 0 }
+.sw-card__line { margin: 0; font-weight: 600 }
+.sw-card__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-xl); margin: 0; font-size: var(--fx-type-root-sm) }
+.sw-card__stats div { display: flex; justify-content: space-between; gap: var(--fx-dens-gap-md) }
+.sw-card__stats dt { color: var(--fx-muted) }
+.sw-card__stats dd { margin: 0; font-variant-numeric: tabular-nums }
+.sw-card__quote { margin: 0; font-style: italic; color: var(--fx-muted) }
+.sw-avatar { flex: none; border-radius: 50% }
+.sw-avatar__bg { fill: var(--fx-accent-soft) }
+.sw-avatar__skin { fill: var(--fx-surface3); stroke: var(--fx-text); stroke-width: 1.2 }
+.sw-avatar__ink { fill: var(--fx-text) }
+.sw-avatar__line { fill: none; stroke: var(--fx-text); stroke-width: 1.6; stroke-linecap: round }
+.sw-avatar__thick { stroke-width: 3 }
+.sw-skill { white-space: pre-wrap; margin: 0; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); background: var(--fx-surface2); font-size: var(--fx-type-root-sm) }
+.sw-feed { margin: 0; padding-left: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.sw-grow { flex: 1 1 auto; min-width: 0 }
+.sw-room { max-height: 60vh; overflow-y: auto; padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface2) }
+.sw-msgs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.sw-msg { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-lg) }
+.sw-msg.is-mine { flex-direction: row-reverse }
+.sw-msg__body { max-width: min(80%, calc(var(--fx-font-size) * 40)); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
+.sw-msg.is-mine .sw-msg__body { background: var(--fx-accent-soft) }
+.sw-msg__body p { margin: 0; overflow-wrap: anywhere }
+.sw-msg__head { display: flex; gap: var(--fx-dens-gap-md); align-items: baseline; font-size: var(--fx-type-root-sm) }
+.sw-msg__badge { flex: none; display: grid; place-items: center; width: calc(var(--fx-font-size) * 2.3); height: calc(var(--fx-font-size) * 2.3); border-radius: 50%; background: var(--fx-text); color: var(--fx-bg); font-weight: 700 }
+.sw-msg__badge.is-brett { background: var(--fx-accent); color: var(--fx-accent-text) }
+.sw-msg.is-assign .sw-msg__body, .sw-msg.is-lease .sw-msg__body, .sw-msg.is-merge .sw-msg__body { border-color: var(--fx-info) }
+.sw-msg.is-report .sw-msg__body, .sw-msg.is-handoff .sw-msg__body { border-color: var(--fx-success) }
+.sw-card { cursor: default }
+.sw-card__open { all: unset; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); cursor: pointer }
+.sw-card__open:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus) }
+/* color by vibe: one theme colour, mixed over the surface by the opacity tint scaled by the vibe (light → darkest at the ceiling) */
+.sw-room.is-accent { --sw-base: var(--fx-accent) }
+.sw-room.is-info { --sw-base: var(--fx-info) }
+.sw-room.is-success { --sw-base: var(--fx-success) }
+.sw-room.is-warning { --sw-base: var(--fx-warning) }
+.sw-room.is-danger { --sw-base: var(--fx-danger) }
+.sw-room.is-brand-1 { --sw-base: var(--fx-brand-1) }
+.sw-room.is-brand-2 { --sw-base: var(--fx-brand-2) }
+.sw-room.is-brand-3 { --sw-base: var(--fx-brand-3) }
+.sw-room.is-vibe .sw-msg__body { background: color-mix(in srgb, var(--sw-base) calc(var(--fx-opacity-tint) * var(--sw-vibe, 0) * 600%), var(--fx-surface)) }
+.sw-swatch { display: inline-block; width: calc(var(--fx-font-size) * 1.4); height: calc(var(--fx-font-size) * 1.4); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border) }
+.sw-swatch.is-accent { background: var(--fx-accent) } .sw-swatch.is-info { background: var(--fx-info) } .sw-swatch.is-success { background: var(--fx-success) } .sw-swatch.is-warning { background: var(--fx-warning) }
+.sw-swatch.is-danger { background: var(--fx-danger) } .sw-swatch.is-brand-1 { background: var(--fx-brand-1) } .sw-swatch.is-brand-2 { background: var(--fx-brand-2) } .sw-swatch.is-brand-3 { background: var(--fx-brand-3) }
+.sw-slider { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.sw-slider p { margin: 0; font-size: var(--fx-type-root-sm) }
+.sw-preview { padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }
+.sw-preview > p { margin: 0 0 var(--fx-dens-gap-sm) }
+/* ID cards: gallery, designer, per-agent card (the cards themselves are the framework's .fx-idcard) */
+.sw-idcards { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); align-items: flex-start }
+.sw-idcards__item { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); max-width: 100% }
+.sw-idcards__item figcaption { max-width: calc(var(--fx-space) * 34) }
+.sw-designer { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 30)), 1fr)); gap: var(--fx-dens-gap-lg); align-items: start }
+.sw-enums { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 12), 1fr)); gap: var(--fx-dens-gap-sm) }
+.sw-enum { gap: var(--fx-dens-gap-2xs) }
+.sw-fields { margin: 0; padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.fx-idcard__photo img { width: 100%; height: 100%; object-fit: cover }
+/* Jobs (recurring job types) + the jobs line on agent cards */
+.sw-card__jobs { margin: 0; font-size: var(--fx-type-root-sm); overflow-wrap: anywhere }
+.sw-job { cursor: default }
+.sw-job__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--fx-dens-gap-md) }
+.sw-job__about { margin: 0; font-size: var(--fx-type-root-sm) }
+.sw-job .sw-card__stats { grid-template-columns: minmax(0, 1fr) }
+.sw-job .sw-card__stats dd { text-align: right; overflow-wrap: anywhere }

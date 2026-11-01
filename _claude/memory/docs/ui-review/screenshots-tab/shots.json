@@ -1,0 +1,6 @@
+[
+ { "name": "screenshots-grid", "steps": [ { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 } ] },
+ { "name": "screenshots-thumbs", "steps": [ { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=1", "wait": 2000 } ] },
+ { "name": "screenshots-viewer", "steps": [ { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0", "wait": 800 }, { "click": ".axp-ui-review__shots .axf-grid-row >> nth=0", "wait": 2500 } ] },
+ { "name": "screenshots-compare", "steps": [ { "eval": "AXF.navigate('ui-screenshots')", "wait": 7000 }, { "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0", "wait": 800 }, { "click": ".axp-ui-review__shots .axf-grid-row:has-text('Agents list') >> nth=0", "wait": 2500 } ] }
+]

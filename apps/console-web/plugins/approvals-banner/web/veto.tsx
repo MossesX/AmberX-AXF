@@ -15,11 +15,12 @@
  */
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, Note } from '@console/axf/react';
+import { WatchLiveFor } from '@console/watchLive';
 import {
   formatCountdown, notifyPlan, runVetoAction, secondsLeftNow, vetoHost, VETO_ACTION_LABELS, VETO_WARNING_SECONDS,
-  type VetoAction, type VetoCall, type VetoPhase,
+  type VetoAction, type VetoActionResult, type VetoCall, type VetoPhase,
 } from '@console/axf/libs/hub/veto';
-import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, type AlarmConfig } from './alarm';
+import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, soundAllowed, type AlarmConfig } from './alarm';
 
 const ACTION_ICON: Record<VetoAction, string> = { deny: 'x-circle', 'approve-now': 'play', shelve: 'pause' };
 /** Green Approve, red Deny (Brett, Oct 30 2026: "Approve/Deny on every row … green/red"). */
@@ -41,13 +42,18 @@ export interface VetoDeps {
 
 /** Runs one action and reports it; the alarm for that call stops at once. */
 export async function act(d: VetoDeps, c: VetoCall, action: VetoAction): Promise<boolean> {
+  return (await actResult(d, c, action)).ok;
+}
+
+/** {@link act} with the hub's whole answer (the application menu's row shows it in place: Running / Denied). */
+export async function actResult(d: VetoDeps, c: VetoCall, action: VetoAction): Promise<VetoActionResult> {
   watch.silence(c.id);
   const r = await runVetoAction(d.hub(), c, action);
   if (r.ok) d.toast(`${DONE_TEXT[action]} ${c.title}`, action === 'deny' ? 'success' : 'info');
   else if (r.opened) d.toast(`Opened it on axHub to ${VETO_ACTION_LABELS[action].toLowerCase()} it there.`, 'info');
   else d.toast(`Couldn't ${VETO_ACTION_LABELS[action].toLowerCase()} it${r.error ? `: ${r.error}` : ''}.`, 'danger');
   d.refresh();
-  return r.ok;
+  return r;
 }
 
 /**
@@ -102,6 +108,7 @@ export function VetoScreen({ c, deps, onClose }: { c: VetoCall | null; deps: Vet
         <strong>Deny</strong> stops it. <strong>Approve</strong> runs it right away. <strong>Shelve</strong> pauses the countdown; it waits until you approve or deny it.
       </p>
       <VetoButtons c={c} deps={deps} onDone={onClose} />
+      <WatchLiveFor text={`${c.title} ${c.command} ${c.tool}`} />
       <a className="fx-small" href={c.url} target="_blank" rel="noopener noreferrer">Open it on axHub <Icon name="external" size={12} /></a>
     </div>
   );
@@ -110,6 +117,9 @@ export function VetoScreen({ c, deps, onClose }: { c: VetoCall | null; deps: Vet
 /* ---------------------------------------------------------------- notices + alarm */
 
 const SENT_KEY = 'approvals-banner.sent';
+const ALARMED_KEY = 'approvals-banner.alarmed';
+const loadAlarmed = (): string[] => { try { const v = JSON.parse(globalThis.localStorage?.getItem(ALARMED_KEY) ?? '[]'); return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []; } catch { return []; } };
+const saveAlarmed = (v: Set<string>) => { try { globalThis.localStorage?.setItem(ALARMED_KEY, JSON.stringify([...v].slice(-200))); } catch { /* fine */ } };
 const loadSent = (): string[] => { try { return JSON.parse(globalThis.localStorage?.getItem(SENT_KEY) ?? '[]') as string[]; } catch { return []; } };
 const saveSent = (v: string[]) => { try { globalThis.localStorage?.setItem(SENT_KEY, JSON.stringify(v)); } catch { /* fine */ } };
 
@@ -124,8 +134,9 @@ export function noticeText(c: Pick<VetoCall, 'title' | 'command' | 'tool'>, phas
 class VetoWatcher {
   readonly alarm = new BrowserAlarm();
   private ringingFor: string | null = null;
-  /** Calls whose alarm already went (or was silenced): it never starts twice for one call. */
-  private alarmed = new Set<string>();
+  /** Calls whose alarm already went (or was silenced): it never starts twice for one call, kept on the device so a
+   * reload or another tab never rings it again. */
+  private alarmed = new Set<string>(loadAlarmed());
   private get: (k: string) => unknown = () => undefined;
   private open: (id: string) => void = () => undefined;
 
@@ -134,6 +145,7 @@ class VetoWatcher {
 
   silence(id: string) {
     this.alarmed.add(id);
+    saveAlarmed(this.alarmed);
     if (this.ringingFor === id) { this.alarm.stop(); this.ringingFor = null; }
     vetoHost().stopAlarm?.();
   }
@@ -144,14 +156,21 @@ class VetoWatcher {
     const native = !!host.notifiesNatively;
     // The alarm: the native side rings by itself (with the app closed too); the page rings only without one.
     const cfg = this.config();
-    if (this.ringingFor && !held.some((c) => c.id === this.ringingFor && !c.shelved && !c.approvedNow)) { this.alarm.stop(); this.ringingFor = null; }
+    const may = soundAllowed();
+    if (this.ringingFor && (!may || !held.some((c) => c.id === this.ringingFor && !c.shelved && !c.approvedNow))) { this.alarm.stop(); this.ringingFor = null; }
     if (!native && !this.alarm.ringing) {
+      for (const id of loadAlarmed()) this.alarmed.add(id); // another tab may have rung it
       const due = held.find((c) => !this.alarmed.has(c.id) && alarmDue(cfg, { secondsLeft: secondsLeftNow(c, now), shelved: c.shelved, approvedNow: c.approvedNow }));
-      if (due) { this.alarmed.add(due.id); this.ringingFor = due.id; this.alarm.start(cfg); }
+      if (due) {
+        this.alarmed.add(due.id);
+        saveAlarmed(this.alarmed);
+        if (may) { this.ringingFor = due.id; this.alarm.start(cfg); }
+      }
     }
-    for (const id of [...this.alarmed]) if (!held.some((c) => c.id === id)) this.alarmed.delete(id);
+    // Kept after a call leaves the list (a read that misses it must not ring it again); only the oldest go, past 200.
+    for (const id of [...this.alarmed].slice(0, Math.max(0, this.alarmed.size - 200))) this.alarmed.delete(id);
     // Notices: browser notifications while the page is open, unless the native side raises them.
-    if (native || this.get(ALARM_KEYS.notices) === false) return;
+    if (native || this.get(ALARM_KEYS.notices) === false || !may) return;
     const plan = notifyPlan(loadSent(), held, now);
     saveSent(plan.sent);
     if (!plan.send.length || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;

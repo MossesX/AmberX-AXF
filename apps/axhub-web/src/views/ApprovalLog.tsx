@@ -1,11 +1,12 @@
 /**
  * The approvals log (decision #94): every request with about sixty named fields and its timeline, filtered, sorted and
  * paged by the hub (`/auth/api/approvals/log`). Tap a row for every field. The auto-approve windows are listed under
- * it, and the whole log downloads as JSON.
+ * it, and the whole log downloads as JSON. Calls that ran without an approval (axHub decision 110, e.g. vps.build_*) have no
+ * request page, so their tool, arguments, who ran it, when and the result show right on the row instead.
  */
 import { useState } from 'react';
 import { Button, Chip, Container, Note, SelectField, TextField, useRuntime } from '../axf/react';
-import { relTime } from '../hub/core';
+import { directRunRows, ranWithoutApproval, relTime } from '../hub/core';
 import { go } from '../hub/route';
 import { HUB } from '../hub/useHub';
 import { HubGate, useHubJson, when } from './hubPage';
@@ -65,16 +66,30 @@ function Log() {
 
       {res.error && <Note tone="danger" icon="alert">{res.error}</Note>}
       {d && d.entries.length === 0 && <Note>Nothing matches.</Note>}
-      {d && d.entries.map((e) => (
+      {d && d.entries.map((e) => {
+        const direct = ranWithoutApproval(e);
+        return (
         <Container key={e.id} title={e.qualifiedTool} icon="list" actions={<Chip>{e.status}</Chip>}>
           <div className="fx-stack">
-            <p className="fx-mono">{e.summary.length > 200 ? `${e.summary.slice(0, 200)}…` : e.summary}</p>
-            <p className="fx-muted">
-              {when(e.createdAt)}{e.decidedBy ? ` · ${e.decidedBy}` : ''}{typeof e.decisionSeconds === 'number' ? ` · decided after ${Math.round(e.decisionSeconds)} s` : ''}
-            </p>
+            {direct ? (
+              <table className="fx-table" data-axf-log-direct="">
+                <tbody>
+                  {directRunRows(e).map((r) => (
+                    <tr key={r.key}><th>{r.label}</th><td className={r.mono ? 'fx-mono' : undefined}>{r.time ? when(r.value) : r.value}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <>
+                <p className="fx-mono">{e.summary.length > 200 ? `${e.summary.slice(0, 200)}…` : e.summary}</p>
+                <p className="fx-muted">
+                  {when(e.createdAt)}{e.decidedBy ? ` · ${e.decidedBy}` : ''}{typeof e.decisionSeconds === 'number' ? ` · decided after ${Math.round(e.decisionSeconds)} s` : ''}
+                </p>
+              </>
+            )}
             <div className="fx-row fx-row--wrap">
               <Button size="sm" icon={open === e.id ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen(open === e.id ? '' : e.id)}>{open === e.id ? 'Less' : 'Every field'}</Button>
-              <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => go(rt, 'approval', { id: e.confirmationId })}>The request</Button>
+              {!direct && e.confirmationId && <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => go(rt, 'approval', { id: e.confirmationId })}>The request</Button>}
             </div>
             {open === e.id && (
               <table className="fx-table">
@@ -90,7 +105,8 @@ function Log() {
             )}
           </div>
         </Container>
-      ))}
+        );
+      })}
 
       {d && d.pages > 1 && (
         <div className="fx-row fx-row--wrap">

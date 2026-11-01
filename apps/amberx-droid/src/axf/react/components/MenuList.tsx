@@ -91,6 +91,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
               role={check === null ? 'menuitem' : 'menuitemcheckbox'}
               aria-checked={check === null ? undefined : check}
               className="fx-menu__item"
+              data-axf-action={item.action}
               disabled={locked}
               title={hostLock ?? (locked ? `Requires ${item.requires}` : undefined)}
               onClick={(e) => {
