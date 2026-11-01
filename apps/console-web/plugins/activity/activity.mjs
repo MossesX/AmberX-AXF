@@ -184,6 +184,8 @@ export function hookPatch(ev, prev) {
   const child = hookChild(ev);
   switch (ev.hook_event_name) {
     case 'UserPromptSubmit':
+      // a background task's completion notice comes in as a prompt: the session carries on with what was asked
+      if (/^\s*<(task-notification|system-reminder)\b/.test(String(ev.prompt ?? '')) && prev?.title) return { ...base, state: 'running', finishedAt: undefined, steps, open };
       return { ...base, state: 'running', startedAt: Date.now(), finishedAt: undefined, steps: [], open, detail: `Asked: ${redact(String(ev.prompt ?? '').replace(/\s+/g, ' ').trim(), 160)}` };
     case 'PreToolUse': {
       const line = toolLine(ev.tool_name, ev.tool_input);

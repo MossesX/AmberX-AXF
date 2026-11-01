@@ -211,6 +211,7 @@ class Feed:
         self._lock = threading.Lock()
         self._gh_cache: tuple[float, list[dict[str, Any]], list[str]] | None = None
         self._gh_backoff: tuple[float, str] | None = None  # (until, why) after a rate-limit answer
+        self._gh_notes: dict[str, str] = {}  # repo → why it was read another way (the systems check shows them)
         self._detail_cache: dict[str, tuple[float, dict[str, Any]]] = {}
         self._extra: dict[str, tuple[str, Callable[[], list[dict[str, Any]]]]] = {}
 
@@ -497,10 +498,25 @@ class Feed:
         return github.GitHubClient(self.github_token, user_agent="axf-console-activity", timeout=12, max_bytes=4_000_000)
 
     def _github_get(self, path: str) -> Any:
+        client = self._client()
         try:
-            return self._client().get(path)
-        except github.GitHubError as e:
-            raise RuntimeError(str(e) or f"GitHub answered {e.status}") from None
+            return client.get(path)
+        except Exception as e:  # noqa: BLE001
+            msg = str(e) or f"GitHub answered {getattr(e, 'status', '?')}"
+            # axHub's token can't see this repo (fine-grained repository access): read it with the console's own token
+            through_hub = type(client) is not github.GitHubClient  # axf.github@1's client
+            if through_hub and self.github_token() and re.search(r"\b404\b|Not Found", msg):
+                local = github.GitHubClient(self.github_token, user_agent="axf-console-activity", timeout=12, max_bytes=4_000_000)
+                try:
+                    out = local.get(path)
+                except github.GitHubError as e2:
+                    raise RuntimeError(str(e2) or msg) from None
+                m = re.match(r"^/repos/([^/]+/[^/]+)/", path)
+                if m:
+                    self._gh_notes[m.group(1)] = (f"axHub's GitHub token can't see {m.group(1)} (404: on a fine-grained token, add the repo under "
+                                                  "Repository access with Actions: read); read with the console's own GITHUB_TOKEN instead.")
+                return out
+            raise RuntimeError(msg) from None
 
     def _can_github(self) -> bool:
         try:
@@ -518,7 +534,8 @@ class Feed:
         rate-limit back-off."""
         c = self._gh_cache
         b = self._gh_backoff if self._gh_backoff and self._gh_backoff[0] > self.now() else None
-        return {"checkedAt": c[0] if c else None, "errors": list(c[2]) if c else [], "backoffUntil": b[0] if b else None, "backoffWhy": b[1] if b else ""}
+        return {"checkedAt": c[0] if c else None, "errors": list(c[2]) if c else [], "backoffUntil": b[0] if b else None, "backoffWhy": b[1] if b else "",
+                "notes": list(self._gh_notes.values())}
 
     def _github(self, cfg: dict[str, Any], now: int) -> tuple[list[dict[str, Any]], list[str]]:
         if self._gh_cache and self.now() - self._gh_cache[0] < GH_CACHE_S:

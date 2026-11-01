@@ -7,7 +7,8 @@
                    changes entry shows a session working. Auto fix: `activity.mjs hooks ensure --all` on the VPS as a
                    veto call (the registry's `vps_run`, when the systems check offers it).
   activity-github  The banner's GitHub Actions part: red with GitHub's own words when a read fails, amber while it
-                   backs off after a rate-limit answer (a used-up hourly limit is not a missing permission).
+                   backs off after a rate-limit answer (a used-up hourly limit is not a missing permission), amber naming
+                   the repo when axHub's token can't see it and the console's own token was used instead.
 """
 from __future__ import annotations
 
@@ -92,6 +93,8 @@ def github_check(st: dict[str, Any], on: bool) -> dict[str, Any]:
     errs = [e for e in st.get("errors") or [] if e]
     if errs:
         return {"status": "error", "summary": f"The Activity banner can't read GitHub Actions: {errs[0][:200]}", "details": errs[:6]}
+    if st.get("notes"):
+        return {"status": "warn", "summary": st["notes"][0][:300], "details": st["notes"][:6]}
     return {"status": "ok", "summary": "GitHub Actions runs are read for the banner." if st.get("checkedAt") else "Not read yet (nobody has the console open)."}
 
 

@@ -151,6 +151,7 @@ check(len(calls) == n + 1 and mod.FEED.github_status()["backoffUntil"], "…then
 hc = sys.modules["axf_console_plugins.activity_test.health"]
 check(hc.github_check(mod.FEED.github_status(), True)["status"] == "warn" and "paused until" in hc.github_check(mod.FEED.github_status(), True)["summary"], "health item: amber while it backs off, with the reason")
 check(hc.github_check({"errors": ["GitHub MossesX/axHub: GitHub 401: Bad credentials"], "checkedAt": 1}, True)["status"] == "error", "health item: red with GitHub's own words on a refused read")
+check(hc.github_check({"errors": [], "checkedAt": 1, "notes": ["axHub's GitHub token can't see MossesX/Build-Pilot (404: …)"]}, True)["status"] == "warn", "health item: amber naming the repo axHub's token can't see")
 NOW[0] += 11 * 60
 mod.FEED._gh_get = fake_gh
 mod.FEED._gh_cache = None
@@ -175,6 +176,31 @@ class FakeHub:
 hub = FakeHub()
 gf = feed_mod.Feed(Path(tempfile.mkdtemp()), ROOT, default_repos=["MossesX/AmberX-AXF"], github_token=lambda: "", github_client=lambda: hub, now=lambda: NOW[0])
 check(not any("no token" in e for e in gf.snapshot()["errors"]) and len(hub.paths) == 1, "with axf.github@1 the feed reads through it (axHub), no local token needed")
+
+
+class HubNoBP(FakeHub):
+    def get(self, path):
+        self.paths.append(path)
+        if "Build-Pilot" in path:
+            raise feed_mod.github.GitHubError(404, '"github" answered HTTP 404: Not Found')
+        return {"workflow_runs": []}
+
+
+hub2 = HubNoBP()
+lf = feed_mod.Feed(Path(tempfile.mkdtemp()), ROOT, default_repos=["MossesX/AmberX-AXF", "MossesX/Build-Pilot"], github_token=lambda: "local-token", github_client=lambda: hub2, now=lambda: NOW[0])
+locals_ = []
+orig_cls = feed_mod.github.GitHubClient
+class FakeLocal(orig_cls):  # noqa: E302
+    def get(self, path, **kw):
+        locals_.append(path)
+        return {"workflow_runs": RUNS["in_progress"]}
+feed_mod.github.GitHubClient = FakeLocal
+try:
+    snap = lf.snapshot()
+finally:
+    feed_mod.github.GitHubClient = orig_cls
+check(not snap["errors"] and len(locals_) == 1 and "Build-Pilot" in locals_[0] and any(i["id"].startswith("gh:MossesX/Build-Pilot:") for i in snap["items"]),
+      "a repo axHub's token can't see (404) is read with the console's own token")
 
 print("reports")
 r = c.post("/p/report", json={"id": "backup", "title": "Backing up password=hunter2secret", "steps": [{"name": "copy", "state": "running"}], "url": "http://evil"})
@@ -544,6 +570,8 @@ if node.returncode == 0:
     check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["open"] == [], "…and forgets them")
     # a line the session didn't list (lost in a race) is still found in the folder and closed on SessionEnd
     run_("hook", inp=ev(hook_event_name="UserPromptSubmit", prompt="again"))
+    run_("hook", inp=ev(hook_event_name="UserPromptSubmit", prompt="<task-notification> <task-id>b1</task-id> <status>completed</status>"))
+    check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["detail"] == "Asked: again", "a background-task notice isn't a new question: the session keeps what was asked")
     (DATA / "reports" / "claude_abc-123_toolu_01LOST.json").write_text(json.dumps({"id": "claude:abc-123:toolu_01LOST", "title": "Pushing · x", "state": "running", "startedAt": 1, "updatedAt": 1}))
     run_("hook", inp=ev(hook_event_name="SessionEnd"))
     check(json.loads((DATA / "reports" / "claude_abc-123_toolu_01LOST.json").read_text())["state"] == "done", "SessionEnd closes unlisted lines found in the folder")
