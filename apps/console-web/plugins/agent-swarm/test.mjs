@@ -459,9 +459,17 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const v = jobs.list().find((j) => j.id === 'site-check'); assert.equal(v.lastRun.status, 'done'); assert.equal(v.cost.runs, 1); assert.ok(v.next > v.lastRun.at);
     const ms = sw.loadState().messages; assert.ok(ms.some((m) => m.kind === 'assign' && /Ping Paulie, you're on Site health check/.test(m.text))); assert.ok(ms.some((m) => m.kind === 'report' && m.from === 'paulie'));
   });
+  t('queued by the agent cap: recorded, kept open while it waits for a desk', () => {
+    writeFileSync(launch, `#!/usr/bin/env bash\nprintf '%s\\n' "$@" > ${JSON.stringify(argsFile)}\necho "queued at position 2 (slot-abc) · starts when a desk frees"\n`);
+    const q = jobs.run('ui-screenshots', { at: '2026-11-04T12:30:00.000Z', inputs: { screen: '/agent-swarm' } });
+    assert.deepEqual(q.run.queued, { position: 2, id: 'slot-abc' }); assert.equal(q.run.tmux, '');
+    const runs = sw.loadRuns(); runs.find((x) => x.jobId === q.run.jobId).startedAt = new Date().toISOString(); writeFileSync(sw.runsFile(), JSON.stringify({ runs }));
+    assert.deepEqual(jobs.sweep(), []); assert.equal(sw.loadRuns().find((x) => x.jobId === q.run.jobId).status, 'running');
+    writeFileSync(launch, `#!/usr/bin/env bash\nprintf '%s\\n' "$@" > ${JSON.stringify(argsFile)}\necho "started axf-$2 in $(pwd)"\n`);
+  });
   t('a session gone without a result is closed as error', () => {
     const r2 = jobs.run('banner-cleanup', { at: '2026-11-04T13:00:00.000Z' }); assert.equal(r2.ok, true);
-    assert.deepEqual(jobs.sweep({ alive: () => false }), [r2.run.jobId]); assert.equal(sw.loadRuns().find((x) => x.jobId === r2.run.jobId).status, 'error');
+    assert.ok(jobs.sweep({ alive: (x) => x.jobId !== r2.run.jobId }).includes(r2.run.jobId)); assert.equal(sw.loadRuns().find((x) => x.jobId === r2.run.jobId).status, 'error');
   });
   t('one-tap hire is kept in the swarm state and joins the roster', () => {
     const d2 = join(dd, 'types2'); mkdirSync(d2); writeFileSync(join(d2, 'cert-renew.json'), JSON.stringify({ $axf: 'asset@1', type: 'job-type', id: 'cert-renew', name: 'Cert renewals', version: '1.0.0', data: { specialty: 'certs', budget: { tokens: 50000 }, trigger: { kind: 'on-demand' }, brief: 'Renew {{date}}' } }));

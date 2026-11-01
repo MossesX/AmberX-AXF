@@ -59,12 +59,12 @@ hands them build steps. Hire date Nov 1 2026.
 
 ## Tests
 
-- `agent-swarm/test.mjs`: 67 → 79 checks. New: six starters valid and each owned by one crew member; bad job type
+- `agent-swarm/test.mjs`: 67 → 80 checks. New: six starters valid and each owned by one crew member; bad job type
   named and never routed; routing to the owner on the job's model with its cap; owner off duty → not routed; budget
   check (pay left under the cap, broke); unassigned → hire → routed; brief carries only the job + own notes and
   read-only gets no edit tools; launcher naming (`--name paulie-site-check`, brief file, model); missing required
   input refused; run recorded on the agent after the sweep (status, cost, stats feed, Jobs view, chat); a session gone
-  without a result closed as error; one-tap hire kept in state and joins the roster.
+  without a result closed as error; a run queued by the agent cap kept open; one-tap hire kept in state and joins the roster.
 - `check-job-type.mts`: 87 checks (new). `check-agent-card.mts` 61 (unchanged).
 - Local CI block: the Node engine sweep (validate 471 assets, tracker, plugins, projects, builds store, UI Review,
   theme, controls, plugin pages, feature matrix, catalog, axf_server), all 45 tsx/node checks of the web test block
@@ -84,7 +84,8 @@ look source was off because the headless browser can't reach axHub).
   or a hook (install_steps step 34). Wiring `build.finished` to the lander is a follow-up.
 - `amberx-walkthrough` has no re-record command yet; Rhonda takes it over when the amberx-walkthrough build lands
   (edit `command` in its job type).
-- The agent cap/queue applies once agent-cap's launcher changes land in `deploy/claude-headless.sh` (this build only
-  calls the launcher, so it inherits them).
+- Agent cap: agent-cap landed on main during this build. Job runs go through `deploy/claude-headless.sh`, so the cap
+  and queue apply; a run the cap queues is recorded with its queue position and stays open until a desk frees (given
+  up after a day). The swarm's desk count also counts the job crew when they're on duty.
 - Claude Code still loads CLAUDE.md from the worktree it runs in; the system line tells the agent not to read more.
 - Kotlin twin of job-type@1 deferred (Android on hold).
