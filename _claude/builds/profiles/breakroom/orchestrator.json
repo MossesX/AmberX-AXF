@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T00:01:37.694Z",
+ "updatedAt": "2026-11-01T00:27:19.872Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14,22 +14,57 @@
    "title": "Agent swarm: headless specialist agents, conflict-free, token-cheap",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): Brett's own agents aren't programmed well; Claude designs as many specialist agents as needed with specific skills. The build orchestrator splits each build into jobs and dispatches them to agents so many builds run at once without stepping on each other. Each agent runs its own headless Claude Code run with ONLY what the job needs: the task, the exact leased files, and the few relevant snippets the orchestrator pre-extracts (no CLAUDE.md dump, no repo exploring). Token efficiency is a hard requirement (sub-agents cost a fortune): cheapest capable model per job (small model for docs/manifests/renames, Sonnet/Opus for code, Fable only for design/contract work); max turns and token budget per run, killed when over; only the tools the job needs; shared skill prefix first so prompt caching applies; short structured JSON report back. No conflicts: file leases per job, overlapping jobs sequenced, shared files (notes, registries, catalogs, tracker) written only by the orchestrator after merge, pre-push lease check, batch merge. Cost meter: tokens and dollars per agent, job and build, visible in the orchestrator. Persona: every agent has Amber's persona (blunt street slang, heavy cussing, wild, still honest about builds), as the full few-line Amber persona (Brett: it's like five lines) in the cached shared prefix. It applies to reports and anything said to Brett; code, code comments and commit messages stay clean and professional. Agent statuses (set from a dropdown on each agent's row in the Agent manager, with a note): On duty (gets work), Off duty (skipped, keeps everything), Injured (keeps failing; no new jobs, flagged for a fix), Medical leave (benched until a date, then back on duty automatically), Probation (small jobs only, Brett notified every run), Fired (never assigned again, kept greyed in history), Custom (Brett names it and picks whether it gets work). The orchestrator only dispatches to agents whose status allows it. Spend per agent on its row: dollars and tokens all time, this week, today, average per job; optional spend cap that auto-benches the agent when hit. Sortable by cost. Status and spend also shown in the session browser. CARDS (Agent manager): one card per agent with photo avatar (unique look per agent), name, role, specialty on its own line, status badge, hiring date, spend (all time, week, today), jobs done, success rate, failures, avg cost per job, favorite model, last seen, Amber-style catchphrase; tap for profile: bio, skills, spend cap, status history, feed of latest runs with cost (opens the session browser). Social profiles live inside the system only, no real social media accounts. GROUP CHAT: a chat window like a normal conversation, switch to enable/disable for all agents plus per-agent; main room plus each agent's history on its profile. The orchestrator ('Boss') posts every assignment (task, files, model, budget) and lease decisions in the chat; agents report done/failed and hand off; banter in Amber persona (fighting over files, chilling, beer while Gradle runs). Work lines are built from orchestrator messages and agent reports (no extra tokens); banter comes from one cheap small-model batch; zero cost when off. DISCIPLINE: Suspend (Brett picks duration + reason; no jobs until it ends, then auto back on duty); Rage-quit (after N consecutive failed jobs, N set by Brett, default 3, agent quits itself and posts it in chat, status Quit, no jobs); Rehire button on the card puts them back on duty. All logged in status history and posted in the group chat. SALARY: each agent has a weekly salary that IS its token budget (replaces the plain spend cap); card shows salary, spent this pay period, left. Broke agents take no new jobs until payday or Brett tops them up, and say so in chat. Raises and pay cuts (docked) set by Brett, posted in chat by Boss. Finishing a job under its budget earns a bonus shown on the card (bragging rights, not real money). Coworker reactions in the group chat when someone gets a raise or bonus (jealous, cussing, Amber persona). Banter rules: no jokes about race, ethnicity, religion, gender, sexuality or other identity. CHAT SETTINGS SUITE: Vibe slider 1-500 (1 = straight to the point, no sarcasm; 100 = chill; 250 = full Amber; 500 = off the rails). The slider is a hard ceiling: every message gets a vibe score; anything above the setting is toned down or dropped before it shows. Also: chattiness (assignments only .. constant banter), cussing (clean .. filthy), drama (fights, jealousy, shit talk) sliders; per-agent overrides of every slider; daily banter budget in dollars (quiet when hit); presets (All business, Work crew, Break room, Off the rails) + save your own; live preview message that changes as sliders move. Color by vibe: a checkbox (also in the chat window's context menu) colors every message by its vibe score; Brett picks the base color; light near 1, darker as the score rises, darkest at the ceiling. ID CARDS ARE ASSETS (Brett, Oct 31): new asset type agent-card@1 in the asset@1 envelope, registered in asset-types.json, loadable by any AXF app on web + Android, hot-swappable like every other asset. Cards are BRANDED: logo slot (brand logo asset, top/watermark/corner per design) and styled ONLY from theme tokens (color-theme + style-theme), so swapping the theme rebrands every card. Ship 4 starter designs: (1) Corporate badge - vertical lanyard ID, logo banner on top, photo, name, role, employee ID, barcode; (2) License - horizontal, small-type fields, logo hologram watermark, ID number, issue date = hire date; (3) Trading card - big photo, foil border in the theme accent, stats on the back (jobs, success rate, spend, favorite model); (4) Backstage pass - dark, neon accent, status badge big, catchphrase. Identity fields editable per agent: name, role, specialty, photo, employee ID, internal email (display/identity inside the system only, no real mailbox unless Brett asks), hire date, status, catchphrase, signature, QR to the agent's page. Card designer: edit any design's layout/fields/logo placement and Save as new (new asset). Gallery to pick the DEFAULT design (Brett picks from a preview page rendered FIRST, before the rest of the build), plus per-agent override. Flip for front/back.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/agent-swarm",
-   "pr": "",
-   "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
-   "builtAt": "",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
+   "createdAt": "2026-10-31T05:27:46.906Z",
+   "updatedAt": "2026-10-31T23:53:03.393Z",
+   "builtAt": "2026-10-31T23:53:03.392Z",
    "notes": [
     {
-     "text": "Status was \"queued\" in _claude/builds/profiles/breakroom/orchestrator.json (not an orchestrator@1 status; the orchestrator always read it as pending).",
-     "at": "2026-10-31T23:41:15.585Z"
+     "text": "Built in one Opus session on claude/agent-swarm (Oct 31 2026) per Brett's dispatch brief ('do every step, never wait for approval'); model-switch gates recorded as approved by that brief. Fable-pinned s1-s3, s11, s12, s15 were built on Opus: Fable rebuild parked as agent-swarm-fable-rebuild.",
+     "at": "2026-10-31T05:27:46.906Z"
+    },
+    {
+     "text": "s1/s3/s4 (Fable-pinned: card preview, card designer, agent-card@1 asset type) built on Opus Oct 31 2026 per Brett's go-live brief; folded into the parked Fable rebuild agent-swarm-fable-rebuild. Default card design picked as corporate-badge (headless run, Brett changes it in Swarm -> ID cards -> Make default). Android renderer deferred (Android on hold, PORTING.md). Branch claude/agent-swarm, pushed to main.",
+     "at": "2026-10-31T23:53:03.302Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-31T05:27:47.112Z"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-10-31T05:27:47.518Z"
+    },
+    {
+     "phase": 3,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-31T05:27:47.667Z"
+    },
+    {
+     "phase": 4,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-10-31T05:27:47.815Z"
+    },
+    {
+     "phase": 5,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-10-31T05:27:47.925Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -44,8 +79,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T23:53:03.077Z",
      "note": "",
      "uid": "st-387t71"
     },
@@ -62,8 +97,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:46.960Z",
      "note": "",
      "uid": "st-14g9k2z"
     },
@@ -80,8 +115,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T23:53:03.146Z",
      "note": "",
      "uid": "st-6h1kll"
     },
@@ -98,8 +133,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T23:53:03.224Z",
      "note": "",
      "uid": "st-1fgs6wr"
     },
@@ -116,8 +151,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.016Z",
      "note": "",
      "uid": "st-1idb5s5"
     },
@@ -134,8 +169,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.066Z",
      "note": "",
      "uid": "st-1qkck4r"
     },
@@ -152,8 +187,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.161Z",
      "note": "",
      "uid": "st-1s9vdu1"
     },
@@ -170,8 +205,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.208Z",
      "note": "",
      "uid": "st-2w4pdn"
     },
@@ -188,8 +223,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.256Z",
      "note": "",
      "uid": "st-17g1ol9"
     },
@@ -206,8 +241,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.309Z",
      "note": "",
      "uid": "st-n3n3la"
     },
@@ -224,8 +259,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.362Z",
      "note": "",
      "uid": "st-rwhyr7"
     },
@@ -242,8 +277,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.414Z",
      "note": "",
      "uid": "st-1o1nnyf"
     },
@@ -260,8 +295,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.467Z",
      "note": "",
      "uid": "st-dx7sen"
     },
@@ -278,8 +313,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.567Z",
      "note": "",
      "uid": "st-1y1r4pn"
     },
@@ -296,8 +331,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.620Z",
      "note": "",
      "uid": "st-7u4sub"
     },
@@ -314,8 +349,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.718Z",
      "note": "",
      "uid": "st-1l5j8a7"
     },
@@ -332,8 +367,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.766Z",
      "note": "",
      "uid": "st-13f71sn"
     },
@@ -350,8 +385,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.872Z",
      "note": "",
      "uid": "st-1s97ed7"
     },
@@ -368,10 +403,160 @@
      "session": "same",
      "agent": false,
      "skip": false,
+     "done": true,
+     "doneAt": "2026-10-31T05:27:47.975Z",
+     "note": "",
+     "uid": "st-21l2hv"
+    }
+   ]
+  },
+  {
+   "id": "agent-swarm-fable-rebuild",
+   "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
+   "category": "Breakroom",
+   "detail": "Fable suggested, Opus chosen rule: s1-s3, s11, s12, s15 of agent-swarm were pinned to Fable and built on Opus (branch claude/agent-swarm). The Fable build starts by reading and then replacing the Opus version.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-10-31T05:27:48.056Z",
+   "updatedAt": "2026-10-31T23:53:18.788Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Oct 31 2026: agent-swarm grew to 19 steps on main (renumbered). Fable-pinned steps built on Opus now: s1 card preview page, s2 roster + skills, s3 card designer, s4 agent-card@1 asset type (framework/core/engines/agent-card-rules.mjs, react/components/AgentCard.tsx, fixture agent-card.json, check-agent-card.mts), s5 job planner, s6 context packer, s14 cards + profiles, s15 group chat, s18 chat settings. The Fable rebuild covers all of them; its agent-card@1 review may keep or replace the Opus contract (Kotlin twin still deferred while Android is on hold).",
+     "at": "2026-10-31T23:53:18.788Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Start: read the Opus version (apps/console-web/plugins/agent-swarm) and its tests; redesign the contracts agent@1, agent-skill@1, swarm-roster@1, swarm-job@1, swarm-report@1 as framework contracts (asset-types / schemas) where they belong",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-21l2hv"
+     "uid": "st-mvx3bvuv089xhn"
+    },
+    {
+     "id": "s2",
+     "text": "Job planner: model tiers, skill matching, lease overlap and wave sequencing reviewed and replaced where better; keep the planner tests passing or replace them with stronger ones",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvx3bvuv09vwf3"
+    },
+    {
+     "id": "s3",
+     "text": "Context packer + cached shared prefix: measure brief sizes, tighten snippet extraction",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvx3bvuv0a7v2s"
+    },
+    {
+     "id": "s4",
+     "text": "Agent cards/profiles: avatars and card layout as assets (everything-is-an-asset rule), not component-drawn",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvx3bvuv0bb25l"
+    },
+    {
+     "id": "s5",
+     "text": "Group chat contract (swarm-state@1 messages, Boss work lines, banter batch)",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvx3bvuv0ckonb"
+    },
+    {
+     "id": "s6",
+     "text": "Vibe engine: scoring, ceiling, tone-down/drop as a pure engine with a fixture",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvx3bvuv0djqhy"
+    },
+    {
+     "id": "s7",
+     "text": "Differences report _claude/memory/docs/rebuilds/agent-swarm.md + LOG.md entry + screenshots",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvx3bvuv0e7mgm"
     }
    ]
   }

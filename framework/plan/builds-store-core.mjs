@@ -274,13 +274,15 @@ function mergeSteps(rec, incoming, now, by, why) {
 function followDefault(rec, now) { if (!rec.rearranged) { rec.defaultSteps = rec.steps.map((s) => ({ ...s })); rec.defaultAt = rec.steps.length ? (rec.defaultAt || now) : ''; } }
 
 /** Take an orchestrator@1 state (after a change) back into the store for one profile. */
-export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 'orchestrator' } = {}) {
+export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 'orchestrator', newerOnly = false } = {}) {
   const s = clone(store);
-  if (orch.rules) s.rules[profile] = { ...DEFAULT_RULES, ...orch.rules };
+  if (orch.rules && !newerOnly) s.rules[profile] = { ...DEFAULT_RULES, ...orch.rules };
   const ids = new Set();
   (orch.builds ?? []).forEach((ob, i) => {
     ids.add(ob.id);
     let rec = s.builds.find((b) => b.id === ob.id);
+    // a file written outside the store (an old checkout, a merge): only builds it has NEWER than the store come in
+    if (newerOnly && rec && !(str(ob.updatedAt) > str(rec.updatedAt))) return;
     if (!rec) {
       rec = normBuild({ ...ob, profiles: [profile], order: { [profile]: nextOrder(s, profile) } }, { now });
       rec.steps = ob.steps.map((x, k) => normStep({ ...x, uid: x.uid || newUid() }, k, { now }));
@@ -293,10 +295,11 @@ export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 
     for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && ob[k] !== undefined) rec[k] = clone(ob[k]);
     mergeSteps(rec, ob.steps ?? [], now, by, 'removed in the orchestrator');
     followDefault(rec, now);
-    rec.order[profile] = i;
+    if (!newerOnly) rec.order[profile] = i;
   });
   // the projection's order is the profile's new order; builds not in the projection were removed there
-  for (const b of buildsOf(s, profile)) if (!ids.has(b.id)) {
+  // (never for a foreign file: it may simply be older than the store)
+  if (!newerOnly) for (const b of buildsOf(s, profile)) if (!ids.has(b.id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }
     else { b.deleted = true; b.deletedAt = now; }
   }
@@ -382,7 +385,7 @@ function pendingMeta(it, b, prefixSteps) {
  * Take a pending@1 state (after a change) back into the store. `change` = the pending action applied (a removal
  * deletes the build softly). Items that equal their build's projection are left alone.
  */
-export function absorbPending(store, profile, pending, change = null, { now = nowIso() } = {}) {
+export function absorbPending(store, profile, pending, change = null, { now = nowIso(), newerOnly = false } = {}) {
   const s = clone(store);
   const shown = new Map(buildsOf(s, profile).filter(onPendingList).map((b) => [b.pendingId || b.id, b]));
   if (pending.artifact !== undefined || pending.updatedAt) s.meta.pending[profile] = { artifact: str(pending.artifact), updatedAt: str(pending.updatedAt) };
@@ -391,6 +394,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     seen.add(it.id);
     let b = shown.get(it.id) ?? s.builds.find((x) => x.id === it.id || x.pendingId === it.id);
     if (!b) { s.builds.push(buildFromItem(it, profile, { now, order: nextOrder(s, profile) })); continue; }
+    if (newerOnly && !(str(it.updatedAt) > str(b.updatedAt))) continue;
     if (b.deleted) { b.deleted = false; b.deletedAt = ''; }
     if (!b.profiles.includes(profile)) { b.profiles.push(profile); b.order[profile] = nextOrder(s, profile); }
     const shownItem = itemOfBuild(b, now);
@@ -420,7 +424,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     b.updatedAt = it.updatedAt || now;
     if (['pending', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
   }
-  for (const [id, b] of shown) if (!seen.has(id)) {
+  if (!newerOnly) for (const [id, b] of shown) if (!seen.has(id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }
     else { b.deleted = true; b.deletedAt = now; b.notes.push({ text: 'Removed from Pending builds (kept in the builds store, soft-deleted).', at: now }); }
   }

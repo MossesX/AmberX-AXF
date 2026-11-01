@@ -37,7 +37,10 @@ export function parseRoute(hash: string): Route {
     return { view: 'home', params: (APPROVAL_FILTERS as readonly string[]).includes(status) && status !== 'all' ? { status } : {} };
   }
   if (a === 'approvals' && b === 'log' && parts.length === 2) return { view: 'approvals-log', params: {} };
-  if (a === 'approvals' && b && APPROVAL_ID_RE.test(b) && parts.length === 2) return { view: 'approval', params: { id: b } };
+  if (a === 'approvals' && b && APPROVAL_ID_RE.test(b) && parts.length === 2) {
+    const pick = pickOf(query.get('do'));
+    return { view: 'approval', params: pick ? { id: b, do: pick } : { id: b } };
+  }
   if (a === 'handoff' && !b) return { view: 'handoff', params: {} };
   if (a === 'handoff' && b && RUN_ID_RE.test(b) && parts.length === 2) {
     const file = query.get('file') ?? '';
@@ -55,7 +58,8 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
     case 'approvals-log':
       return '#/approvals/log';
     case 'approval':
-      return APPROVAL_ID_RE.test(params.id ?? '') ? `#/approvals/${params.id}` : '#/approvals';
+      if (!APPROVAL_ID_RE.test(params.id ?? '')) return '#/approvals';
+      return pickOf(params.do) ? `#/approvals/${params.id}?do=${params.do}` : `#/approvals/${params.id}`;
     case 'handoff-run':
       if (!RUN_ID_RE.test(params.id ?? '')) return '#/handoff';
       return params.file && safeFilePath(params.file) ? `#/handoff/${params.id}?file=${encodeURIComponent(params.file)}` : `#/handoff/${params.id}`;
@@ -68,6 +72,47 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
 export function safeFilePath(p: string): boolean {
   return p.length > 0 && p.length <= 300 && !p.startsWith('/') && !p.includes('\\') && !p.split('/').some((s) => s === '' || s === '.' || s === '..');
 }
+
+/* ─────────────────────────────────────────────────────────── waiting rows */
+
+/** A button a notice can pick (`?do=` on the request's address, axHub decision 105): the page opens with it picked. */
+export const PICKS = ['deny', 'approve-now', 'shelve', 'approve'] as const;
+export type NoticePick = (typeof PICKS)[number];
+/** `?do=` → the picked button, or "" (anything else is ignored). `approve` is the same as `approve-now` on a held call. */
+export const pickOf = (raw: string | null | undefined): NoticePick | '' => ((PICKS as readonly string[]).includes(raw ?? '') ? (raw as NoticePick) : '');
+
+type HeldView = { status: string; veto?: { state?: string; approvedNow?: boolean; actions?: string[] } };
+type HeldAction = 'deny' | 'approve-now' | 'shelve';
+
+/**
+ * What a held (veto) call offers now, in the order shown: Deny, Approve now, Shelve. The hub's `veto.actions` when it
+ * sends them (decision 104); a hub from before 104 sends none, and gets Deny + Approve now (the app tries
+ * `/approve-now`, then `/approve`, decision 105) — Approve now is never left off a call still counting down.
+ */
+export function heldActions(item: HeldView): HeldAction[] {
+  if (item.status !== 'held' || !item.veto) return [];
+  const order: HeldAction[] = ['deny', 'approve-now', 'shelve'];
+  const raw = item.veto.actions;
+  if (Array.isArray(raw)) return order.filter((a) => raw.includes(a));
+  return item.veto.approvedNow ? ['deny'] : ['deny', 'approve-now'];
+}
+
+/** The routes Approve now tries on a held call, in order: decision 104's own, then 105's plain `/approve`. */
+export const approveNowPaths = (id: string): string[] => (APPROVAL_ID_RE.test(id) ? [`/auth/api/approvals/${id}/approve-now`, `/auth/api/approvals/${id}/approve`] : []);
+
+/**
+ * How many requests wait on the owner: the hub's `waiting` counts pending requests only, so the held calls counting
+ * down (`heldCount`, or the held rows on the page from a hub that doesn't send it) are added (decision 102: both wait).
+ */
+export function waitingCount(grid: { waiting?: number; heldCount?: number; items?: HeldView[] } | null | undefined): number {
+  if (!grid) return 0;
+  const pending = Number.isFinite(grid.waiting) ? Math.max(0, grid.waiting!) : 0;
+  const held = Number.isFinite(grid.heldCount) ? Math.max(0, grid.heldCount!) : (grid.items ?? []).filter((i) => i.status === 'held' && !!i.veto).length;
+  return pending + held;
+}
+
+/** The page title for that count. */
+export const waitingTitle = (n: number): string => (n <= 0 ? 'Nothing waiting' : `${n} waiting`);
 
 /** The hub's sign-in page, coming back to this exact page (the hub only returns to its own host). */
 export function signInUrl(hub: string, here: string): string {

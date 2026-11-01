@@ -3,7 +3,7 @@
  * on axHub. No React; the page subscribes, test.mts drives it with a fake bridge and a fake hub.
  */
 import type { LocalChunk, OutputRecorderBridge, Handle } from './bridge';
-import { HubRecordings, REC_IDLE, recReduce, type NativeEvent, type RecState, type Recording, type Settings } from './core';
+import { HubRecordings, REC_IDLE, recReduce, type NativeEvent, type RecState, type Recording, type Settings } from './core.ts';
 
 export interface State {
   rec: RecState;

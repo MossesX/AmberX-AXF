@@ -7,13 +7,17 @@ import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Note, Segmented, SelectField, TextField, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { hubGet } from '../hub/api';
-import { localToUtcMinute, relTime } from '../hub/core';
+import { heldActions, localToUtcMinute, pickOf, relTime } from '../hub/core';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, STATUS_TONE, type ApprovalAction, type ApprovalItem, type AutoState, type PostponeOptions } from '../hub/types';
 import { act } from './Approvals';
 import { HubGate, useHubJson, when } from './hubPage';
 import { CodeSection, WhatItDoes } from './ApprovalParts';
-import { HeldBar, isHeld } from './HeldCall';
+import { HELD_LABELS, HeldBar, isHeld } from './HeldCall';
+import type { VetoAction } from '../axf/libs/hub/veto';
+
+/** The two decision buttons on a request that asks (not held): green Approve now, red Deny (the hub's decline). */
+const DECIDE_LABELS = { approve: 'Approve now', decline: 'Deny' } as const;
 
 export function ApprovalDetail() {
   return <HubGate admin what="approvals">{() => <Detail />}</HubGate>;
@@ -32,6 +36,15 @@ function Detail() {
   const item = res.data?.item;
   const held = !!item && isHeld(item);
   useEffect(() => setFast(held), [held]);
+  // The button a notice picked: Approve (= Approve now on a held call, decision 105), Deny, Shelve.
+  const pick = pickOf(params.do);
+  const heldPick: VetoAction | undefined = !held || !pick ? undefined : pick === 'approve' ? 'approve-now' : pick;
+  const confirmPick: ApprovalAction | undefined = held || !pick ? undefined : pick === 'approve' || pick === 'approve-now' ? 'approve' : pick === 'deny' ? 'decline' : undefined;
+  const pickedLabel = heldPick ? HELD_LABELS[heldPick] : confirmPick ? DECIDE_LABELS[confirmPick as 'approve' | 'decline'] : '';
+  const canPicked = held ? !!heldPick && heldActions(item!).includes(heldPick) : !!confirmPick && !!item?.actions.includes(confirmPick);
+  const pickNote = !pickedLabel ? '' : canPicked ? `You picked ${pickedLabel} in the notice: tap ${pickedLabel} below to do it.` : `You picked ${pickedLabel} in the notice, but this request can't take it any more.`;
+  // Deny / Approve now first, as one pair the same size (Deny left, as on the rows).
+  const decide = item && !held ? (['decline', 'approve'] as const).filter((a) => item.actions.includes(a)) : [];
 
   const run = async (a: ApprovalAction) => {
     if (!item) return;
@@ -51,13 +64,24 @@ function Detail() {
           {item && <p className="fx-muted">Asked {when(item.createdAt)} by {item.callerId}{item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}</p>}
           {/* Brett (Oct 27 2026): the decision buttons are on the first screen, right under the title, before any
               description or code, so Approve never needs a scroll on a phone. */}
-          {/* veto@1: a held command shows its countdown with Deny / Approve / Shelve (decision 104) in place of the usual actions, on the first screen. */}
-          {item && held && <HeldBar big item={item} onDone={(next) => { if (next) res.setData({ item: next, auto: res.data!.auto }); else void res.reload(); }} />}
+          {/* veto@1: a held command shows its countdown with Deny / Approve now / Shelve (decision 104) in place of the usual actions, on the first screen. */}
+          {/* A notice's button (`?do=`, axHub decision 105) opens this page with that button picked: marked and focused,
+              one tap decides (a link never decides by itself). */}
+          {item && pickNote && <Note tone="info" icon="bell">{pickNote}</Note>}
+          {item && held && <HeldBar big item={item} picked={heldPick} onDone={(next) => { if (next) res.setData({ item: next, auto: res.data!.auto }); else void res.reload(); }} />}
           {item && !held && <div className="fx-row fx-row--wrap" data-axf-anchor="approval-actions">
             <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>
-            {orderActions(item.actions).map((a) => (
-              <Button key={a} disabled={busy} icon={a === 'approve' ? 'check' : undefined}
-                tone={a === 'approve' ? 'success' : a === 'decline' || a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
+            {decide.length > 0 && <div className="axp-axhub-pair">
+              {decide.map((a) => (
+                <Button key={a} disabled={busy} icon={a === 'approve' ? 'check' : 'x-circle'} tone={a === 'approve' ? 'success' : 'danger'}
+                  className={confirmPick === a ? 'is-picked' : undefined} autoFocus={confirmPick === a || undefined}
+                  aria-label={`${DECIDE_LABELS[a]}: ${item.title}`} onClick={() => void run(a)}>
+                  {DECIDE_LABELS[a]}
+                </Button>
+              ))}
+            </div>}
+            {orderActions(item.actions).filter((a) => a !== 'approve' && a !== 'decline').map((a) => (
+              <Button key={a} disabled={busy} tone={a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
                 {ACTION_LABELS[a]}
               </Button>
             ))}

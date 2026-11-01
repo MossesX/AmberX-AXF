@@ -2,7 +2,6 @@ package ai.amberx.droid;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
 import com.getcapacitor.BridgeActivity;
 
 /**
@@ -23,7 +22,9 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(AudioExtractPlugin.class); // Audio Extract (apps/console-web/plugins/audio-extract)
         registerPlugin(OutputRecorderPlugin.class); // Audio Output Recorder (apps/console-web/plugins/output-recorder)
         super.onCreate(state);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE); // approvals and hub pages are never captured
+        // No FLAG_SECURE on normal screens (Oct 31 2026): Android's recorder, screenshots and Audio Extract work. The
+        // opt-in "Hide sensitive screens from recordings" hides only password / key / vault screens (SecureScreen).
+        SecureScreen.apply(this, SecureScreen.sensitive);
         getWindow().getDecorView().post(() -> AmberxNativePlugin.deliver(getIntent()));
     }
 
@@ -38,6 +39,7 @@ public class MainActivity extends BridgeActivity {
     public void onResume() {
         super.onResume();
         WatchService.inApp = true;
+        SecureScreen.apply(this, SecureScreen.sensitive);
     }
 
     @Override

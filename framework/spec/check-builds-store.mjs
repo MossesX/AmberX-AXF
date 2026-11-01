@@ -78,6 +78,16 @@ t('removing a build on one profile untags it, the record stays', () => {
   const o2 = c.projectOrchestrator(s2, 'main-framework'); o2.builds = o2.builds.filter((x) => x.id !== 'shared');
   const s3 = c.absorbOrchestrator(s2, 'main-framework', o2, { now: at }); assert.equal(s3.builds.find((x) => x.id === 'shared').deleted, true);
 });
+t('a foreign (old-style) file only brings in builds NEWER than the store, never reverts or removes', () => {
+  const o = c.projectOrchestrator(M, 'refactor');
+  const stale = { ...o, builds: o.builds.filter((b) => b.id !== 'odd').map((b) => (b.id === 'shared' ? { ...b, title: 'Stale title', updatedAt: '2026-01-01T00:00:00Z' } : b)) };
+  const s1 = c.absorbOrchestrator(M, 'refactor', stale, { newerOnly: true, now: at });
+  assert.equal(s1.builds.find((b) => b.id === 'shared').title, 'Shared new'); assert.equal(s1.builds.find((b) => b.id === 'odd').deleted, false);
+  const newer = { ...o, builds: o.builds.map((b) => (b.id === 'shared' ? { ...b, title: 'From another session', updatedAt: '2027-01-01T00:00:00Z' } : b)) };
+  assert.equal(c.absorbOrchestrator(M, 'refactor', newer, { newerOnly: true, now: at }).builds.find((b) => b.id === 'shared').title, 'From another session');
+  const p = c.projectPending(M, 'main-framework'); const staleP = { ...p, items: [] };
+  assert.deepEqual(c.diffStores(M, c.absorbPending(M, 'main-framework', staleP, null, { newerOnly: true, now: at }), at), [], 'an empty old Pending file removes nothing');
+});
 t('diffStores never drops a record and bumps revs', () => {
   const after = c.normalizeStore(JSON.parse(JSON.stringify(M))); after.builds = after.builds.filter((b) => b.id !== 'odd');
   after.builds.find((b) => b.id === 'shared').steps[1].text = 'changed';

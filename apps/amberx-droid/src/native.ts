@@ -69,6 +69,9 @@ export interface NativeApi {
    * follows when it ends), `queue` and `holdMic` (hands-free steps aside while it talks). Older callers: text + lang. */
   speak(opts: { text: string; lang: string; voice?: string; rate?: number; pitch?: number; volume?: number; id?: string; queue?: boolean; holdMic?: boolean }): Promise<void>;
   stopSpeaking(): Promise<void>;
+  /** Screen capture (Oct 31 2026, `securescreen.ts`): hidden from recordings only when `hide` (the opt-in setting) and
+   * `sensitive` (a password / key / vault screen is showing). Browser: nothing to do. */
+  secureScreen(opts: { hide: boolean; sensitive: boolean }): Promise<{ secure: boolean }>;
   /** The phone's text-to-speech voices (Android); the browser's voices in the fallback. */
   ttsVoices(): Promise<{ voices: { id: string; name: string; lang: string; quality?: number; network?: boolean }[] }>;
   /** Microphone permission without asking: granted / denied / prompt. */
@@ -237,6 +240,7 @@ const web: NativeApi = {
     if (id) emit('spoken', { id, done: true });
   },
   async stopSpeaking() { globalThis.speechSynthesis?.cancel(); },
+  async secureScreen() { return { secure: false }; },
   async ttsVoices() {
     const synth = globalThis.speechSynthesis;
     return { voices: (synth?.getVoices() ?? []).map((v) => ({ id: v.voiceURI, name: v.name, lang: v.lang, network: !v.localService })) };

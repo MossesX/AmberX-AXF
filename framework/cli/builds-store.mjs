@@ -87,18 +87,21 @@ function exportTargets() {
 }
 const sig = (f) => { try { const st = statSync(f); return `${st.size}:${Math.floor(st.mtimeMs)}`; } catch { return ''; } };
 const readExports = () => readJson(exportsFile()) ?? {};
+/** Old files changed since the last export here, or never exported on this machine (a fresh checkout, a merge). */
 function foreignWrites() {
   const ex = readExports();
-  return exportTargets().filter((t) => ex[t.file] && sig(t.file) && sig(t.file) !== ex[t.file].sig);
+  return exportTargets().filter((t) => sig(t.file) && (!ex[t.file] || sig(t.file) !== ex[t.file].sig));
 }
 function absorbForeign(store, log) {
   let s = store;
   for (const t of foreignWrites()) {
     const j = readJson(t.file); if (!j) continue;
-    if (t.kind === 'orchestrator' && Array.isArray(j.builds)) s = core.absorbOrchestrator(s, t.profile, j, { by: 'foreign-write' });
-    if (t.kind === 'pending' && Array.isArray(j.items)) s = core.absorbPending(s, t.profile, j);
-    if (t.kind === 'queue' && Array.isArray(j.order)) s = core.absorbQueue(s, t.profile, j, epicsOf(t.profile));
-    log.push(`${rel(t.file)} was changed outside the store: taken in`);
+    // newer-only: a foreign file may be older than the store, so it can add and update builds, never revert or remove
+    const before = s;
+    if (t.kind === 'orchestrator' && Array.isArray(j.builds)) s = core.absorbOrchestrator(s, t.profile, j, { by: 'foreign-write', newerOnly: true });
+    if (t.kind === 'pending' && Array.isArray(j.items)) s = core.absorbPending(s, t.profile, j, null, { newerOnly: true });
+    if (t.kind === 'queue' && Array.isArray(j.order) && !j.$export) s = core.absorbQueue(s, t.profile, j, epicsOf(t.profile));
+    if (core.diffStores(before, core.normalizeStore(JSON.parse(JSON.stringify(s)))).length) log.push(`${rel(t.file)} had newer builds than the store: taken in`);
   }
   return s;
 }
@@ -163,6 +166,7 @@ export function withStore(fn, meta = {}) {
     const base = exportsOn() ? absorbForeign(core.normalizeStore(JSON.parse(JSON.stringify(before))), foreign) : before;
     if (foreign.length) saveStore(before, base, { by: 'foreign-write', action: 'absorb', note: foreign.join('; ') });
     const start = foreign.length ? readStore() : before;
+    // nothing new from outside, but the files still differ from the store (e.g. older): the export below rewrites them
     const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
     const next = r && r.$axf ? r : r.store;
     const saved = saveStore(start, next, meta);

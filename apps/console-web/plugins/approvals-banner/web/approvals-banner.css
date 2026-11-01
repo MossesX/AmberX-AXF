@@ -8,6 +8,8 @@ button.axp-approvals-banner__text { all: unset; flex: 1; min-width: 0; display: 
 .axp-approvals-banner__go { text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
 .axp-approvals-banner__tool { font-weight: 600; white-space: nowrap }
 .axp-approvals-review__frame { width: 100%; height: min(70vh, calc(var(--fx-row-h) * 24)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-approvals-review__stuck { align-items: center; text-align: center; padding: calc(var(--fx-space) * 6) calc(var(--fx-space) * 4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-approvals-review__foot { justify-content: space-between; align-items: center }
 
 /* One line (Brett, Oct 26 2026): the banner's title line and every entry are one line each; long text is cut with an
    ellipsis (hover shows it whole, tap opens the details). Expanded details stay multi-line. Layout only. */

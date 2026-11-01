@@ -6,7 +6,7 @@
  *
  * Nothing here touches the network: every case is a hand-written reply.
  */
-import { afterPick, bashCommand, clipboardFor, clock, errorText, handoffGauges, localToUtcMinute, parseRoute, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
+import { afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
@@ -243,6 +243,62 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/axhub-web.json`, 'utf8'));
   const navViews = nav.data.sections.flatMap((x) => x.items.map((i) => i.view));
   for (const v of ['home', 'approvals-log', 'users', 'handoff', 'account', 'apps']) ok(navViews.includes(v), `the nav reaches ${v}`);
+}
+
+/* ---------------------------------------------------------------- Approve now on every waiting row (Oct 31 2026) */
+{
+  console.log('Approve now, the waiting count, notice picks');
+  const ID = '0f0e0d0c-0b0a-4908-8706-050403020100';
+  const held = (veto = {}) => ({ status: 'held', veto: { runsAt: '2026-10-31T12:00:00Z', secondsLeft: 50, countdownSeconds: 90, ...veto } });
+  // A hub from before decision #104 sends no `actions`: Approve now is still offered next to Deny (Brett's screenshot).
+  eq(heldActions(held()), ['deny', 'approve-now'], 'an older hub (no actions) still gets Approve now next to Deny');
+  eq(heldActions(held({ actions: ['shelve', 'approve-now', 'deny'] })), ['deny', 'approve-now', 'shelve'], "the hub's actions, in the shown order");
+  eq(heldActions(held({ state: 'shelved', actions: ['approve-now', 'deny'] })), ['deny', 'approve-now'], 'a shelved call: Deny + Approve now');
+  eq(heldActions(held({ approvedNow: true, actions: ['deny'] })), ['deny'], 'approved now: only Deny is left');
+  eq(heldActions(held({ approvedNow: true })), ['deny'], 'approved now on an older hub: no second Approve now');
+  eq(heldActions(held({ actions: ['deny', 'launch-missiles'] })), ['deny'], 'unknown actions are dropped');
+  eq(heldActions({ status: 'pending' }), [], 'a request that asks is not held');
+  eq(heldActions({ status: 'ran', veto: { actions: ['deny'] } }), [], 'a call that ran offers nothing');
+  eq(approveNowPaths(ID), [`/auth/api/approvals/${ID}/approve-now`, `/auth/api/approvals/${ID}/approve`], 'Approve now tries /approve-now, then /approve (decision #105)');
+  eq(approveNowPaths('../users'), [], 'no route for something that is not an approval id');
+
+  // The header: the hub's `waiting` is pending only; held calls counting down wait too.
+  eq(waitingCount({ waiting: 0, heldCount: 1, items: [] }), 1, "one held call is 1 waiting (was 'Nothing waiting')");
+  eq(waitingCount({ waiting: 2, heldCount: 1 }), 3, 'pending + held');
+  eq(waitingCount({ waiting: 0, items: [held(), { status: 'pending' }, { status: 'ran', veto: {} }] }), 1, 'no heldCount: held rows on the page count');
+  eq(waitingCount({ waiting: -4, heldCount: Number.NaN, items: [] }), 0, 'nonsense counts are 0');
+  eq(waitingCount(null), 0, 'no grid yet');
+  eq(waitingTitle(0), 'Nothing waiting', '0 → Nothing waiting');
+  eq(waitingTitle(1), '1 waiting', '1 → 1 waiting');
+
+  // A notice's button (`?do=`, decision #105) opens the request with that button picked.
+  eq(pickOf('approve-now'), 'approve-now', 'approve-now is a pick');
+  eq(pickOf('approve'), 'approve', 'approve is a pick');
+  eq(pickOf('rm -rf'), '', 'anything else is no pick');
+  eq(pickOf(undefined), '', 'none');
+  eq(parseRoute(`#/approvals/${ID}?do=approve-now`), { view: 'approval', params: { id: ID, do: 'approve-now' } }, 'the picked button is kept on the route');
+  eq(parseRoute(`#/approvals/${ID}?do=evil`), { view: 'approval', params: { id: ID } }, 'an unknown pick is dropped');
+  eq(routeHash('approval', { id: ID, do: 'deny' }), `#/approvals/${ID}?do=deny`, 'a pick round-trips');
+  eq(routeHash('approval', { id: ID, do: 'x' }), `#/approvals/${ID}`, 'a bad pick is not written');
+
+  // The views: Approve now sits next to Deny as one equal pair, built from framework Buttons, tokens only in the CSS.
+  const { readFileSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const heldSrc = readFileSync(`${here}src/views/HeldCall.tsx`, 'utf8');
+  const listSrc = readFileSync(`${here}src/views/Approvals.tsx`, 'utf8');
+  const detailSrc = readFileSync(`${here}src/views/ApprovalDetail.tsx`, 'utf8');
+  ok(heldSrc.includes("'approve-now': 'Approve now'") && heldSrc.includes('heldActions(item)'), 'held rows: Approve now from heldActions (never Deny alone)');
+  ok(!heldSrc.includes('actionsOf('), "held rows don't use the Deny-only default for a hub without actions");
+  for (const [name, src] of [['HeldCall', heldSrc], ['Approvals', listSrc], ['ApprovalDetail', detailSrc]]) ok(src.includes('axp-axhub-pair'), `${name}: Deny + Approve now are one equal pair`);
+  ok(/>Approve now<\/Button>/.test(listSrc), 'confirm rows say Approve now');
+  ok(listSrc.includes('waitingTitle(waiting)') && listSrc.includes('waitingCount(g)'), 'the header counts held calls too');
+  ok(detailSrc.includes('pickOf(params.do)') && detailSrc.includes('picked={heldPick}'), 'the request page honours the picked button');
+  ok(listSrc.includes('setReply(') && heldSrc.includes("'Running'"), 'a tap flips the row at once (Running / the reply)');
+  const css = readFileSync(`${here}src/hub.css`, 'utf8');
+  const pairCss = css.split('\n').filter((l) => l.includes('axp-axhub-pair'));
+  ok(pairCss.length > 0 && pairCss.every((l) => !/#[0-9a-f]{3,8}\b|rgb\(|hsl\(/i.test(l)), 'the pair CSS uses no colours of its own');
+  ok(/\.axp-axhub-pair \{[^}]*grid-auto-columns: 1fr/.test(css), 'equal columns: Deny and Approve now are the same size');
+  ok(/h3 \{[^}]*text-overflow: ellipsis/.test(css) && /\.axp-axhub-pair > \.fx-btn \{[^}]*white-space: nowrap/.test(css), 'the title is cut first, never the buttons');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
