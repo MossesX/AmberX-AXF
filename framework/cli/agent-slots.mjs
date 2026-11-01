@@ -213,6 +213,23 @@ export function tmuxSessions() {
   return out;
 }
 const tmuxFinished = (name) => /── finished \(exit/.test(spawnSync('tmux', ['capture-pane', '-p', '-t', `=${name}`, '-S', '-40'], { encoding: 'utf8' }).stdout || '');
+/** Is a `claude` process running under this pane process? A session that only waits to close has none. */
+export function paneHasClaude(pid) {
+  const r = spawnSync('ps', ['-e', '-o', 'pid=,ppid=,comm='], { encoding: 'utf8' });
+  if (r.error) return true; // can't tell: assume live rather than kill work
+  const kids = new Map(); const comm = new Map();
+  for (const ln of (r.stdout || '').split('\n')) {
+    const m = /^\s*(\d+)\s+(\d+)\s+(.*)$/.exec(ln); if (!m) continue;
+    comm.set(+m[1], m[3].trim()); (kids.get(+m[2]) ?? kids.set(+m[2], []).get(+m[2])).push(+m[1]);
+  }
+  const stack = [pid]; const seen = new Set();
+  while (stack.length) {
+    const p = stack.pop(); if (seen.has(p)) continue; seen.add(p);
+    if (p !== pid && /^claude/.test(comm.get(p) ?? '')) return true;
+    stack.push(...(kids.get(p) ?? []));
+  }
+  return false;
+}
 const tmuxKill = (name) => spawnSync('tmux', ['kill-session', '-t', `=${name}`]);
 
 /**
@@ -369,16 +386,19 @@ export function sweep(facts = {}) {
   const now = facts.now ?? Date.now();
   const finished = facts.finished ?? tmuxFinished;
   const kill = facts.kill ?? tmuxKill;
+  const hasClaude = facts.hasClaude ?? paneHasClaude;
   const closed = []; const adopted = [];
   withState((st) => {
     const known = new Set(st.running.map((r) => r.session).filter(Boolean));
     for (const r of st.running) {
       if (r.state === 'finished' && r.session && tm.has(r.session) && now - Date.parse(r.finishedAt) >= settings.closeFinishedAfterSec * 1000) { kill(r.session); closed.push(r.session); }
-      if (r.kind === 'legacy' && r.state === 'running' && tm.has(r.session) && finished(r.session)) { kill(r.session); closed.push(r.session); }
+      if (r.kind === 'legacy' && r.state === 'running' && tm.has(r.session) && (finished(r.session) || (now - Date.parse(r.startedAt) > GRACE_MS && !hasClaude(tm.get(r.session).pid)))) { kill(r.session); closed.push(r.session); }
     }
     for (const [name, info] of tm) {
       if (known.has(name)) continue;
       if (finished(name)) { kill(name); closed.push(name); continue; }
+      // a session with no live claude -p (finished, line scrolled off or crashed) is not busy: never adopt it
+      if (now - (info.created || now) > GRACE_MS && !hasClaude(info.pid)) { kill(name); closed.push(name); continue; }
       st.running.push({ id: `lg-${name}`, name: name.replace(/^axf-/, ''), kind: 'legacy', priority: 'normal', state: 'running', host: HOST(), pid: info.pid, session: name, cwd: '', agent: '', by: '',
         enqueuedAt: new Date(info.created || now).toISOString(), startedAt: new Date(info.created || now).toISOString(), waitedMs: 0 });
       adopted.push(name);

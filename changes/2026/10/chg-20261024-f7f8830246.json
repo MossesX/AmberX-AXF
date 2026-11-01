@@ -1,0 +1,68 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-f7f8830246",
+  "createdAt": "2026-10-24T17:53:30.265Z",
+  "updatedAt": "2026-10-24T19:54:56.093Z",
+  "kind": "build",
+  "title": "Vinny offline commands + Auto fix chain",
+  "asked": "Vinny runs mapped VPS/GitHub commands on triggers without Claude; settings dialog; banner Auto fix tries Vinny, then Mosses, then Claude (cloud thread, session_013Ey1ZV98zNkYDUxiaHHZfY)",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Vinny command book + dialog; Auto fix Vinny \u2192 Mosses \u2192 Claude (PR #66)",
+    "branch": "claude/project-thread-1xk0js",
+    "commits": [],
+    "tests": {
+      "agent-manager": {
+        "before": "138",
+        "after": "157"
+      },
+      "systems-check": {
+        "before": "118",
+        "after": "124"
+      },
+      "push-banner": {
+        "before": "102",
+        "after": "105"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/66"
+    }
+  },
+  "closed": {
+    "at": "2026-10-24T19:54:56.093Z",
+    "by": "console:admin"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "vinny-offline-commands"
+  },
+  "surface": "cloud",
+  "startedAt": "2026-10-24T17:53:30.265Z",
+  "finishedAt": "2026-10-24T18:06:09.824Z",
+  "lastSeenAt": "2026-10-24T17:53:30.265Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-1xk0js",
+  "areas": [
+    "apps/console-web/plugins/agent-manager",
+    "apps/console-web/plugins/systems-check",
+    "apps/console-web/plugins/push-banner"
+  ],
+  "progress": 1.0
+}

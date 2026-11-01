@@ -1,0 +1,51 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-bf68f8959e",
+  "createdAt": "2026-10-29T04:23:54.021Z",
+  "updatedAt": "2026-10-29T07:02:33.243Z",
+  "kind": "fix",
+  "title": "Fix: Console public URL is set",
+  "asked": "Systems check fix failed (To stop it coming back after a reinstall, `deploy/install-console.sh` should pass the variable on the Coolify run. That's the fix I proposed earlier, and it's still waiting on your go.); handed to headless Claude Code on the VPS.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "systems-check",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Fix (shell allowed): headless Claude Code on the VPS",
+      "state": "queued"
+    },
+    {
+      "text": "Check again",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "That approval was already used. Call again without confirmation_id to request a new one.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-29T07:02:33.243Z",
+    "by": "console"
+  },
+  "state": "failed",
+  "status": "failed",
+  "surface": "console-launch",
+  "startedAt": "2026-10-29T04:23:54.000Z",
+  "finishedAt": "2026-10-29T04:25:09.681Z",
+  "lastSeenAt": "2026-10-29T04:23:54.125Z",
+  "branch": "fix/syscheck-routine-env-axf-public-url",
+  "doing": "Waiting for approval on axHub"
+}

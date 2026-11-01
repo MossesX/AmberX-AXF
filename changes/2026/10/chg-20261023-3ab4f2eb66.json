@@ -1,0 +1,59 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261023-3ab4f2eb66",
+  "createdAt": "2026-10-23T05:32:05.901Z",
+  "updatedAt": "2026-10-23T12:29:14.546Z",
+  "kind": "build",
+  "title": "Rebuild axHub web: re-bake framework, ship every theme the other Patches apps ship",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Re-baked axhub-web, shipped missing themes/gauge/meter, drift test",
+    "branch": "ccr-46e5de6c-d9d9wh",
+    "commits": [
+      {
+        "sha": "b28d9fc"
+      }
+    ],
+    "tests": {
+      "axhub-web test.mjs": {
+        "before": "52",
+        "after": "72"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-23T12:29:14.546Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "axhub-web-rebuild"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-23T05:32:05.901Z",
+  "finishedAt": "2026-10-23T05:33:20.888Z",
+  "lastSeenAt": "2026-10-23T05:32:17.169Z",
+  "estimate": {
+    "minutes": 45,
+    "costUsd": 6.3
+  },
+  "costEstimated": true,
+  "branch": "ccr-46e5de6c-d9d9wh",
+  "areas": [
+    "apps/axhub-web"
+  ],
+  "progress": 1.0
+}

@@ -1,0 +1,28 @@
+{
+ "$axf": "change-log@1",
+ "id": "chg-20261027-build-orchestrator",
+ "kind": "build",
+ "title": "Build orchestrator plugin + repo build tracker",
+ "asked": "Forget previous model select rules. Create build orchestrator plugin for amberx to break everything down into many steps but don't make new session or sub agent unless needed. Save as many tokens as possible. Break steps down into fable and opus. Prompt for approval between model switches. Tab group with the orchestrator in a tab, same look and behavior as the console's pending list with more options. Build tracker files on the repo to continue builds.",
+ "repos": ["MossesX/AmberX-AXF"],
+ "model": "opus",
+ "buildRef": "pending:build-orchestrator",
+ "status": "done",
+ "surface": "claude.ai",
+ "who": {"host": "claude.ai cloud", "session": "session_01XfLJCRDTkFu8vjMRG1c3dR"},
+ "branch": "claude/build-orchestrator",
+ "areas": ["apps/console-web/plugins/build-orchestrator", "_claude/builds", "_claude/THREADS.md", "_claude/rules", "_claude/shared/rules", "CLAUDE.md", "framework/plan/pending.json"],
+ "startedAt": "2026-10-27T16:29:00Z",
+ "finishedAt": "2026-10-27T16:45:00Z",
+ "lastSeenAt": "2026-10-27T16:45:00Z",
+ "estimate": {"minutes": 30, "costUsd": 4.2},
+ "costEstimated": true,
+ "steps": [
+  {"text": "Core + CLI + server", "state": "done"},
+  {"text": "Page (tab group, Pending look)", "state": "done"},
+  {"text": "Tracker seeded: design-package, arch-foundation, pending-grid-view", "state": "done"},
+  {"text": "Rules, THREADS, CLAUDE.md, pending list", "state": "done"},
+  {"text": "Checks + PR", "state": "done"}
+ ],
+ "result": {"state": "done", "summary": "Plugin + tracker on PR #122; tests 15, tsc, vite, theme, controls, menu-reach pass.", "branch": "claude/build-orchestrator", "links": {"pr": "https://github.com/MossesX/AmberX-AXF/pull/122"}}
+}

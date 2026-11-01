@@ -1,0 +1,99 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-4028f36c-f428-40af-b28c-d60b6c246136",
+ "source": "claude-code",
+ "sessionId": "4028f36c-f428-40af-b28c-d60b6c246136",
+ "project": "axhub",
+ "title": "# Build: live key + health checks in the banners (Angel profile, Opus, one session, no sub-agents) axHub tool allowed: …",
+ "startedAt": "2026-10-31T00:33:25.072Z",
+ "endedAt": "2026-10-31T01:04:50.363Z",
+ "minutes": 31,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "moshi",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/claude-live-key-checks",
+  "repo": "",
+  "branch": "claude/live-key-checks"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-31T00:33:25.884Z",
+   "kind": "prompt",
+   "text": "# Build: live key + health checks in the banners (Angel profile, Opus, one session, no sub-agents) axHub tool allowed: load CLAUDE.md, the shared + repo RULES.md and THREADS.md (claude-sync, else axhub.memory_read), then build. Branch claude/live-key-checks. Steps of 30 min or less in the **Angel** orchestrator (_claude/builds/profiles/angel/orchestrator.json; Brett: \"I want it in the new build profile\", not Refactor). Brett (voice, Oct 30 2026): the console's GITHUB_TOKEN went dead today (GitHub answers 401) and nothing told him. \"You need to make sure things like that go into one of the ban…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 240,
+    "output": 89135,
+    "cacheRead": 23386463,
+    "cacheWrite": 265952,
+    "thinking": 20358
+   },
+   "costUsd": 7.7902,
+   "costEstimated": false,
+   "seconds": 1884,
+   "tools": {
+    "Bash": 105,
+    "ToolSearch": 1,
+    "mcp__claude_ai_axHub__describe_service": 3,
+    "mcp__claude_ai_axHub__call": 4,
+    "Write": 2,
+    "Read": 6
+   },
+   "commands": 105,
+   "files": [
+    "/root/axf-builds/claude-live-key-checks/framework/python/axf_server/github_hub.py",
+    "/root/axf-builds/claude-live-key-checks/apps/console-web/plugins/systems-check/server/githubsvc.py"
+   ],
+   "changeIds": [
+    "chg-20261031-f0cb733f3e"
+   ],
+   "features": [
+    "angel:live-key-checks",
+    "plan:live-key-checks"
+   ],
+   "output": "I've built section 8 (\"Fix it yourself\") and committed it on `claude/live-key-checks` (899009c3), but it isn't pushed, so there's no PR yet. This VPS checkout has no GitHub credentials and its `gh` token is invalid. axHub's GitHub service can't push a branch either. **What's built:** - **The rule**…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/claude-live-key-checks/framework/python/axf_server/github_hub.py",
+  "/root/axf-builds/claude-live-key-checks/apps/console-web/plugins/systems-check/server/githubsvc.py"
+ ],
+ "changeIds": [
+  "chg-20261031-f0cb733f3e"
+ ],
+ "features": [
+  "angel:live-key-checks",
+  "plan:live-key-checks"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 240,
+  "output": 89135,
+  "cacheRead": 23386463,
+  "cacheWrite": 265952,
+  "thinking": 20358,
+  "costUsd": 7.7902,
+  "costEstimated": false,
+  "toolCalls": 121,
+  "commands": 105,
+  "filesTouched": 2,
+  "reportedUsd": 8.5886
+ },
+ "ingestedAt": "2026-10-31T13:52:04.519Z"
+}

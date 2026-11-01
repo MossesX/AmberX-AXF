@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-a7e56918ed",
+  "createdAt": "2026-10-24T18:30:40.219Z",
+  "updatedAt": "2026-10-24T18:53:21.738Z",
+  "kind": "build",
+  "title": "Show all banners button in Banner settings",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Show all banners and reset timers button + context menu entry",
+    "branch": "claude/project-thread-9jsom2",
+    "commits": [],
+    "tests": {
+      "check-banner-hide": {
+        "before": "52",
+        "after": "58"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-24T18:53:21.738Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-24T18:30:40.219Z",
+  "finishedAt": "2026-10-24T18:32:20.873Z",
+  "lastSeenAt": "2026-10-24T18:30:40.219Z",
+  "progress": 1.0
+}

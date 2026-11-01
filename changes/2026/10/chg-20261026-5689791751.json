@@ -1,0 +1,56 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261026-5689791751",
+  "createdAt": "2026-10-26T01:05:03.329Z",
+  "updatedAt": "2026-10-26T01:10:54.790Z",
+  "kind": "fix",
+  "title": "AmberX at amberx.amberxai.com + in-app hub sign-in",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "Opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Hosting files + shell server.url + tests (PR #99)",
+      "state": "done",
+      "startedAt": "2026-10-26T01:10:53.101Z",
+      "finishedAt": "2026-10-26T01:10:53.101Z"
+    },
+    {
+      "text": "DNS + VPS deploy (waits for merge + go)",
+      "state": "queued"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "pending",
+    "id": "amberx-web-host"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-26T01:05:03.329Z",
+  "lastSeenAt": "2026-10-26T01:10:54.790Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-kxgzso",
+  "areas": [
+    "apps/amberx-droid"
+  ],
+  "progress": 0.5,
+  "resume": {
+    "pr": "https://github.com/MossesX/AmberX-AXF/pull/99",
+    "next": "After merge + Gizmo's go: one vps.run (Hostinger DNS A amberx->31.97.13.252 with the console's HOSTINGER_API_TOKEN, log to shared dns/log.md, run apps/amberx-droid/deploy/install.sh from origin/main); verify https://amberx.amberxai.com",
+    "at": "2026-10-26T01:10:54.441Z"
+  }
+}

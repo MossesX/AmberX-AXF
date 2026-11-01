@@ -1,0 +1,47 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-10b61b8eed",
+  "createdAt": "2026-10-25T09:48:51.118Z",
+  "updatedAt": "2026-10-25T10:48:33.998Z",
+  "kind": "build",
+  "title": "Patches Plugins per app: Pilot + axHub columns editable",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Pilot adapter + axhub plugin kind, console routes, axhub-web loader, Patches axhub adapter",
+    "branch": "claude/project-thread-2ijgui",
+    "commits": [
+      {
+        "sha": "5c6aa92"
+      }
+    ],
+    "tests": {
+      "patches server": {
+        "before": "83",
+        "after": "96"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-25T10:48:33.998Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T09:48:51.118Z",
+  "finishedAt": "2026-10-25T09:53:46.506Z",
+  "lastSeenAt": "2026-10-25T09:48:51.118Z",
+  "progress": 1.0
+}

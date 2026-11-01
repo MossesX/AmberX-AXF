@@ -1,0 +1,122 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-5c433b6c82",
+  "createdAt": "2026-10-30T18:08:38.357Z",
+  "updatedAt": "2026-10-30T18:13:27.161Z",
+  "kind": "build",
+  "title": "# Build: finish enterprise-branding (Refactor profile, Opus, one session, no sub-agents) The axHub …",
+  "asked": "# Build: finish enterprise-branding (Refactor profile, Opus, one session, no sub-agents) The axHub tool is allowed in this launch: load CLAUDE.md, _claude/shared/rules/RULES.md, _claude/rules/RULES.md and _claude/THREADS.md (claude-sync, else axhub.memory_read project amberx-axf / shared, area claude), then build. Branch claude/enterprise-branding-3 (this worktree, from main). Brett, Oct 30 2026 (voice): restart enterprise branding. It is at 33 of 46 steps; nothing since Oct 27. Orchestrator build `enterprise-branding` (it was imported to the Refactor profile on Oct 27: carry it on there, _claude/builds/profiles/refactor/orchestrator.json, and keep _claude/builds/orchestrator.json in step). Read the build's brief and notes, DESIGN-LANGUAGE.md and the earlier PRs (#128, #138, #139) first. The 13 open steps, in this order: 1-3. Brand library console plugin (view with tabs Logos / Animated logos / Icon packs / Branding packages, virtualised grid, search, filters; preview pane light/dark, sizes, animation play, Apply / Set as brand, copy id; settings tab, lifecycle panel, menu, tests). 4-6. AmberX app (apps/amberx-droid) on the new design language + branding: banner, toolbar, nav, app menu; windows, floating windows, dialogs, containers, tab groups; pages (Approvals, Settings, Plugins, voice, monitor); test.mjs green. 7-11. Console shell refactor, then the enabled plugins (3 parts), then the banner plugins. 12-13. Re-bake the web apps, defaults + manifests naming a design package and branding, before/after shots; CI checks, PORTING.md, rebuild report, STATUS/CLAUDE.md, THREADS.md. Other builds are running right now; don't touch their files and work around them: push-banner plugin (claude/pr-only-merge), the veto/approvals banner + AmberX veto alarm and notification files (claude/veto-complete), the design-packs plugin which is becoming ui-review (claude/ui-review). For those plugins, do their refactor last and only once their PRs have merged into main (merge main in first); if they haven't by then, leave those steps open with a note. A look refactor is also waiting on Brett's 3 design-pack picks (Angel profile): keep your steps to the design language and tokens so his picks can swap the look later, don't hard-code a pack. Every build that adds or changes UI submits its screenshots to UI Review once that plugin exists on main (until then, keep the shots in the rebuild report). Tick each step in the orchestrator as you finish it, keep a change-log entry live on axHub, commit and push often. Open the PR through the push banner (or gh / git if the banner's GitHub token is broken: it returned 401 today). Don't merge. Anything that needs Brett goes out as a veto call with a reason; never poll it.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "1096bd15-908",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Verify s27-s40 already on main (refactor-all #166); re-run checks",
+      "state": "done",
+      "startedAt": "2026-10-30T18:13:06.106Z",
+      "finishedAt": "2026-10-30T18:13:06.106Z"
+    },
+    {
+      "text": "Tick orchestrator (refactor + main), pending item complete, THREADS.md",
+      "state": "done",
+      "startedAt": "2026-10-30T18:13:06.191Z",
+      "finishedAt": "2026-10-30T18:13:06.191Z"
+    },
+    {
+      "text": "Push + open PR via veto vps.run (job 9999d3b5), gh login broken here",
+      "state": "done",
+      "startedAt": "2026-10-30T18:13:06.292Z",
+      "finishedAt": "2026-10-30T18:13:06.453Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "enterprise-branding complete: s27-s40 were already built in refactor-all (#166); checks re-run green on main; orchestrator (both profiles), pending item and THREADS.md updated. Push/PR sent as veto vps.run job 9999d3b5.",
+    "branch": "claude/enterprise-branding-3",
+    "commits": [
+      {
+        "sha": "5ebf7179"
+      }
+    ],
+    "filesChanged": 5,
+    "tests": {
+      "amberx test.mjs": {
+        "after": "1990/1990"
+      }
+    },
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/enterprise-branding-3.md"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "enterprise-branding"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T18:08:38.357Z",
+  "finishedAt": "2026-10-30T18:13:06.453Z",
+  "lastSeenAt": "2026-10-30T18:13:06.378Z",
+  "estimate": {
+    "minutes": 20,
+    "costUsd": 2.8
+  },
+  "actual": {
+    "minutes": 4,
+    "costUsd": 1.5729,
+    "inputTokens": 92,
+    "outputTokens": 17597,
+    "cacheReadTokens": 3790989,
+    "cacheWriteTokens": 92473,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/enterprise-branding-3",
+  "areas": [
+    "_claude/builds",
+    "_claude/THREADS.md",
+    "framework/plan"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/claude-enterprise-branding-3",
+    "branch": "claude/enterprise-branding-3",
+    "base": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+    "head": "5ebf71794d7ff454e9a7dc00d74ed8656dab2b76",
+    "pushed": false,
+    "dirty": 13,
+    "plan": "Nothing to build: the 13 steps were merged in #166; tracker-only PR",
+    "next": "If veto job 9999d3b5-9afc-4443-b2a6-cf001ec979e6 failed (401), push claude/enterprise-branding-3 (commit 5ebf7179) and open the PR to main with a working token; then send Brett the merge approval",
+    "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/orchestrator.json",
+      "_claude/builds/profiles/refactor/orchestrator.json",
+      "framework/plan/pending.json",
+      "framework/plan/profiles/refactor/framework/plan/pending.json",
+      "framework/catalog/libraries.json",
+      "framework/plan/profiles/refactor/framework/plan/plan.json",
+      "framework/plan/profiles/refactor/tracker.json",
+      ".axf-brief.md",
+      ".axf-build.jsonl",
+      ".axf-build.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-30T18:13:27.242Z"
+  }
+}

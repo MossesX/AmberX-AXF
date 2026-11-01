@@ -1,0 +1,84 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-0df45848-4bb3-4cc7-a6b2-1cdb7c929c25",
+ "source": "claude-code",
+ "sessionId": "0df45848-4bb3-4cc7-a6b2-1cdb7c929c25",
+ "project": "other",
+ "title": "# Breakroom: agent school + student loans (Brett, Oct 31 night) - v2, replaces the stopped 'swarm-school' build Read CL…",
+ "startedAt": "2026-11-01T06:28:53.060Z",
+ "endedAt": "2026-11-01T06:28:54.553Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/agent-school",
+  "repo": "",
+  "branch": "claude/agent-school"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T06:28:53.204Z",
+   "kind": "prompt",
+   "text": "# Breakroom: agent school + student loans (Brett, Oct 31 night) - v2, replaces the stopped 'swarm-school' build Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md and the agent swarm plugin (apps/console-web/plugins/agent-swarm). Opus, one session. Git login works: plain `git push`. 0. WAIT: poll every 60 s (max 4 h) until origin/main contains BOTH swarm-hr and swarm-raises (git log origin/main --oneline | grep -i 'swarm-hr\\|HR department' and grep -i 'swarm-raises\\|raise'; or origin/claude/swarm-hr and origin/claude/swarm-raises are ancestors of origin/main). Then git merge or…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261101-b462a67379"
+   ],
+   "features": [
+    "breakroom:agent-swarm",
+    "plan:swarm-raises"
+   ],
+   "output": ""
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261101-b462a67379"
+ ],
+ "features": [
+  "breakroom:agent-swarm",
+  "plan:swarm-raises"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-01T06:28:58.337Z"
+}

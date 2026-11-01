@@ -1,0 +1,104 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-c5a9c4d7-56e4-4c0d-bfc5-f5070db811ef",
+ "source": "claude-code",
+ "sessionId": "c5a9c4d7-56e4-4c0d-bfc5-f5070db811ef",
+ "project": "axhub",
+ "title": "# Hire agents to own recurring jobs (Brett, Nov 1 ~3 AM) Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona…",
+ "startedAt": "2026-11-01T06:44:05.680Z",
+ "endedAt": "2026-11-01T07:28:18.219Z",
+ "minutes": 44,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/agent-jobs",
+  "repo": "",
+  "branch": "claude/agent-jobs"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T06:44:05.848Z",
+   "kind": "prompt",
+   "text": "# Hire agents to own recurring jobs (Brett, Nov 1 ~3 AM) Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md and the agent swarm on main (apps/console-web/plugins/agent-swarm + README + _claude/builds/reports/agent-swarm-2026-10-31.md + install_steps Part I). Opus, one session. Git login works: plain `git push`. NOTE: the HR department (fun rules, raises, school, HR panel) is SHELVED (axHub data plans/shelved-hr-department.md). Do NOT build any of it. Use only what the swarm already has: hiring, specialties, statuses, salaries/token budgets, ID cards, group chat, leases. Brett: …",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 270,
+    "output": 113238,
+    "cacheRead": 31030621,
+    "cacheWrite": 313495,
+    "thinking": 25186
+   },
+   "costUsd": 10.04,
+   "costEstimated": false,
+   "seconds": 2652,
+   "tools": {
+    "Bash": 126,
+    "Write": 6,
+    "Read": 8
+   },
+   "commands": 126,
+   "files": [
+    "/root/axf-builds/agent-jobs/framework/core/engines/job-type-rules.mjs",
+    "/root/axf-builds/agent-jobs/framework/core/engines/job-type-rules.d.mts",
+    "/root/axf-builds/agent-jobs/framework/spec/check-job-type.mts",
+    "/root/axf-builds/agent-jobs/apps/console-web/plugins/agent-swarm/web/jobs-core.mjs",
+    "/root/axf-builds/agent-jobs/apps/console-web/plugins/agent-swarm/jobs.mjs",
+    "/root/axf-builds/agent-jobs/apps/console-web/plugins/agent-swarm/web/jobs.tsx"
+   ],
+   "changeIds": [
+    "chg-20261101-1e3b994aa6"
+   ],
+   "features": [
+    "orch:agent-jobs",
+    "breakroom:agent-swarm"
+   ],
+   "output": "Done and on main, boss (`8429e623`). Recurring work now goes to hired agents instead of anonymous one-off builds. **What landed** - **Job types are assets now (`job-type@1`).** Each one names the specialty that owns it, its default model, a token budget per run, its trigger (on demand, a schedule o…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/agent-jobs/framework/core/engines/job-type-rules.mjs",
+  "/root/axf-builds/agent-jobs/framework/core/engines/job-type-rules.d.mts",
+  "/root/axf-builds/agent-jobs/framework/spec/check-job-type.mts",
+  "/root/axf-builds/agent-jobs/apps/console-web/plugins/agent-swarm/web/jobs-core.mjs",
+  "/root/axf-builds/agent-jobs/apps/console-web/plugins/agent-swarm/jobs.mjs",
+  "/root/axf-builds/agent-jobs/apps/console-web/plugins/agent-swarm/web/jobs.tsx"
+ ],
+ "changeIds": [
+  "chg-20261101-1e3b994aa6"
+ ],
+ "features": [
+  "orch:agent-jobs",
+  "breakroom:agent-swarm"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 270,
+  "output": 113238,
+  "cacheRead": 31030621,
+  "cacheWrite": 313495,
+  "thinking": 25186,
+  "costUsd": 10.04,
+  "costEstimated": false,
+  "toolCalls": 140,
+  "commands": 126,
+  "filesTouched": 6,
+  "reportedUsd": 10.9799
+ },
+ "ingestedAt": "2026-11-01T07:28:18.610Z"
+}

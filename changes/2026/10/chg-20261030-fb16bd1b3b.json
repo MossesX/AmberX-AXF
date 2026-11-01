@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-fb16bd1b3b",
+  "createdAt": "2026-10-30T23:00:40.637Z",
+  "updatedAt": "2026-10-30T23:02:16.345Z",
+  "kind": "fix",
+  "title": "Fix: Demo site answers",
+  "asked": "Systems check fix failed (If step 2 shows ACME rate-limit or DNS errors, the reinstall in step 3 won't clear it. DNS is something I can fix through the Hostinger connector, so you still won't have to do it yourself.); handed to headless Claude Code on the VPS.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "systems-check",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Fix (shell allowed): headless Claude Code on the VPS",
+      "state": "queued"
+    },
+    {
+      "text": "Check again",
+      "state": "queued"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T23:00:40.000Z",
+  "lastSeenAt": "2026-10-30T23:02:16.345Z",
+  "branch": "fix/syscheck-routine-http-demo-site",
+  "doing": "Launched on the VPS (headless Claude Code)"
+}

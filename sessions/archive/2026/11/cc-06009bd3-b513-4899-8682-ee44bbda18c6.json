@@ -1,0 +1,80 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-06009bd3-b513-4899-8682-ee44bbda18c6",
+ "source": "claude-code",
+ "sessionId": "06009bd3-b513-4899-8682-ee44bbda18c6",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-01T07:20:43.711Z",
+ "endedAt": "2026-11-01T07:20:47.510Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-GTXfId/one",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T07:20:45.914Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/agent-cap/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 15,
+    "cacheRead": 11334,
+    "cacheWrite": 14020,
+    "thinking": 0
+   },
+   "costUsd": 0.0727,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [
+    "plan:agent-cap"
+   ],
+   "output": "Hi! What would you like to work on today?"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [
+  "plan:agent-cap"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 15,
+  "cacheRead": 11334,
+  "cacheWrite": 14020,
+  "thinking": 0,
+  "costUsd": 0.0727,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.1147
+ },
+ "ingestedAt": "2026-11-01T07:20:47.879Z"
+}

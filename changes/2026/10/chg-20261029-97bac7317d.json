@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-97bac7317d",
+  "createdAt": "2026-10-29T07:01:50.986Z",
+  "updatedAt": "2026-10-29T07:04:57.052Z",
+  "kind": "fix",
+  "title": "Fix: Console public URL set",
+  "asked": "Systems check fix failed (You don't have to do it by hand. Run both from an axHub-connected Mosses session (the console's Mosses chat, which has `axhub_call`) and they'll come to you as two approvals.); handed to headless Claude Code on the VPS.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "systems-check",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Fix (shell allowed): headless Claude Code on the VPS",
+      "state": "queued"
+    },
+    {
+      "text": "Check again",
+      "state": "queued"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "surface": "console-launch",
+  "startedAt": "2026-10-29T07:01:50.000Z",
+  "lastSeenAt": "2026-10-29T07:04:57.052Z",
+  "branch": "fix/syscheck-routine-env-public-url",
+  "doing": "Launched on the VPS (headless Claude Code)"
+}
