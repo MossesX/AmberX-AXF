@@ -33,6 +33,17 @@ const sources = { profiles: [
 const { store: M, report } = c.migrate(sources, { now: at });
 const ids = M.builds.map((b) => b.id);
 t('one record per build, no duplicate ids', () => assert.equal(ids.length, new Set(ids).size));
+t('validateStore: the migrated store is a valid builds@1', () => assert.deepEqual(c.validateStore(M).errors, []));
+t('validateStore names every problem by path', () => {
+  const bad = JSON.parse(JSON.stringify(M));
+  bad.$axf = 'nope'; bad.builds[0].status = 'queued'; bad.builds[1].id = bad.builds[0].id; delete bad.builds[0].order[bad.builds[0].profiles[0]];
+  bad.builds[0].steps[0].model = 'Sonnet'; bad.builds[0].steps.push({ ...bad.builds[0].steps[0] });
+  const v = c.validateStore(bad); const paths = v.errors.map((e) => e.path).join('\n');
+  assert.equal(v.ok, false);
+  for (const re of [/^\$axf$/m, /\.status$/m, /\.id$/m, /\.order\./m, /steps\[0\]\.model$/m, /steps\[\d+\]\.uid$/m]) assert.match(paths, re, paths);
+  assert.ok(v.errors.some((e) => /never Sonnet/.test(e.message)), 'a Sonnet step names the model policy');
+  assert.equal(c.validateStore(null).ok, false); assert.equal(c.validateStore({ $axf: 'builds@1', rev: 0 }).ok, false);
+});
 t('the same build in two profiles = one record tagged with both, newest copy wins, the other kept', () => {
   const b = M.builds.find((x) => x.id === 'shared');
   assert.deepEqual(b.profiles.sort(), ['main-framework', 'refactor']);

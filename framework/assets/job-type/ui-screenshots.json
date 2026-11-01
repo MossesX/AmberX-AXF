@@ -12,7 +12,7 @@
   ],
   "data": {
     "specialty": "screenshots",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
       "tokens": 150000,
       "maxTurns": 25,

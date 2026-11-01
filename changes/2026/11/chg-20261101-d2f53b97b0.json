@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-d2f53b97b0",
+  "createdAt": "2026-11-01T11:07:39.172Z",
+  "updatedAt": "2026-11-01T11:07:47.140Z",
+  "kind": "edit",
+  "title": "# Live model check Do not edit, commit or push anything.",
+  "asked": "# Live model check Do not edit, commit or push anything. Reply with one line only: MODEL=<your exact model id>. Then stop. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "fable",
+  "who": {
+    "session": "92c2eaeb-924",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-01T11:07:39.172Z",
+  "finishedAt": "2026-11-01T11:07:47.140Z",
+  "lastSeenAt": "2026-11-01T11:07:46.998Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0.4826,
+    "inputTokens": 2,
+    "outputTokens": 16,
+    "cacheReadTokens": 12896,
+    "cacheWriteTokens": 38286,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message",
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/fable-live-test",
+    "branch": "claude/fable-live-test",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "pushed": true,
+    "dirty": 1,
+    "files": [
+      ".axf-watch-live.log"
+    ],
+    "at": "2026-11-01T11:07:47.175Z"
+  }
+}

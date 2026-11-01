@@ -1,0 +1,110 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-6c13622b7b",
+  "createdAt": "2026-11-01T10:35:40.412Z",
+  "updatedAt": "2026-11-01T10:46:27.228Z",
+  "kind": "fix",
+  "title": "# Directory: one searchable index of every place in the console Brett (Nov 1 2026): \"a directory: a…",
+  "asked": "# Directory: one searchable index of every place in the console Brett (Nov 1 2026): \"a directory: all the main UIs, all the shit I might want to go to, like the Breakroom, the train schedule map, the builds that show all the broken-down steps, and a searchable index of all that.\" Also: \"put the Breakroom in the shortcuts, put the train map in the shortcuts.\" Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/THREADS.md first. ## Build 1. **Directory page**: every screen, view, tab, plugin page, settings section, tool and deep link in the console (and AmberX/axHub pages the console can open), grouped by area (Builds, Breakroom, Review, Settings, Plugins, Tools, Audio, Help...), each with icon, one-line description, where it lives, its shortcut/keyboard if any. Search box filters live (name, description, aliases, keywords). Tap to jump. Pin/unpin to Shortcuts from each row. 2. **Generated, not hand-kept**: build the index from what already registers destinations (routes, nav/app menu assets, plugin manifests, view registries, deep links, the search-bar widget's index, help@1 entries for descriptions). Reuse/extend the search-bar widget's index so search and Directory are one source. A plugin adds itself by its manifest; uninstall removes it (plugin-lifecycle green). A CI check fails if a registered page is missing from the Directory. 3. Make sure these are in it with good names/keywords: Breakroom + Group chat, Build train map (Map view, being built on claude/build-train-map), Steps view, Builds page views (being built on claude/builds-one-page-finish), Agent history (claude/agent-history), Chat viewer, UI Review + Screenshots, Approvals, Walkthrough, Plan Studio, Design packs. For pages not on main yet, register via the same extension point so they appear the moment they land. 4. **Shortcuts**: add Breakroom and Build train map (Map) to the default Shortcuts (map entry shows once the map lands), plus Directory itself. Directory also reachable from app menu, nav menu, context menu, keyboard, `axf://directory`. 5. Framework controls + hot-swappable assets, scale tokens, phone-first one-line rows. Orchestrator build `directory` in profile `refactor`, steps <= 30 min. Tests, lifecycle + theme checks, phone + desktop screenshots, report `_claude/builds/reports/directory.md`, THREADS row, STATUS. Commit on this branch, merge origin/main often (other builds above are landing), push the branch. Do NOT push to main; Brett's session lands it with build_land. Never print secrets. End with a short report. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "2ecdcdf9-f22",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "directory"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-01T10:35:40.412Z",
+  "finishedAt": "2026-11-01T10:46:27.228Z",
+  "lastSeenAt": "2026-11-01T10:46:26.327Z",
+  "estimate": {
+    "minutes": 155,
+    "costUsd": 21.7
+  },
+  "actual": {
+    "minutes": 11,
+    "costUsd": 3.8008,
+    "inputTokens": 146,
+    "outputTokens": 57984,
+    "cacheReadTokens": 8935435,
+    "cacheWriteTokens": 170691,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/directory",
+  "areas": [
+    "apps/console-web/plugins/directory",
+    "apps/console-web/plugins/*/plugin.json",
+    "apps/console-web/src",
+    ".github/workflows"
+  ],
+  "doing": "Running: Create directory plugin manifest and lifecycle files",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/directory",
+    "branch": "claude/directory",
+    "base": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "head": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "pushed": true,
+    "dirty": 38,
+    "files": [
+      "_claude/builds/journal/2026-11.jsonl",
+      "_claude/builds/orchestrator.json",
+      "_claude/builds/profiles/angel/orchestrator.json",
+      "_claude/builds/profiles/breakroom/orchestrator.json",
+      "_claude/builds/profiles/refactor/orchestrator.json",
+      "_claude/builds/profiles/urgent/orchestrator.json",
+      "_claude/builds/store.json",
+      "apps/console-web/plugins/agent-swarm/plugin.json",
+      "apps/console-web/plugins/agent-swarm/web/index.tsx",
+      "apps/console-web/plugins/agent-swarm/web/ui.tsx",
+      "apps/console-web/plugins/approvals-banner/plugin.json",
+      "apps/console-web/plugins/builds-page/plugin.json",
+      "apps/console-web/plugins/builds-page/web/index.tsx",
+      "apps/console-web/plugins/builds-page/web/ui.tsx",
+      "apps/console-web/plugins/chat-viewer/plugin.json",
+      "apps/console-web/plugins/plan-studio/plugin.json",
+      "apps/console-web/plugins/ui-review/plugin.json",
+      "apps/console-web/plugins/directory/",
+      "changes/2026/11/chg-20261101-1a2f437924.json",
+      "changes/2026/11/chg-20261101-1be63f8f1b.json",
+      "changes/2026/11/chg-20261101-398ef192a8.json",
+      "changes/2026/11/chg-20261101-49101f1545.json",
+      "changes/2026/11/chg-20261101-6ccae6f4d3.json",
+      "changes/2026/11/chg-20261101-70795946ff.json",
+      "changes/2026/11/chg-20261101-710d4dab8e.json",
+      "changes/2026/11/chg-20261101-8a3ebed65d.json",
+      "changes/2026/11/chg-20261101-8f773887f3.json",
+      "changes/2026/11/chg-20261101-905d1f449c.json",
+      "changes/2026/11/chg-20261101-9504b77bde.json",
+      "changes/2026/11/chg-20261101-a6777d1886.json",
+      "changes/2026/11/chg-20261101-d7b70e43f7.json",
+      "sessions/archive/2026/11/cc-2e0a66ea-1471-489a-a14d-12698c271604.json",
+      "sessions/archive/2026/11/cc-538b069c-d205-4dab-90f2-12d5c34fdcd6.json",
+      "sessions/archive/2026/11/cc-5bd3dd32-7712-4e0e-aedc-5e2897cd20a9.json",
+      "sessions/archive/2026/11/cc-75b2a975-d5fa-42fa-abb9-1f406fbf49ff.json",
+      "sessions/archive/2026/11/cc-92543c42-347c-455b-838e-259586c69382.json",
+      "sessions/archive/2026/11/cc-ea3d3dfe-3be4-4147-aa83-699be917a582.json",
+      "sessions/archive/2026/11/cc-ea4ac6c5-9077-4a17-ad9d-aa96b5a2c3e8.json"
+    ],
+    "at": "2026-11-01T10:46:27.584Z"
+  }
+}

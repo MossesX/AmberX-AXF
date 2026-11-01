@@ -151,3 +151,8 @@ queue is an order; every write versioned (journal); the console never re-creates
 kept read-only (as exports) for one release; one Builds page with a Steps view (atomic step records, drag reorder,
 multi-select, divide, harvest + split into N, Restore default, draft until Apply / Discard, rename) and live progress
 bars per build, step and profile. Report: `_claude/builds/reports/urgent-builds.md`.
+
+## Models (Nov 1 2026)
+
+- **Opus or Fable only, never Sonnet (Brett, Nov 1 2026).** Three headless builds (land-stragglers, autoclose-fix, breakroom-hooks) ran on Sonnet because `vps.build_start` could not launch Fable (fixed, axHub decision #111). Fable for foundation work (schemas, asset types, data models, kernel/engines, cross-app GUI behaviour), Opus for the rest; no Sonnet or Haiku for builds, job agents, swarm agents or one-shot calls. One registry, `framework/core/model-policy.mjs` (`model-policy@1`, snapshot `framework/schemas/model-policy.json`), drives job-type@1, the swarm roster and planner, the plan model picker and the builds store; a stored Sonnet/Haiku choice is coerced up to Opus. CI: `framework/spec/check-model-policy.mjs`.
+- **Fable reviews Opus-built foundation work first; only what it flags is rebuilt (Brett, Nov 1 2026).** First pass: `_claude/builds/reports/fable-review.md` — builds@1 fix (store self-validator + `framework/spec/BUILDS.md`), UI Review schema fix (one time zone rule for group days and stamps: `REGISTRY.timeZone`), job-type@1 fix (model policy), help@1 OK, session@1 OK, agent cap OK, agent swarm data model → the pending `agent-swarm-fable-rebuild` (Breakroom), with agent-card@1 taken out of its scope (reviewed OK).

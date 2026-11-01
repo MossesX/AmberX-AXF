@@ -1448,8 +1448,6 @@
       ],
       "enums": {
         "model": [
-          "haiku",
-          "sonnet",
           "opus",
           "fable"
         ]
@@ -1468,7 +1466,7 @@
         "asset": false
       },
       "optional_fields": {
-        "model": "default model for a run (haiku, sonnet, opus, fable); default sonnet",
+        "model": "default model for a run, from the model policy (core/model-policy.mjs: opus or fable, never sonnet or haiku); default opus",
         "readOnly": "true = the job changes nothing, only reports",
         "tools": "tool names the run gets (default: the owning agent's tools; read-only jobs get read tools only)",
         "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",

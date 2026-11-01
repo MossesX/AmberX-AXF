@@ -149,7 +149,7 @@ export async function banter(opts = {}) {
   const prompt = core.banterPrompt(roster, st.messages, opts.n ?? 6);
   if (opts.dry) return { dry: true, prompt };
   const bin = opts.bin ?? process.env.AXF_CLAUDE_BIN ?? 'claude';
-  const r = spawnSync(bin, ['-p', prompt, '--model', core.MODEL_IDS.haiku, '--max-turns', '1', '--output-format', 'json', '--system-prompt', loadPersona(), '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--allowedTools', ''], { encoding: 'utf8', timeout: 120000 });
+  const r = spawnSync(bin, ['-p', prompt, '--model', core.MODEL_IDS[core.DEFAULT_MODEL], '--max-turns', '1', '--output-format', 'json', '--system-prompt', loadPersona(), '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--allowedTools', ''], { encoding: 'utf8', timeout: 120000 });
   if (r.error) throw new Error(r.error.code === 'ENOENT' ? `Claude Code not found (${bin}); set AXF_CLAUDE_BIN` : r.error.message);
   let res = {}; try { res = JSON.parse(r.stdout); } catch { throw new Error('banter run gave no JSON'); }
   const lines = core.parseBanter(res.result, roster); const usd = Number(res.total_cost_usd) || 0;

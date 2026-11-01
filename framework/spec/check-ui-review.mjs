@@ -39,7 +39,7 @@ const now = '2026-11-01T08:20:00.000Z';
 const base = { kind: 'review', source: 'headless', submittedBy: 'build:claude/x', app: 'Console', screen: 'Breakroom', files: [{ src: 'a-phone.png', viewport: 'phone' }] };
 let p = S.prepareItem({ ...base, id: 'r-1', name: 'Breakroom check' }, { now, autoGroup: true, session: 'claude/x' });
 ok(p.ok, 'prepareItem: createdAt and the automatic group are the only defaults', JSON.stringify(p.errors));
-ok(p.item.createdAt === now && p.item.group.name === 'claude/x - 2026-11-01 08:20' && p.item.status === 'pending' && p.item.viewport === 'phone', 'auto group "<session> - <YYYY-MM-DD HH:mm>", createdAt = now', JSON.stringify(p.item));
+ok(p.item.createdAt === now && p.item.group.name === 'claude/x - 2026-11-01 03:20' && p.item.status === 'pending' && p.item.viewport === 'phone', 'auto group "<session> - <YYYY-MM-DD HH:mm>" in Brett\'s zone (08:20Z = 03:20 EST on Nov 1 2026), createdAt = now', JSON.stringify(p.item));
 p = S.prepareItem({ ...base, id: 'r-1' }, { now, autoGroup: true });
 ok(!p.ok && p.errors.some((e) => e.field === 'name' && e.code === 'missing'), 'prepareItem never fills a missing name');
 p = S.prepareItem({ ...base, id: 'r-1', name: 'Breakroom check' }, { now, autoGroup: false });
@@ -58,6 +58,8 @@ ok(m.item.name === 'Level bar' && m.item.createdAt === '2026-10-30T10:00:00Z' &&
 const m2 = S.migrateLegacy({ id: 'x1', src: 'shots/live.png' }, { kind: 'screenshot', fileTime: () => '2026-10-31T20:20:00Z' });
 ok(S.validateItem(m2.item).ok && m2.item.createdAt === '2026-10-31T20:20:00Z', 'timestamps come from the file time when an item has none', JSON.stringify(S.validateItem(m2.item).errors));
 ok(S.migrateLegacy(m.item).changes.length === 0, 'migration is idempotent');
+ok(S.REGISTRY.timeZone === 'America/New_York' && S.dayKey('2026-11-01T00:20:00Z') === '2026-10-31' && S.stamp('2026-11-01T00:20:00Z') === '2026-10-31 20:20' && S.stamp('2026-11-01T00:20:00Z', 'UTC') === '2026-11-01 00:20', 'days and stamps are in REGISTRY.timeZone (Brett\'s clock), zone is a parameter');
+ok(S.groupId('Breakroom check', '2026-11-01T00:20:00Z') === 'g-20261031-breakroom-check', 'group id day is the local day');
 
 // 5. every submitter goes through the schema
 const SKIP = /(^|\/)(node_modules|dist|\.git|src\/axf|\.axf-console|changes|sessions|build)(\/|$)/;

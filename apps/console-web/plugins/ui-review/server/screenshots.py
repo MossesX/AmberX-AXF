@@ -46,6 +46,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
 
 from . import conform as cf
+from .schema import _eastern, local_time as _schema_local_time  # noqa: F401 — _eastern re-exported for the tests
 
 SCHEMA = "ui-screenshot@1"
 GROUP_SCHEMA = "ui-review-group@1"  # was shot-group@1 (same fields)
@@ -150,31 +151,9 @@ def side_for(shots: list[dict], pair: str, side: str = "") -> str:
 
 # ---- groups (shot-group@1): mirror of web/groups-core.mjs
 
-def _eastern(t: datetime) -> datetime:
-    """US Eastern without tzdata (the slim image may not ship it): DST from the 2nd Sunday of March to the 1st of November."""
-    y = t.year
-    mar = datetime(y, 3, 8 + (6 - datetime(y, 3, 8).weekday()) % 7, 7, tzinfo=timezone.utc)   # 2:00 EST
-    nov = datetime(y, 11, 1 + (6 - datetime(y, 11, 1).weekday()) % 7, 6, tzinfo=timezone.utc)  # 2:00 EDT
-    return (t + timedelta(hours=-4 if mar <= t < nov else -5)).replace(tzinfo=None)
-
-
 def _local(at: str, tz: str = "") -> datetime | None:
-    v = _s(at, 40)
-    try:
-        t = datetime.fromisoformat(v.replace("Z", "+00:00")) if v else None
-    except ValueError:
-        return None
-    if t is None:
-        return None
-    if t.tzinfo is None:
-        t = t.replace(tzinfo=timezone.utc)
-    t = t.astimezone(timezone.utc)
-    tz = tz or os.environ.get("AXF_SHOT_TZ") or DEFAULT_TZ
-    try:
-        from zoneinfo import ZoneInfo
-        return t.astimezone(ZoneInfo(tz)).replace(tzinfo=None)
-    except Exception:  # noqa: BLE001 — no tzdata: Eastern by rule, anything else UTC
-        return _eastern(t) if tz == DEFAULT_TZ else t.replace(tzinfo=None)
+    """One rule for days and stamps on every port: the schema's local_time (REGISTRY.timeZone, AXF_SHOT_TZ override)."""
+    return _schema_local_time(at, tz)
 
 
 def day_key(at: str, tz: str = "") -> str:

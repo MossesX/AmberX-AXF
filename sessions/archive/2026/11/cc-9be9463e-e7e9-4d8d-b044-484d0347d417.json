@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-9be9463e-e7e9-4d8d-b044-484d0347d417",
+ "source": "claude-code",
+ "sessionId": "9be9463e-e7e9-4d8d-b044-484d0347d417",
+ "project": "other",
+ "title": "Reply with only your exact model id.",
+ "startedAt": "2026-11-01T11:02:39.424Z",
+ "endedAt": "2026-11-01T11:02:42.705Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T11:02:40.524Z",
+   "kind": "prompt",
+   "text": "Reply with only your exact model id.",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 2,
+    "output": 11,
+    "cacheRead": 14966,
+    "cacheWrite": 12385,
+    "thinking": 0
+   },
+   "costUsd": 0.1591,
+   "costEstimated": false,
+   "seconds": 2,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "claude-fable-5-1"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 11,
+  "cacheRead": 14966,
+  "cacheWrite": 12385,
+  "thinking": 0,
+  "costUsd": 0.1591,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.252
+ },
+ "ingestedAt": "2026-11-01T11:02:42.856Z"
+}

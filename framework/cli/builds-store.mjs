@@ -294,10 +294,14 @@ async function main(argv) {
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
   if (cmd === 'verify') {
-    const checks = core.verifyNothingLost(gatherSources({ history: false }), loadStore());
+    // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
+    const store = loadStore();
+    const v = core.validateStore(store);
+    const checks = core.verifyNothingLost(gatherSources({ history: false }), store);
     const bad = checks.filter((c) => !c.ok);
-    if (bad.length) process.exitCode = 1;
-    return out({ ok: !bad.length, total: checks.length, failed: bad }, bad.length ? bad.map((b) => `✗ ${b.what}`).join('\n') : `ok: ${checks.length} checks, everything from the old files is in the store`);
+    if (bad.length || !v.ok) process.exitCode = 1;
+    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`)];
+    return out({ ok: !bad.length && v.ok, store: v, total: checks.length, failed: bad }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store`);
   }
   const s = loadStore();
   if (cmd === 'status') {

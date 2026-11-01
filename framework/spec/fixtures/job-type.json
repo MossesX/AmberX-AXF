@@ -7,7 +7,7 @@
    "job-type",
    {
     "specialty": "site-checks",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
      "tokens": 100000,
      "maxTurns": 10
@@ -57,7 +57,7 @@
    "job-type",
    {
     "specialty": "site-checks",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
      "tokens": 100000,
      "maxTurns": 10
@@ -88,7 +88,7 @@
    "job-type",
    {
     "specialty": "site-checks",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
      "tokens": 100000,
      "maxTurns": 10
@@ -119,7 +119,7 @@
    "job-type",
    {
     "specialty": "site-checks",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
      "tokens": 100000,
      "maxTurns": 10
@@ -151,7 +151,7 @@
    "job-type",
    {
     "specialty": "site-checks",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
      "tokens": 100000,
      "maxTurns": 10
@@ -183,7 +183,7 @@
    "job-type",
    {
     "specialty": "site-checks",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
      "tokens": 100000,
      "maxTurns": 10
@@ -210,6 +210,38 @@
     }
    }
   ],
+  "blocked-model": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    }
+   }
+  ],
   "other-type": [
    "button",
    {
@@ -219,7 +251,7 @@
  },
  "defaults": {
   "specialty": "",
-  "model": "sonnet",
+  "model": "opus",
   "budget": {
    "tokens": 200000,
    "maxTurns": 30,
@@ -245,7 +277,7 @@
  "normalized": {
   "good": {
    "specialty": "site-checks",
-   "model": "sonnet",
+   "model": "opus",
    "budget": {
     "tokens": 100000,
     "maxTurns": 10,
@@ -285,7 +317,7 @@
   },
   "junk": {
    "specialty": "",
-   "model": "sonnet",
+   "model": "opus",
    "budget": {
     "tokens": 200000,
     "maxTurns": 30,
@@ -307,6 +339,46 @@
     "uiReviewGroup": "",
     "uiReviewApp": ""
    }
+  },
+  "blocked": {
+   "specialty": "site-checks",
+   "model": "opus",
+   "budget": {
+    "tokens": 100000,
+    "maxTurns": 10,
+    "usd": 0
+   },
+   "trigger": {
+    "kind": "schedule",
+    "every": "6h",
+    "at": "",
+    "event": ""
+   },
+   "readOnly": false,
+   "tools": [],
+   "inputs": [
+    {
+     "id": "sites",
+     "label": "Sites",
+     "required": false,
+     "default": "a.example b.example",
+     "about": ""
+    },
+    {
+     "id": "who",
+     "label": "Who",
+     "required": true,
+     "default": "",
+     "about": ""
+    }
+   ],
+   "brief": "Check {{sites}} for {{who}} on {{date}}.",
+   "command": "",
+   "outputs": {
+    "report": "r/{{jobType}}/{{stamp}}.md",
+    "uiReviewGroup": "Checks - {{when}}",
+    "uiReviewApp": ""
+   }
   }
  },
  "errors": {
@@ -316,6 +388,7 @@
   ],
   "bad-core": [
    "data.specialty is the owning agent skill id (lowercase letters, digits and dashes)",
+   "data.model \"gpt\" is not a Claude model the policy knows (haiku, sonnet, opus, fable)",
    "data.budget.tokens must be a whole number from 1000 to 10000000",
    "data.trigger.kind must be one of on-demand, schedule, event",
    "data.brief is the brief template (text with {{placeholders}})"
@@ -338,6 +411,9 @@
    "input \"x\" is declared twice or shadows a built-in",
    "data.brief uses {{sites}}, which is neither an input nor a built-in",
    "data.brief uses {{who}}, which is neither an input nor a built-in"
+  ],
+  "blocked-model": [
+   "data.model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
   ],
   "other-type": []
  },

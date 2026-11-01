@@ -158,6 +158,55 @@ export function normalizeStore(s) {
   };
 }
 
+// ------------------------------------------------------------------ store self-check (builds@1)
+
+const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})$/;
+const BUILD_ID = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$/;
+/**
+ * Is this a builds@1 store? `normalizeStore` coerces anything into shape and never says what was wrong; this names it,
+ * so a corrupt or hand-edited store is caught (builds-store.mjs verify, check-builds-store, CI) instead of silently
+ * "repaired". Checks what the normalizer promises plus the invariants: unique build ids, unique live step uids across the
+ * store (a harvested step keeps its uid and leaves its source), an order in every profile a build belongs to, and only
+ * Fable / Opus steps (model policy). Returns { ok, errors: [{ path, message }] }.
+ */
+export function validateStore(store) {
+  const errors = []; const err = (path, message) => { errors.push({ path, message }); };
+  if (!store || typeof store !== 'object' || Array.isArray(store)) return { ok: false, errors: [{ path: 'store', message: 'the store must be a JSON object' }] };
+  if (store.$axf !== SCHEMA) err('$axf', `must be "${SCHEMA}"`);
+  if (!Number.isInteger(store.rev) || store.rev < 0) err('rev', 'must be a whole number');
+  if (store.updatedAt && !ISO.test(store.updatedAt)) err('updatedAt', 'is not an ISO timestamp');
+  for (const k of ['rules', 'meta', 'drafts']) if (store[k] !== undefined && (typeof store[k] !== 'object' || store[k] === null || Array.isArray(store[k]))) err(k, 'must be an object');
+  if (!Array.isArray(store.builds)) { err('builds', 'must be a list'); return { ok: false, errors }; }
+  const ids = new Set(); const uids = new Map();
+  store.builds.forEach((b, i) => {
+    const at = `builds[${i}]${typeof b?.id === 'string' ? `(${b.id})` : ''}`;
+    if (!b || typeof b !== 'object') return err(at, 'must be an object');
+    if (typeof b.id !== 'string' || !BUILD_ID.test(b.id)) err(`${at}.id`, 'is missing or not an id');
+    else if (ids.has(b.id)) err(`${at}.id`, `"${b.id}" appears twice (one record per build)`); else ids.add(b.id);
+    if (typeof b.title !== 'string' || !b.title.trim()) err(`${at}.title`, 'is missing');
+    if (!STATUSES.includes(b.status)) err(`${at}.status`, `"${b.status}" is not one of ${STATUSES.join(', ')}`);
+    if (!Array.isArray(b.profiles) || !b.profiles.length || b.profiles.some((p) => typeof p !== 'string' || !p)) err(`${at}.profiles`, 'needs at least one profile id');
+    else for (const p of b.profiles) if (!Number.isFinite(b.order?.[p])) err(`${at}.order.${p}`, 'is missing: a build has an order in every profile it belongs to');
+    if (b.kind !== 'build' && b.kind !== 'epic') err(`${at}.kind`, 'must be build or epic');
+    if (!Number.isInteger(b.rev) || b.rev < 1) err(`${at}.rev`, 'must be a whole number from 1');
+    for (const k of ['createdAt', 'updatedAt']) if (typeof b[k] !== 'string' || !ISO.test(b[k])) err(`${at}.${k}`, 'is not an ISO timestamp');
+    if (b.deleted === true && !ISO.test(b.deletedAt ?? '')) err(`${at}.deletedAt`, 'a deleted build says when');
+    if (!Array.isArray(b.notes) || b.notes.some((n) => !n || typeof n.text !== 'string')) err(`${at}.notes`, 'must be a list of { text, at }');
+    if (!Array.isArray(b.steps)) return err(`${at}.steps`, 'must be a list');
+    const sids = new Set();
+    b.steps.forEach((s, j) => {
+      const sa = `${at}.steps[${j}]`;
+      if (!s || typeof s !== 'object') return err(sa, 'must be an object');
+      if (typeof s.id !== 'string' || !s.id) err(`${sa}.id`, 'is missing'); else if (sids.has(s.id)) err(`${sa}.id`, `"${s.id}" appears twice in the build`); else sids.add(s.id);
+      if (typeof s.uid !== 'string' || !s.uid) err(`${sa}.uid`, 'is missing'); else if (uids.has(s.uid)) err(`${sa}.uid`, `"${s.uid}" is also a live step of ${uids.get(s.uid)}`); else uids.set(s.uid, at);
+      if (!MODELS.includes(s.model)) err(`${sa}.model`, `"${s.model}" is not one of ${MODELS.join(', ')} (model policy: Opus or Fable, never Sonnet)`);
+      if (typeof s.text !== 'string' || !s.text.trim()) err(`${sa}.text`, 'is missing');
+      if (!Number.isInteger(s.rev) || s.rev < 1) err(`${sa}.rev`, 'must be a whole number from 1');
+    });
+  });
+  return { ok: !errors.length, errors };
+}
+
 /** The form written to disk: the default breakdown is left out while it equals the steps (not rearranged). */
 export function compactStore(store) {
   return { ...store, builds: store.builds.map(compactBuild) };

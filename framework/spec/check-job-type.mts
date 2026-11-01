@@ -29,7 +29,7 @@ eq(spec.types['job-type'].roll, { slot: false, asset: false }, 'never rolled');
 
 /* ---- the contract: computed here, replayed from the fixture ---- */
 const AT = '2026-11-01T07:05:00.000Z';
-const good = { specialty: 'site-checks', model: 'sonnet', budget: { tokens: 100000, maxTurns: 10 }, trigger: { kind: 'schedule', every: '6h' }, inputs: [{ id: 'sites', label: 'Sites', default: 'a.example b.example' }, { id: 'who', label: 'Who', required: true }], brief: 'Check {{sites}} for {{who}} on {{date}}.', outputs: { report: 'r/{{jobType}}/{{stamp}}.md', uiReviewGroup: 'Checks - {{when}}' } };
+const good = { specialty: 'site-checks', model: 'opus', budget: { tokens: 100000, maxTurns: 10 }, trigger: { kind: 'schedule', every: '6h' }, inputs: [{ id: 'sites', label: 'Sites', default: 'a.example b.example' }, { id: 'who', label: 'Who', required: true }], brief: 'Check {{sites}} for {{who}} on {{date}}.', outputs: { report: 'r/{{jobType}}/{{stamp}}.md', uiReviewGroup: 'Checks - {{when}}' } };
 const cases: Record<string, [string, unknown]> = {
   ok: ['job-type', good],
   'not-an-object': ['job-type', 'nope'],
@@ -39,11 +39,12 @@ const cases: Record<string, [string, unknown]> = {
   'undeclared-placeholder': ['job-type', { ...good, brief: 'Do {{thing}} at {{when}}' }],
   'bad-outputs': ['job-type', { ...good, outputs: { report: '../../etc/passwd', uiReviewGroup: 'Shots' } }],
   'shadowed-input': ['job-type', { ...good, inputs: [{ id: 'date' }, { id: 'x' }, { id: 'x' }] }],
+  'blocked-model': ['job-type', { ...good, model: 'sonnet' }],
   'other-type': ['button', { specialty: 'Nope' }],
 };
 const computed = {
   defaults: normalizeJobType(null),
-  normalized: { good: normalizeJobType(good), junk: normalizeJobType({ specialty: 'X', model: 'gpt', budget: { tokens: 1.5 }, trigger: { kind: 'schedule', every: 'often' }, extra: true }) },
+  normalized: { good: normalizeJobType(good), junk: normalizeJobType({ specialty: 'X', model: 'gpt', budget: { tokens: 1.5 }, trigger: { kind: 'schedule', every: 'often' }, extra: true }), blocked: normalizeJobType({ ...good, model: 'sonnet' }) },
   errors: Object.fromEntries(Object.entries(cases).map(([k, [t, d]]) => [k, jobTypeErrors(t, d)])),
   inputs: { filled: jobInputs(normalizeJobType(good), { who: 'Brett', bogus: 'x' }), missing: jobInputs(normalizeJobType(good), {}) },
   time: timeWords(AT),
@@ -65,6 +66,10 @@ ok(fx.errors['bad-core'].length >= 4, 'bad specialty, budget, trigger and brief 
 ok(fx.errors['undeclared-placeholder'].some((e: string) => e.includes('{{thing}}')), 'undeclared placeholder named');
 ok(fx.errors['bad-outputs'].length === 2, 'path escape + group without a timestamp');
 eq(fx.errors['other-type'], [], 'other types are not checked');
+ok(fx.errors['blocked-model'].length === 1 && /never Sonnet/.test(fx.errors['blocked-model'][0]), 'a Sonnet job type is refused by name (model policy: Opus or Fable only)');
+eq(fx.normalized.blocked.model, 'opus', 'a stored Sonnet job runs as Opus (coerced up, never down)');
+eq(fx.defaults.model, 'opus', 'the default model is the policy default');
+ok(JOB_ENUMS.model.every((m) => ['opus', 'fable'].includes(m)) && !JOB_ENUMS.model.includes('sonnet'), 'the model enum is the policy\'s allowed list');
 eq(fx.inputs.missing.missing, ['who'], 'required input reported');
 ok(fx.brief.text.includes('Read-only job') && fx.brief.report === 'r/site-check/2026-11-01-0705.md', 'brief: outputs and read-only line');
 eq(fx.time.when, 'Nov 1 2:05 AM', 'Brett\'s clock (Rhode Island, EST after the DST change)');

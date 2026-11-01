@@ -1,0 +1,103 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-d4c5871d-4a43-4bec-b6a9-1e3fc48cf864",
+ "source": "claude-code",
+ "sessionId": "d4c5871d-4a43-4bec-b6a9-1e3fc48cf864",
+ "project": "other",
+ "title": "# Agent work map: what each agent is building + its history, with progress meters Brett (Nov 1 2026). Read CLAUDE.md, _…",
+ "startedAt": "2026-11-01T10:31:37.130Z",
+ "endedAt": "2026-11-01T10:46:28.827Z",
+ "minutes": 15,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/agent-history",
+  "repo": "",
+  "branch": "claude/agent-history"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T10:31:37.233Z",
+   "kind": "prompt",
+   "text": "# Agent work map: what each agent is building + its history, with progress meters Brett (Nov 1 2026). Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/THREADS.md first. ## Ask In the Breakroom (agent swarm, profile `breakroom`), opening an agent shows: 1. **Working on now**: its current build(s)/steps, each with a progress meter (steps done / total, current step name, live state), tap to open the build in the Steps view. 2. **History**: every build/step/job run it ever did, newest first, with outcome (done/landed/failed/stopped), dates, duration, cost if known, commit/PR links, progress…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 146,
+    "output": 58220,
+    "cacheRead": 12102628,
+    "cacheWrite": 214429,
+    "thinking": 12981
+   },
+   "costUsd": 4.6578,
+   "costEstimated": false,
+   "seconds": 888,
+   "tools": {
+    "Bash": 71,
+    "Read": 1,
+    "Write": 5,
+    "Edit": 1
+   },
+   "commands": 71,
+   "files": [
+    "/root/axf-builds/agent-history/framework/core/engines/agent-work.mjs",
+    "/root/axf-builds/agent-history/framework/core/engines/agent-work.d.mts",
+    "/root/axf-builds/agent-history/framework/spec/check-agent-work.mjs",
+    "/root/axf-builds/agent-history/apps/console-web/plugins/agent-swarm/test.mjs",
+    "/root/axf-builds/agent-history/framework/react/components/Work.tsx",
+    "/root/axf-builds/agent-history/apps/console-web/plugins/agent-swarm/web/work.tsx"
+   ],
+   "changeIds": [
+    "chg-20261101-1a2f437924"
+   ],
+   "features": [
+    "orch:agent-history"
+   ],
+   "output": "All green. Adding help entries for the new tab and sections (Help mode rule)."
+  }
+ ],
+ "files": [
+  "/root/axf-builds/agent-history/framework/core/engines/agent-work.mjs",
+  "/root/axf-builds/agent-history/framework/core/engines/agent-work.d.mts",
+  "/root/axf-builds/agent-history/framework/spec/check-agent-work.mjs",
+  "/root/axf-builds/agent-history/apps/console-web/plugins/agent-swarm/test.mjs",
+  "/root/axf-builds/agent-history/framework/react/components/Work.tsx",
+  "/root/axf-builds/agent-history/apps/console-web/plugins/agent-swarm/web/work.tsx"
+ ],
+ "changeIds": [
+  "chg-20261101-1a2f437924"
+ ],
+ "features": [
+  "orch:agent-history"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 146,
+  "output": 58220,
+  "cacheRead": 12102628,
+  "cacheWrite": 214429,
+  "thinking": 12981,
+  "costUsd": 4.6578,
+  "costEstimated": false,
+  "toolCalls": 78,
+  "commands": 71,
+  "filesTouched": 6,
+  "reportedUsd": 5.3009
+ },
+ "ingestedAt": "2026-11-01T10:46:29.363Z"
+}

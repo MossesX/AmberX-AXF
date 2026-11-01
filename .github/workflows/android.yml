@@ -44,6 +44,7 @@ jobs:
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
+      - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
       - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)

@@ -1,0 +1,133 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-1a2f437924",
+  "createdAt": "2026-11-01T10:31:37.305Z",
+  "updatedAt": "2026-11-01T10:46:29.222Z",
+  "kind": "build",
+  "title": "# Agent work map: what each agent is building + its history, with progress meters Brett (Nov 1 2026…",
+  "asked": "# Agent work map: what each agent is building + its history, with progress meters Brett (Nov 1 2026). Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/THREADS.md first. ## Ask In the Breakroom (agent swarm, profile `breakroom`), opening an agent shows: 1. **Working on now**: its current build(s)/steps, each with a progress meter (steps done / total, current step name, live state), tap to open the build in the Steps view. 2. **History**: every build/step/job run it ever did, newest first, with outcome (done/landed/failed/stopped), dates, duration, cost if known, commit/PR links, progress meter per build. 3. A small overview \"map\" across all agents: one row per agent, its current build + meter, so Brett sees who's on what at a glance. ## Data: NO new datasets Read only from what already exists: the one builds store (urgent-builds), orchestrator profiles, agent-swarm leases/statuses, agent-jobs run records (job-type@1, jobs.mjs / framework/cli/agent-job.mjs), build logs index, approvals log if useful. If a link between an agent and a build/step isn't recorded today, add the minimal field to the EXISTING record (e.g. agent id on lease/run/step) with a migration + fixture, not a new store. Backfill what can be derived from existing records. ## Reuse + dependencies - Build the meter + agent-work list as shared framework controls / assets (reading scale tokens), so other plugins (Build manager, Builds page, Steps view, AmberX) can use them. - Any plugin that uses them declares the dependency in its plugin.json requirements; fold the new pieces into the requirements of the plugins that rely on them (agent-swarm, agent-jobs, build-orchestrator, etc.) and keep plugin-lifecycle checks green (a plugin names only its own folder; uninstall stays clean). - Coordinate with the running build `builds-one-page-finish` (same store): don't change the store shape it relies on; if you must, keep it backward compatible. ## Rules Framework controls + hot-swappable assets; handwritten code only if it conforms. Phone-first, compact one-line rows, expandable rows (caret far right). Orchestrator build `agent-history` in profile `breakroom`, steps <= 30 min. Tests, lifecycle + theme checks, phone + desktop screenshots, report `_claude/builds/reports/agent-history.md`, THREADS row, STATUS. ## Landing Commit on this branch, merge origin/main (notes files keep both sides), push the branch. Do NOT push to main; Brett's session lands it with build_land. Never print secrets. End with a short report: what's on screen, where the data comes from, which plugins gained the dependency. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "d4c5871d-4a4",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "s1 agent-work@1 engine + fixture + check (18/18)",
+      "state": "done",
+      "startedAt": "2026-11-01T10:38:48.793Z",
+      "finishedAt": "2026-11-01T10:38:48.793Z"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "orch",
+    "id": "agent-history"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-01T10:31:37.305Z",
+  "finishedAt": "2026-11-01T10:46:29.222Z",
+  "lastSeenAt": "2026-11-01T10:46:02.819Z",
+  "estimate": {
+    "minutes": 155,
+    "costUsd": 21.7
+  },
+  "actual": {
+    "minutes": 15,
+    "costUsd": 4.6577,
+    "inputTokens": 146,
+    "outputTokens": 58220,
+    "cacheReadTokens": 12102628,
+    "cacheWriteTokens": 214429,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/agent-history",
+  "areas": [
+    "framework/core/engines",
+    "framework/react/components",
+    "framework/ui/axf.css",
+    "framework/spec",
+    "apps/console-web/plugins/agent-swarm",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/builds-page/plugin.json",
+    "_claude"
+  ],
+  "doing": "Running: Find lifecycle tests",
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/agent-history",
+    "branch": "claude/agent-history",
+    "base": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "head": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "pushed": true,
+    "dirty": 49,
+    "files": [
+      "_claude/builds/journal/2026-11.jsonl",
+      "_claude/builds/orchestrator.json",
+      "_claude/builds/profiles/angel/orchestrator.json",
+      "_claude/builds/profiles/breakroom/orchestrator.json",
+      "_claude/builds/profiles/refactor/orchestrator.json",
+      "_claude/builds/profiles/urgent/orchestrator.json",
+      "_claude/builds/store.json",
+      "apps/amberx-droid/src/plugins/walkthrough/web/index.tsx",
+      "apps/console-web/axf.lock.json",
+      "apps/console-web/plugins/agent-swarm/help.json",
+      "apps/console-web/plugins/agent-swarm/plugin.json",
+      "apps/console-web/plugins/agent-swarm/runner.mjs",
+      "apps/console-web/plugins/agent-swarm/swarm.mjs",
+      "apps/console-web/plugins/agent-swarm/test.mjs",
+      "apps/console-web/plugins/agent-swarm/web/cards.tsx",
+      "apps/console-web/plugins/agent-swarm/web/index.tsx",
+      "apps/console-web/plugins/agent-swarm/web/swarm.css",
+      "apps/console-web/plugins/agent-swarm/web/ui-types.tsx",
+      "apps/console-web/plugins/agent-swarm/web/ui.tsx",
+      "apps/console-web/src/axf/react/index.ts",
+      "apps/console-web/src/axf/ui/axf.css",
+      "framework/cli/plugin-lifecycle.mjs",
+      "framework/react/index.ts",
+      "framework/spec/PORTING.md",
+      "framework/ui/axf.css",
+      "apps/console-web/plugins/agent-swarm/web/work.tsx",
+      "apps/console-web/src/axf/core/engines/agent-work.d.mts",
+      "apps/console-web/src/axf/core/engines/agent-work.mjs",
+      "apps/console-web/src/axf/react/components/Work.tsx",
+      "changes/2026/11/chg-20261101-398ef192a8.json",
+      "changes/2026/11/chg-20261101-49101f1545.json",
+      "changes/2026/11/chg-20261101-6ccae6f4d3.json",
+      "changes/2026/11/chg-20261101-70795946ff.json",
+      "changes/2026/11/chg-20261101-8a3ebed65d.json",
+      "changes/2026/11/chg-20261101-8f773887f3.json",
+      "changes/2026/11/chg-20261101-905d1f449c.json",
+      "changes/2026/11/chg-20261101-a6777d1886.json",
+      "framework/core/engines/agent-work.d.mts",
+      "framework/core/engines/agent-work.mjs",
+      "framework/react/components/Work.tsx",
+      "framework/spec/check-agent-work.mjs",
+      "framework/spec/fixtures/agent-work.json",
+      "sessions/archive/2026/11/cc-2e0a66ea-1471-489a-a14d-12698c271604.json",
+      "sessions/archive/2026/11/cc-538b069c-d205-4dab-90f2-12d5c34fdcd6.json",
+      "sessions/archive/2026/11/cc-5bd3dd32-7712-4e0e-aedc-5e2897cd20a9.json",
+      "sessions/archive/2026/11/cc-75b2a975-d5fa-42fa-abb9-1f406fbf49ff.json",
+      "sessions/archive/2026/11/cc-92543c42-347c-455b-838e-259586c69382.json",
+      "sessions/archive/2026/11/cc-ea3d3dfe-3be4-4147-aa83-699be917a582.json",
+      "sessions/archive/2026/11/cc-ea4ac6c5-9077-4a17-ad9d-aa96b5a2c3e8.json"
+    ],
+    "at": "2026-11-01T10:46:29.403Z"
+  }
+}

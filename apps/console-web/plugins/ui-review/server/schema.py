@@ -8,10 +8,11 @@ refuses what fails with a message naming the field.
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 import unicodedata
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -241,14 +242,49 @@ class SchemaError(ValueError):
 # ------------------------------------------------------------------ groups
 
 
-def stamp(iso: str) -> str:
+TIME_ZONE: str = REGISTRY.get("timeZone", "America/New_York")
+
+
+def _eastern(t: datetime) -> datetime:
+    """US Eastern without tzdata (the slim image may not ship it): DST from the 2nd Sunday of March to the 1st of November."""
+    y = t.year
+    mar = datetime(y, 3, 8 + (6 - datetime(y, 3, 8).weekday()) % 7, 7, tzinfo=timezone.utc)   # 2:00 EST
+    nov = datetime(y, 11, 1 + (6 - datetime(y, 11, 1).weekday()) % 7, 6, tzinfo=timezone.utc)  # 2:00 EDT
+    return (t + timedelta(hours=-4 if mar <= t < nov else -5)).replace(tzinfo=None)
+
+
+def local_time(iso: Any, tz: str = "") -> datetime | None:
+    """A timestamp as a naive local time in `tz` (default: AXF_SHOT_TZ, else the registry's timeZone = Brett's clock).
+
+    Same rule as the JS core's localParts: every port stamps and groups by his day, not UTC."""
+    v = _s(iso, 40)
     try:
-        d = datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+        t = datetime.fromisoformat(v.replace("Z", "+00:00")) if v else None
     except ValueError:
-        return ""
-    if d.tzinfo:
-        d = d.astimezone(timezone.utc)
-    return d.strftime("%Y-%m-%d %H:%M")
+        return None
+    if t is None:
+        return None
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    t = t.astimezone(timezone.utc)
+    tz = tz or os.environ.get("AXF_SHOT_TZ") or TIME_ZONE
+    try:
+        from zoneinfo import ZoneInfo
+        return t.astimezone(ZoneInfo(tz)).replace(tzinfo=None)
+    except Exception:  # noqa: BLE001 — no tzdata: Eastern by rule, anything else UTC
+        return _eastern(t) if tz == "America/New_York" else t.replace(tzinfo=None)
+
+
+def day_key(iso: Any, tz: str = "") -> str:
+    """"2026-10-31": the day a time falls on in the zone (same name + same day = same group)."""
+    t = local_time(iso, tz)
+    return t.strftime("%Y-%m-%d") if t else ""
+
+
+def stamp(iso: Any, tz: str = "") -> str:
+    """"2026-10-31 20:20" in the zone."""
+    t = local_time(iso, tz)
+    return t.strftime("%Y-%m-%d %H:%M") if t else ""
 
 
 def slug(s: Any, n: int = 48) -> str:
@@ -258,18 +294,19 @@ def slug(s: Any, n: int = 48) -> str:
     return t or "group"
 
 
-def group_id(name: str, iso: str) -> str:
-    return f"g-{str(iso)[:10].replace('-', '')}-{slug(name)}"
+def group_id(name: str, iso: str, tz: str = "") -> str:
+    """Same name on the same day (in the zone) = the same id. Stores may make their own g-<day>-<hex> ids; both forms pass."""
+    return f"g-{(day_key(iso, tz) or str(iso)[:10]).replace('-', '')}-{slug(name)}"
 
 
-def auto_group_name(source: str = "", session: str = "", now: str = "") -> str:
+def auto_group_name(source: str = "", session: str = "", now: str = "", tz: str = "") -> str:
     who = _s(session, 80) or _s(source, 40) or "UI Review"
-    return f"{who} - {stamp(now or now_iso())}"
+    return f"{who} - {stamp(now or now_iso(), tz)}"
 
 
-def make_group(name: str, now: str, source: str, submitted_by: dict | None = None, app: str = "", session: str = "") -> dict:
-    n = _s(name, REGISTRY["maxName"]) or auto_group_name(source, session, now)
-    g = {"$axf": GROUP_TAG, "id": group_id(n, now), "name": n, "createdAt": now, "source": source}
+def make_group(name: str, now: str, source: str, submitted_by: dict | None = None, app: str = "", session: str = "", tz: str = "") -> dict:
+    n = _s(name, REGISTRY["maxName"]) or auto_group_name(source, session, now, tz)
+    g = {"$axf": GROUP_TAG, "id": group_id(n, now, tz), "name": n, "createdAt": now, "source": source}
     if submitted_by:
         g["submittedBy"] = submitted_by
     if app:

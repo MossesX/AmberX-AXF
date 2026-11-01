@@ -32,6 +32,8 @@ export const REGISTRY = {
   sectionPattern: '^[a-z0-9][a-z0-9-]{0,40}$',
   maxName: 200,
   maxFiles: 60,
+  /** Brett's clock: group names, "same day" and the automatic group stamp are in this zone on every port (Rhode Island). */
+  timeZone: 'America/New_York',
   itemRequired: ['$axf', 'id', 'name', 'group', 'createdAt', 'kind', 'source', 'submittedBy', 'app', 'screen', 'viewport', 'files'],
   /** Required only on review items (kind review). */
   reviewRequired: ['status'],
@@ -173,23 +175,41 @@ export function assertGroup(g) { const v = validateGroup(g); if (!v.ok) throw ne
 
 /* ------------------------------------------------------------------ groups */
 
-const pad = (n) => String(n).padStart(2, '0');
-/** "2026-11-01 08:20" (UTC) for a timestamp. */
-export function stamp(iso) { const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`; }
+/**
+ * { y, mo, d, h, mi } of a timestamp in a zone (default REGISTRY.timeZone). Every port stamps and groups by Brett's
+ * clock, not UTC: "same name the same day" and "<source> - <YYYY-MM-DD HH:mm>" mean his day and his time. A zone the
+ * runtime doesn't know falls back to UTC.
+ */
+export function localParts(iso, tz = REGISTRY.timeZone) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  let f;
+  try { f = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); }
+  catch { f = new Intl.DateTimeFormat('en-CA', { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); }
+  const o = Object.fromEntries(f.formatToParts(d).map((p) => [p.type, p.value]));
+  return { y: o.year, mo: o.month, d: o.day, h: o.hour === '24' ? '00' : o.hour, mi: o.minute };
+}
+/** "2026-10-31": the day a time falls on in the zone (same name + same day = same group). */
+export function dayKey(iso, tz = REGISTRY.timeZone) { const p = localParts(iso, tz); return p ? `${p.y}-${p.mo}-${p.d}` : ''; }
+/** "2026-10-31 20:20" in the zone. */
+export function stamp(iso, tz = REGISTRY.timeZone) { const p = localParts(iso, tz); return p ? `${p.y}-${p.mo}-${p.d} ${p.h}:${p.mi}` : ''; }
 export const slug = (s, n = 48) => String(s ?? '').toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '').slice(0, n).replace(/-+$/, '') || 'group';
-/** Group id from its name and day: the same name on the same day is the same group. */
-export const groupId = (name, iso) => `g-${String(iso).slice(0, 10).replace(/-/g, '')}-${slug(name)}`;
+/**
+ * Group id from its name and day (in the zone): the same name on the same day is the same group. A store that owns a
+ * group list may make ids its own way (`g-<day>-<hex>`, collision-free); both forms pass isId.
+ */
+export const groupId = (name, iso, tz = REGISTRY.timeZone) => `g-${(dayKey(iso, tz) || String(iso).slice(0, 10)).replace(/-/g, '')}-${slug(name)}`;
 
-/** The automatic group name when nobody could ask Brett: "<source or session> - <YYYY-MM-DD HH:mm>". */
-export function autoGroupName({ source = '', session = '', now }) {
+/** The automatic group name when nobody could ask Brett: "<source or session> - <YYYY-MM-DD HH:mm>" (his clock). */
+export function autoGroupName({ source = '', session = '', now, tz = REGISTRY.timeZone }) {
   const who = str(session, 80) || str(source, 40) || 'UI Review';
-  return `${who} - ${stamp(now)}`;
+  return `${who} - ${stamp(now, tz)}`;
 }
 
 /** A full ui-review-group@1 for a name (or the automatic one). */
-export function makeGroup({ name, now, source, submittedBy, app, note, build, session }) {
-  const n = str(name, REGISTRY.maxName) || autoGroupName({ source, session, now });
-  const g = { $axf: GROUP_TAG, id: groupId(n, now), name: n, createdAt: now, source };
+export function makeGroup({ name, now, source, submittedBy, app, note, build, session, tz = REGISTRY.timeZone }) {
+  const n = str(name, REGISTRY.maxName) || autoGroupName({ source, session, now, tz });
+  const g = { $axf: GROUP_TAG, id: groupId(n, now, tz), name: n, createdAt: now, source };
   if (submittedBy) g.submittedBy = submittedBy;
   if (app) g.app = app;
   if (note) g.note = note;
@@ -221,12 +241,13 @@ export function viewportOf(files) {
  * The one intake step every path runs: take a caller's fields, apply only the allowed defaults, validate.
  *   raw: the item as sent (name, group as a string name or { id, name }, files { before, after } or a flat list …)
  *   opts.now: the intake time (createdAt default) · opts.autoGroup: true when the caller can't ask Brett for a group
- *   name (headless, agents, CLIs without --group) · opts.session: label for the automatic group name
+ *   name (headless, agents, CLIs without --group) · opts.session: label for the automatic group name · opts.tz: the
+ *   clock for group days and stamps (default REGISTRY.timeZone)
  * Returns { item, group, errors, ok }. `group` is the full ui-review-group@1 for the item's group.
  * Legacy spellings accepted (same value, not a default): title → name, notes → note, waiting → pending,
  * a flat files/shots list → files.after.
  */
-export function prepareItem(raw, { now = new Date().toISOString(), autoGroup = false, session = '' } = {}) {
+export function prepareItem(raw, { now = new Date().toISOString(), autoGroup = false, session = '', tz = REGISTRY.timeZone } = {}) {
   const o = isObj(raw) ? { ...raw } : {};
   const item = { ...o, $axf: ITEM_TAG };
   if (blank(item.name) && !blank(o.title)) item.name = str(o.title, REGISTRY.maxName);
@@ -250,10 +271,10 @@ export function prepareItem(raw, { now = new Date().toISOString(), autoGroup = f
   const gIn = o.group;
   let group;
   const at = item.createdAt;
-  if (typeof gIn === 'string' && gIn.trim()) group = makeGroup({ name: gIn, now: isTimestamp(at) ? at : now, source: item.source, submittedBy: item.submittedBy, app: item.app, session });
-  else if (isObj(gIn) && !blank(gIn.name)) group = { ...makeGroup({ name: gIn.name, now: isTimestamp(gIn.createdAt) ? gIn.createdAt : isTimestamp(at) ? at : now, source: gIn.source ?? item.source, submittedBy: item.submittedBy, app: item.app, session }), ...gIn, $axf: GROUP_TAG, name: str(gIn.name, REGISTRY.maxName) };
-  else if (blank(gIn) && autoGroup) group = makeGroup({ name: '', now, source: item.source, submittedBy: item.submittedBy, app: item.app, session: session || item.submittedBy?.id || '' });
-  if (group) { if (blank(group.id)) group.id = groupId(group.name, group.createdAt); item.group = { id: group.id, name: group.name }; }
+  if (typeof gIn === 'string' && gIn.trim()) group = makeGroup({ name: gIn, now: isTimestamp(at) ? at : now, source: item.source, submittedBy: item.submittedBy, app: item.app, session, tz });
+  else if (isObj(gIn) && !blank(gIn.name)) group = { ...makeGroup({ name: gIn.name, now: isTimestamp(gIn.createdAt) ? gIn.createdAt : isTimestamp(at) ? at : now, source: gIn.source ?? item.source, submittedBy: item.submittedBy, app: item.app, session, tz }), ...gIn, $axf: GROUP_TAG, name: str(gIn.name, REGISTRY.maxName) };
+  else if (blank(gIn) && autoGroup) group = makeGroup({ name: '', now, source: item.source, submittedBy: item.submittedBy, app: item.app, session: session || item.submittedBy?.id || '', tz });
+  if (group) { if (blank(group.id)) group.id = groupId(group.name, group.createdAt, tz); item.group = { id: group.id, name: group.name }; }
   else if (isObj(gIn)) item.group = gIn;
   else delete item.group;
   const v = validateItem(item);
@@ -272,15 +293,14 @@ export function readableName(src) {
   return stem ? stem[0].toUpperCase() + stem.slice(1) : '';
 }
 
-const DAY_FMT = (iso) => String(iso).slice(0, 10);
 /**
  * Rewrites one older UI Review item (review-item@1 from the queue, or a screenshot record) to ui-review-item@1.
  *   ctx.kind: 'review' | 'screenshot' · ctx.fileTime(src) → ISO time of a file (when the item has no timestamp)
- *   ctx.groupFor(old, createdAt) → { id, name } (default: by build/branch, else by day)
+ *   ctx.groupFor(old, createdAt) → { id, name } (default: by build/branch, else by day) · ctx.tz: the clock for days
  * Returns { item, changes: [what was filled] }. Never invents a name: the title (or the screen, or the first file's
  * readable name) is the name.
  */
-export function migrateLegacy(old, { kind = 'review', fileTime = () => '', groupFor, now = new Date().toISOString() } = {}) {
+export function migrateLegacy(old, { kind = 'review', fileTime = () => '', groupFor, now = new Date().toISOString(), tz = REGISTRY.timeZone } = {}) {
   const o = isObj(old) ? old : {};
   if (o.$axf === ITEM_TAG && validateItem(o).ok) return { item: o, changes: [] };
   const changes = [];
@@ -299,7 +319,7 @@ export function migrateLegacy(old, { kind = 'review', fileTime = () => '', group
     const first = files.after[0] ?? files.before[0];
     const cands = [[str(o.screen ?? o.route, 120), 'screen'], [str(first?.name, 120), 'screenshot name'], [readableName(first?.src), 'file name']];
     const hit = cands.find(([c]) => c && !nameProblem(c));
-    name = hit ? hit[0] : `${str(o.app, 60) || (kind === 'screenshot' ? 'Screenshot' : 'UI review')} ${stamp(createdAt)}`;
+    name = hit ? hit[0] : `${str(o.app, 60) || (kind === 'screenshot' ? 'Screenshot' : 'UI review')} ${stamp(createdAt, tz)}`;
     changes.push(`name from ${hit ? hit[1] : 'app + time (nothing else to go on)'}`);
   } else if (!o.name) changes.push('name from title');
   const source = sourceFrom(o.source);
@@ -308,8 +328,8 @@ export function migrateLegacy(old, { kind = 'review', fileTime = () => '', group
   const who = isObj(o.submittedBy) ? o.submittedBy : parseSubmitter(o.submittedBy) ?? (o.session ? { type: 'session', id: str(o.session, 120) } : o.agent ? { type: 'agent', id: str(o.agent, 120) } : str(o.build, 120) || str(o.branch, 120) ? { type: 'build', id: str(o.branch, 120) || str(o.build, 120) } : { type: histBy === 'brett' ? 'user' : 'build', id: str(histBy, 60) || source });
   if (!REGISTRY.submitterTypes.includes(who.type)) who.type = 'build';
   if (!isObj(o.submittedBy)) changes.push('submittedBy filled');
-  const group = isObj(o.group) && !blank(o.group.name) ? { id: isId(o.group.id) ? o.group.id : groupId(o.group.name, createdAt), name: str(o.group.name, REGISTRY.maxName) }
-    : groupFor ? groupFor(o, createdAt) : (() => { const b = str(o.build, 120) || str(o.branch, 120); const n = b ? `${b} - ${DAY_FMT(createdAt)}` : `UI Review - ${DAY_FMT(createdAt)}`; return { id: groupId(n, createdAt), name: n }; })();
+  const group = isObj(o.group) && !blank(o.group.name) ? { id: isId(o.group.id) ? o.group.id : groupId(o.group.name, createdAt, tz), name: str(o.group.name, REGISTRY.maxName) }
+    : groupFor ? groupFor(o, createdAt) : (() => { const b = str(o.build, 120) || str(o.branch, 120); const day = dayKey(createdAt, tz) || String(createdAt).slice(0, 10); const n = b ? `${b} - ${day}` : `UI Review - ${day}`; return { id: groupId(n, createdAt, tz), name: n }; })();
   if (!isObj(o.group)) changes.push(`group "${group.name}"`);
   const viewport = REGISTRY.viewports.includes(o.viewport) ? o.viewport : viewportOf(files) || 'desktop';
   const item = { ...o, $axf: ITEM_TAG, id: isId(o.id) ? o.id : `r-${createdAt.slice(0, 10).replace(/-/g, '')}-${slug(name, 20)}`, name, group, createdAt, kind, source, submittedBy: who,

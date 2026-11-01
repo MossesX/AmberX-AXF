@@ -12,7 +12,7 @@
   ],
   "data": {
     "specialty": "walkthroughs",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
       "tokens": 300000,
       "maxTurns": 40,

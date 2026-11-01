@@ -81,7 +81,7 @@ cd apps/demo && npm ci && npm run build             # also: npm run dev / typech
 cd apps/console-web && npm install && npm run dev   # :5173, proxies /api to :7090
 cd apps/console-web/server && pip install -r requirements.txt && uvicorn main:app --port 7090 --reload
 ```
-CI re-bakes the framework into the console before building it: `rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas; do cp -r ../../framework/$d src/axf/; done` (run in `apps/console-web`).
+CI re-bakes the framework into the console before building it: `rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done` (run in `apps/console-web`).
 
 Android needs **JDK 17, the Android SDK (API 35) and Maven/Google repo access**. That usually isn't available here, so **GitHub Actions (`.github/workflows/android.yml`) is the compiler.** There is **no Gradle wrapper** in the repo; CI uses Gradle 8.14.3:
 ```bash

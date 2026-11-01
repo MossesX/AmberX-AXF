@@ -1,34 +1,27 @@
 /**
  * Screenshot groups (ui-review-group@1, was shot-group@1): pure functions shared by the Screenshots tab, framework/cli/shot.mjs and the tests.
- * No DOM, no fetch, no Node APIs. The server (server/__init__.py) mirrors resolveGroup / autoName / dayKey / merge.
+ * No DOM, no fetch, no Node APIs. Days and stamps come from the one schema (framework/core/ui-review-schema.mjs,
+ * REGISTRY.timeZone); the server (server/screenshots.py) mirrors resolveGroup / autoName / merge over the same rule.
  *
  * A group: { id, name, createdAt, source, session, build, agent, app, note, …unknown fields kept }
  * Every screenshot carries exactly one `group` (a group id). A name given at intake picks the group of that name
  * created the same day (in the console's time zone), else a new group; no name = '<source/session> - <YYYY-MM-DD HH:mm>'.
  */
 
-export const GROUP_SCHEMA = 'ui-review-group@1'; // was shot-group@1 (same fields)
-export const DEFAULT_TZ = 'America/New_York';
-const ID_RE = /^g-[a-z0-9-]{4,60}$/;
+import { GROUP_TAG, REGISTRY, dayKey as coreDayKey, stamp as coreStamp } from '../../../../../framework/core/ui-review-schema.mjs';
+
+export const GROUP_SCHEMA = GROUP_TAG; // was shot-group@1 (same fields)
+/** Brett's clock, from the one schema registry (framework/core/ui-review-schema.mjs → REGISTRY.timeZone). */
+export const DEFAULT_TZ = REGISTRY.timeZone;
+const ID_RE = /^g-[a-z0-9-]{4,60}$/; // g-<day>-<hex> (this store) or g-<day>-<slug> (the core's groupId): both pass
 const str = (v, n = 300) => (typeof v === 'string' ? v.trim().slice(0, n) : '');
 
 export const isGroupId = (v) => typeof v === 'string' && ID_RE.test(v);
 
-/** { y, mo, d, h, mi } of an ISO time in a time zone. */
-function parts(at, tz = DEFAULT_TZ) {
-  const t = new Date(at);
-  if (Number.isNaN(t.getTime())) return null;
-  let f;
-  try { f = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); }
-  catch { f = new Intl.DateTimeFormat('en-CA', { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); }
-  const o = Object.fromEntries(f.formatToParts(t).map((p) => [p.type, p.value]));
-  return { y: o.year, mo: o.month, d: o.day, h: o.hour === '24' ? '00' : o.hour, mi: o.minute };
-}
-
-/** "2026-10-31" — the day a time falls on in the console's zone (same name + same day = same group). */
-export const dayKey = (at, tz = DEFAULT_TZ) => { const p = parts(at, tz); return p ? `${p.y}-${p.mo}-${p.d}` : ''; };
-/** "2026-10-31 20:20". */
-export const stamp = (at, tz = DEFAULT_TZ) => { const p = parts(at, tz); return p ? `${p.y}-${p.mo}-${p.d} ${p.h}:${p.mi}` : ''; };
+/** "2026-10-31" — the day a time falls on in the console's zone (same name + same day = same group). One rule: the core's. */
+export const dayKey = (at, tz = DEFAULT_TZ) => coreDayKey(at, tz);
+/** "2026-10-31 20:20". One rule: the core's. */
+export const stamp = (at, tz = DEFAULT_TZ) => coreStamp(at, tz);
 /** Name for shots sent without one: '<source/session> - <YYYY-MM-DD HH:mm>'. */
 export const autoName = (by, at, tz = DEFAULT_TZ) => `${str(by, 80) || 'Screenshots'} - ${stamp(at, tz)}`;
 /** The friendly default Claude offers when it asks Brett for a name: 'Breakroom check - Oct 31 8:20 PM'. */

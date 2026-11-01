@@ -13,7 +13,7 @@
   ],
   "data": {
     "specialty": "site-checks",
-    "model": "sonnet",
+    "model": "opus",
     "budget": {
       "tokens": 120000,
       "maxTurns": 20,

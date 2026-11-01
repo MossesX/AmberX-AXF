@@ -97,7 +97,7 @@ function Player({ index }: { index: WalkthroughIndex }) {
         <div className="axp-walkthrough__bar" role="group" aria-label="Chapters on the timeline">
           <span className="axp-walkthrough__fill" style={{ width: `${Math.min(100, (t / Math.max(1, index.duration)) * 100)}%` }} />
           {index.chapters.map((c, i) => (
-            <button key={c.id} type="button" className={`axp-walkthrough__tick${i === at ? ' is-on' : ''}`} title={`${clock(c.start)} ${c.title}`}
+            <button key={c.id} type="button" data-fx-row className={`axp-walkthrough__tick${i === at ? ' is-on' : ''}`} title={`${clock(c.start)} ${c.title}`}
               aria-label={`Chapter ${i + 1}: ${c.title}`} style={{ left: `${(c.start / Math.max(1, index.duration)) * 100}%` }} onClick={() => seek(c.start)} />
           ))}
         </div>
@@ -112,7 +112,7 @@ function Player({ index }: { index: WalkthroughIndex }) {
           {index.chapters.map((c, i) => (
             <div key={c.id} className={`axp-walkthrough__chapter${i === at ? ' is-on' : ''}`}>
               <div className="fx-row axp-walkthrough__chapterhead">
-                <button type="button" className="axp-walkthrough__jump" onClick={() => seek(c.start)}>
+                <button type="button" data-fx-row className="axp-walkthrough__jump" onClick={() => seek(c.start)}>
                   <span className="fx-muted axp-walkthrough__stamp">{clock(c.start)}</span>
                   <span>{i + 1}. {c.title}</span>
                 </button>
@@ -124,7 +124,7 @@ function Player({ index }: { index: WalkthroughIndex }) {
               {open === c.id && (
                 <ol className="axp-walkthrough__segments">
                   {c.segments.map((s) => (
-                    <li key={s.start}><button type="button" className="axp-walkthrough__jump" onClick={() => seek(s.start)}>
+                    <li key={s.start}><button type="button" data-fx-row className="axp-walkthrough__jump" onClick={() => seek(s.start)}>
                       <span className="fx-muted axp-walkthrough__stamp">{clock(s.start)}</span><span>{s.title}</span>
                     </button></li>
                   ))}

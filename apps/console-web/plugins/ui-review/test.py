@@ -88,7 +88,7 @@ for name, f in fx["groups"].items():
     check(v["ok"] == f["ok"] and [e["field"] for e in v["errors"]] == f["errors"], f"fixture group: {name}")
 pi = mod.S.prepare_item({"kind": "review", "source": "headless", "submittedBy": "build:claude/x", "app": "Console", "screen": "B", "id": "r-1", "name": "Breakroom check",
                          "files": [{"src": "a-phone.png", "viewport": "phone"}]}, now="2026-11-01T08:20:00.000Z", auto_group=True, session="claude/x")
-check(pi["ok"] and pi["item"]["group"]["name"] == "claude/x - 2026-11-01 08:20" and pi["item"]["createdAt"] == "2026-11-01T08:20:00.000Z", "prepare_item: only createdAt + the automatic group are filled")
+check(pi["ok"] and pi["item"]["group"]["name"] == "claude/x - 2026-11-01 03:20" and pi["item"]["createdAt"] == "2026-11-01T08:20:00.000Z", "prepare_item: only createdAt + the automatic group are filled (stamp in Brett's zone: 08:20Z = 03:20 EST)")
 check(not mod.S.prepare_item({"kind": "review", "app": "A"})["ok"], "prepare_item never fills a name")
 
 # ---- migration

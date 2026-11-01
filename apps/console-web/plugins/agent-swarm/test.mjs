@@ -16,7 +16,7 @@ t('roster and skills are valid', () => assert.deepEqual(c.checkRoster(roster, sk
 t('the eight build skills and the six job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'docs', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
 t('job crew never gets build steps', () => { const p = c.planJobs([{ id: 'b', steps: [{ id: 's1', text: 'take screenshots of the site check page and land it', files: [] }] }], roster); assert.ok(p.jobs.every((j) => !roster.agents.find((a) => a.id === j.agent).jobsOnly)); });
 t('every skill is under one page', () => { for (const s of Object.values(skills)) assert.ok(s.lines <= c.SKILL_MAX_LINES && s.chars <= c.SKILL_MAX_CHARS, s.id); });
-t('models sort cheapest first', () => assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['haiku', 'opus']));
+t('models sort cheapest first, blocked ones coerced up (model policy: never Sonnet or Haiku)', () => { assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['opus']); assert.deepEqual(c.normAgent({ id: 'y', models: ['fable', 'sonnet'] }).models, ['opus', 'fable']); assert.deepEqual(c.normAgent({ id: 'z' }).models, ['opus']); });
 t('bad roster is reported', () => { const r = c.normRoster({ agents: [{ id: 'A b', skill: 'none' }, { id: 'A b' }] }); const p = c.checkRoster(r, skills); assert.ok(p.some((x) => /lowercase/.test(x)) && p.some((x) => /twice/.test(x)) && p.some((x) => /no skill file/.test(x))); });
 t('long skill is flagged', () => { const s = c.parseSkill(`---\n$axf: agent-skill@1\nid: big\n---\n${'line\n'.repeat(80)}`); assert.match(c.checkRoster({ agents: [] }, { big: s })[0], /one page/); });
 
@@ -53,7 +53,7 @@ t('skill match picks the specialist', () => {
 });
 t('cheapest capable model', () => {
   const p = c.planJobs(B('b', [{ text: 'Update the README docs' }, { text: 'React card view' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }]), roster);
-  assert.deepEqual(p.jobs.map((j) => j.model), ['haiku', 'sonnet', 'fable', 'opus']);
+  assert.deepEqual(p.jobs.map((j) => j.model), ['opus', 'opus', 'fable', 'opus'], 'cheap tiers run as Opus (model policy)');
 });
 t('overlapping leases are sequenced, others run together', () => {
   const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }]), B('b', [{ text: 'Python apps/x/server/main.py' }, { text: 'More React in apps/x/web/ui.tsx' }])], roster);
@@ -95,7 +95,7 @@ const job4 = c.planJobs(B('b', [{ text: 'React card in apps/x/web/ui.tsx' }]), r
 const brief4 = c.packJob(job4, { prefix: c.sharedPrefix(), skill: skills[job4.skill] });
 t('claude args: model id, own system prompt, max turns, only the job tools, no MCP', () => {
   const a = c.claudeArgs(brief4, job4, ag4); const at = (k) => a[a.indexOf(k) + 1];
-  assert.equal(at('--model'), 'claude-sonnet-5-5'); assert.equal(at('--system-prompt'), brief4.system); assert.equal(at('--max-turns'), String(job4.budget.maxTurns));
+  assert.equal(at('--model'), 'claude-opus-5-5'); assert.equal(at('--system-prompt'), brief4.system); assert.equal(at('--max-turns'), String(job4.budget.maxTurns));
   assert.equal(at('--allowedTools'), ag4.tools.join(',')); assert.equal(at('--output-format'), 'stream-json'); assert.ok(a.includes('--strict-mcp-config'));
 });
 const r4 = await runJob(job4, ag4, brief4, { bin: okBin, cwd: tmp });
@@ -212,7 +212,7 @@ t('every agent has a unique look drawn in theme colours', () => {
 // s12 group chat
 t('work lines come from orchestrator data, no tokens', () => {
   const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }]), B('b', [{ text: 'More React in apps/x/web/ui.tsx' }])], roster);
-  const a = c.assignLine(p.jobs[0], roster); assert.equal(a.from, 'boss'); assert.match(a.text, /Rio React, you got a\.s1.*apps\/x\/web\/ui\.tsx.*Sonnet, budget/);
+  const a = c.assignLine(p.jobs[0], roster); assert.equal(a.from, 'boss'); assert.match(a.text, /Rio React, you got a\.s1.*apps\/x\/web\/ui\.tsx.*Opus, budget/);
   const l = c.leaseLines(p, roster); assert.equal(l.length, 1); assert.match(l[0].text, /waits on Rio React \(a\.s1\): both want apps\/x\/web\/ui\.tsx/);
   const r = c.reportLines({ agent: 'rio', jobId: 'a.s1', status: 'done', report: { summary: 'card in', handoff: 'props renamed' } }, roster); assert.deepEqual(r.map((x) => x.kind), ['report', 'handoff']);
   assert.match(c.mergeLines({ branch: 'm', merged: ['a.s1'], conflicts: [{ job: 'b.s1', files: ['x'], fixer: 'b.fix-s1' }], refused: [] }, roster)[1].text, /Merge Max, b\.s1 clashed on x/);
@@ -403,7 +403,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   });
   t('routing goes to the owner, on the job model, with a cap', () => {
     const r = jc.route(site, roster, c.normState({}, roster), [], table, at);
-    assert.equal(r.ok, true); assert.equal(r.agent.id, 'paulie'); assert.equal(r.model, 'sonnet'); assert.equal(r.cap, 1);
+    assert.equal(r.ok, true); assert.equal(r.agent.id, 'paulie'); assert.equal(r.model, 'opus'); assert.equal(r.cap, 1);
   });
   t('owner off duty = not routed, with the reason', () => {
     const st = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'paulie', status: 'off-duty', note: 'nap' }, roster, at).state;
@@ -427,7 +427,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const b = jc.jobBrief(site, paulie, { values: rules.jobInputs(site.data, {}).values, at, runId: 'job-site-check-x', skill: skills['site-checks'], notes: 'NOTE-LINE' });
     assert.match(b.text, /NOTE-LINE/); assert.match(b.text, /demo\.amberxai\.com/); assert.doesNotMatch(b.text, /_claude\/THREADS|RULES\.md/);
     assert.ok(b.tokens < 2500, `brief is ${b.tokens} tokens`);
-    const args = jc.jobArgs(site, paulie, 'sonnet'); const tools = args[args.indexOf('--allowedTools') + 1];
+    const args = jc.jobArgs(site, paulie, 'opus'); const tools = args[args.indexOf('--allowedTools') + 1];
     assert.doesNotMatch(tools, /\b(Edit|Write)\b/); assert.equal(args[args.indexOf('--permission-mode') + 1], 'default'); assert.ok(args.includes('--strict-mcp-config'));
   });
   // end to end through jobs.mjs: a fake launcher, a scratch repo, then a finished stream swept onto the agent
@@ -442,7 +442,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   t('launcher naming: claude-headless gets --name <agent>-<job>, the brief file and the job\'s model', () => {
     assert.equal(rec.ok, true); const a = readFileSync(argsFile, 'utf8').split('\n');
     assert.equal(a[a.indexOf('--name') + 1], 'paulie-site-check'); assert.match(a[a.indexOf('--brief') + 1], /job-briefs\/job-site-check-.*\.md$/);
-    assert.equal(a[a.indexOf('--model') + 1], 'claude-sonnet-5-5'); assert.equal(rec.run.tmux, 'axf-paulie-site-check'); assert.equal(rec.run.session, 'paulie-site-check');
+    assert.equal(a[a.indexOf('--model') + 1], 'claude-opus-5-5'); assert.equal(rec.run.tmux, 'axf-paulie-site-check'); assert.equal(rec.run.session, 'paulie-site-check');
     assert.match(readFileSync(a[a.indexOf('--brief') + 1], 'utf8'), /Check these sites, read-only: demo\.amberxai\.com\./);
   });
   t('unassigned through the CLI: no launch, Boss says so', () => {

@@ -8,8 +8,15 @@
 
 // ---------------------------------------------------------------- roster (agent@1) and skills (agent-skill@1)
 
-/** Models from cheapest to dearest. A job needs a tier; an agent runs the cheapest model it allows at or above it. */
-export const MODEL_TIERS = ['haiku', 'sonnet', 'opus', 'fable'];
+import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_IDS as POLICY_IDS, MODEL_TIERS as POLICY_TIERS, coerceModel } from '../../../../../framework/core/model-policy.mjs';
+
+/**
+ * Models from cheapest to dearest (the model policy's tier order). A job needs a tier; an agent runs the cheapest model
+ * it allows at or above it. Only the policy's allowed models may run (Opus or Fable, never Sonnet; Brett, Nov 1 2026):
+ * a roster or job that names a blocked one is coerced up to the cheapest allowed model.
+ */
+export const MODEL_TIERS = POLICY_TIERS;
+export { ALLOWED_MODELS, DEFAULT_MODEL };
 export const MODEL_LABEL = { haiku: 'Haiku', sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
 /** A skill file is one page at most. */
 export const SKILL_MAX_LINES = 50;
@@ -24,7 +31,7 @@ const ID = /^[a-z][a-z0-9-]{0,39}$/;
 
 export function normAgent(a) {
   const o = a && typeof a === 'object' ? a : {};
-  const models = list(o.models, 4, 20).filter((m) => MODEL_TIERS.includes(m)).sort((x, y) => MODEL_TIERS.indexOf(x) - MODEL_TIERS.indexOf(y));
+  const models = [...new Set(list(o.models, 4, 20).filter((m) => MODEL_TIERS.includes(m)).map((m) => coerceModel(m)))].sort((x, y) => MODEL_TIERS.indexOf(x) - MODEL_TIERS.indexOf(y));
   const av = o.avatar && typeof o.avatar === 'object' ? o.avatar : {};
   return {
     $axf: 'agent@1',
@@ -37,7 +44,7 @@ export function normAgent(a) {
     specialty: str(o.specialty, 200),
     keywords: list(o.keywords, 40, 40).map((k) => k.toLowerCase()),
     paths: list(o.paths, 40, 200),
-    models: models.length ? models : ['sonnet'],
+    models: models.length ? models : [DEFAULT_MODEL],
     tools: list(o.tools, 30, 120),
     maxTurns: num(o.maxTurns, 20, 1, 200),
     tokenBudget: num(o.tokenBudget, 300000, 1000, 10_000_000),
@@ -141,13 +148,13 @@ export function matchAgent(text, files, agents) {
   return best;
 }
 
-/** Cheapest tier that can do the step: Fable only for contract/design work pinned to Fable. */
+/** Cheapest tier that can do the step: Fable only for contract/design work pinned to Fable; the rest the policy's default (cheap tiers are coerced up). */
 export function requiredTier(step, skill) {
   const text = str(step?.text, 4000);
   if (step?.model === 'Fable' && TIER_WORDS.fable.test(text)) return 'fable';
   if (TIER_WORDS.opus.test(text)) return 'opus';
-  if (CHEAP_SKILLS.includes(skill) || TIER_WORDS.haiku.test(text)) return CHEAP_SKILLS.includes(skill) ? 'haiku' : 'sonnet';
-  return 'sonnet';
+  if (CHEAP_SKILLS.includes(skill) || TIER_WORDS.haiku.test(text)) return coerceModel(CHEAP_SKILLS.includes(skill) ? 'haiku' : 'sonnet');
+  return coerceModel('sonnet');
 }
 /** The cheapest model the agent allows at or above the tier (or its dearest, flagged, when none reaches it). */
 export function pickModel(agent, tier) {
@@ -290,7 +297,7 @@ export function packJob(job, { prefix, skill, snippets = [], handoffs = [] } = {
 // ---------------------------------------------------------------- headless runner (pure parts)
 
 /** Model ids for `claude --model`. */
-export const MODEL_IDS = { haiku: 'claude-haiku-5-5', sonnet: 'claude-sonnet-5-5', opus: 'claude-opus-5-5', fable: 'claude-fable-5-1' };
+export const MODEL_IDS = POLICY_IDS;
 export const RUN_STATUSES = ['done', 'failed', 'blocked', 'killed', 'error'];
 /** Cache reads cost about a tenth of fresh input, so they count a tenth against a job's token budget. */
 export const CACHE_READ_WEIGHT = 0.1;

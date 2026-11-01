@@ -12,10 +12,13 @@
  * new type).
  */
 
+import { ALLOWED_MODELS, DEFAULT_MODEL, coerceModel, modelAllowed, modelProblem } from '../model-policy.mjs';
+
 export const JOB_TYPE = 'job-type';
 
+/** Models come from the model policy (model-policy.mjs: Opus or Fable only, never Sonnet; Brett, Nov 1 2026). */
 export const JOB_ENUMS = {
-  model: ['haiku', 'sonnet', 'opus', 'fable'],
+  model: [...ALLOWED_MODELS],
   trigger: ['on-demand', 'schedule', 'event'],
 };
 
@@ -26,7 +29,7 @@ export const JOB_LIMITS = { brief: 4000, inputs: 12, tools: 30, tokensMin: 1000,
 
 export const JOB_DEFAULTS = {
   specialty: '',
-  model: 'sonnet',
+  model: DEFAULT_MODEL,
   budget: { tokens: 200000, maxTurns: 30, usd: 0 },
   trigger: { kind: 'on-demand', every: '', at: '', event: '' },
   readOnly: false,
@@ -56,6 +59,7 @@ export function jobTypeErrors(type, raw) {
   const e = [];
   if (!isObj(raw)) return ['data must be an object'];
   if (!SLUG.test(raw.specialty ?? '')) e.push('data.specialty is the owning agent skill id (lowercase letters, digits and dashes)');
+  if (raw.model !== undefined && !modelAllowed(raw.model)) e.push(`data.${modelProblem(raw.model)}`);
   const b = raw.budget;
   if (!isObj(b)) e.push('data.budget must be { tokens, maxTurns, usd? }');
   else {
@@ -101,7 +105,7 @@ export function normalizeJobType(raw) {
   const D = JOB_DEFAULTS;
   return {
     specialty: SLUG.test(o.specialty ?? '') ? o.specialty : D.specialty,
-    model: JOB_ENUMS.model.includes(o.model) ? o.model : D.model,
+    model: coerceModel(o.model, D.model), // a stored sonnet/haiku job runs as opus: the policy, not the file, decides
     budget: {
       tokens: Number.isInteger(b.tokens) ? Math.min(JOB_LIMITS.tokensMax, Math.max(JOB_LIMITS.tokensMin, b.tokens)) : D.budget.tokens,
       maxTurns: Number.isInteger(b.maxTurns) ? Math.min(JOB_LIMITS.turnsMax, Math.max(1, b.maxTurns)) : D.budget.maxTurns,
