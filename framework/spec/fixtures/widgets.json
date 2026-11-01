@@ -304,6 +304,7 @@
     "spacer:push",
     "status:ai",
     "status:online",
+    "theme-switch:amberx-day-night",
     "theme-switch:day-night",
     "theme-switch:fresh-day-night"
   ],

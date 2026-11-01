@@ -1,4 +1,49 @@
 {
+  "axhub-console": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "toolbar",
+        "nav"
+      ],
+      "areas": "\"menubar menubar\" \"toolbar toolbar\" \"nav main\"",
+      "columns": "224px minmax(0, 1fr)",
+      "rows": "auto auto minmax(0, 1fr)",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      }
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar menubar\" \"toolbar toolbar\" \"nav main\"",
+      "--fx-grid-cols": "224px minmax(0, 1fr)",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr)",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "920px"
+    }
+  },
   "canvas-studio": {
     "compiled": {
       "regions": [
