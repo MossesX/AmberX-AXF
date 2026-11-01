@@ -10,7 +10,8 @@ Settings → Plugins → Systems check → GitHub route). The hub's GitHub token
   status(refresh=False)           does the hub route work right now? (GET /user through axHub; cached 5 min)
   client(user_agent, token=None)  the client (token: a callable for the local fallback, default GITHUB_TOKEN)
 
-The push banner, auto-merge, branch cleanup and CI helpers switch to it in their own build (claude/pr-only-merge).
+The push banner (listing, auto-merge, branch cleanup) builds its client from it (Nov 1 2026); its writes have no hub
+route and use the local token.
 """
 from __future__ import annotations
 

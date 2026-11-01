@@ -68,6 +68,8 @@ class Fake(BaseHTTPRequestHandler):
         SEEN.append({"method": "GET", "path": p, "auth": self.headers.get("Authorization", "")})
         if p == R:
             return self._send(200, {"default_branch": "main"})
+        if p == "/user":
+            return self._send(200, {"login": "MossesX"})
         if p == R + "/branches":
             return self._send(200, [{"name": b} for b in STATE["branches"]])
         if p == R + "/branches/main/protection":
@@ -592,4 +594,41 @@ os.environ["GITHUB_TOKEN"] = ""
 clock["t"] += 999
 out = c.get("/p/branches").json()
 check("GITHUB_TOKEN" in out["error"] and out["repos"] == [], "no token: says so instead of failing")
+
+# axf.github@1 (hub first, local fallback) and the banner's own health@1 item (live-key-checks s7 + s12)
+class FakeHubLink:
+    def __init__(self, on): self.on = on
+    def configured(self): return self.on
+class FakeGitHub:  # stands in for the systems check's githubsvc: answers as if axHub read GitHub for us
+    def __init__(self): self.hub, self.made = FakeHubLink(True), []
+    def client(self, user_agent="", token=None, **kw):
+        self.made.append((user_agent, token))
+        gh = mod.github.GitHubClient(lambda: TOKEN, base_url=os.environ["GITHUB_API_URL"], user_agent=user_agent, **kw)
+        gh.last_route = "axhub"
+        return gh
+class FakeHealth:
+    def __init__(self): self.specs = {}
+    def register(self, spec, owner=""): self.specs[spec["id"]] = (spec, owner); return spec["id"]
+fg, fh = FakeGitHub(), FakeHealth()
+plugin_services.provide("axf.github@1", fg, "fake-github")
+clock["t"] += 999
+out = c.get("/p/branches").json()
+check(not out["error"] and out["repos"] and fg.made and fg.made[-1][0] == "axf-console-push-banner", "no local token: reads through axf.github@1 (axHub) instead of failing")
+check(fg.made[-1][1] == mod.PUSHES.token, "axf.github@1 client gets the local token as its fallback")
+check(mod.PUSHES.auto_merge() == [], "no local token: auto-merge stays off (merges have no hub route)")
+check(mod.ensure_health() is False, "health@1 not provided yet: nothing registered, tried again later")
+plugin_services.provide("axf.health@1", fh, "fake-health")
+check(mod.ensure_health() and mod.HEALTH_ID in fh.specs and fh.specs[mod.HEALTH_ID][1] == "push-banner", "health@1: push banner registers its own GitHub check")
+spec_ = fh.specs[mod.HEALTH_ID][0]
+r = spec_["run"]()
+check(r["status"] == "warn" and "axHub" in r["summary"] and "GITHUB_TOKEN" in r["summary"], "health: reads via axHub, writes off without a local token = amber")
+os.environ["GITHUB_TOKEN"] = TOKEN
+r = spec_["run"]()
+check(r["status"] == "ok" and "as MossesX" in r["summary"], "health: both routes = green")
+os.environ["GITHUB_TOKEN"] = ""
+fg.hub.on = False
+r = spec_["run"]()
+check(r["status"] == "error" and "AXHUB_TOKEN" in r["summary"], "health: no route at all = red, says which keys")
+plugin_services.withdraw("fake-github")
+plugin_services.withdraw("fake-health")
 print(f"push-banner: {ok} checks passed")

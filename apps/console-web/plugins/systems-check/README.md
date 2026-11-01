@@ -39,8 +39,9 @@ broken is a **red banner item** saying what broke, what it **breaks** and **sinc
   phone notification; it resolves when green. One push per red episode (state in `health-state.json`).
 - **Registry:** any plugin adds a check through `plugin_services.get("axf.health@1").register({id, label, run, severity,
   service, breaks, fix, links, instructions, interval}, owner=<folder>)`; `run()` returns `{status, summary, details?,
-  unreachable?, expiresAt?, link?}`. `GET health` lists them; `POST health/run` = Check now. Follow-up (after
-  `claude/pr-only-merge`): the push banner's token check moves onto health@1.
+  unreachable?, expiresAt?, link?}`. `GET health` lists them; `POST health/run` = Check now. The push banner
+  registers its own check there, `push-banner-github` ("Push banner reaches GitHub": red with no route, amber when it
+  reads through axHub but has no local token for PRs and merges).
 
 ## Fix it yourself: auto-fix + GitHub through axHub (Oct 30 2026)
 Brett: "Why do I have to tell you to fix something when you have the tools to do it?"
@@ -59,8 +60,9 @@ Brett: "Why do I have to tell you to fix something when you have the tools to do
   service with the console's AXHUB_TOKEN (the hub's GitHub token stays in its vault) and falls back to the local
   GITHUB_TOKEN when the hub can't be reached, has no tool for the call (merge, branch delete, check-runs, downloads) or
   its own token is refused; or the other way round (route `local`). `GET github` / `PUT github {route}`; check
-  `github-hub` (amber when the hub route is down). CI on main reads through it. Follow-up (build `claude/pr-only-merge`,
-  Angel `live-key-checks` s12): the push banner, auto-merge and branch cleanup build their client from `axf.github@1`.
+  `github-hub` (amber when the hub route is down). CI on main reads through it. The push banner (listing,
+  auto-merge, branch cleanup) builds its client from `axf.github@1` (Nov 1 2026): reads go through axHub, writes (PRs,
+  merges, branch updates/deletes, protection) and check-runs have no hub route and use the local token.
 
 ## What's new banner
 Changes since this browser last opened the console: commits on the console's clone and plugins added, updated or

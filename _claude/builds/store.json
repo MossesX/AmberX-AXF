@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 25,
- "updatedAt": "2026-11-01T02:31:46.612Z",
+ "rev": 28,
+ "updatedAt": "2026-11-01T02:34:25.256Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -39851,19 +39851,23 @@
    "title": "Live key + health checks in the banners: every key tested against its service every 15 min, red banner item with a fix, health@1 registry, push to AmberX",
    "category": "Console",
    "detail": "Brett, Oct 30 2026 (voice): the console's GITHUB_TOKEN went dead (401) and nothing told him. 'You need to make sure things like that go into one of the banners. I need to see that kind of shit.' Live checks (GitHub /user + scopes + expiry, axHub MCP, Anthropic/Claude, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push creds), red banner items with what broke / what it breaks / since when / Fix, amber a week before expiry, health@1 registry, stuck builds, veto denied/expired, CI on main, restarting containers, disk >85%, one push per new red item. Profile: Angel. Web/Python only.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/live-key-checks",
    "pr": "",
    "createdAt": "2026-10-30T18:21:59.378Z",
-   "updatedAt": "2026-10-31T00:46:05.582Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-01T02:34:25.216Z",
+   "builtAt": "2026-11-01T02:34:24.794Z",
    "notes": [
     {
      "text": "s1-s6 done on claude/live-key-checks (Opus): health@1, live probes, system checks, red banners, test-before-save, push once to AmberX, shared rule; self-test 184, tsc/vite/check-theme/check-controls/lifecycle green. s7 waits on claude/pr-only-merge.",
      "at": "2026-10-30T18:52:13.649Z"
+    },
+    {
+     "text": "s7+s12 done by Leftovers (claude/leftovers): push banner builds its client from axf.github@1 (reads through axHub, local GITHUB_TOKEN fallback; writes still local), lists branches with no local token, and registers its own health@1 check push-banner-github (red no route / amber reads only / green). push-banner test.py 132→141, systems-check 216/216.",
+     "at": "2026-11-01T02:34:25.216Z"
     }
    ],
    "approvals": [],
@@ -40015,12 +40019,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:34:24.360Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:34:24.392Z"
     },
     {
      "id": "s8",
@@ -40125,12 +40129,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:34:24.794Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:34:24.833Z"
     }
    ],
    "profiles": [
@@ -40141,7 +40145,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
