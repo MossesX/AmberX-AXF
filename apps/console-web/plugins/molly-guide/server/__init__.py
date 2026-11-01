@@ -7,6 +7,11 @@
     GET  /walkthroughs  ?after=<seq> → {walkthroughs[]}  newest first (the console window polls it; AmberX's voice
                         commands reach Molly through /ask, so a walkthrough she makes for AmberX opens in the console).
 
+    POST /amberx-walkthrough/rerecord   → {state, message}  re-record AmberX's walkthrough video: one veto call (vps.run
+                        through Vinny, axf.vinny@1) that starts apps/amberx-droid/walkthrough/rebuild.sh on the VPS in the
+                        background; Brett can Deny it during the countdown. The button is in Settings → Plugins → Molly guide.
+    GET  /amberx-walkthrough/rerecord   → the last request's {state, message, at}
+
 Data: `walkthroughs.json` (last WALK_KEEP) in this plugin's own data folder; nothing else is written.
 """
 from __future__ import annotations
@@ -88,6 +93,45 @@ def save_walkthrough(wt: dict[str, Any], source: str) -> dict[str, Any]:
         tmp.write_text(json.dumps(([rec] + cur)[:WALK_KEEP], indent=1))
         tmp.replace(_file())
         return rec
+
+
+# Re-recording AmberX's walkthrough video (Nov 1 2026): the recorder runs on the VPS (docker), so the console asks for it
+# through axHub as a veto call; the script itself is apps/amberx-droid/walkthrough/rebuild.sh in the VPS checkout.
+VPS_CHECKOUT = os.environ.get("AXF_VPS_CHECKOUT", "/opt/axf")
+RERECORD_COMMAND = (f"cd {VPS_CHECKOUT} && mkdir -p /opt/amberx-walkthrough-rec && "
+                    "nohup bash apps/amberx-droid/walkthrough/rebuild.sh > /opt/amberx-walkthrough-rec/rebuild.log 2>&1 &")
+RERECORD_REASON = "Re-record the AmberX walkthrough video"
+_rerecord: dict[str, Any] = {"state": "idle", "message": "", "at": 0}
+
+
+def _send_rerecord(svc: Any) -> None:
+    try:
+        r = svc.call("vps.run", {"command": RERECORD_COMMAND}, reason=RERECORD_REASON)
+        msg = ("Sent to axHub: it runs when the countdown ends unless you deny it. The new video is live in AmberX about "
+               "15 minutes later.") if r.get("confirm") or r.get("ok") is not None else str(r)[:300]
+        _rerecord.update(state="sent", message=msg, at=time.time())
+    except Exception as e:  # noqa: BLE001 — say what went wrong, plainly
+        _rerecord.update(state="failed", message=f"axHub didn't take it: {str(e)[:300]}", at=time.time())
+
+
+@router.get("/amberx-walkthrough/rerecord")
+def rerecord_status() -> dict[str, Any]:
+    return dict(_rerecord)
+
+
+@router.post("/amberx-walkthrough/rerecord")
+def rerecord() -> dict[str, Any]:
+    svc = plugin_services.get("axf.vinny@1")
+    if svc is None:
+        raise HTTPException(503, "Re-recording goes through Vinny: switch the Agent manager on.")
+    ok, why = svc.ready()
+    if not ok:
+        raise HTTPException(503, f"Vinny can't send it to axHub: {why}")
+    if _rerecord["state"] == "sending" and time.time() - _rerecord["at"] < 120:
+        return dict(_rerecord)
+    _rerecord.update(state="sending", message="Sending it to axHub…", at=time.time())
+    threading.Thread(target=_send_rerecord, args=(svc,), daemon=True).start()
+    return dict(_rerecord)
 
 
 @router.get("/walkthroughs")

@@ -3,6 +3,31 @@
 import json, sys, os
 ROOT = sys.argv[1]
 EDITS = {
+
+ "github-app": {
+  "app-name": ("App name", "What the GitHub App is called on github.com.", "field"),
+  "create-github-app": ("Create GitHub App", "Opens GitHub to make the app in one click; it comes back here with its keys. After that no session needs a personal token."),
+  "check-installation": ("Check installation", "Checks the app is installed on your repos and can push."),
+  "mint-a-token-now": ("Mint a token now", "Makes a fresh short-lived token from the app, to test it works."),
+  "forget-the-app-here": ("Forget the app here", "Removes the app's keys from this console. The app on GitHub stays."),
+  "github": ("GitHub", "The GitHub App's settings.", "tab"),
+ },
+ "chat-viewer": {
+  "chat-viewer": ("Chat viewer", "Its settings: where sessions come from, voices, how often it checks.", "tab"),
+  "check-for-updates": ("Check for updates", "Looks for new sessions now instead of waiting."),
+  "mark-all-read": ("Mark all read", "Clears the unread marks on every session."),
+  "back-to-every-session": ("Back to every session", "Back to the list."),
+  "copy-the-transcript": ("Copy the transcript", "Copies the whole session as text."),
+  "export-as-markdown": ("Export as Markdown", "Saves the session as a Markdown file."),
+  "export-as-text": ("Export as text", "Saves the session as a plain text file."),
+  "audio": ("Audio", "Turn the session into audio: you and Amber in two voices.", "tab"),
+  "tool-calls": ("Tool calls", "Shows or hides the tool calls between the messages.", "toggle"),
+  "make-audio": ("Make audio", "Reads the session out loud into an audio file, one voice for you, one for Amber."),
+  "delete-this-audio": ("Delete this audio", "Deletes the audio file. The session stays."),
+  "load-player": ("Load player", "Loads the audio so you can play it here."),
+  "set-up-free-voices": ("Set up free voices", "Installs the free Piper voices on the server so audio costs nothing."),
+  "save-sources": ("Save sources", "Saves where sessions are read from."),
+ },
  "approvals-banner": {
   "and-more": ("…and more", "More calls are waiting than fit here. Tap for the full list."),
   "gets-louder-over-time": ("Gets louder over time", "The alarm starts soft and builds up, so it doesn't make you jump."),
@@ -172,6 +197,7 @@ EDITS = {
 n = 0
 for folder, edits in EDITS.items():
     p = os.path.join(ROOT, "apps/console-web/plugins", folder, "help.json")
+    if not os.path.exists(p): continue
     pack = json.load(open(p))
     for x in pack["data"]["entries"]:
         if x["target"] in edits:

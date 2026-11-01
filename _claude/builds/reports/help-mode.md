@@ -47,7 +47,7 @@ first. Lookup falls back from the action to the label, so written help for a wor
 | Scope | Controls | With help | Hand-written | Drafts | Coverage | Screen intros |
 |---|---:|---:|---:|---:|---:|---:|
 | Framework chrome (every app) | 111 | 111 | 111 | 0 | 100% | 3 |
-| Dev Console + 47 plugins | 1140 | 1140 | 473 | 667 | 100% | 15 |
+| Dev Console + 50 plugins | 1196 | 1196 | 496 | 700 | 100% | 15 |
 | axHub web | 163 | 163 | 163 | 0 | 100% | 7 |
 
 - Packs: `framework.json` (283 entries, hand-written: chrome, Help mode, standard menus/actions, approvals rows, Watch
@@ -55,11 +55,11 @@ first. Lookup falls back from the action to the label, so written help for a wor
   every console screen, Builds + Steps, orchestrator, profiles, Build manager, approvals banner, UI Review +
   Screenshots + groups, Breakroom/HR, keys, systems check, push banner, codebase changes, Plan Studio), `axhub.json`
   (68 + 4 intros: approvals with who asked / Approve now / Deny / details, request page, log, Go pass, users, account,
-  handoff), and a `help.json` in 44 console plugins.
+  handoff), and a `help.json` in 47 console plugins (main's new Chat viewer, GitHub App and agent-slots got drafts at merge time; GitHub App and Chat viewer hand-edited).
 - Drafts are written from the code (labels, verbs, plugin descriptions) and flagged `draft: true` (tooltip border
   dashed, "plain-English edit still to come" in the panel). Hand-edited drafts: approvals banner, orchestrator, build
   profiles, UI Review, agent swarm, terminal, AI keys, Plan Studio, push banner, systems check, codebase changes,
-  Build manager (141 entries).
+  Build manager, GitHub App, Chat viewer (161 entries).
 - Ratchet (CI fails below it): per scope percent, covered count and written count.
 - Full list: `_claude/builds/reports/help-coverage.md`.
 
@@ -106,7 +106,7 @@ with `framework/cli/shot.mjs --console` from inside the console container). Shot
 
 ## Known gaps
 
-- 667 console entries are still drafts (readable, but templated). Edit them in each plugin's `help.json`; the
+- 700 console entries are still drafts (readable, but templated). Edit them in each plugin's `help.json`; the
   `written` ratchet keeps the hand-written number from falling.
 - AmberX web (amberx-droid) and Walkthrough Studio get the switch, the framework pack and "No help yet" for their own
   controls; they have no app pack yet and aren't counted scopes (add a scope to `SCOPES` in `help-coverage.mjs`).

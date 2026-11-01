@@ -17,6 +17,27 @@
         "title": "Save preset",
         "text": "Saves this mix of agents and models so you can pick it again.",
         "kind": "button"
+      },
+      {
+        "target": "hire",
+        "title": "Hire",
+        "text": "Shows “Hire”. Part of Agent swarm.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "run",
+        "title": "Run",
+        "text": "Starts it now. Part of Agent swarm.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "preview-brief",
+        "title": "Preview brief",
+        "text": "Previews brief. Part of Agent swarm.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

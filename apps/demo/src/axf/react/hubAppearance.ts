@@ -38,6 +38,8 @@ export class HubAppearanceSource implements AppearanceSource {
   private readonly listeners = new Set<Listener>();
   private st: AppearanceSourceState = { status: 'connecting' };
   private doc: AppearanceDocument | null = null;
+  /** What the last good read said (status, version, body): a re-read that matches it applies nothing again. */
+  private lastRead: string | null = null;
   private version: string | null = null;
   private attempt = 0;
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -73,6 +75,7 @@ export class HubAppearanceSource implements AppearanceSource {
     if (this.running) return;
     this.running = true;
     this.attempt = 0;
+    this.lastRead = null; // following again: the next read is applied even if it matches the last one
     void this.load();
     if (typeof globalThis.addEventListener === 'function') {
       globalThis.addEventListener('online', this.onOnline);
@@ -98,6 +101,9 @@ export class HubAppearanceSource implements AppearanceSource {
   private onFocus = () => this.refresh();
 
   private emitState(st: AppearanceSourceState): void {
+    // The same ready state again (a re-read on focus or a live event that found nothing new) is not news: re-sending it
+    // re-rendered the whole app on every read (Brett, Nov 1 2026: the approvals screen flashing during a countdown).
+    if (st.status === 'ready' && this.st.status === 'ready' && st.version === this.st.version) return;
     this.st = st;
     for (const l of this.listeners) l({ state: st });
   }
@@ -123,22 +129,29 @@ export class HubAppearanceSource implements AppearanceSource {
     }
     if (r.status === 401) return this.unauthorized(`Sign in to ${this.hub} first.`);
     if (r.status === 403) return this.unauthorized(`${this.hub} doesn't allow this site or this account to read settings.`);
+    let read: string;
     if (r.status === 404) {
       // nothing saved yet: a developer app starts from its defaults and the first change creates the document
       this.doc = null;
       this.version = null;
+      read = '404';
     } else if (r.ok) {
       const text = await r.text().catch(() => '');
       const doc = parseAppearance(text);
       if (text && !doc) return this.failed('The appearance document on the hub is not a valid appearance@1 document.');
       this.doc = doc;
       this.version = r.headers.get('X-Data-Version') ?? r.headers.get('ETag')?.replace(/^W\//, '').replace(/^"|"$/g, '') ?? null;
+      read = `200:${this.version ?? ''}:${text}`;
     } else {
       return this.failed(`${this.hub} answered ${r.status}.`);
     }
     this.attempt = 0;
+    // Apply the look once per real change: an unchanged document (same version and body) while already ready is not
+    // pushed again, so focus / live-event re-reads don't re-apply the look and re-render every view.
+    const unchanged = read === this.lastRead && this.st.status === 'ready';
+    this.lastRead = read;
     this.emitState({ status: 'ready', version: this.version });
-    this.emitDoc();
+    if (!unchanged) this.emitDoc();
     this.watch();
     if (this.pending) void this.flush();
   }

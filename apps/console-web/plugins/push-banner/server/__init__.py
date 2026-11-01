@@ -964,7 +964,13 @@ def health_probe(p: "Pushes") -> dict[str, Any]:
     try:
         me = gh.get("/user", timeout=10)
     except github.GitHubError as e:
-        return {"status": "error", "summary": f"Push banner can't read GitHub: {_text(str(e), 200)}."}
+        # a GitHub App installation token (github-app@1) may not read /user (403): any authenticated read proves the route
+        try:
+            if e.status != 403:
+                raise
+            me = {"login": "the GitHub App"} if gh.get("/rate_limit", timeout=10) is not None else None
+        except github.GitHubError:
+            return {"status": "error", "summary": f"Push banner can't read GitHub: {_text(str(e), 200)}."}
     route = "axHub" if getattr(gh, "last_route", "") == "axhub" else "the console's GITHUB_TOKEN"
     who = f" as {me['login']}" if isinstance(me, dict) and me.get("login") else ""
     if not p.has_local():

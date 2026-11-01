@@ -53,6 +53,13 @@
         "text": "Shows the “Audio Output Recorder” part of this screen. Part of Audio Output Recorder.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "record-my-mic-too",
+        "title": "Record my mic too",
+        "text": "Where you set “Record my mic too”. Change it and the app uses the new value. Part of Audio Output Recorder.",
+        "kind": "field",
+        "draft": true
       }
     ],
     "intros": []

@@ -1,0 +1,17 @@
+#!/bin/sh
+# git credential helper for the AmberX VPS (github-app@1, Nov 1 2026), installed as /usr/local/bin/axf-git-cred.
+# Order: the GitHub App's installation token (framework/cli/github-token.mjs, minted and cached on the console server),
+# then the console's old GITHUB_TOKEN (secrets.env) as the fallback until Brett deletes it. Only `get` answers.
+[ "$1" = get ] || exit 0
+cat >/dev/null 2>&1 || true   # git's request on stdin isn't needed
+AXF_DIR="${AXF_DIR:-/opt/axf}"
+B="${AXF_GITHUB_BROKER:-$AXF_DIR/framework/cli/github-token.mjs}"
+S="${AXF_CONSOLE_SECRETS:-$AXF_DIR/.axf-console/secrets.env}"
+T=""
+if [ -f "$B" ] && command -v node >/dev/null 2>&1; then
+  T=$(timeout 40 node "$B" installation 2>/dev/null) || T=""
+fi
+[ -n "$T" ] || T=$(grep -m1 '^GITHUB_TOKEN=' "$S" 2>/dev/null | cut -d= -f2- | tr -d '"\r ')
+[ -n "$T" ] || exit 0
+echo username=x-access-token
+echo "password=$T"
