@@ -1,6 +1,6 @@
 # approval-expand — every approval row expandable (Nov 1 2026, Opus, headless VPS)
 
-Branch `claude/approval-expand`, pushed to `main` (Brett's brief). The first push try failed on the VPS GitHub token (read-only for a while). It works again, so the banner item `blocked:push:approval-expand` can go.
+Branch `claude/approval-expand`, on `main` as `5e9b3475` (Brett's brief). The first push try failed while the VPS GitHub token was refused for writes. It works again; the banner item `blocked:push:approval-expand` was raised, then resolved.
 
 ## What Brett gets
 
@@ -54,3 +54,13 @@ Waiting for Brett:
 ## Also fixed on main
 
 The console's approvals banner imports `@console/watchLive` (watch-live), and AmberX bundles that plugin, so AmberX's build failed on main: Rollup couldn't resolve the import. AmberX now has a `src/console/watchLive.tsx` bridge that draws nothing, since there's no previews API there, wired through the vite alias and tsconfig path.
+
+## After approval-source landed (axHub decision 109)
+
+- The axHub web list is now approval-source's DataGrid (Source / Who / What / Requested / Countdown / Decide). Its expand caret is already the row's last cell (far right). Added on top:
+  - a single tap on the row opens it, while taps on its buttons and links don't;
+  - open rows are kept in `approvalsOpenStore` (scope `axhub`), so they survive polls and coming back to the page;
+  - the open row is `ApprovalDetailsPanel` with Deny / Approve inside, plus Postpone / Ignore / Revoke and Open the request.
+- The source badge in my rows uses lib-hub's `HUB_SOURCE_LABELS / ICON / TONE`, so it reads the same as approval-source's badge everywhere. `who` counts as a name only when it's a real session/build/agent name.
+- The banner keeps main's title and source on its pending items and in the fallback item.
+- Final local run on the merged tree: the full android.yml web block passes 74/74 (plus my new check), libs typecheck passes, all four app builds pass, and theme-swap, interface-scope, check-theme and check-controls pass. Plugin lifecycle is clean except for gitignored hub sync copies, which aren't present in CI. axhub-web test 264/264, check-approval-expand 74/74, check-approvals-menu 53/53.
