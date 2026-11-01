@@ -7,7 +7,7 @@ and downloads as a video too. **Update (Brett, Nov 1 21:32):** "Wanna be able to
 amberx with downloadable video": it lives in AmberX's walkthrough plugin, the voice and narration are editable there,
 and the video downloads from it.
 
-**State:** queued. Nothing is built or recorded until Brett says go (project rule). Profile: Refactor (current).
+**State:** building (Brett said go, Nov 1 22:36). Profile: Refactor (current).
 Model: Opus for every step (no new cross-port contract; the walkthrough-video@1 extension below is script-level).
 Recurring re-records go to the job type `amberx-walkthrough` (Walkthrough producer) once it lands.
 
@@ -68,23 +68,8 @@ Rules for the words (same as AmberX's script): facts match the code and docs; no
 work on hold, Patches paused, HR shelved are skipped or named as on hold); persona only in narration, captions follow
 the narration word for word; no slurs, no sexual stuff.
 
-## Steps (each ≤ 30 min, Opus)
+## Steps
 
-| # | Step | Est |
-|---|---|---|
-| s1 | Extract the shared recorder; AmberX script runs through it unchanged | 30 |
-| s2 | Multi-app chapters (url/viewport/sign-in per chapter) + 1080p letterbox | 25 |
-| s3 | Explainer diagram page (token-styled, animated steps) | 30 |
-| s4 | Console + axHub demo data layers | 30 |
-| s5 | Script ch 1–4 | 30 |
-| s6 | Script ch 5–8 | 30 |
-| s7 | Script ch 9–12 | 30 |
-| s8 | Script ch 13–16 + check.mjs pass | 30 |
-| s9 | Long-video assembly: resume, cache, 1080p + 720p export | 25 |
-| s10 | Plugin: picker, chapters, Download button, console Help link | 30 |
-| s10b | Voice editor: voice pick + preview, scene narration editor, overrides on axHub | 30 |
-| s10c | Partial re-render: changed clips only, re-time + re-cut one chapter, veto-call trigger | 30 |
-| s11 | Record + assemble on the VPS (runs ~2 h unattended via the job agent) | 30 |
-| s12 | Secrets scan, UI Review shots of the player, PR | 20 |
-
-About 7 h of work plus the unattended recording run.
+In the Build orchestrator as `stack-walkthrough` (Refactor): 25 steps of 10 minutes each, Opus (Brett, Nov 1 22:37:
+"Save it in steps in case it fails, do 10 minute steps"). Each step is committed and pushed when it's ticked
+(`orchestrator.mjs act step stack-walkthrough sN`), so a cut-off session resumes from `orchestrator.mjs next`.
