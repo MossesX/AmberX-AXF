@@ -1325,7 +1325,8 @@ export class AxfRuntime {
     const t = (raw as { type?: AssetType; id?: string } | null);
     const prev = t?.type && t.id ? (this.registry.get(t.type, t.id) as RegisteredAsset | undefined) : undefined;
     const r = this.registry.register(raw, prev?.__source ?? 'imported', prev?.__origin ?? origin);
-    if (r.ok) this.set({});
+    // A fresh `active` (same choices) so everything keyed on it — the provider's compiled tokens — re-applies.
+    if (r.ok) this.set({ active: { ...this.state.active } });
     return r;
   }
 

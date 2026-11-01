@@ -35,7 +35,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
-import { formatCountdown, onVetoHost, secondsLeftNow, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
+import { onVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
 import { approvalsHost, ApprovalRow } from '@console/axf/libs/approvals/react';

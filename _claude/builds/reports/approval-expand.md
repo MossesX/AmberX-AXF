@@ -47,4 +47,10 @@ menu-approve put Deny / Approve on each live row (`LiveRow` in `framework/react/
 
 ## UI Review
 
-Item `r-20261101-396ffb92` (banner), 6 shots (desktop + phone: collapsed, an approval open, a held call open), waiting for Brett.
+Waiting for Brett:
+- `r-20261101-396ffb92` (banner), 6 shots: desktop and phone, collapsed, an approval open, a held call open.
+- `r-20261101-657d9917` (menu), 4 shots: the app menu's "Approvals waiting" list, collapsed and open, desktop and phone.
+
+## Also fixed on main
+
+The console's approvals banner imports `@console/watchLive` (watch-live), and AmberX bundles that plugin, so AmberX's build failed on main: Rollup couldn't resolve the import. AmberX now has a `src/console/watchLive.tsx` bridge that draws nothing, since there's no previews API there, wired through the vite alias and tsconfig path.

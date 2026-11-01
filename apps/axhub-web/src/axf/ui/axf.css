@@ -362,7 +362,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__live-state { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4.5)); padding: 0 var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); font-weight: 600; color: var(--fx-success); }
 .fx-menu__live.is-done .fx-menu__live-main { opacity: var(--fx-opacity-muted); }
 .fx-menu__live.is-expandable { flex-wrap: wrap; }
-.fx-menu__caret { flex: none; margin-inline-start: auto; }
+.fx-menu__live > .fx-iconbtn.fx-menu__caret { flex: none; margin-inline-start: auto; }
 .fx-menu__caret svg { transition: transform var(--fx-motion) ease; }
 .fx-menu__caret-open { transform: rotate(180deg); }
 .fx-menu__details { flex: 1 1 100%; min-width: 0; max-height: min(60vh, calc(var(--fx-row-h) * 18)); overflow: auto; padding: 0 0 var(--fx-dens-gap-md) var(--fx-dens-gap-md); cursor: auto; }
@@ -1239,6 +1239,45 @@ code, .fx-mono { font-size: var(--fx-type-mono-size); }
   .fx-pagehead p { display: -webkit-box; -webkit-line-clamp: var(--fx-size-page-head-description-lines); -webkit-box-orient: vertical; overflow: hidden; }
 }
 
+/* ---------------- Watch live (watch-live@1): a session's hot-rendered preview + the outline on the changed element ---------------- */
+.fx-watchlive-link { display: inline-flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center; }
+.fx-watchlive {
+  position: fixed; z-index: 90; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--fx-bg); color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-border);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-scrim) * 100%), transparent);
+}
+.fx-watchlive.is-float {
+  right: var(--fx-dens-gap-xl); bottom: var(--fx-dens-gap-xl); width: min(960px, calc(100vw - 2 * var(--fx-dens-gap-xl)));
+  height: min(680px, calc(100vh - 2 * var(--fx-dens-gap-xl))); min-width: 320px; min-height: 240px; resize: both; border-radius: var(--fx-radius-md);
+}
+.fx-watchlive.is-sheet { inset: 0; width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
+.fx-watchlive__head {
+  flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; min-height: var(--fx-row-h);
+  padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border);
+  font-size: var(--fx-type-root-sm); cursor: move; touch-action: none; user-select: none;
+}
+.fx-watchlive.is-sheet .fx-watchlive__head { cursor: default; }
+.fx-watchlive__live { flex: none; width: 8px; height: 8px; border-radius: 999px; background: var(--fx-danger); animation: fx-watchlive-pulse 1.6s var(--fx-ease) infinite; }
+@keyframes fx-watchlive-pulse { 50% { opacity: var(--fx-opacity-muted); } }
+.fx-watchlive__title { flex: none; white-space: nowrap; }
+.fx-watchlive__focus { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); }
+.fx-watchlive__tools { flex: none; margin-left: auto; display: inline-flex; gap: var(--fx-dens-gap-xs); }
+.fx-watchlive__note { flex: none; margin: var(--fx-dens-gap-sm) var(--fx-dens-gap-md) 0; }
+.fx-watchlive__frame { flex: 1 1 auto; width: 100%; min-height: 0; border: 0; background: var(--fx-bg); }
+@media (prefers-reduced-motion: reduce) { .fx-watchlive__live { animation: none; } }
+/* inside the preview: the element the session is changing (an overlay, so the element's own styles are untouched) */
+.fx-watchlive-outline {
+  position: fixed; z-index: 2147483000; pointer-events: none; box-sizing: border-box; border-radius: var(--fx-radius-sm);
+  outline: 2px solid var(--fx-accent); outline-offset: 2px;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent);
+  transition: top var(--fx-motion) var(--fx-ease), left var(--fx-motion) var(--fx-ease), width var(--fx-motion) var(--fx-ease), height var(--fx-motion) var(--fx-ease);
+}
+.fx-watchlive-note {
+  position: absolute; left: 0; bottom: calc(100% + 6px); max-width: min(420px, 90vw); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 2px var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text);
+  font: 600 var(--fx-type-root-xs) / 1.4 var(--fx-font);
+}
+.fx-watchlive-note:empty { display: none; }
 /* ---------- agent ID cards (agent-card@1 assets; react/components/AgentCard.tsx). Tokens only: a theme swap rebrands every card. ---------- */
 .fx-idcard { --fx-idcard-accent: var(--fx-accent); position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-lg); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); box-shadow: var(--fx-shadow-sm); min-width: 0 }
 .fx-idcard.is-vertical { width: calc(var(--fx-space) * 22); min-height: calc(var(--fx-space) * 32) }

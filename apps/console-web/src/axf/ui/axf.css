@@ -362,7 +362,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__live-state { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4.5)); padding: 0 var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); font-weight: 600; color: var(--fx-success); }
 .fx-menu__live.is-done .fx-menu__live-main { opacity: var(--fx-opacity-muted); }
 .fx-menu__live.is-expandable { flex-wrap: wrap; }
-.fx-menu__caret { flex: none; margin-inline-start: auto; }
+.fx-menu__live > .fx-iconbtn.fx-menu__caret { flex: none; margin-inline-start: auto; }
 .fx-menu__caret svg { transition: transform var(--fx-motion) ease; }
 .fx-menu__caret-open { transform: rotate(180deg); }
 .fx-menu__details { flex: 1 1 100%; min-width: 0; max-height: min(60vh, calc(var(--fx-row-h) * 18)); overflow: auto; padding: 0 0 var(--fx-dens-gap-md) var(--fx-dens-gap-md); cursor: auto; }
