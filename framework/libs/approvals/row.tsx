@@ -13,7 +13,7 @@
  * Open rows live in `approvalsOpenStore` (outside React), so a live refresh updates the row in place and never folds it.
  * Framework controls (Button, Chip, Icon, fx-iconbtn) and theme tokens only (approvals.css, `axf-apx`).
  */
-import { useEffect, useId, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Button, Chip, Icon } from '../../react';
 import { followVeto, formatCountdown } from '../hub/veto';
 import { DECISION_LABELS, rowOrder, type ApprovalDecision } from './core';
@@ -112,13 +112,18 @@ function Decide({ d, busy, onDecide }: { d: ApprovalDetails; busy: string; onDec
 }
 
 export function ApprovalRow({ details: d, scope, onDecide, busy = '', actions, children, openPage, hub, follow = true, compact, stack, className, store = approvalsOpenStore }: ApprovalRowProps) {
-  const [open, toggle] = useOpen(store, scope, d.id);
+  const [open, flip] = useOpen(store, scope, d.id);
   const bodyId = useId();
+  const box = useRef<HTMLDivElement>(null);
+  const opened = useRef(false);
+  const toggle = () => { opened.current = !open; flip(); };
+  // Opened by a tap: bring it into view inside a scrolling host (the banner frame, a popover); a refresh never scrolls.
+  useEffect(() => { if (open && opened.current) { opened.current = false; box.current?.scrollIntoView?.({ block: 'nearest' }); } }, [open]);
   const left = detailsCountdown(d);
   useTick(left !== null);
   const urgent = left !== null && left <= 30 && !d.veto?.shelved;
   return (
-    <div className={`axf-apx${open ? ' is-open' : ''}${d.kind === 'held' ? ' is-held' : ''}${compact ? ' axf-apx--compact' : ''}${stack ? ' axf-apx--stack' : ''} ${className ?? ''}`.trim()} data-approval-id={d.id} data-phase={d.phase}>
+    <div ref={box} className={`axf-apx${open ? ' is-open' : ''}${d.kind === 'held' ? ' is-held' : ''}${compact ? ' axf-apx--compact' : ''}${stack ? ' axf-apx--stack' : ''} ${className ?? ''}`.trim()} data-approval-id={d.id} data-phase={d.phase}>
       <div className="axf-apx__head">
         <button type="button" data-fx-row className="axf-apx__sum" aria-expanded={open} aria-controls={bodyId} onClick={toggle} title={d.title}>
           <span className="axf-apx__top">
