@@ -346,7 +346,7 @@ On claude.ai in a browser → **Settings → Connectors**:
 
 ---
 
-### Replace the GitHub token (when it dies or expires)
+### Replace the GitHub token (when it dies or expires; only the fallback once Part F2 is done)
 
 Signs: the push banner or auto-merge says 401 / Bad credentials, builds finish but say "pushed: no", or the
 health banner shows GitHub red. axHub has its own GitHub token in its vault; this one is the console's and the
@@ -362,6 +362,25 @@ server's git push.
 7. Done. Git push on the VPS reads the same token through `/usr/local/bin/axf-git-cred` (set as the credential
    helper for /opt/axf and every build worktree), so stuck build branches can be pushed straight away. Tell Claude
    "done" and it pushes them and opens the PRs.
+
+---
+
+## Part F2: GitHub App (no more tokens) <!-- axf-plugin:github-app -->
+
+Personal tokens die (expiry, revokes, 401s) and a fine-grained one can't create repos. The console makes its own
+private GitHub App instead and mints its tokens from the app's key, so nothing expires for good. Three taps, once:
+
+1. Console → **Settings → Plugins → GitHub** → **Create GitHub App** → on GitHub tap **Create GitHub App** (name
+   taken? add a suffix in the console's name field and tap Create again).
+2. GitHub opens the install page by itself: pick **All repositories** → **Install**.
+3. Back in the console: **Authorize as Brett** → **Authorize** on GitHub (lets the console create repos).
+
+That's it. The GitHub App item in the systems check goes green. git on the VPS (`/usr/local/bin/axf-git-cred`), `gh`
+(`/usr/local/bin/gh`), the push banner, CI reads, the activity feed and every console plugin now use the app; the old
+token stays as the fallback until you delete it (Keys banner). New repos: `axf repo create <name> --private`.
+Credentials live on the console server only, in `/opt/axf/.axf-console/github-app/` (owner-only). If the app is ever
+deleted or its key revoked, the GitHub App item turns red: tap Fix and do the three taps again.
+VPS helpers (once per server, root): `sh framework/deploy/install-github-helpers.sh`.
 
 ---
 
@@ -480,3 +499,81 @@ you save) with a real agent in the current theme. **Make default** picks the des
 opens the designer (fields per side, labels, logo place, finish) and saves a new design. On a profile, **ID card**
 picks a design for that agent and edits their card details (name, role, specialty, photo link, employee ID, internal
 email, hire date, catchphrase, signature). Cards take their colours from the theme, so a theme switch rebrands them.
+
+## Part J: Jobs and the crew
+
+Recurring work (walkthrough videos, site checks, screenshots, landing builds, banner cleanup, voice QA) is done by
+hired agents who each own a **job type**, not by anonymous one-off builds. Job types are `job-type@1` assets in
+`framework/assets/job-type/`; the crew is in the agent swarm's roster. Console → Builds → **Agent swarm → Jobs**. <!-- axf-plugin:agent-swarm -->
+
+### Step 32. Meet the crew
+
+| Agent | Owns | Model | Trigger |
+| --- | --- | --- | --- |
+| Reel Rhonda | AmberX walkthrough video (`amberx-walkthrough`) | Sonnet | on demand |
+| Ping Paulie | Site health check (`site-check`, read-only) | Sonnet | every 6 h |
+| Snap Sully | UI Review screenshots (`ui-screenshots`) | Sonnet | on demand |
+| Landin' Lenny | Land a finished build (`land-build`) | Opus | event `build.finished` |
+| Janitor Joey | Banner cleanup (`banner-cleanup`) | Sonnet | daily 09:00 UTC |
+| Earl the Ear | Voice listener QA (`listener-qa`) | Sonnet | event `amberx.voice-regression` |
+
+They are normal swarm agents: ID cards, statuses, salaries (weekly budgets) and the group chat all work the same
+(Part I). They never get build steps from the planner (`jobsOnly`). Each card lists the jobs the agent owns.
+
+### Step 33. Run a job
+
+1. **Agent swarm → Jobs**: one card per job type with its owner, trigger, last run, next scheduled run and cost.
+2. Tap **Run**, fill the inputs (blank = the default), **Preview brief** to see exactly what the agent gets, then
+   **Start**. The run opens in the console's Terminal as `axf-<agent>-<job>`.
+3. From a shell (or any Claude session): `node framework/cli/agent-job.mjs <job-type> --input key=value` (run in `/opt/axf`,
+   or `docker exec axf-console …`). `--dry-run` prints the brief and the command; `list` shows everything.
+4. A run is refused (exit 3, reason printed) when the owner is off duty, benched or broke, or its pay left this week
+   is under the run's cap. Fix it on the Agents tab (status, salary, top up), then run again.
+
+### Step 34. Schedules and events
+
+- `node framework/cli/agent-job.mjs due --run` starts every scheduled job that is due. To run it on its own, add a
+  cron line on the VPS, e.g. `*/30 * * * * cd /opt/axf && node framework/cli/agent-job.mjs due --run`.
+- `node framework/cli/agent-job.mjs event build.finished --run --input branch=<b>` starts the jobs an event triggers.
+- Finished runs are booked on the agent (stats, spend, report in the chat) the next time Jobs is opened, or with
+  `agent-job.mjs sweep`. Each run's final report is kept in the swarm's data folder (`job-reports/<run>.md`).
+
+### Step 35. A new kind of job
+
+1. Copy a file in `framework/assets/job-type/`, give it a new `id`, the owning `specialty`, model, budget, trigger,
+   brief (with `{{input}}` placeholders) and outputs (a UI Review group name must carry `{{when}}`).
+2. `node framework/cli/axf.mjs validate --framework` must pass.
+3. If nobody has that specialty, **Jobs** shows **Unassigned job** with **Hire**: one tap adds an agent who owns it
+   (`agent-job.mjs hire <job-type>` does the same). Rename them on their ID card.
+## Part K: The Chat viewer (every session, searchable, as audio)
+
+The Chat viewer (console → Plugins → **Chat viewer** or Apps → **Chats**; AmberX → **Chats**; plugin
+`apps/console-web/plugins/chat-viewer`) keeps every Claude session as a transcript: claude.ai text and voice chats,
+Claude Code sessions and headless build sessions. Details: the plugin's `README.md`. <!-- axf-plugin:chat-viewer -->
+
+### Step 36. Let the console see the session folders
+
+Re-run the console installer on the VPS once (`bash deploy/install-console.sh` in `/opt/axf`, or the console's
+redeploy). It mounts, read-only, `/root/.claude/projects`, `/home/axfbuild/.claude/projects`, `/root/axf-builds` and
+each `/home/axfbuild/wt-*` into the console (`deploy/host.sh` of the plugin). Open the viewer: it checks for updates on
+load and lists the Claude Code and build sessions it found. Settings → Plugins → Chat viewer shows each folder with
+a tick or a cross. <!-- axf-plugin:chat-viewer -->
+
+### Step 37. Bring in your claude.ai chats
+
+1. On claude.ai (phone or computer): **Settings → Privacy → Export data**. claude.ai emails a download link; open it
+   and download the zip.
+2. In the viewer tap **Import export** and pick the zip (or the `conversations.json` inside it). Text and voice chats
+   are added; importing a newer export later adds new chats and updates continued or changed ones (old copies kept as
+   versions). Exports over 12 MB need the console (AmberX's forwarder caps uploads at 12 MB).
+3. Between exports, say **"sync my chats"** in a claude.ai chat: it writes each new or updated conversation to the hub
+   drop folder (`sessions/claude-ai/<uuid>.json`), and the viewer picks them up on its next check (shared rule).
+
+The viewer never logs in to claude.ai and never uses your cookies.
+
+### Step 38. Free voices for audio export
+
+Settings → Plugins → Chat viewer → **Set up free voices (Piper)** (once, a few minutes): installs Piper in the
+plugin's data folder and downloads the two voices (Brett = Ryan, Amber = Amy; change them there). Then in any session
+tap **Audio → Make audio**; the file lands on the hub (`_data/chat-viewer/audio/`) with a player and a download link.
+For OpenAI or ElevenLabs voices instead, paste the key in the same settings (it stays on the console server).

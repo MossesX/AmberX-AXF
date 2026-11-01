@@ -42,7 +42,8 @@
     "typography",
     "density",
     "sizing",
-    "agent-card"
+    "agent-card",
+    "job-type"
   ],
   "parsed": {
     "full": {

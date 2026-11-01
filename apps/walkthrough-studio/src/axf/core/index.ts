@@ -24,6 +24,7 @@ export * from './engines/roller';
 export * from './engines/behavior';
 export * from './engines/scale';
 export * from './engines/agent-card-rules.mjs';
+export * from './engines/job-type-rules.mjs';
 export * from './engines/appearance';
 export * from './engines/banner';
 export * from './engines/bannerhide';

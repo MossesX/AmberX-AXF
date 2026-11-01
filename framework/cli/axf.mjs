@@ -15,6 +15,8 @@
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
+ *   axf repo create <name> [--private|--public] [--description "…"]
+ *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
  *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
@@ -280,6 +282,15 @@ try {
     }
     case 'modules': {
       for (const m of listModules()) console.log(`${c.b(m.name.padEnd(24))} ${c.dim(m.kind.padEnd(10))} ${m.description}`);
+      break;
+    }
+    case 'repo': {
+      // github-app@1: new repos with the GitHub App's user token (installation tokens can't create repos on a personal account)
+      const [sub, name] = args;
+      if (sub !== 'create' || !name) throw new Error('Usage: axf repo create <name> [--private (default) | --public] [--description "…"]');
+      const { appDir, createRepo } = await import('./github-app.mjs');
+      const r = await createRepo(appDir(), { name, private: !flags.public, description: typeof flags.description === 'string' ? flags.description : '' });
+      console.log(c.ok(`✓ ${r.created ? 'created' : 'already there'}: ${r.fullName} (${r.private ? 'private' : 'public'}) ${r.htmlUrl}`));
       break;
     }
     case 'shot': {

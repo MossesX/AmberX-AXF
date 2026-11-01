@@ -1,0 +1,379 @@
+{
+ "$axf": "fixture@1",
+ "about": "job-type@1 rules (core/engines/job-type-rules.mjs); regenerate: npx -y tsx framework/spec/check-job-type.mts --write",
+ "at": "2026-11-01T07:05:00.000Z",
+ "cases": {
+  "ok": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    }
+   }
+  ],
+  "not-an-object": [
+   "job-type",
+   "nope"
+  ],
+  "bad-core": [
+   "job-type",
+   {
+    "specialty": "Site Checks",
+    "model": "gpt",
+    "budget": {
+     "tokens": 5
+    },
+    "trigger": {
+     "kind": "cron"
+    },
+    "brief": ""
+   }
+  ],
+  "schedule-without-time": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    }
+   }
+  ],
+  "event-without-name": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "event"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    }
+   }
+  ],
+  "undeclared-placeholder": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Do {{thing}} at {{when}}",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    }
+   }
+  ],
+  "bad-outputs": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "sites",
+      "label": "Sites",
+      "default": "a.example b.example"
+     },
+     {
+      "id": "who",
+      "label": "Who",
+      "required": true
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "../../etc/passwd",
+     "uiReviewGroup": "Shots"
+    }
+   }
+  ],
+  "shadowed-input": [
+   "job-type",
+   {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+     "tokens": 100000,
+     "maxTurns": 10
+    },
+    "trigger": {
+     "kind": "schedule",
+     "every": "6h"
+    },
+    "inputs": [
+     {
+      "id": "date"
+     },
+     {
+      "id": "x"
+     },
+     {
+      "id": "x"
+     }
+    ],
+    "brief": "Check {{sites}} for {{who}} on {{date}}.",
+    "outputs": {
+     "report": "r/{{jobType}}/{{stamp}}.md",
+     "uiReviewGroup": "Checks - {{when}}"
+    }
+   }
+  ],
+  "other-type": [
+   "button",
+   {
+    "specialty": "Nope"
+   }
+  ]
+ },
+ "defaults": {
+  "specialty": "",
+  "model": "sonnet",
+  "budget": {
+   "tokens": 200000,
+   "maxTurns": 30,
+   "usd": 0
+  },
+  "trigger": {
+   "kind": "on-demand",
+   "every": "",
+   "at": "",
+   "event": ""
+  },
+  "readOnly": false,
+  "tools": [],
+  "inputs": [],
+  "brief": "",
+  "command": "",
+  "outputs": {
+   "report": "_claude/builds/reports/jobs/{{jobType}}/{{stamp}}.md",
+   "uiReviewGroup": "",
+   "uiReviewApp": ""
+  }
+ },
+ "normalized": {
+  "good": {
+   "specialty": "site-checks",
+   "model": "sonnet",
+   "budget": {
+    "tokens": 100000,
+    "maxTurns": 10,
+    "usd": 0
+   },
+   "trigger": {
+    "kind": "schedule",
+    "every": "6h",
+    "at": "",
+    "event": ""
+   },
+   "readOnly": false,
+   "tools": [],
+   "inputs": [
+    {
+     "id": "sites",
+     "label": "Sites",
+     "required": false,
+     "default": "a.example b.example",
+     "about": ""
+    },
+    {
+     "id": "who",
+     "label": "Who",
+     "required": true,
+     "default": "",
+     "about": ""
+    }
+   ],
+   "brief": "Check {{sites}} for {{who}} on {{date}}.",
+   "command": "",
+   "outputs": {
+    "report": "r/{{jobType}}/{{stamp}}.md",
+    "uiReviewGroup": "Checks - {{when}}",
+    "uiReviewApp": ""
+   }
+  },
+  "junk": {
+   "specialty": "",
+   "model": "sonnet",
+   "budget": {
+    "tokens": 200000,
+    "maxTurns": 30,
+    "usd": 0
+   },
+   "trigger": {
+    "kind": "schedule",
+    "every": "",
+    "at": "",
+    "event": ""
+   },
+   "readOnly": false,
+   "tools": [],
+   "inputs": [],
+   "brief": "",
+   "command": "",
+   "outputs": {
+    "report": "_claude/builds/reports/jobs/{{jobType}}/{{stamp}}.md",
+    "uiReviewGroup": "",
+    "uiReviewApp": ""
+   }
+  }
+ },
+ "errors": {
+  "ok": [],
+  "not-an-object": [
+   "data must be an object"
+  ],
+  "bad-core": [
+   "data.specialty is the owning agent skill id (lowercase letters, digits and dashes)",
+   "data.budget.tokens must be a whole number from 1000 to 10000000",
+   "data.trigger.kind must be one of on-demand, schedule, event",
+   "data.brief is the brief template (text with {{placeholders}})"
+  ],
+  "schedule-without-time": [
+   "a scheduled job needs data.trigger.every (\"30m\", \"6h\", \"1d\") or data.trigger.at (\"HH:MM\" UTC)"
+  ],
+  "event-without-name": [
+   "an event job needs data.trigger.event (e.g. \"build.landed\")"
+  ],
+  "undeclared-placeholder": [
+   "data.brief uses {{thing}}, which is neither an input nor a built-in"
+  ],
+  "bad-outputs": [
+   "data.outputs.report must be a path inside the repo",
+   "data.outputs.uiReviewGroup must carry a timestamp ({{when}}, {{date}} or {{stamp}})"
+  ],
+  "shadowed-input": [
+   "input \"date\" is declared twice or shadows a built-in",
+   "input \"x\" is declared twice or shadows a built-in",
+   "data.brief uses {{sites}}, which is neither an input nor a built-in",
+   "data.brief uses {{who}}, which is neither an input nor a built-in"
+  ],
+  "other-type": []
+ },
+ "inputs": {
+  "filled": {
+   "values": {
+    "sites": "a.example b.example",
+    "who": "Brett"
+   },
+   "missing": []
+  },
+  "missing": {
+   "values": {
+    "sites": "a.example b.example",
+    "who": ""
+   },
+   "missing": [
+    "who"
+   ]
+  }
+ },
+ "time": {
+  "date": "2026-11-01",
+  "when": "Nov 1 2:05 AM",
+  "stamp": "2026-11-01-0705"
+ },
+ "brief": {
+  "text": "Check a.example for Brett on 2026-11-01.\n\nOUTPUTS\n- Report: put it in full in your final message; it is saved as r/site-check/2026-11-01-0705.md\n- Screenshots: send them with framework/cli/shot.mjs to UI Review group \"Checks - Nov 1 2:05 AM\"\n- Command for this job: run a.example\n- Read-only job: change nothing anywhere; only report.",
+  "report": "r/site-check/2026-11-01-0705.md",
+  "group": "Checks - Nov 1 2:05 AM"
+ },
+ "next": {
+  "onDemand": "",
+  "everyNever": "2026-11-01T07:05:00.000Z",
+  "everyAfter": "2026-11-01T09:00:00.000Z",
+  "dailyBefore": "2026-11-01T09:00:00.000Z",
+  "dailyNever": "2026-11-01T06:00:00.000Z"
+ }
+}

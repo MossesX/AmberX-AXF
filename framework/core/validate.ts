@@ -8,6 +8,7 @@ import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { scaleErrors } from './engines/scale-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
+import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 
 export interface ValidationResult {
@@ -101,6 +102,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...scaleErrors(raw.type, data));
   // agent-card@1: ONE validator shared with the build engine (core/engines/agent-card-rules.mjs)
   errors.push(...agentCardErrors(raw.type, data));
+  // job-type@1: ONE validator shared with the build engine (core/engines/job-type-rules.mjs)
+  errors.push(...jobTypeErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);

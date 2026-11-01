@@ -1,0 +1,400 @@
+{
+  "$axf": "fixture",
+  "schema": "session@1",
+  "note": "Replayed by framework/spec/check-session.mjs (JS) and the Chat viewer plugin test.py (Python).",
+  "sessions": {
+    "valid voice chat": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cai:6b7f0d3e-1c2a-4f6e-9d1a-0b2c3d4e5f60",
+        "source": "claude-ai-voice",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "user",
+            "text": "Build the chat viewer, kid.",
+            "at": "2026-11-01T07:00:00.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "assistant",
+            "text": "Say less, boss.",
+            "at": "2026-11-01T07:00:05.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "tool",
+            "text": "git status",
+            "at": "2026-11-01T07:00:06.000Z",
+            "kind": "tool",
+            "toolName": "Bash"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+      },
+      "ok": true,
+      "errors": []
+    },
+    "valid empty claude code": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cc:0fd454a0-edbb-4eda-9f2c-d1502525ac3b",
+        "source": "claude-code",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [],
+        "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "ok": true,
+      "errors": []
+    },
+    "missing title": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cai:6b7f0d3e-1c2a-4f6e-9d1a-0b2c3d4e5f60",
+        "source": "claude-ai-voice",
+        "title": "",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "user",
+            "text": "Build the chat viewer, kid.",
+            "at": "2026-11-01T07:00:00.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "assistant",
+            "text": "Say less, boss.",
+            "at": "2026-11-01T07:00:05.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "tool",
+            "text": "git status",
+            "at": "2026-11-01T07:00:06.000Z",
+            "kind": "tool",
+            "toolName": "Bash"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+      },
+      "ok": false,
+      "errors": [
+        "title"
+      ]
+    },
+    "bad source": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cai:6b7f0d3e-1c2a-4f6e-9d1a-0b2c3d4e5f60",
+        "source": "chatgpt",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "user",
+            "text": "Build the chat viewer, kid.",
+            "at": "2026-11-01T07:00:00.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "assistant",
+            "text": "Say less, boss.",
+            "at": "2026-11-01T07:00:05.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "tool",
+            "text": "git status",
+            "at": "2026-11-01T07:00:06.000Z",
+            "kind": "tool",
+            "toolName": "Bash"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+      },
+      "ok": false,
+      "errors": [
+        "source"
+      ]
+    },
+    "bad id": {
+      "session": {
+        "$axf": "session@1",
+        "id": "no prefix",
+        "source": "claude-ai-voice",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "user",
+            "text": "Build the chat viewer, kid.",
+            "at": "2026-11-01T07:00:00.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "assistant",
+            "text": "Say less, boss.",
+            "at": "2026-11-01T07:00:05.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "tool",
+            "text": "git status",
+            "at": "2026-11-01T07:00:06.000Z",
+            "kind": "tool",
+            "toolName": "Bash"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+      },
+      "ok": false,
+      "errors": [
+        "id"
+      ]
+    },
+    "bad timestamp": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cai:6b7f0d3e-1c2a-4f6e-9d1a-0b2c3d4e5f60",
+        "source": "claude-ai-voice",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "yesterday",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "user",
+            "text": "Build the chat viewer, kid.",
+            "at": "2026-11-01T07:00:00.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "assistant",
+            "text": "Say less, boss.",
+            "at": "2026-11-01T07:00:05.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "tool",
+            "text": "git status",
+            "at": "2026-11-01T07:00:06.000Z",
+            "kind": "tool",
+            "toolName": "Bash"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+      },
+      "ok": false,
+      "errors": [
+        "updatedAt"
+      ]
+    },
+    "bad role and kind": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cai:6b7f0d3e-1c2a-4f6e-9d1a-0b2c3d4e5f60",
+        "source": "claude-ai-voice",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "system",
+            "text": "x",
+            "at": "",
+            "kind": "audio"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+      },
+      "ok": false,
+      "errors": [
+        "messages[0].role",
+        "messages[0].kind"
+      ]
+    },
+    "tool from user": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cai:6b7f0d3e-1c2a-4f6e-9d1a-0b2c3d4e5f60",
+        "source": "claude-ai-voice",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "user",
+            "text": "x",
+            "at": "",
+            "kind": "tool"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+      },
+      "ok": false,
+      "errors": [
+        "messages[0].kind"
+      ]
+    },
+    "bad version": {
+      "session": {
+        "$axf": "session@1",
+        "id": "cai:6b7f0d3e-1c2a-4f6e-9d1a-0b2c3d4e5f60",
+        "source": "claude-ai-voice",
+        "title": "Chat viewer kickoff",
+        "startedAt": "2026-11-01T07:00:00.000Z",
+        "updatedAt": "2026-11-01T07:00:06.000Z",
+        "project": "amberx-axf",
+        "messages": [
+          {
+            "role": "user",
+            "text": "Build the chat viewer, kid.",
+            "at": "2026-11-01T07:00:00.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "assistant",
+            "text": "Say less, boss.",
+            "at": "2026-11-01T07:00:05.000Z",
+            "kind": "speech"
+          },
+          {
+            "role": "tool",
+            "text": "git status",
+            "at": "2026-11-01T07:00:06.000Z",
+            "kind": "tool",
+            "toolName": "Bash"
+          }
+        ],
+        "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676",
+        "versions": [
+          {
+            "version": 0,
+            "hash": "x",
+            "updatedAt": "2026-11-01T07:00:06.000Z",
+            "messageCount": 1,
+            "change": "edited"
+          }
+        ]
+      },
+      "ok": false,
+      "errors": [
+        "versions[0].version",
+        "versions[0].change"
+      ]
+    }
+  },
+  "redact": [
+    {
+      "input": "my key is sk-ant-api03-Zx9_Qw8-Ee7Rr6Tt5Yy4Uu3Ii2Oo1Pp0 ok",
+      "output": "my key is [redacted:anthropic-key] ok"
+    },
+    {
+      "input": "OPENAI sk-proj-abcdefghijklmnopqrstuvwx1234 done",
+      "output": "OPENAI [redacted:openai-key] done"
+    },
+    {
+      "input": "disk-usage-monitor-for-the-console-1234567 is not a key",
+      "output": "disk-usage-monitor-for-the-console-1234567 is not a key"
+    },
+    {
+      "input": "push with ghp_abcdefghijklmnopqrstuvwxyz0123456789 then github_pat_11ABCDEFG0123456789_abcdefghijklmnopqrstu",
+      "output": "push with [redacted:github-token] then [redacted:github-token]"
+    },
+    {
+      "input": "aws AKIAIOSFODNN7EXAMPLE slack xoxb-1234567890-abcdefghij google AIzaSyA-1234567890abcdefghijklmnopqrstu",
+      "output": "aws [redacted:aws-key] slack [redacted:slack-token] google [redacted:google-key]"
+    },
+    {
+      "input": "jwt eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U",
+      "output": "jwt [redacted:jwt]"
+    },
+    {
+      "input": "curl -H \"Authorization: Bearer abcdefghijklmnop1234567\" https://bob:hunter22@example.com/x",
+      "output": "curl -H \"Authorization: Bearer [redacted:bearer]\" https://bob:[redacted:url-credentials]@example.com/x"
+    },
+    {
+      "input": "password=hunter2222 api_key: \"zzzzzzzzzz\" token=$AXF_TOKEN secret: <your secret> TOKEN: [redacted:bearer]",
+      "output": "password=[redacted:secret-value] api_key: \"[redacted:secret-value]\" token=$AXF_TOKEN secret: <your secret> TOKEN: [redacted:bearer]"
+    },
+    {
+      "input": "-----BEGIN OPENSSH PRIVATE KEY-----\nAAAA\nBBBB\n-----END OPENSSH PRIVATE KEY----- after",
+      "output": "[redacted:private-key] after"
+    },
+    {
+      "input": "plain talk, no secrets, wicked pissah",
+      "output": "plain talk, no secrets, wicked pissah"
+    }
+  ],
+  "hashes": [
+    {
+      "messages": [],
+      "hash": ""
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "text": "Build the chat viewer, kid.",
+          "at": "2026-11-01T07:00:00.000Z",
+          "kind": "speech"
+        }
+      ],
+      "hash": "055b2a86d22d7dfa4868dbdb1173815f488ceb257086cc2088f793aee17f4742"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "text": "Build the chat viewer, kid.",
+          "at": "2026-11-01T07:00:00.000Z",
+          "kind": "speech"
+        },
+        {
+          "role": "assistant",
+          "text": "Say less, boss.",
+          "at": "2026-11-01T07:00:05.000Z",
+          "kind": "speech"
+        },
+        {
+          "role": "tool",
+          "text": "git status",
+          "at": "2026-11-01T07:00:06.000Z",
+          "kind": "tool",
+          "toolName": "Bash"
+        }
+      ],
+      "hash": "90804e3915889891eff1ae0e8ecc94711947db3544badb6d90ce3aa77e7c8676"
+    },
+    {
+      "messages": [
+        {
+          "role": "assistant",
+          "text": "héllo 🎉 — ünïcode",
+          "at": "",
+          "kind": "text"
+        }
+      ],
+      "hash": "5ec2ac31940f22c94a57b36a192d44135c7f43bb81fa2c8ddf0f4baee663d850"
+    }
+  ],
+  "chain": {
+    "prefix": 1,
+    "note": "chainHash(messages[1:], chainHash(messages[:1])) == chainHash(messages)",
+    "ok": true
+  }
+}
