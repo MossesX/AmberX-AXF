@@ -3757,7 +3757,9 @@
     },
     {
      "text": "[Opus] Script extra: Claude everywhere (threads, memory, Go pass) + voice and Molly",
-     "at": "2026-11-01T22:49:13.405Z"
+     "at": "2026-11-01T22:49:13.405Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:50:42.206Z"
     },
     {
      "text": "[Opus] Script extra: a build from ask to merge + making a new look",
@@ -3790,7 +3792,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:50:15.151Z",
+   "updatedAt": "2026-11-01T22:50:42.206Z",
    "source": "console"
   }
  ]

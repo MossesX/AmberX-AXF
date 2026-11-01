@@ -344,3 +344,28 @@ ch({ id: 'voice', title: 'Voice, Molly and the phone', device: 'phone', url: AMB
   sc("And auto approval lets the phone wave through the calls the boss trusts, by rule. Every one it approves still shows in the log. So it's fast for the routine stuff and still on the record.", async (h) => { await h.scroll(300); }),
   sc("Talk to it, it listens. Tell it to build, it builds, under your rules. Something sketchy shows up, you deny it with one thumb. That's the dream everybody's been promising for years. It's sitting in this phone right now.", async (h) => { await h.go('home'); }),
 ] });
+
+// extra ─────────────────────────────────────────────────────────── the family
+ch({ id: 'family', title: 'The family of apps', device: 'desktop', slide: 'stack', scenes: [
+  ex("The framework doesn't live alone. There's a whole family of apps around it, and it's worth knowing who's who, because they're built the same way and they lean on each other.", 'stack'),
+  ex("The demo app. It's the untouched output of axf init, deployed to axf dot amberx A-I dot com. On purpose. It's the proof that a brand new app, straight out of the engine, works and looks right without anybody hand polishing it.", 'stack', 1),
+  ex("The Dev Console, which you've seen, on the web. There's an Android showcase of it too, built in Compose on the Kotlin side, that's parked with the rest of the Android work. Its code still compiles in C-I every push.", 'stack', 2),
+  ex("Ax hub has its own repo, its own server, its own rules and its own decision log. It never depends on A-X-F underneath. A-X-F plugs into it from the outside, so the hub stays standalone and anybody's tools could connect to it the same way.", 'stack', 4),
+  ex("Build Pilot is the one to watch. It's a plugin driven app designer, built on A-X-F, web first. Its plugins can serve one stack, several, or all of them, and it builds through this repo's engine, through the Dev Console. Android's the first stack it targets. Design an app, and the engine makes it real.", 'builds'),
+  ex("Voice Vault is the voice notes app, one of the few Android apps allowed to move right now. Its notes flow into AmberX under their own list, read only, so a thought you said into one app shows up in the other.", 'stack', 2),
+  ex("Walkthrough Studio is an app for making walkthroughs like this one, with its own assets for the recorder, the review and the compile. And then there's Patches, the app that held the console, Build Pilot and ax hub in tabs. It's paused, globally, until the boss says otherwise.", 'stack', 4),
+  ex("And then the ancestors. An earlier desktop AmberX in Python with Qt, dormant. And AmberX A-I Studio, a separate Next dot J-S line with its own core. Neither one uses this repo. They're where a lot of the ideas got tested before A-X-F did them right.", 'stack', 6),
+  ex("Every one of those projects that belongs to the family has a validated manifest in this repo. Eleven of them. And anything unrelated never gets a manifest and never gets touched. The family's the family. Everybody else stays out of the kitchen.", 'stack', 6),
+] });
+
+// extra ─────────────────────────────────────────────────────────── what it's worth
+ch({ id: 'worth', title: 'What this is worth', device: 'desktop', slide: 'why', scenes: [
+  ex("Let's talk value, because pretty demos are cheap. What's this actually worth? Let me break it down like a business person, except with more swearing.", 'why'),
+  ex("Start with what it replaces. A design system team that keeps the look consistent across apps. A platform team that builds app scaffolding and C-I checks. A release engineer who babysits merges and deploys. An ops person who fixes dead keys and stuck jobs at two in the morning.", 'why', 1),
+  ex("Here, those jobs are engines, checks and plugins. The look is assets with automated proof. The scaffolding is one command. Merges and deploys run themselves. The systems check fixes what it can and flags the rest. That's not a feature list. That's a payroll you don't have.", 'why', 2),
+  ex("Then there's the A-I part, and this is where people get it wrong. Everybody's got A-I that writes code. Almost nobody's got A-I that works inside rules, leaves a paper trail, splits its own work, reports its own costs, and stops when a human says stop. That's the hard part. That's done here.", 'why', 3),
+  ex("And cost control is built in, not bolted on. Every build has an estimate before it starts and real token counts when it ends. Agents have budgets. The machine has a cap. The model policy keeps the expensive brain for the work that needs it. You always know what you're spending and why.", 'builds', 4),
+  ex("Then there's the compounding. Every new asset type, every plugin, every engine makes the next app cheaper. App ten costs a fraction of app one. Most code bases get slower to change as they grow. This one's designed to get faster.", 'assets', 5),
+  ex("And the moat. A single format for every visible thing, enforced in C-I. Engines proven across two languages by golden fixtures. A hub that owns the look and the keys. A veto system on a phone. Each of those is a project on its own. Having all of them, wired together, is the thing nobody else has.", 'stack', 6),
+  ex("So when I say incredibly unique, powerful and valuable, I'm not blowing smoke up anybody's ass. It's the difference between a pile of apps and a platform. Between hoping your A-I behaves and knowing it does.", 'why', 3),
+] });

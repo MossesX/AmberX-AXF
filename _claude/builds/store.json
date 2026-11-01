@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 108,
- "updatedAt": "2026-11-01T22:50:15.168Z",
+ "rev": 109,
+ "updatedAt": "2026-11-01T22:50:42.221Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -47171,7 +47171,7 @@
    "branch": "claude/project-thread-646cjb",
    "pr": "229",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-01T22:50:15.151Z",
+   "updatedAt": "2026-11-01T22:50:42.206Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -47653,12 +47653,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T22:50:42.206Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T22:49:13.405Z",
-     "updatedAt": "2026-11-01T22:49:13.448Z"
+     "updatedAt": "2026-11-01T22:50:42.221Z"
     },
     {
      "id": "s26",
@@ -47823,7 +47823,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
