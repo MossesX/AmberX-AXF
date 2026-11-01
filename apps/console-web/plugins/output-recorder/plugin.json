@@ -25,7 +25,8 @@
     "dataDir": ".axf-console/plugins/output-recorder",
     "env": [],
     "mentions": [
-      "_claude/THREADS.md"
+      "_claude/THREADS.md",
+      "_claude/memory/STATUS.md"
     ]
   },
   "opens": "main"
