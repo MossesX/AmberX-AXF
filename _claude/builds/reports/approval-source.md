@@ -88,6 +88,15 @@ is **decision 109** (renumbered in both repos before the push).
   theme swap, alerts/MCP/axf_server fixtures (incl. axhub-web test 263 + refresh-check), plugin `test.mts` (Node 22):
   green. Same pre-existing tracker/plugins check failures as main.
 
+## Third merge (watch-live, shots-tab)
+
+- `deploy/claude-headless.sh`: watch-live's preview watcher and `--name` pass-through kept together with this build's
+  env file and `axhub` MCP config.
+- **Fixed main's red AmberX build:** watch-live made the approvals banner (also loaded in AmberX) import
+  `@console/watchLive`, which AmberX couldn't resolve (`vite build` failed on untouched main too). AmberX now maps it to
+  a local shim (`src/console/watchLive.tsx`, renders nothing: previews need the console token), like
+  `@console/pluginLifecycle`. All four app builds pass again.
+
 ## Not done / blocked
 
 - **Push (resolved at ~01:30):** for most of the run this VPS had no working GitHub credential. The console's `GITHUB_TOKEN` (helper `axf-git-cred`) and the gh

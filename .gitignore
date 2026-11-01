@@ -23,3 +23,8 @@ apps/shots-*/
 _claude/builds/store.json.exports.json
 _claude/builds/store.json.lock
 _claude/builds/store.json.tmp-*
+
+# Watch live previews (framework/cli/watch-live.mjs): focus file, generated Vite configs + caches, watcher log
+.axf-focus.json
+.axf-preview*
+.axf-watch-live.log

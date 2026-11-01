@@ -1,6 +1,7 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { WatchLiveFor } from '@console/watchLive';
 import { Button, Icon, IconButton, Slot, Switch, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
@@ -168,6 +169,7 @@ function SessionEntry({ e, now }: { e: ChangeLive; now: number }) {
         {e.branch && <Badge icon="git-branch" tone="muted">{e.branch}</Badge>}
         {e.row && <Button size="sm" tone="neutral" icon="arrow-right" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(e.row!.key)}`)}>Item</Button>}
         {rt.actions.get('codebase-changes.open') && <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch(`codebase-changes.open:${e.changeId}`)}>Log</Button>}
+        {!e.finishedAt && <WatchLiveFor change={e.changeId} branch={e.branch} />}
       </div>
       {e.currentStep && <p className="axp-build-manager__live-step"><Icon name="chevron-right" size={12} />{e.currentStep}</p>}
       {pct != null && <Bar value={pct} label={`${e.title} progress`} />}
@@ -833,6 +835,7 @@ function BannerOpen({ rt, e }: { rt: ReturnType<typeof useRuntime>; e: ChangeLiv
     <div className="axp-build-manager-banner__open">
       <Button size="sm" tone="neutral" icon="arrow-right" onClick={() => rt.dispatch(e.row ? `build-manager.open:${encodeURIComponent(e.row.key)}` : 'build-manager.live')}>Open in Build manager</Button>
       {rt.actions.get('codebase-changes.open') && <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch(`codebase-changes.open:${e.changeId}`)}>Log</Button>}
+      <WatchLiveFor change={e.changeId} branch={e.branch} />
     </div>
   );
 }

@@ -11,6 +11,10 @@
 # readable lines (deploy/claude-stream.mjs) and kept: <log> = what you see, <log minus .log>.jsonl = the raw stream.
 # When it finishes the session waits for Enter (up to a day) so the result stays on screen; the tmux session then ends.
 # Without tmux it falls back to the old `nohup … &` (nothing to attach to; the systems check offers to install tmux).
+# Watch live (watch-live@1): next to the session runs framework/cli/watch-live.mjs, which starts a hot-reloading preview
+# for every app the session touches, registers it for the console (proxied at /preview/<session>/<app>/) and stops it
+# when the session ends; the brief gets a line asking the session to `axf focus` the screen it works on.
+# AXF_WATCH_LIVE=off turns it off. Its log: .axf-watch-live.log.
 # Prints one line: "started <tmux session> in <folder>" (or "started pid …").
 #
 # Who asked (axHub decision 109, Nov 1 2026): the run exports AXF_SESSION=<slug of --name>. When an axHub token is at
@@ -39,6 +43,15 @@ done
 [[ "$log" =~ ^[A-Za-z0-9._-]{1,80}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
 raw="${log%.log}.jsonl"
 
+WATCH_LIVE="$HERE/../framework/cli/watch-live.mjs"
+WATCH_NOTE='Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault).'
+start_watch_live() {   # $1 = session name; prints the watcher pid (empty when off or unavailable)
+  [[ "${AXF_WATCH_LIVE:-on}" == off ]] && return 0
+  command -v node >/dev/null && [[ -f "$WATCH_LIVE" ]] || return 0
+  node "$WATCH_LIVE" watch --session "$1" --worktree "$(pwd)" --parent "$$" > .axf-watch-live.log 2>&1 &
+  echo $!
+}
+
 if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$envfile" && -f "$envfile" && -O "$envfile" ]]; then
     # shellcheck disable=SC1090
@@ -52,13 +65,17 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     set -- --mcp-config "$mcp" "$@"
   fi
   printf '\033[2m# headless Claude Code · %s · %s\033[0m\n\n' "$(pwd)" "$(date '+%Y-%m-%d %H:%M')"
+  wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
+  prompt="$(cat "$brief")"
+  [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   if command -v node >/dev/null; then
-    claude -p "$@" --output-format stream-json --verbose "$(cat "$brief")" 2>&1 | tee "$raw" | node "$HERE/claude-stream.mjs" | tee "$log"
+    claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | node "$HERE/claude-stream.mjs" | tee "$log"
   else
-    claude -p "$@" "$(cat "$brief")" 2>&1 | tee "$log"
+    claude -p "$@" "$prompt" 2>&1 | tee "$log"
   fi
   st=${PIPESTATUS[0]}
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
+  [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
   read -r -t 86400 -p "Press Enter to close this session. " _ || true
   exit "$st"
@@ -89,6 +106,6 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
 } > "$secret"
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
-  bash "$HERE/claude-headless.sh" --inner --envfile "$secret" --brief "$brief" --log "$log" -- "$@"
+  bash "$HERE/claude-headless.sh" --inner --name "$slug" --envfile "$secret" --brief "$brief" --log "$log" -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
 echo "started $session in $(pwd)"

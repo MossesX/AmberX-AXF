@@ -15,6 +15,7 @@
  */
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, Note } from '@console/axf/react';
+import { WatchLiveFor } from '@console/watchLive';
 import {
   formatCountdown, notifyPlan, runVetoAction, secondsLeftNow, vetoHost, VETO_ACTION_LABELS, VETO_WARNING_SECONDS,
   type VetoAction, type VetoActionResult, type VetoCall, type VetoPhase,
@@ -107,6 +108,7 @@ export function VetoScreen({ c, deps, onClose }: { c: VetoCall | null; deps: Vet
         <strong>Deny</strong> stops it. <strong>Approve</strong> runs it right away. <strong>Shelve</strong> pauses the countdown; it waits until you approve or deny it.
       </p>
       <VetoButtons c={c} deps={deps} onDone={onClose} />
+      <WatchLiveFor text={`${c.title} ${c.command} ${c.tool}`} />
       <a className="fx-small" href={c.url} target="_blank" rel="noopener noreferrer">Open it on axHub <Icon name="external" size={12} /></a>
     </div>
   );
