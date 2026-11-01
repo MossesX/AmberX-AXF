@@ -13,6 +13,16 @@ queue (items.json); `promote` copies one in when he wants it reviewed. Mounted b
   POST shots/promote {ids: [..], kind?, title?}   send to review: one review item per screenshot (its picture copied)
   POST shots/migrate                 move review items titled "Breakroom check: …" in here (also runs on start)
 
+Groups (shot-group@1): every screenshot belongs to exactly one named, timestamped group. An upload's `group` (a name)
+picks the group of that name made the same day (console time zone, AXF_SHOT_TZ, default America/New_York), else makes
+it; `groupId` names an existing group; neither = '<session/build/source> - <YYYY-MM-DD HH:mm>'.
+  GET  shots                         also lists the groups
+  POST shots/groups  {name, source?, session?, build?, agent?, app?, note?}   make (or reuse, same name same day) a group
+  POST shots/groups/update  {id, name?, note?, app?}       rename / edit
+  POST shots/groups/merge   {from, into}                   from's shots move into into; from goes
+  POST shots/groups/delete  {id, into?}                    with into: its shots move there; without: they are deleted
+  POST shots/move    {ids: [..], group: <id> | groupName: <name>}   move screenshots into a group (made if new)
+
 Files: <data folder>/screenshots/index.json + screenshots/files/<id>.<ext> (the console data volume).
 """
 from __future__ import annotations
@@ -24,7 +34,9 @@ import re
 import secrets
 import shutil
 import threading
+import os
 import time
+from datetime import datetime, timedelta, timezone
 from email.parser import BytesParser
 from email.policy import default as email_policy
 from pathlib import Path
@@ -34,6 +46,9 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
 
 SCHEMA = "ui-screenshot@1"
+GROUP_SCHEMA = "shot-group@1"
+DEFAULT_TZ = "America/New_York"
+_GID = re.compile(r"^g-[a-z0-9-]{4,60}$")
 SOURCES = [
     {"id": "check", "label": "Check", "icon": "eye"},
     {"id": "build", "label": "Build", "icon": "hammer"},
@@ -128,6 +143,107 @@ def side_for(shots: list[dict], pair: str, side: str = "") -> str:
     return "after" if any(x.get("pair") == pair and x.get("side") == "before" for x in shots) else "before"
 
 
+# ---- groups (shot-group@1): mirror of web/groups-core.mjs
+
+def _eastern(t: datetime) -> datetime:
+    """US Eastern without tzdata (the slim image may not ship it): DST from the 2nd Sunday of March to the 1st of November."""
+    y = t.year
+    mar = datetime(y, 3, 8 + (6 - datetime(y, 3, 8).weekday()) % 7, 7, tzinfo=timezone.utc)   # 2:00 EST
+    nov = datetime(y, 11, 1 + (6 - datetime(y, 11, 1).weekday()) % 7, 6, tzinfo=timezone.utc)  # 2:00 EDT
+    return (t + timedelta(hours=-4 if mar <= t < nov else -5)).replace(tzinfo=None)
+
+
+def _local(at: str, tz: str = "") -> datetime | None:
+    v = _s(at, 40)
+    try:
+        t = datetime.fromisoformat(v.replace("Z", "+00:00")) if v else None
+    except ValueError:
+        return None
+    if t is None:
+        return None
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    t = t.astimezone(timezone.utc)
+    tz = tz or os.environ.get("AXF_SHOT_TZ") or DEFAULT_TZ
+    try:
+        from zoneinfo import ZoneInfo
+        return t.astimezone(ZoneInfo(tz)).replace(tzinfo=None)
+    except Exception:  # noqa: BLE001 — no tzdata: Eastern by rule, anything else UTC
+        return _eastern(t) if tz == DEFAULT_TZ else t.replace(tzinfo=None)
+
+
+def day_key(at: str, tz: str = "") -> str:
+    t = _local(at, tz)
+    return t.strftime("%Y-%m-%d") if t else ""
+
+
+def stamp(at: str, tz: str = "") -> str:
+    t = _local(at, tz)
+    return t.strftime("%Y-%m-%d %H:%M") if t else ""
+
+
+def auto_name(by: str, at: str, tz: str = "") -> str:
+    return f"{_s(by, 80) or 'Screenshots'} - {stamp(at, tz)}"
+
+
+def _same(a: Any, b: Any) -> bool:
+    return re.sub(r"\s+", " ", _s(a, 200).lower()) == re.sub(r"\s+", " ", _s(b, 200).lower())
+
+
+def new_group_id(at: str) -> str:
+    return f"g-{(_s(at, 10).replace('-', '') or '00000000')}-{secrets.token_hex(4)}"
+
+
+def norm_group(raw: dict, now: str | None = None) -> dict:
+    now = now or _now()
+    o = raw if isinstance(raw, dict) else {}
+    created = _s(o.get("createdAt"), 40) or now
+    return {**o, "$axf": GROUP_SCHEMA, "id": o["id"] if isinstance(o.get("id"), str) and _GID.match(o["id"]) else new_group_id(created),
+            "name": _s(o.get("name"), 200) or auto_name(o.get("source"), created), "createdAt": created,
+            "source": _s(o.get("source"), 40), "session": _s(o.get("session"), 120), "build": _s(o.get("build"), 120),
+            "agent": _s(o.get("agent"), 120), "app": _s(o.get("app"), 80), "note": _s(o.get("note"), 2000)}
+
+
+def resolve_group(groups: list[dict], opts: dict, at: str | None = None, tz: str = "") -> tuple[dict, bool]:
+    """(group, created): same name made the same day = that group; else a new one. No name = the auto name."""
+    at = at or _now()
+    o = opts if isinstance(opts, dict) else {}
+    name = _s(o.get("name"), 200) or auto_name(_s(o.get("session")) or _s(o.get("build")) or _s(o.get("agent")) or _s(o.get("source")), at, tz)
+    day = day_key(at, tz)
+    for g in groups:
+        if isinstance(g, dict) and _same(g.get("name"), name) and day_key(g.get("createdAt", ""), tz) == day:
+            return g, False
+    meta = {k: o.get(k, "") for k in ("source", "session", "build", "agent", "app", "note")}
+    return norm_group({**meta, "id": new_group_id(at), "name": name, "createdAt": at}, at), True
+
+
+def assign_groups(groups: list[dict], shots: list[dict], tz: str = "") -> tuple[list[dict], list[dict], list[str]]:
+    """Every shot without a valid group gets one: bucketed by title prefix ("Breakroom check: Grid" -> "Breakroom check")
+    or session / build / source, and day; each bucket = '<prefix> - <YYYY-MM-DD HH:mm of its first shot>'."""
+    gs = list(groups)
+    ids = {g.get("id") for g in gs}
+    loose = sorted((x for x in shots if x.get("group") not in ids), key=lambda x: str(x.get("takenAt") or ""))
+    buckets: dict[str, dict] = {}
+    for x in loose:
+        m = re.match(r"^(.{2,80}?)\s*:\s", _s(x.get("title"), 200))
+        label = m.group(1) if m else (x.get("session") or x.get("build") or x.get("agent") or x.get("source") or "Screenshots")
+        b = buckets.setdefault(f"{label.lower()}\x01{day_key(x.get('takenAt', ''), tz)}", {"label": label, "first": x, "ids": set()})
+        b["ids"].add(x.get("id"))
+    made: list[str] = []
+    assign: dict[str, str] = {}
+    for b in buckets.values():
+        f = b["first"]
+        at = f.get("takenAt") or _now()
+        g = norm_group({"id": new_group_id(at), "name": f"{b['label']} - {stamp(at, tz)}", "createdAt": at, "source": f.get("source", ""),
+                        "session": f.get("session", ""), "build": f.get("build", ""), "agent": f.get("agent", ""), "app": f.get("app", ""),
+                        "note": "Made when screenshot groups came in."}, at)
+        gs.append(g)
+        made.append(g["name"])
+        for sid in b["ids"]:
+            assign[sid] = g["id"]
+    return gs, [{**x, "group": assign[x["id"]]} if x.get("id") in assign else x for x in shots], made
+
+
 def image_type(raw: bytes) -> str:
     if raw.startswith(b"\x89PNG"):
         return "png"
@@ -165,10 +281,105 @@ class Store:
             d = None
         if not isinstance(d, dict) or not isinstance(d.get("shots"), list):
             d = {"$axf": "ui-screenshots@1", "shots": []}
+        if not isinstance(d.get("groups"), list):
+            d["groups"] = []
         return d
 
     def all(self) -> list[dict]:
         return [x for x in self.doc()["shots"] if isinstance(x, dict)]
+
+    def groups(self) -> list[dict]:
+        return [g for g in self.doc()["groups"] if isinstance(g, dict)]
+
+    def group(self, gid: str) -> dict | None:
+        return next((g for g in self.groups() if g.get("id") == gid), None)
+
+    def ensure_group(self, opts: dict, at: str | None = None) -> dict:
+        """The group for an upload: an existing groupId, else resolve_group by name (made and saved when new)."""
+        gid = _s((opts or {}).get("groupId"), 80)
+        with _lock:
+            doc = self.doc()
+            if gid:
+                hit = next((g for g in doc["groups"] if isinstance(g, dict) and g.get("id") == gid), None)
+                if not hit:
+                    raise ValueError(f"no such group: {gid}")
+                return hit
+            g, created = resolve_group(doc["groups"], {**(opts or {}), "name": (opts or {}).get("group") or (opts or {}).get("name")}, at)
+            if created:
+                doc["groups"].append(g)
+                self._write(doc)
+            return g
+
+    def repair(self) -> list[str]:
+        """Give every screenshot a group (migration of shots from before groups, and after a bad edit)."""
+        with _lock:
+            doc = self.doc()
+            ids = {g.get("id") for g in doc["groups"] if isinstance(g, dict)}
+            if all(not isinstance(x, dict) or x.get("group") in ids for x in doc["shots"]):
+                return []
+            doc["groups"], doc["shots"], made = assign_groups([g for g in doc["groups"] if isinstance(g, dict)], [x for x in doc["shots"] if isinstance(x, dict)])
+            self._write(doc)
+            return made
+
+    def update_group(self, gid: str, changes: dict) -> dict:
+        with _lock:
+            doc = self.doc()
+            for i, g in enumerate(doc["groups"]):
+                if isinstance(g, dict) and g.get("id") == gid:
+                    if "name" in changes and not _s(changes.get("name"), 200):
+                        raise ValueError("a name is needed")
+                    g2 = norm_group({**g, **{k: changes[k] for k in ("name", "note", "app") if k in changes}})
+                    g2["updatedAt"] = _now()
+                    doc["groups"][i] = g2
+                    self._write(doc)
+                    return g2
+        raise KeyError(gid)
+
+    def merge_groups(self, src: str, into: str) -> int:
+        if src == into:
+            raise ValueError("pick two different groups")
+        with _lock:
+            doc = self.doc()
+            have = {g.get("id") for g in doc["groups"] if isinstance(g, dict)}
+            if src not in have or into not in have:
+                raise KeyError(src if src not in have else into)
+            n = 0
+            for x in doc["shots"]:
+                if isinstance(x, dict) and x.get("group") == src:
+                    x["group"] = into
+                    n += 1
+            doc["groups"] = [g for g in doc["groups"] if not (isinstance(g, dict) and g.get("id") == src)]
+            self._write(doc)
+            return n
+
+    def move(self, ids: list[str], into: str) -> int:
+        with _lock:
+            doc = self.doc()
+            if not any(isinstance(g, dict) and g.get("id") == into for g in doc["groups"]):
+                raise KeyError(into)
+            n = 0
+            for x in doc["shots"]:
+                if isinstance(x, dict) and x.get("id") in ids and x.get("group") != into:
+                    x["group"] = into
+                    n += 1
+            self._write(doc)
+            return n
+
+    def delete_group(self, gid: str, into: str = "") -> dict:
+        """With into: the shots move there first. Without: the group's screenshots are deleted with it."""
+        if into:
+            if into == gid:
+                raise ValueError("pick another group to keep the screenshots in")
+            moved = self.merge_groups(gid, into)
+            return {"deleted": gid, "moved": moved, "removed": []}
+        if not self.group(gid):
+            raise KeyError(gid)
+        gone = self.remove([x["id"] for x in self.all() if x.get("group") == gid])
+        with _lock:
+            doc = self.doc()
+            doc["groups"] = [g for g in doc["groups"] if not (isinstance(g, dict) and g.get("id") == gid)]
+            self._write(doc)
+        return {"deleted": gid, "moved": 0, "removed": gone}
 
     def get(self, sid: str) -> dict | None:
         return next((x for x in self.all() if x.get("id") == sid), None)
@@ -180,8 +391,9 @@ class Store:
         p = (self.files / f).resolve()
         return p if self.files.resolve() in p.parents and p.is_file() else None
 
-    def add(self, fields: dict, raw: bytes, name: str = "") -> dict:
-        """Save one picture + its record. Raises ValueError on bad fields or a file that isn't PNG / JPEG / WebP."""
+    def add(self, fields: dict, raw: bytes, name: str = "", group: str = "") -> dict:
+        """Save one picture + its record in `group` (an id; else the upload's group name / the auto group). Raises
+        ValueError on bad fields or a file that isn't PNG / JPEG / WebP."""
         kind = image_type(raw)
         if not kind:
             raise ValueError("screenshots must be PNG, JPEG or WebP")
@@ -194,9 +406,12 @@ class Store:
         if not base.get("viewport") and name:
             base["viewport"] = viewport_of(name)
         base.pop("id", None)
+        base.pop("groupId", None)
+        group_name = base.pop("group", "")
         shot, problems = norm_shot(base, now)
         if problems:
             raise ValueError("; ".join(problems))
+        shot["group"] = group or self.ensure_group({**fields, "group": group_name, "groupId": fields.get("groupId", "")})["id"]
         shot["file"] = f"{shot['id']}.{kind}"
         self.files.mkdir(parents=True, exist_ok=True)
         (self.files / shot["file"]).write_bytes(raw)
@@ -212,7 +427,7 @@ class Store:
             doc = self.doc()
             for i, x in enumerate(doc["shots"]):
                 if isinstance(x, dict) and x.get("id") == sid:
-                    merged = {**x, **{k: v for k, v in changes.items() if k in EDITABLE}}
+                    merged = {**x, **{k: v for k, v in changes.items() if k in EDITABLE}, "group": x.get("group", "")}
                     shot, problems = norm_shot(merged)
                     if problems:
                         raise ValueError("; ".join(problems))
@@ -304,7 +519,8 @@ class Store:
                 past = []
             past = past if isinstance(past, list) else []
             log.write_text(json.dumps([*past, {"at": _now(), "items": moved, "shots": added}], indent=1))
-        return {"moved": moved, "shots": added}
+        groups = self.repair()  # the moved shots land in '<title prefix> - <their date time>' groups
+        return {"moved": moved, "shots": added, "groups": groups}
 
 
 def _decode(data: str) -> bytes:
@@ -363,7 +579,69 @@ def router_for(store: Store, promote: Callable[[dict, bytes, dict], dict], migra
 
     @r.get("/shots")
     def list_shots() -> dict:
-        return {"shots": store.all(), "sources": SOURCES}
+        store.repair()
+        d = store.doc()
+        return {"shots": [x for x in d["shots"] if isinstance(x, dict)], "groups": [g for g in d["groups"] if isinstance(g, dict)], "sources": SOURCES}
+
+    def gid_of(v: Any, what: str = "id") -> str:
+        if not isinstance(v, str) or not _GID.match(v):
+            raise HTTPException(400, f"{what}: a group id")
+        return v
+
+    @r.post("/shots/groups")
+    async def make_group(request: Request) -> dict:
+        body = await body_json(request)
+        if not _s(body.get("name"), 200):
+            raise HTTPException(400, "a name is needed")
+        before = {g.get("id") for g in store.groups()}
+        g = store.ensure_group({**body, "group": body.get("name"), "groupId": ""})
+        return {"ok": True, "group": g, "created": g["id"] not in before}
+
+    @r.post("/shots/groups/update")
+    async def update_group(request: Request) -> dict:
+        body = await body_json(request)
+        try:
+            return {"ok": True, "group": store.update_group(gid_of(body.get("id")), body)}
+        except KeyError as e:
+            raise HTTPException(404, "no such group") from e
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from e
+
+    @r.post("/shots/groups/merge")
+    async def merge_groups(request: Request) -> dict:
+        body = await body_json(request)
+        try:
+            return {"ok": True, "moved": store.merge_groups(gid_of(body.get("from"), "from"), gid_of(body.get("into"), "into"))}
+        except KeyError as e:
+            raise HTTPException(404, "no such group") from e
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from e
+
+    @r.post("/shots/groups/delete")
+    async def delete_group(request: Request) -> dict:
+        body = await body_json(request)
+        into = gid_of(body.get("into"), "into") if body.get("into") else ""
+        try:
+            return {"ok": True, **store.delete_group(gid_of(body.get("id")), into)}
+        except KeyError as e:
+            raise HTTPException(404, "no such group") from e
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from e
+
+    @r.post("/shots/move")
+    async def move(request: Request) -> dict:
+        body = await body_json(request)
+        ids = ids_of(body)
+        if body.get("group"):
+            into = gid_of(body.get("group"), "group")
+        elif _s(body.get("groupName"), 200):
+            into = store.ensure_group({"group": body["groupName"], "source": "manual", "by": caller(request)})["id"]
+        else:
+            raise HTTPException(400, "group: a group id, or groupName: a new or today's group")
+        try:
+            return {"ok": True, "moved": store.move(ids, into), "group": into}
+        except KeyError as e:
+            raise HTTPException(404, "no such group") from e
 
     @r.post("/shots")
     async def upload(request: Request) -> dict:
@@ -394,13 +672,19 @@ def router_for(store: Store, promote: Callable[[dict, bytes, dict], dict], migra
             raise HTTPException(400, "at most 40 pictures per upload")
         fields.setdefault("by", caller(request))
         saved = []
+        group = ""
+        had = {g.get("id") for g in store.groups()}
         try:
+            # one group for the whole upload (named, or '<session/build/source> - <YYYY-MM-DD HH:mm>')
+            group = store.ensure_group(fields)["id"]
             for name, data, extra in files:
-                saved.append(store.add({**fields, **extra}, data, name))
+                saved.append(store.add({**fields, **extra}, data, name, group))
         except ValueError as e:
             store.remove([x["id"] for x in saved])
+            if group and group not in had:
+                store.delete_group(group)
             raise HTTPException(400, str(e)) from e
-        return {"ok": True, "shots": saved}
+        return {"ok": True, "shots": saved, "group": store.group(group)}
 
     @r.get("/shots/file")
     def file(id: str = ""):  # noqa: A002 — the query name

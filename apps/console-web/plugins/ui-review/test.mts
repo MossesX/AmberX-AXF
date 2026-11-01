@@ -12,6 +12,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/review-core.mjs';
 import * as sc from './web/shots-core.mjs';
+import * as gc from './web/groups-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let n = 0; const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -183,6 +184,64 @@ t('screenshots core: migrateItems moves only "Breakroom check:" items', () => {
   assert.equal(r.shots[0].shot.migratedFrom, 'r-1'); assert.equal(r.shots[0].shot.app, 'Breakroom');
 });
 
+t('groups: auto name, same name same day reuses, next day makes a new one (console time zone)', () => {
+  const at = '2026-11-01T00:20:00Z'; // Oct 31 8:20 PM in New York
+  assert.equal(gc.dayKey(at), '2026-10-31'); assert.equal(gc.stamp(at), '2026-10-31 20:20');
+  assert.equal(gc.autoName('breakroom-shots', at), 'breakroom-shots - 2026-10-31 20:20');
+  assert.equal(gc.suggestName('Breakroom check', at), 'Breakroom check - Oct 31 8:20 PM');
+  assert.equal(gc.stamp(at, 'UTC'), '2026-11-01 00:20', 'zone is a parameter');
+  const a = gc.resolveGroup([], { name: 'Breakroom check', source: 'check', session: 's-1', app: 'Breakroom' }, at);
+  assert.ok(a.created); assert.ok(gc.isGroupId(a.group.id)); assert.equal(a.group.$axf, 'shot-group@1'); assert.equal(a.group.session, 's-1'); assert.equal(a.group.createdAt, at);
+  const b = gc.resolveGroup([a.group], { name: '  breakroom   CHECK ' }, '2026-11-01T03:59:00Z');
+  assert.equal(b.created, false); assert.equal(b.group.id, a.group.id, 'case and spaces ignored, same day (still Oct 31 local)');
+  assert.ok(gc.resolveGroup([a.group], { name: 'Breakroom check' }, '2026-11-01T05:00:00Z').created, 'Nov 1 local = a new group');
+  const auto = gc.resolveGroup([], { session: 'sess-7', source: 'check' }, at);
+  assert.equal(auto.group.name, 'sess-7 - 2026-10-31 20:20'); assert.equal(gc.resolveGroup([], { source: 'pr' }, at).group.name, 'pr - 2026-10-31 20:20');
+  assert.equal(gc.resolveGroup([], {}, at).group.name, 'Screenshots - 2026-10-31 20:20');
+});
+
+t('groups: rows (count, cover, newest first), search by name / date / app / source', () => {
+  const g1 = gc.normGroup({ id: 'g-20261030-aaaa', name: 'Breakroom check - Oct 30', createdAt: '2026-10-30T20:00:00Z', source: 'check', app: 'Breakroom' });
+  const g2 = gc.normGroup({ id: 'g-20261101-bbbb', name: 'PR 181 before/after', createdAt: '2026-11-01T15:00:00Z', source: 'pr' });
+  const g3 = gc.normGroup({ id: 'g-20261101-cccc', name: 'Empty', createdAt: '2026-11-01T16:00:00Z' });
+  const shots = [{ id: 's1', group: g1.id, takenAt: '2026-10-30T20:02:00Z', app: 'Breakroom' }, { id: 's0', group: g1.id, takenAt: '2026-10-30T20:01:00Z' }, { id: 's2', group: g2.id, takenAt: '2026-11-01T15:01:00Z', app: 'Console' }];
+  const rows = gc.groupRows([g1, g2, g3], shots);
+  assert.deepEqual(rows.map((r) => [r.id, r.count]), [[g3.id, 0], [g2.id, 1], [g1.id, 2]]);
+  assert.equal(rows[2].cover.id, 's0', 'cover = the first shot'); assert.equal(rows[0].cover, null); assert.deepEqual(rows[1].apps, ['Console']);
+  const hit = (q) => rows.filter((r) => gc.matchGroup(r, q)).map((r) => r.id);
+  assert.deepEqual(hit(''), rows.map((r) => r.id));
+  assert.deepEqual(hit('breakroom'), [g1.id]); assert.deepEqual(hit('console'), [g2.id], 'app of a shot');
+  assert.deepEqual(hit('pr'), [g2.id]); assert.deepEqual(hit('2026-10-30'), [g1.id]); assert.deepEqual(hit('oct 30'), [g1.id]);
+  assert.deepEqual(hit('check oct 30'), [g1.id], 'every word must match'); assert.deepEqual(hit('nothing-here'), []);
+});
+
+t('groups: rename, merge, move; errors', () => {
+  const a = gc.normGroup({ id: 'g-1-aaaa', name: 'A', createdAt: AT }), b = gc.normGroup({ id: 'g-1-bbbb', name: 'B', createdAt: AT });
+  const shots = [{ id: 's1', group: a.id }, { id: 's2', group: a.id }, { id: 's3', group: b.id }];
+  assert.equal(gc.renameGroup([a, b], a.id, ' Alpha ').find((g) => g.id === a.id).name, 'Alpha');
+  assert.throws(() => gc.renameGroup([a, b], a.id, ' '), /name/); assert.throws(() => gc.renameGroup([a], 'g-x-zzzz', 'n'), /no such/);
+  const m = gc.mergeGroups([a, b], shots, a.id, b.id);
+  assert.equal(m.moved, 2); assert.deepEqual(m.groups.map((g) => g.id), [b.id]); assert.ok(m.shots.every((x) => x.group === b.id));
+  assert.throws(() => gc.mergeGroups([a, b], shots, a.id, a.id), /different/); assert.throws(() => gc.mergeGroups([a], shots, a.id, b.id), /no such/);
+  const mv = gc.moveShots([a, b], shots, ['s1', 's3'], b.id);
+  assert.equal(mv.moved, 1, 's3 is already there'); assert.equal(mv.shots.find((x) => x.id === 's1').group, b.id); assert.equal(mv.shots.find((x) => x.id === 's2').group, a.id);
+  assert.throws(() => gc.moveShots([a], shots, ['s1'], 'g-x-zzzz'), /no such/);
+});
+
+t('groups: migration puts loose shots in "<title prefix> - <their date time>" groups, once', () => {
+  const loose = [
+    { id: 'm2', title: 'Breakroom check: Group chat', takenAt: '2026-11-01T00:21:00Z', source: 'check', app: 'Breakroom' },
+    { id: 'm1', title: 'Breakroom check: Breakroom · Home phone', takenAt: '2026-11-01T00:20:00Z', source: 'check', app: 'Breakroom' },
+    { id: 'u1', title: 'My upload', takenAt: '2026-10-29T12:00:00Z', source: 'manual', session: '' },
+  ];
+  const r = gc.assignGroups([], loose);
+  assert.deepEqual(r.made.sort(), ['Breakroom check - 2026-10-31 20:20', 'manual - 2026-10-29 08:00']);
+  const bc = r.groups.find((g) => g.name.startsWith('Breakroom check'));
+  assert.ok(['m1', 'm2'].every((id) => r.shots.find((x) => x.id === id).group === bc.id), 'one check session = one group');
+  assert.equal(bc.app, 'Breakroom'); assert.equal(bc.createdAt, '2026-11-01T00:20:00Z', 'the group takes its first shot\'s time');
+  const again = gc.assignGroups(r.groups, r.shots); assert.deepEqual(again.made, [], 'idempotent'); assert.equal(again.groups.length, 2);
+});
+
 t('shot CLI: add (local) → pair → list → promote → migrate; never in the review queue', () => {
   const dir = mkdtempSync(join(tmpdir(), 'ui-shots-test-'));
   const env = { ...process.env, AXF_UI_REVIEW_DIR: dir }; delete env.AXF_CONSOLE_URL; delete env.AXF_TOKEN;
@@ -213,6 +272,31 @@ t('shot CLI: add (local) → pair → list → promote → migrate; never in the
   assert.deepEqual(left, ['Breakroom home'], 'only the promoted item stays in the queue');
   assert.equal(JSON.parse(shot('list', '--json').stdout).shots.length, 4);
   assert.equal(JSON.parse(shot('migrate', '--json').stdout).moved.length, 0, 'idempotent');
+});
+
+t('shot CLI: --group files shots in a named group (reused the same day), groups / group / move commands', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'ui-shot-groups-test-'));
+  const env = { ...process.env, AXF_UI_REVIEW_DIR: dir }; delete env.AXF_CONSOLE_URL; delete env.AXF_TOKEN;
+  const shot = (...a) => { const r = spawnSync(process.execPath, [join(HERE, '../../../../framework/cli/shot.mjs'), ...a, '--json'], { env, encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); return JSON.parse(r.stdout); };
+  const img = readFileSync(join(HERE, 'packs', JSON.parse(readFileSync(join(HERE, 'packs/index.json'), 'utf8')).packs[0].files[0].src));
+  const p = join(dir, 'home-phone.png'), d = join(dir, 'home-desktop.png'); writeFileSync(p, img); writeFileSync(d, img);
+  const two = shot(p, d, '--title', 'Breakroom', '--group', 'Breakroom check - Oct 31 8:20 PM').shots;
+  assert.equal(two.length, 2); assert.equal(two[0].group, two[1].group, 'one call = one group');
+  const again = shot(p, '--group', 'breakroom check - oct 31 8:20 pm').shots[0]; assert.equal(again.group, two[0].group, 'same name today = same group');
+  const auto = shot(d, '--session', 'sess-9').shots[0]; assert.notEqual(auto.group, two[0].group);
+  let gs = shot('groups').groups;
+  assert.equal(gs.length, 2); assert.equal(gs.find((g) => g.id === two[0].group).count, 3); assert.match(gs.find((g) => g.id === auto.group).name, /^sess-9 - \d{4}-\d\d-\d\d \d\d:\d\d$/);
+  assert.equal(shot('groups', '--q', 'sess-9').groups.length, 1);
+  assert.equal(shot('group', 'rename', auto.group, 'Lobby check').group.name, 'Lobby check');
+  assert.equal(shot('move', again.id, auto.group).moved, 1);
+  const moved = shot('move', two[0].id, 'Brand new group'); assert.equal(moved.moved, 1);
+  gs = shot('groups').groups; assert.equal(gs.length, 3);
+  assert.equal(shot('group', 'merge', auto.group, two[0].group).moved, 2);
+  const nu = gs.find((g) => g.name === 'Brand new group');
+  const del = shot('group', 'delete', nu.id); assert.equal(del.removed.length, 1);
+  gs = shot('groups').groups; assert.deepEqual(gs.map((g) => g.count), [3]);
+  const kept = shot('group', 'new', 'Spare'); const del2 = shot('group', 'delete', gs[0].id, '--into', kept.group.id); assert.equal(del2.moved, 3, 'delete --into keeps the shots');
+  assert.ok(shot('list').shots.every((x) => x.group === kept.group.id), 'every screenshot still has exactly one group');
 });
 
 t('shot.mjs finds its handler by capability (ui-screenshots@1), never by folder name', () => {

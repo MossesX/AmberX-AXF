@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, IconButton, Segmented, Slider, usePortalRoot, useRuntime } from '@console/axf/react';
+import { Button, Icon, IconButton, Segmented, SelectField, Slider, TextField, usePortalRoot, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi, pluginFetch } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as sc from './shots-core.mjs';
 import type { GroupBy, Screenshot } from './shots-core.mjs';
+import * as gc from './groups-core.mjs';
+import type { GroupRow, ShotGroupRec } from './groups-core.mjs';
 import { FOLDER, KEYS, SHOT_PARAM } from './keys';
 
 /*
@@ -13,6 +15,10 @@ import { FOLDER, KEYS, SHOT_PARAM } from './keys';
  * Brett's own uploads). A framework grid (search, filters, sortable date column) grouped by app / screen / source / day,
  * or thumbnails; tap one for the full-screen viewer (swipe, arrow keys, before/after slider when paired, copy link, send
  * to review, delete). They never join the approve / reject queue unless sent there.
+ *
+ * Groups (shot-group@1) come first: every screenshot is in one named, timestamped group (newest first, searchable by
+ * name / date / app / source, cover thumbnail + count). Tap a group for its shots; rename, merge, delete it, or select
+ * shots and move them to another group. Uploads here go into the open group, or a new one named before picking.
  */
 
 const api = pluginApi(FOLDER, 'UI Review', { unavailable: 'The UI Review plugin is switched off or its server part is not running.' });
@@ -101,9 +107,61 @@ function Viewer({ list, index, all, onIndex, onClose, act }: { list: Screenshot[
 interface Acts { copy: (s: Screenshot) => Promise<void>; promote: (xs: Screenshot[]) => Promise<void>; remove: (xs: Screenshot[]) => Promise<void> }
 type Mode = 'grid' | 'thumbs';
 
+/** One group's header: back, name + time + count, and its actions (rename, merge, select + move, delete). */
+function GroupHead({ g, groups, picked, selecting, onBack, onSelecting, onPick, act }: {
+  g: GroupRow; groups: GroupRow[]; picked: string[]; selecting: boolean; onBack: () => void; onSelecting: (v: boolean) => void; onPick: (ids: string[]) => void; act: GroupActs;
+}) {
+  const [tool, setTool] = useState<'' | 'rename' | 'merge'>('');
+  const [name, setName] = useState(g.name);
+  const [into, setInto] = useState('');
+  const [moveTo, setMoveTo] = useState('');
+  useEffect(() => { setName(g.name); setTool(''); setInto(''); }, [g.id]);
+  const others = groups.filter((x) => x.id !== g.id).map((x) => ({ value: x.id, label: `${x.name} (${x.count})` }));
+  return (
+    <div className="axp-ui-review__ghead">
+      <div className="axp-ui-review__bar" role="toolbar" aria-label={`Group ${g.name}`}>
+        <IconButton icon="chevron-left" label="All groups" onClick={onBack} />
+        <span className="axp-ui-review__gname"><b>{g.name}</b><span className="fx-small fx-muted">{fmtDate(g.createdAt)} · {g.count} shot{g.count === 1 ? '' : 's'}{g.source ? ` · ${g.source}` : ''}</span></span>
+        <Button size="sm" icon="edit" aria-pressed={tool === 'rename'} onClick={() => setTool(tool === 'rename' ? '' : 'rename')}>Rename</Button>
+        <Button size="sm" icon="layers" aria-pressed={tool === 'merge'} disabled={!others.length} onClick={() => setTool(tool === 'merge' ? '' : 'merge')}>Merge</Button>
+        <Button size="sm" icon="check" aria-pressed={selecting} tone={selecting ? 'primary' : 'neutral'} onClick={() => { onSelecting(!selecting); onPick([]); }}>Select</Button>
+        <Button size="sm" tone="danger" icon="trash" confirm={`Delete the group "${g.name}" and its ${g.count} screenshot${g.count === 1 ? '' : 's'}? This can't be undone. (To keep them, merge it into another group instead.)`} onClick={() => void act.remove(g)}>Delete</Button>
+      </div>
+      {tool === 'rename' && (
+        <div className="axp-ui-review__gtool">
+          <TextField label="Group name" value={name} onChange={setName} autoFocus />
+          <Button size="sm" tone="primary" icon="check" disabled={!name.trim() || name.trim() === g.name} onClick={() => void act.rename(g, name.trim()).then(() => setTool(''))}>Save name</Button>
+        </div>
+      )}
+      {tool === 'merge' && (
+        <div className="axp-ui-review__gtool">
+          <SelectField label={`Move all ${g.count} into`} value={into} onChange={setInto} options={others} empty="Pick a group" />
+          <Button size="sm" tone="primary" icon="layers" disabled={!into} onClick={() => void act.merge(g, into)}>Merge</Button>
+        </div>
+      )}
+      {selecting && (
+        <div className="axp-ui-review__gtool">
+          <span className="fx-small fx-muted">{picked.length} selected · tap shots to pick</span>
+          <SelectField label="Move to" value={moveTo} onChange={setMoveTo} options={[...others, { value: '+new', label: 'A new group…' }]} empty="Pick a group" />
+          <Button size="sm" tone="primary" icon="arrow-right" disabled={!picked.length || !moveTo} onClick={() => void act.move(picked, moveTo).then(() => { onPick([]); setMoveTo(''); })}>Move</Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface GroupActs { rename: (g: GroupRow, name: string) => Promise<void>; merge: (g: GroupRow, into: string) => Promise<void>; remove: (g: GroupRow) => Promise<void>; move: (ids: string[], into: string) => Promise<void> }
+
 export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   const rt = useRuntime();
   const [shots, setShots] = useState<Screenshot[] | null>(null);
+  const [groupRecs, setGroupRecs] = useState<ShotGroupRec[]>([]);
+  const [gid, setGid] = useState<string | null>(null);
+  const [gq, setGq] = useState('');
+  const [selecting, setSelecting] = useState(false);
+  const [picked, setPicked] = useState<string[]>([]);
+  const [naming, setNaming] = useState(false);
+  const [newName, setNewName] = useState('');
   const [error, setError] = useState('');
   const [q, setQ] = useState('');
   const [app, setApp] = useState('');
@@ -113,6 +171,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   const [mode, setModeRaw] = useState<Mode>(() => setting(rt, KEYS.shotMode, 'grid') as Mode);
   const [sort, setSort] = useState<GridSort>({ col: 'date', dir: -1 });
   const [hidden, setHidden] = useState<string[]>(() => (isPhone() ? ['screen', 'source', 'viewport'] : []));
+  const [ghidden, setGhidden] = useState<string[]>(() => (isPhone() ? ['source', 'date'] : []));
   const [collapsed, setCollapsed] = useState<string[]>([]);
   const [viewing, setViewing] = useState<{ ids: string[]; i: number } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -121,7 +180,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   const setMode = (v: Mode) => { setModeRaw(v); save(rt, KEYS.shotMode, v); };
 
   const load = async () => {
-    try { const r = await api.call<{ shots: Screenshot[] }>('shots'); setShots(r.shots.map((x) => sc.normShot(x).shot)); setError(''); }
+    try { const r = await api.call<{ shots: Screenshot[]; groups?: ShotGroupRec[] }>('shots'); setShots(r.shots.map((x) => sc.normShot(x).shot)); setGroupRecs(r.groups ?? []); setError(''); }
     catch (e) { setError((e as Error).message); setShots((s) => s ?? []); }
   };
   useEffect(() => { void load(); }, []);
@@ -130,15 +189,41 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   useEffect(() => {
     if (!shots) return;
     const want = new URLSearchParams(globalThis.location?.search ?? '').get(SHOT_PARAM);
-    if (want && shots.some((x) => x.id === want)) setViewing({ ids: [want], i: 0 });
+    const hit = want ? shots.find((x) => x.id === want) : undefined;
+    if (hit) { if (hit.group) setGid(hit.group); setViewing({ ids: [hit.id], i: 0 }); }
   }, [shots]);
 
-  const all = shots ?? [];
+  const everything = shots ?? [];
+  const groupRows = useMemo(() => gc.groupRows(groupRecs, everything), [groupRecs, everything]);
+  const shownGroups = useMemo(() => groupRows.filter((g) => gc.matchGroup(g, gq)), [groupRows, gq]);
+  const cur = gid ? groupRows.find((g) => g.id === gid) ?? null : null;
+  useEffect(() => { if (gid && shots && !cur) setGid(null); }, [gid, shots, cur]);
+  const all = useMemo(() => (cur ? everything.filter((x) => x.group === cur.id) : everything), [everything, cur]);
   const rows = useMemo(() => sc.sortShots(sc.filterShots(all, { q, app, source, viewport }), 'newest'), [all, q, app, source, viewport]);
   const groups = useMemo(() => sc.groupShots(rows, by), [rows, by]);
   const apps = useMemo(() => sc.distinct(all, 'app'), [all]);
 
-  const open = (s: Screenshot, list: Screenshot[]) => { const ids = list.map((x) => x.id); setViewing({ ids, i: Math.max(0, ids.indexOf(s.id)) }); };
+  const openShot = (s: Screenshot, list: Screenshot[]) => { const ids = list.map((x) => x.id); setViewing({ ids, i: Math.max(0, ids.indexOf(s.id)) }); };
+  const open = (s: Screenshot, list: Screenshot[]) => (selecting ? setPicked((p) => (p.includes(s.id) ? p.filter((x) => x !== s.id) : [...p, s.id])) : openShot(s, list));
+  const openGroup = (id: string | null) => { setGid(id); setSelecting(false); setPicked([]); setQ(''); setApp(''); setSource(''); setViewport(''); };
+  const gact: GroupActs = {
+    rename: async (g, name) => {
+      try { await api.post('shots/groups/update', { id: g.id, name }); rt.toast('Group renamed', 'success'); await load(); } catch (e) { rt.toast((e as Error).message, 'danger'); }
+    },
+    merge: async (g, into) => {
+      try { const r = await api.post<{ moved: number }>('shots/groups/merge', { from: g.id, into }); rt.toast(`Merged: ${r.moved} screenshot${r.moved === 1 ? '' : 's'} moved`, 'success'); openGroup(into); await load(); } catch (e) { rt.toast((e as Error).message, 'danger'); }
+    },
+    remove: async (g) => {
+      try { await api.post('shots/groups/delete', { id: g.id }); rt.toast(`Deleted the group "${g.name}"`, 'success'); openGroup(null); await load(); } catch (e) { rt.toast((e as Error).message, 'danger'); }
+    },
+    move: async (ids, into) => {
+      try {
+        const body = into === '+new' ? { ids, groupName: gc.suggestName(cur?.name.replace(/ - .*$/, '') || 'Moved', new Date().toISOString()) } : { ids, group: into };
+        const r = await api.post<{ moved: number }>('shots/move', body);
+        rt.toast(`Moved ${r.moved} screenshot${r.moved === 1 ? '' : 's'}`, 'success'); await load();
+      } catch (e) { rt.toast((e as Error).message, 'danger'); }
+    },
+  };
   const act: Acts = {
     copy: async (s) => {
       const u = new URL(globalThis.location.href); u.hash = ''; u.search = ''; u.searchParams.set(SHOT_PARAM, s.id);
@@ -166,7 +251,9 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
     setBusy(true);
     try {
       const payload = await Promise.all(list.map(async (f) => ({ name: f.name, data: await readAsDataUrl(f), takenAt: new Date(f.lastModified || Date.now()).toISOString() })));
-      const r = await api.post<{ shots: Screenshot[] }>('shots', { source: 'manual', app, files: payload });
+      const r = await api.post<{ shots: Screenshot[]; group?: ShotGroupRec }>('shots', { source: 'manual', app, files: payload, ...(cur ? { groupId: cur.id } : { group: newName.trim() || gc.suggestName('Upload', new Date().toISOString()) }) });
+      setNaming(false);
+      if (!cur && r.group) setGid(r.group.id);
       rt.terminal.log('ui-review', `uploaded ${r.shots.length} screenshot(s)`, 'ok');
       rt.toast(`Uploaded ${r.shots.length} screenshot${r.shots.length === 1 ? '' : 's'}`, 'success');
       await load();
@@ -175,6 +262,57 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   };
 
   if (!shots) return <LoadingSkeleton rows={6} label="Loading screenshots" />;
+
+  const picker = <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onChange={(e) => void upload(e.target.files)} />;
+  if (!cur) {
+    const gcols: GridColumn<GroupRow>[] = [
+      { id: 'name', label: 'Group', width: 'minmax(calc(var(--fx-font-size) * 12), 3fr)', fixed: true, sortable: true, sortValue: (g) => g.name.toLowerCase(),
+        render: (g) => <span className="axp-ui-review__srow">{g.cover ? <Pic id={g.cover.id} alt="" className="axp-ui-review__mini" /> : <span className="axp-ui-review__noimg axp-ui-review__mini" />}<span className="axp-ui-review__title axp-ui-review__gcell"><b>{g.name}</b><span className="fx-small fx-muted">{[fmtDate(g.createdAt), ...g.apps].join(' · ')}</span></span></span> },
+      { id: 'date', label: 'Made', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (g) => g.createdAt, render: (g) => <span className="fx-small" title={g.createdAt}>{fmtDate(g.createdAt)}</span> },
+      { id: 'count', label: 'Shots', width: 'calc(var(--fx-font-size) * 4)', sortable: true, sortValue: (g) => g.count, render: (g) => <span className="fx-small">{g.count}</span> },
+      { id: 'source', label: 'Source', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (g) => g.source || g.cover?.source || '', render: (g) => <span className="fx-small axp-ui-review__clip">{g.session || g.build || sc.sourceInfo(g.source || g.cover?.source || '').label}</span> },
+    ];
+    const sorted = sort?.col === 'date' && sort.dir === -1 ? shownGroups : [...shownGroups].sort((a, b) => {
+      const c = gcols.find((x) => x.id === sort?.col)?.sortValue; if (!c || !sort) return 0;
+      const va = c(a), vb = c(b); return (typeof va === 'number' && typeof vb === 'number' ? va - vb : String(va).localeCompare(String(vb))) * sort.dir;
+    });
+    return (
+      <div className="fx-stack axp-ui-review__shots">
+        {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
+        <div className="axp-ui-review__bar" role="toolbar" aria-label="Screenshot groups: search and view">
+          <input className="fx-input axp-ui-review__search" value={gq} onChange={(e) => setGq(e.target.value)} placeholder="Search groups: name, date (Oct 31, 2026-10-31), app, source…" aria-label="Search groups" />
+          <Segmented<Mode> size="sm" label="Layout" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'list' }, { value: 'thumbs', label: 'Thumbnails', icon: 'grid' }]} />
+          {picker}
+          <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy} aria-pressed={naming} onClick={() => { setNewName(gc.suggestName('Upload', new Date().toISOString())); setNaming(!naming); }}>Upload</Button>
+          <IconButton icon="refresh" label="Reload screenshots" onClick={() => void load()} />
+        </div>
+        {naming && (
+          <div className="axp-ui-review__gtool">
+            <TextField label="Name the group for these screenshots" value={newName} onChange={setNewName} autoFocus />
+            <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy || !newName.trim()} onClick={() => input.current?.click()}>Pick pictures</Button>
+          </div>
+        )}
+        <p className="fx-small fx-muted axp-ui-review__countline">{shownGroups.length} of {groupRows.length} group{groupRows.length === 1 ? '' : 's'} · {everything.length} screenshot{everything.length === 1 ? '' : 's'} · newest first; tap a group for its shots.</p>
+        {shownGroups.length === 0 ? (
+          <EmptyState icon="monitor">{groupRows.length ? 'No group matches. Clear the search.' : 'No screenshots yet. Upload some, or save them from a session with axf shot <file> --group "Breakroom check - Oct 31 8:20 PM".'}</EmptyState>
+        ) : mode === 'thumbs' ? (
+          <div className="axp-ui-review__thumbs">
+            {sorted.map((g) => (
+              <button key={g.id} type="button" data-fx-row className={`axp-ui-review__tcard is-${g.cover?.viewport ?? 'desktop'}`} onClick={() => openGroup(g.id)} title={g.name}>
+                {g.cover ? <Pic id={g.cover.id} alt="" className="axp-ui-review__big" /> : <span className="axp-ui-review__noimg axp-ui-review__big" />}
+                <span className="axp-ui-review__tcap fx-small"><b>{g.name}</b><span className="fx-muted">{fmtDate(g.createdAt)} · {g.count}</span></span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <DataGrid<GroupRow> id="ui-review-shot-groups" label="Screenshot groups" groups={[{ id: 'all', title: 'Groups', icon: 'layers', collapsed: false, rows: sorted, groups: [], counts: <span className="fx-small fx-muted">{sorted.length}</span> }]}
+            columns={gcols} rowId={(g) => g.id} rowLabel={(g) => g.name} hidden={ghidden} onToggleColumn={(c) => setGhidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setGhidden([])}
+            sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? { col: c, dir: s.dir === 1 ? -1 : 1 } : { col: c, dir: c === 'date' ? -1 : 1 }))}
+            onRowClick={(g) => openGroup(g.id)} rowTone={() => 'muted'} compact />
+        )}
+      </div>
+    );
+  }
 
   const cols: GridColumn<Screenshot>[] = [
     { id: 'title', label: 'Screenshot', width: 'minmax(calc(var(--fx-font-size) * 12), 3fr)', fixed: true, sortable: true, sortValue: (s) => s.title.toLowerCase(),
@@ -191,6 +329,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   return (
     <div className="fx-stack axp-ui-review__shots">
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
+      <GroupHead g={cur} groups={groupRows} picked={picked} selecting={selecting} onBack={() => openGroup(null)} onSelecting={setSelecting} onPick={setPicked} act={gact} />
       <div className="axp-ui-review__bar" role="toolbar" aria-label="Screenshots: filter and view">
         <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, screen, session, #PR…" aria-label="Search screenshots" />
         {apps.length > 0 && <select className="fx-input axp-ui-review__sel" value={app} onChange={(e) => setApp(e.target.value)} aria-label="App"><option value="">Every app</option>{apps.map((a) => <option key={a} value={a}>{a}</option>)}</select>}
@@ -198,11 +337,11 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
         <select className="fx-input axp-ui-review__sel" value={viewport} onChange={(e) => setViewport(e.target.value)} aria-label="Device"><option value="">Phone + desktop</option><option value="phone">Phone</option><option value="desktop">Desktop</option></select>
         <select className="fx-input axp-ui-review__sel" value={by} onChange={(e) => setBy(e.target.value as GroupBy)} aria-label="Group by">{sc.GROUPS.map((g) => <option key={g.id} value={g.id}>{g.id === 'none' ? g.label : `By ${g.label.toLowerCase()}`}</option>)}</select>
         <Segmented<Mode> size="sm" label="Layout" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'list' }, { value: 'thumbs', label: 'Thumbnails', icon: 'grid' }]} />
-        <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onChange={(e) => void upload(e.target.files)} />
+        {picker}
         <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy} onClick={() => input.current?.click()}>Upload</Button>
         <IconButton icon="refresh" label="Reload screenshots" onClick={() => void load()} />
       </div>
-      <p className="fx-small fx-muted axp-ui-review__countline">{rows.length} of {all.length} screenshot{all.length === 1 ? '' : 's'} · not waiting for approval; Send to review puts one in the queue.</p>
+      <p className="fx-small fx-muted axp-ui-review__countline">{rows.length} of {all.length} screenshot{all.length === 1 ? '' : 's'} in this group · not waiting for approval; Send to review puts one in the queue.</p>
 
       {rows.length === 0 ? (
         <EmptyState icon="monitor">{all.length ? 'Nothing matches. Clear the search or the filters.' : 'No screenshots yet. Upload one, or save them from a session with axf shot <file> --title "…" --app … --source check.'}</EmptyState>
@@ -213,7 +352,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
               {by !== 'none' && <h3 className="axp-ui-review__thead fx-small">{g.label} <span className="fx-muted">{g.shots.length}</span></h3>}
               <div className="axp-ui-review__thumbs">
                 {g.shots.map((s) => (
-                  <button key={s.id} type="button" data-fx-row className={`axp-ui-review__tcard is-${s.viewport}`} onClick={() => open(s, g.shots)} title={s.title}>
+                  <button key={s.id} type="button" data-fx-row className={`axp-ui-review__tcard is-${s.viewport}${picked.includes(s.id) ? ' is-picked' : ''}`} aria-pressed={selecting ? picked.includes(s.id) : undefined} onClick={() => open(s, g.shots)} title={s.title}>
                     <Pic id={s.id} alt="" className="axp-ui-review__big" />
                     <span className="axp-ui-review__tcap fx-small"><b>{s.title}</b><span className="fx-muted">{fmtDate(s.takenAt)}</span></span>
                   </button>
@@ -227,7 +366,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
           hidden={hidden} onToggleColumn={(c) => setHidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setHidden([])}
           sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? { col: c, dir: s.dir === 1 ? -1 : 1 } : { col: c, dir: c === 'date' ? -1 : 1 }))}
           onToggleGroup={(id) => setCollapsed((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]))}
-          onRowClick={(s) => open(s, rows)} rowTone={(s) => (s.promoted.length ? 'accent' : s.pair ? 'info' : 'muted')} compact />
+          multi={selecting ? picked : undefined} onRowClick={(s) => open(s, rows)} rowTone={(s) => (s.promoted.length ? 'accent' : s.pair ? 'info' : 'muted')} compact />
       )}
 
       {viewing && viewList.length > 0 && <Viewer list={viewList} index={viewing.i} all={all} onIndex={(i) => setViewing({ ...viewing, i })} onClose={() => setViewing(null)} act={act} />}

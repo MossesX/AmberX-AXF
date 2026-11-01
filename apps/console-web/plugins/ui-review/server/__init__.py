@@ -37,6 +37,7 @@ import console_context as cx
 import plugin_services
 
 from .screenshots import Store as ShotStore, router_for as shots_router
+from . import screenshots as shots_mod
 
 router = APIRouter()
 FOLDER = "ui-review"

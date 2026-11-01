@@ -4,7 +4,7 @@ export type Side = 'before' | 'after' | '';
 export interface Screenshot {
   $axf: string; id: string; title: string; source: string; session: string; build: string; agent: string; app: string; screen: string;
   viewport: Viewport; takenAt: string; addedAt: string; pair: string; side: Side; note: string; branch: string; pr: number | null; by: string;
-  file: string; size: number; promoted: string[]; [k: string]: unknown;
+  file: string; size: number; promoted: string[]; group?: string; [k: string]: unknown;
 }
 export interface SourceInfo { id: string; label: string; icon: string }
 export interface ShotFilter { q?: string; app?: string; source?: string; viewport?: string; screen?: string }
