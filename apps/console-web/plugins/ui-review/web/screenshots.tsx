@@ -118,7 +118,7 @@ function GroupHead({ g, groups, picked, selecting, onBack, onSelecting, onPick, 
   useEffect(() => { setName(g.name); setTool(''); setInto(''); }, [g.id]);
   const others = groups.filter((x) => x.id !== g.id).map((x) => ({ value: x.id, label: `${x.name} (${x.count})` }));
   return (
-    <div className="fx-stack axp-ui-review__ghead">
+    <div className="axp-ui-review__ghead">
       <div className="axp-ui-review__bar" role="toolbar" aria-label={`Group ${g.name}`}>
         <IconButton icon="chevron-left" label="All groups" onClick={onBack} />
         <span className="axp-ui-review__gname"><b>{g.name}</b><span className="fx-small fx-muted">{fmtDate(g.createdAt)} · {g.count} shot{g.count === 1 ? '' : 's'}{g.source ? ` · ${g.source}` : ''}</span></span>
@@ -171,6 +171,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   const [mode, setModeRaw] = useState<Mode>(() => setting(rt, KEYS.shotMode, 'grid') as Mode);
   const [sort, setSort] = useState<GridSort>({ col: 'date', dir: -1 });
   const [hidden, setHidden] = useState<string[]>(() => (isPhone() ? ['screen', 'source', 'viewport'] : []));
+  const [ghidden, setGhidden] = useState<string[]>(() => (isPhone() ? ['source', 'date'] : []));
   const [collapsed, setCollapsed] = useState<string[]>([]);
   const [viewing, setViewing] = useState<{ ids: string[]; i: number } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -266,7 +267,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   if (!cur) {
     const gcols: GridColumn<GroupRow>[] = [
       { id: 'name', label: 'Group', width: 'minmax(calc(var(--fx-font-size) * 12), 3fr)', fixed: true, sortable: true, sortValue: (g) => g.name.toLowerCase(),
-        render: (g) => <span className="axp-ui-review__srow">{g.cover ? <Pic id={g.cover.id} alt="" className="axp-ui-review__mini" /> : <span className="axp-ui-review__noimg axp-ui-review__mini" />}<span className="axp-ui-review__title"><b>{g.name}</b>{g.apps.length > 0 && <span className="fx-small fx-muted">{g.apps.join(', ')}</span>}</span></span> },
+        render: (g) => <span className="axp-ui-review__srow">{g.cover ? <Pic id={g.cover.id} alt="" className="axp-ui-review__mini" /> : <span className="axp-ui-review__noimg axp-ui-review__mini" />}<span className="axp-ui-review__title axp-ui-review__gcell"><b>{g.name}</b><span className="fx-small fx-muted">{[fmtDate(g.createdAt), ...g.apps].join(' · ')}</span></span></span> },
       { id: 'date', label: 'Made', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (g) => g.createdAt, render: (g) => <span className="fx-small" title={g.createdAt}>{fmtDate(g.createdAt)}</span> },
       { id: 'count', label: 'Shots', width: 'calc(var(--fx-font-size) * 4)', sortable: true, sortValue: (g) => g.count, render: (g) => <span className="fx-small">{g.count}</span> },
       { id: 'source', label: 'Source', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (g) => g.source || g.cover?.source || '', render: (g) => <span className="fx-small axp-ui-review__clip">{g.session || g.build || sc.sourceInfo(g.source || g.cover?.source || '').label}</span> },
@@ -305,7 +306,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
           </div>
         ) : (
           <DataGrid<GroupRow> id="ui-review-shot-groups" label="Screenshot groups" groups={[{ id: 'all', title: 'Groups', icon: 'layers', collapsed: false, rows: sorted, groups: [], counts: <span className="fx-small fx-muted">{sorted.length}</span> }]}
-            columns={gcols} rowId={(g) => g.id} rowLabel={(g) => g.name} hidden={hidden.filter((h) => h !== 'count')} onToggleColumn={(c) => setHidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setHidden([])}
+            columns={gcols} rowId={(g) => g.id} rowLabel={(g) => g.name} hidden={ghidden} onToggleColumn={(c) => setGhidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setGhidden([])}
             sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? { col: c, dir: s.dir === 1 ? -1 : 1 } : { col: c, dir: c === 'date' ? -1 : 1 }))}
             onRowClick={(g) => openGroup(g.id)} rowTone={() => 'muted'} compact />
         )}
