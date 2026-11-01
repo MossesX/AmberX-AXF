@@ -323,7 +323,7 @@ export function itemOfBuild(b, now = nowIso()) {
     id: b.pendingId || b.id, title: b.title, detail: b.detail,
     model: p.model === 'Sonnet' && !b.steps.length ? 'Sonnet' : next ? stepModel(next.model) : (p.model || 'Opus'),
     status,
-    notes: b.notes.map((n) => ({ text: n.text, at: n.at || now })),
+    notes: b.notes.map((n) => ({ text: n.text, at: n.at })), // a note without a date keeps none (exports stay byte-stable)
     subPrompts: b.steps.map((s) => ({
       text: prefix ? `[${stepModel(s.model)}] ${plain(s.text)}` : s.text,
       at: at[s.uid] ?? (s.createdAt || b.createdAt || now),

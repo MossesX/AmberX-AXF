@@ -2103,7 +2103,7 @@
    "notes": [
     {
      "text": "Hub copy of this list (axhub.memory_* project amberx-axf, data area) held only 10 items on Oct 21 2026 while the repo snapshot held 20 — check `claude-sync status` on the VPS before trusting either; this item was added to the repo snapshot by the Fable build session.",
-     "at": "2026-11-01T00:30:06.614Z"
+     "at": ""
     },
     {
      "text": "Built Oct 21 2026 on Fable: branch fable/patches-wrapper, PR #5; Android CI green (kernel tests incl. EmbedConformanceTest, lib-hub, patches-debug.apk 20.6 MB). Report _claude/memory/docs/rebuilds/patches-wrapper.md.",
@@ -2566,7 +2566,7 @@
    "notes": [
     {
      "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
-     "at": "2026-11-01T00:30:06.614Z"
+     "at": ""
     }
    ],
    "subPrompts": [],
@@ -4893,7 +4893,7 @@
    "notes": [
     {
      "text": "Built on branch claude/no-login-questions-terminal-launches (PR to follow)",
-     "at": "2026-11-01T00:30:06.615Z"
+     "at": ""
     }
    ],
    "subPrompts": [
