@@ -3727,7 +3727,9 @@
     },
     {
      "text": "[Opus] Script ch10 agents + ch11 axHub",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:47:31.373Z"
     },
     {
      "text": "[Opus] Script ch12 veto + ch13 AmberX",
@@ -3764,7 +3766,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:47:01.821Z",
+   "updatedAt": "2026-11-01T22:47:31.373Z",
    "source": "console"
   }
  ]
