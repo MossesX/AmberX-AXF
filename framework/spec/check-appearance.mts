@@ -90,6 +90,20 @@ class FakeSource implements AppearanceSource {
   eq(rt.getState().active.layout, defaults.layout, 'unknown layout id → the app default, no crash');
   ok(rt.appearanceSkipped().some((s) => s.startsWith('layout:no-such-layout')), 'skipped is reported');
   eq(rt.spacing(), 'regular', 'spacing applied');
+  {
+    // Nov 1 2026: the same document again changes nothing (no new state, no re-render); a failed re-read after the first
+    // ready keeps the app on screen (only signed-out blocks it again)
+    const rev = rt.getState().rev;
+    src.setState({ status: 'ready', version: 'v' });
+    src.push(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'neon-tide', layout: 'no-such-layout', 'nav-menu': 'top-tabs' }, spacing: 'regular', hidden: { toolbar: false, 'nav-menu': true } })));
+    eq(rt.getState().rev, rev, 'same state + same document again: no state change');
+    ok(!rt.appearanceBlocking(), 'ready: not blocking');
+    src.setState({ status: 'unreachable', reason: 'blip', retryInMs: 1000, attempt: 1 });
+    ok(!rt.appearanceReady() && !rt.appearanceBlocking(), 'a failed re-read after ready keeps the app (not blocking)');
+    src.setState({ status: 'unauthorized', reason: 'signed out' });
+    ok(rt.appearanceBlocking(), 'signed out blocks again');
+    src.setState({ status: 'ready', version: 'v' });
+  }
   ok(!rt.slotHidden('toolbar') && rt.slotHidden('nav-menu'), 'hidden applied over the app default');
   eq(src.saved, [], 'a pushed document is not echoed back');
   // local changes push (admin role has assets.swap)
@@ -186,6 +200,17 @@ class FakeSource implements AppearanceSource {
   src.refresh();
   await new Promise((r) => setTimeout(r, 20));
   ok(src.state().status === 'ready', 'back');
+  // Nov 1 2026 (approvals screen flashing): a re-read that finds the same document applies nothing again
+  const evBefore = events.length;
+  src.refresh();
+  await new Promise((r) => setTimeout(r, 20));
+  src.refresh();
+  await new Promise((r) => setTimeout(r, 20));
+  eq(events.length, evBefore, 'unchanged re-reads (focus, live events) emit no state and no document');
+  stored = { text: JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'neon-tide' } }), version: ver('changed-doc') };
+  src.refresh();
+  await new Promise((r) => setTimeout(r, 20));
+  ok(events.slice(evBefore).some((e) => 'doc' in (e as object)) && events.slice(evBefore).some((e) => 'state' in (e as object)), 'a real change is emitted once');
   ok(calls.every((c) => c.url.startsWith('https://hub.test/data/')), 'only the hub data API is called');
   src.stop();
 }

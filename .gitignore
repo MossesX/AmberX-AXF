@@ -20,3 +20,6 @@ apps/shots-*/
 
 # Build agents' git worktrees in the console checkout (agent-manager gittools, Oct 28 2026)
 .mosses/
+_claude/builds/store.json.exports.json
+_claude/builds/store.json.lock
+_claude/builds/store.json.tmp-*

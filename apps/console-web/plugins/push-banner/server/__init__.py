@@ -462,8 +462,21 @@ class Pushes:
             if isinstance(open_, list) and open_ and isinstance(open_[0], dict):
                 p = open_[0]
                 return {"number": p.get("number"), "url": _safe_url(p.get("html_url")), "existing": True}
+            head = self._head(gh, repo, branch)
+            head_sha = _text(head.get("sha"), 40)
+            # Duplicate PRs after a squash merge (Oct 31 2026, #217 → #218): main got a NEW commit, so the old branch still
+            # counts "commits ahead". A branch whose exact head was already merged, or whose tree equals the base's, has
+            # nothing to push: no PR.
+            closed = gh.get(github.repo_path(repo, "pulls", query={"state": "closed", "head": f"{owner}:{branch}", "base": base, "per_page": 10}))
+            for c in closed if isinstance(closed, list) else []:
+                if isinstance(c, dict) and c.get("merged_at") and head_sha and _text((c.get("head") or {}).get("sha"), 40) == head_sha:
+                    raise HTTPException(409, f"nothing new on {branch}: PR #{c.get('number')} already merged this exact commit")
+            tree = ((head.get("commit") or {}).get("tree") or {}).get("sha") if isinstance(head.get("commit"), dict) else None
+            base_tree = ((self._head(gh, repo, base).get("commit") or {}).get("tree") or {}).get("sha") if tree else None
+            if tree and base_tree and tree == base_tree:
+                raise HTTPException(409, f"nothing to push: {branch} has the same files as {base}")
             cmp = gh.get(compare_path(repo, base, branch))
-            last = self._head(gh, repo, branch).get("commit") or {}
+            last = head.get("commit") or {}
             title = _text(str(last.get("message") or "").split("\n")[0], 120) or branch
             p = gh.json("POST", github.repo_path(repo, "pulls"), {
                 "title": title, "head": branch, "base": base,
@@ -517,6 +530,15 @@ class Pushes:
         merged = bool(isinstance(r, dict) and r.get("merged"))
         base = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200)
         if merged:
+            # the merged head branch goes (Oct 31 2026: a left-over branch was re-opened as a duplicate PR); same-repo only,
+            # never the base or the never-PR branches; best effort (a token without the right just leaves it)
+            ref = _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)
+            same = (((p.get("head") or {}).get("repo") or {}).get("full_name") or "").lower() == repo.lower() if isinstance(p.get("head"), dict) else False
+            if same and valid_branch(ref) and ref != base and ref not in NO_AUTO_PR and ref not in ALWAYS_HIDDEN:
+                try:
+                    gh.json("DELETE", github.repo_path(repo, "git", "refs", "heads", ref))
+                except Exception:  # noqa: BLE001
+                    pass
             self._remember({"key": f"{repo}:#{number}", "kind": "merged", "repo": repo, "base": base, "number": number,
                             "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Merged #{number} into {base or 'main'}."})
         return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}

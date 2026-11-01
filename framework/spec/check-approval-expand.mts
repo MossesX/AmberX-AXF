@@ -5,6 +5,8 @@
  *
  * 1. details.ts: one model from a feed item and from the hub's API entry (who asked, tool + policy + risk, timeline,
  *    result), the open-row store.
+ * 3. The application menu's "Waiting for approval" rows (framework AppMenu LiveRow): caret on the far right, a tap opens
+ *    the same details in place, the menu reloading its list keeps it open, Deny / Approve inside decide.
  * 2. The shared row in a DOM (jsdom): collapsed by default with the caret on the far right; a tap on the row or the
  *    caret opens it in place; a live refresh (new details, a re-render, a remount) keeps it open in the same element;
  *    Deny / Approve inside work while it waits and are gone once decided; the job stream fills the output.
@@ -33,6 +35,8 @@ const {
   isWaitingPhase, riskTags, sourceOf, tailLines, timelineOf,
 } = await import('../libs/approvals/details.ts');
 const { ApprovalRow } = await import('../libs/approvals/row.tsx');
+const { AppMenuList, menuRowOpen } = await import('../react/components/AppMenu.tsx');
+const { installApprovalsMenu } = await import('../libs/approvals/menu.ts');
 const { readFileSync, readdirSync } = await import('node:fs');
 const { join } = await import('node:path');
 
@@ -202,6 +206,46 @@ const click = async (el: Element | null | undefined) => { await act(async () => 
   const r = rowEl(R1)!;
   check(r.querySelector('.axf-apx__exit')?.textContent === 'Exit 0', 'result: exit code');
   check(r.querySelector('pre[aria-label="Last lines of output"]')?.textContent === 'line 1\nline 2', 'result: last lines of output');
+}
+
+{
+  // 3. The application menu's live list: rows carry `expand: approval:<id>`, the row's caret / tap opens the details.
+  let feed = interpretApprovals(HUB, 200, JSON.stringify({ signedIn: true, admin: true, count: 2, pending: [held(H1, 80), approval(A1)] }), T);
+  const menuDecided: string[] = [];
+  installApprovalsMenu(rt, { hub: HUB, read: async () => feed, decide: async (item, d) => { menuDecided.push(`${item.id}:${d}`); return { ok: true, message: 'Done.' }; } });
+  const mhost = document.createElement('div');
+  document.body.appendChild(mhost);
+  const mroot = createRoot(mhost);
+  let items = await rt.loadAppMenuProvider('hub.approvals');
+  check(items.every((i) => i.expand === `approval:${i.id.slice('approval-'.length)}`), 'menu rows carry their expand key through the engine');
+  let closed = 0;
+  const draw = async () => { await act(async () => { mroot.render(h(AxfProvider, { runtime: rt }, h(AppMenuList, { items, depth: 2, onDone: () => { closed++; } }))); }); };
+  await draw();
+  const mrow = () => mhost.querySelector(`[data-axf-live-row="approval-${A1}"]`) as HTMLElement;
+  const li = mrow();
+  check(li.lastElementChild?.classList.contains('fx-menu__caret'), 'menu row: the caret is the last thing on the row (far right)');
+  check(!li.querySelector('.fx-menu__details'), 'menu row: folded by default');
+  await click(li.querySelector('.fx-menu__live-main'));
+  check(!!mrow().querySelector('.fx-menu__details .axf-apx__body'), 'menu row: a tap on the row opens the details in place');
+  check(closed === 0, 'menu row: opening it never closes the menu');
+  check(mrow().textContent!.includes('approval-expand') && !!mrow().querySelector('pre[aria-label="Command"]'), 'menu row: who asked + the exact command inside');
+  const inside = [...mrow().querySelectorAll('.fx-menu__details .axf-apx__decide button')] as HTMLButtonElement[];
+  check(inside.map((b) => b.textContent).join() === 'Deny,Approve', 'menu row: Deny + Approve inside');
+  await click(inside[1]);
+  await act(async () => { await sleep(10); });
+  check(menuDecided.join() === `${A1}:approve`, 'menu row: Approve inside decides through the list');
+  check(closed === 0, 'menu row: a button inside never closes the menu');
+  // The menu reads its list again (a refresh): new compiled items, still open.
+  feed = interpretApprovals(HUB, 200, JSON.stringify({ signedIn: true, admin: true, count: 2, pending: [held(H1, 70), approval(A1, { reason: { title: 'Restart it again', description: 'Again.' } })] }), T + 5_000);
+  items = await rt.loadAppMenuProvider('hub.approvals');
+  await draw();
+  check(!!mrow().querySelector('.fx-menu__details .axf-apx__body') && menuRowOpen(`approval-${A1}`), 'menu row: stays open when the list is read again');
+  await act(async () => { mroot.render(h('div', null)); });
+  await draw();
+  check(!!mrow().querySelector('.fx-menu__details'), 'menu row: stays open when the menu is closed and opened again');
+  await click(mrow().querySelector('.fx-menu__caret'));
+  check(!mrow().querySelector('.fx-menu__details') && mrow().querySelector('.fx-menu__caret')?.getAttribute('aria-expanded') === 'false', 'menu row: the caret folds it');
+  await act(async () => { mroot.unmount(); });
 }
 
 await act(async () => { root.unmount(); });

@@ -14,11 +14,12 @@
  * Framework controls (Button, Chip, Icon, fx-iconbtn) and theme tokens only (approvals.css, `axf-apx`).
  */
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Icon } from '../../react';
+import { Button, Chip, Icon, registerMenuRowDetails, useOptionalRuntime } from '../../react';
+import { decideApproval, openHubPage } from './host';
 import { followVeto, formatCountdown } from '../hub/veto';
-import { DECISION_LABELS, rowOrder, type ApprovalDecision } from './core';
+import { DECISION_LABELS, rowOrder, type ApprovalDecision, type ApprovalItem } from './core';
 import {
-  approvalsOpenStore, clientLine, collapsedLine, detailsCountdown, exitLine, hasResult, isWaitingPhase, tailLines, timelineOf,
+  approvalsOpenStore, clientLine, detailsOfItem, lookupApproval, collapsedLine, detailsCountdown, exitLine, hasResult, isWaitingPhase, tailLines, timelineOf,
   PHASE_LABELS, POLICY_LABELS, SOURCE_ICONS, SOURCE_LABELS, type ApprovalDetails, type ApprovalsOpenStore,
 } from './details';
 
@@ -236,3 +237,31 @@ export function ApprovalDetailsPanel({ id, details: d, onDecide, busy = '', chil
     </div>
   );
 }
+
+/* ---------------------------------------------------------------- the application menu's rows */
+
+/**
+ * The open part of an approval row in the application menu's "Waiting for approval" list (`expand: approval:<id>`,
+ * framework AppMenu LiveRow): the same details panel, live (re-read every second from the list that showed it), with
+ * Deny / Approve inside through that list's deciding path.
+ */
+function MenuApprovalDetails({ id }: { id: string }) {
+  const rt = useOptionalRuntime();
+  useTick(true);
+  const [busy, setBusy] = useState('');
+  const found = lookupApproval(id);
+  if (!found) return <p className="fx-small fx-muted axf-apx__gone">No longer waiting on axHub.</p>;
+  const { item, lookup } = found;
+  const hub = lookup.hub();
+  const decide = async (d: ApprovalDecision) => {
+    setBusy(`${item.id}:${d}`);
+    try {
+      const r = await (lookup.decide ?? ((i: ApprovalItem, x: ApprovalDecision) => decideApproval(hub, i, x)))(item, d);
+      if (!r.opened) rt?.toast(r.message, r.ok ? 'success' : 'danger', 'Approvals');
+    } catch (e) {
+      rt?.toast((e as Error)?.message || 'Something went wrong.', 'danger', 'Approvals');
+    } finally { setBusy(''); }
+  };
+  return <ApprovalDetailsPanel className="axf-apx--menu" details={detailsOfItem(item)} hub={hub} busy={busy} onDecide={(d) => void decide(d)} openPage={openHubPage} />;
+}
+registerMenuRowDetails('approval', (id) => <MenuApprovalDetails id={id} />);

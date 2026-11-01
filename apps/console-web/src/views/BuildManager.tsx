@@ -99,26 +99,16 @@ async function act(a: Act, log: Log): Promise<Proposal | null> {
   return null;
 }
 
-/** Called once when the console starts: two-way sync of the feature tracker and the build queue. */
+/**
+ * Called once when the console starts. It only LOADS the queue: the console no longer re-creates or re-syncs the build
+ * queue from the plan on start (master cleanup, Oct 31 2026: that wiped Refactor's queue on every boot). The queue is
+ * the order field of the builds store; it syncs with the feature tracker after plan/status writes, and a queue is
+ * only created when none exists.
+ */
 export async function initBuildSync(log: Log) {
   await loadPlanStore(true);
-  if (api.isBackendUp()) {
-    const r = await api.buildPost('sync', { by: 'console:init' });
-    if (r.ok) {
-      if (r.state) setQ(r.state);
-      for (const l of r.log ?? []) log(l, 'note');
-      await loadPlanStore(true);
-      const v = r.view;
-      log(`build queue synced: ${v?.counts.done ?? 0} done · next ${v?.next ?? '—'}${v?.rework ? ` · ${v.rework} need rework` : ''}`, 'ok');
-      return;
-    }
-    log(r.unauthorized ? 'build queue: read-only until the console token is set (Home → Console token)' : `build queue sync failed: ${r.error}`, 'warn');
-    await loadQueue(true);
-    return;
-  }
   await loadQueue(true);
-  await act({ kind: 'sync', by: 'console:init' }, log);
-  log('build queue synced in this browser (API offline)', 'warn');
+  log('build queue loaded from the builds store (no re-create on start)', 'note');
 }
 
 const STATE_LABEL: Record<string, string> = { done: 'built', rework: 'needs rework', active: 'in progress', queued: 'queued', blocked: 'blocked', dropped: 'dropped', missing: 'missing' };

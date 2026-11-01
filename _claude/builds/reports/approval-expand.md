@@ -1,6 +1,6 @@
 # approval-expand — every approval row expandable (Nov 1 2026, Opus, headless VPS)
 
-Branch `claude/approval-expand`, pushed to `main` (Brett's brief).
+Branch `claude/approval-expand`, pushed to `main` (Brett's brief). The first push try failed on the VPS GitHub token (read-only for a while). It works again, so the banner item `blocked:push:approval-expand` can go.
 
 ## What Brett gets
 
@@ -29,15 +29,16 @@ Surfaces:
 - **AmberX approvals view** (`apps/amberx-droid/src/views/Approvals.tsx`): `ApprovalsList` replaces the old Review-only cards; deciding goes through the phone's own path (`setApprovalsHost` decide).
 - **Title-bar "waiting" popover** (lib-approvals badge): the shared row, compact and stacked.
 
-## Not done: the app-menu "Waiting for approvals" dropdown
+## The app-menu "Waiting for approvals" dropdown (after menu-approve landed)
 
-That dropdown is being rebuilt by **menu-approve** (Approve / Deny on each menu row, `LiveRow` in `framework/react/components/AppMenu.tsx`). That build hadn't landed on main after more than 60 minutes of waiting, and **approval-source** hadn't either. Touching `AppMenu.tsx` now would clash head-on with it. The hook is ready: `ApprovalDetailsPanel` renders the open part for a row the menu draws itself. **Follow-up:** once menu-approve is on main, add a caret to `LiveRow` (far right) and a details slot the approvals menu provider fills with `ApprovalDetailsPanel`. It's about 30 min of work and goes into the orchestrator as the next step of this build.
-
-Who-asked badges show as soon as the hub sends `source` (approval-source, axHub decision 108). Until that's deployed they read "Not recorded".
+menu-approve put Deny / Approve on each live row (`LiveRow` in `framework/react/components/AppMenu.tsx`). On top of it:
+- **Engine:** live-list rows may carry `expand: "<kind>:<key>"`. It's a runtime passthrough like `buttons` / `detail` / `deadline` (`core/types.ts`, `engines/appmenu.ts`; not an asset field, and the fixture is unchanged).
+- **AppMenu:** `registerMenuRowDetails(kind, render)`. A row whose kind has a renderer gets a caret on the far right. A tap on the row or the caret opens the details in place without closing the menu or navigating; clicks and keys inside stay inside. Open rows live in a module set, so the menu reading its list again, or being closed and reopened, keeps them open. The AppMenu itself knows nothing about approvals.
+- **lib-approvals:** rows carry `expand: approval:<id>`. `row.tsx` registers the `approval` renderer (`ApprovalDetailsPanel`, live, Deny / Approve inside). `registerApprovalsLookup` lets each list say where its items are and how they're decided: `installApprovalsMenu` for axhub-web and AmberX, and the console banner for its `approvals.list`.
 
 ## Tests
 
-- New `framework/spec/check-approval-expand.mts` (jsdom; in CI next to check-approvals): **62/62**. Covers the model, collapsed by default with the caret last, opening by a tap on the row and on the caret, opening in place (same element), staying open on refresh with in-place updates, staying open across a remount, Deny/Approve inside working, buttons gone once decided, and output tail plus exit code from the job stream. jsdom was added as a framework devDependency.
+- New `framework/spec/check-approval-expand.mts` (jsdom; in CI next to check-approvals): **74/74**. The 12 menu checks: caret last on the row, a tap opens it in place without closing the menu, Deny / Approve inside decide, it stays open when the list is read again and when the menu is reopened, and the caret folds it. menu-approve's `check-approvals-menu.mts` still 53/53. Covers the model, collapsed by default with the caret last, opening by a tap on the row and on the caret, opening in place (same element), staying open on refresh with in-place updates, staying open across a remount, Deny/Approve inside working, buttons gone once decided, and output tail plus exit code from the job stream. jsdom was added as a framework devDependency.
 - `check-approvals.mts` 66/66; `apps/axhub-web/test.mjs` 238/238 (one source-grep check updated to the shared row); approvals-banner test 10/10.
 - The full local block from android.yml on the merged tree: 75/75 commands green. Also green: libs typecheck, builds of console-web / axhub-web / amberx-droid / walkthrough-studio, theme-swap, interface-scope, check-theme, check-controls and plugin lifecycle (all plugins).
 - Fixed on main while testing:

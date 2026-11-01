@@ -338,6 +338,12 @@ check(r["existing"] is False and r["number"] == 19 and STATE["created"][-1]["hea
 check(STATE["created"][-1]["title"] == "Last on feat/b", "the PR is titled from the last commit")
 check(c.post("/p/pr", json={"repo": "MossesX/Other", "branch": "feat/b"}).status_code == 400, "a repo that isn't watched is refused")
 check(c.post("/p/pr", json={"repo": "MossesX/AmberX-AXF", "branch": "main"}).status_code == 400, "no PR from main into main")
+# duplicate PRs after a squash merge (Oct 31 2026, #217 → #218): the exact head was merged already → no new PR
+STATE["closed"] = [{"number": 17, "merged_at": "2026-10-31T18:55:00Z", "base": {"ref": "main"}, "head": {"ref": "feat/b", "sha": "feat/b-head", "repo": {"full_name": "MossesX/AmberX-AXF"}}}]
+n_created = len(STATE["created"])
+d = c.post("/p/pr", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b"})
+check(d.status_code == 409 and "already merged" in d.json()["detail"] and len(STATE["created"]) == n_created, "no duplicate PR for a branch whose exact head was merged")
+STATE["closed"] = []
 
 m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18})
 check(m.status_code == 400, "merge needs the typed confirm")

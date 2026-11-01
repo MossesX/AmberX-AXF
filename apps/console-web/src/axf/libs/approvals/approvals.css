@@ -103,3 +103,5 @@
 .axf-apx--compact .axf-apx__body { padding: var(--fx-dens-gap-md); gap: var(--fx-dens-gap-md) }
 .axf-approvals__page { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0 }
 .axf-approvals__page a { color: var(--fx-accent) }
+.axf-apx__body.axf-apx--menu { border-top: 0; padding: var(--fx-dens-gap-md) 0 0; font-size: var(--fx-type-scale-sm) }
+.axf-apx__gone { margin: 0 }

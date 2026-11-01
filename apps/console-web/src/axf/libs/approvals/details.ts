@@ -326,3 +326,27 @@ export class ApprovalsOpenStore {
 }
 
 export const approvalsOpenStore = new ApprovalsOpenStore();
+
+/* ---------------------------------------------------------------- where a row's item lives */
+
+/**
+ * Something that holds approval items a surface shows elsewhere (the application menu's rows only carry
+ * `expand: "approval:<id>"`): lib-approvals' own menu list and the console banner register one, and the menu's details
+ * renderer finds the item (and how to decide it) through {@link lookupApproval}.
+ */
+export interface ApprovalsLookup {
+  hub: () => string;
+  find: (id: string) => ApprovalItem | undefined;
+  /** This surface's deciding path (default: lib-approvals `decideApproval`). */
+  decide?: (item: ApprovalItem, d: ApprovalDecision) => Promise<{ ok: boolean; message: string; opened?: boolean }>;
+}
+const lookups = new Set<ApprovalsLookup>();
+/** Registers a lookup; returns its remover. */
+export function registerApprovalsLookup(l: ApprovalsLookup): () => void { lookups.add(l); return () => { lookups.delete(l); }; }
+/** The newest-registered lookup that knows this id, with its item. */
+export function lookupApproval(id: string): { item: ApprovalItem; lookup: ApprovalsLookup } | null {
+  for (const l of [...lookups].reverse()) { const item = l.find(id); if (item) return { item, lookup: l }; }
+  return null;
+}
+/** The `expand` key of an approval's menu row. */
+export const approvalExpandKey = (id: string): string => `approval:${id}`;

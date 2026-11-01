@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, Note } from '@console/axf/react';
 import {
   formatCountdown, notifyPlan, runVetoAction, secondsLeftNow, vetoHost, VETO_ACTION_LABELS, VETO_WARNING_SECONDS,
-  type VetoAction, type VetoCall, type VetoPhase,
+  type VetoAction, type VetoActionResult, type VetoCall, type VetoPhase,
 } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, type AlarmConfig } from './alarm';
 
@@ -41,13 +41,18 @@ export interface VetoDeps {
 
 /** Runs one action and reports it; the alarm for that call stops at once. */
 export async function act(d: VetoDeps, c: VetoCall, action: VetoAction): Promise<boolean> {
+  return (await actResult(d, c, action)).ok;
+}
+
+/** {@link act} with the hub's whole answer (the application menu's row shows it in place: Running / Denied). */
+export async function actResult(d: VetoDeps, c: VetoCall, action: VetoAction): Promise<VetoActionResult> {
   watch.silence(c.id);
   const r = await runVetoAction(d.hub(), c, action);
   if (r.ok) d.toast(`${DONE_TEXT[action]} ${c.title}`, action === 'deny' ? 'success' : 'info');
   else if (r.opened) d.toast(`Opened it on axHub to ${VETO_ACTION_LABELS[action].toLowerCase()} it there.`, 'info');
   else d.toast(`Couldn't ${VETO_ACTION_LABELS[action].toLowerCase()} it${r.error ? `: ${r.error}` : ''}.`, 'danger');
   d.refresh();
-  return r.ok;
+  return r;
 }
 
 /**

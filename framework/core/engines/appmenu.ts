@@ -11,9 +11,13 @@
  * Pure and framework-agnostic, pinned by spec/fixtures/app-menu.json (replayed by spec/check-app-menu.mts). The Android
  * twin (`AppMenuEngine.kt`, same names) is deferred: Android port on hold, Brett Oct 21 2026 (see spec/PORTING.md).
  * Field names and limits come from schemas/asset-types.json → `menuItems`.
+ *
+ * Live-list rows (a provider's items, never an asset's) may also carry `buttons` (Deny / Approve on the row itself,
+ * run through the provider's `act`), `detail` (a second line), `deadline` (a live countdown), `paused` and `expand` (details in place, `<kind>:<key>`); they pass
+ * through untouched, buttons gated like items (hide drops, disable locks). Runtime only: not asset fields.
  */
 import spec from '../../schemas/asset-types.json';
-import type { AppMenuData, Gate, MenuItem } from '../types';
+import type { AppMenuData, Gate, MenuItem, MenuItemButton } from '../types';
 
 const MENU_SPEC = spec.menuItems as { optional_fields: Record<string, string>; checkedKinds: string[]; maxDepth: number; providerMax: number; defaultOrder: number };
 const TYPE_LABELS = spec.types as unknown as Record<string, { label: string; icon?: string; hideable?: boolean }>;
@@ -84,7 +88,15 @@ export interface CompiledMenuItem {
   /** UAC disable gate: shown but not runnable */
   locked: boolean;
   origin: string;
+  /** live-list rows: buttons on the row (gated), second line, countdown deadline (local ms), paused text */
+  buttons?: CompiledMenuButton[];
+  detail?: string;
+  deadline?: number;
+  paused?: string;
+  /** live-list rows: `<kind>:<key>` for the expandable details (React `registerMenuRowDetails`) */
+  expand?: string;
 }
+export interface CompiledMenuButton extends MenuItemButton { locked: boolean }
 export interface CompiledMenu { id: string; label: string; origin: string; items: CompiledMenuItem[] }
 export interface CompiledAppMenu { menus: CompiledMenu[]; conflicts: AppMenuConflict[]; notes: string[] }
 
@@ -125,6 +137,7 @@ export function titleFromId(id: string): string {
 type Node = {
   id: string; label?: string; icon?: string; action?: string; shortcut?: string; requires?: string; separator?: boolean;
   provider?: string; badge?: string; checked?: string;
+  buttons?: MenuItemButton[]; detail?: string; deadline?: number; paused?: string; expand?: string;
   items?: Node[]; origin: string; order: number; seq: number; before?: string; after?: string;
 };
 type MenuNode = { id: string; label: string; origin: string; order: number; seq: number; items: Node[] };
@@ -141,6 +154,11 @@ function toNode(it: MenuItem, origin: string, seq: number, defaults: { order?: n
     ...(it.provider !== undefined ? { provider: it.provider } : {}),
     ...(it.badge !== undefined ? { badge: it.badge } : {}),
     ...(it.checked !== undefined ? { checked: it.checked } : {}),
+    ...(Array.isArray(it.buttons) && it.buttons.length ? { buttons: it.buttons.map((b) => ({ ...b })) } : {}),
+    ...(typeof it.detail === 'string' ? { detail: it.detail } : {}),
+    ...(typeof it.deadline === 'number' && Number.isFinite(it.deadline) ? { deadline: it.deadline } : {}),
+    ...(typeof it.paused === 'string' ? { paused: it.paused } : {}),
+    ...(typeof it.expand === 'string' && it.expand ? { expand: it.expand } : {}),
   };
   const before = it.before ?? defaults.before;
   const after = it.after ?? defaults.after;
@@ -177,6 +195,11 @@ function strip(n: Node): MergedMenuItem {
   if (n.provider !== undefined) out.provider = n.provider;
   if (n.badge !== undefined) out.badge = n.badge;
   if (n.checked !== undefined) out.checked = n.checked;
+  if (n.buttons) out.buttons = n.buttons;
+  if (n.detail !== undefined) out.detail = n.detail;
+  if (n.deadline !== undefined) out.deadline = n.deadline;
+  if (n.paused !== undefined) out.paused = n.paused;
+  if (n.expand !== undefined) out.expand = n.expand;
   if (n.items) out.items = n.items.map(strip);
   return out;
 }
@@ -292,6 +315,15 @@ function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: n
     if (it.requires !== undefined) c.requires = it.requires;
     if (it.badge !== undefined) { c.badge = it.badge; const n = Math.max(0, Math.floor(env.counter(it.badge)) || 0); if (n > 0) c.count = n; }
     if (it.checked !== undefined) { c.checked = it.checked; const on = resolveChecked(it.checked, env); if (on !== null) c.check = on; }
+    if (it.buttons) {
+      const bs: CompiledMenuButton[] = [];
+      for (const b of it.buttons) { const g = env.gate(b.requires); if (g !== 'hide' && b.id && b.label) bs.push({ ...b, locked: g === 'disable' || c.locked }); }
+      if (bs.length) c.buttons = bs;
+    }
+    if (it.detail !== undefined) c.detail = it.detail;
+    if (it.deadline !== undefined) c.deadline = it.deadline;
+    if (it.paused !== undefined) c.paused = it.paused;
+    if (it.expand !== undefined) c.expand = it.expand;
     if (it.provider !== undefined) {
       if (!env.providers.includes(it.provider)) { notes.push(`${where}/${it.id}: live list "${it.provider}" is not registered`); continue; }
       if (depth >= max) { notes.push(`${where}/${it.id}: live list cut at depth ${max}`); continue; }
