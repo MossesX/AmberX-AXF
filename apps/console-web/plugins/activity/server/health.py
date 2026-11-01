@@ -20,6 +20,8 @@ from typing import Any, Callable
 
 import plugin_services
 
+from .feed import _ms
+
 CAPABILITY = "axf.health@1"
 OWNER = "activity"
 EVENTS = ("UserPromptSubmit", "PreToolUse", "PostToolUse", "Notification", "Stop", "SessionEnd")
@@ -70,7 +72,7 @@ def hooks_check(notes: list[dict[str, Any]], working: list[dict[str, Any]], now_
             bad.append(f"PostToolUse stopped arriving for {n['user']}")
             details.append(f"{n['user']}: last PreToolUse {ago(pre)}, last PostToolUse {ago(post) if post else 'never'}")
     newest = max((float(v) for n in notes for v in (n.get("events") or {}).values() if isinstance(v, (int, float))), default=0.0)
-    live = [w for w in working if now_ms - float(w.get("updatedAt") or 0) < WORKING_S * 1000]
+    live = [w for w in working if now_ms - (_ms(w.get("updatedAt")) or 0) < WORKING_S * 1000]  # the change log's times are ISO
     if live and now_ms - newest > QUIET_S * 1000:
         bad.append("Claude Code hook events stopped arriving" if newest else "no Claude Code hook has reported yet")
         details.append(f"last hook event: {ago(newest) if newest else 'never'}; working now per the Codebase changes log: "

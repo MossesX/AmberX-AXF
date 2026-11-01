@@ -480,6 +480,10 @@ r = hc.hooks_check([note("axfbuild", PreToolUse=nowms, PostToolUse=nowms - 2 * H
 check(r["status"] == "error" and "stopped arriving for axfbuild" in r["summary"], "red: PreToolUse keeps coming, PostToolUse doesn't")
 r = hc.hooks_check([note("root", PreToolUse=nowms - H, PostToolUse=nowms - H)], [{"id": "changes:x", "title": "A build", "updatedAt": nowms - 60_000}], nowms)
 check(r["status"] == "error" and "stopped arriving" in r["summary"] and "A build" in r["details"][0], "red: hook events stopped while the change log shows a session working")
+from datetime import datetime, timezone  # noqa: E402
+iso = datetime.fromtimestamp((nowms - 60_000) / 1000, timezone.utc).isoformat().replace("+00:00", "Z")
+r = hc.hooks_check([note("root", PreToolUse=nowms - H, PostToolUse=nowms - H)], [{"id": "changes:x", "title": "A build", "updatedAt": iso}], nowms)
+check(r["status"] == "error", "the change log's ISO times are read (what the live console sends)")
 r = hc.hooks_check([note("root", PreToolUse=nowms - 30_000, PostToolUse=nowms - 20_000), note("axfbuild", UserPromptSubmit=nowms - H)], [{"id": "changes:x", "updatedAt": nowms - 60_000}], nowms)
 check(r["status"] == "ok" and "root, axfbuild" in r["summary"], "green: every user's hooks complete and reporting")
 check(hc.hooks_check([], [], nowms)["status"] == "ok", "green when nothing is working and nothing reported")
