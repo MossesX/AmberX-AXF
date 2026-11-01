@@ -8,6 +8,7 @@ import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
 import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
+import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
@@ -778,6 +779,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   for (const [n, schema] of Object.entries(uiReviewJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const reg = join(FRAMEWORK_DIR, 'schemas/ui-review.json');
   writeFileSync(reg, JSON.stringify(UI_REVIEW_REGISTRY, null, 2) + '\n'); written.push(reg);
+  // session@1 (Chat viewer): JSON Schema + the registry snapshot (redaction patterns included) the Python server reads
+  for (const [n, schema] of Object.entries(sessionJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const sreg = join(FRAMEWORK_DIR, 'schemas/session.json');
+  writeFileSync(sreg, JSON.stringify(SESSION_REGISTRY, null, 2) + '\n'); written.push(sreg);
   return written;
 }
 

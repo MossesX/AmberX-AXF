@@ -138,6 +138,8 @@ docker run --rm -v "$DIR":/axf:ro "${DATA_ARGS[@]}" -e AXF_ROOT=/axf --entrypoin
 PLUGIN_ARGS=()
 CA_HOST="$DIR/apps/console-web/plugins/container-access/deploy/host.sh"  # axf-plugin:container-access
 [ -f "$CA_HOST" ] && { mapfile -t PLUGIN_ARGS < <(NAME="$NAME" bash "$CA_HOST" up) || say "Docker socket proxy didn't start"; }  # axf-plugin:container-access
+CV_HOST="$DIR/apps/console-web/plugins/chat-viewer/deploy/host.sh"  # axf-plugin:chat-viewer
+[ -f "$CV_HOST" ] && { mapfile -t CV_ARGS < <(bash "$CV_HOST" up) && PLUGIN_ARGS+=("${CV_ARGS[@]}") || say "Chat viewer mounts skipped"; }  # axf-plugin:chat-viewer
 _PA=(); for a in "${PLUGIN_ARGS[@]}"; do [ -n "$a" ] && _PA+=("$a"); done; PLUGIN_ARGS=("${_PA[@]}")  # never pass an empty arg to docker run (it would be read as the image name)
 # Sidecars of plugins whose folder is gone (label axf.plugin=<folder>) are removed; nothing is run for them.
 for c in $(docker ps -aq --filter label=axf.plugin); do
