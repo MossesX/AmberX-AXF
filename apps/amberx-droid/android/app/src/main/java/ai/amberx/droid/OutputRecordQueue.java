@@ -65,6 +65,56 @@ final class OutputRecordQueue {
         e.apply();
     }
 
+    /* ---------------------------------------------------------------- the session a start from axHub set (decision #108) */
+
+    /** Sets the session the next recording's parts are named and grouped by (cleared when the recorder stops). */
+    static void setSession(Context c, RecorderControl.Session s) {
+        c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putString("session.name", s.name).putString("session.group", s.group).putString("session.note", s.note)
+            .putLong("session.startedAt", 0).putInt("session.parts", 0).putInt("session.uploaded", 0)
+            .apply();
+    }
+
+    /** The active session or null: {name, group, note, startedAt, parts, uploaded}. */
+    static JSONObject session(Context c) {
+        SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        String name = p.getString("session.name", "");
+        if (name == null || name.isEmpty()) return null;
+        try {
+            return new JSONObject().put("name", name).put("group", p.getString("session.group", name))
+                .put("note", p.getString("session.note", "")).put("startedAt", p.getLong("session.startedAt", 0))
+                .put("parts", p.getInt("session.parts", 0)).put("uploaded", p.getInt("session.uploaded", 0));
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    /** The recording started: the time every part name carries. */
+    static void sessionStarted(Context c, long ms) {
+        SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if (!p.getString("session.name", "").isEmpty()) p.edit().putLong("session.startedAt", ms).putInt("session.parts", 0).apply();
+    }
+
+    /** Numbers a kept part (1, 2, …). */
+    static synchronized int nextPart(Context c) {
+        SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        int n = p.getInt("session.parts", 0) + 1;
+        p.edit().putInt("session.parts", n).apply();
+        return n;
+    }
+
+    /** A part of [session] reached axHub. */
+    static synchronized void sessionUploaded(Context c, String session) {
+        SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if (session != null && !session.isEmpty() && session.equals(p.getString("session.name", ""))) p.edit().putInt("session.uploaded", p.getInt("session.uploaded", 0) + 1).apply();
+    }
+
+    static void clearSession(Context c) {
+        c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .remove("session.name").remove("session.group").remove("session.note").remove("session.startedAt").remove("session.parts").remove("session.uploaded")
+            .apply();
+    }
+
     private static int pick(int v, int[] allowed, int d) {
         for (int a : allowed) if (a == v) return v;
         return d;
