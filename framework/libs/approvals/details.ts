@@ -8,7 +8,7 @@
  *  - {@link detailsOfHubEntry}: one hub entry as the hub's approvals API shapes it (`approvalView`: the AXHub web app's
  *    grid, the approval page; also a raw feed entry), so the axHub list and the dropdown share the rows.
  *
- * Who asked (axHub decision #108, approval-source): `source { kind, session?, client?, clientVersion?, oauthClient? }`,
+ * Who asked (axHub decision 108, approval-source): `source { kind, session?, client?, clientVersion?, oauthClient? }`,
  * read tolerantly (absent on an older hub: the row says "Not recorded"). Secrets are already hidden by the hub
  * (connector redaction); nothing here un-hides or adds anything. Every link is rebuilt from the id (lib-hub rule).
  *
@@ -30,7 +30,7 @@ export const SOURCE_LABELS: Record<SourceKind, string> = {
 export const SOURCE_ICONS: Record<SourceKind, string> = {
   claude_ai: 'sparkles', claude_code: 'terminal', headless: 'rocket', console: 'monitor', agent: 'user', system: 'shield', unknown: 'info',
 };
-/** The `X-Axhub-Session` pattern (decision #108). */
+/** The `X-Axhub-Session` pattern (decision 108). */
 export const SESSION_NAME = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,59}$/;
 
 export interface ApprovalSource { kind: SourceKind; session?: string; client?: string; clientVersion?: string; oauthClient?: string }
