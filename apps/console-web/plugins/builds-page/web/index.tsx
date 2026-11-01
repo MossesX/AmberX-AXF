@@ -51,8 +51,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('builds.open', () => rt.navigate(VIEW), { label: 'Open the Builds page' });
     start(rt);
   },
-  views: { [VIEW]: { title: 'Builds', icon: 'list', keywords: ['builds', 'steps', 'harvest', 'progress', 'pending', 'queue', 'orchestrator', 'rename', 'restore default'], render: () => <BuildsPage /> } },
-  nav: { label: 'Builds', items: [{ id: VIEW, label: 'Builds', icon: 'list', view: VIEW }] },
+  views: { builds: { title: 'Builds', icon: 'list', keywords: ['builds', 'steps', 'harvest', 'progress', 'pending', 'queue', 'orchestrator', 'rename', 'restore default'], render: () => <BuildsPage /> } },
+  nav: { label: 'Builds', items: [{ id: 'builds', label: 'Builds', icon: 'list', view: 'builds' }] }, // literal ids: scripts/menu-reach.mts reads them (= VIEW)
   settingsTabs: [{ id: FOLDER, label: 'Builds', icon: 'list', order: 88, parent: 'plugins', description: 'The one Builds page: views, selection, the banner number.' }],
   settings: [{
     id: 'builds.look', label: 'Builds page', icon: 'list', tab: FOLDER, order: 5,
