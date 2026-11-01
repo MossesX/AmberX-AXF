@@ -166,6 +166,8 @@ def _vps_call(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
 
 
 REGISTRY = health.Registry()
+# Plugins' auto-fixes may run one fixed VPS command the same way (veto call through Vinny, else Mosses).
+REGISTRY.vps_run = lambda command: healthchecks.veto_fix(command, _vps_call)
 MONITOR = health.Monitor(REGISTRY, lambda *a, **k: SVC.core.item(*a, **k), lambda: store.data_dir() / "health-state.json",
                          raise_alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys), log=cx.log,
                          mode_of=lambda cid: store.settings()["autoFix"].get(cid), recheck=_recheck, record=_record_fix)

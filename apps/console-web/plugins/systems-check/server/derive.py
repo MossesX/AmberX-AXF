@@ -154,7 +154,9 @@ def derive(item: Callable[..., Check]) -> list[Check]:
             if p.is_dir():
                 mode = stat.S_IMODE(p.stat().st_mode)
                 details.append(f"data {data_dir} ({oct(mode)})")
-                if mode & 0o077 and status == "ok":
+                # traverse-only for others (0711) is still private: nothing in it can be listed or read (the Activity
+                # banner's drop folders for other machine users' Claude Code hooks need it)
+                if mode & 0o066 and status == "ok":
                     status, summary = "warn", f"data folder {data_dir} is readable by other users ({oct(mode)}); Auto fix makes it owner-only"
                     FIXES[cid], row_fix = (lambda q=p: _lock_down(q)), AUTO
         row = item(cid, "plugins", f"{name} plugin", status, summary, details=details, fix=row_fix, order=71)
