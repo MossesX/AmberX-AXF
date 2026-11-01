@@ -60,5 +60,6 @@ export async function loadWalkthrough(id = process.env.WALKTHROUGH || 'amberx-ap
   const overrides = normalizeOverrides(readOverrides(out), mod.CHAPTERS);
   const WALKTHROUGH = { ...mod.WALKTHROUGH, voice: overrides.voice ?? mod.WALKTHROUGH.voice, speed: overrides.speed ?? mod.WALKTHROUGH.speed ?? 1 };
   const CHAPTERS = mod.CHAPTERS.map((c) => ({ ...c, scenes: c.scenes.map((s, i) => ({ ...s, say: overrides.lines[`${c.id}-${i}`] ?? s.say })) }));
-  return { WALKTHROUGH, CHAPTERS, walkthroughErrors: mod.walkthroughErrors, overrides };
+  // BASE: the script as written (what an edit is compared with, and what Reset goes back to)
+  return { WALKTHROUGH, CHAPTERS, BASE: mod.CHAPTERS, walkthroughErrors: mod.walkthroughErrors, overrides };
 }

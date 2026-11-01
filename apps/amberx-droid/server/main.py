@@ -90,10 +90,34 @@ USER_ROUTES = frozenset({("GET", "/api/health"), ("GET", "/api/me"), ("GET", "/a
                          ("POST", "/api/ai/prompt")})
 # The recorded walkthrough (walkthrough/rebuild.sh writes these into $AMBERX_DATA_DIR/walkthrough); nothing else is served.
 WALKTHROUGH_FILES = {"walkthrough.mp4": "video/mp4", "walkthrough.vtt": "text/vtt", "chapters.json": "application/json",
-                     "poster.jpg": "image/jpeg"}
+                     "poster.jpg": "image/jpeg", "script.json": "application/json"}
 WALKTHROUGH_COPY = re.compile(r"^walkthrough-(\d{3,4})\.mp4$")  # smaller download copies (walkthrough-720.mp4)
 WALKTHROUGH_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")  # other walkthroughs: $AMBERX_DATA_DIR/walkthrough/<id>/
 WALKTHROUGH_DEFAULT = "amberx-app"  # the AmberX tour, at the folder's top level
+# Voice edits from the Walkthrough page (walkthrough-voice@1), checked here before they go to the console's re-record call.
+# The same voices and limits as walkthrough/load.mjs.
+WALKTHROUGH_VOICES = frozenset({"en_US-kristin-medium", "en_US-amy-medium", "en_US-lessac-medium", "en_US-hfc_female-medium", "en_US-ljspeech-medium",
+                                "en_US-ryan-medium", "en_US-joe-medium", "en_US-hfc_male-medium", "en_GB-alba-medium", "en_GB-jenny_dioco-medium"})
+WALKTHROUGH_LINE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}-\d{1,3}$")
+WALKTHROUGH_RENDER = "/api/plugins/molly-guide/amberx-walkthrough/rerecord"
+WALKTHROUGH_MAX_EDITS = 64 * 1024
+
+
+def walkthrough_edits(raw: Any) -> dict[str, Any]:
+    """Voice edits made safe: a known voice, a speed in range, at most 600 lines of plain text (400 characters each)."""
+    o = raw if isinstance(raw, dict) else {}
+    lines: dict[str, str] = {}
+    for k, v in list((o.get("lines") if isinstance(o.get("lines"), dict) else {}).items())[:600]:
+        if isinstance(k, str) and WALKTHROUGH_LINE.match(k) and isinstance(v, str):
+            t = " ".join(re.sub(r"[\x00-\x1f\x7f]+", " ", v).split())[:400]
+            if t:
+                lines[k] = t
+    speed = o.get("speed")
+    out: dict[str, Any] = {"voice": o.get("voice") if o.get("voice") in WALKTHROUGH_VOICES else None,
+                           "speed": round(float(speed), 2) if isinstance(speed, (int, float)) and 0.75 <= speed <= 1.3 else None, "lines": lines}
+    if len(json.dumps(out)) > WALKTHROUGH_MAX_EDITS:
+        raise HTTPException(413, "too many edits for one re-voice (64 KB at most)")
+    return out
 CONSOLE_URL = (os.environ.get("AMBERX_CONSOLE_URL") or "http://axf-console:7090").rstrip("/")
 _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, fallback=lambda: os.environ.get("AMBERX_CONSOLE_TOKEN", ""))
 MOLLY_TIMEOUT = 300.0
@@ -245,6 +269,24 @@ def make_app(router: Router | None = None) -> FastAPI:
         if name == "walkthroughs.json":
             return walkthrough_list()
         return walkthrough_file(DATA / "walkthrough", WALKTHROUGH_DEFAULT, name, bool(download))
+
+    @app.post("/api/walkthrough/{wid}/render")
+    async def walkthrough_render(wid: str, request: Request) -> dict[str, Any]:
+        """Re-voice (voiceOnly) or re-record a walkthrough with the voice edits. Hub admins only (the wall's rule for every
+        write). The console sends it to axHub as a veto call; it runs on the VPS unless Brett denies it."""
+        if not WALKTHROUGH_ID.match(wid):
+            raise HTTPException(404, "no such walkthrough")
+        b = await body_of(request)
+        body = {"walkthrough": wid, "voiceOnly": b.get("voiceOnly") is not False, "overrides": walkthrough_edits(b.get("overrides"))}
+        c = console_client()
+        if c is None:
+            raise HTTPException(503, "The console isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
+        try:
+            r = await run_in_threadpool(c.call, "POST", WALKTHROUGH_RENDER, body, 30.0)
+        except ConsoleError as e:
+            raise HTTPException(502, f"The console didn't take it: {str(e)[:300]}") from None
+        r = r if isinstance(r, dict) else {}
+        return {"state": str(r.get("state") or "sent")[:20], "message": str(r.get("message") or "")[:400]}
 
     @app.get("/api/walkthrough/{wid}/{name}")
     def walkthrough_other(wid: str, name: str, download: int = 0) -> Any:

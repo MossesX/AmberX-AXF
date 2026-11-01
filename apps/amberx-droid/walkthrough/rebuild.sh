@@ -57,7 +57,7 @@ say "secrets scan"
 node "$HERE/check.mjs" --scan "$WORK"
 if [ -n "${NO_PUBLISH:-}" ]; then say "recorded in $WORK/publish (not published)"; exit 0; fi
 mkdir -p "$PUBLISH"
-cp "$WORK/publish/"walkthrough*.mp4 "$WORK/publish/"{walkthrough.vtt,chapters.json,poster.jpg} "$PUBLISH/"
+cp "$WORK/publish/"walkthrough*.mp4 "$WORK/publish/"{walkthrough.vtt,chapters.json,poster.jpg,script.json} "$PUBLISH/"
 chmod 644 "$PUBLISH"/*
 chown -R --reference="$PUBLISH/.." "$PUBLISH" 2>/dev/null || true   # same owner as AmberX's data folder
 say "published to $PUBLISH (AmberX → Walkthrough)"

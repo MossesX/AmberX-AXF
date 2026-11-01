@@ -335,6 +335,12 @@ main.console_client = lambda: fc
 mr = c.post("/api/ai/molly", headers=AP, json={"task": "is ci green", "page": "developer<x>"}).json()
 check("Molly: asks the console's walkthrough guide, answer + walkthrough title back", mr == {"answer": "CI is green.", "walkthrough": "Open CI"} and fc.calls[-1] == ("POST", main.MOLLY_ASK, {"task": "is ci green", "app": "amberx", "page": "developerx"}), (mr, fc.calls))
 check("Molly status: connected", c.get("/api/ai/molly/status", headers=A).json()["ok"] is True)
+# Re-voice a walkthrough with edits: checked here, then sent to the console's re-record call (a veto call on axHub)
+rv = c.post("/api/walkthrough/stack/render", headers=AP, json={"voiceOnly": True, "overrides": {"voice": "en_US-amy-medium", "speed": 5, "lines": {"open-0": "  Yo\n kid ", "Bad Key": "x", "open-1": 7}}})
+check("walkthrough re-voice: sent to the console with clean edits", rv.status_code == 200 and fc.calls[-1] == ("POST", main.WALKTHROUGH_RENDER,
+      {"walkthrough": "stack", "voiceOnly": True, "overrides": {"voice": "en_US-amy-medium", "speed": None, "lines": {"open-0": "Yo kid"}}}), (rv.status_code, fc.calls[-1:]))
+check("walkthrough re-voice: hub admins only", c.post("/api/walkthrough/stack/render", headers={**signed("ann", role="user", perms=""), "origin": ORIGIN}, json={}).status_code == 403)
+check("walkthrough re-voice: bad id refused", c.post("/api/walkthrough/Bad!/render", headers=AP, json={}).status_code == 404)
 main.console_client = _real
 
 # ---------------------------------------------------------------- console plugins (AI assistant, Agent manager) via the console

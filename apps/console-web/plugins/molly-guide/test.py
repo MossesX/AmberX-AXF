@@ -94,4 +94,12 @@ tool, args, why = fv.calls[0]
 check(tool == "vps.run" and "apps/amberx-droid/walkthrough/rebuild.sh" in args["command"] and args["command"].rstrip().endswith("&"), "rerecord: vps.run starts rebuild.sh in the background")
 check(why == "Re-record the AmberX walkthrough video", "rerecord: the veto notice says what it's for")
 check(c.get("/mg/amberx-walkthrough/rerecord").json()["state"] == "sent", "rerecord: status says it was sent")
+# the whole-stack walkthrough, re-voiced with edits from AmberX: base64 env, VOICE_ONLY, its own log, its own notice
+import base64 as _b64, json as _json, re as _re  # noqa: E402
+cmd, why2 = mg.rerecord_command("stack", True, {"voice": "en_US-amy-medium", "speed": 0.95, "lines": {"open-0": "Yo; rm -rf / $(x)"}})
+m = _re.search(r"VOICE_OVERRIDES_B64=([A-Za-z0-9+/=]+) ", cmd)
+check("WALKTHROUGH=stack VOICE_ONLY=1" in cmd and "rebuild-stack.log" in cmd and m and _json.loads(_b64.b64decode(m.group(1)))["lines"]["open-0"] == "Yo; rm -rf / $(x)"
+      and "rm -rf" not in cmd, "rerecord: edits travel base64 only, never as shell text")
+check(why2 == "Re-voice the stack walkthrough video", "rerecord: re-voice notice names the walkthrough")
+check(c.post("/mg/amberx-walkthrough/rerecord", json={"walkthrough": "bad id;"}).status_code == 400, "rerecord: bad walkthrough id refused")
 print(f"all {ok} checks passed")
