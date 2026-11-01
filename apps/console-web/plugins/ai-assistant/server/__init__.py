@@ -231,7 +231,7 @@ class LlmService:
 
 
 CLAUDE_PROTOCOLS = ("anthropic", "claude-cli")
-_NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota", re.I)
+_NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|(weekly|daily|session|5-hour) limit|hit your [a-z0-9 -]*limit|quota", re.I)
 
 
 def _credit_state(pid: str, prof: dict[str, Any]) -> dict[str, Any]:
