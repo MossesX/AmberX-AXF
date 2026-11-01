@@ -1,0 +1,2 @@
+- Never push to main without a green rerun. Never force. One build per run.
+- Bookkeeping files merge by keeping both sides; code files never.

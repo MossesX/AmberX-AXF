@@ -13,6 +13,7 @@ import { Banner } from './components/Banner';
 import { FrameBanners, Slot } from './components/Slots';
 import { WaitingForHub } from './components/Waiting';
 import { Note } from './components/Forms';
+import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
 import { placedParts } from './placement';
 
@@ -98,6 +99,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </main>
           <DialogHost dialogs={allDialogs} />
           <ToastHost />
+          <HelpLayer />
         </div>
       </div>
       </TabRenderersProvider>
@@ -163,6 +165,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
       <ToastHost />
       <ContextMenuHost />
       <FloatingWindowsHost />
+      {/* Help mode (components/Help.tsx): tooltips on every control, screen intros, What is this?; nothing while it's off */}
+      <HelpLayer />
     </div>
     <Slot name="app.frame.cover" />
     </div>

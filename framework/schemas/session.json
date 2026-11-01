@@ -1,0 +1,146 @@
+{
+  "$id": "axf/session",
+  "tag": "session@1",
+  "sources": [
+    "claude-ai-text",
+    "claude-ai-voice",
+    "claude-code",
+    "headless",
+    "hub-drop"
+  ],
+  "roles": [
+    "user",
+    "assistant",
+    "tool"
+  ],
+  "kinds": [
+    "speech",
+    "text",
+    "tool"
+  ],
+  "changes": [
+    "new",
+    "continued",
+    "changed"
+  ],
+  "idPattern": "^[a-z][a-z0-9-]{0,15}:[A-Za-z0-9._:-]{1,160}$",
+  "maxTitle": 300,
+  "maxText": 200000,
+  "required": [
+    "$axf",
+    "id",
+    "source",
+    "title",
+    "startedAt",
+    "updatedAt",
+    "project",
+    "messages",
+    "hash"
+  ],
+  "optional": [
+    "versions",
+    "via",
+    "origin",
+    "model",
+    "branch",
+    "cwd",
+    "host",
+    "meta"
+  ],
+  "messageRequired": [
+    "role",
+    "text",
+    "at",
+    "kind"
+  ],
+  "messageOptional": [
+    "toolName",
+    "id"
+  ],
+  "versionRequired": [
+    "version",
+    "hash",
+    "updatedAt",
+    "messageCount",
+    "change"
+  ],
+  "redact": [
+    {
+      "id": "private-key",
+      "pattern": "-----BEGIN [A-Z ]*PRIVATE KEY-----[\\s\\S]*?-----END [A-Z ]*PRIVATE KEY-----",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "anthropic-key",
+      "pattern": "\\bsk-ant-[A-Za-z0-9_-]{20,}",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "openai-key",
+      "pattern": "\\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "github-token",
+      "pattern": "\\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{30,}|\\bgithub_pat_[A-Za-z0-9_]{30,}",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "aws-key",
+      "pattern": "\\bAKIA[0-9A-Z]{16}",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "slack-token",
+      "pattern": "\\bxox[abposr]-[A-Za-z0-9-]{10,}",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "google-key",
+      "pattern": "\\bAIza[0-9A-Za-z_-]{35}",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "jwt",
+      "pattern": "\\beyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}",
+      "flags": "",
+      "pre": 0,
+      "post": 0
+    },
+    {
+      "id": "bearer",
+      "pattern": "(Bearer\\s+)(?!\\[redacted)[A-Za-z0-9._~+/=-]{16,}",
+      "flags": "i",
+      "pre": 1,
+      "post": 0
+    },
+    {
+      "id": "url-credentials",
+      "pattern": "(://[^/\\s:@]{1,64}:)[^@\\s/]{3,}(@)",
+      "flags": "",
+      "pre": 1,
+      "post": 2
+    },
+    {
+      "id": "secret-value",
+      "pattern": "((?:password|passwd|secret|token|api[_-]?key|access[_-]?key|client[_-]?secret)[\"']?\\s*[:=]\\s*[\"']?)(?![\\[$<{(])[^\\s\"'&,;]{6,}",
+      "flags": "i",
+      "pre": 1,
+      "post": 0
+    }
+  ]
+}

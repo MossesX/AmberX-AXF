@@ -1,0 +1,97 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "push-banner-help",
+  "name": "push-banner help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:push-banner. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:push-banner",
+    "entries": [
+      {
+        "target": "pull-in",
+        "title": "Pull main in",
+        "text": "Brings main's newer commits into this branch, so it can merge.",
+        "kind": "button"
+      },
+      {
+        "target": "hand-to-claude",
+        "title": "Hand to Claude",
+        "text": "Gives this to headless Claude Code on the VPS to sort out.",
+        "kind": "button"
+      },
+      {
+        "target": "hide-every-device",
+        "title": "Hide (every device)",
+        "text": "Hides it from the banner on every device.",
+        "kind": "button"
+      },
+      {
+        "target": "merge-into",
+        "title": "Merge",
+        "text": "Merges this PR — only once it's up to date with main and CI is green.",
+        "kind": "button"
+      },
+      {
+        "target": "repair-on-the-vps",
+        "title": "Repair on the VPS",
+        "text": "Fixes this checkout on the VPS (a veto call).",
+        "kind": "button"
+      },
+      {
+        "target": "remove-from-pull-failed-every-device",
+        "title": "Remove from Pull failed",
+        "text": "Takes it off the Pull failed list on every device.",
+        "kind": "button"
+      },
+      {
+        "target": "repair-all-on-the-vps",
+        "title": "Repair all on the VPS",
+        "text": "Fixes every broken checkout on the VPS.",
+        "kind": "button"
+      },
+      {
+        "target": "hand-every-failed-pull-to-headless-claude-code-on-the-vps",
+        "title": "Hand failed pulls to Claude",
+        "text": "Every pull that conflicts goes to headless Claude Code on the VPS by itself.",
+        "kind": "toggle"
+      },
+      {
+        "target": "pull-main-into-all",
+        "title": "Pull main into all",
+        "text": "Brings main into every branch that's behind.",
+        "kind": "button"
+      },
+      {
+        "target": "bring-mains-newer-commits-into-every-entry-in-this-group",
+        "title": "Pull main into the group",
+        "text": "Brings main's newer commits into every branch in this group.",
+        "kind": "button"
+      },
+      {
+        "target": "hand-failures-to-mosses-claude-code-on-the-vps",
+        "title": "Hand failures to Mosses",
+        "text": "Failures go to Mosses (Claude Code on the VPS) by itself.",
+        "kind": "toggle"
+      },
+      {
+        "target": "let-it-run-any-shell-command",
+        "title": "Any shell command",
+        "text": "Lets the fixer run any shell command. Leave it off unless you trust it.",
+        "kind": "toggle"
+      },
+      {
+        "target": "action:push-banner.check",
+        "title": "Branches not on main",
+        "text": "Shows “Branches not on main”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

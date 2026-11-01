@@ -7,8 +7,11 @@
  *
  * Design language (enterprise-branding s33): page head = eyebrow · title · one sentence, actions right; skeleton
  * cards while the first read runs (never a spinner for a list); the page can pop out into a floating window.
+ *
+ * Walkthrough (Nov 1 2026): the last card on Home opens the narrated walkthrough when the Walkthrough plugin is installed
+ * (its `walkthrough.open` action); without it the card isn't shown.
  */
-import { Button, Chip, useRuntime } from '../axf/react';
+import { Button, Chip, Container, useRuntime } from '../axf/react';
 import { HubStatusNote } from '../axf/libs/hub/react';
 import { ApprovalsList } from '../axf/libs/approvals/react';
 import { HUB, useApprovals } from '../hub/useHub';
@@ -42,6 +45,14 @@ export function Approvals() {
       ) : (
         // The shared expandable rows (lib-approvals, Nov 1 2026): who asked, the reason, Deny / Approve; tap or the caret for the details.
         <ApprovalsList hub={HUB} scope="amberx" empty={<p className="fx-muted">No call is waiting. Anything that writes, deletes or runs a command shows up here within a few seconds.</p>} />
+      )}
+      {rt.actions.get('walkthrough.open') && (
+        <Container title="Walkthrough" icon="play" className="amberx-approvals__walkthrough">
+          <p className="fx-muted">New here, or forgot where something lives? Amber walks you through every part of AmberX, in chapters you can skip.</p>
+          <div className="fx-row fx-row--wrap">
+            <Button tone="primary" icon="play" onClick={() => rt.dispatch('walkthrough.open')}>Watch the walkthrough</Button>
+          </div>
+        </Container>
       )}
     </div>
   );

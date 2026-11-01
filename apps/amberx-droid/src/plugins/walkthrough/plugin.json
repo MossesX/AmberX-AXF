@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.walkthrough",
+  "name": "Walkthrough",
+  "version": "0.1.0",
+  "description": "The narrated AmberX walkthrough video: chapters you can skip to, captions, playback speed; from Home, the AmberX menu and Help. Recorded by walkthrough/rebuild.sh and served behind the hub's wall.",
+  "builtWith": { "model": "opus", "builtAt": "2026-11-01" }
+}

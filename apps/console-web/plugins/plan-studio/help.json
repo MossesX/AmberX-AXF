@@ -1,0 +1,381 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "plan-studio-help",
+  "name": "plan-studio help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:plan-studio. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:plan-studio",
+    "entries": [
+      {
+        "target": "preview",
+        "title": "Preview",
+        "text": "Shows the plan as it'll read.",
+        "kind": "button"
+      },
+      {
+        "target": "remove-link",
+        "title": "Remove link",
+        "text": "Removes link. Depending on your behaviour theme it asks first. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "go",
+        "title": "Go",
+        "text": "Runs it.",
+        "kind": "button"
+      },
+      {
+        "target": "set-up-ai",
+        "title": "Set up AI",
+        "text": "Connects Claude so you can edit plans in plain English.",
+        "kind": "button"
+      },
+      {
+        "target": "plan",
+        "title": "Plan",
+        "text": "Which plan.",
+        "kind": "field"
+      },
+      {
+        "target": "one-line-about-it",
+        "title": "One line about it",
+        "text": "A short sentence on what the plan is.",
+        "kind": "field"
+      },
+      {
+        "target": "category",
+        "title": "Category",
+        "text": "Where the plan is filed, like Builds > Console.",
+        "kind": "field"
+      },
+      {
+        "target": "template",
+        "title": "Template",
+        "text": "Start from a ready-made outline.",
+        "kind": "field"
+      },
+      {
+        "target": "save-anyway",
+        "title": "Save anyway",
+        "text": "Saves anyway. Nothing is kept until you tap it. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-and-open",
+        "title": "Save and open",
+        "text": "Saves the plan and opens it.",
+        "kind": "button"
+      },
+      {
+        "target": "tree",
+        "title": "Tree",
+        "text": "Plans by category, as a tree.",
+        "kind": "tab"
+      },
+      {
+        "target": "sub-grids",
+        "title": "Sub-grids",
+        "text": "One grid per category.",
+        "kind": "tab"
+      },
+      {
+        "target": "coverage",
+        "title": "Coverage",
+        "text": "Which apps and plugins have plans and which don't.",
+        "kind": "tab"
+      },
+      {
+        "target": "look-again-new-plugins-and-apps-appear-by-themselves",
+        "title": "Look again (new plugins and apps appear by themselves)",
+        "text": "Shows “Look again (new plugins and apps appear by themselves)”. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "gaps",
+        "title": "Gaps",
+        "text": "What has no plan yet.",
+        "kind": "tab"
+      },
+      {
+        "target": "planned",
+        "title": "Planned",
+        "text": "Plans not built yet.",
+        "kind": "tab"
+      },
+      {
+        "target": "gone",
+        "title": "Gone",
+        "text": "Shows “Gone”. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "a-new-plan-instead",
+        "title": "A new plan instead",
+        "text": "Shows “A new plan instead”. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "plan-this",
+        "title": "Plan this",
+        "text": "Starts a plan for this gap.",
+        "kind": "button"
+      },
+      {
+        "target": "add-to-a-plan",
+        "title": "Add to a plan",
+        "text": "Adds this to an existing plan.",
+        "kind": "button"
+      },
+      {
+        "target": "add-a-planned-feature",
+        "title": "Add a planned feature",
+        "text": "Adds a planned feature. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "back-to-plans",
+        "title": "Back to plans",
+        "text": "Back to the list.",
+        "kind": "button"
+      },
+      {
+        "target": "talk",
+        "title": "Talk",
+        "text": "Talk the plan through out loud with AmberX.",
+        "kind": "button"
+      },
+      {
+        "target": "save-as-a-new-plan-anyway",
+        "title": "Save as a new plan anyway",
+        "text": "Saves as a new plan anyway. Nothing is kept until you tap it. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "keep-editing",
+        "title": "Keep editing",
+        "text": "Back to the editor; nothing is lost.",
+        "kind": "button"
+      },
+      {
+        "target": "summary",
+        "title": "Summary",
+        "text": "What the plan is, in a few lines.",
+        "kind": "field"
+      },
+      {
+        "target": "goal",
+        "title": "Goal",
+        "text": "What done looks like.",
+        "kind": "field"
+      },
+      {
+        "target": "priority",
+        "title": "Priority",
+        "text": "How soon it matters.",
+        "kind": "field"
+      },
+      {
+        "target": "build-profile",
+        "title": "Build profile",
+        "text": "Which profile it'll be built in.",
+        "kind": "field"
+      },
+      {
+        "target": "project",
+        "title": "Project",
+        "text": "Where you set “Project”. Change it and the app uses the new value. Part of Plan Studio.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "owner",
+        "title": "Owner",
+        "text": "Where you set “Owner”. Change it and the app uses the new value. Part of Plan Studio.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "target-date",
+        "title": "Target date",
+        "text": "When you'd like it done.",
+        "kind": "field"
+      },
+      {
+        "target": "tags",
+        "title": "Tags",
+        "text": "Where you set “Tags”. Change it and the app uses the new value. Part of Plan Studio.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "duplicate",
+        "title": "Duplicate",
+        "text": "Makes a copy of the plan.",
+        "kind": "button"
+      },
+      {
+        "target": "save-as-template",
+        "title": "Save as template",
+        "text": "Saves as template. Nothing is kept until you tap it. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-link",
+        "title": "Add link",
+        "text": "Adds link. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "write",
+        "title": "Write",
+        "text": "Back to writing the plan.",
+        "kind": "tab"
+      },
+      {
+        "target": "open-the-orchestrator",
+        "title": "Open the orchestrator",
+        "text": "Opens the build this plan turned into.",
+        "kind": "button"
+      },
+      {
+        "target": "check-progress",
+        "title": "Check progress",
+        "text": "How far its build has got.",
+        "kind": "button"
+      },
+      {
+        "target": "preview-steps",
+        "title": "Preview steps",
+        "text": "Shows the steps the orchestrator would split it into, before you commit.",
+        "kind": "button"
+      },
+      {
+        "target": "add-to-the-orchestrator",
+        "title": "Turn into a build",
+        "text": "Sends the plan to the Build orchestrator. Only then does it become a build.",
+        "kind": "button"
+      },
+      {
+        "target": "restore-v",
+        "title": "Restore v",
+        "text": "Restores v. What is there now is kept in the history. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-comment",
+        "title": "Add comment",
+        "text": "Adds a comment to the plan.",
+        "kind": "button"
+      },
+      {
+        "target": "plan-studio",
+        "title": "Plan Studio",
+        "text": "Its settings.",
+        "kind": "tab"
+      },
+      {
+        "target": "action:plan-studio.capture",
+        "title": "Quick capture",
+        "text": "Jots a plan down in one line; file it later.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "autosave-saved-plans-while-editing",
+        "title": "Autosave saved plans while editing",
+        "text": "Where you set “Autosave saved plans while editing”. Change it and the app uses the new value. Part of Plan Studio.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "apply-small-ai-edits-straight-away-with-undo",
+        "title": "Apply small AI edits straight away (with Undo)",
+        "text": "Where you set “Apply small AI edits straight away (with Undo)”. Change it and the app uses the new value. Part of Plan Studio.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-plan-on-the-banner",
+        "title": "Plan on the banner",
+        "text": "Shows the plan you're on in the banner.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-plan",
+        "title": "New plan",
+        "text": "Starts an empty plan.",
+        "kind": "button"
+      },
+      {
+        "target": "new-from-a-template",
+        "title": "New from a template",
+        "text": "Starts a plan from a ready-made outline.",
+        "kind": "button"
+      },
+      {
+        "target": "save-this-view",
+        "title": "Save this view",
+        "text": "Keeps these filters and this layout so you can come back to them.",
+        "kind": "button"
+      },
+      {
+        "target": "export-selected-or-all-as-markdown",
+        "title": "Export (selected, or all) as Markdown",
+        "text": "Exports (selected, or all) as Markdown. Keep it or share it. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "export-as-json",
+        "title": "Export as JSON",
+        "text": "Exports as JSON. Keep it or share it. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "tag",
+        "title": "Tag",
+        "text": "Shows “Tag”. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "previous-plan",
+        "title": "Previous plan",
+        "text": "Goes to the previous plan. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "next-plan",
+        "title": "Next plan",
+        "text": "Goes to the next plan. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "here-in-all",
+        "title": "here · in all",
+        "text": "Shows “here · in all”. Part of Plan Studio.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

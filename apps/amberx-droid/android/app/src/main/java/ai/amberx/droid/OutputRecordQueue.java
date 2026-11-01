@@ -36,6 +36,7 @@ final class OutputRecordQueue {
         String whenFull = "stop"; // stop | drop-oldest
         boolean skipSilent = true;
         String project = "amberx-recordings";
+        boolean mic = false;    // "Record my mic too": opt-in, off by default
     }
 
     static Settings settings(Context c) {
@@ -49,6 +50,7 @@ final class OutputRecordQueue {
         s.skipSilent = p.getBoolean("skipSilent", s.skipSilent);
         String proj = p.getString("project", s.project);
         s.project = proj != null && proj.matches("[a-z0-9][a-z0-9._-]{0,99}") && !proj.contains("..") ? proj : s.project;
+        s.mic = p.getBoolean("mic", false);
         return s;
     }
 
@@ -62,6 +64,7 @@ final class OutputRecordQueue {
         if (o.has("whenFull")) e.putString("whenFull", o.optString("whenFull"));
         if (o.has("skipSilent")) e.putBoolean("skipSilent", o.optBoolean("skipSilent"));
         if (o.has("project")) e.putString("project", o.optString("project"));
+        if (o.opt("mic") instanceof Boolean) e.putBoolean("mic", o.optBoolean("mic"));
         e.apply();
     }
 
@@ -72,10 +75,11 @@ final class OutputRecordQueue {
         c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("session.name", s.name).putString("session.group", s.group).putString("session.note", s.note)
             .putLong("session.startedAt", 0).putInt("session.parts", 0).putInt("session.uploaded", 0)
+            .putInt("session.mic", s.mic == null ? -1 : s.mic ? 1 : 0)
             .apply();
     }
 
-    /** The active session or null: {name, group, note, startedAt, parts, uploaded}. */
+    /** The active session or null: {name, group, note, startedAt, parts, uploaded, mic (true / false / null = the setting)}. */
     static JSONObject session(Context c) {
         SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         String name = p.getString("session.name", "");
@@ -83,7 +87,8 @@ final class OutputRecordQueue {
         try {
             return new JSONObject().put("name", name).put("group", p.getString("session.group", name))
                 .put("note", p.getString("session.note", "")).put("startedAt", p.getLong("session.startedAt", 0))
-                .put("parts", p.getInt("session.parts", 0)).put("uploaded", p.getInt("session.uploaded", 0));
+                .put("parts", p.getInt("session.parts", 0)).put("uploaded", p.getInt("session.uploaded", 0))
+                .put("mic", p.getInt("session.mic", -1) < 0 ? JSONObject.NULL : (Object) (p.getInt("session.mic", -1) == 1));
         } catch (JSONException e) {
             return null;
         }
@@ -111,8 +116,15 @@ final class OutputRecordQueue {
 
     static void clearSession(Context c) {
         c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-            .remove("session.name").remove("session.group").remove("session.note").remove("session.startedAt").remove("session.parts").remove("session.uploaded")
+            .remove("session.name").remove("session.group").remove("session.note").remove("session.startedAt").remove("session.parts").remove("session.uploaded").remove("session.mic")
             .apply();
+    }
+
+    /** Whether the next (or current) recording takes the mic: the session's choice, else the setting. */
+    static boolean micWanted(Context c) {
+        JSONObject s = session(c);
+        Object m = s == null ? null : s.opt("mic");
+        return RecorderControl.micFor(m instanceof Boolean ? (Boolean) m : null, settings(c).mic);
     }
 
     private static int pick(int v, int[] allowed, int d) {

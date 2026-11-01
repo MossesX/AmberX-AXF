@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // rebuild-shots — screenshots of the web Dev Console for rebuild logs (rebuild-log rule, Oct 20 2026).
 //
-//   node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> [--label before|after] [--web-port N] [--env K=V …]
+//   node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> [--label before|after] [--web-port N] [--env K=V …] [--nav-timeout ms]
 //
 // --web-port pins Vite's port (an app that must be on a known origin, e.g. allow-listed on a local axHub); --env adds
 // variables for the API and Vite (AXF_APPEARANCE_HUB=http://127.0.0.1:18080 points the console at a local hub). A shot
@@ -69,7 +69,9 @@ try {
       // "userAgent" (a host app's marker, e.g. "AXF-Embed/patches") and "path" (e.g. "/?axf-embed=patches") show the console as another app embeds it (embed@1).
       const ctx = await browser.newContext({ ...VIEWPORTS[vp], colorScheme: shot.colorScheme || 'dark', ...(shot.userAgent ? { userAgent: `Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36 ${shot.userAgent}` } : {}) });
       await ctx.addInitScript((t) => { try { localStorage.setItem('axf-console:token', t); } catch { /* blocked */ } }, token);
-      const page = await ctx.newPage(); page.on('pageerror', (e) => console.error(`[page error] ${shot.name}: ${e.message}\n${(e.stack ?? '').split('\n').slice(0, 4).join('\n')}`));
+      const page = await ctx.newPage(); page.setDefaultNavigationTimeout(Number(args['nav-timeout']) || 30_000); page.on('pageerror', (e) => console.error(`[page error] ${shot.name}: ${e.message}\n${(e.stack ?? '').split('\n').slice(0, 4).join('\n')}`));
+      // AXF_SHOTS_DEBUG=1: the page's console errors too (a React render crash shows only there)
+      if (process.env.AXF_SHOTS_DEBUG) page.on('console', (m) => { if (m.type() === 'error') console.error(`[console] ${shot.name}/${vp}: ${m.text().slice(0, 600)}`); });
       if (shot.signIn) {
         // a hub session first (local axHub): post its sign-in form, keep the cookie in this context
         await page.goto(shot.signIn.url, { waitUntil: 'load' });

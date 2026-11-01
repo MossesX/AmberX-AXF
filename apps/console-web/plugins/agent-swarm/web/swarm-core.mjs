@@ -32,6 +32,8 @@ export function normAgent(a) {
     name: str(o.name, 60) || str(o.id, 40),
     role: str(o.role, 80),
     skill: str(o.skill, 40),
+    // hired for recurring job types (job-type@1) only: the build planner never hands them build steps
+    jobsOnly: o.jobsOnly === true,
     specialty: str(o.specialty, 200),
     keywords: list(o.keywords, 40, 40).map((k) => k.toLowerCase()),
     paths: list(o.paths, 40, 200),
@@ -181,7 +183,7 @@ export function planJobs(builds, roster, opts = {}) {
     for (const s of b.steps ?? []) {
       if ((s.done === true && !opts.includeDone) || s.skip === true) continue;
       const files = stepFiles(s);
-      const pool = roster.agents.filter((a) => eligible(a, { stepId: s.id, buildId: b.id, estimate: s.estimate }));
+      const pool = roster.agents.filter((a) => !a.jobsOnly && eligible(a, { stepId: s.id, buildId: b.id, estimate: s.estimate }));
       const want = requiredTier(s, null); // agents that can reach the job's tier come first
       const able = pool.filter((a) => !pickModel(a, want).short);
       const hit = matchAgent(s.text, files, able.length ? able : pool);
@@ -570,7 +572,9 @@ export function normState(s, roster) {
   for (const a of roster?.agents ?? []) agents[a.id] = normAgentState(o.agents?.[a.id]);
   for (const [k, v] of Object.entries(o.agents ?? {})) if (!agents[k]) agents[k] = normAgentState(v); // keep history of agents taken off the roster
   const rules = { rageQuitAfter: num(o.rules?.rageQuitAfter, DEFAULT_RULES.rageQuitAfter, 1, 50) | 0 };
-  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), chatSettings: normChatSettings(o.chatSettings), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })), cards: normCards(o.cards) };
+  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), chatSettings: normChatSettings(o.chatSettings), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })), cards: normCards(o.cards),
+    // one-tap hires for job types (agent-jobs): agents and their skill pages, kept here (the roster file is hand-kept)
+    hired: (Array.isArray(o.hired) ? o.hired : []).slice(0, 50).map(normAgent).filter((a) => ID.test(a.id)), hiredSkills: Object.fromEntries(Object.entries(o.hiredSkills && typeof o.hiredSkills === 'object' ? o.hiredSkills : {}).slice(0, 50).map(([k, v]) => [str(k, 40), { id: str(k, 40), title: str(v?.title, 80), body: str(v?.body, SKILL_MAX_CHARS) }])) };
 }
 
 export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || 'Custom' : STATUSES[as.status]?.label ?? as.status);

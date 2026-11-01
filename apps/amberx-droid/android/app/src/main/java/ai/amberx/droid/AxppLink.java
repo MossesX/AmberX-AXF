@@ -28,7 +28,8 @@ import org.json.JSONObject;
  *  - `recorder.start` sets the session ({@link RecorderControl#sessionOf}) and opens the recorder's own consent flow
  *    ({@link OutputRecordStartActivity}: Android's capture prompt, every start) at once where Android lets it, plus a
  *    "Start recording: <session>" notification that opens it with one tap. Approval happened on axHub (Brett's Approve);
- *    Android's prompt is the phone's own second yes. The microphone is never involved.
+ *    Android's prompt is the phone's own second yes. The mic only joins when the start says `mic: true` (axHub's
+ *    approval then reads "Playback + MIC") or, with no `mic`, when "Record my mic too" is on.
  *  - `recorder.stop` stops it the same way the notification's Stop does.
  *  - `recorder.status` answers on/off, since, session, current file, uploaded parts and the queue.
  */
@@ -166,7 +167,7 @@ final class AxppLink {
         }
     }
 
-    /** What `recorder_status` shows: on/off, since, session, current file, uploaded parts, the queue; never the mic. */
+    /** What `recorder_status` shows: on/off, since, session, current file, uploaded parts, the queue, the mic. */
     static JSONObject status(Context c) throws Exception {
         JSObject up = OutputRecordUploader.status(c);
         JSObject rec = OutputRecordService.status();
@@ -175,7 +176,10 @@ final class AxppLink {
             .put("running", OutputRecordService.running)
             .put("since", rec.has("startedAt") && !rec.isNull("startedAt") ? rec.getString("startedAt") : JSONObject.NULL)
             .put("currentFile", OutputRecordService.running && OutputRecordService.currentName != null ? OutputRecordService.currentName : JSONObject.NULL)
-            .put("mic", false)
+            .put("mic", OutputRecordService.running && OutputRecordService.micOn)
+            .put("micBusy", OutputRecordService.running && OutputRecordService.micBusy != null ? OutputRecordService.micBusy : JSONObject.NULL)
+            // the hub's approval title reads this when a start leaves `mic` out ("Record my mic too" on the phone)
+            .put("micDefault", OutputRecordQueue.settings(c).mic)
             .put("queue", new JSONObject()
                 .put("waiting", up.getInteger("waiting", 0))
                 .put("waitingBytes", up.optLong("waitingBytes"))
@@ -209,8 +213,10 @@ final class AxppLink {
             PendingIntent open = PendingIntent.getActivity(c, 3, OutputRecordStartActivity.intent(c), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
             Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL) : new Notification.Builder(c);
             b.setSmallIcon(android.R.drawable.ic_btn_speak_now)
-                .setContentTitle("Start recording: " + s.name)
-                .setContentText("Approved on axHub. Tap to allow Android's capture prompt (phone audio only, mic off).")
+                .setContentTitle("Start recording: " + s.name + (OutputRecordQueue.micWanted(c) ? " (Playback + MIC)" : ""))
+                .setContentText(OutputRecordQueue.micWanted(c)
+                    ? "Approved on axHub. Tap to allow Android's capture prompt (phone audio + your mic)."
+                    : "Approved on axHub. Tap to allow Android's capture prompt (phone audio only, mic off).")
                 .setContentIntent(open)
                 .setAutoCancel(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(10 * 60_000L);

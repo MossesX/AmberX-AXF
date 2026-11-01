@@ -1,11 +1,11 @@
 # Audio Output Recorder
 
-Records everything the phone **plays** while it's on and keeps it on axHub. **Never the microphone.**
+Records everything the phone **plays** while it's on and keeps it on axHub. **The mic only when you turn it on** (opt-in "Record my mic too", below).
 
 - **Turn it on:** AmberX → Media → Audio out → the switch, or the quick-settings tile **Record audio out**, or say
   "record audio out". Android asks for capture consent every start (its own "Start recording or casting?" prompt) and
   shows a notification while it records, with Stop. The first time it also asks for the audio permission (Android files
-  playback capture under it; the recorder never opens the mic) and for notifications.
+  playback capture under it; the mic is opened only for the opt-in mic track) and for notifications.
 - **What it can't hear:** phone and VoIP calls (Android never offers call audio to capture) and apps that opt out of
   capture (DRM video, some music apps): those parts are silent. Android 10 or newer.
 - **Chunks:** AAC in `.m4a`, 30 minutes each by default, named by start time (`20261030-101500-k3x9`). Silent-all-through
@@ -35,3 +35,22 @@ quality. A binary upload endpoint on axHub (bigger files, real delete) would lif
   `OutputRecordStartActivity` (the one consent flow), `OutputRecordTile`, `OutputRecorderPlugin` (the bridge).
   The capture path is Audio Extract's (PR #187) without the screen; `AudioExtractPlugin.offer` takes the hand-over.
 - Test: `node --experimental-strip-types apps/console-web/plugins/output-recorder/test.mts` (or `npx -y tsx …`).
+
+## Opt-in mic ("Record my mic too", Nov 1 2026)
+
+- **Off by default.** Settings → Plugins → Audio Output Recorder → Microphone. Turning it on asks Android for the
+  microphone only then (AmberX usually has it already: playback capture and hands-free use the same permission).
+  A start from axHub can choose for itself: `amberx.recorder_start {…, mic: true|false}` (left out = this setting);
+  the approval then reads `Start recording: <session> (Playback + MIC)` or `(Playback only)`.
+- **Two tracks per chunk:** stereo AAC, **left = mic, right = playback**, one timeline (`TwoTrack.java`). Same 30-minute
+  chunks, names and upload. The index adds `mic: true`, `tracks: {left: "mic", right: "playback"}`, `micBusy`
+  (`[{fromMs, toMs, reason}]`) and `micBusyMs`.
+- **Mic busy:** when Android won't open the mic or silences it (`AudioRecordingConfiguration.isClientSilenced`, e.g.
+  the Claude app's voice mode or a call holds it), the left side is silence, the span is kept in `micBusy` and a
+  notification says "Mic busy: recording playback only". The recording never fails over it. Source is
+  `VOICE_RECOGNITION` (not privacy-sensitive), so AmberX never takes the mic away from a call or the Claude app; echo
+  canceller and noise suppressor are added when the phone has them.
+- **Privacy:** the notification reads "Recording: playback + mic" with **Stop mic** (lets go of the mic at once, the
+  playback recording goes on). The mic is released whenever the recording stops, and nothing records without the
+  approved start (or your own switch / tile) plus Android's capture prompt. The mic picks up anyone in the room.
+- **One owner:** a plain capture, no recognizer and no new listener: events still go to the one recorder listener.

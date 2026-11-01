@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
 import { compileLayout, layoutVars } from '../core/engines/layout';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
@@ -91,6 +92,75 @@ write('agent-card.json', {
     'too-many': agentCardErrors('agent-card', { front: Array(13).fill('name') }),
     'not-an-object': agentCardErrors('agent-card', 'nope'),
     'other-type': agentCardErrors('button', { design: 'poster' }),
+  },
+});
+// Help mode (help@1; core/engines/help-rules.mjs): auto help ids, packs, the index (later wins, drafts never beat written), intros, coverage, ratchet, errors.
+const HELP_PACKS = [
+  { id: 'framework', data: { entries: [
+    { target: 'refresh', title: 'Refresh', text: 'Reloads it.' },
+    { target: 'action:app.settings', title: 'Settings', text: 'Opens Settings.' },
+    { target: 'view:home', title: 'Home', text: 'The front page.' },
+    { target: 'deny', title: 'Deny', text: 'Drops it.', draft: true },
+  ], intros: [{ screen: 'home', title: 'Home', steps: [{ say: 'Cards up top.', target: 'view:home' }, { say: 'Banners live.', do: 'nav:home' }] }] } },
+  { id: 'app', data: { entries: [
+    { target: 'refresh', title: 'Refresh (app)', text: 'Reloads it from the hub.' },
+    { target: 'deny', title: 'Deny', text: 'Never runs.' },
+    { target: 'builds/refresh', title: 'Refresh builds', text: 'Reloads the builds.' },
+    { target: 'action:app.settings', title: 'Settings (draft)', text: 'x', draft: true },
+  ] } },
+];
+const HELP_INDEX = buildHelpIndex(HELP_PACKS);
+const helpIndexJson = (ix: ReturnType<typeof buildHelpIndex>) => ({ byTarget: Object.fromEntries([...ix.byTarget].sort(([a], [b]) => a.localeCompare(b))), intros: Object.fromEntries(ix.intros) });
+write('help.json', {
+  slugs: Object.fromEntries(['Approve now (3)', 'Approvals 12 new', 'Save…', 'What is this?', 'Don’t show intros again', 'h1 size', 'Step 2 of 4', '', '  Copy JSON  ', 'Top 10 — 50%'].map((l) => [l, slugLabel(l)])),
+  targets: {
+    'menu-item': helpTarget({ action: 'app.settings', label: 'Settings', screen: 'builds' }),
+    'param-action': helpTarget({ action: 'swap:color-theme:next', label: 'Next color theme' }),
+    'nav-action': helpTarget({ action: 'nav:builds', label: 'Builds' }),
+    'nav-item': helpTarget({ view: 'plan-studio', label: 'Plan Studio', screen: 'home' }),
+    'explicit': helpTarget({ help: 'approval-deny', label: 'Deny: vps.run', screen: 'home' }),
+    'label-only': helpTarget({ label: 'Refresh (2)', screen: 'builds' }),
+    'column': helpTarget({ label: 'Status ▲', column: true, screen: 'builds' }),
+    'banner': helpTarget({ banner: 'approvals', label: '3 waiting' }),
+    'menu': helpTarget({ menu: 'file', label: 'File' }),
+    'nothing': helpTarget({ label: '…' }),
+  },
+  packs: Object.fromEntries(HELP_PACKS.map((p) => [p.id, normalizeHelpPack(p.data)])),
+  index: helpIndexJson(HELP_INDEX),
+  resolve: {
+    'screen-override': resolveHelp(HELP_INDEX, helpTarget({ label: 'Refresh', screen: 'builds' }).lookup)?.title ?? null,
+    'later-pack-wins': resolveHelp(HELP_INDEX, helpTarget({ label: 'Refresh', screen: 'home' }).lookup)?.title ?? null,
+    'written-beats-draft': resolveHelp(HELP_INDEX, helpTarget({ action: 'app.settings', label: 'Settings' }).lookup)?.title ?? null,
+    'draft-replaced': resolveHelp(HELP_INDEX, ['deny'])?.text ?? null,
+    'falls-back-to-label': resolveHelp(HELP_INDEX, helpTarget({ action: 'refresh.all', label: 'Refresh' }).lookup)?.title ?? null,
+    'missing': resolveHelp(HELP_INDEX, helpTarget({ label: 'Frobnicate' }).lookup),
+  },
+  intros: {
+    'first-time': introToShow({ mode: true, seen: [], screen: 'home', index: HELP_INDEX }),
+    'mode-off': introToShow({ mode: false, seen: [], screen: 'home', index: HELP_INDEX }),
+    'seen': introToShow({ mode: true, seen: ['home'], screen: 'home', index: HELP_INDEX }),
+    'intros-off': introToShow({ mode: true, intros: false, seen: [], screen: 'home', index: HELP_INDEX }),
+    'no-intro': introToShow({ mode: true, seen: [], screen: 'plan', index: HELP_INDEX }),
+    'walkthrough': introToWalkthrough(HELP_INDEX.intros.get('home')!, 'console'),
+    'mark-seen': markSeen(['plan', 'home'], 'plan'),
+  },
+  coverage: helpCoverage([
+    { id: 'refresh', lookup: helpTarget({ label: 'Refresh' }).lookup },
+    { id: 'refresh', lookup: helpTarget({ label: 'Refresh' }).lookup },
+    { id: 'action:app.settings', lookup: helpTarget({ action: 'app.settings', label: 'Settings' }).lookup },
+    { id: 'frobnicate', lookup: ['frobnicate'], kind: 'button', label: 'Frobnicate' },
+  ], HELP_INDEX),
+  ratchet: {
+    ok: ratchetErrors({ app: { percent: 80, covered: 10, written: 5 } }, { app: { percent: 80, covered: 10, written: 5 } }),
+    fell: ratchetErrors({ app: { percent: 70.5, covered: 9, written: 4 } }, { app: { percent: 80, covered: 10, written: 5 } }),
+    'scope-gone': ratchetErrors({}, { app: { percent: 80, covered: 10 } }),
+  },
+  errors: {
+    ok: helpErrors('help', HELP_PACKS[0]!.data),
+    'not-an-object': helpErrors('help', 'nope'),
+    'bad-entries': helpErrors('help', { entries: [{ target: 'Bad Id', title: '', text: 'x' }, { target: 'a', title: 'A', text: 'x'.repeat(601), link: 'javascript:alert(1)', related: ['ok', 'Not Ok'], kind: 'widget', draft: 'yes' }, { target: 'a', title: 'A', text: 'again' }, 7] }),
+    'bad-intros': helpErrors('help', { intros: [{ screen: 'home', steps: [] }, { screen: 'home', steps: [{ say: '' }, { say: 'ok', do: 'javascript:x' }] }, { screen: 'BAD', steps: Array(7).fill({ say: 'x' }) }] }),
+    'other-type': helpErrors('button', { entries: 'nope' }),
   },
 });
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));

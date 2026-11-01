@@ -20,8 +20,8 @@ export const APPEARANCE_PROJECT = 'shared';
 export const APPEARANCE_PATH = 'settings/appearance.json';
 /** Largest document an app accepts (the hub's data API caps at 64 KB; this is far below). */
 export const APPEARANCE_MAX_BYTES = 16 * 1024;
-/** Slots an appearance document never carries: access policies come from the account / the app, never from shared data. */
-export const APPEARANCE_NEVER: readonly string[] = ['uac-policy'];
+/** Slots an appearance document never carries: access policies come from the account / the app, never from shared data; help packs are all in force at once (no pick to share). */
+export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help'];
 
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const COLOR = /^(#[0-9a-f]{3,8}|rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*(,\s*[\d.]+\s*)?\))$/i;

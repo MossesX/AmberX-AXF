@@ -43,11 +43,15 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
       - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
+      - run: node framework/spec/check-github-app.mjs                # github-app@1 broker: manifest, callback exchange, file modes, JWT, token cache, git/gh helpers, user refresh, health
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
+      - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
+      - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
@@ -140,6 +144,9 @@ jobs:
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
+            npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
+            npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch
+            npx -y tsx framework/spec/check-help-mode.mts              # Help mode in the DOM (jsdom): switch, hover / long-press / badge tooltips, dismiss, No help yet, What is this?, intro once per screen
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
@@ -166,6 +173,7 @@ jobs:
             python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
             node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
             node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
+            node framework/spec/check-github-app.mjs                  # github-app@1 broker against a fake GitHub
             python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
             npx -y tsx framework/spec/check-plugin-inventory.mts
             npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)

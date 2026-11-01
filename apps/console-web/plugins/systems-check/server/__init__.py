@@ -18,7 +18,7 @@ every item `since` and `breaks`, and pushes each new red item once to AmberX thr
   POST secret/test                  test a key without saving it
   GET  health | POST health/run     health@1 (Oct 30 2026): every registered live check and its latest answer; run now
   POST health/autofix/{id}         run a check's auto-fix now (Auto fix button; "ask first" checks)
-  GET  github | PUT github         github@1: does GitHub through axHub work, and the route (hub | local)
+  GET  github | PUT github         github@1: does GitHub through axHub work, and the route (hub | local | auto)
   POST fix/{id}                     run a check's automatic fix
   POST mosses/{id} | GET mosses     Auto fix for every other check: handed to Mosses as a task (he runs commands through
                                     axHub, each approved); GET says whether he can take one and, if not, exactly why
@@ -248,13 +248,14 @@ def health_autofix(cid: str) -> dict[str, Any]:
 
 
 class RouteReq(BaseModel):
-    route: str = Field(pattern=r"^(hub|local)$")
+    route: str = Field(pattern=r"^(hub|local|auto)$")
 
 
 @router.get("/github")
 def github_status(refresh: bool = False) -> dict[str, Any]:
     """github@1: the route and whether GitHub through axHub works (never the hub's or the console's token)."""
-    return {**GITHUB.status(refresh), "local": bool(os.environ.get("GITHUB_TOKEN"))}
+    return {**GITHUB.status(refresh), "local": bool(os.environ.get("GITHUB_TOKEN")), "saved": store.settings().get("githubRoute", "auto"),
+            "app": os.environ.get("AXF_GITHUB_TOKEN_SOURCE") == "app"}
 
 
 @router.put("/github")

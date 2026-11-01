@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "alerts-bell-help",
+  "name": "alerts-bell help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:alerts-bell. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:alerts-bell",
+    "entries": [
+      {
+        "target": "open-alerts",
+        "title": "Open alerts",
+        "text": "Opens alerts. Part of Alerts bell.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-the-alerts-bell-on-the-banner",
+        "title": "Show the alerts bell on the banner",
+        "text": "Where you set “Show the alerts bell on the banner”. Change it and the app uses the new value. Part of Alerts bell.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "alerts-bell",
+        "title": "Alerts bell",
+        "text": "Shows the “Alerts bell” part of this screen. Part of Alerts bell.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

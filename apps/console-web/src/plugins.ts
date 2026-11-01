@@ -55,6 +55,8 @@ export interface PluginStatus {
 
 const manifests = import.meta.glob(['../plugins/*/plugin.json', '!../plugins/_*/**'], { eager: true, import: 'default' }) as Record<string, PluginManifest>;
 const webParts = import.meta.glob(['../plugins/*/web/index.tsx', '!../plugins/_*/**'], { eager: true }) as Record<string, { plugin?: AxfWebLibrary }>;
+// Each plugin's own help (help@1 data; plugin.json `help`, default `help.json`): ships and uninstalls with the plugin.
+const helpFiles = import.meta.glob(['../plugins/*/help.json', '!../plugins/_*/**'], { eager: true, import: 'default' }) as Record<string, AxfWebLibrary['help']>;
 
 const folderOf = (path: string) => path.split('/')[2] ?? '';
 
@@ -68,7 +70,11 @@ export const bundledPlugins: BundledPlugin[] = Object.entries(manifests)
     else if (!web) out.problem = 'no web/index.tsx';
     else if (!web.plugin || typeof web.plugin !== 'object') out.problem = 'web/index.tsx does not export `plugin`';
     else if (web.plugin.id !== manifest.id) out.problem = `web part id "${web.plugin.id}" differs from plugin.json id "${manifest.id}"`;
-    else out.library = web.plugin;
+    else {
+      out.library = web.plugin;
+      const help = helpFiles[`../plugins/${folder}/help.json`];
+      if (help && !web.plugin.help) web.plugin.help = help;
+    }
     return out;
   })
   .sort((a, b) => a.manifest.name.localeCompare(b.manifest.name));

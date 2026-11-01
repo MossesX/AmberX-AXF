@@ -37,6 +37,23 @@ public class RecorderControlTest {
     }
 
     @Test
+    public void micIsTheStartsChoiceElseTheSettingWhichIsOffByDefault() throws Exception {
+        assertEquals(null, RecorderControl.sessionOf(new JSONObject().put("session_name", "x")).mic); // left out = the setting
+        assertEquals(Boolean.TRUE, RecorderControl.sessionOf(new JSONObject().put("session_name", "x").put("mic", true)).mic);
+        assertEquals(Boolean.FALSE, RecorderControl.sessionOf(new JSONObject().put("session_name", "x").put("mic", false)).mic);
+        try { RecorderControl.sessionOf(new JSONObject().put("session_name", "x").put("mic", "yes")); fail(); } catch (IllegalArgumentException expected) { /* booleans only */ }
+        // axHub filled it from the setting it last saw: on only while the setting is still on; off stays off
+        assertEquals(null, RecorderControl.sessionOf(new JSONObject().put("session_name", "x").put("mic", true).put("mic_source", "default")).mic);
+        assertEquals(Boolean.FALSE, RecorderControl.sessionOf(new JSONObject().put("session_name", "x").put("mic", false).put("mic_source", "default")).mic);
+        assertEquals(Boolean.TRUE, RecorderControl.sessionOf(new JSONObject().put("session_name", "x").put("mic", true).put("mic_source", "call")).mic);
+        assertFalse(RecorderControl.micFor(null, false));
+        assertTrue(RecorderControl.micFor(null, true));
+        assertTrue(RecorderControl.micFor(true, false));
+        assertFalse(RecorderControl.micFor(false, true));
+        assertFalse(new OutputRecordQueue.Settings().mic); // "Record my mic too" is off by default
+    }
+
+    @Test
     public void commands() {
         assertTrue(RecorderControl.known("recorder.start"));
         assertTrue(RecorderControl.known("recorder.stop"));

@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "build-orchestrator-help",
+  "name": "build-orchestrator help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:build-orchestrator. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:build-orchestrator",
+    "entries": [
+      {
+        "target": "only",
+        "title": "Only",
+        "text": "Shows only this kind.",
+        "kind": "button"
+      },
+      {
+        "target": "keep",
+        "title": "Keep",
+        "text": "Keeps this step in the build.",
+        "kind": "button"
+      },
+      {
+        "target": "add-note",
+        "title": "Add note",
+        "text": "Adds a note to this build, for you or the next session.",
+        "kind": "button"
+      },
+      {
+        "target": "save-rules",
+        "title": "Save rules",
+        "text": "Saves the token rules every session follows.",
+        "kind": "button"
+      },
+      {
+        "target": "hidden",
+        "title": "Hidden",
+        "text": "Builds you hid from the list. Tap to see them.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}
