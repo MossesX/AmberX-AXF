@@ -1,0 +1,284 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ai-assistant-help",
+  "name": "ai-assistant help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:ai-assistant. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ai-assistant",
+    "entries": [
+      {
+        "target": "action:ai-assistant.open",
+        "title": "Ask the assistant",
+        "text": "Asks the assistant. Part of AI assistant.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "open-the-setup-wizard",
+        "title": "Open the setup wizard",
+        "text": "Opens the setup wizard. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "new-chat",
+        "title": "New chat",
+        "text": "Starts a new chat. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "hide-conversations",
+        "title": "Hide conversations",
+        "text": "Hides conversations. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "chats",
+        "title": "Chats",
+        "text": "Shows “Chats”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "archived",
+        "title": "Archived",
+        "text": "Shows “Archived”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "msgs",
+        "title": "msgs ·",
+        "text": "Shows “msgs ·”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "conversations",
+        "title": "Conversations",
+        "text": "Shows “Conversations”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "chat-settings",
+        "title": "Chat settings",
+        "text": "Opens the chat settings. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "cancel-edit",
+        "title": "Cancel edit",
+        "text": "Cancels edit. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-context",
+        "title": "Remove context",
+        "text": "Removes context. Depending on your behaviour theme it asks first. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-image",
+        "title": "Remove image",
+        "text": "Removes image. Depending on your behaviour theme it asks first. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-file",
+        "title": "Remove file",
+        "text": "Removes file. Depending on your behaviour theme it asks first. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "attach-images-or-text-files",
+        "title": "Attach images or text files",
+        "text": "Attaches images or text files. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "attach-the-current-console-view-as-context",
+        "title": "Attach the current console view as context",
+        "text": "Attaches the current console view as context. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "edit-and-resend",
+        "title": "Edit and resend",
+        "text": "Edits and resend. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "regenerate",
+        "title": "Regenerate",
+        "text": "Shows “Regenerate”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "continue-this-reply",
+        "title": "Continue this reply",
+        "text": "Shows “Continue this reply”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "fork-from-here",
+        "title": "Fork from here",
+        "text": "Shows “Fork from here”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-model",
+        "title": "Add model",
+        "text": "Adds model. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-chat-dialog",
+        "title": "Open chat dialog",
+        "text": "Opens chat dialog. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "chat-page",
+        "title": "Chat page",
+        "text": "Opens the chat page. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-axhub-approvals-in-the-chat-title-bar",
+        "title": "Show axHub approvals in the chat title bar",
+        "text": "Where you set “Show axHub approvals in the chat title bar”. Change it and the app uses the new value. Part of AI assistant.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "ai-assistant",
+        "title": "AI assistant",
+        "text": "Shows the “AI assistant” part of this screen. Part of AI assistant.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "view:ai-assistant.chat",
+        "title": "AI assistant",
+        "text": "Opens the AI assistant screen. The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, ",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "fetch",
+        "title": "Fetch",
+        "text": "Shows “Fetch”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "all-assistant-settings",
+        "title": "All assistant settings",
+        "text": "Opens the all assistant settings. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "get-a-key",
+        "title": "Get a key",
+        "text": "Opens Get a key.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "finish-setup",
+        "title": "Finish setup",
+        "text": "Finishes setup. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "try-it-now",
+        "title": "Try it now",
+        "text": "Tries it now. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-prompt",
+        "title": "Add prompt",
+        "text": "Adds prompt. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "save-prompts",
+        "title": "Save prompts",
+        "text": "Saves prompts. Nothing is kept until you tap it. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "end",
+        "title": "End",
+        "text": "Shows “End”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "microphone-agent-voice-isnt-installed",
+        "title": "Microphone (Agent voice isn't installed)",
+        "text": "Shows “Microphone (Agent voice isn't installed)”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "its-installed-but-off-switch-it-on",
+        "title": "It's installed but off? Switch it on",
+        "text": "Shows “It's installed but off? Switch it on”. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "install-it-with",
+        "title": "Install it with",
+        "text": "Installs it with. Part of AI assistant.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:plugins-menu.install",
+        "title": "Install it",
+        "text": "Installs it. Part of AI assistant.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:plugin-manager.install",
+        "title": "Install from the catalog",
+        "text": "Installs from the catalog. Part of AI assistant.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

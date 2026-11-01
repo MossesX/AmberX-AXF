@@ -1,0 +1,81 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "plugin-manager-help",
+  "name": "plugin-manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:plugin-manager. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:plugin-manager",
+    "entries": [
+      {
+        "target": "all-plugins",
+        "title": "All plugins",
+        "text": "Shows “All plugins”. Part of Plugin Manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "update-to",
+        "title": "Update to",
+        "text": "Shows “Update to”. Part of Plugin Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "take-out",
+        "title": "Take out",
+        "text": "Takes out. Part of Plugin Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:plugin-manager.open",
+        "title": "Plugin Manager",
+        "text": "Shows “Plugin Manager”. Part of Plugin Manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "plugin-manager",
+        "title": "Plugin Manager",
+        "text": "Shows the “Plugin Manager” part of this screen. Part of Plugin Manager.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "view:plugin-manager.window",
+        "title": "Plugin Manager",
+        "text": "Opens the Plugin Manager screen. Every console plugin in one place: info, health, enable / disable, logs, settings, its UI, install & uninstall, and its dependencies in detail (what it needs, who provides it, who needs it, what clashes).",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "action:plugin-manager.window",
+        "title": "Plugin Manager in a window",
+        "text": "Shows “Plugin Manager in a window”. Part of Plugin Manager.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "open-its-ui",
+        "title": "Open its UI",
+        "text": "Opens its UI. Part of Plugin Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-its-settings",
+        "title": "Open its settings",
+        "text": "Opens its settings. Part of Plugin Manager.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

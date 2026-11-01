@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "plugin-switches-help",
+  "name": "plugin-switches help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:plugin-switches. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:plugin-switches",
+    "entries": [
+      {
+        "target": "action:plugin-switches.open",
+        "title": "Plugin switches",
+        "text": "Shows “Plugin switches”. Part of Plugin switches.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "turn-off",
+        "title": "Turn off",
+        "text": "Turns off. Part of Plugin switches.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "keep-it-on",
+        "title": "Keep it on",
+        "text": "Keeps it on. Part of Plugin switches.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-plugin-switches",
+        "title": "Open plugin switches",
+        "text": "Opens plugin switches. Part of Plugin switches.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

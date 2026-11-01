@@ -139,7 +139,7 @@ function BadgeFor({ hub, frame: frameProp, className }: ApprovalsBadgeProps & { 
     <span className={`axf-approvals ${className ?? ''}`}>
       <button
         ref={btn} type="button" className={`fx-iconbtn axf-approvals__badge${fresh ? ' is-fresh' : ''}`}
-        aria-label={badgeLabel(state)} title={badgeLabel(state)} aria-haspopup="dialog" aria-expanded={open}
+        aria-label={badgeLabel(state)} title={badgeLabel(state)} data-help="approvals-badge" aria-haspopup="dialog" aria-expanded={open}
         onClick={() => { setFirst(null); setOpen((v) => !v); }}
       >
         <Icon name={hasHeld ? 'clock' : 'shield'} size={16} />

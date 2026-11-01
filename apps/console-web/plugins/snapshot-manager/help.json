@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "snapshot-manager-help",
+  "name": "snapshot-manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:snapshot-manager. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:snapshot-manager",
+    "entries": [
+      {
+        "target": "snapshots",
+        "title": "Snapshots",
+        "text": "Shows the “Snapshots” part of this screen. Part of Snapshot Manager.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "close-diff",
+        "title": "Close diff",
+        "text": "Closes diff. Part of Snapshot Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "take-snapshot",
+        "title": "Take snapshot",
+        "text": "Takes snapshot. Part of Snapshot Manager.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "prune-now",
+        "title": "Prune now",
+        "text": "Shows “Prune now”. Part of Snapshot Manager.",
+        "kind": "button",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

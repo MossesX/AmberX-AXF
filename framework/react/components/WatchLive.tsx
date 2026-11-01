@@ -43,7 +43,7 @@ export function WatchLiveLink({ previews, className }: { previews: WatchLivePrev
   return (
     <span className={`fx-watchlive-link ${className ?? ''}`}>
       {ready.map((p) => (
-        <Button key={`${p.session}/${p.app}`} size="sm" tone="ghost" icon="eye" title={p.focus?.note || `Watch ${p.label ?? p.app} live`}
+        <Button key={`${p.session}/${p.app}`} size="sm" tone="ghost" icon="eye" data-help="watch-live" title={p.focus?.note || `Watch ${p.label ?? p.app} live`}
           onClick={(e) => { e.stopPropagation(); setOpen(p); }}>
           {ready.length > 1 ? `Watch live · ${p.label ?? p.app}` : 'Watch live'}
         </Button>

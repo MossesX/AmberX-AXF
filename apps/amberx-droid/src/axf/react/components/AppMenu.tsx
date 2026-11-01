@@ -158,14 +158,14 @@ function LiveRow({ item, onGone }: { item: CompiledMenuItem; onGone: (id: string
         ) : item.buttons!.map((b) => (
           <Button
             key={b.id} tone={b.tone ?? 'neutral'} icon={b.icon} busy={run.phase === 'busy' && run.button === b.id}
-            disabled={b.locked || run.phase !== 'idle'} data-axf-row-button={b.id} aria-label={`${b.label}: ${item.label}`}
+            disabled={b.locked || run.phase !== 'idle'} data-axf-row-button={b.id} data-help={`menu-row-${b.id}`} aria-label={`${b.label}: ${item.label}`}
             onClick={() => void tap(b)}
           >{b.label}</Button>
         ))}
       </div>
       {details && (
         <button type="button" className="fx-iconbtn fx-menu__caret" aria-expanded={open} aria-controls={bodyId}
-          aria-label={open ? `Fold the details: ${item.label}` : `Show the details: ${item.label}`} title={open ? 'Fold' : 'Details'}
+          aria-label={open ? `Fold the details: ${item.label}` : `Show the details: ${item.label}`} data-help="menu-row-details" title={open ? 'Fold' : 'Details'}
           onClick={(e) => { e.stopPropagation(); toggle(); }}>
           <Icon name="chevron-down" size={15} className={open ? 'fx-menu__caret-open' : ''} />
         </button>

@@ -6,6 +6,7 @@
 import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
 import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
+import { helpErrors } from '../core/engines/help-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { createHash } from 'node:crypto';
@@ -155,6 +156,8 @@ export function validateAsset(raw) {
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with core (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, raw.data));
+  // help@1: ONE validator shared with core (core/engines/help-rules.mjs)
+  errors.push(...helpErrors(raw.type, raw.data));
   // agent-card@1: ONE validator shared with core (core/engines/agent-card-rules.mjs)
   errors.push(...agentCardErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)

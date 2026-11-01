@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "agent-swarm-help",
+  "name": "agent-swarm help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:agent-swarm. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:agent-swarm",
+    "entries": [
+      {
+        "target": "save-preset",
+        "title": "Save preset",
+        "text": "Saves this mix of agents and models so you can pick it again.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

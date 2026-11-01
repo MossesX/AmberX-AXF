@@ -1,0 +1,256 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "basic-filter-help",
+  "name": "basic-filter help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:basic-filter. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:basic-filter",
+    "entries": [
+      {
+        "target": "remove-rule",
+        "title": "Remove rule",
+        "text": "Removes rule. Depending on your behaviour theme it asks first. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-rule",
+        "title": "Add rule",
+        "text": "Adds rule. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-sort-filter",
+        "title": "Open sort & filter",
+        "text": "Opens sort & filter. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "plugin-switches",
+        "title": "Plugin switches",
+        "text": "Shows “Plugin switches”. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "basic-filter",
+        "title": "Basic filter",
+        "text": "Shows the “Basic filter” part of this screen. Part of Basic filter.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:basic-filter.open",
+        "title": "Sort & filter",
+        "text": "Sorts & filter. Part of Basic filter.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "column",
+        "title": "Column",
+        "text": "Where you set “Column”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "condition",
+        "title": "Condition",
+        "text": "Where you set “Condition”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "to",
+        "title": "To",
+        "text": "Where you set “To”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "attach-it",
+        "title": "Attach it",
+        "text": "Attaches it. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "all-rules",
+        "title": "All rules",
+        "text": "Shows the “All rules” part of this screen. Part of Basic filter.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "any-rule",
+        "title": "Any rule",
+        "text": "Shows the “Any rule” part of this screen. Part of Basic filter.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "z-a",
+        "title": "Z → A",
+        "text": "Shows the “Z → A” part of this screen. Part of Basic filter.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "remove-sort-key",
+        "title": "Remove sort key",
+        "text": "Removes sort key. Depending on your behaviour theme it asks first. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-sort-level",
+        "title": "Add sort level",
+        "text": "Adds sort level. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "attach-by-dataset-id",
+        "title": "Attach by dataset id",
+        "text": "Where you set “Attach by dataset id”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "attach",
+        "title": "Attach",
+        "text": "Shows “Attach”. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "datasets",
+        "title": "Datasets:",
+        "text": "Shows “Datasets:”. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "label-also-the-tooltip",
+        "title": "Label (also the tooltip)",
+        "text": "Where you set “Label (also the tooltip)”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "icon",
+        "title": "Icon",
+        "text": "Where you set “Icon”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "tone",
+        "title": "Tone",
+        "text": "Where you set “Tone”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "small",
+        "title": "Small",
+        "text": "Shows the “Small” part of this screen. Part of Basic filter.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "medium",
+        "title": "Medium",
+        "text": "Shows the “Medium” part of this screen. Part of Basic filter.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "sort-by-column-id-empty-the-datasets-first-column",
+        "title": "Sort by column id (empty = the dataset's first column)",
+        "text": "Where you set “Sort by column id (empty = the dataset's first column)”. Change it and the app uses the new value. Part of Basic filter.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "shown-on-the-toolbar",
+        "title": "Shown on the toolbar",
+        "text": "Turns “Shown on the toolbar” on or off. It takes effect straight away and is remembered. Part of Basic filter.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "move-left",
+        "title": "Move left",
+        "text": "Moves left. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "move-right",
+        "title": "Move right",
+        "text": "Moves right. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "reset-style",
+        "title": "Reset style",
+        "text": "Resets style. Your own changes go. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-to-the-toolbar",
+        "title": "Add to the toolbar",
+        "text": "Adds to the toolbar. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "close-the-preview",
+        "title": "Close the preview",
+        "text": "Closes the preview. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-the-toolbar-on-attached-datasets",
+        "title": "Show the toolbar on attached datasets",
+        "text": "Turns “Show the toolbar on attached datasets” on or off. It takes effect straight away and is remembered. Part of Basic filter.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "center",
+        "title": "Center",
+        "text": "Shows the “Center” part of this screen. Part of Basic filter.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "back-to-default",
+        "title": "Back to default",
+        "text": "Shows “Back to default”. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "column:kind",
+        "title": "Kind",
+        "text": "The “Kind” column. Tap its header to sort the list by it.",
+        "kind": "column",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

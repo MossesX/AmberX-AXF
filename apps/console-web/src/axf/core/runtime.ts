@@ -30,6 +30,7 @@ import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
@@ -252,6 +253,14 @@ export class AxfRuntime {
   private storageKey: string;
   private toastSeq = 0;
   private settingsBump = false;
+  /** Help packs added at run time (a plugin's help.json, a library), by id; with the app's help@1 assets they make the help index. */
+  private readonly helpPacks = new Map<string, { id: string; data: unknown }>();
+  private helpCache: { assets: readonly unknown[]; rev: number; index: HelpIndex } | null = null;
+  /** Help ids a control asked for and found nothing (the coverage report's run-time half). */
+  private readonly helpMissingIds = new Set<string>();
+  /** The help id the "What is this?" panel shows (null = closed); a screen intro asked to replay. */
+  private helpPanelId: string | null = null;
+  private helpReplay: string | null = null;
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
@@ -313,6 +322,13 @@ export class AxfRuntime {
     };
     this.actions.withModule(FRAMEWORK_MODULE, () => this.registerBuiltinActions());
     this.registerBuiltinAppMenuProviders();
+    // Help mode in every app's Help menu (Brett, Nov 1 2026): the switch, replay the intro, intros again.
+    this.addAppMenuItems({ id: 'axf.help', module: 'axf', menu: 'help', menuLabel: 'Help', menuOrder: 1000, order: -10, items: [
+      { id: 'axf-help-mode', label: 'Help mode', icon: 'help', action: `${HELP_ACTIONS.mode}:toggle`, checked: `setting:${HELP_MODE_KEY}`, shortcut: 'F1' },
+      { id: 'axf-help-intro', label: 'Show this screen\'s intro', icon: 'play', action: 'help.intro' },
+      { id: 'axf-help-intros-reset', label: 'Show all screen intros again', icon: 'refresh', action: HELP_ACTIONS.resetIntros },
+      { id: 'axf-help-sep', separator: true },
+    ] });
   }
 
   /* ---------------- appearance source (engines/appearance.ts): settings from the axHub data server ---------------- */
@@ -1457,6 +1473,90 @@ export class AxfRuntime {
     this.set({ view, context: null });
   }
 
+  /* ---------------- Help mode (engines/help.ts, help@1) ---------------- */
+
+  /** Help mode on? (setting axf.help.mode, per device; off by default.) */
+  helpMode(): boolean {
+    return this.settings.get(HELP_MODE_KEY) === true;
+  }
+
+  /** Switch Help mode on / off (null = toggle). Hot: every control re-reads it on the next render. */
+  setHelpMode(on: boolean | null = null): void {
+    const next = on === null ? !this.helpMode() : on;
+    this.settings.set(HELP_MODE_KEY, next);
+    if (!next) this.helpPanelId = null;
+    this.terminal.ok('help', `help mode ${next ? 'on' : 'off'}`);
+    this.set({});
+  }
+
+  /** Every help pack in force, as one index: the app's help@1 assets (registry order), then run-time packs. */
+  helpIndex(): HelpIndex {
+    const assets = this.registry.list('help' as AssetType);
+    const c = this.helpCache;
+    // registered assets are replaced, never mutated, so the same objects + the same run-time packs = the same index
+    if (c && c.rev === this.helpPacksRev && c.assets.length === assets.length && c.assets.every((a, i) => a === assets[i])) return c.index;
+    const index = buildHelpIndex([...assets.map((a) => ({ id: a.id, data: a.data })), ...this.helpPacks.values()]);
+    this.helpCache = { assets, rev: this.helpPacksRev, index };
+    return index;
+  }
+  private helpPacksRev = 0;
+
+  /** Add (or replace) a help pack at run time: `data` is help@1 data ({ entries, intros }). Returns a remover. */
+  addHelp(id: string, data: unknown): () => void {
+    this.helpPacks.set(id, { id, data });
+    this.helpPacksRev += 1;
+    this.set({});
+    return () => this.removeHelp(id);
+  }
+
+  removeHelp(id: string): void {
+    if (this.helpPacks.delete(id)) { this.helpPacksRev += 1; this.set({}); }
+  }
+
+  /** The help for a control (descriptor → help ids → first entry), with its canonical id; records misses. */
+  helpFor(desc: HelpDescriptor): { id: string | null; entry: (HelpEntry & { pack: string }) | null } {
+    const t = helpTarget({ screen: this.state.view, ...desc });
+    const entry = resolveHelp(this.helpIndex(), t.lookup);
+    if (!entry && t.id) this.helpMissingIds.add(t.id);
+    return { id: t.id, entry };
+  }
+
+  /** Help ids asked for on this page that had no help (newest last). */
+  missingHelp(): string[] {
+    return [...this.helpMissingIds];
+  }
+
+  /** The intro to show on this screen now (Help mode on, intros on, not seen yet), or the one asked to replay. */
+  helpIntro(screen = this.state.view): HelpIntro | null {
+    if (this.helpReplay === screen) return introFor(this.helpIndex(), screen);
+    return introToShow({ mode: this.helpMode(), intros: this.settings.get(HELP_INTROS_KEY) !== false, seen: this.settings.get(HELP_SEEN_KEY), screen, index: this.helpIndex() });
+  }
+
+  /** The intro of a screen was shown (finished or skipped): it won't show again there. `stopAll` turns screen intros off. */
+  helpIntroDone(screen: string, stopAll = false): void {
+    if (this.helpReplay === screen) this.helpReplay = null;
+    this.settings.set(HELP_SEEN_KEY, markSeen(this.settings.get(HELP_SEEN_KEY), screen));
+    if (stopAll) this.settings.set(HELP_INTROS_KEY, false);
+    this.set({});
+  }
+
+  /** Forget which intros were seen (and turn intros back on). */
+  resetHelpIntros(): void {
+    this.settings.set(HELP_SEEN_KEY, []);
+    this.settings.set(HELP_INTROS_KEY, true);
+    this.set({});
+  }
+
+  /** Open / close the "What is this?" panel for a help id (null closes). */
+  explainHelp(id: string | null): void {
+    this.helpPanelId = id;
+    this.set({});
+  }
+
+  helpPanel(): string | null {
+    return this.helpPanelId;
+  }
+
   navigate(view: string) {
     if (this.openPlaced(`view:${view}`)) return;
     // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
@@ -1991,6 +2091,16 @@ export class AxfRuntime {
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });
     a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate', params: true });
+    // Help mode (engines/help.ts): help.mode[:on|off|toggle] · help.intros.reset · help.intro (replay this screen's intro) · help.explain:<help id>
+    a.register(HELP_ACTIONS.mode, ([v]) => this.setHelpMode(v === 'on' ? true : v === 'off' ? false : null), { label: 'Help mode (tooltips everywhere)', params: true });
+    a.register(HELP_ACTIONS.resetIntros, () => { this.resetHelpIntros(); this.toast('Screen intros will show again, once per screen.', 'success', 'Help mode'); }, { label: 'Show the screen intros again' });
+    a.register('help.intro', () => {
+      if (!introFor(this.helpIndex(), this.state.view)) return this.toast('This screen has no intro yet.', 'info', 'Help mode');
+      if (!this.helpMode()) this.settings.set(HELP_MODE_KEY, true);
+      this.helpReplay = this.state.view;
+      this.set({});
+    }, { label: 'Replay this screen\'s intro' });
+    a.register(HELP_ACTIONS.explain, ([id]) => this.explainHelp(id || null), { label: 'Explain a control (What is this?)', params: true });
     a.register('dialog', ([id, ...rest]) => id && this.openDialog(id, rest.length ? { arg: rest.join(':') } : undefined), { label: 'Open dialog', params: true });
     a.register('toast', ([kind = 'info', ...msg]) => this.toast(msg.join(':') || 'Hello from AmberX AXF', kind as Toast['kind']), { label: 'Show toast', params: true });
     a.register('role', ([id]) => id && this.setRole(id), { label: 'Switch role', params: true });

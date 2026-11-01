@@ -135,6 +135,17 @@ node framework/cli/plugin-lifecycle.mjs list | status <folder> | restore <folder
 The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/install|uninstall|check|restore]`
 (console routes, so they work while the plugin is disabled; uninstall needs `{"confirm": "<folder>"}`).
 
+## Help (help@1 `help.json`, Nov 1 2026) — every plugin ships its own help
+
+Help mode (the ? in the menu bar, F1, Help → Help mode) explains every control. A plugin brings its help with it: a
+help@1 asset in `help.json` beside `plugin.json` (plugin@1 `help` names another file). The console loads it while the
+plugin runs and drops it with the plugin, so uninstalling leaves nothing behind. Each entry targets a control's help id:
+`view:<id>` for its pages, `action:<spec>` for its menu items, `banner:<id>` for its banner, otherwise the label slug
+("Approve now (3)" → `approve-now`); `intros` give a page a 2–4 step tour the first time it's opened. Start from the
+template's `help.json`; draft the rest from your code with `node framework/cli/help-coverage.mjs --draft console-web`
+and edit the drafts into plain English (drop `draft`). CI fails if help coverage falls (`help-coverage.mjs --check`,
+ratchet `framework/spec/help-coverage.json`). Rules: `framework/core/engines/help-rules.mjs`.
+
 ## Menus and UI editors
 
 - **Menu links are contributions, not asset edits:** `contextMenu: [{ id, target: 'default', items }]` on the `AxfWebLibrary` adds items to a context-menu target (`default` = right-click / long-press anywhere). They leave with the plugin (disabled or removed), so no asset ever names a plugin.

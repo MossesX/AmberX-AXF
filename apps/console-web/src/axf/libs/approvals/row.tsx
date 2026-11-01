@@ -105,7 +105,7 @@ function Decide({ d, busy, onDecide }: { d: ApprovalDetails; busy: string; onDec
       {rowOrder(d.decisions).map((x) => (
         <Button key={x} tone={x === 'approve' ? 'success' : 'danger'} icon={x === 'approve' ? (d.kind === 'held' ? 'play' : 'check') : 'x-circle'}
           busy={busy === `${d.id}:${x}`} disabled={!!busy || (d.kind === 'held' && left === 0 && !d.veto?.shelved)}
-          aria-label={`${DECISION_LABELS[x]}: ${d.title}`} onClick={() => onDecide(x)}>
+          aria-label={`${DECISION_LABELS[x]}: ${d.title}`} data-help={`approval-${x}`} onClick={() => onDecide(x)}>
           {DECISION_LABELS[x]}
         </Button>
       ))}
@@ -138,7 +138,7 @@ export function ApprovalRow({ details: d, scope, onDecide, busy = '', actions, c
           </span>
         </button>
         {actions && <div className="axf-apx__quick">{actions}</div>}
-        <button type="button" className="fx-iconbtn axf-apx__caret" aria-expanded={open} aria-controls={bodyId} aria-label={open ? 'Fold the details' : 'Show the details'} title={open ? 'Fold' : 'Details'} onClick={toggle}>
+        <button type="button" className="fx-iconbtn axf-apx__caret" aria-expanded={open} aria-controls={bodyId} aria-label={open ? 'Fold the details' : 'Show the details'} data-help="approval-details" title={open ? 'Fold' : 'Details'} onClick={toggle}>
           <Icon name="chevron-down" size={16} className={open ? 'axf-apx__flip' : ''} />
         </button>
       </div>

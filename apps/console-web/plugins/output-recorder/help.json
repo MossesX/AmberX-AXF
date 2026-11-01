@@ -1,0 +1,60 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "output-recorder-help",
+  "name": "output-recorder help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:output-recorder. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:output-recorder",
+    "entries": [
+      {
+        "target": "send-now",
+        "title": "Send now",
+        "text": "Sends now. Part of Audio Output Recorder.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "chunk-length-minutes",
+        "title": "Chunk length (minutes)",
+        "text": "Where you set “Chunk length (minutes)”. Change it and the app uses the new value. Part of Audio Output Recorder.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "skip-silent-chunks",
+        "title": "Skip silent chunks",
+        "text": "Where you set “Skip silent chunks”. Change it and the app uses the new value. Part of Audio Output Recorder.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "phone-queue-limit-mb",
+        "title": "Phone queue limit (MB)",
+        "text": "Where you set “Phone queue limit (MB)”. Change it and the app uses the new value. Part of Audio Output Recorder.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "axhub-project",
+        "title": "axHub project",
+        "text": "Where you set “axHub project”. Change it and the app uses the new value. Part of Audio Output Recorder.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "audio-output-recorder",
+        "title": "Audio Output Recorder",
+        "text": "Shows the “Audio Output Recorder” part of this screen. Part of Audio Output Recorder.",
+        "kind": "tab",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

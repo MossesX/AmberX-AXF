@@ -1,0 +1,382 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "claude-handoff-help",
+  "name": "claude-handoff help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:claude-handoff. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:claude-handoff",
+    "entries": [
+      {
+        "target": "action:claude-handoff.open",
+        "title": "Account handoff",
+        "text": "Shows “Account handoff”. Part of Claude handoff banner.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "view:claude-handoff-preview",
+        "title": "Installer preview",
+        "text": "Opens the Installer preview screen. Moves AmberX AXF to a new Claude account.",
+        "kind": "nav",
+        "draft": true
+      },
+      {
+        "target": "action:claude-handoff.files",
+        "title": "Claude handoff files",
+        "text": "Shows “Claude handoff files”. Part of Claude handoff banner.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "claude-handoff",
+        "title": "Claude handoff",
+        "text": "Shows the “Claude handoff” part of this screen. Part of Claude handoff banner.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "view:claude-handoff.installer",
+        "title": "Claude handoff installer",
+        "text": "Opens the Claude handoff installer screen. Moves AmberX AXF to a new Claude account.",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "view:claude-handoff.last",
+        "title": "Last assembly",
+        "text": "Opens the Last assembly screen. Moves AmberX AXF to a new Claude account.",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "view:claude-handoff.look",
+        "title": "Installer look",
+        "text": "Opens the Installer look screen. Moves AmberX AXF to a new Claude account.",
+        "kind": "screen",
+        "draft": true
+      },
+      {
+        "target": "banner:claude-handoff",
+        "title": "banner:claude-handoff",
+        "text": "A banner from Claude handoff banner: a strip at the top that keeps you posted. Right-click or long-press it for its settings.",
+        "kind": "banner",
+        "draft": true
+      },
+      {
+        "target": "restart",
+        "title": "Restart",
+        "text": "Shows “Restart”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "continue-handoff-to-the-new-account",
+        "title": "Continue handoff to the new account",
+        "text": "Shows “Continue handoff to the new account”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "run-again",
+        "title": "Run again",
+        "text": "Runs again. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "copy-prompt",
+        "title": "Copy prompt",
+        "text": "Copies prompt. Paste it wherever you need it. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "hide-the-tree",
+        "title": "Hide the tree",
+        "text": "Hides the tree. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "tokens",
+        "title": "Tokens",
+        "text": "Shows “Tokens”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "roll",
+        "title": "Roll",
+        "text": "Shows “Roll”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Shows “Undo”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "back-to-the-apps-look",
+        "title": "Back to the app's look",
+        "text": "Shows “Back to the app's look”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "gauges",
+        "title": "Gauges",
+        "text": "Turns “Gauges” on or off. It takes effect straight away and is remembered. Part of Claude handoff banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "groups-on-the-right",
+        "title": "Groups on the right",
+        "text": "Turns “Groups on the right” on or off. It takes effect straight away and is remembered. Part of Claude handoff banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "log-lines",
+        "title": "Log lines",
+        "text": "Where you set “Log lines”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "on",
+        "title": "On",
+        "text": "Shows the “On” part of this screen. Part of Claude handoff banner.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "off",
+        "title": "Off",
+        "text": "Shows the “Off” part of this screen. Part of Claude handoff banner.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:claude-handoff.assemble",
+        "title": "Assemble the handoff prompt",
+        "text": "Shows “Assemble the handoff prompt”. Part of Claude handoff banner.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:claude-handoff.session",
+        "title": "Handoff Session (open work summary)",
+        "text": "Shows “Handoff Session (open work summary)”. Part of Claude handoff banner.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:claude-handoff.last",
+        "title": "Last assembly results",
+        "text": "Opens the last assembly results. Part of Claude handoff banner.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:claude-handoff.publish",
+        "title": "Publish the handoff kit",
+        "text": "Publishes the handoff kit. Part of Claude handoff banner.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:claude-handoff.look",
+        "title": "Installer look",
+        "text": "Shows “Installer look”. Part of Claude handoff banner.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "refresh-the-claude-handoff-kit",
+        "title": "Refresh the Claude handoff kit",
+        "text": "Refreshes the Claude handoff kit. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "dismiss-until-the-next-reminder",
+        "title": "Dismiss until the next reminder",
+        "text": "Dismisses until the next reminder. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "assemble-prompt",
+        "title": "Assemble prompt",
+        "text": "Shows “Assemble prompt”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "the-handoff-prompt",
+        "title": "The handoff prompt",
+        "text": "Where you set “The handoff prompt”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "copy-again",
+        "title": "Copy again",
+        "text": "Copies again. Paste it wherever you need it. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-threads",
+        "title": "Open threads",
+        "text": "Where you set “Open threads”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "notes",
+        "title": "Notes",
+        "text": "Where you set “Notes”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "back-to-the-default-notes",
+        "title": "Back to the default notes",
+        "text": "Shows “Back to the default notes”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "repo-file-changed-since-the-kit",
+        "title": "repo file changed since the kit",
+        "text": "Shows “repo file changed since the kit”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "id",
+        "title": "Id",
+        "text": "Where you set “Id”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "kind",
+        "title": "Kind",
+        "text": "Where you set “Kind”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "link-https",
+        "title": "Link (https)",
+        "text": "Where you set “Link (https)”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "how-to-recreate-it",
+        "title": "How to recreate it",
+        "text": "Where you set “How to recreate it”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "add-item",
+        "title": "Add item",
+        "text": "Adds item. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "claude-ai-memory",
+        "title": "claude.ai memory",
+        "text": "Where you set “claude.ai memory”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "old-project-instructions",
+        "title": "Old Project instructions",
+        "text": "Where you set “Old Project instructions”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "forget-this-machines-files",
+        "title": "Forget this machine's files",
+        "text": "Shows “Forget this machine's files”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "copy-install-the-hook",
+        "title": "Copy: install the hook",
+        "text": "Shows “Copy: install the hook”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "copy-send-now",
+        "title": "Copy: send now",
+        "text": "Shows “Copy: send now”. Part of Claude handoff banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "file",
+        "title": "File",
+        "text": "Where you set “File”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "remind-every-hours",
+        "title": "Remind every (hours)",
+        "text": "Where you set “Remind every (hours)”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "remind-only-when-something-changed",
+        "title": "Remind only when something changed",
+        "text": "Turns “Remind only when something changed” on or off. It takes effect straight away and is remembered. Part of Claude handoff banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "publish-by-itself-when-the-reminder-is-due",
+        "title": "Publish by itself when the reminder is due",
+        "text": "Turns “Publish by itself when the reminder is due” on or off. It takes effect straight away and is remembered. Part of Claude handoff banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "include-this-consoles-own-claude",
+        "title": "Include this console's own ~/.claude",
+        "text": "Turns “Include this console's own ~/.claude” on or off. It takes effect straight away and is remembered. Part of Claude handoff banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "more-files-for-claude-ai-project-knowledge",
+        "title": "More files for claude.ai Project knowledge",
+        "text": "Where you set “More files for claude.ai Project knowledge”. Change it and the app uses the new value. Part of Claude handoff banner.",
+        "kind": "field",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

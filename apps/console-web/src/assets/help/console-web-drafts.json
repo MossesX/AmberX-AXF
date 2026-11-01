@@ -1,0 +1,704 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "console-web-drafts",
+  "name": "console-web help (drafts)",
+  "version": "0.1.0",
+  "description": "Help mode entries for console-web. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "console-web",
+    "entries": [
+      {
+        "target": "your-account-password-name-email",
+        "title": "Your account (password, name, email)",
+        "text": "Opens Your account (password, name, email).",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "open-account-management",
+        "title": "Open account management",
+        "text": "Opens Open account management.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "copy-axhub-permission-hints-value",
+        "title": "Copy AXHUB_PERMISSION_HINTS value",
+        "text": "Copies aXHUB_PERMISSION_HINTS value. Paste it wherever you need it.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "reset-token",
+        "title": "Reset token",
+        "text": "Resets token. Your own changes go.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-the-menu-bar",
+        "title": "Show the menu bar",
+        "text": "Shows the menu bar.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "banner:console-menu.rescue",
+        "title": "banner:console-menu.rescue",
+        "text": "A banner: a strip at the top that keeps you posted. Right-click or long-press it for its settings.",
+        "kind": "banner",
+        "draft": true
+      },
+      {
+        "target": "check-for-stale-code",
+        "title": "Check for stale code",
+        "text": "Checks for stale code.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "create-app",
+        "title": "Create app",
+        "text": "Creates app.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "get-started",
+        "title": "Get started",
+        "text": "Gets started.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "position",
+        "title": "Position",
+        "text": "Slide to set “Position”: left is less, right is more.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "save-boilerplate",
+        "title": "Save boilerplate",
+        "text": "Saves boilerplate. Nothing is kept until you tap it.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "stage-for-porting",
+        "title": "Stage for porting",
+        "text": "Shows “Stage for porting”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "reprocess",
+        "title": "Reprocess",
+        "text": "Shows “Reprocess”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "sync",
+        "title": "Sync",
+        "text": "Shows “Sync”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "feature-tracker",
+        "title": "Feature tracker",
+        "text": "Shows “Feature tracker”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "reworked",
+        "title": "Reworked",
+        "text": "Shows “Reworked”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "in-feature-tracker",
+        "title": "In feature tracker",
+        "text": "Shows “In feature tracker”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "export-plan",
+        "title": "Export plan",
+        "text": "Exports plan. Keep it or share it.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "libraries",
+        "title": "Libraries",
+        "text": "Shows “Libraries”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "check-all",
+        "title": "Check all",
+        "text": "Checks all.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "build-a-library",
+        "title": "Build a library",
+        "text": "Builds a library.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "manage",
+        "title": "Manage",
+        "text": "Shows “Manage”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "primary",
+        "title": "Primary",
+        "text": "Shows “Primary”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "neutral",
+        "title": "Neutral",
+        "text": "Shows “Neutral”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "danger",
+        "title": "Danger",
+        "text": "Shows “Danger”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "ghost",
+        "title": "Ghost",
+        "text": "Shows “Ghost”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "switch",
+        "title": "Switch",
+        "text": "Turns “Switch” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "bare-switch",
+        "title": "Bare switch",
+        "text": "Turns “Bare switch” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "disabled",
+        "title": "Disabled",
+        "text": "Turns “Disabled” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "one",
+        "title": "One",
+        "text": "Shows “One”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "two",
+        "title": "Two",
+        "text": "Shows “Two”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "three",
+        "title": "Three",
+        "text": "Shows “Three”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "text-field",
+        "title": "Text field",
+        "text": "Where you set “Text field”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "with-error",
+        "title": "With error",
+        "text": "Where you set “With error”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "select-field",
+        "title": "Select field",
+        "text": "Where you set “Select field”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "open-a-dialog",
+        "title": "Open a dialog",
+        "text": "Opens a dialog.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-toast",
+        "title": "Show toast",
+        "text": "Shows toast.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "import-as-amberx-ui-library",
+        "title": "Import as AmberX UI library",
+        "text": "Imports as AmberX UI library.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "tracker",
+        "title": "Tracker",
+        "text": "Shows “Tracker”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "more-terminal-export-plan-token",
+        "title": "More: terminal, export plan, token",
+        "text": "Shows “More: terminal, export plan, token”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:dialog:token",
+        "title": "Console token",
+        "text": "Shows “Console token”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "framework-libraries",
+        "title": "Framework libraries",
+        "text": "Shows “Framework libraries”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "ui-libraries",
+        "title": "UI libraries",
+        "text": "Shows “UI libraries”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "library-templates",
+        "title": "Library templates",
+        "text": "Shows “Library templates”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "build-library",
+        "title": "Build library",
+        "text": "Builds library.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "swap",
+        "title": "Swap",
+        "text": "Shows “Swap”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "compare",
+        "title": "Compare",
+        "text": "Shows “Compare”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "new-library",
+        "title": "New library",
+        "text": "Starts a new library.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "use-template",
+        "title": "Use template",
+        "text": "Uses template.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "claude-ai-list",
+        "title": "claude.ai list",
+        "text": "Opens claude.ai list.",
+        "kind": "link",
+        "draft": true
+      },
+      {
+        "target": "sub-prompt",
+        "title": "Sub prompt",
+        "text": "Shows “Sub prompt”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-to-list",
+        "title": "Add to list",
+        "text": "Adds to list.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-feature",
+        "title": "Add feature",
+        "text": "Adds feature.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "warnings",
+        "title": "Warnings",
+        "text": "Shows “Warnings”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "epic",
+        "title": "epic:",
+        "text": "Shows “epic:”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "parent",
+        "title": "parent:",
+        "text": "Shows “parent:”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-in-window",
+        "title": "Open in window",
+        "text": "Opens in window.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-warning",
+        "title": "Remove warning",
+        "text": "Removes warning. Depending on your behaviour theme it asks first.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-dependency",
+        "title": "Remove dependency",
+        "text": "Removes dependency. Depending on your behaviour theme it asks first.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-screenshot",
+        "title": "Remove screenshot",
+        "text": "Removes screenshot. Depending on your behaviour theme it asks first.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-preview",
+        "title": "Remove preview",
+        "text": "Removes preview. Depending on your behaviour theme it asks first.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-in-the-console",
+        "title": "Open in the console",
+        "text": "Opens in the console.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-preview",
+        "title": "Add preview",
+        "text": "Adds preview.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "add-to-plan",
+        "title": "Add to plan",
+        "text": "Adds to plan.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "export-status-json",
+        "title": "Export status.json",
+        "text": "Exports status.json. Keep it or share it.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "copy-spec",
+        "title": "Copy spec",
+        "text": "Copies spec. Paste it wherever you need it.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "copy-script",
+        "title": "Copy script",
+        "text": "Copies script. Paste it wherever you need it.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:console.search",
+        "title": "Search everything",
+        "text": "Searches everything.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.refresh",
+        "title": "Reload data",
+        "text": "Reloads data.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "open-pending-items",
+        "title": "Open pending items",
+        "text": "Opens pending items.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "queue-steps-left",
+        "title": "Queue steps left",
+        "text": "Queues steps left.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "copy-build-plan",
+        "title": "Copy build plan",
+        "text": "Copies build plan. Paste it wherever you need it.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "copy-status-json",
+        "title": "Copy status.json",
+        "text": "Copies status.json. Paste it wherever you need it.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "not-built-yet",
+        "title": "Not built yet",
+        "text": "Shows “Not built yet”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.install",
+        "title": "Install a library",
+        "text": "Installs a library.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "import-a-ui-library",
+        "title": "Import a UI library",
+        "text": "Imports a UI library.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "library-list",
+        "title": "Library list",
+        "text": "Opens the library list.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "modules",
+        "title": "Modules",
+        "text": "Shows “Modules”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "module-list",
+        "title": "Module list",
+        "text": "Opens the module list.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "boilerplates",
+        "title": "Boilerplates",
+        "text": "Shows “Boilerplates”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "boilerplate-list",
+        "title": "Boilerplate list",
+        "text": "Opens the boilerplate list.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "layouts",
+        "title": "Layouts",
+        "text": "Shows “Layouts”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "standards",
+        "title": "Standards",
+        "text": "Shows “Standards”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "open-a-plugin",
+        "title": "Open a plugin",
+        "text": "Opens a plugin.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "build-pilot",
+        "title": "Build Pilot",
+        "text": "Builds pilot.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:pilot",
+        "title": "Open Pilot in a new tab",
+        "text": "Opens pilot in a new tab.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "axhub",
+        "title": "axHub",
+        "text": "Shows “axHub”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:axhub-approvals",
+        "title": "Approvals",
+        "text": "Shows “Approvals”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:axhub-apps",
+        "title": "App catalog",
+        "text": "Shows “App catalog”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:axhub-users",
+        "title": "Users",
+        "text": "Shows “Users”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:axhub-account",
+        "title": "Your hub account",
+        "text": "Shows “Your hub account”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:axhub",
+        "title": "Open axHub in a new tab",
+        "text": "Opens axHub in a new tab.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "demo-site",
+        "title": "Demo site",
+        "text": "Shows “Demo site”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:demo",
+        "title": "Open the demo in a new tab",
+        "text": "Opens the demo in a new tab.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:console.open:plugin-guide",
+        "title": "Plugin guide",
+        "text": "Shows “Plugin guide”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "cycle-slot",
+        "title": "Cycle slot",
+        "text": "Cycles slot.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "plugins",
+        "title": "Plugins",
+        "text": "Shows “Plugins”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:ashes.toggle",
+        "title": "AshesUI",
+        "text": "Shows “AshesUI”.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

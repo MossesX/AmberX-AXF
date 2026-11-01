@@ -1,0 +1,151 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "activity-help",
+  "name": "activity help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:activity. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:activity",
+    "entries": [
+      {
+        "target": "stuck-remove-it-from-the-banners-on-every-device",
+        "title": "Stuck: remove it from the banners on every device",
+        "text": "Shows “Stuck: remove it from the banners on every device”. Part of Activity banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "just-finished",
+        "title": "Just finished ()",
+        "text": "Shows “Just finished ()”. Part of Activity banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "github-repos-to-watch",
+        "title": "GitHub repos to watch",
+        "text": "Where you set “GitHub repos to watch”. Change it and the app uses the new value. Part of Activity banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-repos",
+        "title": "Save repos",
+        "text": "Saves repos. Nothing is kept until you tap it. Part of Activity banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "push-a-notification-to-the-phone-through-axhub",
+        "title": "Push a notification to the phone through axHub",
+        "text": "Where you set “Push a notification to the phone through axHub”. Change it and the app uses the new value. Part of Activity banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "alert-level-for-work-that-finished-well",
+        "title": "Alert level for work that finished well",
+        "text": "Where you set “Alert level for work that finished well”. Change it and the app uses the new value. Part of Activity banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "send-a-test-push",
+        "title": "Send a test push",
+        "text": "Sends a test push. Part of Activity banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "remove-it-from-the-banner-by-itself",
+        "title": "Remove it from the banner by itself",
+        "text": "Turns “Remove it from the banner by itself” on or off. It takes effect straight away and is remembered. Part of Activity banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "keep-failures-until-i-close-them",
+        "title": "Keep failures until I close them",
+        "text": "Turns “Keep failures until I close them” on or off. It takes effect straight away and is remembered. Part of Activity banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "when-it-removes-itself",
+        "title": "When it removes itself",
+        "text": "Where you set “When it removes itself”. Change it and the app uses the new value. Part of Activity banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "play-a-sound",
+        "title": "Play a sound",
+        "text": "Where you set “Play a sound”. Change it and the app uses the new value. Part of Activity banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "hear-it",
+        "title": "Hear it",
+        "text": "Shows “Hear it”. Part of Activity banner.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-a-pop-up-message",
+        "title": "Show a pop-up message",
+        "text": "Turns “Show a pop-up message” on or off. It takes effect straight away and is remembered. Part of Activity banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "open-the-banner",
+        "title": "Open the banner",
+        "text": "Turns “Open the banner” on or off. It takes effect straight away and is remembered. Part of Activity banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "open-the-result",
+        "title": "Open the result",
+        "text": "Turns “Open the result” on or off. It takes effect straight away and is remembered. Part of Activity banner.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "when-i-close-a-finished-item",
+        "title": "When I close a finished item (✕)",
+        "text": "Where you set “When I close a finished item (✕)”. Change it and the app uses the new value. Part of Activity banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "activity",
+        "title": "Activity",
+        "text": "Shows the “Activity” part of this screen. Part of Activity banner.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "banner:activity",
+        "title": "banner:activity",
+        "text": "A banner from Activity banner: a strip at the top that keeps you posted. Right-click or long-press it for its settings.",
+        "kind": "banner",
+        "draft": true
+      },
+      {
+        "target": "action:activity.open",
+        "title": "Activity (what’s in progress)",
+        "text": "Shows “Activity (what’s in progress)”. Part of Activity banner.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

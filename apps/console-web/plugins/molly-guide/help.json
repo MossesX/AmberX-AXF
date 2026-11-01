@@ -1,0 +1,95 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-guide-help",
+  "name": "molly-guide help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:molly-guide. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:molly-guide",
+    "entries": [
+      {
+        "target": "close-the-walkthrough",
+        "title": "Close the walkthrough",
+        "text": "Closes the walkthrough. Part of Molly guide.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "repeat",
+        "title": "Repeat",
+        "text": "Shows “Repeat”. Part of Molly guide.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "what-do-you-want-to-do",
+        "title": "What do you want to do",
+        "text": "Where you set “What do you want to do”. Change it and the app uses the new value. Part of Molly guide.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "stop-talking",
+        "title": "Stop talking",
+        "text": "Stops talking. Part of Molly guide.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "show-me-the-sample",
+        "title": "Show me the sample",
+        "text": "Turns “Show me the sample” on or off. It takes effect straight away and is remembered. Part of Molly guide.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "read-each-step-out-loud",
+        "title": "Read each step out loud",
+        "text": "Where you set “Read each step out loud”. Change it and the app uses the new value. Part of Molly guide.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "move-the-console-to-each-step-run-its-action",
+        "title": "Move the console to each step (run its action)",
+        "text": "Where you set “Move the console to each step (run its action)”. Change it and the app uses the new value. Part of Molly guide.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "open-walkthroughs-molly-makes-from-amberx-by-themselves",
+        "title": "Open walkthroughs Molly makes from AmberX by themselves",
+        "text": "Where you set “Open walkthroughs Molly makes from AmberX by themselves”. Change it and the app uses the new value. Part of Molly guide.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "molly-guide",
+        "title": "Molly guide",
+        "text": "Shows the “Molly guide” part of this screen. Part of Molly guide.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:molly.ask",
+        "title": "Ask Molly to show me",
+        "text": "Asks molly to show me. Part of Molly guide.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:molly.replay",
+        "title": "Replay the last walkthrough",
+        "text": "Replays the last walkthrough. Part of Molly guide.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

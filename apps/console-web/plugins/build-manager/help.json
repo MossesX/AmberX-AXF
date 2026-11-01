@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "build-manager-help",
+  "name": "build-manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:build-manager. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:build-manager",
+    "entries": [
+      {
+        "target": "removed",
+        "title": "Removed",
+        "text": "Builds taken off the list.",
+        "kind": "button"
+      },
+      {
+        "target": "open-in",
+        "title": "Open in",
+        "text": "Opens it in another screen.",
+        "kind": "button"
+      },
+      {
+        "target": "clear-the-search",
+        "title": "Clear the search",
+        "text": "Empties the search box.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

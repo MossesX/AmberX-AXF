@@ -31,5 +31,6 @@
     ]
   },
   "builtWith": { "model": "", "builtAt": "" },
+  "help": "help.json",
   "opens": "main"
 }
