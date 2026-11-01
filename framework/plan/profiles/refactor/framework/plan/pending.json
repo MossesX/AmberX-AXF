@@ -3733,7 +3733,9 @@
     },
     {
      "text": "[Opus] Script ch12 veto + ch13 AmberX",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:48:05.128Z"
     },
     {
      "text": "[Opus] Script ch14 VPS + ch15 MCP + ch16 close; check.mjs passes",
@@ -3766,7 +3768,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:47:31.373Z",
+   "updatedAt": "2026-11-01T22:48:05.128Z",
    "source": "console"
   }
  ]
