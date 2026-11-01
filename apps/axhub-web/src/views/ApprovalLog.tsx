@@ -1,7 +1,7 @@
 /**
  * The approvals log (decision #94): every request with about sixty named fields and its timeline, filtered, sorted and
  * paged by the hub (`/auth/api/approvals/log`). Tap a row for every field. The auto-approve windows are listed under
- * it, and the whole log downloads as JSON. Calls that ran without an approval (decision #110, e.g. vps.build_*) have no
+ * it, and the whole log downloads as JSON. Calls that ran without an approval (axHub decision 110, e.g. vps.build_*) have no
  * request page, so their tool, arguments, who ran it, when and the result show right on the row instead.
  */
 import { useState } from 'react';
