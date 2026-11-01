@@ -45,9 +45,15 @@ Desktop: `menu-approve/desktop.png` · Phone: `menu-approve/phone.png`
   Denied, opened → keep, refusal, decision not offered, no double send), UAC gating, and the real `AppMenuList` in a
   DOM: tap Approve / Deny → busy → flips in place (same element, other rows byte-identical, menu open, list not
   reloaded) → drops off; refusal restores the buttons and toasts; last one gone → Nothing waiting. **53 / 53.**
-- RESULTS_PLACEHOLDER
+- Full local block from `.github/workflows/android.yml` (engine sweep `- run:` checks, theme / controls / plugin pages /
+  lifecycle, add-ons, the whole web / Python test block, every plugin `test.py` and `test.mts`) on a clean worktree of
+  the merged branch, Node 22: **75 / 75 green**. `framework` libs typecheck green; console-web, axhub-web,
+  amberx-droid and walkthrough-studio build green.
 
 ## Notes
+- The brief said to wait (max 30 min) for the axhub-web flicker fix on main first. It hadn't landed after 30 min
+  (no `flicker` commit, no `claude/axhub-web-flicker` branch), so main was merged as it stood. This change doesn't
+  depend on it: the menu list loads once per open and only the tapped row changes.
 - The approvals-banner plugin is 0.5.1 (menu rows); its banner rows are unchanged.
 - Baked copies re-baked: console-web, axhub-web, amberx-droid, walkthrough-studio (demo stays as it was; Patches is
   paused and untouched).
