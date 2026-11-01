@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.ui-review",
   "name": "UI Review",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",

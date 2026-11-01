@@ -2,7 +2,8 @@
 """Self-test for the UI Review plugin (routes through FastAPI's test client, scratch data folder).
 
 Covers: migration of the old Design packs data folder, kinds, submit (base64 shots), items, shots, decide (single,
-bulk, design packs), remove, picks, state per branch / PR and the ui-review@1 capability.
+bulk, design packs), remove, picks, state per branch / PR, the ui-review@1 capability, Screenshots and their groups
+(shot-group@1: create / reuse, auto name, rename, merge, move, delete, migration of shots from before groups).
 
     python3 apps/console-web/plugins/ui-review/test.py
 """
@@ -175,6 +176,63 @@ check(len(moved) == 2 and all(x["source"] == "check" and x["app"] == "Breakroom"
 check(all(c.get("/p/shots/file", params={"id": x["id"]}).status_code == 200 for x in moved), "migrated pictures served")
 check(c.post("/p/shots/migrate").json()["moved"] == [], "migration is idempotent")
 check((TMP / "ui-review" / "screenshots" / "migrated.json").exists(), "migration leaves a note")
+gl = c.get("/p/shots").json()
+mg = {x["group"] for x in gl["shots"] if x.get("migratedFrom") == bc["id"]}
+mgn = [g["name"] for g in gl["groups"] if g["id"] in mg]
+check(len(mg) == 1 and len(mgn) == 1 and mgn[0] == "Breakroom check - " + mod.shots_mod.stamp(bc["submittedAt"]), f"migrated check shots land in one 'Breakroom check - <date time>' group ({mgn})")
+
+# ---- groups (shot-group@1): every screenshot in exactly one named, timestamped group
+sm = mod.shots_mod
+check(sm.stamp("2026-11-01T00:20:00Z") == "2026-10-31 20:20" and sm.day_key("2026-11-01T00:20:00Z") == "2026-10-31", "console time zone (New York) for names and days")
+check(sm._eastern(sm.datetime(2026, 7, 1, 12, tzinfo=sm.timezone.utc)).hour == 8 and sm._eastern(sm.datetime(2026, 12, 1, 12, tzinfo=sm.timezone.utc)).hour == 7, "Eastern fallback without tzdata: EDT / EST")
+gl = c.get("/p/shots").json()
+check(all(x.get("group") in {g["id"] for g in gl["groups"]} for x in gl["shots"]), "every screenshot has a group")
+check(next(g for g in gl["groups"] if g["id"] == sa["group"])["name"] == "sess-1 - " + sm.stamp(sm._now()), "no group given = '<session> - <YYYY-MM-DD HH:mm>'")
+g1 = c.post("/p/shots", json={"group": "Breakroom check - Oct 31 8:20 PM", "source": "check", "app": "Breakroom", "files": [{"name": "a-phone.png", "data": b64}, {"name": "a-desktop.png", "data": b64}]}).json()
+check(g1["shots"][0]["group"] == g1["shots"][1]["group"] == g1["group"]["id"] and g1["group"]["name"] == "Breakroom check - Oct 31 8:20 PM" and g1["group"]["app"] == "Breakroom", "named group made, one per upload")
+g2 = c.post("/p/shots", json={"group": "breakroom CHECK - oct 31 8:20 pm", "title": "b", "data": b64}).json()
+check(g2["shots"][0]["group"] == g1["group"]["id"], "same name same day reuses the group")
+g3 = c.post("/p/shots", json={"groupId": g1["group"]["id"], "title": "c", "data": b64}).json()
+check(g3["shots"][0]["group"] == g1["group"]["id"], "groupId files into an existing group")
+check(c.post("/p/shots", json={"groupId": "g-20260101-deadbeef", "title": "d", "data": b64}).status_code == 400, "unknown groupId refused")
+n_groups = len(c.get("/p/shots").json()["groups"])
+check(c.post("/p/shots", json={"group": "Will fail", "title": "f", "data": base64.b64encode(b"GIF89a....").decode()}).status_code == 400 and len(c.get("/p/shots").json()["groups"]) == n_groups, "a failed upload leaves no empty group behind")
+other = sm.Store(lambda: TMP / "ui-review")
+old = {**other.group(g1["group"]["id"]), "createdAt": "2026-10-20T12:00:00Z"}
+d0 = other.doc(); d0["groups"] = [old if g["id"] == old["id"] else g for g in d0["groups"]]; other._write(d0)
+g4 = c.post("/p/shots", json={"group": "Breakroom check - Oct 31 8:20 PM", "title": "e", "data": b64}).json()
+check(g4["group"]["id"] != g1["group"]["id"], "same name on another day = a new group")
+mk = c.post("/p/shots/groups", json={"name": "Spare", "source": "manual"}).json()
+check(mk["created"] and c.post("/p/shots/groups", json={"name": "spare"}).json()["created"] is False, "groups route makes or reuses")
+check(c.post("/p/shots/groups", json={"name": " "}).status_code == 400, "a group needs a name")
+rn = c.post("/p/shots/groups/update", json={"id": g4["group"]["id"], "name": "Breakroom recheck"}).json()
+check(rn["group"]["name"] == "Breakroom recheck", "rename")
+check(c.post("/p/shots/groups/update", json={"id": g4["group"]["id"], "name": ""}).status_code == 400 and c.post("/p/shots/groups/update", json={"id": "g-20260101-deadbeef", "name": "x"}).status_code == 404, "rename: empty name / unknown group refused")
+mv = c.post("/p/shots/move", json={"ids": [g2["shots"][0]["id"]], "group": mk["group"]["id"]}).json()
+check(mv["moved"] == 1 and next(x for x in c.get("/p/shots").json()["shots"] if x["id"] == g2["shots"][0]["id"])["group"] == mk["group"]["id"], "move a shot to another group")
+mv2 = c.post("/p/shots/move", json={"ids": [g3["shots"][0]["id"]], "groupName": "Fresh"}).json()
+check(mv2["moved"] == 1 and any(g["name"] == "Fresh" and g["id"] == mv2["group"] for g in c.get("/p/shots").json()["groups"]), "move into a new group by name")
+check(c.post("/p/shots/move", json={"ids": [sa["id"]]}).status_code == 400 and c.post("/p/shots/move", json={"ids": [sa["id"]], "group": "g-20260101-deadbeef"}).status_code == 404, "move: no / unknown group refused")
+me = c.post("/p/shots/groups/merge", json={"from": mv2["group"], "into": g1["group"]["id"]}).json()
+gl = c.get("/p/shots").json()
+check(me["moved"] == 1 and mv2["group"] not in {g["id"] for g in gl["groups"]} and next(x for x in gl["shots"] if x["id"] == g3["shots"][0]["id"])["group"] == g1["group"]["id"], "merge moves the shots and drops the group")
+check(c.post("/p/shots/groups/merge", json={"from": g1["group"]["id"], "into": g1["group"]["id"]}).status_code == 400, "merge into itself refused")
+upd = c.post("/p/shots/update", json={"id": sa["id"], "note": "x", "group": "g-20260101-deadbeef"}).json()["shot"]
+check(upd["group"] == sa["group"], "shots/update never changes the group (move does)")
+keep_n = sum(1 for x in gl["shots"] if x["group"] == g1["group"]["id"])
+dl = c.post("/p/shots/groups/delete", json={"id": g1["group"]["id"], "into": mk["group"]["id"]}).json()
+check(dl["moved"] == keep_n and not dl["removed"], "delete with into keeps the shots in another group")
+files_before = {x["id"]: x["file"] for x in c.get("/p/shots").json()["shots"] if x["group"] == mk["group"]["id"]}
+dl2 = c.post("/p/shots/groups/delete", json={"id": mk["group"]["id"]}).json()
+gl = c.get("/p/shots").json()
+check(set(dl2["removed"]) == set(files_before) and not any(x["id"] in files_before for x in gl["shots"]) and not any((TMP / "ui-review" / "screenshots" / "files" / f).exists() for f in files_before.values()), "delete without into deletes the group's screenshots + files")
+check(c.post("/p/shots/groups/delete", json={"id": mk["group"]["id"]}).status_code == 404, "delete unknown group refused")
+# shots from before groups (no group field) get one on the next read
+d0 = other.doc(); d0["shots"].append({**d0["shots"][0], "id": "s-legacy-1", "group": "", "title": "Lobby check: door", "takenAt": "2026-10-30T23:00:00Z"}); other._write(d0)
+gl = c.get("/p/shots").json()
+lg = next(x for x in gl["shots"] if x["id"] == "s-legacy-1")
+check(next(g["name"] for g in gl["groups"] if g["id"] == lg["group"]) == "Lobby check - 2026-10-30 19:00", "a shot without a group is repaired into '<title prefix> - <date time>'")
+other.remove(["s-legacy-1"])
 
 # ---- remove
 c.post("/p/shots/remove", json={"ids": [sb["id"]]})

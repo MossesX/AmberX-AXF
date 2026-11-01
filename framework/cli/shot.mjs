@@ -5,7 +5,8 @@
  *
  *   node framework/cli/shot.mjs <file> [<file>…] --title "…" --app Breakroom --screen /breakroom --source check --session <id>
  *        [--viewport phone|desktop] [--pair <id> --side before|after] [--note "…"] [--build B] [--pr N] [--console | --local]
- *   node framework/cli/shot.mjs list | promote <id> | migrate | paths     (see the plugin's shots.mjs)
+ *        [--group "<name>"]   the named, timestamped group (same name today = same group; none = "<session> - <YYYY-MM-DD HH:mm>")
+ *   node framework/cli/shot.mjs list | groups | group … | move … | promote <id> | migrate | paths   (see the plugin's shots.mjs)
  *
  * Posts to the running console when AXF_CONSOLE_URL + AXF_TOKEN are set (else writes this checkout's data folder).
  * The handler is found by capability (a console plugin providing service:ui-screenshots@1 with shots.mjs), never by folder.

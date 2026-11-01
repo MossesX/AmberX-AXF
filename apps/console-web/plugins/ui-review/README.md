@@ -66,6 +66,32 @@ which copies the picture into a normal waiting item (the screenshot stays and re
   `check`, the item and its folder removed; note in `screenshots/migrated.json`; idempotent).
 - **Rule** (shared RULES, build briefs): non-review screenshots use `axf shot`, never `review.mjs submit`.
 
+### Groups (`shot-group@1`, Nov 1 2026)
+
+Brett: Screenshots fills up fast, so every screenshot belongs to **exactly one named, timestamped group**, and Claude
+asks him for the name before sending (shared rule *Screenshots go in a named group*; headless sessions name it after
+their build).
+
+- **Group**: id (`g-<date>-<hex>`), name, createdAt, source, session, build, agent, app, note. Kept in the same
+  `screenshots/index.json` (`groups: [...]`); each screenshot carries `group` (an id). Pure core `web/groups-core.mjs`
+  (= the group helpers in `server/screenshots.py`).
+- **Intake**: `--group "<name>"` (CLI) / `group` (API) picks the group of that name made **the same day** (case and
+  spaces ignored), else makes it; `--group-id` / `groupId` = an existing group. One upload = one group. No name =
+  `<session/build/source> - <YYYY-MM-DD HH:mm>`. Days and times are in the console's zone (`AXF_SHOT_TZ`, default
+  America/New_York; a rule-based Eastern fallback when the image has no tzdata).
+- **Routes**: `GET shots` (also `groups`), `POST shots/groups` (make / reuse), `shots/groups/update` (rename),
+  `shots/groups/merge {from, into}`, `shots/groups/delete {id, into?}` (with `into` the shots move; without, they are
+  deleted), `shots/move {ids, group | groupName}`. `shots/update` never changes a group.
+- **CLI**: `shot groups [--q …]`, `shot group new|rename|merge|delete`, `shot move <ids> <group id | name>`, `shot list --group <id>`.
+- **Page**: the group list comes first (newest first; cover thumbnail, name, apps, time, count, source; grid or
+  thumbnails), searched by name, date (`Oct 31`, `2026-10-31`), app or source. Tap a group for its shots (the old grid /
+  thumbnails, filters and viewer), with **Rename**, **Merge** (into another group), **Select** (tap shots, then *Move
+  to* a group or a new one) and **Delete** (with its shots). Upload asks for the group name first (default
+  `Upload - <Mon D h:mm PM>`); inside a group it uploads there.
+- **Migration**: screenshots from before groups are put in `'<title prefix> - <YYYY-MM-DD HH:mm of their first shot>'`
+  groups on the next read (so the Breakroom check pictures become `Breakroom check - 2026-10-31 20:20`), one group per
+  prefix and day; the Breakroom item migration does the same right after moving them. Idempotent.
+
 ## State for other plugins (`ui-review@1`)
 
 `plugin_services.get("ui-review@1")` → `state(branch, pr)`, `holds(branch, pr)`, `items(branch, pr)`, `submit(fields,
@@ -78,10 +104,12 @@ push-banner plugin is being changed by another build, so it was not touched; orc
 
 ## Checks
 
-`python apps/console-web/plugins/ui-review/test.py` (64 checks: migration, kinds, submit, shots, decide, bulk, packs,
+`python apps/console-web/plugins/ui-review/test.py` (89 checks: migration, kinds, submit, shots, decide, bulk, packs,
 remove, picks, state, capability; Screenshots: intake JSON + multipart, auth through the real console, never in the
-queue, promote, Breakroom migration, delete) · `node --experimental-strip-types apps/console-web/plugins/ui-review/test.mts`
-(15 groups: core, packs, CLI end to end, rebuild-shots option, screenshots core, migration, shot CLI, capability) · console `tsc` + `vite build` · `check-theme`,
+queue, promote, Breakroom migration, delete; groups: create / reuse / auto name / next day, rename, merge, move, delete
+with and without into, repair of ungrouped shots) · `node --experimental-strip-types apps/console-web/plugins/ui-review/test.mts`
+(20 groups: core, packs, CLI end to end, rebuild-shots option, screenshots core, migration, shot CLI, groups core
+(create / reuse, rows + search, rename / merge / move, migration), shot CLI groups, capability) · console `tsc` + `vite build` · `check-theme`,
 `check-controls`, `check-plugin-pages`, `plugin-lifecycle check ui-review`, `menu-reach`: all pass.
 
 ## Screenshots (demo data: 9 submitted items + the 18 packs)
