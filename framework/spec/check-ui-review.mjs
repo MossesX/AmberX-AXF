@@ -68,8 +68,12 @@ for (const d of ['framework', 'apps', 'deploy', '_claude/shared', '_claude/rules
 const SCHEMA_AWARE = /ui-review-schema|prepareItem|prepare_item|validate_item|review\.mjs|shot\.mjs|ui_review_schema/;
 const API = /ui-review\/(submit|shots|upload)\b|['"]ui-review@1['"]\)?\.submit|get\(["']ui-review@1["']\)\.submit/;
 let callers = 0, commands = 0;
+// the intake's own server folder: the console plugin providing service:ui-review@1 (found by capability, not by name)
+const PLUGINS = 'apps/console-web/plugins';
+const owner = (() => { try { return readdirSync(join(ROOT, PLUGINS)).find((n) => { try { return JSON.parse(readFileSync(join(ROOT, PLUGINS, n, 'plugin.json'), 'utf8')).provides?.includes('service:ui-review@1'); } catch { return false; } }); } catch { return undefined; } })();
+const intake = owner ? `${PLUGINS}/${owner}/server/` : '';
 for (const f of files) {
-  if (f.startsWith('apps/console-web/plugins/ui-review/server/') || f === 'framework/spec/check-ui-review.mjs') continue; // the intake itself, this check
+  if ((intake && f.startsWith(intake)) || f === 'framework/spec/check-ui-review.mjs') continue; // the intake itself, this check
   const s = readFileSync(join(ROOT, f), 'utf8');
   if (/\.(mjs|js|ts|tsx|mts|py)$/.test(f) && API.test(s)) { callers++; ok(SCHEMA_AWARE.test(s), `${f} submits to UI Review without the ui-review-item@1 validator`, 'import framework/core/ui-review-schema.mjs (prepareItem) or call review.mjs / shot.mjs'); }
   // every invocation (a command with flags) in code, scripts and docs: up to the end of its code span / line

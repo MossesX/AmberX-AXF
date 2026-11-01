@@ -5,8 +5,8 @@
  * TIMESTAMP and conform to ONE schema. No exceptions."
  *
  * Pure and dependency-free (no DOM, no Node APIs), so the console page, the review.mjs / shot.mjs CLIs, rebuild-shots,
- * the build hooks and the tests all run the same checks. The server (apps/console-web/plugins/ui-review/server) mirrors
- * it in Python from framework/schemas/ui-review.json, which `axf schemas` writes from REGISTRY below (and
+ * the build hooks and the tests all run the same checks. The console plugin providing ui-review@1 mirrors it in Python
+ * on its server from framework/schemas/ui-review.json, which `axf schemas` writes from REGISTRY below (and
  * framework/spec/check-ui-review.mjs keeps in step). Fixtures: framework/spec/fixtures/ui-review-item.json.
  *
  * The only defaults an intake path may fill are createdAt = now and, when the caller can't ask Brett for a group
