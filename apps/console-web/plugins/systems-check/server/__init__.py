@@ -433,7 +433,7 @@ def claude_start(cid: str, req: ClaudeReq) -> dict[str, Any]:
 #   POST fix-help-vinny/{id}     no Claude: Vinny runs his command for this check through axHub vps.run (approval there)
 #   GET  fix-help-run/{run}       follow that run
 
-NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota|payment required|\b402\b", re.I)
+NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|(weekly|daily|session|5-hour) limit|hit your [a-z0-9 -]*limit|quota|payment required|\b402\b", re.I)
 
 
 def claude_connection(refresh: bool = False) -> dict[str, Any]:

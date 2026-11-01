@@ -25,7 +25,7 @@ from axf_server import storage
 router = APIRouter()
 _lock = threading.Lock()
 # Same wording the AI assistant's credit check matches (ai-assistant `_NO_CREDIT`); kept here so no plugin is named.
-NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota|payment required|\b402\b", re.I)
+NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|(weekly|daily|session|5-hour) limit|hit your [a-z0-9 -]*limit|quota|payment required|\b402\b", re.I)
 STATES = ("ok", "no-credit", "error")
 PROMPT = "Connection check from the AmberX console. Reply with one word: OK."
 
