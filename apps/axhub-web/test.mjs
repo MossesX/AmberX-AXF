@@ -158,7 +158,8 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     ok(/title="The code that runs"[^>]*collapsible/.test(parts), 'the code that runs has its own collapsible section');
     ok(parts.includes("Claude's words"), "the caller's description is labelled as theirs");
     const row = readText(new URL('./src/views/Approvals.tsx', import.meta.url), 'utf8');
-    ok(/title=\{item\.title\}/.test(row), 'a collapsed row leads with what is being approved');
+    // The shared expandable row (lib-approvals) leads with the reason title (details.title from the hub entry).
+    ok(/detailsOfHubEntry\(HUB, item\)/.test(row) && /<ExpandRow/.test(row), 'a collapsed row leads with what is being approved (shared expandable row)');
   }
   eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
   eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');
