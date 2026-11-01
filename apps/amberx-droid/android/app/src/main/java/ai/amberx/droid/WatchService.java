@@ -389,8 +389,15 @@ public class WatchService extends Service {
     private final Handler micH = new Handler(Looper.getMainLooper());
     private final Runnable micTick = this::micCheck;
 
-    /** True while one of AmberX's own Google recognizers is running (it shows as another app's recording). */
-    private boolean ownRecognizer() { return oneShot || appListening || (recognizer != null && listening); }
+    /** Until when (ms) a Google recognizer AmberX just stopped may still show as a recording (it ends a moment later). */
+    static volatile long recognizerGraceUntil;
+
+    static void recognizerEnded() { recognizerGraceUntil = System.currentTimeMillis() + MicRules.RECOGNIZER_GRACE_MS; }
+
+    /** True while one of AmberX's own Google recognizers is running, or has just stopped (it shows as another app's recording). */
+    private boolean ownRecognizer() {
+        return oneShot || appListening || (recognizer != null && listening) || System.currentTimeMillis() < recognizerGraceUntil;
+    }
 
     /**
      * Listens for other apps' recordings and for calls (audio mode), so hands-free lets go at once instead of on the
@@ -487,6 +494,7 @@ public class WatchService extends Service {
     /** The Speak button wants the microphone (true) or is done with it (false). */
     static void appMic(boolean on) {
         appListening = on;
+        if (!on) recognizerEnded();
         WatchService w = running;
         // Classic mode used to keep Google's recognizer running while AmberX talked, so it heard its own reply as the
         // next command (the "nothing in Inbox" loop, Oct 31 2026): stop it now; the loop starts again once the mic is free.
@@ -589,7 +597,7 @@ public class WatchService extends Service {
         oneShotGen++;
         SpeechRecognizer rec = oneShotRec;
         oneShotRec = null;
-        if (rec != null) { try { rec.destroy(); } catch (Exception ignored) {} }
+        if (rec != null) { try { rec.destroy(); } catch (Exception ignored) {} recognizerEnded(); }
         // The stop tone plays just after the result: restore a moment later, unless another utterance started.
         if (muted) main.postDelayed(() -> { if (!oneShot) SpeechTuning.loud(this); }, 600);
         String t = text.trim();
@@ -664,7 +672,7 @@ public class WatchService extends Service {
         if (!phase.isEmpty()) setPhase("stopped", "");
         SpeechTuning.loud(this);
         setListening(false);
-        if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; }
+        if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; recognizerEnded(); }
     }
 
     private void setListening(boolean on) {

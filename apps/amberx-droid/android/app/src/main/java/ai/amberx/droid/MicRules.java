@@ -19,6 +19,8 @@ final class MicRules {
 
     /** How long the microphone must stay free before background listening starts again. */
     static final long RESUME_AFTER_MS = 3_000;
+    /** A Google recognizer AmberX just stopped can still show as a recording this long; it isn't another app. */
+    static final long RECOGNIZER_GRACE_MS = 1_500;
     /** How often the watch service looks again while it has yielded (the callbacks usually answer first). */
     static final long CHECK_EVERY_MS = 2_000;
 
