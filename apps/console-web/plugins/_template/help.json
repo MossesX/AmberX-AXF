@@ -13,6 +13,16 @@
     "scope": "plugin:example",
     "entries": [
       {
+        "target": "ask-again",
+        "title": "Ask again",
+        "text": "Asks the plugin's server part again and shows the fresh answer. Replace this with what your button does."
+      },
+      {
+        "target": "example",
+        "title": "Example settings",
+        "text": "This plugin's settings, under Settings → Plugins. Replace this with what can be set here."
+      },
+      {
         "target": "view:example",
         "title": "Example",
         "text": "The example plugin's page. Replace this with what your plugin's page is for, in one plain sentence.",
