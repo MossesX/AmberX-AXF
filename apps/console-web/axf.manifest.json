@@ -2,7 +2,7 @@
   "$axf": "manifest@1",
   "app": {
     "id": "axf-console",
-    "name": "AXF Dev Console",
+    "name": "GizmoX AI Studio",
     "version": "0.1.0"
   },
   "framework": {

@@ -110,7 +110,7 @@ def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[
 
 def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None) -> MCPServer:
     """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict."""
-    mcp = MCPServer(name="amberx-axf", title="AmberX AXF Dev Console", version="0.2.0", instructions=INSTRUCTIONS,
+    mcp = MCPServer(name="amberx-axf", title="GizmoX AI Studio", version="0.2.0", instructions=INSTRUCTIONS,
                     website_url="https://console.amberxai.com")
 
     async def run(op: str, **args: Any) -> dict[str, Any]:

@@ -48,9 +48,10 @@ export function MenuBar() {
   return (
     <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
       <div className="fx-brand">
-        {/* the branding package names the app everywhere it shows (GizmoX for the Dev Console); the manifest name is the fallback */}
+        {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
+            mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
         {menuMark?.svg ? <BrandMark slot="app-menu" height={18} /> : <span className="fx-brand__mark" aria-hidden="true" />}
-        <span className="fx-brand__name">{rt.branding()?.name || rt.manifest.app.name}</span>
+        <span className="fx-brand__name">{rt.manifest.app.name || rt.branding()?.name}</span>
       </div>
       <div className="fx-menubar__menus">
         {menus.map((m) => (

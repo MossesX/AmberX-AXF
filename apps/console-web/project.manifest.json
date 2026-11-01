@@ -1,7 +1,7 @@
 {
   "$manifest": "project-manifest@1",
   "name": "axf-console-web",
-  "displayName": "AXF Dev Console",
+  "displayName": "GizmoX AI Studio",
   "description": "The web Dev Console (React/TS + FastAPI + MCP server), live at console.amberxai.com.",
   "kind": "app",
   "status": "active",
