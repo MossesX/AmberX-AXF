@@ -128,7 +128,7 @@ export function chunkName(id: string): string {
 }
 
 /**
- * A session's part name (Claude's session recordings through axHub's `amberx.recorder_start`, axHub decision #108):
+ * A session's part name (Claude's session recordings through axHub's `amberx.recorder_start`, axHub decision 108):
  * "<session_name> - <YYYY-MM-DD HH-mm> - partN", the time being when the session started (local), N from 1.
  * Twin: RecorderControl.partName (Android). Characters files can't hold become spaces.
  */
@@ -215,7 +215,7 @@ export interface Recording {
   sha256: string;
   uploadedAt: string;
   deleted: boolean;
-  /** The recording group on axHub (a session's name when started through axHub, decision #108); '' = none. */
+  /** The recording group on axHub (a session's name when started through axHub, axHub decision 108); '' = none. */
   group: string;
   /** The session it belongs to and its note, when started through axHub. */
   session: string;
