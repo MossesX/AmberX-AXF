@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 32,
- "updatedAt": "2026-11-01T02:36:26.287Z",
+ "rev": 37,
+ "updatedAt": "2026-11-01T02:37:25.492Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -39329,16 +39329,25 @@
    "title": "AmberX Audio Output Recorder -> axHub (no mic)",
    "category": "",
    "detail": "Brett, Oct 30 2026 (voice): AmberX plugin that records all audio the phone outputs while it is on, saved to the server on axHub. One switch + quick-settings tile. Playback capture only, NEVER the microphone. Android 10+; system consent prompt each start and a notification while recording. Calls and opt-out apps (DRM) cannot be captured. 30-minute timestamped chunks, each uploaded to axHub; keep the local file until axHub confirms, queue and retry when offline, small local cap. Built on the capture engine from claude/audio-extract (PR #187).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/audio-output-recorder",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-01T02:37:25.448Z",
+   "builtAt": "2026-11-01T02:37:25.448Z",
+   "notes": [
+    {
+     "text": "Leftovers check against main (e46b8079, 08f84bf3, PR #194 merged): s1 OutputRecordService (AudioPlaybackCapture via MediaProjection, setAudioPlaybackCaptureConfig only = never the mic, foreground notification type mediaProjection); s2 output-recorder switch + OutputRecordTile quick-settings tile + OutputRecordStartActivity consent; s3 30-min chunks, OutputRecordUploader/Queue (local copy until axHub confirms, offline retry, local cap with drop-oldest/stop); s4 recordings on axHub (play, share/download, delete, send to Audio Extract) in AmberX and the console; s5 test.mts 18/18 on Node 22 + README + RecorderControlTest. All ticked; nothing missing. Java compiles only in CI.",
+     "at": "2026-11-01T02:37:02.141Z"
+    },
+    {
+     "text": "s3-s5 recorded done with a plain step update, NOT a model-switch approval: the Fable→Opus gate is for starting a phase, and this work had already shipped in PR #194 (e46b8079). No approval was recorded for Brett.",
+     "at": "2026-11-01T02:37:21.093Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -39356,12 +39365,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:36:59.574Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:36:59.609Z"
     },
     {
      "id": "s2",
@@ -39378,12 +39387,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:00.146Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:37:00.203Z"
     },
     {
      "id": "s3",
@@ -39400,12 +39409,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:25.023Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:37:25.492Z"
     },
     {
      "id": "s4",
@@ -39422,12 +39431,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:25.023Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:37:25.492Z"
     },
     {
      "id": "s5",
@@ -39444,12 +39453,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:37:25.023Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:37:25.492Z"
     }
    ],
    "profiles": [
@@ -39460,7 +39469,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
