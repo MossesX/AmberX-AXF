@@ -301,7 +301,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(/h3 \{[^}]*text-overflow: ellipsis/.test(css) && /\.axp-axhub-pair > \.fx-btn \{[^}]*white-space: nowrap/.test(css), 'the title is cut first, never the buttons');
 }
 
-// who asked (axHub decision #108): source column, filter chips, sort keys, the reply shown at once
+// who asked (axHub decision 109): source column, filter chips, sort keys, the reply shown at once
 {
   const src = (kind, who, label) => ({ source: { kind, label: label ?? kind, who } });
   eq(sourceKind(src('headless', 'b1', 'Headless')), 'headless', 'source kind');

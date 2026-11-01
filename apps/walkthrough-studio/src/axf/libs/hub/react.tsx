@@ -122,7 +122,7 @@ export function HubStatusNote({ hub, state, what = 'this' }: { hub: string; stat
 }
 
 /**
- * Who asked (axHub decision 108): the source badge (Claude.ai / Claude Code / Headless / Console / Agent / System) and
+ * Who asked (axHub decision 109): the source badge (Claude.ai / Claude Code / Headless / Console / Agent / System) and
  * the session, build or agent name. Nothing when the hub didn't say (an older hub). Framework Chip + Icon only.
  */
 export function HubSourceBadge({ source, who = true }: { source: HubSource | null | undefined; who?: boolean }) {
@@ -158,7 +158,7 @@ export function HubApprovalList({ state }: { state: HubWatchState }) {
         return (
           <Container key={a.id} title={a.title || a.tool} icon="shield">
             <div className="fx-stack">
-              {/* Who asked (axHub 108), then the tool as a small chip under the reason title. */}
+              {/* Who asked (axHub 109), then the tool as a small chip under the reason title. */}
               <div className="fx-row fx-row--wrap">
                 <HubSourceBadge source={a.source} />
                 {a.title && <Chip>{a.tool}</Chip>}

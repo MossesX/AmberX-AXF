@@ -209,7 +209,7 @@ function PendingRow({ p, hide }: { p: Pending; hide?: () => void }) {
     <div className="axp-approvals-banner__row axp-approvals-banner__pending">
       <BannerIcon icon="shield" working size={20} />
       <button type="button" data-fx-row className="axp-approvals-banner__text" title={[sourceText(p.source), p.title, p.tool, shortSummary(p)].filter(Boolean).join('\n')} onClick={() => openReview(p.id)}>
-        {/* Who asked (axHub 108) and what it is (the reason title) first; the tool after. */}
+        {/* Who asked (axHub 109) and what it is (the reason title) first; the tool after. */}
         {p.source && <span className="axp-approvals-banner__tool">{sourceText(p.source)}</span>}
         <span className="axp-approvals-banner__tool">{p.title || p.tool}</span>
         <span className="axp-approvals-banner__sum">{p.title ? p.tool : shortSummary(p)}</span>

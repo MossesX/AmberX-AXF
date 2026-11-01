@@ -13,7 +13,7 @@
 # Without tmux it falls back to the old `nohup … &` (nothing to attach to; the systems check offers to install tmux).
 # Prints one line: "started <tmux session> in <folder>" (or "started pid …").
 #
-# Who asked (axHub decision #108, Nov 1 2026): the run exports AXF_SESSION=<slug of --name>. When an axHub token is at
+# Who asked (axHub decision 109, Nov 1 2026): the run exports AXF_SESSION=<slug of --name>. When an axHub token is at
 # hand (AXHUB_TOKEN, else the console's env file), Claude gets an `axhub` MCP server whose requests carry
 # `X-Axhub-Session: $AXF_SESSION`, so every approval it asks for shows "Headless · <name>". The token stays a
 # ${AXHUB_TOKEN} placeholder in the config; Claude Code fills it from the environment.
@@ -66,7 +66,7 @@ fi
 
 slug="$(printf '%s' "${name:-run}" | tr -c 'A-Za-z0-9._-' '-' | sed 's/^-*//; s/-*$//' | cut -c1-48)"
 session="axf-${slug:-run}"
-# axHub #108: the build's name, sent as X-Axhub-Session (letters, digits, . _ - only; at most 48 here, 60 on the hub).
+# axHub 109: the build's name, sent as X-Axhub-Session (letters, digits, . _ - only; at most 48 here, 60 on the hub).
 export AXF_SESSION="${AXF_SESSION:-${slug:-run}}"
 [[ "$AXF_SESSION" =~ ^[A-Za-z0-9][A-Za-z0-9._:-]{0,59}$ ]] || AXF_SESSION="${slug:-run}"
 if ! command -v tmux >/dev/null; then

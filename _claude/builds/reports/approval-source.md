@@ -1,8 +1,11 @@
 # approval-source — who asked, on every approval (Nov 1 2026, Opus, headless VPS)
 
 Brett: "every approval just says vps.run". Now every held/confirm request says **who** asked (source + name) and
-**what** it is (the reason title first, the tool as a small chip). axHub decision 108. Branch `claude/approval-source`
+**what** it is (the reason title first, the tool as a small chip). axHub decision 109. Branch `claude/approval-source`
 in both repos.
+
+**Number:** built as decision 108; while it ran, AXF main got the AmberX recorder citing axHub decision #108, so this one
+is **decision 109** (renumbered in both repos before the push).
 
 ## axHub (server)
 
@@ -18,7 +21,7 @@ in both repos.
 - API: `source { kind, label, who, session?, client?, clientVersion?, auth?, oauthClient? }` on every approvals view
   (grid, one request) and the `approvals.json` feed; approvals log gets `source`, `sourceSession`, `sourceClient`;
   veto pushes carry `from` and the held/shelved ntfy line starts "From Headless · approval-source.".
-- Docs: decision 108 in `axhub-planning.md`, context, `docs/veto.md` §5, roadmap, CLAUDE.md status.
+- Docs: decision 109 in `axhub-planning.md`, context, `docs/veto.md` §5, roadmap, CLAUDE.md status.
 - Tests: 477 → **487 pass** (Node 22; new `call-source.test.ts`, an end-to-end MCP test with clientInfo + header,
   feed/grid assertions).
 
@@ -52,7 +55,7 @@ in both repos.
   compiles that):
   - **Pass:** framework validate, project manifests + fixtures, plugin catalog, axf-server, build steps, profiles,
     feature matrix, orch-sync, pending/build-queue step checks, lib-github, libraries, **theme check** (after taking the
-    `#` out of "decision 108" in comments: the checker read `#108` as a colour), controls, plugin pages, project wizard,
+    `#` out of "decision 109" in comments: the checker read `#109` as a colour), controls, plugin pages, project wizard,
     deploy helpers, add-ons, plugin lifecycle, **console / axhub-web / amberx-droid / walkthrough-studio re-bake +
     build**, **theme swap**, alerts + MCP + axf_server fixtures, library templates, every plugin `test.mts` (Node 22).
   - **Fail on untouched origin/main too (pre-existing, not this build):** `tracker.mjs --check`, `plugins.mjs --check`,
@@ -60,6 +63,16 @@ in both repos.
     /session lists running changes…"; same failure list as main).
   - **Environment only:** session check-in (passes in a clean container), template sweep (`shellcheck` missing inside
     it here), AmberX `cap sync` (needs Node 22; the AmberX web build itself passed).
+
+## After merging origin/main (AXF)
+
+- Merged cleanly (agent swarm, recorder). Re-ran: framework validate, manifests, fixtures, plugin catalog, axf-server,
+  lib-github, libraries, theme, controls, plugin pages, add-ons, all four app builds, theme swap, alerts/MCP/axf_server
+  fixtures (17/17), plugin `test.mts` 11/11 + agent-card 61 (tsx), check-approvals 83, axhub-web 259 + typecheck, Python
+  suites. axHub: 487/487 after the renumber.
+- **Fixed on the way:** main's recorder commit wrote `#108` in three comments (`output-recorder/web/core.ts`,
+  `amberx-droid/.../monitor/web/core.ts`), which the theme check reads as a colour: main's theme step was red. Took the
+  `#` out.
 
 ## Not done / blocked
 

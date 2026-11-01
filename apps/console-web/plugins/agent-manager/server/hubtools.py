@@ -59,7 +59,7 @@ def _hub() -> tuple[str, str]:
 def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str, Any], timeout: float) -> tuple[dict[str, Any], str | None]:
     body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()
     headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
-    headers.update(hub_session.headers())  # axHub #108: `agent:<name>` inside an agent's call, else `console`
+    headers.update(hub_session.headers())  # axHub 109: `agent:<name>` inside an agent's call, else `console`
     if session:
         headers["mcp-session-id"] = session
     try:  # https only, never follows a redirect: the token goes nowhere else

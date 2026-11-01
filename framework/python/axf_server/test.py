@@ -701,7 +701,7 @@ c, gt = hubclient(FakeHub(), route="bogus")
 check(c.route() == "hub", "unknown route setting = hub")
 check(gh_hub.HubGitHubClient(lambda: "", hub=gh_hub.HubLink("https://hub.test", lambda: "t")).has_token(), "hub configured counts as a token")
 
-# who asked (axHub decision #108): every axHub MCP request says X-Axhub-Session
+# who asked (axHub decision 109): every axHub MCP request says X-Axhub-Session
 from axf_server import hub_session  # noqa: E402
 
 check(hub_session.session_value("approval-source") == "approval-source" and hub_session.session_value("Src Test!") == "Src-Test", "session names fit the hub's pattern")

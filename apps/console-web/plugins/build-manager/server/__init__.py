@@ -181,7 +181,7 @@ def _call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None 
     def rpc(method: str, params: dict[str, Any]) -> dict[str, Any]:
         nonlocal sid
         h = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
-        h.update(hub_session.headers(hub_session.CONSOLE))  # axHub #108: the hub shows "Console" as who asked
+        h.update(hub_session.headers(hub_session.CONSOLE))  # axHub 109: the hub shows "Console" as who asked
         if sid:
             h["mcp-session-id"] = sid
         r = axf_http.request("POST", f"{url}/mcp", headers=h, body=json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode(),

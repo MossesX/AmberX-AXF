@@ -268,7 +268,7 @@ function Row({ item, busy, onDecide }: { item: ApprovalItem; busy: string; onDec
   return (
     <li className={`axf-approvals__item${item.kind === 'held' ? ' is-held' : ''}`}>
       <div className="axf-approvals__text">
-        {/* What it is first (the reason title), then who asked (axHub 108), the tool as a small chip, when, and the countdown. */}
+        {/* What it is first (the reason title), then who asked (axHub 109), the tool as a small chip, when, and the countdown. */}
         <strong className="axf-approvals__title" title={item.title}>{item.title}</strong>
         <span className="fx-row fx-row--wrap fx-row--tight axf-approvals__meta">
           <HubSourceBadge source={item.source} />

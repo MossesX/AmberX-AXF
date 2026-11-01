@@ -1,4 +1,4 @@
-"""Who asks axHub (axHub decision #108, Nov 1 2026): the `X-Axhub-Session` header every axHub MCP caller here sends.
+"""Who asks axHub (axHub decision 109, Nov 1 2026): the `X-Axhub-Session` header every axHub MCP caller here sends.
 
 Brett: every approval just said "vps.run"; he wants to know WHO asked. The hub derives the source (Claude.ai, Claude Code,
 headless build, console, agent, system) from the sign-in, the MCP clientInfo and this header, and shows it on every

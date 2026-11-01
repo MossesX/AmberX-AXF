@@ -220,7 +220,7 @@ class HubLink:
         if not url or not tok:
             raise HubUnreachable("axHub isn't connected here (no AXHUB_TOKEN)")
         headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
-        headers.update(hub_session.headers())  # axHub #108: approvals say who asked (console, or the agent acting)
+        headers.update(hub_session.headers())  # axHub 109: approvals say who asked (console, or the agent acting)
         if sid:
             headers["mcp-session-id"] = sid
         body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()

@@ -39,7 +39,7 @@
 .axf-approvals__framed { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); min-height: 0; flex: 1 1 auto }
 .axf-approvals__frame { width: 100%; height: min(60vh, calc(var(--fx-row-h) * 18)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axf-approvals__note { margin: 0 }
-/* Who asked (axHub 108): badge, name, tool chip, when, countdown on one wrapping line; the name gives way first. */
+/* Who asked (axHub 109): badge, name, tool chip, when, countdown on one wrapping line; the name gives way first. */
 .axf-approvals__meta { min-width: 0 }
 .axf-approvals__meta .axf-hub-source { min-width: 0; gap: var(--fx-dens-gap-xs) }
 .axf-approvals__meta .axf-hub-source__who { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-root-xs) }

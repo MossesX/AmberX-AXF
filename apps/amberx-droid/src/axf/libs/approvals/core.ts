@@ -58,7 +58,7 @@ export interface ApprovalItem {
   revision: number | null;
   /** Held calls: the countdown (seconds left at `readAt`, local clock). */
   veto: VetoCall | null;
-  /** Who asked (axHub decision 108): Claude.ai / Claude Code / Headless / Console / Agent / System + name; null on older hubs. */
+  /** Who asked (axHub decision 109): Claude.ai / Claude Code / Headless / Console / Agent / System + name; null on older hubs. */
   source: HubSource | null;
 }
 
@@ -185,7 +185,7 @@ export function itemLine(item: ApprovalItem, now: number = Date.now()): string {
 }
 
 /**
- * The row's times (axHub 108 rows, Brett Nov 1 2026): when it was asked ("3 min ago", '' when unknown) and its countdown
+ * The row's times (axHub 109 rows, Brett Nov 1 2026): when it was asked ("3 min ago", '' when unknown) and its countdown
  * ("Runs in 2:40" / "Running" for a held call, "12 min left" / "Expired" for an approval, '' when unknown).
  */
 export function rowTimes(item: Pick<ApprovalItem, 'createdAt' | 'expiresAt' | 'veto'>, now: number = Date.now()): { asked: string; countdown: string } {

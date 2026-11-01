@@ -1,5 +1,5 @@
 /**
- * Who asked (axHub decision 108): every approval the hub lists carries `source` — where the call came from (Claude.ai,
+ * Who asked (axHub decision 109): every approval the hub lists carries `source` — where the call came from (Claude.ai,
  * Claude Code, a headless build, the console, an agent, the hub itself) and who (the session, build or agent name).
  * Brett, Nov 1 2026: "every approval just says vps.run" — this is the WHO next to the WHAT (the reason title).
  *

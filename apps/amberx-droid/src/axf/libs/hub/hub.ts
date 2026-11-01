@@ -150,7 +150,7 @@ export interface HubApproval {
   id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string;
   /** What it is: the caller's reason title (axHub decision #99), when the hub sent one. */
   title?: string;
-  /** Who asked (axHub decision 108), when the hub sent it. */
+  /** Who asked (axHub decision 109), when the hub sent it. */
   source?: HubSource;
 }
 

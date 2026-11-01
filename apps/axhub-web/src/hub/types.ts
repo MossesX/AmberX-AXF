@@ -42,7 +42,7 @@ export interface ApprovalItem {
   denyUrl?: string;
   streamUrl?: string;
   /**
-   * Who asked (axHub decision 108): `kind` + badge `label` (Claude.ai / Claude Code / Headless / Console / Agent /
+   * Who asked (axHub decision 109): `kind` + badge `label` (Claude.ai / Claude Code / Headless / Console / Agent /
    * System / Unknown), `who` (session, build or agent name), the MCP client. Absent on an older hub.
    */
   source?: ApprovalSourceView;
@@ -103,7 +103,7 @@ export const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'dan
   pending: 'accent', held: 'warning', running: 'accent', ran: 'success', failed: 'danger', denied: undefined, approved: 'success', consumed: 'success', rejected: 'danger', revoked: 'danger', postponed: 'warning', ignored: undefined, expired: undefined,
 };
 
-/** Source badge tones (axHub decision 108): people-driven sources accent, unattended ones warning, the console success. */
+/** Source badge tones (axHub decision 109): people-driven sources accent, unattended ones warning, the console success. */
 export const SOURCE_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
   claude_ai: 'accent', claude_code: 'accent', headless: 'warning', console: 'success', agent: 'warning', system: undefined, unknown: undefined,
 };

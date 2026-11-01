@@ -157,7 +157,7 @@ const fake = (replies: Record<string, { status: number; json?: unknown; text?: s
   check((await fetchApprovals(HUB, { fetch: f, now: () => T })).status !== 'ok', 'a redirect is never ok');
 }
 
-// who asked (axHub decision 108)
+// who asked (axHub decision 109)
 {
   const src = { kind: 'headless', label: 'Headless', who: 'approval-source', session: 'approval-source', client: 'claude-code', clientVersion: '2.1.3', auth: 'token' };
   check(JSON.stringify(parseSource(src)) === JSON.stringify({ kind: 'headless', label: 'Headless', who: 'approval-source', client: 'claude-code 2.1.3' }), 'source parsed');

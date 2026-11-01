@@ -242,7 +242,7 @@ export function stepGroups(steps: HandoffStepView[]): { name: string; steps: Han
   return [...groups].map(([name, list]) => ({ name, steps: list, done: list.filter((s) => s.done).length }));
 }
 
-/* ─────────────────────────────────────────────────────────── who asked (axHub decision 108) */
+/* ─────────────────────────────────────────────────────────── who asked (axHub decision 109) */
 
 /** The badge order for the source filter and the sort: people first, then unattended, then the hub. */
 export const SOURCE_ORDER = ['claude_ai', 'claude_code', 'headless', 'console', 'agent', 'system', 'unknown'] as const;

@@ -57,7 +57,7 @@ export function CodeSection({ item, defaultOpen = false }: { item: ApprovalItem;
 }
 
 /**
- * Who asked and what it runs, one line under the title (axHub decision 108): Source badge, the session / build / agent
+ * Who asked and what it runs, one line under the title (axHub decision 109): Source badge, the session / build / agent
  * name, the tool as a small chip, when it was asked. The client (e.g. claude-code 2.1.3) is in the badge's tooltip.
  */
 export function SourceLine({ item, asked }: { item: ApprovalItem; asked: string }) {
