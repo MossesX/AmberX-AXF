@@ -7,6 +7,7 @@ import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as sc from './shots-core.mjs';
 import type { GroupBy, Screenshot } from './shots-core.mjs';
 import * as gc from './groups-core.mjs';
+import * as cf from './conform.mjs';
 import type { GroupRow, ShotGroupRec } from './groups-core.mjs';
 import { FOLDER, KEYS, SHOT_PARAM } from './keys';
 
@@ -162,6 +163,10 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   const [picked, setPicked] = useState<string[]>([]);
   const [naming, setNaming] = useState(false);
   const [newName, setNewName] = useState('');
+  // ui-review-item@1 needs a name, app and screen for every picture: the upload panel asks for them (no guesses)
+  const [upName, setUpName] = useState('');
+  const [upApp, setUpApp] = useState('');
+  const [upScreen, setUpScreen] = useState('');
   const [error, setError] = useState('');
   const [q, setQ] = useState('');
   const [app, setApp] = useState('');
@@ -180,7 +185,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   const setMode = (v: Mode) => { setModeRaw(v); save(rt, KEYS.shotMode, v); };
 
   const load = async () => {
-    try { const r = await api.call<{ shots: Screenshot[]; groups?: ShotGroupRec[] }>('shots'); setShots(r.shots.map((x) => sc.normShot(x).shot)); setGroupRecs(r.groups ?? []); setError(''); }
+    try { const r = await api.call<{ shots: Screenshot[]; groups?: ShotGroupRec[] }>('shots'); setShots(r.shots.map((x) => sc.normShot(cf.storedToShot(x)).shot)); setGroupRecs(r.groups ?? []); setError(''); }
     catch (e) { setError((e as Error).message); setShots((s) => s ?? []); }
   };
   useEffect(() => { void load(); }, []);
@@ -250,8 +255,9 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
     if (!list.length) { if (files?.length) rt.toast('Pick PNG, JPEG or WebP pictures', 'warning'); return; }
     setBusy(true);
     try {
-      const payload = await Promise.all(list.map(async (f) => ({ name: f.name, data: await readAsDataUrl(f), takenAt: new Date(f.lastModified || Date.now()).toISOString() })));
-      const r = await api.post<{ shots: Screenshot[]; group?: ShotGroupRec }>('shots', { source: 'manual', app, files: payload, ...(cur ? { groupId: cur.id } : { group: newName.trim() || gc.suggestName('Upload', new Date().toISOString()) }) });
+      const many = list.length > 1;
+      const payload = await Promise.all(list.map(async (f) => ({ name: f.name, data: await readAsDataUrl(f), takenAt: new Date(f.lastModified || Date.now()).toISOString(), title: many ? `${upName.trim()} · ${sc.titleOf(f.name)}` : upName.trim() })));
+      const r = await api.post<{ shots: unknown[]; group?: ShotGroupRec }>('shots', { source: 'manual', app: upApp.trim(), screen: upScreen.trim(), files: payload, ...(cur ? { groupId: cur.id } : { group: newName.trim() || gc.suggestName('Upload', new Date().toISOString()) }) });
       setNaming(false);
       if (!cur && r.group) setGid(r.group.id);
       rt.terminal.log('ui-review', `uploaded ${r.shots.length} screenshot(s)`, 'ok');
@@ -264,6 +270,17 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   if (!shots) return <LoadingSkeleton rows={6} label="Loading screenshots" />;
 
   const picker = <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onChange={(e) => void upload(e.target.files)} />;
+  const startUpload = () => { if (!naming) { setNewName(gc.suggestName('Upload', new Date().toISOString())); setUpApp(upApp || cur?.app || app || ''); } setNaming(!naming); };
+  const ready = !!(upName.trim() && upApp.trim() && upScreen.trim() && (cur || newName.trim()));
+  const uploadPanel = naming && (
+    <div className="axp-ui-review__gtool">
+      {!cur && <TextField label="Group name" value={newName} onChange={setNewName} autoFocus />}
+      <TextField label="Name (what the pictures show)" value={upName} onChange={setUpName} autoFocus={!!cur} />
+      <TextField label="App" value={upApp} onChange={setUpApp} />
+      <TextField label="Screen or route" value={upScreen} onChange={setUpScreen} />
+      <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy || !ready} onClick={() => input.current?.click()}>Pick pictures</Button>
+    </div>
+  );
   if (!cur) {
     const gcols: GridColumn<GroupRow>[] = [
       { id: 'name', label: 'Group', width: 'minmax(calc(var(--fx-font-size) * 12), 3fr)', fixed: true, sortable: true, sortValue: (g) => g.name.toLowerCase(),
@@ -283,18 +300,13 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
           <input className="fx-input axp-ui-review__search" value={gq} onChange={(e) => setGq(e.target.value)} placeholder="Search groups: name, date (Oct 31, 2026-10-31), app, source…" aria-label="Search groups" />
           <Segmented<Mode> size="sm" label="Layout" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'list' }, { value: 'thumbs', label: 'Thumbnails', icon: 'grid' }]} />
           {picker}
-          <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy} aria-pressed={naming} onClick={() => { setNewName(gc.suggestName('Upload', new Date().toISOString())); setNaming(!naming); }}>Upload</Button>
+          <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy} aria-pressed={naming} onClick={startUpload}>Upload</Button>
           <IconButton icon="refresh" label="Reload screenshots" onClick={() => void load()} />
         </div>
-        {naming && (
-          <div className="axp-ui-review__gtool">
-            <TextField label="Name the group for these screenshots" value={newName} onChange={setNewName} autoFocus />
-            <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy || !newName.trim()} onClick={() => input.current?.click()}>Pick pictures</Button>
-          </div>
-        )}
+        {uploadPanel}
         <p className="fx-small fx-muted axp-ui-review__countline">{shownGroups.length} of {groupRows.length} group{groupRows.length === 1 ? '' : 's'} · {everything.length} screenshot{everything.length === 1 ? '' : 's'} · newest first; tap a group for its shots.</p>
         {shownGroups.length === 0 ? (
-          <EmptyState icon="monitor">{groupRows.length ? 'No group matches. Clear the search.' : 'No screenshots yet. Upload some, or save them from a session with axf shot <file> --group "Breakroom check - Oct 31 8:20 PM".'}</EmptyState>
+          <EmptyState icon="monitor">{groupRows.length ? 'No group matches. Clear the search.' : 'No screenshots yet. Upload some, or save them from a session with axf shot <file> --name "…" --app … --screen … --group "Breakroom check - Oct 31 8:20 PM".'}</EmptyState>
         ) : mode === 'thumbs' ? (
           <div className="axp-ui-review__thumbs">
             {sorted.map((g) => (
@@ -338,13 +350,14 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
         <select className="fx-input axp-ui-review__sel" value={by} onChange={(e) => setBy(e.target.value as GroupBy)} aria-label="Group by">{sc.GROUPS.map((g) => <option key={g.id} value={g.id}>{g.id === 'none' ? g.label : `By ${g.label.toLowerCase()}`}</option>)}</select>
         <Segmented<Mode> size="sm" label="Layout" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'list' }, { value: 'thumbs', label: 'Thumbnails', icon: 'grid' }]} />
         {picker}
-        <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy} onClick={() => input.current?.click()}>Upload</Button>
+        <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy} aria-pressed={naming} onClick={startUpload}>Upload</Button>
         <IconButton icon="refresh" label="Reload screenshots" onClick={() => void load()} />
       </div>
+      {uploadPanel}
       <p className="fx-small fx-muted axp-ui-review__countline">{rows.length} of {all.length} screenshot{all.length === 1 ? '' : 's'} in this group · not waiting for approval; Send to review puts one in the queue.</p>
 
       {rows.length === 0 ? (
-        <EmptyState icon="monitor">{all.length ? 'Nothing matches. Clear the search or the filters.' : 'No screenshots yet. Upload one, or save them from a session with axf shot <file> --title "…" --app … --source check.'}</EmptyState>
+        <EmptyState icon="monitor">{all.length ? 'Nothing matches. Clear the search or the filters.' : 'No screenshots yet. Upload one, or save them from a session with axf shot <file> --name "…" --app … --screen … --group "…".'}</EmptyState>
       ) : mode === 'thumbs' ? (
         <div className="fx-stack axp-ui-review__tgroups">
           {groups.map((g) => (

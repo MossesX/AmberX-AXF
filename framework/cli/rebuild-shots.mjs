@@ -16,8 +16,10 @@
 //   {"press": "Escape"} {"click": "text=Cards"} {"type": "abc"} {"wait": 800} {"eval": "js expression"}
 // ], "viewports": ["phone","desktop"] }].
 // --submit <kind> sends what was captured to UI Review for Brett's approval (the plugin providing ui-review@1, its
-// review.mjs): --title "…" (default: the shots' names), --app, --build, --branch, --pr, --notes; --console posts to the
-// running console (AXF_CONSOLE_URL + AXF_TOKEN) instead of this checkout's data folder.
+// review.mjs) as one ui-review-item@1: --name "…" (--title is the same) and --app are required, --group "<name>" (ask
+// Brett; headless builds name it after the build), the screen is the shots' names (or --screen), --source / --by
+// (else the Claude Code session running this), --build, --step, --branch, --pr, --notes; --console posts to the running
+// console (AXF_CONSOLE_URL + AXF_TOKEN) instead of this checkout's data folder. Anything missing is refused, field named.
 // Needs: Python with the console's requirements, npm deps in apps/console-web, Playwright + Chromium
 // (PLAYWRIGHT_BROWSERS_PATH). Android screenshots come from CI (see _claude/rules/RULES.md, rebuild log).
 import { spawn, execSync, spawnSync } from 'node:child_process';
@@ -101,9 +103,10 @@ function submitForReview(dir, files) {
   const owner = existsSync(plugins) ? readdirSync(plugins).map((n) => join(plugins, n)).find((d) => { try { return JSON.parse(readFileSync(join(d, 'plugin.json'), 'utf8')).provides?.includes('service:ui-review@1') && existsSync(join(d, 'review.mjs')); } catch { return false; } }) : null;
   if (!owner) { console.error('--submit: no plugin provides ui-review@1 here; screenshots kept, nothing submitted'); process.exitCode = 1; return; }
   const kind = args.submit === true ? 'screen' : String(args.submit);
-  const title = typeof args.title === 'string' ? args.title : [...new Set(shots.map((s) => s.name))].join(', ');
-  const argv = [join(owner, 'review.mjs'), 'submit', '--kind', kind, '--title', title, '--shots', files.join(','), '--source', 'rebuild-shots'];
-  for (const k of ['app', 'build', 'branch', 'pr', 'notes']) if (typeof args[k] === 'string') argv.push(`--${k}`, args[k]);
+  const name = typeof args.name === 'string' ? args.name : typeof args.title === 'string' ? args.title : '';
+  const screen = typeof args.screen === 'string' ? args.screen : [...new Set(shots.map((s) => s.name))].join(', ');
+  const argv = [join(owner, 'review.mjs'), 'submit', '--kind', kind, '--name', name, '--screen', screen, '--shots', files.join(',')];
+  for (const k of ['app', 'group', 'source', 'by', 'build', 'step', 'branch', 'pr', 'notes']) if (typeof args[k] === 'string') argv.push(`--${k}`, args[k]);
   if (args.console) argv.push('--console');
   const r = spawnSync(process.execPath, argv, { stdio: 'inherit' });
   if (r.status !== 0) { console.error(`--submit failed (exit ${r.status}); screenshots kept in ${dir}`); process.exitCode = 1; }

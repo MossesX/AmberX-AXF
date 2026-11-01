@@ -3,6 +3,7 @@ import { Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@cons
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as core from './review-core.mjs';
+import * as cf from './conform.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
 import { FOLDER, GROUP_BYS, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
 import { ShotBrowser } from './shots';
@@ -147,7 +148,8 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   };
   useEffect(() => { void load(); }, []);
 
-  const all = useMemo(() => (data ? [...data.items.map((x) => core.normItem(x).item), ...core.packItems(data.packs, data.overlay)] : []), [data]);
+  // served as ui-review-item@1; the views work on the queue's shape (conform.mjs converts)
+  const all = useMemo(() => (data ? [...data.items.map((x) => core.normItem(cf.storedToReview(x)).item), ...core.packItems(data.packs, data.overlay)] : []), [data]);
   const kinds = useMemo(() => (data ? core.mergeKinds(data.kinds.base, data.kinds.extra, all) : []), [data, all]);
   const counts = useMemo(() => core.counts(all), [all]);
   const appList = useMemo(() => core.apps(all), [all]);

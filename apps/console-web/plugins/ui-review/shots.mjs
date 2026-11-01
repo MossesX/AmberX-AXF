@@ -3,7 +3,7 @@
  * UI Review → Screenshots CLI (ui-screenshot@1): ad-hoc screenshots that are NOT waiting for Brett's approval (a check
  * session looking at a screen, a live capture, PR before/after). Usually run as `node framework/cli/shot.mjs` / `axf shot`.
  *
- *   shot <file> [<file>…] [--title "…"] [--app A] [--screen S] [--source check|build|pr|manual|watch-live]
+ *   shot <file> [<file>…] --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by <type:id>]
  *        [--session S] [--build B] [--agent A] [--viewport phone|desktop] [--pair <id>] [--side before|after]
  *        [--note "…"] [--branch B] [--pr N] [--taken <ISO time>] [--group "<name>" | --group-id <id>] [--console | --local] [--json]
  *   shot list [--app A] [--source S] [--q text] [--group <id>] [--console | --local] [--json]
@@ -15,7 +15,10 @@
  *   shot paths
  *
  * Where it goes: the running console when AXF_CONSOLE_URL + AXF_TOKEN are set (or --console), so Brett sees it at once;
- * otherwise (or --local) this checkout's UI Review data folder (AXF_UI_REVIEW_DIR overrides). Default --source: check.
+ * otherwise (or --local) this checkout's UI Review data folder (AXF_UI_REVIEW_DIR overrides).
+ * Every screenshot is ui-review-item@1 (framework/core/ui-review-schema.mjs): --name (--title is the same; several files
+ * = "<name> · <file>"), --app and --screen are required; source and sender come from --source / --by, else from the
+ * Claude Code session running this (headless when unattended). Anything missing is refused with the field named.
  * Device: --viewport, else "phone" when the file name says so (…-phone.png), else desktop.
  * Groups (shot-group@1): every screenshot is in exactly one group. --group "<name>" files them in the group of that name
  * made today (made if new); no group = '<session/build/source> - <YYYY-MM-DD HH:mm>'. Ask Brett for the name first
@@ -27,15 +30,24 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/shots-core.mjs';
 import * as gc from './web/groups-core.mjs';
-import { dataDir, submitLocal } from './review.mjs';
+import * as cf from './web/conform.mjs';
+import { caller, dataDir, submitLocal } from './review.mjs';
 
 const IMG = /\.(png|jpe?g|webp)$/i;
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp`; writeFileSync(t, JSON.stringify(v, null, 1)); renameSync(t, f); };
 export const shotsDir = () => join(dataDir(), 'screenshots');
 const indexFile = () => join(shotsDir(), 'index.json');
-export const loadShots = () => { const d = readJson(indexFile(), null); const doc = d && Array.isArray(d.shots) ? d : { $axf: 'ui-screenshots@1', shots: [] }; if (!Array.isArray(doc.groups)) doc.groups = []; return doc; };
-const saveShots = (doc) => writeJson(indexFile(), doc);
+/** screenshots/index.json → working records (ui-review-item@1 screenshots → the Screenshots tab's shape) + groups. */
+export const loadShots = () => { const d = readJson(indexFile(), null); const doc = d && Array.isArray(d.shots) ? d : { $axf: 'ui-screenshots@1', shots: [] }; return { ...doc, shots: doc.shots.map(cf.storedToShot), groups: Array.isArray(doc.groups) ? doc.groups : [] }; };
+/** Working records → screenshots/index.json; refuses to write anything that isn't ui-review-item@1 / ui-review-group@1. */
+export function saveShots(doc) {
+  const groups = doc.groups.map((g) => cf.groupToStored(g).group); const shots = []; const errors = [];
+  for (const x of doc.shots) { const r = cf.shotToStored(x, groups); shots.push(r.item); errors.push(...r.errors.map((e) => ({ ...e, message: `${x.id}: ${e.message}` }))); }
+  errors.push(...cf.storeErrors([], groups));
+  cf.refuse(errors);
+  writeJson(indexFile(), { ...doc, $axf: 'ui-screenshots@1', shots, groups });
+}
 const tz = () => process.env.AXF_SHOT_TZ || gc.DEFAULT_TZ;
 
 /** Local: the group for these fields (an existing --group-id, else today's group of that name, made if new). */
@@ -91,14 +103,23 @@ export function addLocal(fields, file, groupId = '') {
   const { group: _name, groupId: _gid, ...rest } = fields;
   const gid = groupId || ensureGroupLocal(fields).id;
   const doc = loadShots();
-  const { shot, problems } = core.normShot({ ...rest, group: gid, id: undefined, title: fields.title || core.titleOf(name), viewport: fields.viewport || core.viewportOf(name), size: buf.length, promoted: [] });
+  const { shot, problems } = core.normShot({ ...rest, group: gid, id: undefined, title: fields.title, viewport: fields.viewport || core.viewportOf(name), size: buf.length, promoted: [] });
   if (problems.length) throw new Error(problems.join('; '));
   shot.file = `${shot.id}.${type}`;
   shot.side = core.sideFor(doc.shots, shot.pair, shot.side);
+  doc.shots.push(shot);
+  const check = cf.shotToStored(shot, doc.groups); cf.refuse(check.errors); // nothing is copied for a refused screenshot
   mkdirSync(join(shotsDir(), 'files'), { recursive: true });
   copyFileSync(file, join(shotsDir(), 'files', shot.file));
-  doc.shots.push(shot); writeJson(indexFile(), doc);
-  return shot;
+  saveShots(doc);
+  return check.item;
+}
+
+/** Refuses a call whose screenshots would not be ui-review-item@1 (every field but the group, which intake makes). */
+export function precheck(fields, files) {
+  const g = { $axf: cf.GROUP_TAG, id: 'g-precheck', name: 'Precheck', createdAt: new Date().toISOString(), source: 'console' };
+  const { shot } = core.normShot({ ...fields, group: g.id, title: fields.title, viewport: fields.viewport || core.viewportOf(basename(files[0] ?? '')), file: 'precheck.png' });
+  cf.refuse(cf.shotToStored(shot, [g]).errors);
 }
 
 /** Local "Send to review": a review item in items.json with the picture copied (the screenshot stays). */
@@ -111,11 +132,13 @@ export function promoteLocal(ids, { kind = 'screen', title = '' } = {}) {
     const tmpDir = mkdtempSync(join(tmpdir(), 'axf-shot-')); const tmp = join(tmpDir, `${String(s.screen || s.title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'screen'}-${s.viewport}.${ext}`);
     copyFileSync(src, tmp);
     try {
-      const item = submitLocal({ kind, title: (ids.length === 1 && title) || s.title, app: s.app, build: s.build, branch: s.branch, pr: s.pr, notes: [s.note, `Sent from Screenshots (${s.id}).`].filter(Boolean).join('\n'), source: 'screenshots', by: 'cli', fromShot: s.id }, [tmp]);
+      const who = caller(process.env, s.branch || s.build);
+      const item = submitLocal({ kind, title: (ids.length === 1 && title) || s.title, app: s.app, screen: s.screen, build: s.build, branch: s.branch, pr: s.pr, notes: [s.note, `Sent from Screenshots (${s.id}).`].filter(Boolean).join('\n'),
+        source: who.source || s.source, submittedBy: who.submittedBy || s.submittedBy, group: doc.groups.find((g) => g.id === s.group)?.name ?? '', fromShot: s.id }, [tmp]);
       s.promoted = [...(s.promoted ?? []), item.id].slice(-20); items.push(item);
     } finally { rmSync(tmpDir, { recursive: true, force: true }); }
   }
-  writeJson(indexFile(), doc);
+  saveShots(doc);
   return items;
 }
 
@@ -136,7 +159,7 @@ export function migrateLocal() {
     if (!doc.shots.some((x) => x.id === shot.id)) { shot.file = `${shot.id}.${type}`; shot.size = buf.length; mkdirSync(join(shotsDir(), 'files'), { recursive: true }); copyFileSync(f, join(shotsDir(), 'files', shot.file)); doc.shots.push(shot); }
     added.push(shot.id);
   }
-  writeJson(indexFile(), doc);
+  saveShots(doc);
   items.items = r.keep; writeJson(itemsFile, items);
   for (const id of r.moved) rmSync(join(dataDir(), 'shots', id), { recursive: true, force: true });
   const log = readJson(join(shotsDir(), 'migrated.json'), []);
@@ -166,12 +189,13 @@ export function parseArgs(argv) {
   return { pos, flags };
 }
 const val = (v) => (v === true || v === undefined ? '' : String(v));
-export const fieldsOf = (f) => ({
-  title: val(f.title), app: val(f.app), screen: val(f.screen), source: val(f.source) || 'check', session: val(f.session) || process.env.CLAUDE_SESSION_ID || '',
+export const fieldsOf = (f, env = process.env) => { const who = caller(env, val(f.branch) || val(f.build)); return {
+  title: val(f.name) || val(f.title), app: val(f.app), screen: val(f.screen), source: val(f.source) || who.source, session: val(f.session) || (who.submittedBy?.type === 'session' ? who.submittedBy.id : ''),
+  submittedBy: val(f.by) && /^(session|build|agent|user):/.test(val(f.by)) ? val(f.by) : who.submittedBy,
   build: val(f.build), agent: val(f.agent), viewport: val(f.viewport), pair: val(f.pair), side: val(f.side), note: val(f.note), branch: val(f.branch),
-  pr: val(f.pr) || null, takenAt: val(f.taken) || new Date().toISOString(), by: val(f.by) || 'cli',
+  pr: val(f.pr) || null, takenAt: val(f.taken) || new Date().toISOString(), by: val(f.by),
   group: val(f.group), groupId: val(f['group-id']),
-});
+}; };
 const line = (x) => `${x.id.padEnd(22)} ${core.sourceInfo(x.source).label.padEnd(10)} ${x.viewport.padEnd(7)} ${x.title}${x.app ? ` · ${x.app}` : ''}${x.screen ? ` · ${x.screen}` : ''}${x.pair ? ` · pair ${x.pair} (${x.side})` : ''}`;
 
 export async function main(argv = process.argv.slice(2)) {
@@ -183,13 +207,13 @@ export async function main(argv = process.argv.slice(2)) {
   if (cmd === 'help' || flags.help) { const src = readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n'); console.log(src.slice(2, src.indexOf(' */')).map((l) => l.replace(/^ \*\s?/, '')).join('\n')); return; }
   if (cmd === 'list') {
     if (!remote) repairLocal();
-    const shots = remote ? (await consoleCall('shots')).shots : loadShots().shots;
+    const shots = remote ? (await consoleCall('shots')).shots.map(cf.storedToShot) : loadShots().shots;
     const rows = core.sortShots(core.filterShots(shots, { app: val(flags.app), source: val(flags.source), q: val(flags.q) })).filter((x) => !val(flags.group) || x.group === val(flags.group));
     return out({ ok: true, shots: rows }, rows.length ? rows.map(line).join('\n') : 'no screenshots');
   }
   if (cmd === 'groups') {
     if (!remote) repairLocal();
-    const d = remote ? await consoleCall('shots') : loadShots();
+    const d = remote ? await consoleCall('shots').then((r) => ({ ...r, shots: r.shots.map(cf.storedToShot) })) : loadShots();
     const rows = gc.groupRows(d.groups ?? [], d.shots).filter((g) => gc.matchGroup(g, val(flags.q), tz()));
     return out({ ok: true, groups: rows.map(({ cover, ...g }) => ({ ...g, cover: cover?.id ?? null })) }, rows.length ? rows.map((g) => `${g.id.padEnd(20)} ${gc.stamp(g.createdAt, tz())}  ${String(g.count).padStart(3)} shot(s)  ${g.name}${g.source ? ` · ${g.source}` : ''}`).join('\n') : 'no groups');
   }
@@ -217,7 +241,7 @@ export async function main(argv = process.argv.slice(2)) {
     const ids = String(pos[1] ?? '').split(',').filter(Boolean);
     if (!ids.length) throw new Error('usage: promote <id[,id…]> [--kind screen] [--title "…"]');
     const items = remote ? (await consoleCall('shots/promote', { ids, kind: val(flags.kind), title: val(flags.title) })).items : promoteLocal(ids, { kind: val(flags.kind) || 'screen', title: val(flags.title) });
-    return out({ ok: true, items }, items.map((it) => `sent to review: ${it.id} ${it.title} (waiting for Brett in UI Review)`).join('\n'));
+    return out({ ok: true, items }, items.map((it) => `sent to review: ${it.id} ${it.name} (waiting for Brett in UI Review)`).join('\n'));
   }
   if (cmd === 'migrate') {
     const r = remote ? await consoleCall('shots/migrate', {}) : migrateLocal();
@@ -229,15 +253,17 @@ export async function main(argv = process.argv.slice(2)) {
   if (!files.length) throw new Error('give at least one screenshot file (PNG, JPEG or WebP)');
   for (const f of files) { if (!existsSync(f) || !statSync(f).isFile()) throw new Error(`no such file: ${f}`); if (!IMG.test(f)) throw new Error(`not a PNG / JPEG / WebP: ${f}`); }
   const fields = fieldsOf(flags);
-  if (fields.source && !core.SOURCE_IDS.includes(fields.source)) throw new Error(`--source must be one of ${core.SOURCE_IDS.join(', ')}`);
+  if (fields.source && !core.SOURCE_IDS.includes(fields.source)) throw new Error(`ui-review-item@1 rejected: source "${fields.source}" is not a source — one of ${core.SOURCE_IDS.join(', ')}`);
   if (fields.viewport && !core.VIEWPORTS.includes(fields.viewport)) throw new Error('--viewport must be phone or desktop');
   if (fields.side && !core.SIDES.includes(fields.side)) throw new Error('--side must be before or after');
   const many = files.length > 1;
+  for (const f of files) if (!imageType(readFileSync(f))) throw new Error(`not a PNG / JPEG / WebP: ${f}`);
+  precheck(fields, files);  // refused before any group is made or file copied
   const group = remote ? '' : ensureGroupLocal(fields).id;  // one group for every file of this call
   const shots = remote
     ? (await consoleCall('shots', { ...fields, files: files.map((f) => ({ name: basename(f), data: readFileSync(f).toString('base64'), ...(many && fields.title ? { title: `${fields.title} · ${core.titleOf(basename(f))}` } : {}) })) })).shots
     : files.map((f) => addLocal({ ...fields, title: many && fields.title ? `${fields.title} · ${core.titleOf(basename(f))}` : fields.title }, f, group));
-  return out({ ok: true, shots, where: remote ? 'console' : 'local' }, shots.map((x) => `saved ${x.id}: ${x.title} (${x.viewport}${x.pair ? `, ${x.side} of ${x.pair}` : ''}) → Screenshots${remote ? '' : ` (local: ${shotsDir()})`}`).join('\n'));
+  return out({ ok: true, shots, where: remote ? 'console' : 'local' }, shots.map((x) => `saved ${x.id}: ${x.name} [${x.group?.name}] (${x.viewport}${x.pair ? `, ${x.side} of ${x.pair}` : ''}) → Screenshots${remote ? '' : ` (local: ${shotsDir()})`}`).join('\n'));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

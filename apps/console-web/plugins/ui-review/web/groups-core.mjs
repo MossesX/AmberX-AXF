@@ -1,5 +1,5 @@
 /**
- * Screenshot groups (shot-group@1): pure functions shared by the Screenshots tab, framework/cli/shot.mjs and the tests.
+ * Screenshot groups (ui-review-group@1, was shot-group@1): pure functions shared by the Screenshots tab, framework/cli/shot.mjs and the tests.
  * No DOM, no fetch, no Node APIs. The server (server/__init__.py) mirrors resolveGroup / autoName / dayKey / merge.
  *
  * A group: { id, name, createdAt, source, session, build, agent, app, note, …unknown fields kept }
@@ -7,7 +7,7 @@
  * created the same day (in the console's time zone), else a new group; no name = '<source/session> - <YYYY-MM-DD HH:mm>'.
  */
 
-export const GROUP_SCHEMA = 'shot-group@1';
+export const GROUP_SCHEMA = 'ui-review-group@1'; // was shot-group@1 (same fields)
 export const DEFAULT_TZ = 'America/New_York';
 const ID_RE = /^g-[a-z0-9-]{4,60}$/;
 const str = (v, n = 300) => (typeof v === 'string' ? v.trim().slice(0, n) : '');

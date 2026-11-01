@@ -2,8 +2,9 @@
  * UI Review core (review-item@1): pure functions shared by the web page, the review.mjs CLI and the tests.
  * No DOM, no fetch, no Node APIs. The server (server/__init__.py) mirrors normalise / decide / state.
  *
- * An item: { id, kind, title, app, build, branch, pr, shots: [{ src, device, name }], notes, status, comment,
- *            history: [{ at, by, action, status, comment }], source, submittedAt, updatedAt, …unknown fields kept }
+ * An item (working shape): { id, kind, title, app, screen, build, branch, pr, shots: [{ src, device, name }], notes, status,
+ *            comment, history: [{ at, by, action, status, comment }], source, submittedBy, group, submittedAt, updatedAt, … }
+ * What is stored and served is ui-review-item@1 (framework/core/ui-review-schema.mjs); conform.mjs converts both ways.
  * Kinds are an open registry (kinds.json + the data folder's kinds.json + any kind an item names).
  */
 
@@ -63,8 +64,7 @@ export function normItem(raw, { now = new Date().toISOString(), id } = {}) {
   const problems = [];
   const kind = str(o.kind, 41) || 'other';
   if (!isKind(kind)) problems.push(`kind "${kind}" must be lowercase letters, digits and dashes`);
-  const title = str(o.title, 200);
-  if (!title) problems.push('a title is needed');
+  const title = str(o.title, 200) || str(o.name, 200); // a missing name is refused by ui-review-item@1 (conform.mjs), naming the field
   const pr = o.pr === undefined || o.pr === null || o.pr === '' ? null : Number(String(o.pr).replace(/^#/, ''));
   if (pr !== null && !(Number.isInteger(pr) && pr > 0)) problems.push('pr must be a PR number');
   const shots = (Array.isArray(o.shots) ? o.shots : []).slice(0, 60).map((s) => (typeof s === 'string' ? { src: s } : s)).filter((s) => s && typeof s.src === 'string' && s.src)
@@ -73,11 +73,11 @@ export function normItem(raw, { now = new Date().toISOString(), id } = {}) {
   const item = {
     ...o, $axf: SCHEMA, id: isItemId(o.id) ? o.id : (id ?? newId(now)), kind, title, app: str(o.app, 80), build: str(o.build, 120), branch: str(o.branch, 200),
     pr, shots, notes: str(o.notes, 4000), status, comment: str(o.comment, 2000),
-    history: Array.isArray(o.history) ? o.history.slice(-200) : [], source: str(o.source, 40) || 'api',
-    submittedAt: str(o.submittedAt, 40) || now, updatedAt: str(o.updatedAt, 40) || now,
+    history: Array.isArray(o.history) ? o.history.slice(-200) : [], source: str(o.source, 40), screen: str(o.screen, 200),
+    submittedAt: str(o.submittedAt, 40) || str(o.createdAt, 40) || now, updatedAt: str(o.updatedAt, 40) || now,
   };
-  if (!item.history.length) item.history = [{ at: item.submittedAt, by: str(o.by, 60) || 'build', action: 'submitted', status }];
-  delete item.by;
+  if (!item.history.length) item.history = [{ at: item.submittedAt, by: str(o.by, 60) || str(o.submittedBy?.id ?? o.submittedBy, 60), action: 'submitted', status }];
+  delete item.by; delete item.name;
   return { item, problems };
 }
 
@@ -103,7 +103,10 @@ export function bulkDecide(items, ids, decision, opts = {}) {
   return { items: out, changed, missing: [...want].filter((x) => !changed.includes(x)) };
 }
 
-/** Design packs (packs/index.json) as review items; saved decisions (overlay by item id) win for status/comment/history. */
+/** The groups design packs sit in (one per round): ui-review-group@1. */
+export const packGroups = (index) => [...new Map((index?.packs ?? []).map((p) => [p.round, { $axf: 'ui-review-group@1', id: `g-design-packs-r${p.round}`, name: `Design packs - Round ${p.round}`, createdAt: p.added, source: 'plugin' }])).values()];
+
+/** Design packs (packs/index.json) as review items (each conforms to ui-review-item@1 through conform.mjs); saved decisions (overlay by item id) win for status/comment/history. */
 export function packItems(index, overlay = {}) {
   return (index?.packs ?? []).map((p) => {
     const id = `pack:${p.id}`; const o = overlay[id] ?? {};
@@ -111,7 +114,8 @@ export function packItems(index, overlay = {}) {
       $axf: SCHEMA, id, kind: DESIGN_KIND, title: p.name, app: 'Look refactor', build: `Round ${p.round}`, branch: '', pr: null,
       shots: (p.files ?? []).map((f) => ({ src: f.src, device: f.device === 'phone' ? 'phone' : 'desktop', name: f.name })),
       notes: p.desc ?? '', status: STATUS_IDS.includes(o.status) ? o.status : 'waiting', comment: o.comment ?? '', history: o.history ?? [],
-      source: 'pack', submittedAt: p.added ?? '', updatedAt: o.updatedAt ?? p.added ?? '',
+      source: 'plugin', screen: 'Design pack', submittedBy: { type: 'build', id: 'ui-review design packs' }, group: `g-design-packs-r${p.round}`, groupName: `Design packs - Round ${p.round}`,
+      submittedAt: p.added ?? '', updatedAt: o.updatedAt ?? p.added ?? '',
       pack: { id: p.id, num: p.num, round: p.round, scheme: p.scheme, swatches: p.swatches ?? [], font: p.font, radius: p.radius },
     };
   });

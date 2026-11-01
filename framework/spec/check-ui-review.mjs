@@ -72,11 +72,13 @@ for (const f of files) {
   if (f.startsWith('apps/console-web/plugins/ui-review/server/') || f === 'framework/spec/check-ui-review.mjs') continue; // the intake itself, this check
   const s = readFileSync(join(ROOT, f), 'utf8');
   if (/\.(mjs|js|ts|tsx|mts|py)$/.test(f) && API.test(s)) { callers++; ok(SCHEMA_AWARE.test(s), `${f} submits to UI Review without the ui-review-item@1 validator`, 'import framework/core/ui-review-schema.mjs (prepareItem) or call review.mjs / shot.mjs'); }
-  for (const line of s.split('\n')) {
-    const cmd = /(?:review\.mjs\s+submit|cli\/shot\.mjs\s)(.*)$/.exec(line);
-    if (!cmd || /`[^`]*\.\.\.`|usage:|^\s*\*\s+node .*\[--name/i.test(line)) continue;
+  // every invocation (a command with flags) in code, scripts and docs: up to the end of its code span / line
+  const CMD = /(?:review\.mjs\s+submit|(?:cli\/)?shot\.mjs\s+(?!list\b|groups?\b|move\b|promote\b|migrate\b|paths\b|\||…)|\baxf shot\s+(?!list\b|groups?\b|move\b|promote\b|migrate\b|paths\b))([^`'"\n]*)/g;
+  for (const m of s.matchAll(CMD)) {
+    const rest = m[1];
+    if (!/(^|\s)--[a-z]/.test(rest) || /\[--name|usage:/i.test(rest)) continue; // a mention, or the usage line itself
     commands++;
-    ok(/--(name|title)\b/.test(cmd[1]) || /\$\{?[A-Z_]*ARGS/.test(cmd[1]), `${f}: a UI Review submit command without --name`, line.trim().slice(0, 160));
+    ok(/--(name|title)\b/.test(rest), `${f}: a UI Review submit command without --name`, m[0].trim().slice(0, 160));
   }
 }
 console.log(failed ? `${failed} ui-review schema check(s) failed (${passed} passed)` : `✓ ui-review-item@1: ${passed} checks (${Object.keys(fx.items).length + Object.keys(fx.groups).length} fixtures, ${callers} API callers, ${commands} submit commands)`);

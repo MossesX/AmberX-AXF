@@ -288,7 +288,8 @@ export function migrateLegacy(old, { kind = 'review', fileTime = () => '', group
   const files = isObj(o.files) && !Array.isArray(o.files) ? { before: o.files.before ?? [], after: o.files.after ?? [] }
     : { before: shotsIn.filter((s) => s?.pair === 'before' || s?.side === 'before').map(fileOf), after: shotsIn.filter((s) => !(s?.pair === 'before' || s?.side === 'before')).map(fileOf) };
   if (Array.isArray(o.files)) { files.before = []; files.after = o.files.map(fileOf); }
-  if (!shotsIn.length && !Array.isArray(o.files) && !isObj(o.files) && typeof o.src === 'string') files.after = [{ src: o.src, ...(o.viewport ? { viewport: o.viewport } : {}) }];
+  const one = typeof o.file === 'string' && o.file ? o.file : typeof o.src === 'string' ? o.src : '';
+  if (!shotsIn.length && !Array.isArray(o.files) && !isObj(o.files) && one) files.after = [{ src: one, ...(REGISTRY.viewports.includes(o.viewport) ? { viewport: o.viewport } : {}) }];
   for (const f of [...files.before, ...files.after]) { if (f && f.viewport === undefined && f.device) { f.viewport = f.device; } if (f) delete f.device; }
   let createdAt = [o.createdAt, o.submittedAt, o.takenAt, o.at, o.updatedAt].find(isTimestamp);
   if (!createdAt) { const t = [...files.after, ...files.before].map((f) => fileTime(f.src)).find(isTimestamp); createdAt = t || now; changes.push(t ? 'createdAt from the file time' : 'createdAt = migration time (no file time)'); }
@@ -321,7 +322,11 @@ export function migrateLegacy(old, { kind = 'review', fileTime = () => '', group
   if (typeof o.build === 'string') item.build = o.build ? { id: o.build } : undefined;
   if (item.build === undefined) delete item.build;
   if (item.pr === null || item.pr === '') delete item.pr;
-  for (const k of ['title', 'notes', 'shots', 'submittedAt', 'takenAt', 'device', 'src', 'route', 'session', 'agent']) delete item[k];
+  if (typeof o.pair === 'string' && o.pair && !item.pairId) item.pairId = o.pair;
+  if (!item.pairId) delete item.side;
+  for (const k of ['title', 'notes', 'shots', 'submittedAt', 'takenAt', 'device', 'src', 'file', 'route', 'pair', 'groupName']) delete item[k];
+  if (o.session === '') delete item.session;
+  if (o.agent === '') delete item.agent;
   return { item, changes };
 }
 
