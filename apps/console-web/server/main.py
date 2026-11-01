@@ -227,6 +227,7 @@ def _appearance_hub(hub: str) -> str:
     return explicit or hub
 
 
+@app.get("/api/me")
 def me(request: Request) -> dict[str, Any]:
     """Who this browser is: a signed-in hub user/admin (wall on), the console token, or an open console (no wall)."""
     hub = os.environ.get("AXF_WALL_HUB", "https://axhub.amberxai.com").rstrip("/")
