@@ -3685,7 +3685,9 @@
     },
     {
      "text": "[Opus] Script ch1 cold open + ch2 asset@1",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:44:38.285Z"
     },
     {
      "text": "[Opus] Script ch3 engines + ch4 two ports",
@@ -3750,7 +3752,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:42:58.670Z",
+   "updatedAt": "2026-11-01T22:44:38.285Z",
    "source": "console"
   }
  ]

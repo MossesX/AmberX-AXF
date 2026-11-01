@@ -138,6 +138,18 @@ function helpers(page, log) {
       await page.waitForTimeout(900);
     }),
     step: () => soft('step', () => page.evaluate(() => window.wtStep?.())),
+    steps: async (n, gap = 1400) => { for (let i = 0; i < n; i++) { await h.step(); await page.waitForTimeout(gap); } },
+    // a view on a desktop AXF app (console, axHub): its nav link, else the banner search
+    view: (name, label) => soft(`view ${name}`, async () => {
+      await unring();
+      let l = page.locator(`[data-axf-view-link="${name}"], .fx-nav__item[title^="${name}"]`).filter({ visible: true }).first();
+      if (await l.count()) { await ring(l, label ?? name); await page.waitForTimeout(700); await l.click({ timeout: 4000 }); }
+      else {
+        const q = page.locator('.fx-banner .fx-search input, .fx-search input').filter({ visible: true }).first();
+        await q.click({ timeout: 4000 }); await q.fill(''); await q.pressSequentially(name, { delay: 40 }); await page.waitForTimeout(900); await q.press('Enter');
+      }
+      await page.waitForTimeout(1800); await unring();
+    }),
     hl: (sel, label) => soft(`hl ${sel}`, async () => { await ring(loc(sel), label); }),
     click: (sel, label) => soft(`click ${sel}`, async () => {
       const l = loc(sel); const b = await ring(l, label);

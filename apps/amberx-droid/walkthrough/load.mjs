@@ -16,7 +16,7 @@ export const VOICES = [
 ];
 export const SPEED = { min: 0.75, max: 1.3 };
 export const VOICE_FORMAT = 'walkthrough-voice@1';
-export const MAX_LINE = 1200;
+export const MAX_LINE = 400; // the scripts' own limit per scene
 
 /** Where Piper's files for a voice live: en_US-kristin-medium → en/en_US/kristin/medium. */
 export function voicePath(voice) {
