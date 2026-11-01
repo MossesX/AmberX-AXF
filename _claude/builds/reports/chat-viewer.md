@@ -17,7 +17,7 @@ voices (Brett and Amber).
 | Viewer | `web/ui.tsx`: DataGrid list, search, bubbles, versions, export, audio panel + player, settings tab |
 | Host mounts | `deploy/host.sh` (read-only), wired in `deploy/install-console.sh` (marked lines) |
 | Rule | shared `RULES.md`: "Sync my chats" → claude.ai sessions write `sessions/claude-ai/<uuid>.json` through axHub |
-| Docs | plugin `README.md` (hub drop schema), `install_steps.md` Part J (steps 32–34), plugins README, STATUS, PORTING |
+| Docs | plugin `README.md` (hub drop schema), `install_steps.md` Part K (steps 36–38), plugins README, STATUS, PORTING |
 
 ## How Brett gets his claude.ai chats in
 

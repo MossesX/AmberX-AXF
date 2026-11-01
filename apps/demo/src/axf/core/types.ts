@@ -52,11 +52,12 @@ export const ASSET_TYPES = [
   'density',
   'sizing',
   'agent-card',
+  'job-type',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -100,6 +101,54 @@ export interface MenuItem {
   order?: number;
   before?: string;
   after?: string;
+  /* ---- live-list rows only (a provider's items; engines/appmenu.ts) ---- */
+  /** buttons on the row itself (e.g. Deny / Approve): run without closing the menu, the row flips in place */
+  buttons?: MenuItemButton[];
+  /** a second, muted line under the label */
+  detail?: string;
+  /** local-clock time (ms) a live countdown on the row reaches 0 */
+  deadline?: number;
+  /** text shown instead of the countdown while it is paused (e.g. `Shelved`) */
+  paused?: string;
+  /**
+   * `<kind>:<key>`: the row expands in place (caret on the far right) and shows what the details renderer registered
+   * for `<kind>` draws for `<key>` (React `registerMenuRowDetails`, e.g. lib-approvals' `approval:<id>`). No renderer
+   * for the kind: an ordinary row.
+   */
+  expand?: string;
+  /** a small badge before the second line (e.g. who asked: `Headless`), drawn as a framework chip */
+  tag?: MenuItemTag;
+  /** a small chip after the badge (e.g. the tool, `vps.run`) */
+  chip?: string;
+}
+
+/** A live-list row's badge (`MenuItem.tag`). */
+export interface MenuItemTag {
+  label: string;
+  tone?: 'accent' | 'success' | 'warning' | 'danger';
+  /** tooltip */
+  title?: string;
+}
+
+/** A button on a live-list row (`MenuItem.buttons`): the provider's `act` runs it, else `action` is dispatched. */
+export interface MenuItemButton {
+  id: string;
+  label: string;
+  icon?: string;
+  tone?: 'success' | 'danger' | 'neutral' | 'primary';
+  action?: string;
+  requires?: string;
+}
+
+/** What a row button did (`AppMenuProvider.act`): the row shows `state` in place, then drops off unless `keep`. */
+export interface MenuActResult {
+  ok: boolean;
+  /** what the row reads now (`Running`, `Denied`); default `Done` when ok */
+  state?: string;
+  /** a toast for the result (none when absent: the provider may have told the user itself) */
+  message?: string;
+  /** the row stays (e.g. the decision opened a page elsewhere) */
+  keep?: boolean;
 }
 
 /* ---------- themes ---------- */
@@ -518,6 +567,7 @@ export interface AssetDataMap {
   density: import('./engines/scale').DensityData;
   sizing: import('./engines/scale').SizingData;
   'agent-card': import('./engines/agent-card-rules.mjs').AgentCardData;
+  'job-type': import('./engines/job-type-rules.mjs').JobTypeData;
   'uac-policy': UACPolicyData;
 }
 
@@ -525,7 +575,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

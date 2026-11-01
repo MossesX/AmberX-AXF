@@ -7,7 +7,7 @@ Built Oct 31 2026 on Opus (orchestrator build `agent-swarm`, Breakroom profile).
 
 ## The crew
 
-Eight agents in `agents/roster.json` (`swarm-roster@1`, each agent `agent@1`), each with one skill file under one
+Eight build agents (plus the six-agent job crew below) in `agents/roster.json` (`swarm-roster@1`, each agent `agent@1`), each with one skill file under one
 page in `agents/skills/` (`agent-skill@1`):
 
 | Agent | Skill | Models (cheapest first) |
@@ -81,6 +81,29 @@ nothing spent; one switch per agent too.
 above = dropped; work lines are never dropped), chattiness, cussing and drama sliders, per-agent overrides, a daily
 banter budget (quiet when hit), presets (All business, Work crew, Break room, Off the rails, plus your own), a live
 preview, and Color by vibe (also on the chat's right-click menu).
+
+## Jobs and the crew (agent jobs, Nov 1 2026)
+
+Recurring kinds of work are **job types** (`job-type@1` assets in `framework/assets/job-type/`, rules
+`framework/core/engines/job-type-rules.mjs`): owning specialty, default model, token budget per run, trigger (on demand,
+schedule, event), brief template, outputs (report path, UI Review group). Six hires own the first six, one each:
+Reel Rhonda (walkthroughs), Ping Paulie (site checks, read-only), Snap Sully (screenshots), Landin' Lenny (landing),
+Janitor Joey (banner cleanup), Earl the Ear (listener QA). They are `jobsOnly`: the build planner never gives them
+build steps.
+
+- **Route** (`node framework/cli/agent-job.mjs <job-type> [--input k=v]…`, found by capability `service:agent-jobs@1`
+  → `jobs.mjs`; Breakroom → **Jobs** → Run): the owner (cheapest salary first) that is on duty, not broke, and whose
+  pay left this week covers the run's cap; the brief from the template plus the agent's skill page and
+  `agents/notes/<id>.md` (nothing else); launched through `deploy/claude-headless.sh` as `axf-<agent>-<job>` in its own
+  worktree (detached for read-only jobs, else branch `agent-jobs/<type>/<stamp>`); the run is a `swarm-run@1` with
+  `kind: "job"` in `runs.json`.
+- **Sweep** (`agent-job.mjs sweep`, also on every Jobs read): a finished stream fills usage, cost and the report, then
+  the run is booked on the agent like any swarm run (stats, spend, fail streak, bonus, chat). The final message is kept
+  as `job-reports/<run>.md` in the data folder.
+- **Unassigned**: a job type nobody owns shows **Unassigned job** with **Hire**; the hire (agent + a skill page made
+  from the job type) is kept in the swarm state (`hired`, `hiredSkills`) and joins the roster.
+- `due [--run]` and `event <name> [--run]` start scheduled and event jobs (cron is not installed by the plugin).
+- The Jobs tab replaced the old tab name for build planning, which is now **Build plan**.
 
 ## Files
 

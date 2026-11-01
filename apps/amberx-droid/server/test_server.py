@@ -483,5 +483,20 @@ for p in ("/.secret", "/assets/../.secret", "/%2e%2e/outside.txt", "/..%2foutsid
 check("unknown API route 404 (not the page)", c.get("/api/nope", headers=A).status_code == 404)
 check("healthz", c.get("/healthz").text == "ok\n")
 
+# ---------------------------------------------------------------- the recorded walkthrough (behind the wall)
+wt = main.DATA / "walkthrough"
+check("walkthrough 404 before it is recorded", c.get("/api/walkthrough/chapters.json", headers=A).status_code == 404)
+wt.mkdir(parents=True, exist_ok=True)
+(wt / "chapters.json").write_text('{"chapters": []}')
+(wt / "walkthrough.mp4").write_bytes(bytes(range(256)) * 4)
+(wt / "notes.txt").write_text("NOT-SERVED")
+check("walkthrough needs a sign-in", c.get("/api/walkthrough/chapters.json").status_code == 401)
+check("walkthrough chapters served", c.get("/api/walkthrough/chapters.json", headers=A).json() == {"chapters": []})
+check("walkthrough open to signed-in users", c.get("/api/walkthrough/chapters.json", headers=signed("ann", role="user", perms="")).status_code == 200)
+rg = c.get("/api/walkthrough/walkthrough.mp4", headers={**A, "range": "bytes=0-9"})
+check("walkthrough video seeks (Range)", rg.status_code == 206 and len(rg.content) == 10 and rg.headers.get("content-type") == "video/mp4", rg.status_code)
+check("walkthrough serves only its own files", c.get("/api/walkthrough/notes.txt", headers=A).status_code == 404
+      and c.get("/api/walkthrough/..%2fai.json", headers=A).status_code == 404)
+
 print(f"amberx server: {ok} passed, {fail} failed")
 sys.exit(1 if fail else 0)

@@ -1,0 +1,50 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "site-check",
+  "name": "Site health check",
+  "version": "1.0.0",
+  "description": "Read-only health check of the sites and apps on the VPS: route, HTTP status, certificate, container health and errors. Changes nothing.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "ops",
+    "read-only"
+  ],
+  "data": {
+    "specialty": "site-checks",
+    "model": "sonnet",
+    "budget": {
+      "tokens": 120000,
+      "maxTurns": 20,
+      "usd": 1
+    },
+    "trigger": {
+      "kind": "schedule",
+      "every": "6h"
+    },
+    "readOnly": true,
+    "tools": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(curl:*)",
+      "Bash(openssl s_client:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker inspect:*)"
+    ],
+    "inputs": [
+      {
+        "id": "sites",
+        "label": "Sites",
+        "default": "demo.amberxai.com axhub.amberxai.com console.amberxai.com amberx.amberxai.com",
+        "about": "space-separated host names"
+      }
+    ],
+    "brief": "Check these sites, read-only: {{sites}}.\nFor each: does the route answer (curl -sS -o /dev/null -w \"%{http_code} %{time_total}\"), the HTTP status, the certificate expiry (warn under 14 days), the container behind it (docker ps / inspect: running, health, restarts) and the last errors in its log (docker logs --tail 200, errors only).\nDo not restart, fix or change anything. Report one line per site: ok / warn / down, and why.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/site-check/{{stamp}}.md"
+    }
+  }
+}

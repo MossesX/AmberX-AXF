@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "amberx-walkthrough",
+  "name": "AmberX walkthrough video",
+  "version": "1.0.0",
+  "description": "Make or re-record an app walkthrough video. Owned by the Walkthrough producer; takes over the amberx-walkthrough build's outputs and re-record command when that build lands.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "video"
+  ],
+  "data": {
+    "specialty": "walkthroughs",
+    "model": "sonnet",
+    "budget": {
+      "tokens": 300000,
+      "maxTurns": 40,
+      "usd": 3
+    },
+    "trigger": {
+      "kind": "on-demand"
+    },
+    "inputs": [
+      {
+        "id": "app",
+        "label": "App",
+        "required": true,
+        "default": "amberx-droid",
+        "about": "the app to walk through"
+      },
+      {
+        "id": "flow",
+        "label": "Flow",
+        "default": "first run, main screens, settings",
+        "about": "what the video shows, in order"
+      },
+      {
+        "id": "reason",
+        "label": "Why",
+        "default": "refresh after the latest changes"
+      }
+    ],
+    "brief": "Make (or re-record) the walkthrough video of {{app}}: {{flow}}. Reason: {{reason}}.\nUse the walkthrough tooling already in the repo (apps/walkthrough-studio, the molly-guide walkthrough@1 scripts); when the amberx-walkthrough build has landed, run its re-record command instead of recording by hand. Keep the old video until the new one is checked.\nReport: the video path or link, its length, the screens it covers, and anything that looked broken while recording.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/amberx-walkthrough/{{stamp}}.md",
+      "uiReviewGroup": "Walkthrough {{app}} - {{when}}",
+      "uiReviewApp": "walkthrough-studio"
+    }
+  }
+}

@@ -445,7 +445,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.5.1',
+  version: '0.5.2',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
