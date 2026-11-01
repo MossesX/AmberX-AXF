@@ -160,6 +160,8 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     ok(parts.includes("Claude's words"), "the caller's description is labelled as theirs");
     const row = readText(new URL('./src/views/Approvals.tsx', import.meta.url), 'utf8');
     ok(/title=\{item\.title\}/.test(row), 'a collapsed row leads with what is being approved');
+    // The open row is lib-approvals' shared details panel (Nov 1 2026: every approval row expandable).
+    ok(/<ApprovalDetailsPanel/.test(row) && /detailsOfHubEntry\(HUB, item\)/.test(row), 'an open row shows the shared details panel');
   }
   eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
   eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');

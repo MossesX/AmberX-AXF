@@ -109,6 +109,12 @@ export interface MenuItem {
   deadline?: number;
   /** text shown instead of the countdown while it is paused (e.g. `Shelved`) */
   paused?: string;
+  /**
+   * `<kind>:<key>`: the row expands in place (caret on the far right) and shows what the details renderer registered
+   * for `<kind>` draws for `<key>` (React `registerMenuRowDetails`, e.g. lib-approvals' `approval:<id>`). No renderer
+   * for the kind: an ordinary row.
+   */
+  expand?: string;
   /** a small badge before the second line (e.g. who asked: `Headless`), drawn as a framework chip */
   tag?: MenuItemTag;
   /** a small chip after the badge (e.g. the tool, `vps.run`) */

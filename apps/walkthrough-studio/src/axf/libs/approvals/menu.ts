@@ -21,6 +21,7 @@ import { HUB_SOURCE_TONE } from '../hub/source';
 import { approvalsWatcher } from './index';
 import { DECISION_LABELS, rowOrder, rowTimes, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult } from './core';
 import { decideApproval } from './host';
+import { approvalExpandKey, registerApprovalsLookup } from './details';
 
 export const APPROVALS_MENU_MODULE = 'ai.amberx.axf.approvals';
 /** The live list's id in lib-hub's menus (axhub-web, AmberX); the console's plugin uses `approvals.list`. */
@@ -65,6 +66,8 @@ export function approvalMenuRows(st: ApprovalsState, opts: ApprovalRowsOptions =
     const row: MenuItem = {
       id: `${APPROVALS_ROW_PREFIX}${it.id}`, label: it.title, icon: it.kind === 'held' ? (v?.shelved ? 'pause' : 'clock') : 'shield',
       action: review(it), detail: whoLine(it),
+      // Expands in place (caret on the far right): lib-approvals' details panel (row.tsx registers the renderer).
+      expand: approvalExpandKey(it.id),
     };
     // Who asked (axHub decision 109): the source badge and the tool as chips, the title stays first.
     if (it.source) row.tag = { label: it.source.label, tone: HUB_SOURCE_TONE[it.source.kind], ...(it.source.client ? { title: `${it.source.label} · ${it.source.client}` } : {}) };
@@ -104,7 +107,12 @@ export function installApprovalsMenu(rt: AxfRuntime, opts: ApprovalsMenuOptions 
   const decide = opts.decide ?? ((item: ApprovalItem, d: ApprovalDecision) => decideApproval(hub, item, d));
   /** The items the open menu shows (a button acts on what the row showed, not on a later read). */
   let shown = new Map<string, ApprovalItem>();
-  return rt.registerAppMenuProvider(opts.id ?? APPROVALS_MENU_PROVIDER, {
+  // The open row's details find the item here: what the menu showed, else the watcher's latest read.
+  const offLookup = registerApprovalsLookup({
+    hub: () => hub, decide,
+    find: (id) => shown.get(`${APPROVALS_ROW_PREFIX}${id}`) && (approvalsWatcher(hub).state.items.find((i) => i.id === id) ?? shown.get(`${APPROVALS_ROW_PREFIX}${id}`)),
+  });
+  const offProvider = rt.registerAppMenuProvider(opts.id ?? APPROVALS_MENU_PROVIDER, {
     module: APPROVALS_MENU_MODULE, max: opts.max ?? 12, moreAction: opts.moreAction ?? 'hub.open:approvals', moreLabel: opts.moreLabel ?? 'All approvals…',
     items: async () => {
       const st = await read();
@@ -121,4 +129,5 @@ export function installApprovalsMenu(rt: AxfRuntime, opts: ApprovalsMenuOptions 
       return r;
     },
   });
+  return () => { offProvider(); offLookup(); };
 }

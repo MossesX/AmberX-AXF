@@ -58,6 +58,8 @@ export interface ApprovalItem {
   revision: number | null;
   /** Held calls: the countdown (seconds left at `readAt`, local clock). */
   veto: VetoCall | null;
+  /** The feed entry as the hub sent it, for the expanded row's extra fields (who asked, effect, timeline); details.ts reads it. */
+  entry?: Record<string, unknown> | null;
   /** Who asked (axHub decision 109): Claude.ai / Claude Code / Headless / Console / Agent / System + name; null on older hubs. */
   source: HubSource | null;
 }
@@ -84,14 +86,14 @@ const o = (v: unknown): Record<string, unknown> | null => (v && typeof v === 'ob
 const s = (r: Record<string, unknown> | null, k: string): string | null => (r && typeof r[k] === 'string' ? (r[k] as string) : null);
 const oneLine = (t: string, cap: number) => t.replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, cap);
 
-interface Extra { title: string; description: string; actions: string[] | null; revision: number | null; source: HubSource | null; createdAt: string }
+interface Extra { title: string; description: string; actions: string[] | null; revision: number | null; source: HubSource | null; createdAt: string; entry: Record<string, unknown> }
 
 /** The decision fields of each feed entry, by id (the hub's `title`/`reason`, `actions`, `revision`). */
 function extras(body: string): Map<string, Extra> {
   const out = new Map<string, Extra>();
   let j: Record<string, unknown> | null = null;
   try { j = o(JSON.parse(body)); } catch { return out; }
-  for (const e of Array.isArray(j?.pending) ? (j!.pending as unknown[]) : []) {
+  for (const e of [...(Array.isArray(j?.pending) ? (j!.pending as unknown[]) : []), ...(Array.isArray(j?.held) ? (j!.held as unknown[]) : [])]) {
     const p = o(e);
     const id = s(p, 'id');
     if (!p || !id || out.has(id)) continue;
@@ -104,6 +106,7 @@ function extras(body: string): Map<string, Extra> {
       revision: rev,
       source: parseSource(p.source),
       createdAt: (s(p, 'createdAt') ?? '').slice(0, 64),
+      entry: p,
     });
   }
   return out;
@@ -145,7 +148,7 @@ export function interpretApprovals(base: string, status: number, body: string, n
     items.push({
       kind: 'held', id: c.id, tool: c.tool, title: e?.title || c.title || `Run ${c.tool}`, description: e?.description ?? '',
       summary: c.summary, command: c.command, createdAt: e?.createdAt ?? '', expiresAt: c.runsAt, url: c.url, decisions: heldDecisions(c), revision: e?.revision ?? null, veto: c,
-      source: e?.source ?? null,
+      source: e?.source ?? null, entry: e?.entry ?? null,
     });
   }
   for (const p of feed.pending) {
@@ -154,7 +157,7 @@ export function interpretApprovals(base: string, status: number, body: string, n
       kind: 'approval', id: p.id, tool: p.tool, title: e?.title || `Run ${p.tool}`.slice(0, APPROVALS_TITLE_CAP), description: e?.description ?? '',
       summary: p.summary, command: commandOfSummary(p.summary).slice(0, HUB_FIELD_CAPS.summary), createdAt: p.createdAt, expiresAt: p.expiresAt,
       url: p.url, decisions: decisionsOf(e?.actions ?? null), revision: e?.revision ?? null, veto: null,
-      source: e?.source ?? null,
+      source: e?.source ?? null, entry: e?.entry ?? null,
     });
   }
   return { status: 'ok', hub: base, count: Math.max(feed.count + held.length, items.length), items, approvalsUrl: feed.approvalsUrl, error: '', checkedAt: now };

@@ -49,3 +49,4 @@ button.axp-approvals-banner__more { all: unset; cursor: pointer; padding-left: v
 .axp-veto-screen__count { font-size: calc(var(--fx-font-size) * 2.4); font-variant-numeric: tabular-nums; font-weight: 700; }
 .axp-veto-screen__count.is-urgent { color: var(--fx-danger); }
 .axp-veto-screen__cmd { display: block; white-space: pre-wrap; word-break: break-word; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-approvals-banner > .axf-apx { background: var(--fx-surface) }

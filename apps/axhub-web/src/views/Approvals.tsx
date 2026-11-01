@@ -17,9 +17,10 @@ import { clearDatasetTransform, DataGrid, setDatasetTransform, type GridColumn, 
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, SOURCE_TONE, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
 import { HUB } from '../hub/useHub';
-import { CodeSection, WhatItDoes } from './ApprovalParts';
+import { ApprovalDetailsPanel } from '../axf/libs/approvals/react';
+import { approvalsOpenStore, detailsOfHubEntry, type ApprovalDecision } from '../axf/libs/approvals';
 import { HubGate, TapTwice, useHubJson } from './hubPage';
-import { HeldBar, HeldChip, isHeld } from './HeldCall';
+import { actHeld, HeldBar, HeldChip, isHeld } from './HeldCall';
 
 export function Approvals() {
   return (
@@ -169,7 +170,10 @@ const SOURCE_FILTER_OWNER = 'axhub-web.source';
 function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () => void }) {
   const [sort, setSort] = useState<GridSort>(null);
   const [hidden, setHidden] = useState<string[]>([]);
-  const [expanded, setExpanded] = useState<string[]>([]);
+  // Open rows live in lib-approvals' open-row store (scope 'axhub'): a poll, a re-render or coming back to the page keeps
+  // them open (Brett, Nov 1 2026: every approval row expandable, stays open on refresh).
+  const [expanded, setExpanded] = useState<string[]>(() => items.filter((i) => approvalsOpenStore.isOpen('axhub', i.id)).map((i) => i.id));
+  const toggleRow = useCallback((id: string) => setExpanded((e) => { const on = !e.includes(id); approvalsOpenStore.set('axhub', id, on); return on ? [...e, id] : e.filter((x) => x !== id); }), []);
   const [only, setOnly] = useState<string>('');
   const [replies, setReplies] = useState<Record<string, KeptReply<ApprovalItem>>>({});
   // Same JSON as the last read = the same object (flicker fix, Nov 1 2026): memoised cells of unchanged rows don't redraw.
@@ -238,7 +242,9 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
         sort={sort}
         onSort={(c) => setSort((s0) => nextSort(s0, c))}
         expanded={expanded}
-        onToggleExpand={(id) => setExpanded((e) => (e.includes(id) ? e.filter((x) => x !== id) : [...e, id]))}
+        onToggleExpand={toggleRow}
+        // A tap on the row opens it in place (no navigation); taps on its buttons and links do their own thing.
+        onRowClick={(r, e) => { if (!(e.target as Element).closest?.('button, a, input, select, textarea')) toggleRow(r.id); }}
         renderDetail={(r) => <RowDetail item={r} onDone={onDone} />}
         rowTone={(r) => (isHeld(r) ? 'warning' : r.status === 'pending' ? 'accent' : STATUS_TONE[r.status] ?? 'muted')}
         empty="No requests."
@@ -288,40 +294,42 @@ function RowDecideCell({ item, onDone }: { item: ApprovalItem; onDone: (next?: A
 /** An opened row: what it does, the code, who and when, and the rest of its actions. */
 function RowDetail({ item, onDone }: { item: ApprovalItem; onDone: () => void }) {
   const rt = useRuntime();
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState('');
   const held = isHeld(item);
-  // Approve / Deny sit on the row; the rest (postpone, ignore, revoke, reopen) here. A held call has only its own buttons.
+  // The open row (Brett, Nov 1 2026): lib-approvals' shared details panel (the reason, the exact call + copy, who asked,
+  // tool / policy / risk, the timeline, the result + output tail, Deny / Approve inside), then this app's own extras.
+  const details = useMemo(() => detailsOfHubEntry(HUB, item), [item]);
+  // Approve / Deny sit on the row and inside; the rest (postpone, ignore, revoke, reopen) here. A held call has only its own buttons.
   const quick = held ? [] : item.actions.filter((a) => a !== 'approve' && a !== 'decline');
   const run = async (a: ApprovalAction) => {
     if (a === 'postpone') { go(rt, 'approval', { id: item.id, postpone: '1' }); return; }
-    setBusy(true);
-    try { const r = await act(item, a); rt.toast(r.message || 'Done.', 'info'); }
+    setBusy(`${item.id}:${a}`);
+    try { const r = await act(item, a); rt.toast(r.message || 'Done.', a === 'approve' ? 'success' : 'info'); }
     catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); }
-    finally { setBusy(false); onDone(); }
+    finally { setBusy(''); onDone(); }
   };
+  const decide = async (d: ApprovalDecision) => {
+    if (!held) { await run(d === 'approve' ? 'approve' : 'decline'); return; }
+    setBusy(`${item.id}:${d}`);
+    try { const r = await actHeld(item.id, d === 'approve' ? 'approve-now' : 'deny'); rt.toast(r.message || (d === 'approve' ? 'Approved: the hub runs it now.' : 'Denied: it will not run.'), d === 'approve' ? 'success' : 'info'); checkHubNow(); }
+    catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); }
+    finally { setBusy(''); onDone(); }
+  };
+  if (!details) return null;
   return (
-    <div className="fx-stack">
-      <WhatItDoes item={item} />
-      <CodeSection item={item} />
-      <p className="fx-muted">
-        Asked {relTime(item.createdAt)}{sourceWho(item) ? ` by ${sourceWho(item)}` : ''} ({item.source?.label ?? 'Unknown'}{item.source?.client ? `, ${item.source.client}${item.source.clientVersion ? ` ${item.source.clientVersion}` : ''}` : ''}) · caller {item.callerId}
-        {item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}
-        {item.decidedBy ? ` · by ${item.decidedBy}` : ''}
-      </p>
+    <ApprovalDetailsPanel className="axp-axhub-detail" details={details} hub={HUB} busy={busy} onDecide={(d) => void decide(d)} openPage={() => go(rt, 'approval', { id: item.id })}>
       {item.postponed && (
         <p className="fx-muted">Waiting for {item.postponed.waitingFor}{item.postponed.lastNote ? ` · ${item.postponed.lastNote}` : ''}</p>
       )}
       {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
       <div className="fx-row fx-row--wrap">
         {quick.map((a) => (
-          <Button key={a} size="sm" disabled={busy} tone={a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
+          <Button key={a} size="sm" disabled={!!busy} tone={a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
             {ACTION_LABELS[a]}
           </Button>
         ))}
-        <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => go(rt, 'approval', { id: item.id })}>
-          {item.actions.includes('approve') && !item.whole ? 'Review the whole call' : 'Details'}
-        </Button>
+        <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => go(rt, 'approval', { id: item.id })}>Open the request</Button>
       </div>
-    </div>
+    </ApprovalDetailsPanel>
   );
 }

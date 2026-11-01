@@ -11,7 +11,7 @@
  * the row flips to the result in place (`Running`, `Denied`) and then drops off. Only that row changes: the list is
  * not reloaded. A row with a `deadline` counts down on its own tick (the rest of the menu doesn't re-render).
  */
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import type { CompiledMenuButton } from '../../core/engines/appmenu';
 import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu';
 import { MenuSub } from './MenuList';
@@ -86,6 +86,25 @@ function RowCountdown({ deadline, paused }: { deadline: number; paused?: string 
   return <span className={`fx-menu__count${sec <= 30 ? ' is-urgent' : ''}`} role="timer" aria-live="off">{sec > 0 ? rowCountdown(sec) : 'Running'}</span>;
 }
 
+/* ---- expandable live rows (Brett, Nov 1 2026: every approval row expands in place) ---- */
+
+/** Draws the open part of a live row whose `expand` is `<kind>:<key>` (gets the key). */
+export type MenuRowDetails = (key: string) => ReactNode;
+const rowDetails = new Map<string, MenuRowDetails>();
+/** Registers the details renderer for one `expand` kind (e.g. lib-approvals: `approval`); returns the remover. */
+export function registerMenuRowDetails(kind: string, render: MenuRowDetails): () => void {
+  rowDetails.set(kind, render);
+  return () => { if (rowDetails.get(kind) === render) rowDetails.delete(kind); };
+}
+const expandParts = (expand: string | undefined): [MenuRowDetails, string] | null => {
+  const i = expand ? expand.indexOf(':') : -1;
+  const r = i > 0 ? rowDetails.get(expand!.slice(0, i)) : undefined;
+  return r ? [r, expand!.slice(i + 1)] : null;
+};
+/** Open rows (by row id), outside React: a live list read again (the menu reopened, a refresh) keeps them open. */
+const openRows = new Set<string>();
+export const menuRowOpen = (id: string): boolean => openRows.has(id);
+
 type RowRun = { phase: 'idle' } | { phase: 'busy'; button: string } | { phase: 'done'; ok: boolean; state: string };
 
 /** A live-list row with buttons: label (cut first) + second line + countdown, then the buttons, which never shrink. */
@@ -107,12 +126,18 @@ function LiveRow({ item, onGone }: { item: CompiledMenuItem; onGone: (id: string
     setTimeout(() => { if (alive.current) onGone(item.id); }, LIVE_ROW_DROP_MS);
   };
   const done = run.phase === 'done';
+  // An expandable row: a tap on the row (or the caret on the far right) opens its details in place, no navigation.
+  const details = expandParts(item.expand);
+  const [open, setOpen] = useState(() => openRows.has(item.id));
+  const toggle = () => setOpen((o) => { const n = !o; if (n) openRows.add(item.id); else openRows.delete(item.id); return n; });
+  const bodyId = `fx-menu-details-${item.id.replace(/[^A-Za-z0-9_-]/g, '_')}`;
   return (
-    <li className={`fx-menu__li fx-menu__live${done ? ' is-done' : ''}`} data-axf-live-row={item.id} data-axf-row-state={done ? run.state : undefined}>
+    <li className={`fx-menu__li fx-menu__live${done ? ' is-done' : ''}${details ? ' is-expandable' : ''}${open && details ? ' is-open' : ''}`} data-axf-live-row={item.id} data-axf-row-state={done ? run.state : undefined}>
       <button
-        type="button" role="menuitem" className="fx-menu__item fx-menu__live-main" disabled={item.locked || done}
+        type="button" role="menuitem" className="fx-menu__item fx-menu__live-main" disabled={item.locked || (done && !details)}
         data-axf-menu-item={item.id} data-axf-origin={item.origin} title={item.detail ? `${item.label}\n${item.detail}` : item.label}
-        onClick={() => { if (item.action) rt.dispatch(item.action); }}
+        aria-expanded={details ? open && !!details : undefined} aria-controls={details ? bodyId : undefined}
+        onClick={(e) => { if (details) { e.stopPropagation(); toggle(); } else if (item.action) rt.dispatch(item.action); }}
       >
         <span className="fx-menu__icon"><Icon name={item.icon} size={15} /></span>
         <span className="fx-menu__live-text">
@@ -138,6 +163,19 @@ function LiveRow({ item, onGone }: { item: CompiledMenuItem; onGone: (id: string
           >{b.label}</Button>
         ))}
       </div>
+      {details && (
+        <button type="button" className="fx-iconbtn fx-menu__caret" aria-expanded={open} aria-controls={bodyId}
+          aria-label={open ? `Fold the details: ${item.label}` : `Show the details: ${item.label}`} title={open ? 'Fold' : 'Details'}
+          onClick={(e) => { e.stopPropagation(); toggle(); }}>
+          <Icon name="chevron-down" size={15} className={open ? 'fx-menu__caret-open' : ''} />
+        </button>
+      )}
+      {details && open && (
+        // Clicks and keys inside stay inside: they never close the menu or move its focus.
+        <div className="fx-menu__details" id={bodyId} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+          {details[0](details[1])}
+        </div>
+      )}
     </li>
   );
 }
