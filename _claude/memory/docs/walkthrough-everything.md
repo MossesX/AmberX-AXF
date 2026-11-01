@@ -7,7 +7,7 @@ and downloads as a video too. **Update (Brett, Nov 1 21:32):** "Wanna be able to
 amberx with downloadable video": it lives in AmberX's walkthrough plugin, the voice and narration are editable there,
 and the video downloads from it.
 
-**State:** building (Brett said go, Nov 1 22:36). Profile: Refactor (current).
+**State:** built on branch `claude/project-thread-646cjb` (PR #229); waiting on merge, then the recording run on the VPS (`WALKTHROUGH=stack bash apps/amberx-droid/walkthrough/rebuild.sh`, a veto call). As built: 26 chapters, 275 scenes, ~11.9k words at speed 0.93 (~85 min speech, about 90 with screen holds). Details: `apps/amberx-droid/walkthrough/README.md`. Profile: Refactor (current).
 Model: Opus for every step (no new cross-port contract; the walkthrough-video@1 extension below is script-level).
 Recurring re-records go to the job type `amberx-walkthrough` (Walkthrough producer) once it lands.
 

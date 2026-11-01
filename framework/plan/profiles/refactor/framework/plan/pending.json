@@ -3793,7 +3793,9 @@
     },
     {
      "text": "[Opus] Docs: README, plan doc, THREADS, PR ready",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:58:58.048Z"
     },
     {
      "text": "[Opus] Record + publish on the VPS (unattended run, job agent)",
@@ -3802,7 +3804,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:56:33.085Z",
+   "updatedAt": "2026-11-01T22:58:58.048Z",
    "source": "console"
   }
  ]
