@@ -346,6 +346,22 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-menu__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); color: var(--fx-muted); }
 .fx-menu__error { color: var(--fx-danger); }
+/* live-list rows with buttons (AppMenu LiveRow: Deny / Approve on each waiting approval). The text gives way first
+   (min-width: 0 + ellipsis); the buttons never shrink and are big tap targets, sized from the theme's spacing. */
+.fx-menu__live { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; padding-right: var(--fx-dens-gap-md); }
+.fx-dropdown:has(.fx-menu__live), .fx-menu__sub:has(.fx-menu__live) { min-width: min(calc(var(--fx-space) * 46), calc(100vw - 16px)); }
+.fx-menu__live-main { flex: 1 1 auto; min-width: 0; }
+.fx-menu__live-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.fx-menu__live-label { overflow: hidden; text-overflow: ellipsis; }
+.fx-menu__live-detail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.fx-menu__count { flex: none; font-variant-numeric: tabular-nums; font-weight: 600; font-size: var(--fx-type-scale-sm); color: var(--fx-warning); }
+.fx-menu__count.is-urgent { color: var(--fx-danger); }
+.fx-menu__count.is-paused { color: var(--fx-muted); font-weight: 500; }
+.fx-menu__acts { flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-md); }
+.fx-menu__acts > .fx-btn { flex: none; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4.5)); min-width: calc(var(--fx-space) * 11); justify-content: center; }
+.fx-menu__live-state { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4.5)); padding: 0 var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); font-weight: 600; color: var(--fx-success); }
+.fx-menu__live.is-done .fx-menu__live-main { opacity: var(--fx-opacity-muted); }
+@media (max-width: 720px) { .fx-menu__acts > .fx-btn, .fx-menu__live-state { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); } }
 .fx-menu__spinner {
   width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--fx-border); border-top-color: var(--fx-accent);
   animation: fx-spin calc(var(--fx-motion) * 4) linear infinite;
@@ -1216,3 +1232,50 @@ code, .fx-mono { font-size: var(--fx-type-mono-size); }
   .fx-pagehead h1 { font-size: var(--fx-type-headings-h2); }
   .fx-pagehead p { display: -webkit-box; -webkit-line-clamp: var(--fx-size-page-head-description-lines); -webkit-box-orient: vertical; overflow: hidden; }
 }
+
+/* ---------- agent ID cards (agent-card@1 assets; react/components/AgentCard.tsx). Tokens only: a theme swap rebrands every card. ---------- */
+.fx-idcard { --fx-idcard-accent: var(--fx-accent); position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-lg); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); box-shadow: var(--fx-shadow-sm); min-width: 0 }
+.fx-idcard.is-vertical { width: calc(var(--fx-space) * 22); min-height: calc(var(--fx-space) * 32) }
+.fx-idcard.is-horizontal { width: calc(var(--fx-space) * 34); min-height: calc(var(--fx-space) * 20) }
+.fx-idcard.is-accent-brand-1 { --fx-idcard-accent: var(--fx-brand-1) }
+.fx-idcard.is-accent-brand-2 { --fx-idcard-accent: var(--fx-brand-2) }
+.fx-idcard.is-accent-brand-3 { --fx-idcard-accent: var(--fx-brand-3) }
+.fx-idcard.is-accent-info { --fx-idcard-accent: var(--fx-info) }
+.fx-idcard.is-accent-success { --fx-idcard-accent: var(--fx-success) }
+.fx-idcard.is-accent-warning { --fx-idcard-accent: var(--fx-warning) }
+.fx-idcard.is-accent-danger { --fx-idcard-accent: var(--fx-danger) }
+.fx-idcard.is-surface-raised { background: var(--fx-surface2) }
+.fx-idcard.is-surface-inverse { background: var(--fx-text); color: var(--fx-bg); border-color: var(--fx-text) }
+.fx-idcard.is-surface-accent { background: color-mix(in srgb, var(--fx-idcard-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.fx-idcard.is-finish-foil { border: calc(var(--fx-border-w) * 4) solid var(--fx-idcard-accent); background-image: linear-gradient(135deg, color-mix(in srgb, var(--fx-idcard-accent) calc(var(--fx-opacity-tint) * 100%), transparent), transparent 60%) }
+.fx-idcard.is-finish-hologram { background-image: linear-gradient(120deg, transparent 30%, color-mix(in srgb, var(--fx-brand-2) calc(var(--fx-opacity-tint) * 100%), transparent) 45%, color-mix(in srgb, var(--fx-brand-3) calc(var(--fx-opacity-tint) * 100%), transparent) 55%, transparent 70%) }
+.fx-idcard.is-finish-neon { border-color: var(--fx-idcard-accent); box-shadow: 0 0 calc(var(--fx-space) * 1.2) color-mix(in srgb, var(--fx-idcard-accent) calc(var(--fx-opacity-glass) * 100%), transparent) }
+.fx-idcard__banner { margin: calc(var(--fx-dens-gap-md) * -1) calc(var(--fx-dens-gap-md) * -1) 0; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); background: var(--fx-idcard-accent); color: var(--fx-accent-text); display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-height: calc(var(--fx-space) * 3) }
+.fx-idcard__corner { position: absolute; top: var(--fx-dens-gap-sm); right: var(--fx-dens-gap-sm); color: var(--fx-idcard-accent) }
+.fx-idcard__watermark { position: absolute; inset: 0; display: grid; place-items: center; opacity: var(--fx-opacity-tint); pointer-events: none; transform: rotate(-18deg) scale(2.4) }
+.fx-idcard__appname { font-weight: var(--fx-type-weights-strong); font-size: var(--fx-type-scale-sm); letter-spacing: 0.06em; text-transform: uppercase }
+.fx-idcard__body { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.fx-idcard.is-horizontal .fx-idcard__body { flex-direction: row; align-items: flex-start }
+.fx-idcard__photo { flex: none; display: grid; place-items: center; overflow: hidden; border-radius: var(--fx-radius-md); background: var(--fx-surface3); border: var(--fx-border-w) solid var(--fx-border) }
+.fx-idcard.is-photo-large .fx-idcard__photo { width: calc(var(--fx-space) * 11); height: calc(var(--fx-space) * 11) }
+.fx-idcard.is-photo-small .fx-idcard__photo { width: calc(var(--fx-space) * 6); height: calc(var(--fx-space) * 6) }
+.fx-idcard--trading.is-photo-large .fx-idcard__photo { width: 100%; height: calc(var(--fx-space) * 13) }
+.fx-idcard__photo svg { width: 100%; height: 100% }
+.fx-idcard__initials { font-size: var(--fx-type-scale-2xl); font-weight: var(--fx-type-weights-strong); color: var(--fx-idcard-accent) }
+.fx-idcard__fields { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); width: 100%; min-width: 0 }
+.fx-idcard.is-vertical .fx-idcard__fields { text-align: center; align-items: center }
+.fx-idcard__name { margin: 0; font-size: var(--fx-type-scale-lg); font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere }
+.fx-idcard__badge { font-size: var(--fx-type-scale-lg) }
+.fx-idcard__list { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); width: 100% }
+.fx-idcard__line { display: flex; justify-content: space-between; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-sm); min-width: 0 }
+.fx-idcard.is-vertical .fx-idcard__line { flex-direction: column; align-items: center; gap: 0 }
+.fx-idcard__line dt { color: var(--fx-muted); font-size: var(--fx-type-scale-xs); text-transform: uppercase; letter-spacing: 0.04em }
+.fx-idcard.is-surface-inverse .fx-idcard__line dt { color: color-mix(in srgb, var(--fx-bg) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.fx-idcard__line dd { margin: 0; overflow-wrap: anywhere }
+.fx-idcard__line.is-catchphrase dd { font-style: italic }
+.fx-idcard__line.is-signature dd { font-style: italic; font-family: var(--fx-font-mono) }
+.fx-idcard--license .fx-idcard__line { font-size: var(--fx-type-scale-xs) }
+.fx-idcard--backstage .fx-idcard__line.is-status dd { font-size: var(--fx-type-scale-2xl); font-weight: var(--fx-type-weights-strong); color: var(--fx-idcard-accent); text-transform: uppercase }
+.fx-idcard__barcode { width: 100%; height: calc(var(--fx-space) * 2.5); fill: currentColor; margin-top: auto }
+.fx-idcard__page { margin: auto 0 0; font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-2xs); color: var(--fx-idcard-accent); overflow-wrap: anywhere; text-align: center }
+.fx-idcard__flip { align-self: flex-end }

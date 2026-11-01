@@ -65,6 +65,8 @@ node framework/cli/project.mjs validate --all       # every project manifest (al
 node framework/cli/claude-project.mjs [dir] --dry-run --yes   # what claude-project would do in a folder
 node framework/spec/check-project-fixtures.mjs      # JS validator vs reference fixtures
 node framework/spec/check-build-steps.mjs           # small-steps rule: pending + build-queue cores (40 checks)
+node framework/spec/check-builds-store.mjs          # builds@1 store: migration loses nothing, projections, reorder, rename, harvest, apply/discard
+node framework/cli/builds-store.mjs [verify|history <id>|restore <id> <rev>]   # the one builds store
 node framework/cli/rebake.mjs [status|apply <app>]  # apps whose baked src/axf is behind the framework; re-bake one
 node framework/cli/watch-live.mjs targets|list      # Watch live: apps this checkout touches / live previews (axf focus <app> [route] [selector])
 node framework/cli/pending.mjs --steps | --check-steps        # pending builds with their steps; what still needs splitting
@@ -105,6 +107,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 - **Interop:** the kernel never knows a protocol. Protocols are modules contributing a `ProtocolAdapter`. Exposure is default-deny, and a remote caller can never exceed the local UAC role. Wire error codes never change meaning (see INTEROP.md).
 - **React/TS port:** the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.
 - `axf init` **bakes** `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.
+- **One builds store (Oct 31 2026):** every build of every profile is one record in `_claude/builds/store.json` (builds@1, owned by the orchestrator; profiles are a field, Pending a status, the queue an order). Every write is versioned (`_claude/builds/journal/`); the old orchestrator/pending/build-queue files are read-only exports. `node framework/cli/builds-store.mjs verify | history <id> | restore <id> <rev>`.
 - Feature status lives in `framework/catalog/status.json`. Build order and completion live in `framework/plan/build-queue.json`, which the MCP tools `build_next` and `build_step` drive. Update both, then run `tracker.mjs`, whenever something lands.
 - Model policy: per step in the Build orchestrator (Fable for contracts/engines/migrations/cross-app GUI behaviour, Opus otherwise); approval only at a model switch.
 - No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.

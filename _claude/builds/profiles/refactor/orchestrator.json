@@ -1,6 +1,7 @@
 {
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T00:35:23.971Z",
+ "updatedAt": "2026-11-01T01:27:38.720Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -34,6 +35,18 @@
     {
      "text": "Merged into enterprise-branding (Oct 27 2026). Archived here; build it there.",
      "at": "2026-10-27T16:56:46.245Z"
+    },
+    {
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
+    },
+    {
+     "text": "Built on Opus (Brett: \"Do in opus\") on branch rebuild/design-package-opus. Fable rebuild parked as design-package-fable. Report _claude/memory/docs/rebuilds/design-package.md.",
+     "at": "2026-10-27T17:16:22.734Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+     "at": "2026-10-27T19:30:00.000Z"
     }
    ],
    "approvals": [],
@@ -55,7 +68,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1bphxuw"
     },
     {
      "id": "s2",
@@ -76,7 +90,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-anlvd6"
     },
     {
      "id": "s3",
@@ -95,7 +110,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-zl0w98"
     },
     {
      "id": "s4",
@@ -116,7 +132,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-11gulzm"
     },
     {
      "id": "s5",
@@ -135,7 +152,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-yh7p48"
     },
     {
      "id": "s6",
@@ -152,7 +170,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1pmjjk2"
     },
     {
      "id": "s7",
@@ -173,7 +192,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-onrf2c"
     },
     {
      "id": "s8",
@@ -190,7 +210,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-qgh6sq"
     },
     {
      "id": "s9",
@@ -207,7 +228,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ghumgo"
     }
    ]
   },
@@ -229,6 +251,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+     "at": "2026-10-27T19:30:00.000Z"
     }
    ],
    "approvals": [],
@@ -252,7 +278,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mhxeuv"
     },
     {
      "id": "s2",
@@ -269,7 +296,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-jxbc9"
     },
     {
      "id": "s3",
@@ -286,7 +314,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-19jnxnf"
     },
     {
      "id": "s4",
@@ -305,7 +334,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-p1ztax"
     },
     {
      "id": "s5",
@@ -324,7 +354,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-4ksev"
     },
     {
      "id": "s6",
@@ -341,7 +372,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1k4otwx"
     },
     {
      "id": "s7",
@@ -358,7 +390,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1kk1cub"
     },
     {
      "id": "s8",
@@ -377,7 +410,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-999pi9"
     },
     {
      "id": "s9",
@@ -394,7 +428,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-dcv15j"
     },
     {
      "id": "s10",
@@ -411,7 +446,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-pqqxj0"
     },
     {
      "id": "s11",
@@ -428,7 +464,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-5cv4j1"
     },
     {
      "id": "s12",
@@ -447,7 +484,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-hkx7ct"
     }
    ]
   },
@@ -464,7 +502,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "createdAt": "2026-10-27T16:56:46.231Z",
    "updatedAt": "2026-10-30T18:10:39.641Z",
-   "builtAt": "2026-10-30T18:10:38.408Z",
+   "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
      "text": "Merged in design-package (its 9 steps are s2-s5, s29 and parts of s38). One model switch: Fable s1-s12, then Opus s13-s40.",
@@ -503,16 +541,12 @@
      "at": "2026-10-27T19:11:51.156Z"
     },
     {
-     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
-     "at": "2026-10-28T19:31:15.654Z"
+     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
+     "at": "2026-10-27T22:05:00.000Z"
     },
     {
      "text": "Oct 30 2026 (Opus, claude/enterprise-branding-3): s27-s40 were built inside refactor-all (refactor-all s28-s40 = these steps, numbering one ahead) and merged in PR #166 on Oct 29; ticked here. Re-checked on main 1b4ecd5a: amberx test.mjs 1990/1990, brand-library test.mts 20/20, check-plugin-pages, check-theme, check-brand 205, check-design-language 427, check-design-package 1161 all green. Rebuild report _claude/memory/docs/rebuilds/enterprise-branding-3.md.",
-     "at": "2026-10-30T18:10:38.319Z"
-    },
-    {
-     "text": "Imported to the Refactor build profile on Oct 27 2026; carry it on there.",
-     "at": "2026-10-27T22:05:00.000Z"
+     "at": "2026-10-30T18:10:39.560Z"
     },
     {
      "text": "Complete (Oct 30 2026, claude/enterprise-branding-3): all 46 orchestrator steps done. Fable s1-s12 in PR #128, Opus s13-s26 in PR #138, s27-s40 inside refactor-all (PR #166, merged Oct 29). Re-checked green on main. Report _claude/memory/docs/rebuilds/enterprise-branding-3.md.",
@@ -521,6 +555,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
      "at": "2026-10-27T19:30:00.000Z"
+    },
+    {
+     "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
+     "at": "2026-10-28T19:31:15.654Z"
     }
    ],
    "approvals": [
@@ -551,7 +589,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.097Z",
-     "note": ""
+     "note": "",
+     "uid": "st-iickvw"
     },
     {
      "id": "s2",
@@ -570,7 +609,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
-     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group.",
+     "uid": "st-1gbevz2"
     },
     {
      "id": "s3",
@@ -589,7 +629,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
-     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group.",
+     "uid": "st-15wgo2o"
     },
     {
      "id": "s4",
@@ -608,7 +649,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
-     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group.",
+     "uid": "st-5sdbym"
     },
     {
      "id": "s5",
@@ -625,7 +667,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
-     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group.",
+     "uid": "st-1v640f0"
     },
     {
      "id": "s5r1",
@@ -642,7 +685,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.166Z",
-     "note": ""
+     "note": "",
+     "uid": "st-15b10iu"
     },
     {
      "id": "s5r2",
@@ -659,7 +703,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.238Z",
-     "note": ""
+     "note": "",
+     "uid": "st-acyode"
     },
     {
      "id": "s5r3",
@@ -676,7 +721,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.306Z",
-     "note": ""
+     "note": "",
+     "uid": "st-k7xovu"
     },
     {
      "id": "s5r4",
@@ -693,7 +739,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.375Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1lzyn5q"
     },
     {
      "id": "s5r5",
@@ -710,7 +757,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:28:33.433Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1rrhkyu"
     },
     {
      "id": "s5r6",
@@ -727,7 +775,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:55.597Z",
-     "note": ""
+     "note": "",
+     "uid": "st-8yyrx"
     },
     {
      "id": "s6",
@@ -744,7 +793,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.047Z",
-     "note": ""
+     "note": "",
+     "uid": "st-edvv2x"
     },
     {
      "id": "s7",
@@ -761,7 +811,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.101Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1wsm5cd"
     },
     {
      "id": "s8",
@@ -778,7 +829,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.151Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1sxhrul"
     },
     {
      "id": "s9",
@@ -795,7 +847,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:39:25.205Z",
-     "note": ""
+     "note": "",
+     "uid": "st-10v6bzt"
     },
     {
      "id": "s10",
@@ -814,7 +867,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:44:28.329Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1rlbx7o"
     },
     {
      "id": "s11",
@@ -833,7 +887,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:46:52.502Z",
-     "note": ""
+     "note": "",
+     "uid": "st-vxijx4"
     },
     {
      "id": "s12",
@@ -850,7 +905,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:51:14.262Z",
-     "note": ""
+     "note": "",
+     "uid": "st-k1u1hk"
     },
     {
      "id": "s13",
@@ -867,7 +923,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:31:42.318Z",
-     "note": ""
+     "note": "",
+     "uid": "st-p70odg"
     },
     {
      "id": "s14",
@@ -884,7 +941,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:31:42.369Z",
-     "note": ""
+     "note": "",
+     "uid": "st-dphfj0"
     },
     {
      "id": "s15",
@@ -901,7 +959,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:34:14.770Z",
-     "note": ""
+     "note": "",
+     "uid": "st-4sslx9"
     },
     {
      "id": "s16",
@@ -918,7 +977,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:34:14.844Z",
-     "note": ""
+     "note": "",
+     "uid": "st-v9x5r9"
     },
     {
      "id": "s17",
@@ -935,7 +995,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:42:08.861Z",
-     "note": ""
+     "note": "",
+     "uid": "st-crz2h"
     },
     {
      "id": "s18",
@@ -952,7 +1013,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T20:42:08.934Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1gfdpsx"
     },
     {
      "id": "s19",
@@ -969,7 +1031,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:47:13.405Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1d3t1c5"
     },
     {
      "id": "s20",
@@ -986,7 +1049,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:47:13.482Z",
-     "note": ""
+     "note": "",
+     "uid": "st-gzg0lq"
     },
     {
      "id": "s21",
@@ -1003,7 +1067,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:50:08.047Z",
-     "note": ""
+     "note": "",
+     "uid": "st-14809va"
     },
     {
      "id": "s22",
@@ -1020,7 +1085,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:50:08.100Z",
-     "note": ""
+     "note": "",
+     "uid": "st-urepma"
     },
     {
      "id": "s23",
@@ -1037,7 +1103,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:51:10.874Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1asfsre"
     },
     {
      "id": "s24",
@@ -1054,7 +1121,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:55:00.852Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1qikt6u"
     },
     {
      "id": "s25",
@@ -1071,7 +1139,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:55:00.906Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1ysxzd"
     },
     {
      "id": "s26",
@@ -1088,7 +1157,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T21:56:06.767Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1jthkip"
     },
     {
      "id": "s27",
@@ -1104,8 +1174,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:36.658Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:38.482Z",
+     "note": "",
+     "uid": "st-1tqxped"
     },
     {
      "id": "s28",
@@ -1121,8 +1192,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:36.850Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:38.562Z",
+     "note": "",
+     "uid": "st-tu3rp1"
     },
     {
      "id": "s29",
@@ -1138,8 +1210,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.028Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:38.667Z",
+     "note": "",
+     "uid": "st-1afad81"
     },
     {
      "id": "s30",
@@ -1158,7 +1231,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:08:21.998Z",
-     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group."
+     "note": "Built on Opus by another session (PRs #123/#124 on main); the Fable pass is the \"Design package (Fable rebuild)\" group.",
+     "uid": "st-1noyuw"
     },
     {
      "id": "s31",
@@ -1176,8 +1250,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.157Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:38.745Z",
+     "note": "",
+     "uid": "st-kud4ik"
     },
     {
      "id": "s32",
@@ -1193,8 +1268,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.295Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:38.826Z",
+     "note": "",
+     "uid": "st-1ytgrfo"
     },
     {
      "id": "s33",
@@ -1210,8 +1286,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.377Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:38.903Z",
+     "note": "",
+     "uid": "st-1pz2wh4"
     },
     {
      "id": "s34",
@@ -1229,8 +1306,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.473Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:38.987Z",
+     "note": "",
+     "uid": "st-zhcqg"
     },
     {
      "id": "s35",
@@ -1246,8 +1324,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.585Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:39.096Z",
+     "note": "",
+     "uid": "st-1doh2q5"
     },
     {
      "id": "s36",
@@ -1263,8 +1342,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.826Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:39.172Z",
+     "note": "",
+     "uid": "st-1aim4x1"
     },
     {
      "id": "s37",
@@ -1280,8 +1360,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:37.941Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:39.240Z",
+     "note": "",
+     "uid": "st-1blo6h5"
     },
     {
      "id": "s38",
@@ -1297,8 +1378,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:38.064Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:39.325Z",
+     "note": "",
+     "uid": "st-1uxt29l"
     },
     {
      "id": "s39",
@@ -1314,8 +1396,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:38.153Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:39.409Z",
+     "note": "",
+     "uid": "st-5vec1p"
     },
     {
      "id": "s40",
@@ -1331,8 +1414,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-10-30T18:10:38.239Z",
-     "note": ""
+     "doneAt": "2026-10-30T18:10:39.491Z",
+     "note": "",
+     "uid": "st-160ai5a"
     }
    ]
   },
@@ -1370,6 +1454,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026: refactoring and upgrading work from today's sessions).",
+     "at": "2026-10-27T19:30:00.000Z"
     }
    ],
    "approvals": [
@@ -1396,7 +1484,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:58:54.888Z",
-     "note": ""
+     "note": "",
+     "uid": "st-ci1jlh"
     },
     {
      "id": "s2",
@@ -1413,7 +1502,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T18:58:54.951Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1dt78hf"
     },
     {
      "id": "s3",
@@ -1430,7 +1520,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:03:25.215Z",
-     "note": ""
+     "note": "",
+     "uid": "st-ovs7ld"
     },
     {
      "id": "s4",
@@ -1447,7 +1538,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:08:35.374Z",
-     "note": ""
+     "note": "",
+     "uid": "st-pb4qir"
     },
     {
      "id": "s5",
@@ -1464,7 +1556,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:08:35.445Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1ho4el"
     },
     {
      "id": "s6",
@@ -1481,7 +1574,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.746Z",
-     "note": ""
+     "note": "",
+     "uid": "st-15fsyb"
     },
     {
      "id": "s7",
@@ -1498,7 +1592,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.816Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1b94u1d"
     },
     {
      "id": "s8",
@@ -1515,7 +1610,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.876Z",
-     "note": ""
+     "note": "",
+     "uid": "st-y0bx1v"
     },
     {
      "id": "s9",
@@ -1532,7 +1628,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.927Z",
-     "note": ""
+     "note": "",
+     "uid": "st-7yyhdx"
     },
     {
      "id": "s10",
@@ -1549,7 +1646,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T22:19:19.983Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1f9ewly"
     },
     {
      "id": "s11",
@@ -1566,7 +1664,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ck9f8b"
     },
     {
      "id": "s12",
@@ -1583,7 +1682,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1o89ubz"
     },
     {
      "id": "s13",
@@ -1600,7 +1700,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-6wasnr"
     },
     {
      "id": "s14",
@@ -1617,7 +1718,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1i56urn"
     },
     {
      "id": "s15",
@@ -1634,7 +1736,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-gwe9ez"
     }
    ]
   },
@@ -1681,7 +1784,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-m45a6h"
     },
     {
      "id": "s2",
@@ -1700,7 +1804,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1w7ub9j"
     },
     {
      "id": "s3",
@@ -1717,7 +1822,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1y3itd1"
     },
     {
      "id": "s4",
@@ -1734,7 +1840,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1w7p3mn"
     },
     {
      "id": "s5",
@@ -1751,7 +1858,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-166bnyp"
     },
     {
      "id": "s6",
@@ -1768,7 +1876,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-af0i13"
     }
    ]
   },
@@ -1813,7 +1922,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-ggxhi4"
     },
     {
      "id": "s2",
@@ -1830,7 +1940,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-erensu"
     },
     {
      "id": "s3",
@@ -1847,7 +1958,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-402vi8"
     },
     {
      "id": "s4",
@@ -1864,7 +1976,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-12x3lda"
     }
    ]
   },
@@ -1929,7 +2042,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:35:41.594Z",
-     "note": ""
+     "note": "",
+     "uid": "st-q8vqrx"
     },
     {
      "id": "s2",
@@ -1946,7 +2060,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:41:13.352Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1rgxhnv"
     },
     {
      "id": "s3",
@@ -1963,7 +2078,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:45:58.111Z",
-     "note": ""
+     "note": "",
+     "uid": "st-thpi6h"
     },
     {
      "id": "s4",
@@ -1980,7 +2096,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:46:34.469Z",
-     "note": ""
+     "note": "",
+     "uid": "st-3gc2ij"
     },
     {
      "id": "s5",
@@ -1997,7 +2114,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-6cv1dx"
     },
     {
      "id": "s6",
@@ -2014,7 +2132,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-ejwfqj"
     },
     {
      "id": "s7",
@@ -2031,7 +2150,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-g9f9ft"
     },
     {
      "id": "s8",
@@ -2048,7 +2168,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-pwsmyj"
     },
     {
      "id": "s9",
@@ -2065,7 +2186,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ugpm65"
     },
     {
      "id": "s10",
@@ -2082,7 +2204,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1brmv5a"
     },
     {
      "id": "s11",
@@ -2099,7 +2222,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-15xdrlf"
     },
     {
      "id": "s12",
@@ -2116,7 +2240,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-31fetj"
     },
     {
      "id": "s14",
@@ -2140,7 +2265,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-crj9vs"
     },
     {
      "id": "s15",
@@ -2164,7 +2290,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-n8ym5e"
     },
     {
      "id": "s13",
@@ -2181,7 +2308,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-re4dux"
     }
    ]
   },
@@ -2229,7 +2357,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-6zj66w"
     },
     {
      "id": "s2",
@@ -2246,7 +2375,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-14slha2"
     },
     {
      "id": "s3",
@@ -2263,7 +2393,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-u19ozg"
     },
     {
      "id": "s4",
@@ -2280,7 +2411,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-vx3epu"
     }
    ]
   },
@@ -2329,7 +2461,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-xcrsus"
     },
     {
      "id": "s2",
@@ -2346,7 +2479,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ma6tqu"
     },
     {
      "id": "s3",
@@ -2363,7 +2497,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-kz14uw"
     },
     {
      "id": "s4",
@@ -2380,7 +2515,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-bo1bqe"
     }
    ]
   },
@@ -2410,6 +2546,14 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Overlaps claude-handoff (built Oct 22 2026, PR #22: it currently creates the Tools section itself, so this build moves that out). Parked by Brett: \"Hold off on that, add to queue.\"",
+     "at": "2026-10-22T14:05:33.773Z"
+    },
+    {
+     "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
+     "at": "2026-10-27T22:41:47.258Z"
     }
    ],
    "approvals": [],
@@ -2429,7 +2573,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1gj7phg"
     },
     {
      "id": "s2",
@@ -2446,7 +2591,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-15rvx6u"
     },
     {
      "id": "s3",
@@ -2463,7 +2609,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-4t3sp4"
     },
     {
      "id": "s4",
@@ -2480,7 +2627,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-uuh8d2"
     }
    ]
   },
@@ -2525,7 +2673,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.444Z",
-     "note": ""
+     "note": "",
+     "uid": "st-i6kqwf"
     },
     {
      "id": "s2",
@@ -2542,7 +2691,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.492Z",
-     "note": ""
+     "note": "",
+     "uid": "st-5dhjz5"
     },
     {
      "id": "s3",
@@ -2559,7 +2709,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T23:48:40.545Z",
-     "note": ""
+     "note": "",
+     "uid": "st-623par"
     },
     {
      "id": "s4",
@@ -2576,7 +2727,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:08:50.049Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1te2z4h"
     }
    ]
   },
@@ -2594,7 +2746,12 @@
    "createdAt": "2026-10-28T00:32:03.143Z",
    "updatedAt": "2026-10-28T02:35:09.837Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
+     "at": "2026-10-28T02:35:00.000Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -2612,7 +2769,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:37:06.746Z",
-     "note": ""
+     "note": "",
+     "uid": "st-wszme0"
     },
     {
      "id": "s2",
@@ -2629,7 +2787,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:37:06.797Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1um1xh6"
     },
     {
      "id": "s3",
@@ -2646,7 +2805,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:47:48.682Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1juq56k"
     },
     {
      "id": "s4",
@@ -2663,7 +2823,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:47:48.739Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1lqjuwy"
     },
     {
      "id": "s5",
@@ -2680,7 +2841,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:46:16.982Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1ix2mfs"
     },
     {
      "id": "s6",
@@ -2697,7 +2859,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.655Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1aq1836"
     },
     {
      "id": "s7",
@@ -2714,7 +2877,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.741Z",
-     "note": ""
+     "note": "",
+     "uid": "st-18xgnzo"
     },
     {
      "id": "s8",
@@ -2731,7 +2895,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:51:02.810Z",
-     "note": ""
+     "note": "",
+     "uid": "st-bdt6xm"
     },
     {
      "id": "s9",
@@ -2748,7 +2913,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.507Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1qftew"
     },
     {
      "id": "s10",
@@ -2765,7 +2931,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.574Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1cjm4r9"
     },
     {
      "id": "s11",
@@ -2782,7 +2949,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.638Z",
-     "note": ""
+     "note": "",
+     "uid": "st-q6rp3a"
     },
     {
      "id": "s12",
@@ -2799,7 +2967,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.678Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1p5uhcm"
     },
     {
      "id": "s13",
@@ -2816,7 +2985,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:01:20.720Z",
-     "note": ""
+     "note": "",
+     "uid": "st-wtwcdq"
     },
     {
      "id": "s14",
@@ -2833,7 +3003,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T00:41:50.166Z",
-     "note": ""
+     "note": "",
+     "uid": "st-klu9jy"
     },
     {
      "id": "s15",
@@ -2850,7 +3021,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T02:35:09.742Z",
-     "note": ""
+     "note": "",
+     "uid": "st-t2w4ri"
     }
    ]
   },
@@ -2891,7 +3063,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T03:05:25.022Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1nji859"
     }
    ]
   },
@@ -2927,7 +3100,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.242Z",
-     "note": ""
+     "note": "",
+     "uid": "st-kmboj3"
     },
     {
      "id": "s2",
@@ -2944,7 +3118,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.296Z",
-     "note": ""
+     "note": "",
+     "uid": "st-7t8hlt"
     },
     {
      "id": "s3",
@@ -2961,7 +3136,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.343Z",
-     "note": ""
+     "note": "",
+     "uid": "st-8humxf"
     },
     {
      "id": "s4",
@@ -2978,7 +3154,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.392Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1vttwr5"
     },
     {
      "id": "s5",
@@ -2995,7 +3172,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T04:45:09.446Z",
-     "note": ""
+     "note": "",
+     "uid": "st-xulx9r"
     }
    ]
   },
@@ -3036,7 +3214,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T05:10:31.767Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1uydgp9"
     }
    ]
   },
@@ -3077,7 +3256,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T05:05:08.295Z",
-     "note": ""
+     "note": "",
+     "uid": "st-cb6fdc"
     }
    ]
   },
@@ -3118,7 +3298,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:01:41.167Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1bsn6zm"
     },
     {
      "id": "s2",
@@ -3135,7 +3316,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:01:41.230Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1ooubww"
     },
     {
      "id": "s3",
@@ -3152,7 +3334,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T10:11:22.287Z",
-     "note": ""
+     "note": "",
+     "uid": "st-oqwo72"
     }
    ]
   },
@@ -3193,7 +3376,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:42:12.883Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1tymlwl"
     },
     {
      "id": "s2",
@@ -3210,7 +3394,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:42:12.969Z",
-     "note": ""
+     "note": "",
+     "uid": "st-vwaof7"
     },
     {
      "id": "s3",
@@ -3227,7 +3412,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:52:00.523Z",
-     "note": ""
+     "note": "",
+     "uid": "st-16nmgpt"
     }
    ]
   },
@@ -3263,7 +3449,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.823Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1vyesil"
     },
     {
      "id": "s2",
@@ -3280,7 +3467,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.909Z",
-     "note": ""
+     "note": "",
+     "uid": "st-xz6t17"
     },
     {
      "id": "s3",
@@ -3297,7 +3485,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:14:59.973Z",
-     "note": ""
+     "note": "",
+     "uid": "st-64hy1"
     },
     {
      "id": "s4",
@@ -3314,7 +3503,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:15:00.036Z",
-     "note": ""
+     "note": "",
+     "uid": "st-9thvgr"
     },
     {
      "id": "s5",
@@ -3331,7 +3521,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.310Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1bw8eqd"
     },
     {
      "id": "s6",
@@ -3348,7 +3539,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.378Z",
-     "note": ""
+     "note": "",
+     "uid": "st-kqwkaj"
     },
     {
      "id": "s7",
@@ -3365,7 +3557,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.462Z",
-     "note": ""
+     "note": "",
+     "uid": "st-mml2e1"
     },
     {
      "id": "s8",
@@ -3382,7 +3575,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.543Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1vmbop7"
     },
     {
      "id": "s9",
@@ -3399,7 +3593,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.619Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1gdsr1"
     },
     {
      "id": "s10",
@@ -3416,7 +3611,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.697Z",
-     "note": ""
+     "note": "",
+     "uid": "st-pvhrlq"
     },
     {
      "id": "s11",
@@ -3433,7 +3629,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.770Z",
-     "note": ""
+     "note": "",
+     "uid": "st-53jog3"
     },
     {
      "id": "s12",
@@ -3450,7 +3647,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.837Z",
-     "note": ""
+     "note": "",
+     "uid": "st-118pdnb"
     },
     {
      "id": "s13",
@@ -3467,7 +3665,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T14:38:08.898Z",
-     "note": ""
+     "note": "",
+     "uid": "st-aacckf"
     },
     {
      "id": "s14",
@@ -3484,7 +3683,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:29:37.266Z",
-     "note": ""
+     "note": "",
+     "uid": "st-rdyv57"
     }
    ]
   },
@@ -3529,7 +3729,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-2prvbp"
     },
     {
      "id": "s2",
@@ -3546,7 +3747,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-45yv0z"
     },
     {
      "id": "s3",
@@ -3563,7 +3765,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1e9nw41"
     },
     {
      "id": "s4",
@@ -3580,7 +3783,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-fiv28z"
     },
     {
      "id": "s5",
@@ -3597,7 +3801,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1qqii3x"
     },
     {
      "id": "s6",
@@ -3614,7 +3819,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1q1wm9f"
     },
     {
      "id": "s7",
@@ -3631,7 +3837,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-114hldd"
     },
     {
      "id": "s8",
@@ -3648,7 +3855,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-nvoodv"
     }
    ]
   },
@@ -3689,7 +3897,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-13x0f29"
     },
     {
      "id": "s2",
@@ -3706,7 +3915,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-15sox5r"
     },
     {
      "id": "s3",
@@ -3723,7 +3933,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-gv9w9p"
     }
    ]
   },
@@ -3772,7 +3983,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1vqe3d7"
     },
     {
      "id": "s3",
@@ -3789,7 +4001,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1jmn12a"
     },
     {
      "id": "s4",
@@ -3806,7 +4019,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-19xywky"
     },
     {
      "id": "s5",
@@ -3823,7 +4037,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-kgkoay"
     }
    ]
   },
@@ -3864,7 +4079,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:41:17.287Z",
-     "note": ""
+     "note": "",
+     "uid": "st-xl9cam"
     }
    ]
   },
@@ -3905,7 +4121,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T16:55:24.189Z",
-     "note": ""
+     "note": "",
+     "uid": "st-h9rf2m"
     }
    ]
   },
@@ -3950,7 +4167,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:20:20.040Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1uspr3i"
     },
     {
      "id": "s2",
@@ -3967,7 +4185,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.183Z",
-     "note": ""
+     "note": "",
+     "uid": "st-8kow1o"
     },
     {
      "id": "s3",
@@ -3984,7 +4203,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.244Z",
-     "note": ""
+     "note": "",
+     "uid": "st-17hplwq"
     },
     {
      "id": "s4",
@@ -4001,7 +4221,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.312Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1gmej04"
     },
     {
      "id": "s5",
@@ -4018,7 +4239,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.380Z",
-     "note": ""
+     "note": "",
+     "uid": "st-167gb3q"
     },
     {
      "id": "s6",
@@ -4035,7 +4257,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T15:26:39.456Z",
-     "note": ""
+     "note": "",
+     "uid": "st-lsz4sc"
     },
     {
      "id": "s7",
@@ -4052,7 +4275,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-l191gq"
     }
    ]
   },
@@ -4093,7 +4317,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T16:58:54.074Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1aikpr"
     },
     {
      "id": "s2",
@@ -4110,7 +4335,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:17:09.876Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1nijfrl"
     },
     {
      "id": "s3",
@@ -4127,7 +4353,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:20:18.551Z",
-     "note": ""
+     "note": "",
+     "uid": "st-oomnwj"
     },
     {
      "id": "s4",
@@ -4144,7 +4371,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T17:20:18.607Z",
-     "note": ""
+     "note": "",
+     "uid": "st-czhvr5"
     },
     {
      "id": "s5",
@@ -4161,7 +4389,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T18:14:23.585Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1e7jmn3"
     },
     {
      "id": "s6",
@@ -4178,7 +4407,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-yx9zrt"
     },
     {
      "id": "s7",
@@ -4195,7 +4425,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-8vwk3v"
     },
     {
      "id": "s8",
@@ -4212,7 +4443,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-22dvo9"
     },
     {
      "id": "s9",
@@ -4229,7 +4461,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-19y637j"
     },
     {
      "id": "s10",
@@ -4246,7 +4479,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1nd67d0"
     },
     {
      "id": "s11",
@@ -4263,7 +4497,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1gw97x1"
     },
     {
      "id": "s12",
@@ -4280,7 +4515,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1t17cqt"
     }
    ]
   },
@@ -4325,7 +4561,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-18gc8as"
     }
    ]
   },
@@ -4366,7 +4603,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ojhxpb"
     },
     {
      "id": "s2",
@@ -4383,7 +4621,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1bqeqs1"
     },
     {
      "id": "s3",
@@ -4400,7 +4639,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-cwhywz"
     },
     {
      "id": "s4",
@@ -4417,7 +4657,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-17d6rl"
     },
     {
      "id": "s5",
@@ -4434,7 +4675,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-12fexnj"
     },
     {
      "id": "s6",
@@ -4451,7 +4693,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-n55as9"
     },
     {
      "id": "s7",
@@ -4468,7 +4711,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1w4vx3f"
     },
     {
      "id": "s8",
@@ -4485,7 +4729,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1pbd8nt"
     }
    ]
   },
@@ -4530,7 +4775,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-ayfstk"
     },
     {
      "id": "s2",
@@ -4547,7 +4793,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-18xnsay"
     },
     {
      "id": "s3",
@@ -4564,7 +4811,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1xv2t70"
     },
     {
      "id": "s5",
@@ -4581,7 +4829,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1yp6twt"
     },
     {
      "id": "s4",
@@ -4598,7 +4847,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ycyigj"
     }
    ]
   },
@@ -4643,7 +4893,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:46.881Z",
-     "note": ""
+     "note": "",
+     "uid": "st-xeb3bd"
     },
     {
      "id": "s2",
@@ -4660,7 +4911,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:46.949Z",
-     "note": ""
+     "note": "",
+     "uid": "st-8gw2fb"
     },
     {
      "id": "s3",
@@ -4677,7 +4929,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:13:47.023Z",
-     "note": ""
+     "note": "",
+     "uid": "st-ackkit"
     }
    ]
   },
@@ -4773,7 +5026,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-acp8iv"
     },
     {
      "id": "s2",
@@ -4790,7 +5044,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-o3fy6x"
     },
     {
      "id": "s3",
@@ -4807,7 +5062,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-xefrbf"
     },
     {
      "id": "s4",
@@ -4826,7 +5082,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1c94vrd"
     },
     {
      "id": "s5",
@@ -4845,7 +5102,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1n0go1z"
     },
     {
      "id": "s6",
@@ -4862,7 +5120,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-17zgnkx"
     },
     {
      "id": "s7",
@@ -4879,7 +5138,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-92fxpv"
     },
     {
      "id": "s8",
@@ -4899,7 +5159,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-wmkgcx"
     },
     {
      "id": "s9",
@@ -4916,7 +5177,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-10k03lz"
     },
     {
      "id": "s10",
@@ -4933,7 +5195,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-sjhm7g"
     },
     {
      "id": "s11",
@@ -4950,7 +5213,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1gk8ty5"
     },
     {
      "id": "s12",
@@ -4967,7 +5231,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-9rbkq5"
     },
     {
      "id": "s13",
@@ -4984,7 +5249,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-jorplt"
     },
     {
      "id": "s14",
@@ -5001,7 +5267,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1f2wmwh"
     },
     {
      "id": "s15",
@@ -5018,7 +5285,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1p0crs5"
     },
     {
      "id": "s16",
@@ -5035,7 +5303,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-qdnjx1"
     },
     {
      "id": "s17",
@@ -5052,7 +5321,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:00:27.285Z",
-     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383"
+     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383",
+     "uid": "st-qpft4h"
     },
     {
      "id": "s18",
@@ -5069,7 +5339,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:00:27.336Z",
-     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383"
+     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383",
+     "uid": "st-3bv0rl"
     },
     {
      "id": "s19",
@@ -5086,7 +5357,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:00:27.389Z",
-     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383"
+     "note": "Fable sub-agent, branch refactor-all/wt-window (a2c5f30e/8926cb8b/0a6c193f); fixture windows.json + check-windows.mts 383",
+     "uid": "st-vkefil"
     },
     {
      "id": "s20",
@@ -5103,7 +5375,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:00:27.439Z",
-     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43"
+     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43",
+     "uid": "st-1pso5xm"
     },
     {
      "id": "s21",
@@ -5120,7 +5393,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:00:27.492Z",
-     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43"
+     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43",
+     "uid": "st-1al19of"
     },
     {
      "id": "s22",
@@ -5137,7 +5411,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:00:27.542Z",
-     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43"
+     "note": "Fable sub-agent, branch refactor-all/wt-levels (e8d1b0d3/3265d06c/ccc5cd76); check-settings-ui 43",
+     "uid": "st-mqyior"
     },
     {
      "id": "s23",
@@ -5154,7 +5429,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:22:20.263Z",
-     "note": "Fable sub-agent, branch refactor-all/wt-s23b → refactor-all/terminal (6d6d8590, 10f3bdc3): re-baked console/axhub-web/walkthrough/amberx/demo, shots + report _claude/memory/docs/rebuilds/windows-terminal-fable.md"
+     "note": "Fable sub-agent, branch refactor-all/wt-s23b → refactor-all/terminal (6d6d8590, 10f3bdc3): re-baked console/axhub-web/walkthrough/amberx/demo, shots + report _claude/memory/docs/rebuilds/windows-terminal-fable.md",
+     "uid": "st-egq643"
     },
     {
      "id": "s24",
@@ -5171,7 +5447,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:43:14.152Z",
-     "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-core.mjs, fixture + check-feature-matrix.mjs; see _claude/memory/docs/feature-matrix.md on that branch"
+     "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-core.mjs, fixture + check-feature-matrix.mjs; see _claude/memory/docs/feature-matrix.md on that branch",
+     "uid": "st-1u4cjsn"
     },
     {
      "id": "s25",
@@ -5188,7 +5465,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T19:43:14.236Z",
-     "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-apply.mjs + skip/fm support in orchestrator/pending/build-queue/changes cores; merge or cherry-pick that branch before s62"
+     "note": "done Oct 28 2026 on branch fable/feature-matrix (cb43a82): framework/plan/feature-matrix-apply.mjs + skip/fm support in orchestrator/pending/build-queue/changes cores; merge or cherry-pick that branch before s62",
+     "uid": "st-11wh3b"
     },
     {
      "id": "s68",
@@ -5205,7 +5483,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-9jhvi9"
     },
     {
      "id": "s69",
@@ -5222,7 +5501,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-w9t7h9"
     },
     {
      "id": "s70",
@@ -5239,7 +5519,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1417b3o"
     },
     {
      "id": "s26",
@@ -5256,7 +5537,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:10:51.216Z",
-     "note": "Already landed: PR #141 merged Oct 28, hands-free tests in apps/amberx-droid/test.mjs (1672 pass), README covers it, CI green on main"
+     "note": "Already landed: PR #141 merged Oct 28, hands-free tests in apps/amberx-droid/test.mjs (1672 pass), README covers it, CI green on main",
+     "uid": "st-y9rws"
     },
     {
      "id": "s27",
@@ -5273,7 +5555,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T01:29:16.807Z",
-     "note": "PR #155 merged Oct 28 (Basic filter live)"
+     "note": "PR #155 merged Oct 28 (Basic filter live)",
+     "uid": "st-5x696i"
     },
     {
      "id": "s28",
@@ -5290,7 +5573,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:28.918Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-mhx34v"
     },
     {
      "id": "s29",
@@ -5307,7 +5591,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:28.968Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-1sn3sr5"
     },
     {
      "id": "s30",
@@ -5324,7 +5609,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.018Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-6ddwwa"
     },
     {
      "id": "s31",
@@ -5343,7 +5629,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.068Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-1u8o0q4"
     },
     {
      "id": "s32",
@@ -5360,7 +5647,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.122Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-1o3rdsu"
     },
     {
      "id": "s33",
@@ -5377,7 +5665,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.172Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-o12v8"
     },
     {
      "id": "s34",
@@ -5396,7 +5685,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.222Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-ilwlui"
     },
     {
      "id": "s35",
@@ -5413,7 +5703,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.270Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-qvf4kc"
     },
     {
      "id": "s36",
@@ -5430,7 +5721,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.335Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-6x3o6u"
     },
     {
      "id": "s37",
@@ -5447,7 +5739,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.388Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-kqe8s4"
     },
     {
      "id": "s38",
@@ -5464,7 +5757,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.439Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-1fyqrub"
     },
     {
      "id": "s39",
@@ -5481,7 +5775,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.491Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-vx7it1"
     },
     {
      "id": "s40",
@@ -5498,7 +5793,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:15:29.557Z",
-     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md"
+     "note": "Opus sub-agent, branch refactor-all/branding (c18f348e…482a2f77); report _claude/memory/docs/rebuilds/enterprise-branding-3.md",
+     "uid": "st-16ff7d8"
     },
     {
      "id": "s41",
@@ -5515,7 +5811,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-c2982e"
     },
     {
      "id": "s42",
@@ -5532,7 +5829,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1yvwbtc"
     },
     {
      "id": "s43",
@@ -5549,7 +5847,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-96eg7i"
     },
     {
      "id": "s44",
@@ -5566,7 +5865,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1uydfz8"
     },
     {
      "id": "s45",
@@ -5583,7 +5883,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-qgc85y"
     },
     {
      "id": "s46",
@@ -5602,7 +5903,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1tt1s8w"
     },
     {
      "id": "s47",
@@ -5619,7 +5921,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1iort72"
     },
     {
      "id": "s48",
@@ -5636,7 +5939,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-n7qkmb"
     },
     {
      "id": "s49",
@@ -5653,7 +5957,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-dr5p4l"
     },
     {
      "id": "s50",
@@ -5672,7 +5977,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1uwtj8a"
     },
     {
      "id": "s51",
@@ -5689,7 +5995,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-13quv5o"
     },
     {
      "id": "s52",
@@ -5706,7 +6013,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-4bcazi"
     },
     {
      "id": "s53",
@@ -5723,7 +6031,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-fwq210"
     },
     {
      "id": "s54",
@@ -5740,7 +6049,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1momfk2"
     },
     {
      "id": "s55",
@@ -5757,7 +6067,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-kvumtg"
     },
     {
      "id": "s56",
@@ -5776,7 +6087,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ts9b3i"
     },
     {
      "id": "s57",
@@ -5795,7 +6107,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-zzunjg"
     },
     {
      "id": "s58",
@@ -5812,7 +6125,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-6ksf9z"
     },
     {
      "id": "s59",
@@ -5829,7 +6143,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1copy0p"
     },
     {
      "id": "s60",
@@ -5846,7 +6161,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1daeav4"
     },
     {
      "id": "s61",
@@ -5863,7 +6179,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-8af6wa"
     },
     {
      "id": "s62",
@@ -5880,7 +6197,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T07:38:54.255Z",
-     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)",
+     "uid": "st-1fkumkk"
     },
     {
      "id": "s63",
@@ -5897,7 +6215,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T07:38:54.329Z",
-     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)",
+     "uid": "st-1gd734y"
     },
     {
      "id": "s64",
@@ -5914,7 +6233,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T07:38:54.398Z",
-     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)",
+     "uid": "st-v6d5c"
     },
     {
      "id": "s65",
@@ -5931,7 +6251,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T07:38:54.469Z",
-     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)",
+     "uid": "st-1nr3roy"
     },
     {
      "id": "s66",
@@ -5948,7 +6269,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T07:38:54.529Z",
-     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)",
+     "uid": "st-18kxyng"
     },
     {
      "id": "s67",
@@ -5965,7 +6287,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T07:38:54.592Z",
-     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)"
+     "note": "Opus sub-agent, branch refactor-all/feature-matrix-plugin (7999578e…cd4edd85)",
+     "uid": "st-1x2ausa"
     },
     {
      "id": "s71",
@@ -5982,7 +6305,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T01:29:16.860Z",
-     "note": "PR #161 merged Oct 28"
+     "note": "PR #161 merged Oct 28",
+     "uid": "st-ywa4pp"
     },
     {
      "id": "s72",
@@ -5999,7 +6323,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:34:58.934Z",
-     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look",
+     "uid": "st-wrq1fx"
     },
     {
      "id": "s73",
@@ -6016,7 +6341,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:34:58.987Z",
-     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look",
+     "uid": "st-1q7ml6p"
     },
     {
      "id": "s74",
@@ -6033,7 +6359,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:34:59.038Z",
-     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look",
+     "uid": "st-114kwbt"
     },
     {
      "id": "s75",
@@ -6050,7 +6377,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:34:59.089Z",
-     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look"
+     "note": "Opus sub-agent, branch refactor-all/plugin-theme (e7004f14 d451e219 9cb7825e 266f6b7a); lib framework/libs/plugintheme, check-plugintheme 54; contract steps skipped by Brett — storage shape axf.plugin.<id>.look",
+     "uid": "st-ki74m5"
     },
     {
      "id": "s76",
@@ -6067,7 +6395,8 @@
      "skip": true,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1a0smd9"
     },
     {
      "id": "s77",
@@ -6084,7 +6413,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:57:11.396Z",
-     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62",
+     "uid": "st-27oal5"
     },
     {
      "id": "s78",
@@ -6101,7 +6431,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:57:11.477Z",
-     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62",
+     "uid": "st-1kp0di9"
     },
     {
      "id": "s79",
@@ -6118,7 +6449,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:57:11.547Z",
-     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62",
+     "uid": "st-pl1o6l"
     },
     {
      "id": "s80",
@@ -6135,7 +6467,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:57:11.635Z",
-     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62"
+     "note": "Opus sub-agent, branch refactor-all/assistant-approvals (64946b65 a62231f5 8c1cfbe8 4067065e); lib framework/libs/approvals, check-approvals 62",
+     "uid": "st-anf7vu"
     },
     {
      "id": "s81",
@@ -6152,7 +6485,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:09:31.017Z",
-     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'"
+     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'",
+     "uid": "st-4kghkz"
     },
     {
      "id": "s82",
@@ -6169,7 +6503,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:09:31.093Z",
-     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'"
+     "note": "Opus sub-agent, axHub branch claude/veto-approvals (00fc76c, 1357757) on top of PR #14; 448 tests; live hub needs redeploy + 'axhub services veto vps run 180 30' / 'vps logs'",
+     "uid": "st-1xima6v"
     },
     {
      "id": "s83",
@@ -6186,7 +6521,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:01:47.724Z",
-     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles",
+     "uid": "st-xxlwzj"
     },
     {
      "id": "s84",
@@ -6203,7 +6539,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:01:47.785Z",
-     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles",
+     "uid": "st-1nmcwhn"
     },
     {
      "id": "s85",
@@ -6220,7 +6557,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:01:47.847Z",
-     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles",
+     "uid": "st-17jsy5f"
     },
     {
      "id": "s86",
@@ -6237,7 +6575,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T02:01:47.901Z",
-     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles"
+     "note": "Opus sub-agent, branch refactor-all/veto (fa0a58ca e4036060 f99b73b2 2dfdbf47); tests amberx 1672, axhub-web 183; Android Java only javac-checked, CI compiles",
+     "uid": "st-f3u7en"
     },
     {
      "id": "s87",
@@ -6254,7 +6593,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T05:51:30.232Z",
-     "note": "Opus sub-agent, branch refactor-all/amberx-voice-wake (ea5dfa9b 43bbc832 afb00d37); Java compiled first in CI"
+     "note": "Opus sub-agent, branch refactor-all/amberx-voice-wake (ea5dfa9b 43bbc832 afb00d37); Java compiled first in CI",
+     "uid": "st-7wxj9j"
     },
     {
      "id": "s88",
@@ -6271,7 +6611,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T05:51:30.294Z",
-     "note": "Opus sub-agent, branch refactor-all/amberx-voice-wake (ea5dfa9b 43bbc832 afb00d37); Java compiled first in CI"
+     "note": "Opus sub-agent, branch refactor-all/amberx-voice-wake (ea5dfa9b 43bbc832 afb00d37); Java compiled first in CI",
+     "uid": "st-1lc4v2z"
     },
     {
      "id": "s89",
@@ -6288,7 +6629,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T05:51:30.365Z",
-     "note": "Opus sub-agent, branch refactor-all/amberx-voice-wake (ea5dfa9b 43bbc832 afb00d37); Java compiled first in CI"
+     "note": "Opus sub-agent, branch refactor-all/amberx-voice-wake (ea5dfa9b 43bbc832 afb00d37); Java compiled first in CI",
+     "uid": "st-159kwqr"
     }
    ]
   },
@@ -6324,7 +6666,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:53:16.760Z",
-     "note": ""
+     "note": "",
+     "uid": "st-qi4gs"
     },
     {
      "id": "s2",
@@ -6341,7 +6684,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:53:16.849Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1y23cqm"
     },
     {
      "id": "s3",
@@ -6358,7 +6702,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T03:53:16.932Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1narkg0"
     }
    ]
   },
@@ -6394,7 +6739,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T05:57:18.705Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1cv6z94"
     }
    ]
   },
@@ -6439,7 +6785,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T18:10:52.266Z",
-     "note": ""
+     "note": "",
+     "uid": "st-7wa8m6"
     },
     {
      "id": "s2",
@@ -6456,7 +6803,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T18:10:52.322Z",
-     "note": ""
+     "note": "",
+     "uid": "st-kpdfjg"
     },
     {
      "id": "s3",
@@ -6473,7 +6821,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T18:10:52.379Z",
-     "note": ""
+     "note": "",
+     "uid": "st-jxnc7u"
     },
     {
      "id": "s4",
@@ -6490,7 +6839,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-29T18:46:29.664Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1sx8qw4"
     }
    ]
   },
@@ -6535,7 +6885,8 @@
      "skip": false,
      "done": true,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-6g4qgu"
     },
     {
      "id": "s2",
@@ -6552,7 +6903,8 @@
      "skip": false,
      "done": true,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-j97xe4"
     },
     {
      "id": "s3",
@@ -6569,7 +6921,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-itvegq"
     },
     {
      "id": "s4",
@@ -6586,7 +6939,8 @@
      "skip": false,
      "done": true,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-rykbk4"
     },
     {
      "id": "s5",
@@ -6603,7 +6957,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:15:09.312Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1gvzcg6"
     },
     {
      "id": "s6",
@@ -6620,7 +6975,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:15:09.394Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1w68zbg"
     },
     {
      "id": "s7",
@@ -6637,7 +6993,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:15:09.470Z",
-     "note": ""
+     "note": "",
+     "uid": "st-w25n7e"
     },
     {
      "id": "s8",
@@ -6654,7 +7011,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:15:09.555Z",
-     "note": ""
+     "note": "",
+     "uid": "st-jlqpf8"
     },
     {
      "id": "s9",
@@ -6671,7 +7029,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-1ar2jv2"
     }
    ]
   },
@@ -6712,7 +7071,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T11:40:27.320Z",
-     "note": ""
+     "note": "",
+     "uid": "st-3cnemv"
     },
     {
      "id": "s2",
@@ -6729,7 +7089,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T11:42:13.158Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1gs4xhl"
     },
     {
      "id": "s3",
@@ -6746,7 +7107,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T11:43:59.748Z",
-     "note": ""
+     "note": "",
+     "uid": "st-qqrhtn"
     },
     {
      "id": "s4",
@@ -6763,7 +7125,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T11:43:59.788Z",
-     "note": ""
+     "note": "",
+     "uid": "st-15f8q9l"
     },
     {
      "id": "s5",
@@ -6780,7 +7143,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T11:51:30.556Z",
-     "note": ""
+     "note": "",
+     "uid": "st-ghtpdj"
     },
     {
      "id": "s6",
@@ -6797,7 +7161,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T11:51:30.597Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1gtowh"
     },
     {
      "id": "s7",
@@ -6814,7 +7179,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T11:51:30.637Z",
-     "note": ""
+     "note": "",
+     "uid": "st-11r4x0j"
     },
     {
      "id": "s8",
@@ -6831,7 +7197,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T12:04:43.792Z",
-     "note": ""
+     "note": "",
+     "uid": "st-pyw6v5"
     },
     {
      "id": "s9",
@@ -6848,7 +7215,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-tq3y47"
     }
    ]
   },
@@ -6889,7 +7257,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:04:28.053Z",
-     "note": ""
+     "note": "",
+     "uid": "st-3cjnbb"
     },
     {
      "id": "s2",
@@ -6906,7 +7275,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:04:28.131Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1glta61"
     },
     {
      "id": "s3",
@@ -6923,7 +7293,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-30T18:04:28.209Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1q96nor"
     }
    ]
   },
@@ -6968,7 +7339,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:19:49.625Z",
-     "note": ""
+     "note": "",
+     "uid": "st-18cwakd"
     },
     {
      "id": "s2",
@@ -6985,7 +7357,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:19:49.625Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1a8ksnv"
     },
     {
      "id": "s3",
@@ -7002,7 +7375,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:19:49.625Z",
-     "note": ""
+     "note": "",
+     "uid": "st-cfihkp"
     },
     {
      "id": "s4",
@@ -7019,7 +7393,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:19:49.625Z",
-     "note": ""
+     "note": "",
+     "uid": "st-lqiap7"
     }
    ]
   },
@@ -7068,7 +7443,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:48:42.596Z",
-     "note": ""
+     "note": "",
+     "uid": "st-vn3j6l"
     },
     {
      "id": "s2",
@@ -7085,7 +7461,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:48:42.596Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1wozlob"
     },
     {
      "id": "s3",
@@ -7102,7 +7479,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:48:42.596Z",
-     "note": ""
+     "note": "",
+     "uid": "st-yvxal5"
     },
     {
      "id": "s4",
@@ -7119,7 +7497,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T03:48:42.596Z",
-     "note": ""
+     "note": "",
+     "uid": "st-18jao3v"
     }
    ]
   },
@@ -7257,7 +7636,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z",
-     "note": ""
+     "note": "",
+     "uid": "st-6wj0z"
     },
     {
      "id": "s2",
@@ -7274,7 +7654,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1m5nrol"
     },
     {
      "id": "s3",
@@ -7291,7 +7672,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z",
-     "note": ""
+     "note": "",
+     "uid": "st-w4ac0n"
     },
     {
      "id": "s4",
@@ -7308,7 +7690,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:30:00.000Z",
-     "note": ""
+     "note": "",
+     "uid": "st-mzlex9"
     }
    ]
   },
@@ -7384,7 +7767,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:25:27.054Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1hi60a4"
     },
     {
      "id": "s2",
@@ -7401,7 +7785,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:25:27.054Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1fyv2ku"
     },
     {
      "id": "s3",
@@ -7418,7 +7803,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-27T19:25:27.054Z",
-     "note": ""
+     "note": "",
+     "uid": "st-5v61hs"
     }
    ]
   },
@@ -7461,7 +7847,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:10:06.928Z",
-     "note": ""
+     "note": "",
+     "uid": "st-11z1an5"
     },
     {
      "id": "s2",
@@ -7481,7 +7868,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-28T01:10:06.991Z",
-     "note": ""
+     "note": "",
+     "uid": "st-13ic8cf"
     },
     {
      "id": "s3",
@@ -7498,7 +7886,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-ekx7gd"
     }
    ]
   },
@@ -7510,11 +7899,11 @@
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
+   "pendingId": "watch-live",
    "branch": "claude/watch-live",
    "pr": "",
    "createdAt": "2026-11-01T00:35:23.969Z",
-   "updatedAt": "2026-11-01T00:35:23.970Z",
+   "updatedAt": "2026-11-01T01:27:38.663Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -7533,8 +7922,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
-     "note": ""
+     "doneAt": "2026-11-01T00:35:23.970Z",
+     "note": "",
+     "uid": "st-mvx3n4fa01k669"
     },
     {
      "id": "s2",
@@ -7550,8 +7940,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
-     "note": ""
+     "doneAt": "2026-11-01T00:35:23.970Z",
+     "note": "",
+     "uid": "st-mvx3n4fa02w95l"
     },
     {
      "id": "s3",
@@ -7567,8 +7958,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
-     "note": ""
+     "doneAt": "2026-11-01T00:35:23.970Z",
+     "note": "",
+     "uid": "st-mvx3n4fa03jurr"
     },
     {
      "id": "s4",
@@ -7584,8 +7976,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
-     "note": ""
+     "doneAt": "2026-11-01T00:35:23.970Z",
+     "note": "",
+     "uid": "st-mvx3n4fa045spq"
     },
     {
      "id": "s5",
@@ -7601,8 +7994,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "",
-     "note": ""
+     "doneAt": "2026-11-01T00:35:23.970Z",
+     "note": "",
+     "uid": "st-mvx3n4fa0522wu"
     },
     {
      "id": "s6",
@@ -7619,7 +8013,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3n4fa06huva"
     }
    ]
   }

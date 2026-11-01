@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import {
-  DEFAULTS, HUB_DOC_MAX, K, PART_BYTES, REC_IDLE, HubRecordings, byDay, capHours, chunkBytes, chunkName, cleanProject, dataUrl, fromBase64, hubHours, hubOf,
+  DEFAULTS, HUB_DOC_MAX, K, PART_BYTES, REC_IDLE, HubRecordings, byDay, byGroup, cleanSession, sessionPartName, capHours, chunkBytes, chunkName, cleanProject, dataUrl, fromBase64, hubHours, hubOf,
   idDate, idOfIndex, indexPath, isChunkId, normalizeIndex, partCount, partPath, readSettings, recReduce, splitParts, toBase64,
 } from './web/core.ts';
 import { createController } from './web/store.ts';
@@ -22,6 +22,21 @@ const tick = () => new Promise((r) => setTimeout(r, 0));
 const settle = async () => { for (let i = 0; i < 20; i++) await tick(); };
 
 /* ---------------------------------------------------------------- pure rules */
+
+await t('sessions from axHub: part names (twin of RecorderControl.partName), groups', () => {
+  const at = new Date(2026, 10, 1, 9, 5); // local time, like the phone
+  assert.equal(sessionPartName('axHub build', at, 1), 'axHub build - 2026-11-01 09-05 - part1');
+  assert.equal(sessionPartName('axHub build', at, 3), 'axHub build - 2026-11-01 09-05 - part3');
+  assert.equal(sessionPartName('a/b:c', at, 0), 'a b c - 2026-11-01 09-05 - part1');
+  assert.equal(cleanSession('  '), 'Session');
+  assert.equal(cleanSession('x'.repeat(200)).length, 80);
+  const rec = (id: string, group = '') => ({ id, name: id, startedAt: '', endedAt: '', durationMs: 0, bytes: 0, mime: 'audio/mp4', kbps: 32, channels: 1, device: '', parts: 0, sha256: '', uploadedAt: '', deleted: false, group, session: group, note: '' });
+  const g = byGroup([rec('20261101-090500-aaaa', 'Build'), rec('20261101-093500-bbbb', 'Build'), rec('20261101-120000-cccc'), rec('20261031-100000-dddd')]);
+  assert.deepEqual(g.map((x) => x.label), ['2026-11-01', 'Build', '2026-10-31']);
+  assert.deepEqual(g[1]!.items.map((r) => r.id), ['20261101-090500-aaaa', '20261101-093500-bbbb']); // part1 first
+  assert.equal(g[1]!.group, true);
+});
+
 
 await t('settings: defaults, bounds, bad values', () => {
   assert.deepEqual(readSettings(() => undefined), DEFAULTS);
@@ -322,6 +337,14 @@ await t('native: one consent flow (switch and tile), manifest, part size twin', 
   assert.match(java('MainActivity.java'), /registerPlugin\(OutputRecorderPlugin\.class\)/);
   assert.match(java('AudioExtractPlugin.java'), /void offer\(List<Uri> uris\)/);
   assert.ok(existsSync(new URL('apps/console-web/plugins/output-recorder/README.md', root)));
+});
+
+await t('sessions from axHub: native side names parts, groups them, never the mic, never auto-approved', () => {
+  assert.match(java('OutputRecordService.java'), /RecorderControl\.partName\(/);
+  assert.match(java('OutputRecordUploader.java'), /"group", "session", "note"/);
+  assert.match(java('RecorderControl.java'), /" - part" \+/);
+  assert.match(java('AxppLink.java'), /\.put\("mic", false\)/);
+  assert.match(java('HubRules.java'), /NEVER_AUTO = Set\.of\("amberx\.recorder_start"\)/);
 });
 
 console.log(`output-recorder: ${n} tests passed`);

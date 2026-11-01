@@ -16,7 +16,7 @@ import { Button, Container, Note, Switch, useRuntime, type AxfWebLibrary } from 
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { nativeBridge } from './bridge';
 import {
-  DEFAULTS, FOLDER, ID, K, KBPS, UPLOAD_LABEL, VOICE, byDay, capHours, chunkBytes, chunkName, formatSize, formatTime, hubHours, hubOf, readSettings,
+  DEFAULTS, FOLDER, ID, K, KBPS, UPLOAD_LABEL, VOICE, byGroup, capHours, chunkBytes, chunkName, formatSize, formatTime, hubHours, hubOf, readSettings,
   type Recording,
 } from './core';
 import { createController, type Controller } from './store';
@@ -126,15 +126,15 @@ function HubList() {
   const s = useStore();
   const rt = useRuntime();
   useEffect(() => { if (!s.hub.loaded && !s.hub.loading) void c.refreshHub(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const days = byDay(s.hub.items);
+  const days = byGroup(s.hub.items);
   return (
     <Container title={`On axHub · ${settingsOf(rt).project}`} icon="cloud" actions={<Button size="sm" tone="quiet" icon="refresh" busy={s.hub.loading} onClick={() => void c.refreshHub()}>Refresh</Button>}>
       {s.hub.error ? <Note tone="warning">{s.hub.error}</Note>
         : !s.hub.loaded ? <p className="fx-muted">Loading…</p>
           : !days.length ? <p className="fx-muted">No recordings on axHub yet.</p>
             : days.map((d) => (
-              <div key={d.day} className="fx-stack">
-                <p className="fx-eyebrow">{d.day}</p>
+              <div key={d.key} className="fx-stack">
+                <p className="fx-eyebrow">{d.group ? `Session · ${d.label}` : d.label}</p>
                 <ul className="axp-output-recorder-list">{d.items.map((r) => <RecordingRow key={r.id} r={r} />)}</ul>
               </div>
             ))}

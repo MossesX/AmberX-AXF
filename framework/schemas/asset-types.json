@@ -1368,6 +1368,73 @@
       },
       "optional": true
     },
+    "agent-card": {
+      "label": "Agent card",
+      "group": "Widgets",
+      "icon": "user",
+      "description": "An agent's ID card (agent-card@1, rules core/engines/agent-card-rules.mjs): the design family (corporate badge, license, trading card, backstage pass), orientation, where the brand logo sits, which theme roles colour it, finish, photo size, code strip and the fields on each side. Colours and sizes come only from the active colour and style themes, so a theme swap rebrands every card. The active agent-card asset is the default design; apps may override it per agent. Every field has a default.",
+      "required": [],
+      "enums": {
+        "design": [
+          "badge",
+          "license",
+          "trading",
+          "backstage"
+        ],
+        "orientation": [
+          "vertical",
+          "horizontal"
+        ],
+        "logo": [
+          "banner",
+          "watermark",
+          "corner",
+          "none"
+        ],
+        "surface": [
+          "surface",
+          "raised",
+          "inverse",
+          "accent"
+        ],
+        "accent": [
+          "accent",
+          "brand-1",
+          "brand-2",
+          "brand-3",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "finish": [
+          "flat",
+          "foil",
+          "hologram",
+          "neon"
+        ],
+        "photo": [
+          "large",
+          "small",
+          "none"
+        ],
+        "code": [
+          "barcode",
+          "qr",
+          "none"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "front": "card field ids, in order (name, role, specialty, employeeId, email, hiredAt, status, catchphrase, signature, jobs, successRate, spend, favoriteModel); up to 12",
+        "back": "card field ids for the back (flip); empty = no back",
+        "labels": "{ field: label } to rename a field on this design (up to 24 characters)"
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

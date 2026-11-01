@@ -1,5 +1,8 @@
 /**
- * pending — reads and writes framework/plan/pending.json (pending@1) on top of plan/pending-core.mjs.
+ * pending — the Pending builds list (pending@1) on top of plan/pending-core.mjs. Since the master cleanup (Oct 31 2026)
+ * Pending is a status of a build in the one builds store (builds@1, framework/cli/builds-store.mjs): the list is the
+ * active profile's projection of the store and every change is absorbed back into it (versioned). The old
+ * framework/plan/pending.json files are read-only snapshots. AXF_PENDING_FILE points at a plain pending@1 file (tests).
  *   node framework/cli/pending.mjs                 list (sorted by status)
  *   node framework/cli/pending.mjs --sort added    list sorted by date added (also: built)
  *   node framework/cli/pending.mjs --steps         also list every sub prompt (step) with its build-time estimate and ✓ when done
@@ -13,27 +16,37 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/pending-core.mjs';
-import { dataPath } from './persist.mjs';
+import { activeProfile } from './persist.mjs';
 import { loadPricing } from './model-pricing.mjs';
-import { pullIntoOrchestrator } from './orch-sync.mjs';
+import { loadStore, storeFile, withStore } from './builds-store.mjs';
+import { absorbPending, projectPending } from '../plan/builds-store-core.mjs';
 
 const PRICING = loadPricing();
 const usd = (model, min) => (min ? core.formatUsd(core.costForMinutes(model, min, PRICING)) : '');
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export const PENDING = process.env.AXF_PENDING_FILE || dataPath('framework/plan/pending.json'); // AXF_PENDING_FILE: tests
+const LEGACY = process.env.AXF_PENDING_FILE || ''; // tests: a plain pending@1 file
+export const PENDING = LEGACY || storeFile();
+const profile = () => activeProfile().id;
 
-export function loadPending() { return core.normalizeState(existsSync(PENDING) ? JSON.parse(readFileSync(PENDING, 'utf8')) : core.emptyPending()); }
-export function savePending(s) { writeFileSync(PENDING, JSON.stringify(s, null, 1) + '\n'); }
+export function loadPending() {
+  if (LEGACY) return core.normalizeState(existsSync(LEGACY) ? JSON.parse(readFileSync(LEGACY, 'utf8')) : core.emptyPending());
+  return core.normalizeState(projectPending(loadStore(), profile()));
+}
+export function savePending(s, change = null, by = 'pending') {
+  if (LEGACY) { writeFileSync(LEGACY, JSON.stringify(s, null, 1) + '\n'); return; }
+  const p = profile();
+  withStore((st) => absorbPending(st, p, s, change), { by, action: `pending:${change?.action ?? 'save'}`, note: change?.id ?? '' });
+}
 
-/** Apply one action (see pending-core apply) and save. */
+/** Apply one action (see pending-core apply) to the profile's Pending view of the store, under the store lock. */
 export function actPending(action, now = new Date().toISOString()) {
-  const r = core.apply(loadPending(), action, now);
-  // Every Pending change flows into the build profile's orchestrator, which publishes the list back (orch-sync, Oct 27 2026).
-  let state = r.state;
-  try { const s = pullIntoOrchestrator(r.state, action); state = s.pending; r.log = [...(r.log ?? []), ...s.log]; }
-  catch (e) { r.log = [...(r.log ?? []), `orchestrator sync skipped: ${e.message}`]; }
-  savePending(state);
+  if (LEGACY) { const r = core.apply(loadPending(), action, now); savePending(r.state); return r; }
+  const p = profile();
+  let r;
+  const by = process.env.AXF_ACTOR || 'pending';
+  const saved = withStore((st) => { r = core.apply(core.normalizeState(projectPending(st, p)), action, now); return absorbPending(st, p, r.state, action, { now }); }, { by, action: `pending:${action?.action}`, note: action?.id ?? '' });
+  const state = core.normalizeState(projectPending(saved.store, p));
   const item = r.item ? state.items.find((x) => x.id === r.item.id) ?? r.item : r.item;
   return { ...r, state, item };
 }

@@ -51,6 +51,12 @@ import org.json.JSONObject;
  * Encoding: the 48 kHz stereo capture → AAC-LC (mono downmix by default, 32 kbps) → one MediaMuxer per chunk. The
  * encoder runs straight through; at a chunk boundary the muxer is closed and a new one opened (every AAC frame is a
  * sync frame, so any frame can start a file). A chunk that was silent all through is dropped when "skip silent" is on.
+ *
+ * Sessions from axHub (decision #108, {@link AxppLink}): a start through `amberx.recorder_start` sets a session first
+ * ({@link OutputRecordQueue#setSession}); while it is set the notification says "Recording: <session>", each kept part
+ * is named {@code "<session> - <YYYY-MM-DD HH-mm> - partN"} ({@link RecorderControl#partName}) and goes to axHub with the
+ * session's group, and stopping (switch, tile, notification Stop, `recorder_stop`) ends the session. Still never the
+ * microphone: a session changes names only.
  */
 public class OutputRecordService extends Service {
     interface Listener { void on(JSObject e); }
@@ -71,6 +77,8 @@ public class OutputRecordService extends Service {
     static volatile long startedAtMs;
     /** the chunk being written (so a cleanup never removes it) */
     private static volatile File current;
+    /** the session part being written, e.g. "Build - 2026-11-01 10-00 - part2" (null outside a session) */
+    static volatile String currentName;
     private static final SecureRandom RNG = new SecureRandom();
 
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -126,6 +134,8 @@ public class OutputRecordService extends Service {
         JSObject o = new JSObject();
         o.put("running", running);
         o.put("startedAt", running && startedAtMs > 0 ? iso(startedAtMs) : null);
+        o.put("currentFile", running ? currentName : null);
+        o.put("mic", false); // there is no microphone path in this recorder
         return o;
     }
 
@@ -151,7 +161,7 @@ public class OutputRecordService extends Service {
         PendingIntent stop = PendingIntent.getService(this, 1, new Intent(this, OutputRecordService.class).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(this, CHANNEL) : new Notification.Builder(this);
         return b.setSmallIcon(android.R.drawable.ic_btn_speak_now)
-            .setContentTitle("Recording what the phone plays")
+            .setContentTitle(sessionTitle())
             .setContentText(text)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
@@ -160,11 +170,22 @@ public class OutputRecordService extends Service {
             .build();
     }
 
+    /** When the session's recording started (every part name carries it); the chunk's own start if not known yet. */
+    private static long sessionStart(JSONObject session, long fallback) {
+        long t = session.optLong("startedAt", 0);
+        return t > 0 ? t : fallback;
+    }
+
+    private String sessionTitle() {
+        JSONObject s = OutputRecordQueue.session(this);
+        return s == null ? "Recording what the phone plays" : "Recording: " + s.optString("name");
+    }
+
     private void tick() {
         main.removeCallbacks(tick);
         if (!running || stopping) return;
         int waiting = OutputRecordQueue.list(this).size();
-        String text = clock(System.currentTimeMillis() - startedAtMs) + (waiting > 0 ? " · " + waiting + " waiting for axHub" : " · no microphone");
+        String text = clock(System.currentTimeMillis() - startedAtMs) + (waiting > 0 ? " · " + waiting + " waiting for axHub" : "") + " · mic off";
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION, notification(text));
         main.postDelayed(tick, 15_000);
     }
@@ -197,6 +218,8 @@ public class OutputRecordService extends Service {
             encoder.start();
             capture.startRecording();
             startedAtMs = System.currentTimeMillis();
+            OutputRecordQueue.sessionStarted(this, startedAtMs);
+            AxppLink.cancelPrompt(this);
             pump = new Thread(this::pump, "amberx-outrec");
             pump.start();
             JSObject e = new JSObject();
@@ -332,6 +355,8 @@ public class OutputRecordService extends Service {
         chunkId = newId(chunkStartWall);
         File f = OutputRecordQueue.part(this, chunkId);
         current = f;
+        JSONObject session = OutputRecordQueue.session(this);
+        currentName = session == null ? null : RecorderControl.partName(session.optString("name"), sessionStart(session, chunkStartWall), session.optInt("parts") + 1, TimeZone.getDefault());
         muxer = new MediaMuxer(f.getAbsolutePath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         track = muxer.addTrack(outFormat);
         muxer.start();
@@ -347,6 +372,7 @@ public class OutputRecordService extends Service {
         try { muxer.release(); } catch (RuntimeException ignored) { /* already gone */ }
         muxer = null;
         current = null;
+        currentName = null;
         long durMs = Math.max(0, lastUs) / 1000;
         boolean silent = peak <= SILENCE;
         if (!ok || (skipSilent && silent)) {
@@ -367,6 +393,15 @@ public class OutputRecordService extends Service {
             meta.put("channels", channels);
             meta.put("device", Build.MANUFACTURER + " " + Build.MODEL);
             meta.put("uploadedParts", 0);
+            JSONObject session = OutputRecordQueue.session(this);
+            if (session != null) {
+                int n = OutputRecordQueue.nextPart(this);
+                meta.put("name", RecorderControl.partName(session.optString("name"), sessionStart(session, chunkStartWall), n, TimeZone.getDefault()));
+                meta.put("session", session.optString("name"));
+                meta.put("group", session.optString("group"));
+                meta.put("part", n);
+                if (!session.optString("note").isEmpty()) meta.put("note", session.optString("note"));
+            }
             OutputRecordQueue.writeMeta(this, id, meta);
             JSObject e = new JSObject();
             e.put("id", id);
@@ -406,6 +441,7 @@ public class OutputRecordService extends Service {
         JSObject e = new JSObject();
         if (endReason != null) e.put("reason", endReason);
         emit("stopped", e);
+        OutputRecordQueue.clearSession(this);
         stopForeground(STOP_FOREGROUND_REMOVE);
         OutputRecordTile.refresh(this);
         OutputRecordUploader.kick(this);
@@ -418,6 +454,7 @@ public class OutputRecordService extends Service {
         JSObject e = new JSObject();
         e.put("message", message);
         emit("error", e);
+        OutputRecordQueue.clearSession(this);
         running = false;
         startedAtMs = 0;
         try { if (projection != null) projection.stop(); } catch (RuntimeException ignored) { /* never started */ }

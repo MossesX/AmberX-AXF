@@ -7,6 +7,7 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
+import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { compileLayout, layoutVars } from '../core/engines/layout';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
@@ -66,6 +67,30 @@ write('scale.json', {
     'sizing:bad-enum-and-int': scaleErrors('sizing', { chip: { radius: 'round' }, pageHead: { descriptionLines: 3.7 }, card: 'big' }),
     'sizing:not-an-object': scaleErrors('sizing', 'nope'),
     'other-type': scaleErrors('button', { shape: 'rounded' }),
+  },
+});
+// Agent ID cards (agent-card@1; core/engines/agent-card-rules.mjs): defaults, every starter's card model for one sample agent, errors.
+write('agent-card.json', {
+  sample: AGENT_CARD_SAMPLE,
+  defaults: normalizeCard(null),
+  starters: Object.fromEntries(load('agent-card').map((a) => [a.id, { normalized: normalizeCard(a.data), model: cardModel(a.data, AGENT_CARD_SAMPLE.identity, AGENT_CARD_SAMPLE.stats) }])),
+  normalized: {
+    'unknown-dropped': normalizeCard({ design: 'poster', front: ['name', 'shoeSize', 'name'], labels: { name: ' Who ', bogus: 'x' }, extra: 1 }),
+    'not-an-object': normalizeCard('nope'),
+  },
+  models: {
+    'no-identity': cardModel({ front: ['name', 'employeeId', 'jobs'], code: 'barcode' }, {}, {}),
+    'qr-page': cardModel({ code: 'qr', front: ['email'] }, { id: 'kat', page: 'axf://agent-swarm/kat' }, {}),
+  },
+  employeeIds: Object.fromEntries(['kat', 'rio', 'boss', 'Doc-Dee'].map((id) => [id, employeeId(id)])),
+  bars: { 'AX-0042': barcodeBars('AX-0042'), '': barcodeBars('') },
+  errors: {
+    ok: agentCardErrors('agent-card', { design: 'license', front: ['name'], labels: { name: 'Who' } }),
+    'bad-enums': agentCardErrors('agent-card', { design: 'poster', finish: 'chrome', code: 'nfc' }),
+    'bad-fields': agentCardErrors('agent-card', { front: ['name', 'shoeSize'], back: 'jobs', labels: { bogus: 'x', name: '' } }),
+    'too-many': agentCardErrors('agent-card', { front: Array(13).fill('name') }),
+    'not-an-object': agentCardErrors('agent-card', 'nope'),
+    'other-type': agentCardErrors('button', { design: 'poster' }),
   },
 });
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));
