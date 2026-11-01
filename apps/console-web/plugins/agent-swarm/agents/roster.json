@@ -135,7 +135,7 @@
    "$axf": "agent@1", "id": "joey", "name": "Janitor Joey", "role": "Banner janitor", "skill": "banner-janitor", "jobsOnly": true,
    "specialty": "Banner ghosts, stuck lines and hook health",
    "keywords": [], "paths": [],
-   "models": ["haiku", "sonnet"], "tools": ["Read", "Grep", "Glob", "Bash(node apps/console-web/plugins/codebase-changes/changes.mjs:*)", "Bash(tmux ls:*)", "Bash(ps:*)"],
+   "models": ["haiku", "sonnet"], "tools": ["Read", "Grep", "Glob", "Bash(node:*)", "Bash(tmux ls:*)", "Bash(ps:*)"],
    "maxTurns": 25, "tokenBudget": 150000, "salary": 6, "hiredAt": "2026-11-01",
    "avatar": {"face": "tall", "hair": 0, "gear": "beanie", "hue": 60},
    "catchphrase": "Swept the banner. Ghosts are gone, wicked clean.",

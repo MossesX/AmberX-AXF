@@ -1,2 +1,2 @@
-- Walkthrough tooling: apps/walkthrough-studio, apps/console-web/plugins/molly-guide (walkthrough@1).
+- Walkthrough tooling: apps/walkthrough-studio and the molly-guide console plugin (walkthrough@1).
 - amberx-walkthrough build not landed yet (Nov 1 2026): no re-record command; record with the studio and say so in the report.
