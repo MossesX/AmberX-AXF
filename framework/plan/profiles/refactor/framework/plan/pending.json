@@ -3697,7 +3697,9 @@
     },
     {
      "text": "[Opus] Script ch5 build engine + CLI",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:45:30.621Z"
     },
     {
      "text": "[Opus] Script ch6 Dev Console tour",
@@ -3754,7 +3756,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:45:09.902Z",
+   "updatedAt": "2026-11-01T22:45:30.621Z",
    "source": "console"
   }
  ]
