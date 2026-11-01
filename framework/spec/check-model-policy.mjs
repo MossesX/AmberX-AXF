@@ -2,7 +2,7 @@
 // model-policy@1 — Opus or Fable only, never Sonnet; Fable for foundation work (Brett, Nov 1 2026). One registry, every reader.
 //   node framework/spec/check-model-policy.mjs
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from '../core/model-policy.mjs';
@@ -54,9 +54,11 @@ t('the plan model picker never suggests Sonnet', () => {
     assert.ok(P.modelAllowed(suggestModel(f).model), `${f.title}: ${suggestModel(f).model}`);
   }
 });
-t('the swarm roster runs only on allowed models', () => {
-  const roster = read('apps/console-web/plugins/agent-swarm/agents/roster.json');
-  for (const a of roster.agents) for (const m of a.models) assert.ok(P.modelAllowed(m), `${a.id}: ${m}`);
+t('every agent roster runs only on allowed models', () => {
+  // found, not named: a plugin is never referenced by folder outside itself (plugin-lifecycle@1); none installed = nothing to check
+  const plugins = 'apps/console-web/plugins';
+  const rosters = readdirSync(join(ROOT, plugins)).map((f) => `${plugins}/${f}/agents/roster.json`).filter((f) => existsSync(join(ROOT, f)));
+  for (const f of rosters) for (const a of read(f).agents) for (const m of a.models) assert.ok(P.modelAllowed(m), `${f} ${a.id}: ${m}`);
 });
 
 console.log(`model-policy: ${n} checks passed`);
