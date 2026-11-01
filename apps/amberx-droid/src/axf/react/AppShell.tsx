@@ -151,7 +151,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           </div>
         )}
       </main>
-      {layout.inspector !== 'none' && (
+      {layout.inspector !== 'none' && rt.inspectorShown() && (
         <aside className="fx-region fx-region--inspector" style={{ gridArea: 'inspector' }} data-side={layout.inspector}>
           {inspector ?? <Inspector />}
         </aside>

@@ -171,6 +171,12 @@
             "icon": "keyboard",
             "action": "view.shortcuts",
             "shortcut": "Alt+K"
+          },
+          {
+            "id": "inspector",
+            "label": "Active assets pane",
+            "icon": "layers",
+            "action": "inspector"
           }
         ]
       },

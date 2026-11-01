@@ -14,6 +14,9 @@ export function Inspector() {
         <button type="button" className="fx-iconbtn" title="Randomize all" aria-label="Randomize all assets" onClick={() => rt.dispatch('assets.random')}>
           <Icon name="shuffle" size={14} />
         </button>
+        <button type="button" className="fx-iconbtn" title="Close the pane (View → Active assets pane opens it again)" aria-label="Close the Active assets pane" onClick={() => rt.dispatch('inspector:off')}>
+          <Icon name="x" size={14} />
+        </button>
       </div>
       <ul className="fx-inspector__list">
         {ASSET_TYPES.filter((t) => !attachable(t) && rt.assetOrNull(t)).map((t) => {

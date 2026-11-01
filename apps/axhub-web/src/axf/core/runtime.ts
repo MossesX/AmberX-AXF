@@ -99,6 +99,12 @@ export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
 /** Developer apps: false = stop reading (and writing) the look on axHub; the app keeps its own saved look. */
 export const APPEARANCE_FOLLOW_KEY = 'axf.hub.appearance.follow';
+/**
+ * The Active assets pane (the layout's inspector region): a developer tool, closed until the user opens it
+ * (View → Active assets pane, the `inspector` action). Layouts only say where it goes when it is open
+ * (Brett, Nov 1 2026: the pane popped up on its own when a design package switched to a layout with an inspector).
+ */
+export const INSPECTOR_KEY = 'axf.inspector.shown';
 
 /** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
 type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
@@ -382,6 +388,20 @@ export class AxfRuntime {
   /** Is the look read from axHub right now? (A developer app with the follow switch on; true without a source too.) */
   appearanceFollowing(): boolean { return this.settings.get(APPEARANCE_FOLLOW_KEY) !== false; }
 
+  /** Is the Active assets pane open? Closed unless the user opened it. */
+  inspectorShown(): boolean { return this.settings.get(INSPECTOR_KEY) === true; }
+
+  /** Open or close the Active assets pane (a view choice, not part of the look: never sent to axHub). */
+  setInspectorShown(on: boolean): void {
+    if (on) this.settings.set(INSPECTOR_KEY, true); else this.settings.clear(INSPECTOR_KEY);
+    this.set({});
+  }
+
+  /** The layout as drawn: its inspector region only while the pane is open. */
+  inspectorLayout<L extends { inspector: string }>(l: L): L {
+    return this.inspectorShown() || l.inspector === 'none' ? l : { ...l, inspector: 'none' };
+  }
+
   /** Turn reading the look from axHub on or off (developer apps). Off = the app runs on its own saved look, no waiting. */
   setAppearanceFollowing(on: boolean): void {
     if (!this.mayChangeLook()) return this.toast('Your role cannot change where the look comes from.', 'danger', 'Permission denied');
@@ -466,6 +486,10 @@ export class AxfRuntime {
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
       // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
       if (changed) this.set({ active, swaps: this.state.swaps + 1 }, true);
+      // A new look from the hub is applied to the app itself: hosts drawing the app under something else (the console's
+      // GizmoX interface tabs) bring it back into view, like a local design package does (Brett, Nov 1 2026: the console
+      // sat on its GizmoX Night tab while axHub showed Saffron Day, so the two looked out of sync).
+      if (changed) this.lookApplied('hub', doc?.updatedBy ?? '');
       if (r.skipped.length) this.terminal.warn('appearance', `not in this app, kept the default: ${r.skipped.join(', ')}`);
       this.terminal.ok('appearance', `applied from the hub${doc?.updatedBy ? ` (saved by ${doc.updatedBy})` : ''}`);
     } finally {
@@ -1232,18 +1256,18 @@ export class AxfRuntime {
     return true;
   }
 
-  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void>();
+  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void>();
 
   /**
    * Called after a design package, an interface or the default look is applied to the app (also on "Apply again").
    * Hosts that draw the app under something else (the console's GizmoX interface tabs) bring the app back into view.
    */
-  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default'; id: string }) => void): () => void {
+  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void): () => void {
     this.lookAppliedListeners.add(fn);
     return () => { this.lookAppliedListeners.delete(fn); };
   }
 
-  private lookApplied(kind: 'design-package' | 'interface' | 'default', id: string): void {
+  private lookApplied(kind: 'design-package' | 'interface' | 'default' | 'hub', id: string): void {
     for (const fn of [...this.lookAppliedListeners]) { try { fn({ kind, id }); } catch (e) { this.terminal.warn('hot-swap', `look listener failed: ${(e as Error).message}`); } }
   }
 
@@ -1831,7 +1855,7 @@ export class AxfRuntime {
       ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
       // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
       ...scaleThemeVars({ typography: this.assetOrNull('typography' as AssetType)?.data, density: this.assetOrNull('density' as AssetType)?.data, sizing: this.assetOrNull('sizing' as AssetType)?.data }),
-      ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
+      ...layoutVars(this.inspectorLayout(this.asset('layout').data), this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
@@ -2153,6 +2177,7 @@ export class AxfRuntime {
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
     const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
     a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.appearanceLocked())); }, { label: 'Lock the look', params: true });
+    a.register('inspector', ([v]) => { this.setInspectorShown(turn(v, this.inspectorShown())); }, { label: 'Active assets pane', params: true });
     a.register('appearance.hub', ([v]) => { this.setAppearanceFollowing(turn(v, this.appearanceFollowing())); }, { label: 'Read the look from axHub', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
