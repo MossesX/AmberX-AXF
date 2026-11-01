@@ -178,6 +178,7 @@ export function briefFor({ row, model, branch, areas, deps, dontTouch, live, ver
     '\n## Rules',
     '- Follow CLAUDE.md and _claude/rules/RULES.md + _claude/shared/rules/RULES.md (plugin rules, theme tokens only, no secrets, small steps, Android on hold).',
     ...rules.map((r) => `- ${r}`),
+    '- Watch live: whenever you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` so Brett\'s live preview scrolls to and outlines it.',
     '\n## Report to the Build manager (axHub) as you go',
     'The console already opened your Codebase changes entry (the hook adopts it through AXF_ADOPT_CHANGE and prints its id; `last` points at it). Record estimates first, then steps, then the result:',
     `  ${reportCmd} update last --ref ${ref} --model ${model} --estimate-min ${minutes || '<minutes>'} ${areas.length ? `--areas "${areas.join(',')}" ` : ''}--branch ${branch}`,

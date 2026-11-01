@@ -205,6 +205,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — then commit _claude/builds/orchestrator.json with your work.`,
+    'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
   ];
   return lines.filter(Boolean).join('\n');
 }

@@ -170,12 +170,14 @@ jobs:
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
             npx -y tsx framework/spec/check-hubsync.mts                # lib-hubsync: look/settings/data config, follow source, settings mirror on a fake hub
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
+            npx -y tsx framework/spec/check-watch-live.mts             # watch-live@1: focus params, asset hot swap (no reload), registry, targets, focus file, Vite plugin
             python apps/console-web/server/test_alerts.py
             python apps/console-web/server/test_wall_users.py
             python apps/console-web/server/test_app_ci.py
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
             python apps/console-web/server/test_build_profiles.py
+            python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue

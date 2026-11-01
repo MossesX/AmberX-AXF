@@ -21,7 +21,21 @@ import { basename, dirname, join, relative, resolve } from 'node:path';
 import { appTemplate, FRAMEWORK_DIR, loadAssets, validateAsset } from './build-engine.mjs';
 import { requireProject } from './project.mjs';
 
-export function startDevServer({ dir = '.', port = 7070, framework = false, log = console.log } = {}) {
+/**
+ * One changed asset file → the change record /events serves ({type, id, action, ok}, plus the parsed asset as `raw`
+ * when it is valid). Shared with the Watch live preview's Vite plugin (framework/cli/watch-live-vite.mjs).
+ */
+export function assetChange(file, action) {
+  const type = basename(dirname(file));
+  const id = basename(file, '.json');
+  if (action === 'removed') return { type, id, action, ok: true };
+  try {
+    const raw = JSON.parse(readFileSync(file, 'utf8'));
+    return validateAsset(raw).ok ? { type: raw.type ?? type, id: raw.id ?? id, action, ok: true, raw } : { type, id, action, ok: false };
+  } catch { return { type, id, action, ok: false }; }
+}
+
+export function startDevServer({ dir = '.', port = 7070, host = '0.0.0.0', framework = false, log = console.log } = {}) {
   const root = resolve(dir);
   // The build rule: no project is loaded without a validated manifest (the framework's own is the repo root).
   requireProject(framework ? join(FRAMEWORK_DIR, '..') : root, 'loaded');
@@ -35,12 +49,7 @@ export function startDevServer({ dir = '.', port = 7070, framework = false, log 
   const snapshot = () => loadAssets(assetsDir).filter((a) => a.result.ok).map((a) => a.raw);
 
   const notify = (file, action) => {
-    const type = basename(dirname(file));
-    const id = basename(file, '.json');
-    let ok = true;
-    if (action !== 'removed') {
-      try { ok = validateAsset(JSON.parse(readFileSync(file, 'utf8'))).ok; } catch { ok = false; }
-    }
+    const { type, id, ok } = assetChange(file, action);
     rev++;
     changes.push({ rev, type, id, action, ok, at: Date.now() });
     changes = changes.slice(-200);
@@ -71,7 +80,13 @@ export function startDevServer({ dir = '.', port = 7070, framework = false, log 
     const url = new URL(req.url, 'http://x');
     if (url.pathname === '/') return respond(res, { axf: 'dev-server@1', app: existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf8')).app : null, rev, assets: snapshot().length, dir: relative(process.cwd(), assetsDir) });
     if (url.pathname === '/assets.json') return respond(res, { rev, assets: snapshot() });
-    if (url.pathname === '/manifest.json') return existsSync(manifestPath) ? respond(res, JSON.parse(readFileSync(manifestPath, 'utf8'))) : respond(res, { error: 'no manifest' }, 404);
+    if (url.pathname === '/manifest.json') {
+      if (existsSync(manifestPath)) return respond(res, JSON.parse(readFileSync(manifestPath, 'utf8')));
+      // --framework: the framework's own starter defaults stand in for an app manifest (Watch live shows them)
+      const fwDefaults = join(FRAMEWORK_DIR, 'defaults.json');
+      if (framework && existsSync(fwDefaults)) return respond(res, { app: { id: 'framework', name: 'AmberX AXF framework' }, defaults: JSON.parse(readFileSync(fwDefaults, 'utf8')) });
+      return respond(res, { error: 'no manifest' }, 404);
+    }
     if (url.pathname.startsWith('/assets/')) {
       const file = join(assetsDir, url.pathname.slice('/assets/'.length));
       if (!file.startsWith(assetsDir) || !existsSync(file)) return respond(res, { error: 'not found' }, 404);
@@ -88,6 +103,6 @@ export function startDevServer({ dir = '.', port = 7070, framework = false, log 
     }
     respond(res, { error: 'not found' }, 404);
   });
-  server.listen(port, '0.0.0.0', () => log(`AXF dev server on http://0.0.0.0:${port}  watching ${relative(process.cwd(), assetsDir)} (${snapshot().length} assets)\n  on the device: Settings → Developer → Dev server URL = http://<this machine's IP>:${port}`));
+  server.listen(port, host, () => log(`AXF dev server on http://${host}:${port}  watching ${relative(process.cwd(), assetsDir)} (${snapshot().length} assets)\n  on the device: Settings → Developer → Dev server URL = http://<this machine's IP>:${port}`));
   return server;
 }

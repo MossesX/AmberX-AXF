@@ -66,6 +66,7 @@ node framework/cli/claude-project.mjs [dir] --dry-run --yes   # what claude-proj
 node framework/spec/check-project-fixtures.mjs      # JS validator vs reference fixtures
 node framework/spec/check-build-steps.mjs           # small-steps rule: pending + build-queue cores (40 checks)
 node framework/cli/rebake.mjs [status|apply <app>]  # apps whose baked src/axf is behind the framework; re-bake one
+node framework/cli/watch-live.mjs targets|list      # Watch live: apps this checkout touches / live previews (axf focus <app> [route] [selector])
 node framework/cli/pending.mjs --steps | --check-steps        # pending builds with their steps; what still needs splitting
 node framework/cli/build-queue.mjs --steps | --check-steps    # same for the build queue
 claude-sync status                                  # Claude files + shared data sync with the hub
