@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T01:27:38.720Z",
+ "updatedAt": "2026-11-01T02:26:59.912Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14,19 +14,23 @@
    "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
    "category": "Builds > Data cleanup",
    "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-builds",
    "pr": "",
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "updatedAt": "2026-11-01T00:37:27.395Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-01T02:26:59.880Z",
+   "builtAt": "2026-11-01T02:26:59.508Z",
    "notes": [
     {
      "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
      "at": "2026-11-01T00:37:27.395Z"
+    },
+    {
+     "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
+     "at": "2026-11-01T02:26:59.880Z"
     }
    ],
    "approvals": [],
@@ -242,8 +246,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:26:59.508Z",
      "note": "",
      "uid": "st-a28gqr"
     }
