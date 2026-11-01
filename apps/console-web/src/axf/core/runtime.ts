@@ -43,7 +43,9 @@ import {
   type AxfManifest,
   type AxfState,
   type Gate,
+  type MenuActResult,
   type MenuItem,
+  type MenuItemButton,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -141,6 +143,12 @@ export interface AppMenuProvider {
   moreLabel?: string;
   /** the module that registered it (`removeAppMenuItems(module)` also drops its providers) */
   module?: string;
+  /**
+   * Runs a button on one of its rows (`MenuItem.buttons`, e.g. Deny / Approve) and says what happened, so the open
+   * menu flips that row in place (`state`) and drops it, without reloading the list. Absent: the button's `action`
+   * is dispatched.
+   */
+  act?: (itemId: string, buttonId: string) => MenuActResult | Promise<MenuActResult>;
 }
 
 /**
@@ -526,6 +534,21 @@ export class AxfRuntime {
 
   /** Registered live-list ids. */
   appMenuProviderIds(): string[] { return [...this.appMenuProviders.keys()]; }
+
+  /**
+   * A tap on a button of a live-list row: the provider's `act`, else the button's action. Never throws: a failure is
+   * `{ ok: false, message? }` (the menu toasts the message and puts the buttons back).
+   */
+  async runAppMenuButton(providerId: string, itemId: string, button: Pick<MenuItemButton, 'id' | 'action'>): Promise<MenuActResult> {
+    const p = this.appMenuProviders.get(providerId);
+    try {
+      if (p?.act) return (await p.act(itemId, button.id)) ?? { ok: false, message: 'No answer.' };
+      if (button.action) return { ok: this.dispatch(button.action) };
+      return { ok: false, message: 'Nothing to run.' };
+    } catch (e) {
+      return { ok: false, message: ((e as Error)?.message || 'Something went wrong.').slice(0, 160) };
+    }
+  }
 
   /** What compiling the menu needs from this runtime (the fixtures feed the engine the same shape). */
   private appMenuEnv(): AppMenuEnv {

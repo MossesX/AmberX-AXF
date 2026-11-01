@@ -1,6 +1,7 @@
 {
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-10-31T23:53:18.789Z",
+ "updatedAt": "2026-11-01T00:37:27.424Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80,7 +81,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T23:53:03.077Z",
-     "note": ""
+     "note": "",
+     "uid": "st-387t71"
     },
     {
      "id": "s2",
@@ -97,7 +99,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:46.960Z",
-     "note": ""
+     "note": "",
+     "uid": "st-14g9k2z"
     },
     {
      "id": "s3",
@@ -114,7 +117,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T23:53:03.146Z",
-     "note": ""
+     "note": "",
+     "uid": "st-6h1kll"
     },
     {
      "id": "s4",
@@ -131,7 +135,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T23:53:03.224Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1fgs6wr"
     },
     {
      "id": "s5",
@@ -148,7 +153,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.016Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1idb5s5"
     },
     {
      "id": "s6",
@@ -165,7 +171,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.066Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1qkck4r"
     },
     {
      "id": "s7",
@@ -182,7 +189,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.161Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1s9vdu1"
     },
     {
      "id": "s8",
@@ -199,7 +207,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.208Z",
-     "note": ""
+     "note": "",
+     "uid": "st-2w4pdn"
     },
     {
      "id": "s9",
@@ -216,7 +225,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.256Z",
-     "note": ""
+     "note": "",
+     "uid": "st-17g1ol9"
     },
     {
      "id": "s10",
@@ -233,7 +243,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.309Z",
-     "note": ""
+     "note": "",
+     "uid": "st-n3n3la"
     },
     {
      "id": "s11",
@@ -250,7 +261,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.362Z",
-     "note": ""
+     "note": "",
+     "uid": "st-rwhyr7"
     },
     {
      "id": "s12",
@@ -267,7 +279,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.414Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1o1nnyf"
     },
     {
      "id": "s13",
@@ -284,7 +297,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.467Z",
-     "note": ""
+     "note": "",
+     "uid": "st-dx7sen"
     },
     {
      "id": "s14",
@@ -301,7 +315,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.567Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1y1r4pn"
     },
     {
      "id": "s15",
@@ -318,7 +333,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.620Z",
-     "note": ""
+     "note": "",
+     "uid": "st-7u4sub"
     },
     {
      "id": "s16",
@@ -335,7 +351,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.718Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1l5j8a7"
     },
     {
      "id": "s17",
@@ -352,7 +369,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.766Z",
-     "note": ""
+     "note": "",
+     "uid": "st-13f71sn"
     },
     {
      "id": "s18",
@@ -369,7 +387,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.872Z",
-     "note": ""
+     "note": "",
+     "uid": "st-1s97ed7"
     },
     {
      "id": "s19",
@@ -386,7 +405,8 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-10-31T05:27:47.975Z",
-     "note": ""
+     "note": "",
+     "uid": "st-21l2hv"
     }
    ]
   },
@@ -427,7 +447,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3bvuv089xhn"
     },
     {
      "id": "s2",
@@ -444,7 +465,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3bvuv09vwf3"
     },
     {
      "id": "s3",
@@ -461,7 +483,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3bvuv0a7v2s"
     },
     {
      "id": "s4",
@@ -478,7 +501,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3bvuv0bb25l"
     },
     {
      "id": "s5",
@@ -495,7 +519,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3bvuv0ckonb"
     },
     {
      "id": "s6",
@@ -512,7 +537,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3bvuv0djqhy"
     },
     {
      "id": "s7",
@@ -529,7 +555,8 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": ""
+     "note": "",
+     "uid": "st-mvx3bvuv0e7mgm"
     }
    ]
   }
