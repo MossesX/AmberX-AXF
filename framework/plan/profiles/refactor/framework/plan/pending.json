@@ -3806,6 +3806,32 @@
    "builtAt": "",
    "updatedAt": "2026-11-01T22:58:58.048Z",
    "source": "console"
+  },
+  {
+   "id": "orch-step-click",
+   "title": "Fix: can't click steps in the Build orchestrator",
+   "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Repro on the live console (desktop + phone): which click fails (tick, row open, model, move) and why",
+     "at": "2026-11-01T23:09:37.032Z"
+    },
+    {
+     "text": "[Opus] Fix (nested grid click bubbling, disabled state or tap target) + test",
+     "at": "2026-11-01T23:09:37.032Z"
+    },
+    {
+     "text": "[Opus] UI Review shots, PR",
+     "at": "2026-11-01T23:09:37.032Z"
+    }
+   ],
+   "createdAt": "2026-11-01T23:09:37.031Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-01T23:09:37.031Z",
+   "source": "console"
   }
  ]
 }

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T22:58:58.067Z",
+ "updatedAt": "2026-11-01T23:09:37.106Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -9002,6 +9002,79 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mvyevgxe1eg5fj"
+    }
+   ]
+  },
+  {
+   "id": "orch-step-click",
+   "title": "Fix: can't click steps in the Build orchestrator",
+   "category": "Console",
+   "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-01T23:09:37.031Z",
+   "updatedAt": "2026-11-01T23:09:37.031Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Repro on the live console (desktop + phone): which click fails (tick, row open, model, move) and why",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvyfzsuq041swt"
+    },
+    {
+     "id": "s2",
+     "text": "Fix (nested grid click bubbling, disabled state or tap target) + test",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvyfzsuq05epe0"
+    },
+    {
+     "id": "s3",
+     "text": "UI Review shots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvyfzsuq06fyyb"
     }
    ]
   }
