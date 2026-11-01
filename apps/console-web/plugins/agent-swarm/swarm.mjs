@@ -29,6 +29,7 @@ import * as core from './web/swarm-core.mjs';
 import { orchestratorPath } from '../../../../framework/cli/persist.mjs';
 import { spawnSync } from 'node:child_process';
 import { runJob, worktreeFor } from './runner.mjs';
+import { withSlot } from '../../../../framework/cli/agent-slots.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -107,7 +108,11 @@ export async function run(buildId, ref, opts = {}) {
   const wt = opts.cwd ? { path: opts.cwd, branch: '' } : worktreeFor(repoRoot(), dataDir(), job, opts.base);
   const roster = loadRoster();
   say([core.assignLine(job, roster), ...core.leaseLines({ jobs: [job, ...plan([buildId]).jobs.filter((x) => job.after.includes(x.id))] }, roster).filter((l) => l.jobId === job.id)]);
-  const rec = await runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
+  // agent-slots@1: the swarm shares the VPS-wide cap with every headless session; over it, the agent waits for a desk.
+  const go = () => runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
+  const rec = process.env.AXF_SLOTS === 'off' ? await go()
+    : await withSlot({ name: `swarm-${job.id}`, kind: 'swarm', agent: agent.id, priority: opts.priority, by: 'agent-swarm',
+      onQueued: (r) => say([{ from: core.BOSS.id, kind: 'status', text: `${agent.name} is waiting for a desk (position ${r.position} in the queue, ${r.used}/${r.cap} running).` }]) }, go);
   chatAfterRun(rec, roster);
   const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
   const st = loadState(); const as = st.agents[agent.id];

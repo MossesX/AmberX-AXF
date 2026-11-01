@@ -14,17 +14,20 @@ import { DataGrid, type GridColumn, type GridGroup } from '../../../axf/libs/dat
 import './voice.css';
 import { isNative, native, type VoiceStatus } from '../../../native';
 import { withMic } from '../../../miclease';
-import { dbText, graphPoints, interpretHeard, levelOf, listens, overlayColors, pushLevel, voiceConfig, type VoiceConfig } from './handsfree';
+import { dbText, graphPoints, levelOf, listens, overlayColors, pushLevel, voiceConfig, type VoiceConfig } from './handsfree';
 import { flatTree, localDay, parseIntent, type Intent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
 import { aiReady, parseNote } from '../../ai/web/client';
 import {
   GROUPS, NOTE_EXAMPLES, TASK_EXAMPLES, actionCommands, afterWake, applyOverrides, checkMine, decide, describeIntent, fillReply,
-  navigationCommands, normalize, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
+  navigationCommands, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
   type CommandGroup, type Effective, type ManagedCommand, type MyCommand, type VoiceCommand,
 } from './core';
 import { FACTORY_PHRASES, SUGGESTED_PHRASES, addPhrase, phrasesText, removePhrase } from './wake';
-import { isEcho, markDone, markSpeaking, newGate, shouldSpeak, speechMs, type SayOpts } from './speechgate';
+import { armedSaveAllowed, isEcho, markDone, markSpeaking, newGate, noteArmedSave, shouldSpeak, speechMs, type SayOpts } from './speechgate';
+import { HandledIds, Subscriptions, deviceStore } from '../../../listeners';
+import { wakeAction, type WakeEvent } from './wakeflow';
+import { deviceHandsFree, isSoundOwner, mayMakeSound, onDeviceChange, onSound } from '../../../sound';
 
 export const K = {
   wake: 'amberx.voice.wake',
@@ -139,11 +142,21 @@ const gate = newGate();
 const ending = new Map<string, () => void>();
 let sayN = 0;
 
-/** Is this heard text AmberX's own voice coming back? (exported for the dictation plugin) */
-export const heardEcho = (text: string) => isEcho(gate, text, Date.now());
+/** Is this heard text AmberX's own voice coming back? (exported for the dictation plugin) `armed` = heard with no wake
+ * phrase (always armed): it waits longer after AmberX talks. */
+export const heardEcho = (text: string, armed = false) => isEcho(gate, text, Date.now(), { armed });
+
+/** Wake hits already run, kept on the device: a replay (reopen, reconnect, a retained event) never runs again. */
+const handledWake = new HandledIds(deviceStore(), 'amberx.voice.handled');
+/** The native listeners, one per event: registering again replaces them, never stacks them (Nov 1 2026). */
+const nativeSubs = new Subscriptions();
+/** For tests and the Sound settings: how many native listeners are bound. */
+export const boundListeners = () => nativeSubs.keys();
 
 export async function say(rt: AxfRuntime, text: string, opts: SayOpts = {}) {
   if (rt.settings.get(K.speak) === false || !text) return;
+  // Quiet, another AmberX page owns the sound, or this browser's sounds are off: nothing is said (the log still shows it).
+  if (!mayMakeSound()) return;
   if (!shouldSpeak(gate, text, Date.now(), opts).speak) return;
   const id = `amberx-say-${++sayN}`;
   markSpeaking(gate, text, Date.now());
@@ -170,10 +183,10 @@ async function runCommand(rt: AxfRuntime, c: VoiceCommand): Promise<{ did: strin
   return { did: ran ? reply || `Ran ${c.action}.` : `${c.action} isn't available.`, ok: ran };
 }
 
-/** Local parse first, then the AI (when connected). */
-async function notesIntent(heard: string, local: Intent | null): Promise<Intent | null> {
+/** Local parse first, then the AI (when connected and allowed: never for a sentence nobody addressed to AmberX). */
+async function notesIntent(heard: string, local: Intent | null, ai = true): Promise<Intent | null> {
   if (local) return local;
-  if (!aiReady()) return null;
+  if (!ai || !aiReady()) return null;
   if (!notesSnapshot().loaded) await loadNotes();
   return parseNote(heard, { lists: flatTree(notesSnapshot().view).map((t) => t.path), today: localDay(new Date()) });
 }
@@ -205,26 +218,37 @@ export async function askAloud(rt: AxfRuntime, question: string): Promise<string
   return nextCommand(rt);
 }
 
-/** Runs what was heard: a command or a notes sentence (see `decide` in core.ts for the order), then answers. */
-export async function handle(rt: AxfRuntime, heardRaw: string): Promise<Turn> {
+/**
+ * Runs what was heard: a command or a notes sentence (see `decide` in core.ts for the order), then answers.
+ * `armed` = heard with no wake phrase and no Speak tap (always armed). Such a sentence never goes to the AI notes
+ * parser (Nov 1 2026: the AI turned AmberX's own mis-heard "Note saved to Inbox" into a new note, 125 times), and three
+ * unprompted saves within a minute pause unprompted saves for two minutes.
+ */
+export async function handle(rt: AxfRuntime, heardRaw: string, opts: { armed?: boolean } = {}): Promise<Turn> {
   const heard = afterWake(heardRaw, phraseList(rt.settings.get(K.wake)));
   const at = new Date().toISOString();
+  const armed = opts.armed === true;
   let turn: Turn;
   if (!heard) turn = { at, heard: heardRaw, did: 'Heard nothing.', ok: false };
   else {
-    const notes = notesOn(rt);
+    const notes = notesOn(rt) && (!armed || armedSaveAllowed(gate, Date.now()));
     const local = notes ? parseIntent(heard) : null;
-    const d = decide(heard, allCommands(rt), { localIntent: !!local, ai: notes && aiReady() });
+    const d = decide(heard, allCommands(rt), { localIntent: !!local, ai: notes && !armed && aiReady() });
     let done: { did: string; ok: boolean } | null = null;
     const yours = d.route === 'command' && d.match && (d.match.command as Partial<Effective>).group === 'user';
     if (!yours) for (const r of routers.values()) { done = await r(rt, heard).catch(() => null); if (done) break; }
     if (done) { /* a router ran it */ } else if (d.route === 'command' && d.match) done = await runCommand(rt, d.match.command);
     else {
-      const intent = notes ? await notesIntent(heard, local) : null;
-      if (intent) done = await runNotes(rt, heard, intent);
-      else if (d.match) done = await runCommand(rt, d.match.command);
+      const intent = notes ? await notesIntent(heard, local, !armed) : null;
+      if (intent) {
+        done = await runNotes(rt, heard, intent);
+        if (armed && done.ok && noteArmedSave(gate, Date.now())) rt.toast('AmberX kept saving what it heard with no wake phrase, so that is paused for two minutes. Say the wake phrase to save a note.', 'warning', 'Voice');
+      } else if (d.match) done = await runCommand(rt, d.match.command);
     }
-    if (!done) {
+    if (!done && armed) {
+      // Unprompted chatter nobody addressed to AmberX: logged, never answered out loud.
+      done = { did: 'Not a command (no wake phrase).', ok: false };
+    } else if (!done) {
       await say(rt, "Sorry, I don't know that one.");
       done = { did: "I didn't catch a command.", ok: false };
     }
@@ -280,6 +304,9 @@ export function configOf(rt: AxfRuntime): VoiceConfig {
 }
 
 async function syncNative(rt: AxfRuntime, cfg: VoiceConfig) {
+  // In a browser only the device's owner tab listens, and only when hands-free is on for this browser (the synced
+  // hands-free setting is the phone app's): no second recognizer, no Chrome "ding" loop, mic released otherwise.
+  if (!isNative() && (!deviceHandsFree() || !isSoundOwner())) cfg = { ...cfg, handsFree: false };
   try { set({ status: await native.voiceSet(cfg) }); } catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'warning', 'Hands-free'); }
 }
 
@@ -656,6 +683,21 @@ function VoiceCommandsView() {
   );
 }
 
+/**
+ * A wake hit from the native side (or a final result in a browser): `wakeflow.ts` decides. Runs once per id and never
+ * when stale (Android hands a retained event to the page that loads next: that used to replay old sentences on every
+ * open), never when it is AmberX's own voice, never in a tab that isn't the device's owner.
+ */
+export function onWake(rt: AxfRuntime, e: WakeEvent): void {
+  const a = wakeAction(e, {
+    gate, handled: handledWake, now: Date.now(), owner: isNative() || isSoundOwner(), waiting: !!nextHeard, busy: state.busy,
+    wake: phraseList(rt.settings.get(K.wake)), alwaysArmed: rt.settings.get(K.alwaysArmed) === true,
+  });
+  if (a.do === 'answer') nextHeard?.(a.text);
+  else if (a.do === 'handle') void handle(rt, a.text, { armed: a.armed });
+  else if (a.do === 'listen') void say(rt, 'Yes?', { asked: true }).then(() => listenOnce(rt));
+}
+
 /* ---------------------------------------------------------------- library */
 
 export const library: AxfWebLibrary = {
@@ -700,42 +742,28 @@ export const library: AxfWebLibrary = {
     rt.actions.register('voice.commands', () => rt.navigate('voice-commands'), { label: 'Voice commands' });
     // A wake phrase was heard (hands-free, on screen or with the app closed): the rest of the sentence may already be the
     // command. An empty phrase = no wake phrase in it (always armed on Android, or any final result in a browser).
-    void native.addListener('spoken', ({ id }) => { ending.get(id)?.(); }).catch(() => undefined);
-    void native.addListener('wake', ({ phrase, text }) => {
-      // AmberX's own reply coming back through the mic is never a command (no TTS ↔ mic loop).
-      if (heardEcho(text ?? '')) return;
-      if (nextHeard) { nextHeard(afterWake(text ?? '', phraseList(rt.settings.get(K.wake)))); return; }
-      if (state.busy) return;
-      const wake = phraseList(rt.settings.get(K.wake));
-      if (phrase) {
-        const rest = afterWake(text ?? '', wake);
-        if (rest) void handle(rt, rest);
-        else void say(rt, 'Yes?', { asked: true }).then(() => listenOnce(rt));
-        return;
-      }
-      const h = interpretHeard(text ?? '', wake, rt.settings.get(K.alwaysArmed) === true, normalize);
-      if (h.kind === 'command') void handle(rt, h.text);
-      else if (h.kind === 'wake') void say(rt, 'Yes?', { asked: true }).then(() => listenOnce(rt));
-    }).catch(() => undefined);
-    void native.addListener('heard', ({ text, final }) => {
+    // Every native listener is bound by key: registering again replaces it (no stacking on resume or re-render).
+    nativeSubs.bind('spoken', () => native.addListener('spoken', ({ id }) => { ending.get(id)?.(); }));
+    nativeSubs.bind('wake', () => native.addListener('wake', (e) => onWake(rt, e)));
+    nativeSubs.bind('heard', () => native.addListener('heard', ({ text, final }) => {
       set({ heard: text, heardFinal: final });
       // Speak / "Yes?" is waiting: the next final utterance is the command (whether or not it held a wake phrase).
       if (final && nextHeard && !heardEcho(text)) nextHeard(afterWake(text, phraseList(rt.settings.get(K.wake))));
-    }).catch(() => undefined);
-    void native.addListener('level', ({ db, source }) => set({ db, levels: pushLevel(state.levels, levelOf(db, source ?? 'android')) })).catch(() => undefined);
+    }));
+    nativeSubs.bind('level', () => native.addListener('level', ({ db, source }) => set({ db, levels: pushLevel(state.levels, levelOf(db, source ?? 'android')) })));
     // The watch service's status carries the wake engine's phase (downloading %, idle, listening): keep the card live.
-    void native.addListener('monitor', (m) => {
+    nativeSubs.bind('monitor', () => native.addListener('monitor', (m) => {
       const x = m as unknown as Partial<VoiceStatus>;
       if (state.status && (x.phase !== undefined || x.listening !== undefined)) {
         set({ status: { ...state.status, listening: x.listening ?? state.status.listening, engine: x.engine ?? state.status.engine, phase: x.phase ?? state.status.phase, phaseDetail: x.phaseDetail ?? state.status.phaseDetail } });
       }
-    }).catch(() => undefined);
+    }));
     // A quick setting changed on the overlay: save it so Settings and this page show the same.
-    void native.addListener('voiceSettings', (c) => {
+    nativeSubs.bind('voiceSettings', () => native.addListener('voiceSettings', (c) => {
       if (typeof c.handsFree === 'boolean') rt.settings.set(K.handsFree, c.handsFree);
       if (typeof c.alwaysArmed === 'boolean') rt.settings.set(K.alwaysArmed, c.alwaysArmed);
       if (typeof c.overlay === 'boolean') rt.settings.set(K.overlay, c.overlay);
-    }).catch(() => undefined);
+    }));
     // Settings (or the theme) changed: send the native side the new config. Same config = no call.
     let last = '';
     const sync = () => {
@@ -746,6 +774,9 @@ export const library: AxfWebLibrary = {
       void syncNative(rt, cfg);
     };
     rt.subscribe(sync);
+    // This tab became (or stopped being) the device's owner, or this browser's hands-free switch changed: re-send.
+    onSound(() => { last = ''; sync(); });
+    onDeviceChange(() => { last = ''; sync(); });
     sync();
   },
 };

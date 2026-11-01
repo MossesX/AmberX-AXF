@@ -198,6 +198,7 @@ final class VetoAlerts {
             .setContentIntent(tap).setAutoCancel(running)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setPublicVersion(new NotificationCompat.Builder(c, channelId(phase)).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Held command").build());
+        if (Quiet.on(c)) b.setSilent(true); // Quiet: shown, never heard
         if (!running) {
             b.setOngoing(true);
             if (!shelved) {

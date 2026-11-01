@@ -137,6 +137,17 @@ export function alarmDue(cfg: Pick<AlarmConfig, 'enabled' | 'startAt'>, call: { 
   return at === 0 ? call.secondsLeft <= 0 : call.secondsLeft <= at;
 }
 
+/**
+ * May this page ring or post a notice? An app that runs several pages on one device (AmberX tabs) puts a sound owner
+ * on `globalThis.__axfSoundOwner` (sound-owner@1, Nov 1 2026): only the owner rings, and never while its Quiet switch
+ * is on. Without one (the console) the page may, as before.
+ */
+export function soundAllowed(g: unknown = globalThis): boolean {
+  const o = (g as { __axfSoundOwner?: { $axf?: string; allowed?: () => boolean } }).__axfSoundOwner;
+  if (!o || o.$axf !== 'sound-owner@1' || typeof o.allowed !== 'function') return true;
+  try { return o.allowed() !== false; } catch { return true; }
+}
+
 /** Total length of the alarm (all rings and the gaps between them), seconds. */
 export const alarmLength = (cfg: Pick<AlarmConfig, 'ringSeconds' | 'repeat' | 'repeatGapSeconds'>): number =>
   cfg.ringSeconds * cfg.repeat + cfg.repeatGapSeconds * (cfg.repeat - 1);
