@@ -24,6 +24,7 @@ import {
   type CommandGroup, type Effective, type ManagedCommand, type MyCommand, type VoiceCommand,
 } from './core';
 import { FACTORY_PHRASES, SUGGESTED_PHRASES, addPhrase, phrasesText, removePhrase } from './wake';
+import { isEcho, markDone, markSpeaking, newGate, shouldSpeak, speechMs, type SayOpts } from './speechgate';
 
 export const K = {
   wake: 'amberx.voice.wake',
@@ -132,8 +133,32 @@ const useVoice = () => useSyncExternalStore((f) => { subs.add(f); return () => {
 
 const str = (v: unknown, d: string) => (typeof v === 'string' && v.trim() ? v.trim() : d);
 
-export async function say(rt: AxfRuntime, text: string) {
-  if (rt.settings.get(K.speak) !== false && text) await native.speak({ text, lang: str(rt.settings.get(K.lang), 'en-US') }).catch(() => undefined);
+/** Every spoken reply passes the speech gate (`speechgate.ts`): empty states stay silent, a sentence is said once per
+ * change, and hands-free holds the mic while AmberX talks so it never hears itself as the next command. */
+const gate = newGate();
+const ending = new Map<string, () => void>();
+let sayN = 0;
+
+/** Is this heard text AmberX's own voice coming back? (exported for the dictation plugin) */
+export const heardEcho = (text: string) => isEcho(gate, text, Date.now());
+
+export async function say(rt: AxfRuntime, text: string, opts: SayOpts = {}) {
+  if (rt.settings.get(K.speak) === false || !text) return;
+  if (!shouldSpeak(gate, text, Date.now(), opts).speak) return;
+  const id = `amberx-say-${++sayN}`;
+  markSpeaking(gate, text, Date.now());
+  // Android's speak returns as soon as it starts: wait for its `spoken` event (or the estimate) before going on.
+  const ended = new Promise<void>((done) => {
+    const t = setTimeout(() => { ending.delete(id); done(); }, speechMs(text) + 4000);
+    ending.set(id, () => { clearTimeout(t); ending.delete(id); done(); });
+  });
+  try {
+    await native.speak({ text, lang: str(rt.settings.get(K.lang), 'en-US'), id, holdMic: true });
+    await ended;
+  } catch { /* no speech engine */ } finally {
+    ending.get(id)?.();
+    markDone(gate, Date.now());
+  }
 }
 
 async function runCommand(rt: AxfRuntime, c: VoiceCommand): Promise<{ did: string; ok: boolean }> {
@@ -156,7 +181,7 @@ async function notesIntent(heard: string, local: Intent | null): Promise<Intent 
 async function runNotes(rt: AxfRuntime, heard: string, intent: Intent): Promise<{ did: string; ok: boolean }> {
   if (!notesSnapshot().loaded) await loadNotes();
   const r = runIntent(intent, { source: 'voice', transcript: heard });
-  await say(rt, r.say);
+  await say(rt, r.say, { change: r.changed });
   const open = openSpec(r.open, (id) => !!rt.actions.get(id));
   if (open) rt.dispatch(open);
   return { did: r.say, ok: r.ok };
@@ -175,7 +200,7 @@ export function registerVoiceRouter(module: string, fn: VoiceRouter): () => void
 
 /** Says a question and returns the next thing heard ('' when nothing was): wizards and confirmations use it. */
 export async function askAloud(rt: AxfRuntime, question: string): Promise<string> {
-  await say(rt, question);
+  await say(rt, question, { asked: true });
   set({ heard: question, heardFinal: true });
   return nextCommand(rt);
 }
@@ -675,24 +700,27 @@ export const library: AxfWebLibrary = {
     rt.actions.register('voice.commands', () => rt.navigate('voice-commands'), { label: 'Voice commands' });
     // A wake phrase was heard (hands-free, on screen or with the app closed): the rest of the sentence may already be the
     // command. An empty phrase = no wake phrase in it (always armed on Android, or any final result in a browser).
+    void native.addListener('spoken', ({ id }) => { ending.get(id)?.(); }).catch(() => undefined);
     void native.addListener('wake', ({ phrase, text }) => {
+      // AmberX's own reply coming back through the mic is never a command (no TTS ↔ mic loop).
+      if (heardEcho(text ?? '')) return;
       if (nextHeard) { nextHeard(afterWake(text ?? '', phraseList(rt.settings.get(K.wake)))); return; }
       if (state.busy) return;
       const wake = phraseList(rt.settings.get(K.wake));
       if (phrase) {
         const rest = afterWake(text ?? '', wake);
         if (rest) void handle(rt, rest);
-        else void say(rt, 'Yes?').then(() => listenOnce(rt));
+        else void say(rt, 'Yes?', { asked: true }).then(() => listenOnce(rt));
         return;
       }
       const h = interpretHeard(text ?? '', wake, rt.settings.get(K.alwaysArmed) === true, normalize);
       if (h.kind === 'command') void handle(rt, h.text);
-      else if (h.kind === 'wake') void say(rt, 'Yes?').then(() => listenOnce(rt));
+      else if (h.kind === 'wake') void say(rt, 'Yes?', { asked: true }).then(() => listenOnce(rt));
     }).catch(() => undefined);
     void native.addListener('heard', ({ text, final }) => {
       set({ heard: text, heardFinal: final });
       // Speak / "Yes?" is waiting: the next final utterance is the command (whether or not it held a wake phrase).
-      if (final && nextHeard) nextHeard(afterWake(text, phraseList(rt.settings.get(K.wake))));
+      if (final && nextHeard && !heardEcho(text)) nextHeard(afterWake(text, phraseList(rt.settings.get(K.wake))));
     }).catch(() => undefined);
     void native.addListener('level', ({ db, source }) => set({ db, levels: pushLevel(state.levels, levelOf(db, source ?? 'android')) })).catch(() => undefined);
     // The watch service's status carries the wake engine's phase (downloading %, idle, listening): keep the card live.

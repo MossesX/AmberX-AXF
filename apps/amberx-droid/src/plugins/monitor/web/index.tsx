@@ -65,6 +65,8 @@ function watchInPage(rt: AxfRuntime) {
     const s = w.state;
     if (s.phase !== 'checked') return;
     reportWebMonitor({ lastCheck: new Date().toISOString(), status: s.status, waiting: s.count });
+    // Only a good read says what is waiting: a failed one (empty list) must not make everything "new" on the next.
+    if (s.status !== 'ok') return;
     const plan = seenPlan(seen, s.pending.map((p) => p.id));
     seen = plan.next;
     if (first) { first = false; return; } // what was there when the page opened isn't news

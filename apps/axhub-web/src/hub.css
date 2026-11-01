@@ -11,20 +11,25 @@
 .axp-axhub-held--big .axp-axhub-held__count { font-size: var(--fx-type-root-2xl); }
 .axp-axhub-held__what { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0; color: var(--fx-muted); }
 
-/* Approve / Deny on every row (Brett, Oct 30 2026): shown on the collapsed row, big targets from the theme's spacing
-   (about 32 px, 44 px on a phone) that never shrink; the title is cut first (one line, ellipsis). Colours are the
+/* Deny / Approve now on every waiting row, the banner of a request and its page (Brett, Oct 30 + 31 2026): one pair in
+   equal grid columns, so both are the same size whatever their words; big targets from the theme's spacing (about 32 px,
+   44 px on a phone) that never shrink; the title is cut first (one line, ellipsis), never the buttons. Colours are the
    buttons' tones. Layout only. */
 .axp-axhub-row > .fx-card__head { flex-wrap: wrap; }
 .axp-axhub-row > .fx-card__head h3 { flex: 1 1 0; min-width: calc(var(--fx-space) * 12); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* the buttons never shrink; when the title would go under its minimum they move under it, still on the collapsed row */
-.axp-axhub-row > .fx-card__head > .fx-card__actions { flex: 0 0 auto; margin-left: auto; }
+.axp-axhub-row > .fx-card__head > .fx-card__actions { flex: 0 0 auto; margin-left: auto; min-width: 0; }
+.axp-axhub-pair { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--fx-dens-gap-xl); flex: 0 0 auto; }
+.axp-axhub-pair > .fx-btn { min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-width: calc(var(--fx-space) * 10); justify-content: center; white-space: nowrap; }
 .axp-axhub-row .axp-axhub-held > .axp-axhub-held__shelve { flex: 0 0 auto; min-width: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); }
-.axp-axhub-decide { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); }
-.axp-axhub-decide > .fx-btn, .axp-axhub-row .axp-axhub-held > .fx-btn { min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-width: calc(var(--fx-space) * 10); justify-content: center; }
+/* The button a notice picked (`?do=`): ringed in the focus colour until tapped. */
+.axp-axhub-pair > .fx-btn.is-picked, .axp-axhub-held > .is-picked { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * 2); }
 @media (max-width: 720px) {
-  .axp-axhub-decide > .fx-btn, .axp-axhub-row .axp-axhub-held > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+  .axp-axhub-pair > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
   .axp-axhub-row .axp-axhub-held > .axp-axhub-held__shelve { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem); min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
 }
 @media (max-width: 480px) {
-  .axp-axhub-decide > .fx-btn, .axp-axhub-row .axp-axhub-held > .fx-btn { min-width: calc(var(--fx-space) * 9); }
+  .axp-axhub-pair > .fx-btn { min-width: calc(var(--fx-space) * 9); }
+  /* the request's own page: the pair takes the whole width, two big halves */
+  .axp-axhub-held--big > .axp-axhub-pair, [data-axf-anchor="approval-actions"] > .axp-axhub-pair { display: grid; flex: 1 1 100%; }
 }

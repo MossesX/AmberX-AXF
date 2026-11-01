@@ -272,11 +272,23 @@ function ApprovalsBanner() {
 
 /* ---------------- the review dialog: the hub's own page, in a frame ---------------- */
 
+/** How long the hub's page gets to load in the frame before the dialog shows the Open-on-the-hub card instead. */
+export const FRAME_LOAD_MS = 8_000;
+
 function ReviewDialog({ id }: { id: string }) {
   const s = useApprovals();
   const [decided, setDecided] = useState(false);
+  // The frame's state: loading → loaded, or stuck (no load in FRAME_LOAD_MS: the hub refused to be framed here, or the
+  // network is gone). Stuck = no dead frame: a plain card with the Open-on-the-hub button.
+  const [frame, setFrame] = useState<'loading' | 'loaded' | 'stuck'>('loading');
   const p = s.pending.find((x) => x.id === id) ?? s.held.find((x) => x.id === id);
   const url = p?.url ?? approvalUrl(s.hub, id) ?? s.approvalsUrl;
+  const openOnHub = () => { const h = vetoHost(); if (h.open) h.open(url); else globalThis.open(url, '_blank', 'noopener,noreferrer'); };
+  useEffect(() => {
+    setFrame('loading');
+    const t = setTimeout(() => setFrame((f) => (f === 'loading' ? 'stuck' : f)), FRAME_LOAD_MS);
+    return () => clearTimeout(t);
+  }, [url]);
   // Fast checks while it's open; once the request leaves the waiting list it was decided (or expired): close.
   useEffect(() => { const t = setInterval(() => void checkNow(), 2_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
   useEffect(() => {
@@ -288,10 +300,22 @@ function ReviewDialog({ id }: { id: string }) {
   return (
     <div className="fx-stack axp-approvals-review">
       {decided && <p className="fx-small" role="status" style={{ margin: 0 }}><Icon name="check" size={14} /> Decided. Closing…</p>}
-      <iframe className="axp-approvals-review__frame" title="Approval on axHub" src={url} sandbox="allow-scripts allow-forms allow-same-origin" referrerPolicy="no-referrer" />
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>
-        This is axHub's own page (the AXHub web app on the hub's address): Approve or Decline runs there. Blank? <a href={url} target="_blank" rel="noopener noreferrer">Open it on the hub <Icon name="external" size={12} /></a>
-      </p>
+      {frame === 'stuck' ? (
+        <div className="fx-stack axp-approvals-review__stuck" role="status">
+          <Icon name="shield" size={24} />
+          <strong>{p ? `${p.tool}` : 'Approval waiting'}</strong>
+          <p className="fx-small fx-muted" style={{ margin: 0 }}>axHub's page didn't open in here. Open it on the hub to approve or decline.</p>
+          <Button tone="primary" icon="external" onClick={openOnHub}>Open on the hub</Button>
+        </div>
+      ) : (
+        <iframe className="axp-approvals-review__frame" title="Approval on axHub" src={url} sandbox="allow-scripts allow-forms allow-same-origin" referrerPolicy="no-referrer" onLoad={() => setFrame('loaded')} />
+      )}
+      {frame !== 'stuck' && (
+        <div className="fx-row fx-row--wrap axp-approvals-review__foot">
+          <p className="fx-small fx-muted" style={{ margin: 0 }}>This is axHub's own page: Approve or Decline runs there.</p>
+          <Button size="sm" icon="external" onClick={openOnHub}>Open on the hub</Button>
+        </div>
+      )}
     </div>
   );
 }
