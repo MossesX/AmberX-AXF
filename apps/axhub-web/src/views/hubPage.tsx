@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button, Note, useRuntime } from '../axf/react';
 import { OLD_HUB, hubGet, useHubSession, type HubSession } from '../hub/api';
-import { signInUrl } from '../hub/core';
+import { sameJson, shownError, signInUrl } from '../hub/core';
 import { HUB } from '../hub/useHub';
 
 /** Shows `children(session)` only to a signed-in browser (an admin one when `admin`), a plain note otherwise. */
@@ -50,12 +50,24 @@ export function HubGate({ admin, what, children }: { admin?: boolean; what: stri
   return <>{children(session)}</>;
 }
 
-export interface Loaded<T> { data: T | null; error: string; loading: boolean; reload: () => Promise<void>; setData: (d: T) => void }
+export interface Loaded<T> {
+  data: T | null;
+  /** What to show: at once before the first answer; over data already on screen only after a second failed read in a row. */
+  error: string;
+  loading: boolean;
+  reload: () => Promise<void>;
+  setData: (d: T) => void;
+}
 
-/** Loads `path` (null = nothing to load), again on `reload()`, and every `everyMs` while the tab is visible. */
+/**
+ * Loads `path` (null = nothing to load), again on `reload()`, and every `everyMs` while the tab is visible.
+ * Only the first read (or a new address) starts empty; every later read updates the data in place, and an answer equal to
+ * the one on screen keeps the old value, so a poll during a countdown re-renders nothing (Brett, Nov 1 2026).
+ */
 export function useHubJson<T>(path: string | null, everyMs = 0): Loaded<T> {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState('');
+  const [misses, setMisses] = useState(0);
   const [loading, setLoading] = useState(!!path);
   const seq = useRef(0);
   const reload = useCallback(async () => {
@@ -64,21 +76,21 @@ export function useHubJson<T>(path: string | null, everyMs = 0): Loaded<T> {
     setLoading(true);
     try {
       const d = await hubGet<T>(path);
-      if (n === seq.current) { setData(d); setError(''); }
+      if (n === seq.current) { setData((old) => (old !== null && sameJson(old, d) ? old : d)); setError(''); setMisses(0); }
     } catch (e) {
-      if (n === seq.current) setError(e instanceof Error ? e.message : String(e));
+      if (n === seq.current) { setError(e instanceof Error ? e.message : String(e)); setMisses((m) => m + 1); }
     } finally {
       if (n === seq.current) setLoading(false);
     }
   }, [path]);
   // A new address starts empty; a new pace (fast while something counts down) keeps what is shown.
-  useEffect(() => { setData(null); void reload(); }, [reload]);
+  useEffect(() => { setData(null); setError(''); setMisses(0); void reload(); }, [reload]);
   useEffect(() => {
     if (!everyMs) return;
     const t = setInterval(() => { if (document.visibilityState === 'visible') void reload(); }, everyMs);
     return () => clearInterval(t);
   }, [reload, everyMs]);
-  return { data, error, loading, reload, setData };
+  return { data, error: shownError(data !== null, error, misses), loading, reload, setData };
 }
 
 /** Copies `text`, says so in a toast. */
