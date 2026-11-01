@@ -68,6 +68,7 @@ node framework/spec/check-build-steps.mjs           # small-steps rule: pending 
 node framework/spec/check-builds-store.mjs          # builds@1 store: migration loses nothing, projections, reorder, rename, harvest, apply/discard
 node framework/cli/builds-store.mjs [verify|history <id>|restore <id> <rev>]   # the one builds store
 node framework/cli/rebake.mjs [status|apply <app>]  # apps whose baked src/axf is behind the framework; re-bake one
+node framework/cli/watch-live.mjs targets|list      # Watch live: apps this checkout touches / live previews (axf focus <app> [route] [selector])
 node framework/cli/pending.mjs --steps | --check-steps        # pending builds with their steps; what still needs splitting
 node framework/cli/build-queue.mjs --steps | --check-steps    # same for the build queue
 claude-sync status                                  # Claude files + shared data sync with the hub

@@ -15,13 +15,17 @@
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
+ *   axf shot <file> --title "…" --app A --screen S --source check|build|pr|manual|watch-live --session S
+ *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
  *   axf new-module <name> [--label "Name"] [--capabilities a,b] [--depends-on id,id] [--no-compose]
  *                               scaffold framework/android/lib-<name> (Android port)
  *   axf new-demo <library>      create apps/demo-<library>, an Android app showcasing one library
  *   axf modules                 list Android framework modules
  *   axf boilerplates            list boilerplates (framework/boilerplates)
- *   axf dev [dir] [--port 7070] [--framework]   live-reload server: watches assets, pushes changes to devices
+ *   axf dev [dir] [--port 7070] [--host 0.0.0.0] [--framework]   live-reload server: watches assets, pushes changes to devices
+ *   axf focus <app> [route] [selector] [--note "…"]   Watch live: the screen + element this session is changing
+ *                               (writes .axf-focus.json; the console's Watch live popup scrolls to and outlines it)
  *   axf serve [--port 7080] [--token secret]    HTTP driver for the build engine (the Dev Console / VPS)
  *   axf import-ui --name "Cupertino" --kit cupertino --source git --url https://github.com/x/y [--version 1.0] [--covers BUTTON,CHIP] [--apply apps/my-app]
  *                               port a third-party UI library: clone → refactor to AXF tokens → save as kit-<id> → apply to a project
@@ -166,8 +170,19 @@ try {
     }
     case 'dev': {
       const { startDevServer } = await import('./dev-server.mjs');
-      startDevServer({ dir: args[0] ?? '.', port: Number(flags.port ?? 7070), framework: !!flags.framework });
+      startDevServer({ dir: args[0] ?? '.', port: Number(flags.port ?? 7070), host: flags.host ?? '0.0.0.0', framework: !!flags.framework });
       await new Promise(() => {});
+      break;
+    }
+    case 'focus': {
+      // Watch live: the session says which screen and element it is working on (.axf-focus.json in the checkout).
+      const { writeFocus, TARGETS } = await import('./watch-live.mjs');
+      const [app, route = '', selector = ''] = args;
+      const { execSync } = await import('node:child_process');
+      let top = '.';
+      try { top = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim(); } catch { /* not a checkout */ }
+      const { focus, known } = writeFocus(flags.worktree ?? top, { app, route, selector, note: typeof flags.note === 'string' ? flags.note : '' });
+      console.log(c.ok(`✓ focus → ${focus.app} ${focus.route || '/'} ${focus.selector || '(whole screen)'}`) + (known ? '' : c.warn(`  "${app}" is not a preview target (${TARGETS.map((t) => t.app).join(', ')})`)));
       break;
     }
     case 'import-ui': {
@@ -265,6 +280,12 @@ try {
     }
     case 'modules': {
       for (const m of listModules()) console.log(`${c.b(m.name.padEnd(24))} ${c.dim(m.kind.padEnd(10))} ${m.description}`);
+      break;
+    }
+    case 'shot': {
+      // UI Review → Screenshots (not the approve / reject queue): framework/cli/shot.mjs, raw arguments passed through
+      const { main: shot } = await import('./shot.mjs');
+      await shot(process.argv.slice(3));
       break;
     }
     case 'schemas': {

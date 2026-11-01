@@ -39,6 +39,7 @@ export * from './live-session';
 export * from './sse';
 export * from './catalog';
 export * from './assistant';
+export * from './watch-live';
 export * from './agents';
 export * from './engines/plugins';
 export * from './library';

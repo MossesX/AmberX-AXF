@@ -43,6 +43,7 @@ import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, regist
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
 import type { MenuActResult, MenuItem } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 
@@ -385,6 +386,7 @@ function ReviewDialog({ id }: { id: string }) {
       {frame !== 'stuck' && (
         <div className="fx-row fx-row--wrap axp-approvals-review__foot">
           <p className="fx-small fx-muted" style={{ margin: 0 }}>This is axHub's own page: Approve or Decline runs there.</p>
+          {p && <WatchLiveFor text={JSON.stringify(p)} />}
           <Button size="sm" icon="external" onClick={openOnHub}>Open on the hub</Button>
         </div>
       )}

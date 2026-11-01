@@ -37,6 +37,35 @@ curl -H "Authorization: Bearer $AXF_TOKEN" -d '{"kind":"screen","title":"…","f
 CLI writes this checkout's data folder (`AXF_UI_REVIEW_DIR` overrides). `rebuild-shots --submit` finds the submitter
 by capability (`service:ui-review@1` + `review.mjs`), never by folder name.
 
+## Screenshots tab (`ui-screenshot@1`, Nov 1 2026)
+
+Brett: UI Review only showed planned build screens waiting for a decision; there was no place for ad-hoc pictures.
+The **Screenshots** tab (View → Screenshots, or the tab strip under the page title) holds them. They **never enter
+the approve / reject queue** (separate store, never counted by `ui-review@1` state) unless he taps **Send to review**,
+which copies the picture into a normal waiting item (the screenshot stays and remembers the item).
+
+- **Record**: id, title, source (`check`, `build`, `pr`, `manual`, `watch-live`), session, build, agent, app,
+  screen/route, viewport (phone / desktop, from `--viewport` or the file name), takenAt, addedAt, before/after `pair`
+  + `side`, note, branch, PR, by, promoted (review item ids). Unknown fields kept. Pure core `web/shots-core.mjs`
+  (= `server/screenshots.py`).
+- **Files**: `<data folder>/screenshots/index.json` + `screenshots/files/<id>.<ext>` (the console data volume).
+- **Intake** (console token or a signed-in admin, like every plugin route):
+  `node framework/cli/shot.mjs <file>… --title "…" --app Breakroom --screen /breakroom --source check --session <id>
+  [--viewport phone] [--pair <id> --side before|after] [--note …] [--pr N]` (also `axf shot …`; posts to the console
+  when `AXF_CONSOLE_URL` + `AXF_TOKEN` are set, else writes this checkout; `list`, `promote <id>`, `migrate`, `paths`),
+  `POST /api/plugins/ui-review/shots` (JSON with `data` base64 / data URL or `files: [...]`, or multipart
+  `curl -F file=@x.png -F title=… -F app=…`), and the tab's **Upload** button (camera roll on a phone).
+  A pair with no side: the first is *before*, the next *after*.
+- **Routes**: `GET shots`, `POST shots`, `GET shots/file?id=`, `POST shots/update`, `shots/remove`, `shots/promote`,
+  `shots/migrate`.
+- **Page**: framework DataGrid (search, app / source / device filters, sortable columns incl. the *Taken* date,
+  column menu) grouped by app, screen, source or day (or none), or a thumbnails layout; tap → full-screen viewer
+  (swipe, ← →, Esc), before/after slider when paired, Copy link (`?ui-shot=<id>` opens it), Send to review, Delete.
+- **Migration**: review items titled `Breakroom check: …` (a check session that used the review queue) move into
+  Screenshots on start and with `POST shots/migrate` / `shot.mjs migrate` (one screenshot per picture, source
+  `check`, the item and its folder removed; note in `screenshots/migrated.json`; idempotent).
+- **Rule** (shared RULES, build briefs): non-review screenshots use `axf shot`, never `review.mjs submit`.
+
 ## State for other plugins (`ui-review@1`)
 
 `plugin_services.get("ui-review@1")` → `state(branch, pr)`, `holds(branch, pr)`, `items(branch, pr)`, `submit(fields,
@@ -49,9 +78,10 @@ push-banner plugin is being changed by another build, so it was not touched; orc
 
 ## Checks
 
-`python apps/console-web/plugins/ui-review/test.py` (34 checks: migration, kinds, submit, shots, decide, bulk, packs,
-remove, picks, state, capability) · `node --experimental-strip-types apps/console-web/plugins/ui-review/test.mts`
-(11 groups: core, packs, CLI end to end, rebuild-shots option) · console `tsc` + `vite build` · `check-theme`,
+`python apps/console-web/plugins/ui-review/test.py` (64 checks: migration, kinds, submit, shots, decide, bulk, packs,
+remove, picks, state, capability; Screenshots: intake JSON + multipart, auth through the real console, never in the
+queue, promote, Breakroom migration, delete) · `node --experimental-strip-types apps/console-web/plugins/ui-review/test.mts`
+(15 groups: core, packs, CLI end to end, rebuild-shots option, screenshots core, migration, shot CLI, capability) · console `tsc` + `vite build` · `check-theme`,
 `check-controls`, `check-plugin-pages`, `plugin-lifecycle check ui-review`, `menu-reach`: all pass.
 
 ## Screenshots (demo data: 9 submitted items + the 18 packs)
