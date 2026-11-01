@@ -87,6 +87,7 @@ function exportTargets() {
 }
 const sig = (f) => { try { const st = statSync(f); return `${st.size}:${Math.floor(st.mtimeMs)}`; } catch { return ''; } };
 const readExports = () => readJson(exportsFile()) ?? {};
+const str = (v) => (typeof v === 'string' ? v : '');
 /** Old files changed since the last export here, or never exported on this machine (a fresh checkout, a merge). */
 function foreignWrites() {
   const ex = readExports();
@@ -94,8 +95,13 @@ function foreignWrites() {
 }
 function absorbForeign(store, log) {
   let s = store;
+  const ex = readExports();
   for (const t of foreignWrites()) {
     const j = readJson(t.file); if (!j) continue;
+    // our own export from another checkout or machine: a projection of the store, nothing new in it
+    if (!ex[t.file] && j.$export) continue;
+    // written before the migration: everything in it is in the store already (the migration read every copy)
+    if (!(str(j.updatedAt || j.generatedAt) > str(s.migratedAt))) continue;
     // newer-only: a foreign file may be older than the store, so it can add and update builds, never revert or remove
     const before = s;
     if (t.kind === 'orchestrator' && Array.isArray(j.builds)) s = core.absorbOrchestrator(s, t.profile, j, { by: 'foreign-write', newerOnly: true });
