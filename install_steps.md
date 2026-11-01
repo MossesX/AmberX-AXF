@@ -413,3 +413,70 @@ From then on:
   `https://axhub.<domain>/auth/admin/approvals`).
 - To move work to another Claude account, use the handoff
   ([install_instructions §11](install_instructions.md#11-handing-off-sessions)).
+
+---
+
+## Part I: How to set up the agent swarm
+
+The agent swarm (console → Builds → **Agent swarm**, plugin `apps/console-web/plugins/agent-swarm`) runs builds as
+small headless jobs, each on the cheapest model that can do it. It ships switched on with eight agents. Everything
+below is in the console; the same actions work from the shell with
+`node apps/console-web/plugins/agent-swarm/swarm.mjs …` (run in `/opt/axf`, or `docker exec axf-console …`). <!-- axf-plugin:agent-swarm -->
+
+### Step 27. Check the crew (and hire more)
+
+1. Open **Agent swarm → Crew**. Each card shows the agent's specialty, hire date, status, salary and spend.
+2. To hire another agent, add an `agent@1` entry to `agents/roster.json` (id, name, role, `skill`, specialty,
+   keywords, paths, models cheapest first, tools, `maxTurns`, `tokenBudget`, `salary`, `hiredAt`, avatar,
+   catchphrase, bio). Then give it a one-page skill file `agents/skills/<skill>.md` (`agent-skill@1`, under 50 lines).
+3. Check it: `node apps/console-web/plugins/agent-swarm/swarm.mjs roster` (no problems listed = hired), then commit <!-- axf-plugin:agent-swarm -->
+   and push. The new agent appears on Crew after the console redeploys.
+
+### Step 28. Statuses
+
+**Agents** tab, the agent's row: pick a status from the dropdown and add a note.
+
+| Status | Gets work? |
+| --- | --- |
+| On duty | yes |
+| Off duty | no, keeps everything |
+| Injured | no; flagged for a fix |
+| Medical leave | no until the date you set, then back on duty by itself |
+| Probation | small jobs only (15 min or less); you're told every run |
+| Fired | never again; kept greyed in history |
+| Custom | you name it and tick whether it gets work |
+
+**Discipline** is on each profile (tap a card): **Suspend** for a time with a reason; **Rehire** brings back a
+suspended, fired or quit agent. Agents rage-quit by themselves after a run of failed jobs; set how many on the
+Agents tab (**Rage-quit after**, default 3). Shell: `swarm.mjs act status <agent> off-duty "<note>"`,
+`swarm.mjs act suspend <agent> <hours> <reason>`, `swarm.mjs act rehire <agent>`.
+
+### Step 29. Salaries
+
+A salary is the agent's **weekly budget in dollars**. When it's spent the agent is broke and takes no new jobs until
+payday (Monday, UTC) or a top-up.
+
+- Change it on the Agents tab (**Salary / week**) or on the profile's **Pay** section. Higher = a raise, lower = docked;
+  Boss posts it in the group chat.
+- **Top up** gives a broke agent more for this week only.
+- Finishing a job under its budget earns a bonus on the card (bragging rights, not money).
+- Shell: `swarm.mjs act salary <agent> <usd> "<why>"`, `swarm.mjs act topup <agent> <usd>`.
+
+### Step 30. The group chat switch
+
+1. **Agent swarm → Group chat**: the switch at the top turns the chat on or off for everybody; each agent has its own
+   switch too. Off = nothing is posted and banter costs nothing.
+2. **Chat settings**: the vibe slider (1 = straight to the point, 500 = off the rails) is a hard ceiling; anything
+   above it is toned down or dropped. Chattiness, cussing and drama sliders, per-agent overrides, a daily banter
+   budget and presets (All business, Work crew, Break room, Off the rails, or save your own).
+3. **Color by vibe**: a setting (also on the chat's right-click menu) that shades messages by their vibe score.
+4. Shell: `swarm.mjs act chat on|off`, `swarm.mjs act chat <agent> off`, `swarm.mjs act preset crew` (business, crew, breakroom, rails),
+   `swarm.mjs act vibe 100`.
+
+### Step 31. ID cards
+
+**Agent swarm → ID cards** shows every card design (corporate badge, license, trading card, backstage pass, plus any
+you save) with a real agent in the current theme. **Make default** picks the design everyone gets; **Edit as new**
+opens the designer (fields per side, labels, logo place, finish) and saves a new design. On a profile, **ID card**
+picks a design for that agent and edits their card details (name, role, specialty, photo link, employee ID, internal
+email, hire date, catchphrase, signature). Cards take their colours from the theme, so a theme switch rebrands them.
