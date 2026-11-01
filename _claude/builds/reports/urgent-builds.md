@@ -88,6 +88,7 @@ branch is deleted after a merge (same repo only; never main/site/gh-pages/go-pas
 
 ## Known gaps / honest notes
 
+- **Not pushed yet:** the VPS host has no GitHub credentials (`git push` → "Invalid username or token"). Everything is committed on `claude/urgent-builds` in `/root/axf-builds/urgent`; a banner alert (`blocked:push:claude/urgent-builds`) has the exact steps.
 - The old pages (Build manager, Pending builds, Build queue, Fable rebuilds, Tracker) still exist; they now read the
   same store, so they can't drift, but folding their UIs into the Builds page and removing them is the follow-up.
   Duplicate-view candidates from the audit: build-manager, pending (core view), build-queue (core view),

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 13,
- "updatedAt": "2026-11-01T00:36:04.446Z",
+ "rev": 14,
+ "updatedAt": "2026-11-01T00:37:27.424Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -41519,9 +41519,14 @@
    "branch": "claude/urgent-builds",
    "pr": "",
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "updatedAt": "2026-11-01T00:36:04.420Z",
+   "updatedAt": "2026-11-01T00:37:27.395Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
+     "at": "2026-11-01T00:37:27.395Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -41797,7 +41802,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {

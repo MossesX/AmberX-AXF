@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T00:36:04.446Z",
+ "updatedAt": "2026-11-01T00:37:27.424Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -21,9 +21,14 @@
    "branch": "claude/urgent-builds",
    "pr": "",
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "updatedAt": "2026-11-01T00:36:04.420Z",
+   "updatedAt": "2026-11-01T00:37:27.395Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
+     "at": "2026-11-01T00:37:27.395Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
