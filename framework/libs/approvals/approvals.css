@@ -23,7 +23,7 @@
 .axf-approvals__foot a, .axf-approvals__note a { color: var(--fx-accent); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
 .axf-approvals__list { list-style: none; margin: 0; padding: var(--fx-dens-gap-md); overflow: auto; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
 .axf-approvals__li { display: block; min-width: 0 }
-.axf-approvals__li .axf-approvals__actions { width: 100% }
+.axf-apx--stack .axf-approvals__actions { width: 100% }
 .axf-approvals__item { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); min-width: 0 }
 .axf-approvals__item.is-held { border-color: var(--fx-warning) }
 .axf-approvals__text { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0 }
@@ -101,3 +101,5 @@
 .axf-apx--stack .axf-apx__quick .fx-btn { flex: 1 1 0; justify-content: center; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem) }
 .axf-apx--compact .axf-apx__head { padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md) }
 .axf-apx--compact .axf-apx__body { padding: var(--fx-dens-gap-md); gap: var(--fx-dens-gap-md) }
+.axf-approvals__page { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0 }
+.axf-approvals__page a { color: var(--fx-accent) }

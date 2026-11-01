@@ -17,7 +17,7 @@
  * Theme tokens only (approvals.css), framework controls only; the badge is `flex: none` so it snaps beside its
  * neighbours in a title bar and never draws over them; the popover is portalled with fixed coordinates.
  */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type RefObject } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
 import { HUB_DEFAULT, normalizeHub } from '../hub/hub';
@@ -265,12 +265,13 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
 }
 
 /** One item: the shared expandable row (caret far right, details in place), Deny / Approve on the collapsed row too. */
-function Row({ item, hub, busy, onDecide, openPage }: { item: ApprovalItem; hub: string; busy: string; onDecide: (d: ApprovalDecision) => void; openPage: (url: string) => void }) {
+function Row({ item, hub, busy, onDecide, openPage, scope = 'popover', stack = true }: { item: ApprovalItem; hub: string; busy: string; onDecide: (d: ApprovalDecision) => void; openPage: (url: string) => void; scope?: string; stack?: boolean }) {
   const left = countdownOf(item);
+  const Wrap = stack ? 'li' : 'div';
   return (
-    <li className="axf-approvals__li">
+    <Wrap className="axf-approvals__li">
       <ApprovalRow
-        scope="popover" details={detailsOfItem(item)} hub={hub} busy={busy} onDecide={onDecide} openPage={openPage} compact stack
+        scope={scope} details={detailsOfItem(item)} hub={hub} busy={busy} onDecide={onDecide} openPage={openPage} compact={stack} stack={stack}
         actions={
           <div className="axf-approvals__actions">
             {/* Approve / Deny on every row (Brett, Oct 30 2026): big targets, green and red, the safe one first. */}
@@ -281,6 +282,52 @@ function Row({ item, hub, busy, onDecide, openPage }: { item: ApprovalItem; hub:
           </div>
         }
       />
-    </li>
+    </Wrap>
+  );
+}
+
+/* ---------------------------------------------------------------- the list (a page of rows) */
+
+export interface ApprovalsListProps {
+  /** The hub (an app host's `hub` wins). */
+  hub?: string;
+  /** Surface name for the open-row store (default 'list'). */
+  scope?: string;
+  /** Shown when nothing waits (default a short line). */
+  empty?: ReactNode;
+}
+
+/**
+ * Everything waiting, as expandable rows (AmberX's approvals view, any app page): Deny / Approve on each collapsed row
+ * and inside the open one. Deciding: the app host's path, else directly on the hub's own origin, else the hub's page.
+ */
+export function ApprovalsList({ hub: hubProp, scope = 'list', empty }: ApprovalsListProps) {
+  const h = useHost();
+  const hub = normalizeHub(h.hub) ?? normalizeHub(hubProp) ?? HUB_DEFAULT;
+  const rt = useOptionalRuntime();
+  const { state } = useApprovalsFeed(hub, h.everyMs);
+  const [busy, setBusy] = useState('');
+  const openPage = (url: string) => { if (host.open) host.open(url); else globalThis.open?.(url, '_blank', 'noopener,noreferrer'); };
+  const run = async (item: ApprovalItem, d: ApprovalDecision) => {
+    setBusy(`${item.id}:${d}`);
+    try {
+      let r: DecideResult;
+      if (host.decide) r = await host.decide(item, d);
+      else if (canDecideHere(hub, globalThis.location?.origin)) r = await decideOnHub(hub, item, d);
+      else { openPage(item.url); r = { ok: true, opened: true, message: '' }; }
+      if (!r.opened) rt?.toast(r.message, r.ok ? 'success' : 'danger', 'Approvals');
+      void approvalsWatcher(hub).check();
+    } catch (e) {
+      rt?.toast((e as Error)?.message || 'Something went wrong.', 'danger', 'Approvals');
+    } finally { setBusy(''); }
+  };
+  if (state.status !== 'ok') return null;
+  const more = state.count - state.items.length;
+  return (
+    <div className="axf-approvals__page">
+      {state.items.length === 0 && (empty ?? <p className="fx-muted">Nothing is waiting on axHub.</p>)}
+      {state.items.map((it) => <Row key={it.id} item={it} hub={hub} busy={busy} onDecide={(d) => void run(it, d)} openPage={openPage} scope={scope} stack={false} />)}
+      {more > 0 && <p className="fx-small fx-muted">…and {more} more on the hub. <a href={state.approvalsUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => { if (host.open) { e.preventDefault(); host.open(state.approvalsUrl); } }}>See them all</a></p>}
+    </div>
   );
 }

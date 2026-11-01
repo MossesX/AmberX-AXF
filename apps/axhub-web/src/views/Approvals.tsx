@@ -8,17 +8,18 @@
  * refused) — never with a token, so an AI client can't approve its own call. Approve sits on a row only when the row
  * shows the complete call; a longer one opens its page first.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
+import { ApprovalRow as ExpandRow } from '../axf/libs/approvals/react';
+import { detailsOfHubEntry, type ApprovalDecision } from '../axf/libs/approvals';
 import { hubPost } from '../hub/api';
 import { relTime, waitingCount, waitingTitle } from '../hub/core';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
 import { HUB } from '../hub/useHub';
-import { CodeSection, WhatItDoes } from './ApprovalParts';
 import { HubGate, TapTwice, useHubJson } from './hubPage';
-import { HeldBar, HeldChip, isHeld } from './HeldCall';
+import { actHeld, HeldBar, HeldChip, isHeld } from './HeldCall';
 
 export function Approvals() {
   return (
@@ -171,41 +172,40 @@ export function ApprovalRow({ item: fromGrid, onDone }: { item: ApprovalItem; on
   const held = isHeld(item);
   // Approve / Deny sit on the collapsed row; the rest (postpone, ignore, revoke, reopen) inside.
   const quick = held ? [] : item.actions.filter((a) => a !== 'approve' && a !== 'decline');
-  // Collapsed: what is being approved. Opened: what it does, then the code in its own collapsible section.
+  // The shared expandable row (lib-approvals, Brett Nov 1 2026): collapsed = who asked, the reason title, the tool, the
+  // countdown and Deny / Approve now; the caret on the far right (or a tap on the row) opens the details in place.
+  const details = useMemo(() => detailsOfHubEntry(HUB, item), [item]);
+  const decide = (d: ApprovalDecision) => {
+    if (held) { void runHeld(d === 'approve' ? 'approve-now' : 'deny'); return; }
+    void run(d === 'approve' ? 'approve' : 'decline');
+  };
+  const runHeld = async (a: 'deny' | 'approve-now') => {
+    setBusy(true);
+    try { const r = await actHeld(item.id, a); if (r.item) setReply(r.item); rt.toast(r.message || (a === 'deny' ? 'Denied: it will not run.' : 'Approved: the hub runs it now.'), a === 'deny' ? 'info' : 'success'); onDone(); checkHubNow(); }
+    catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); onDone(); }
+    finally { setBusy(false); }
+  };
+  if (!details) return null;
   return (
-    <Container
-      className="axp-axhub-row"
-      title={item.title}
-      icon={item.status === 'pending' ? 'shield' : item.status === 'postponed' || held ? 'clock' : 'check'}
+    <ExpandRow
+      scope="axhub" className="axp-axhub-row" details={details} hub={HUB} busy={busy ? `${item.id}:busy` : ''}
+      onDecide={decide} openPage={() => go(rt, 'approval', { id: item.id })}
       actions={held ? <HeldBar item={item} onDone={done} /> : <RowDecide item={item} busy={busy} run={(a) => void run(a)} />}
-      collapsible
-      defaultOpen={false}
     >
-      <div className="fx-stack">
-        <WhatItDoes item={item} />
-        <CodeSection item={item} />
-        <p className="fx-muted">
-          Asked {relTime(item.createdAt)} by {item.callerId}
-          {item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}
-          {item.decidedBy ? ` · by ${item.decidedBy}` : ''}
-        </p>
-        {item.postponed && (
-          <p className="fx-muted">Waiting for {item.postponed.waitingFor}{item.postponed.lastNote ? ` · ${item.postponed.lastNote}` : ''}</p>
-        )}
-        {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
-        {held && <HeldChip item={item} />}
-        <div className="fx-row fx-row--wrap">
-          {quick.map((a) => (
-            <Button key={a} size="sm" disabled={busy} tone={a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
-              {ACTION_LABELS[a]}
-            </Button>
-          ))}
-          <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => go(rt, 'approval', { id: item.id })}>
-            {item.actions.includes('approve') && !item.whole ? 'Review the whole call' : 'Details'}
+      {item.postponed && (
+        <p className="fx-muted">Waiting for {item.postponed.waitingFor}{item.postponed.lastNote ? ` · ${item.postponed.lastNote}` : ''}</p>
+      )}
+      {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
+      {held && <HeldChip item={item} />}
+      <div className="fx-row fx-row--wrap">
+        {quick.map((a) => (
+          <Button key={a} size="sm" disabled={busy} tone={a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
+            {ACTION_LABELS[a]}
           </Button>
-        </div>
+        ))}
+        <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => go(rt, 'approval', { id: item.id })}>Open the request</Button>
       </div>
-    </Container>
+    </ExpandRow>
   );
 }
 
