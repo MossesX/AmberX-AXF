@@ -3673,7 +3673,9 @@
     },
     {
      "text": "[Opus] rebuild.sh: WALKTHROUGH, VOICE, VOICE_ONLY (re-voice without re-recording), voice download by name",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:42:15.684Z"
     },
     {
      "text": "[Opus] Server: /api/walkthrough/<id>/<file>, walkthroughs.json, download with attachment header",
@@ -3746,7 +3748,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:41:50.257Z",
+   "updatedAt": "2026-11-01T22:42:15.684Z",
    "source": "console"
   }
  ]
