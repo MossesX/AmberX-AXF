@@ -70,13 +70,16 @@ try {
       const ctx = await browser.newContext({ ...VIEWPORTS[vp], colorScheme: shot.colorScheme || 'dark', ...(shot.userAgent ? { userAgent: `Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36 ${shot.userAgent}` } : {}) });
       await ctx.addInitScript((t) => { try { localStorage.setItem('axf-console:token', t); } catch { /* blocked */ } }, token);
       const page = await ctx.newPage(); page.on('pageerror', (e) => console.error(`[page error] ${shot.name}: ${e.message}\n${(e.stack ?? '').split('\n').slice(0, 4).join('\n')}`));
+      // AXF_SHOTS_DEBUG=1: the page's console errors too (a React render crash shows only there)
+      if (process.env.AXF_SHOTS_DEBUG) page.on('console', (m) => { if (m.type() === 'error') console.error(`[console] ${shot.name}/${vp}: ${m.text().slice(0, 600)}`); });
       if (shot.signIn) {
         // a hub session first (local axHub): post its sign-in form, keep the cookie in this context
         await page.goto(shot.signIn.url, { waitUntil: 'load' });
         await page.fill('input[name=username]', shot.signIn.username); await page.fill('input[name=password]', shot.signIn.password);
         await page.click('button[type=submit]'); await page.waitForTimeout(800);
       }
-      await page.goto(`http://127.0.0.1:${webPort}${shot.path || '/'}`, { waitUntil: 'load' });
+      // a cold Vite dev server on the VPS compiles the whole console on the first load: give it two minutes
+      await page.goto(`http://127.0.0.1:${webPort}${shot.path || '/'}`, { waitUntil: 'load', timeout: 120000 });
       await page.waitForTimeout(shot.settle ?? 3500);
       for (const s of shot.steps || []) {
         if (s.search) { await page.keyboard.press('Control+K'); await page.keyboard.type(s.search, { delay: 20 }); await page.waitForTimeout(500); await page.keyboard.press('Enter'); }

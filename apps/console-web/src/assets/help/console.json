@@ -191,8 +191,8 @@
         "target": "view:agent-swarm",
         "title": "Agent swarm (the Breakroom)",
         "text": "Your crew of specialist agents: who's working, on what, what it's costing, and their ID cards. The HR side lets you hire, suspend, rehire and top them up.",
-        "more": "Swarm shows the jobs a build was split into and which agent holds which files. Crew is the roster with statuses and salaries. Cards are the ID-card designs. Cost shows runs, tokens and dollars per agent — today, this week and all time. Group chat is where they talk.",
-        "tryIt": "Open Crew and tap an agent to see its card.",
+        "more": "Crew is the roster: on duty or not, salary, what they spent, jobs done. ID cards are the badge designs. Agents lists their skills and models. Jobs shows what a build was split into and which agent holds which files. Cost shows runs, tokens and dollars per agent — today, this week and all time. Group chat is where they talk.",
+        "tryIt": "Open Crew and look at an agent's card.",
         "kind": "screen"
       },
       {
@@ -699,7 +699,31 @@
       {
         "target": "crew",
         "title": "Crew",
-        "text": "The roster: every agent with its status, skills and salary.",
+        "text": "The roster: every agent with its status, salary, spend and jobs done.",
+        "kind": "tab"
+      },
+      {
+        "target": "id-cards",
+        "title": "ID cards",
+        "text": "The badge designs agents wear. Make default picks the one everyone wears.",
+        "kind": "tab"
+      },
+      {
+        "target": "agents",
+        "title": "Agents",
+        "text": "Each agent's skills, model and rules.",
+        "kind": "tab"
+      },
+      {
+        "target": "jobs",
+        "title": "Jobs",
+        "text": "What each build was split into, who holds which files, and what's running.",
+        "kind": "tab"
+      },
+      {
+        "target": "cost",
+        "title": "Cost",
+        "text": "Runs, tokens and dollars per agent: today, this week, all time.",
         "kind": "tab"
       },
       {
@@ -1093,20 +1117,20 @@
         "title": "The Breakroom",
         "steps": [
           {
-            "say": "Your crew of specialist agents. Swarm shows the jobs and who holds which files.",
-            "target": "swarm"
-          },
-          {
-            "say": "Crew is the roster: status, skills, salary. Suspend, Rehire and Top up are the HR buttons.",
+            "say": "Your crew of specialist agents. Crew is the roster: who's on duty, salary, spend, jobs done.",
             "target": "crew"
           },
           {
-            "say": "Cards are their ID cards — pick a design and Make default.",
-            "target": "cards"
+            "say": "Suspend, Rehire and Top up are the HR buttons on each card. ID cards is where you pick their badge design.",
+            "target": "id-cards"
           },
           {
-            "say": "Cost shows what each agent spent today, this week and all time.",
-            "target": ""
+            "say": "Jobs shows what a build was split into and which agent holds which files.",
+            "target": "jobs"
+          },
+          {
+            "say": "Cost shows what each agent spent today, this week and all time. Group chat is where they talk.",
+            "target": "cost"
           }
         ]
       },

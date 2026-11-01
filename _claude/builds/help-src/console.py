@@ -34,7 +34,7 @@ S("view:feature-matrix", "Feature matrix", "Each build's list of pieces with min
 S("view:ui-review", "UI Review", "Every new screen, dialog, menu or banner a build makes waits here for your OK, with phone and desktop shots. Approve, ask for changes or reject.", "Open one and swipe between the phone and desktop shots.", "A PR whose UI is waiting, has changes asked or is rejected is held: it won't merge until you approve it here. Screenshots that aren't for approval go to Screenshots instead.", ["view:ui-screenshots", "view:design-packs"])
 S("view:ui-screenshots", "Screenshots", "Pictures Claude took while checking things — not for approval. Every shot sits in a named, timestamped group.", "Open a group, then Send to review if one should be approved after all.", related=["view:ui-review"])
 S("view:design-packs", "Design packs", "Whole matched looks waiting for review.")
-S("view:agent-swarm", "Agent swarm (the Breakroom)", "Your crew of specialist agents: who's working, on what, what it's costing, and their ID cards. The HR side lets you hire, suspend, rehire and top them up.", "Open Crew and tap an agent to see its card.", "Swarm shows the jobs a build was split into and which agent holds which files. Crew is the roster with statuses and salaries. Cards are the ID-card designs. Cost shows runs, tokens and dollars per agent — today, this week and all time. Group chat is where they talk.")
+S("view:agent-swarm", "Agent swarm (the Breakroom)", "Your crew of specialist agents: who's working, on what, what it's costing, and their ID cards. The HR side lets you hire, suspend, rehire and top them up.", "Open Crew and look at an agent's card.", "Crew is the roster: on duty or not, salary, what they spent, jobs done. ID cards are the badge designs. Agents lists their skills and models. Jobs shows what a build was split into and which agent holds which files. Cost shows runs, tokens and dollars per agent — today, this week and all time. Group chat is where they talk.")
 S("view:agent-manager", "Agent manager", "Your named agents (Molly and friends): who they are, what they know, what they may do.")
 S("view:ai-assistant", "AI assistant", "Ask Claude about the console, the framework or your builds.")
 S("view:plan-studio", "Plan Studio", "Every plan in one place. 'Put it in a plan for later' lands here, parked — it only becomes a build when you say Turn into a build.", "Switch between Tree, Grid, Board and Roadmap at the top.", related=["view:builds"])
@@ -129,7 +129,11 @@ e("move-to", "Move to", "Moves the picked shots into another group.")
 
 # ---------- agent swarm / Breakroom / HR
 e("swarm", "Swarm", "The jobs a build was split into, who holds which files, and what's running.", kind="tab")
-e("crew", "Crew", "The roster: every agent with its status, skills and salary.", kind="tab")
+e("crew", "Crew", "The roster: every agent with its status, salary, spend and jobs done.", kind="tab")
+e("id-cards", "ID cards", "The badge designs agents wear. Make default picks the one everyone wears.", kind="tab")
+e("agents", "Agents", "Each agent's skills, model and rules.", kind="tab")
+e("jobs", "Jobs", "What each build was split into, who holds which files, and what's running.", kind="tab")
+e("cost", "Cost", "Runs, tokens and dollars per agent: today, this week, all time.", kind="tab")
 e("cards", "Cards", "The ID-card designs. Make default picks the one every agent wears.", kind="tab")
 e("group-chat", "Group chat", "Where the agents talk to each other (and you).", kind="tab")
 e("rehire", "Rehire", "Brings a suspended or fired agent back on the crew.")
@@ -208,10 +212,10 @@ intros = [
    {"say": "Pictures Claude took while checking things, each in a named, timestamped group.", "target": ""},
    {"say": "Open a group to swipe through it; Send to review moves one into the approval queue.", "target": ""}]},
  {"screen": "agent-swarm", "title": "The Breakroom", "steps": [
-   {"say": "Your crew of specialist agents. Swarm shows the jobs and who holds which files.", "target": "swarm"},
-   {"say": "Crew is the roster: status, skills, salary. Suspend, Rehire and Top up are the HR buttons.", "target": "crew"},
-   {"say": "Cards are their ID cards — pick a design and Make default.", "target": "cards"},
-   {"say": "Cost shows what each agent spent today, this week and all time.", "target": ""}]},
+   {"say": "Your crew of specialist agents. Crew is the roster: who's on duty, salary, spend, jobs done.", "target": "crew"},
+   {"say": "Suspend, Rehire and Top up are the HR buttons on each card. ID cards is where you pick their badge design.", "target": "id-cards"},
+   {"say": "Jobs shows what a build was split into and which agent holds which files.", "target": "jobs"},
+   {"say": "Cost shows what each agent spent today, this week and all time. Group chat is where they talk.", "target": "cost"}]},
  {"screen": "plan-studio", "title": "Plan Studio", "steps": [
    {"say": "Every plan in one place. 'Put it in a plan for later' lands here, parked.", "target": ""},
    {"say": "Switch views at the top: Tree, Grid, Board, Roadmap, Reader.", "target": ""},

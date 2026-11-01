@@ -480,3 +480,52 @@ you save) with a real agent in the current theme. **Make default** picks the des
 opens the designer (fields per side, labels, logo place, finish) and saves a new design. On a profile, **ID card**
 picks a design for that agent and edits their card details (name, role, specialty, photo link, employee ID, internal
 email, hire date, catchphrase, signature). Cards take their colours from the theme, so a theme switch rebrands them.
+
+## Part K: Help mode
+
+Help mode makes every AmberX app explain itself: tooltips on every button, menu item, switch, slider, tab, column and
+banner, a short intro the first time you open a screen, and a **What is this?** panel with the longer story. Off means
+no tooltips and no clutter. It's in the framework, so the console, every plugin page, axHub web, AmberX web and
+Walkthrough Studio all have it (Patches is paused and gets it when it's re-baked).
+
+### Step 32. Turn it on
+
+Any of these, in any app:
+
+- the **?** at the right of the menu bar (it lights up while Help mode is on);
+- **F1** (or **Ctrl+Shift+H** where the browser keeps F1);
+- **Help → Help mode** in the app menu;
+- **Settings → About → Help mode**;
+- AmberX: say "help mode on" / "help mode off" (also "show me the tooltips" / "hide the tooltips").
+
+It's remembered per device, so the phone and the desktop can differ.
+
+### Step 33. Read a tooltip
+
+- **Desktop:** hover any control. The tooltip opens beside it (never on top of it), so you can still click it.
+- **Phone:** every control gets a small **?** badge; tap the badge. Or long-press the control itself (the control is
+  not tapped).
+- Tap anywhere else (or Escape) to close it. A normal tap on a control still does its job.
+- **What is this?** in a tooltip opens a small panel: the longer explanation, a thing to try, and related screens
+  (tap one to go there).
+- A control nobody has written help for yet says **No help yet** and shows its help id; it's on the coverage list.
+
+### Step 34. Screen intros
+
+The first time you open a screen with Help mode on, a 2–4 step intro points at its main parts. **Next** / **Back**,
+**Skip**, or tick **Don't show intros again** to stop them everywhere. **Help → Show this screen's intro** replays one;
+**Help → Show all screen intros again** (or the Settings action) brings them all back.
+
+### Step 35. Write help (for builds and plugins)
+
+- Help is an asset (help@1): packs of entries `{ target, title, text, more?, tryIt?, link?, related? }` plus `intros`.
+  The framework's pack is `framework/assets/help/framework.json` (copied into every app with
+  `node framework/cli/help-coverage.mjs --sync`); apps add `src/assets/help/*.json`; each console plugin ships its own
+  `help.json` beside `plugin.json` (it goes away when the plugin is uninstalled).
+- `target` is the control's help id: `action:<spec>` for anything with an action, `view:<id>` for a screen,
+  `banner:<id>`, `menu:<id>`, `column:<label>`, otherwise the label in lower-case with dashes ("Approve now (3)" →
+  `approve-now`). Put `data-help="<id>"` on a control to name it outright.
+- `node framework/cli/help-coverage.mjs` shows coverage per app; `--missing <scope>` lists what still says "No help yet";
+  `--draft <scope>` writes drafts from the code (edit them into plain English and drop `draft`); `--report <file>` writes
+  the report. CI runs `--check` and fails if coverage drops below `framework/spec/help-coverage.json`
+  (`--update` raises it after you add help).

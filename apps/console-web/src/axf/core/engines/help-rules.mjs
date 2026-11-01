@@ -291,6 +291,6 @@ export function ratchetErrors(current, baseline) {
  */
 export const HELP_CONTROL_SELECTOR = [
   'button', 'a[href]', '[role="button"]', '[role="menuitem"]', '[role="menuitemcheckbox"]', '[role="tab"]',
-  '[role="columnheader"]', 'th', 'summary', 'select', '.fx-switchrow', '.fx-checkrow', '.fx-slider', '.fx-field', '[data-help]',
+  '[role="columnheader"]', 'thead th', 'summary', 'select', '.fx-switchrow', '.fx-checkrow', '.fx-slider', '.fx-field', '[data-help]',
   '[data-fx-banner-id]', '.fx-card[data-help]', '.fx-container__head',
 ].join(', ');
