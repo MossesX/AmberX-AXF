@@ -19,6 +19,7 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createGitHub, gitAuthEnv, repoPath, scrub, validRepo } from './github.mjs';
+import { bake as bakeShared, config as sharedConfig, sharedTree } from './shared-assets.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const BAKED = ['core', 'react', 'ui', 'schemas'];
@@ -26,6 +27,8 @@ export const BAKED = ['core', 'react', 'ui', 'schemas'];
 export const OPTIONAL_BAKED = ['libs'];
 const BAKE_DIR = 'src/axf';
 const bakedDirs = (appDir) => [...BAKED, ...OPTIONAL_BAKED.filter((d) => existsSync(join(appDir, BAKE_DIR, d)))];
+/** Apps that ship every shareable asset, baked at src/axf/assets (framework/schemas/shared-assets.json). */
+const sharesAssets = (appDir, root) => { try { return sharedConfig(root).apps.some((a) => resolve(root, a) === appDir); } catch { return false; } };
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
 const walk = (d) => (existsSync(d) ? readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; }) : []);
 const posix = (p) => p.split(sep).join('/');
@@ -54,8 +57,9 @@ export function appStatus(dir, root = ROOT) {
   let lock;
   try { lock = JSON.parse(readFileSync(join(appDir, 'axf.lock.json'), 'utf8')); } catch (e) { return { dir: name, state: 'error', error: `axf.lock.json unreadable: ${e.message}` }; }
   const dirs = bakedDirs(appDir);
-  const want = tree(join(root, 'framework'), dirs);
-  const have = tree(join(appDir, BAKE_DIR), dirs);
+  const shares = sharesAssets(appDir, root);
+  const want = { ...tree(join(root, 'framework'), dirs), ...(shares ? sharedTree(root) : {}) };
+  const have = tree(join(appDir, BAKE_DIR), shares ? [...dirs, 'assets'] : dirs);
   const changed = [], missing = [], extra = [], edited = [];
   for (const [rel, h] of Object.entries(want)) { if (!(rel in have)) missing.push(rel); else if (have[rel] !== h) changed.push(rel); }
   for (const rel of Object.keys(have)) if (!(rel in want)) extra.push(rel);
@@ -81,10 +85,11 @@ export function apply(dir, root = ROOT, { force = false } = {}) {
   const appDir = resolve(root, dir);
   const dirs = bakedDirs(appDir);
   for (const d of dirs) { rmSync(join(appDir, BAKE_DIR, d), { recursive: true, force: true }); cpSync(join(root, 'framework', d), join(appDir, BAKE_DIR, d), { recursive: true }); }
+  const all = sharesAssets(appDir, root) ? (bakeShared(appDir, root), [...dirs, 'assets']) : dirs;
   const lockPath = join(appDir, 'axf.lock.json');
   const lock = JSON.parse(readFileSync(lockPath, 'utf8'));
-  const files = Object.fromEntries(Object.entries(lock.files ?? {}).filter(([k]) => !dirs.some((d) => k.startsWith(`${BAKE_DIR}/${d}/`))));
-  for (const [rel, h] of Object.entries(tree(join(appDir, BAKE_DIR), dirs))) files[`${BAKE_DIR}/${rel}`] = h;
+  const files = Object.fromEntries(Object.entries(lock.files ?? {}).filter(([k]) => !all.some((d) => k.startsWith(`${BAKE_DIR}/${d}/`))));
+  for (const [rel, h] of Object.entries(tree(join(appDir, BAKE_DIR), all))) files[`${BAKE_DIR}/${rel}`] = h;
   lock.files = Object.fromEntries(Object.entries(files).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
   writeFileSync(lockPath, JSON.stringify(lock, null, 2) + '\n');
   return { ...s, rebaked: true };

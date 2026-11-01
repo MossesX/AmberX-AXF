@@ -5415,6 +5415,62 @@
    "updatedAt": "2026-10-27T19:23:01.225Z",
    "source": "chat",
    "estimate": "1 h"
+  },
+  {
+   "id": "help-mode",
+   "title": "Help mode: a switch that teaches Brett his own apps",
+   "detail": "Help mode (Brett, Nov 1 2026): ? switch + F1 + Help menu + Settings + AmberX voice; help@1 packs; tooltips on every control (hover / long-press / phone ? badge), screen intros, What is this?; coverage CLI + CI ratchet; packs for the framework, the console + every plugin, axHub web. Branch claude/help-mode, pushed to main. Report _claude/builds/reports/help-mode.md",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] help@1 rules + engine (ids, validators, index, intros, coverage, ratchet), types, schema, fixture",
+     "at": "2026-11-01T07:51:58.116Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:51:58.581Z"
+    },
+    {
+     "text": "[Opus] Runtime: setting, actions, Help menu item, rt.addHelp, library + plugin help.json hook",
+     "at": "2026-11-01T07:51:58.116Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:51:59.057Z"
+    },
+    {
+     "text": "[Opus] React Help layer: ? switch, tagging, hover / long-press / badge tooltips, What is this?, screen intros; theme-token CSS",
+     "at": "2026-11-01T07:51:58.116Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:51:59.513Z"
+    },
+    {
+     "text": "[Opus] Coverage CLI (scan, drafts, sync, report, --check ratchet) + CI",
+     "at": "2026-11-01T07:51:58.116Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:51:59.902Z"
+    },
+    {
+     "text": "[Opus] Help packs: framework + console + axHub web hand-written; plugin drafts, key plugins edited; intros",
+     "at": "2026-11-01T07:51:58.116Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:52:00.435Z"
+    },
+    {
+     "text": "[Opus] Tests: check-help.mts + check-help-mode.mts (jsdom); full local CI block; re-bake apps",
+     "at": "2026-11-01T07:51:58.116Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:52:00.955Z"
+    },
+    {
+     "text": "[Opus] Screenshots to UI Review (Help mode - Nov 1), install_steps Part K, PORTING, report, push",
+     "at": "2026-11-01T07:51:58.116Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:52:01.479Z"
+    }
+   ],
+   "createdAt": "2026-11-01T07:51:58.115Z",
+   "builtAt": "2026-11-01T07:52:02.425Z",
+   "updatedAt": "2026-11-01T07:52:02.425Z",
+   "source": "console"
   }
  ]
 }

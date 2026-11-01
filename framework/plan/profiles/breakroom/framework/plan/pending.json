@@ -151,11 +151,15 @@
     {
      "text": "Oct 31 2026: agent-swarm grew to 19 steps on main (renumbered). Fable-pinned steps built on Opus now: s1 card preview page, s2 roster + skills, s3 card designer, s4 agent-card@1 asset type (framework/core/engines/agent-card-rules.mjs, react/components/AgentCard.tsx, fixture agent-card.json, check-agent-card.mts), s5 job planner, s6 context packer, s14 cards + profiles, s15 group chat, s18 chat settings. The Fable rebuild covers all of them; its agent-card@1 review may keep or replace the Opus contract (Kotlin twin still deferred while Android is on hold).",
      "at": "2026-10-31T23:53:18.788Z"
+    },
+    {
+     "text": "Nov 1 2026, Fable review (claude/fable-review, report _claude/builds/reports/fable-review.md): verdict REBUILD, this build. Reviewed OK and NOT to be rebuilt: agent-card@1 (one rules file drives both validators, fixture, defaults, open enums) and job-type@1 (now on the model policy). What the rebuild must do: move the swarm contracts (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1, swarm-report@1) out of the plugin into framework/core/engines/swarm-rules.mjs with ONE registry, a JSON snapshot in framework/schemas, JSON Schemas, a fixture in framework/spec/fixtures and a check in CI; a swarm-run@1 record shared with agent jobs (kind job); every model choice through framework/core/model-policy.mjs (already applied: roster and planner run Opus or Fable only). The 19-step Opus build stays in place until this lands.",
+     "at": "2026-11-01T11:25:25.676Z"
     }
    ],
    "subPrompts": [
     {
-     "text": "[Fable] Start: read the Opus version (apps/console-web/plugins/agent-swarm) and its tests; redesign the contracts agent@1, agent-skill@1, swarm-roster@1, swarm-job@1, swarm-report@1 as framework contracts (asset-types / schemas) where they belong",
+     "text": "[Fable] Start: read the Opus version (apps/console-web/plugins/agent-swarm) and the Fable review verdict (_claude/builds/reports/fable-review.md); move the contracts agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1 (shared with agent jobs, kind job) and swarm-report@1 into framework/core/engines/swarm-rules.mjs: one registry, normalizers, validators that name the field, JSON snapshot framework/schemas/swarm.json, JSON Schemas, fixture framework/spec/fixtures/swarm.json, check framework/spec/check-swarm.mts in CI; the plugin imports them. Models only through framework/core/model-policy.mjs.",
      "at": "2026-11-01T00:27:19.617Z",
      "estimate": "30 min"
     },
@@ -170,9 +174,9 @@
      "estimate": "25 min"
     },
     {
-     "text": "[Fable] Agent cards/profiles: avatars and card layout as assets (everything-is-an-asset rule), not component-drawn",
+     "text": "[Fable] Agent cards/profiles: agent-card@1 passed the Fable review (no rebuild). Only check that the avatar (face, hair, gear, hue) and the card layout are driven by agent-card@1 and theme tokens, not component-drawn, and add a fixture case for the avatar.",
      "at": "2026-11-01T00:27:19.617Z",
-     "estimate": "30 min"
+     "estimate": "20 min"
     },
     {
      "text": "[Fable] Group chat contract (swarm-state@1 messages, Boss work lines, banter batch)",
@@ -192,7 +196,7 @@
    ],
    "createdAt": "2026-10-31T05:27:48.056Z",
    "builtAt": "",
-   "updatedAt": "2026-10-31T23:53:18.788Z",
+   "updatedAt": "2026-11-01T11:27:17.235Z",
    "source": "console"
   },
   {
@@ -200,8 +204,13 @@
    "title": "Configurable max-agents cap + queue",
    "detail": "Brett, Nov 1 2026: a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Nov 1 2026 on Opus (headless), branch claude/agent-cap, pushed to main a824f5f4. Report _claude/builds/reports/agent-cap.md; screenshots UI Review -> Screenshots, group Agent cap - Nov 1.",
+     "at": "2026-11-01T07:21:34.524Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] agent-slots@1 engine + CLI (framework/cli/agent-slots.mjs): settings, registry, queue, claim/release, heavy lock, memory guard, sweep",
@@ -229,12 +238,14 @@
     },
     {
      "text": "[Opus] tests, full check block, screenshots, report, push",
-     "at": "2026-11-01T06:34:28.473Z"
+     "at": "2026-11-01T06:34:28.473Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:21:33.817Z"
     }
    ],
    "createdAt": "2026-11-01T06:34:28.472Z",
-   "builtAt": "",
-   "updatedAt": "2026-11-01T06:49:17.449Z",
+   "builtAt": "2026-11-01T07:21:35.917Z",
+   "updatedAt": "2026-11-01T07:21:35.917Z",
    "source": "console"
   },
   {
@@ -242,38 +253,53 @@
    "title": "Agent jobs: hire agents to own recurring jobs (job-type@1, crew, router, Jobs view)",
    "detail": "Brett, Nov 1 2026: recurring kinds of work (walkthroughs, site checks, screenshots, landing, banner cleanup, listener QA) go to hired swarm agents instead of anonymous one-off builds. HR department stays shelved.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Nov 1 2026 on Opus (headless) on claude/agent-jobs, pushed to main per Brett's brief. Report _claude/builds/reports/agent-jobs.md.",
+     "at": "2026-11-01T07:20:51.874Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] job-type@1 asset type: rules, both validators, schema, starters, check",
      "at": "2026-11-01T06:45:35.924Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:23.510Z"
     },
     {
      "text": "[Opus] Hire the crew: six agents, skills, notes",
      "at": "2026-11-01T06:45:35.924Z",
-     "estimate": "20m"
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:23.852Z"
     },
     {
      "text": "[Opus] Router: agent-job.mjs (owner, duty, budget, brief, headless launch, run recorded), unassigned + hire",
      "at": "2026-11-01T06:45:35.924Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:24.309Z"
     },
     {
      "text": "[Opus] Breakroom Jobs view + card jobs + console button + server routes",
      "at": "2026-11-01T06:45:35.924Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:24.780Z"
     },
     {
      "text": "[Opus] Tests, RULES section, install_steps Part J, screenshots, report",
      "at": "2026-11-01T06:45:35.924Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T07:20:50.958Z"
     }
    ],
    "createdAt": "2026-11-01T06:45:35.923Z",
-   "builtAt": "",
-   "updatedAt": "2026-11-01T06:45:35.923Z",
+   "builtAt": "2026-11-01T07:20:52.680Z",
+   "updatedAt": "2026-11-01T07:20:52.680Z",
    "source": "console"
   }
  ]

@@ -229,8 +229,6 @@ html.axf-strip-page #root { height: auto; min-height: 0; display: block; }
 .bm-cost.is-none { color: var(--fx-muted); font-style: italic }
 .bm-cost__price { color: var(--fx-muted); font-variant-numeric: tabular-nums }
 
-/* GizmoX interface tabs (interfaceTabs.tsx): layout only, the tab-group engine draws the tabs */
-.axp-ifx-tabs { flex: none; padding: 0 var(--fx-dens-gap-2xl); background: var(--fx-surface); }
 
 /* ---- enterprise shell (enterprise-branding s34): page heads, cards, empty states; tokens only ---- */
 .fx-pagehead { padding-bottom: var(--fx-dens-gap-2xl); border-bottom: var(--fx-border-w) solid var(--fx-border); }

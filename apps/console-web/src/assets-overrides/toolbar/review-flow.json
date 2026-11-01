@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "review-flow",
+  "name": "Review Flow",
+  "version": "1.0.0",
+  "description": "Undo, redo and save with the open windows provider so reviewers jump between compared items. In the console the alerts bell lives on the banner only.",
+  "author": "AmberX AXF",
+  "tags": [
+    "review",
+    "live"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "history",
+        "items": [
+          {
+            "id": "undo",
+            "icon": "undo",
+            "label": "Undo",
+            "action": "edit.undo"
+          },
+          {
+            "id": "redo",
+            "icon": "redo",
+            "label": "Redo",
+            "action": "edit.redo"
+          },
+          {
+            "id": "save",
+            "icon": "save",
+            "label": "Save",
+            "action": "file.save"
+          }
+        ]
+      },
+      {
+        "id": "windows",
+        "items": [],
+        "provider": "windows",
+        "max": 6,
+        "label": "Open windows"
+      },
+      {
+        "id": "inbox",
+        "items": []
+      }
+    ]
+  }
+}

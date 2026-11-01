@@ -1,6 +1,5 @@
 import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { InterfaceTabBar, InterfaceTabs } from './interfaceTabs';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
@@ -175,18 +174,16 @@ function Shell() {
     return { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
   }, [banners, plugins.contributed.banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
   if (isBannerStrip) return <SlotsProvider slots={slots}><BannerStrip /></SlotsProvider>;
-  // GizmoX interface tabs (interfaceTabs.tsx): the tab row goes in app.frame.head, the shell under the open tab's interface.
-  const withTabs = { ...slots, 'app.frame.head': [{ id: 'console.interface-tabs', order: -100, render: () => <InterfaceTabBar /> }, ...(slots['app.frame.head'] ?? [])] };
+  // The GizmoX interface tabs (each drawing the console under its own interface's look) are gone: the look comes from
+  // axHub only (Brett, Nov 1 2026). Applying an interface still works through Settings → Appearance and goes to the hub.
   return (
     <div {...drop} style={{ display: 'contents' }}>
-      <SlotsProvider slots={withTabs}>
-      <InterfaceTabs>
+      <SlotsProvider slots={slots}>
       <AppShell
         views={allViews}
         dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
         tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
       />
-      </InterfaceTabs>
       </SlotsProvider>
     </div>
   );

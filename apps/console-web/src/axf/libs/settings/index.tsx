@@ -859,8 +859,8 @@ const LOCK_PANEL_ID = 'axf.appearance.lock';
 
 /**
  * Settings → Appearance, on top: lock the look (every look control greys out, this device's own tweaks are set aside
- * but kept) and, in a developer app, whether the look is read from axHub at all. Both switches stay usable while
- * locked; they need a role that may change the look.
+ * but kept). A developer app always reads its look from axHub (Nov 1 2026): there is no switch to opt out. The lock
+ * stays usable while locked; it needs a role that may change the look.
  */
 function AppearanceLockPanel() {
   const rt = useRuntime();
@@ -868,20 +868,12 @@ function AppearanceLockPanel() {
   const locked = rt.appearanceLocked();
   const may = rt.mayChangeLook();
   const hub = rt.hasAppearanceSource();
-  const following = rt.appearanceFollowing();
   return (
     <div className="fx-stack">
       <Switch label="Lock the look" checked={locked} disabled={!may} text={locked ? 'Locked' : 'Off'}
         hint="Greys out everything that changes how the app looks, so nothing can change it by accident. Your own tweaks here (Sliders, asset appearance) are set aside while it's on and come back when you turn it off."
         onChange={(on) => rt.setAppearanceLocked(on)} />
-      {hub && (
-        <Switch label="Get the look from axHub" checked={following} disabled={!may} text={following ? 'On' : 'Off'}
-          hint={following
-            ? 'On: this app shows the same look as your other developer apps and follows changes made in any of them.'
-            : 'Off: this app stops reading its look from axHub and keeps its own saved look. Changes here aren\'t sent to axHub either.'}
-          onChange={(on) => rt.setAppearanceFollowing(on)} />
-      )}
-      {locked && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{hub && following ? 'The look from axHub still applies.' : 'The app shows its saved look.'}</p>}
+      {locked && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{hub ? 'The look from axHub still applies.' : 'The app shows its saved look.'}</p>}
     </div>
   );
 }

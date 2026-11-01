@@ -130,16 +130,13 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   eq(man.developer?.hub, 'https://axhub.amberxai.com', 'developer app: the look comes from axHub');
 }
 
-// The look comes from axHub's shared appearance document, so this app must ship every colour and style theme
-// the console (the other app in Patches) ships: a missing one would fall back to this app's default.
-{
-  const { readdirSync, existsSync } = await import('node:fs');
-  const here = new URL('.', import.meta.url).pathname;
-  for (const type of ['color-theme', 'style-theme', 'gauge', 'meter']) {
-    const mine = existsSync(`${here}src/assets/${type}`) ? readdirSync(`${here}src/assets/${type}`) : [];
-    for (const f of readdirSync(`${here}../console-web/src/assets/${type}`)) ok(mine.includes(f), `ships the console's ${type} ${f}`);
-  }
-}
+// The look comes from axHub's shared appearance document, so this app ships every shareable asset, baked from the
+// framework at src/axf/assets (framework/cli/shared-assets.mjs, Nov 1 2026): whatever any app picks resolves here.
+const { appAssetFiles: registered, check: sharedCheck } = await import(new URL('../../framework/cli/shared-assets.mjs', import.meta.url).href);
+const here0 = new URL('.', import.meta.url).pathname;
+const mine = registered(here0);
+eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared one');
+
 
 // Its own chrome: banner, toolbar, context menu, navigation menu and application menu are all picked in the manifest
 // and ship with the app. It runs inside Patches, so it installs only what it needs (no plugin shared with the
@@ -151,7 +148,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const own = { banner: 'amberx-branded', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'amberx-droid', 'app-menu': 'amberx-droid' };
   for (const [type, id] of Object.entries(own)) {
     eq(man.defaults[type], id, `default ${type} is ${id}`);
-    ok(existsSync(`${here}src/assets/${type}/${id}.json`), `ships ${type}/${id}`);
+    ok(mine.has(`${type}/${id}`), `ships ${type}/${id}`);
     ok(!(man.hidden ?? []).includes(type), `${type} is not hidden`);
   }
   const app = readFileSync(`${here}src/App.tsx`, 'utf8');
@@ -166,20 +163,20 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const { readFileSync, existsSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
-  const read = (t, id) => JSON.parse(readFileSync(`${here}src/assets/${t}/${id}.json`, 'utf8'));
+  const read = (t, id) => mine.get(`${t}/${id}`).asset;
   eq(man.defaults['design-package'], 'amberx-app-day', 'default design package is AmberX · Day');
   eq(man.defaults.branding, 'amberx-app', 'default branding is the AmberX app branding package');
   for (const id of ['amberx-app-day', 'amberx-app-night']) {
-    ok(existsSync(`${here}src/assets/design-package/${id}.json`), `ships design-package/${id}`);
+    ok(mine.has(`design-package/${id}`), `ships design-package/${id}`);
     const d = read('design-package', id).data;
-    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(existsSync(`${here}src/assets/${t}/${d[t]}.json`), `${id}: ${t} ${d[t]} ships`);
-    for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(existsSync(`${here}src/assets/${t}/${sid}.json`), `${id}: ${t} ${sid} ships`);
+    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(mine.has(`${t}/${d[t]}`), `${id}: ${t} ${d[t]} ships`);
+    for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(mine.has(`${t}/${sid}`), `${id}: ${t} ${sid} ships`);
     if (id === 'amberx-app-day') for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) eq(man.defaults[t], d[t], `default ${t} matches the default design package`);
   }
   const b = read('branding', 'amberx-app').data;
   for (const [slot, mode] of Object.entries({ banner: 'lockup', toolbar: 'none', container: 'none', 'tab-group': 'none', dialog: 'mark', window: 'mark' })) eq(b.decorations[slot], mode, `brand ${slot} = ${mode} (DESIGN-LANGUAGE §10)`);
-  for (const [k, mid] of Object.entries(b.marks)) ok(existsSync(`${here}src/assets/${k === 'animated' ? 'animated-logo' : 'logo-mark'}/${mid}.json`), `branding ${k} ${mid} ships`);
-  ok(existsSync(`${here}src/assets/icon-pack/${b.iconPack}.json`), `branding icon pack ${b.iconPack} ships`);
+  for (const [k, mid] of Object.entries(b.marks)) ok(mine.has(`${k === 'animated' ? 'animated-logo' : 'logo-mark'}/${mid}`), `branding ${k} ${mid} ships`);
+  ok(mine.has(`icon-pack/${b.iconPack}`), `branding icon pack ${b.iconPack} ships`);
   eq(b.brand.name, 'AmberX', 'the brand is AmberX');
   const banner = read('banner', 'amberx-branded').data;
   ok(banner.height >= 24 && banner.height <= 40, 'the banner is one line, 24–40 px');
@@ -190,7 +187,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(read('nav-menu', 'amberx-droid').data.sections.every((s) => typeof s.label === 'string' && s.label), 'every nav section has an eyebrow');
   ok(read('app-menu', 'amberx-droid').data.menus.length <= 9, 'at most 9 top menus');
   const sw = read('theme-switch', man.defaults['theme-switch']).data;
-  ok(existsSync(`${here}src/assets/color-theme/${sw.light}.json`) && existsSync(`${here}src/assets/color-theme/${sw.dark}.json`), 'the day/night switch flips between colours the app ships');
+  ok(mine.has(`color-theme/${sw.light}`) && mine.has(`color-theme/${sw.dark}`), 'the day/night switch flips between colours the app ships');
 }
 
 // Windows (enterprise-branding s32): any page opens in a floating window on the framework's window engine, and the

@@ -81,30 +81,26 @@ class FakeSource implements AppearanceSource {
   ok(tested > 0, 'some starter role may not change the look');
 }
 
-/* ---- the look from axHub still applies while locked; the follow switch ---- */
+/* ---- the look from axHub still applies while locked; there is no opt-out (Nov 1 2026) ---- */
 {
   const rt = new AxfRuntime({ manifest, assets, storageKey: 'check-lock-3' });
   rt.setRole('admin');
+  rt.settings.set(APPEARANCE_FOLLOW_KEY, false as never); // a saved "don't follow" from the retired switch
   const src = new FakeSource();
   rt.attachAppearanceSource(src);
-  ok(src.started === 1 && rt.appearanceFollowing() && !rt.appearanceReady(), 'developer app: reads the hub, waits for it');
+  ok(src.started === 1 && !rt.appearanceReady(), 'developer app: reads the hub, waits for it');
+  ok(rt.settings.get(APPEARANCE_FOLLOW_KEY) === null, 'the retired follow switch is cleared on attach');
   src.setState({ status: 'ready', version: 'v' });
   rt.setAppearanceLocked(true);
   src.push(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'neon-tide' } })));
   ok(rt.getState().active['color-theme'] === 'neon-tide', 'locked: the look from axHub still applies');
   rt.setAppearanceLocked(false);
-  rt.setAppearanceFollowing(false);
-  ok(!rt.appearanceFollowing() && src.stopped === 1 && rt.appearanceReady() && rt.getState().appearance === null, 'follow off: source stopped, the app runs without the hub');
-  src.push(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'arctic-daylight' } })));
-  ok(rt.getState().active['color-theme'] === 'neon-tide', 'follow off: hub documents are ignored');
+  ok(!rt.dispatch('appearance.hub:off'), 'appearance.hub is gone: no way to stop reading the hub');
   const n = src.saved.length;
   rt.swap('color-theme', 'arctic-daylight');
-  ok(src.saved.length === n, 'follow off: local changes are not sent to the hub');
-  ok(rt.settings.get(APPEARANCE_FOLLOW_KEY) === false, 'the switch is a setting');
-  rt.dispatch('appearance.hub:on');
-  ok(rt.appearanceFollowing() && src.started === 2 && rt.getState().appearance?.status === 'ready', 'appearance.hub:on starts reading again');
+  ok(src.saved.length === n + 1, 'a local change always goes to the hub');
   rt.detachAppearanceSource();
-  ok(src.stopped === 2, 'detach stops a running source');
+  ok(src.stopped === 1, 'detach stops a running source');
 }
 
 /* ---- Restore clears the Sliders; the Sliders can't overlap lines ---- */

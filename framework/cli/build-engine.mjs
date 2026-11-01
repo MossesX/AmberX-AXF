@@ -697,6 +697,12 @@ export function appTemplate(root) {
   try { return templateInfo(id ?? 'react-ts'); } catch { return templateInfo('react-ts'); }
 }
 
+/** Every folder an app registers assets from: the baked shared set, its own, its overrides (those that exist). */
+export function appAssetDirs(root, tpl = appTemplate(root)) {
+  const base = dirname(tpl.assetsDir);
+  return [join(root, base, 'axf/assets'), join(root, tpl.assetsDir), join(root, base, 'assets-overrides')].filter((d, i) => i === 1 || existsSync(d));
+}
+
 export function validateApp(dir) {
   const root = resolve(dir);
   const errors = [];
@@ -712,7 +718,9 @@ export function validateApp(dir) {
     // (apps made before init mapped it, e.g. the Android console): either is the same file.
     if (!existsSync(p) && !existsSync(join(root, e.path))) (e.required ? errors : warnings).push(`missing ${e.kind} ${relative(root, p)}`);
   }
-  const assets = loadAssets(join(root, tpl.assetsDir));
+  // An app that ships the shared set (framework/cli/shared-assets.mjs) has it baked at src/axf/assets, its own assets in
+  // src/assets and the shared ids it tunes in src/assets-overrides: together they are what it registers.
+  const assets = appAssetDirs(root, tpl).flatMap((d) => loadAssets(d));
   for (const a of assets) if (!a.result.ok) errors.push(`${relative(root, a.file)}: ${a.result.errors.join('; ')}`);
   const byType = {};
   for (const a of assets) if (a.result.ok) (byType[a.raw.type] ??= new Set()).add(a.raw.id);

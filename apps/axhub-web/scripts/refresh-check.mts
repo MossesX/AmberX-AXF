@@ -15,7 +15,7 @@ import { register } from 'node:module';
 register('data:text/javascript,' + encodeURIComponent(
   "export async function load(url, ctx, next) { return url.endsWith('.css') ? { format: 'module', source: '', shortCircuit: true } : next(url, ctx); }",
 ));
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 /* ---- the little DOM the page touches (no jsdom: listeners only) ---- */
@@ -73,7 +73,8 @@ const h = React.createElement;
 const walk = (dir: string): string[] => readdirSync(dir).flatMap((f) => { const p = join(dir, f); return statSync(p).isDirectory() ? walk(p) : p.endsWith('.json') ? [p] : []; });
 const here = new URL('..', import.meta.url).pathname;
 const manifest = JSON.parse(readFileSync(join(here, 'axf.manifest.json'), 'utf8'));
-const assets = walk(join(here, 'src/assets')).map((p) => JSON.parse(readFileSync(p, 'utf8')));
+// as the app registers them: the baked shared set, its own, its overrides (later wins; framework/cli/shared-assets.mjs)
+const assets = ['src/axf/assets', 'src/assets', 'src/assets-overrides'].flatMap((d) => (existsSync(join(here, d)) ? walk(join(here, d)) : [])).map((p) => JSON.parse(readFileSync(p, 'utf8')));
 const rt = createAxf({ manifest, assets });
 type Ev = Parameters<Parameters<import('../src/axf/core').AppearanceSource['subscribe']>[0]>[0];
 const subs = new Set<(e: Ev) => void>();

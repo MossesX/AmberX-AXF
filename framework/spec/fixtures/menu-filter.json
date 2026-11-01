@@ -247,6 +247,7 @@
           "next-layout",
           "random",
           "reset",
+          "inspector",
           "settings",
           "s1",
           "shortcuts"
@@ -293,6 +294,7 @@
           "next-layout",
           "random",
           "reset",
+          "inspector",
           "settings",
           "s1",
           "shortcuts"
@@ -339,6 +341,7 @@
           "next-layout",
           "random",
           "reset",
+          "inspector",
           "settings",
           "s1",
           "shortcuts"

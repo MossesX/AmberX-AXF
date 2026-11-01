@@ -3452,48 +3452,173 @@
    "title": "AmberX app walkthrough video (narrated, chapters, player in the app, one-command re-record)",
    "detail": "Brett Nov 1 2026: a narrated walkthrough of the AmberX app like the one on demo.amberxai.com, made with the existing tour recorder tooling (Playwright + Piper + ffmpeg), seeded demo data, phone layout, player with chapters in AmberX (Home, app menu, Help), media on the server behind the wall, one command + console button to re-record. Profile: refactor (active; headless session, no card possible).",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Done Nov 1: branch claude/amberx-walkthrough pushed to main; 9:12 video live at AmberX → Walkthrough; report _claude/builds/reports/amberx-walkthrough.md",
+     "at": "2026-11-01T08:43:51.307Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Recon: how the demo walkthrough + tour recorder were made; write it down",
      "at": "2026-11-01T06:47:21.597Z",
-     "estimate": "20m"
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-01T07:28:11.709Z"
     },
     {
      "text": "[Opus] Walkthrough script (chapters, Amber narration, highlights) + walkthrough-video@1 validator",
      "at": "2026-11-01T06:47:21.597Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T07:28:12.065Z"
     },
     {
      "text": "[Opus] Recorder: seeded demo data via request routing, highlights, masking, TTS, assemble",
      "at": "2026-11-01T06:47:21.597Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T07:28:12.400Z"
     },
     {
      "text": "[Opus] Record the live app at 412x915, publish behind the wall",
      "at": "2026-11-01T06:47:21.597Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T08:43:50.651Z"
     },
     {
      "text": "[Opus] Player in AmberX: Home entry, app menu, Help",
      "at": "2026-11-01T06:47:21.597Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T07:28:12.713Z"
     },
     {
      "text": "[Opus] Rebuild command + console button; tests (entry, player, script, secrets scan)",
      "at": "2026-11-01T06:47:21.597Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T07:28:13.050Z"
     },
     {
      "text": "[Opus] Checks, screenshots, report, merge main, push",
      "at": "2026-11-01T06:47:21.597Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T08:43:50.967Z"
     }
    ],
    "createdAt": "2026-11-01T06:47:21.596Z",
+   "builtAt": "2026-11-01T08:43:51.654Z",
+   "updatedAt": "2026-11-01T08:43:51.654Z",
+   "source": "console"
+  },
+  {
+   "id": "chat-viewer",
+   "title": "Chat viewer: every session stored, synced, searchable, exportable as 2-voice audio",
+   "detail": "Brett, Nov 1 2026 ~3 AM. session@1 schema + validators; console plugin chat-viewer (also AmberX 'Chats'): claude.ai export zip upload, Claude Code JSONL incremental sync, headless build logs, hub drop folder sessions/claude-ai/<uuid>.json; SQLite + FTS5 store on the console data volume with versions + redaction; DataGrid list, search, bubbles, check for updates; 2-voice audio export (Piper free, OpenAI/ElevenLabs optional) to the hub. Branch claude/chat-viewer.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on claude/chat-viewer, pushed to main. Report _claude/builds/reports/chat-viewer.md",
+     "at": "2026-11-01T07:36:47.807Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] session@1 schema, JS validator, redaction, chain hash, fixtures + check",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:42.089Z"
+    },
+    {
+     "text": "[Opus] SQLite+FTS5 store with upsert, versions, seen badges",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:42.695Z"
+    },
+    {
+     "text": "[Opus] Ingesters: claude.ai export zip, Claude Code JSONL incremental, build logs, hub drop",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:43.488Z"
+    },
+    {
+     "text": "[Opus] Server routes + sync timer + check for updates",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:44.064Z"
+    },
+    {
+     "text": "[Opus] Audio: Piper setup, two-voice mixer, mp3 + chapters, cloud providers, background jobs",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:44.687Z"
+    },
+    {
+     "text": "[Opus] Web viewer: DataGrid list, search, bubbles, export, audio player, settings",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:45.260Z"
+    },
+    {
+     "text": "[Opus] Tests, lifecycle, deploy mounts, AmberX entry, RULES line, install steps",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:45.789Z"
+    },
+    {
+     "text": "[Opus] Checks, screenshots to UI Review, report, merge main, push",
+     "at": "2026-11-01T06:50:37.080Z",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:46.391Z"
+    }
+   ],
+   "createdAt": "2026-11-01T06:50:37.079Z",
+   "builtAt": "2026-11-01T07:36:47.161Z",
+   "updatedAt": "2026-11-01T07:36:47.807Z",
+   "source": "console"
+  },
+  {
+   "id": "github-app",
+   "title": "GitHub App for the whole stack: one-click setup, tokens that never die",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Token broker (framework/cli/github-app.mjs + github-token.mjs): manifest, conversion, JWT, installation + user tokens, cache, lock",
+     "at": "2026-11-01T07:17:49.321Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] git credential helper + gh wrapper + repo create",
+     "at": "2026-11-01T07:17:49.321Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Console plugin github-app: routes, keeper, health checks, settings UI",
+     "at": "2026-11-01T07:17:49.321Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Point callers at the broker (key check on old token, push-banner probe)",
+     "at": "2026-11-01T07:17:49.321Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, screenshots, install_steps, report, push",
+     "at": "2026-11-01T07:17:49.321Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-01T07:17:49.320Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T06:47:21.596Z",
+   "updatedAt": "2026-11-01T07:17:49.320Z",
    "source": "console"
   }
  ]

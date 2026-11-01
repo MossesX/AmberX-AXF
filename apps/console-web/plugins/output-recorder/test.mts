@@ -396,7 +396,8 @@ await t('native: the mic only in the recorder service, only opt-in, VOICE_RECOGN
   assert.ok(!/VOICE_COMMUNICATION|CAMCORDER/.test(svc), 'never a privacy-sensitive source (it would take the mic from a call / the Claude app)');
   assert.ok(!/SpeechRecognizer/.test(svc), 'a plain capture: no recognizer');
   // opened only when the setting / the approved start asks for it
-  assert.match(svc, /boolean wantMic = OutputRecordQueue\.micWanted\(this\);/);
+  // opt-in only, and never while AmberX's Mic off switch is on (MicGuard, Nov 1 2026)
+  assert.match(svc, /boolean wantMic = OutputRecordQueue\.micWanted\(this\)( && MicGuard\.mayOpen\(this\))?;/);
   assert.match(svc, /if \(micOn\) \{\s*if \(!micAllowed\)[^\n]*\n\s*else openMic\(\);/);
   assert.match(code('OutputRecordQueue.java'), /boolean mic = false;/);
   assert.match(code('OutputRecordQueue.java'), /s\.mic = p\.getBoolean\("mic", false\);/);

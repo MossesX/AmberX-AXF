@@ -39,6 +39,18 @@
         "kind": "toggle"
       },
       {
+        "target": "action:inspector",
+        "title": "Active assets pane",
+        "text": "Opens or closes the Active assets pane: every slot of the current look with its asset, to flip through them right there.",
+        "more": "Closed unless you open it. It's a view choice on this device, not part of the look, so it never goes to axHub.",
+        "kind": "toggle"
+      },
+      {
+        "target": "cycle-slot",
+        "title": "Cycle slot",
+        "text": "Swaps one slot (colour theme, layout, toolbar…) to its next asset. The change is the look on axHub, so every app follows."
+      },
+      {
         "target": "action:help.intros.reset",
         "title": "Show all screen intros again",
         "text": "Forgets which screens you've already toured, so each intro shows once more the next time you open that screen."
@@ -676,12 +688,6 @@
         "target": "lock-the-look",
         "title": "Lock the look",
         "text": "Stops anyone (you included) changing the look on this device until it's unlocked.",
-        "kind": "toggle"
-      },
-      {
-        "target": "get-the-look-from-axhub",
-        "title": "Get the look from axHub",
-        "text": "On: this app wears the look saved on your hub, live, so every app matches. Off: it keeps its own.",
         "kind": "toggle"
       },
       {

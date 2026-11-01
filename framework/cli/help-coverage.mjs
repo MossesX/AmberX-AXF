@@ -40,15 +40,15 @@ export const SCOPES = {
   'console-web': {
     label: 'Dev Console + plugins',
     code: ['apps/console-web/src'],
-    assets: ['apps/console-web/src/assets'],
-    help: ['apps/console-web/src/assets/help'],
+    assets: ['apps/console-web/src/axf/assets', 'apps/console-web/src/assets', 'apps/console-web/src/assets-overrides'],
+    help: ['apps/console-web/src/axf/assets/help', 'apps/console-web/src/assets/help'],
     plugins: 'apps/console-web/plugins',
   },
   'axhub-web': {
     label: 'axHub web',
     code: ['apps/axhub-web/src'],
-    assets: ['apps/axhub-web/src/assets'],
-    help: ['apps/axhub-web/src/assets/help'],
+    assets: ['apps/axhub-web/src/axf/assets', 'apps/axhub-web/src/assets', 'apps/axhub-web/src/assets-overrides'],
+    help: ['apps/axhub-web/src/axf/assets/help', 'apps/axhub-web/src/assets/help'],
     plugins: 'apps/axhub-web/src/plugins',
   },
 };
@@ -198,6 +198,7 @@ export function controlsInAssets(dir) {
 
 /** Apps that ship the framework's help pack in src/assets/help (Patches is paused; demo keeps its old baked framework). */
 export const HELP_APPS = ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio'];
+const sharesAssets = (app) => { try { return JSON.parse(readFileSync(join(ROOT, 'framework/schemas/shared-assets.json'), 'utf8')).apps.includes(`apps/${app}`); } catch { return false; } };
 const FRAMEWORK_HELP = 'framework/assets/help';
 
 /** Copy the framework's help packs into every app's assets (what `--sync` does), or list the stale copies. */
@@ -206,6 +207,8 @@ export function syncFrameworkHelp(write) {
   for (const f of readdirSync(join(ROOT, FRAMEWORK_HELP)).filter((n) => n.endsWith('.json'))) {
     const want = readFileSync(join(ROOT, FRAMEWORK_HELP, f), 'utf8');
     for (const app of HELP_APPS) {
+      // apps that ship the shared set get the framework help baked with it (framework/cli/shared-assets.mjs)
+      if (sharesAssets(app)) continue;
       const dest = join(ROOT, 'apps', app, 'src/assets/help', f);
       const have = existsSync(dest) ? readFileSync(dest, 'utf8') : null;
       if (have === want) continue;

@@ -175,7 +175,16 @@ if (hasTmux) {
   const until = async (fn, ms = 20_000) => { const t = Date.now() + ms; while (Date.now() < t) { if (fn()) return true; await new Promise((r) => setTimeout(r, 200)); } return false; };
   ok(await until(() => S.status().running.some((r) => r.state === 'running' && r.session.startsWith('axf-slotstest-'))), 'first run bound its tmux session');
   writeFileSync(join(d1, 'go'), '');
-  ok(await until(() => existsSync(join(d2, 'run.log'))), 'queued run starts by itself when the first finishes');
+  const started2 = await until(() => existsSync(join(d2, 'run.log')));
+  // on failure, say why: the slots state, the queued waiter's own log and the tmux sessions (CI only shows FAIL lines)
+  if (!started2) {
+    const peek = (f) => { try { return readFileSync(f, 'utf8').slice(-1500); } catch (e) { return `(${e.code})`; } };
+    console.log('  slots:', JSON.stringify(S.status().running.map((r) => [r.session, r.state, r.kind, r.id])), 'queue:', JSON.stringify(S.status().queue ?? S.status().queued));
+    console.log('  waiter log:', peek(join(d2, '.axf-queue.log')));
+    console.log('  first log:', peek(join(d1, 'run.log')));
+    console.log('  tmux:', spawnSync('tmux', ['list-panes', '-a', '-F', '#{session_name}|#{pane_pid}|#{pane_dead}'], { encoding: 'utf8' }).stdout);
+  }
+  ok(started2, 'queued run starts by itself when the first finishes');
   ok(await until(() => spawnSync('tmux', ['has-session', '-t', `=axf-${tag}-a`]).status !== 0), 'finished session closed by itself');
   ok(existsSync(join(d1, 'run.log')) && /finished|done/.test(readFileSync(join(d1, 'run.log'), 'utf8') + readFileSync(join(d1, 'run.jsonl'), 'utf8')), 'its log is kept');
   writeFileSync(join(d2, 'go'), '');

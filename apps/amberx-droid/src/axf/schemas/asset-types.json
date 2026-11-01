@@ -1439,6 +1439,7 @@
       "label": "Job type",
       "group": "Agents",
       "icon": "layers",
+      "shared": false,
       "description": "A recurring kind of work a hired swarm agent owns (job-type@1, rules core/engines/job-type-rules.mjs): the owning specialty (an agent skill id), default model, token budget per run, trigger (on demand, schedule, event), the brief template the agent gets ({{placeholders}} from declared inputs and built-ins) and where its outputs go (report path, UI Review group name with a timestamp). Routed by framework/cli/agent-job.mjs. Not drawn: it carries no colours or sizes.",
       "required": [
         "specialty",

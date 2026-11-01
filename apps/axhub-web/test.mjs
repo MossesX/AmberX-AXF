@@ -116,16 +116,13 @@ ok(statusNote('not-admin', '').includes('users page'), 'no permission points at 
 eq(statusNote('unreachable', 'Boom.'), 'Boom.', 'unreachable shows why');
 eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 
-// The look comes from axHub's shared appearance document, so this app must ship every colour and style theme
-// the console (the other app in Patches) ships: a missing one would fall back to this app's default.
-{
-  const { readdirSync, existsSync } = await import('node:fs');
-  const here = new URL('.', import.meta.url).pathname;
-  for (const type of ['color-theme', 'style-theme', 'gauge', 'meter']) {
-    const mine = existsSync(`${here}src/assets/${type}`) ? readdirSync(`${here}src/assets/${type}`) : [];
-    for (const f of readdirSync(`${here}../console-web/src/assets/${type}`)) ok(mine.includes(f), `ships the console's ${type} ${f}`);
-  }
-}
+// The look comes from axHub's shared appearance document, so this app ships every shareable asset, baked from the
+// framework at src/axf/assets (framework/cli/shared-assets.mjs, Nov 1 2026): whatever any app picks resolves here.
+const { appAssetFiles: registered, check: sharedCheck } = await import(new URL('../../framework/cli/shared-assets.mjs', import.meta.url).href);
+const here0 = new URL('.', import.meta.url).pathname;
+const mine = registered(here0);
+eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared one');
+
 
 // Its own chrome: banner, toolbar, context menu, navigation menu and application menu are all picked in the manifest
 // and ship with the app. It runs inside Patches, so it installs only what it needs (no plugin shared with the
@@ -137,7 +134,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   const own = { banner: 'amberx-thin', toolbar: 'axhub-web', 'context-menu': 'axhub-web', 'nav-menu': 'axhub-web', 'app-menu': 'axhub-web' };
   for (const [type, id] of Object.entries(own)) {
     eq(man.defaults[type], id, `default ${type} is ${id}`);
-    ok(existsSync(`${here}src/assets/${type}/${id}.json`), `ships ${type}/${id}`);
+    ok(mine.has(`${type}/${id}`), `ships ${type}/${id}`);
     ok(!(man.hidden ?? []).includes(type), `${type} is not hidden`);
   }
   const app = readFileSync(`${here}src/App.tsx`, 'utf8');

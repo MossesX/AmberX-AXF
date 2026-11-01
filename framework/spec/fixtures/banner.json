@@ -24,6 +24,9 @@
     "amberx-accent": {
       "--fx-banner-h": "30px"
     },
+    "amberx-branded": {
+      "--fx-banner-h": "32px"
+    },
     "amberx-thin": {
       "--fx-banner-h": "24px"
     },

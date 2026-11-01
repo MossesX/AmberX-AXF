@@ -99,6 +99,7 @@
           "terminal-pro"
         ],
         "layout": [
+          "axhub-console",
           "canvas-studio",
           "classic-ide",
           "command-center",
@@ -377,6 +378,7 @@
         ],
         "banner": [
           "amberx-accent",
+          "amberx-branded",
           "amberx-thin"
         ],
         "behavior-theme": [
@@ -407,6 +409,7 @@
           "touch"
         ],
         "branding": [
+          "amberx-app",
           "amberx-brand-014",
           "amberx",
           "gizmox-brand-006",
@@ -488,6 +491,7 @@
           "terminal-pro"
         ],
         "layout": [
+          "axhub-console",
           "canvas-studio",
           "classic-ide",
           "command-center",
@@ -766,6 +770,7 @@
         ],
         "banner": [
           "amberx-accent",
+          "amberx-branded",
           "amberx-thin"
         ],
         "behavior-theme": [
@@ -796,6 +801,7 @@
           "touch"
         ],
         "branding": [
+          "amberx-app",
           "amberx-brand-014",
           "amberx",
           "gizmox-brand-006",
@@ -880,6 +886,7 @@
           "terminal-pro"
         ],
         "layout": [
+          "axhub-console",
           "canvas-studio",
           "classic-ide",
           "command-center",
@@ -1161,6 +1168,7 @@
         ],
         "banner": [
           "amberx-accent",
+          "amberx-branded",
           "amberx-thin"
         ],
         "behavior-theme": [
@@ -1191,6 +1199,7 @@
           "touch"
         ],
         "branding": [
+          "amberx-app",
           "amberx-brand-014",
           "amberx",
           "gizmox-brand-006",
@@ -1272,6 +1281,7 @@
           "terminal-pro"
         ],
         "layout": [
+          "axhub-console",
           "canvas-studio",
           "classic-ide",
           "command-center",
@@ -1550,6 +1560,7 @@
         ],
         "banner": [
           "amberx-accent",
+          "amberx-branded",
           "amberx-thin"
         ],
         "behavior-theme": [
@@ -1580,6 +1591,7 @@
           "touch"
         ],
         "branding": [
+          "amberx-app",
           "amberx-brand-014",
           "amberx",
           "gizmox-brand-006",
@@ -1663,6 +1675,7 @@
           "terminal-pro"
         ],
         "layout": [
+          "axhub-console",
           "canvas-studio",
           "classic-ide",
           "command-center",
@@ -1911,6 +1924,7 @@
         ],
         "banner": [
           "amberx-accent",
+          "amberx-branded",
           "amberx-thin"
         ],
         "behavior-theme": [
@@ -1941,6 +1955,7 @@
           "touch"
         ],
         "branding": [
+          "amberx-app",
           "amberx-brand-014",
           "amberx",
           "gizmox-brand-006",
@@ -2022,6 +2037,7 @@
           "terminal-pro"
         ],
         "layout": [
+          "axhub-console",
           "canvas-studio",
           "classic-ide",
           "command-center",
@@ -2300,6 +2316,7 @@
         ],
         "banner": [
           "amberx-accent",
+          "amberx-branded",
           "amberx-thin"
         ],
         "behavior-theme": [
@@ -2330,6 +2347,7 @@
           "touch"
         ],
         "branding": [
+          "amberx-app",
           "amberx-brand-014",
           "amberx",
           "gizmox-brand-006",
