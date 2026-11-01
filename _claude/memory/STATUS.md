@@ -4,6 +4,7 @@ Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Re
 
 ## Status (as of Oct 21 2026)
 
+- **Watch live (Nov 1 2026, Opus, `claude/watch-live`):** hot-rendered previews of what a headless session is changing. `framework/cli/watch-live.mjs` (started by `deploy/claude-headless.sh`: previews per touched app, registry `/opt/axf/.axf-console/previews`, `axf focus`), Vite plugin `watch-live-vite.mjs`, page helper `framework/core/watch-live.ts` + `AxfRuntime.hotReplaceAsset`, console proxy `server/previews.py` (`/preview/<session>/<app>/`, `/api/previews`), `WatchLiveLink`/`WatchLiveWindow` in the Build manager, orchestrator and approval details. Spec `framework/spec/WATCH-LIVE.md`, report `_claude/builds/reports/watch-live.md`.
 - **Built:** web reference engines (`framework/core`), React layer, 39 starter assets, build engine + CLI (`axf init/validate/new-asset/install/import-ui/serve/dev`), Android kernel + modules, Android console showcase, web Dev Console + Python API + MCP server (`/mcp`, 24 tools), CI, demo site deploy. Build-queue steps `x.assets` … `x.console.mcp` are done.
 - **Just merged (PR #2, commit 2d7a1ac):** protocol-neutral **kernel interop contracts** in `axf-kernel/.../interop` — action/event descriptors, default-deny exposure (LOCAL/LINKED/REMOTE), remote callers, callable actions, protocol adapters, `surface@1`, wire error codes, `axf.jobs`/`axf.remote` placeholders. Spec: `framework/spec/INTEROP.md`. Written without Maven access; Android CI is what compiles and tests it.
 - **Next:**
