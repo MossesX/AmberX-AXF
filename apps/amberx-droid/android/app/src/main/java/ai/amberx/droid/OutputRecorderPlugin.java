@@ -45,6 +45,7 @@ public class OutputRecorderPlugin extends Plugin {
     public void load() {
         OutputRecordService.listener = e -> notifyListeners("recorder", e, true);
         OutputRecordUploader.kick(getContext()); // AmberX opened: send whatever waited
+        AxppLink.ensure(getContext()); // axHub can drive the recorder (amberx.recorder_*, axHub decision #108)
     }
 
     @Override

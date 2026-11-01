@@ -42,6 +42,7 @@
     "typography": true,
     "density": true,
     "sizing": true,
+    "agent-card": false,
     "uac-policy": false
   },
   "cases": {
