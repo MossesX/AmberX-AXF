@@ -10,11 +10,14 @@
  *
  * Walkthrough (Nov 1 2026): the last card on Home opens the narrated walkthrough when the Walkthrough plugin is installed
  * (its `walkthrough.open` action); without it the card isn't shown.
+ *
+ * Mic off (Nov 1 2026): the big microphone switch sits right under the page head (`mic.tsx`).
  */
 import { Button, Chip, Container, useRuntime } from '../axf/react';
 import { HubStatusNote } from '../axf/libs/hub/react';
 import { ApprovalsList } from '../axf/libs/approvals/react';
 import { HUB, useApprovals } from '../hub/useHub';
+import { MicSwitch } from '../mic';
 
 export function Approvals() {
   const rt = useRuntime();
@@ -37,6 +40,7 @@ export function Approvals() {
           <Button tone="quiet" icon="maximize" title="Open this page in a floating window" onClick={() => rt.dispatch('amberx.window:home')}>Window</Button>
         </div>
       </header>
+      <MicSwitch />
       <HubStatusNote hub={HUB} state={state} />
       {!checked ? (
         <div className="amberx-approvals__skeleton" aria-busy="true" aria-label="Reading the hub">

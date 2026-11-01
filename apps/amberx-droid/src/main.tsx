@@ -1,3 +1,5 @@
+// First: Mic off guards getUserMedia and SpeechRecognition before any module captures them (micguard.ts).
+import './micguard';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createAxf, type AxfManifest } from './axf/core';

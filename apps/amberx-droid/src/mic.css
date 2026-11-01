@@ -1,0 +1,5 @@
+/* Mic off switch (mic.tsx): layout only (THEMING.md), theme tokens only. The button stays the framework's button. */
+.amberx-mic__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.amberx-mic__body > p { margin: 0; }
+/* the big tap target: the full width of the card on a phone, never narrower than a thumb on a desktop */
+.amberx-mic__button { width: 100%; min-height: calc(var(--fx-space) * 6); justify-content: center; }

@@ -80,6 +80,19 @@
             </intent-filter>
         </service>
 
+        <!-- Mic off (Nov 1 2026): one tap lets go of every microphone AmberX holds -->
+        <service
+            android:name=".MicTile"
+            android:exported="true"
+            android:icon="@android:drawable/ic_btn_speak_now"
+            android:label="AmberX mic"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data android:name="android.service.quicksettings.TOGGLEABLE_TILE" android:value="true" />
+        </service>
+
         <receiver
             android:name=".BootReceiver"
             android:exported="false">

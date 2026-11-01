@@ -55,6 +55,8 @@ public class WatchService extends Service {
     static final String PREFS = "amberx_watch";
     static final String ACTION_STOP = "ai.amberx.droid.STOP";
     static final String ACTION_CHECK = "ai.amberx.droid.CHECK";
+    /** The notification's Mic off / Mic on button (extra `off`). */
+    static final String ACTION_MIC = "ai.amberx.droid.MIC";
     static final String CH_WATCH = "watch", CH_APPROVALS = "approvals", CH_WAKE = "wake", CH_CONSOLE = "console";
     private static final int ID_ONGOING = 1, ID_WAKE = 2;
 
@@ -67,6 +69,8 @@ public class WatchService extends Service {
     static volatile boolean appListening;
     /** The running service, for the plugin's live calls (overlay permission granted, …). */
     static volatile WatchService running;
+    /** Why background listening has let go of the microphone (MicRules: call / silenced / other-app), or null. */
+    static volatile String yielded;
 
     interface StatusListener { void changed(JSONObject status); }
 
@@ -85,6 +89,9 @@ public class WatchService extends Service {
     private SpeechRecognizer oneShotRec;
     private boolean oneShot;
     private int oneShotGen;
+    /** Since when (ms) the microphone has been free while yielded; -1 = not free. */
+    private long freeSince = -1;
+    private Object recordingCallback, modeListener;
 
     static JSONObject idle() {
         JSONObject o = new JSONObject();
@@ -105,7 +112,7 @@ public class WatchService extends Service {
 
     static void stop(Context c) {
         prefs(c).edit().putBoolean("on", false).apply();
-        if (handsFree(c)) refresh(c); // hands-free keeps the service (and the microphone) running on its own
+        if (handsFree(c) && MicGuard.mayOpen(c)) refresh(c); // hands-free keeps the service (and the microphone) running on its own
         else c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
     }
 
@@ -144,9 +151,9 @@ public class WatchService extends Service {
         AmberxNativePlugin.voiceChanged(v);
     }
 
-    /** Starts the service when watching or hands-free wants it, else stops it. */
+    /** Starts the service when watching or hands-free wants it (never hands-free while Mic off is on), else stops it. */
     static void refresh(Context c) {
-        boolean want = prefs(c).getBoolean("on", false) || handsFree(c);
+        boolean want = prefs(c).getBoolean("on", false) || (handsFree(c) && MicGuard.mayOpen(c));
         if (want) {
             try { ContextCompat.startForegroundService(c, new Intent(c, WatchService.class)); } catch (Exception ignored) { /* background start refused */ }
         } else c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
@@ -163,7 +170,11 @@ public class WatchService extends Service {
         thread.start();
         work = new Handler(thread.getLooper());
         AxppLink.ensure(this); // keeps the axHub link (recorder control, axHub decision #108) up while the watch runs
+        watchMicUsers();
     }
+
+    /** Mic off changed (MicGuard): run the start logic again, so listening, the overlay and the service follow at once. */
+    void reapply() { main.post(() -> onStartCommand(null, 0, 0)); }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -175,9 +186,22 @@ public class WatchService extends Service {
             stopSelf();
             return START_NOT_STICKY;
         }
+        if (intent != null && ACTION_MIC.equals(intent.getAction())) {
+            MicGuard.set(this, intent.getBooleanExtra("off", true)); // comes back here through reapply()
+            return START_STICKY;
+        }
         boolean watching = prefs(this).getBoolean("on", false);
-        if (!watching && !handsFree(this)) { stopListening(); hideOverlay(); stopSelf(); return START_NOT_STICKY; }
-        boolean wantMic = wantsMic() && micGranted();
+        boolean micAllowed = MicGuard.mayOpen(this);
+        if (!micAllowed) yielded = null;
+        if (!watching && !(handsFree(this) && micAllowed)) {
+            // Nothing left to do (hands-free with Mic off): the service goes, and with it the microphone and the green dot.
+            stopListening(); hideOverlay();
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+            setStatus(idle());
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+        boolean wantMic = wantsMic() && micGranted() && micAllowed;
         int type = ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE | (wantMic ? ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE : 0);
         try {
             ServiceCompat.startForeground(this, ID_ONGOING, ongoing(wantMic), Build.VERSION.SDK_INT >= 29 ? type : 0);
@@ -203,6 +227,7 @@ public class WatchService extends Service {
     @Override
     public void onDestroy() {
         if (running == this) running = null;
+        unwatchMicUsers();
         stopListening();
         hideOverlay();
         if (thread != null) thread.quitSafely();
@@ -352,8 +377,94 @@ public class WatchService extends Service {
 
     private void listenLoop() {
         boolean on = prefs(this).getBoolean("on", false) || handsFree(this);
-        if (!on || !wantsMic() || !micGranted()) { stopListening(); return; }
+        if (!on || !wantsMic() || !micGranted() || !MicGuard.mayOpen(this)) { stopListening(); return; }
+        if (yielded != null) return; // another app or a call has the microphone: micCheck() brings listening back
+        if (!appListening && yieldIfBusy()) return;
         if (wakeMode(this)) wakeLoop(); else classicLoop();
+    }
+
+    /* ---- letting go of the microphone for other apps (Nov 1 2026: a Claude voice call couldn't get the mic) */
+
+    /** Its own handler: onStartCommand clears `main`'s queue, and this check must keep running through that. */
+    private final Handler micH = new Handler(Looper.getMainLooper());
+    private final Runnable micTick = this::micCheck;
+
+    /** True while one of AmberX's own Google recognizers is running (it shows as another app's recording). */
+    private boolean ownRecognizer() { return oneShot || appListening || (recognizer != null && listening); }
+
+    /**
+     * Listens for other apps' recordings and for calls (audio mode), so hands-free lets go at once instead of on the
+     * next tick. The tick ({@link MicRules#CHECK_EVERY_MS}) is the fallback and what brings listening back.
+     */
+    private void watchMicUsers() {
+        android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am != null) {
+            try {
+                android.media.AudioManager.AudioRecordingCallback cb = new android.media.AudioManager.AudioRecordingCallback() {
+                    @Override public void onRecordingConfigChanged(List<android.media.AudioRecordingConfiguration> configs) { micH.post(WatchService.this::micCheck); }
+                };
+                am.registerAudioRecordingCallback(cb, micH);
+                recordingCallback = cb;
+            } catch (RuntimeException ignored) { /* the tick still checks */ }
+            if (Build.VERSION.SDK_INT >= 31) {
+                try {
+                    android.media.AudioManager.OnModeChangedListener ml = mode -> micH.post(this::micCheck);
+                    am.addOnModeChangedListener(ContextCompat.getMainExecutor(this), ml);
+                    modeListener = ml;
+                } catch (RuntimeException ignored) { /* the tick still checks */ }
+            }
+        }
+        micH.postDelayed(micTick, MicRules.CHECK_EVERY_MS);
+    }
+
+    private void unwatchMicUsers() {
+        micH.removeCallbacksAndMessages(null);
+        android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am == null) return;
+        try { if (recordingCallback != null) am.unregisterAudioRecordingCallback((android.media.AudioManager.AudioRecordingCallback) recordingCallback); } catch (RuntimeException ignored) {}
+        if (Build.VERSION.SDK_INT >= 31) {
+            try { if (modeListener != null) am.removeOnModeChangedListener((android.media.AudioManager.OnModeChangedListener) modeListener); } catch (RuntimeException ignored) {}
+        }
+        recordingCallback = null;
+        modeListener = null;
+    }
+
+    /** Lets go now if a call or another app wants the microphone; true when it did. */
+    private boolean yieldIfBusy() {
+        if (appListening) return false; // the Speak button: listening was asked for, right now
+        String why = MicGuard.yieldReason(this, ownRecognizer());
+        if (why == null || "mic-off".equals(why)) return false;
+        yielded = why;
+        freeSince = -1;
+        stopListening();
+        if (overlay != null) overlay.setHeard(MicRules.label(why), true);
+        setStatus(withYield(status));
+        AmberxNativePlugin.micChanged(MicGuard.state(this));
+        return true;
+    }
+
+    /** The tick: yield when someone needs the microphone, come back once it has stayed free for a moment. */
+    private void micCheck() {
+        micH.removeCallbacks(micTick);
+        micH.postDelayed(micTick, MicRules.CHECK_EVERY_MS);
+        boolean wanted = (prefs(this).getBoolean("on", false) || handsFree(this)) && wantsMic() && micGranted() && MicGuard.mayOpen(this);
+        if (!wanted) { if (yielded != null) { yielded = null; setStatus(withYield(status)); } return; }
+        if (yielded == null) { if (listening || oneShot) yieldIfBusy(); return; }
+        // Yielded: AmberX holds nothing now, so any recording is someone else's.
+        String why = MicRules.yieldReason(false, MicGuard.mode(this), MicGuard.foreign(this), false, false);
+        long now = System.currentTimeMillis();
+        if (why != null) { freeSince = -1; if (!why.equals(yielded)) { yielded = why; setStatus(withYield(status)); } return; }
+        if (freeSince < 0) freeSince = now;
+        if (!MicRules.mayResume(freeSince, now)) return;
+        yielded = null;
+        freeSince = -1;
+        setStatus(withYield(status));
+        AmberxNativePlugin.micChanged(MicGuard.state(this));
+        main.post(this::listenLoop);
+    }
+
+    private static JSONObject withYield(JSONObject s) {
+        try { return new JSONObject(s.toString()); } catch (Exception e) { return new JSONObject(); }
     }
 
     /* ---- wake mode: silent Vosk idle */
@@ -416,6 +527,7 @@ public class WatchService extends Service {
      */
     private void oneShot(String phrase) {
         if (oneShot) return;
+        if (!MicGuard.mayOpen(this)) { stopListening(); return; }
         if (wake != null) wake.stop();
         if (!SpeechRecognizer.isRecognitionAvailable(this)) { woke(phrase, phrase); main.postDelayed(this::listenLoop, 500); return; }
         oneShot = true;
@@ -625,7 +737,7 @@ public class WatchService extends Service {
 
     /** Shows or hides the overlay to match the voice config (hands-free on, overlay on, permission granted). */
     void syncOverlay() {
-        boolean want = handsFree(this) && voice(this).optBoolean("overlay", true) && DetectionOverlay.canDraw(this);
+        boolean want = handsFree(this) && MicGuard.mayOpen(this) && voice(this).optBoolean("overlay", true) && DetectionOverlay.canDraw(this);
         if (want) {
             if (overlay == null) overlay = new DetectionOverlay(this);
             overlay.setColors(voice(this).optJSONObject("colors"));
@@ -658,11 +770,17 @@ public class WatchService extends Service {
         boolean watching = prefs(this).getBoolean("on", false);
         String hearing = alwaysArmed() ? "listening (always armed)" : "listening for " + String.join(" / ", phrases());
         String what = watching ? (mic ? "Watching axHub and " + hearing : "Watching axHub for approvals") : (mic ? "Hands-free: " + hearing : "Hands-free is waiting for the microphone");
+        if (MicGuard.off(this)) what = watching ? "Watching axHub · Mic off" : "Mic off";
         NotificationCompat.Builder b = new NotificationCompat.Builder(this, CH_WATCH)
             .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX").setContentText(what)
             .setOngoing(true).setContentIntent(open);
         // Hands-free always listens: no Stop here (turn it off in Voice control). Watching axHub alone keeps its Stop.
         if (!handsFree(this)) b.addAction(0, "Stop", stop);
+        // Mic off from the notification (Nov 1 2026): every microphone AmberX holds is let go at once.
+        boolean off = MicGuard.off(this);
+        PendingIntent micFlip = PendingIntent.getService(this, 3, new Intent(this, WatchService.class).setAction(ACTION_MIC).putExtra("off", !off),
+            PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        if (off || handsFree(this) || mic) b.addAction(0, off ? "Mic on" : "Mic off", micFlip);
         return b.build();
     }
 
@@ -695,6 +813,7 @@ public class WatchService extends Service {
     }
 
     private static void setStatus(JSONObject s) {
+        try { s.put("yielded", yielded == null ? JSONObject.NULL : yielded); } catch (Exception ignored) {}
         status = s;
         StatusListener l = listener;
         if (l != null) l.changed(s);

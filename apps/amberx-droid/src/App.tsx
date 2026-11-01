@@ -9,6 +9,7 @@ import { HUB } from './hub/useHub';
 import { loadPlugins } from './plugins';
 import { secureScreenLibrary } from './securescreen';
 import { soundLibrary } from './sound';
+import { micLibrary } from './mic';
 import { VIEW_TAB_KIND, ViewPane, registerWindowActions } from './windows/ViewWindow';
 import './windows/windows.css';
 
@@ -26,9 +27,9 @@ const views: ViewMap = {
  * Libraries this app ships. lib-settings gives it the settings interface (Appearance, Account & security, Connections,
  * Plugins, About). lib-hubsync keeps its settings on axHub (same on every device). The screen-capture setting (no
  * FLAG_SECURE unless opted in, `securescreen.ts`) and Sound and microphone (Quiet, one owner per device, `sound.tsx`)
- * are AmberX's own. The plugins come after them.
+ * are AmberX's own, and so is Mic off (`mic.tsx`: one tap lets go of every microphone). The plugins come after them.
  */
-const libraries = [settingsLibrary, hubSyncLibrary, secureScreenLibrary, soundLibrary, ...loadPlugins().map((p) => p.library)];
+const libraries = [settingsLibrary, hubSyncLibrary, secureScreenLibrary, soundLibrary, micLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

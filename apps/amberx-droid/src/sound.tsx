@@ -10,7 +10,8 @@
  *   browser, where the AmberX app makes the sounds) and *Listen hands-free in this browser* (off by default: the synced
  *   hands-free setting is the phone app's).
  * - **Who holds the microphone**: hands-free (the app's service or this tab's recognizer), or the page's mic lease
- *   holder (dictation, Speak, the Assistant microphone), or nobody.
+ *   holder (dictation, Speak, the Assistant microphone), or nobody (also while Mic off is on: `mic.tsx`, its own
+ *   switch at the top of this tab).
  *
  * The decision is on `globalThis.__axfSoundOwner` (sound-owner@1) for console plugins loaded into AmberX (the veto
  * banner's alarm asks it before ringing); AmberX's own code calls `mayMakeSound()`.
@@ -20,6 +21,7 @@ import type { AxfRuntime } from './axf/core';
 import { Chip, Note, Switch, type AxfWebLibrary } from './axf/react';
 import { isNative, native } from './native';
 import { HOLDER_LABEL, micLease } from './miclease';
+import { useMic } from './mic';
 import {
   SOUND_OWNER_KEY, createOwner, deviceSoundsDefault, deviceStore, soundAllowed,
   HEARTBEAT_MS, type OwnerChannel, type OwnerLocks, type SoundOwner, type SoundOwnerApi, type SoundState,
@@ -119,6 +121,7 @@ function useMicHolder(): string {
     const t = setInterval(read, 3000);
     return () => { alive = false; clearInterval(t); };
   }, []);
+  if (useMic().off) return 'Nobody: Mic off is on (nothing opens it until you turn it back on)';
   if (holder) return `${HOLDER_LABEL[holder] ?? holder} (in this page)`;
   if (listening) return isNative() ? 'Hands-free (AmberX\'s listening service)' : 'Hands-free (this tab)';
   return 'Nobody: the microphone is free';

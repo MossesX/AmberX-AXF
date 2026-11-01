@@ -1420,9 +1420,9 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   // Mic released when hands-free is off; Quiet; native wiring.
   {
     const nat = src('native.ts');
-    ok(/if \(!cfg\.handsFree \|\| !Recognition\) return;/.test(nat) && /webVoiceStop\(\);\n  webVoice\.cfg = cfg;/.test(nat), 'mic: browser hands-free off = recognizer and mic stream released');
+    ok(/if \(!cfg\.handsFree \|\| !Recognition \|\| micIsOff\(\)\) return;/.test(nat) && /webVoiceStop\(\);\n  webVoice\.cfg = cfg;/.test(nat), 'mic: browser hands-free off = recognizer and mic stream released');
     const ws = java('WatchService.java');
-    ok(/boolean on = prefs\(this\)\.getBoolean\("on", false\) \|\| handsFree\(this\);\s*if \(!on \|\| !wantsMic\(\) \|\| !micGranted\(\)\) \{ stopListening\(\); return; \}/.test(ws), 'mic: Android lets go of the microphone when hands-free is off');
+    ok(/boolean on = prefs\(this\)\.getBoolean\("on", false\) \|\| handsFree\(this\);\s*if \(!on \|\| !wantsMic\(\) \|\| !micGranted\(\) \|\| !MicGuard\.mayOpen\(this\)\) \{ stopListening\(\); return; \}/.test(ws), 'mic: Android lets go of the microphone when hands-free is off');
     const sound = src('sound.tsx');
     ok(/key: K\.quiet, label: 'Quiet', kind: 'toggle', default: false/.test(sound), 'Quiet: a switch in Settings → Sound and microphone, off by default');
     ok(/native\.quiet\(\{ quiet: true \}\)/.test(sound) && /native\.stopSpeaking\(\)/.test(sound) && /native\.vetoAlarmStop\(\)/.test(sound), 'Quiet: stops speech and the alarm at once');
@@ -1439,6 +1439,100 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     const mon = src('plugins/monitor/web/index.tsx');
     ok(/new DingGate\(deviceStore\(\), 'amberx\.monitor\.seen'\)/.test(mon), 'monitor: browser approval notices go through the ding gate');
   }
+}
+
+/* ---------------------------------------------------------------- Mic off (Nov 1 2026: "turns the green dot off my phone") */
+{
+  const G = await import('./src/micguard.ts');
+  const L = await import('./src/listeners.ts');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  const src = (f) => readFileSync(new URL(`./src/${f}`, import.meta.url), 'utf8');
+
+  // The page's gate over a fake page: getUserMedia + SpeechRecognition.
+  const stopped = [];
+  const started = [];
+  class FakeRec { start() { started.push(this); } abort() { stopped.push('rec'); } }
+  const fake = {
+    DOMException: class extends Error { constructor(m, n) { super(m); this.name = n; } },
+    navigator: { mediaDevices: { getUserMedia: async (c) => ({ getTracks: () => [{ kind: c.audio ? 'audio' : 'video', stop: () => stopped.push('track') }] }) } },
+    SpeechRecognition: FakeRec,
+  };
+  const store = L.memoryStore();
+  const g = G.createMicGuard(fake, store);
+  eq(g.off(), false, 'mic off: off by default');
+  await fake.navigator.mediaDevices.getUserMedia({ audio: true });
+  const r1 = new fake.SpeechRecognition();
+  r1.start();
+  eq(g.open(), { streams: 1, recognizers: 1 }, 'mic off: the gate sees every audio stream and recognizer the page opens');
+  const fired = [];
+  g.on((o) => fired.push(o));
+  eq(g.set(true), 2, 'mic off: switching it on stops the open audio track and aborts the recognizer at once');
+  eq(stopped, ['track', 'rec'], 'mic off: track stopped, recognizer aborted');
+  eq(fired, [true], 'mic off: listeners hear the change once');
+  eq(store.getItem(G.MIC_OFF_KEY), 'true', 'mic off: kept on this device (survives a restart)');
+  let refused = null;
+  try { await fake.navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { refused = e.name; }
+  eq(refused, 'NotAllowedError', 'mic off: a new audio request is refused');
+  const video = await fake.navigator.mediaDevices.getUserMedia({ video: true });
+  ok(!!video, 'mic off: video-only requests are left alone');
+  const r2 = new fake.SpeechRecognition();
+  const errs = [];
+  r2.onerror = (e) => errs.push(e.error);
+  r2.onend = () => errs.push('end');
+  const before = started.length;
+  r2.start();
+  await new Promise((d) => setTimeout(d, 5));
+  eq(started.length, before, 'mic off: a recognizer never really starts');
+  eq(errs, ['not-allowed', 'end'], 'mic off: it ends with not-allowed (callers stop restarting)');
+  ok(fake[G.MIC_OFF_GLOBAL]?.$axf === 'mic-off@1' && fake[G.MIC_OFF_GLOBAL].off() === true, 'mic off: mic-off@1 on the page global for console plugins');
+  const g2 = G.createMicGuard(fake, store);
+  ok(g2.off() === true && fake.SpeechRecognition.__axfMicGuard === true, 'mic off: read back after a reload; constructors wrapped once');
+  g.set(false);
+  r2.start();
+  ok(started.includes(r2), 'mic off: back on, recognizers start again');
+
+  // What the switch says.
+  eq(G.micChip({ off: true, yielded: 'mic-off', listening: false }).text, 'Mic off', 'mic chip: Mic off');
+  eq(G.micChip({ off: false, yielded: null, listening: true }).text, 'Listening', 'mic chip: Listening');
+  eq(G.micChip({ off: false, yielded: 'call', listening: false }).text, 'Paused for another app', 'mic chip: paused while a call has the mic');
+  ok(/green dot is off/.test(G.micDetail({ off: true, yielded: 'mic-off', listening: false }, true)), 'mic detail: says the green dot is off');
+  ok(/comes back by itself/.test(G.micDetail({ off: false, yielded: 'other-app', listening: false }, true)), 'mic detail: says listening comes back after the other app');
+
+  // Wiring: the page.
+  const lib = src('mic.tsx');
+  ok(src('App.tsx').includes('micLibrary') && /<MicSwitch \/>/.test(src('views/Approvals.tsx')), 'mic off: installed, big switch on Home');
+  ok(/attachToBanner\(\{ type: 'status', id: 'amberx-mic'/.test(lib), 'mic off: on the banner (any banner asset)');
+  const st = JSON.parse(src('assets/status/amberx-mic.json'));
+  eq([st.data.counter, st.data.onLabel, st.data.offLabel, st.data.link], ['amberx.mic.on', 'Listening', 'Mic off', 'amberx.mic.toggle'], 'mic off: banner status asset: Listening / Mic off, tap flips it');
+  const tb = JSON.parse(src('assets/toolbar/amberx-droid.json'));
+  ok(tb.data.groups.some((gr) => gr.items.some((i) => i.action === 'amberx.mic.toggle')), 'mic off: on the toolbar');
+  ok(/checked: `counter:\$\{MIC_OFF\}`/.test(lib) && /tab: 'sound'/.test(lib), 'mic off: application menu (check mark) + Settings → Sound and microphone');
+  ok(/target: `action:\$\{MIC_ACTIONS\.toggle\}`/.test(lib) && /target: 'amberx-mic-switch'/.test(lib) && /data-help="amberx-mic-switch"/.test(lib), 'mic off: help@1 entries for the switch');
+  ok(!/#[0-9a-f]{3,8}\b|\d+px/i.test(src('mic.css')), 'mic off: CSS uses tokens only');
+  ok(/^import \{ micGuard, micIsOff \} from '\.\/micguard';/m.test(src('native.ts')) && /^import '\.\/micguard';/m.test(src('main.tsx')), 'mic off: the page gate loads before anything captures getUserMedia / SpeechRecognition');
+  ok(/if \(micIsOff\(\)\) return Promise\.reject/.test(src('native.ts')), 'mic off: browser Speak refused while off');
+  ok(/__axfMicOff\?\.off\(\)\) throw/.test(src('miclease.ts')), 'mic off: the mic lease refuses while off');
+
+  // Wiring: Android, one gate for every mic user.
+  const mg = java('MicGuard.java');
+  ok(/static boolean mayOpen\(Context c\) \{ return !off\(c\); \}/.test(mg), 'android: MicGuard.mayOpen is the one check');
+  ok(/MicGuard\.mayOpen\(app\)/.test(java('WakeListener.java')) && /MicGuard\.claim\(session\)/.test(java('WakeListener.java')), 'android: the wake listener asks before it opens the mic, and registers its session');
+  const plug = java('AmberxNativePlugin.java');
+  ok(/public void listen\(PluginCall call\) \{\n\s*if \(!MicGuard\.mayOpen/.test(plug) && /public void micSet\(PluginCall call\)/.test(plug) && /static void cancelListen\(\)/.test(plug), 'android: Speak refused while off, a running Speak is cancelled, micSet/micState bridge');
+  const rec = java('OutputRecordService.java');
+  ok(/micWanted\(this\) && MicGuard\.mayOpen\(this\)/.test(rec) && /if \(!MicGuard\.mayOpen\(this\)\) \{ micBusy/.test(rec), 'android: the recorder\'s mic track obeys Mic off (playback goes on)');
+  ok(/ACTION_STOP_MIC/.test(mg), 'android: Mic off lets go of a running recorder mic track');
+  const ws = java('WatchService.java');
+  ok(/boolean wantMic = wantsMic\(\) && micGranted\(\) && micAllowed;/.test(ws), 'android: no microphone foreground type while off (green dot off)');
+  ok(/handsFree\(c\) && MicGuard\.mayOpen\(c\)\)/.test(ws), 'android: hands-free alone never keeps the service up while off');
+  ok(/MicGuard\.mayOpen\(this\) && voice\(this\)\.optBoolean\("overlay", true\)/.test(ws), 'android: the detection overlay goes while off');
+  ok(/setAction\(ACTION_MIC\)\.putExtra\("off", !off\)/.test(ws), 'android: Mic off / Mic on on the notification');
+  ok(/registerAudioRecordingCallback/.test(ws) && /addOnModeChangedListener/.test(ws) && /private boolean yieldIfBusy\(\)/.test(ws), 'android: hands-free lets go when a call or another app records, and comes back after');
+  const man = readFileSync(new URL('./android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
+  ok(/android:name="\.MicTile"/.test(man) && /BIND_QUICK_SETTINGS_TILE/.test(man), 'android: quick-settings tile "AmberX mic"');
+  ok(/MicGuard\.set\(this, !MicGuard\.off\(this\)\)/.test(java('MicTile.java')), 'android: the tile flips Mic off');
+  const rules = java('MicRules.java');
+  ok(/static boolean micSource\(int source\)/.test(rules) && /source != 8/.test(rules), 'android: playback capture and the hotword detector never count as another app\'s mic');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

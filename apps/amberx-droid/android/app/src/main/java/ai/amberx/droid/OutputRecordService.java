@@ -103,6 +103,8 @@ public class OutputRecordService extends Service {
     private AudioRecord capture;
     /** the opt-in mic (null when off, refused or stopped) */
     private AudioRecord mic;
+    /** The mic AudioRecord's session id, registered with MicGuard while open. */
+    private int micSession;
     private Thread micReader, playReader;
     private final TwoTrack.Ring micRing = new TwoTrack.Ring(TwoTrack.RING_FRAMES);
     private final TwoTrack.Ring playRing = new TwoTrack.Ring(TwoTrack.RING_FRAMES);
@@ -235,7 +237,7 @@ public class OutputRecordService extends Service {
         micLive = false;
         micBusy = null;
         // the mic only when asked for (setting or the approved start's `mic`) and Android's audio permission is there
-        boolean wantMic = OutputRecordQueue.micWanted(this);
+        boolean wantMic = OutputRecordQueue.micWanted(this) && MicGuard.mayOpen(this); // Mic off: playback only
         micOn = wantMic;
         boolean micAllowed = wantMic && checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED;
         Notification n = notification("Starting…");
@@ -320,6 +322,7 @@ public class OutputRecordService extends Service {
      */
     @SuppressLint("MissingPermission") // checked in start() before this is called
     private void openMic() {
+        if (!MicGuard.mayOpen(this)) { micBusy(TwoTrack.BUSY_OFF, "Mic off is on"); return; }
         try {
             int min = AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
             AudioFormat af = new AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(RATE).setChannelMask(AudioFormat.CHANNEL_IN_MONO).build();
@@ -330,8 +333,10 @@ public class OutputRecordService extends Service {
             int sid = m.getAudioSessionId();
             try { if (android.media.audiofx.AcousticEchoCanceler.isAvailable()) { android.media.audiofx.AcousticEchoCanceler a = android.media.audiofx.AcousticEchoCanceler.create(sid); if (a != null) a.setEnabled(true); } } catch (RuntimeException ignored) { /* no AEC on this phone */ }
             try { if (android.media.audiofx.NoiseSuppressor.isAvailable()) { android.media.audiofx.NoiseSuppressor ns = android.media.audiofx.NoiseSuppressor.create(sid); if (ns != null) ns.setEnabled(true); } } catch (RuntimeException ignored) { /* none */ }
+            micSession = sid;
+            MicGuard.claim(sid);
             m.startRecording();
-            if (m.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) { m.release(); micBusy(TwoTrack.BUSY_UNAVAILABLE, "the mic is in use by another app"); return; }
+            if (m.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) { MicGuard.release(sid); m.release(); micBusy(TwoTrack.BUSY_UNAVAILABLE, "the mic is in use by another app"); return; }
             mic = m;
             micLive = true;
             micReader = new Thread(this::readMic, "amberx-outrec-mic");
@@ -428,6 +433,8 @@ public class OutputRecordService extends Service {
         AudioRecord m = mic;
         mic = null;
         micLive = false;
+        MicGuard.release(micSession);
+        micSession = 0;
         if (m == null) return;
         try { m.stop(); } catch (RuntimeException ignored) { /* not started */ }
         try { m.release(); } catch (RuntimeException ignored) { /* gone */ }

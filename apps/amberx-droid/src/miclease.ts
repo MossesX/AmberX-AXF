@@ -57,6 +57,8 @@ export const HOLDER_LABEL: Record<string, string> = { dictation: 'Dictation', 'v
 
 /** Runs `fn` while `owner` holds the microphone lease; throws a plain message when someone else has it. */
 export async function withMic<T>(owner: string, fn: () => Promise<T>, ttlMs = DEFAULT_TTL): Promise<T> {
+  // Mic off (micguard.ts): nobody gets the microphone until it is switched back on.
+  if ((globalThis as { __axfMicOff?: { off(): boolean } }).__axfMicOff?.off()) throw new Error('Mic off is on. Turn the mic back on first.');
   const lease = micLease();
   if (!lease.take(owner, ttlMs)) {
     const who = lease.holder() ?? '';

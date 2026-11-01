@@ -59,6 +59,11 @@ public class MainActivity extends BridgeActivity {
         super.onResume();
         WatchService.inApp = true;
         SecureScreen.apply(this, SecureScreen.sensitive);
+        // Mic turned back on from the tile or the notification while AmberX was in the background: Android may have
+        // refused the microphone then, so hands-free picks it up now that AmberX is on screen.
+        if (MicGuard.mayOpen(this) && WatchService.handsFree(this) && WatchService.yielded == null && !WatchService.status.optBoolean("listening", false)) {
+            try { WatchService.refresh(this); } catch (RuntimeException ignored) { /* started by the page's voiceSet instead */ }
+        }
     }
 
     @Override

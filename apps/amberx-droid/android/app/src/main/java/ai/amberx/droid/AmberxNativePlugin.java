@@ -232,6 +232,7 @@ public class AmberxNativePlugin extends Plugin {
 
     @PluginMethod
     public void listen(PluginCall call) {
+        if (!MicGuard.mayOpen(getContext())) { call.reject("Mic off is on. Turn the mic back on to talk to AmberX."); return; }
         if (getPermissionState("microphone") != PermissionState.GRANTED) { requestPermissionForAlias("microphone", call, "listenAfterPermission"); return; }
         doListen(call);
     }
@@ -242,6 +243,31 @@ public class AmberxNativePlugin extends Plugin {
         else call.reject("The microphone isn't allowed.");
     }
 
+    /** The Speak button's recognizer while it runs, so Mic off can cancel it. */
+    private static volatile Runnable cancelSpeak;
+
+    /** Mic off: a running Speak recognizer stops now (it answers with nothing heard). */
+    static void cancelListen() {
+        Runnable r = cancelSpeak;
+        if (r != null) r.run();
+    }
+
+    /** Mic off or a yield changed: the page's switch, banner and Home show it at once. */
+    static void micChanged(JSONObject state) {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("mic", js(state));
+    }
+
+    /** The Mic off switch (`src/mic.tsx`): every microphone AmberX holds is let go at once; kept across restarts. */
+    @PluginMethod
+    public void micSet(PluginCall call) {
+        MicGuard.set(getContext(), Boolean.TRUE.equals(call.getBoolean("off", true)));
+        call.resolve(js(MicGuard.state(getContext())));
+    }
+
+    @PluginMethod
+    public void micState(PluginCall call) { call.resolve(js(MicGuard.state(getContext()))); }
+
     private void doListen(PluginCall call) {
         WatchService.appMic(true); // hands-free lets go of the microphone while the Speak button listens
         getActivity().runOnUiThread(() -> {
@@ -249,11 +275,13 @@ public class AmberxNativePlugin extends Plugin {
             JSONObject voice = WatchService.voice(getContext());
             SpeechRecognizer rec = SpeechRecognizer.createSpeechRecognizer(getContext());
             SpeechTuning.quiet(getContext(), voice); // no tone
-            rec.setRecognitionListener(new RecognitionListener() {
+            final RecognitionListener[] self = new RecognitionListener[1];
+            rec.setRecognitionListener(self[0] = new RecognitionListener() {
                 private boolean done;
                 private void finish(String text) {
                     if (done) return;
                     done = true;
+                    cancelSpeak = null;
                     WatchService.appMic(false);
                     // Classic hands-free keeps it quiet; the silent wake mode mutes only while Google listens.
                     if (WatchService.running == null || WatchService.wakeMode(getContext())) {
@@ -280,9 +308,11 @@ public class AmberxNativePlugin extends Plugin {
                 }
                 @Override public void onEvent(int t, Bundle b) {}
             });
+            cancelSpeak = () -> getActivity().runOnUiThread(() -> { try { rec.cancel(); } catch (Exception ignored) {} self[0].onError(SpeechRecognizer.ERROR_CLIENT); });
             Intent i = SpeechTuning.request(call.getString("lang", "en-US"), voice, false);
             // Give hands-free a moment to release the microphone first.
             getActivity().getWindow().getDecorView().postDelayed(() -> {
+                if (!MicGuard.mayOpen(getContext())) { self[0].onError(SpeechRecognizer.ERROR_CLIENT); return; }
                 try { rec.startListening(i); } catch (Exception e) { WatchService.appMic(false); call.reject("The microphone is busy."); }
             }, 250);
         });
@@ -424,7 +454,8 @@ public class AmberxNativePlugin extends Plugin {
     @PluginMethod
     public void voiceSet(PluginCall call) {
         JSONObject cfg = call.getData();
-        if (cfg.optBoolean("handsFree", true) && getPermissionState("microphone") != PermissionState.GRANTED) {
+        // Mic off: the config is kept (hands-free comes back when the mic is turned on), but nothing asks for the mic.
+        if (cfg.optBoolean("handsFree", true) && MicGuard.mayOpen(getContext()) && getPermissionState("microphone") != PermissionState.GRANTED) {
             requestPermissionForAlias("microphone", call, "voiceSetAfterPermission");
             return;
         }

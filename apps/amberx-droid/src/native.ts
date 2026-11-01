@@ -9,6 +9,8 @@
  *
  * Plugins never import Capacitor themselves: they call `native`.
  */
+// First: the page's Mic off guard wraps getUserMedia and SpeechRecognition before anything below captures them.
+import { micGuard, micIsOff } from './micguard';
 import { registerPlugin, Capacitor, type PluginListenerHandle } from '@capacitor/core';
 import { unmask } from './plugins/voice/web/speech';
 import { sharesHubSite } from './hosted';
@@ -38,6 +40,17 @@ export interface MonitorStatus {
   waiting: number;
   /** open console alerts (errors + warnings); -1 = the console can't be read (not signed in there); absent = off */
   alerts?: number;
+}
+
+/** Mic off (`mic.tsx`, Java `MicGuard`): `off` = the switch; `yielded` = why background listening let go of the mic
+ * (`mic-off` | `call` | `silenced` | `other-app`, null = it may listen); `label` for people. */
+export interface MicState {
+  off: boolean;
+  yielded: string | null;
+  label: string;
+  listening: boolean;
+  /** the recorder's opt-in mic track is recording now */
+  recorderMic?: boolean;
 }
 
 export interface VoiceStatus {
@@ -72,6 +85,10 @@ export interface NativeApi {
   stopSpeaking(): Promise<void>;
   /** The Quiet switch (`sound.tsx`): no speech, no alarm, silent notifications until it is switched off. */
   quiet(opts: { quiet: boolean }): Promise<{ quiet: boolean }>;
+  /** Mic off: every microphone AmberX holds is let go at once and nothing opens it until it is switched back. Kept
+   * across restarts (Android: in the app's prefs, also switched by the quick-settings tile and the notification). */
+  micSet(opts: { off: boolean }): Promise<MicState>;
+  micState(): Promise<MicState>;
   /** Screen capture (Oct 31 2026, `securescreen.ts`): hidden from recordings only when `hide` (the opt-in setting) and
    * `sensitive` (a password / key / vault screen is showing). Browser: nothing to do. */
   secureScreen(opts: { hide: boolean; sensitive: boolean }): Promise<{ secure: boolean }>;
@@ -105,6 +122,8 @@ export interface NativeApi {
   /** `id` + `at` (ms): the page runs each wake hit once and drops stale ones (older APKs send neither). */
   addListener(event: 'wake', fn: (e: { phrase: string; text: string; id?: string; at?: number }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'monitor', fn: (e: MonitorStatus) => void): Promise<PluginListenerHandle>;
+  /** Mic off changed (the tile, the notification, another page) or hands-free let go of / took back the mic. */
+  addListener(event: 'mic', fn: (e: MicState) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
   /** what hands-free is hearing (only while AmberX is on screen) */
   addListener(event: 'spoken', fn: (e: { id: string; done: boolean; error?: string }) => void): Promise<PluginListenerHandle>;
@@ -158,7 +177,7 @@ function webVoiceStop() {
 async function webVoiceStart(cfg: VoiceConfig) {
   webVoiceStop();
   webVoice.cfg = cfg;
-  if (!cfg.handsFree || !Recognition) return;
+  if (!cfg.handsFree || !Recognition || micIsOff()) return;
   const rec = new Recognition();
   rec.lang = cfg.lang; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
   rec.onresult = (e) => {
@@ -203,6 +222,11 @@ if (typeof document !== 'undefined') {
   });
 }
 
+function webMicState(): MicState {
+  const off = micIsOff();
+  return { off, yielded: off ? 'mic-off' : null, label: off ? 'Mic off' : 'Listening', listening: !off && webVoice.listening };
+}
+
 let webMonitor: { timer: ReturnType<typeof setInterval> | null; status: MonitorStatus } = {
   timer: null,
   status: { running: false, listening: false, lastCheck: null, status: 'off', waiting: 0 },
@@ -225,6 +249,7 @@ const web: NativeApi = {
   },
   async hubSignOut({ hub }) { window.open(`${hub}/auth/logout`, '_blank', 'noopener,noreferrer'); },
   listen({ lang }) {
+    if (micIsOff()) return Promise.reject(new Error('Mic off is on. Turn the mic back on to talk to AmberX.'));
     // Hands-free lets go of the recognizer while the Speak button listens, and comes back afterwards.
     const resume = webVoice.cfg;
     if (webVoice.rec) webVoiceStop();
@@ -260,6 +285,15 @@ const web: NativeApi = {
   },
   async stopSpeaking() { globalThis.speechSynthesis?.cancel(); },
   async quiet({ quiet }) { if (quiet) globalThis.speechSynthesis?.cancel(); return { quiet }; },
+  async micSet({ off }) {
+    if (off) webVoiceStop();
+    micGuard().set(off);
+    if (!off && webVoice.cfg) void webVoiceStart(webVoice.cfg);
+    const s = webMicState();
+    emit('mic', s);
+    return s;
+  },
+  async micState() { return webMicState(); },
   async secureScreen() { return { secure: false }; },
   async ttsVoices() {
     const synth = globalThis.speechSynthesis;
