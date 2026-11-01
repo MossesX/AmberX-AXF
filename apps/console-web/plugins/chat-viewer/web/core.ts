@@ -50,6 +50,14 @@ export function fmtWhen(iso: string, now = Date.now()): string {
   return `${d.toLocaleDateString([], { month: 'short', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }) })} ${time}`;
 }
 
+/** Grid cells: the time today, else the day (the session view shows the full time). */
+export function fmtShort(iso: string, now = Date.now()): string {
+  const d = new Date(iso);
+  if (!iso || Number.isNaN(d.getTime())) return iso;
+  if (new Date(now).toDateString() === d.toDateString()) return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric', ...(new Date(now).getFullYear() === d.getFullYear() ? {} : { year: 'numeric' }) });
+}
+
 export function fmtDuration(s: number): string {
   const t = Math.max(0, Math.round(s));
   const h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), sec = t % 60;

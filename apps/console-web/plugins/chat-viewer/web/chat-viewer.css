@@ -10,7 +10,10 @@
 .axp-chat-viewer-lede { margin: 0; overflow-wrap: anywhere; }
 .axp-chat-viewer-when { color: var(--fx-muted); white-space: nowrap; font-size: var(--fx-type-root-sm); }
 .axp-chat-viewer-src { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs); color: var(--fx-muted); font-size: var(--fx-type-root-sm); white-space: nowrap; }
-.axp-chat-viewer-title { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; max-width: 100%; }
+/* the grid sizes rows to their content: a fixed title width keeps every row's columns lined up */
+.axp-chat-viewer-title { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); width: min(calc(var(--fx-space) * 56), 50vw); overflow: hidden; color: var(--fx-text); }
+.axp-chat-viewer-title > svg { flex: none; color: var(--fx-muted); }
+.axp-chat-viewer-title .fx-chip { flex: none; }
 .axp-chat-viewer-title__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .axp-chat-viewer-errs ul { margin: var(--fx-dens-gap-xs) 0 0; padding-left: var(--fx-dens-gap-2xl); }
 .axp-chat-viewer-mark { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-text); border-radius: var(--fx-radius-sm); }

@@ -480,3 +480,36 @@ you save) with a real agent in the current theme. **Make default** picks the des
 opens the designer (fields per side, labels, logo place, finish) and saves a new design. On a profile, **ID card**
 picks a design for that agent and edits their card details (name, role, specialty, photo link, employee ID, internal
 email, hire date, catchphrase, signature). Cards take their colours from the theme, so a theme switch rebrands them.
+
+## Part J: The Chat viewer (every session, searchable, as audio)
+
+The Chat viewer (console → Plugins → **Chat viewer** or Apps → **Chats**; AmberX → **Chats**; plugin
+`apps/console-web/plugins/chat-viewer`) keeps every Claude session as a transcript: claude.ai text and voice chats,
+Claude Code sessions and headless build sessions. Details: the plugin's `README.md`. <!-- axf-plugin:chat-viewer -->
+
+### Step 32. Let the console see the session folders
+
+Re-run the console installer on the VPS once (`bash deploy/install-console.sh` in `/opt/axf`, or the console's
+redeploy). It mounts, read-only, `/root/.claude/projects`, `/home/axfbuild/.claude/projects`, `/root/axf-builds` and
+each `/home/axfbuild/wt-*` into the console (`deploy/host.sh` of the plugin). Open the viewer: it checks for updates on
+load and lists the Claude Code and build sessions it found. Settings → Plugins → Chat viewer shows each folder with
+a tick or a cross. <!-- axf-plugin:chat-viewer -->
+
+### Step 33. Bring in your claude.ai chats
+
+1. On claude.ai (phone or computer): **Settings → Privacy → Export data**. claude.ai emails a download link; open it
+   and download the zip.
+2. In the viewer tap **Import export** and pick the zip (or the `conversations.json` inside it). Text and voice chats
+   are added; importing a newer export later adds new chats and updates continued or changed ones (old copies kept as
+   versions). Exports over 12 MB need the console (AmberX's forwarder caps uploads at 12 MB).
+3. Between exports, say **"sync my chats"** in a claude.ai chat: it writes each new or updated conversation to the hub
+   drop folder (`sessions/claude-ai/<uuid>.json`), and the viewer picks them up on its next check (shared rule).
+
+The viewer never logs in to claude.ai and never uses your cookies.
+
+### Step 34. Free voices for audio export
+
+Settings → Plugins → Chat viewer → **Set up free voices (Piper)** (once, a few minutes): installs Piper in the
+plugin's data folder and downloads the two voices (Brett = Ryan, Amber = Amy; change them there). Then in any session
+tap **Audio → Make audio**; the file lands on the hub (`_data/chat-viewer/audio/`) with a player and a download link.
+For OpenAI or ElevenLabs voices instead, paste the key in the same settings (it stays on the console server).

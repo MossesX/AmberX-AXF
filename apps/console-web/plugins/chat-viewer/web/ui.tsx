@@ -11,6 +11,8 @@ const api = pluginApi(FOLDER, 'The Chat viewer');
 const enc = encodeURIComponent;
 const W = (n: number) => `calc(var(--fx-space) * ${n})`;
 
+/** A phone-width screen: fewer columns by default (the title shows the source icon anyway). */
+const narrow = () => typeof window !== 'undefined' && window.matchMedia?.('(max-width: 640px)').matches;
 function readLocal<T>(k: string, d: T): T { try { const v = localStorage.getItem(`axf.chat-viewer.${k}`); return v ? (JSON.parse(v) as T) : d; } catch { return d; } }
 function writeLocal(k: string, v: unknown) { try { localStorage.setItem(`axf.chat-viewer.${k}`, JSON.stringify(v)); } catch { /* private mode */ } }
 
@@ -30,7 +32,7 @@ export function ChatViewer() {
   const [only, setOnly] = useState<string>(() => readLocal('only', 'all'));
   const [hits, setHits] = useState<Hit[] | null>(null);
   const [sort, setSort] = useState<GridSort>(() => readLocal('sort', { col: 'updated', dir: -1 }));
-  const [hidden, setHidden] = useState<string[]>(() => readLocal('hidden', ['started', 'project']));
+  const [hidden, setHidden] = useState<string[]>(() => readLocal('hidden', narrow() ? ['started', 'project', 'source'] : ['started', 'project']));
   const fileRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState('');
 
@@ -68,11 +70,11 @@ export function ChatViewer() {
   const shown = (rows ?? []).filter((r) => (only === 'all' || r.source === only || (only === 'updated' && !r.seen)) && core.matches(r, hits ? '' : q));
   const cols: GridColumn<Row>[] = [
     { id: 'title', label: 'Session', width: 'minmax(0, 4fr)', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(), render: (r) => <TitleCell r={r} /> },
-    { id: 'source', label: 'Source', width: W(9), sortable: true, sortValue: (r) => r.source, render: (r) => <SourceChip s={r.source} /> },
-    { id: 'updated', label: 'Updated', width: W(10), sortable: true, sortValue: (r) => r.updatedAt, render: (r) => <span className="axp-chat-viewer-when">{core.fmtWhen(r.updatedAt)}</span> },
-    { id: 'started', label: 'Started', width: W(10), sortable: true, sortValue: (r) => r.startedAt, render: (r) => <span className="axp-chat-viewer-when">{core.fmtWhen(r.startedAt)}</span> },
-    { id: 'messages', label: 'Messages', width: W(6), align: 'end', sortable: true, sortValue: (r) => r.messageCount, render: (r) => r.messageCount },
-    { id: 'project', label: 'Project', width: W(9), sortable: true, sortValue: (r) => r.project, render: (r) => r.project || '—' },
+    { id: 'source', label: 'Source', width: W(12), sortable: true, sortValue: (r) => r.source, render: (r) => <SourceChip s={r.source} /> },
+    { id: 'updated', label: 'Updated', width: W(12), sortable: true, sortValue: (r) => r.updatedAt, render: (r) => <span className="axp-chat-viewer-when" title={core.fmtWhen(r.updatedAt)}>{core.fmtShort(r.updatedAt)}</span> },
+    { id: 'started', label: 'Started', width: W(15), sortable: true, sortValue: (r) => r.startedAt, render: (r) => <span className="axp-chat-viewer-when" title={core.fmtWhen(r.startedAt)}>{core.fmtShort(r.startedAt)}</span> },
+    { id: 'messages', label: 'Msgs', width: W(6), align: 'end', sortable: true, sortValue: (r) => r.messageCount, render: (r) => r.messageCount },
+    { id: 'project', label: 'Project', width: W(12), sortable: true, sortValue: (r) => r.project, render: (r) => r.project || '—' },
   ];
   const by = status?.counts.bySource ?? {};
   const unseen = (rows ?? []).filter((r) => !r.seen).length;
@@ -82,7 +84,7 @@ export function ChatViewer() {
   return (
     <div className="fx-stack axp-chat-viewer">
       <header className="fx-pagehead">
-        <div><p className="fx-eyebrow">Every session</p><h1>Chats</h1></div>
+        <div><p className="fx-eyebrow">Every session</p><h1>Chats</h1><p className="fx-muted axp-chat-viewer-lede">claude.ai, Claude Code and build sessions in one place: search them, read them, listen to them.</p></div>
         <div className="fx-row axp-chat-viewer-acts">
           <Button icon="refresh" busy={checking} onClick={() => void check()}>Check for updates</Button>
           <Button icon="upload" busy={!!importing} onClick={() => fileRef.current?.click()}>Import export</Button>
@@ -130,6 +132,7 @@ function TitleCell({ r }: { r: Row }) {
   const b = core.badge(r);
   return (
     <span className="axp-chat-viewer-title">
+      <Icon name={core.sourceOf(r.source).icon} size={12} />
       <span className="axp-chat-viewer-title__text">{r.title}</span>
       {b && <Chip tone={b === 'new' ? 'success' : 'accent'}>{b === 'new' ? 'New' : r.change === 'changed' ? 'Changed' : 'Updated'}</Chip>}
     </span>
