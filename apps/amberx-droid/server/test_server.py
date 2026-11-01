@@ -497,6 +497,17 @@ rg = c.get("/api/walkthrough/walkthrough.mp4", headers={**A, "range": "bytes=0-9
 check("walkthrough video seeks (Range)", rg.status_code == 206 and len(rg.content) == 10 and rg.headers.get("content-type") == "video/mp4", rg.status_code)
 check("walkthrough serves only its own files", c.get("/api/walkthrough/notes.txt", headers=A).status_code == 404
       and c.get("/api/walkthrough/..%2fai.json", headers=A).status_code == 404)
+# more than one walkthrough: the whole-stack one in its own folder, download copies, the list, Download as a file
+(wt / "stack").mkdir(exist_ok=True)
+(wt / "stack" / "chapters.json").write_text('{"title": "The whole stack", "duration": 5400, "chapters": []}')
+(wt / "stack" / "walkthrough-720.mp4").write_bytes(b"x" * 64)
+(wt / "stack" / "secret.mp4").write_bytes(b"x")
+lst = c.get("/api/walkthrough/walkthroughs.json", headers=A).json()["walkthroughs"]
+check("walkthrough list: the AmberX tour and the stack one", [w["id"] for w in lst] == ["amberx-app", "stack"] and lst[1]["base"] == "stack/" and lst[1]["duration"] == 5400, lst)
+dl = c.get("/api/walkthrough/stack/walkthrough-720.mp4?download=1", headers=A)
+check("walkthrough download copy saved as a file", dl.status_code == 200 and 'attachment; filename="axf-stack-walkthrough-720.mp4"' == dl.headers.get("content-disposition"), dl.headers)
+check("walkthrough folders serve only their own files", c.get("/api/walkthrough/stack/secret.mp4", headers=A).status_code == 404
+      and c.get("/api/walkthrough/amberx-app/chapters.json", headers=A).status_code == 404 and c.get("/api/walkthrough/Bad_ID/chapters.json", headers=A).status_code == 404)
 
 print(f"amberx server: {ok} passed, {fail} failed")
 sys.exit(1 if fail else 0)
