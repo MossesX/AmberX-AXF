@@ -245,9 +245,12 @@ export function prune(st, settings, facts = {}) {
   const alive = facts.alive ?? ((e) => (e.session && tm ? tm.has(e.session) : pidAlive(e.pid)));
   const mine = (e) => (e.host ?? host) === host;
   const young = (e) => now - Date.parse(e.startedAt || e.enqueuedAt || 0) < GRACE_MS;
+  // an adopted (legacy) entry exists only because tmux listed its session: once tmux no longer has it, it's gone at once,
+  // young or not (a quick run adopted by a sweep before it bound its slot would otherwise hold the cap for the grace time)
+  const vanished = (e) => e.kind === 'legacy' && e.session && tm && !tm.has(e.session);
   const gone = [];
   st.running = st.running.filter((e) => {
-    if (!mine(e) || young(e) || alive(e)) return true;
+    if (!mine(e) || ((young(e) && !vanished(e)) || alive(e))) return true;
     gone.push({ ...e, state: e.state === 'finished' ? 'closed' : 'gone', closedAt: new Date(now).toISOString() });
     return false;
   });
