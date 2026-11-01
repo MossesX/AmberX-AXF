@@ -1,0 +1,43 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.builds-page",
+  "name": "Builds",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "One Builds page over the one builds store (builds@1, owned by the Build orchestrator): every build of the active build profile, with switchable views. Builds = one row per build with a live progress bar, status, steps, time left; double-tap or right-click a name to rename it (the id never changes). Steps = every atomic step as its own stored record, for one build or the whole profile: expandable rows, multi-select (Ctrl+click, long-press, optional checkboxes), drag to reorder steps and builds, divide a step, harvest selected steps into one new build or split them into N, Restore default. Everything in the Steps view is a draft (saved, survives a restart) until Apply; Discard drops it. Live progress bars per build, per step and per profile; the banner shows the profile's percentage, animated while a build runs. Runs in AmberX too (its server forwards the routes).",
+  "targets": [
+    "axf-console",
+    "amberx-droid"
+  ],
+  "provides": [
+    "view:builds",
+    "settings-tab:builds-page",
+    "banner:right"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": {
+    "view": "builds",
+    "label": "Builds",
+    "icon": "list"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/builds-page",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "_claude/THREADS.md",
+      "_claude/builds/README.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-31" },
+  "opens": "main"
+}

@@ -30,7 +30,9 @@ import * as core from '../plan/builds-store-core.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
-export const storeFile = () => process.env.AXF_BUILDS_STORE || join(REPO_ROOT, STORE_REL);
+/** A scratch data folder (AXF_DATA_DIR set to a folder, as tests do): the store lives there too, seeded from the repo's. */
+const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !== 'off' ? d : ''; };
+export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? join(scratchDir(), STORE_REL) : join(REPO_ROOT, STORE_REL));
 export const journalDir = () => join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal');
 
 function lock(f) {
@@ -49,6 +51,7 @@ function lock(f) {
 export function storeExists() { return existsSync(storeFile()); }
 function readStore() {
   const f = storeFile();
+  if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL))); }
   if (!existsSync(f)) {
     if (process.env.AXF_BUILDS_STORE) return core.emptyStore();
     // first use on this checkout: migrate from the older files (the dry run is `migrate --dry`)
@@ -77,7 +80,7 @@ function exportTargets() {
   const hub = persistRoot();
   const data = (id, r) => join(hub ?? REPO_ROOT, profileRel(id, r));
   return readProfiles().profiles.flatMap((p) => [
-    { kind: 'orchestrator', profile: p.id, file: orchestratorPath(p.id) },
+    { kind: 'orchestrator', profile: p.id, file: scratchDir() ? join(scratchDir(), rel(orchestratorPath(p.id))) : orchestratorPath(p.id) },
     { kind: 'pending', profile: p.id, file: data(p.id, 'framework/plan/pending.json') },
     { kind: 'queue', profile: p.id, file: data(p.id, 'framework/plan/build-queue.json') },
   ]);

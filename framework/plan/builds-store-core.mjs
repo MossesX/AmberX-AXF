@@ -339,6 +339,9 @@ export function itemOfBuild(b, now = nowIso()) {
   return item;
 }
 
+/** JSON with sorted keys: two items are the same whatever order their fields were written in. */
+function canon(v) { return JSON.stringify(v, (k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map((key) => [key, x[key]])) : x)); }
+
 /** Which builds the Pending list shows: every build of the profile except plan epics with no pending record and recovered ones. */
 const onPendingList = (b) => (b.kind !== 'epic' || !!b.pending) && !b.pending?.recovered; // recovered-from-history builds stay archived, off the list
 
@@ -390,14 +393,16 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (!b) { s.builds.push(buildFromItem(it, profile, { now, order: nextOrder(s, profile) })); continue; }
     if (b.deleted) { b.deleted = false; b.deletedAt = ''; }
     if (!b.profiles.includes(profile)) { b.profiles.push(profile); b.order[profile] = nextOrder(s, profile); }
-    const before = JSON.stringify(itemOfBuild(b, now));
-    if (before === JSON.stringify(it)) continue;
+    const shownItem = itemOfBuild(b, now);
+    if (canon(shownItem) === canon(it)) continue;
     const prefix = b.pending?.prefixSteps ?? (it.subPrompts ?? []).some((p) => PREFIX.test(str(p.text)));
     b.title = str(it.title, 300) || b.title;
     b.detail = str(it.detail, 8000);
-    const st = orchStatusOfPending(it.status);
-    if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }
-    else if (['complete', 'failed', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
+    if (it.status !== shownItem.status) { // only a real status change on the Pending side moves the build
+      const st = orchStatusOfPending(it.status);
+      if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }
+      else if (['complete', 'failed', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
+    }
     const incoming = (it.subPrompts ?? []).map((p, k) => {
       const t = prefix ? plain(p.text) : str(p.text);
       const old = b.steps.find((x) => (prefix ? plain(x.text) : x.text) === t) ?? ((it.subPrompts.length === b.steps.length) ? b.steps[k] : null);
@@ -408,7 +413,10 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     const notes = [...b.notes];
     for (const n of it.notes ?? []) if (n?.text && !notes.some((m) => m.text === n.text)) notes.push({ text: str(n.text, 2000), at: n.at || now });
     b.notes = (it.notes ?? []).length < notes.length && change?.action === 'remove-note' ? (it.notes ?? []).map((n) => ({ text: n.text, at: n.at })) : notes;
-    b.pending = { ...(b.pending ?? {}), ...pendingMeta(it, b, prefix) };
+    const meta = pendingMeta(it, b, prefix);
+    if (it.model === shownItem.model && b.pending?.model) meta.model = b.pending.model; // the shown model is derived from the next step
+    if (it.status === shownItem.status && b.pending?.status) meta.status = b.pending.status;
+    b.pending = { ...(b.pending ?? {}), ...meta };
     b.updatedAt = it.updatedAt || now;
     if (['pending', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
   }
@@ -700,6 +708,14 @@ export function previewDraft(store, profile) {
   const d = draftOf(store, profile);
   const r = applyOps(clone(store), profile, d.ops, { dry: true });
   return { store: r.store, log: r.log, profileName: r.profileName };
+}
+
+/** Apply ops at once (no draft): the Builds view's renames and reorders. Same rules as a draft. */
+export function applyNow(store, profile, ops, { now = nowIso(), by = 'console' } = {}) {
+  for (const op of ops) validateOp(op);
+  const r = applyOps(clone(store), profile, ops, { now, by });
+  r.store.updatedAt = now;
+  return r;
 }
 
 /** Apply the draft: the orchestrator refactors the builds it touches. Returns { store, log, profileRename? }. */
