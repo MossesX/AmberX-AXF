@@ -1,6 +1,6 @@
 # menu-approve — Approve / Deny on every row of the app menu's "Waiting for approval"
 
-**Date:** 2026-11-01 · **Model:** Opus (headless VPS, one session) · **Branch:** `claude/menu-approve` → `main`
+**Date:** 2026-11-01 · **Model:** Opus (headless VPS, one session) · **Branch:** `claude/menu-approve` → `main` (**not pushed yet: VPS GitHub token is dead**, see below)
 
 ## What Brett asked
 Application menu → Approvals → *Waiting for approval* listed each waiting call with no buttons. Put green **Approve**
@@ -57,3 +57,17 @@ Desktop: `menu-approve/desktop.png` · Phone: `menu-approve/phone.png`
 - The approvals-banner plugin is 0.5.1 (menu rows); its banner rows are unchanged.
 - Baked copies re-baked: console-web, axhub-web, amberx-droid, walkthrough-studio (demo stays as it was; Patches is
   paused and untouched).
+
+## Push: blocked
+`git push origin HEAD:main` fails: `remote: Invalid username or token`. The credential helper's token (console env
+file and the axf-console container, same value) answers 401 on the GitHub API; there's no other token on the host,
+and this session had no `GIT_CONFIG_*` auth in its environment. The axhub-web flicker fix is stuck the same way
+(`blocked:push-axhub-web-flicker`), which is why it never showed up on main. Banner item `blocked:push-menu-approve`
+has the steps: new token (repo + workflow) → Keys banner `GITHUB_TOKEN` → push the flicker worktree, then this one
+(`git fetch origin && git merge origin/main && git push origin HEAD:main`).
+
+## Also fixed (red on main before this build)
+- `check-theme`: three comments from rec-control said `#108`, which the checker reads as a hex colour → "axHub
+  decision 108".
+- `plugin-lifecycle check output-recorder`: STATUS.md line had its marker but `plugin.json` didn't list STATUS.md in
+  `lifecycle.mentions` → added.
