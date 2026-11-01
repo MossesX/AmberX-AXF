@@ -1,5 +1,10 @@
 # Appearance source: a developer app's look and settings live on axHub
 
+> **The rule (Brett, Nov 1 2026): the apps get their appearance from axHub only, period, and any look change in one app
+> applies to all.** No opt-out switch, no local look tabs, no local fallback; the look settings (Sliders, per-asset
+> tokens, banner looks, rolls) ride the document's `settings` map. **Every app ships every shareable asset**
+> (`framework/cli/shared-assets.mjs`: baked at `src/axf/assets`, CI-checked), so a pick made anywhere resolves everywhere.
+
 Brett's decision (Oct 20 2026, refined the same night): **all settings and shared data of his developer apps come
 from the axHub data server.** The theme is *data*: the selection (asset id per appearance slot, spacing, hidden chrome)
 is a settings document on the hub, never fetched from the hub's web app. A change in any developer app is written

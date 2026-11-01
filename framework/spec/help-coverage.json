@@ -1,23 +1,23 @@
 {
   "scopes": {
     "framework": {
-      "total": 111,
-      "covered": 111,
-      "written": 111,
+      "total": 110,
+      "covered": 110,
+      "written": 110,
       "drafts": 0,
       "percent": 100
     },
     "console-web": {
-      "total": 1196,
-      "covered": 1196,
-      "written": 496,
-      "drafts": 700,
+      "total": 1198,
+      "covered": 1198,
+      "written": 499,
+      "drafts": 699,
       "percent": 100
     },
     "axhub-web": {
-      "total": 163,
-      "covered": 163,
-      "written": 163,
+      "total": 174,
+      "covered": 174,
+      "written": 174,
       "drafts": 0,
       "percent": 100
     }

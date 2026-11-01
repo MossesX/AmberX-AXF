@@ -33,6 +33,16 @@ A port is quick to write because almost everything is already shared and languag
 
 Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spec/gen-fixtures.mts`.
 
+- **One look from axHub + shared assets (Nov 1 2026, web; Android twin deferred):** appearance@1 gains `settings`
+  (look settings key → JSON value; present = the hub owns them, keys it doesn't list are cleared; null in a change =
+  remove; a change that would push the document over 16 KB keeps the hub's settings) and `combineAppearanceChanges`;
+  the runtime pushes every look setting change (`SettingsRegistry.onAnyChange`), seeds an older document once, always
+  runs the source (the follow switch `axf.hub.appearance.follow` is retired and cleared on attach). asset-types.json
+  types carry `shared` (default true; `job-type` is false); `shared-assets.mjs` bakes the shared set into each app.
+  The fixture (`appearance.json`) is unchanged. Kotlin: `AppearanceEngine` settings map + merge, `AxfRuntime` push /
+  apply / seed, no follow switch, the inspector toggle (`axf.inspector.shown`, closed by default), the `shared` flag.
+  Checked on the web by `spec/check-hub-look.mts` and `node framework/cli/shared-assets.mjs check`.
+
 ## Port status
 
 | Port | Stack | Status |

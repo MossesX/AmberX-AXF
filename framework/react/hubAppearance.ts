@@ -11,7 +11,7 @@
  * a developer app does not run without the hub (Brett's decision, Oct 20 2026). Off by default: only an app that
  * calls `rt.attachAppearanceSource(new HubAppearanceSource({ hub }))` is a developer app.
  */
-import { APPEARANCE_PATH, APPEARANCE_PROJECT, appearanceRetryMs, combineAppearanceChanges, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSource, type AppearanceSourceState, type Spacing } from '../core';
+import { APPEARANCE_PATH, APPEARANCE_PROJECT, appearanceRetryMs, combineAppearanceChanges, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSource, type AppearanceSourceState } from '../core';
 
 export interface HubAppearanceOptions {
   /** The hub's origin, https (http only for localhost while developing). */

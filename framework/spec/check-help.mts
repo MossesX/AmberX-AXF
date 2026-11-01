@@ -120,7 +120,7 @@ for (const k of ['ok', 'bad-entries', 'bad-intros']) {
 
 /* ---- every help pack the repo ships ---- */
 const packFiles: string[] = [];
-const dirs = ['framework/assets/help', 'apps/console-web/src/assets/help', 'apps/axhub-web/src/assets/help', 'apps/amberx-droid/src/assets/help', 'apps/walkthrough-studio/src/assets/help'];
+const dirs = ['framework/assets/help', 'apps/console-web/src/assets/help', 'apps/axhub-web/src/assets/help', 'apps/amberx-droid/src/assets/help', 'apps/walkthrough-studio/src/assets/help', 'apps/console-web/src/axf/assets/help', 'apps/axhub-web/src/axf/assets/help', 'apps/amberx-droid/src/axf/assets/help'];
 for (const d of dirs) if (existsSync(join(ROOT, d))) for (const f of readdirSync(join(ROOT, d)).filter((x) => x.endsWith('.json'))) packFiles.push(join(d, f));
 for (const folder of readdirSync(join(ROOT, 'apps/console-web/plugins'))) if (existsSync(join(ROOT, 'apps/console-web/plugins', folder, 'help.json'))) packFiles.push(`apps/console-web/plugins/${folder}/help.json`);
 ok(packFiles.length >= 10, `help packs found (${packFiles.length})`);
@@ -130,7 +130,8 @@ for (const f of packFiles) {
   eq((engine.validateAsset(a) as { errors: string[] }).errors, [], `${f} validates (build engine)`);
 }
 const fw = readFileSync(join(ROOT, 'framework/assets/help/framework.json'), 'utf8');
-for (const app of ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio']) eq(readFileSync(join(ROOT, `apps/${app}/src/assets/help/framework.json`), 'utf8'), fw, `${app} ships the framework help unchanged`);
+// apps that ship the shared set have it baked at src/axf/assets (shared-assets.mjs); the others keep a copy
+for (const app of ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio']) eq(readFileSync(join(ROOT, `apps/${app}/${['console-web', 'axhub-web', 'amberx-droid'].includes(app) ? 'src/axf/assets' : 'src/assets'}/help/framework.json`), 'utf8'), fw, `${app} ships the framework help unchanged`);
 const fwPack = read('framework/assets/help/framework.json').data;
 for (const t of ['action:help.mode', 'refresh', 'save', 'delete', 'approval-deny', 'approval-approve', 'watch-live', 'view:settings']) ok(fwPack.entries.some((e: { target: string; draft?: boolean }) => e.target === t && !e.draft), `framework help has written "${t}"`);
 const consolePack = read('apps/console-web/src/assets/help/console.json').data;

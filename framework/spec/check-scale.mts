@@ -104,7 +104,8 @@ for (const [k, c] of Object.entries(fx.starters as Record<string, { normalized: 
 for (const [k, errs] of Object.entries(fx.errors as Record<string, string[]>)) ok(Array.isArray(errs), `fixture error case ${k}`);
 
 /* ---- starters: one per type at least, a compact one (the default look), distinct, and every copy validates ---- */
-const dirs = ['framework/assets', ...['console-web', 'axhub-web', 'patches-web', 'amberx-droid', 'walkthrough-studio'].map((a) => `apps/${a}/src/assets`)];
+const appAssets = (a: string) => (['console-web', 'axhub-web', 'amberx-droid'].includes(a) ? `apps/${a}/src/axf/assets` : `apps/${a}/src/assets`); // shared set baked there (shared-assets.mjs)
+const dirs = ['framework/assets', ...['console-web', 'axhub-web', 'patches-web', 'amberx-droid', 'walkthrough-studio'].map(appAssets)];
 const defaults = read('framework/defaults.json');
 for (const t of SCALE_TYPES) {
   const files = readdirSync(new URL(`framework/assets/${t}/`, root)).filter((f) => f.endsWith('.json'));

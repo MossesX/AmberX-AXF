@@ -16,8 +16,13 @@ routeHubFetch(HUB);
 // The veto banner plugin's phone side: Deny / Approve / Shelve with the phone's session, the alarm, notification taps.
 installVetoHost();
 
-// Every JSON file under src/assets is registered as a hot-swappable asset.
-const assetModules = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
+// Hot-swappable assets, in order (framework/cli/shared-assets.mjs): every shareable asset, baked from the framework at
+// src/axf/assets (every app ships them all, so the one look on axHub resolves everywhere); then this app's own (its
+// menus, toolbar, help, access policy); then the few shared ids this app tunes for itself (src/assets-overrides).
+const sharedAssets = import.meta.glob('./axf/assets/**/*.json', { eager: true, import: 'default' });
+const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
+const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
+const assetModules = { ...sharedAssets, ...ownAssets, ...overrideAssets };
 
 const axf = createAxf({
   manifest: manifest as AxfManifest,

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 export async function onInstall(ctx) { ctx.log(`ready: ${ctx.dataDir}`); }
 export async function onUninstall(ctx) { ctx.log('removing the Plugin Manager (its menu link, nav entry and settings tab leave with the code)'); }
 export async function checks(ctx) {
-  const assets = join(ctx.root, 'apps/console-web/src/assets/context-menu');
+  const assets = join(ctx.root, 'framework/assets/context-menu'); // shared context menus (baked into every app)
   // The context-menu link is contributed at runtime; it must never be written into a context-menu asset.
   let baked = false;
   try { baked = ['compact-classic', 'glass-minimal', 'roomy-touch'].some((f) => readFileSync(join(assets, `${f}.json`), 'utf8').includes('plugin-manager')); } catch { /* assets moved */ }

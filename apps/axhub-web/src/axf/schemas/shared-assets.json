@@ -1,0 +1,9 @@
+{
+  "$comment": "Shared assets (framework/cli/shared-assets.mjs): the apps that ship every shareable asset, baked at src/axf/assets, and brand-library entries shared beyond what framework/assets needs. Patches, the demo and Walkthrough Studio are left out (Brett, Nov 1 2026).",
+  "apps": [
+    "apps/console-web",
+    "apps/axhub-web",
+    "apps/amberx-droid"
+  ],
+  "roots": []
+}

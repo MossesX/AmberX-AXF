@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "essentials-pills",
+  "name": "Essentials Pills",
+  "version": "1.0.0",
+  "description": "Essentials Pills: small apps, top bar. Lists the pages it can; each app shows the ones it has. Pairs with the calm behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:calm"
+  ],
+  "data": {
+    "style": "pills",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          }
+        ]
+      }
+    ],
+    "indicator": "fill"
+  }
+}

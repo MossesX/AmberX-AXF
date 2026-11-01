@@ -33,16 +33,19 @@ let checks = 0;
 const need = (cond: unknown, msg: string) => { checks++; if (!cond) problems.push(msg); };
 
 const manifest = readJson('axf.manifest.json');
+// the console's assets as it registers them: the baked shared set, its own, its overrides (shared-assets.mjs)
+const { appAssetsOfType } = await import(new URL('../../../framework/cli/shared-assets.mjs', import.meta.url).href);
+const ofType = (type: string) => appAssetsOfType(app, type) as { id: string; data: any }[];
 const assetFile = (type: string, id: string) => {
-  const dir = join(app, 'src/assets', type);
-  for (const f of readdirSync(dir)) { const a = JSON.parse(readFileSync(join(dir, f), 'utf8')); if (a.id === id) return a; }
-  throw new Error(`no ${type} asset "${id}" in src/assets/${type}`);
+  const a = ofType(type).find((x) => x.id === id);
+  if (!a) throw new Error(`the console registers no ${type} asset "${id}"`);
+  return a;
 };
 const menuAsset = assetFile('app-menu', manifest.defaults['app-menu']);
 const navAsset = assetFile('nav-menu', manifest.defaults['nav-menu']);
 const toolbarAsset = assetFile('toolbar', manifest.defaults.toolbar);
 /** Every toolbar the console ships (any can be picked in Settings → Appearance). */
-const toolbars = readdirSync(join(app, 'src/assets/toolbar')).map((f) => JSON.parse(readFileSync(join(app, 'src/assets/toolbar', f), 'utf8')));
+const toolbars = ofType('toolbar');
 /** Framework stand-ins the console gives no handler (they only say "no handler yet"): reached through the toolbar live list. */
 const consoleActions = readText('src/actions.ts') + readText('src/menuLibrary.tsx');
 const stubs = new Set(Object.keys(STANDARD_ACTIONS).filter((a) => !consoleActions.includes(`'${a}'`)));
@@ -157,8 +160,7 @@ for (const [what, a] of [['Search', 'console.search'], ['Alerts', 'alerts.open']
 for (const t of ['toolbar', 'nav-menu', 'banner']) need(actions.has(`slot.hide:${t}:toggle`), `View menu has no show/hide toggle for ${t}`);
 need((manifest.hidden ?? []).includes('toolbar') && (manifest.hidden ?? []).includes('nav-menu'), 'the console manifest should hide toolbar and nav-menu by default');
 need(!(manifest.hidden ?? []).includes('app-menu'), 'the console must not hide its app menu by default');
-for (const f of readdirSync(join(app, 'src/assets/layout'))) {
-  const l = JSON.parse(readFileSync(join(app, 'src/assets/layout', f), 'utf8'));
+for (const l of ofType('layout')) {
   need(l.data.showMenubar === true, `layout ${l.id} hides the menu bar (the console's menu must show in every layout)`);
   const slot = l.data.slots?.menubar;
   need(!slot || slot === 'app-menu' || (Array.isArray(slot) && slot.includes('app-menu')) || (Array.isArray(slot?.accepts) && slot.accepts.includes('app-menu')), `layout ${l.id}'s menubar slot refuses the app menu`);
