@@ -100,8 +100,6 @@
         },
         "model": {
           "enum": [
-            "haiku",
-            "sonnet",
             "opus",
             "fable"
           ]

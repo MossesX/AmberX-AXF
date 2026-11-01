@@ -162,6 +162,12 @@
             "action": "assets.reset"
           },
           {
+            "id": "inspector",
+            "label": "Active assets pane",
+            "icon": "layers",
+            "action": "inspector"
+          },
+          {
             "id": "settings",
             "label": "Settings",
             "icon": "settings",
