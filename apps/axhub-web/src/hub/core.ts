@@ -322,3 +322,40 @@ export const replyBase = (r: { revision: number; status: string }): string => `$
 export function shownRow<T extends { id: string; revision: number; status: string }>(fromGrid: T, kept: KeptReply<T> | undefined): T {
   return kept && kept.base === replyBase(fromGrid) && (kept.item as { id: string }).id === fromGrid.id ? kept.item : fromGrid;
 }
+
+/* ─────────────────────────────────────────────────────────── approvals log: calls that needed no approval */
+
+/** One log entry, as far as these helpers read it (the hub sends about sixty fields; see the log page). */
+export type LogEntryView = Record<string, unknown>;
+
+/**
+ * A call that ran without asking (axHub decision 110: fixed-purpose tools on `allow`, e.g. vps.build_start / build_land
+ * / build_stop / build_list) is logged so the history shows it, but there is no approval request behind it, so the
+ * request page would open empty. The log shows its details inline instead.
+ */
+export const ranWithoutApproval = (e: LogEntryView): boolean =>
+  typeof e.status === 'string' && e.status.endsWith('without approval');
+
+const txt = (v: unknown): string => (typeof v === 'string' ? v.trim() : typeof v === 'number' && Number.isFinite(v) ? String(v) : '');
+
+/** The inline details of such a call: tool, arguments, who ran it, when, and the result (rows with nothing are left out). */
+export function directRunRows(e: LogEntryView): { key: string; label: string; value: string; time?: boolean; mono?: boolean }[] {
+  const tool = txt(e.qualifiedTool) || [txt(e.service), txt(e.tool)].filter(Boolean).join('.');
+  const keys = Array.isArray(e.argumentKeys) ? e.argumentKeys.filter((k): k is string => typeof k === 'string') : [];
+  const args = txt(e.command) || txt(e.summary) || (keys.length ? keys.join(', ') : '(no arguments)');
+  const source = txt(e.source);
+  const who = [Object.hasOwn(SOURCE_LABEL, source) ? SOURCE_LABEL[source] : source, txt(e.sourceSession), txt(e.callerName) || txt(e.callerId)]
+    .filter((v, i, a) => v && a.indexOf(v) === i).join(' · ');
+  const ms = typeof e.runMs === 'number' && Number.isFinite(e.runMs) ? e.runMs : null;
+  const result = [txt(e.resultStatus) || (e.status === 'failed without approval' ? 'error' : 'ok'), txt(e.errorCode),
+    txt(e.jobId) ? `job ${txt(e.jobId)}` : '', ms === null ? '' : ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(1)} s`].filter(Boolean).join(' · ');
+  const rows: { key: string; label: string; value: string; time?: boolean; mono?: boolean }[] = [
+    { key: 'tool', label: 'Tool', value: txt(e.toolTitle) && txt(e.toolTitle) !== tool ? `${tool} — ${txt(e.toolTitle)}` : tool, mono: true },
+    { key: 'arguments', label: 'Arguments', value: args, mono: true },
+    { key: 'who', label: 'Ran by', value: who },
+    { key: 'when', label: 'When', value: txt(e.ranAt) || txt(e.createdAt), time: true },
+    { key: 'result', label: 'Result', value: result },
+    { key: 'why', label: 'Approval', value: txt(e.decidedBy) || 'no approval needed (policy allow)' },
+  ];
+  return rows.filter((r) => r.value);
+}

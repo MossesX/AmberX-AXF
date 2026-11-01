@@ -7,6 +7,7 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
+import { directRunRows, ranWithoutApproval } from './src/hub/core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
@@ -335,6 +336,27 @@ eq([sameJson({ a: 1 }, { a: 1 }), sameJson({ a: 1 }, { a: 2 }), sameJson(null, n
   eq(shownRow({ ...row, revision: 4, status: 'consumed' }, { base: replyBase(row), item: reply }).revision, 4, 'the next read of that row wins');
   eq(shownRow(row, undefined), row, 'no reply: the grid row');
   eq(shownRow({ ...row, id: 'b' }, { base: replyBase(row), item: reply }).id, 'b', 'a reply never lands on another row');
+}
+
+console.log('Approvals log — calls that ran without an approval (decision 110)');
+{
+  const ran = { id: 'l1', confirmationId: 'c1', qualifiedTool: 'vps.build_start', toolTitle: 'Start a headless build', status: 'ran without approval',
+    summary: 'name=leftovers repo=AmberX-AXF', argumentKeys: ['name', 'repo'], source: 'claude_code', sourceSession: 'Leftovers', callerId: 'cl-1',
+    createdAt: '2026-11-01T01:00:00.000Z', ranAt: '2026-11-01T01:00:02.000Z', resultStatus: 'started', jobId: 'j9', runMs: 1500, decidedBy: 'no approval needed (policy allow)' };
+  ok(ranWithoutApproval(ran), 'ran without approval: inline, no request page');
+  ok(ranWithoutApproval({ status: 'failed without approval' }), 'failed without approval: inline too');
+  ok(!ranWithoutApproval({ status: 'ran' }) && !ranWithoutApproval({ status: 'approved' }) && !ranWithoutApproval({}), 'approved calls keep The request');
+  const rows = Object.fromEntries(directRunRows(ran).map((r) => [r.key, r]));
+  eq(rows.tool.value, 'vps.build_start — Start a headless build', 'tool + its title');
+  eq(rows.arguments.value, 'name=leftovers repo=AmberX-AXF', 'arguments: the hub summary');
+  eq(rows.who.value, 'Claude Code · Leftovers · cl-1', 'who ran it: source, session, caller');
+  eq([rows.when.value, rows.when.time], ['2026-11-01T01:00:02.000Z', true], 'when: the run time, shown as a time');
+  eq(rows.result.value, 'started · job j9 · 1.5 s', 'result: status, job, how long');
+  eq(rows.why.value, 'no approval needed (policy allow)', 'says why there is no approval');
+  const bare = Object.fromEntries(directRunRows({ status: 'failed without approval', service: 'vps', tool: 'build_list', argumentKeys: [], createdAt: '2026-11-01T02:00:00.000Z', errorCode: 'timeout', runMs: 250 }).map((r) => [r.key, r.value]));
+  eq([bare.tool, bare.arguments, bare.result, bare.when], ['vps.build_list', '(no arguments)', 'error · timeout · 250 ms', '2026-11-01T02:00:00.000Z'], 'bare entry: tool from service + tool, no arguments, failed');
+  ok(!('who' in bare), 'empty rows are left out');
+  eq(directRunRows({ status: 'ran without approval', qualifiedTool: 'vps.build_land', command: 'land leftovers', summary: 'x', argumentKeys: ['a'] }).find((r) => r.key === 'arguments').value, 'land leftovers', 'arguments: the command when the hub sent one');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

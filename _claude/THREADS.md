@@ -324,6 +324,7 @@ VPS). The session reads the rules and this file first, as usual.
 ## Done (recent)
 
 | Thread | Result | Updated |
+| Fix: axHub web approvals log — entries for tools that ran without approval (vps.build_*) opened an empty request page | fixed on main (Leftovers): tool, arguments, who ran it, when, result shown inline, The request only on approved calls; axhub-web test 276/276; UI Review `r-20261101-f74d2ada` waiting | 2026-11-01 |
 | Audio Output Recorder (Angel `audio-output-recorder`): phone playback → 30-min chunks → axHub, no mic (Opus) | merged (#194, e46b8079 + 08f84bf3): checked step by step against main by Leftovers, all 5 really built; test.mts 18/18 (Node 22) | 2026-11-01 |
 | Audio Extract plugin for AmberX (Angel `audio-extract`): audio out of screen recordings (lossless .m4a / WAV), batch, trim, track pick, Share → AmberX, new-recording cards, results list; built-in screen recorder with app playback audio, no mic (Opus) | merged (claude/audio-extract on main); test.mts 24/24, AmberX test.mjs + tsc green, lifecycle clean (Leftovers s7); install the new AmberX APK from CI | 2026-11-01 |
 | UI Review plugin (Angel `ui-review`): Design packs renamed + widened into one UI approval plugin — sections per kind (open registry), tree / grid / sub-grids / gallery / compare, bulk Approve / Ask changes / Reject, `review.mjs submit`, `rebuild-shots --submit`, capability `ui-review@1` (launched build, Opus) | merged; follow-up s9 done by Leftovers: auto-merge holds PRs whose UI review is waiting / changes / rejected (push-banner test 150) | 2026-11-01 |
