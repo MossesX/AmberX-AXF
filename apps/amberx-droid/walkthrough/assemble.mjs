@@ -12,8 +12,15 @@ const PUB = `${OUT}/publish`;
 const TMP = `${OUT}/tmp`;
 mkdirSync(PUB, { recursive: true });
 mkdirSync(TMP, { recursive: true });
-const W = 720, H = 1600;
+// The frame every chapter is fitted into: the walkthrough's `output` (the AmberX tour: phone 720×1600; the whole-stack
+// one: 1920×1080, its phone chapters letterboxed in the middle).
+const W = WALKTHROUGH.output?.width ?? 720, H = WALKTHROUGH.output?.height ?? 1600;
+const PAD = WALKTHROUGH.output?.pad ?? '0x0f0d0a';
 const timeline = JSON.parse(readFileSync(`${OUT}/timeline.json`, 'utf8'));
+// The clips as voiced now: a line edited after the recording has a new length (VOICE_ONLY re-voicing).
+let durations = {};
+try { durations = JSON.parse(readFileSync(`${OUT}/durations.json`, 'utf8')); } catch { /* the recorded lengths */ }
+const says = new Map(CHAPTERS.flatMap((c) => c.scenes.map((x, i) => [`${c.id}-${i}`, x.say])));
 const ff = (args) => execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...args], { stdio: 'inherit' });
 const r1 = (t) => Math.round(t * 10) / 10;
 const vttTime = (t) => {
@@ -26,46 +33,64 @@ const parts = [], cues = [], chapters = [];
 let offset = 0;
 for (const ch of timeline) {
   const first = Math.max(0, ch.scenes[0].start - 0.4);
-  const last = ch.scenes.at(-1).end;
-  const length = last - first;
-  // each scene's clip padded with silence to the scene's real on-screen length, then joined
-  const inputs = [], filters = [];
-  ch.scenes.forEach((s, k) => {
-    const span = (k + 1 < ch.scenes.length ? ch.scenes[k + 1].start : s.end) - s.start + (k === 0 ? s.start - first : 0);
-    inputs.push('-i', `${OUT}/audio/${ch.id}-${s.i}.wav`);
-    const lead = k === 0 ? `adelay=${Math.round((s.start - first) * 1000)}:all=1,` : '';
-    filters.push(`[${k}:a]aresample=48000,${lead}apad,atrim=0:${span.toFixed(3)},asetpts=N/SR/TB[a${k}]`);
+  // Each scene is its own cut of the recording: from its start (the chapter's lead-in for the first) to the next
+  // scene's start. When its clip is now longer than that cut (an edited line), the cut's last frame is held.
+  const cuts = ch.scenes.map((s, k) => {
+    const from = k === 0 ? first : s.start;
+    const to = k + 1 < ch.scenes.length ? ch.scenes[k + 1].start : s.end;
+    const dur = durations[`${ch.id}-${s.i}`] ?? s.dur;
+    const lead = k === 0 ? s.start - first : 0;
+    const need = lead + dur + 0.6;
+    return { s, from, to, dur, lead, span: Math.max(to - from, need), hold: Math.max(0, need - (to - from)) };
   });
-  filters.push(`${ch.scenes.map((_, k) => `[a${k}]`).join('')}concat=n=${ch.scenes.length}:v=0:a=1[a]`);
-  const wav = `${TMP}/${ch.id}.wav`;
-  ff([...inputs, '-filter_complex', filters.join(';'), '-map', '[a]', wav]);
+  const inputs = ['-i', `${OUT}/raw/${ch.id}.webm`], filters = [];
+  cuts.forEach((c, k) => {
+    filters.push(`[0:v]trim=${c.from.toFixed(3)}:${c.to.toFixed(3)},setpts=PTS-STARTPTS${c.hold ? `,tpad=stop_mode=clone:stop_duration=${c.hold.toFixed(3)}` : ''},`
+      + `fps=30,scale=${W}:${H}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=${PAD},setsar=1,format=yuv420p[v${k}]`);
+    inputs.push('-i', `${OUT}/audio/${ch.id}-${c.s.i}.wav`);
+    const delay = c.lead ? `adelay=${Math.round(c.lead * 1000)}:all=1,` : '';
+    filters.push(`[${k + 1}:a]aresample=48000,${delay}apad,atrim=0:${c.span.toFixed(3)},asetpts=N/SR/TB[a${k}]`);
+  });
+  filters.push(`${cuts.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${cuts.length}:v=1:a=1[v][a]`);
   const mp4 = `${TMP}/${ch.id}.mp4`;
-  ff(['-ss', first.toFixed(3), '-t', length.toFixed(3), '-i', `${OUT}/raw/${ch.id}.webm`, '-i', wav,
-    '-map', '0:v', '-map', '1:a', '-vf', `fps=30,scale=${W}:${H}:flags=lanczos,format=yuv420p`, '-c:v', 'libx264', '-preset', 'medium', '-crf', '27',
-    '-c:a', 'aac', '-b:a', '96k', '-ar', '48000', '-shortest', mp4]);
+  ff([...inputs, '-filter_complex', filters.join(';'), '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', WALKTHROUGH.output?.preset ?? 'medium',
+    '-crf', String(WALKTHROUGH.output?.crf ?? 27), '-c:a', 'aac', '-b:a', '96k', '-ar', '48000', mp4]);
   parts.push(mp4);
   const segments = [];
-  for (const s of ch.scenes) {
-    const at = offset + (s.start - first);
-    const ss = sentences(s.say);
+  let at = offset;
+  for (const c of cuts) {
+    const say = says.get(`${ch.id}-${c.s.i}`) ?? c.s.say;
+    const ss = sentences(say);
     segments.push({ start: r1(at), title: ss[0].replace(/[.!?]+$/, '').slice(0, 90) });
     const total = ss.reduce((n, x) => n + x.length, 0);
-    let t = at;
-    for (const x of ss) { const d = (s.dur * x.length) / total; cues.push(`${vttTime(t)} --> ${vttTime(t + d)}\n${x}`); t += d; }
+    let t = at + c.lead;
+    for (const x of ss) { const d = (c.dur * x.length) / total; cues.push(`${vttTime(t)} --> ${vttTime(t + d)}\n${x}`); t += d; }
+    at += c.span;
   }
+  const length = at - offset;
   chapters.push({ id: ch.id, title: ch.title, start: r1(offset), duration: r1(length), segments });
   offset += length;
 }
 
 writeFileSync(`${TMP}/list.txt`, parts.map((p) => `file '${p}'`).join('\n'));
 ff(['-f', 'concat', '-safe', '0', '-i', `${TMP}/list.txt`, '-c', 'copy', '-movflags', '+faststart', `${PUB}/walkthrough.mp4`]);
-ff(['-ss', '3', '-i', `${PUB}/walkthrough.mp4`, '-frames:v', '1', '-vf', 'scale=720:1600', '-q:v', '4', `${PUB}/poster.jpg`]);
+ff(['-ss', '3', '-i', `${PUB}/walkthrough.mp4`, '-frames:v', '1', '-vf', `scale=${W}:${H}`, '-q:v', '4', `${PUB}/poster.jpg`]);
+// Smaller download copies (the walkthrough's `downloads`, e.g. [720] → walkthrough-720.mp4 at 1280×720)
+const downloads = [{ file: 'walkthrough.mp4', label: `${H}p`, height: H, bytes: statSync(`${PUB}/walkthrough.mp4`).size }];
+for (const h of WALKTHROUGH.downloads ?? []) {
+  if (h >= H) continue;
+  const w = Math.round((W * h) / H / 2) * 2;
+  const file = `walkthrough-${h}.mp4`;
+  ff(['-i', `${PUB}/walkthrough.mp4`, '-vf', `scale=${w}:${h}:flags=lanczos`, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '28',
+    '-c:a', 'copy', '-movflags', '+faststart', `${PUB}/${file}`]);
+  downloads.push({ file, label: `${h}p`, height: h, bytes: statSync(`${PUB}/${file}`).size });
+}
 writeFileSync(`${PUB}/walkthrough.vtt`, `WEBVTT\n\n${cues.join('\n\n')}\n`);
 const index = {
   $axf: WALKTHROUGH.$axf, id: WALKTHROUGH.id, title: WALKTHROUGH.title, app: WALKTHROUGH.app,
   recordedAt: new Date().toISOString(), duration: r1(offset), width: W, height: H,
   bytes: statSync(`${PUB}/walkthrough.mp4`).size,
-  video: 'walkthrough.mp4', captions: 'walkthrough.vtt', poster: 'poster.jpg', chapters,
+  video: 'walkthrough.mp4', captions: 'walkthrough.vtt', poster: 'poster.jpg', downloads, chapters,
 };
 writeFileSync(`${PUB}/chapters.json`, JSON.stringify(index, null, 1));
 console.log(`walkthrough: ${(offset / 60).toFixed(1)} min, ${chapters.length} chapters, ${cues.length} captions, ${(index.bytes / 1e6).toFixed(1)} MB`);

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 86,
- "updatedAt": "2026-11-01T22:41:01.158Z",
+ "rev": 88,
+ "updatedAt": "2026-11-01T22:41:50.272Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -47171,7 +47171,7 @@
    "branch": "claude/project-thread-646cjb",
    "pr": "229",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-01T22:41:01.140Z",
+   "updatedAt": "2026-11-01T22:41:50.257Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -47301,12 +47301,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:50.034Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T22:38:15.392Z",
-     "updatedAt": "2026-11-01T22:38:15.392Z"
+     "updatedAt": "2026-11-01T22:41:50.052Z"
     },
     {
      "id": "s7",
@@ -47323,12 +47323,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:50.257Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T22:38:15.392Z",
-     "updatedAt": "2026-11-01T22:38:15.392Z"
+     "updatedAt": "2026-11-01T22:41:50.272Z"
     },
     {
      "id": "s8",
@@ -47735,7 +47735,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
