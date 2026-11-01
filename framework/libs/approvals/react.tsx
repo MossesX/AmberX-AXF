@@ -23,10 +23,14 @@ import { Button, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
 import { HUB_DEFAULT, normalizeHub } from '../hub/hub';
 import { formatCountdown } from '../hub/veto';
 import {
-  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, freshIds, goneIds, goneMessage, isUrgent, itemLine, rowOrder,
+  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, freshIds, goneIds, goneMessage, isUrgent, rowOrder,
   approvalsWatcher, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult,
 } from './index';
+import { ApprovalRow } from './row';
+import { detailsOfItem } from './details';
 import './approvals.css';
+
+export { ApprovalRow, SourceBadge, RESULT_LINES, type ApprovalRowProps } from './row';
 
 /* ---------------------------------------------------------------- the host seam */
 
@@ -249,7 +253,7 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
         </div>
       ) : (
         <ul className="axf-approvals__list">
-          {items.map((it) => <Row key={it.id} item={it} busy={busy} onDecide={(d) => void run(it, d)} />)}
+          {items.map((it) => <Row key={it.id} item={it} hub={hub} busy={busy} onDecide={(d) => void run(it, d)} openPage={openPage} />)}
           {state.items.length === 0 && <li className="fx-muted fx-small">Nothing is waiting on axHub.</li>}
           {more > 0 && <li className="fx-muted fx-small">…and {more} more on the hub.</li>}
         </ul>
@@ -260,24 +264,23 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
   );
 }
 
-function Row({ item, busy, onDecide }: { item: ApprovalItem; busy: string; onDecide: (d: ApprovalDecision) => void }) {
+/** One item: the shared expandable row (caret far right, details in place), Deny / Approve on the collapsed row too. */
+function Row({ item, hub, busy, onDecide, openPage }: { item: ApprovalItem; hub: string; busy: string; onDecide: (d: ApprovalDecision) => void; openPage: (url: string) => void }) {
   const left = countdownOf(item);
-  const urgent = left !== null && left <= 30;
   return (
-    <li className={`axf-approvals__item${item.kind === 'held' ? ' is-held' : ''}`}>
-      <div className="axf-approvals__text">
-        <strong className="axf-approvals__title" title={item.title}>{item.title}</strong>
-        <span className={`fx-small axf-approvals__line${urgent ? ' is-urgent' : ''}`} role={left !== null ? 'timer' : undefined}>{itemLine(item)}</span>
-        {item.description && <span className="fx-small fx-muted axf-approvals__desc">{item.description}</span>}
-        {item.command && <code className="fx-mono fx-small axf-approvals__cmd" title={item.command}>{item.command}</code>}
-      </div>
-      <div className="axf-approvals__actions">
-        {/* Approve / Deny on every row (Brett, Oct 30 2026): big targets, green and red, the safe one first. */}
-        {rowOrder(item.decisions).map((d) => (
-          <Button key={d} tone={d === 'approve' ? 'success' : 'danger'} icon={d === 'approve' ? (item.kind === 'held' ? 'play' : 'check') : d === 'deny' ? 'x-circle' : 'x'}
-            busy={busy === `${item.id}:${d}`} disabled={!!busy || (item.kind === 'held' && left === 0)} onClick={() => onDecide(d)}>{DECISION_LABELS[d]}</Button>
-        ))}
-      </div>
+    <li className="axf-approvals__li">
+      <ApprovalRow
+        scope="popover" details={detailsOfItem(item)} hub={hub} busy={busy} onDecide={onDecide} openPage={openPage} compact stack
+        actions={
+          <div className="axf-approvals__actions">
+            {/* Approve / Deny on every row (Brett, Oct 30 2026): big targets, green and red, the safe one first. */}
+            {rowOrder(item.decisions).map((d) => (
+              <Button key={d} tone={d === 'approve' ? 'success' : 'danger'} icon={d === 'approve' ? (item.kind === 'held' ? 'play' : 'check') : d === 'deny' ? 'x-circle' : 'x'}
+                busy={busy === `${item.id}:${d}`} disabled={!!busy || (item.kind === 'held' && left === 0)} onClick={() => onDecide(d)}>{DECISION_LABELS[d]}</Button>
+            ))}
+          </div>
+        }
+      />
     </li>
   );
 }

@@ -22,6 +22,8 @@
 .axf-approvals__foot { border-top: var(--fx-border-w) solid var(--fx-border); justify-content: flex-end }
 .axf-approvals__foot a, .axf-approvals__note a { color: var(--fx-accent); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
 .axf-approvals__list { list-style: none; margin: 0; padding: var(--fx-dens-gap-md); overflow: auto; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axf-approvals__li { display: block; min-width: 0 }
+.axf-approvals__li .axf-approvals__actions { width: 100% }
 .axf-approvals__item { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); min-width: 0 }
 .axf-approvals__item.is-held { border-color: var(--fx-warning) }
 .axf-approvals__text { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0 }
@@ -39,3 +41,63 @@
 .axf-approvals__framed { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); min-height: 0; flex: 1 1 auto }
 .axf-approvals__frame { width: 100%; height: min(60vh, calc(var(--fx-row-h) * 18)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axf-approvals__note { margin: 0 }
+
+/* The expandable approval row (row.tsx, every surface): collapsed = badge, title, line, quick buttons, caret far right;
+   open = the details in place. Theme + scale tokens only; controls are the framework's. Updates in place: no
+   animation on refresh, only the caret turns. */
+.axf-apx { display: flex; flex-direction: column; min-width: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); color: var(--fx-text) }
+.axf-apx.is-held { border-color: var(--fx-warning) }
+.axf-apx__head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); min-width: 0 }
+.axf-apx__sum { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: var(--fx-dens-gap-xs); padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer }
+.axf-apx__sum:focus-visible, .axf-apx__caret:focus-visible { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: var(--fx-dens-gap-xs) }
+.axf-apx__top { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axf-apx__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axf-apx__src { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axf-apx__line { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; color: var(--fx-muted); font-variant-numeric: tabular-nums }
+.axf-apx__line > .fx-chip { flex: none }
+.axf-apx__when { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axf-apx.is-held .axf-apx__line { color: var(--fx-warning) }
+.axf-apx__line.is-urgent, .axf-apx.is-held .axf-apx__line.is-urgent, .axf-apx .is-urgent { color: var(--fx-danger) }
+.axf-apx__quick { flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-md) }
+.axf-apx__caret { flex: none; margin-inline-start: auto }
+.axf-apx__caret svg { transition: transform var(--fx-motion) ease }
+.axf-apx__flip { transform: rotate(180deg) }
+@media (prefers-reduced-motion: reduce) { .axf-apx__caret svg { transition: none } }
+.axf-apx__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-lg); border-top: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
+.axf-apx__sec { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axf-apx__sec > .fx-eyebrow { margin: 0 !important }
+.axf-apx__title-full { margin: 0; font-weight: 600; overflow-wrap: anywhere }
+.axf-apx__text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere }
+.axf-apx__code { margin: 0; padding: var(--fx-dens-gap-md); max-height: calc(var(--fx-row-h) * 8); overflow: auto; white-space: pre; border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); font-size: var(--fx-type-root-xs) }
+.axf-apx__out { max-height: calc(var(--fx-row-h) * 10) }
+.axf-apx__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axf-apx__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 28)), 1fr)); gap: var(--fx-dens-gap-lg) }
+.axf-apx__grid > div { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axf-apx__dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); margin: 0; align-items: center }
+.axf-apx__dl dt { color: var(--fx-muted); font-size: var(--fx-type-root-xs) }
+.axf-apx__dl dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
+.axf-apx__timeline .axf-apx__step { display: contents }
+.axf-apx__timeline dd { font-variant-numeric: tabular-nums }
+.axf-apx__exit { margin: 0; font-weight: 600 }
+.axf-apx__exit.is-good { color: var(--fx-success) }
+.axf-apx__exit.is-bad { color: var(--fx-danger) }
+.axf-apx__foot { justify-content: space-between }
+.axf-apx__link { color: var(--fx-accent); display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axf-apx__count { font-weight: 600; color: var(--fx-warning); font-variant-numeric: tabular-nums }
+/* Deny / Approve inside: big targets sharing the width (about 32 px, 44 px on a phone). */
+.axf-apx__decide { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
+.axf-apx__decide > .fx-btn { flex: 1 1 0; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); justify-content: center }
+@media (max-width: 720px) {
+  .axf-apx__decide > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem) }
+  .axf-apx__head { flex-wrap: wrap }
+  .axf-apx__sum { flex-basis: calc(100% - calc(var(--fx-space) * 5)) }
+  .axf-apx__quick { order: 3; flex: 1 1 100% }
+  .axf-apx__quick > * { flex: 1 1 0 }
+}
+.axf-apx--stack .axf-apx__head { flex-wrap: wrap }
+.axf-apx--stack .axf-apx__sum { flex-basis: calc(100% - calc(var(--fx-space) * 5)) }
+.axf-apx--stack .axf-apx__quick { order: 3; flex: 1 1 100% }
+.axf-apx--stack .axf-apx__quick > * { flex: 1 1 0 }
+.axf-apx--stack .axf-apx__quick .fx-btn { flex: 1 1 0; justify-content: center; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem) }
+.axf-apx--compact .axf-apx__head { padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md) }
+.axf-apx--compact .axf-apx__body { padding: var(--fx-dens-gap-md); gap: var(--fx-dens-gap-md) }
