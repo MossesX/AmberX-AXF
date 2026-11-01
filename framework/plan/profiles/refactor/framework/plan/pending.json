@@ -3709,7 +3709,9 @@
     },
     {
      "text": "[Opus] Script ch7 plugins",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:46:15.036Z"
     },
     {
      "text": "[Opus] Script ch8 builds + orchestrator",
@@ -3758,7 +3760,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:45:52.729Z",
+   "updatedAt": "2026-11-01T22:46:15.036Z",
    "source": "console"
   }
  ]
