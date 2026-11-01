@@ -1325,3 +1325,81 @@ code, .fx-mono { font-size: var(--fx-type-mono-size); }
 .fx-idcard__barcode { width: 100%; height: calc(var(--fx-space) * 2.5); fill: currentColor; margin-top: auto }
 .fx-idcard__page { margin: auto 0 0; font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-2xs); color: var(--fx-idcard-accent); overflow-wrap: anywhere; text-align: center }
 .fx-idcard__flip { align-self: flex-end }
+
+/* ---------------- Help mode (components/Help.tsx; help@1): theme tokens only ---------------- */
+
+.fx-helpbtn {
+  margin-left: auto; display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: var(--fx-size-icon-button-size, 26px); height: var(--fx-size-icon-button-size, 26px); border-radius: 999px;
+  border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-muted);
+}
+.fx-helpbtn:hover { color: var(--fx-text); border-color: var(--fx-accent); }
+.fx-helpbtn.is-on {
+  color: var(--fx-accent-text); background: var(--fx-accent); border-color: var(--fx-accent);
+  box-shadow: 0 0 0 3px var(--fx-accent-soft);
+}
+.fx-helpbtn + .fx-rolechip { margin-left: var(--fx-dens-gap-md); }
+.fx-help-layer { position: fixed; inset: 0; pointer-events: none; z-index: 95; }
+.fx-help-layer > * { pointer-events: auto; }
+html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [role][data-axf-help-id] { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+@media (pointer: fine) {
+  html[data-axf-help='on'] [data-axf-help-id]:hover { outline: 1px dashed var(--fx-accent); outline-offset: 2px; }
+  html[data-axf-help='on'] [data-axf-help-has='no']:hover { outline-color: var(--fx-muted); }
+}
+.fx-help-badge {
+  position: fixed; transform: translate(-50%, -50%); width: 18px; height: 18px; padding: 0; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center; line-height: 1;
+  font-size: var(--fx-type-scale-2xs); font-weight: var(--fx-type-weights-strong); color: var(--fx-accent-text);
+  background: var(--fx-accent); border: var(--fx-border-w) solid var(--fx-surface); box-shadow: var(--fx-shadow-lg);
+}
+.fx-help-badge::before { content: ''; position: absolute; inset: -8px; } /* a 34px tap target round an 18px dot */
+.fx-help-tip {
+  position: fixed; max-width: min(320px, calc(100vw - 16px)); min-width: 180px;
+  display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl);
+  background: var(--fx-surface); color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-accent);
+  border-radius: var(--fx-radius-md); box-shadow: var(--fx-shadow-lg); font-size: var(--fx-type-scale-sm);
+  animation: fx-pop calc(var(--fx-motion) * 1.2) ease both;
+}
+.fx-help-tip.is-missing { border-color: var(--fx-border); border-style: dashed; }
+.fx-help-tip.is-draft { border-style: dashed; }
+.fx-help-tip__head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); color: var(--fx-accent); }
+.fx-help-tip__title { flex: 1; min-width: 0; color: var(--fx-text); font-size: var(--fx-type-scale-md); }
+.fx-help-tip__text { margin: 0; line-height: var(--fx-type-line-normal); }
+.fx-help-tip__try { margin: 0; display: flex; gap: var(--fx-dens-gap-md); align-items: baseline; color: var(--fx-muted); }
+.fx-help-tip__foot { display: flex; justify-content: flex-end; }
+.fx-help-panel {
+  position: fixed; right: var(--fx-dens-gap-2xl); bottom: var(--fx-dens-gap-2xl); width: min(380px, calc(100vw - 24px)); max-height: min(70vh, 560px);
+  display: flex; flex-direction: column; background: var(--fx-surface); color: var(--fx-text);
+  border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg, var(--fx-radius-md)); box-shadow: var(--fx-shadow-lg);
+  animation: fx-pop calc(var(--fx-motion) * 1.2) ease both;
+}
+.fx-help-panel__head { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-2xl); border-bottom: var(--fx-border-w) solid var(--fx-border); color: var(--fx-accent); }
+.fx-help-panel__titles { flex: 1; min-width: 0; }
+.fx-help-panel__titles h2 { margin: 0; color: var(--fx-text); font-size: var(--fx-type-headings-h3); }
+.fx-help-panel__body { overflow: auto; padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); font-size: var(--fx-type-scale-md); line-height: var(--fx-type-line-normal); }
+.fx-help-panel__body p { margin: 0; }
+.fx-help-panel__note { font-size: var(--fx-type-scale-sm); }
+.fx-help-panel__related { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); align-items: center; }
+.fx-help-panel__related .fx-eyebrow { width: 100%; margin: 0; }
+.fx-help-intro {
+  position: fixed; left: 50%; bottom: var(--fx-dens-gap-3xl); transform: translateX(-50%); width: min(440px, calc(100vw - 24px));
+  display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-2xl);
+  background: var(--fx-surface); color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-accent);
+  border-radius: var(--fx-radius-lg, var(--fx-radius-md)); box-shadow: var(--fx-shadow-lg);
+  animation: fx-toast-in calc(var(--fx-motion) * 1.6) cubic-bezier(.2, .9, .3, 1.15) both;
+}
+.fx-help-intro__head { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-lg); }
+.fx-help-intro__head .fx-eyebrow { margin: 0; color: var(--fx-accent); }
+.fx-help-intro__title { margin: 0; font-size: var(--fx-type-headings-h3); }
+.fx-help-intro__say { margin: 0; font-size: var(--fx-type-scale-md); line-height: var(--fx-type-line-normal); }
+.fx-help-intro__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-lg); }
+.fx-help-intro__buttons { display: inline-flex; gap: var(--fx-dens-gap-md); margin-left: auto; }
+.fx-help-spot {
+  position: fixed; pointer-events: none !important; border-radius: var(--fx-radius-md);
+  outline: 2px solid var(--fx-accent); box-shadow: 0 0 0 9999px color-mix(in srgb, var(--fx-bg) calc(var(--fx-opacity-scrim) * 100%), transparent);
+  transition: all var(--fx-motion) ease;
+}
+@media (max-width: 640px) {
+  .fx-help-panel { left: var(--fx-dens-gap-lg); right: var(--fx-dens-gap-lg); bottom: var(--fx-dens-gap-lg); width: auto; }
+  .fx-help-intro { bottom: var(--fx-dens-gap-lg); }
+}

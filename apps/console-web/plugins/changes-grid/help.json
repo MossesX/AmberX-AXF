@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "changes-grid-help",
+  "name": "changes-grid help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:changes-grid. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:changes-grid",
+    "entries": [
+      {
+        "target": "features",
+        "title": "Features",
+        "text": "Shows “Features”. Part of Changes & features grid.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "both",
+        "title": "Both",
+        "text": "Shows the “Both” part of this screen. Part of Changes & features grid.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "changes",
+        "title": "Changes",
+        "text": "Shows the “Changes” part of this screen. Part of Changes & features grid.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "changes-features-grid",
+        "title": "Changes & features grid",
+        "text": "Shows the “Changes & features grid” part of this screen. Part of Changes & features grid.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:changes-grid.open",
+        "title": "Changes & features grid",
+        "text": "Shows “Changes & features grid”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

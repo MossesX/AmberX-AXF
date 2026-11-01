@@ -7,6 +7,7 @@ import { stylePackageErrors } from './engines/stylepackage';
 import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { scaleErrors } from './engines/scale-rules.mjs';
+import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
@@ -31,6 +32,11 @@ export const FRAMEWORK_VERSION: string = spec.frameworkVersion;
 /** Attachable types (badge, clock): assets placed on a host (the banner), not slots picked in Appearance or rolled. */
 export function attachable(t: string): boolean {
   return (spec.types as unknown as Record<string, { attachable?: boolean }>)[t]?.attachable === true;
+}
+
+/** Collection types (help): every asset of the type is in force at once, so there is no active pick to show in Appearance or roll. */
+export function collectionType(t: string): boolean {
+  return (spec.types as unknown as Record<string, { collection?: boolean }>)[t]?.collection === true;
 }
 
 export function isAssetType(t: unknown): t is AssetType {
@@ -100,6 +106,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with the build engine (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, data));
+  // help@1: ONE validator shared with the build engine (core/engines/help-rules.mjs)
+  errors.push(...helpErrors(raw.type, data));
   // agent-card@1: ONE validator shared with the build engine (core/engines/agent-card-rules.mjs)
   errors.push(...agentCardErrors(raw.type, data));
   // job-type@1: ONE validator shared with the build engine (core/engines/job-type-rules.mjs)

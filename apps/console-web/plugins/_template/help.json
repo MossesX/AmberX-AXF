@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "example-help",
+  "name": "Example help",
+  "version": "0.1.0",
+  "description": "This plugin's Help mode entries (help@1). Every screen, button, switch and setting the plugin draws gets one: a short title and a plain sentence on what it does, when to use it and what happens if you tap it. Draft new ones from the code with `node framework/cli/help-coverage.mjs --draft console-web`, then edit them and drop `draft`.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:example",
+    "entries": [
+      {
+        "target": "view:example",
+        "title": "Example",
+        "text": "The example plugin's page. Replace this with what your plugin's page is for, in one plain sentence.",
+        "kind": "screen"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "example",
+        "title": "Example",
+        "steps": [
+          {
+            "say": "This is the example plugin's page. Say what the main part is for.",
+            "target": ""
+          },
+          {
+            "say": "And what to tap first.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}

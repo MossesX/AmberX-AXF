@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "codebase-changes-help",
+  "name": "codebase-changes help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:codebase-changes. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:codebase-changes",
+    "entries": [
+      {
+        "target": "close-gone-on-every-device-stays-in-the-log",
+        "title": "Close",
+        "text": "Takes it off the banner on every device. It stays in the log.",
+        "kind": "button"
+      },
+      {
+        "target": "show-in-the-banner-again",
+        "title": "Show in the banner again",
+        "text": "Puts a closed change back on the banner.",
+        "kind": "button"
+      },
+      {
+        "target": "clear-the-search-and-filters",
+        "title": "Clear search and filters",
+        "text": "Shows everything again.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

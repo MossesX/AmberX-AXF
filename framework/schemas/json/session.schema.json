@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/session.schema.json",
+  "title": "AmberX AXF stored chat session (session@1)",
+  "description": "Generated from framework/core/session-schema.mjs. One chat session (claude.ai, Claude Code, headless build, hub drop).",
+  "type": "object",
+  "required": [
+    "$axf",
+    "id",
+    "source",
+    "title",
+    "startedAt",
+    "updatedAt",
+    "project",
+    "messages",
+    "hash"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "session@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,15}:[A-Za-z0-9._:-]{1,160}$"
+    },
+    "source": {
+      "enum": [
+        "claude-ai-text",
+        "claude-ai-voice",
+        "claude-code",
+        "headless",
+        "hub-drop"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "project": {
+      "type": "string"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "text",
+          "at",
+          "kind"
+        ],
+        "properties": {
+          "role": {
+            "enum": [
+              "user",
+              "assistant",
+              "tool"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 200000
+          },
+          "at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+              },
+              {
+                "const": ""
+              }
+            ]
+          },
+          "kind": {
+            "enum": [
+              "speech",
+              "text",
+              "tool"
+            ]
+          },
+          "toolName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "hash": {
+      "type": "string"
+    },
+    "versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "version",
+          "hash",
+          "updatedAt",
+          "messageCount",
+          "change"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "hash": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "messageCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "change": {
+            "enum": [
+              "new",
+              "continued",
+              "changed"
+            ]
+          }
+        }
+      }
+    },
+    "via": {
+      "type": "string"
+    },
+    "origin": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "cwd": {
+      "type": "string"
+    },
+    "host": {
+      "type": "string"
+    },
+    "meta": {
+      "type": "object"
+    }
+  }
+}

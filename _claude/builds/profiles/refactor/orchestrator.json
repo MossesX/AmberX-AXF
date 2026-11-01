@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T07:28:13.082Z",
+ "updatedAt": "2026-11-01T07:52:02.542Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -8185,16 +8185,21 @@
    "title": "Chat viewer: every session stored, synced, searchable, exportable as 2-voice audio",
    "category": "",
    "detail": "Brett, Nov 1 2026 ~3 AM. session@1 schema + validators; console plugin chat-viewer (also AmberX 'Chats'): claude.ai export zip upload, Claude Code JSONL incremental sync, headless build logs, hub drop folder sessions/claude-ai/<uuid>.json; SQLite + FTS5 store on the console data volume with versions + redaction; DataGrid list, search, bubbles, check for updates; 2-voice audio export (Piper free, OpenAI/ElevenLabs optional) to the hub. Branch claude/chat-viewer.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "chat-viewer",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T06:50:37.079Z",
-   "updatedAt": "2026-11-01T06:50:37.079Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-01T07:36:47.807Z",
+   "builtAt": "2026-11-01T07:36:47.161Z",
+   "notes": [
+    {
+     "text": "Built on claude/chat-viewer, pushed to main. Report _claude/builds/reports/chat-viewer.md",
+     "at": "2026-11-01T07:36:47.807Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -8210,8 +8215,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:42.089Z",
      "note": "",
      "uid": "st-mvxi42qo01gcfe"
     },
@@ -8228,8 +8233,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:42.695Z",
      "note": "",
      "uid": "st-mvxi42qo02qg6m"
     },
@@ -8246,8 +8251,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:43.488Z",
      "note": "",
      "uid": "st-mvxi42qo0363sx"
     },
@@ -8264,8 +8269,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:44.064Z",
      "note": "",
      "uid": "st-mvxi42qo04ngtp"
     },
@@ -8282,8 +8287,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:44.687Z",
      "note": "",
      "uid": "st-mvxi42qo05j01u"
     },
@@ -8300,8 +8305,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:45.260Z",
      "note": "",
      "uid": "st-mvxi42qo06m5ro"
     },
@@ -8318,8 +8323,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:45.789Z",
      "note": "",
      "uid": "st-mvxi42qo07cehx"
     },
@@ -8336,8 +8341,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:36:46.391Z",
      "note": "",
      "uid": "st-mvxi42qo088yyg"
     }

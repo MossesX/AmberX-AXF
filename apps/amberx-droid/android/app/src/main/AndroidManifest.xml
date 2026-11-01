@@ -61,7 +61,7 @@
         <service
             android:name=".OutputRecordService"
             android:exported="false"
-            android:foregroundServiceType="mediaProjection" />
+            android:foregroundServiceType="mediaProjection|microphone" />
         <activity
             android:name=".OutputRecordStartActivity"
             android:exported="false"

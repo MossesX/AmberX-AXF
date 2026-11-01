@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ai-keys-help",
+  "name": "ai-keys help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:ai-keys. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ai-keys",
+    "entries": [
+      {
+        "target": "test-the-pair-and-save",
+        "title": "Test and save",
+        "text": "Tests the key against Anthropic and saves it only if it works.",
+        "kind": "button"
+      },
+      {
+        "target": "save-name",
+        "title": "Save name",
+        "text": "Saves the key's name (the key itself doesn't change).",
+        "kind": "button"
+      },
+      {
+        "target": "write-to-the-vps-now",
+        "title": "Write to the VPS now",
+        "text": "Copies the active key to the VPS so headless Claude Code uses it too.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

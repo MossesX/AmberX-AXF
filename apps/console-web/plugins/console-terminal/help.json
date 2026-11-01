@@ -1,0 +1,313 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "console-terminal-help",
+  "name": "console-terminal help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:console-terminal. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:console-terminal",
+    "entries": [
+      {
+        "target": "close-tab-ctrl-shift-w",
+        "title": "Close tab",
+        "text": "Closes this terminal tab (Ctrl+Shift+W). If something's still running it asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "new-tab",
+        "title": "New tab",
+        "text": "Opens a new terminal tab on the default connection.",
+        "kind": "button"
+      },
+      {
+        "target": "new-tab-menu",
+        "title": "New tab menu",
+        "text": "Pick what the new tab opens: a shell or Claude Code, on which connection.",
+        "kind": "button"
+      },
+      {
+        "target": "close-window",
+        "title": "Close window",
+        "text": "Closes the whole terminal window and its tabs.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-code",
+        "title": "Claude Code",
+        "text": "Opens Claude Code in a tab.",
+        "kind": "button"
+      },
+      {
+        "target": "this-tabs-connection",
+        "title": "This tab's connection",
+        "text": "Where this tab runs: the console container, the VPS, a container or axHub.",
+        "kind": "button"
+      },
+      {
+        "target": "find-ctrl-shift-f",
+        "title": "Find",
+        "text": "Searches the terminal's output (Ctrl+Shift+F).",
+        "kind": "button"
+      },
+      {
+        "target": "a",
+        "title": "Text size",
+        "text": "Makes the terminal text smaller or bigger.",
+        "kind": "button"
+      },
+      {
+        "target": "mouse-mode-a-click-moves-the-cursor",
+        "title": "Mouse mode",
+        "text": "On: a click moves the cursor to where you tapped. Handy on a phone.",
+        "kind": "toggle"
+      },
+      {
+        "target": "copy-ctrl-shift-c",
+        "title": "Copy",
+        "text": "Copies the selected text (Ctrl+Shift+C).",
+        "kind": "button"
+      },
+      {
+        "target": "paste-ctrl-shift-v",
+        "title": "Paste",
+        "text": "Pastes into the terminal (Ctrl+Shift+V). Several lines ask first.",
+        "kind": "button"
+      },
+      {
+        "target": "terminal-settings",
+        "title": "Terminal settings",
+        "text": "Fonts, colours, cursor, bell, scrollback and the Claude Code profiles.",
+        "kind": "button"
+      },
+      {
+        "target": "hide-this-toolbar-right-click-a-tab-to-show-it-again",
+        "title": "Hide this toolbar",
+        "text": "Hides the command toolbar. Right-click a tab to bring it back.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-code-pick-a-connection",
+        "title": "Claude Code on…",
+        "text": "Opens Claude Code on the connection you pick.",
+        "kind": "button"
+      },
+      {
+        "target": "shell-pick-a-connection",
+        "title": "Shell on…",
+        "text": "Opens a shell on the connection you pick.",
+        "kind": "button"
+      },
+      {
+        "target": "open-a-root-shell-anyway",
+        "title": "Open a root shell anyway",
+        "text": "Opens a root shell on the VPS. Careful, kid: root can break anything.",
+        "kind": "button"
+      },
+      {
+        "target": "paste",
+        "title": "Paste",
+        "text": "Shows “Paste”. Part of Terminal.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "start-again",
+        "title": "Start again",
+        "text": "Restarts what was running in this tab.",
+        "kind": "button"
+      },
+      {
+        "target": "shell",
+        "title": "Shell",
+        "text": "Opens a plain shell.",
+        "kind": "button"
+      },
+      {
+        "target": "reconnect",
+        "title": "Reconnect",
+        "text": "Connects this tab again after it dropped.",
+        "kind": "button"
+      },
+      {
+        "target": "switch-connection",
+        "title": "Switch connection",
+        "text": "Moves this tab to another connection.",
+        "kind": "button"
+      },
+      {
+        "target": "new-tab-elsewhere",
+        "title": "New tab elsewhere",
+        "text": "Opens a tab on another connection.",
+        "kind": "button"
+      },
+      {
+        "target": "colour-scheme",
+        "title": "Colour scheme",
+        "text": "The terminal's colours.",
+        "kind": "field"
+      },
+      {
+        "target": "font",
+        "title": "Font",
+        "text": "The terminal font.",
+        "kind": "field"
+      },
+      {
+        "target": "cursor",
+        "title": "Cursor",
+        "text": "The cursor shape.",
+        "kind": "field"
+      },
+      {
+        "target": "line-height",
+        "title": "Line height",
+        "text": "Space between lines.",
+        "kind": "field"
+      },
+      {
+        "target": "padding",
+        "title": "Padding",
+        "text": "Room round the text.",
+        "kind": "field"
+      },
+      {
+        "target": "windows-look",
+        "title": "Windows look",
+        "text": "Makes the terminal look like Windows Terminal.",
+        "kind": "toggle"
+      },
+      {
+        "target": "mica-background",
+        "title": "Mica background",
+        "text": "The see-through Windows background.",
+        "kind": "toggle"
+      },
+      {
+        "target": "command-toolbar",
+        "title": "Command toolbar",
+        "text": "Shows the row of command buttons above the terminal.",
+        "kind": "toggle"
+      },
+      {
+        "target": "blinking-cursor",
+        "title": "Blinking cursor",
+        "text": "Makes the cursor blink.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-terminal-opens",
+        "title": "New terminal opens",
+        "text": "What a new terminal starts with.",
+        "kind": "field"
+      },
+      {
+        "target": "the-button",
+        "title": "The + button",
+        "text": "What the + on the tab strip opens.",
+        "kind": "field"
+      },
+      {
+        "target": "tab-width",
+        "title": "Tab width",
+        "text": "How wide the tabs are.",
+        "kind": "field"
+      },
+      {
+        "target": "bell",
+        "title": "Bell",
+        "text": "What happens when a program rings the bell.",
+        "kind": "field"
+      },
+      {
+        "target": "scrollback-lines",
+        "title": "Scrollback",
+        "text": "How many lines you can scroll back.",
+        "kind": "field"
+      },
+      {
+        "target": "ask-before-closing-a-running-tab",
+        "title": "Ask before closing",
+        "text": "Asks before closing a tab that's still running something.",
+        "kind": "toggle"
+      },
+      {
+        "target": "copy-on-select",
+        "title": "Copy on select",
+        "text": "Selecting text copies it straight away.",
+        "kind": "toggle"
+      },
+      {
+        "target": "ask-before-pasting-several-lines",
+        "title": "Ask before pasting lines",
+        "text": "Asks before pasting more than one line, so nothing runs by accident.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-tabs-start-in-mouse-mode",
+        "title": "Mouse mode for new tabs",
+        "text": "New tabs start with mouse mode on.",
+        "kind": "toggle"
+      },
+      {
+        "target": "new-tabs-start-in-mosh-mode",
+        "title": "Mosh mode for new tabs",
+        "text": "New tabs start in Mosh mode (the phone-friendly connection).",
+        "kind": "toggle"
+      },
+      {
+        "target": "permissions",
+        "title": "Permissions",
+        "text": "What Claude Code may do without asking in this profile.",
+        "kind": "field"
+      },
+      {
+        "target": "tab-colour",
+        "title": "Tab colour",
+        "text": "The colour of this profile's tabs.",
+        "kind": "field"
+      },
+      {
+        "target": "folder",
+        "title": "Folder",
+        "text": "Which folder Claude Code starts in.",
+        "kind": "field"
+      },
+      {
+        "target": "extra-flags-one-per-line",
+        "title": "Extra flags",
+        "text": "More Claude Code command-line flags, one per line.",
+        "kind": "field"
+      },
+      {
+        "target": "first-prompt",
+        "title": "First prompt",
+        "text": "The message Claude Code starts with.",
+        "kind": "field"
+      },
+      {
+        "target": "add-a-profile",
+        "title": "Add a profile",
+        "text": "Makes a new Claude Code profile: model, permissions, folder, first prompt, colour.",
+        "kind": "button"
+      },
+      {
+        "target": "open-a-terminal",
+        "title": "Open a terminal",
+        "text": "Opens the terminal window.",
+        "kind": "button"
+      },
+      {
+        "target": "make-a-new-key",
+        "title": "Make a new key",
+        "text": "Makes a new SSH key for a connection.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

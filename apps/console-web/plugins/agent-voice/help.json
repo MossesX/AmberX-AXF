@@ -1,0 +1,564 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "agent-voice-help",
+  "name": "agent-voice help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:agent-voice. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:agent-voice",
+    "entries": [
+      {
+        "target": "volume",
+        "title": "Volume",
+        "text": "Slide to set “Volume”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "make-a-voice-agent-allow-listen",
+        "title": "Make a voice agent + allow Listen",
+        "text": "Makes a voice agent + allow Listen. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "allow-to-listen",
+        "title": "Allow to listen",
+        "text": "Shows “Allow to listen”. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "s-voice-settings",
+        "title": "'s voice settings",
+        "text": "Opens the 's voice settings. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pause-speaking",
+        "title": "Pause speaking",
+        "text": "Pauses speaking. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "resume-speaking",
+        "title": "Resume speaking",
+        "text": "Resumes speaking. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "stop-speaking",
+        "title": "Stop speaking",
+        "text": "Stops speaking. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "microphone-settings",
+        "title": "Microphone settings",
+        "text": "Opens the microphone settings. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "find-an-agent",
+        "title": "Find an agent",
+        "text": "Where you set “Find an agent”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "reset-to-defaults",
+        "title": "Reset to defaults",
+        "text": "Resets to defaults. Your own changes go. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "cloud-voice",
+        "title": "Cloud voice",
+        "text": "Shows the “Cloud voice” part of this screen. Part of Agent voice.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "fall-back-to-the-device-voice-when-the-cloud-voice-fails",
+        "title": "Fall back to the device voice when the cloud voice fails",
+        "text": "Turns “Fall back to the device voice when the cloud voice fails” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "language",
+        "title": "Language",
+        "text": "Where you set “Language”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "voice",
+        "title": "Voice",
+        "text": "Where you set “Voice”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "openai",
+        "title": "OpenAI",
+        "text": "Shows the “OpenAI” part of this screen. Part of Agent voice.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "elevenlabs",
+        "title": "ElevenLabs",
+        "text": "Shows the “ElevenLabs” part of this screen. Part of Agent voice.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "model",
+        "title": "Model",
+        "text": "Where you set “Model”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "speaking-style",
+        "title": "Speaking style",
+        "text": "Where you set “Speaking style”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "stability",
+        "title": "Stability",
+        "text": "Slide to set “Stability”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "similarity",
+        "title": "Similarity",
+        "text": "Slide to set “Similarity”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "speed",
+        "title": "Speed",
+        "text": "Slide to set “Speed”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "pitch",
+        "title": "Pitch",
+        "text": "Slide to set “Pitch”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "speak-replies",
+        "title": "Speak replies",
+        "text": "Where you set “Speak replies”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "when-a-new-reply-comes-while-talking",
+        "title": "When a new reply comes while talking",
+        "text": "Where you set “When a new reply comes while talking”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "conversation-mode",
+        "title": "Conversation mode",
+        "text": "Turns “Conversation mode” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "read",
+        "title": "Read",
+        "text": "Where you set “Read”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "sentences",
+        "title": "Sentences",
+        "text": "Slide to set “Sentences”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "longest-reply-read-out",
+        "title": "Longest reply read out",
+        "text": "Slide to set “Longest reply read out”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "code",
+        "title": "Code",
+        "text": "Where you set “Code”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "links",
+        "title": "Links",
+        "text": "Where you set “Links”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "long-numbers",
+        "title": "Long numbers",
+        "text": "Where you set “Long numbers”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "emoji",
+        "title": "Emoji",
+        "text": "Where you set “Emoji”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "announce-headings",
+        "title": "Announce headings",
+        "text": "Turns “Announce headings” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "number-list-items-out-loud",
+        "title": "Number list items out loud",
+        "text": "Turns “Number list items out loud” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "slow-down-a-little-on-bold-text-and-headings",
+        "title": "Slow down a little on bold text and headings",
+        "text": "Turns “Slow down a little on bold text and headings” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "pause-after-a-sentence",
+        "title": "Pause after a sentence",
+        "text": "Slide to set “Pause after a sentence”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "pause-after-a-paragraph",
+        "title": "Pause after a paragraph",
+        "text": "Slide to set “Pause after a paragraph”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "pause-after-a-list-item",
+        "title": "Pause after a list item",
+        "text": "Slide to set “Pause after a list item”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "intro",
+        "title": "Intro",
+        "text": "Where you set “Intro”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "outro",
+        "title": "Outro",
+        "text": "Where you set “Outro”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "chime-before-speaking",
+        "title": "Chime before speaking",
+        "text": "Turns “Chime before speaking” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "speak-out-loud",
+        "title": "Speak out loud",
+        "text": "Turns “Speak out loud” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "listen-the-assistant-microphone",
+        "title": "Listen (the Assistant microphone)",
+        "text": "Turns “Listen (the Assistant microphone)” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "send-what-i-say-right-away",
+        "title": "Send what I say right away",
+        "text": "Turns “Send what I say right away” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "cloud-voices",
+        "title": "Cloud voices",
+        "text": "Turns “Cloud voices” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "written",
+        "title": "Written",
+        "text": "Where you set “Written”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "said",
+        "title": "Said",
+        "text": "Where you set “Said”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "whole-word",
+        "title": "Whole word",
+        "text": "Turns “Whole word” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "match-case",
+        "title": "Match case",
+        "text": "Turns “Match case” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "text",
+        "title": "Text",
+        "text": "Where you set “Text”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "speak",
+        "title": "Speak",
+        "text": "Shows “Speak”. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "pause",
+        "title": "Pause",
+        "text": "Shows “Pause”. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "resume",
+        "title": "Resume",
+        "text": "Shows “Resume”. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "skip-line",
+        "title": "Skip line",
+        "text": "Skips line. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "how-it-listens",
+        "title": "How it listens",
+        "text": "Where you set “How it listens”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-words-as-theyre-said",
+        "title": "Show words as they're said",
+        "text": "Turns “Show words as they're said” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "send-phrase",
+        "title": "Send phrase",
+        "text": "Where you set “Send phrase”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "cancel-phrase",
+        "title": "Cancel phrase",
+        "text": "Where you set “Cancel phrase”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "spoken-punctuation-comma-period-new-line",
+        "title": "Spoken punctuation (\"comma\", \"period\", \"new line\")",
+        "text": "Turns “Spoken punctuation (\"comma\", \"period\", \"new line\")” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "stop-after-silence-toggle-mode",
+        "title": "Stop after silence (toggle mode)",
+        "text": "Slide to set “Stop after silence (toggle mode)”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "never-listen-longer-than",
+        "title": "Never listen longer than",
+        "text": "Slide to set “Never listen longer than”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "pressing-the-mic-stops-the-agent-talking",
+        "title": "Pressing the mic stops the agent talking",
+        "text": "Turns “Pressing the mic stops the agent talking” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "hands-free-listening-steps-aside-while-this-listens-amberx",
+        "title": "Hands-free listening steps aside while this listens (AmberX)",
+        "text": "Turns “Hands-free listening steps aside while this listens (AmberX)” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "wait-when-dictation-or-speak-a-command-has-the-mic",
+        "title": "Wait when dictation or Speak a command has the mic",
+        "text": "Turns “Wait when dictation or Speak a command has the mic” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "wait-up-to",
+        "title": "Wait up to",
+        "text": "Slide to set “Wait up to”: left is less, right is more. Part of Agent voice.",
+        "kind": "slider",
+        "draft": true
+      },
+      {
+        "target": "vibrate-when-the-mic-opens-phone",
+        "title": "Vibrate when the mic opens (phone)",
+        "text": "Turns “Vibrate when the mic opens (phone)” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "keep-the-words-in-the-box-if-sending-fails",
+        "title": "Keep the words in the box if sending fails",
+        "text": "Turns “Keep the words in the box if sending fails” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "defaults",
+        "title": "Defaults",
+        "text": "Shows “Defaults”. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "new-key",
+        "title": "New key",
+        "text": "Where you set “New key”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "test-save",
+        "title": "Test & save",
+        "text": "Tests & save. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "clear-the-spoken-audio-cache",
+        "title": "Clear the spoken-audio cache",
+        "text": "Clears the spoken-audio cache. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "export-every-voice",
+        "title": "Export every voice",
+        "text": "Exports every voice. Keep it or share it. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "open-agent-voice",
+        "title": "Open Agent voice",
+        "text": "Opens agent voice. Part of Agent voice.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "action:agent-voice.open",
+        "title": "Agent voice",
+        "text": "Shows “Agent voice”. Part of Agent voice.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:agent-voice.stop",
+        "title": "Stop the agent talking",
+        "text": "Stops the agent talking. Part of Agent voice.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "in-the-assistant-title-bar",
+        "title": "In the Assistant title bar",
+        "text": "Where you set “In the Assistant title bar”. Change it and the app uses the new value. Part of Agent voice.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "agent-voice",
+        "title": "Agent voice",
+        "text": "Shows the “Agent voice” part of this screen. Part of Agent voice.",
+        "kind": "tab",
+        "draft": true
+      },
+      {
+        "target": "action:agent-voice.settings",
+        "title": "Microphone & cloud voices",
+        "text": "Shows “Microphone & cloud voices”. Part of Agent voice.",
+        "kind": "menu-item",
+        "draft": true
+      }
+    ],
+    "intros": []
+  }
+}

@@ -167,3 +167,27 @@ Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Re
 ## Session recording through axHub (Nov 1 2026, rec-control, Opus)
 
 Claude drives AmberX's existing Audio Output Recorder through axHub's MCP: service `amberx` (axHub decision #108) — `recorder_start {session_name, group?, note?}` is a straight approval (never veto, never auto-approved; title `Start recording: <session_name>`), `recorder_stop` / `recorder_status` run directly. The phone is the AXPP device: `AxppLink.java` (hello / long poll / answer with the hub session, started by the recorder plugin and WatchService), `RecorderControl.java` (part names `<session> - <YYYY-MM-DD HH-mm> - partN`, session parsing; JUnit `RecorderControlTest`). A remote start sets the session and opens the recorder's own consent flow (Android's capture prompt) plus a "Start recording: <session>" notification; the recording notification says "Recording: <session> … mic off" with Stop. Parts carry `group`/`session`/`note` in their axHub index; the recordings list groups a session's parts (`byGroup`). Phone and web never auto-approve `amberx.recorder_start`. No microphone path exists (the opt-in mic switch Brett mentioned isn't built). Report: `_claude/builds/reports/rec-control.md`. <!-- axf-plugin:output-recorder -->
+
+## Help mode (Nov 1 2026, help-mode, Opus)
+
+A switch that makes every AmberX app teach itself (Brett: "tooltips everywhere… off = no clutter"): the ? in the menu
+bar, F1 / Ctrl+Shift+H, Help → Help mode, Settings → About, AmberX voice; per device. help@1 packs (collection type;
+rules `framework/core/engines/help-rules.mjs`), tooltips on every control (hover, phone ? badges, long-press), What is
+this? panel, 2–4 step screen intros once per screen. Coverage CLI `framework/cli/help-coverage.mjs` with a CI ratchet
+(`framework/spec/help-coverage.json`): framework 111/111, console + plugins 1196/1196 (496 written, 700 drafts), axHub
+web 163/163. Plugins ship `help.json`. Report `_claude/builds/reports/help-mode.md`; install_steps Part L.
+
+## GitHub App for the whole stack (Nov 1 2026, github-app, Opus) <!-- axf-plugin:github-app -->
+- Console plugin `github-app` (Settings → Plugins → GitHub): GitHub App manifest flow on MossesX (Create → Install on All
+  repositories → Authorize as Brett). Broker `framework/cli/github-token.mjs` (lib `github-app.mjs`): app JWT (RS256),
+  installation tokens cached and renewed at 50 min, user token refreshed under a lock (refresh token rolled), repo creation,
+  health. Credentials in `<console>/.axf-console/github-app/` (0700/0600), never in git or a browser.
+- The keeper keeps the console's `GITHUB_TOKEN` on the installation token (old PAT in `GITHUB_TOKEN_PAT`, used again if the
+  app can't mint), so every plugin and subprocess uses the app; systems check GitHub route default `auto`; "GitHub token"
+  item tests the old token. VPS: `axf-git-cred` (app first, PAT fallback) and a `gh` wrapper (`framework/deploy/`).
+- Health items `github-app` and `github-app-user`. `axf repo create <name> --private`. Report `_claude/builds/reports/github-app.md`.
+- Follow-up: axHub's github connector still on its own token.
+
+## Chat viewer (Nov 1 2026, chat-viewer, Opus) <!-- axf-plugin:chat-viewer -->
+
+Console plugin `chat-viewer` (also AmberX "Chats"): every session as session@1 (`framework/core/session-schema.mjs`, Python port in the plugin, fixture `spec/fixtures/session.json`, CI `spec/check-session.mjs`) in SQLite + FTS5 (`.axf-console/plugins/chat-viewer/chats.db`). Sources: claude.ai data export upload (zip / conversations.json, voice detected), hub drop folder `_data/sessions/claude-ai/<uuid>.json` (shared rule "sync my chats"), Claude Code JSONL (incremental by byte offset), headless build logs + `.brief.md`. Check for updates on load / every 10 min / button (new · continued · changed · unchanged; versions kept, old copies readable), secrets redacted on ingest, DataGrid list with badges, full-text search jumping to the hit, bubbles with collapsible tool calls, copy / share / export md · txt · json. Audio: two voices (Piper free in a venv in the data folder, OpenAI / ElevenLabs with a key), background jobs with progress, chapters per hour, MP3 on the hub `_data/chat-viewer/audio/` with a player. Read-only host mounts via the plugin's `deploy/host.sh` (install-console.sh). Self-test `test.py` (98; +1 with a real Piper render). Report `_claude/builds/reports/chat-viewer.md`. <!-- axf-plugin:chat-viewer -->

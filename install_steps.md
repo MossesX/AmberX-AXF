@@ -346,7 +346,7 @@ On claude.ai in a browser → **Settings → Connectors**:
 
 ---
 
-### Replace the GitHub token (when it dies or expires)
+### Replace the GitHub token (when it dies or expires; only the fallback once Part F2 is done)
 
 Signs: the push banner or auto-merge says 401 / Bad credentials, builds finish but say "pushed: no", or the
 health banner shows GitHub red. axHub has its own GitHub token in its vault; this one is the console's and the
@@ -362,6 +362,25 @@ server's git push.
 7. Done. Git push on the VPS reads the same token through `/usr/local/bin/axf-git-cred` (set as the credential
    helper for /opt/axf and every build worktree), so stuck build branches can be pushed straight away. Tell Claude
    "done" and it pushes them and opens the PRs.
+
+---
+
+## Part F2: GitHub App (no more tokens) <!-- axf-plugin:github-app -->
+
+Personal tokens die (expiry, revokes, 401s) and a fine-grained one can't create repos. The console makes its own
+private GitHub App instead and mints its tokens from the app's key, so nothing expires for good. Three taps, once:
+
+1. Console → **Settings → Plugins → GitHub** → **Create GitHub App** → on GitHub tap **Create GitHub App** (name
+   taken? add a suffix in the console's name field and tap Create again).
+2. GitHub opens the install page by itself: pick **All repositories** → **Install**.
+3. Back in the console: **Authorize as Brett** → **Authorize** on GitHub (lets the console create repos).
+
+That's it. The GitHub App item in the systems check goes green. git on the VPS (`/usr/local/bin/axf-git-cred`), `gh`
+(`/usr/local/bin/gh`), the push banner, CI reads, the activity feed and every console plugin now use the app; the old
+token stays as the fallback until you delete it (Keys banner). New repos: `axf repo create <name> --private`.
+Credentials live on the console server only, in `/opt/axf/.axf-console/github-app/` (owner-only). If the app is ever
+deleted or its key revoked, the GitHub App item turns red: tap Fix and do the three taps again.
+VPS helpers (once per server, root): `sh framework/deploy/install-github-helpers.sh`.
 
 ---
 
@@ -526,3 +545,84 @@ They are normal swarm agents: ID cards, statuses, salaries (weekly budgets) and 
 2. `node framework/cli/axf.mjs validate --framework` must pass.
 3. If nobody has that specialty, **Jobs** shows **Unassigned job** with **Hire**: one tap adds an agent who owns it
    (`agent-job.mjs hire <job-type>` does the same). Rename them on their ID card.
+## Part K: The Chat viewer (every session, searchable, as audio)
+
+The Chat viewer (console → Plugins → **Chat viewer** or Apps → **Chats**; AmberX → **Chats**; plugin
+`apps/console-web/plugins/chat-viewer`) keeps every Claude session as a transcript: claude.ai text and voice chats,
+Claude Code sessions and headless build sessions. Details: the plugin's `README.md`. <!-- axf-plugin:chat-viewer -->
+
+### Step 36. Let the console see the session folders
+
+Re-run the console installer on the VPS once (`bash deploy/install-console.sh` in `/opt/axf`, or the console's
+redeploy). It mounts, read-only, `/root/.claude/projects`, `/home/axfbuild/.claude/projects`, `/root/axf-builds` and
+each `/home/axfbuild/wt-*` into the console (`deploy/host.sh` of the plugin). Open the viewer: it checks for updates on
+load and lists the Claude Code and build sessions it found. Settings → Plugins → Chat viewer shows each folder with
+a tick or a cross. <!-- axf-plugin:chat-viewer -->
+
+### Step 37. Bring in your claude.ai chats
+
+1. On claude.ai (phone or computer): **Settings → Privacy → Export data**. claude.ai emails a download link; open it
+   and download the zip.
+2. In the viewer tap **Import export** and pick the zip (or the `conversations.json` inside it). Text and voice chats
+   are added; importing a newer export later adds new chats and updates continued or changed ones (old copies kept as
+   versions). Exports over 12 MB need the console (AmberX's forwarder caps uploads at 12 MB).
+3. Between exports, say **"sync my chats"** in a claude.ai chat: it writes each new or updated conversation to the hub
+   drop folder (`sessions/claude-ai/<uuid>.json`), and the viewer picks them up on its next check (shared rule).
+
+The viewer never logs in to claude.ai and never uses your cookies.
+
+### Step 38. Free voices for audio export
+
+Settings → Plugins → Chat viewer → **Set up free voices (Piper)** (once, a few minutes): installs Piper in the
+plugin's data folder and downloads the two voices (Brett = Ryan, Amber = Amy; change them there). Then in any session
+tap **Audio → Make audio**; the file lands on the hub (`_data/chat-viewer/audio/`) with a player and a download link.
+For OpenAI or ElevenLabs voices instead, paste the key in the same settings (it stays on the console server).
+
+## Part L: Help mode
+
+Help mode makes every AmberX app explain itself: tooltips on every button, menu item, switch, slider, tab, column and
+banner, a short intro the first time you open a screen, and a **What is this?** panel with the longer story. Off means
+no tooltips and no clutter. It's in the framework, so the console, every plugin page, axHub web, AmberX web and
+Walkthrough Studio all have it (Patches is paused and gets it when it's re-baked).
+
+### Step 39. Turn it on
+
+Any of these, in any app:
+
+- the **?** at the right of the menu bar (it lights up while Help mode is on);
+- **F1** (or **Ctrl+Shift+H** where the browser keeps F1);
+- **Help → Help mode** in the app menu;
+- **Settings → About → Help mode**;
+- AmberX: say "help mode on" / "help mode off" (also "show me the tooltips" / "hide the tooltips").
+
+It's remembered per device, so the phone and the desktop can differ.
+
+### Step 40. Read a tooltip
+
+- **Desktop:** hover any control. The tooltip opens beside it (never on top of it), so you can still click it.
+- **Phone:** every control gets a small **?** badge; tap the badge. Or long-press the control itself (the control is
+  not tapped).
+- Tap anywhere else (or Escape) to close it. A normal tap on a control still does its job.
+- **What is this?** in a tooltip opens a small panel: the longer explanation, a thing to try, and related screens
+  (tap one to go there).
+- A control nobody has written help for yet says **No help yet** and shows its help id; it's on the coverage list.
+
+### Step 41. Screen intros
+
+The first time you open a screen with Help mode on, a 2–4 step intro points at its main parts. **Next** / **Back**,
+**Skip**, or tick **Don't show intros again** to stop them everywhere. **Help → Show this screen's intro** replays one;
+**Help → Show all screen intros again** (or the Settings action) brings them all back.
+
+### Step 42. Write help (for builds and plugins)
+
+- Help is an asset (help@1): packs of entries `{ target, title, text, more?, tryIt?, link?, related? }` plus `intros`.
+  The framework's pack is `framework/assets/help/framework.json` (copied into every app with
+  `node framework/cli/help-coverage.mjs --sync`); apps add `src/assets/help/*.json`; each console plugin ships its own
+  `help.json` beside `plugin.json` (it goes away when the plugin is uninstalled).
+- `target` is the control's help id: `action:<spec>` for anything with an action, `view:<id>` for a screen,
+  `banner:<id>`, `menu:<id>`, `column:<label>`, otherwise the label in lower-case with dashes ("Approve now (3)" →
+  `approve-now`). Put `data-help="<id>"` on a control to name it outright.
+- `node framework/cli/help-coverage.mjs` shows coverage per app; `--missing <scope>` lists what still says "No help yet";
+  `--draft <scope>` writes drafts from the code (edit them into plain English and drop `draft`); `--report <file>` writes
+  the report. CI runs `--check` and fails if coverage drops below `framework/spec/help-coverage.json`
+  (`--update` raises it after you add help).

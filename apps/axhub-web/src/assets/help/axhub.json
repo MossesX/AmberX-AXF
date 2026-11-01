@@ -1,0 +1,468 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub",
+  "name": "axHub web help",
+  "version": "1.0.0",
+  "description": "Help mode entries for axHub web: approvals (who asked, Approve now / Deny / details), the request page, the log, Go pass, users, account, handoff and the hub pages, plus screen intros. Hand-written.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help",
+    "axhub"
+  ],
+  "data": {
+    "scope": "axhub-web",
+    "entries": [
+      {
+        "target": "view:home",
+        "title": "Approvals",
+        "text": "Everything waiting on you: held calls counting down (they run by themselves unless you Deny) and straight approvals (they only run if you Approve).",
+        "more": "Each row says who asked (Claude.ai, Claude Code, headless build, console, agent), what it wants to do and why. Deny drops it for good; Approve now runs it at once; Shelve pauses a countdown until you make up your mind.",
+        "tryIt": "Tap a row's caret to see the exact code before you decide.",
+        "related": [
+          "view:approvals-log",
+          "view:approval"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:hub",
+        "title": "Hub",
+        "text": "Your hub at a glance: services, jobs, devices and what's connected.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:approval",
+        "title": "Request",
+        "text": "One call in full: the reason, the exact code, who asked, the tool and its risk, the timeline and the result.",
+        "related": [
+          "view:home"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:go-pass",
+        "title": "Go pass",
+        "text": "Lets a Claude session that can't reach the hub work anyway, for the hours you pick. When it ends, they stop.",
+        "tryIt": "Pick the hours, add a note, tap Go.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:approvals-log",
+        "title": "Approvals log",
+        "text": "Every call the hub ever held or asked about: decided, denied, timed out — with who asked and what ran.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:apps",
+        "title": "Apps",
+        "text": "Your apps on the hub, each with its page.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:users",
+        "title": "Users",
+        "text": "Who can sign in to the hub, their role and their permissions.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:handoff",
+        "title": "Handoff",
+        "text": "Hands a job to another Claude account with everything it needs, and shows the runs.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:handoff-run",
+        "title": "Handoff run",
+        "text": "One handoff run: what was sent, what came back.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:assets",
+        "title": "Assets",
+        "text": "Every asset this app uses; pick one to look at it or swap it in.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:account",
+        "title": "Account",
+        "text": "Your hub account: name, password, signed-in devices.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:services",
+        "title": "Services",
+        "text": "Every service the hub connects to, and its tools.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:jobs",
+        "title": "Jobs",
+        "text": "Slow calls the hub is running for you, and their results.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:audit",
+        "title": "Audit log",
+        "text": "Everything that changed on the hub, who did it and when.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:vault",
+        "title": "Vault",
+        "text": "Secrets the hub keeps. They're never shown back in full.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:projects",
+        "title": "Projects",
+        "text": "Every project's files on the hub (/projects).",
+        "kind": "screen"
+      },
+      {
+        "target": "view:devices",
+        "title": "Devices",
+        "text": "Phones and computers paired with the hub.",
+        "kind": "screen"
+      },
+      {
+        "target": "action:axhub.search",
+        "title": "Search everything",
+        "text": "Finds any page, approval, app or setting by what you type."
+      },
+      {
+        "target": "action:axhub.check",
+        "title": "Check the hub now",
+        "text": "Asks the hub right now instead of waiting for the next check."
+      },
+      {
+        "target": "action:hub.open",
+        "title": "Hub page",
+        "text": "Opens that hub page."
+      },
+      {
+        "target": "action:hub.open:approvals",
+        "title": "Approvals",
+        "text": "Opens what's waiting on you."
+      },
+      {
+        "target": "action:hub.open:log",
+        "title": "Approvals log",
+        "text": "Opens the full history of approvals."
+      },
+      {
+        "target": "action:axhub.signout",
+        "title": "Sign out of axHub",
+        "text": "Signs this browser out of the hub. Approvals stop showing here until you sign back in."
+      },
+      {
+        "target": "indent-size",
+        "title": "Indent size",
+        "text": "How far the JSON is indented.",
+        "kind": "field"
+      },
+      {
+        "target": "keep-it",
+        "title": "Keep it",
+        "text": "Keeps it as it is."
+      },
+      {
+        "target": "all-requests",
+        "title": "All requests",
+        "text": "Back to every request."
+      },
+      {
+        "target": "how-long",
+        "title": "How long",
+        "text": "How long to put it off.",
+        "kind": "field"
+      },
+      {
+        "target": "amount",
+        "title": "Amount",
+        "text": "How many (minutes, hours…).",
+        "kind": "field"
+      },
+      {
+        "target": "unit",
+        "title": "Unit",
+        "text": "Minutes, hours or days.",
+        "kind": "field"
+      },
+      {
+        "target": "date-and-time-your-time",
+        "title": "Date and time",
+        "text": "When it should run, in your time.",
+        "kind": "field"
+      },
+      {
+        "target": "wait-for",
+        "title": "Wait for",
+        "text": "Put it off for a while, or until a set time.",
+        "kind": "field"
+      },
+      {
+        "target": "postpone",
+        "title": "Postpone",
+        "text": "Puts the call off until the time you picked. It still needs your OK then."
+      },
+      {
+        "target": "requests",
+        "title": "Requests",
+        "text": "The calls in this log.",
+        "kind": "tab"
+      },
+      {
+        "target": "download-json",
+        "title": "Download JSON",
+        "text": "Saves the whole log as a JSON file."
+      },
+      {
+        "target": "decided",
+        "title": "Decided",
+        "text": "How it ended: approved, denied, timed out.",
+        "kind": "column"
+      },
+      {
+        "target": "column:decided",
+        "title": "Decided",
+        "text": "How it ended: approved, denied, timed out. Tap to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "tool",
+        "title": "Tool",
+        "text": "The tool the call uses (vps.run, github.pulls/create…).",
+        "kind": "column"
+      },
+      {
+        "target": "column:tool",
+        "title": "Tool",
+        "text": "The tool the call uses. Tap to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "the-request",
+        "title": "The request",
+        "text": "Opens this call's own page."
+      },
+      {
+        "target": "newer",
+        "title": "Newer",
+        "text": "Shows newer calls."
+      },
+      {
+        "target": "older",
+        "title": "Older",
+        "text": "Shows older calls."
+      },
+      {
+        "target": "stop-now",
+        "title": "Stop now",
+        "text": "Stops this running call."
+      },
+      {
+        "target": "every-source",
+        "title": "Every source",
+        "text": "Shows calls from everyone: Claude.ai, Claude Code, headless builds, the console, agents.",
+        "kind": "field"
+      },
+      {
+        "target": "open-the-request",
+        "title": "Open the request",
+        "text": "Opens this call's own page with everything about it."
+      },
+      {
+        "target": "hub-page",
+        "title": "Hub page",
+        "text": "Opens this app's page on the hub."
+      },
+      {
+        "target": "sign-in-to-axhub",
+        "title": "Sign in to axHub",
+        "text": "Signs you in, so approvals and your look show here."
+      },
+      {
+        "target": "apps-page",
+        "title": "Apps page",
+        "text": "Opens the app's own page."
+      },
+      {
+        "target": "note-optional-shown-in-the-pass",
+        "title": "Note",
+        "text": "Optional: what the pass is for. Shown in the pass.",
+        "kind": "field"
+      },
+      {
+        "target": "go-for-h",
+        "title": "Go",
+        "text": "Starts the pass for the hours you picked. Sessions without the hub may work until it ends."
+      },
+      {
+        "target": "all-runs",
+        "title": "All runs",
+        "text": "Every handoff run."
+      },
+      {
+        "target": "continue-installation-and-handoff",
+        "title": "Continue",
+        "text": "Carries on installing and hands the job over."
+      },
+      {
+        "target": "ive-sent-it",
+        "title": "I've sent it",
+        "text": "Tells the hub you've sent the message, so it waits for the reply."
+      },
+      {
+        "target": "sign-out-the-others",
+        "title": "Sign out the others",
+        "text": "Signs out every other device using your account. This one stays signed in."
+      },
+      {
+        "target": "current-password",
+        "title": "Current password",
+        "text": "Your password now.",
+        "kind": "field"
+      },
+      {
+        "target": "new-password",
+        "title": "New password",
+        "text": "The one you want.",
+        "kind": "field"
+      },
+      {
+        "target": "new-password-again",
+        "title": "New password again",
+        "text": "Same again, to catch typos.",
+        "kind": "field"
+      },
+      {
+        "target": "change-password",
+        "title": "Change password",
+        "text": "Saves the new password."
+      },
+      {
+        "target": "settings-appearance",
+        "title": "Settings → Appearance",
+        "text": "Opens the look settings."
+      },
+      {
+        "target": "username",
+        "title": "Username",
+        "text": "What they sign in with.",
+        "kind": "field"
+      },
+      {
+        "target": "temporary-password",
+        "title": "Temporary password",
+        "text": "A password they must change the first time they sign in.",
+        "kind": "field"
+      },
+      {
+        "target": "save-name-and-email",
+        "title": "Save name and email",
+        "text": "Saves the user's name and email."
+      },
+      {
+        "target": "change-role",
+        "title": "Change role",
+        "text": "Gives the user another role (admin, member…)."
+      },
+      {
+        "target": "another-permission",
+        "title": "Another permission",
+        "text": "Adds a permission to this user.",
+        "kind": "field"
+      },
+      {
+        "target": "save-permissions",
+        "title": "Save permissions",
+        "text": "Saves what this user may do."
+      },
+      {
+        "target": "set-a-temporary-password",
+        "title": "Set a temporary password",
+        "text": "Gives the user a password they must change on first sign-in.",
+        "kind": "toggle"
+      },
+      {
+        "target": "set-password",
+        "title": "Set password",
+        "text": "Saves the password."
+      },
+      {
+        "target": "the-hubs-approvals-page",
+        "title": "The hub's approvals page",
+        "text": "Opens the approvals page on the hub."
+      },
+      {
+        "target": "pick-a-password",
+        "title": "Pick a password",
+        "text": "Choose the password for this account.",
+        "kind": "field"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "home",
+        "title": "Approvals",
+        "steps": [
+          {
+            "say": "Everything waiting on you. Held calls count down and run by themselves unless you Deny them.",
+            "target": ""
+          },
+          {
+            "say": "Each row says who asked and what it wants. The caret opens the exact code in place.",
+            "target": "approval-details"
+          },
+          {
+            "say": "Deny drops it for good. Approve now runs it right away. That's it — you're the boss.",
+            "target": "approval-deny"
+          }
+        ]
+      },
+      {
+        "screen": "approvals-log",
+        "title": "Approvals log",
+        "steps": [
+          {
+            "say": "Every call the hub ever held or asked about, newest first.",
+            "target": ""
+          },
+          {
+            "say": "Filter by source or tool, tap a row for the full request.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "go-pass",
+        "title": "Go pass",
+        "steps": [
+          {
+            "say": "When a Claude session can't reach the hub, it stops and asks for a go. This is where you give one.",
+            "target": ""
+          },
+          {
+            "say": "Pick the hours, tap Go. When it runs out, the sessions stop again.",
+            "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "users",
+        "title": "Users",
+        "steps": [
+          {
+            "say": "Who can sign in, their role and what they may do.",
+            "target": ""
+          },
+          {
+            "say": "Tap a user to change their role, permissions or set a temporary password.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}

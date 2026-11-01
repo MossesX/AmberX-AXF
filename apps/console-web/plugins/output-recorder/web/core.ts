@@ -1,8 +1,10 @@
 /**
  * Audio Output Recorder core: pure rules, no React. The page, test.mts and (as twins) the Java side use the same ones.
  *
- *  - the phone records what it plays (AudioPlaybackCapture, never the microphone) into timestamped chunks, 30 min each
- *    by default, and sends each to axHub; the local copy stays until axHub confirms it (OutputRecordUploader.java)
+ *  - the phone records what it plays (AudioPlaybackCapture) into timestamped chunks, 30 min each by default, and sends
+ *    each to axHub; the local copy stays until axHub confirms it (OutputRecordUploader.java)
+ *  - opt-in mic ("Record my mic too", off by default; or a start from axHub with `mic: true`): the chunk is stereo,
+ *    left = mic, right = playback (TRACKS), and the times the mic was busy are kept in its index (`micBusy`)
  *  - on axHub: the data server (same store as AmberX notes) in its own hub project, `amberx-recordings` by default.
  *    The data server takes text documents of ≤ 64 KB, so a chunk is numbered parts plus an index:
  *      output-recorder/parts/<id>/0000.json        { $axf: 'audio-part@1', id, n, b64 }      (44 000 audio bytes each)
@@ -56,6 +58,8 @@ export interface Settings {
   skipSilent: boolean;
   /** hub project the recordings go to */
   project: string;
+  /** "Record my mic too": a second track with the phone's mic (opt-in, off by default) */
+  mic: boolean;
 }
 
 export const K = {
@@ -66,9 +70,21 @@ export const K = {
   whenFull: 'output-recorder.whenFull',
   skipSilent: 'output-recorder.skipSilent',
   project: 'output-recorder.project',
+  mic: 'output-recorder.mic',
 } as const;
 
-export const DEFAULTS: Settings = { kbps: 32, channels: 1, chunkMin: 30, capMb: 200, whenFull: 'stop', skipSilent: true, project: DEFAULT_PROJECT };
+export const DEFAULTS: Settings = { kbps: 32, channels: 1, chunkMin: 30, capMb: 200, whenFull: 'stop', skipSilent: true, project: DEFAULT_PROJECT, mic: false };
+
+/** A two-track chunk's sides (twin: TwoTrack.LEFT / RIGHT): left = the mic (Brett), right = what the phone plays. */
+export const TRACKS = { left: 'mic', right: 'playback' } as const;
+/** Why the mic side was silent for a while (twin: TwoTrack.BUSY_*). */
+export type MicBusyReason = 'unavailable' | 'silenced' | 'error' | 'stopped';
+export interface MicBusySpan { fromMs: number; toMs: number; reason: MicBusyReason }
+export const MIC_BUSY_LABEL: Record<MicBusyReason, string> = {
+  unavailable: 'mic busy (another app had it)', silenced: 'mic silenced by Android', error: 'mic stopped', stopped: 'mic turned off',
+};
+/** The notification's mic line (twin: TwoTrack.micLine). */
+export const micLine = (micOn: boolean, busy: boolean) => (!micOn ? 'mic off' : busy ? 'mic busy: playback only' : 'playback + mic');
 export const KBPS = [24, 32, 48, 64, 96] as const;
 
 const num = (v: unknown, d: number, lo: number, hi: number) => {
@@ -93,6 +109,7 @@ export function readSettings(get: (key: string) => unknown): Settings {
     whenFull: pick(get(K.whenFull), ['stop', 'drop-oldest'] as const, d.whenFull),
     skipSilent: get(K.skipSilent) !== false,
     project: cleanProject(get(K.project) ?? d.project),
+    mic: get(K.mic) === true, // only an explicit on: anything else is off
   };
 }
 
@@ -220,6 +237,10 @@ export interface Recording {
   /** The session it belongs to and its note, when started through axHub. */
   session: string;
   note: string;
+  /** two tracks: left = mic, right = playback (the opt-in mic) */
+  mic: boolean;
+  /** when the mic side was silent (ms from the recording's start) */
+  micBusy: MicBusySpan[];
 }
 
 /** An index document read from the hub, checked (null = not one of ours or damaged). */
@@ -237,7 +258,23 @@ export function normalizeIndex(raw: unknown, id: string): Recording | null {
     bytes, mime: s(r.mime, 'audio/mp4') || 'audio/mp4', kbps: n(r.kbps), channels: n(r.channels), device: s(r.device), parts,
     sha256: /^[0-9a-f]{64}$/.test(s(r.sha256)) ? s(r.sha256) : '', uploadedAt: s(r.uploadedAt), deleted: r.deleted === true,
     group: s(r.group).slice(0, 80), session: s(r.session).slice(0, 80), note: typeof r.note === 'string' ? r.note.slice(0, 500) : '',
+    mic: r.mic === true, micBusy: busySpans(r.micBusy),
   };
+}
+
+const BUSY_REASONS: readonly MicBusyReason[] = ['unavailable', 'silenced', 'error', 'stopped'];
+/** The `micBusy` spans of an index, checked (at most 100, each 0 ≤ from ≤ to). */
+export function busySpans(raw: unknown): MicBusySpan[] {
+  if (!Array.isArray(raw)) return [];
+  const out: MicBusySpan[] = [];
+  for (const x of raw.slice(0, 100)) {
+    const o = x as Record<string, unknown> | null;
+    const from = typeof o?.fromMs === 'number' ? o.fromMs : NaN;
+    const to = typeof o?.toMs === 'number' ? o.toMs : NaN;
+    if (!(from >= 0) || !(to >= from)) continue;
+    out.push({ fromMs: from, toMs: to, reason: BUSY_REASONS.includes(o!.reason as MicBusyReason) ? (o!.reason as MicBusyReason) : 'unavailable' });
+  }
+  return out;
 }
 
 /** Newest first; deleted ones out. */
@@ -362,8 +399,13 @@ export interface RecState {
   lastUploadAt: string;
   /** the last thing worth telling (a stop reason, a refusal) */
   note: string;
+  /** the mic track is part of this recording */
+  mic: boolean;
+  /** why the mic side is silent right now ('' = it records) */
+  micBusy: MicBusyReason | '';
 }
-export const REC_IDLE: RecState = { running: false, starting: false, startedAt: null, upload: 'idle', message: '', waiting: 0, waitingBytes: 0, capBytes: 0, nextTryAt: '', lastUploadAt: '', note: '' };
+export const REC_IDLE: RecState = { running: false, starting: false, startedAt: null, upload: 'idle', message: '', waiting: 0, waitingBytes: 0, capBytes: 0, nextTryAt: '', lastUploadAt: '', note: '', mic: false, micBusy: '' };
+const busyOf = (v: unknown): MicBusyReason | '' => (BUSY_REASONS.includes(v as MicBusyReason) ? (v as MicBusyReason) : '');
 
 export type NativeEvent = { state: string; [k: string]: unknown };
 export type RecAction = { type: 'start' } | { type: 'status'; status: Partial<RecState> } | { type: 'native'; e: NativeEvent };
@@ -389,14 +431,19 @@ export function recReduce(s: RecState, a: RecAction): RecState {
   if (a.type === 'status') {
     const st = a.status as Record<string, unknown>;
     const running = typeof st.running === 'boolean' ? st.running : s.running;
-    return { ...s, ...queueFields(st), running, starting: running ? false : s.starting, startedAt: running ? (str(st.startedAt) || s.startedAt) : null };
+    return { ...s, ...queueFields(st), running, starting: running ? false : s.starting, startedAt: running ? (str(st.startedAt) || s.startedAt) : null, mic: running && st.mic === true, micBusy: running ? busyOf(st.micBusy) : '' };
   }
   const e = a.e;
   switch (e.state) {
-    case 'recording': return { ...s, running: true, starting: false, startedAt: str(e.startedAt) || new Date().toISOString(), note: '' };
-    case 'stopped': return { ...s, running: false, starting: false, startedAt: null, note: str(e.reason) };
+    case 'recording': return { ...s, running: true, starting: false, startedAt: str(e.startedAt) || new Date().toISOString(), note: '', mic: e.mic === true, micBusy: busyOf(e.micBusy) };
+    case 'stopped': return { ...s, running: false, starting: false, startedAt: null, note: str(e.reason), mic: false, micBusy: '' };
+    case 'micBusy': {
+      const reason = busyOf(e.reason) || 'unavailable';
+      return { ...s, micBusy: reason, mic: reason === 'stopped' ? false : s.mic, note: reason === 'stopped' ? 'Mic off: still recording what the phone plays.' : `Mic busy (${str(e.message) || MIC_BUSY_LABEL[reason]}): recording playback only.` };
+    }
+    case 'micBack': return { ...s, micBusy: '', note: 'Mic back: recording playback + mic.' };
     case 'cancelled': return { ...s, running: false, starting: false, note: str(e.message) || 'Capture wasn’t allowed.' };
-    case 'error': return { ...s, running: false, starting: false, startedAt: null, note: str(e.message) || 'The recorder stopped.' };
+    case 'error': return { ...s, running: false, starting: false, startedAt: null, note: str(e.message) || 'The recorder stopped.', mic: false, micBusy: '' };
     case 'queue': return { ...s, ...queueFields(e) };
     case 'dropped': return { ...s, note: `The oldest unsent chunk (${str(e.id)}) was dropped: the phone’s queue was full.` };
     default: return s; // chunk, uploaded, silent: the queue event that follows carries the counts

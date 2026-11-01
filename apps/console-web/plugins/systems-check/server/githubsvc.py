@@ -41,12 +41,17 @@ class GitHubService:
 
     # ---- route
     def route(self) -> str:
-        return store.settings().get("githubRoute", "hub")
+        """hub | local; "auto" (the default since Nov 1 2026) = the local token first while it is the GitHub App's
+        (github-app@1: minted, never dies), else axHub first."""
+        saved = store.settings().get("githubRoute")
+        if saved in github_hub.ROUTE_MODES:
+            return saved
+        return "local" if os.environ.get("AXF_GITHUB_TOKEN_SOURCE") == "app" else "hub"
 
     def set_route(self, mode: str, by: str = "console") -> str:
-        if mode not in github_hub.ROUTE_MODES:
-            raise ValueError("route is hub or local")
-        before = self.route()
+        if mode not in (*github_hub.ROUTE_MODES, "auto"):
+            raise ValueError("route is hub, local or auto")
+        before = store.settings().get("githubRoute")
         store.save_settings({"githubRoute": mode})
         if before != mode:
             self.log("system", f"GitHub route: {before} → {mode} ({by})", "info")

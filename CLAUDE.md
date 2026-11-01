@@ -112,6 +112,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 - **Agent cap (Nov 1 2026):** every headless `claude -p` on the VPS (deploy/claude-headless.sh, so axHub build_start and console launches; the agent swarm) takes a slot from `framework/cli/agent-slots.mjs` first: max running agents (default 6), memory floor (2 GB), extras queue and start by themselves (`queued at position N`). Wrap heavy steps (pnpm/vite builds, docker test runs, Playwright) in `node framework/cli/agent-slots.mjs heavy -- <cmd>` (default 3 at once). Settings: Settings → Plugins → Agent cap; `agent-slots.mjs status`. <!-- axf-plugin:agent-slots -->
 - Model policy: per step in the Build orchestrator (Fable for contracts/engines/migrations/cross-app GUI behaviour, Opus otherwise); approval only at a model switch.
 - No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.
+- **GitHub goes through the GitHub App (Nov 1 2026):** get tokens from the broker `framework/cli/github-token.mjs` (`installation` | `user` | `token` | `repo create`), never a new personal token; the console keeps `GITHUB_TOKEN` on the app's installation token, the old PAT is only the fallback. Setup: Settings → Plugins → GitHub. <!-- axf-plugin:github-app -->
 
 ## Related repos
 

@@ -163,7 +163,12 @@ class SysCheck:
         """Live (Oct 30 2026): GET /user, the scopes or permissions the console's GitHub helpers need, and the expiry
         header (amber a week ahead, red once expired). probes.github does the calls; no token in any text."""
         from . import probes
-        tok = os.environ.get("GITHUB_TOKEN", "")
+        # github-app@1 (Nov 1 2026): when the GitHub App plugin keeps GITHUB_TOKEN on the app's installation token, the
+        # personal token is the fallback in GITHUB_TOKEN_PAT; this item tests that one (its expiry warning included).
+        on_app = os.environ.get("AXF_GITHUB_TOKEN_SOURCE") == "app"
+        tok = os.environ.get("GITHUB_TOKEN_PAT", "") if on_app else os.environ.get("GITHUB_TOKEN", "")
+        if on_app and not tok:
+            return self.item("github-token", "github", "GitHub token", "ok", "No personal token: GitHub runs on the GitHub App (see the GitHub App item).", order=10)
         base = dict(fix=self.secret_fix("GITHUB_TOKEN"), links=[{"label": "Make a new token (pre-filled)", "url": github_token_page()}, {"label": "GitHub docs: personal access tokens", "url": DOCS["github_pat_docs"]}],
                     instructions=["Make a new fine-grained token (the link pre-fills it): Repository access → only MossesX/AmberX-AXF.",
                                   "Permissions: Contents, Pull requests, Actions and Workflows → Read and write; Metadata → Read.",
@@ -171,6 +176,8 @@ class SysCheck:
         if tok and not github.valid_repo(self.repo):
             return self.item("github-token", "github", "GitHub token", "error", f"AXF_GITHUB_REPO isn't owner/name ({self.repo[:60]!r}).", **base)
         r = probes.github(tok, self.repo)
+        if on_app and r["status"] in ("error", "warn"):
+            r = {**r, "status": "warn", "summary": f"Old personal token (fallback only; GitHub runs on the GitHub App): {r['summary']}"}
         c = self.item("github-token", "github", "GitHub token", r["status"], r["summary"], details=r.get("details") or [], **base)
         for k in ("unreachable", "expiresAt", "expiring"):
             if r.get(k):

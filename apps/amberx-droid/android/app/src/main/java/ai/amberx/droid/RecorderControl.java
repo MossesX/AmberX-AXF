@@ -15,8 +15,8 @@ import org.json.JSONObject;
  * Part name: {@code "<session_name> - <YYYY-MM-DD HH-mm> - partN"}, the time being when the session started (phone's
  * local time), N from 1. Web twin: output-recorder core.ts {@code sessionPartName}.
  *
- * Microphone: the recorder has no microphone path at all (AudioPlaybackCapture only); a remote command can't change
- * that, and status always reports {@code mic: false}.
+ * Microphone (opt-in, Nov 1 2026): off unless Brett's "Record my mic too" setting is on, or a start's `mic: true` asks
+ * for it (axHub's approval then says "Playback + MIC"). {@link #micFor}: the start's own choice wins, else the setting.
  */
 final class RecorderControl {
     private RecorderControl() {}
@@ -40,10 +40,17 @@ final class RecorderControl {
         return clean(session) + " - " + f.format(new Date(startedMs)) + " - part" + Math.max(1, part);
     }
 
-    /** What a remote start sets: the session, its group (default: the session) and note. */
+    /** What a remote start sets: the session, its group (default: the session), note and mic choice (null = the setting). */
     static final class Session {
         final String name, group, note;
-        Session(String name, String group, String note) { this.name = name; this.group = group; this.note = note; }
+        final Boolean mic;
+        Session(String name, String group, String note) { this(name, group, note, null); }
+        Session(String name, String group, String note, Boolean mic) { this.name = name; this.group = group; this.note = note; this.mic = mic; }
+    }
+
+    /** Whether a recording takes the mic too: the start's own choice when it made one, else the setting. */
+    static boolean micFor(Boolean sessionMic, boolean setting) {
+        return sessionMic != null ? sessionMic : setting;
     }
 
     /** The session from a `recorder.start` call's arguments; throws with a message the hub shows when it's unusable. */
@@ -55,7 +62,13 @@ final class RecorderControl {
         String group = g.trim().isEmpty() ? name : clean(g);
         String note = args.optString("note", "").replaceAll("\\p{Cntrl}", " ").trim();
         if (note.length() > MAX_NOTE) note = note.substring(0, MAX_NOTE);
-        return new Session(name, group, note);
+        Object m = args.opt("mic");
+        if (m != null && m != JSONObject.NULL && !(m instanceof Boolean)) throw new IllegalArgumentException("mic must be true or false.");
+        Boolean mic = m instanceof Boolean ? (Boolean) m : null;
+        // axHub filled `mic` from the setting it last saw ("default"): on only if the setting is still on, so the phone
+        // never records more than the approval said; off stays off.
+        if ("default".equals(args.optString("mic_source")) && Boolean.TRUE.equals(mic)) mic = null;
+        return new Session(name, group, note, mic);
     }
 
     /** True for the commands this app takes from the hub. */
