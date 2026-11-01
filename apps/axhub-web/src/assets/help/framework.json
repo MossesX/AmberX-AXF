@@ -679,12 +679,6 @@
         "kind": "toggle"
       },
       {
-        "target": "get-the-look-from-axhub",
-        "title": "Get the look from axHub",
-        "text": "On: this app wears the look saved on your hub, live, so every app matches. Off: it keeps its own.",
-        "kind": "toggle"
-      },
-      {
         "target": "apply-settings-to-all",
         "title": "Apply to all",
         "text": "Uses these settings for every asset of this kind, not just this one.",

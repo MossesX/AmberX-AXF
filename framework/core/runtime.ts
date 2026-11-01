@@ -29,7 +29,7 @@ import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDe
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
-import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
+import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -97,7 +97,10 @@ export const SPACING_KEY = 'axf.appearance.spacing';
  */
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
-/** Developer apps: false = stop reading (and writing) the look on axHub; the app keeps its own saved look. */
+/**
+ * Retired (Nov 1 2026, Brett: "The apps should only get appearance from axhub period"): a developer app always reads
+ * and writes its look on axHub. A saved `false` from the old "Get the look from axHub" switch is cleared on attach.
+ */
 export const APPEARANCE_FOLLOW_KEY = 'axf.hub.appearance.follow';
 /**
  * The Active assets pane (the layout's inspector region): a developer tool, closed until the user opens it
@@ -210,7 +213,7 @@ export interface AppearanceSource {
   /** Re-read now (the UI-editor rule: fresh on focus). */
   refresh(): void;
   /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
-  save(change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }): void;
+  save(change: AppearanceChange): void;
 }
 
 /** What `rt.brandPlace(slot)` gives a UI piece to draw. */
@@ -283,6 +286,11 @@ export class AxfRuntime {
     );
     // The Spacing choice recompiles the styles (the provider re-applies them on any state change it sees).
     this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); });
+    // Look settings (Sliders, per-asset tokens, banner looks, rolls…) are shared through the axHub look like the slots
+    // (Nov 1 2026, Brett: "Any theme change applies to all"): every local change goes to the hub document.
+    this.settings.onAnyChange((key, value) => {
+      if (isAppearanceSetting(key)) this.pushAppearance({ settings: { [key]: value ?? null } });
+    });
     // Hot render (Brett, Oct 23 2026): "whenever settings are changed that affect the UI, render immediately". Any
     // settings change is a state change, so everything that reads a setting while it renders (banners, chrome, plugin
     // pages) re-renders at once, wherever it was changed. Coalesced: several changes in one task = one render.
@@ -353,7 +361,6 @@ export class AxfRuntime {
     this.detachAppearanceSource();
     this.appearanceSource = source;
     this.appearanceOff = source.subscribe((ev) => {
-      if (!this.appearanceFollowing()) return;
       if ('state' in ev) {
         if (ev.state.status === 'ready') this.appearanceWasReady = true;
         if (sameSourceState(this.state.appearance, ev.state)) return; // nothing new: no re-render
@@ -362,17 +369,21 @@ export class AxfRuntime {
       }
       this.applyAppearance(ev.doc);
     });
-    this.followOff = this.settings.onChange(APPEARANCE_FOLLOW_KEY, () => this.syncAppearanceFollow());
-    this.appearanceRunning = false;
-    this.syncAppearanceFollow();
+    // the old opt-out switch: a saved "don't follow" is dropped, the look comes from axHub only (Nov 1 2026)
+    if (this.settings.get(APPEARANCE_FOLLOW_KEY) !== null) {
+      this.settings.clear(APPEARANCE_FOLLOW_KEY);
+      this.terminal.ok('appearance', 'the "Get the look from axHub" switch is retired: this app reads its look from axHub only');
+    }
+    this.appearanceRunning = true;
+    this.appearanceWasReady = false;
+    this.set({ appearance: source.state() });
+    source.start();
   }
 
   detachAppearanceSource(): void {
     this.appearanceOff?.();
-    this.followOff?.();
     if (this.appearanceRunning) this.appearanceSource?.stop();
     this.appearanceOff = null;
-    this.followOff = null;
     this.appearanceRunning = false;
     this.appearanceWasReady = false;
     this.appearanceSource = null;
@@ -380,13 +391,9 @@ export class AxfRuntime {
     this.set({ appearance: null });
   }
 
-  private followOff: (() => void) | null = null;
   private appearanceRunning = false;
   /** The source has been ready since it was attached / followed again: the app has its look and stays on screen. */
   private appearanceWasReady = false;
-
-  /** Is the look read from axHub right now? (A developer app with the follow switch on; true without a source too.) */
-  appearanceFollowing(): boolean { return this.settings.get(APPEARANCE_FOLLOW_KEY) !== false; }
 
   /** Is the Active assets pane open? Closed unless the user opened it. */
   inspectorShown(): boolean { return this.settings.get(INSPECTOR_KEY) === true; }
@@ -400,31 +407,6 @@ export class AxfRuntime {
   /** The layout as drawn: its inspector region only while the pane is open. */
   inspectorLayout<L extends { inspector: string }>(l: L): L {
     return this.inspectorShown() || l.inspector === 'none' ? l : { ...l, inspector: 'none' };
-  }
-
-  /** Turn reading the look from axHub on or off (developer apps). Off = the app runs on its own saved look, no waiting. */
-  setAppearanceFollowing(on: boolean): void {
-    if (!this.mayChangeLook()) return this.toast('Your role cannot change where the look comes from.', 'danger', 'Permission denied');
-    if (on) this.settings.clear(APPEARANCE_FOLLOW_KEY); else this.settings.set(APPEARANCE_FOLLOW_KEY, false);
-  }
-
-  /** Start or stop the source to match the follow switch. */
-  private syncAppearanceFollow(): void {
-    const src = this.appearanceSource;
-    if (!src) return;
-    const want = this.appearanceFollowing();
-    if (want === this.appearanceRunning) return;
-    this.appearanceRunning = want;
-    this.appearanceWasReady = false;
-    if (want) {
-      this.set({ appearance: src.state() });
-      src.start();
-      this.terminal.ok('appearance', 'reading the look from axHub again');
-    } else {
-      src.stop();
-      this.set({ appearance: null });
-      this.terminal.ok('appearance', 'not reading the look from axHub: this app keeps its own saved look');
-    }
   }
 
   /** Is a source attached (developer app)? */
@@ -483,6 +465,15 @@ export class AxfRuntime {
       }
       const sp = r.spacing ?? SPACING_DEFAULT_VALUE;
       if (this.spacing() !== sp) this.settings.set(SPACING_KEY, sp);
+      // Look settings: a document that lists them owns them all (keys it doesn't list are cleared here); an older one
+      // without the field leaves this app's own alone (they are sent up once, below, so the hub takes them over).
+      if (doc?.settings) {
+        const saved = this.settings.savedValues();
+        for (const [k, v] of Object.entries(doc.settings)) {
+          if (isAppearanceSetting(k) && JSON.stringify(saved[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
+        }
+        for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(doc.settings, k)) this.settings.clear(k);
+      }
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
       // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
       if (changed) this.set({ active, swaps: this.state.swaps + 1 }, true);
@@ -495,10 +486,22 @@ export class AxfRuntime {
     } finally {
       this.applyingAppearance = false;
     }
+    // The hub doesn't hold look settings yet: this app's become the shared ones (sent once; the next document lists them).
+    if (doc && !doc.settings) {
+      const mine = this.lookSettings();
+      if (Object.keys(mine).length) this.pushAppearance({ settings: mine });
+    }
+  }
+
+  /** This app's saved look settings (the keys `isAppearanceSetting` counts), as the hub document carries them. */
+  private lookSettings(): Record<string, SettingValue> {
+    const out: Record<string, SettingValue> = {};
+    for (const [k, v] of Object.entries(this.settings.savedValues())) if (isAppearanceSetting(k) && v !== null) out[k] = v;
+    return out;
   }
 
   /** Push a local change to the source (no-op without one, or while applying a pushed document). */
-  private pushAppearance(change: Parameters<AppearanceSource['save']>[0]): void {
+  private pushAppearance(change: AppearanceChange): void {
     if (!this.appearanceSource || !this.appearanceRunning || this.applyingAppearance) return;
     this.appearanceSource.save(change);
   }
@@ -514,7 +517,7 @@ export class AxfRuntime {
     for (const t of ASSET_TYPES) if (t !== 'uac-policy' && this.state.active[t]) slots[t] = this.state.active[t];
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, new Date().toISOString());
+    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette(), settings: this.lookSettings() }, this.manifest.app.id, new Date().toISOString());
   }
 
   /* ---------------- store ---------------- */
@@ -2178,7 +2181,6 @@ export class AxfRuntime {
     const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
     a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.appearanceLocked())); }, { label: 'Lock the look', params: true });
     a.register('inspector', ([v]) => { this.setInspectorShown(turn(v, this.inspectorShown())); }, { label: 'Active assets pane', params: true });
-    a.register('appearance.hub', ([v]) => { this.setAppearanceFollowing(turn(v, this.appearanceFollowing())); }, { label: 'Read the look from axHub', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
       const json = type && id ? this.exportAsset(type as AssetType, id) : '';

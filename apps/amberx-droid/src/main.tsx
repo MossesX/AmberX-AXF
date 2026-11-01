@@ -3,7 +3,7 @@ import './micguard';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createAxf, type AxfManifest } from './axf/core';
-import { AxfProvider, HubAppearanceSource } from './axf/react';
+import { AxfProvider, HubAppearanceSource, DEFAULT_HUB } from './axf/react';
 import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { App } from './App';
@@ -25,9 +25,9 @@ const axf = createAxf({
 });
 registerActions(axf);
 
-// Developer app (manifest `developer: { hub }`, `axf init --developer`): its look and settings come from axHub's data
-// server; it waits for the hub instead of running without it. Ordinary apps have no `developer` and skip this.
-if (manifest.developer?.hub) axf.attachAppearanceSource(new HubAppearanceSource({ hub: manifest.developer.hub, appId: manifest.app.id }));
+// The look comes from axHub only (Brett, Nov 1 2026): this app always reads and writes the shared look on axHub's data
+// server (manifest `developer.hub`, else the default hub) and waits for the hub instead of running without it.
+axf.attachAppearanceSource(new HubAppearanceSource({ hub: manifest.developer?.hub ?? DEFAULT_HUB, appId: manifest.app.id }));
 
 if (axf.loadErrors.length) console.warn('[axf] assets skipped:', axf.loadErrors);
 

@@ -219,58 +219,19 @@ def ok_or_500(r: dict[str, Any]) -> dict[str, Any]:
 
 
 def _appearance_hub(hub: str) -> str:
-    """Where the look comes from. AXF_APPEARANCE_HUB wins when set; otherwise the wall's hub, except that a wall turned
-    off with `AXF_WALL=off bash deploy/install-console.sh` (saved as .axf-console/wall = off, the way back in while the
-    hub is down) also turns the hub source off, so the console runs on local settings instead of waiting for the hub
-    (decision Oct 21 2026)."""
+    """Where the look comes from: always axHub (Brett, Nov 1 2026: "The apps should only get appearance from axhub
+    period"). The wall's hub, or AXF_APPEARANCE_HUB when set. The old fallbacks that ran the console on local settings
+    (wall turned off, a hub without a data server) are gone: no hub = the waiting screen. AXF_APPEARANCE_HUB=off is
+    kept only for offline screenshot runs on a dev checkout (rebuild-shots.mjs), never on the VPS."""
     explicit = os.environ.get("AXF_APPEARANCE_HUB", "").strip().rstrip("/")
-    if explicit:
-        return explicit
-    try:
-        if (ROOT / ".axf-console" / "wall").read_text(encoding="utf-8").strip() == "off":
-            return "off"
-    except OSError:
-        pass
-    if _hub_lacks_data_server(hub):
-        return "off"
-    return hub
+    return explicit or hub
 
 
-_HUB_PROBE: dict[str, tuple[float, bool]] = {}
-
-
-def _hub_lacks_data_server(hub: str) -> bool:
-    """Rollout guard (Oct 21 2026): a hub that answers but predates the data server (its /healthz names no `data`) can't
-    hold the look yet, so the console uses its local settings instead of waiting forever. A hub that doesn't answer
-    still means "wait" (Brett's rule: developer apps don't run without the hub). Cached 60 s; https only, no redirects."""
-    now = time.time()
-    hit = _HUB_PROBE.get(hub)
-    if hit and now - hit[0] < 60:
-        return hit[1]
-    lacks = False
-    try:
-        import urllib.request
-        if hub.startswith("https://"):
-            class _NoRedirect(urllib.request.HTTPRedirectHandler):
-                def redirect_request(self, *a: Any, **k: Any) -> None:
-                    return None
-            opener = urllib.request.build_opener(_NoRedirect)
-            with opener.open(urllib.request.Request(hub.rstrip("/") + "/healthz", headers={"Accept": "application/json"}), timeout=3) as r:
-                body = json.loads(r.read(65536).decode("utf-8", "replace"))
-            lacks = isinstance(body, dict) and body.get("name") == "axHub" and "data" not in body
-    except Exception:
-        lacks = False
-    _HUB_PROBE[hub] = (now, lacks)
-    return lacks
-
-
-@app.get("/api/me")
 def me(request: Request) -> dict[str, Any]:
     """Who this browser is: a signed-in hub user/admin (wall on), the console token, or an open console (no wall)."""
     hub = os.environ.get("AXF_WALL_HUB", "https://axhub.amberxai.com").rstrip("/")
-    # Developer app (decision Oct 20 2026): the look + settings come from the hub's data server. Same hub as the wall
-    # unless AXF_APPEARANCE_HUB says otherwise; "off" = no source (local development without a hub only: the console
-    # then runs on its own local settings, which is never the case on the VPS).
+    # The look + settings come from the hub's data server, always (Nov 1 2026). Same hub as the wall unless
+    # AXF_APPEARANCE_HUB says otherwise ("off" only for offline screenshot runs on a dev checkout).
     appearance_hub = _appearance_hub(hub)
     c = wall.wall_caller(request.headers)
     if c:
