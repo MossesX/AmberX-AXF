@@ -43,10 +43,20 @@ export function writeJson(f, data) {
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(data, null, 1)}\n`); renameSync(tmp, f);
 }
 
-export function loadRoster() { return core.normRoster(readJson(join(HERE, 'agents/roster.json'), { agents: [] })); }
+/** The roster file plus agents hired from the Breakroom (one-tap hires for job types, kept in the swarm state). */
+export function loadRoster() {
+  const r = core.normRoster(readJson(join(HERE, 'agents/roster.json'), { agents: [] }));
+  const hired = readJson(stateFile(), {}).hired;
+  if (Array.isArray(hired)) for (const a of hired.map(core.normAgent)) if (a.id && !r.agents.some((x) => x.id === a.id)) r.agents.push(a);
+  return r;
+}
 export function loadSkills() {
   const dir = join(HERE, 'agents/skills');
-  return Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith('.md')).map((f) => { const s = core.parseSkill(readFileSync(join(dir, f), 'utf8')); return [s.id, s]; }));
+  const files = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith('.md')).map((f) => { const s = core.parseSkill(readFileSync(join(dir, f), 'utf8')); return [s.id, s]; }));
+  // skill pages of Breakroom hires (made from their job type) live in the swarm state
+  const hs = readJson(stateFile(), {}).hiredSkills ?? {};
+  for (const [k, v] of Object.entries(hs)) if (!files[k] && typeof v?.body === 'string') files[k] = { id: k, title: String(v.title ?? k), schema: 'agent-skill@1', body: v.body.slice(0, core.SKILL_MAX_CHARS), lines: v.body.split('\n').length, chars: Math.min(v.body.length, core.SKILL_MAX_CHARS) };
+  return files;
 }
 export function loadTracker() { const f = trackerFile(); return existsSync(f) ? readJson(f, { builds: [] }) : { builds: [] }; }
 export function findBuilds(ids) {

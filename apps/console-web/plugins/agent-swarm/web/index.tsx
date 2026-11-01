@@ -8,7 +8,7 @@ import { appMenu } from './menu';
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.agent-swarm',
   label: 'Agent swarm',
-  version: '0.1.0',
+  version: '0.2.0',
   register(rt) {
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },

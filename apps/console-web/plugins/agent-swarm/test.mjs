@@ -1,6 +1,6 @@
 // Self-test: node apps/console-web/plugins/agent-swarm/test.mjs
 import assert from 'node:assert/strict';
-import { chmodSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -13,7 +13,8 @@ const skills = Object.fromEntries(readdirSync(here('./agents/skills/')).filter((
 
 // s1 roster + skills
 t('roster and skills are valid', () => assert.deepEqual(c.checkRoster(roster, skills), []));
-t('the eight specialist skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'docs', 'kotlin-compose', 'merge-fixer', 'plugin-manifests', 'python-server', 'react-ui', 'tests']));
+t('the eight build skills and the six job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'docs', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
+t('job crew never gets build steps', () => { const p = c.planJobs([{ id: 'b', steps: [{ id: 's1', text: 'take screenshots of the site check page and land it', files: [] }] }], roster); assert.ok(p.jobs.every((j) => !roster.agents.find((a) => a.id === j.agent).jobsOnly)); });
 t('every skill is under one page', () => { for (const s of Object.values(skills)) assert.ok(s.lines <= c.SKILL_MAX_LINES && s.chars <= c.SKILL_MAX_CHARS, s.id); });
 t('models sort cheapest first', () => assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['haiku', 'opus']));
 t('bad roster is reported', () => { const r = c.normRoster({ agents: [{ id: 'A b', skill: 'none' }, { id: 'A b' }] }); const p = c.checkRoster(r, skills); assert.ok(p.some((x) => /lowercase/.test(x)) && p.some((x) => /twice/.test(x)) && p.some((x) => /no skill file/.test(x))); });
@@ -350,7 +351,7 @@ t('CLI answers --json errors as JSON', () => {
 t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
-  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm']); assert.equal(m.tabable.view, 'agent-swarm');
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1']); assert.equal(m.tabable.view, 'agent-swarm');
 });
 
 // batch merge end to end on a scratch repo
@@ -383,6 +384,93 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   });
   const f = await cli.fix('m', 's2', { dry: true });
   t('merge fixer gets the half-done merge and the conflicted files', () => { assert.equal(f.job.agent, 'max'); assert.match(f.brief.prompt, /a\.md/); assert.match(readFileSync(join(dd, 'worktrees', 'm.fix-s2', 'a.md'), 'utf8'), /<<<<<<<|>>>>>>>/); });
+}
+
+// agent jobs (job-type@1): routing to the owner, unassigned + hire, duty and budget checks, launch naming, run recorded
+{
+  const jc = await import('./jobs-core.mjs');
+  const rules = await import('../../../../framework/core/engines/job-type-rules.mjs');
+  const typesDir = new URL('../../../../framework/assets/job-type/', import.meta.url).pathname;
+  const types = jc.jobTypes(readdirSync(typesDir).map((f) => JSON.parse(readFileSync(join(typesDir, f), 'utf8'))));
+  const at = '2026-11-04T12:00:00.000Z'; const table = c.prices(JSON.parse(readFileSync(here('../../../../framework/schemas/model-pricing.json'), 'utf8')));
+  const site = types.find((x) => x.id === 'site-check');
+  t('job types: six starters, all valid, each owned by one hired crew member', () => {
+    assert.equal(types.length, 6); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, 1, jt.id); assert.ok(o[0].jobsOnly, jt.id); }
+  });
+  t('job-type validation: a bad job type is named and never routed', () => {
+    const bad = jc.jobTypes([{ type: 'job-type', id: 'bad', name: 'Bad', data: { specialty: 'site-checks', budget: { tokens: 5 }, trigger: { kind: 'cron' }, brief: 'x {{nope}}' } }])[0];
+    assert.ok(bad.errors.length >= 3); const r = jc.route(bad, roster, c.normState({}, roster), [], table, at); assert.equal(r.ok, false); assert.match(r.why, /invalid/);
+  });
+  t('routing goes to the owner, on the job model, with a cap', () => {
+    const r = jc.route(site, roster, c.normState({}, roster), [], table, at);
+    assert.equal(r.ok, true); assert.equal(r.agent.id, 'paulie'); assert.equal(r.model, 'sonnet'); assert.equal(r.cap, 1);
+  });
+  t('owner off duty = not routed, with the reason', () => {
+    const st = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'paulie', status: 'off-duty', note: 'nap' }, roster, at).state;
+    const r = jc.route(site, roster, st, [], table, at); assert.equal(r.ok, false); assert.equal(r.unassigned, false); assert.match(r.why, /paulie: Off duty/);
+  });
+  t('budget check: an owner whose pay left this week is under the run cap is not routed', () => {
+    const st = c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'paulie', usd: 0.5 }, roster, at).state;
+    const r = jc.route(site, roster, st, [], table, at); assert.equal(r.ok, false); assert.match(r.why, /\$0\.50 left this week, the run may cost up to \$1\.00/);
+    const broke = c.applyChange(c.normState({}, roster), { action: 'salary', agent: 'paulie', usd: 0 }, roster, at).state;
+    assert.match(jc.route(site, roster, broke, [], table, at).why, /broke/);
+  });
+  const orphan = jc.jobTypes([{ type: 'job-type', id: 'cert-renew', name: 'Cert renewals', description: 'Renew certificates.', data: { specialty: 'certs', budget: { tokens: 50000 }, trigger: { kind: 'on-demand' }, brief: 'Renew {{date}}' } }])[0];
+  t('unassigned job: nobody owns it → unassigned, and a one-tap hire owns it after', () => {
+    const r = jc.route(orphan, roster, c.normState({}, roster), [], table, at); assert.equal(r.unassigned, true); assert.match(r.why, /nobody owns Cert renewals/);
+    const h = jc.hireFor(orphan, roster, at); assert.equal(h.agent.skill, 'certs'); assert.ok(h.agent.jobsOnly); assert.ok(!roster.agents.some((a) => a.id === h.agent.id));
+    const r2 = { ...roster, agents: [...roster.agents, h.agent] }; const ok2 = jc.route(orphan, r2, c.normState({}, r2), [], table, at); assert.equal(ok2.ok, true); assert.equal(ok2.agent.id, h.agent.id);
+    assert.deepEqual(c.checkRoster(r2, { ...skills, certs: { ...h.skill, schema: 'agent-skill@1' } }), []);
+  });
+  t('brief = the job brief + the agent\'s own notes only; read-only gets no edit tools', () => {
+    const paulie = roster.agents.find((a) => a.id === 'paulie');
+    const b = jc.jobBrief(site, paulie, { values: rules.jobInputs(site.data, {}).values, at, runId: 'job-site-check-x', skill: skills['site-checks'], notes: 'NOTE-LINE' });
+    assert.match(b.text, /NOTE-LINE/); assert.match(b.text, /demo\.amberxai\.com/); assert.doesNotMatch(b.text, /_claude\/THREADS|RULES\.md/);
+    assert.ok(b.tokens < 2500, `brief is ${b.tokens} tokens`);
+    const args = jc.jobArgs(site, paulie, 'sonnet'); const tools = args[args.indexOf('--allowedTools') + 1];
+    assert.doesNotMatch(tools, /\b(Edit|Write)\b/); assert.equal(args[args.indexOf('--permission-mode') + 1], 'default'); assert.ok(args.includes('--strict-mcp-config'));
+  });
+  // end to end through jobs.mjs: a fake launcher, a scratch repo, then a finished stream swept onto the agent
+  const repo = mkdtempSync(join(tmpdir(), 'jobs-repo-')); const dd = mkdtempSync(join(tmpdir(), 'jobs-data-'));
+  const g = (cwd, ...a) => spawnSync('git', a, { cwd, encoding: 'utf8' });
+  g(repo, 'init', '-q', '-b', 'main'); g(repo, 'config', 'user.email', 't@t'); g(repo, 'config', 'user.name', 't'); writeFileSync(join(repo, 'a.md'), 'a\n'); g(repo, 'add', '.'); g(repo, 'commit', '-qm', 'base');
+  const argsFile = join(dd, 'launch-args.txt');
+  const launch = join(dd, 'fake-launch.sh'); writeFileSync(launch, `#!/usr/bin/env bash\nprintf '%s\\n' "$@" > ${JSON.stringify(argsFile)}\necho "started axf-$2 in $(pwd)"\n`); chmodSync(launch, 0o755);
+  Object.assign(process.env, { AXF_SWARM_REPO: repo, AXF_SWARM_DIR: dd, AXF_JOB_LAUNCHER: launch, AXF_JOB_TYPES_DIR: typesDir });
+  const jobs = await import('./jobs.mjs'); const sw = await import('./swarm.mjs');
+  const rec = jobs.run('site-check', { inputs: { sites: 'demo.amberxai.com' } });
+  t('launcher naming: claude-headless gets --name <agent>-<job>, the brief file and the job\'s model', () => {
+    assert.equal(rec.ok, true); const a = readFileSync(argsFile, 'utf8').split('\n');
+    assert.equal(a[a.indexOf('--name') + 1], 'paulie-site-check'); assert.match(a[a.indexOf('--brief') + 1], /job-briefs\/job-site-check-.*\.md$/);
+    assert.equal(a[a.indexOf('--model') + 1], 'claude-sonnet-5-5'); assert.equal(rec.run.tmux, 'axf-paulie-site-check'); assert.equal(rec.run.session, 'paulie-site-check');
+    assert.match(readFileSync(a[a.indexOf('--brief') + 1], 'utf8'), /Check these sites, read-only: demo\.amberxai\.com\./);
+  });
+  t('unassigned through the CLI: no launch, Boss says so', () => {
+    const r = jobs.run('listener-qa', { inputs: { symptom: 'x' }, dry: true }); assert.equal(r.ok, true); assert.equal(r.agent, 'earl');
+    assert.throws(() => jobs.run('listener-qa', { dry: true }), /needs --input symptom=/);
+  });
+  const stream = [JSON.stringify({ type: 'assistant', message: { usage: { input_tokens: 2000, output_tokens: 500 } } }), JSON.stringify({ type: 'result', subtype: 'success', num_turns: 3, total_cost_usd: 0.12, usage: { input_tokens: 9000, output_tokens: 1500 }, result: 'All four up, kid.\n```json\n{"status":"done","summary":"4 sites ok","files":[],"checks":[{"name":"curl","ok":true}]}\n```' })];
+  writeFileSync(join(rec.run.cwd, `${rec.run.log.replace(/\.log$/, '')}.jsonl`), `${stream.join('\n')}\n`);
+  const closed = jobs.sweep({ alive: () => false });
+  t('run recorded on the agent: runs, stats, spend, report saved, chat', () => {
+    assert.deepEqual(closed, [rec.run.jobId]); const r = sw.loadRuns().find((x) => x.jobId === rec.run.jobId);
+    assert.equal(r.status, 'done'); assert.equal(r.kind, 'job'); assert.equal(r.reportedCost, 0.12); assert.ok(existsSync(r.reportFile));
+    const stats = c.agentStats(sw.loadRuns(), 'paulie', sw.priceTable()); assert.equal(stats.done, 1); assert.equal(stats.feed[0].summary, '4 sites ok');
+    const v = jobs.list().find((j) => j.id === 'site-check'); assert.equal(v.lastRun.status, 'done'); assert.equal(v.cost.runs, 1); assert.ok(v.next > v.lastRun.at);
+    const ms = sw.loadState().messages; assert.ok(ms.some((m) => m.kind === 'assign' && /Ping Paulie, you're on Site health check/.test(m.text))); assert.ok(ms.some((m) => m.kind === 'report' && m.from === 'paulie'));
+  });
+  t('a session gone without a result is closed as error', () => {
+    const r2 = jobs.run('banner-cleanup', { at: '2026-11-04T13:00:00.000Z' }); assert.equal(r2.ok, true);
+    assert.deepEqual(jobs.sweep({ alive: () => false }), [r2.run.jobId]); assert.equal(sw.loadRuns().find((x) => x.jobId === r2.run.jobId).status, 'error');
+  });
+  t('one-tap hire is kept in the swarm state and joins the roster', () => {
+    const d2 = join(dd, 'types2'); mkdirSync(d2); writeFileSync(join(d2, 'cert-renew.json'), JSON.stringify({ $axf: 'asset@1', type: 'job-type', id: 'cert-renew', name: 'Cert renewals', version: '1.0.0', data: { specialty: 'certs', budget: { tokens: 50000 }, trigger: { kind: 'on-demand' }, brief: 'Renew {{date}}' } }));
+    process.env.AXF_JOB_TYPES_DIR = d2;
+    assert.equal(jobs.list()[0].unassigned, true); const h = jobs.hire('cert-renew');
+    assert.ok(sw.loadRoster().agents.some((a) => a.id === h.agent.id)); assert.ok(sw.loadSkills().certs); assert.equal(jobs.list()[0].unassigned, false);
+    assert.throws(() => jobs.hire('cert-renew'), /already has an owner/);
+    process.env.AXF_JOB_TYPES_DIR = typesDir;
+  });
 }
 
 console.log(`agent-swarm: ${n} checks passed`);

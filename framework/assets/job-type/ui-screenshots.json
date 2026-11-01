@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "ui-screenshots",
+  "name": "UI Review screenshots",
+  "version": "1.0.0",
+  "description": "Take desktop and phone screenshots of a screen and file them in UI Review in a named, timestamped group (ui-review-item@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "ui-review"
+  ],
+  "data": {
+    "specialty": "screenshots",
+    "model": "sonnet",
+    "budget": {
+      "tokens": 150000,
+      "maxTurns": 25,
+      "usd": 1.5
+    },
+    "trigger": {
+      "kind": "on-demand"
+    },
+    "inputs": [
+      {
+        "id": "app",
+        "label": "App",
+        "required": true,
+        "default": "console-web"
+      },
+      {
+        "id": "screen",
+        "label": "Screen (route)",
+        "required": true
+      },
+      {
+        "id": "name",
+        "label": "What it shows",
+        "default": ""
+      },
+      {
+        "id": "groupName",
+        "label": "Group name (Brett's pick)",
+        "default": "",
+        "about": "blank = the job's default group"
+      }
+    ],
+    "brief": "Take desktop and phone screenshots of {{app}} at {{screen}} ({{name}}).\nUse framework/cli/rebuild-shots.mjs or the app's dev server and a headless browser; then file every picture with framework/cli/shot.mjs <files> --name \"<what it shows>\" --app {{app}} --screen {{screen}} --group \"{{groupName}}\" (blank group name: use \"{{group}}\"). Screenshots only, never the review queue unless the brief says so.\nReport the files, the group and anything that looked wrong.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/ui-screenshots/{{stamp}}.md",
+      "uiReviewGroup": "Screenshots - {{when}}",
+      "uiReviewApp": "console-web"
+    }
+  }
+}

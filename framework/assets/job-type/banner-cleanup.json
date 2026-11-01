@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "banner-cleanup",
+  "name": "Banner cleanup",
+  "version": "1.0.0",
+  "description": "Sweep the console banners: ghost sessions, stuck lines, dead items, and the health of the Claude Code hooks that feed them.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "console"
+  ],
+  "data": {
+    "specialty": "banner-janitor",
+    "model": "sonnet",
+    "budget": {
+      "tokens": 150000,
+      "maxTurns": 25,
+      "usd": 1.5
+    },
+    "trigger": {
+      "kind": "schedule",
+      "at": "09:00"
+    },
+    "inputs": [
+      {
+        "id": "scope",
+        "label": "Scope",
+        "default": "activity, build manager live list, approvals, systems check"
+      }
+    ],
+    "brief": "Clean the console banners: {{scope}}.\nFind ghosts (sessions shown running whose process or tmux session is gone), stuck lines (running with no heartbeat for over 30 minutes), duplicate or dead items. Close them only through the owning tool (changes.mjs result … --state cancelled, the plugin's own CLI), never by editing data files. Check the hooks: changes.mjs hooks status, and that the newest entries got heartbeats.\nReport what you closed, what you left and why, and any hook that is down.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/banner-cleanup/{{stamp}}.md"
+    }
+  }
+}

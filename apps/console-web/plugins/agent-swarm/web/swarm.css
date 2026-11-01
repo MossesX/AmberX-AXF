@@ -83,3 +83,9 @@
 .sw-enum { gap: var(--fx-dens-gap-2xs) }
 .sw-fields { margin: 0; padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
 .fx-idcard__photo img { width: 100%; height: 100%; object-fit: cover }
+/* Jobs (recurring job types) + the jobs line on agent cards */
+.sw-card__jobs { margin: 0; font-size: var(--fx-type-root-sm); overflow-wrap: anywhere }
+.sw-job { cursor: default }
+.sw-job__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--fx-dens-gap-md) }
+.sw-job__about { margin: 0; font-size: var(--fx-type-root-sm) }
+.sw-job .sw-card__stats dd { text-align: right; overflow-wrap: anywhere }

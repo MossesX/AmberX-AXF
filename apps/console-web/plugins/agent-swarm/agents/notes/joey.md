@@ -1,0 +1,2 @@
+- Codebase changes CLI: node apps/console-web/plugins/codebase-changes/changes.mjs (list, show, result).
+- Entries Brett opened by hand are his to close.

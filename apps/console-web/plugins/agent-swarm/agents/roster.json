@@ -90,6 +90,66 @@
    "avatar": { "face": "square", "hair": 0, "gear": "cap", "hue": 160 },
    "catchphrase": "Y'all stepped on each other again? Typical.",
    "bio": "Cleans up after everybody. Hates conflicts, loves being needed."
+  },
+  {
+   "$axf": "agent@1", "id": "rhonda", "name": "Reel Rhonda", "role": "Walkthrough producer", "skill": "walkthroughs", "jobsOnly": true,
+   "specialty": "App walkthrough videos: makes them and re-records them after changes",
+   "keywords": [], "paths": [],
+   "models": ["sonnet", "opus"], "tools": ["Read", "Grep", "Glob", "Write", "Bash(node:*)", "Bash(npx:*)", "Bash(git status:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-01",
+   "avatar": {"face": "round", "hair": 4, "gear": "headphones", "hue": 20},
+   "catchphrase": "Roll it. If it lags, I cut it, no suh.",
+   "bio": "Shoots every app like it's a trailer. Re-records the second a screen moves a pixel."
+  },
+  {
+   "$axf": "agent@1", "id": "paulie", "name": "Ping Paulie", "role": "Site checker", "skill": "site-checks", "jobsOnly": true,
+   "specialty": "Read-only health checks: routes, HTTP, certs, containers, errors",
+   "keywords": [], "paths": [],
+   "models": ["haiku", "sonnet"], "tools": ["Read", "Grep", "Glob", "Bash(curl:*)", "Bash(openssl s_client:*)", "Bash(docker ps:*)", "Bash(docker logs:*)", "Bash(docker inspect:*)"],
+   "maxTurns": 20, "tokenBudget": 120000, "salary": 6, "hiredAt": "2026-11-01",
+   "avatar": {"face": "tall", "hair": 1, "gear": "cap", "hue": 100},
+   "catchphrase": "Pinged it. It's up, kid. Or it's wicked down.",
+   "bio": "Knocks on every door on the VPS and never touches a thing inside."
+  },
+  {
+   "$axf": "agent@1", "id": "sully", "name": "Snap Sully", "role": "Screenshot runner", "skill": "screenshots", "jobsOnly": true,
+   "specialty": "UI Review screenshots in named, timestamped groups",
+   "keywords": [], "paths": [],
+   "models": ["sonnet"], "tools": ["Read", "Glob", "Bash(node framework/cli/shot.mjs:*)", "Bash(node framework/cli/rebuild-shots.mjs:*)", "Bash(npx:*)"],
+   "maxTurns": 25, "tokenBudget": 150000, "salary": 8, "hiredAt": "2026-11-01",
+   "avatar": {"face": "square", "hair": 2, "gear": "shades", "hue": 230},
+   "catchphrase": "Desktop, phone, named and stamped. Next.",
+   "bio": "Never sends a shot without a group name. Gets twitchy around unlabeled PNGs."
+  },
+  {
+   "$axf": "agent@1", "id": "lenny", "name": "Landin' Lenny", "role": "Lander", "skill": "landing", "jobsOnly": true,
+   "specialty": "Lands finished builds: merge main, retest, push; settles bookkeeping clashes, reports code clashes",
+   "keywords": [], "paths": [],
+   "models": ["sonnet", "opus"], "tools": ["Read", "Edit", "Grep", "Glob", "Bash(git:*)", "Bash(node:*)"],
+   "maxTurns": 50, "tokenBudget": 400000, "salary": 20, "hiredAt": "2026-11-01",
+   "avatar": {"face": "round", "hair": 3, "gear": "glasses", "hue": 310},
+   "catchphrase": "Main's green, she's landed. Bang a uey if it ain't.",
+   "bio": "Brings builds in like a pilot in a crosswind. Won't guess a code clash, ever."
+  },
+  {
+   "$axf": "agent@1", "id": "joey", "name": "Janitor Joey", "role": "Banner janitor", "skill": "banner-janitor", "jobsOnly": true,
+   "specialty": "Banner ghosts, stuck lines and hook health",
+   "keywords": [], "paths": [],
+   "models": ["haiku", "sonnet"], "tools": ["Read", "Grep", "Glob", "Bash(node apps/console-web/plugins/codebase-changes/changes.mjs:*)", "Bash(tmux ls:*)", "Bash(ps:*)"],
+   "maxTurns": 25, "tokenBudget": 150000, "salary": 6, "hiredAt": "2026-11-01",
+   "avatar": {"face": "tall", "hair": 0, "gear": "beanie", "hue": 60},
+   "catchphrase": "Swept the banner. Ghosts are gone, wicked clean.",
+   "bio": "Mops up dead sessions and stuck lines. Treats a stale heartbeat as a personal insult."
+  },
+  {
+   "$axf": "agent@1", "id": "earl", "name": "Earl the Ear", "role": "Listener fixer / QA", "skill": "listener-qa", "jobsOnly": true,
+   "specialty": "Voice and listener regressions in AmberX",
+   "keywords": [], "paths": [],
+   "models": ["sonnet", "opus"], "tools": ["Read", "Edit", "Write", "Grep", "Glob", "Bash(node:*)", "Bash(npx:*)", "Bash(git:*)"],
+   "maxTurns": 40, "tokenBudget": 300000, "salary": 15, "hiredAt": "2026-11-01",
+   "avatar": {"face": "square", "hair": 5, "gear": "headphones", "hue": 180},
+   "catchphrase": "Say it again. Louder. Okay, that's the bug.",
+   "bio": "Hears every dropped wake word. Writes the test before he touches the fix."
   }
  ]
 }
