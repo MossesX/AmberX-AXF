@@ -92,6 +92,22 @@ eq([w.state.phase, w.state.hub, w.state.status, w.state.pending.length, calls.at
 const p3 = w.check(); await new Promise((r) => setTimeout(r, 0)); release(); await p3;
 eq(resolves, 1, 'hub resolved only once');
 
+// Nov 1 2026 (approvals screen flashing): one failed read keeps the list on screen; the second in a row says so
+{
+  let down = false;
+  const w2 = new HubWatcher({ hub: HUB_DEFAULT, fetch: fake(() => down ? Promise.reject(new TypeError('fetch failed')) : Promise.resolve(new Response(okBody, { status: 200 }))) });
+  await w2.check();
+  const good = w2.state;
+  down = true;
+  await w2.check();
+  eq([w2.state === good, w2.state.status], [true, 'ok'], 'one blip: the same state, list kept');
+  await w2.check();
+  eq([w2.state.status, w2.state.pending.length], ['unreachable', 0], 'second miss in a row: unreachable');
+  down = false;
+  await w2.check();
+  eq(w2.state.status, 'ok', 'back');
+}
+
 // catalog client: same transport rules as the feed
 const apOk = await fetchHubApps(HUB_DEFAULT, { fetch: fake(() => new Response(A.feeds[0].body, { status: 200 })) });
 eq([apOk.status, apOk.apps.length], ['ok', 1], 'apps client ok');

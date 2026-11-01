@@ -9,12 +9,33 @@ or Claude account, can pick a build up where the last one stopped. <!-- axf-plug
 
 Build → **category** (`category`) → **phases** (step `phase` label; a new phase starts where the label or the model changes) → **groups** (step `group` label, consecutive steps) → **steps**. Only a model change between phases needs Brett's approval. In the console, Builds shows a Grid (one row per build, sortable, expands to the card) or a List, filtered by category. <!-- axf-plugin:build-orchestrator -->
 
+## One builds store (builds@1, since Oct 31 2026)
+
+Every build of every profile is ONE record in `_claude/builds/store.json`, owned by the orchestrator (core
+`framework/plan/builds-store-core.mjs`, IO `framework/cli/builds-store.mjs`). A build's profiles are a field
+(`profiles: [...]`, `order` per profile); Pending is a status; the build queue is the order of plan-epic builds. Every
+step is its own record (`uid` never changes; `title` = rename). Every write is versioned: store `rev`, record `rev`,
+and a journal line in `_claude/builds/journal/<YYYY-MM>.jsonl` (each changed build before and after).
+`orchestrator.mjs`, `pending.mjs`, `build-queue.mjs`, the console, the MCP tools and the Builds page read and write
+projections of it. The per-profile `orchestrator.json` files and `framework/plan/**/{pending,build-queue}.json` are
+read-only exports regenerated after every write; a direct write by an old-style session is taken in newer-only.
+
+```bash
+node framework/cli/builds-store.mjs                     # rev, builds and % per profile
+node framework/cli/builds-store.mjs verify              # every build, step, note and status of the old files is in the store
+node framework/cli/builds-store.mjs history <id>        # every journal revision of a build
+node framework/cli/builds-store.mjs restore <id> <rev>  # put it back as it was (itself versioned)
+```
+
+The Builds page (console and AmberX: Builds → Builds) shows it: Builds and Steps views, rename, drag to reorder,
+divide, harvest / split into N, Restore default, a draft until Apply, live progress bars. <!-- axf-plugin:builds-page -->
+
 ## Build profiles
 
-Each build profile (build-profiles@1, `framework/cli/profiles.mjs`) has its own tracker: **Main framework** (base) =
-`_claude/builds/orchestrator.json`, any other profile = `_claude/builds/profiles/<id>/orchestrator.json` (Refactor:
-`profiles/refactor/`). `orchestrator.mjs` reads the active profile's; check it with `node framework/cli/profiles.mjs current`
-(or run one command on another profile with `AXF_BUILD_PROFILE=<id>`). Console: banner chip / **Build profiles** dialog.
+Each build profile (build-profiles@1, `framework/cli/profiles.mjs`) is a field on the builds in the store. The
+registry is `framework/plan/profiles.json`; `orchestrator.mjs` works on the active profile's builds; check it with
+`node framework/cli/profiles.mjs current` (or run one command on another profile with `AXF_BUILD_PROFILE=<id>`).
+Console: banner chip / **Build profiles** dialog.
 
 ## Carry a build on
 
@@ -26,7 +47,7 @@ node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step <id> 
 node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act approve <id> <phase>   # only after Brett approves (card) # axf-plugin:build-orchestrator
 ```
 
-Commit `orchestrator.json` with the work after every step. Console: **Builds → Build orchestrator** (tabs Builds,
+Commit `_claude/builds/store.json` and `_claude/builds/journal/` with the work after every step. Console: **Builds → Build orchestrator** (tabs Builds,
 Approvals, Rules).
 
 ## Token rules (on every build, editable in the Rules tab)
@@ -44,11 +65,7 @@ Approvals, Rules).
 
 Order steps to keep switches few: all Fable work of a build first where the dependencies allow, then Opus.
 
-## Sync with Pending builds (orch-sync)
+## Pending builds
 
-The orchestrator is the source of truth; every build in it is published to the same build profile's Pending builds
-list (steps → sub prompts prefixed `[Fable]` / `[Opus]`, next step's model → the item's model, complete/failed →
-complete/failed, open → pending), and Pending edits flow back. Automatic: `orchestrator.mjs` save → Pending,
-`framework/cli/pending.mjs` actPending → orchestrator, and the console runs a catch-up on every Pending read.
-By hand: `node framework/cli/orch-sync.mjs [--dry]`. Logic: `framework/plan/orch-sync.mjs`; tests:
-`framework/spec/check-orch-sync.mjs`. Refactor and newer profiles sync; Main framework only with `orchSync: true`. <!-- axf-plugin:build-orchestrator -->
+Pending is a status of a build in the store, not a copy: the Pending list is the profile's projection of the store
+and a Pending change is absorbed back into it (`framework/cli/pending.mjs`). The orch-sync bridge is retired. <!-- axf-plugin:build-orchestrator -->

@@ -8,11 +8,11 @@
  * refused) — never with a token, so an AI client can't approve its own call. Approve sits on a row only when the row
  * shows the complete call; a longer one opens its page first.
  */
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { hubPost } from '../hub/api';
-import { relTime, waitingCount, waitingTitle } from '../hub/core';
+import { relTime, sameJson, showReading, waitingCount, waitingTitle } from '../hub/core';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
 import { HUB } from '../hub/useHub';
@@ -43,7 +43,10 @@ function ApprovalsGrid() {
   // Pending requests + held calls counting down (the hub's `waiting` is pending only): matches the banner's count.
   const waiting = waitingCount(g);
 
-  const after = async () => { await grid.reload(); checkHubNow(); };
+  const reload = grid.reload;
+  // One function for the page's life (per address), so the rows (memo) don't re-render because the parent did.
+  const after = useCallback(async () => { await reload(); checkHubNow(); }, [reload]);
+  const onRowDone = useCallback(() => void after(), [after]);
 
   return (
     <div className="fx-stack fx-stack--lg">
@@ -77,9 +80,10 @@ function ApprovalsGrid() {
         </div>
       )}
 
-      {!g && !grid.error && <p className="fx-muted">Reading the hub…</p>}
+      {/* Only before the first answer: a refresh keeps the list on screen and updates its rows in place. */}
+      {showReading(g, grid.error) && <p className="fx-muted">Reading the hub…</p>}
       {g && g.items.length === 0 && <Note tone="success" icon="check">{g.filter === 'all' ? 'No requests yet.' : 'None with this status.'}</Note>}
-      {g && g.items.map((item) => <ApprovalRow key={item.id} item={item} onDone={() => void after()} />)}
+      {g && g.items.map((item) => <ApprovalRow key={item.id} item={item} onDone={onRowDone} />)}
 
       {g && g.pages > 1 && (
         <div className="fx-row fx-row--wrap">
@@ -151,8 +155,14 @@ function RowDecide({ item, busy, run }: { item: ApprovalItem; busy: boolean; run
   );
 }
 
-/** One request, collapsed: what is being approved and its Approve / Deny (or countdown); opened: the call, times, the rest. */
-export function ApprovalRow({ item: fromGrid, onDone }: { item: ApprovalItem; onDone: () => void }) {
+/**
+ * One request, collapsed: what is being approved and its Approve / Deny (or countdown); opened: the call, times, the rest.
+ * Keyed by id and memoised on its content: a poll that changes another row (or nothing) leaves this one alone, and the
+ * countdown ticks only its own number (HeldBar's timer), never the row or the page.
+ */
+export const ApprovalRow = memo(ApprovalRowView, (a, b) => a.onDone === b.onDone && sameJson(a.item, b.item));
+
+function ApprovalRowView({ item: fromGrid, onDone }: { item: ApprovalItem; onDone: () => void }) {
   const rt = useRuntime();
   const [busy, setBusy] = useState(false);
   // The hub's reply to a tap shows at once (Running, Approved, Used, Denied …) until the grid's next read is newer.
