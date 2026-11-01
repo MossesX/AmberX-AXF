@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 81,
- "updatedAt": "2026-11-01T22:38:15.410Z",
+ "rev": 83,
+ "updatedAt": "2026-11-01T22:39:11.277Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -47164,14 +47164,14 @@
    "title": "Whole-stack walkthrough plugin (AmberX, editable voice, video download)",
    "category": "AmberX",
    "detail": "Plan: _claude/memory/docs/walkthrough-everything.md. Brett Nov 1: 90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/project-thread-646cjb",
    "pr": "229",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-01T22:38:15.391Z",
+   "updatedAt": "2026-11-01T22:39:11.252Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -47191,12 +47191,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T22:39:10.877Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T22:38:15.392Z",
-     "updatedAt": "2026-11-01T22:38:15.392Z"
+     "updatedAt": "2026-11-01T22:39:10.932Z"
     },
     {
      "id": "s2",
@@ -47213,12 +47213,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T22:39:11.252Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T22:38:15.392Z",
-     "updatedAt": "2026-11-01T22:38:15.392Z"
+     "updatedAt": "2026-11-01T22:39:11.277Z"
     },
     {
      "id": "s3",
@@ -47735,7 +47735,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

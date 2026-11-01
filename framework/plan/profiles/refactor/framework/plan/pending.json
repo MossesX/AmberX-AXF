@@ -3620,6 +3620,124 @@
    "builtAt": "",
    "updatedAt": "2026-11-01T07:17:49.320Z",
    "source": "console"
+  },
+  {
+   "id": "stack-walkthrough",
+   "title": "Whole-stack walkthrough plugin (AmberX, editable voice, video download)",
+   "detail": "Plan: _claude/memory/docs/walkthrough-everything.md. Brett Nov 1: 90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Shared loader: pick a walkthrough by WALKTHROUGH env, apply voice/narration overrides (voice.json)",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:39:10.877Z"
+    },
+    {
+     "text": "[Opus] tts.mjs + record.mjs + assemble.mjs read the loader; AmberX tour unchanged",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:39:11.252Z"
+    },
+    {
+     "text": "[Opus] Per-chapter url/viewport/device; one recorded context per device kind",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Explainer page (diagram slides served by the recorder), slide() helper",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Read-only guard for console + axHub chapters (writes answered in the browser)",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Assemble: per-scene cut with freeze-frame when a clip grows, letterbox phone into 1080p",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Assemble: 1080p + 720p download copies, per-walkthrough publish folder",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] rebuild.sh: WALKTHROUGH, VOICE, VOICE_ONLY (re-voice without re-recording), voice download by name",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Server: /api/walkthrough/<id>/<file>, walkthroughs.json, download with attachment header",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch1 cold open + ch2 asset@1",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch3 engines + ch4 two ports",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch5 build engine + CLI",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch6 Dev Console tour",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch7 plugins",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch8 builds + orchestrator",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch9 changes log, UI Review, systems check",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch10 agents + ch11 axHub",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch12 veto + ch13 AmberX",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Script ch14 VPS + ch15 MCP + ch16 close; check.mjs passes",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Plugin: walkthrough picker (AmberX tour / The whole stack) + Download button",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Plugin: voice editor (voice, speed, per-scene narration), overrides saved on axHub",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Plugin: Re-voice / Re-record button through the console (veto call), molly-guide takes walkthrough + overrides",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Tests (test.mjs, server tests), typecheck, theme + controls checks",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Docs: README, plan doc, THREADS, PR ready",
+     "at": "2026-11-01T22:38:15.392Z"
+    },
+    {
+     "text": "[Opus] Record + publish on the VPS (unattended run, job agent)",
+     "at": "2026-11-01T22:38:15.392Z"
+    }
+   ],
+   "createdAt": "2026-11-01T22:38:15.391Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-01T22:39:11.252Z",
+   "source": "console"
   }
  ]
 }

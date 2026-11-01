@@ -4,7 +4,7 @@
 //                                                             captions are free of key-like strings, the demo user only
 // Exit 1 on any problem. Used by rebuild.sh (before recording, and before publishing) and test.mjs.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { CHAPTERS, WALKTHROUGH, walkthroughErrors } from './script.mjs';
+import { loadWalkthrough } from './load.mjs';
 
 /** Things that look like secrets: provider keys, GitHub / Slack / AWS tokens, JWTs, private keys, long random strings. */
 export const SECRET_PATTERNS = [
@@ -54,6 +54,7 @@ if (process.argv[1]?.endsWith('check.mjs')) {
     if (p.length) { console.error(`secrets scan: ${p.length} problem(s)\n  ${p.join('\n  ')}`); process.exit(1); }
     console.log(`secrets scan: clean (${readdirSync(`${dir}/texts`).length} scene texts + captions)`);
   } else {
+    const { CHAPTERS, WALKTHROUGH, walkthroughErrors } = await loadWalkthrough(process.env.WALKTHROUGH, process.env.OUT || '.');
     const e = walkthroughErrors(WALKTHROUGH, CHAPTERS);
     if (e.length) { console.error(`walkthrough script: ${e.length} problem(s)\n  ${e.join('\n  ')}`); process.exit(1); }
     const words = CHAPTERS.reduce((n, c) => n + c.scenes.reduce((m, s) => m + s.say.split(/\s+/).length, 0), 0);

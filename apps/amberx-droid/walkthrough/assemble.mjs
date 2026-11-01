@@ -4,9 +4,10 @@
 // poster.jpg. Adapted from the AmberX Tour recorder's assemble.mjs.
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
-import { WALKTHROUGH } from './script.mjs';
+import { loadWalkthrough } from './load.mjs';
 
 const OUT = process.env.OUT || '/out';
+const { CHAPTERS, WALKTHROUGH } = await loadWalkthrough();
 const PUB = `${OUT}/publish`;
 const TMP = `${OUT}/tmp`;
 mkdirSync(PUB, { recursive: true });

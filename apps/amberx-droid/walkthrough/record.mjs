@@ -6,10 +6,11 @@
 // Writes $OUT/raw/<chapter>.webm, $OUT/timeline.json, $OUT/shots/, $OUT/texts/.
 import { chromium } from 'playwright';
 import { mkdirSync, readFileSync, writeFileSync, renameSync, rmSync } from 'node:fs';
-import { CHAPTERS, WALKTHROUGH } from './script.mjs';
+import { loadWalkthrough } from './load.mjs';
 import { HUB, installDemoHub } from './demo-hub.mjs';
 
 const OUT = process.env.OUT || '/out';
+const { CHAPTERS, WALKTHROUGH } = await loadWalkthrough();
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean);
 const VIEW = WALKTHROUGH.viewport;
 const SCALE = 2;
