@@ -115,6 +115,7 @@ final class VetoAlarm {
             r.add(id);
             prefs(c).edit().putStringSet("rang", r).apply();
         }
+        if (Quiet.on(c)) return; // Quiet: counted as rung, never heard
         ringingId = id;
         playing = cfg;
         startedAt = SystemClock.elapsedRealtime();
