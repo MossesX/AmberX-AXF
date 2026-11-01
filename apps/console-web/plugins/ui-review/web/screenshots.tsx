@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Icon, IconButton, Segmented, Slider, useRuntime } from '@console/axf/react';
+import { createPortal } from 'react-dom';
+import { Button, Icon, IconButton, Segmented, Slider, usePortalRoot, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi, pluginFetch } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -37,9 +38,8 @@ function Pic({ id, alt, className }: { id: string; alt: string; className?: stri
 
 const readAsDataUrl = (f: File) => new Promise<string>((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.onerror = () => bad(r.error); r.readAsDataURL(f); });
 
-/** Before / after: the after picture over the before one, cut at the slider. */
-function CompareSlider({ before, after }: { before: Screenshot; after: Screenshot }) {
-  const [at, setAt] = useState(50);
+/** Before / after: the after picture over the before one, cut at `at` % (the slider sits in the viewer's footer). */
+function CompareStage({ before, after, at }: { before: Screenshot; after: Screenshot; at: number }) {
   return (
     <div className="axp-ui-review__cmp">
       <div className="axp-ui-review__cmpstage">
@@ -47,7 +47,6 @@ function CompareSlider({ before, after }: { before: Screenshot; after: Screensho
         <span className="axp-ui-review__cmpafter" style={{ clipPath: `inset(0 0 0 ${at}%)` }}><Pic id={after.id} alt={`After: ${after.title}`} className="axp-ui-review__cmpimg" /></span>
         <span className="axp-ui-review__cmpline" style={{ insetInlineStart: `${at}%` }} aria-hidden="true" />
       </div>
-      <div className="axp-ui-review__cmpbar"><Slider label="Before ◂ ▸ After" value={at} onChange={setAt} unit="%" /></div>
     </div>
   );
 }
@@ -57,13 +56,16 @@ function Viewer({ list, index, all, onIndex, onClose, act }: { list: Screenshot[
   const n = list.length;
   const s = list[Math.min(index, n - 1)];
   const [compare, setCompare] = useState(true);
+  const [at, setAt] = useState(50);
+  const portal = usePortalRoot();
   const touch = useRef<{ x: number; y: number } | null>(null);
   const box = useRef<HTMLDivElement>(null);
   const go = (d: number) => onIndex((index + d + n) % n);
   useEffect(() => { box.current?.focus(); }, []);
   if (!s) return null;
   const pair = sc.pairOf(all, s);
-  return (
+  // a portal: the page's own containers may be transformed, which would trap a fixed overlay inside them
+  return createPortal(
     <div ref={box} className="axp-ui-review__viewer" role="dialog" aria-modal="true" aria-label={s.title} tabIndex={-1}
       onKeyDown={(e) => { if (e.key === 'Escape') { onClose(); e.preventDefault(); } if (e.key === 'ArrowRight') { go(1); e.preventDefault(); } if (e.key === 'ArrowLeft') { go(-1); e.preventDefault(); } }}>
       <div className="axp-ui-review__vbar">
@@ -76,13 +78,14 @@ function Viewer({ list, index, all, onIndex, onClose, act }: { list: Screenshot[
       <div className={`axp-ui-review__vstage is-${s.viewport}`}
         onTouchStart={(e) => { const t = e.touches[0]; if (t) touch.current = { x: t.clientX, y: t.clientY }; }}
         onTouchEnd={(e) => { const st = touch.current; touch.current = null; if (!st || (pair && compare)) return; const t = e.changedTouches[0]; if (!t) return; const dx = t.clientX - st.x; const dy = t.clientY - st.y; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1); }}>
-        {pair && compare ? <CompareSlider before={pair.before} after={pair.after} /> : <Pic id={s.id} alt={s.title} className="axp-ui-review__img" />}
+        {pair && compare ? <CompareStage before={pair.before} after={pair.after} at={at} /> : <Pic id={s.id} alt={s.title} className="axp-ui-review__img" />}
       </div>
       <div className="axp-ui-review__vfoot">
         <span className="fx-small fx-muted axp-ui-review__vmeta">
           {[sc.sourceInfo(s.source).label, s.app, s.screen, s.viewport === 'phone' ? 'Phone' : 'Desktop', fmtDate(s.takenAt), s.session && `session ${s.session}`, s.pair && `${s.side} · ${s.pair}`, s.promoted.length ? 'sent to review' : ''].filter(Boolean).join(' · ')}
         </span>
         {s.note && <p className="axp-ui-review__notes fx-small">{s.note}</p>}
+        {pair && compare && <div className="axp-ui-review__cmpbar"><Slider label="Before ◂ ▸ After" value={at} onChange={setAt} unit="%" /></div>}
         <div className="axp-ui-review__acts">
           {pair && <Button size="sm" tone={compare ? 'primary' : 'neutral'} icon="sliders" aria-pressed={compare} onClick={() => setCompare(!compare)}>Before / after</Button>}
           <Button size="sm" icon="copy" onClick={() => void act.copy(s)}>Copy link</Button>
@@ -90,7 +93,8 @@ function Viewer({ list, index, all, onIndex, onClose, act }: { list: Screenshot[
           <Button size="sm" tone="danger" icon="trash" confirm={`Delete "${s.title}"? This can't be undone.`} onClick={() => void act.remove([s])}>Delete</Button>
         </div>
       </div>
-    </div>
+    </div>,
+    portal,
   );
 }
 

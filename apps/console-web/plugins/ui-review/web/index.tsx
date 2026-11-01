@@ -30,7 +30,7 @@ export const plugin: AxfWebLibrary = {
     [SHOTS_VIEW]: { title: 'Screenshots', icon: 'monitor', keywords: ['screenshots', 'shots', 'captures', 'before after', 'check', 'upload', 'pictures'], render: () => <UiReviewPage tab="shots" /> },
     [PACKS_VIEW]: { title: 'Design packs', icon: 'palette', keywords: ['design', 'packs', 'look', 'theme', 'refactor', 'pick'], render: () => <UiReviewPage section={core.DESIGN_KIND} /> },
   },
-  nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: SHOTS_VIEW }] },
+  nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
   settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Every UI a build makes, waiting for your approval.' }],
   settings: [{
     id: 'ui-review.prefs', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,

@@ -20,7 +20,7 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/shots-core.mjs';
-import { dataDir, parseArgs, submitLocal } from './review.mjs';
+import { dataDir, submitLocal } from './review.mjs';
 
 const IMG = /\.(png|jpe?g|webp)$/i;
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
@@ -105,6 +105,18 @@ async function consoleCall(path, body) {
   return j;
 }
 
+/** Flags; --console, --local, --json and --help never take a value (so `--local shot.png` keeps the file). */
+const BOOL = new Set(['console', 'local', 'json', 'help']);
+export function parseArgs(argv) {
+  const pos = [], flags = {};
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (!a.startsWith('--')) { pos.push(a); continue; }
+    const k = a.slice(2); const next = argv[i + 1];
+    if (BOOL.has(k) || next === undefined || next.startsWith('--')) flags[k] = true; else { flags[k] = next; i++; }
+  }
+  return { pos, flags };
+}
 const val = (v) => (v === true || v === undefined ? '' : String(v));
 export const fieldsOf = (f) => ({
   title: val(f.title), app: val(f.app), screen: val(f.screen), source: val(f.source) || 'check', session: val(f.session) || process.env.CLAUDE_SESSION_ID || '',
@@ -119,7 +131,7 @@ export async function main(argv = process.argv.slice(2)) {
   const remote = flags.local ? false : flags.console ? true : !!(process.env.AXF_CONSOLE_URL && process.env.AXF_TOKEN);
   const out = (v, text) => console.log(json ? JSON.stringify(v) : text);
   const [cmd = 'help'] = pos;
-  if (cmd === 'help' || flags.help) { console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(2, 18).map((l) => l.replace(/^ \*\s?/, '')).join('\n')); return; }
+  if (cmd === 'help' || flags.help) { const src = readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n'); console.log(src.slice(2, src.indexOf(' */')).map((l) => l.replace(/^ \*\s?/, '')).join('\n')); return; }
   if (cmd === 'list') {
     const shots = remote ? (await consoleCall('shots')).shots : loadShots().shots;
     const rows = core.sortShots(core.filterShots(shots, { app: val(flags.app), source: val(flags.source), q: val(flags.q) }));

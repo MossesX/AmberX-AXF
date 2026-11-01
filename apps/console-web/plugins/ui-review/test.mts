@@ -190,7 +190,7 @@ t('shot CLI: add (local) → pair → list → promote → migrate; never in the
   const axf = (...a) => spawnSync(process.execPath, [join(HERE, '../../../../framework/cli/axf.mjs'), ...a], { env, encoding: 'utf8' });
   const img = readFileSync(join(HERE, 'packs', JSON.parse(readFileSync(join(HERE, 'packs/index.json'), 'utf8')).packs[0].files[0].src));
   const p = join(dir, 'breakroom-home-phone.png'), d = join(dir, 'breakroom-home-desktop.png'); writeFileSync(p, img); writeFileSync(d, img);
-  const one = shot(p, '--title', 'Breakroom home', '--app', 'Breakroom', '--screen', '/breakroom', '--source', 'check', '--session', 's-9', '--pair', 'br', '--json');
+  const one = shot('--local', p, '--title', 'Breakroom home', '--app', 'Breakroom', '--screen', '/breakroom', '--source', 'check', '--session', 's-9', '--pair', 'br', '--json');
   assert.equal(one.status, 0, one.stderr);
   const a = JSON.parse(one.stdout).shots[0];
   assert.equal(a.viewport, 'phone'); assert.equal(a.side, 'before'); assert.equal(a.session, 's-9'); assert.ok(existsSync(join(dir, 'screenshots', 'files', a.file)));
