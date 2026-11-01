@@ -1199,5 +1199,45 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(app.includes('secureScreenLibrary'), 'App installs the screen capture setting');
 }
 
+/* ---------------------------------------------------------------- walkthrough video (Nov 1 2026) */
+{
+  const wt = await import('./src/plugins/walkthrough/web/core.ts');
+  const { CHAPTERS, WALKTHROUGH, walkthroughErrors } = await import('./walkthrough/script.mjs');
+  const { findSecrets } = await import('./walkthrough/check.mjs');
+  const raw = { $axf: 'walkthrough-video@1', id: 'amberx-app', title: 'AmberX walkthrough', duration: 300, video: 'walkthrough.mp4',
+    chapters: [{ id: 'home', title: 'Home', start: 60, segments: [{ start: 60, title: 'This is Home' }, { start: 75, title: 'Deny' }] },
+      { id: 'welcome', title: 'Welcome', start: 0 }, { title: 'No start' }, { id: 'home', title: 'Again', start: 200 }] };
+  const ix = wt.parseIndex(raw);
+  eq(ix.chapters.map((c) => c.id), ['welcome', 'home', 'home-4'], 'walkthrough: chapters sorted, broken ones dropped, ids unique');
+  eq(ix.chapters.map((c) => c.duration), [60, 140, 100], 'walkthrough: chapter lengths filled from the next start');
+  eq(ix.chapters[1].segments.length, 2, 'walkthrough: segments kept');
+  eq(wt.parseIndex({ $axf: 'other@1', chapters: raw.chapters }), null, 'walkthrough: another format is refused');
+  eq(wt.parseIndex({ chapters: [] }), null, 'walkthrough: no chapters = nothing to play');
+  eq(wt.parseIndex({ ...raw, video: '../ai.json', poster: 'https://evil.test/x.jpg' }).video, 'walkthrough.mp4', 'walkthrough: only plain file names are used');
+  eq(wt.parseIndex({ ...raw, poster: 'https://evil.test/x.jpg' }).poster, 'poster.jpg', 'walkthrough: no outside poster');
+  eq([wt.chapterAt(ix, 0), wt.chapterAt(ix, 59.9), wt.chapterAt(ix, 61), wt.chapterAt(ix, 250)], [0, 1, 1, 2], 'walkthrough: chapter playing at a time');
+  eq(wt.previousStart(ix, 70), 60, 'walkthrough: Previous goes to the start of this chapter');
+  eq(wt.previousStart(ix, 61), 0, 'walkthrough: Previous near the start goes one chapter back');
+  eq([wt.nextStart(ix, 10), wt.nextStart(ix, 250)], [60, null], 'walkthrough: Next chapter, none after the last');
+  eq([wt.clock(75), wt.clock(3725), wt.clock(-3)], ['1:15', '1:02:05', '0:00'], 'walkthrough: clock');
+  eq([wt.speedOf('1.5'), wt.speedOf(3), wt.speedOf(undefined)], [1.5, 1, 1], 'walkthrough: speed presets only');
+  eq(walkthroughErrors(WALKTHROUGH, CHAPTERS), [], 'walkthrough: the script validates (walkthrough-video@1)');
+  ok(CHAPTERS.length >= 10 && CHAPTERS.every((c) => c.scenes.length), 'walkthrough: every main part has a chapter');
+  for (const want of ['home', 'terminal', 'command-center', 'dictate', 'ask', 'voice', 'molly', 'recorder', 'settings', 'hub'])
+    ok(CHAPTERS.some((c) => c.id === want), `walkthrough: chapter ${want}`);
+  ok(walkthroughErrors(WALKTHROUGH, [{ id: 'Bad Id', title: '', scenes: [{ say: 'short', act: 1 }] }]).length >= 3, 'walkthrough: a broken script is refused');
+  ok(walkthroughErrors(WALKTHROUGH, [{ id: 'x', title: 'X', scenes: [{ say: 'this is some shit right here kid', act: () => {} }] }]).some((e) => e.includes('clean')), 'walkthrough: narration stays clean');
+  for (const k of ['sk-ant-api03-' + 'Ab3'.repeat(10), 'ghp_' + 'a1B2'.repeat(9), 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.abcDEF12345', 'password: hunter22', 'AKIA' + 'ABCDEFGHIJKLMNOP'])
+    ok(findSecrets(`Settings ${k} end`).length > 0, `walkthrough scan catches ${k.slice(0, 6)}…`);
+  eq(findSecrets('3 waiting · Restart the demo web app · runs in 1:15 · commit 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b'), [], 'walkthrough scan: ordinary screen text (and a commit sha) is clean');
+  const plug = readFileSync(new URL('./src/plugins/walkthrough/web/index.tsx', import.meta.url), 'utf8');
+  ok(/menu: 'axhub'/.test(plug) && /menu: 'help'/.test(plug), 'walkthrough: in the AmberX menu and Help');
+  ok(/'walkthrough\.open'/.test(plug) && /<track kind="captions"/.test(plug) && /SPEEDS\.map/.test(plug), 'walkthrough: open action, captions, speed presets');
+  const home = readFileSync(new URL('./src/views/Approvals.tsx', import.meta.url), 'utf8');
+  ok(/rt\.actions\.get\('walkthrough\.open'\)/.test(home) && /Watch the walkthrough/.test(home), 'walkthrough: Home shows the card when the plugin is there');
+  const css = readFileSync(new URL('./src/plugins/walkthrough/web/walkthrough.css', import.meta.url), 'utf8');
+  ok(!/#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b(?![^{]*@media)/i.test(css.replace(/@media[^{]*\{/g, '').replace(/999px/g, '')), 'walkthrough: stylesheet uses theme tokens only');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
