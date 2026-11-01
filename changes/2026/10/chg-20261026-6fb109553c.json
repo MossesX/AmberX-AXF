@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261026-6fb109553c",
+  "createdAt": "2026-10-26T01:02:33.226Z",
+  "updatedAt": "2026-10-29T07:02:40.485Z",
+  "kind": "edit",
+  "title": "Merge PR #98 (threads log)",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "PR #98 marked ready and merged (merge commit 0a9cae0); CI was green",
+    "commits": [
+      {
+        "sha": "0a9cae0174980a488a39993c2b9d9524eca78a54"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-29T07:02:40.485Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-26T01:02:33.226Z",
+  "finishedAt": "2026-10-26T01:02:34.023Z",
+  "lastSeenAt": "2026-10-26T01:02:33.226Z",
+  "progress": 1.0
+}

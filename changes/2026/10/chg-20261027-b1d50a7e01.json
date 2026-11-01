@@ -1,0 +1,102 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261027-b1d50a7e01",
+  "createdAt": "2026-10-27T19:35:00.000Z",
+  "updatedAt": "2026-10-28T02:01:50.638Z",
+  "kind": "build",
+  "title": "Builds: one dataset (Fable phase 1 of builds-one-page)",
+  "asked": "Continue orchestrator build builds-one-page: Fable phase (s1-s4): one builds dataset, builds-core, shims, migration",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "session": "session_01XfLJCQ5g9oTgnp4Mz56z5g",
+    "where": "claude-ai",
+    "host": "claude.ai"
+  },
+  "steps": [
+    {
+      "text": "s1 dataset design + spec/BUILDS.md",
+      "state": "done",
+      "startedAt": "2026-10-27T19:35:00.000Z",
+      "finishedAt": "2026-10-27T19:50:00.000Z"
+    },
+    {
+      "text": "s2 builds-core.mjs",
+      "state": "done",
+      "startedAt": "2026-10-27T19:50:00.000Z",
+      "finishedAt": "2026-10-27T20:10:00.000Z"
+    },
+    {
+      "text": "s3 shims + exports + tracker export + fixture",
+      "state": "done",
+      "startedAt": "2026-10-27T20:10:00.000Z",
+      "finishedAt": "2026-10-27T20:30:00.000Z"
+    },
+    {
+      "text": "s4 migration dry run + manifest/persist/docs",
+      "state": "done",
+      "startedAt": "2026-10-27T20:30:00.000Z",
+      "finishedAt": "2026-10-27T20:40:00.000Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "builds@1: spec, pure core (views, lossless write-backs, rows, migrate), IO + exports, shims in pending/build-queue/orchestrator CLIs, fixture + CI check (11), dry-run report. Nothing migrated yet; phase 2 (Opus) waits for Brett's approval of the model switch.",
+    "branch": "claude/builds-one-page",
+    "commits": [
+      {
+        "sha": "71985aff"
+      }
+    ],
+    "tests": {
+      "check-builds": {
+        "after": "0\u219211"
+      },
+      "check-build-steps": {
+        "after": "44\u219244"
+      },
+      "build-orchestrator": {
+        "after": "16\u219216"
+      },
+      "build-manager": {
+        "after": "126\u2192126"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/134",
+      "report": "_claude/memory/docs/builds-migration.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-28T02:01:50.638Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "builds-one-page"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-27T19:35:00.000Z",
+  "finishedAt": "2026-10-27T20:40:00.000Z",
+  "lastSeenAt": "2026-10-27T20:40:00.000Z",
+  "estimate": {
+    "minutes": 115,
+    "costUsd": 32.2
+  },
+  "actual": {
+    "minutes": 65
+  },
+  "costEstimated": true,
+  "branch": "claude/builds-one-page",
+  "areas": [
+    "framework/plan",
+    "framework/cli",
+    "framework/spec",
+    "apps/console-web/plugins/build-orchestrator",
+    "_claude/builds"
+  ]
+}

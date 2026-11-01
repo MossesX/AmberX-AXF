@@ -62,7 +62,7 @@ export function Home({ me, reload }: { me: Me | null; reload: () => void }) {
         </Container>
 
         <Container title="Next steps" icon="list">
-          <ol className="fx-small" style={{ margin: 0, paddingLeft: 18 }}>
+          <ol className="fx-small" style={{ margin: 0, paddingLeft: 'var(--fx-dens-gap-3xl)' }}>
             <li>Add routes in <code>server/main.py</code> (every /api route goes through <code>auth</code>).</li>
             <li>Add views in <code>src/App.tsx</code>; call them with <code>api()</code> from <code>src/api.ts</code>.</li>
             <li>Deploy: <code>sudo bash deploy/install.sh</code> on the VPS (see README).</li>

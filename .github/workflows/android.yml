@@ -53,10 +53,12 @@ jobs:
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
-      - name: Libraries and plugins conform to the theme engines
+      - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
         run: node framework/cli/check-theme.mjs
-      - name: Plugin and library controls are framework controls (they inherit the app's style)
+      - name: Asset conformance — every web button is a framework control (apps, plugins, libraries, templates)
         run: node framework/cli/check-controls.mjs
+      - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
+        run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
         run: node framework/cli/check-plugin-pages.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)

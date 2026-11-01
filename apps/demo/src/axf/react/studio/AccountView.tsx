@@ -37,6 +37,7 @@ export function AccountView() {
             <button
               key={r.id}
               type="button"
+              data-fx-row
               className={`fx-rolecard ${r.id === state.role ? 'is-active' : ''}`}
               aria-pressed={r.id === state.role}
               disabled={!!bound && r.id !== state.role}

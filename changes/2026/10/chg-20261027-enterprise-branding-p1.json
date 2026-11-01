@@ -1,0 +1,32 @@
+{
+ "$axf": "change-log@1",
+ "id": "chg-20261027-enterprise-branding-p1",
+ "kind": "build",
+ "title": "Enterprise design + branding: phase 1 (contracts, engines, generators) on Fable",
+ "asked": "Only refactor the console, the AmberX app (amberx.amberxai.com), the plugins installed and switched on in Plugin switches, and the banner plugins. Enterprise quality. New asset types: branding package, icon pack, logo mark, animated logo, behaviour theme (done on main), design package (done on main). Branding engine, hot-swappable. Then the asset library (themes, menus, toolbars, style packages, nav, 25 design packages, 250 logos, 250 animated logos, 100 icon packs), a brand library plugin, the AmberX + GizmoX console refactor. Phase 1 approved Oct 27 2026 13:35 (card). Then interface-roller phase 1 (interface@1, scopes, roller engine) in the same session.",
+ "repos": ["MossesX/AmberX-AXF"],
+ "model": "fable",
+ "buildRef": "pending:enterprise-branding",
+ "status": "done",
+ "surface": "claude.ai",
+ "who": {"host": "claude.ai cloud", "session": "session_01XfLJCRDTkFu8vjMRG1c3dR"},
+ "branch": "fable/enterprise-branding",
+ "areas": ["framework/schemas", "framework/core/engines", "framework/react", "framework/spec", "framework/assets", "framework/cli/brand-gen.mjs", "_claude/builds"],
+ "startedAt": "2026-10-27T18:25:00Z",
+ "finishedAt": "2026-10-27T19:35:00Z",
+ "lastSeenAt": "2026-10-27T19:35:00Z",
+ "estimate": {"minutes": 510, "costUsd": 143},
+ "actual": {"minutes": 70, "costUsd": 20, "source": "estimate"},
+ "costEstimated": true,
+ "progress": 1,
+ "doing": "",
+ "steps": [
+  {"text": "s1 Design language brief + live plugin scope", "state": "done", "note": "DESIGN-LANGUAGE.md; scope read live (approval 72afb5a6): all 32 plugins"},
+  {"text": "s5r1-s5r6 Design package Fable rebuild", "state": "done", "note": "window placement rules, busy cursor + confirmDelete in controls, 575 checks"},
+  {"text": "s6-s9 branding, logo, animated logo, icon-pack types + engine", "state": "done", "note": "commit f29b608, check-brand 88"},
+  {"text": "s10-s11 React layer", "state": "done", "note": "banner, toolbar, tab group, windows, dialogs, containers, Icon"},
+  {"text": "s12 generators", "state": "done", "note": "brand-gen.mjs + check-design-language 183"},
+  {"text": "interface-roller s1-s5", "state": "done", "note": "interface@1, scoped runtime, <InterfaceScope>, roller engine; branch fable/interface-roller"}
+ ],
+ "result": {"state": "done", "summary": "Fable phase 1 of enterprise-branding (PR #128) and interface-roller (PR #129, stacked). Waiting on Brett's approval of the Fable → Opus switch for the next phases.", "branch": "fable/interface-roller", "links": [{"label": "PR #128", "url": "https://github.com/MossesX/AmberX-AXF/pull/128"}, {"label": "PR #129", "url": "https://github.com/MossesX/AmberX-AXF/pull/129"}], "tests": {"check-brand": "0→88", "check-design-language": "0→183", "check-interface": "0→56", "check-roller": "0→137", "check-design-package": "539→575"}}
+}

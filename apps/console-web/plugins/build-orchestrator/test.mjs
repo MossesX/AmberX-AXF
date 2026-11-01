@@ -72,4 +72,8 @@ t('matrix-applied build: skipped step leaves progress, phases and the brief', ()
   const one = { ...b2, steps: b2.steps.map((st) => ({ ...st, model: 'Fable' })) };
   assert.match(c.brief(one), /\[skip\] s3/); assert.match(c.brief(one), /\[ \] fm-dark-mode-shots/); assert.match(c.brief(one), /3 left, ~1 h/);
 });
+t('every brief carries the asset-conformance rule', () => {
+  const b2 = c.normalizeState({ builds: [fmx.apply.after.build] }).builds[0];
+  assert.ok(c.brief(b2).includes(c.ASSET_RULE));
+});
 console.log(`build-orchestrator: ${n} checks passed`);

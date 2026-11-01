@@ -23,7 +23,18 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const args = process.argv.slice(2);
 const json = args.includes('--json');
 const roots = args.filter((a) => !a.startsWith('--')).map((a) => resolve(ROOT, a));
-const ROOTS = roots.length ? roots : [join(ROOT, 'apps/console-web/plugins'), join(ROOT, 'framework/libs')];
+/**
+ * Asset conformance (Brett, Oct 31 2026, build asset-conform): every web UI is held to it, handwritten or generated —
+ * plugins and libraries, framework React views, every app's own UI and what the build system generates from (app
+ * templates, library templates, the plugin template). Patches is paused (Brett, Oct 28 2026) and is left as it is.
+ */
+const APPS = (() => { try { return readdirSync(join(ROOT, 'apps')).filter((a) => !a.startsWith('patches')); } catch { return []; } })();
+const ROOTS = roots.length ? roots : [
+  join(ROOT, 'framework/libs'), join(ROOT, 'framework/react'), join(ROOT, 'framework/templates'), join(ROOT, 'framework/library-templates'),
+  ...APPS.flatMap((a) => [join(ROOT, 'apps', a, 'plugins'), join(ROOT, 'apps', a, 'src')]),
+];
+/** Where the framework's controls and chrome are defined: their buttons ARE the controls (allowlisted). */
+const DEFINES = ['framework/react/components', 'framework/react/windows'];
 
 export const CONTROL_CLASSES = ['fx-btn', 'fx-iconbtn', 'fx-chip', 'fx-seg__opt', 'fx-tab', 'fx-menu__item', 'fx-nav__item'];
 export const RESTYLE_PROPS = ['background', 'background-color', 'color', 'border', 'border-color', 'border-radius', 'padding', 'font-size', 'font-weight', 'box-shadow', 'text-transform'];
@@ -34,6 +45,7 @@ function walk(dir, out = []) {
   for (const n of names) {
     if (n === 'node_modules' || n === 'vendor' || n === 'dist' || n.startsWith('.')) continue;
     const p = join(dir, n);
+    if (/[\\/]src[\\/]axf$/.test(p) || DEFINES.some((d) => p === join(ROOT, d))) continue; // baked framework copies; where the controls are defined
     let st; try { st = statSync(p); } catch { continue; }
     if (st.isDirectory()) walk(p, out);
     else if (/\.(tsx|jsx|css)$/.test(n) && !/\.test\./.test(n)) out.push(p);

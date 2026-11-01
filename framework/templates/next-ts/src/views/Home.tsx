@@ -63,7 +63,7 @@ export function Home() {
       <Container title="Active assets" icon="layers" actions={<Chip tone="accent">{rt.getState().swaps} swaps</Chip>}>
         <div className="home-slots">
           {ASSET_TYPES.map((t) => (
-            <button key={t} type="button" className="home-slot" onClick={() => rt.swap(t, 'next')} title={`Tap to swap ${assetTypeSpecs[t].label}`}>
+            <button key={t} type="button" data-fx-row className="home-slot" onClick={() => rt.swap(t, 'next')} title={`Tap to swap ${assetTypeSpecs[t].label}`}>
               <Icon name={assetTypeSpecs[t].icon} size={15} />
               <span className="fx-muted fx-small">{assetTypeSpecs[t].label}</span>
               <strong>{rt.asset(t)?.name ?? 'none'}</strong>
@@ -75,7 +75,7 @@ export function Home() {
       <style>{`
         .home-tree, .home-steps { margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); }
         .home-tree { list-style: none; }
-        .home-tree li { display: flex; flex-direction: column; gap: 1px; }
+        .home-tree li { display: flex; flex-direction: column; gap: var(--fx-border-w); }
         .home-steps { padding-left: var(--fx-dens-gap-3xl); font-size: var(--fx-type-scale-md); }
         .home-steps code { word-break: break-word; }
         .home-slots { display: grid; gap: var(--fx-dens-gap-xl); grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); }

@@ -117,7 +117,7 @@ export function ChangeBatchCard({ batch: initial, actions, onChange }: { batch: 
                 {pending && it.status === 'pending'
                   ? <input type="checkbox" aria-label={`Include ${k.label} ${it.path ?? it.command ?? ''}`} checked={ticked.has(it.id)} onChange={() => setTicked((s) => toggle(s, it.id))} />
                   : <Icon name={st === 'applied' ? 'check-circle' : st === 'failed' || st === 'invalid' ? 'x-circle' : 'minus'} size={14} />}
-                <button type="button" className="cl-batch__toggle" aria-expanded={isOpen} onClick={() => setOpen((s) => toggle(s, it.id))}>
+                <button type="button" data-fx-row className="cl-batch__toggle" aria-expanded={isOpen} onClick={() => setOpen((s) => toggle(s, it.id))}>
                   <Icon name={k.icon} size={14} />
                   <span className="cl-batch__what">
                     <strong>{k.label}</strong> <span className="fx-mono">{it.container}</span>
@@ -156,7 +156,7 @@ export function ChangeBatchCard({ batch: initial, actions, onChange }: { batch: 
       {b.snapshots.length > 0 && (
         <p className="fx-small fx-muted">
           Snapshot{b.snapshots.length > 1 ? 's' : ''}:{' '}
-          {b.snapshots.map((s) => actions.openSnapshot ? <button key={s} type="button" className="cl-batch__link" onClick={() => actions.openSnapshot!(s)}>{s}</button> : <span key={s} className="fx-mono">{s} </span>)}
+          {b.snapshots.map((s) => actions.openSnapshot ? <button key={s} type="button" className="fx-chip" onClick={() => actions.openSnapshot!(s)}>{s}</button> : <span key={s} className="fx-mono">{s} </span>)}
         </p>
       )}
       <div className="cl-batch__actions">

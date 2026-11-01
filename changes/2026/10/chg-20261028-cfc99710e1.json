@@ -1,0 +1,38 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261028-cfc99710e1",
+  "createdAt": "2026-10-28T19:12:00.000Z",
+  "updatedAt": "2026-10-28T19:40:00.000Z",
+  "kind": "build",
+  "title": "Feature Matrix: feature-matrix@1 contract + Apply engine (Fable s1-s2)",
+  "asked": "Start orchestrator build feature-matrix (refactor): Fable phase s1-s2 on branch fable/feature-matrix. s1 = feature-matrix@1 contract (one dataset, matrix per build ref + profile, items keep|skip never deleted, totals, version + dirty/applied, fixture + check). s2 = Apply engine projecting a matrix onto orchestrator steps, pending item, build-queue step, build manager entry, plan, idempotently, never deleting, with a what-changed report + fixture.",
+  "repos": ["MossesX/AmberX-AXF"],
+  "model": "fable",
+  "who": { "where": "claude-ai", "host": "claude.ai (cloud session, Claude Code harness)", "session": "session_01XfLJCQwCCLDvSmBFSsLFsi", "sessionType": "claude.ai chat" },
+  "surface": "claude-ai",
+  "status": "done",
+  "buildRef": { "kind": "orchestrator", "id": "feature-matrix", "profile": "refactor" },
+  "startedAt": "2026-10-28T19:12:00.000Z",
+  "finishedAt": "2026-10-28T19:40:00.000Z",
+  "lastSeenAt": "2026-10-28T19:40:00.000Z",
+  "doing": "",
+  "estimate": { "minutes": 60, "costUsd": 16.8 },
+  "actual": { "minutes": 28 },
+  "costEstimated": true,
+  "branch": "fable/feature-matrix",
+  "areas": ["framework/plan", "framework/spec", "apps/console-web/plugins/build-orchestrator/web", "apps/console-web/plugins/codebase-changes", "_claude/builds/profiles/refactor", "_claude/THREADS.md", "_claude/memory/docs", ".github/workflows"],
+  "steps": [
+    { "text": "s1 feature-matrix@1 contract: core, fixture, check", "state": "done", "startedAt": "2026-10-28T19:12:00.000Z", "finishedAt": "2026-10-28T19:30:00.000Z" },
+    { "text": "s2 Apply engine: project onto orchestrator/pending/queue/change-log/plan, report, fixture", "state": "done", "startedAt": "2026-10-28T19:30:00.000Z", "finishedAt": "2026-10-28T19:40:00.000Z" }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "framework/plan/feature-matrix-core.mjs (contract) + feature-matrix-apply.mjs (Apply engine, 5 targets, idempotent, what-changed report), fixture spec/fixtures/feature-matrix.json + check-feature-matrix.mjs (30 checks) in android.yml; additive skip/fm support in orchestrator-core (action skip-step), pending-core, build-queue-core, changes-core; doc _claude/memory/docs/feature-matrix.md. Orchestrator s1, s2 ticked; branch pushed; no PR yet (s8). Next: Brett approves Fable -> Opus, then s3-s8.",
+    "branch": "fable/feature-matrix",
+    "commits": [{ "sha": "cb43a82" }],
+    "files": 14,
+    "tests": [{ "name": "check-feature-matrix", "value": "0 -> 30 passed" }, { "name": "check-build-steps", "value": "44 -> 44" }, { "name": "build-orchestrator test", "value": "16 -> 16" }, { "name": "codebase-changes test", "value": "111 -> 111" }],
+    "links": { "doc": "_claude/memory/docs/feature-matrix.md", "branch": "https://github.com/MossesX/AmberX-AXF/tree/fable/feature-matrix" }
+  },
+  "closed": null
+}

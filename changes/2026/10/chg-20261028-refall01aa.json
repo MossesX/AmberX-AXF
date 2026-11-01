@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261028-refall01aa",
+  "createdAt": "2026-10-29T01:40:00.000Z",
+  "updatedAt": "2026-10-29T03:35:00.000Z",
+  "kind": "build",
+  "title": "refactor-all: build the matrix's kept steps with sub-agents",
+  "asked": "Brett Oct 28 21:20-21:35 EDT: 'Run refactor all with sub agents' / 'Build refactor all according to matrix' / 'Start with terminal with sub agents and deploy it' / veto approval system (Vinnie). Matrix keeps: windows-terminal s6-s12 (Fable), amberx-handsfree s4, enterprise-branding s27-s29 + s31-s40, plugin-theme-override s4-s6 + s9, assistant-approvals s2-s5, veto-approvals s1-s6 (Opus).",
+  "repos": ["MossesX/AmberX-AXF", "MossesX/axHub"],
+  "model": "fable",
+  "who": { "where": "claude-ai", "host": "claude.ai cloud session + sub-agents", "session": "session_01XfLJCQwCCLDvSmBFSsLFsi", "sessionType": "claude.ai chat orchestrating 8 sub-agents (3 Fable, 5 Opus)" },
+  "surface": "claude-ai",
+  "status": "done",
+  "buildRef": { "kind": "orchestrator", "id": "refactor-all", "profile": "refactor" },
+  "startedAt": "2026-10-29T01:40:00.000Z",
+  "finishedAt": "2026-10-29T03:35:00.000Z",
+  "lastSeenAt": "2026-10-29T03:35:00.000Z",
+  "doing": "",
+  "estimate": { "minutes": 1000, "costUsd": 180 },
+  "actual": { "minutes": 115 },
+  "costEstimated": true,
+  "branch": "claude/refactor-all",
+  "areas": ["framework/core", "framework/react", "framework/ui", "framework/libs", "framework/spec", "apps/console-web", "apps/amberx-droid", "apps/axhub-web", "_claude"],
+  "steps": [
+    { "text": "windows-terminal s17-s23 (Fable): window engine, settings levels, re-bake + report -> PR #165", "state": "done" },
+    { "text": "amberx-handsfree s26: already merged (#141)", "state": "done" },
+    { "text": "veto-approvals s81-s86: axHub PR #18 + AXF side", "state": "done" },
+    { "text": "plugin-theme-override s72-s75", "state": "done" },
+    { "text": "enterprise-branding s28-s40", "state": "done" },
+    { "text": "assistant-approvals s77-s80", "state": "done" },
+    { "text": "merge groups, re-bake, checks, PR #166 + merge approvals (waiting on Brett)", "state": "done" }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "All 35 kept matrix items built and merged into claude/refactor-all (PR #166; Terminal alone in #165; axHub veto in #18). Checks green: console typecheck+build, AmberX test.mjs 1914, axhub-web/walkthrough/demo build, check-theme, check-controls, check-plugin-pages, check-windows 383, check-settings-ui 43, check-plugintheme 54, check-approvals 62, check-feature-matrix 30, lifecycle clean. Reports: _claude/memory/docs/rebuilds/windows-terminal-fable.md, enterprise-branding-3.md; docs veto-approvals.md, plugin-theme-override.md, assistant-approvals.md. After merge: hub redeploy + 'axhub services veto vps run 180 30' / 'logs'; new AmberX APK.",
+    "branch": "claude/refactor-all",
+    "commits": [{ "sha": "a3249c7f" }],
+    "links": { "pr": "https://github.com/MossesX/AmberX-AXF/pull/166", "terminal": "https://github.com/MossesX/AmberX-AXF/pull/165", "axhub": "https://github.com/MossesX/axHub/pull/18" }
+  },
+  "closed": null
+}

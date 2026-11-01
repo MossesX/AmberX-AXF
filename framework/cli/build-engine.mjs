@@ -12,6 +12,7 @@ import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engine
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
 import { PROJECT_MANIFEST_FILE, checkProject, requireProject } from './project.mjs';
@@ -594,7 +595,21 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
 
   const report = validateApp(dest);
   if (!report.ok) throw new Error(`Initialized app failed validation:\n${report.errors.join('\n')}`);
+  assetConformance(dest, log);
   return { dir: dest, manifest: installed.length ? readJson(join(dest, 'axf.manifest.json')) : manifest, assets: assets.length, bakedFiles: Object.keys(files).length, libraries: installed.map((i) => ({ library: i.library, config: i.config })), report, next: tpl.next };
+}
+
+/**
+ * Asset conformance gate (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the asset system"): what the
+ * build system generates (templates, boilerplates, library templates) is never handwritten by default, so it must take
+ * every look value from the asset tokens. Runs check-theme.mjs on the generated code (its baked src/axf is skipped)
+ * and refuses to finish on any finding (file:line + the token to use). AXF_SKIP_CONFORM=1 skips it (tests only).
+ */
+export function assetConformance(dest, log = () => {}) {
+  if (process.env.AXF_SKIP_CONFORM === '1') return;
+  log('• checking asset conformance (check-theme)');
+  const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/check-theme.mjs'), dest], { encoding: 'utf8' });
+  if (r.status !== 0) throw new Error(`Generated code does not conform to the asset system:\n${(r.stdout || r.stderr || '').trim()}`);
 }
 
 /** Where `dir` sits inside a git repo whose root has a project manifest: { repo: "owner/name", path }. */

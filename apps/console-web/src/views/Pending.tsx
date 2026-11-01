@@ -17,6 +17,8 @@ const usdFor = (model: string, minutes: number | null | undefined) => (minutes ?
  */
 
 const LOCAL_KEY = 'pending';
+/** Status → the framework chip's tone (a framework control, so the chip asset + colour theme restyle it). */
+const STATUS_TONE: Record<PendingStatus, string> = { pending: 'fx-chip--warning', complete: 'fx-chip--success', failed: 'fx-chip--danger', unsafe: 'fx-chip--danger', broken: 'fx-chip--accent' };
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 const SORT_LABEL: Record<PendingSort, string> = { status: 'Status', added: 'Date added', built: 'Date built' };
@@ -88,7 +90,7 @@ export function Pending() {
 
       <div className="pd-strip" role="group" aria-label="Filter by status">
         {core.STATUSES.map((s) => (
-          <button key={s} className={`pd-count is-${s}`} aria-pressed={filter === s} onClick={() => setFilter((f) => (f === s ? '' : s))}>
+          <button key={s} data-fx-row className={`pd-count is-${s}`} aria-pressed={filter === s} onClick={() => setFilter((f) => (f === s ? '' : s))}>
             <b>{counts[s]}</b><span>{core.STATUS_LABEL[s]}</span>
           </button>
         ))}
@@ -97,11 +99,11 @@ export function Pending() {
       <div className="pd-sortbar" role="group" aria-label="Sort">
         <span className="fx-small fx-muted">Sort by</span>
         {core.SORTS.map((k) => (
-          <button key={k} className="pd-sort" aria-pressed={sort === k} onClick={() => pickSort(k)} title={sort === k ? 'Click again to reverse' : undefined}>
+          <button key={k} className={`fx-chip ${sort === k ? 'is-on' : ''}`} aria-pressed={sort === k} onClick={() => pickSort(k)} title={sort === k ? 'Click again to reverse' : undefined}>
             {SORT_LABEL[k]}{sort === k && <Icon name={dir === 'asc' ? 'chevron-up' : 'chevron-down'} size={13} />}
           </button>
         ))}
-        {filter && <button className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{core.STATUS_LABEL[filter]} only</button>}
+        {filter && <button className="fx-chip is-on" onClick={() => setFilter('')}><Icon name="x" size={13} />{core.STATUS_LABEL[filter]} only</button>}
       </div>
 
       <div className="pd-list" role="list">
@@ -145,12 +147,12 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
     <article className={`pd-card is-${it.status}`} role="listitem" data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{it.title}<span className="fx-muted fx-small fx-mono"> {it.id}</span></h2>
-        <button className={`pd-badge is-${it.status}`} aria-expanded={statusOpen} aria-label={`Status: ${core.STATUS_LABEL[it.status]}. Change`} onClick={() => setStatusOpen((o) => !o)}>{core.STATUS_LABEL[it.status]}</button>
+        <button className={`fx-chip ${STATUS_TONE[it.status]}`} aria-expanded={statusOpen} aria-label={`Status: ${core.STATUS_LABEL[it.status]}. Change`} onClick={() => setStatusOpen((o) => !o)}>{core.STATUS_LABEL[it.status]}</button>
       </div>
       <Slot name="pending.item" props={{ item: it }} />
       {statusOpen && (
         <div className="fx-row fx-row--wrap">
-          {core.STATUSES.map((s) => <button key={s} className={`pd-badge is-${s}`} disabled={busy || s === it.status} onClick={async () => { if (await act({ action: 'status', id: it.id, status: s })) setStatusOpen(false); }}>{core.STATUS_LABEL[s]}</button>)}
+          {core.STATUSES.map((s) => <button key={s} className={`fx-chip ${STATUS_TONE[s]}`} disabled={busy || s === it.status} onClick={async () => { if (await act({ action: 'status', id: it.id, status: s })) setStatusOpen(false); }}>{core.STATUS_LABEL[s]}</button>)}
         </div>
       )}
       <div className="pd-meta">

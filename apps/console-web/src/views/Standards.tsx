@@ -158,9 +158,9 @@ function RulesEditor({ draft, setDraft, base, problems, dirty, busy, onReset }: 
           <article key={r.id + i} className={`st-card st-rule ${ruleSeverity(r) === 'off' ? 'is-off' : ''}`} role="listitem">
             <div className="st-card__top">
               <h2 className="st-card__title">{r.locked && <Icon name="lock" size={13} />} {r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></h2>
-              <div className="st-seg" role="group" aria-label={`Severity of ${r.title}`}>
+              <div className="fx-seg fx-seg--sm st-seg" role="group" aria-label={`Severity of ${r.title}`}>
                 {SEVERITIES.map((s) => (
-                  <button key={s} className={`st-seg__b is-${s}`} aria-pressed={ruleSeverity(r) === s} disabled={r.locked || busy} title={r.locked ? 'Locked: always an error' : undefined} onClick={() => update(i, { severity: s })}>{SEV_LABEL[s]}</button>
+                  <button key={s} className={`fx-seg__opt ${ruleSeverity(r) === s ? 'is-on' : ''}`} aria-pressed={ruleSeverity(r) === s} disabled={r.locked || busy} title={r.locked ? 'Locked: always an error' : undefined} onClick={() => update(i, { severity: s })}>{SEV_LABEL[s]}</button>
                 ))}
               </div>
             </div>
@@ -190,7 +190,7 @@ function Vocab({ draft, setDraft, busy }: { draft: ProjectRules; setDraft: (r: P
             <h3 className="fx-mono">{name}</h3>
             <div className="st-chips">
               {values.map((v) => (
-                <span key={v} className="st-chip">{v}<button aria-label={`Remove ${v}`} disabled={busy} onClick={() => set(name, values.filter((x) => x !== v))}><Icon name="x" size={11} /></button></span>
+                <span key={v} className="st-chip">{v}<button className="fx-iconbtn" aria-label={`Remove ${v}`} disabled={busy} onClick={() => set(name, values.filter((x) => x !== v))}><Icon name="x" size={11} /></button></span>
               ))}
               <form className="st-chipadd" onSubmit={(e) => { e.preventDefault(); const v = (adding[name] ?? '').trim(); if (v && !values.includes(v)) set(name, [...values, v]); setAdding({ ...adding, [name]: '' }); }}>
                 <input className="fx-input" value={adding[name] ?? ''} onChange={(e) => setAdding({ ...adding, [name]: e.target.value })} placeholder="add value" aria-label={`Add to ${name}`} />
@@ -246,8 +246,8 @@ function AddRule({ draft, setDraft, busy }: { draft: ProjectRules; setDraft: (r:
         {needsParam && <label className="pd-field">{hint}<input className="fx-input fx-mono" value={param} onChange={(e) => setParam(e.target.value)} /></label>}
         <div className="fx-row fx-row--wrap">
           <label className="fx-row"><input type="checkbox" checked={required} onChange={(e) => setRequired(e.target.checked)} /> Required</label>
-          <div className="st-seg" role="group" aria-label="Severity">
-            {SEVERITIES.map((s) => <button type="button" key={s} className={`st-seg__b is-${s}`} aria-pressed={severity === s} onClick={() => setSeverity(s)}>{SEV_LABEL[s]}</button>)}
+          <div className="fx-seg fx-seg--sm st-seg" role="group" aria-label="Severity">
+            {SEVERITIES.map((s) => <button type="button" key={s} className={`fx-seg__opt ${severity === s ? 'is-on' : ''}`} aria-pressed={severity === s} onClick={() => setSeverity(s)}>{SEV_LABEL[s]}</button>)}
           </div>
         </div>
         <div><Button tone="primary" icon="plus" type="submit" disabled={busy || !id.trim() || !title.trim()}>Add rule</Button> <span className="fx-small fx-muted">Then Save rules at the top.</span></div>

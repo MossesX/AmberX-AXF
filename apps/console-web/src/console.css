@@ -29,7 +29,7 @@
 .cx-strip__cell { flex: 0 0 100%; scroll-snap-align: start; display: grid; gap: var(--fx-dens-gap-md); }
 .cx-subgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--fx-dens-gap-md); }
 .cx-subgrid__cell { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }
-.cx-phone { width: 300px; max-width: 100%; margin: 0 auto; border: 6px solid var(--fx-surface3); border-radius: calc(var(--fx-radius-lg) * 12 / 7); padding: var(--fx-dens-gap-2xl); background: var(--fx-bg); min-height: 420px; }
+.cx-phone { width: 300px; max-width: 100%; margin: 0 auto; border: calc(var(--fx-border-w) * 6) solid var(--fx-surface3); border-radius: calc(var(--fx-radius-lg) * 12 / 7); padding: var(--fx-dens-gap-2xl); background: var(--fx-bg); min-height: 420px; }
 .cx-brandmark { width: 56px; height: 56px; border-radius: 50%; background: var(--fx-accent-soft); display: inline-block; }
 .cx-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--fx-accent); display: inline-block; }
 .cx-imageph { height: 90px; border-radius: var(--fx-radius-sm); background: var(--fx-surface3); margin-bottom: var(--fx-dens-gap-lg); }
@@ -79,7 +79,7 @@
 .pl-list { display: grid; gap: var(--fx-dens-gap-md) } .pl-list__item { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-size: var(--fx-type-root-md); overflow-wrap: anywhere }
 .pl-list__add { display: flex; gap: var(--fx-dens-gap-lg); align-items: center } .pl-list__add .fx-input { flex: 1 1 auto; min-width: 0 }
 .pl-mini { width: auto !important; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg) !important; font-size: var(--fx-type-root-sm) !important }
-.pl-note { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); font-size: var(--fx-type-root-md); border-left: 3px solid var(--fx-info); background: var(--fx-surface2) }
+.pl-note { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); font-size: var(--fx-type-root-md); border-left: calc(var(--fx-border-w) * 3) solid var(--fx-info); background: var(--fx-surface2) }
 .pl-note.is-warn { border-left-color: var(--fx-warning) } .pl-note.is-error { border-left-color: var(--fx-danger) }
 .pl-dep { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); font-size: var(--fx-type-root-md); width: 100% } .pl-dep--add { cursor: pointer; border-radius: var(--fx-radius-sm) } .pl-dep--add:hover { background: var(--fx-surface2) }
 .pl-link { all: unset; cursor: pointer; color: var(--fx-accent); flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap } .pl-link:hover { text-decoration: underline }
@@ -109,7 +109,7 @@
 .bm-model.is-sonnet { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); color: color-mix(in srgb, var(--fx-success) 75%, var(--fx-text)); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 60%), transparent) }
 .bm-banner { display: flex; align-items: center; gap: var(--fx-dens-gap-2xl); flex-wrap: wrap; padding: var(--fx-dens-gap-2xl) var(--fx-dens-gap-3xl); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-warning) 14%, var(--fx-surface)); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 60%), transparent) }
 .bm-queue { display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden; background: var(--fx-surface) }
-.bm-drop { border-top: 2px solid transparent } .bm-drop.is-over { border-top-color: var(--fx-accent) }
+.bm-drop { border-top: calc(var(--fx-border-w) * 2) solid transparent } .bm-drop.is-over { border-top-color: var(--fx-accent) }
 .bm-divider { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl); font-size: var(--fx-type-root-sm); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--fx-muted); background: var(--fx-surface2); border-top: var(--fx-border-w) solid var(--fx-border) }
 .bm-step { border-top: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
 .bm-queue > .bm-step:first-child, .bm-queue > .bm-drop:first-child .bm-step { border-top: 0 }
@@ -197,14 +197,7 @@
 .st-issues li { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-md); overflow-wrap: anywhere; min-width: 0 }
 .st-issues li.is-bad { color: var(--fx-danger) }
 .st-issues li.is-warn { color: var(--fx-warning) }
-.st-seg { display: inline-flex; border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; overflow: hidden; flex: none }
-.st-seg__b { border: 0; background: var(--fx-surface); color: var(--fx-text); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); font-size: var(--fx-type-root-sm); cursor: pointer }
-.st-seg__b + .st-seg__b { border-left: var(--fx-border-w) solid var(--fx-border) }
-.st-seg__b:disabled { cursor: default }
-.st-seg__b[aria-pressed='true'].is-error { background: var(--fx-danger); color: var(--fx-accent-text) }
-.st-seg__b[aria-pressed='true'].is-warn { background: var(--fx-warning); color: var(--fx-accent-text) }
-.st-seg__b[aria-pressed='true'].is-off { background: var(--fx-surface2); color: var(--fx-muted) }
-.st-seg__b:disabled:not([aria-pressed='true']) { opacity: var(--fx-opacity-disabled) }
+.st-seg { flex: none }
 .st-panel { padding: var(--fx-dens-gap-2xl) var(--fx-dens-gap-3xl); border-radius: var(--fx-radius-lg); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl) }
 .st-panel summary { cursor: pointer; font-weight: 600 }
 .st-vocab h3 { margin: 0 0 var(--fx-dens-gap-md); font-size: var(--fx-type-root-sm); color: var(--fx-muted); font-weight: 500 }

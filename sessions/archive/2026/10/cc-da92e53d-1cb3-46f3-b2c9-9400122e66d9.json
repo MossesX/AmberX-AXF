@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-da92e53d-1cb3-46f3-b2c9-9400122e66d9",
+ "source": "claude-code",
+ "sessionId": "da92e53d-1cb3-46f3-b2c9-9400122e66d9",
+ "project": "amberx-axf",
+ "title": "Reply with exactly: OK",
+ "startedAt": "2026-10-31T11:17:22.944Z",
+ "endedAt": "2026-10-31T11:17:25.647Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "axf-console",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.316",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/axf/apps/console-web/server",
+  "repo": "",
+  "branch": "main"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-31T11:17:23.090Z",
+   "kind": "prompt",
+   "text": "Reply with exactly: OK",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 4,
+    "cacheRead": 19917,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0.0041,
+   "costEstimated": false,
+   "seconds": 3,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "OK"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 4,
+  "cacheRead": 19917,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0.0041,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.0041
+ },
+ "ingestedAt": "2026-10-31T13:52:07.443Z"
+}

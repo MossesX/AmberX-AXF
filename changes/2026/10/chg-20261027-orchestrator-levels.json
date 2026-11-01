@@ -1,0 +1,27 @@
+{
+ "$axf": "change-log@1",
+ "id": "chg-20261027-orchestrator-levels",
+ "kind": "edit",
+ "title": "Build orchestrator: categories, phases, groups, steps + grid view",
+ "asked": "Manage build with an orchestrator interface so build can be broken down into category, phases, groups and steps and stored state so can be continued from another account or session. List it all in a grid that looks and behaves like pending builds list in console. Build orchestrator and its interface now first. Scope: only the console, the AmberX app at amberx.amberxai.com, the plugins currently installed and enabled in plugin switches, and the banner plugins.",
+ "repos": ["MossesX/AmberX-AXF"],
+ "model": "opus",
+ "buildRef": "pending:build-orchestrator",
+ "status": "done",
+ "surface": "claude.ai",
+ "who": {"host": "claude.ai cloud", "session": "session_01XfLJCRDTkFu8vjMRG1c3dR"},
+ "branch": "claude/build-orchestrator",
+ "areas": ["apps/console-web/plugins/build-orchestrator", "_claude/builds", "_claude/THREADS.md", "CLAUDE.md"],
+ "startedAt": "2026-10-27T17:05:00Z",
+ "finishedAt": "2026-10-27T17:20:00Z",
+ "lastSeenAt": "2026-10-27T17:20:00Z",
+ "estimate": {"minutes": 25, "costUsd": 3.5},
+ "costEstimated": true,
+ "steps": [
+  {"text": "Core: category, phase + group labels, categories()", "state": "done"},
+  {"text": "Grid view + category filters + forms", "state": "done"},
+  {"text": "Tracker labelled, scope updated", "state": "done"},
+  {"text": "Checks (test 16, tsc, vite, theme, controls, menu-reach)", "state": "done"}
+ ],
+ "result": {"state": "done", "summary": "Commit 32db59a on PR #122.", "branch": "claude/build-orchestrator", "commits": ["32db59a"], "links": {"pr": "https://github.com/MossesX/AmberX-AXF/pull/122"}}
+}

@@ -19,5 +19,4 @@
 .cl-batch__diff .is-hunk { color: var(--fx-muted) }
 .cl-batch__err { color: var(--fx-danger); font-size: var(--fx-type-root-md); overflow-wrap: anywhere }
 .cl-batch__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
-.cl-batch__link { padding: 0; border: 0; background: transparent; color: var(--fx-accent); font: inherit; font-family: var(--fx-font-mono); cursor: pointer; margin-right: var(--fx-dens-gap-md) }
 .cl-batch__accept { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-start; font-size: var(--fx-type-root-md); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning) }

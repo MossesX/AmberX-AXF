@@ -1,0 +1,68 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-39d59171ff",
+  "createdAt": "2026-10-29T10:38:14.225Z",
+  "updatedAt": "2026-10-29T10:39:48.934Z",
+  "kind": "build",
+  "title": "# Build: Look tokens + settings levels (Fable rebuild) Started from the Build manager (\"Start build…",
+  "asked": "# Build: Look tokens + settings levels (Fable rebuild) Started from the Build manager (\"Start build now\"). Model: fable. Work on branch `fable/apply-all-levels-fable` (create it from origin/main), commit there, push it and open a PR. Never merge it. ## What to build Fable recommended, Opus chosen. Replace the Opus build (branch claude/apply-all-levels): look@1 as a cross-port contract with a fixture both ports replay, the Kotlin twin when Android work resumes, and a review of every token mapping (compact at 0, inherited theme layering, banner fallbacks). ## Steps (≤ 30 min each) 1. [Fable] look@1 fixture + reference engine review, replace the Opus engine (~30 min) 2. [Fable] Banner Apply to all on the reviewed engine (~30 min) 3. [Fable] settings-ui@1 levels review + Sliders (~30 min) 4. [Fable] Re-bake every app, before/after shots, differences report (~30 min) ## Do not touch (being built by other sessions right now) - apps/amberx-droid Running now: “Fix: Console public URL set” (Console launch, fix/syscheck-routine-env-public-url); “Fix: Hub /projects folder is mounted” (Console launch, fix/syscheck-routine-env-axhub-projects-dir); “AmberX at amberx.amberxai.com + in-app hub sign-in” (Cloud, claude/project-thread-kxgzso). Expected to touch: see the item. ## Rules - Follow CLAUDE.md and _claude/rules/RULES.md + _claude/shared/rules/RULES.md (plugin rules, theme tokens only, no secrets, small steps, Android on hold). ## Report to the Build manager (axHub) as you go The console already opened your Codebase changes entry (the hook adopts it through AXF_ADOPT_CHANGE and prints its id; `last` points at it). Record estimates first, then steps, then the result: node apps/console-web/plugins/codebase-changes/changes.mjs update last --ref pending:apply-all-levels-fable --model fable --estimate-min 120 --branch fable/apply-all-levels-fable node apps/console-web/plugins/codebase-changes/changes.mjs step last \"<step>\" --state running (then done) node apps/console-web/plugins/codebase-changes/changes.mjs result last --state done --summary \"<what changed>\" --branch fable/apply-all-levels-fable --commit <sha> --link pr=<PR url> ## When done, check nothing broke (run each; report failures in the result) - project manifests: `node framework/cli/project.mjs validate --all`",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "session": "37982a78-259",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "console-launch",
+  "startedAt": "2026-10-29T10:38:14.225Z",
+  "finishedAt": "2026-10-29T10:39:48.934Z",
+  "lastSeenAt": "2026-10-29T10:39:48.749Z",
+  "actual": {
+    "minutes": 2,
+    "costUsd": 1.1694,
+    "inputTokens": 450,
+    "outputTokens": 6414,
+    "cacheReadTokens": 816581,
+    "cacheWriteTokens": 51201,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/fable-apply-all-levels-fable",
+    "branch": "fable/apply-all-levels-fable",
+    "base": "78b80699b21459ca06e79315d3e96a36d56c07f1",
+    "head": "78b80699b21459ca06e79315d3e96a36d56c07f1",
+    "pushed": true,
+    "dirty": 11,
+    "files": [
+      "_claude/THREADS.md",
+      ".axf-brief.md",
+      ".axf-build.jsonl",
+      ".axf-build.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-29T10:39:49.009Z"
+  }
+}

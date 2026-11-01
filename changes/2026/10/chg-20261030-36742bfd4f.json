@@ -1,0 +1,186 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-36742bfd4f",
+  "createdAt": "2026-10-30T18:19:35.381Z",
+  "updatedAt": "2026-10-30T19:01:27.613Z",
+  "kind": "build",
+  "title": "# Build: Plan Studio (Angel profile, Opus, one session, no sub-agents) axHub tool allowed: load CLA…",
+  "asked": "# Build: Plan Studio (Angel profile, Opus, one session, no sub-agents) axHub tool allowed: load CLAUDE.md, the shared + repo RULES.md and THREADS.md (claude-sync, else axhub.memory_read), then build. Branch claude/plans. Big build: split into orchestrator steps of 30 min or less, commit + push after each. Brett (voice, Oct 30): a planning studio to store and view all plans, \"really powerful\": enter plans by hand in the UI carrying all the info needed, categorized; and list every plugin and app with its features, checked off as have or planned. Every plugin and app needs a place in it. 1. Plugin Plan Studio (folder plan-studio, plugin-lifecycle@1, dataDir synced to axHub _data so claude.ai/VPS sessions read and write plans via axhub.memory_read/write). Contract plan@1 (JSON + Markdown body): schema, fixtures, migrations. 2. A plan carries: title, summary, goal, why; nested categories (Categories editor: add/rename/move/merge) + tags; project, plugins/apps it touches (picked from the Catalog), build profile; status idea/draft/parked/ready/building/done/dropped, priority P0-P3, effort + cost (summed from steps), target date, owner; steps (model Fable/Opus/Sonnet, estimate, dependencies, done); requirements, acceptance checklist, decisions, open questions, risks, out of scope; links (related plans depends/blocks/part-of, PRs, branches, builds, docs, URLs); attachments (images, files, voice notes, transcribed if a dictation capability exists); Markdown body with preview + outline; versioned history with diff + restore; comments. 3. Hand entry is the core: full sectioned editor, autosave drafts, phone-friendly; templates (Feature, Plugin, App, Product, Fix, Research, Refactor + user templates); quick capture (+ from banner, menu, search, right-click); AI assist via assistant@1 if installed (fill in from note, break into steps, estimate, find related), always shown as a diff to accept or reject; duplicate check on save. 4. Views: collapsible tree with multi-select, grid with expandable panes, sub-grids by category/status/project/tag/priority, board by status (drag), roadmap timeline, reader. Search all fields, filters, sort, saved views, counts, bulk actions. Phone-first, theme tokens only, framework controls, DESIGN-LANGUAGE page heads. 5. Turn into a build: pick profile, preview steps, orchestrator.mjs act add, link both ways; live progress; done when the build completes. Import/export Markdown + JSON. 6. Import as parked plans: (a) Docs Studio from _claude/memory/docs/docs-engine-plan.md on branch claude/project-thread-y4x54r (all 15 steps, models, ~7 h, 5 layouts; category Framework > Docs), then close draft PR #159 with \"Moved to Plan Studio as the parked plan Docs Studio\" (keep the branch). Do NOT build Docs Studio. (b) \"AmberX — Selling It: Product + Installer Plan\" (https://claude.ai/artifact/MGWAVAP3kfMEZtN6L5TqWf; if unreadable, title + note to paste it), category Product > Installer. (c) other parked items that are plans. 7. Catalog: an entry for every console plugin, every app in apps/, every framework library, and axHub, found automatically (same discovery as plugins.mjs / app-bundle.mjs / tracker; new ones appear with no code change, removed ones marked gone). Each entry: kind, version, status, description, profile, links, and features checked as have / partial / planned (linked to its plan or build) / idea, with counts and progress. Read features from the Feature matrix plugin, tracker.json and catalog.json as source of truth; don't duplicate them; write planned features back through that path. \"Plan this\" on a feature makes a pre-filled plan; a plan's chosen features show as planned and tick to have when its build finishes. Views: tree with checkboxes, expandable grid, sub-grids, coverage matrix; filters (gaps, planned, profile). 8. CLI plans.mjs add|list|show|status|import|export; capability plans@1. Rule in shared RULES.md: \"put it in a plan for later\" = a Plan Studio entry (parked), not a build. 9. Don't touch fil…",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "0f1e62ff-d61",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "s1-s4 contract, parser, catalog, CLI, server",
+      "state": "done",
+      "startedAt": "2026-10-30T19:01:06.111Z",
+      "finishedAt": "2026-10-30T19:01:06.111Z"
+    },
+    {
+      "text": "s5-s10 web: views, editor, catalog, capture, AI box, voice",
+      "state": "done",
+      "startedAt": "2026-10-30T19:01:06.209Z",
+      "finishedAt": "2026-10-30T19:01:06.209Z"
+    },
+    {
+      "text": "s11 imports: Docs Studio, Selling It, ClipX (parked)",
+      "state": "done",
+      "startedAt": "2026-10-30T19:01:06.280Z",
+      "finishedAt": "2026-10-30T19:01:06.280Z"
+    },
+    {
+      "text": "s12 tests, checks, screenshots, docs, rule, THREADS",
+      "state": "done",
+      "startedAt": "2026-10-30T19:01:06.389Z",
+      "finishedAt": "2026-10-30T19:01:06.389Z"
+    },
+    {
+      "text": "Push + PR + close #159 (veto call 32b55385, runs 19:02 UTC unless denied)",
+      "state": "skipped",
+      "startedAt": "2026-10-30T19:01:06.472Z",
+      "finishedAt": "2026-10-30T19:01:06.542Z"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "Plan Studio built on claude/plans (12/12 orchestrator steps, Angel). Push/PR/close #159 sent as a veto call (no GitHub creds in sandbox).",
+    "branch": "claude/plans",
+    "commits": [
+      {
+        "sha": "7b734579"
+      }
+    ],
+    "filesChanged": 40,
+    "tests": {
+      "plan-studio test.py": {
+        "before": "0",
+        "after": "15"
+      },
+      "plan-studio test.mjs": {
+        "before": "0",
+        "after": "26"
+      },
+      "amberx test.mjs": {
+        "before": "1990",
+        "after": "1990"
+      }
+    },
+    "links": {
+      "report": "_claude/memory/docs/plan-studio/README.md"
+    }
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "plan-studio"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T18:19:35.381Z",
+  "finishedAt": "2026-10-30T19:01:06.542Z",
+  "lastSeenAt": "2026-10-30T19:01:06.472Z",
+  "estimate": {
+    "minutes": 330,
+    "costUsd": 46.2
+  },
+  "actual": {
+    "minutes": 42,
+    "costUsd": 14.2729,
+    "inputTokens": 300,
+    "outputTokens": 219725,
+    "cacheReadTokens": 39527656,
+    "cacheWriteTokens": 394341,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/plans",
+  "areas": [
+    "apps/console-web/plugins/plan-studio",
+    "apps/amberx-droid/src",
+    "framework/schemas",
+    "_claude/shared/rules",
+    "_claude/THREADS.md"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/claude-plans",
+    "branch": "claude/plans",
+    "base": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+    "head": "7b734579a07b0c11107fec534e69385817e6930e",
+    "pushed": false,
+    "dirty": 10,
+    "plan": "Plan Studio plugin",
+    "next": "If veto job 32b55385 failed: push claude/plans, open PR, close #159 (THREADS 'Plan Studio')",
+    "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/profiles/angel/orchestrator.json",
+      "_claude/memory/STATUS.md",
+      "_claude/memory/docs/plan-studio/README.md",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-board-desktop.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-capture-phone.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-catalog-desktop.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-catalog-phone.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-coverage-desktop.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-editor-desktop.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-editor-phone.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-grid-desktop.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-grid-phone.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-tree-desktop.png",
+      "_claude/memory/docs/plan-studio/shots/after/plan-studio-tree-phone.png",
+      "_claude/shared/rules/RULES.md",
+      "apps/console-web/plugins/README.md",
+      "apps/console-web/plugins/plan-studio/catalog.mjs",
+      "apps/console-web/plugins/plan-studio/data/plans/amberx-selling-it.json",
+      "apps/console-web/plugins/plan-studio/data/plans/clipx.json",
+      "apps/console-web/plugins/plan-studio/data/plans/docs-studio.json",
+      "apps/console-web/plugins/plan-studio/fixtures/cases.json",
+      "apps/console-web/plugins/plan-studio/fixtures/plan.json",
+      "apps/console-web/plugins/plan-studio/hooks.mjs",
+      "apps/console-web/plugins/plan-studio/install.mjs",
+      "apps/console-web/plugins/plan-studio/plans.mjs",
+      "apps/console-web/plugins/plan-studio/plugin.json",
+      "apps/console-web/plugins/plan-studio/schema/plan.schema.json",
+      "apps/console-web/plugins/plan-studio/server/__init__.py",
+      "apps/console-web/plugins/plan-studio/test.mjs",
+      "apps/console-web/plugins/plan-studio/test.py",
+      "apps/console-web/plugins/plan-studio/uninstall.mjs",
+      "apps/console-web/plugins/plan-studio/web/ai.tsx",
+      "apps/console-web/plugins/plan-studio/web/api.ts",
+      "apps/console-web/plugins/plan-studio/web/capture.tsx",
+      "apps/console-web/plugins/plan-studio/web/catalog.tsx",
+      "apps/console-web/plugins/plan-studio/web/editor.tsx",
+      "apps/console-web/plugins/plan-studio/web/index.tsx",
+      "apps/console-web/plugins/plan-studio/web/menu.ts",
+      "apps/console-web/plugins/plan-studio/web/plan-ai.d.mts",
+      "apps/console-web/plugins/plan-studio/web/plan-ai.mjs",
+      "apps/console-web/plugins/plan-studio/web/plan-core.d.mts",
+      "apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+      "apps/console-web/plugins/plan-studio/web/plan-studio.css",
+      "apps/console-web/plugins/plan-studio/web/ui.tsx",
+      "apps/console-web/plugins/plan-studio/web/voice.ts",
+      ".axf-brief.md",
+      ".axf-build.jsonl",
+      ".axf-build.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "read": [
+      "_claude/memory/docs/plan-studio/README.md"
+    ],
+    "at": "2026-10-30T19:01:27.723Z"
+  }
+}

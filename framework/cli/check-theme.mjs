@@ -16,14 +16,28 @@
  *    calc(var(--fx-space|--fx-font-size) * n) instead of a scale token (--fx-type-scale-*, --fx-dens-gap-*, --fx-size-*);
  *    `node framework/cli/scale-adopt.mjs <path>` moves them. Everywhere, framework CSS included. Layout-sized values
  *    (> 3.5 space, > 2.3× text: icons, empty states) and 1em are left alone, as scale-adopt leaves them.
- *  Profiles: libraries, plugins and the console's own UI get every rule; framework React/CSS and apps' own UI get the colour and
- *  transparency rules (a colour-theme or style-theme swap must restyle them too).
+ *  - fonts: a literal font-family stack instead of --fx-font / --fx-font-mono / --fx-font-display
+ *  - rem sizes and em spacing (font-size / padding / margin / gap / border-radius)
+ *
+ * Asset conformance (Brett, Oct 31 2026, build asset-conform; shared rule "Handwritten code conforms to the asset
+ * system"): EVERY web CSS/TSX file gets every rule, handwritten or generated: libraries, plugins, framework React + CSS,
+ * every app's own UI, the app templates, boilerplates and library templates. Each finding names file:line and the
+ * asset token to use instead (`node framework/cli/scale-adopt.mjs <path>` writes most of them in).
+ * Kotlin UI (Compose files) is checked the same way: Color literals, .sp text sizes and .dp spacing / radii must come
+ * from Axf.colors / Axf.type / Axf.space / Axf.shapes.
+ *
+ * Allowlisted: the framework's token/asset definition files (framework/core engines, framework/ui/axf.css's own
+ * --fx-* defaults and optional component-token fallbacks, axf-ui's theme/ package that turns tokens into Compose
+ * values). Frozen code (all Android work is on hold; all Patches work is paused) is held to a ratchet baseline,
+ * framework/spec/conform-baseline.json: it may only shrink (`--update-baseline` rewrites it after a fix).
  * Put `theme-ok` in a comment on a line to allow a deliberate exception (e.g. a colour input's default value).
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SCALE_TYPES, scaleVars } from '../core/engines/scale-rules.mjs';
+import { adoptLine } from './scale-adopt.mjs';
+import { writeFileSync } from 'node:fs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const FRAMEWORK = join(ROOT, 'framework');
@@ -72,27 +86,42 @@ for (const f of walk(join(FRAMEWORK, 'assets/color-theme')).filter((f) => f.ends
 
 const args = process.argv.slice(2);
 const colourFlag = args.includes('--colour');
+const updateBaseline = args.includes('--update-baseline');
 const paths = args.filter((a) => !a.startsWith('--'));
 const apps = readdirSync(join(ROOT, 'apps'));
 /**
- * Two profiles:
- *  - strict (libraries + plugins): every rule.
- *  - colour (framework React/CSS and every app's own UI): colours and transparency must follow the active
- *    themes, so a colour-theme or style-theme swap restyles everything. Size rules are not enforced there yet.
+ * Profiles:
+ *  - strict: every rule. Every web UI path since asset-conform (Oct 31 2026).
+ *  - colour: colours and transparency only (kept for `--colour` runs on a single path).
+ *  - definition: a token/asset definition file (framework/ui/axf.css): it defines --fx-* defaults and reads optional
+ *    component tokens with fallbacks, so the reserved / fallback / unknown-token rules don't apply; the rest do.
  */
+const DEFINITION_FILES = new Set(['framework/ui/axf.css']);
+/** Frozen code: findings are counted against framework/spec/conform-baseline.json instead of failing outright. */
+const FROZEN = [
+  { re: /^apps\/patches(-web)?\//, why: 'all Patches work is paused (Brett, Oct 28 2026)' },
+  { re: /\.kt$/, why: 'all Android work is on hold (Brett, Oct 21 2026); generated Kotlin (templates) has no baseline' },
+];
+const GENERATED_KT = /^framework\/(templates|library-templates|boilerplates)\//;
 const scans = paths.length
   ? paths.map((p) => ({ path: resolve(p), profile: colourFlag ? 'colour' : 'strict' }))
   : [
       { path: join(FRAMEWORK, 'libs'), profile: 'strict' },
       ...apps.map((a) => join(ROOT, 'apps', a, 'plugins')).filter(existsSync).map((path) => ({ path, profile: 'strict' })),
-      { path: join(FRAMEWORK, 'react'), profile: 'colour' },
-      { path: join(FRAMEWORK, 'ui'), profile: 'colour' },
-      // apps/demo is untouched `axf init` output with an older baked framework; its source of truth is the templates.
-      // The console's own UI is held to every rule too (sizes converted to tokens Oct 17 2026).
-      { path: join(ROOT, 'apps', 'console-web', 'src'), profile: 'strict' },
-      ...apps.filter((a) => a !== 'demo' && a !== 'console-web').map((a) => join(ROOT, 'apps', a, 'src')).filter(existsSync).map((path) => ({ path, profile: 'colour' })),
-      ...readdirSync(join(FRAMEWORK, 'templates')).map((t) => join(FRAMEWORK, 'templates', t, 'src')).filter(existsSync).map((path) => ({ path, profile: 'colour' })),
+      { path: join(FRAMEWORK, 'react'), profile: 'strict' },
+      { path: join(FRAMEWORK, 'ui'), profile: 'strict' },
+      // every app's own UI, apps/demo included (it is `axf init` output: its baked framework copy, src/axf, is skipped)
+      ...apps.map((a) => join(ROOT, 'apps', a, 'src')).filter(existsSync).map((path) => ({ path, profile: 'strict' })),
+      // what the build system generates from: app templates, boilerplates, library templates, the plugin template
+      ...readdirSync(join(FRAMEWORK, 'templates')).map((t) => join(FRAMEWORK, 'templates', t)).filter((p) => statSync(p).isDirectory()).map((path) => ({ path, profile: 'strict' })),
+      { path: join(FRAMEWORK, 'boilerplates'), profile: 'strict' },
+      { path: join(FRAMEWORK, 'library-templates'), profile: 'strict' },
     ];
+/** Kotlin UI roots (Compose): framework modules, apps, templates. */
+const KT_ROOTS = paths.length ? paths.map((p) => resolve(p)) : [join(FRAMEWORK, 'android'), ...apps.map((a) => join(ROOT, 'apps', a)), join(FRAMEWORK, 'templates'), join(FRAMEWORK, 'library-templates'), join(FRAMEWORK, 'boilerplates')];
+/** Where the Kotlin framework controls are built (from Material primitives): the raw-control rule doesn't apply there. */
+const KT_CONTROLS_DEFINED = /framework\/android\/axf-ui\/src\/main\/kotlin\/ai\/amberx\/axf\/ui\/(components|kit|windows)\//;
+const KT_DEFINITION = /framework\/android\/(axf-kernel\/|axf-ui\/src\/main\/kotlin\/ai\/amberx\/axf\/ui\/theme\/|build-logic\/)/;
 
 const COLOUR = ['colour', 'transparency'];
 /** What scale-adopt would still move on this line (same steps): checked in every profile. */
@@ -121,26 +150,50 @@ const RULES = [
   { id: 'size', re: /\b(?:fontSize|padding(?:Top|Bottom|Left|Right|Inline|Block)?|margin(?:Top|Bottom|Left|Right|Inline|Block)?|gap|rowGap|columnGap|borderRadius)\s*:\s*(?!999\b|'999px')(?:[1-9]\d*(?:\.\d+)?|['"][1-9][\d.]*px['"])/g, msg: 'hard-coded size; use --fx-space / --fx-radius-* / --fx-font-size' },
   { id: 'scale', test: scaleLeft, msg: 'size not on the scale; use --fx-type-scale-* / --fx-dens-gap-* / --fx-size-* (node framework/cli/scale-adopt.mjs moves it)' },
   { id: 'size', re: /(?:^|[;{\s])(?:font-size|padding(?:-[a-z]+)?|margin(?:-[a-z]+)?|gap|border-radius)\s*:\s*[^;}]*?\b(?!999px)[1-9]\d*(?:\.\d+)?px/g, msg: 'hard-coded px size in CSS; use theme tokens' },
+  { id: 'size', re: /(?:^|[;{\s'"])(?:font-size|fontSize|padding[\w-]*|margin[\w-]*|gap|rowGap|columnGap|border-radius|borderRadius)\s*:\s*[^;}]*?(?<![\w.-])\d*\.?\d+rem\b/g, msg: 'hard-coded rem size; use the scale tokens' },
+  { id: 'size', re: /(?:^|[;{\s'"])(?:padding[\w-]*|margin[\w-]*|gap|rowGap|columnGap|border-radius|borderRadius)\s*:\s*['"]?[^;}'"]*?(?<![\w.-])(?:0?\.\d+|[1-9][\d.]*)em\b/g, msg: 'spacing in em; use --fx-dens-gap-* / --fx-radius-*' },
+  { id: 'size', re: /(?:^|[;{\s'"])(?:border(?:-(?:top|bottom|left|right|inline|block)(?:-(?:start|end))?)?(?:-width)?|border(?:Top|Bottom|Left|Right)?(?:Width)?)\s*:\s*['"`]?[^;}'"`]*?(?<![\w.-])\d*\.?\d+px\b/g, msg: 'hard-coded border width; use var(--fx-border-w) (× n)' },
+  { id: 'font', re: /(?:^|[;{\s])(?:font-family\s*:\s*(?!\s*(?:var\(--fx-font|inherit|initial|unset|\$\{))[^;}$]|fontFamily\s*:\s*['"](?!var\(--fx-font|inherit)[^'"]*(?:,|monospace|serif|system-ui|ui-))/g, msg: 'literal font; use var(--fx-font) / var(--fx-font-mono) / var(--fx-font-display) (the style theme\'s fonts)' },
 ];
+
+/** The asset token a finding should use, from scale-adopt's mapping (or null when it can't tell). */
+function hint(line) {
+  const after = adoptLine(line);
+  if (after === line) return null;
+  const used = [...new Set([...after.matchAll(/calc\(var\(--fx-border-w\)\s*\*\s*[\d.]+\)|var\(--fx-(?:type-(?:scale|root)|dens-gap|radius|border-w|font)[a-z0-9-]*\)/g)].map((m) => m[0]).filter((t) => !line.includes(t)))];
+  return used.length ? used.join(', ') : null;
+}
 
 let problems = 0;
 let files = 0;
-for (const { path, profile } of scans) {
-  const pausedPatches = path.includes(`${'/'}apps${'/'}patches`);
+const frozenCounts = {};
+// only this repo's own frozen code; anything outside it (a freshly generated app) is checked in full
+// a run on named paths lists everything (that is how frozen findings are read)
+const frozenOf = (rel) => !paths.length && !rel.startsWith('..') && FROZEN.find((z) => z.re.test(rel) && !(rel.endsWith('.kt') && GENERATED_KT.test(rel)));
+function found(f, i, line, msg) {
+  const rel = relative(ROOT, f);
+  const z = frozenOf(rel);
+  if (z) { frozenCounts[rel] = (frozenCounts[rel] ?? 0) + 1; return; }
+  problems += 1;
+  const h = msg.startsWith('hard-coded') || msg.startsWith('size not') || msg.startsWith('spacing') || msg.startsWith('literal font') || msg.includes('border width') ? hint(line) : null;
+  console.log(`${rel}:${i + 1}  ${msg}${h ? `\n    → use ${h}` : ''}\n    ${line.trim().slice(0, 160)}`);
+}
+for (const { path, profile: base } of scans) {
   const inFramework = path.startsWith(join(FRAMEWORK, 'react')) || path.startsWith(join(FRAMEWORK, 'ui'));
-  for (const f of walk(path).filter((f) => /\.(tsx?|css|m?js)$/.test(f) && !f.includes(`${'/'}src${'/'}axf${'/'}`))) {
+  for (const f of walk(path).filter((f) => /\.(tsx?|css|m?js)$/.test(f) && !f.includes(`${'/'}src${'/'}axf${'/'}`) && !/\.d\.m?ts$/.test(f))) {
+    // templates/boilerplates/library templates: only their web UI (not build scripts, configs or server code)
+    if (/^framework\/(templates|boilerplates|library-templates)\//.test(relative(ROOT, f)) && !/\.(tsx|css)$/.test(f)) continue;
+    if (/[\\/](vite|next|tailwind|postcss|eslint)\.config\.|[\\/](server|deploy|scripts)[\\/]/.test(f) && relative(ROOT, f).startsWith('..')) continue; // a generated app's build config / server
     files += 1;
+    const profile = DEFINITION_FILES.has(relative(ROOT, f)) ? 'definition' : base;
     const lines = readFileSync(f, 'utf8').split('\n');
     lines.forEach((line, i) => {
       if (/theme-ok/.test(line)) return;
       const scaleOk = /scale-ok/.test(line);
-      const report = (msg) => {
-        problems += 1;
-        console.log(`${relative(ROOT, f)}:${i + 1}  ${msg}\n    ${line.trim().slice(0, 160)}`);
-      };
+      const report = (msg) => found(f, i, line, msg);
       for (const r of RULES) {
         if (profile === 'colour' && !COLOUR.includes(r.id) && r.id !== 'fallback' && r.id !== 'scale' && !(r.id === 'reserved' && !inFramework)) continue;
-        if (r.id === 'scale' && pausedPatches) continue; // all Patches work is paused (Brett, Oct 28 2026): its copy stays as it is
+        if (profile === 'definition' && (r.id === 'reserved' || r.id === 'fallback')) continue;
         if (r.test) { if (!scaleOk && r.test(line)) report(r.msg); continue; }
         r.re.lastIndex = 0;
         if (r.id === 'fallback' && profile === 'colour') {
@@ -149,11 +202,69 @@ for (const { path, profile } of scans) {
         }
         if (r.re.test(line)) report(r.msg);
       }
+      if (profile === 'definition') return;
       for (const m of line.matchAll(/var\(\s*(--fx-[a-z0-9-]*[a-z0-9])(?![a-z0-9-]|\$)/g)) {
         if (!isKnown(m[1])) report(`unknown token ${m[1]} (not defined by any theme engine or axf.css)`);
       }
     });
   }
+}
+
+/* ---------- Kotlin UI (Compose) ---------- */
+const KT_RULES = [
+  { re: /(?<![\w.])(?:Button|TextButton|OutlinedButton|FilledTonalButton|ElevatedButton|IconButton|Switch|Slider|Checkbox|RadioButton|TextField|OutlinedTextField|FilterChip|AssistChip|Tab)\s*\(/, msg: 'raw Material control; use the framework control (AxfButton, AxfIconButton, AxfSwitch, AxfSlider, AxfTextField, AxfChip, …) so the component-style assets restyle it', controls: true },
+  { re: /\bColor\(\s*0x|\bColor\(\s*(?:red|0?\.\d|\d+\s*,)/, msg: 'literal colour; use Axf.colors.* (the colour theme)' },
+  { re: /\bColor\.(?:Red|Green|Blue|Black|White|Gray|DarkGray|LightGray|Yellow|Cyan|Magenta)\b/, msg: 'named colour; use Axf.colors.*' },
+  { re: /(?<![\w.])\d+(?:\.\d+)?f?\.sp\b/, msg: 'hard-coded text size; use Axf.type.* (typography asset)' },
+  { re: /\b(?:padding|spacedBy|PaddingValues|RoundedCornerShape|border|shadow|absolutePadding)\s*\([^)]*?(?<![\w.])(?!0\.dp)\d+(?:\.\d+)?f?\.dp\b/, msg: 'hard-coded spacing / radius; use Axf.space.x(n) / Axf.space.borderWidth / Axf.shapes.*' },
+];
+/** Kotlin: the spacing unit (style theme `space`, 8dp at the default) → `Axf.space.x(n)` for each dp literal. */
+function ktHint(line, r) {
+  if (!r.msg.includes('spacing')) return '';
+  const xs = [...line.matchAll(/(?<![\w.])(\d+(?:\.\d+)?)f?\.dp\b/g)].filter((m) => Number(m[1]) > 0).map((m) => (Number(m[1]) === 1 ? `${m[0]} → Axf.space.borderWidth` : `${m[0]} → Axf.space.x(${+(Number(m[1]) / 8).toFixed(2)})`));
+  return xs.length ? `\n    → use ${[...new Set(xs)].join(', ')}` : '';
+}
+for (const root of KT_ROOTS) {
+  for (const f of walk(root).filter((f) => f.endsWith('.kt') && !f.includes(`${'/'}build${'/'}`))) {
+    const rel = relative(ROOT, f);
+    if (KT_DEFINITION.test(rel)) continue;
+    const src = readFileSync(f, 'utf8');
+    if (!/import androidx\.compose/.test(src)) continue; // not UI
+    files += 1;
+    src.split('\n').forEach((line, i) => {
+      if (/theme-ok/.test(line) || /^\s*(\/\/|\*|import )/.test(line)) return;
+      for (const r of KT_RULES) {
+        if (r.controls && KT_CONTROLS_DEFINED.test(rel)) continue;
+        if (r.re.test(line)) found(f, i, line, r.msg + ktHint(line, r));
+      }
+    });
+  }
+}
+
+/* ---------- frozen code: ratchet against the baseline ---------- */
+const BASELINE = join(FRAMEWORK, 'spec/conform-baseline.json');
+if (!paths.length) {
+  const base = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : { files: {} };
+  if (updateBaseline) {
+    const sorted = Object.fromEntries(Object.entries(frozenCounts).sort(([a], [b]) => a.localeCompare(b)));
+    writeFileSync(BASELINE, JSON.stringify({
+      schema: 'conform-baseline@1',
+      note: 'Asset-conformance findings in frozen code (Android on hold, Patches paused). check-theme.mjs fails if a file goes above its count; fix and run --update-baseline to shrink it. New files never get an entry.',
+      total: Object.values(sorted).reduce((a, b) => a + b, 0),
+      files: sorted,
+    }, null, 2) + '\n');
+    console.log(`baseline written: ${Object.keys(sorted).length} frozen file(s), ${Object.values(sorted).reduce((a, b) => a + b, 0)} finding(s)`);
+  }
+  const allowed = updateBaseline ? frozenCounts : base.files ?? {};
+  let frozen = 0;
+  for (const [rel, n] of Object.entries(frozenCounts)) {
+    frozen += n;
+    if (n > (allowed[rel] ?? 0)) {
+      problems += n - (allowed[rel] ?? 0);
+      console.log(`${rel}  ${n} asset-conformance finding(s), baseline allows ${allowed[rel] ?? 0} (${frozenOf(rel).why}); run node framework/cli/check-theme.mjs ${rel} to list them`);
+    }
+  }
+  if (frozen) console.log(`  (frozen code: ${frozen} finding(s) held at the baseline in framework/spec/conform-baseline.json)`);
 }
 
 if (problems) {

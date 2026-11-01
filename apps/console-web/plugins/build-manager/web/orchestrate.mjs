@@ -86,8 +86,10 @@ export function verifyChecks(areas) {
     out.push({ name: `${p} self-test (node)`, cmd: `test -f apps/console-web/plugins/${p}/test.mjs && node apps/console-web/plugins/${p}/test.mjs || true` });
     out.push({ name: `${p} lifecycle`, cmd: `node framework/cli/plugin-lifecycle.mjs check ${p}` });
   }
+  // asset conformance (Oct 31 2026): every build that can touch UI runs the theme + controls checks
+  out.push({ name: 'theme check', cmd: 'node framework/cli/check-theme.mjs' });
+  out.push({ name: 'controls check', cmd: 'node framework/cli/check-controls.mjs' });
   if (plugins.length || has('apps/console-web') || has('framework/core') || has('framework/react') || has('framework/ui') || has('framework/schemas')) {
-    out.push({ name: 'theme check', cmd: 'node framework/cli/check-theme.mjs' });
     out.push({ name: 'console build (tsc + vite)', cmd: "cd apps/console-web && rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas plan libs; do [ -d ../../framework/$d ] && cp -r ../../framework/$d src/axf/; done && npm ci --silent && npx tsc --noEmit && npx vite build" });
     out.push({ name: 'menu reach', cmd: 'npx -y tsx apps/console-web/scripts/menu-reach.mts' });
   }
@@ -158,6 +160,9 @@ export function planStart({ row, rows = [], features = [], queue = null, running
   return { ok: true, reasons, deps, order, model, branch, areas, dontTouch, verify, brief };
 }
 
+/** Asset conformance (Brett, Oct 31 2026; shared rule "Handwritten code conforms to the asset system"), in every brief. */
+export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.';
+
 export function briefFor({ row, model, branch, areas, deps, dontTouch, live, verify, rules, reportCmd }) {
   const steps = (row.steps ?? []).map((s, i) => `${i + 1}. ${s.done ? '[done] ' : ''}${s.text}${s.estimateText ? ` (~${s.estimateText})` : ''}`);
   const ref = `${row.source}:${row.id}`;
@@ -178,6 +183,7 @@ export function briefFor({ row, model, branch, areas, deps, dontTouch, live, ver
     '\n## Rules',
     '- Follow CLAUDE.md and _claude/rules/RULES.md + _claude/shared/rules/RULES.md (plugin rules, theme tokens only, no secrets, small steps, Android on hold).',
     '- Screenshots that are not a planned UI for approval (checking a screen, live captures, PR before/after) go to UI Review → Screenshots with `node framework/cli/shot.mjs <file> --name "…" --app <app> --screen <route> --group "<build name>"` (`axf shot`; ui-review-item@1: a name, app, screen and group, the session is detected), never the review queue.',
+    `- ${ASSET_RULE}`,
     ...rules.map((r) => `- ${r}`),
     '- Watch live: whenever you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "<what you are changing>"` so Brett\'s live preview scrolls to and outlines it.',
     '\n## Report to the Build manager (axHub) as you go',

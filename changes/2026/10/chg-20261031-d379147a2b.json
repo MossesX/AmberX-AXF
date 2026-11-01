@@ -1,0 +1,95 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261031-d379147a2b",
+  "createdAt": "2026-10-31T10:26:26.970Z",
+  "updatedAt": "2026-10-31T10:35:24.576Z",
+  "kind": "fix",
+  "title": "Headless fix build for Brett's AmberX app (apps/amberx-droid in AmberX-AXF).",
+  "asked": "Headless fix build for Brett's AmberX app (apps/amberx-droid in AmberX-AXF). Load rules from axHub (mcp__axHub__call axhub.memory_read, project amberx-axf, area claude). Opus, one session. Brett is live on his phone and blocked. Two bugs: 1. VOICE LOOP: AmberX keeps SPEAKING \"no saved inbox\" / \"no saved note(s)\" over and over. Find what speaks empty-state text (hands-free listening, agent voice, notes/inbox, overlay, command center, polling/refresh that re-announces). Fix: empty states are never spoken; any spoken status is said at most once per real change (dedupe + debounce), never on a poll/refresh/re-render; no loop between TTS output and the mic (holdMic / mic lease). Add a test that a repeated empty refresh speaks nothing. 2. SCREEN RECORD BLOCKED: Android says it can't record/screenshot \"due to security policy\" = FLAG_SECURE (or equivalent) on AmberX's window. Fix: no FLAG_SECURE on normal screens. Only an opt-in setting \"Hide sensitive screens from recordings\" (OFF by default), applied only while a password/key/vault screen is showing. Make sure AmberX's own screen recorder (Audio Extract) and Android's recorder both work. Then: run the repo checks + AmberX tests, commit, push branch, open a PR, then merge origin/main, retest and push to main (Brett said push to main tonight). CI builds the new APK. Report in detailed style (file touched, what was wrong, before/after) to _claude/builds/reports/amberx-fix-loop-securescreen.md.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "c011f3ae-a42",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "Voice loop + FLAG_SECURE fixed and tested (test.mjs 1996→2037 pass); committed locally, push blocked: VPS GitHub token invalid",
+    "branch": "claude/amberx-fix-loop-securescreen",
+    "commits": [
+      {
+        "sha": "35824600726ee04aea3fb3c18f6ade48b6c2052d"
+      }
+    ],
+    "tests": {
+      "amberx test.mjs": {
+        "before": "1996",
+        "after": "2037"
+      }
+    },
+    "links": {
+      "report": "_claude/builds/reports/amberx-fix-loop-securescreen.md"
+    }
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "vps-claude-code",
+  "startedAt": "2026-10-31T10:26:26.970Z",
+  "finishedAt": "2026-10-31T10:34:52.111Z",
+  "lastSeenAt": "2026-10-31T10:34:52.045Z",
+  "estimate": {
+    "minutes": 60,
+    "costUsd": 8.4
+  },
+  "actual": {
+    "minutes": 8,
+    "costUsd": 2.9067,
+    "inputTokens": 116,
+    "outputTokens": 37735,
+    "cacheReadTokens": 6867304,
+    "cacheWriteTokens": 155618,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/amberx-fix-loop-securescreen",
+  "areas": [
+    "apps/amberx-droid",
+    "_claude"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/amberx-fix",
+    "branch": "claude/amberx-fix-loop-securescreen",
+    "base": "3c967fe5539cd02155569fe9504f05c6dfd1dfd1",
+    "head": "35824600726ee04aea3fb3c18f6ade48b6c2052d",
+    "pushed": false,
+    "dirty": 3,
+    "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/reports/amberx-fix-loop-securescreen.md",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubWebActivity.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/SecureScreen.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+      "apps/amberx-droid/src/App.tsx",
+      "apps/amberx-droid/src/native.ts",
+      "apps/amberx-droid/src/plugins/dictation/web/index.tsx",
+      "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+      "apps/amberx-droid/src/plugins/voice/web/speechgate.ts",
+      "apps/amberx-droid/src/securescreen.ts",
+      "apps/amberx-droid/test.mjs",
+      ".brief.md",
+      "amberx-fix.jsonl",
+      "amberx-fix.log"
+    ],
+    "at": "2026-10-31T10:35:24.695Z"
+  }
+}

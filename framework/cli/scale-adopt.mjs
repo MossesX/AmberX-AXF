@@ -7,7 +7,12 @@
  *
  *   text     --fx-type-scale-{2xs,xs,sm,md,lg,xl,2xl}      em sizes (relative to the parent; 1em is left alone)
  *            --fx-type-root-{2xs … 2xl}                     calc(var(--fx-font-size) * n) and px (from the base size; > 2.3× is an icon, left alone)
- *   spacing  --fx-dens-gap-{2xs,xs,sm,md,lg,xl,2xl,3xl,4xl} (> 3.5 space is layout, left alone; 1px stays a hairline)
+ *   spacing  --fx-dens-gap-{2xs,xs,sm,md,lg,xl,2xl,3xl,4xl} (> 3.5 space is layout, left alone; a 1px hairline → --fx-border-w)
+ *   radii    --fx-radius-{sm,md,lg}                         border-radius in px / rem / a bare number (999px pills and % shapes stay)
+ *   fonts    --fx-font / --fx-font-mono                     a literal font-family stack
+ *   borders  var(--fx-border-w) (× n)                       border widths in px (the style theme's hairline)
+ *   (asset-conform, Oct 31 2026) rem counts as 16px; spacing in em as em × the base font size; JSX numbers
+ *   (`padding: 8`, `fontSize: 12`, `borderRadius: 4`) are px, as React reads them.
  *
  *   node framework/cli/scale-adopt.mjs [paths…] [--dry-run]
  *   (default: framework/ui, framework/react, framework/libs, apps/console-web/src + plugins, apps/amberx-droid/src)
@@ -35,6 +40,11 @@ export const typeToken = (r) => { const s = stepOf(TYPE_STEPS, r); return s ? `v
 export const rootTypeToken = (r) => { const s = stepOf(TYPE_STEPS, r); return s ? `var(--fx-type-root-${s})` : null; };
 export const gapToken = (k) => { if (!(k > 0)) return null; const s = stepOf(GAP_STEPS, k); return s ? `var(--fx-dens-gap-${s})` : null; };
 
+/** Border radius in px → the style theme's radius step (sm ≈ 6, md ≈ 10, lg ≈ 14 at the default theme). */
+export const radiusToken = (px) => (!(px > 0) || px >= 999 ? null : `var(--fx-radius-${px <= 4 ? 'sm' : px <= 10 ? 'md' : 'lg'})`);
+/** A literal font stack → the theme's font token. */
+export const fontToken = (v) => (/var\(|inherit|initial|unset|[${]/.test(v) || !/,|monospace|serif|system-ui|ui-/.test(v) ? null : /mono|consol|courier|menlo/i.test(v) ? 'var(--fx-font-mono)' : 'var(--fx-font)');
+
 const NUM = String.raw`(\d+(?:\.\d+)?|\.\d+)`;
 const ratio = (a, b) => (b ? Number(a) / Number(b) : Number(a));
 
@@ -43,14 +53,24 @@ function fontValue(v) {
   return v
     .replace(new RegExp(String.raw`calc\(\s*var\(--fx-font-size\)\s*\*\s*${NUM}(?:\s*\/\s*${NUM})?\s*\)`, 'g'), (m, a, b) => rootTypeToken(ratio(a, b)) ?? m)
     .replace(new RegExp(String.raw`(?<![\w.-])${NUM}em\b`, 'g'), (m, a) => typeToken(Number(a)) ?? m)
-    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}px\b`, 'g'), (m, a) => (Number(a) >= 8 ? rootTypeToken(Number(a) / 14) ?? m : m));
+    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}px\b`, 'g'), (m, a) => (Number(a) >= 8 ? rootTypeToken(Number(a) / 14) ?? m : m))
+    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}rem\b`, 'g'), (m, a) => rootTypeToken(Number(a) * 16 / 14) ?? m);
 }
 /** One spacing value (several terms) → tokens. */
 function spaceValue(v) {
   return v
     .replace(new RegExp(String.raw`calc\(\s*var\(--fx-space\)\s*\*\s*${NUM}(?:\s*\/\s*${NUM})?\s*\)`, 'g'), (m, a, b) => gapToken(ratio(a, b)) ?? m)
     .replace(/(?<![(*/+-]\s*)var\(--fx-space\)(?!\s*[*/])/g, (m) => gapToken(1) ?? m)
-    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}px\b`, 'g'), (m, a) => (Number(a) >= 2 ? gapToken(Number(a) / 8) ?? m : m));
+    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}px\b`, 'g'), (m, a) => (Number(a) >= 2 ? gapToken(Number(a) / 8) ?? m : Number(a) === 1 ? 'var(--fx-border-w)' : m))
+    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}rem\b`, 'g'), (m, a) => gapToken(Number(a) * 2) ?? m)
+    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}em\b`, 'g'), (m, a) => gapToken(Number(a) * 1.75) ?? m);
+}
+/** One border-radius value → radius tokens. */
+function radiusValue(v) {
+  if (/calc\(/.test(v)) return v; // arithmetic on a radius token: needs a person (check-theme flags it)
+  return v
+    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}px\b`, 'g'), (m, a) => radiusToken(Number(a)) ?? m)
+    .replace(new RegExp(String.raw`(?<![\w.-])${NUM}r?em\b`, 'g'), (m, a) => radiusToken(Number(a) * 16) ?? m);
 }
 
 const KEBAB_FONT = /(?<![\w-])(font-size|font)(\s*:\s*)([^;}{'"`\n]+)/g;
@@ -58,13 +78,42 @@ const KEBAB_SPACE = /(?<![\w-])((?:row-|column-)?gap|padding(?:-[a-z]+)*|margin(
 const CAMEL_FONT = /(?<![\w-])(fontSize)(\s*:\s*)(['"])([^'"\n]*)\3/g;
 const CAMEL_SPACE = /(?<![\w-])((?:row|column)?[gG]ap|padding(?:Top|Bottom|Left|Right|Inline|Block|InlineStart|InlineEnd|BlockStart|BlockEnd)?|margin(?:Top|Bottom|Left|Right|Inline|Block|InlineStart|InlineEnd|BlockStart|BlockEnd)?)(\s*:\s*)(['"])([^'"\n]*)\3/g;
 
+/** Border widths in px → the style theme's hairline (1px → --fx-border-w, n px → calc(var(--fx-border-w) * n)). */
+export const borderToken = (px) => (!(px > 0) || px > 8 ? null : px === 1 ? 'var(--fx-border-w)' : `calc(var(--fx-border-w) * ${px})`);
+function borderValue(v) {
+  if (/calc\(/.test(v)) return v;
+  return v.replace(new RegExp(String.raw`(?<![\w.-])${NUM}px\b`, 'g'), (m, a) => borderToken(Number(a)) ?? m);
+}
+const KEBAB_BORDER = /(?<![\w-])(border(?:-(?:top|bottom|left|right|inline|block)(?:-(?:start|end))?)?(?:-width)?)(\s*:\s*)([^;}{'"`\n]+)/g;
+/** borderLeft: c ? '3px solid …' : 'none' — the whole value up to the next prop or the closing brace. */
+const CAMEL_BORDER = /(?<![\w-])(border(?:Top|Bottom|Left|Right|Inline|Block)?(?:Width)?)(\s*:\s*)(?=['"`(\w])([^}\n]*?)(?=,\s*[A-Za-z]+\s*:|\s*\}|$)/g;
+const KEBAB_RADIUS = /(?<![\w-])(border(?:-(?:top|bottom)-(?:left|right))?-radius)(\s*:\s*)([^;}{'"`\n]+)/g;
+const CAMEL_RADIUS = /(?<![\w-])(borderRadius)(\s*:\s*)(['"])([^'"\n]*)\3/g;
+const KEBAB_FAMILY = /(?<![\w-])(font-family)(\s*:\s*)([^;}{`\n]+)/g;
+const CAMEL_FAMILY = /(?<![\w-])(fontFamily)(\s*:\s*)(['"])([^'"\n]*)\3/g;
+/** JSX style numbers are px: `padding: 8` → `padding: 'var(--fx-dens-gap-xl)'` (0 and layout-sized values stay). */
+const CAMEL_NUM = /(?<![\w-])(fontSize|borderRadius|(?:row|column)?[gG]ap|padding(?:Top|Bottom|Left|Right|Inline|Block)?|margin(?:Top|Bottom|Left|Right|Inline|Block)?)(\s*:\s*)(\d+(?:\.\d+)?)(?=\s*[,}\n])/g;
+function numValue(p, n) {
+  const v = Number(n);
+  if (p === 'fontSize') return v >= 8 ? rootTypeToken(v / 14) : null;
+  if (p === 'borderRadius') return radiusToken(v);
+  return v === 1 ? 'var(--fx-border-w)' : v >= 2 ? gapToken(v / 8) : null;
+}
+
 export function adoptLine(line) {
   if (/theme-ok|scale-ok/.test(line)) return line;
   return line
     .replace(KEBAB_FONT, (m, p, s, v) => p + s + fontValue(v))
     .replace(KEBAB_SPACE, (m, p, s, v) => p + s + spaceValue(v))
+    .replace(KEBAB_RADIUS, (m, p, s, v) => p + s + radiusValue(v))
+    .replace(KEBAB_BORDER, (m, p, s, v) => p + s + borderValue(v))
+    .replace(CAMEL_BORDER, (m, p, s, v) => p + s + v.replace(/(['"`])([^'"`]*)\1/g, (x, q, inner) => q + borderValue(inner) + q))
+    .replace(KEBAB_FAMILY, (m, p, s, v) => p + s + (fontToken(v) ?? v))
     .replace(CAMEL_FONT, (m, p, s, q, v) => p + s + q + fontValue(v) + q)
-    .replace(CAMEL_SPACE, (m, p, s, q, v) => p + s + q + spaceValue(v) + q);
+    .replace(CAMEL_SPACE, (m, p, s, q, v) => p + s + q + spaceValue(v) + q)
+    .replace(CAMEL_RADIUS, (m, p, s, q, v) => p + s + q + radiusValue(v) + q)
+    .replace(CAMEL_FAMILY, (m, p, s, q, v) => p + s + q + (fontToken(v) ?? v) + q)
+    .replace(CAMEL_NUM, (m, p, s, n) => { const t = numValue(p, n); return t ? `${p}${s}'${t}'` : m; });
 }
 
 function walk(dir, out = []) {

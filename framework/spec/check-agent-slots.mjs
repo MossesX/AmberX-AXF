@@ -141,6 +141,16 @@ eq(st1.used, 1, 'adopted session counts, the finished one does not');
 S.sweep({ tmux: new Map([...tm].filter(([k]) => k !== 'axf-slotstest-done')), finished: () => false, kill: (k) => kills.push(k), now: Date.now() + 61_000 });
 ok(kills.includes('axf-slotstest-fin'), 'finished session closed after the grace');
 
+// an old unregistered session with no live claude -p is closed, never adopted (it must not count as busy)
+reset({ maxAgents: 6 });
+const k2 = [];
+const r3 = S.sweep({ tmux: new Map([['axf-slotstest-stale', { pid: process.pid, created: Date.now() - 600_000 }], ['axf-slotstest-live', { pid: process.pid, created: Date.now() - 600_000 }]]),
+  finished: () => false, kill: (k) => k2.push(k), hasClaude: () => false, now: Date.now() });
+eq(r3.closed.sort(), ['axf-slotstest-live', 'axf-slotstest-stale'], 'old sessions with no live claude are closed');
+eq(r3.adopted, [], 'and not adopted as running');
+const r4 = S.sweep({ tmux: new Map([['axf-slotstest-live', { pid: process.pid, created: Date.now() - 600_000 }]]), finished: () => false, kill: () => {}, hasClaude: () => true, now: Date.now() });
+eq(r4.adopted, ['axf-slotstest-live'], 'old session with a live claude is adopted');
+
 // summary shape for the console
 const sm = S.status({ tmux: new Map() });
 ok(['used', 'cap', 'queued', 'queue', 'heavy', 'memory', 'guard', 'swap', 'settings'].every((k) => k in sm), 'status has every field the console reads');

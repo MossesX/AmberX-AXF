@@ -63,7 +63,7 @@ export function LibraryTemplates() {
       <div className="fx-row fx-row--wrap">{cats.map((c) => <button key={c} className={`fx-chip ${cat === c ? 'is-selected' : ''}`} onClick={() => setCat(c)}>{c === 'all' ? 'All' : c}</button>)}</div>
       <div className="lt-grid">
         <div className="lt-list">{templates.filter((t) => cat === 'all' || t.category === cat).map((t) => (
-          <button key={t.id} className={`lt-card ${cur?.id === t.id ? 'is-selected' : ''}`} onClick={() => setSel(t.id)}>
+          <button key={t.id} data-fx-row className={`lt-card ${cur?.id === t.id ? 'is-selected' : ''}`} onClick={() => setSel(t.id)}>
             <span className="lt-card__icon"><Icon name={t.icon} size={20} /></span>
             <span className="lt-card__body"><strong>{t.name}</strong><span className="fx-muted fx-small">{t.description}</span>
               <span className="fx-row fx-row--wrap" style={{ gap: 'var(--fx-dens-gap-md)' }}>{t.produces.map((p) => <span key={p} className="fx-badge">{p}</span>)}</span></span>
@@ -139,7 +139,7 @@ export function NewLibraryDialog({ templateId, close }: { templateId: string; cl
       <div><p className="fx-eyebrow">Catalog features it covers</p>
         <div className="fx-row fx-row--wrap">{[...features].map((f) => <button key={f} className="fx-chip is-selected" onClick={() => setFeatures((x) => { const n = new Set(x); n.delete(f); return n; })}>{f} ×</button>)}</div>
         <input id="newlib-features" className="fx-input" placeholder="Search the catalog…" value={fq} onChange={(e) => setFq(e.target.value)} />
-        {matches.map((i) => <button key={i.id} className="pl-dep pl-dep--add" onClick={() => { setFeatures((x) => new Set([...x, i.id])); setFq(''); }}><Icon name="plus" size={14} /> {i.title} <span className="fx-mono fx-small fx-muted">{i.id}</span></button>)}
+        {matches.map((i) => <button key={i.id} data-fx-row className="pl-dep pl-dep--add" onClick={() => { setFeatures((x) => new Set([...x, i.id])); setFq(''); }}><Icon name="plus" size={14} /> {i.title} <span className="fx-mono fx-small fx-muted">{i.id}</span></button>)}
       </div>
       <label className="fx-row"><input type="checkbox" checked={thenCompile} onChange={(e) => setThenCompile(e.target.checked)} /> Compile every port after generating</label>
       <pre className="fx-code" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{script}{log ? `\n\n${log}` : ''}</pre>

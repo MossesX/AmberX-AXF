@@ -43,7 +43,7 @@ button.axp-activity__head { all: unset; box-sizing: border-box; width: 100%; cur
 .axp-activity__link { text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
 button.axp-activity__more { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); color: var(--fx-muted); font-size: var(--fx-type-root-md) }
 .axp-activity__errors { margin: 0 }
-.axp-activity__cmd { margin: 0; padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all }
+.axp-activity__cmd { margin: 0; padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all }
 /* stuck items (No word, or active 30+ min): a trash can next to the row, the timer in the warning colour */
 .axp-activity__headrow { display: flex; align-items: center; min-width: 0 }
 .axp-activity__headrow > .axp-activity__head { flex: 1 1 auto }

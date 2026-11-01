@@ -175,8 +175,8 @@
     "src/axf/react/library.ts": "3845c2aa2ae3e7e0",
     "src/axf/react/placement.tsx": "e50243526c856169",
     "src/axf/react/pluginRecords.ts": "b0165b309076c3d3",
-    "src/axf/react/studio/AccountView.tsx": "c1197703245de423",
-    "src/axf/react/studio/AssetPreview.tsx": "91aea2a523653e34",
+    "src/axf/react/studio/AccountView.tsx": "06157f15d56df859",
+    "src/axf/react/studio/AssetPreview.tsx": "2dfd1aeadf351cda",
     "src/axf/react/studio/AssetStudio.tsx": "94e538086c261ab2",
     "src/axf/react/studio/Inspector.tsx": "91ccd788392f7f36",
     "src/axf/react/studio/OutputTerminal.tsx": "1ac995fb7275d62c",
@@ -256,6 +256,6 @@
     "src/axf/schemas/project-rules.json": "be7b7c29a1fd9663",
     "src/axf/schemas/session.json": "88c52ff903d48dbf",
     "src/axf/schemas/ui-review.json": "7ca49a9b6c3ada33",
-    "src/axf/ui/axf.css": "eb0a2ac0626204c8"
+    "src/axf/ui/axf.css": "4225234d1ec399ce"
   }
 }

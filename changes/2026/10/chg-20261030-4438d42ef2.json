@@ -1,0 +1,67 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-4438d42ef2",
+  "createdAt": "2026-10-30T21:55:10.632Z",
+  "updatedAt": "2026-10-30T21:55:57.596Z",
+  "kind": "build",
+  "title": "# Build: Audio Extract plugin for AmberX (Angel profile, Opus, one session, no sub-agents) -- TOP P…",
+  "asked": "# Build: Audio Extract plugin for AmberX (Angel profile, Opus, one session, no sub-agents) -- TOP PRIORITY axHub tool allowed: load CLAUDE.md, the shared + repo RULES.md and THREADS.md (claude-sync, else axhub.memory_read), then build. Branch claude/audio-extract. Brett (voice, Oct 30 2026): he screen-records his phone (Samsung Screen recorder) and wants an AmberX plugin that strips the audio out of the video into an audio file. NO live recording, NO microphone, NO fallbacks: \"I don't want that shit if it has fallback.\" Extraction from a video file only, which always works. 1. Plugin **Audio Extract** (folder audio-extract, plugin-lifecycle@1), targets amberx-droid; installed and enabled in AmberX by default in this build. 2. Native side (apps/amberx-droid/android, own Capacitor plugin file next to AmberxNativePlugin.java; don't edit files other builds own): MediaExtractor + MediaMuxer to pull the audio track out losslessly (AAC in MP4 -> .m4a) with no re-encode, fast, no permissions beyond the file picker (MediaStore / SAF). Optional re-encode to MP3 or WAV through MediaCodec only when Brett picks that format. Trim start/end, pick a track if there are several, batch (several videos at once), progress + cancel. Output to Music/AmberX Audio via MediaStore. 3. UI in AmberX: Share-to-AmberX intent (share a video from Gallery -> extract), a Pick video button, auto-detect new screen recordings (watch Movies/Screen recordings / DCIM/Screen recordings and show a \"New screen recording: extract audio?\" card, opt-in setting), a results list (play, rename, share, delete), settings (format, output folder, auto-extract on/off, delete video after). Voice commands: \"extract audio from my last screen recording\". Theme tokens only, framework controls, phone-first. 4. Tests: AmberX tsc + test.mjs, plugin-lifecycle check, fakes for the native bridge; Android compile if the toolchain is present (note if not). Build a debug APK if possible and put it where AmberX APKs go; otherwise say exactly how Brett builds it. 5. Angel orchestrator entry (steps of 30 min or less), THREADS row, axHub change log. Push and open the PR (gh/git if the banner token 401s). Don't merge. Anything needing Brett = a veto call with a reason, never polled.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "210ae416-785",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T21:55:10.632Z",
+  "finishedAt": "2026-10-30T21:55:57.596Z",
+  "lastSeenAt": "2026-10-30T21:55:15.596Z",
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.358,
+    "inputTokens": 16,
+    "outputTokens": 2116,
+    "cacheReadTokens": 345808,
+    "cacheWriteTokens": 49286,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Running: Read brief and app layout",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/claude-audio-extract",
+    "branch": "claude/audio-extract",
+    "base": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+    "head": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+    "pushed": true,
+    "dirty": 10,
+    "files": [
+      ".axf-brief.md",
+      ".axf-build.jsonl",
+      ".axf-build.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-30T21:55:57.679Z"
+  }
+}
