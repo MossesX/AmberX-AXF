@@ -7,6 +7,7 @@ import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
 import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
+import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
@@ -773,6 +774,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     writeFileSync(f, JSON.stringify(schema, null, 2) + '\n');
     written.push(f);
   }
+  // ui-review-item@1 / ui-review-group@1: JSON Schemas + the registry snapshot the Python server reads
+  for (const [n, schema] of Object.entries(uiReviewJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const reg = join(FRAMEWORK_DIR, 'schemas/ui-review.json');
+  writeFileSync(reg, JSON.stringify(UI_REVIEW_REGISTRY, null, 2) + '\n'); written.push(reg);
   return written;
 }
 
