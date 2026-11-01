@@ -205,6 +205,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — then commit _claude/builds/orchestrator.json with your work.`,
+    'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --title "…" --app … --screen … --source check --session … (UI Review → Screenshots), never the review queue.',
   ];
   return lines.filter(Boolean).join('\n');
 }

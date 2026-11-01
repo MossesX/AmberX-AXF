@@ -3,9 +3,14 @@ export const ID = 'ai.amberx.axf.console.ui-review';
 export const VIEW = 'ui-review';
 /** View → Design packs: the same page, opened on its Design packs section. */
 export const PACKS_VIEW = 'design-packs';
+/** View → Screenshots: the same page, opened on its Screenshots tab (ad-hoc pictures, not waiting for approval). */
+export const SHOTS_VIEW = 'ui-screenshots';
+/** A copied screenshot link: ?ui-shot=<id> opens UI Review → Screenshots on that picture. */
+export const SHOT_PARAM = 'ui-shot';
 export const KEYS = {
   view: 'ui-review.view', sort: 'ui-review.sort', groupBy: 'ui-review.groupBy', section: 'ui-review.section',
   status: 'ui-review.status', device: 'ui-review.device', thumbs: 'ui-review.thumbs',
+  tab: 'ui-review.tab', shotGroup: 'ui-review.shotGroup', shotMode: 'ui-review.shotMode',
 } as const;
 export const VIEWS = [
   { id: 'grid', label: 'Grid', icon: 'list' },

@@ -15,6 +15,8 @@
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
+ *   axf shot <file> --title "…" --app A --screen S --source check|build|pr|manual|watch-live --session S
+ *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
  *   axf new-module <name> [--label "Name"] [--capabilities a,b] [--depends-on id,id] [--no-compose]
  *                               scaffold framework/android/lib-<name> (Android port)
@@ -265,6 +267,12 @@ try {
     }
     case 'modules': {
       for (const m of listModules()) console.log(`${c.b(m.name.padEnd(24))} ${c.dim(m.kind.padEnd(10))} ${m.description}`);
+      break;
+    }
+    case 'shot': {
+      // UI Review → Screenshots (not the approve / reject queue): framework/cli/shot.mjs, raw arguments passed through
+      const { main: shot } = await import('./shot.mjs');
+      await shot(process.argv.slice(3));
       break;
     }
     case 'schemas': {

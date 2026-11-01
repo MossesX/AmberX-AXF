@@ -177,6 +177,7 @@ export function briefFor({ row, model, branch, areas, deps, dontTouch, live, ver
     `\nExpected to touch: ${areas.length ? areas.join(', ') : 'see the item'}.`,
     '\n## Rules',
     '- Follow CLAUDE.md and _claude/rules/RULES.md + _claude/shared/rules/RULES.md (plugin rules, theme tokens only, no secrets, small steps, Android on hold).',
+    '- Screenshots that are not a planned UI for approval (checking a screen, live captures, PR before/after) go to UI Review → Screenshots with `node framework/cli/shot.mjs <file> --title "…" --app <app> --screen <route> --source check --session <id>` (`axf shot`), never the review queue.',
     ...rules.map((r) => `- ${r}`),
     '\n## Report to the Build manager (axHub) as you go',
     'The console already opened your Codebase changes entry (the hook adopts it through AXF_ADOPT_CHANGE and prints its id; `last` points at it). Record estimates first, then steps, then the result:',

@@ -101,6 +101,37 @@
 .axp-ui-review__bulkn { font-variant-numeric: tabular-nums; }
 .axp-ui-review__bulkc { flex: 1 1 calc(var(--fx-font-size) * 10); min-width: 0; }
 
+/* Tabs: Review (the approve / reject queue) · Screenshots (ad-hoc pictures). */
+.axp-ui-review__tabs { align-self: flex-start; max-width: 100%; overflow-x: auto; }
+
+/* Screenshots: grid rows with a thumbnail, thumbnail cards, the full-screen viewer and the before / after slider. */
+.axp-ui-review__srow { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0; }
+.axp-ui-review__clip { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-ui-review__thead { margin: 0 0 calc(var(--fx-space) / 2); font-weight: 600; }
+.axp-ui-review__thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 7.5), 1fr)); gap: var(--fx-dens-gap-lg); }
+.axp-ui-review__tcard { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; min-width: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden; }
+.axp-ui-review__tcard:focus-visible { outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: calc(var(--fx-space) * -0.25); }
+.axp-ui-review__tcard .axp-ui-review__big { aspect-ratio: 9 / 14; height: auto; background: var(--fx-bg); }
+.axp-ui-review__tcard.is-desktop .axp-ui-review__big { aspect-ratio: 16 / 11; }
+.axp-ui-review__tcap { display: flex; flex-direction: column; padding: calc(var(--fx-space) / 2) var(--fx-dens-gap-lg); min-width: 0; }
+.axp-ui-review__tcap > b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.axp-ui-review__viewer { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--fx-bg); outline: none; }
+.axp-ui-review__vbar { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); padding: calc(var(--fx-space) / 2) var(--fx-dens-gap-xl); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0; }
+.axp-ui-review__vstage { min-height: 0; overflow: auto; overscroll-behavior: contain; display: flex; justify-content: center; align-items: flex-start; padding: var(--fx-dens-gap-xl); touch-action: pan-y; }
+.axp-ui-review__vstage.is-phone .axp-ui-review__img { width: min(100%, calc(var(--fx-font-size) * 30)); }
+.axp-ui-review__vfoot { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); padding: calc(var(--fx-space) / 2) var(--fx-dens-gap-xl) var(--fx-dens-gap-xl); border-top: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); max-height: 40dvh; overflow: auto; }
+.axp-ui-review__vmeta { overflow-wrap: anywhere; }
+
+.axp-ui-review__cmp { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); width: min(100%, calc(var(--fx-font-size) * 60)); }
+.axp-ui-review__vstage.is-phone .axp-ui-review__cmp { width: min(100%, calc(var(--fx-font-size) * 30)); }
+.axp-ui-review__cmpstage { position: relative; display: grid; border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); overflow: hidden; user-select: none; }
+.axp-ui-review__cmpstage > * { grid-area: 1 / 1; }
+.axp-ui-review__cmpimg { display: block; width: 100%; height: auto; }
+.axp-ui-review__cmpafter { display: block; }
+.axp-ui-review__cmpline { position: absolute; inset-block: 0; width: var(--fx-border-w); background: var(--fx-accent); pointer-events: none; }
+.axp-ui-review__cmpbar { min-width: 0; }
+
 @media (min-width: 761px) {
   .axp-ui-review__bar > .axp-ui-review__search { flex: 1 1 calc(var(--fx-font-size) * 16); }
   .axp-ui-review__bar > .axp-ui-review__sel { flex: 0 1 auto; }
@@ -114,4 +145,5 @@
   .axp-ui-review__fname { font-size: var(--fx-type-scale-md); text-align: start; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .axp-ui-review__gallery { grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 14), 1fr)); }
   .axp-ui-review__cols { grid-auto-columns: minmax(calc(var(--fx-font-size) * 18), 1fr); }
+  .axp-ui-review__thumbs { grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 10), 1fr)); }
 }
