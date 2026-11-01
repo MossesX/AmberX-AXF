@@ -164,3 +164,13 @@ Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Re
 ## Session recording through axHub (Nov 1 2026, rec-control, Opus)
 
 Claude drives AmberX's existing Audio Output Recorder through axHub's MCP: service `amberx` (axHub decision #108) — `recorder_start {session_name, group?, note?}` is a straight approval (never veto, never auto-approved; title `Start recording: <session_name>`), `recorder_stop` / `recorder_status` run directly. The phone is the AXPP device: `AxppLink.java` (hello / long poll / answer with the hub session, started by the recorder plugin and WatchService), `RecorderControl.java` (part names `<session> - <YYYY-MM-DD HH-mm> - partN`, session parsing; JUnit `RecorderControlTest`). A remote start sets the session and opens the recorder's own consent flow (Android's capture prompt) plus a "Start recording: <session>" notification; the recording notification says "Recording: <session> … mic off" with Stop. Parts carry `group`/`session`/`note` in their axHub index; the recordings list groups a session's parts (`byGroup`). Phone and web never auto-approve `amberx.recorder_start`. No microphone path exists (the opt-in mic switch Brett mentioned isn't built). Report: `_claude/builds/reports/rec-control.md`. <!-- axf-plugin:output-recorder -->
+
+## Help mode (Nov 1 2026, help-mode, Opus)
+
+A switch that makes every AmberX app teach itself (Brett: "tooltips everywhere… off = no clutter"): the ? in the menu
+bar, F1 / Ctrl+Shift+H, Help → Help mode, Settings → About, AmberX voice; per device. help@1 packs (collection type;
+rules `framework/core/engines/help-rules.mjs`), tooltips on every control (hover, phone ? badges, long-press), What is
+this? panel, 2–4 step screen intros once per screen. Coverage CLI `framework/cli/help-coverage.mjs` with a CI ratchet
+(`framework/spec/help-coverage.json`): framework 111/111, console + plugins 1140/1140 (473 written, 667 drafts), axHub
+web 163/163. Plugins ship `help.json`. Report `_claude/builds/reports/help-mode.md`; install_steps Part K.
+
