@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 30,
- "updatedAt": "2026-11-01T02:36:08.008Z",
+ "rev": 32,
+ "updatedAt": "2026-11-01T02:36:26.287Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -40810,19 +40810,23 @@
    "title": "Audio Extract plugin for AmberX: pull the audio out of screen recordings (lossless .m4a, optional MP3/WAV), plus a built-in screen recorder with playback audio (no mic)",
    "category": "AmberX",
    "detail": "Brett, Oct 30 2026 (voice): strip the audio out of his phone screen recordings into an audio file; extraction from a video file only, no live mic, no fallbacks. Then: add a Record screen mode (MediaProjection + playback capture, foreground service, chip, countdown) whose recordings go straight through the extractor. Profile: Angel. Opus, one session.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/audio-extract",
    "pr": "",
    "createdAt": "2026-10-30T21:56:25.813Z",
-   "updatedAt": "2026-10-30T22:16:02.736Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-01T02:36:26.239Z",
+   "builtAt": "2026-11-01T02:36:25.826Z",
    "notes": [
     {
      "text": "Built on claude/audio-extract (Opus). Web: console plugin audio-extract (targets amberx-droid). Native: AudioExtractPlugin/AudioExtractor/ScreenRecordService. javac-checked locally vs android-35 + Capacitor 8.5.3; APK from CI job amberx. No MP3 (Android has no MP3 encoder); screen-recording folders are SAF grants (no storage permission).",
      "at": "2026-10-30T22:16:02.736Z"
+    },
+    {
+     "text": "s7 closed by Leftovers: claude/audio-extract is on main; test.mts 24/24, AmberX test.mjs 2045/2045 + tsc (Node 22), plugin-lifecycle clean. The new AmberX APK comes from CI (amberx-debug.apk).",
+     "at": "2026-11-01T02:36:26.239Z"
     }
    ],
    "approvals": [],
@@ -40974,12 +40978,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:36:25.826Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:36:25.867Z"
     }
    ],
    "profiles": [
@@ -40990,7 +40994,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
