@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, Segmented, Slot, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
+import { WatchLiveFor } from '@console/watchLive';
 import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
@@ -190,6 +191,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         {b.category && <span><Icon name="layers" size={13} />{b.category}</span>}
         {b.pendingId && <span className="fx-mono">pending:{b.pendingId}</span>}
         {b.branch && <span className="fx-mono">{b.branch}</span>}
+        {(b.status === 'running' || b.status === 'waiting') && <WatchLiveFor branch={b.branch} text={`${b.id} ${b.pendingId ?? ''}`} />}
       </div>
       {!embedded && n.needsApproval && n.phase && (
         <div className="pl-note is-warn oc-gate"><Icon name="alert" size={14} />Next phase switches {n.phase.from} → {n.phase.model}. Approve before a session starts it.

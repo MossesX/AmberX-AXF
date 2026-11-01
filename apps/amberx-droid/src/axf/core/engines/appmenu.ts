@@ -13,11 +13,11 @@
  * Field names and limits come from schemas/asset-types.json → `menuItems`.
  *
  * Live-list rows (a provider's items, never an asset's) may also carry `buttons` (Deny / Approve on the row itself,
- * run through the provider's `act`), `detail` (a second line), `deadline` (a live countdown) and `paused`; they pass
+ * run through the provider's `act`), `detail` (a second line), `deadline` (a live countdown), `paused` and `expand` (details in place, `<kind>:<key>`); they pass
  * through untouched, buttons gated like items (hide drops, disable locks). Runtime only: not asset fields.
  */
 import spec from '../../schemas/asset-types.json';
-import type { AppMenuData, Gate, MenuItem, MenuItemButton } from '../types';
+import type { AppMenuData, Gate, MenuItem, MenuItemButton, MenuItemTag } from '../types';
 
 const MENU_SPEC = spec.menuItems as { optional_fields: Record<string, string>; checkedKinds: string[]; maxDepth: number; providerMax: number; defaultOrder: number };
 const TYPE_LABELS = spec.types as unknown as Record<string, { label: string; icon?: string; hideable?: boolean }>;
@@ -93,6 +93,10 @@ export interface CompiledMenuItem {
   detail?: string;
   deadline?: number;
   paused?: string;
+  /** live-list rows: `<kind>:<key>` for the expandable details (React `registerMenuRowDetails`) */
+  expand?: string;
+  tag?: MenuItemTag;
+  chip?: string;
 }
 export interface CompiledMenuButton extends MenuItemButton { locked: boolean }
 export interface CompiledMenu { id: string; label: string; origin: string; items: CompiledMenuItem[] }
@@ -135,7 +139,7 @@ export function titleFromId(id: string): string {
 type Node = {
   id: string; label?: string; icon?: string; action?: string; shortcut?: string; requires?: string; separator?: boolean;
   provider?: string; badge?: string; checked?: string;
-  buttons?: MenuItemButton[]; detail?: string; deadline?: number; paused?: string;
+  buttons?: MenuItemButton[]; detail?: string; deadline?: number; paused?: string; tag?: MenuItemTag; chip?: string; expand?: string;
   items?: Node[]; origin: string; order: number; seq: number; before?: string; after?: string;
 };
 type MenuNode = { id: string; label: string; origin: string; order: number; seq: number; items: Node[] };
@@ -156,6 +160,9 @@ function toNode(it: MenuItem, origin: string, seq: number, defaults: { order?: n
     ...(typeof it.detail === 'string' ? { detail: it.detail } : {}),
     ...(typeof it.deadline === 'number' && Number.isFinite(it.deadline) ? { deadline: it.deadline } : {}),
     ...(typeof it.paused === 'string' ? { paused: it.paused } : {}),
+    ...(it.tag && typeof it.tag.label === 'string' && it.tag.label ? { tag: { ...it.tag } } : {}),
+    ...(typeof it.chip === 'string' && it.chip ? { chip: it.chip } : {}),
+    ...(typeof it.expand === 'string' && it.expand ? { expand: it.expand } : {}),
   };
   const before = it.before ?? defaults.before;
   const after = it.after ?? defaults.after;
@@ -196,6 +203,9 @@ function strip(n: Node): MergedMenuItem {
   if (n.detail !== undefined) out.detail = n.detail;
   if (n.deadline !== undefined) out.deadline = n.deadline;
   if (n.paused !== undefined) out.paused = n.paused;
+  if (n.tag !== undefined) out.tag = n.tag;
+  if (n.chip !== undefined) out.chip = n.chip;
+  if (n.expand !== undefined) out.expand = n.expand;
   if (n.items) out.items = n.items.map(strip);
   return out;
 }
@@ -319,6 +329,9 @@ function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: n
     if (it.detail !== undefined) c.detail = it.detail;
     if (it.deadline !== undefined) c.deadline = it.deadline;
     if (it.paused !== undefined) c.paused = it.paused;
+    if (it.tag !== undefined) c.tag = it.tag;
+    if (it.chip !== undefined) c.chip = it.chip;
+    if (it.expand !== undefined) c.expand = it.expand;
     if (it.provider !== undefined) {
       if (!env.providers.includes(it.provider)) { notes.push(`${where}/${it.id}: live list "${it.provider}" is not registered`); continue; }
       if (depth >= max) { notes.push(`${where}/${it.id}: live list cut at depth ${max}`); continue; }

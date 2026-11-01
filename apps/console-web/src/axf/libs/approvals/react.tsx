@@ -17,17 +17,21 @@
  * Theme tokens only (approvals.css), framework controls only; the badge is `flex: none` so it snaps beside its
  * neighbours in a title bar and never draws over them; the popover is portalled with fixed coordinates.
  */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type RefObject } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
 import { HUB_DEFAULT, normalizeHub } from '../hub/hub';
 import { formatCountdown } from '../hub/veto';
 import {
-  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, countdownOf, freshIds, goneIds, goneMessage, isUrgent, itemLine, rowOrder,
+  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, countdownOf, freshIds, goneIds, goneMessage, isUrgent, rowOrder,
   approvalsWatcher, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult,
 } from './index';
 import { approvalsHost, decideApproval, onApprovalsHost, openHubPage } from './host';
+import { ApprovalRow } from './row';
+import { detailsOfItem } from './details';
 import './approvals.css';
+
+export { ApprovalDetailsPanel, ApprovalRow, SourceBadge, RESULT_LINES, type ApprovalDetailsPanelProps, type ApprovalRowProps } from './row';
 
 /* ---------------------------------------------------------------- the host seam */
 
@@ -227,7 +231,7 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
         </div>
       ) : (
         <ul className="axf-approvals__list">
-          {items.map((it) => <Row key={it.id} item={it} busy={busy} onDecide={(d) => void run(it, d)} />)}
+          {items.map((it) => <Row key={it.id} item={it} hub={hub} busy={busy} onDecide={(d) => void run(it, d)} openPage={openHubPage} />)}
           {state.items.length === 0 && <li className="fx-muted fx-small">Nothing is waiting on axHub.</li>}
           {more > 0 && <li className="fx-muted fx-small">…and {more} more on the hub.</li>}
         </ul>
@@ -238,24 +242,65 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
   );
 }
 
-function Row({ item, busy, onDecide }: { item: ApprovalItem; busy: string; onDecide: (d: ApprovalDecision) => void }) {
+/** One item: the shared expandable row (caret far right, details in place), Deny / Approve on the collapsed row too. */
+function Row({ item, hub, busy, onDecide, openPage, scope = 'popover', stack = true }: { item: ApprovalItem; hub: string; busy: string; onDecide: (d: ApprovalDecision) => void; openPage: (url: string) => void; scope?: string; stack?: boolean }) {
   const left = countdownOf(item);
-  const urgent = left !== null && left <= 30;
+  const Wrap = stack ? 'li' : 'div';
   return (
-    <li className={`axf-approvals__item${item.kind === 'held' ? ' is-held' : ''}`}>
-      <div className="axf-approvals__text">
-        <strong className="axf-approvals__title" title={item.title}>{item.title}</strong>
-        <span className={`fx-small axf-approvals__line${urgent ? ' is-urgent' : ''}`} role={left !== null ? 'timer' : undefined}>{itemLine(item)}</span>
-        {item.description && <span className="fx-small fx-muted axf-approvals__desc">{item.description}</span>}
-        {item.command && <code className="fx-mono fx-small axf-approvals__cmd" title={item.command}>{item.command}</code>}
-      </div>
-      <div className="axf-approvals__actions">
-        {/* Approve / Deny on every row (Brett, Oct 30 2026): big targets, green and red, the safe one first. */}
-        {rowOrder(item.decisions).map((d) => (
-          <Button key={d} tone={d === 'approve' ? 'success' : 'danger'} icon={d === 'approve' ? (item.kind === 'held' ? 'play' : 'check') : d === 'deny' ? 'x-circle' : 'x'}
-            busy={busy === `${item.id}:${d}`} disabled={!!busy || (item.kind === 'held' && left === 0)} onClick={() => onDecide(d)}>{DECISION_LABELS[d]}</Button>
-        ))}
-      </div>
-    </li>
+    <Wrap className="axf-approvals__li">
+      <ApprovalRow
+        scope={scope} details={detailsOfItem(item)} hub={hub} busy={busy} onDecide={onDecide} openPage={openPage} compact={stack} stack={stack}
+        actions={
+          <div className="axf-approvals__actions">
+            {/* Approve / Deny on every row (Brett, Oct 30 2026): big targets, green and red, the safe one first. */}
+            {rowOrder(item.decisions).map((d) => (
+              <Button key={d} tone={d === 'approve' ? 'success' : 'danger'} icon={d === 'approve' ? (item.kind === 'held' ? 'play' : 'check') : d === 'deny' ? 'x-circle' : 'x'}
+                busy={busy === `${item.id}:${d}`} disabled={!!busy || (item.kind === 'held' && left === 0)} onClick={() => onDecide(d)}>{DECISION_LABELS[d]}</Button>
+            ))}
+          </div>
+        }
+      />
+    </Wrap>
+  );
+}
+
+/* ---------------------------------------------------------------- the list (a page of rows) */
+
+export interface ApprovalsListProps {
+  /** The hub (an app host's `hub` wins). */
+  hub?: string;
+  /** Surface name for the open-row store (default 'list'). */
+  scope?: string;
+  /** Shown when nothing waits (default a short line). */
+  empty?: ReactNode;
+}
+
+/**
+ * Everything waiting, as expandable rows (AmberX's approvals view, any app page): Deny / Approve on each collapsed row
+ * and inside the open one. Deciding: the app host's path, else directly on the hub's own origin, else the hub's page.
+ */
+export function ApprovalsList({ hub: hubProp, scope = 'list', empty }: ApprovalsListProps) {
+  const h = useHost();
+  const hub = normalizeHub(h.hub) ?? normalizeHub(hubProp) ?? HUB_DEFAULT;
+  const rt = useOptionalRuntime();
+  const { state } = useApprovalsFeed(hub, h.everyMs);
+  const [busy, setBusy] = useState('');
+  const run = async (item: ApprovalItem, d: ApprovalDecision) => {
+    setBusy(`${item.id}:${d}`);
+    try {
+      const r: DecideResult = await decideApproval(hub, item, d);
+      if (!r.opened) rt?.toast(r.message, r.ok ? 'success' : 'danger', 'Approvals');
+    } catch (e) {
+      rt?.toast((e as Error)?.message || 'Something went wrong.', 'danger', 'Approvals');
+    } finally { setBusy(''); }
+  };
+  if (state.status !== 'ok') return null;
+  const more = state.count - state.items.length;
+  return (
+    <div className="axf-approvals__page">
+      {state.items.length === 0 && (empty ?? <p className="fx-muted">Nothing is waiting on axHub.</p>)}
+      {state.items.map((it) => <Row key={it.id} item={it} hub={hub} busy={busy} onDecide={(d) => void run(it, d)} openPage={openHubPage} scope={scope} stack={false} />)}
+      {more > 0 && <p className="fx-small fx-muted">…and {more} more on the hub. <a href={state.approvalsUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => { if (approvalsHost().open) { e.preventDefault(); openHubPage(state.approvalsUrl); } }}>See them all</a></p>}
+    </div>
   );
 }

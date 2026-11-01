@@ -5,7 +5,8 @@
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
 import { SettingsRegistry, type SettingValue } from './settings';
-import { AssetRegistry, serializeAsset } from './registry';
+import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
+import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
@@ -254,6 +255,7 @@ export class AxfRuntime {
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
+    announceWatchLiveRuntime(this);
     this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
     if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
@@ -330,7 +332,12 @@ export class AxfRuntime {
     this.appearanceSource = source;
     this.appearanceOff = source.subscribe((ev) => {
       if (!this.appearanceFollowing()) return;
-      if ('state' in ev) { this.set({ appearance: ev.state }); return; }
+      if ('state' in ev) {
+        if (ev.state.status === 'ready') this.appearanceWasReady = true;
+        if (sameSourceState(this.state.appearance, ev.state)) return; // nothing new: no re-render
+        this.set({ appearance: ev.state });
+        return;
+      }
       this.applyAppearance(ev.doc);
     });
     this.followOff = this.settings.onChange(APPEARANCE_FOLLOW_KEY, () => this.syncAppearanceFollow());
@@ -345,6 +352,7 @@ export class AxfRuntime {
     this.appearanceOff = null;
     this.followOff = null;
     this.appearanceRunning = false;
+    this.appearanceWasReady = false;
     this.appearanceSource = null;
     this.lastAppearance = null;
     this.set({ appearance: null });
@@ -352,6 +360,8 @@ export class AxfRuntime {
 
   private followOff: (() => void) | null = null;
   private appearanceRunning = false;
+  /** The source has been ready since it was attached / followed again: the app has its look and stays on screen. */
+  private appearanceWasReady = false;
 
   /** Is the look read from axHub right now? (A developer app with the follow switch on; true without a source too.) */
   appearanceFollowing(): boolean { return this.settings.get(APPEARANCE_FOLLOW_KEY) !== false; }
@@ -369,6 +379,7 @@ export class AxfRuntime {
     const want = this.appearanceFollowing();
     if (want === this.appearanceRunning) return;
     this.appearanceRunning = want;
+    this.appearanceWasReady = false;
     if (want) {
       this.set({ appearance: src.state() });
       src.start();
@@ -394,6 +405,17 @@ export class AxfRuntime {
 
   /** The developer app runs only while its source is ready (or it has none). The React layer shows the waiting screen otherwise. */
   appearanceReady(): boolean { return !this.appearanceSource || !this.appearanceRunning || this.state.appearance?.status === 'ready'; }
+
+  /**
+   * Should the React layer show the waiting screen instead of the app? Only until the source is ready the first time,
+   * or while the hub says this browser may not read the look (signed out). A re-read that fails after the app is on screen
+   * keeps the app as it is (the source retries by itself): dropping the whole app for the waiting screen and back
+   * remounted every view on each failed re-read (Brett, Nov 1 2026: the approvals screen flashing "Reading the hub").
+   */
+  appearanceBlocking(): boolean {
+    if (this.appearanceReady()) return false;
+    return !this.appearanceWasReady || this.state.appearance?.status === 'unauthorized';
+  }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
   appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
@@ -426,7 +448,8 @@ export class AxfRuntime {
       const sp = r.spacing ?? SPACING_DEFAULT_VALUE;
       if (this.spacing() !== sp) this.settings.set(SPACING_KEY, sp);
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
-      this.set({ active, swaps: this.state.swaps + (changed ? 1 : 0) }, true);
+      // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
+      if (changed) this.set({ active, swaps: this.state.swaps + 1 }, true);
       if (r.skipped.length) this.terminal.warn('appearance', `not in this app, kept the default: ${r.skipped.join(', ')}`);
       this.terminal.ok('appearance', `applied from the hub${doc?.updatedBy ? ` (saved by ${doc.updatedBy})` : ''}`);
     } finally {
@@ -1293,6 +1316,20 @@ export class AxfRuntime {
     return r;
   }
 
+  /**
+   * Watch live (watch-live@1): an asset file a session is editing changed on disk. Re-registers it in place (keeping
+   * the source of the copy it replaces) and recompiles, so the active theme/layout/menu shows the edit without a
+   * reload. Not a user action: no permission check and no swap; the active choice stays what it was.
+   */
+  hotReplaceAsset(raw: unknown, origin = 'watch-live'): ValidationResult {
+    const t = (raw as { type?: AssetType; id?: string } | null);
+    const prev = t?.type && t.id ? (this.registry.get(t.type, t.id) as RegisteredAsset | undefined) : undefined;
+    const r = this.registry.register(raw, prev?.__source ?? 'imported', prev?.__origin ?? origin);
+    // A fresh `active` (same choices) so everything keyed on it — the provider's compiled tokens — re-applies.
+    if (r.ok) this.set({ active: { ...this.state.active } });
+    return r;
+  }
+
   exportAsset(type: AssetType, id: string): string {
     const a = this.registry.get(type, id);
     return a ? serializeAsset(a) : '';
@@ -2056,4 +2093,10 @@ export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {
   // Expose the runtime as a cross-application API (devtools, MCP bridges, other AmberX AXF apps in the page).
   (globalThis as unknown as { AXF?: AxfRuntime }).AXF = rt;
   return rt;
+}
+
+/** Two source states that say the same thing (status, version, reason, retry): re-setting one would only re-render. */
+function sameSourceState(a: AppearanceSourceState | null | undefined, b: AppearanceSourceState): boolean {
+  if (!a || a.status !== b.status) return false;
+  return JSON.stringify(a) === JSON.stringify(b);
 }

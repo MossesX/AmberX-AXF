@@ -5,7 +5,8 @@
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
 import { SettingsRegistry, type SettingValue } from './settings';
-import { AssetRegistry, serializeAsset } from './registry';
+import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
+import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
@@ -254,6 +255,7 @@ export class AxfRuntime {
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
+    announceWatchLiveRuntime(this);
     this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
     if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
@@ -1311,6 +1313,20 @@ export class AxfRuntime {
       if (activate && this.can('assets.swap')) this.swap(r.asset.type, r.asset.id);
       else this.set({});
     }
+    return r;
+  }
+
+  /**
+   * Watch live (watch-live@1): an asset file a session is editing changed on disk. Re-registers it in place (keeping
+   * the source of the copy it replaces) and recompiles, so the active theme/layout/menu shows the edit without a
+   * reload. Not a user action: no permission check and no swap; the active choice stays what it was.
+   */
+  hotReplaceAsset(raw: unknown, origin = 'watch-live'): ValidationResult {
+    const t = (raw as { type?: AssetType; id?: string } | null);
+    const prev = t?.type && t.id ? (this.registry.get(t.type, t.id) as RegisteredAsset | undefined) : undefined;
+    const r = this.registry.register(raw, prev?.__source ?? 'imported', prev?.__origin ?? origin);
+    // A fresh `active` (same choices) so everything keyed on it — the provider's compiled tokens — re-applies.
+    if (r.ok) this.set({ active: { ...this.state.active } });
     return r;
   }
 

@@ -17,9 +17,11 @@
  */
 import type { AxfRuntime, MenuActResult, MenuItem, MenuItemButton } from '../../core';
 import { HUB_DEFAULT, normalizeHub } from '../hub/hub';
+import { HUB_SOURCE_TONE } from '../hub/source';
 import { approvalsWatcher } from './index';
-import { DECISION_LABELS, rowOrder, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult } from './core';
+import { DECISION_LABELS, rowOrder, rowTimes, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult } from './core';
 import { decideApproval } from './host';
+import { approvalExpandKey, registerApprovalsLookup } from './details';
 
 export const APPROVALS_MENU_MODULE = 'ai.amberx.axf.approvals';
 /** The live list's id in lib-hub's menus (axhub-web, AmberX); the console's plugin uses `approvals.list`. */
@@ -45,6 +47,13 @@ export interface ApprovalRowsOptions {
   signIn?: string;
 }
 
+/** The row's second line: who asked (session / build / agent name), when, then the command; the tool when nothing else. */
+export function whoLine(it: Pick<ApprovalItem, 'source' | 'createdAt' | 'expiresAt' | 'veto' | 'command' | 'tool'>, now: number = Date.now()): string {
+  const who = it.source && it.source.who !== it.source.label ? it.source.who : '';
+  const asked = rowTimes(it, now).asked;
+  return [who, asked, it.command].filter(Boolean).join(' · ') || it.tool;
+}
+
 /** The menu rows for one read of the feed (status rows when it can't be read, `Nothing waiting` when empty). */
 export function approvalMenuRows(st: ApprovalsState, opts: ApprovalRowsOptions = {}): MenuItem[] {
   if (st.status === 'signed-out') return [{ id: 'hub-sign-in', label: 'Sign in to axHub to see them', icon: 'shield', action: opts.signIn ?? 'hub.open:sign-in' }];
@@ -56,8 +65,13 @@ export function approvalMenuRows(st: ApprovalsState, opts: ApprovalRowsOptions =
     const v = it.veto;
     const row: MenuItem = {
       id: `${APPROVALS_ROW_PREFIX}${it.id}`, label: it.title, icon: it.kind === 'held' ? (v?.shelved ? 'pause' : 'clock') : 'shield',
-      action: review(it), detail: it.command || it.tool,
+      action: review(it), detail: whoLine(it),
+      // Expands in place (caret on the far right): lib-approvals' details panel (row.tsx registers the renderer).
+      expand: approvalExpandKey(it.id),
     };
+    // Who asked (axHub decision 109): the source badge and the tool as chips, the title stays first.
+    if (it.source) row.tag = { label: it.source.label, tone: HUB_SOURCE_TONE[it.source.kind], ...(it.source.client ? { title: `${it.source.label} · ${it.source.client}` } : {}) };
+    if (it.title !== `Run ${it.tool}`) row.chip = it.tool;
     if (v) { row.deadline = v.readAt + v.secondsLeft * 1000; if (v.shelved) row.paused = 'Shelved'; }
     const buttons = decisionButtons(it);
     if (buttons.length) row.buttons = buttons;
@@ -93,7 +107,12 @@ export function installApprovalsMenu(rt: AxfRuntime, opts: ApprovalsMenuOptions 
   const decide = opts.decide ?? ((item: ApprovalItem, d: ApprovalDecision) => decideApproval(hub, item, d));
   /** The items the open menu shows (a button acts on what the row showed, not on a later read). */
   let shown = new Map<string, ApprovalItem>();
-  return rt.registerAppMenuProvider(opts.id ?? APPROVALS_MENU_PROVIDER, {
+  // The open row's details find the item here: what the menu showed, else the watcher's latest read.
+  const offLookup = registerApprovalsLookup({
+    hub: () => hub, decide,
+    find: (id) => shown.get(`${APPROVALS_ROW_PREFIX}${id}`) && (approvalsWatcher(hub).state.items.find((i) => i.id === id) ?? shown.get(`${APPROVALS_ROW_PREFIX}${id}`)),
+  });
+  const offProvider = rt.registerAppMenuProvider(opts.id ?? APPROVALS_MENU_PROVIDER, {
     module: APPROVALS_MENU_MODULE, max: opts.max ?? 12, moreAction: opts.moreAction ?? 'hub.open:approvals', moreLabel: opts.moreLabel ?? 'All approvals…',
     items: async () => {
       const st = await read();
@@ -110,4 +129,5 @@ export function installApprovalsMenu(rt: AxfRuntime, opts: ApprovalsMenuOptions 
       return r;
     },
   });
+  return () => { offProvider(); offLookup(); };
 }

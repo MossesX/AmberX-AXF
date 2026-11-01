@@ -35,14 +35,15 @@ import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
-import { fetchVetoFeed, formatCountdown, onVetoHost, secondsLeftNow, vetoHost, VETO_ACTIONS, VETO_WARNING_SECONDS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
+import { onVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
-import { approvalsHost } from '@console/axf/libs/approvals/react';
-import { heldDecisions, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
+import { approvalsHost, ApprovalRow } from '@console/axf/libs/approvals/react';
+import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
 import type { MenuActResult, MenuItem } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 
@@ -82,11 +83,11 @@ const DEFAULT_HUB = HUB_DEFAULT;
 
 type Pending = HubApproval;
 type Status = 'idle' | HubFeedStatus;
-interface State { status: Status; hub: string; count: number; pending: Pending[]; held: VetoCall[]; approvalsUrl: string; checkedAt: string | null; hiddenIds: string; error: string }
+interface State { status: Status; hub: string; count: number; pending: Pending[]; held: VetoCall[]; items: ApprovalItem[]; approvalsUrl: string; checkedAt: string | null; hiddenIds: string; error: string }
 
 /* ---------------- a tiny store shared by the banner and the settings panel ---------------- */
 
-let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], held: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
+let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], held: [], items: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); subs.forEach((f) => f()); };
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
@@ -108,13 +109,19 @@ export async function checkNow(): Promise<void> {
   inflight = true;
   try {
     const hub = st.status === 'idle' ? await hubUrl() : st.hub;
-    // lib-hub: the browser's own hub session (credentials included), redirects refused, reply capped, links checked;
-    // veto.ts splits held commands (countdown + Deny) off the calls waiting for an approval.
-    const { feed, held: heldNow } = await fetchVetoFeed(hub);
-    const ok = feed.status === 'ok';
-    const pending = ok ? feed.pending : [];
-    const held = ok ? heldNow : [];
-    set({ hub, status: feed.status, count: feed.count, pending, held, approvalsUrl: feed.approvalsUrl, checkedAt: new Date().toISOString(), error: feed.error });
+    // lib-approvals over lib-hub: the browser's own hub session (credentials included), redirects refused, reply capped,
+    // links checked; held commands (countdown + Deny) split off the calls waiting for an approval; each item keeps its
+    // feed entry for the expanded row (who asked, timeline).
+    const a = await fetchApprovals(hub);
+    const ok = a.status === 'ok';
+    const items = ok ? a.items : [];
+    const held = items.flatMap((i) => (i.kind === 'held' && i.veto ? [i.veto] : []));
+    const pending: Pending[] = items.filter((i) => i.kind === 'approval').map((i) => ({
+      id: i.id, tool: i.tool, summary: i.summary, createdAt: i.createdAt, expiresAt: i.expiresAt, url: i.url,
+      ...(i.title && i.title !== `Run ${i.tool}` ? { title: i.title } : {}), ...(i.source ? { source: i.source } : {}),
+    }));
+    const status: Status = a.status === 'idle' ? 'unreachable' : a.status;
+    set({ hub, status, count: ok ? Math.max(pending.length, a.count - held.length) : 0, pending, held, items, approvalsUrl: a.approvalsUrl, checkedAt: new Date().toISOString(), error: a.error });
     watch.update(held);
     // Shelved calls wait quietly: they don't pop up again.
     autoOpen([...held.filter((c) => !c.shelved && !c.approvedNow), ...pending]);
@@ -156,20 +163,22 @@ function useTick(on: boolean) {
   useEffect(() => { if (!on) return; const t = setInterval(() => setN((n) => n + 1), 1_000); return () => clearInterval(t); }, [on]);
 }
 
-/** One held command: title, command, live countdown (or shelved), Deny / Approve / Shelve. The row opens the veto screen. */
+/** The feed item behind a row (for the expanded details), or one built from what the banner holds. */
+const itemOf = (id: string): ApprovalItem | undefined => st.items.find((i) => i.id === id);
+
+/**
+ * One held command: the shared expandable row (lib-approvals, Brett Nov 1 2026): who asked, the title, the live countdown
+ * and Deny / Approve / Shelve on the collapsed row; a tap or the caret on the far right opens the details in place
+ * (Deny / Approve inside too). The veto screen is one tap away inside ("Full approval page").
+ */
 function HeldRow({ c }: { c: VetoCall }) {
-  const left = secondsLeftNow(c);
-  const urgent = !c.shelved && left <= VETO_WARNING_SECONDS;
+  const it = itemOf(c.id);
+  const [busy, setBusy] = useState('');
+  if (!it) return null;
+  const decide = (d: ApprovalDecision) => { setBusy(`${c.id}:${d}`); void act(deps, c, d === 'approve' ? 'approve-now' : 'deny').finally(() => setBusy('')); };
   return (
-    <div className="axp-approvals-banner__row axp-approvals-banner__held">
-      <BannerIcon icon={c.shelved ? 'pause' : 'clock'} working={!c.shelved && left > 0} size={20} />
-      <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${c.title}\n${c.command}`} onClick={() => openVeto(c.id)}>
-        {c.shelved ? 'Shelved' : c.approvedNow ? 'Approved' : left > 0 ? <span className="axp-approvals-banner__runs">Runs in</span> : 'Running'}
-        {!c.shelved && !c.approvedNow && <span className={`axp-approvals-banner__count${urgent ? ' is-urgent' : ''}`} role="timer">{left > 0 ? formatCountdown(left) : '0:00'}</span>}
-        <span className="axp-approvals-banner__sum">{c.title}{c.command ? `: ${c.command}` : ''}</span>
-      </button>
-      <VetoButtons c={c} deps={deps} row />
-    </div>
+    <ApprovalRow scope="banner" className="axp-approvals-banner__xrow" compact details={detailsOfItem(it)} hub={st.hub} busy={busy} onDecide={decide}
+      openPage={() => openVeto(c.id)} actions={<VetoButtons c={c} deps={deps} row />} />
   );
 }
 
@@ -181,9 +190,9 @@ function HeldRow({ c }: { c: VetoCall }) {
 async function decidePending(p: Pending, d: ApprovalDecision): Promise<DecideResult> {
   const decide = approvalsHost().decide;
   if (!decide) { openReview(p.id); return { ok: true, opened: true, message: '' }; }
-  const item: ApprovalItem = {
-    kind: 'approval', id: p.id, tool: p.tool, title: `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
-    createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null,
+  const item: ApprovalItem = itemOf(p.id) ?? {
+    kind: 'approval', id: p.id, tool: p.tool, title: p.title || `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
+    createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null, source: p.source ?? null,
   };
   let r: DecideResult;
   try {
@@ -207,14 +216,35 @@ export function menuRows(s: Pick<State, 'held' | 'pending'>): MenuItem[] {
     ...s.held.map((x): MenuItem => ({
       id: `held:${x.id}`, label: x.title, icon: x.shelved ? 'pause' : 'clock', action: `approvals.veto:${x.id}`, detail: x.command || x.tool,
       deadline: x.readAt + x.secondsLeft * 1000, ...(x.shelved ? { paused: 'Shelved' } : {}),
-      buttons: decisionButtons({ kind: 'held', decisions: heldDecisions(x) }),
+      buttons: decisionButtons({ kind: 'held', decisions: heldDecisions(x) }), expand: approvalExpandKey(x.id),
     })),
     ...s.pending.map((x): MenuItem => ({
       id: `approval:${x.id}`, label: `${x.tool}: ${shortSummary(x)}`, icon: 'shield', action: `approvals.review:${x.id}`, detail: x.tool,
-      buttons: decisionButtons({ kind: 'approval', decisions: ['approve', 'decline'] }),
+      buttons: decisionButtons({ kind: 'approval', decisions: ['approve', 'decline'] }), expand: approvalExpandKey(x.id),
     })),
   ];
 }
+
+/**
+ * The menu rows expand in place (caret on the far right, lib-approvals' details panel); the panel finds the item and
+ * decides through the banner's own routes (veto@1 for held calls, the deciding path or the review dialog for approvals).
+ */
+registerApprovalsLookup({
+  hub: () => st.hub,
+  find: (id) => itemOf(id),
+  decide: async (item, d) => {
+    if (item.kind === 'held') {
+      const c = st.held.find((x) => x.id === item.id);
+      if (!c) return { ok: false, message: 'That call is no longer held.' };
+      const r = await actResult(deps, c, d === 'approve' ? 'approve-now' : 'deny'); // toasts by itself
+      return { ok: r.ok, message: '', opened: true };
+    }
+    const p = st.pending.find((x) => x.id === item.id);
+    if (!p) return { ok: false, message: 'That one is no longer waiting.' };
+    await decidePending(p, d); // toasts by itself
+    return { ok: true, message: '', opened: true };
+  },
+});
 
 /** One row button: the same routes as the banner's buttons (veto@1 for held calls, the deciding path for approvals). */
 export async function menuAct(rowId: string, buttonId: string): Promise<MenuActResult> {
@@ -244,18 +274,22 @@ function PendingButtons({ p }: { p: Pending }) {
   );
 }
 
-/** One call waiting for an approval: tool + command (cut first), then Deny / Approve. The text opens the review. */
+/**
+ * One call waiting for an approval: the shared expandable row: who asked, the reason title, the tool, then Deny /
+ * Approve (and the hide button); a tap or the caret opens the details in place, Deny / Approve inside too.
+ */
 function PendingRow({ p, hide }: { p: Pending; hide?: () => void }) {
+  const it = itemOf(p.id);
+  const [busy, setBusy] = useState('');
+  if (!it) return null;
+  const decide = (d: ApprovalDecision) => { setBusy(`${p.id}:${d}`); void decidePending(p, d).finally(() => setBusy('')); };
   return (
-    <div className="axp-approvals-banner__row axp-approvals-banner__pending">
-      <BannerIcon icon="shield" working size={20} />
-      <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${p.tool}\n${shortSummary(p)}`} onClick={() => openReview(p.id)}>
-        <span className="axp-approvals-banner__tool">{p.tool}</span>
-        <span className="axp-approvals-banner__sum">{shortSummary(p)}</span>
-      </button>
-      <PendingButtons p={p} />
-      {hide && <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>}
-    </div>
+    <ApprovalRow scope="banner" className="axp-approvals-banner__xrow" compact details={detailsOfItem(it)} hub={st.hub} busy={busy} onDecide={decide}
+      openPage={() => openReview(p.id)}
+      actions={<>
+        <PendingButtons p={p} />
+        {hide && <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>}
+      </>} />
   );
 }
 
@@ -355,6 +389,7 @@ function ReviewDialog({ id }: { id: string }) {
       {frame !== 'stuck' && (
         <div className="fx-row fx-row--wrap axp-approvals-review__foot">
           <p className="fx-small fx-muted" style={{ margin: 0 }}>This is axHub's own page: Approve or Decline runs there.</p>
+          {p && <WatchLiveFor text={JSON.stringify(p)} />}
           <Button size="sm" icon="external" onClick={openOnHub}>Open on the hub</Button>
         </div>
       )}
