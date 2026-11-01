@@ -74,6 +74,8 @@ public class OutputRecordStartActivity extends Activity {
     private void refuse(String message) { refuse(message, "error"); }
 
     private void refuse(String message, String state) {
+        OutputRecordQueue.clearSession(this); // a session from axHub that never started doesn't name a later recording
+        AxppLink.consentRefused(this, message);
         JSObject e = new JSObject();
         e.put("message", message);
         OutputRecordService.emit(state, e);
