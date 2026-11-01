@@ -3751,7 +3751,9 @@
     },
     {
      "text": "[Opus] Script extra: the family of apps + what it is worth",
-     "at": "2026-11-01T22:49:13.777Z"
+     "at": "2026-11-01T22:49:13.777Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:50:15.151Z"
     },
     {
      "text": "[Opus] Script extra: Claude everywhere (threads, memory, Go pass) + voice and Molly",
@@ -3788,7 +3790,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:49:42.935Z",
+   "updatedAt": "2026-11-01T22:50:15.151Z",
    "source": "console"
   }
  ]
