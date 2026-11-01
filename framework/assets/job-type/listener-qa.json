@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "listener-qa",
+  "name": "Voice listener QA",
+  "version": "1.0.0",
+  "description": "Find and fix voice and listener regressions in AmberX (apps/amberx-droid): wake word, push-to-talk, command routing, Molly hand-off.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "voice",
+    "amberx"
+  ],
+  "data": {
+    "specialty": "listener-qa",
+    "model": "sonnet",
+    "budget": {
+      "tokens": 300000,
+      "maxTurns": 40,
+      "usd": 3
+    },
+    "trigger": {
+      "kind": "event",
+      "event": "amberx.voice-regression"
+    },
+    "inputs": [
+      {
+        "id": "symptom",
+        "label": "What broke",
+        "required": true
+      },
+      {
+        "id": "since",
+        "label": "Since",
+        "default": ""
+      }
+    ],
+    "brief": "AmberX voice regression: {{symptom}} (since {{since}}).\nReproduce it from the tests first (apps/amberx-droid voice + commands tests); find the commit that broke it (git log on apps/amberx-droid/src/plugins/voice and commands). Fix it on a branch named agent-jobs/listener-qa-{{stamp}} with a test that would have caught it. Web/TS code only (framework Android code is on hold).\nReport cause, fix, the new test, and anything you could not reproduce.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/listener-qa/{{stamp}}.md"
+    }
+  }
+}

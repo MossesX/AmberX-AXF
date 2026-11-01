@@ -10,6 +10,8 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     POST /api/ai/summarize  {text}                        → {title, summary, tags}
     POST /api/ai/ask        {question, notes[]}           → {answer}   (only from the given notes)
     POST /api/ai/prompt     {prompt, notes[]?}            → {answer}   (AI snippets; notes only as data)
+    GET  /api/walkthrough/{file}          the recorded app walkthrough (walkthrough.mp4 with Range, .vtt, chapters.json,
+                                          poster.jpg) from `$AMBERX_DATA_DIR/walkthrough/` (walkthrough/rebuild.sh writes it)
   hub admins only:
     GET  /api/ai/molly/status                     {ok, reason}   is Molly (the console's agent) reachable
     POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Molly through the console's walkthrough guide
@@ -86,6 +88,9 @@ WALL = wallmod.Wall("AMBERX_")
 USER_ROUTES = frozenset({("GET", "/api/health"), ("GET", "/api/me"), ("GET", "/api/ai/status"),
                          ("POST", "/api/ai/parse"), ("POST", "/api/ai/summarize"), ("POST", "/api/ai/ask"),
                          ("POST", "/api/ai/prompt")})
+# The recorded walkthrough (walkthrough/rebuild.sh writes these into $AMBERX_DATA_DIR/walkthrough); nothing else is served.
+WALKTHROUGH_FILES = {"walkthrough.mp4": "video/mp4", "walkthrough.vtt": "text/vtt", "chapters.json": "application/json",
+                     "poster.jpg": "image/jpeg"}
 CONSOLE_URL = (os.environ.get("AMBERX_CONSOLE_URL") or "http://axf-console:7090").rstrip("/")
 _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, fallback=lambda: os.environ.get("AMBERX_CONSOLE_TOKEN", ""))
 MOLLY_TIMEOUT = 300.0
@@ -150,11 +155,13 @@ def make_app(router: Router | None = None) -> FastAPI:
             return JSONResponse({"detail": "sign in at the hub first"}, status_code=401)
         if c.via == "session" and request.method.upper() not in wallmod.SAFE_METHODS and not WALL.same_origin(request):
             return JSONResponse({"detail": "cross-site request refused"}, status_code=403)
-        if not c.admin and (request.method.upper(), path.rstrip("/")) not in USER_ROUTES:
+        walkthrough = request.method.upper() in ("GET", "HEAD") and path.startswith("/api/walkthrough/")
+        if not c.admin and not walkthrough and (request.method.upper(), path.rstrip("/")) not in USER_ROUTES:
             return JSONResponse({"detail": "hub admins only"}, status_code=403)
         request.state.caller = c
         resp = await call_next(request)
-        resp.headers["Cache-Control"] = "no-store"
+        if not path.startswith("/api/walkthrough/"):
+            resp.headers["Cache-Control"] = "no-store"
         return resp
 
     async def body_of(request: Request) -> dict[str, Any]:
@@ -204,6 +211,14 @@ def make_app(router: Router | None = None) -> FastAPI:
     def me(request: Request) -> dict[str, Any]:
         c = request.state.caller
         return {"wall": WALL.trusted(), "hub": HUB, "user": c.public(), "admin": c.admin}
+
+    @app.get("/api/walkthrough/{name}")
+    def walkthrough(name: str) -> Any:
+        kind = WALKTHROUGH_FILES.get(name)
+        f = DATA / "walkthrough" / name
+        if not kind or not f.is_file():
+            raise HTTPException(404, "the walkthrough hasn't been recorded yet (walkthrough/rebuild.sh)")
+        return FileResponse(f, media_type=kind, headers={"Cache-Control": "private, max-age=300"})
 
     @app.get("/api/ai/status")
     async def status() -> dict[str, Any]:

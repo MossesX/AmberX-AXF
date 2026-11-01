@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Switch, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, useRuntime } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import './builds.css';
@@ -232,6 +232,8 @@ export function BuildsPage() {
         <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
       </div>
       <DraftBar state={state} />
+      {/* other plugins' panels above the list (e.g. agent-slots: the queue of headless runs waiting for a slot) */}
+      <Slot name="builds.top" props={{ profile: state.profile }} />
       {s.error && <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {s.error}</p>}
       {view === 'builds' ? <BuildsView state={state} builds={builds} /> : <StepsView state={state} builds={builds} />}
     </div>

@@ -1,0 +1,2 @@
+- Group names: "<what> - <Mon D h:mm AM/PM>" in Brett's time; the brief gives one.
+- shot.mjs refuses items missing name, app, screen or group.

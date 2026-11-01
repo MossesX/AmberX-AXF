@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip } from '@console/axf/react';
+import { Button, Chip, Slot } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
 import { AgentChat } from './chat';
@@ -46,29 +46,36 @@ export function Avatar({ a, size = 56 }: { a: Agent; size?: number }) {
   );
 }
 
-export function CrewTab({ state, stats, act, onFeed }: { state: SwarmState; stats: Record<string, Stats>; act: Act; onFeed: (jobId: string) => void }) {
+type JobRef = { id: string; name: string };
+export function CrewTab({ state, stats, act, jobsBy = {}, onFeed }: { state: SwarmState; stats: Record<string, Stats>; act: Act; jobsBy?: Record<string, JobRef[]>; onFeed: (jobId: string) => void }) {
   const [open, setOpen] = useState<string>(() => consoleApi.readLocal('swarm-profile', ''));
   const pick = (id: string) => { setOpen(id); consoleApi.writeLocal('swarm-profile', id); };
   const a = state.roster.agents.find((x) => x.id === open);
-  if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} onBack={() => pick('')} onFeed={onFeed} />;
+  if (a) return <Profile a={a} state={state} st={stats[a.id]!} act={act} jobs={jobsBy[a.id] ?? []} onBack={() => pick('')} onFeed={onFeed} />;
   return (
     <div className="sw-cards" role="list">
-      {state.roster.agents.map((x) => <Card key={x.id} a={x} state={state} st={stats[x.id]!} act={act} onOpen={() => pick(x.id)} />)}
+      {state.roster.agents.map((x) => <Card key={x.id} a={x} state={state} st={stats[x.id]!} act={act} jobs={jobsBy[x.id] ?? []} onOpen={() => pick(x.id)} />)}
     </div>
   );
 }
 
 const BENCHED = ['quit', 'fired', 'suspended'];
-function Card({ a, state, st, act, onOpen }: { a: Agent; state: SwarmState; st: Stats; act: Act; onOpen: () => void }) {
+/** On-duty agents in roster order: the agent cap (agent-slots plugin) shows "waiting for a desk" past the free slots. */
+const onDutyIds = (state: SwarmState) => state.roster.agents.filter((x) => state.swarm.agents[x.id]?.status === 'on-duty').map((x) => x.id);
+function DeskSlot({ id, state }: { id: string; state: SwarmState }) {
+  return <Slot name="swarm.agent.status" props={{ agentId: id, status: state.swarm.agents[id]?.status ?? '', onDuty: onDutyIds(state) }} />;
+}
+function Card({ a, state, st, act, jobs, onOpen }: { a: Agent; state: SwarmState; st: Stats; act: Act; jobs: JobRef[]; onOpen: () => void }) {
   const as = state.swarm.agents[a.id]!; const sp = state.spend[a.id]; const pay = state.pay[a.id]; const idn = core.cardIdentity(a, as);
   return (
     <article role="listitem" className={`sw-card ${as.status === 'fired' ? 'sw-gone' : ''}`}>
       <button type="button" data-fx-row className="sw-card__open" onClick={onOpen} aria-label={`${idn.name}, open profile`}>
         <div className="sw-card__head">
           <Avatar a={a} />
-          <div className="sw-card__who"><b>{idn.name}</b><span className="fx-muted">{idn.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
+          <div className="sw-card__who"><b>{idn.name}</b><span className="fx-muted">{idn.role}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip><DeskSlot id={a.id} state={state} /></div>
         </div>
         <p className="sw-card__line">{idn.specialty}</p>
+        {jobs.length > 0 && <p className="sw-card__jobs"><span className="fx-muted">Jobs</span> {jobs.map((j) => j.name).join(' · ')}</p>}
         <dl className="sw-card__stats">
           <div><dt>Hired</dt><dd>{fmtDay(idn.hiredAt)}</dd></div>
           <div><dt>Salary</dt><dd>{core.fmtUsd(pay?.salary ?? a.salary)}/wk</dd></div>
@@ -138,7 +145,7 @@ function Discipline({ a, state, act }: { a: Agent; state: SwarmState; act: Act }
   );
 }
 
-function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: SwarmState; st: Stats; act: Act; onBack: () => void; onFeed: (jobId: string) => void }) {
+function Profile({ a, state, st, act, jobs, onBack, onFeed }: { a: Agent; state: SwarmState; st: Stats; act: Act; jobs: JobRef[]; onBack: () => void; onFeed: (jobId: string) => void }) {
   const as = state.swarm.agents[a.id]!; const skill = state.skills[a.skill]; const idn = core.cardIdentity(a, as);
   return (
     <div className="fx-stack">
@@ -146,10 +153,11 @@ function Profile({ a, state, st, act, onBack, onFeed }: { a: Agent; state: Swarm
       <div className="sw-card sw-card--profile">
         <div className="sw-card__head">
           <Avatar a={a} size={88} />
-          <div className="sw-card__who"><h2>{idn.name}</h2><span className="fx-muted">{idn.role} · {idn.specialty} · hired {fmtDay(idn.hiredAt)}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip></div>
+          <div className="sw-card__who"><h2>{idn.name}</h2><span className="fx-muted">{idn.role} · {idn.specialty} · hired {fmtDay(idn.hiredAt)}</span><Chip tone={TONE[state.statuses[as.status]?.tone ?? '']}>{statusText(as, state.statuses)}</Chip><DeskSlot id={a.id} state={state} /></div>
         </div>
         <p>{a.bio}</p>
         <p className="sw-card__quote">“{idn.catchphrase}”</p>
+        {jobs.length > 0 && <p className="sw-card__jobs"><span className="fx-muted">Owns</span> {jobs.map((j) => j.name).join(' · ')}</p>}
         <p className="fx-muted">Models {a.models.map((m) => core.MODEL_LABEL[m] ?? m).join(' · ')} · up to {a.maxTurns} turns · tools {a.tools.join(', ')}</p>
       </div>
       <section className="fx-stack">
