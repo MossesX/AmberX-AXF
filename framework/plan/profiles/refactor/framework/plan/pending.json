@@ -3643,15 +3643,21 @@
     },
     {
      "text": "[Opus] Per-chapter url/viewport/device; one recorded context per device kind",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:00.655Z"
     },
     {
      "text": "[Opus] Explainer page (diagram slides served by the recorder), slide() helper",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:00.902Z"
     },
     {
      "text": "[Opus] Read-only guard for console + axHub chapters (writes answered in the browser)",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:01.140Z"
     },
     {
      "text": "[Opus] Assemble: per-scene cut with freeze-frame when a clip grows, letterbox phone into 1080p",
@@ -3736,7 +3742,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:39:11.252Z",
+   "updatedAt": "2026-11-01T22:41:01.140Z",
    "source": "console"
   }
  ]

@@ -7,12 +7,25 @@
 import { chromium } from 'playwright';
 import { mkdirSync, readFileSync, writeFileSync, renameSync, rmSync } from 'node:fs';
 import { loadWalkthrough } from './load.mjs';
-import { HUB, installDemoHub } from './demo-hub.mjs';
+import { APP, HUB, installDemoHub, installReadOnly } from './demo-hub.mjs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const OUT = process.env.OUT || '/out';
 const { CHAPTERS, WALKTHROUGH } = await loadWalkthrough();
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean);
-const VIEW = WALKTHROUGH.viewport;
+// Devices a chapter can be recorded on (chapter.device, default the walkthrough's): the phone layout with demo data, or
+// a desktop browser for the console and axHub (read live, every write answered in the browser) and the explainer slides.
+const DEVICES = {
+  phone: { viewport: WALKTHROUGH.viewport ?? { width: 412, height: 915 }, isMobile: true, hasTouch: true, data: 'demo' },
+  desktop: { viewport: WALKTHROUGH.desktop ?? { width: 1920, height: 1080 }, isMobile: false, hasTouch: false, data: 'read-only' },
+};
+const deviceOf = (ch) => (DEVICES[ch.device] ? ch.device : WALKTHROUGH.device && DEVICES[WALKTHROUGH.device] ? WALKTHROUGH.device : 'phone');
+let VIEW = DEVICES.phone.viewport;
+// The explainer slides (explainer.html next to this file, or in /rec in the recorder image) at a made-up origin.
+export const EXPLAINER = 'https://walkthrough.local/';
+const HERE = dirname(fileURLToPath(import.meta.url));
+const explainerHtml = () => { for (const d of [HERE, '/rec']) { try { return readFileSync(`${d}/explainer.html`, 'utf8'); } catch { /* next */ } } return '<!doctype html><title>missing</title>'; };
 const SCALE = 2;
 const durations = JSON.parse(readFileSync(`${OUT}/durations.json`, 'utf8'));
 const seed = JSON.parse(readFileSync(`${OUT}/seed.json`, 'utf8'));
@@ -45,12 +58,13 @@ const browser = await chromium.launch({ args: ['--use-fake-ui-for-media-stream',
 }
 
 // Warm-up, never recorded: AmberX opens each new approval in a popup once. Let them all pop and close them here, so the
-// recording starts calm and the Home chapter opens the held call on purpose.
-{
+// recording starts calm and the Home chapter opens the held call on purpose. Only when a chapter shows AmberX on the phone.
+if (CHAPTERS.some((c) => deviceOf(c) === 'phone' && (!c.url || c.url.startsWith(APP)) && (!ONLY.length || ONLY.includes(c.id)))) {
   const ctx = await browser.newContext({ viewport: VIEW, isMobile: true, hasTouch: true, storageState: `${OUT}/state.json` });
   await installDemoHub(ctx, seed, []);
   const page = await ctx.newPage();
-  await page.goto(WALKTHROUGH.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  const url = ch.url ?? (ch.slide ? `${EXPLAINER}#${ch.slide}` : WALKTHROUGH.url);
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
   for (let t = 0; t < 8; t++) {
     await page.waitForTimeout(2500);
     const c = page.getByRole('button', { name: 'Close dialog' }).filter({ visible: true });
@@ -60,17 +74,28 @@ const browser = await chromium.launch({ args: ['--use-fake-ui-for-media-stream',
   await ctx.close();
 }
 
-// One recorded context for every chapter (so a popup seen once stays seen); each chapter is its own page = its own video.
-const ctx = await browser.newContext({
-  viewport: VIEW, deviceScaleFactor: SCALE, isMobile: true, hasTouch: true, storageState: `${OUT}/state.json`,
-  // Playwright's screencast comes at the viewport's CSS size and is never scaled up (a bigger size only pads it), so
-  // record at that size; assemble.mjs scales it to 720×1600. SCALE only sharpens the per-scene screenshots.
-  recordVideo: { dir: `${OUT}/raw/tmp`, size: { width: VIEW.width, height: VIEW.height } },
-  permissions: ['microphone'],
-});
-await ctx.addInitScript(PAGE_SETUP);
+// One recorded context per device for every chapter (so a popup seen once stays seen); each chapter is its own page =
+// its own video.
 const hubLog = [];
-const demo = await installDemoHub(ctx, seed, hubLog);
+const contexts = {};
+let demo = { blocked: [] };
+async function contextFor(kind) {
+  if (contexts[kind]) return contexts[kind];
+  const d = DEVICES[kind];
+  const c = await browser.newContext({
+    viewport: d.viewport, deviceScaleFactor: kind === 'phone' ? SCALE : 1, isMobile: d.isMobile, hasTouch: d.hasTouch, storageState: `${OUT}/state.json`,
+    // Playwright's screencast comes at the viewport's CSS size and is never scaled up (a bigger size only pads it), so
+    // record at that size; assemble.mjs scales it. SCALE only sharpens the per-scene screenshots.
+    recordVideo: { dir: `${OUT}/raw/tmp`, size: { width: d.viewport.width, height: d.viewport.height } },
+    permissions: ['microphone'],
+  });
+  await c.addInitScript(PAGE_SETUP);
+  await c.route(`${EXPLAINER}**`, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: explainerHtml() }));
+  if (d.data === 'demo') demo = await installDemoHub(c, seed, hubLog);
+  else await installReadOnly(c, hubLog);
+  contexts[kind] = c;
+  return c;
+}
 
 function helpers(page, log) {
   const soft = async (what, fn) => { try { await fn(); } catch (e) { log.push(`  ! ${what}: ${String(e.message).split('\n')[0].slice(0, 160)}`); } };
@@ -99,6 +124,20 @@ function helpers(page, log) {
   };
   const h = {
     wait: (ms) => page.waitForTimeout(ms),
+    // a page by address (a full URL, or a path / #route on the chapter's app)
+    open: (to, base) => soft(`open ${to}`, async () => {
+      await unring();
+      await page.goto(new URL(to, base ?? page.url()).href, { waitUntil: 'domcontentloaded', timeout: 45000 });
+      await page.waitForTimeout(2500);
+    }),
+    // an explainer slide (explainer.html#<id>): steps reveal with h.step()
+    slide: (id) => soft(`slide ${id}`, async () => {
+      await unring();
+      if (!page.url().startsWith(EXPLAINER)) { await page.goto(`${EXPLAINER}#${id}`, { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(600); }
+      else await page.evaluate((id) => { location.hash = id; }, id);
+      await page.waitForTimeout(900);
+    }),
+    step: () => soft('step', () => page.evaluate(() => window.wtStep?.())),
     hl: (sel, label) => soft(`hl ${sel}`, async () => { await ring(loc(sel), label); }),
     click: (sel, label) => soft(`click ${sel}`, async () => {
       const l = loc(sel); const b = await ring(l, label);
@@ -188,13 +227,16 @@ const visibleText = (page) => page.evaluate(() => {
 const timeline = [];
 for (const ch of CHAPTERS) {
   if (ONLY.length && !ONLY.includes(ch.id)) continue;
+  const kind = deviceOf(ch);
+  VIEW = DEVICES[kind].viewport;
+  const ctx = await contextFor(kind);
   const page = await ctx.newPage();
   const t0 = Date.now();
   const log = [`## ${ch.id}`];
   const h = helpers(page, log);
   await page.goto(WALKTHROUGH.url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch((e) => log.push(`  ! open: ${e.message}`));
   await page.waitForTimeout(5000);
-  if (ch.start && ch.start !== 'home') await h.go(ch.start);
+  if (ch.start && ch.start !== 'home' && kind === 'phone') await h.go(ch.start);
   const lead = (Date.now() - t0) / 1000;
   const scenes = [];
   for (let i = 0; i < ch.scenes.length; i++) {
@@ -213,10 +255,10 @@ for (const ch of CHAPTERS) {
   const video = page.video();
   await page.close();
   renameSync(await video.path(), `${OUT}/raw/${ch.id}.webm`);
-  timeline.push({ id: ch.id, title: ch.title, lead, scenes });
+  timeline.push({ id: ch.id, title: ch.title, device: kind, viewport: VIEW, lead, scenes });
   console.log(log.join('\n'));
 }
-await ctx.close();
+for (const c of Object.values(contexts)) await c.close();
 await browser.close();
 rmSync(`${OUT}/state.json`, { force: true });
 rmSync(`${OUT}/raw/tmp`, { recursive: true, force: true });
