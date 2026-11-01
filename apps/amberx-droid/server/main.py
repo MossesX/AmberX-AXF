@@ -99,7 +99,6 @@ WALKTHROUGH_DEFAULT = "amberx-app"  # the AmberX tour, at the folder's top level
 WALKTHROUGH_VOICES = frozenset({"en_US-kristin-medium", "en_US-amy-medium", "en_US-lessac-medium", "en_US-hfc_female-medium", "en_US-ljspeech-medium",
                                 "en_US-ryan-medium", "en_US-joe-medium", "en_US-hfc_male-medium", "en_GB-alba-medium", "en_GB-jenny_dioco-medium"})
 WALKTHROUGH_LINE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}-\d{1,3}$")
-WALKTHROUGH_RENDER = "/api/plugins/molly-guide/amberx-walkthrough/rerecord"
 WALKTHROUGH_MAX_EDITS = 64 * 1024
 
 
@@ -125,6 +124,7 @@ MOLLY_TIMEOUT = 300.0
 # 404 and AmberX says Molly can't be reached; nothing here breaks.
 MOLLY_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_MOLLY_PLUGIN") or "molly-guide") or "molly-guide"
 MOLLY_ASK = f"/api/plugins/{MOLLY_PLUGIN}/ask"
+WALKTHROUGH_RENDER = f"/api/plugins/{MOLLY_PLUGIN}/amberx-walkthrough/rerecord"  # re-voice / re-record a walkthrough
 MOLLY_WALKS = f"/api/plugins/{MOLLY_PLUGIN}/walkthroughs"
 
 
