@@ -235,6 +235,13 @@
         "text": "Shows the “Plugins menu” part of this screen. Part of Plugins menu.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "action:plugins-menu.install",
+        "title": "Install it",
+        "text": "Installs it. Part of AI assistant.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

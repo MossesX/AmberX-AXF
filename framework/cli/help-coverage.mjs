@@ -409,10 +409,14 @@ export function writeDrafts(scope) {
   const s = SCOPES[scope];
   const byFile = new Map();
   const seen = new Set();
+  const folders = s.plugins && existsSync(join(ROOT, s.plugins)) ? readdirSync(join(ROOT, s.plugins)).filter((n) => !n.startsWith('_') && existsSync(join(ROOT, s.plugins, n, 'plugin.json'))) : [];
   for (const c of r.missing) {
     if (seen.has(c.id)) continue;
     seen.add(c.id);
-    const owner = r.controls.find((x) => x.id === c.id && x.plugin)?.plugin;
+    // an entry naming another plugin (action:plugin-manager.install) lives in that plugin's pack, so removing a plugin
+    // leaves no mention of it behind (plugin-lifecycle@1)
+    const named = folders.find((f) => new RegExp(`(^|[^a-z0-9-])${f}([^a-z0-9-]|$)`).test(c.id));
+    const owner = named ?? r.controls.find((x) => x.id === c.id && x.plugin)?.plugin;
     let path;
     let meta;
     if (owner) { path = join(ROOT, s.plugins, owner, 'help.json'); meta = { id: `${owner}-help`, name: `${owner} help`, label: `plugin:${owner}` }; }

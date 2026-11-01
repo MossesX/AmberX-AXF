@@ -83,6 +83,13 @@
         "title": "Any shell command",
         "text": "Lets the fixer run any shell command. Leave it off unless you trust it.",
         "kind": "toggle"
+      },
+      {
+        "target": "action:push-banner.check",
+        "title": "Branches not on main",
+        "text": "Shows “Branches not on main”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

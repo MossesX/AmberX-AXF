@@ -81,6 +81,13 @@
         "text": "Opens on GitHub. Part of Main build status.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "action:main-build-status.open",
+        "title": "Main build status",
+        "text": "Shows “Main build status”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

@@ -20,34 +20,6 @@
         "draft": true
       },
       {
-        "target": "action:changes-grid.open",
-        "title": "Changes & features grid",
-        "text": "Shows “Changes & features grid”. Part of Build Breaker.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
-        "target": "action:fable-rebuilds.open",
-        "title": "Fable rebuilds",
-        "text": "Shows “Fable rebuilds”. Part of Build Breaker.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
-        "target": "action:push-banner.check",
-        "title": "Branches not on main",
-        "text": "Shows “Branches not on main”. Part of Build Breaker.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
-        "target": "action:main-build-status.open",
-        "title": "Main build status",
-        "text": "Shows “Main build status”. Part of Build Breaker.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
         "target": "build-breaker",
         "title": "Build Breaker",
         "text": "Shows the “Build Breaker” part of this screen. Part of Build Breaker.",

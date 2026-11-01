@@ -39,6 +39,13 @@
         "text": "Opens plugin switches. Part of Plugin switches.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "plugin-switches",
+        "title": "Plugin switches",
+        "text": "Shows “Plugin switches”. Part of Basic filter.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

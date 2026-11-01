@@ -74,6 +74,13 @@
         "text": "Opens its settings. Part of Plugin Manager.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "action:plugin-manager.install",
+        "title": "Install from the catalog",
+        "text": "Installs from the catalog. Part of AI assistant.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

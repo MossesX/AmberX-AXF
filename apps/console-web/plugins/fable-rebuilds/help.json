@@ -53,6 +53,13 @@
         "text": "Marks rebuilt. Part of Fable rebuilds.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "action:fable-rebuilds.open",
+        "title": "Fable rebuilds",
+        "text": "Shows “Fable rebuilds”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

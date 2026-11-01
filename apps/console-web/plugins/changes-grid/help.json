@@ -39,6 +39,13 @@
         "text": "Shows the “Changes & features grid” part of this screen. Part of Changes & features grid.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "action:changes-grid.open",
+        "title": "Changes & features grid",
+        "text": "Shows “Changes & features grid”. Part of Build Breaker.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

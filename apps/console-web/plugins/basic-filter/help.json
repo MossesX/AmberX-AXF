@@ -34,13 +34,6 @@
         "draft": true
       },
       {
-        "target": "plugin-switches",
-        "title": "Plugin switches",
-        "text": "Shows “Plugin switches”. Part of Basic filter.",
-        "kind": "button",
-        "draft": true
-      },
-      {
         "target": "basic-filter",
         "title": "Basic filter",
         "text": "Shows the “Basic filter” part of this screen. Part of Basic filter.",

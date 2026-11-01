@@ -263,20 +263,6 @@
         "text": "Installs it with. Part of AI assistant.",
         "kind": "button",
         "draft": true
-      },
-      {
-        "target": "action:plugins-menu.install",
-        "title": "Install it",
-        "text": "Installs it. Part of AI assistant.",
-        "kind": "menu-item",
-        "draft": true
-      },
-      {
-        "target": "action:plugin-manager.install",
-        "title": "Install from the catalog",
-        "text": "Installs from the catalog. Part of AI assistant.",
-        "kind": "menu-item",
-        "draft": true
       }
     ],
     "intros": []
