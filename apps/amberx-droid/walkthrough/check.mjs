@@ -58,6 +58,6 @@ if (process.argv[1]?.endsWith('check.mjs')) {
     const e = walkthroughErrors(WALKTHROUGH, CHAPTERS);
     if (e.length) { console.error(`walkthrough script: ${e.length} problem(s)\n  ${e.join('\n  ')}`); process.exit(1); }
     const words = CHAPTERS.reduce((n, c) => n + c.scenes.reduce((m, s) => m + s.say.split(/\s+/).length, 0), 0);
-    console.log(`walkthrough script: ${CHAPTERS.length} chapters, ${CHAPTERS.reduce((n, c) => n + c.scenes.length, 0)} scenes, ${words} words (~${Math.round(words / 150)} min of narration)`);
+    console.log(`walkthrough script: ${CHAPTERS.length} chapters, ${CHAPTERS.reduce((n, c) => n + c.scenes.length, 0)} scenes, ${words} words (~${Math.round(words / 150 / (WALKTHROUGH.speed ?? 1))} min of narration)`);
   }
 }

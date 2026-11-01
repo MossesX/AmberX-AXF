@@ -3763,7 +3763,9 @@
     },
     {
      "text": "[Opus] Script extra: a build from ask to merge + making a new look",
-     "at": "2026-11-01T22:49:13.127Z"
+     "at": "2026-11-01T22:49:13.127Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:51:55.917Z"
     },
     {
      "text": "[Opus] Plugin: walkthrough picker (AmberX tour / The whole stack) + Download button",
@@ -3792,7 +3794,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:50:42.206Z",
+   "updatedAt": "2026-11-01T22:51:55.917Z",
    "source": "console"
   }
  ]

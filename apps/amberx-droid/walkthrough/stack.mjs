@@ -26,6 +26,8 @@ export const WALKTHROUGH = {
   output: { width: 1920, height: 1080, crf: 26, preset: 'veryfast' },
   downloads: [720],
   voice: 'en_US-kristin-medium',
+  // a touch slower than the AmberX tour: it's a long sit, and it brings the run to about 90 minutes
+  speed: 0.93,
 };
 
 /** A scene: what Amber says and what's shown meanwhile. */
@@ -58,6 +60,8 @@ ch({ id: 'open', title: 'What the hell this is', device: 'desktop', slide: 'stac
   ex("And the boss built all of this mostly from his phone, on the couch, talking to it. Think about that for a second. That's not a toy. That's a factory you can run from a packie parking lot.", 'why', 1),
   ex("Here's how this goes. We start at the bottom with assets and engines, the guts. Then the build engine and the Dev Console. Then plugins, builds, the safety rails and the agents. Then ax hub, the veto system, AmberX, the V-P-S and the M-C-P server.", 'stack'),
   ex("Every chapter's skippable. Tap the chapter list in the player and bang a uey to whatever you care about. And if you don't like how I sound, you can change my voice and rewrite any line right in AmberX. Yeah, really. Wicked smart, right?", 'stack'),
+  ex("Now, who's this for? Anybody who's tired of building the same scaffolding over and over. Anybody who wants A-I doing real work without losing control of it. And anybody who wants a dozen apps that look and act like they came from the same family, because they did.", 'why', 3),
+  ex("And a quick word about me, since I'm gonna be in your ear for a while. I'm Amber. I talk like I'm from Pawtucket because, spiritually, I am. I'll cuss, I'll bust chops, but I won't lie to you about what's built and what isn't. If something's on hold, I'll say so.", 'stack'),
   ex("Alright. Enough yappin. Let's get into the guts of it.", 'stack'),
 ] });
 
@@ -75,6 +79,8 @@ ch({ id: 'assets', title: 'Everything is an asset', device: 'desktop', url: CONS
   sc("Transparency is themed too. Hover tints, scrims, the glass effect, disabled controls. Those are opacity tokens in the style theme, so even how see through something is follows the look. Most frameworks never even think about that.", async (h) => { await h.scroll(-400); }),
   sc("And the scale. Typography, density, spacing, compact by default but big enough to tap on a phone. One scale asset, every app follows it. Swap it and every screen tightens up or opens up, all at once.", async (h) => { await h.view('components', 'Components'); }),
   sc("These are the framework controls. Buttons, chips, switches, segmented pickers, fields, sliders. Apps and plugins build from these, not their own home made junk, so when the button style changes, every button everywhere changes with it.", async (h) => { await h.hl('main', 'Framework controls'); await h.scroll(500); }),
+  sc("And assets aren't just about looks. There's an access policy asset too, so who gets to see or use a part of an app is the same kind of swappable data as its colour. Roles and permissions live next to the theme, checked by the same validators.", async (h) => { await h.scroll(300); }),
+  sc("Per port extensions exist too. If Android needs a field the web doesn't, it lives in its own extension file next to the main one, so the shared contract stays clean and each port can grow without stepping on the other.", async (h) => { await h.scroll(-300); }),
   sc("That's the foundation. Everything that comes next sits on it: one format, one source of truth, engines in the middle, and UI that only reads tokens. Wicked simple to say. Wicked hard to pull off. And it's done.", async (h) => { await h.scroll(-500); }),
 ] });
 
@@ -369,3 +375,59 @@ ch({ id: 'worth', title: 'What this is worth', device: 'desktop', slide: 'why', 
   ex("And the moat. A single format for every visible thing, enforced in C-I. Engines proven across two languages by golden fixtures. A hub that owns the look and the keys. A veto system on a phone. Each of those is a project on its own. Having all of them, wired together, is the thing nobody else has.", 'stack', 6),
   ex("So when I say incredibly unique, powerful and valuable, I'm not blowing smoke up anybody's ass. It's the difference between a pile of apps and a platform. Between hoping your A-I behaves and knowing it does.", 'why', 3),
 ] });
+
+// extra ─────────────────────────────────────────────────────────── more plugins
+ch({ id: 'toolbox', title: 'The rest of the toolbox', device: 'desktop', url: CONSOLE, scenes: [
+  sc("A few more plugins deserve a shout, because they show how far this thing goes. First up, Activity. A banner across the top of the console whenever anything is built, edited, pushed, pulled, merged, or even thought about. Actions runs, A-I replies, auto fix jobs. The pulse of the whole operation, in one strip.", async (h) => { await h.hl('.fx-banner', 'Activity'); }),
+  sc("The alerts bell sits on the banner with an unread count, built from the framework's own action button, so it looks like every other button in the app. Tap it, there's the alerts view. Simple, consistent, themed.", async (h) => { await h.view('Alerts', 'Alerts'); }),
+  sc("Snapshots. Before every approved change to a container, its files get snapshotted. Browse by container and date, see the diff, restore in one step. And restoring takes a snapshot of the current state first, so even an undo can be undone. Safety net under the safety net.", async (h) => { await h.view('Snapshots', 'Snapshots'); }),
+  sc("Container access is the master switch for reaching the other containers on the box. It's the only code that talks to Docker, through a locked down proxy that can list, read files, exec and restart, and that's it. Coolify, Traefik and the console itself are on a protected list it won't touch.", async (h) => { await h.view('Container access', 'Container access'); }),
+  sc("The chat viewer keeps every session as a transcript in one searchable store. Claude dot ai chats, text and voice, Claude Code sessions, headless runs. Say sync my chats on claude dot ai and Claude drops the new ones on the hub for the viewer to pick up. Never scraping, never using his login.", async (h) => { await h.view('Chat viewer', 'Chat viewer'); }),
+  sc("Feature matrix. Every build gets one: grouped items, each with its minutes, its model and why. Tick to keep, untick to skip, and nothing is ever deleted. So you can see the shape of a build and trim it before a single token gets spent.", async (h) => { await h.view('Feature matrix', 'Feature matrix'); }),
+  sc("The GitHub plugin makes a private GitHub App for the whole stack in one click, and a token broker hands out short lived tokens from it. So the console's GitHub access renews itself instead of dying on some personal token from last spring.", async (h) => { await h.view('settings', 'Settings'); }),
+  sc("A-I keys keeps several Anthropic keys, the A-P-I kind and the subscription kind, tests every one before it's saved, and picks the active one. When one dies, the systems check sees it, and swaps or flags it. Dead key at midnight? Not the boss's problem anymore.", async (h) => { await h.scroll(300); }),
+  sc("The context menu designer lets you build right click menus as assets, with reusable chunks you drop into any menu by name. The to do manager does nested lists of notes, to dos and tasks as a tree or a grid. Claude handoff keeps a kit ready to move the whole project to a new Claude account.", async (h) => { await h.scroll(-300); }),
+  sc("And session check in opens every new Claude Code session with a short set of questions, where you are, which repo, which model and effort, and logs it to an archive. Every one of these is a plugin. Every one can be pulled out clean. Every one wears the app's look.", async (h) => { await h.view('home', 'Home'); }),
+] });
+
+// extra ─────────────────────────────────────────────────────────── straight answers
+ch({ id: 'answers', title: 'Straight answers', device: 'desktop', slide: 'why', scenes: [
+  ex("Alright, lightning round. The questions people actually ask, and straight answers. No marketing department, just me.", 'why'),
+  ex("Is the A-I gonna wreck my server? No. Anything that changes the server is a veto call with a title, a reason and the exact code, and it shows up on the boss's phone with a Deny button. Containers get snapshotted before approved changes. And there's a cap on how many agents can run at once.", 'veto', 4),
+  ex("Can I trust what it says it did? Yes, because you don't have to trust it. You read the changes log: steps, commits, files, tests before and after, tokens and cost. Visible changes sit in UI Review until approved. The paper trail is the product.", 'why', 2),
+  ex("What if Claude goes off and rebuilds stuff it shouldn't? It can't skip the line. Every build goes through the orchestrator, checks for clashes first, and anything parked stays parked until the boss says go. Ask to queue something and it gets queued, not built.", 'builds', 4),
+  ex("Isn't hot swapping the look slow or flickery? Nah. The engines compile assets into variables, and the browser just repaints. On Android, the same tokens drive Compose. It's the cheapest kind of change a screen can make.", 'swap', 3),
+  ex("Do I have to use React? The reference port is React for now, and that's where the conventions get set. But the core engines are framework agnostic TypeScript, and Kotlin has the same engines. Another port proves itself the same way: match the fixtures.", 'ports', 3),
+  ex("What about secrets? None in the repo, logs, chat or the shared memory. Environment variables and GitHub secrets only. A secrets scan runs over every frame of this very video before it's published, plus a blur on password and key fields.", 'stack'),
+  ex("What's not done? Straight up: Android framework work is on hold. Patches is paused. The H-R department for the agents is shelved. A few pending builds are parked waiting on the boss. I'd rather tell you that than have you find out the hard way.", 'stack'),
+  ex("And can I change what you're saying right now? Yep. Open the walkthrough in AmberX, hit Edit the voice, rewrite my lines, pick a different voice, change the speed. Re-voice, and only the lines you changed get redone. I'm not precious about it, kid.", 'stack'),
+] });
+
+// extra ─────────────────────────────────────────────────────────── recap
+ch({ id: 'recap', title: 'The whole thing in five minutes', device: 'desktop', slide: 'stack', scenes: [
+  ex("Before I let you go, here's the whole thing in a few minutes, for anybody who skipped to the end. I see you. No judgment.", 'stack'),
+  ex("Everything visible is an asset, in one format, from one source of truth. Engines compile assets into tokens. The UI reads only tokens, and C-I fails anything that doesn't. Swap an asset, every screen follows, live.", 'assets', 5),
+  ex("One design, two ports, TypeScript and Kotlin, held together by golden fixtures. The build engine validates, bakes and checks every app, and refuses to build without a valid manifest.", 'ports', 3),
+  ex("The Dev Console is the shop, and it's mostly plugins: each one in its own folder, removable without a trace, working together through capability services, and wearing the app's look.", 'stack', 2),
+  ex("Every build goes through the orchestrator, split into small steps on Opus or Fable, kept in one versioned store. Every change is logged with its cost. Every visible change is reviewed. Broken stuff fixes itself or shows up loud.", 'builds', 4),
+  ex("Ax hub holds the keys, the memory, the shared data and the one look. Every risky call waits for the boss's veto on AmberX. Merges and deploys run themselves. One V-P-S runs it all under Coolify and Traefik.", 'path', 5),
+  ex("And the M-C-P server hands Claude the whole engine as tools, behind the same locks. So any Claude, on any surface, can do real work here, on the record, under the rules. That's the machine.", 'mcp', 6),
+] });
+
+// extra ─────────────────────────────────────────────────────────── a day with the boss
+ch({ id: 'day', title: 'A day in the life', device: 'desktop', slide: 'path', scenes: [
+  ex("Let me paint you a picture of a normal day running this thing, so it clicks how it all fits in a life. Seven in the morning. The boss wakes up, grabs his phone, and before his feet hit the floor he knows what happened overnight.", 'path'),
+  ex("The banner on AmberX shows what's waiting on him. Two builds finished overnight, both merged by themselves after C-I passed. One UI change is sitting in UI Review with phone and desktop shots. A dead key got swapped by the systems check at three A M, and it left a note saying so.", 'path', 2),
+  ex("He looks at the screenshots over a coffee milk. One looks great, approve. One's got a button that's a little cramped on the phone, so he taps changes and says why, out loud. The session that built it gets the note and fixes it. He never opened a laptop.", 'path', 3),
+  ex("Nine A M, in the car. He says, park an idea: a widget that shows the weather on the banner. That becomes a parked plan in Plan Studio, not a build. It'll sit there until he says turn it into a build. No accidental spending.", 'builds', 1),
+  ex("Noon. He says go on a queued build. The session checks the Go pass, loads the rules and the threads log, checks the queue for clashes, splits the work into steps, and starts. A veto call shows up for a server command. He glances at the title, lets the countdown run, and it goes.", 'builds', 4),
+  ex("Afternoon, the session gets cut off, out of credits mid build. No panic. The threads log says exactly where it stopped. He opens a new session on another account, says carry on, and it picks up at the exact step. Ten minute steps, committed as they go. Nothing lost.", 'builds', 4),
+  ex("Evening. He wants the whole fleet in a darker look for the night. One pick on his phone, the appearance document on the hub changes, and the console, ax hub and AmberX all flip together. Every plugin follows, because they all read the same tokens.", 'swap', 4),
+  ex("And before bed, he checks the changes log. Every change the day made, what it cost, what's still running. Then he says, record this session, approves it on the hub, and goes to sleep while the box keeps working under the cap.", 'stack', 6),
+  ex("That's the life. Not chained to a desk. Not babysitting a bot. Steering a machine from wherever he is, with every important decision in his hand and every boring one handled. That's the dream, and it's Tuesday.", 'why', 3),
+] });
+
+// The order to watch them in (chapters were written in build steps; this is the story).
+const ORDER = ['open', 'assets', 'engines', 'look', 'ports', 'cli', 'console', 'plugins', 'toolbox', 'builds', 'story', 'guardrails',
+  'agents', 'sessions', 'axhub', 'veto', 'amberx', 'voice', 'vps', 'mcp', 'family', 'day', 'worth', 'answers', 'recap', 'close'];
+CHAPTERS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
