@@ -127,6 +127,23 @@ export function chunkName(id: string): string {
   return isChunkId(id) ? `Phone audio ${id.slice(0, 4)}-${id.slice(4, 6)}-${id.slice(6, 8)} ${id.slice(9, 11)}:${id.slice(11, 13)}` : 'Phone audio';
 }
 
+/**
+ * A session's part name (Claude's session recordings through axHub's `amberx.recorder_start`, axHub decision 108):
+ * "<session_name> - <YYYY-MM-DD HH-mm> - partN", the time being when the session started (local), N from 1.
+ * Twin: RecorderControl.partName (Android). Characters files can't hold become spaces.
+ */
+export function sessionPartName(session: string, started: Date, part: number): string {
+  const p = (v: number) => String(v).padStart(2, '0');
+  const when = `${started.getFullYear()}-${p(started.getMonth() + 1)}-${p(started.getDate())} ${p(started.getHours())}-${p(started.getMinutes())}`;
+  return `${cleanSession(session)} - ${when} - part${Math.max(1, Math.floor(part))}`;
+}
+
+/** A session or group name made safe for a file name and a list heading (twin: RecorderControl.clean). */
+export function cleanSession(raw: unknown): string {
+  const c = (typeof raw === 'string' ? raw : '').replace(/[\\/:*?"<>|\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+  return c || 'Session';
+}
+
 export const partPath = (id: string, n: number) => `${HUB_FOLDER}/parts/${id}/${String(n).padStart(4, '0')}.json`;
 export const indexPath = (id: string) => `${HUB_FOLDER}/recordings/${id}.json`;
 export const partCount = (bytes: number) => Math.ceil(Math.max(0, bytes) / PART_BYTES);
@@ -198,6 +215,11 @@ export interface Recording {
   sha256: string;
   uploadedAt: string;
   deleted: boolean;
+  /** The recording group on axHub (a session's name when started through axHub, axHub decision 108); '' = none. */
+  group: string;
+  /** The session it belongs to and its note, when started through axHub. */
+  session: string;
+  note: string;
 }
 
 /** An index document read from the hub, checked (null = not one of ours or damaged). */
@@ -214,6 +236,7 @@ export function normalizeIndex(raw: unknown, id: string): Recording | null {
     id, name: s(r.name, chunkName(id)) || chunkName(id), startedAt: s(r.startedAt), endedAt: s(r.endedAt), durationMs: n(r.durationMs),
     bytes, mime: s(r.mime, 'audio/mp4') || 'audio/mp4', kbps: n(r.kbps), channels: n(r.channels), device: s(r.device), parts,
     sha256: /^[0-9a-f]{64}$/.test(s(r.sha256)) ? s(r.sha256) : '', uploadedAt: s(r.uploadedAt), deleted: r.deleted === true,
+    group: s(r.group).slice(0, 80), session: s(r.session).slice(0, 80), note: typeof r.note === 'string' ? r.note.slice(0, 500) : '',
   };
 }
 
@@ -228,6 +251,21 @@ export function byDay(list: Recording[]): { day: string; items: Recording[] }[] 
     days.set(day, [...(days.get(day) ?? []), r]);
   }
   return [...days.entries()].map(([day, items]) => ({ day, items }));
+}
+
+/**
+ * Recordings grouped for the list: a session's parts under its group name, the rest by local day; groups are ordered by
+ * their newest recording, parts inside a group oldest first (part1, part2, …).
+ */
+export function byGroup(list: Recording[]): { key: string; label: string; group: boolean; items: Recording[] }[] {
+  const out = new Map<string, { key: string; label: string; group: boolean; items: Recording[] }>();
+  for (const r of sortRecordings(list)) {
+    const key = r.group ? `g:${r.group}` : `d:${r.id.slice(0, 8)}`;
+    const label = r.group || `${r.id.slice(0, 4)}-${r.id.slice(4, 6)}-${r.id.slice(6, 8)}`;
+    if (!out.has(key)) out.set(key, { key, label, group: !!r.group, items: [] });
+    out.get(key)!.items.push(r);
+  }
+  return [...out.values()].map((g) => (g.group ? { ...g, items: [...g.items].reverse() } : g));
 }
 
 /* ---------------------------------------------------------------- the hub client (the page's own hub session) */
