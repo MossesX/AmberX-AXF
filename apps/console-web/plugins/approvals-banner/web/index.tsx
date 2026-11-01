@@ -116,7 +116,10 @@ export async function checkNow(): Promise<void> {
     const ok = a.status === 'ok';
     const items = ok ? a.items : [];
     const held = items.flatMap((i) => (i.kind === 'held' && i.veto ? [i.veto] : []));
-    const pending: Pending[] = items.filter((i) => i.kind === 'approval').map((i) => ({ id: i.id, tool: i.tool, summary: i.summary, createdAt: i.createdAt, expiresAt: i.expiresAt, url: i.url }));
+    const pending: Pending[] = items.filter((i) => i.kind === 'approval').map((i) => ({
+      id: i.id, tool: i.tool, summary: i.summary, createdAt: i.createdAt, expiresAt: i.expiresAt, url: i.url,
+      ...(i.title && i.title !== `Run ${i.tool}` ? { title: i.title } : {}), ...(i.source ? { source: i.source } : {}),
+    }));
     const status: Status = a.status === 'idle' ? 'unreachable' : a.status;
     set({ hub, status, count: ok ? Math.max(pending.length, a.count - held.length) : 0, pending, held, items, approvalsUrl: a.approvalsUrl, checkedAt: new Date().toISOString(), error: a.error });
     watch.update(held);
@@ -188,8 +191,8 @@ async function decidePending(p: Pending, d: ApprovalDecision): Promise<DecideRes
   const decide = approvalsHost().decide;
   if (!decide) { openReview(p.id); return { ok: true, opened: true, message: '' }; }
   const item: ApprovalItem = itemOf(p.id) ?? {
-    kind: 'approval', id: p.id, tool: p.tool, title: `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
-    createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null,
+    kind: 'approval', id: p.id, tool: p.tool, title: p.title || `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
+    createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null, source: p.source ?? null,
   };
   let r: DecideResult;
   try {

@@ -8,7 +8,7 @@
  *  - {@link detailsOfHubEntry}: one hub entry as the hub's approvals API shapes it (`approvalView`: the AXHub web app's
  *    grid, the approval page; also a raw feed entry), so the axHub list and the dropdown share the rows.
  *
- * Who asked (axHub decision 108, approval-source): `source { kind, session?, client?, clientVersion?, oauthClient? }`,
+ * Who asked (axHub decision 109, approval-source): `source { kind, session?, client?, clientVersion?, oauthClient? }`,
  * read tolerantly (absent on an older hub: the row says "Not recorded"). Secrets are already hidden by the hub
  * (connector redaction); nothing here un-hides or adds anything. Every link is rebuilt from the id (lib-hub rule).
  *
@@ -16,6 +16,7 @@
  * read, a re-render, even a remount of the list) never folds a row the user opened.
  */
 import { approvalUrl } from '../hub/hub';
+import { HUB_SOURCE_ICON, HUB_SOURCE_LABELS, HUB_SOURCE_TONE } from '../hub/source';
 import { formatCountdown, secondsLeftNow, vetoStreamUrl, type VetoCall } from '../hub/veto';
 import type { ApprovalDecision, ApprovalItem } from './core';
 
@@ -23,14 +24,11 @@ import type { ApprovalDecision, ApprovalItem } from './core';
 
 export type SourceKind = 'claude_ai' | 'claude_code' | 'headless' | 'console' | 'agent' | 'system' | 'unknown';
 export const SOURCE_KINDS: readonly SourceKind[] = ['claude_ai', 'claude_code', 'headless', 'console', 'agent', 'system', 'unknown'];
-export const SOURCE_LABELS: Record<SourceKind, string> = {
-  claude_ai: 'Claude.ai', claude_code: 'Claude Code', headless: 'Headless', console: 'Console', agent: 'Agent', system: 'System', unknown: 'Unknown',
-};
-/** Icon per source (framework icon names). */
-export const SOURCE_ICONS: Record<SourceKind, string> = {
-  claude_ai: 'sparkles', claude_code: 'terminal', headless: 'rocket', console: 'monitor', agent: 'user', system: 'shield', unknown: 'info',
-};
-/** The `X-Axhub-Session` pattern (decision 108). */
+/** Labels, icons and chip tones are lib-hub's (hub/source.ts, axHub decision 109), so every badge reads the same. */
+export const SOURCE_LABELS: Record<SourceKind, string> = HUB_SOURCE_LABELS;
+export const SOURCE_ICONS: Record<SourceKind, string> = HUB_SOURCE_ICON;
+export const SOURCE_TONES = HUB_SOURCE_TONE;
+/** The `X-Axhub-Session` pattern (decision 109). */
 export const SESSION_NAME = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,59}$/;
 
 export interface ApprovalSource { kind: SourceKind; session?: string; client?: string; clientVersion?: string; oauthClient?: string }
@@ -47,7 +45,9 @@ export function sourceOf(raw: unknown): ApprovalSource | null {
   const s = o(p?.source) ?? o(o(p?.caller)?.source);
   if (!s) return null;
   const kind = SOURCE_KINDS.includes(s.kind as SourceKind) ? (s.kind as SourceKind) : 'unknown';
-  const session = str(s, 'session');
+  // `who` (decision 109) is the session, else the client, else the label: only a real name counts as one here.
+  const who = str(s, 'who');
+  const session = str(s, 'session') ?? (who && who !== HUB_SOURCE_LABELS[kind] && who !== str(s, 'client') ? who : null);
   const out: ApprovalSource = { kind };
   if (session && SESSION_NAME.test(session)) out.session = session;
   for (const [k, cap] of [['client', 80], ['clientVersion', 40], ['oauthClient', 80]] as const) { const v = str(s, k); if (v) out[k] = clean(v, cap); }

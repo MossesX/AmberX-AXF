@@ -21,7 +21,7 @@ const consoleAliases = [
   { find: /^@console\/axf\//, replacement: `${src}/axf/` },
   { find: /^@console\/plugins$/, replacement: `${src}/console/plugins.ts` },
   { find: /^@console\/pluginLifecycle$/, replacement: `${src}/console/pluginLifecycle.tsx` },
-  { find: /^@console\/watchLive$/, replacement: `${src}/console/watchLive.tsx` }, // no previews API in AmberX: draws nothing
+  { find: /^@console\/watchLive$/, replacement: `${src}/console/watchLive.tsx` }, // Watch live previews need the console token: none here
   { find: /^@console\/changeBatch$/, replacement: join(consoleSrc, 'changeBatch.tsx') },
   { find: /^@console\/emptyState$/, replacement: join(consoleSrc, 'emptyState.tsx') }, // branded empty states + skeletons (enterprise-branding s34)
 ];

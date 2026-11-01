@@ -7,7 +7,7 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
-import { afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
+import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
@@ -141,7 +141,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   }
   const app = readFileSync(`${here}src/App.tsx`, 'utf8');
   const libs = [...app.matchAll(/from '\.\/axf\/libs\/([a-z-]+)/g)].map((m) => m[1]).sort();
-  for (const l of libs) ok(['hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
+  for (const l of libs) ok(['datagrid', 'hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
   ok(!/plugins\//.test(app), 'no console plugin is imported');
 }
 
@@ -159,8 +159,9 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     ok(/title="The code that runs"[^>]*collapsible/.test(parts), 'the code that runs has its own collapsible section');
     ok(parts.includes("Claude's words"), "the caller's description is labelled as theirs");
     const row = readText(new URL('./src/views/Approvals.tsx', import.meta.url), 'utf8');
-    // The shared expandable row (lib-approvals) leads with the reason title (details.title from the hub entry).
-    ok(/detailsOfHubEntry\(HUB, item\)/.test(row) && /<ExpandRow/.test(row), 'a collapsed row leads with what is being approved (shared expandable row)');
+    ok(/title=\{item\.title\}/.test(row), 'a collapsed row leads with what is being approved');
+    // The open row is lib-approvals' shared details panel (Nov 1 2026: every approval row expandable).
+    ok(/<ApprovalDetailsPanel/.test(row) && /detailsOfHubEntry\(HUB, item\)/.test(row), 'an open row shows the shared details panel');
   }
   eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
   eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');
@@ -295,7 +296,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(/>Approve now<\/Button>/.test(listSrc), 'confirm rows say Approve now');
   ok(listSrc.includes('waitingTitle(waiting)') && listSrc.includes('waitingCount(g)'), 'the header counts held calls too');
   ok(detailSrc.includes('pickOf(params.do)') && detailSrc.includes('picked={heldPick}'), 'the request page honours the picked button');
-  ok(listSrc.includes('setReply(') && heldSrc.includes("'Running'"), 'a tap flips the row at once (Running / the reply)');
+  ok(listSrc.includes('setReplies(') && listSrc.includes('shownRow(') && heldSrc.includes("'Running'"), 'a tap flips the row at once (Running / the reply)');
   const css = readFileSync(`${here}src/hub.css`, 'utf8');
   const pairCss = css.split('\n').filter((l) => l.includes('axp-axhub-pair'));
   ok(pairCss.length > 0 && pairCss.every((l) => !/#[0-9a-f]{3,8}\b|rgb\(|hsl\(/i.test(l)), 'the pair CSS uses no colours of its own');
@@ -308,6 +309,33 @@ eq([showReading(null, ''), showReading({ items: [] }, ''), showReading(null, 'do
 eq([shownError(false, 'down', 1), shownError(true, 'down', 1), shownError(true, 'down', MISSES_SHOWN), shownError(true, '', 5)], ['down', '', 'down', ''], 'an error over data shows only after a second miss in a row');
 eq([keepSessionOnFailure('ready', 0), keepSessionOnFailure('ready', 502), keepSessionOnFailure('ready', 429), keepSessionOnFailure('ready', 404), keepSessionOnFailure('loading', 0)], [true, true, true, false, false], 'a session re-read blip keeps a signed-in page; an answer or the first read does not');
 eq([sameJson({ a: 1 }, { a: 1 }), sameJson({ a: 1 }, { a: 2 }), sameJson(null, null)], [true, false, true], 'same JSON = same answer');
+// who asked (axHub decision 109): source column, filter chips, sort keys, the reply shown at once
+{
+  const src = (kind, who, label) => ({ source: { kind, label: label ?? kind, who } });
+  eq(sourceKind(src('headless', 'b1', 'Headless')), 'headless', 'source kind');
+  eq(sourceKind({}), 'unknown', 'no source: unknown');
+  eq(sourceKind(src('martian', 'x')), 'unknown', 'a kind this page does not know: unknown');
+  eq(sourceWho(src('headless', 'approval-source', 'Headless')), 'approval-source', 'who = the build name');
+  eq(sourceWho(src('console', 'Console', 'Console')), '', 'who adds nothing beyond the badge: empty');
+  eq(sourceChips([src('headless', 'a'), src('claude_ai', 'b'), src('headless', 'c'), {}]).map((c) => `${c.label}:${c.count}`), ['Claude.ai:1', 'Headless:2', 'Unknown:1'], 'filter chips in badge order with counts');
+  const T = Date.parse('2026-11-01T01:00:00.000Z');
+  eq(countdownKey({ status: 'held', createdAt: '', expiresAt: '', veto: { secondsLeft: 40 } }, T), 40, 'held: seconds to run');
+  ok(countdownKey({ status: 'held', createdAt: '', expiresAt: '', veto: { secondsLeft: 40, state: 'shelved' } }, T) > 1e9, 'shelved after counting ones');
+  eq(countdownKey({ status: 'pending', showExpires: true, createdAt: '', expiresAt: '2026-11-01T01:10:00.000Z' }, T), 600, 'waiting: seconds to expiry');
+  eq(countdownKey({ status: 'consumed', createdAt: '', expiresAt: '' }, T), Number.POSITIVE_INFINITY, 'decided: last');
+  eq(requestedKey({ createdAt: '2026-11-01T01:00:00.000Z' }), T, 'requested key');
+  eq(requestedKey({ createdAt: 'x' }), 0, 'requested key, bad time');
+  eq(nextSort(null, 'who'), { col: 'who', dir: 1 }, 'first tap sorts up');
+  eq(nextSort({ col: 'who', dir: 1 }, 'who'), { col: 'who', dir: -1 }, 'same column flips');
+  eq(nextSort({ col: 'who', dir: -1 }, 'source'), { col: 'source', dir: 1 }, 'new column starts up');
+  eq(nextSort({ col: 'who', dir: 1 }, null), null, 'null = the hub order');
+  const row = { id: 'a', revision: 3, status: 'pending', title: 'x' };
+  const reply = { id: 'a', revision: 4, status: 'consumed', title: 'x' };
+  eq(shownRow(row, { base: replyBase(row), item: reply }).status, 'consumed', "the hub's reply shows at once");
+  eq(shownRow({ ...row, revision: 4, status: 'consumed' }, { base: replyBase(row), item: reply }).revision, 4, 'the next read of that row wins');
+  eq(shownRow(row, undefined), row, 'no reply: the grid row');
+  eq(shownRow({ ...row, id: 'b' }, { base: replyBase(row), item: reply }).id, 'b', 'a reply never lands on another row');
+}
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);

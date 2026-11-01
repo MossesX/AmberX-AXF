@@ -354,6 +354,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__live-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
 .fx-menu__live-label { overflow: hidden; text-overflow: ellipsis; }
 .fx-menu__live-detail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.fx-menu__live-tags { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; font-size: var(--fx-type-scale-xs); }
 .fx-menu__count { flex: none; font-variant-numeric: tabular-nums; font-weight: 600; font-size: var(--fx-type-scale-sm); color: var(--fx-warning); }
 .fx-menu__count.is-urgent { color: var(--fx-danger); }
 .fx-menu__count.is-paused { color: var(--fx-muted); font-weight: 500; }

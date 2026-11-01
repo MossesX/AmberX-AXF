@@ -77,3 +77,12 @@ Watch live links, others greyed), `watch-live-popup-desktop.png` (floating windo
 - Approval rows: matched by text (a held call naming the session's branch, change id or tmux session). The
   approval-expand build's expanded row details get the link when it lands on main (see THREADS carry-on).
 - Previews start only for sessions launched through `claude-headless.sh` (console launches, Build manager starts).
+
+## Merge + push
+
+Waited the full 90 min (00:00–01:37 UTC) for `approval-expand`; it never reached origin/main. Merged origin/main
+(`60752f86`, clean), re-baked the console (main's own framework changes came along), retested: check-watch-live 68,
+test_previews 42, console tsc + vite build, theme / controls / plugin pages, build-manager (test.mjs 126 + test.py),
+build-orchestrator 18, approvals-banner 10, check-approvals-menu 53, check-builds-store — all pass. Pushed to main.
+The approval link sits today in the veto screen and the review dialog (the details of an approval row); the
+expanded-row placement follows when approval-expand lands (THREADS carry-on).

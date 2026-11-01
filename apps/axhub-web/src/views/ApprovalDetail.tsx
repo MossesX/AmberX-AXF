@@ -12,7 +12,7 @@ import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, STATUS_TONE, type ApprovalAction, type ApprovalItem, type AutoState, type PostponeOptions } from '../hub/types';
 import { act } from './Approvals';
 import { HubGate, useHubJson, when } from './hubPage';
-import { CodeSection, WhatItDoes } from './ApprovalParts';
+import { CodeSection, SourceLine, WhatItDoes } from './ApprovalParts';
 import { HELD_LABELS, HeldBar, isHeld } from './HeldCall';
 import type { VetoAction } from '../axf/libs/hub/veto';
 
@@ -61,7 +61,7 @@ function Detail() {
         <div>
           <p className="fx-eyebrow">Approval request</p>
           <h1>{item ? item.title : 'Request'}</h1>
-          {item && <p className="fx-muted">Asked {when(item.createdAt)} by {item.callerId}{item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}</p>}
+          {item && <SourceLine item={item} asked={when(item.createdAt)} />}
           {/* Brett (Oct 27 2026): the decision buttons are on the first screen, right under the title, before any
               description or code, so Approve never needs a scroll on a phone. */}
           {/* veto@1: a held command shows its countdown with Deny / Approve now / Shelve (decision 104) in place of the usual actions, on the first screen. */}

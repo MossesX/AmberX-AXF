@@ -20,7 +20,7 @@ import { followVeto, formatCountdown } from '../hub/veto';
 import { DECISION_LABELS, rowOrder, type ApprovalDecision, type ApprovalItem } from './core';
 import {
   approvalsOpenStore, clientLine, detailsOfItem, lookupApproval, collapsedLine, detailsCountdown, exitLine, hasResult, isWaitingPhase, tailLines, timelineOf,
-  PHASE_LABELS, POLICY_LABELS, SOURCE_ICONS, SOURCE_LABELS, type ApprovalDetails, type ApprovalsOpenStore,
+  PHASE_LABELS, POLICY_LABELS, SOURCE_ICONS, SOURCE_LABELS, SOURCE_TONES, type ApprovalDetails, type ApprovalsOpenStore,
 } from './details';
 
 /** Lines of output the open row keeps. */
@@ -93,7 +93,8 @@ function CopyText({ text, label }: { text: string; label: string }) {
 /** The source badge (Claude.ai / Claude Code / Headless / Console / Agent / System). */
 export function SourceBadge({ details: d }: { details: Pick<ApprovalDetails, 'source'> }) {
   if (!d.source) return null;
-  return <span className="fx-chip fx-chip--accent axf-apx__src" data-source={d.source.kind}><Icon name={SOURCE_ICONS[d.source.kind]} size={12} />{SOURCE_LABELS[d.source.kind]}</span>;
+  const tone = SOURCE_TONES[d.source.kind];
+  return <span className={`fx-chip${tone ? ` fx-chip--${tone}` : ''} axf-apx__src`} data-source={d.source.kind}><Icon name={SOURCE_ICONS[d.source.kind]} size={12} />{SOURCE_LABELS[d.source.kind]}</span>;
 }
 
 /** Deny (red) and Approve (green), the safe one first. */

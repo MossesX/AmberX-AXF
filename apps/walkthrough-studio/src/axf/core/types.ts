@@ -115,6 +115,18 @@ export interface MenuItem {
    * for the kind: an ordinary row.
    */
   expand?: string;
+  /** a small badge before the second line (e.g. who asked: `Headless`), drawn as a framework chip */
+  tag?: MenuItemTag;
+  /** a small chip after the badge (e.g. the tool, `vps.run`) */
+  chip?: string;
+}
+
+/** A live-list row's badge (`MenuItem.tag`). */
+export interface MenuItemTag {
+  label: string;
+  tone?: 'accent' | 'success' | 'warning' | 'danger';
+  /** tooltip */
+  title?: string;
 }
 
 /** A button on a live-list row (`MenuItem.buttons`): the provider's `act` runs it, else `action` is dispatched. */

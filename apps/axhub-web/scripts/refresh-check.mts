@@ -9,6 +9,12 @@
  *   cd apps/axhub-web && npm install && npm i --no-save react-test-renderer@18.3.1 && npx tsx scripts/refresh-check.mts
  */
 import assert from 'node:assert/strict';
+import { register } from 'node:module';
+
+// Stylesheets imported by the views (lib-datagrid's datagrid.css) are nothing to Node: load them as empty modules.
+register('data:text/javascript,' + encodeURIComponent(
+  "export async function load(url, ctx, next) { return url.endsWith('.css') ? { format: 'module', source: '', shortCircuit: true } : next(url, ctx); }",
+));
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -93,7 +99,8 @@ ok(!text().includes('Reading the hub'), 'first read done: no loading line');
 
 /** The fibers of the rows now; a remount gives a new fiber (not the same one or its alternate). */
 type Fiber = { alternate: Fiber | null };
-const rows = () => root.root.findAll((n) => typeof n.type === 'string' && String(n.props.className ?? '').includes('axp-axhub-row'), { deep: false });
+// The list is lib-datagrid's grid since axHub decision 109 ("who asked"): one `axf-grid-row` per request.
+const rows = () => root.root.findAll((n) => typeof n.type === 'string' && /\b(axp-axhub-row|axf-grid-row)\b/.test(String(n.props.className ?? '')), { deep: false });
 const fibers = () => rows().map((n) => (n as unknown as { _fiber: Fiber })._fiber);
 const sameFibers = (a: Fiber[], b: Fiber[]) => a.length === b.length && a.every((f, i) => f === b[i] || f.alternate === b[i] || f === b[i]?.alternate);
 const f0 = fibers();

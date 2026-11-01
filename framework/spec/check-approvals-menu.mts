@@ -47,7 +47,7 @@ const H1 = '33333333-3333-4333-8333-333333333333';
 const H2 = '44444444-4444-4444-8444-444444444444';
 const approval = (id: string, over: Record<string, unknown> = {}) => ({ id, tool: 'vps.run', summary: 'vps.run with arguments {"command":"docker ps"}', createdAt: new Date(T - 60_000).toISOString(), expiresAt: new Date(T + 900_000).toISOString(), url: `${HUB}/auth/admin/approvals/${id}`, title: 'List the containers', ...over });
 const held = (id: string, left: number, over: Record<string, unknown> = {}) => ({ ...approval(id), status: 'held', title: 'Restart the console with a very long title that has to be cut before the buttons ever are', veto: { runsAt: new Date(T + left * 1000).toISOString(), secondsLeft: left, countdownSeconds: 90, actions: ['deny', 'approve-now', 'shelve'], ...over }, jobId: 'job-1' });
-const body = JSON.stringify({ signedIn: true, admin: true, count: 1, pending: [held(H1, 80), held(H2, 40), approval(A1)] });
+const body = JSON.stringify({ signedIn: true, admin: true, count: 1, pending: [held(H1, 80), held(H2, 40), approval(A1, { source: { kind: 'console', label: 'Console', who: 'console' } })] });
 const st = interpretApprovals(HUB, 200, body, T);
 
 /* ---------------------------------------------------------------- 1. rows */
@@ -60,7 +60,14 @@ const st = interpretApprovals(HUB, 200, body, T);
   check(a1!.buttons?.[0]?.label === 'Deny' && a1!.buttons?.[1]?.label === 'Approve', 'both read Deny / Approve');
   check(typeof h2!.deadline === 'number' && Math.abs(h2!.deadline! - (T + 40_000)) < 1500, 'held row counts down to its run time');
   check(a1!.deadline === undefined, 'an approval has no countdown');
-  check(h2!.action === `hub.review:${H2}` && h2!.detail === 'docker ps', 'row tap reviews it; command under the title');
+  check(h2!.action === `hub.review:${H2}` && h2!.detail === '1 min ago · docker ps', 'row tap reviews it; when + command under the title');
+  // who asked (axHub decision 109): source badge + tool chip on the row, the name first on the second line
+  const src = { kind: 'headless', label: 'Headless', who: 'approval-source', client: 'claude-code', clientVersion: '2.1.3' };
+  const [w] = approvalMenuRows(interpretApprovals(HUB, 200, JSON.stringify({ pending: [approval(A1, { source: src })] }), T));
+  check(w!.label === 'List the containers' && w!.tag?.label === 'Headless' && w!.tag?.tone === 'warning' && w!.chip === 'vps.run', 'title first, then the source badge and the tool chip');
+  check(w!.detail === 'approval-source · 1 min ago · docker ps' && w!.tag?.title === 'Headless · claude-code 2.1.3', 'who, when, command; the client in the badge tooltip');
+  const [old] = approvalMenuRows(interpretApprovals(HUB, 200, JSON.stringify({ pending: [approval(A1, { title: undefined })] }), T));
+  check(old!.tag === undefined && old!.chip === undefined, 'an older hub (no source) and no title: no badge, no chip');
   const shelved = approvalMenuRows(interpretApprovals(HUB, 200, JSON.stringify({ pending: [held(H1, 50, { state: 'shelved' })] }), T))[0]!;
   check(shelved.paused === 'Shelved' && shelved.icon === 'pause', 'a shelved call reads Shelved, no countdown');
   const denyOnly = decisionButtons({ kind: 'held', decisions: ['deny'] });
@@ -91,6 +98,7 @@ installApprovalsMenu(rt, {
   const items = await rt.loadAppMenuProvider('hub.approvals');
   check(items.length === 3 && items.every((i) => i.buttons?.length === 2 && i.buttons.every((b) => !b.locked)), 'compiled rows keep their two buttons');
   check(items[0]!.origin === 'provider:hub.approvals' && typeof items[0]!.deadline === 'number' && !!items[0]!.detail, 'origin, deadline and detail pass through');
+  check(items[2]!.tag?.label === 'Console' && items[2]!.tag?.tone === 'success' && items[2]!.chip === 'vps.run' && items[0]!.tag === undefined, 'the source badge and tool chip pass through the engine');
   const approveNow = await rt.runAppMenuButton('hub.approvals', `approval-${H2}`, { id: 'approve' });
   check(approveNow.ok && approveNow.state === 'Running' && decided.at(-1) === `${H2}:approve`, 'Approve on a held call: approve (run now) → Running');
   const deny = await rt.runAppMenuButton('hub.approvals', `approval-${H1}`, { id: 'deny' });

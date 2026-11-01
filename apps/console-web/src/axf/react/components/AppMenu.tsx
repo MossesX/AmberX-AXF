@@ -17,7 +17,7 @@ import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu'
 import { MenuSub } from './MenuList';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
-import { Button, Kbd } from './Controls';
+import { Button, Chip, Kbd } from './Controls';
 
 /** Phones drill down instead of opening flyouts (the same breakpoint as the banner's label cut). */
 export const APP_MENU_PHONE_QUERY = '(max-width: 480px)';
@@ -142,6 +142,12 @@ function LiveRow({ item, onGone }: { item: CompiledMenuItem; onGone: (id: string
         <span className="fx-menu__icon"><Icon name={item.icon} size={15} /></span>
         <span className="fx-menu__live-text">
           <span className="fx-menu__label fx-menu__live-label">{item.label}</span>
+          {(item.tag || item.chip) && (
+            <span className="fx-menu__live-tags">
+              {item.tag && <span title={item.tag.title}><Chip tone={item.tag.tone}>{item.tag.label}</Chip></span>}
+              {item.chip && <Chip>{item.chip}</Chip>}
+            </span>
+          )}
           {item.detail && <span className="fx-menu__live-detail">{item.detail}</span>}
         </span>
         {!done && item.deadline !== undefined && <RowCountdown deadline={item.deadline} paused={item.paused} />}
