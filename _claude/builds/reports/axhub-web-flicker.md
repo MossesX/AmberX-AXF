@@ -59,6 +59,15 @@ being **unmounted and mounted again** from above, and every remount starts the g
   report stale references, all inside untracked hook data (`sessions/archive`), not in the repo.
 - `npm run build` green for axhub-web and amberx-droid.
 
+## Push: blocked
+
+Merged with main (`d9ea1692`) and retested: the block is 52/53. The one failure, `test_wall_users.py` "the page
+itself", fails the same way on plain main, so it comes from this machine, not from this change. Theme, controls and
+refresh-check pass, and lifecycle is 42/42 on a clean checkout. `git push origin HEAD:main` failed: the VPS GitHub
+token is dead (401 from the API for both the console env file and the axf-console container; the brief's
+`GIT_CONFIG_*` auth wasn't in the environment). Banner item `blocked:push-axhub-web-flicker` has the steps.
+After a new token: `cd /root/axf-builds/flicker && git fetch && git merge origin/main && git push origin HEAD:main`.
+
 ## Gaps
 
 - Kotlin twin deferred (Android on hold): logged in `framework/spec/PORTING.md`.
