@@ -12,6 +12,8 @@
 # When it finishes the result stays on screen for closeFinishedAfterSec (agent cap settings, default 2 min; Enter closes
 # it sooner), then the tmux session ends. Without the cap (AXF_SLOTS=off) it waits for Enter up to a day as before.
 # Without tmux it falls back to the old `nohup … &` (nothing to attach to; the systems check offers to install tmux).
+# Activity banner: before Claude starts, `activity.mjs hooks ensure` adds any Claude Code hook event missing from the
+# running user's ~/.claude/settings.json (root or axfbuild alike), so headless sessions report and close their lines.
 # Watch live (watch-live@1): next to the session runs framework/cli/watch-live.mjs, which starts a hot-reloading preview
 # for every app the session touches, registers it for the console (proxied at /preview/<session>/<app>/) and stops it
 # when the session ends; the brief gets a line asking the session to `axf focus` the screen it works on.
@@ -81,6 +83,10 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     node "$SLOTS" bind "$slot" --pid "$$" --session "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" >/dev/null 2>&1 || true
   fi
   printf '\033[2m# headless Claude Code · %s · %s\033[0m\n\n' "$(pwd)" "$(date '+%Y-%m-%d %H:%M')"
+  # Activity banner hooks (Oct 31 2026): add whatever event is missing from this user's ~/.claude/settings.json (an old
+  # install without PostToolUse left every push/pull/merge/delete/build line open as a ghost). Never blocks the run.
+  act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
+  command -v node >/dev/null && [[ -f "${act:-}" ]] && node "$act" hooks ensure >/dev/null 2>&1 || true  # axf-plugin:activity
   wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
   prompt="$(cat "$brief")"
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"

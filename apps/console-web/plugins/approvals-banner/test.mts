@@ -1,7 +1,7 @@
 // @ts-nocheck: a Node test, not part of the console's build
 /** Approvals (veto) banner self-test: the alarm model. node --experimental-strip-types apps/console-web/plugins/approvals-banner/test.mts */
 import assert from 'node:assert/strict';
-import { ALARM_DEFAULTS, ALARM_KEYS as K, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
+import { ALARM_DEFAULTS, ALARM_KEYS as K, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -58,5 +58,11 @@ t('phone config', () => {
 t('every built-in tone plays something; every vibration is a list', () => {
   for (const tone of TONES) if (tone.value !== 'custom') assert.ok(tonesOf(tone.value).some(([hz]) => hz > 0), tone.value);
   for (const v of VIBRATIONS) assert.ok(Array.isArray(v.pattern));
+});
+t('sound owner (sound-owner@1): only the owner page rings', () => {
+  assert.equal(soundAllowed({}), true); // the console: no owner object, rings as before
+  assert.equal(soundAllowed({ __axfSoundOwner: { $axf: 'sound-owner@1', allowed: () => false } }), false); // another AmberX tab owns, or Quiet
+  assert.equal(soundAllowed({ __axfSoundOwner: { $axf: 'sound-owner@1', allowed: () => true } }), true);
+  assert.equal(soundAllowed({ __axfSoundOwner: { $axf: 'other@1', allowed: () => false } }), true); // not the contract: ignored
 });
 console.log(`✓ approvals-banner: ${n} checks passed`);
