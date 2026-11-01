@@ -3333,11 +3333,15 @@
    "title": "Orchestrator ↔ Pending builds auto-sync (Build manager follows)",
    "detail": "Brett, Oct 27 2026 20:46: all builds go to the orchestrator, which splits them into Fable/Opus steps and sends them out to Pending builds and the Build manager; they always stay in sync. Bridge until builds-one-page (paused) merges the datasets. Every orchestrator save rewrites the profile Pending list; every Pending change (console, CLI, MCP, plugins) flows back into the orchestrator. Profile: Refactor.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "Built on Opus, branch claude/orch-pending-sync, PR #143; s3 ticks when merged.",
      "at": "2026-10-28T01:11:04.754Z"
+    },
+    {
+     "text": "s3 closed by Leftovers (claude/leftovers): the bridge was retired by urgent-builds (one store), so the rule now describes the store; CI test = check-builds-store.mjs + builds-store verify (already in android.yml); README already updated. No PR: pushed to main per Brett's leftovers brief.",
+     "at": "2026-11-01T02:28:35.357Z"
     }
    ],
    "subPrompts": [
@@ -3358,12 +3362,14 @@
     {
      "text": "[Opus] Rule + docs (RULES.md, _claude/builds/README.md), CI test, PR + merge approval",
      "at": "2026-10-28T01:07:25.673Z",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:28:34.899Z"
     }
    ],
    "createdAt": "2026-10-28T01:07:25.673Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-28T01:11:04.754Z",
+   "builtAt": "2026-11-01T02:28:34.899Z",
+   "updatedAt": "2026-11-01T02:28:35.357Z",
    "source": "chat"
   },
   {

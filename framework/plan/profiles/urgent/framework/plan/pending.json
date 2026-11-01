@@ -9,11 +9,15 @@
    "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
    "detail": "Brett, Oct 31 2026 (GO given). Spec: /projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
      "at": "2026-11-01T00:37:27.395Z"
+    },
+    {
+     "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
+     "at": "2026-11-01T02:26:59.880Z"
     }
    ],
    "subPrompts": [
@@ -97,12 +101,14 @@
     {
      "text": "[Opus] Report _claude/builds/reports/urgent-builds.md, THREADS.md, merge main, push",
      "at": "2026-10-31T23:31:50.472Z",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:26:59.508Z"
     }
    ],
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "builtAt": "",
-   "updatedAt": "2026-11-01T00:37:27.395Z",
+   "builtAt": "2026-11-01T02:26:59.508Z",
+   "updatedAt": "2026-11-01T02:26:59.880Z",
    "source": "console"
   }
  ]
