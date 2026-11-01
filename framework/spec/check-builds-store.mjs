@@ -159,16 +159,21 @@ process.env.AXF_BUILD_PROFILE = 'refactor';
 delete process.env.AXF_ORCH_FILE; delete process.env.AXF_PENDING_FILE;
 const io = await import('../cli/builds-store.mjs');
 io.migrateNow({ sources, by: 'test' });
-const orch = await import('../../apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
 const pend = await import('../cli/pending.mjs');
-orch.act({ action: 'add', title: 'From CLI', steps: [{ text: 'one', model: 'Opus', estimate: '5 min' }] });
-orch.act({ action: 'step', id: 'from-cli', step: 's1' });
+// an orchestrator-style write: the profile's orchestrator@1 view with a new build, absorbed back (what orchestrator.mjs does)
+const orchAdd = (b) => io.withStore((s) => { const o = c.projectOrchestrator(s, 'refactor'); o.builds.push(b); return c.absorbOrchestrator(s, 'refactor', o); }, { by: 'test', action: 'orchestrator:add' });
+const orchView = () => c.projectOrchestrator(io.loadStore(), 'refactor');
+orchAdd({ id: 'from-cli', title: 'From CLI', status: 'complete', steps: [{ id: 's1', text: 'one', model: 'Opus', estimate: '5 min', done: true, doneAt: at }] });
 t('an orchestrator change lands in the store and shows on the Pending list (no sync step)', () => { const it = pend.loadPending().items.find((x) => x.id === 'from-cli'); assert.equal(it.status, 'complete'); assert.equal(it.subPrompts[0].done, true); });
 pend.actPending({ action: 'note', id: 'from-cli', text: 'pending note' });
-t('a Pending change lands in the store and shows in the orchestrator', () => assert.ok(orch.load().builds.find((x) => x.id === 'from-cli').notes.some((x) => x.text === 'pending note')));
-t('rename through the orchestrator: id unchanged, empty refused', () => { orch.act({ action: 'rename', id: 'from-cli', title: 'Named' }); assert.equal(pend.loadPending().items.find((x) => x.id === 'from-cli').title, 'Named'); assert.throws(() => orch.act({ action: 'rename', id: 'from-cli', title: '' }), /needs a name/); });
+t('a Pending change lands in the store and shows in the orchestrator', () => assert.ok(orchView().builds.find((x) => x.id === 'from-cli').notes.some((x) => x.text === 'pending note')));
+t('rename through the store: id unchanged, empty refused', () => {
+  io.withStore((s) => c.applyNow(s, 'refactor', [{ op: 'rename-build', id: 'from-cli', title: 'Named' }]).store, { by: 'test', action: 'rename' });
+  assert.equal(pend.loadPending().items.find((x) => x.id === 'from-cli').title, 'Named');
+  assert.throws(() => c.applyNow(io.loadStore(), 'refactor', [{ op: 'rename-build', id: 'from-cli', title: '' }]), /needs a name/);
+});
 t('every write is versioned in the journal and can be restored', () => {
-  const s = io.loadStore(); assert.ok(s.rev >= 5);
+  const s = io.loadStore(); assert.ok(s.rev >= 4, `rev ${s.rev}`);
   const h = io.journalOf('from-cli'); assert.ok(h.length >= 3);
   const first = h[0].rev; io.restoreBuild('from-cli', first, 'test');
   assert.equal(io.loadStore().builds.find((x) => x.id === 'from-cli').title, 'From CLI');

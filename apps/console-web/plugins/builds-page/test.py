@@ -20,9 +20,11 @@ os.environ["AXF_BUILD_PROFILE"] = "main-framework"
 os.environ.pop("AXF_ORCH_FILE", None)
 os.environ.pop("AXF_PENDING_FILE", None)
 
-# a scratch store with one build of three steps
-add = {"action": "add", "id": "demo", "title": "Demo", "steps": [{"text": "add the menu item", "estimate": "10 min"}, {"text": "fix the banner colour", "estimate": "10 min"}, {"text": "remove the old page; update docs", "estimate": "20 min"}]}
-subprocess.run(["node", str(ROOT / "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"), "act", json.dumps(add), "--json"], cwd=ROOT, check=True, capture_output=True)
+# a scratch store with one build of three steps (written through the framework store, as the orchestrator does)
+build = {"id": "demo", "title": "Demo", "steps": [{"id": "s1", "text": "add the menu item", "estimate": "10 min"}, {"id": "s2", "text": "fix the banner colour", "estimate": "10 min"}, {"id": "s3", "text": "remove the old page; update docs", "estimate": "20 min"}]}
+seed = ("const c = await import('./framework/plan/builds-store-core.mjs'); const io = await import('./framework/cli/builds-store.mjs');"
+        f"io.withStore((s) => {{ const o = c.projectOrchestrator(s, 'main-framework'); o.builds.push({json.dumps(build)}); return c.absorbOrchestrator(s, 'main-framework', o); }}, {{ by: 'test' }});")
+subprocess.run(["node", "--input-type=module", "-e", seed], cwd=ROOT, check=True, capture_output=True)
 
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 from fastapi import FastAPI  # noqa: E402
