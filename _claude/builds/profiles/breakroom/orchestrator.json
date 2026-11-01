@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T06:45:35.962Z",
+ "updatedAt": "2026-11-01T07:20:52.732Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -572,7 +572,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T06:34:28.472Z",
-   "updatedAt": "2026-11-01T06:41:07.129Z",
+   "updatedAt": "2026-11-01T06:49:17.449Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -626,8 +626,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T06:49:16.956Z",
      "note": "",
      "uid": "st-mvxgu4n003ejuq"
     },
@@ -644,8 +644,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T06:49:17.449Z",
      "note": "",
      "uid": "st-mvxgu4n00469wq"
     },
@@ -674,16 +674,21 @@
    "title": "Agent jobs: hire agents to own recurring jobs (job-type@1, crew, router, Jobs view)",
    "category": "",
    "detail": "Brett, Nov 1 2026: recurring kinds of work (walkthroughs, site checks, screenshots, landing, banner cleanup, listener QA) go to hired swarm agents instead of anonymous one-off builds. HR department stays shelved.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/agent-jobs",
    "pr": "",
    "createdAt": "2026-11-01T06:45:35.923Z",
-   "updatedAt": "2026-11-01T06:45:35.923Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-01T07:20:52.680Z",
+   "builtAt": "2026-11-01T07:20:52.680Z",
+   "notes": [
+    {
+     "text": "Built Nov 1 2026 on Opus (headless) on claude/agent-jobs, pushed to main per Brett's brief. Report _claude/builds/reports/agent-jobs.md.",
+     "at": "2026-11-01T07:20:51.874Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -699,8 +704,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:23.510Z",
      "note": "",
      "uid": "st-mvxgucex06nhjt"
     },
@@ -717,8 +722,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:23.852Z",
      "note": "",
      "uid": "st-mvxgucex074nsi"
     },
@@ -735,8 +740,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:24.309Z",
      "note": "",
      "uid": "st-mvxgucex081nj9"
     },
@@ -753,8 +758,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T06:57:24.780Z",
      "note": "",
      "uid": "st-mvxgucex095s1f"
     },
@@ -771,8 +776,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:20:50.958Z",
      "note": "",
      "uid": "st-mvxgucex0ay55n"
     }

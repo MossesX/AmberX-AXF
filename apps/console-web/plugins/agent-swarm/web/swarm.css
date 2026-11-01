@@ -88,4 +88,5 @@
 .sw-job { cursor: default }
 .sw-job__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--fx-dens-gap-md) }
 .sw-job__about { margin: 0; font-size: var(--fx-type-root-sm) }
+.sw-job .sw-card__stats { grid-template-columns: minmax(0, 1fr) }
 .sw-job .sw-card__stats dd { text-align: right; overflow-wrap: anywhere }
