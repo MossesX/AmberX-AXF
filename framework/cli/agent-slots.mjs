@@ -203,11 +203,13 @@ const tmuxOff = () => process.env.AXF_SLOTS_TMUX === 'off';
 /** axf-* tmux sessions here: name → { pid, created }; null without tmux. */
 export function tmuxSessions() {
   if (tmuxOff()) return null;
-  const r = spawnSync('tmux', ['list-panes', '-a', '-F', '#{session_name}\t#{pane_pid}\t#{session_created}'], { encoding: 'utf8' });
+  // A printable separator: tmux 3.4 prints control characters in -F output as `_`, so a tab joined the fields into one
+  // bogus name (`axf-x_1234_1793…`) that was then adopted as a running agent and held a slot forever.
+  const r = spawnSync('tmux', ['list-panes', '-a', '-F', '#{session_name}|#{pane_pid}|#{session_created}'], { encoding: 'utf8' });
   if (r.error) return null;
   const out = new Map();
   for (const ln of (r.stdout || '').split('\n')) {
-    const [name, pid, created] = ln.split('\t');
+    const [name, pid, created] = ln.split('|');
     if ((name ?? '').startsWith(process.env.AXF_SLOTS_PREFIX || 'axf-') && !out.has(name)) out.set(name, { pid: Number(pid), created: Number(created) * 1000 });
   }
   return out;
