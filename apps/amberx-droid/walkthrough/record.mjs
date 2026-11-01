@@ -62,7 +62,9 @@ const browser = await chromium.launch({ args: ['--use-fake-ui-for-media-stream',
 // One recorded context for every chapter (so a popup seen once stays seen); each chapter is its own page = its own video.
 const ctx = await browser.newContext({
   viewport: VIEW, deviceScaleFactor: SCALE, isMobile: true, hasTouch: true, storageState: `${OUT}/state.json`,
-  recordVideo: { dir: `${OUT}/raw/tmp`, size: { width: VIEW.width * SCALE, height: VIEW.height * SCALE } },
+  // Playwright's screencast comes at the viewport's CSS size and is never scaled up (a bigger size only pads it), so
+  // record at that size; assemble.mjs scales it to 720×1600. SCALE only sharpens the per-scene screenshots.
+  recordVideo: { dir: `${OUT}/raw/tmp`, size: { width: VIEW.width, height: VIEW.height } },
   permissions: ['microphone'],
 });
 await ctx.addInitScript(PAGE_SETUP);

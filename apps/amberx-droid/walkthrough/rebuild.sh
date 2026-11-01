@@ -49,6 +49,7 @@ chown -R --reference="$PUBLISH/.." "$PUBLISH" 2>/dev/null || true   # same owner
 say "published to $PUBLISH (AmberX → Walkthrough)"
 if [ -n "${UI_CHECK:-}" ]; then
   say "UI check on the live app (Home card, menus, player, chapters)"
-  docker run --rm --env-file "$ENVF" -e OUT=/out -v "$HERE:/rec:ro" -v "$WORK:/out" "$IMAGE" \
-    bash -c 'cd /rec-app && cp /rec/*.mjs . && node ui-check.mjs'
+  # Playwright's Chromium has no H.264: ui-check plays a VP9 copy of the first 30 s for its pictures
+  docker run --rm --env-file "$ENVF" -e OUT=/out -v "$HERE:/rec:ro" -v "$WORK:/out" "$IMAGE" bash -c \
+    'mkdir -p /out/ui && ffmpeg -loglevel error -y -t 30 -i /out/publish/walkthrough.mp4 -c:v libvpx-vp9 -b:v 1M -deadline realtime -cpu-used 8 -c:a libopus /out/ui/preview.webm && cd /rec-app && cp /rec/*.mjs . && node ui-check.mjs'
 fi

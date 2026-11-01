@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T07:52:02.542Z",
+ "updatedAt": "2026-11-01T08:43:51.692Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -8040,16 +8040,21 @@
    "title": "AmberX app walkthrough video (narrated, chapters, player in the app, one-command re-record)",
    "category": "",
    "detail": "Brett Nov 1 2026: a narrated walkthrough of the AmberX app like the one on demo.amberxai.com, made with the existing tour recorder tooling (Playwright + Piper + ffmpeg), seeded demo data, phone layout, player with chapters in AmberX (Home, app menu, Help), media on the server behind the wall, one command + console button to re-record. Profile: refactor (active; headless session, no card possible).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "amberx-walkthrough",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T06:47:21.596Z",
-   "updatedAt": "2026-11-01T07:28:13.050Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-01T08:43:51.654Z",
+   "builtAt": "2026-11-01T08:43:51.654Z",
+   "notes": [
+    {
+     "text": "Done Nov 1: branch claude/amberx-walkthrough pushed to main; 9:12 video live at AmberX → Walkthrough; report _claude/builds/reports/amberx-walkthrough.md",
+     "at": "2026-11-01T08:43:51.307Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -8119,8 +8124,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T08:43:50.651Z",
      "note": "",
      "uid": "st-mvxgz2hi04zss1"
     },
@@ -8173,8 +8178,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T08:43:50.967Z",
      "note": "",
      "uid": "st-mvxgz2hi07r0cp"
     }

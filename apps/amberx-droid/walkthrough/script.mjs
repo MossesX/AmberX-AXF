@@ -19,10 +19,10 @@ export const CHAPTERS = [
   {
     id: 'welcome', title: 'Welcome to AmberX', start: 'home',
     scenes: [
-      { say: "Hey, I'm Amber. This is AmberX, your pocket control room for everything running on your hub. Notes, tasks, voice, agents, and every approval, all in one wicked simple app. Stick with me, kid, this won't take long.", act: async (h) => { await h.calm(); await h.hl('.fx-region--banner, header', 'The banner'); } },
-      { say: "Up top is the banner. It shows the time, the AI that's answering, and how many calls are waiting on you. That little number is the one to watch.", act: async (h) => { await h.hl('text=/\\d+ waiting/', 'Calls waiting'); } },
+      { say: "Hey, I'm Amber. This is AmberX, your pocket control room for everything running on your hub. Notes, tasks, voice, agents, and every approval, all in one wicked simple app. Stick with me, kid, this won't take long.", act: async (h) => { await h.calm(); await h.hl('.fx-banner', 'The banner'); } },
+      { say: "Up top is the banner. It shows the time, the AI that's answering, and how many calls are waiting on you. That little number is the one to watch.", act: async (h) => { await h.hl('.fx-banner .fx-widget-counter', 'Calls waiting'); } },
       { say: "Down at the bottom is the nav bar. Swipe it sideways and every page is right there: home, settings, ask my notes, terminal, the command center, dictate, voice, notes, tasks, and the rest.", act: async (h) => { await h.hl('.fx-region--nav', 'Every page'); await h.navScroll(600); await h.wait(1500); await h.navScroll(-600); } },
-      { say: "Can't find something? The search box up top finds any page, setting, or command. Type a word and go.", act: async (h) => { await h.hl('input[placeholder^="Search"]', 'Search'); } },
+      { say: "Can't find something? The search box up top finds any page, setting, or command. Type a word and go.", act: async (h) => { await h.hl('.fx-banner .fx-search', 'Search'); } },
       { say: "Every chapter in this video is skippable. Tap the chapter list in the player and jump right to the part you care about. Bet.", act: async (h) => { await h.wait(500); } },
     ],
   },
