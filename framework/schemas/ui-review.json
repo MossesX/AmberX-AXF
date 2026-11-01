@@ -1,0 +1,88 @@
+{
+  "$id": "axf/ui-review",
+  "item": "ui-review-item@1",
+  "group": "ui-review-group@1",
+  "kinds": [
+    "review",
+    "screenshot"
+  ],
+  "sources": [
+    "claude-chat",
+    "claude-voice",
+    "claude-code",
+    "headless",
+    "agent",
+    "console",
+    "plugin",
+    "manual",
+    "watch-live"
+  ],
+  "statuses": [
+    "pending",
+    "approved",
+    "rejected",
+    "changes"
+  ],
+  "statusAliases": {
+    "waiting": "pending"
+  },
+  "submitterTypes": [
+    "session",
+    "build",
+    "agent",
+    "user"
+  ],
+  "viewports": [
+    "phone",
+    "desktop",
+    "tablet",
+    "mixed"
+  ],
+  "idPattern": "^[a-z0-9][a-z0-9:._-]{0,80}$",
+  "sectionPattern": "^[a-z0-9][a-z0-9-]{0,40}$",
+  "maxName": 200,
+  "maxFiles": 60,
+  "itemRequired": [
+    "$axf",
+    "id",
+    "name",
+    "group",
+    "createdAt",
+    "kind",
+    "source",
+    "submittedBy",
+    "app",
+    "screen",
+    "viewport",
+    "files"
+  ],
+  "reviewRequired": [
+    "status"
+  ],
+  "groupRequired": [
+    "$axf",
+    "id",
+    "name",
+    "createdAt",
+    "source"
+  ],
+  "itemOptional": [
+    "note",
+    "pr",
+    "branch",
+    "build",
+    "section",
+    "comment",
+    "history",
+    "updatedAt",
+    "pairId"
+  ],
+  "groupOptional": [
+    "submittedBy",
+    "app",
+    "note",
+    "build",
+    "session",
+    "updatedAt"
+  ]
+}

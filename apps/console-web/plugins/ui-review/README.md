@@ -3,6 +3,34 @@
 Brett, Oct 30 2026 (voice, driving): rename the Design packs plugin and make it one all-in-one UI approval plugin.
 Every UI a build makes goes there for his approval, separated by type, with design packs as one section.
 
+## One schema: ui-review-item@1 (Nov 1 2026)
+
+Brett: "ANYTHING that goes into UI Review (the approve/reject queue AND Screenshots), from ANY source … MUST have a
+NAME and a TIMESTAMP and conform to ONE schema. No exceptions."
+
+- **Contract**: `framework/core/ui-review-schema.mjs` (validator, intake `prepareItem`, `migrateLegacy`), registry
+  snapshot `framework/schemas/ui-review.json` (the server's `server/schema.py` reads it), JSON Schemas
+  `framework/schemas/json/ui-review-{item,group}.schema.json` (`axf schemas`), fixtures
+  `framework/spec/fixtures/ui-review-item.json`, CI check `framework/spec/check-ui-review.mjs`.
+- **Item**: `$axf: ui-review-item@1`, id, **name** (human: letters, not a file name or an id), **group** `{id, name}`,
+  **createdAt** (ISO), kind (`review` | `screenshot`), source (`claude-chat`, `claude-voice`, `claude-code`,
+  `headless`, `agent`, `console`, `plugin`, `manual`, `watch-live`), submittedBy `{type: session|build|agent|user, id}`,
+  app, screen, viewport (`phone`, `desktop`, `tablet`, `mixed`), files `{before: [], after: []}`, status on review
+  items (`pending`, `approved`, `rejected`, `changes`); optional note, pr, branch, build `{id, step}`, section (the
+  queue's kinds below), comment, history, pairId. **Group**: `ui-review-group@1` {id, name, createdAt, source, …}.
+- **Where it is enforced**: both stores convert at one boundary (`web/conform.mjs` = `server/conform.py`) and refuse
+  to write a record that fails the schema; every intake (POST `submit`, POST `shots` incl. multipart and the Upload
+  button, `review.mjs submit`, `shot.mjs`, `rebuild-shots --submit`, `ui-review@1.submit`, Send to review) answers
+  `ui-review-item@1 rejected: name is missing — …; screen is missing — …`. The only defaults: `createdAt` = now and,
+  with no group given, `<session/build/source> - <YYYY-MM-DD HH:mm>`. CLIs take source + sender from `--source` /
+  `--by type:id`, else from the Claude Code session running them (`CLAUDECODE`; headless when unattended).
+- **Served** as ui-review-item@1 too (`GET items`, `GET shots`); the page converts to its working shape in `conform.mjs`.
+- **Migration**: `review.mjs migrate` (dry-run report) → `review.mjs migrate --apply` (backs both files up as
+  `*.pre-schema-<time>`); names from titles (else screen / file name), timestamps from submittedAt / takenAt (else the
+  file time), queue items grouped by build / day, screenshots keep their groups (else Screenshots' title-prefix rule).
+  The server runs it on start (through node) and keeps the report as `schema-migration.md`; `POST migrate {apply}`.
+  `review.mjs check` = every stored record conforms.
+
 ## What it is
 
 - **Folder** `ui-review` (id `ai.amberx.axf.console.ui-review`, replaces `ai.amberx.axf.console.design-packs`).
@@ -10,7 +38,7 @@ Every UI a build makes goes there for his approval, separated by type, with desi
 - **Sections** = kinds, an open registry: the plugin's `kinds.json` (Design packs, Whole apps / programs, Screens &
   pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other), plus `kinds.json` in its
   data folder, plus any kind an item names (shown with a label made from its id). No code change for a new kind.
-- **Item** (`review-item@1`): title, kind, app, build, branch, PR, screenshots (`device` phone / desktop, from the
+- **Item** (working shape of a stored ui-review-item@1, see above): title, kind (= section), app, build, branch, PR, screenshots (`device` phone / desktop, from the
   file name), notes, status (waiting / changes asked / rejected / approved), his comment, history (who, when,
   what, comment). Unknown fields are kept.
 - **Views** (remembered in settings): Grid (collapsible rows, a row opens to the screenshot browser + details +
@@ -26,10 +54,10 @@ Every UI a build makes goes there for his approval, separated by type, with desi
 ## How builds submit
 
 ```bash
-node apps/console-web/plugins/ui-review/review.mjs submit --kind settings --title "Level bar" \
-  --shots a-phone.png,a-desktop.png --app Console --branch claude/x --pr 180 --console
-node framework/cli/rebuild-shots.mjs --repo . --out shots --shots shots.json --submit screen --title "…" --pr 180 --console
-curl -H "Authorization: Bearer $AXF_TOKEN" -d '{"kind":"screen","title":"…","files":[{"name":"x-phone.png","data":"<base64>"}]}' \
+node apps/console-web/plugins/ui-review/review.mjs submit --kind settings --name "Level bar" --app Console --screen Settings \
+  --group "Level bar pass" --shots a-phone.png,a-desktop.png --branch claude/x --pr 180 --console
+node framework/cli/rebuild-shots.mjs --repo . --out shots --shots shots.json --submit screen --name "…" --app Console --group "…" --pr 180 --console
+curl -H "Authorization: Bearer $AXF_TOKEN" -d '{"kind":"screen","name":"…","app":"Console","screen":"Home","group":"…","source":"headless","submittedBy":"build:claude/x","files":[{"name":"x-phone.png","data":"<base64>"}]}' \
   https://console.amberxai.com/api/plugins/ui-review/submit
 ```
 
@@ -44,13 +72,13 @@ The **Screenshots** tab (View → Screenshots, or the tab strip under the page t
 the approve / reject queue** (separate store, never counted by `ui-review@1` state) unless he taps **Send to review**,
 which copies the picture into a normal waiting item (the screenshot stays and remembers the item).
 
-- **Record**: id, title, source (`check`, `build`, `pr`, `manual`, `watch-live`), session, build, agent, app,
+- **Record** (working shape of a stored ui-review-item@1, kind `screenshot`): id, title (= name), source (the schema's), session, build, agent, app,
   screen/route, viewport (phone / desktop, from `--viewport` or the file name), takenAt, addedAt, before/after `pair`
   + `side`, note, branch, PR, by, promoted (review item ids). Unknown fields kept. Pure core `web/shots-core.mjs`
   (= `server/screenshots.py`).
 - **Files**: `<data folder>/screenshots/index.json` + `screenshots/files/<id>.<ext>` (the console data volume).
 - **Intake** (console token or a signed-in admin, like every plugin route):
-  `node framework/cli/shot.mjs <file>… --title "…" --app Breakroom --screen /breakroom --source check --session <id>
+  `node framework/cli/shot.mjs <file>… --name "…" --app Breakroom --screen /breakroom --group "…" [--source …] [--by type:id]
   [--viewport phone] [--pair <id> --side before|after] [--note …] [--pr N]` (also `axf shot …`; posts to the console
   when `AXF_CONSOLE_URL` + `AXF_TOKEN` are set, else writes this checkout; `list`, `promote <id>`, `migrate`, `paths`),
   `POST /api/plugins/ui-review/shots` (JSON with `data` base64 / data URL or `files: [...]`, or multipart

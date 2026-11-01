@@ -25,6 +25,7 @@ import os
 import re
 import secrets
 import shutil
+import subprocess
 import threading
 import time
 from pathlib import Path
@@ -36,7 +37,9 @@ from fastapi.responses import FileResponse
 import console_context as cx
 import plugin_services
 
-from .screenshots import Store as ShotStore, router_for as shots_router
+from . import conform as cf
+from . import schema as S
+from .screenshots import Store as ShotStore, resolve_group, router_for as shots_router
 from . import screenshots as shots_mod
 
 router = APIRouter()
@@ -102,10 +105,35 @@ def migrate() -> dict:
 
 
 def _items_doc() -> dict:
+    """items.json as working records (+ design-pack decisions as pack:<id> records, + the queue's groups)."""
     d = _read(data_dir() / "items.json", None)
     if not isinstance(d, dict) or not isinstance(d.get("items"), list):
         d = {"$axf": "ui-review-items@1", "items": []}
-    return d
+    packs = [v for v in (d.get("packDecisions") or {}).values() if isinstance(v, dict)]
+    return {**d, "groups": [g for g in d.get("groups") or [] if isinstance(g, dict)], "items": [cf.stored_to_review(it) for it in d["items"]] + packs}
+
+
+def _stored_items(doc: dict) -> tuple[dict, list[dict]]:
+    groups = [cf.group_to_stored(g) for g in doc.get("groups") or []]
+    items, packs, errors = [], {}, []
+    for it in doc["items"]:
+        if not isinstance(it, dict):
+            continue
+        if str(it.get("id", "")).startswith("pack:"):
+            packs[it["id"]] = it
+            continue
+        stored, errs = cf.review_to_stored(it, groups)
+        items.append(stored)
+        errors += [{**e, "message": f"{it.get('id')}: {e['message']}"} for e in errs]
+    errors += cf.store_errors([], groups)
+    return {"$axf": "ui-review-items@1", "items": items, "groups": groups, "packDecisions": packs}, errors
+
+
+def _save_items(doc: dict) -> None:
+    """Working records → items.json; refuses (SchemaError, a ValueError) to write anything that isn't ui-review-item@1."""
+    out, errors = _stored_items(doc)
+    cf.refuse(errors)
+    _write(data_dir() / "items.json", out)
 
 
 def _s(v: Any, n: int = 300) -> str:
@@ -139,9 +167,7 @@ def norm_item(raw: dict, now: str | None = None) -> tuple[dict, list[str]]:
     kind = _s(o.get("kind"), 41) or "other"
     if not _KIND.match(kind):
         problems.append(f'kind "{kind}" must be lowercase letters, digits and dashes')
-    title = _s(o.get("title"), 200)
-    if not title:
-        problems.append("a title is needed")
+    title = _s(o.get("title"), 200) or _s(o.get("name"), 200)  # a missing name is refused by ui-review-item@1, naming the field
     pr_raw = o.get("pr")
     pr = None
     if pr_raw not in (None, ""):
@@ -156,7 +182,7 @@ def norm_item(raw: dict, now: str | None = None) -> tuple[dict, list[str]]:
     item = {**o, "$axf": SCHEMA, "id": o["id"] if isinstance(o.get("id"), str) and _ID.match(o["id"]) else f"r-{now[:10].replace('-', '')}-{secrets.token_hex(4)}",
             "kind": kind, "title": title, "app": _s(o.get("app"), 80), "build": _s(o.get("build"), 120), "branch": _s(o.get("branch"), 200),
             "pr": pr, "notes": _s(o.get("notes"), 4000), "status": status, "comment": _s(o.get("comment"), 2000),
-            "source": _s(o.get("source"), 40) or "api", "submittedAt": _s(o.get("submittedAt"), 40) or now, "updatedAt": now}
+            "source": _s(o.get("source"), 40), "screen": _s(o.get("screen"), 200), "submittedAt": _s(o.get("submittedAt"), 40) or _s(o.get("createdAt"), 40) or now, "updatedAt": now}
     shots = []
     for s in (o.get("shots") or [])[:60]:
         s = {"src": s} if isinstance(s, str) else s
@@ -164,8 +190,10 @@ def norm_item(raw: dict, now: str | None = None) -> tuple[dict, list[str]]:
             shots.append({**s, "src": s["src"][:300], "device": s.get("device") if s.get("device") in ("phone", "desktop") else _device(s["src"]), "name": _s(s.get("name"), 120) or _shot_name(s["src"])})
     item["shots"] = shots
     hist = o.get("history") if isinstance(o.get("history"), list) else []
-    item["history"] = hist[-200:] or [{"at": item["submittedAt"], "by": _s(o.get("by"), 60) or "build", "action": "submitted", "status": status}]
+    by = o.get("submittedBy")
+    item["history"] = hist[-200:] or [{"at": item["submittedAt"], "by": _s(o.get("by"), 60) or _s(by.get("id") if isinstance(by, dict) else by, 60), "action": "submitted", "status": status}]
     item.pop("by", None)
+    item.pop("name", None)
     return item, problems
 
 
@@ -210,24 +238,38 @@ def _decode(data: str) -> bytes:
 
 def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> dict:
     """Add one item. shots: (file name, device or '', bytes). Fields may also list shots already in place (src)."""
-    item, problems = norm_item({**fields, "status": "waiting", "history": None, "id": None})
+    """Every field is checked against ui-review-item@1 before a picture is written; refused = SchemaError naming them.
+    The group: fields.group (a name: today's group of that name, made if new), else '<session/build/source> - <time>'."""
+    now = _now()
+    item, problems = norm_item({**fields, "status": "waiting", "history": None, "id": None, "group": None}, now)
     if problems:
         raise ValueError("; ".join(problems))
     folder = data_dir() / "shots" / item["id"]
-    saved = []
+    names: list[tuple[str, str, bytes]] = []
+    used: set[str] = set()
     for i, (name, device, raw) in enumerate(shots or []):
         fn = _safe_file(name, i)
-        while (folder / fn).exists():
+        while fn in used or (folder / fn).exists():
             fn = f"{i + 1}-{fn}"[:120]
-        folder.mkdir(parents=True, exist_ok=True)
-        (folder / fn).write_bytes(raw)
-        saved.append({"src": f"items/{item['id']}/{fn}", "device": device if device in ("phone", "desktop") else _device(name), "name": _shot_name(name)})
-    item["shots"] = saved + [s for s in item["shots"] if _ITEM_SHOT.match(s["src"]) or _PACK_SHOT.match(s["src"])]
+        used.add(fn)
+        names.append((fn, device if device in ("phone", "desktop") else _device(name), raw))
+    item["shots"] = [{"src": f"items/{item['id']}/{fn}", "device": dev, "name": _shot_name(fn)} for fn, dev, _ in names] + [s for s in item["shots"] if _ITEM_SHOT.match(s["src"]) or _PACK_SHOT.match(s["src"])]
     with _lock:
         doc = _items_doc()
+        g, created = resolve_group(doc["groups"], {"name": _s(fields.get("group") if isinstance(fields.get("group"), str) else (fields.get("group") or {}).get("name") if isinstance(fields.get("group"), dict) else "", 200),
+                                                   "source": item.get("source", ""), "session": _s(fields.get("groupSession"), 120), "build": item.get("build", ""), "app": item.get("app", "")}, now)
+        item["group"] = g["id"]
+        item.pop("groupSession", None)
+        stored, errors = cf.review_to_stored(item, [*doc["groups"], g])
+        cf.refuse(errors)  # nothing written for a refused item
+        if created:
+            doc["groups"].append(g)
+        for fn, _, raw in names:
+            folder.mkdir(parents=True, exist_ok=True)
+            (folder / fn).write_bytes(raw)
         doc["items"].append(item)
-        _write(data_dir() / "items.json", doc)
-    return item
+        _save_items(doc)
+    return stored
 
 
 def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "brett") -> dict:
@@ -246,7 +288,7 @@ def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "bre
                 # a design pack's first decision: its overlay record (status, comment, history)
                 doc["items"].append(decide({"id": x, "kind": "design-pack", "status": "waiting", "comment": "", "history": []}, decision, comment, by, at))
                 changed.append(x)
-        _write(data_dir() / "items.json", doc)
+        _save_items(doc)
     return {"changed": changed, "missing": [x for x in ids if x not in changed], "at": at}
 
 
@@ -256,7 +298,8 @@ class UiReviewService:
     name = "ui-review@1"
 
     def items(self, branch: str = "", pr: int | None = None) -> list[dict]:
-        its = _submitted(_items_doc())
+        """The branch's / PR's queue items as ui-review-item@1."""
+        its = _stored_items(_items_doc())[0]["items"]
         return [it for it in its if (not branch or it.get("branch") == branch) and (not pr or it.get("pr") == pr)]
 
     def state(self, branch: str = "", pr: int | None = None) -> dict:
@@ -277,20 +320,39 @@ def promote_shot(shot: dict, raw: bytes, opts: dict) -> dict:
     ext = (shot.get("file") or "x.png").rsplit(".", 1)[-1]
     name = f"{re.sub(r'[^a-z0-9]+', '-', (shot.get('screen') or shot.get('title') or 'screen').lower()).strip('-')[:80] or 'screen'}-{shot.get('viewport') or 'desktop'}.{ext}"
     notes = "\n".join(x for x in [shot.get("note") or "", f"Sent from Screenshots ({shot['id']})."] if x)
-    fields = {"kind": opts.get("kind") or "screen", "title": opts.get("title") or shot.get("title"), "app": shot.get("app", ""), "build": shot.get("build", ""),
-              "branch": shot.get("branch", ""), "pr": shot.get("pr"), "notes": notes, "source": "screenshots", "by": opts.get("by") or "brett", "fromShot": shot["id"]}
+    g = shots.group(shot.get("group", "")) or {}
+    who = opts.get("by") or ""
+    fields = {"kind": opts.get("kind") or "screen", "title": opts.get("title") or shot.get("title"), "app": shot.get("app", ""), "screen": shot.get("screen", ""), "build": shot.get("build", ""),
+              "branch": shot.get("branch", ""), "pr": shot.get("pr"), "notes": notes, "source": "console" if who else shot.get("source"),
+              "submittedBy": {"type": "user", "id": who} if who else shot.get("submittedBy"), "group": g.get("name", ""), "fromShot": shot["id"]}
     return submit(fields, [(name, shot.get("viewport") or "", raw)])
 
 
 def migrate_shots() -> dict:
     """Review items titled "Breakroom check: …" (a check session's pictures) move into Screenshots."""
-    return shots.migrate(_items_doc, lambda d: _write(data_dir() / "items.json", d), data_dir() / "shots", _lock)
+    return shots.migrate(_items_doc, _save_items, data_dir() / "shots", _lock)
+
+
+def migrate_schema(apply: bool = True) -> dict:
+    """Older items + screenshots → ui-review-item@1 (migrate.mjs; dry run with apply=False). The applied report is kept
+    as schema-migration.md in the data folder."""
+    r = cf.run_migration(data_dir(), apply=apply)
+    if r.get("applied") and r.get("changed"):
+        try:
+            (data_dir() / "schema-migration.md").write_text(r.get("report", ""))
+        except OSError:
+            pass
+    return r
 
 
 try:
     migrate()
 except OSError:
     pass  # a read-only checkout: the page still works, the picks stay where they were
+try:
+    _schema_migration = migrate_schema(apply=True)
+except (OSError, ValueError, subprocess.SubprocessError) as e:  # never keeps the console from starting
+    _schema_migration = {"ok": False, "errors": [str(e)]}
 try:
     migrate_shots()
 except OSError:
@@ -323,7 +385,8 @@ def kinds() -> dict:
 def items() -> dict:
     doc = _items_doc()
     overlay = {it["id"]: it for it in doc["items"] if isinstance(it, dict) and str(it.get("id", "")).startswith("pack:")}
-    return {"items": _submitted(doc), "overlay": overlay, "packs": index(), "picks": get_picks(), "kinds": kinds()}
+    stored = _stored_items(doc)[0]
+    return {"items": stored["items"], "groups": stored["groups"], "overlay": overlay, "packs": index(), "picks": get_picks(), "kinds": kinds()}
 
 
 @router.post("/submit")
@@ -336,11 +399,28 @@ async def post_submit(request: Request) -> dict:
             raise HTTPException(400, "files: [{name, device?, data}]")
         shots.append((_s(f.get("name"), 120) or f"shot-{i + 1}.png", _s(f.get("device"), 10), _decode(f["data"])))
     fields = {k: v for k, v in body.items() if k != "files"}
-    fields.setdefault("source", "api")
+    if "name" in fields and not fields.get("title"):
+        fields["title"] = fields.pop("name")
     try:
         return {"ok": True, "item": submit(fields, shots)}
+    except S.SchemaError as e:
+        raise HTTPException(400, str(e)) from e  # names every missing / bad field
     except ValueError as e:
         raise HTTPException(400, str(e)) from e
+
+
+@router.post("/migrate")
+async def post_migrate(request: Request) -> dict:
+    """{apply?: bool} — dry run by default: the report of what the ui-review-item@1 migration would change."""
+    body = await _json(request)
+    with _lock:
+        return migrate_schema(apply=bool(body.get("apply")))
+
+
+@router.get("/schema")
+def get_schema() -> dict:
+    """The registry and the last start-up migration (Settings and other tools show it)."""
+    return {"registry": S.REGISTRY, "migration": _schema_migration}
 
 
 @router.post("/decide")
@@ -364,7 +444,7 @@ async def post_remove(request: Request) -> dict:
     with _lock:
         doc = _items_doc()
         doc["items"] = [it for it in doc["items"] if it.get("id") not in ids]
-        _write(data_dir() / "items.json", doc)
+        _save_items(doc)
     for x in ids:
         shutil.rmtree(data_dir() / "shots" / x, ignore_errors=True)
     return {"ok": True, "removed": ids}

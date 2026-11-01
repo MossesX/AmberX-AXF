@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * axf shot: save a screenshot to the console's UI Review → Screenshots tab (ui-screenshot@1), NOT the approve / reject
+ * axf shot: save a screenshot to the console's UI Review → Screenshots tab (ui-review-item@1, kind screenshot), NOT the approve / reject
  * queue. For check sessions, live captures, PR before/after and anything else that isn't a planned UI for review.
  *
- *   node framework/cli/shot.mjs <file> [<file>…] --title "…" --app Breakroom --screen /breakroom --source check --session <id>
+ *   node framework/cli/shot.mjs <file> [<file>…] --name "…" --app Breakroom --screen /breakroom [--group "<name>"] [--source …] [--by type:id]
  *        [--viewport phone|desktop] [--pair <id> --side before|after] [--note "…"] [--build B] [--pr N] [--console | --local]
  *        [--group "<name>"]   the named, timestamped group (same name today = same group; none = "<session> - <YYYY-MM-DD HH:mm>")
  *   node framework/cli/shot.mjs list | groups | group … | move … | promote <id> | migrate | paths   (see the plugin's shots.mjs)

@@ -1,0 +1,38 @@
+[
+ {
+  "name": "groups-list",
+  "steps": [
+   {
+    "wait": 5000
+   },
+   {
+    "eval": "AXF.navigate('ui-screenshots')",
+    "wait": 7000
+   },
+   {
+    "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "upload-new-group",
+  "steps": [
+   {
+    "wait": 5000
+   },
+   {
+    "eval": "AXF.navigate('ui-screenshots')",
+    "wait": 7000
+   },
+   {
+    "click": ".axp-ui-review__shots .fx-seg__opt >> nth=0",
+    "wait": 800
+   },
+   {
+    "click": ".axp-ui-review__shots button:has-text('Upload') >> nth=0",
+    "wait": 1500
+   }
+  ]
+ }
+]

@@ -7,12 +7,17 @@
  */
 
 export const SCHEMA = 'ui-screenshot@1';
+/** Where a screenshot came from: the ui-review-item@1 sources (framework/core/ui-review-schema.mjs), with a label + icon. */
 export const SOURCES = [
-  { id: 'check', label: 'Check', icon: 'eye' },
-  { id: 'build', label: 'Build', icon: 'hammer' },
-  { id: 'pr', label: 'PR', icon: 'branch' },
+  { id: 'claude-chat', label: 'Claude chat', icon: 'chat' },
+  { id: 'claude-voice', label: 'Claude voice', icon: 'mic' },
+  { id: 'claude-code', label: 'Claude Code', icon: 'terminal' },
+  { id: 'headless', label: 'Headless build', icon: 'hammer' },
+  { id: 'agent', label: 'Agent', icon: 'user' },
+  { id: 'console', label: 'Console', icon: 'monitor' },
+  { id: 'plugin', label: 'Plugin', icon: 'puzzle' },
   { id: 'manual', label: 'Upload', icon: 'upload' },
-  { id: 'watch-live', label: 'Watch live', icon: 'monitor' },
+  { id: 'watch-live', label: 'Watch live', icon: 'eye' },
 ];
 export const SOURCE_IDS = SOURCES.map((s) => s.id);
 export const VIEWPORTS = ['phone', 'desktop'];
@@ -43,9 +48,8 @@ export const newId = (now = new Date().toISOString()) => `s-${now.slice(0, 10).r
 export function normShot(raw, { now = new Date().toISOString() } = {}) {
   const o = raw && typeof raw === 'object' ? raw : {};
   const problems = [];
-  const title = s(o.title, 200) || (o.file ? titleOf(o.file) : '');
-  if (!title) problems.push('a title is needed');
-  const source = SOURCE_IDS.includes(o.source) ? o.source : 'manual';
+  const title = s(o.title, 200) || s(o.name, 200); // no name = refused by ui-review-item@1 (conform.mjs) with the field named
+  const source = s(o.source, 40);
   const prRaw = s(o.pr, 12).replace(/^#/, '');
   let pr = null;
   if (prRaw) { if (/^\d+$/.test(prRaw) && Number(prRaw) > 0) pr = Number(prRaw); else problems.push('pr must be a PR number'); }
@@ -139,7 +143,7 @@ export function migrateItems(items, { now = new Date().toISOString() } = {}) {
       const many = pics.length > 1;
       const screen = title.slice(title.indexOf(':') + 1).trim();
       const { shot } = normShot({
-        title: many ? `${title} · ${p.name || titleOf(p.src)}` : title, source: 'check', app: it.app || 'Breakroom', screen: p.name || screen,
+        title: many ? `${title} · ${p.name || titleOf(p.src)}` : title, source: 'claude-code', submittedBy: { type: 'build', id: it.build || it.branch || 'check' }, app: it.app || 'Breakroom', screen: p.name || screen,
         viewport: p.device, takenAt: it.submittedAt, session: it.build || it.branch || '', build: it.build || '', branch: it.branch || '', pr: it.pr || null,
         note: [it.notes, `Moved from UI Review item ${it.id}.`].filter(Boolean).join('\n'), by: it.history?.[0]?.by || 'check', migratedFrom: it.id,
         id: `s-${String(it.id).replace(/[^a-z0-9]+/gi, '').slice(-24).toLowerCase()}-${i + 1}`,

@@ -45,16 +45,23 @@ from typing import Any, Callable
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
 
+from . import conform as cf
+
 SCHEMA = "ui-screenshot@1"
-GROUP_SCHEMA = "shot-group@1"
+GROUP_SCHEMA = "ui-review-group@1"  # was shot-group@1 (same fields)
 DEFAULT_TZ = "America/New_York"
 _GID = re.compile(r"^g-[a-z0-9-]{4,60}$")
+# where a screenshot came from: the ui-review-item@1 sources (framework/schemas/ui-review.json), with a label + icon
 SOURCES = [
-    {"id": "check", "label": "Check", "icon": "eye"},
-    {"id": "build", "label": "Build", "icon": "hammer"},
-    {"id": "pr", "label": "PR", "icon": "branch"},
+    {"id": "claude-chat", "label": "Claude chat", "icon": "chat"},
+    {"id": "claude-voice", "label": "Claude voice", "icon": "mic"},
+    {"id": "claude-code", "label": "Claude Code", "icon": "terminal"},
+    {"id": "headless", "label": "Headless build", "icon": "hammer"},
+    {"id": "agent", "label": "Agent", "icon": "user"},
+    {"id": "console", "label": "Console", "icon": "monitor"},
+    {"id": "plugin", "label": "Plugin", "icon": "puzzle"},
     {"id": "manual", "label": "Upload", "icon": "upload"},
-    {"id": "watch-live", "label": "Watch live", "icon": "monitor"},
+    {"id": "watch-live", "label": "Watch live", "icon": "eye"},
 ]
 SOURCE_IDS = [x["id"] for x in SOURCES]
 MIGRATE_PREFIXES = ["Breakroom check:"]
@@ -107,9 +114,7 @@ def norm_shot(raw: dict, now: str | None = None) -> tuple[dict, list[str]]:
     file = _s(o.get("file"), 140)
     if file and not _FILE.match(file):
         problems.append(f'file "{file}" is not a screenshot file name')
-    title = _s(o.get("title"), 200) or (title_of(file) if file else "")
-    if not title:
-        problems.append("a title is needed")
+    title = _s(o.get("title"), 200) or _s(o.get("name"), 200)  # no name = refused by ui-review-item@1, naming the field
     pr_raw = _s(o.get("pr"), 12).lstrip("#")
     pr = None
     if pr_raw:
@@ -122,7 +127,7 @@ def norm_shot(raw: dict, now: str | None = None) -> tuple[dict, list[str]]:
     shot = {
         **o, "$axf": SCHEMA,
         "id": o["id"] if isinstance(o.get("id"), str) and _ID.match(o["id"]) else new_id(now),
-        "title": title, "source": o.get("source") if o.get("source") in SOURCE_IDS else "manual",
+        "title": title, "source": _s(o.get("source"), 40),
         "session": _s(o.get("session"), 120), "build": _s(o.get("build"), 120), "agent": _s(o.get("agent"), 80),
         "app": _s(o.get("app"), 80), "screen": _s(o.get("screen"), 200),
         "viewport": o.get("viewport") if o.get("viewport") in ("phone", "desktop") else viewport_of(file or title),
@@ -268,10 +273,26 @@ class Store:
     def files(self) -> Path:
         return self.root / "files"
 
+    def stored(self, doc: dict) -> tuple[dict, list[dict]]:
+        """Working records → what index.json holds (ui-review-item@1 screenshots, ui-review-group@1 groups) + errors."""
+        groups = [cf.group_to_stored(g) for g in doc.get("groups") or [] if isinstance(g, dict)]
+        shots, errors = [], []
+        for x in doc.get("shots") or []:
+            if not isinstance(x, dict):
+                continue
+            item, errs = cf.shot_to_stored(x, groups)
+            shots.append(item)
+            errors += [{**e, "message": f"{x.get('id')}: {e['message']}"} for e in errs]
+        errors += cf.store_errors([], groups)
+        return {**{k: v for k, v in doc.items() if k not in ("shots", "groups")}, "$axf": "ui-screenshots@1", "shots": shots, "groups": groups}, errors
+
     def _write(self, doc: dict) -> None:
+        """Refuses (SchemaError) to write anything that isn't ui-review-item@1 / ui-review-group@1."""
+        out, errors = self.stored(doc)
+        cf.refuse(errors)
         self.root.mkdir(parents=True, exist_ok=True)
         tmp = self.root / "index.json.tmp"
-        tmp.write_text(json.dumps(doc, indent=1))
+        tmp.write_text(json.dumps(out, indent=1))
         tmp.replace(self.root / "index.json")
 
     def doc(self) -> dict:
@@ -283,7 +304,7 @@ class Store:
             d = {"$axf": "ui-screenshots@1", "shots": []}
         if not isinstance(d.get("groups"), list):
             d["groups"] = []
-        return d
+        return {**d, "shots": [cf.stored_to_shot(x) for x in d["shots"]]}
 
     def all(self) -> list[dict]:
         return [x for x in self.doc()["shots"] if isinstance(x, dict)]
@@ -401,8 +422,6 @@ class Store:
             raise ValueError("a screenshot is over 20 MB")
         now = _now()
         base = {**fields, "file": None, "size": len(raw), "promoted": [], "addedAt": now}
-        if not _s(base.get("title"), 200) and name:
-            base["title"] = title_of(name)
         if not base.get("viewport") and name:
             base["viewport"] = viewport_of(name)
         base.pop("id", None)
@@ -413,6 +432,7 @@ class Store:
             raise ValueError("; ".join(problems))
         shot["group"] = group or self.ensure_group({**fields, "group": group_name, "groupId": fields.get("groupId", "")})["id"]
         shot["file"] = f"{shot['id']}.{kind}"
+        cf.refuse(cf.shot_to_stored(shot, self.groups())[1])  # nothing written for a refused screenshot
         self.files.mkdir(parents=True, exist_ok=True)
         (self.files / shot["file"]).write_bytes(raw)
         with _lock:
@@ -477,6 +497,9 @@ class Store:
                     continue
                 pics = it.get("shots") if isinstance(it.get("shots"), list) else []
                 screen = title.split(":", 1)[-1].strip()
+                at0 = it.get("submittedAt") or _now()
+                # their group: '<title prefix> - <date time>' (Screenshots' own rule), made once per check item
+                gid = self.ensure_group({"group": f"{title.split(':', 1)[0].strip()} - {stamp(at0)}", "source": "claude-code", "build": it.get("build") or "", "app": it.get("app") or "Breakroom"}, at0)["id"]
                 for i, p in enumerate(pics):
                     src = p.get("src", "") if isinstance(p, dict) else ""
                     m = re.match(r"^items/([a-z0-9][a-z0-9:._-]{0,80})/([a-z0-9][a-z0-9._-]{0,120})$", src)
@@ -490,13 +513,14 @@ class Store:
                         continue
                     name = _s(p.get("name"), 120) or title_of(src)
                     shot, _ = norm_shot({
-                        "id": sid, "title": f"{title} · {name}" if len(pics) > 1 else title, "source": "check", "app": it.get("app") or "Breakroom",
+                        "id": sid, "title": f"{title} · {name}" if len(pics) > 1 else title, "source": "claude-code", "submittedBy": {"type": "build", "id": it.get("build") or it.get("branch") or "check"}, "app": it.get("app") or "Breakroom",
                         "screen": name if len(pics) > 1 else screen, "viewport": p.get("device"), "takenAt": it.get("submittedAt"),
                         "session": it.get("build") or it.get("branch") or "", "build": it.get("build") or "", "branch": it.get("branch") or "", "pr": it.get("pr"),
                         "note": "\n".join(x for x in [it.get("notes") or "", f"Moved from UI Review item {it.get('id')}."] if x), "by": ((it.get("history") or [{}])[0] or {}).get("by", "check"),
                         "migratedFrom": it.get("id"), "size": len(raw),
                     })
                     shot["file"] = f"{sid}.{image_type(raw)}"
+                    shot["group"] = gid
                     self.files.mkdir(parents=True, exist_ok=True)
                     (self.files / shot["file"]).write_bytes(raw)
                     with _lock:
@@ -580,8 +604,8 @@ def router_for(store: Store, promote: Callable[[dict, bytes, dict], dict], migra
     @r.get("/shots")
     def list_shots() -> dict:
         store.repair()
-        d = store.doc()
-        return {"shots": [x for x in d["shots"] if isinstance(x, dict)], "groups": [g for g in d["groups"] if isinstance(g, dict)], "sources": SOURCES}
+        d = store.stored(store.doc())[0]
+        return {"shots": d["shots"], "groups": d["groups"], "sources": SOURCES}
 
     def gid_of(v: Any, what: str = "id") -> str:
         if not isinstance(v, str) or not _GID.match(v):
@@ -594,7 +618,7 @@ def router_for(store: Store, promote: Callable[[dict, bytes, dict], dict], migra
         if not _s(body.get("name"), 200):
             raise HTTPException(400, "a name is needed")
         before = {g.get("id") for g in store.groups()}
-        g = store.ensure_group({**body, "group": body.get("name"), "groupId": ""})
+        g = store.ensure_group({"source": "console", **body, "group": body.get("name"), "groupId": ""})
         return {"ok": True, "group": g, "created": g["id"] not in before}
 
     @r.post("/shots/groups/update")
@@ -671,6 +695,8 @@ def router_for(store: Store, promote: Callable[[dict, bytes, dict], dict], migra
         if len(files) > 40:
             raise HTTPException(400, "at most 40 pictures per upload")
         fields.setdefault("by", caller(request))
+        if not fields.get("submittedBy") and fields.get("source") in ("manual", "console"):
+            fields["submittedBy"] = {"type": "user", "id": fields["by"]}  # the signed-in user (or console token) uploading
         saved = []
         group = ""
         had = {g.get("id") for g in store.groups()}
@@ -684,7 +710,8 @@ def router_for(store: Store, promote: Callable[[dict, bytes, dict], dict], migra
             if group and group not in had:
                 store.delete_group(group)
             raise HTTPException(400, str(e)) from e
-        return {"ok": True, "shots": saved, "group": store.group(group)}
+        groups = store.groups()
+        return {"ok": True, "shots": [cf.shot_to_stored(x, groups)[0] for x in saved], "group": cf.group_to_stored(store.group(group) or {})}
 
     @r.get("/shots/file")
     def file(id: str = ""):  # noqa: A002 — the query name

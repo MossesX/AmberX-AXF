@@ -35,6 +35,7 @@ export function normItem(raw: unknown, opts?: { now?: string; id?: string }): { 
 export function newId(now?: string): string;
 export function decide(item: Item, decision: Decision | Status, opts?: { comment?: string; by?: string; at?: string }): Item;
 export function bulkDecide(items: Item[], ids: string[], decision: Decision | Status, opts?: { comment?: string; by?: string; at?: string }): { items: Item[]; changed: string[]; missing: string[] };
+export function packGroups(index: { packs?: unknown[] } | null | undefined): { $axf: 'ui-review-group@1'; id: string; name: string; createdAt: string; source: string }[];
 export function packItems(index: { packs?: unknown[] } | null | undefined, overlay?: Record<string, Partial<Item>>): Item[];
 export function matches(it: Item, q?: string): boolean;
 export function filterItems(items: Item[], f?: Filter): Item[];

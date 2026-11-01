@@ -210,7 +210,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — then commit _claude/builds/orchestrator.json with your work.`,
     'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
-    'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --title "…" --app … --screen … --source check --session … (UI Review → Screenshots), never the review queue.',
+    'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name "…" --app … --screen … --group "<build name>" (UI Review → Screenshots; ui-review-item@1), never the review queue.',
   ];
   return lines.filter(Boolean).join('\n');
 }
