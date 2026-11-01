@@ -4,6 +4,7 @@
 #   bash apps/amberx-droid/walkthrough/rebuild.sh            everything (~15 min)
 #   ONLY=home,settings bash …/rebuild.sh                    just those chapters, the rest kept from the last run
 #   NO_PUBLISH=1 bash …/rebuild.sh                           record and check, don't publish
+#   UI_CHECK=1 bash …/rebuild.sh                             after publishing, check the entry + player on the live app
 #
 # Steps: script check → demo data (seed.mts) → recorder image (Piper voice, Playwright, ffmpeg) → secrets scan of every
 # frame's text → copy publish/ to AmberX's data folder, served at /api/walkthrough/* (the app's Walkthrough player).
@@ -44,4 +45,10 @@ if [ -n "${NO_PUBLISH:-}" ]; then say "recorded in $WORK/publish (not published)
 mkdir -p "$PUBLISH"
 cp "$WORK/publish/"{walkthrough.mp4,walkthrough.vtt,chapters.json,poster.jpg} "$PUBLISH/"
 chmod 644 "$PUBLISH"/*
+chown -R --reference="$PUBLISH/.." "$PUBLISH" 2>/dev/null || true   # same owner as AmberX's data folder
 say "published to $PUBLISH (AmberX → Walkthrough)"
+if [ -n "${UI_CHECK:-}" ]; then
+  say "UI check on the live app (Home card, menus, player, chapters)"
+  docker run --rm --env-file "$ENVF" -e OUT=/out -v "$HERE:/rec:ro" -v "$WORK:/out" "$IMAGE" \
+    bash -c 'cd /rec-app && cp /rec/*.mjs . && node ui-check.mjs'
+fi

@@ -58,7 +58,7 @@ for (const ch of timeline) {
 
 writeFileSync(`${TMP}/list.txt`, parts.map((p) => `file '${p}'`).join('\n'));
 ff(['-f', 'concat', '-safe', '0', '-i', `${TMP}/list.txt`, '-c', 'copy', '-movflags', '+faststart', `${PUB}/walkthrough.mp4`]);
-ff(['-ss', '3', '-i', `${PUB}/walkthrough.mp4`, '-frames:v', '1', '-vf', 'scale=360:800', '-q:v', '4', `${PUB}/poster.jpg`]);
+ff(['-ss', '3', '-i', `${PUB}/walkthrough.mp4`, '-frames:v', '1', '-vf', 'scale=720:1600', '-q:v', '4', `${PUB}/poster.jpg`]);
 writeFileSync(`${PUB}/walkthrough.vtt`, `WEBVTT\n\n${cues.join('\n\n')}\n`);
 const index = {
   $axf: WALKTHROUGH.$axf, id: WALKTHROUGH.id, title: WALKTHROUGH.title, app: WALKTHROUGH.app,

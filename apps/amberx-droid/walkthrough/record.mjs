@@ -143,11 +143,12 @@ function helpers(page, log) {
       await page.reload({ waitUntil: 'domcontentloaded' });
       await page.getByText(/until axHub runs it/).first().waitFor({ timeout: 9000 });
     }),
-    // Settings is a drill-down list: back to the top ("All settings") when the row isn't on screen, then open the row
+    // Settings is a drill-down list that remembers where it was: back up ("Back to …", "All settings") until the row is
+    // on screen, then open it
     settingsTab: (name) => soft(`settings tab ${name}`, async () => {
       const row = () => page.locator('main button').filter({ visible: true }).filter({ hasText: new RegExp(`^\\s*${name}`) }).first();
-      for (let i = 0; i < 3 && !(await row().count()); i++) {
-        const back = page.locator('main').getByRole('button', { name: 'All settings' }).filter({ visible: true });
+      for (let i = 0; i < 4 && !(await row().count()); i++) {
+        const back = page.locator('main').getByRole('button', { name: /^(All settings|Back to )/ }).filter({ visible: true });
         if (!(await back.count())) break;
         await back.first().click({ timeout: 3000 }); await page.waitForTimeout(800);
       }

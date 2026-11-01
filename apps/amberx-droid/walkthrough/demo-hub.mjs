@@ -95,6 +95,8 @@ export async function installDemoHub(context, seed, log = []) {
     const url = new URL(req.url());
     const key = `${req.method()} ${url.pathname}`;
     if (api[key]) return json(route, api[key]());
+    // the walkthrough's own files are real (the published video; nothing private in them)
+    if (req.method() === 'GET' && url.pathname.startsWith('/api/walkthrough/')) return route.continue();
     if (req.method() !== 'GET' && req.method() !== 'HEAD') { note(`blocked: ${key}`); return json(route, { ok: true }); }
     // console plugins seen from AmberX (agents, chats, builds…): their real data never shows; the page gets an empty answer
     note(`api answered empty: ${key}`);

@@ -7,7 +7,7 @@
 .axp-walkthrough__stage { display: flex; justify-content: center; min-width: 0; }
 /* the recording is a phone screen (9:20): as tall as the screen allows, never wider than the page */
 .axp-walkthrough__video {
-  display: block; max-width: 100%; max-height: 72vh; aspect-ratio: 9 / 20; background: var(--fx-bg);
+  display: block; max-width: 100%; max-height: 72vh; aspect-ratio: 9 / 20; object-fit: contain; background: var(--fx-bg);
   border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg);
 }
 .axp-walkthrough__side { min-width: 0; gap: var(--fx-dens-gap-lg); }
