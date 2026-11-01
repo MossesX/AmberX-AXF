@@ -138,10 +138,11 @@ function Shell() {
   useHubAppearance();
   const plugins = usePlugins();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
-  // the tab title follows the branding package (GizmoX) and the page: "Plan · GizmoX"
+  // the tab title is the app's own name and the page: "Plan · GizmoX AI Studio". Not the branding package's name: the
+  // look (branding included) is one for every app on axHub, so it can't name this app (Brett, Nov 1 2026)
   const rtTitle = useRuntime();
   const st = useAxfState();
-  const brandName = rtTitle.branding()?.name || rtTitle.manifest.app.name;
+  const brandName = rtTitle.manifest.app.name || rtTitle.branding()?.name || 'GizmoX AI Studio';
   const allViews: ViewMap = {
     ...plugins.contributed.views,
     ...views,

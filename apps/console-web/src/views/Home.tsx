@@ -24,8 +24,8 @@ export function Home() {
   }, [rt]);
   const s = useStore();
   useAxfState();
-  // the branding package names the console (GizmoX); the manifest name is the fallback
-  const brand = rt.branding()?.name || rt.manifest.app.name;
+  // the app's own name (GizmoX AI Studio): the branding package is shared by every app through the axHub look
+  const brand = rt.manifest.app.name || rt.branding()?.name;
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">

@@ -90,7 +90,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
                 hub.stop()
 
 
-app = FastAPI(title="AXF Dev Console API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
