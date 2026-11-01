@@ -1,0 +1,122 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-c8882764a3",
+  "createdAt": "2026-11-01T11:09:56.151Z",
+  "updatedAt": "2026-11-01T11:31:34.463Z",
+  "kind": "build",
+  "title": "# Fable review pass of Opus-built foundation work Brett (Nov 1 2026): every headless build since Oc…",
+  "asked": "# Fable review pass of Opus-built foundation work Brett (Nov 1 2026): every headless build since Oct 31 ran on Opus because the launcher couldn't start Fable (fixed, axHub decision #111). His rule: **Opus or Fable only, never Sonnet; Fable for foundation work** (schemas, asset types, data models, kernel/engines, cross-app GUI behaviour). Plan he approved: **Fable REVIEWS first and only rebuilds what it flags.** Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/THREADS.md, and the handoff `_claude/memory/handoff-2026-11-01.md` on axHub if available. ## Review these (each: read its report in _claude/builds/reports/, the schema/spec, core code, fixtures, tests) 1. One builds store (urgent-builds, merged 2a057cc4) + BUILDS spec / builds-core. 2. UI Review schema: ui-review-item@1 / ui-review-group@1 (review-schema) + shot-group@1. 3. help@1 + help mode engine (help-mode). 4. job-type@1 + agent jobs router (agent-jobs) and agent cap/queue (agent-cap). 5. session@1 + chat viewer store/ingesters (chat-viewer). 6. Agent swarm data model (agent-swarm; `agent-swarm-fable-rebuild` 0/7 already pending in profile breakroom — fold into it, don't duplicate). For each, judge against the AXF design rules (asset@1 envelope, namespaced ids, semver + migrations, open type registry, both validators web+Kotlin, conformance fixtures, tokens-only styling, typed placeholders, new types never need kernel changes, plugin-lifecycle) and long-term scalability. Verdict per item: **OK** / **fix** (small, do it now) / **rebuild** (needs a planned Fable build). ## Output - Do the small fixes in this branch (tests + lifecycle + theme + conformance checks green, migrations for any shape change, never break stored data). - For each **rebuild**: add an orchestrator build in the right profile, steps <= 30 min tagged Fable/Opus, and an entry on the Fable rebuilds list. Don't start them. - Add to `_claude/shared/rules/RULES.md` (merge carefully, claude-sync currently holds a conflict on it and decisions.md: keep BOTH sides' content): \"Models: Opus or Fable only, never Sonnet. Fable for foundation work (schemas, asset types, data models, kernel/engines, cross-app GUI); Opus for the rest.\" - Report `_claude/builds/reports/fable-review.md`: table item | verdict | why | what changed or what's planned. THREADS row, STATUS. Commit on this branch, merge origin/main, push the branch. Do NOT push to main; Brett's session lands it with build_land. Never print secrets (do not cat secrets.env). End with a short phone-readable summary. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "session": "ef566660-e59",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Review the six Opus-built foundation items against the AXF design rules",
+      "state": "done",
+      "startedAt": "2026-11-01T11:16:44.868Z",
+      "finishedAt": "2026-11-01T11:16:44.868Z"
+    },
+    {
+      "text": "Model policy: one registry (Opus or Fable, never Sonnet) for job-type@1, the swarm roster and the plan model picker",
+      "state": "done",
+      "startedAt": "2026-11-01T11:16:44.940Z",
+      "finishedAt": "2026-11-01T11:28:50.507Z"
+    },
+    {
+      "text": "builds@1 self-validator + BUILDS.md spec; UI Review one time zone rule (core, plugin, Python); swarm rebuild notes; rules, threads, status, report",
+      "state": "done",
+      "startedAt": "2026-11-01T11:28:50.571Z",
+      "finishedAt": "2026-11-01T11:31:18.348Z"
+    },
+    {
+      "text": "Commit, merge origin/main, push claude/fable-review",
+      "state": "running",
+      "startedAt": "2026-11-01T11:31:18.421Z"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "pending",
+    "id": "fable-review"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-01T11:09:56.151Z",
+  "lastSeenAt": "2026-11-01T11:31:34.463Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 49.5
+  },
+  "costEstimated": true,
+  "branch": "claude/fable-review",
+  "areas": [
+    "_claude",
+    "framework/core",
+    "framework/schemas",
+    "framework/spec",
+    "framework/cli",
+    "apps/console-web/plugins"
+  ],
+  "doing": "Running: Commit the review branch and fetch origin/main",
+  "progress": 0.75,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/fable-review",
+    "branch": "claude/fable-review",
+    "base": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "head": "2713d09d4c2fa6d106b67a319f57604ca9f16fd9",
+    "pushed": true,
+    "dirty": 39,
+    "files": [
+      "_claude/memory/handoff-2026-11-01.md",
+      "changes/2026/11/chg-20261101-1a2f437924.json",
+      "changes/2026/11/chg-20261101-1be63f8f1b.json",
+      "changes/2026/11/chg-20261101-2569cb816e.json",
+      "changes/2026/11/chg-20261101-398ef192a8.json",
+      "changes/2026/11/chg-20261101-49101f1545.json",
+      "changes/2026/11/chg-20261101-4d090ab119.json",
+      "changes/2026/11/chg-20261101-6ab239dbd3.json",
+      "changes/2026/11/chg-20261101-6c13622b7b.json",
+      "changes/2026/11/chg-20261101-6ccae6f4d3.json",
+      "changes/2026/11/chg-20261101-70795946ff.json",
+      "changes/2026/11/chg-20261101-710d4dab8e.json",
+      "changes/2026/11/chg-20261101-8a3ebed65d.json",
+      "changes/2026/11/chg-20261101-8f773887f3.json",
+      "changes/2026/11/chg-20261101-905d1f449c.json",
+      "changes/2026/11/chg-20261101-92971c2ac2.json",
+      "changes/2026/11/chg-20261101-9504b77bde.json",
+      "changes/2026/11/chg-20261101-a6777d1886.json",
+      "changes/2026/11/chg-20261101-d2f53b97b0.json",
+      "changes/2026/11/chg-20261101-d7b70e43f7.json",
+      "changes/2026/11/chg-20261101-dec0c78671.json",
+      "sessions/archive/2026/11/cc-2060e6a0-5312-4b26-969a-44eb6c1c4732.json",
+      "sessions/archive/2026/11/cc-2e0a66ea-1471-489a-a14d-12698c271604.json",
+      "sessions/archive/2026/11/cc-2ecdcdf9-f224-4730-9511-2e04826c26cd.json",
+      "sessions/archive/2026/11/cc-31ae2060-8528-4307-a234-c5cbefec9b51.json",
+      "sessions/archive/2026/11/cc-457a1e3f-105d-4357-b458-abc384dbabed.json",
+      "sessions/archive/2026/11/cc-538b069c-d205-4dab-90f2-12d5c34fdcd6.json",
+      "sessions/archive/2026/11/cc-5bd3dd32-7712-4e0e-aedc-5e2897cd20a9.json",
+      "sessions/archive/2026/11/cc-75b2a975-d5fa-42fa-abb9-1f406fbf49ff.json",
+      "sessions/archive/2026/11/cc-92543c42-347c-455b-838e-259586c69382.json",
+      "sessions/archive/2026/11/cc-92c2eaeb-9240-4212-a558-e352d56ba131.json",
+      "sessions/archive/2026/11/cc-956294e4-bdc3-4cac-bdf0-d7daab896e54.json",
+      "sessions/archive/2026/11/cc-965b375e-ddd4-4edb-8121-ff06e8864f32.json",
+      "sessions/archive/2026/11/cc-9be9463e-e7e9-4d8d-b044-484d0347d417.json",
+      "sessions/archive/2026/11/cc-acd0478c-820d-4077-80bc-54dda9e8c7e1.json",
+      "sessions/archive/2026/11/cc-d4c5871d-4a43-4bec-b6a9-1e3fc48cf864.json",
+      "sessions/archive/2026/11/cc-e650d5d8-2ad1-4f14-9c14-6951ec83d2e8.json",
+      "sessions/archive/2026/11/cc-ea3d3dfe-3be4-4147-aa83-699be917a582.json",
+      "sessions/archive/2026/11/cc-ea4ac6c5-9077-4a17-ad9d-aa96b5a2c3e8.json"
+    ],
+    "at": "2026-11-01T11:09:56.340Z"
+  }
+}
