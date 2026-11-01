@@ -112,6 +112,32 @@ What the runtime does with it:
 - Write: hub admins, and users granted `data.write` on the hub. In the console the UAC gate (`assets.swap` via
   `console.themes`) applies first, so a plain user can't change the look even if the hub would accept the write.
 
+## Design theme precedence (Nov 1 2026)
+
+Brett: "When a design theme is loaded the individual style and color themes are not applied. Only when something
+changes is the design pack overridden with the individual packs." Engine: `core/engines/designpackage.ts`
+(`designLookSlots`, `overrideAfterPick`, `normalizeDesignOverrides`, `designLookLabel`); runtime: `applyAppearance`,
+`swap`, `applyDesignPackage`, `designOverrides()`.
+
+1. While a design package is loaded (slot `design-package`), its `style-theme` and `color-theme` are in force. A style
+   or colour slot the document still carries is ignored.
+2. Picking a style or colour theme afterwards records an override for that part only, in the look setting
+   `axf.appearance.overrides` (`{ "style-theme"?: id, "color-theme"?: id }`), which rides `settings` like every other
+   look setting, so every app agrees. Picking the package's own theme drops that override.
+3. Loading a design package (again) clears every override. Restore default clears them too.
+4. An override or package theme the app doesn't ship falls back (override → package → the pick), never a broken look.
+
+Settings → Appearance in every app is selection only: Design theme, Style theme, Colour theme, Restore. The status
+line reads "Hub Default (style changed)". Plugin settings (Banner settings and its Apply to all) still edit their own
+look, shared through the same document.
+
+**Retired look settings:** `axf.look` (Sliders), `axf.custom.*` (per-asset tokens) and `axf.roll.*` (rolls) are never
+applied or sent; a document that still carries them is cleaned once by the first app that reads it
+(`RETIRED_LOOK_SETTINGS`, `isRetiredLookSetting`).
+
+**Default look:** design package `hub-default` (style theme `hub`, colour theme `hub-night`) is the default of the Dev
+Console (GizmoX AI Studio), axHub web and AmberX.
+
 ## When axHub is down
 
 The developer app shows the waiting screen and retries (1 s → 30 s). The console is behind the hub's wall anyway, so

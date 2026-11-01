@@ -164,14 +164,16 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
   const read = (t, id) => mine.get(`${t}/${id}`).asset;
-  eq(man.defaults['design-package'], 'amberx-app-day', 'default design package is AmberX · Day');
+  // Nov 1 2026 (Brett): every app inherits one default look from axHub, the Hub Default design theme; AmberX's own
+  // day/night packages still ship and can be picked.
+  eq(man.defaults['design-package'], 'hub-default', 'default design package is Hub Default (shared by every app)');
+  { const hd = read('design-package', 'hub-default').data; for (const t of ['style-theme', 'color-theme']) eq(man.defaults[t], hd[t], `default ${t} matches the default design package`); }
   eq(man.defaults.branding, 'amberx-app', 'default branding is the AmberX app branding package');
   for (const id of ['amberx-app-day', 'amberx-app-night']) {
     ok(mine.has(`design-package/${id}`), `ships design-package/${id}`);
     const d = read('design-package', id).data;
     for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(mine.has(`${t}/${d[t]}`), `${id}: ${t} ${d[t]} ships`);
     for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(mine.has(`${t}/${sid}`), `${id}: ${t} ${sid} ships`);
-    if (id === 'amberx-app-day') for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) eq(man.defaults[t], d[t], `default ${t} matches the default design package`);
   }
   const b = read('branding', 'amberx-app').data;
   for (const [slot, mode] of Object.entries({ banner: 'lockup', toolbar: 'none', container: 'none', 'tab-group': 'none', dialog: 'mark', window: 'mark' })) eq(b.decorations[slot], mode, `brand ${slot} = ${mode} (DESIGN-LANGUAGE §10)`);

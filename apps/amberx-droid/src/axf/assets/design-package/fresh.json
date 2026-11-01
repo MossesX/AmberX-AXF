@@ -6,9 +6,7 @@
   "version": "2.0.0",
   "description": "Fresh: the framework's default look (Fresh Light + Fresh style, solid rounded buttons, soft cards), super-tight spacing, top toolbar hidden. An AmberX Design Package: its style, colour, layout and behaviour themes, with the rest of the look as extras (was an appearance package).",
   "author": "AmberX AXF",
-  "tags": [
-    "default"
-  ],
+  "tags": [],
   "data": {
     "style-theme": "fresh",
     "color-theme": "fresh-light",

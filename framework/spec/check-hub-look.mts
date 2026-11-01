@@ -3,8 +3,8 @@
  * "if you select design package in one app it changes it for all! Any theme change applies to all").
  *
  * Two runtimes stand in for two apps on one hub document: whatever one changes (a design package, a slot, spacing,
- * hidden chrome, the Sliders, per-asset tokens) the other ends up with, exactly, and nothing is skipped when both ship
- * the same shared assets.
+ * hidden chrome, plugin look settings, the design overrides) the other ends up with, exactly, and nothing is skipped
+ * when both ship the same shared assets. The retired app-wide tweaks (Sliders, per-asset tokens, rolls) never travel.
  * Run: npx -y tsx framework/spec/check-hub-look.mts
  */
 import assert from 'node:assert/strict';
@@ -97,18 +97,56 @@ await settle();
   ok(a.slotHidden('toolbar'), 'hidden chrome follows');
 }
 
-/* ---- the look settings (Sliders, per-asset tokens) are shared too ---- */
+/* ---- plugin look settings are shared; the retired app-wide tweaks are not (Nov 1 2026) ---- */
 {
-  a.settings.set('axf.look', { lineHeight: 130, letterSpacing: 0.02 } as never);
+  a.settings.set('axf.banners.prefs', { activity: { launch: 'expanded' } } as never);
+  await settle(); await settle();
+  eq(b.settings.get('axf.banners.prefs'), { activity: { launch: 'expanded' } }, 'a banner setting made in app A applies in app B');
+  ok(hub.doc?.settings && 'axf.banners.prefs' in hub.doc.settings, 'the hub document carries it');
+  b.settings.clear('axf.banners.prefs');
+  await settle(); await settle();
+  ok(a.settings.savedValues()['axf.banners.prefs'] === undefined, 'clearing a look setting in one app clears it in every app');
+  ok(!('axf.banners.prefs' in (hub.doc?.settings ?? {})), 'and on the hub');
+  a.settings.set('axf.look', { lineHeight: 130 } as never);
   a.settings.set('axf.custom.button', { all: true, shared: { fontSize: 110 }, byId: {} } as never);
   await settle(); await settle();
-  eq(b.settings.get('axf.look'), { lineHeight: 130, letterSpacing: 0.02 }, 'the Sliders set in app A apply in app B');
-  eq(b.settings.get('axf.custom.button'), { all: true, shared: { fontSize: 110 }, byId: {} }, 'per-asset tokens set in app A apply in app B');
-  ok(hub.doc?.settings && 'axf.look' in hub.doc.settings, 'the hub document carries them');
-  b.settings.clear('axf.custom.button');
+  ok(!('axf.look' in (hub.doc?.settings ?? {})) && !('axf.custom.button' in (hub.doc?.settings ?? {})), 'the retired Sliders and per-asset tokens never reach the hub');
+  ok(b.settings.get('axf.look') === null && b.settings.get('axf.custom.button') === null, 'and never reach another app');
+  // a document that still carries them (saved by an older build) is cleaned once, in every app
+  hub.save({ settings: { 'axf.look': { lineHeight: 140 }, 'axf.roll.slot.toolbar': true } }, 'old-build');
   await settle(); await settle();
-  ok(a.settings.savedValues()['axf.custom.button'] === undefined, 'clearing a look setting in one app clears it in every app');
-  ok(!('axf.custom.button' in (hub.doc?.settings ?? {})), 'and on the hub');
+  ok(b.settings.get('axf.look') === null && b.settings.get('axf.roll.slot.toolbar') === null, 'retired settings in an older document are not applied');
+  ok(!('axf.look' in (hub.doc?.settings ?? {})) && !('axf.roll.slot.toolbar' in (hub.doc?.settings ?? {})), 'and are removed from the hub document');
+  a.settings.clear('axf.look'); a.settings.clear('axf.custom.button');
+}
+
+/* ---- precedence: a loaded design package wins; a later pick overrides only its part (Nov 1 2026) ---- */
+{
+  ok(a.applyDesignPackage('hub-default'), 'app A loads Hub Default');
+  await settle(); await settle();
+  const st = (rt: AxfRuntime, t: string) => rt.getState().active[t as never];
+  eq([st(b, 'design-package'), st(b, 'style-theme'), st(b, 'color-theme')], ['hub-default', 'hub', 'hub-night'], 'app B shows the package\'s style and colour');
+  // a stale style / colour slot in the document is ignored while the package is loaded
+  hub.save({ slots: { 'style-theme': 'glass-orbit', 'color-theme': 'arctic-daylight' } }, 'old-build');
+  await settle(); await settle();
+  eq([st(a, 'style-theme'), st(a, 'color-theme')], ['hub', 'hub-night'], 'individual picks without an override are not applied (app A)');
+  eq([st(b, 'style-theme'), st(b, 'color-theme')], ['hub', 'hub-night'], 'individual picks without an override are not applied (app B)');
+  // picking a style in app B overrides only the style, in every app
+  ok(b.swap('style-theme', 'fresh'), 'app B picks the Fresh style');
+  await settle(); await settle();
+  eq([st(a, 'style-theme'), st(a, 'color-theme')], ['fresh', 'hub-night'], 'app A: style overridden, colour still the package\'s');
+  eq(a.designOverrides(), { 'style-theme': 'fresh' }, 'app A sees the override');
+  // picking the package's own style again drops the override
+  ok(a.swap('style-theme', 'hub'), 'app A picks the package\'s style again');
+  await settle(); await settle();
+  eq(b.designOverrides(), {}, 'override dropped everywhere');
+  // colour override, then reloading the package clears it
+  ok(a.swap('color-theme', 'fresh-light'), 'app A picks a colour');
+  await settle(); await settle();
+  eq([st(b, 'style-theme'), st(b, 'color-theme')], ['hub', 'fresh-light'], 'app B: colour overridden, style the package\'s');
+  ok(b.applyDesignPackage('hub-default'), 'app B loads the package again');
+  await settle(); await settle();
+  eq([st(a, 'style-theme'), st(a, 'color-theme'), a.designOverrides()], ['hub', 'hub-night', {}], 'reloading the package clears the overrides in every app');
 }
 
 /* ---- Restore default appearance in one app restores every app ---- */
@@ -124,11 +162,11 @@ await settle();
   hub2.doc = normalizeAppearance({ $axf: 'appearance@1', slots: {} });
   const c = new AxfRuntime({ manifest: manifest('app-c'), assets, storageKey: 'hub-look-c' });
   c.setRole('admin');
-  c.settings.set('axf.look', { lineHeight: 120 } as never);
+  c.settings.set('axf.toolbar.collapsed', true as never);
   c.attachAppearanceSource(new HubLink(hub2, 'app-c'));
   await settle(); await settle();
-  eq(hub2.doc?.settings, { 'axf.look': { lineHeight: 120 } }, 'local look settings are sent up once when the hub has none');
-  ok(c.settings.get('axf.look') !== null, 'and kept here');
+  eq(hub2.doc?.settings, { 'axf.toolbar.collapsed': true }, 'local look settings are sent up once when the hub has none');
+  ok(c.settings.get('axf.toolbar.collapsed') !== null, 'and kept here');
 }
 
 /* ---- non-look settings never ride the look ---- */

@@ -48,6 +48,19 @@ const PREFIXES: string[] = [
 ];
 export const APPEARANCE_SETTING_PREFIXES: readonly string[] = PREFIXES;
 
+/**
+ * Look settings retired on Nov 1 2026 (Brett: "Remove all appearance and theme editing abilities from the settings
+ * interface … only allow selecting design, style, and color themes"; then: "I only wanted it removed from settings
+ * for the apps not plugins"): the app-wide Sliders, per-asset tokens and rolls. They are no longer applied; a shared
+ * document that still carries them is cleaned once. Plugin settings (Banner settings and its Apply to all) stay.
+ */
+export const RETIRED_LOOK_SETTINGS: readonly string[] = ['axf.look', 'axf.custom.', 'axf.roll.'];
+
+/** Is this a retired look setting (never applied, cleared where found)? */
+export function isRetiredLookSetting(key: string): boolean {
+  return RETIRED_LOOK_SETTINGS.some((p) => (p.endsWith('.') ? key.startsWith(p) : key === p || key.startsWith(`${p}.`)));
+}
+
 /** Add a prefix of settings keys that are part of an app's look (a library's own appearance settings). */
 export function registerAppearanceSettingPrefix(prefix: string): void {
   if (/^[a-z0-9][a-z0-9._-]{1,80}$/.test(prefix) && !PREFIXES.includes(prefix)) PREFIXES.push(prefix);
@@ -80,6 +93,68 @@ function normalizeExtras(d: Record<string, unknown>): DesignPackageExtras {
     out.settings = settings;
   }
   return out;
+}
+
+/* ---------------- precedence: a loaded design package wins over the individual picks ---------------- */
+
+/**
+ * Precedence rule (Nov 1 2026, Brett: "When a design theme is loaded the individual style and color themes are not
+ * applied. Only when something changes is the design pack overridden with the individual packs."):
+ *
+ *  1. While a design package is loaded, its style theme and colour theme are the ones in force. Whatever style or
+ *     colour slot a document or an older save still carries is ignored.
+ *  2. Picking a style theme or a colour theme afterwards overrides only that part; the other part stays the package's.
+ *     The override is recorded under DESIGN_OVERRIDES_KEY (a look setting, so it rides the shared appearance document
+ *     and every app agrees).
+ *  3. Loading a design package (again) clears every override.
+ *
+ * Pure and port-neutral; the Kotlin twin is a deferred gap (PORTING.md, "design overrides").
+ */
+export const DESIGN_OVERRIDES_KEY = 'axf.appearance.overrides';
+/** The parts of a design package an individual pick may override. */
+export const DESIGN_OVERRIDABLE = ['style-theme', 'color-theme'] as const;
+export type DesignOverridable = (typeof DESIGN_OVERRIDABLE)[number];
+export type DesignOverrides = Partial<Record<DesignOverridable, string>>;
+
+/** Keep only well-formed overrides (style-theme / color-theme → asset id); anything else is dropped. */
+export function normalizeDesignOverrides(raw: unknown): DesignOverrides {
+  const out: DesignOverrides = {};
+  if (!isObj(raw)) return out;
+  for (const t of DESIGN_OVERRIDABLE) { const v = raw[t]; if (typeof v === 'string' && ID.test(v)) out[t] = v; }
+  return out;
+}
+
+/**
+ * The style and colour theme in force. `pkg` is the loaded package (null = none), `picks` the individual slots the
+ * app or the document carries, `has` the app's registry. With a package: override if the app has it, else the
+ * package's theme if the app has it, else the pick. Without a package: the picks.
+ */
+export function designLookSlots(pkg: DesignPackageData | null, overrides: DesignOverrides, picks: Partial<Record<DesignOverridable, string>>, has: (type: string, id: string) => boolean): Partial<Record<DesignOverridable, string>> {
+  const out: Partial<Record<DesignOverridable, string>> = {};
+  for (const t of DESIGN_OVERRIDABLE) {
+    const o = overrides[t];
+    const p = pkg?.[t];
+    const pick = picks[t];
+    if (pkg && o && has(t, o)) out[t] = o;
+    else if (pkg && p && has(t, p)) out[t] = p;
+    else if (pick) out[t] = pick;
+  }
+  return out;
+}
+
+/** The overrides after the user picks `id` for part `type` while `pkg` is loaded: picking the package's own theme drops the override. */
+export function overrideAfterPick(pkg: DesignPackageData | null, overrides: DesignOverrides, type: string, id: string): DesignOverrides | null {
+  if (!pkg || !(DESIGN_OVERRIDABLE as readonly string[]).includes(type)) return null;
+  const next: DesignOverrides = { ...overrides };
+  if (pkg[type as DesignOverridable] === id) delete next[type as DesignOverridable];
+  else next[type as DesignOverridable] = id;
+  return next;
+}
+
+/** What the look reads as: "Hub Default", "Hub Default (style changed)", "Hub Default (style and colour changed)". */
+export function designLookLabel(name: string, overrides: DesignOverrides): string {
+  const parts = [overrides['style-theme'] ? 'style' : '', overrides['color-theme'] ? 'colour' : ''].filter(Boolean);
+  return parts.length ? `${name} (${parts.join(' and ')} changed)` : name;
 }
 
 /** Keep only fields a package may hold; anything malformed is dropped (never a crash). Missing themes stay ''. */
@@ -156,7 +231,7 @@ export function captureDesignPackage(env: PackageCaptureEnv, withExtras = true):
  */
 export function packageSettingsPlan(pkg: DesignPackageData, saved: readonly string[]): { set: Record<string, unknown>; clear: string[] } {
   if (!pkg.extras) return { set: {}, clear: [] };
-  const set = { ...(pkg.extras.settings ?? {}) };
+  const set = Object.fromEntries(Object.entries(pkg.extras.settings ?? {}).filter(([k]) => !isRetiredLookSetting(k)));
   const clear = saved.filter((k) => isAppearanceSetting(k) && !(k in set));
   return { set, clear };
 }
