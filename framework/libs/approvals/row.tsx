@@ -115,13 +115,8 @@ export function ApprovalRow({ details: d, scope, onDecide, busy = '', actions, c
   const [open, toggle] = useOpen(store, scope, d.id);
   const bodyId = useId();
   const left = detailsCountdown(d);
-  useTick(left !== null || (open && d.phase === 'running'));
-  const tail = useJobTail(hub, d.streamUrl, open && follow && hasResult(d));
-  const waiting = isWaitingPhase(d.phase);
+  useTick(left !== null);
   const urgent = left !== null && left <= 30 && !d.veto?.shelved;
-  const exitCode = d.exitCode !== undefined ? d.exitCode : tail.exitCode;
-  const page = (e: { preventDefault: () => void }) => { if (openPage) { e.preventDefault(); openPage(d.url); } };
-  const timeline = open ? timelineOf(d) : [];
   return (
     <div className={`axf-apx${open ? ' is-open' : ''}${d.kind === 'held' ? ' is-held' : ''}${compact ? ' axf-apx--compact' : ''}${stack ? ' axf-apx--stack' : ''} ${className ?? ''}`.trim()} data-approval-id={d.id} data-phase={d.phase}>
       <div className="axf-apx__head">
@@ -140,77 +135,99 @@ export function ApprovalRow({ details: d, scope, onDecide, busy = '', actions, c
           <Icon name="chevron-down" size={16} className={open ? 'axf-apx__flip' : ''} />
         </button>
       </div>
-      {open && (
-        <div className="axf-apx__body" id={bodyId}>
-          <section className="axf-apx__sec">
-            <p className="fx-eyebrow">What it does{d.reasonGiven === true ? " (Claude's words)" : d.reasonGiven === false ? ' (from the hub)' : ''}</p>
-            <p className="axf-apx__title-full">{d.title}</p>
-            {d.description ? <p className="axf-apx__text">{d.description}</p> : <p className="fx-small fx-muted axf-apx__text">No reason was given. Read the command before you approve it.</p>}
-          </section>
+      {open && <ApprovalDetailsPanel id={bodyId} details={d} onDecide={onDecide} busy={busy} openPage={openPage} hub={hub} follow={follow}>{children}</ApprovalDetailsPanel>}
+    </div>
+  );
+}
 
-          <section className="axf-apx__sec">
-            <p className="fx-eyebrow">Exact call</p>
-            {d.command && <pre className="fx-mono axf-apx__code" aria-label="Command">{d.command}</pre>}
-            <pre className="fx-mono axf-apx__code" aria-label="Arguments">{d.arguments || '(no arguments)'}</pre>
-            <div className="axf-apx__row">
-              {d.command && <CopyText text={d.command} label="Copy command" />}
-              <CopyText text={d.arguments} label="Copy arguments" />
-            </div>
-          </section>
+export interface ApprovalDetailsPanelProps extends Pick<ApprovalRowProps, 'details' | 'onDecide' | 'busy' | 'children' | 'openPage' | 'hub' | 'follow'> {
+  id?: string;
+  className?: string;
+}
 
-          <section className="axf-apx__sec axf-apx__grid">
-            <div>
-              <p className="fx-eyebrow">Who asked</p>
-              {d.source ? (
-                <dl className="axf-apx__dl">
-                  <dt>Source</dt><dd><SourceBadge details={d} /></dd>
-                  {d.source.session && <><dt>Name</dt><dd className="fx-mono">{d.source.session}</dd></>}
-                  {clientLine(d.source) && <><dt>Client</dt><dd>{clientLine(d.source)}</dd></>}
-                  {d.callerId && <><dt>Caller</dt><dd className="fx-mono">{d.callerId}</dd></>}
-                </dl>
-              ) : (
-                <dl className="axf-apx__dl"><dt>Source</dt><dd className="fx-muted">Not recorded</dd>{d.callerId && <><dt>Caller</dt><dd className="fx-mono">{d.callerId}</dd></>}</dl>
-              )}
-            </div>
-            <div>
-              <p className="fx-eyebrow">Tool and policy</p>
-              <dl className="axf-apx__dl">
-                <dt>Tool</dt><dd className="fx-mono">{d.tool}</dd>
-                <dt>Policy</dt><dd><Chip tone={d.policy === 'veto' ? 'warning' : undefined}>{POLICY_LABELS[d.policy]}</Chip></dd>
-                <dt>State</dt><dd>{PHASE_LABELS[d.phase]}</dd>
-              </dl>
-              {d.risk.length > 0 && <div className="axf-apx__row" aria-label="Risk">{d.risk.map((r) => <Chip key={r} tone={r === 'destructive' || r === 'deletes' || r === 'secrets' ? 'danger' : r === 'read-only' ? 'success' : 'warning'}>{r}</Chip>)}</div>}
-              {d.toolDescription && <p className="fx-small fx-muted axf-apx__text">{d.toolDescription}</p>}
-            </div>
-          </section>
+/**
+ * The open part on its own (a surface that draws its own collapsed row, e.g. the application menu's live list): the
+ * reason, the exact call, who asked, tool + policy + risk, the timeline, the result, the approval page link and Deny /
+ * Approve while it waits. Ticks every second while a countdown or a run is live; follows the job stream for the output.
+ */
+export function ApprovalDetailsPanel({ id, details: d, onDecide, busy = '', children, openPage, hub, follow = true, className }: ApprovalDetailsPanelProps) {
+  const left = detailsCountdown(d);
+  useTick(left !== null || d.phase === 'running');
+  const tail = useJobTail(hub, d.streamUrl, follow && hasResult(d));
+  const waiting = isWaitingPhase(d.phase);
+  const urgent = left !== null && left <= 30 && !d.veto?.shelved;
+  const exitCode = d.exitCode !== undefined ? d.exitCode : tail.exitCode;
+  const page = (e: { preventDefault: () => void }) => { if (openPage) { e.preventDefault(); openPage(d.url); } };
+  const timeline = timelineOf(d);
+  return (
+    <div className={`axf-apx__body ${className ?? ''}`.trim()} id={id}>
+      <section className="axf-apx__sec">
+        <p className="fx-eyebrow">What it does{d.reasonGiven === true ? " (Claude's words)" : d.reasonGiven === false ? ' (from the hub)' : ''}</p>
+        <p className="axf-apx__title-full">{d.title}</p>
+        {d.description ? <p className="axf-apx__text">{d.description}</p> : <p className="fx-small fx-muted axf-apx__text">No reason was given. Read the command before you approve it.</p>}
+      </section>
 
-          {timeline.length > 0 && (
-            <section className="axf-apx__sec">
-              <p className="fx-eyebrow">Timeline</p>
-              <dl className="axf-apx__dl axf-apx__timeline">
-                {timeline.map((t) => <span key={t.id} className="axf-apx__step" data-step={t.id}><dt>{t.label}</dt><dd className={t.id === 'countdown' && urgent ? 'is-urgent' : ''} role={t.live ? 'timer' : undefined}>{t.text}</dd></span>)}
-              </dl>
-            </section>
-          )}
-
-          {hasResult(d) && (
-            <section className="axf-apx__sec">
-              <p className="fx-eyebrow">Result</p>
-              <p className={`axf-apx__exit${exitCode !== undefined && exitCode !== null && exitCode !== 0 ? ' is-bad' : exitCode === 0 ? ' is-good' : ''}`}>{exitLine({ phase: d.phase, exitCode })}</p>
-              {tail.lines.length > 0 && <pre className="fx-mono axf-apx__code axf-apx__out" aria-label="Last lines of output">{tail.lines.join('\n')}</pre>}
-              {tail.error && tail.lines.length === 0 && <p className="fx-small fx-muted axf-apx__text">Output isn't readable here ({tail.error}); the approval page has it.</p>}
-            </section>
-          )}
-
-          <div className="axf-apx__row axf-apx__foot">
-            <a className="fx-small axf-apx__link" href={d.url} target="_blank" rel="noopener noreferrer" onClick={page}>Full approval page <Icon name="external" size={12} /></a>
-            {left !== null && <span className={`fx-small axf-apx__count${urgent ? ' is-urgent' : ''}`}>{d.veto?.shelved ? 'Shelved' : left > 0 ? `Runs in ${formatCountdown(left)}` : 'Running'}</span>}
-          </div>
-
-          {children}
-          {waiting && onDecide && d.decisions.length > 0 && <Decide d={d} busy={busy} onDecide={onDecide} />}
+      <section className="axf-apx__sec">
+        <p className="fx-eyebrow">Exact call</p>
+        {d.command && <pre className="fx-mono axf-apx__code" aria-label="Command">{d.command}</pre>}
+        <pre className="fx-mono axf-apx__code" aria-label="Arguments">{d.arguments || '(no arguments)'}</pre>
+        <div className="axf-apx__row">
+          {d.command && <CopyText text={d.command} label="Copy command" />}
+          <CopyText text={d.arguments} label="Copy arguments" />
         </div>
+      </section>
+
+      <section className="axf-apx__sec axf-apx__grid">
+        <div>
+          <p className="fx-eyebrow">Who asked</p>
+          {d.source ? (
+            <dl className="axf-apx__dl">
+              <dt>Source</dt><dd><SourceBadge details={d} /></dd>
+              {d.source.session && <><dt>Name</dt><dd className="fx-mono">{d.source.session}</dd></>}
+              {clientLine(d.source) && <><dt>Client</dt><dd>{clientLine(d.source)}</dd></>}
+              {d.callerId && <><dt>Caller</dt><dd className="fx-mono">{d.callerId}</dd></>}
+            </dl>
+          ) : (
+            <dl className="axf-apx__dl"><dt>Source</dt><dd className="fx-muted">Not recorded</dd>{d.callerId && <><dt>Caller</dt><dd className="fx-mono">{d.callerId}</dd></>}</dl>
+          )}
+        </div>
+        <div>
+          <p className="fx-eyebrow">Tool and policy</p>
+          <dl className="axf-apx__dl">
+            <dt>Tool</dt><dd className="fx-mono">{d.tool}</dd>
+            <dt>Policy</dt><dd><Chip tone={d.policy === 'veto' ? 'warning' : undefined}>{POLICY_LABELS[d.policy]}</Chip></dd>
+            <dt>State</dt><dd>{PHASE_LABELS[d.phase]}</dd>
+          </dl>
+          {d.risk.length > 0 && <div className="axf-apx__row" aria-label="Risk">{d.risk.map((r) => <Chip key={r} tone={r === 'destructive' || r === 'deletes' || r === 'secrets' ? 'danger' : r === 'read-only' ? 'success' : 'warning'}>{r}</Chip>)}</div>}
+          {d.toolDescription && <p className="fx-small fx-muted axf-apx__text">{d.toolDescription}</p>}
+        </div>
+      </section>
+
+      {timeline.length > 0 && (
+        <section className="axf-apx__sec">
+          <p className="fx-eyebrow">Timeline</p>
+          <dl className="axf-apx__dl axf-apx__timeline">
+            {timeline.map((t) => <span key={t.id} className="axf-apx__step" data-step={t.id}><dt>{t.label}</dt><dd className={t.id === 'countdown' && urgent ? 'is-urgent' : ''} role={t.live ? 'timer' : undefined}>{t.text}</dd></span>)}
+          </dl>
+        </section>
       )}
+
+      {hasResult(d) && (
+        <section className="axf-apx__sec">
+          <p className="fx-eyebrow">Result</p>
+          <p className={`axf-apx__exit${exitCode !== undefined && exitCode !== null && exitCode !== 0 ? ' is-bad' : exitCode === 0 ? ' is-good' : ''}`}>{exitLine({ phase: d.phase, exitCode })}</p>
+          {tail.lines.length > 0 && <pre className="fx-mono axf-apx__code axf-apx__out" aria-label="Last lines of output">{tail.lines.join('\n')}</pre>}
+          {tail.error && tail.lines.length === 0 && <p className="fx-small fx-muted axf-apx__text">Output isn't readable here ({tail.error}); the approval page has it.</p>}
+        </section>
+      )}
+
+      <div className="axf-apx__row axf-apx__foot">
+        <a className="fx-small axf-apx__link" href={d.url} target="_blank" rel="noopener noreferrer" onClick={page}>Full approval page <Icon name="external" size={12} /></a>
+        {left !== null && <span className={`fx-small axf-apx__count${urgent ? ' is-urgent' : ''}`}>{d.veto?.shelved ? 'Shelved' : left > 0 ? `Runs in ${formatCountdown(left)}` : 'Running'}</span>}
+      </div>
+
+      {children}
+      {waiting && onDecide && d.decisions.length > 0 && <Decide d={d} busy={busy} onDecide={onDecide} />}
     </div>
   );
 }

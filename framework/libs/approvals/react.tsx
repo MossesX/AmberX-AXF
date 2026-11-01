@@ -30,7 +30,7 @@ import { ApprovalRow } from './row';
 import { detailsOfItem } from './details';
 import './approvals.css';
 
-export { ApprovalRow, SourceBadge, RESULT_LINES, type ApprovalRowProps } from './row';
+export { ApprovalDetailsPanel, ApprovalRow, SourceBadge, RESULT_LINES, type ApprovalDetailsPanelProps, type ApprovalRowProps } from './row';
 
 /* ---------------------------------------------------------------- the host seam */
 
