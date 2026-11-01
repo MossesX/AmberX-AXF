@@ -228,7 +228,7 @@ ch({ id: 'axhub', title: 'ax hub, the hub', device: 'desktop', url: `${AXHUB}#/h
 
 // 12 ────────────────────────────────────────────────────────────── veto
 ch({ id: 'veto', title: 'The veto system', device: 'phone', url: AMBERX, start: 'home', scenes: [
-  ex("Here's a question that keeps people up at night. If Claude can run commands on your server, push to GitHub and delete stuff on the hub, what stops it from doing something stupid? Answer: the veto system. And it flips the usual approval idea on its head.", 'veto'),
+  sc("Here's a question that keeps people up at night. If Claude can run commands on your server, push to GitHub and delete stuff on the hub, what stops it from doing something stupid? Answer: the veto system. And it flips the usual approval idea on its head.", async (h) => { await h.calm(); }),
   sc("Every call that changes something real, a command on the V-P-S, a GitHub write, a pull request, a delete on the hub, goes through ax hub. The hub holds it, and pushes a notice straight to the boss's phone, to AmberX. That's what you're looking at now.", async (h) => { await h.calm(); await h.hl('h1, h2', 'Waiting on you'); }),
   sc("Every notice says what it's for. A one line title saying what's about to happen, a description saying what it does and why, and the exact code in its own section. A call without a reason is flat out refused. No mystery commands, ever.", async (h) => { await h.hl('text=Restart the demo web app', 'What it is'); await h.wait(2500); await h.click('role=button[name="Show the details"] >> nth=0', 'The details'); }),
   sc("Now the flip. It's a veto, not an approval. The call runs by itself when the countdown hits zero, ninety seconds, unless the boss taps Deny. He doesn't have to do anything to let good work through. He only acts when something smells off.", async (h) => { await h.scroll(-300); await h.hl('text=/runs in/', 'Countdown'); }),
@@ -236,7 +236,7 @@ ch({ id: 'veto', title: 'The veto system', device: 'phone', url: AMBERX, start: 
   sc("And here's why that's genius. Sessions don't sit around waiting. A session sends the call once, with its reason, tells the boss in one line what's coming, and keeps building. No polling, no re-sending, no please approve, no pestering. The work flows. The boss steers.", async (h) => { await h.calm(); await h.go('Terminal'); }),
   sc("The Terminal page is the fast lane for it. Every held command with its countdown and the three buttons right on the line. When a build is firing commands, you read, you decide, you move on.", async (h) => { await h.calm(); await h.hl('role=button[name="Deny"] >> nth=0', 'One tap'); }),
   sc("Merges work the same spirit. Pull requests merge by themselves once they're ready, up to date with main and green in C-I. No merge button babysitting. And a denied call stays denied unless the boss asks again. Simple rules, no loopholes.", async (h) => { await h.go('home'); }),
-  ex("So picture the flow one more time. Claude asks, through the M-C-P tools. The hub holds the call. AmberX buzzes the boss. He lets it ride or kills it. The V-P-S runs it. Speed of autopilot, safety of a human hand on the wheel.", 'path', 5),
+  sc("So picture the flow one more time. Claude asks, through the M-C-P tools. The hub holds the call. AmberX buzzes the boss. He lets it ride or kills it. The V-P-S runs it. Speed of autopilot, safety of a human hand on the wheel.", async (h) => { await h.hl('.fx-banner .fx-widget-counter', 'Calls waiting'); }),
 ] });
 
 // 13 ────────────────────────────────────────────────────────────── AmberX
@@ -251,4 +251,41 @@ ch({ id: 'amberx', title: 'AmberX in your pocket', device: 'phone', url: AMBERX,
   sc("Settings is the framework's settings interface, the same one every app gets, with the level toolbar and every plugin under Plugins. The A-I connection lives there too: Claude first, other providers as backups. The keys stay on the AmberX server, never on the phone.", async (h) => { await h.settings('Plugins'); await h.wait(1500); }),
   sc("And this walkthrough? It's a plugin in AmberX. Pick the AmberX tour or the whole stack, jump to any chapter, read the captions, download the video. And open Edit the voice to pick my voice, change my speed, and rewrite any line I say. Then re-voice it, and only the lines you changed get redone.", async (h) => { await h.go('Walkthrough'); await h.calm(); await h.hl('h1, h2', 'Walkthrough'); }),
   sc("A whole control room, from one app, on one phone, in one hand. Nobody's walking around with anything like this, kid. Nobody.", async (h) => { await h.go('home'); }),
+] });
+
+// 14 ────────────────────────────────────────────────────────────── the VPS
+ch({ id: 'vps', title: 'The V-P-S that runs it all', device: 'desktop', slide: 'vps', scenes: [
+  ex("Time to go down to the basement. Everything you've seen runs on one box: a Hostinger V-P-S. Not a fleet, not some cloud bill that looks like a phone number. One server, run smart.", 'vps'),
+  ex("On that box is Coolify. Coolify builds and runs the apps as containers. And in front of everything sits Traefik, Coolify's proxy, which owns ports eighty and four forty three and hands out the certificates. Every new web app goes behind it as a Coolify app. No hand rolled nginx, no snowflakes.", 'vps', 2),
+  ex("The domain is amberx A-I dot com. Every app gets its own subdomain: console, ax hub, amberx, the demo, and more. And DNS changes aren't a chore for the boss. Claude reads and changes the records itself through the Hostinger connector, touches nothing else, double checks the zone, and writes every change to a DNS log on the hub.", 'vps', 2),
+  ex("The Dev Console runs as a Docker image behind Coolify, the FastAPI server and the built web app together, with the M-C-P server inside it. Ax hub runs there with its data. AmberX's server runs there behind the hub's wall, so you sign in once at the hub and every app knows who you are.", 'vps', 4),
+  ex("Deploys are boring, which is exactly how you want them. Push to main, a GitHub workflow builds the demo and pushes it to a site branch, and the server pulls that branch every two minutes. Nobody logs in to deploy anything.", 'vps', 4),
+  ex("And there's a shared installer, axf deploy, that sets up the pieces the same way every time: Coolify apps, the hub's wall in front, auto update. With a dry run harness that shows before and after, so an install never surprises anybody.", 'vps', 4),
+  ex("Then the headless Claude sessions. When a build gets launched from the hub or the console, it runs on the box in its own terminal session, under the agent cap, with its own slot. The boss can launch, list, land and stop builds from his phone, through the hub, without ever opening a terminal.", 'vps', 6),
+  ex("Reading the box is free and quiet: status checks for builds, logs, git and the orchestrator, no countdown needed. Anything that changes the box, a real command, goes through the hub as a veto call, once, with a reason. That's the deal: look all you want, touch only with a reason.", 'vps', 6),
+  ex("And no secrets anywhere they shouldn't be. Not in the repo, not in logs, not in chat, not in the shared memory. Tokens live in environment variables or GitHub secrets. And GitHub access goes through a GitHub App with short lived tokens from a broker, not some personal token rotting in a file.", 'vps', 6),
+  ex("One box. Clean proxy, containers for everything, deploys on rails, Claude sessions under a cap, every risky move behind a veto. That's a production setup most small shops would kill for, and it costs about as much as a decent pizza a month.", 'vps', 6),
+] });
+
+// 15 ────────────────────────────────────────────────────────────── the MCP server
+ch({ id: 'mcp', title: 'The M-C-P server', device: 'desktop', slide: 'mcp', scenes: [
+  ex("Last piece of the machine, and it's the one that makes Claude a real coworker instead of a chatbot. The M-C-P server. M-C-P is the Model Context Protocol, the way Claude talks to tools. And the Dev Console speaks it.", 'mcp'),
+  ex("The repo registers it, so any Claude Code session that opens this project gets the axf tools, locally over standard I O, or remotely at the console's M-C-P endpoint, with a token from the environment. No secrets in the config. Just a reference to the variable.", 'mcp', 1),
+  ex("And the tools are the whole engine. The build queue: what's next, tick a step, reorder, move, sync. The pending list: list it, change it, see the steps. The plan: search features, add, update, set a status.", 'mcp', 3),
+  ex("Projects: list them, read their rules, validate a manifest. The tracker summary, the catalog, the libraries: make a new library, compile it, port it, install it. App init, the build options, validating an app. Even tailing the console's terminal.", 'mcp', 5),
+  ex("So when the boss says, from his phone, build the next thing on the queue, Claude doesn't guess. It calls build next, gets the exact step, the model, the files, builds it, calls build step to tick it, and the store, the console, the pending list and the tracker all update together.", 'mcp', 5),
+  ex("The same build switches that work on the command line work here, from one registry. The same manifests are required. The same rules apply. The M-C-P server isn't a back door. It's the front door, with the same locks.", 'mcp', 6),
+  ex("And remember the interop rule. Exposure is default deny, and a remote caller can never exceed the local role. So a tool you didn't expose doesn't exist to the outside, and a caller with a small role can't do a big thing just because it came in over the wire.", 'path', 2),
+  ex("Ax hub proxies the console's M-C-P endpoint as one of its services. So a Claude chat on claude dot ai, with nothing but the hub connector, can reach into the console's tools through the hub, under the hub's rules and the boss's veto.", 'path', 5),
+  ex("Think about what that means. Any Claude, on any surface, can plan, queue, build, validate and track work on this framework, with the same tools and the same guardrails. That's what Claude native actually means. Not a chat window bolted on the side. Claude in the loop, everywhere.", 'mcp', 6),
+] });
+
+// 16 ────────────────────────────────────────────────────────────── close
+ch({ id: 'close', title: 'Why it matters', device: 'desktop', slide: 'why', scenes: [
+  ex("Alright. Let's land this plane. You've seen the whole thing now. Let me tell you straight why it matters, and why I keep saying nobody else has it.", 'why'),
+  ex("One: speed. A new app starts validated, themed, settings ready and conformance checked. Plugins drop in and leave clean. Builds split themselves into steps. That's weeks of setup turned into minutes, every single time.", 'why', 1),
+  ex("Two: control. Every change is logged. Every visible change is reviewed. Every risky command waits for a veto. Broken stuff fixes itself or shows up loud with a fix button. You can let Claude run hard because you can see everything and stop anything.", 'why', 2),
+  ex("Three: reach. One look across every app. One design across web and Android, proven by fixtures. One hub that every session, every device and every Claude reads from. Build once, run everywhere, and actually mean it.", 'why', 3),
+  ex("And four, the one I can't get over. The boss built this mostly from his phone. Talking to it. On the couch, in the car, wherever. That's what a framework looks like when it's built for the way people actually work now.", 'stack', 6),
+  ex("That's A-X-F, the console, AmberX, ax hub, the V-P-S and the M-C-P server. The whole wicked pissah machine. Thanks for hangin out with me, kid. Now go build something. I'm Amber. Peace.", 'stack'),
 ] });
