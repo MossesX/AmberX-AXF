@@ -480,3 +480,34 @@ you save) with a real agent in the current theme. **Make default** picks the des
 opens the designer (fields per side, labels, logo place, finish) and saves a new design. On a profile, **ID card**
 picks a design for that agent and edits their card details (name, role, specialty, photo link, employee ID, internal
 email, hire date, catchphrase, signature). Cards take their colours from the theme, so a theme switch rebrands them.
+
+---
+
+## Part J: AXP backup
+
+The AXP streaming stack's code lives only on the VPS: `/opt/amberx/xchat` (xchat.amberxai.com: `axp-xchat`,
+`axp-xchat-media`), `/opt/axp-devstudio` (`axp-devstudio`) and `/opt/axp-demo` (demo.amberxai.com: `axp-demo`,
+`axp-demo-api`). A nightly job copies the code (never data, media, logs, build output or secrets) to private repos
+`MossesX/axp-xchat`, `MossesX/axp-devstudio` and `MossesX/axp-demo`. Scripts and units: `deploy/axp-backup/`.
+
+### Step 32. Install the backup
+
+1. Copy the scripts: `mkdir -p /root/axp-backup/bin && cp deploy/axp-backup/{backup.sh,finish.sh,excludes.txt} /root/axp-backup/bin/ && chmod +x /root/axp-backup/bin/*.sh`.
+   Each backup checkout gets `deploy/axp-backup/gitignore.template` as its `.gitignore`.
+2. Units: `cp deploy/axp-backup/systemd/* /etc/systemd/system/ && systemctl daemon-reload`.
+3. The three repos must exist on GitHub, **Private**, empty (no README). The gh token can't create repos, so make them
+   at github.com/new. Until they exist, `axp-backup-finish.timer` checks every 15 minutes, then pushes the first backup,
+   turns `axp-backup.timer` on and turns itself off (`systemctl enable --now axp-backup-finish.timer`).
+4. By hand: `/root/axp-backup/bin/backup.sh` (`--no-push` = copy, scan and commit only).
+
+### Step 33. What it does each night (03:30 UTC)
+
+- **Copy:** `rsync` from each live folder to `/root/axp-backup/<repo>` with `excludes.txt` (node_modules, .next, dist,
+  build output, `.env*`, keys and certs, `secrets*`, databases, dumps, backups, `uploads/ media/ recordings/ storage/
+  data/ seed-data/ .prod-accounts/ logs/`, `*.log`, `*.ndjson`, `*.bak*`, video and audio). The live folders are only
+  read, never git-initialised. Each checkout keeps its own `.env.example` with variable names only.
+- **Checks before a commit:** media over 1 MB outside `public/`, a gitleaks secret scan (`zricethezav/gitleaks` in
+  Docker, values redacted; known test values are listed in the checkout's `.gitleaksignore`) and a 200 MB size cap.
+- **Commit + push** only when something changed (author Claude).
+- **Failures** (copy, scan hit, size, push) become a red console banner item (`system:axp-backup-<repo>`); a later
+  clean run resolves it. Log: `/root/axp-backup/backup.log`, `journalctl -u axp-backup`.

@@ -1,0 +1,7 @@
+[Unit]
+Description=AXP backup: first push once the private repos exist
+
+[Service]
+Type=oneshot
+Environment=HOME=/root
+ExecStart=/root/axp-backup/bin/finish.sh
