@@ -84,8 +84,10 @@ export function run(typeId, opts = {}) {
   const log = `.axf-job-${runId}.log`.slice(0, 80);
   const p = spawnSync('bash', [launcher(), '--name', session, '--brief', briefFile, '--log', log, '--', ...args], { cwd: wt.path, encoding: 'utf8', env: { ...process.env, AXF_SURFACE: 'agent-job', AXF_MODEL: r.model, AXF_SESSION: session }, timeout: 60000 });
   if (p.status !== 0) throw new Error(`launch failed: ${(p.stderr || p.stdout || '').trim().slice(-400)}`);
+  // started now, or queued by the agent cap (agent-slots@1): a waiter starts it when a desk frees
   const started = /started (\S+)/.exec(p.stdout ?? ''); const tmux = started && !started[1].startsWith('pid') ? started[1] : '';
-  const rec = { ...jc.jobRunRecord(jt, agent, r.model, { runId, at, session, brief, cwd: wt.path, branch: wt.branch, log, inputs: values }), tmux, briefFile };
+  const queued = /queued at position (\d+) \(([^)]+)\)/.exec(p.stdout ?? '');
+  const rec = { ...jc.jobRunRecord(jt, agent, r.model, { runId, at, session, brief, cwd: wt.path, branch: wt.branch, log, inputs: values }), tmux, briefFile, queued: queued ? { position: Number(queued[1]), id: queued[2] } : null };
   const all = loadRuns(); all.push(rec); writeJson(runsFile(), { $axf: 'swarm-runs@1', runs: all.slice(-5000) });
   withState((s) => {
     core.post(s, [jc.assignJobLine(jt, agent, r.model, r.cap)], at);
@@ -105,7 +107,12 @@ export function event(name, opts = {}) {
   return opts.run ? v.map((t) => { try { return { id: t.id, ...run(t.id, { inputs: opts.inputs }) }; } catch (e) { return { id: t.id, ok: false, why: e.message }; } }) : v.map((t) => ({ id: t.id, name: t.name }));
 }
 
-const tmuxAlive = (s) => !!s && spawnSync('tmux', ['has-session', '-t', `=${s}`], { encoding: 'utf8' }).status === 0;
+/** A run's tmux session is up: the recorded name, or (started later by the agent cap's waiter) axf-<session>[-suffix]. */
+const tmuxAlive = (r) => {
+  const names = (spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout ?? '').split('\n').filter(Boolean);
+  return names.some((n) => n === r.tmux || n === `axf-${r.session}` || n.startsWith(`axf-${r.session}-`));
+};
+const QUEUE_PATIENCE_MS = 24 * 3600e3;
 /**
  * Finished runs: read each running job's raw stream (<log>.jsonl in its worktree), fill usage, turns, cost and the
  * agent's report, then book it on the agent (stats, spend, fail streak, bonus) and post the report in the chat.
@@ -117,7 +124,9 @@ export function sweep(opts = {}) {
     const raw = join(r.cwd || '', `${(r.log || '').replace(/\.log$/, '')}.jsonl`);
     const tr = core.newTracker();
     if (existsSync(raw)) for (const line of readFileSync(raw, 'utf8').split('\n')) if (line.trim()) core.trackLine(tr, line, r.budget);
-    const alive = opts.alive ? opts.alive(r) : tmuxAlive(r.tmux);
+    // queued by the agent cap and not started yet: still waiting for a desk (given up after a day)
+    const waiting = !!r.queued && !existsSync(raw) && Date.now() - Date.parse(r.startedAt) < QUEUE_PATIENCE_MS;
+    const alive = opts.alive ? opts.alive(r) : waiting || tmuxAlive(r);
     if (!tr.final && alive) continue;
     const o = core.runOutcome(tr, { exitCode: tr.final ? (tr.isError ? 1 : 0) : 1 });
     const rec = updateRun(r.jobId, { endedAt: new Date().toISOString(), status: tr.final ? o.status : 'error', reason: tr.final ? o.reason : 'the session ended without a result', report: o.report, usage: tr.usage, budgetTokens: core.budgetTokens(tr.usage), turns: tr.turns, reportedCost: tr.reportedCost });
