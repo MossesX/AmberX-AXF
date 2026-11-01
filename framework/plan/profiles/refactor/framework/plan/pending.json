@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "pending@1",
- "updatedAt": "2026-11-01T00:24:04.661Z",
+ "updatedAt": "2026-11-01T00:35:23.982Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3365,6 +3365,60 @@
    "builtAt": "",
    "updatedAt": "2026-10-28T01:11:04.754Z",
    "source": "chat"
+  },
+  {
+   "id": "watch-live",
+   "title": "Watch live: hot-rendered preview of the screen a session is changing",
+   "detail": "Brett: Watch live = HOT RENDER. A Watch live link on every approval row (details) and every running build in the Build manager / Build orchestrator pops up (floating window desktop, full-screen sheet phone) the exact screen the session is changing, changed element scrolled to + outlined, hot-rendering as files change. Every web app, every hot-swappable asset (no reload), Android screens through the web port with a next-APK note. claude-headless.sh starts previews + registry; console proxies /preview/<session>/<app>/ behind auth; axf focus + .axf-focus.json; greyed No live preview otherwise.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] framework/core/watch-live.ts helper (focus params, outline overlay, asset hot swap) + AxfRuntime.hotReplaceAsset",
+     "at": "2026-11-01T00:35:23.969Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T00:35:23.970Z"
+    },
+    {
+     "text": "[Opus] framework/cli/watch-live.mjs (targets, registry, watcher, axf focus) + watch-live-vite.mjs plugin + dev-server reuse",
+     "at": "2026-11-01T00:35:23.969Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T00:35:23.970Z"
+    },
+    {
+     "text": "[Opus] claude-headless.sh starts/stops previews; brief templates ask for axf focus",
+     "at": "2026-11-01T00:35:23.969Z",
+     "estimate": "15m",
+     "done": true,
+     "doneAt": "2026-11-01T00:35:23.970Z"
+    },
+    {
+     "text": "[Opus] Console server previews.py: /api/previews + /preview proxy (HTTP + HMR WebSocket) behind console auth, signed per-preview keys",
+     "at": "2026-11-01T00:35:23.969Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T00:35:23.970Z"
+    },
+    {
+     "text": "[Opus] WatchLiveLink/WatchLiveWindow (framework/react) + console watchLive.tsx; links in Build manager, Build orchestrator, approval details",
+     "at": "2026-11-01T00:35:23.969Z",
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-01T00:35:23.970Z"
+    },
+    {
+     "text": "[Opus] Tests: check-watch-live.mts, test_previews.py, end-to-end browser run; CI block green; report",
+     "at": "2026-11-01T00:35:23.969Z",
+     "estimate": "30m"
+    }
+   ],
+   "createdAt": "2026-11-01T00:35:23.969Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-01T00:35:23.970Z",
+   "source": "console"
   }
  ]
 }
