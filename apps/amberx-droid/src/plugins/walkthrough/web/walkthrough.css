@@ -44,3 +44,16 @@
   height: calc(var(--fx-space) * 40); border-radius: var(--fx-radius-lg);
   background: color-mix(in srgb, var(--fx-muted) calc(var(--fx-opacity-tint) * 100%), transparent);
 }
+
+/* the whole-stack walkthrough is landscape (16:9): video on top, full width, the chapters under it */
+.axp-walkthrough__player--wide { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .axp-walkthrough__player--wide { grid-template-columns: minmax(0, 1fr); } }
+.axp-walkthrough__video--wide { width: 100%; max-height: none; aspect-ratio: 16 / 9; }
+.axp-walkthrough__downloads { gap: var(--fx-dens-gap-md); }
+
+/* Edit the voice */
+.axp-walkthrough__voicebar { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-lg); }
+@media (min-width: 700px) { .axp-walkthrough__voicebar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; } }
+.axp-walkthrough__script { max-height: none; }
+.axp-walkthrough__lines { gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); }
+.axp-walkthrough__line { gap: var(--fx-dens-gap-xs); }

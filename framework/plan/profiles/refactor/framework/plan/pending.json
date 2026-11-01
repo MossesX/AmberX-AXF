@@ -3769,19 +3769,27 @@
     },
     {
      "text": "[Opus] Plugin: walkthrough picker (AmberX tour / The whole stack) + Download button",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:32.281Z"
     },
     {
      "text": "[Opus] Plugin: voice editor (voice, speed, per-scene narration), overrides saved on axHub",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:32.543Z"
     },
     {
      "text": "[Opus] Plugin: Re-voice / Re-record button through the console (veto call), molly-guide takes walkthrough + overrides",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:32.811Z"
     },
     {
      "text": "[Opus] Tests (test.mjs, server tests), typecheck, theme + controls checks",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:33.085Z"
     },
     {
      "text": "[Opus] Docs: README, plan doc, THREADS, PR ready",
@@ -3794,7 +3802,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T22:51:55.917Z",
+   "updatedAt": "2026-11-01T22:56:33.085Z",
    "source": "console"
   }
  ]

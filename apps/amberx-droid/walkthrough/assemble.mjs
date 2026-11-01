@@ -7,7 +7,7 @@ import { mkdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
 import { loadWalkthrough } from './load.mjs';
 
 const OUT = process.env.OUT || '/out';
-const { CHAPTERS, WALKTHROUGH, BASE, overrides } = await loadWalkthrough();
+const { CHAPTERS, WALKTHROUGH, BASE, BASE_META, overrides } = await loadWalkthrough();
 const PUB = `${OUT}/publish`;
 const TMP = `${OUT}/tmp`;
 mkdirSync(PUB, { recursive: true });
@@ -87,7 +87,7 @@ for (const h of WALKTHROUGH.downloads ?? []) {
 }
 // script.json: every scene's words as written and as voiced now, for AmberX's voice editor (walkthrough-voice@1 edits)
 writeFileSync(`${PUB}/script.json`, JSON.stringify({
-  $axf: 'walkthrough-script@1', id: WALKTHROUGH.id, voice: WALKTHROUGH.voice, speed: WALKTHROUGH.speed ?? 1, edits: overrides,
+  $axf: 'walkthrough-script@1', id: WALKTHROUGH.id, voice: BASE_META.voice, speed: BASE_META.speed ?? 1, edits: overrides,
   chapters: BASE.map((c) => ({ id: c.id, title: c.title, scenes: c.scenes.map((x, i) => ({ key: `${c.id}-${i}`, say: x.say })) })),
 }));
 writeFileSync(`${PUB}/walkthrough.vtt`, `WEBVTT\n\n${cues.join('\n\n')}\n`);

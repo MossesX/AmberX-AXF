@@ -1236,6 +1236,41 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/rt\.actions\.get\('walkthrough\.open'\)/.test(home) && /Watch the walkthrough/.test(home), 'walkthrough: Home shows the card when the plugin is there');
   const css = readFileSync(new URL('./src/plugins/walkthrough/web/walkthrough.css', import.meta.url), 'utf8');
   ok(!/#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b(?![^{]*@media)/i.test(css.replace(/@media[^{]*\{/g, '').replace(/999px/g, '')), 'walkthrough: stylesheet uses theme tokens only');
+
+  // more than one walkthrough, downloads, the voice editor (whole-stack walkthrough, Nov 1 2026)
+  const wide = wt.parseIndex({ ...raw, width: 1920, height: 1080, downloads: [{ file: 'walkthrough.mp4', label: '1080p', bytes: 1.4e9 }, { file: '../x.mp4' }, { file: 'walkthrough-720.mp4', label: '720p', bytes: 4.2e8 }] });
+  eq([wide.wide, wide.downloads.map((d) => d.file)], [true, ['walkthrough.mp4', 'walkthrough-720.mp4']], 'walkthrough: landscape + download copies, no paths');
+  eq(ix.downloads.map((d) => d.file), ['walkthrough.mp4'], 'walkthrough: an older index still offers the video for download');
+  eq([wt.sizeLabel(1.4e9), wt.sizeLabel(4.2e8), wt.sizeLabel(0)], ['1.4 GB', '420 MB', ''], 'walkthrough: download sizes');
+  eq(wt.parseList({ walkthroughs: [{ id: 'amberx-app', title: 'AmberX' }, { id: 'stack', title: 'The whole stack', duration: 5400 }, { id: 'Bad!' }, { id: 'stack' }] }).map((w) => [w.id, w.base]),
+    [['amberx-app', ''], ['stack', 'stack/']], 'walkthrough: the list, each with its folder');
+  const script = wt.parseScript({ id: 'stack', voice: 'en_US-kristin-medium', speed: 0.93, edits: { lines: { 'open-1': 'Edited before' } },
+    chapters: [{ id: 'open', title: 'Open', scenes: [{ key: 'open-0', say: 'Yo, it is Amber.' }, { key: 'open-1', say: 'Second line.' }, { key: 'bad key', say: 'x' }] }] });
+  eq([script.chapters[0].scenes.length, script.speed, script.edits.lines['open-1']], [2, 0.93, 'Edited before'], 'walkthrough voice: script.json read, bad scenes dropped');
+  eq(wt.editsOf(script, 'en_US-kristin-medium', 0.93, { 'open-0': 'Yo, it is Amber.', 'open-1': '  New\nline ', 'nope-0': 'x' }),
+    { voice: null, speed: null, lines: { 'open-1': 'New line' } }, 'walkthrough voice: only real changes are edits');
+  eq(wt.editsOf(script, 'en_US-amy-medium', 1.1, {}), { voice: 'en_US-amy-medium', speed: 1.1, lines: {} }, 'walkthrough voice: voice and speed when changed');
+  eq(wt.normalizeEdits({ voice: 'robot', speed: 9, lines: { 'open-0': 'x'.repeat(900) } }).lines['open-0'].length, 400, 'walkthrough voice: unknown voice / speed dropped, lines capped');
+  eq(wt.editCount({ voice: 'en_US-amy-medium', speed: null, lines: { a: 'x', b: 'y' } }), 3, 'walkthrough voice: change count');
+  const ld = await import('./walkthrough/load.mjs');
+  eq([ld.voicePath('en_US-kristin-medium'), ld.voicePath('en_GB-jenny_dioco-medium')], ['en/en_US/kristin/medium', 'en/en_GB/jenny_dioco/medium'], 'walkthrough voice: Piper download path from the name');
+  eq(ld.VOICES, wt.VOICES.map((v) => v.id), 'walkthrough voice: the recorder and the editor offer the same voices');
+  const stack = await ld.loadWalkthrough('stack', '/nonexistent');
+  eq(stack.walkthroughErrors(stack.WALKTHROUGH, stack.CHAPTERS), [], 'whole-stack walkthrough: the script validates');
+  const words = stack.CHAPTERS.reduce((n, c) => n + c.scenes.reduce((m, x) => m + x.say.split(/\s+/).length, 0), 0);
+  ok(words / 150 / stack.WALKTHROUGH.speed >= 80, `whole-stack walkthrough: about 90 minutes of narration (${words} words)`);
+  for (const want of ['assets', 'engines', 'ports', 'cli', 'console', 'plugins', 'builds', 'guardrails', 'agents', 'axhub', 'veto', 'amberx', 'vps', 'mcp'])
+    ok(stack.CHAPTERS.some((c) => c.id === want), `whole-stack walkthrough: chapter ${want}`);
+  eq(stack.CHAPTERS.at(-1).id, 'close', 'whole-stack walkthrough: the closing chapter is last');
+  ok(stack.walkthroughErrors(stack.WALKTHROUGH, [{ id: 'x', title: 'X', scenes: [{ say: 'a slur like retard is never ok here', act: () => {} }] }]).length > 0, 'whole-stack walkthrough: swearing ok, slurs refused');
+  const edited = await ld.loadWalkthrough('stack', '/nonexistent');
+  process.env.VOICE_OVERRIDES_B64 = Buffer.from(JSON.stringify({ voice: 'en_US-amy-medium', speed: 1.1, lines: { 'open-0': 'Edited first line.', 'zzz-9': 'gone' } })).toString('base64');
+  const withEdits = await ld.loadWalkthrough('stack', '/nonexistent');
+  delete process.env.VOICE_OVERRIDES_B64;
+  eq([withEdits.WALKTHROUGH.voice, withEdits.WALKTHROUGH.speed, withEdits.CHAPTERS[0].scenes[0].say, withEdits.BASE[0].scenes[0].say === edited.CHAPTERS[0].scenes[0].say],
+    ['en_US-amy-medium', 1.1, 'Edited first line.', true], 'walkthrough voice: the recorder applies the edits, keeps the script as written');
+  const vt = readFileSync(new URL('./src/plugins/walkthrough/web/voice.tsx', import.meta.url), 'utf8');
+  ok(/folder: 'walkthrough'/.test(vt) && /\/render`/.test(vt) && /voiceOnly: kind === 'voice'/.test(vt), 'walkthrough voice: edits saved on axHub, re-voice through the server');
 }
 
 /* ---------------------------------------------------------------- one listener per event (Nov 1 2026: "Note saved" on a loop, Chrome dinging) */

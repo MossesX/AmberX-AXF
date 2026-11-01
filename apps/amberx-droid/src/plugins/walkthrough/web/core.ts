@@ -9,10 +9,15 @@ export const WALKTHROUGH_BASE = '/api/walkthrough/';
 export const SPEEDS = [0.75, 1, 1.25, 1.5, 2] as const;
 
 export interface Segment { start: number; title: string }
+/** A file the Download button offers: the full video and its smaller copies (walkthrough-720.mp4). */
+export interface Download { file: string; label: string; bytes: number }
 export interface Chapter { id: string; title: string; start: number; duration: number; segments: Segment[] }
 export interface WalkthroughIndex {
   id: string; title: string; recordedAt: string; duration: number;
   video: string; captions: string; poster: string; chapters: Chapter[];
+  /** Landscape recording (the whole-stack one, 1920×1080) rather than a phone screen. */
+  wide: boolean;
+  downloads: Download[];
 }
 
 const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : null);
@@ -47,9 +52,19 @@ export function parseIndex(raw: unknown): WalkthroughIndex | null {
   const last = chapters[chapters.length - 1]!;
   const duration = Math.max(num(o.duration) ?? 0, last.start + last.duration);
   chapters.forEach((c, i) => { if (!c.duration) c.duration = Math.max(0, (chapters[i + 1]?.start ?? duration) - c.start); });
+  const video = file(o.video, 'walkthrough.mp4');
+  const downloads: Download[] = [];
+  for (const d of Array.isArray(o.downloads) ? o.downloads : []) {
+    if (!d || typeof d !== 'object') continue;
+    const r = d as Record<string, unknown>;
+    const f = file(r.file, '');
+    if (f && f.endsWith('.mp4') && !downloads.some((x) => x.file === f)) downloads.push({ file: f, label: text(r.label, 12) || f, bytes: num(r.bytes) ?? 0 });
+  }
+  if (!downloads.length) downloads.push({ file: video, label: 'Video', bytes: 0 });
   return {
+    wide: (num(o.width) ?? 0) > (num(o.height) ?? 0), downloads,
     id: text(o.id, 40) || 'walkthrough', title: text(o.title, 80) || 'Walkthrough', recordedAt: text(o.recordedAt, 40), duration,
-    video: file(o.video, 'walkthrough.mp4'), captions: file(o.captions, 'walkthrough.vtt'), poster: file(o.poster, 'poster.jpg'), chapters,
+    video, captions: file(o.captions, 'walkthrough.vtt'), poster: file(o.poster, 'poster.jpg'), chapters,
   };
 }
 
@@ -82,3 +97,95 @@ export function clock(t: number): string {
 
 /** A playback speed from settings, snapped to the offered ones. */
 export const speedOf = (v: unknown): number => (SPEEDS as readonly number[]).includes(Number(v)) ? Number(v) : 1;
+
+/** "1.2 GB", "380 MB" (0 → ""). */
+export function sizeLabel(bytes: number): string {
+  if (!bytes) return '';
+  return bytes >= 1e9 ? `${(bytes / 1e9).toFixed(1)} GB` : `${Math.max(1, Math.round(bytes / 1e6))} MB`;
+}
+
+/* ---------------------------------------------------------------- every recorded walkthrough */
+
+export const DEFAULT_WALKTHROUGH = 'amberx-app';
+/** One row of /api/walkthrough/walkthroughs.json; `base` is its folder under WALKTHROUGH_BASE ("" for the AmberX tour). */
+export interface WalkthroughEntry { id: string; title: string; duration: number; recordedAt: string; base: string }
+
+export function parseList(raw: unknown): WalkthroughEntry[] {
+  const rows = raw && typeof raw === 'object' && Array.isArray((raw as { walkthroughs?: unknown }).walkthroughs) ? (raw as { walkthroughs: unknown[] }).walkthroughs : [];
+  const out: WalkthroughEntry[] = [];
+  for (const r of rows) {
+    if (!r || typeof r !== 'object') continue;
+    const o = r as Record<string, unknown>;
+    const id = text(o.id, 40);
+    if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(id) || out.some((x) => x.id === id)) continue;
+    out.push({ id, title: text(o.title, 80) || id, duration: num(o.duration) ?? 0, recordedAt: text(o.recordedAt, 40), base: id === DEFAULT_WALKTHROUGH ? '' : `${id}/` });
+  }
+  return out;
+}
+
+/* ---------------------------------------------------------------- the voice editor (walkthrough-voice@1) */
+
+export const VOICE_FORMAT = 'walkthrough-voice@1';
+/** The Piper voices the recorder can use (walkthrough/load.mjs VOICES; the AmberX server checks the same list). */
+export const VOICES: readonly { id: string; label: string }[] = [
+  { id: 'en_US-kristin-medium', label: 'Kristin (US, Amber\'s own)' }, { id: 'en_US-amy-medium', label: 'Amy (US)' },
+  { id: 'en_US-lessac-medium', label: 'Lessac (US)' }, { id: 'en_US-hfc_female-medium', label: 'HFC female (US)' },
+  { id: 'en_US-ljspeech-medium', label: 'LJ Speech (US)' }, { id: 'en_US-ryan-medium', label: 'Ryan (US)' },
+  { id: 'en_US-joe-medium', label: 'Joe (US)' }, { id: 'en_US-hfc_male-medium', label: 'HFC male (US)' },
+  { id: 'en_GB-alba-medium', label: 'Alba (Scottish)' }, { id: 'en_GB-jenny_dioco-medium', label: 'Jenny (British)' },
+];
+export const SPEED_RANGE = { min: 0.75, max: 1.3, step: 0.05 } as const;
+export const MAX_LINE = 400;
+
+export interface ScriptScene { key: string; say: string }
+export interface ScriptChapter { id: string; title: string; scenes: ScriptScene[] }
+/** script.json: every scene's words as written, the voice and speed in use, and the edits it was voiced with. */
+export interface ScriptDoc { id: string; voice: string; speed: number; chapters: ScriptChapter[]; edits: Edits }
+/** What the editor saves (on axHub) and sends with a re-voice: only what differs from the script. */
+export interface Edits { voice: string | null; speed: number | null; lines: Record<string, string> }
+
+const KEY = /^[a-z0-9][a-z0-9-]{0,40}-\d{1,3}$/;
+const line = (v: unknown) => (typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, MAX_LINE) : '');
+
+/** Edits made safe: a known voice, a speed in range, plain-text lines with scene keys. */
+export function normalizeEdits(raw: unknown): Edits {
+  const o = raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, unknown>) : {};
+  const lines: Record<string, string> = {};
+  const src = o.lines && typeof o.lines === 'object' && !Array.isArray(o.lines) ? (o.lines as Record<string, unknown>) : {};
+  for (const [k, v] of Object.entries(src).slice(0, 600)) { const t = line(v); if (KEY.test(k) && t) lines[k] = t; }
+  const sp = Number(o.speed);
+  return {
+    voice: typeof o.voice === 'string' && VOICES.some((x) => x.id === o.voice) ? o.voice : null,
+    speed: o.speed !== null && o.speed !== undefined && Number.isFinite(sp) && sp >= SPEED_RANGE.min && sp <= SPEED_RANGE.max ? Math.round(sp * 100) / 100 : null,
+    lines,
+  };
+}
+
+export function parseScript(raw: unknown): ScriptDoc | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const o = raw as Record<string, unknown>;
+  const chapters: ScriptChapter[] = [];
+  for (const c of Array.isArray(o.chapters) ? o.chapters : []) {
+    if (!c || typeof c !== 'object') continue;
+    const r = c as Record<string, unknown>;
+    const scenes = (Array.isArray(r.scenes) ? r.scenes : [])
+      .map((x) => (x && typeof x === 'object' ? { key: text((x as ScriptScene).key, 50), say: line((x as ScriptScene).say) } : null))
+      .filter((x): x is ScriptScene => !!x && KEY.test(x.key) && !!x.say);
+    const id = text(r.id, 41);
+    if (id && scenes.length) chapters.push({ id, title: text(r.title, 80) || id, scenes });
+  }
+  if (!chapters.length) return null;
+  const sp = num(o.speed);
+  return { id: text(o.id, 40), voice: text(o.voice, 60), speed: sp && sp > 0 ? sp : 1, chapters, edits: normalizeEdits(o.edits) };
+}
+
+/** The edits a draft amounts to: lines that differ from the script, and voice / speed only when they differ. */
+export function editsOf(script: ScriptDoc, voice: string, speed: number, drafts: Record<string, string>): Edits {
+  const base = new Map(script.chapters.flatMap((c) => c.scenes.map((x) => [x.key, x.say] as const)));
+  const lines: Record<string, string> = {};
+  for (const [k, v] of Object.entries(drafts)) { const t = line(v); if (base.has(k) && t && t !== base.get(k)) lines[k] = t; }
+  return normalizeEdits({ voice: voice !== script.voice ? voice : null, speed: Math.abs(speed - script.speed) > 0.001 ? speed : null, lines });
+}
+
+/** How many changes an edit set holds (lines + voice + speed), for the button labels. */
+export const editCount = (e: Edits) => Object.keys(e.lines).length + (e.voice ? 1 : 0) + (e.speed !== null ? 1 : 0);
