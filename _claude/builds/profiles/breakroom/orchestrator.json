@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T07:20:52.732Z",
+ "updatedAt": "2026-11-01T07:21:35.944Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -565,16 +565,21 @@
    "title": "Configurable max-agents cap + queue",
    "category": "",
    "detail": "Brett, Nov 1 2026: a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
-   "pendingId": "agent-cap",
-   "branch": "",
+   "pendingId": "",
+   "branch": "claude/agent-cap",
    "pr": "",
    "createdAt": "2026-11-01T06:34:28.472Z",
-   "updatedAt": "2026-11-01T06:49:17.449Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-01T07:21:35.917Z",
+   "builtAt": "2026-11-01T07:21:35.917Z",
+   "notes": [
+    {
+     "text": "Built Nov 1 2026 on Opus (headless), branch claude/agent-cap, pushed to main a824f5f4. Report _claude/builds/reports/agent-cap.md; screenshots UI Review -> Screenshots, group Agent cap - Nov 1.",
+     "at": "2026-11-01T07:21:34.524Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -593,7 +598,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:06.666Z",
      "note": "",
-     "uid": "st-mvxgu4n001sbzo"
+     "uid": "st-mvxgg1eb06o57k"
     },
     {
      "id": "s2",
@@ -611,7 +616,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:07.129Z",
      "note": "",
-     "uid": "st-mvxgu4n002lnct"
+     "uid": "st-mvxgg1eb07k5ks"
     },
     {
      "id": "s3",
@@ -629,7 +634,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:49:16.956Z",
      "note": "",
-     "uid": "st-mvxgu4n003ejuq"
+     "uid": "st-mvxgg1eb08p2cy"
     },
     {
      "id": "s4",
@@ -647,7 +652,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:49:17.449Z",
      "note": "",
-     "uid": "st-mvxgu4n00469wq"
+     "uid": "st-mvxgg1eb09dz7w"
     },
     {
      "id": "s5",
@@ -662,10 +667,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:21:33.817Z",
      "note": "",
-     "uid": "st-mvxgu4n005rk50"
+     "uid": "st-mvxgg1eb0amj99"
     }
    ]
   },
@@ -677,8 +682,8 @@
    "status": "complete",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
-   "branch": "claude/agent-jobs",
+   "pendingId": "agent-jobs",
+   "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T06:45:35.923Z",
    "updatedAt": "2026-11-01T07:20:52.680Z",
@@ -707,7 +712,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:23.510Z",
      "note": "",
-     "uid": "st-mvxgucex06nhjt"
+     "uid": "st-mvxgvlsd01fcyc"
     },
     {
      "id": "s2",
@@ -725,7 +730,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:23.852Z",
      "note": "",
-     "uid": "st-mvxgucex074nsi"
+     "uid": "st-mvxgvlsd0293k0"
     },
     {
      "id": "s3",
@@ -743,7 +748,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:24.309Z",
      "note": "",
-     "uid": "st-mvxgucex081nj9"
+     "uid": "st-mvxgvlsd03awaj"
     },
     {
      "id": "s4",
@@ -761,7 +766,7 @@
      "done": true,
      "doneAt": "2026-11-01T06:57:24.780Z",
      "note": "",
-     "uid": "st-mvxgucex095s1f"
+     "uid": "st-mvxgvlsd04j995"
     },
     {
      "id": "s5",
@@ -779,7 +784,7 @@
      "done": true,
      "doneAt": "2026-11-01T07:20:50.958Z",
      "note": "",
-     "uid": "st-mvxgucex0ay55n"
+     "uid": "st-mvxgvlsd055pzx"
     }
    ]
   }

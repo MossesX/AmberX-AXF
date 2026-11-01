@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 48,
- "updatedAt": "2026-11-01T07:20:52.732Z",
+ "rev": 49,
+ "updatedAt": "2026-11-01T07:21:35.944Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -46026,21 +46026,26 @@
    "title": "Configurable max-agents cap + queue",
    "category": "",
    "detail": "Brett, Nov 1 2026: a configurable cap on headless Claude sessions/builds running at once (default 6), a heavy test/build lock (default 3), a memory guard (default 2 GB); extras wait in a FIFO+priority queue and start when a slot frees; finished sessions don't count and close by themselves. Console: slots in the activity banner summary, queue on the Builds page (move up / cancel), settings in Settings and the Breakroom; swarm respects the cap; systems-check memory/swap item.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
-   "pendingId": "agent-cap",
-   "branch": "",
+   "pendingId": "",
+   "branch": "claude/agent-cap",
    "pr": "",
    "createdAt": "2026-11-01T06:34:28.472Z",
-   "updatedAt": "2026-11-01T06:49:17.449Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-01T07:21:35.917Z",
+   "builtAt": "2026-11-01T07:21:35.917Z",
+   "notes": [
+    {
+     "text": "Built Nov 1 2026 on Opus (headless), branch claude/agent-cap, pushed to main a824f5f4. Report _claude/builds/reports/agent-cap.md; screenshots UI Review -> Screenshots, group Agent cap - Nov 1.",
+     "at": "2026-11-01T07:21:34.524Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxgu4n001sbzo",
+     "uid": "st-mvxgg1eb06o57k",
      "title": "",
      "text": "agent-slots@1 engine + CLI (framework/cli/agent-slots.mjs): settings, registry, queue, claim/release, heavy lock, memory guard, sweep",
      "model": "Opus",
@@ -46056,13 +46061,13 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:06.666Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T06:45:25.839Z"
+     "updatedAt": "2026-11-01T06:41:06.696Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxgu4n002lnct",
+     "uid": "st-mvxgg1eb07k5ks",
      "title": "",
      "text": "deploy/claude-headless.sh + swarm runner go through the slots; finished sessions auto-close",
      "model": "Opus",
@@ -46078,13 +46083,13 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:07.129Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T06:45:25.839Z"
+     "updatedAt": "2026-11-01T06:41:07.159Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxgu4n003ejuq",
+     "uid": "st-mvxgg1eb08p2cy",
      "title": "",
      "text": "agent-slots console plugin: API, settings panel (Settings + Breakroom), Builds-page queue, banner summary slot, swarm desks",
      "model": "Opus",
@@ -46102,11 +46107,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T06:57:23.242Z"
+     "updatedAt": "2026-11-01T06:49:16.991Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxgu4n00469wq",
+     "uid": "st-mvxgg1eb09dz7w",
      "title": "",
      "text": "systems-check memory guard / swap item",
      "model": "Opus",
@@ -46124,11 +46129,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T06:57:23.242Z"
+     "updatedAt": "2026-11-01T06:49:17.476Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxgu4n005rk50",
+     "uid": "st-mvxgg1eb0amj99",
      "title": "",
      "text": "tests, full check block, screenshots, report, push",
      "model": "Opus",
@@ -46141,12 +46146,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T07:21:33.817Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T06:45:25.839Z"
+     "updatedAt": "2026-11-01T07:21:33.871Z"
     }
    ],
    "profiles": [
@@ -46157,28 +46162,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-01T06:34:28.472Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mvxgu4n001sbzo": "2026-11-01T06:34:28.473Z",
-     "st-mvxgu4n002lnct": "2026-11-01T06:34:28.473Z",
-     "st-mvxgu4n003ejuq": "2026-11-01T06:34:28.473Z",
-     "st-mvxgu4n00469wq": "2026-11-01T06:34:28.473Z",
-     "st-mvxgu4n005rk50": "2026-11-01T06:34:28.473Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-01T06:45:25.839Z",
+   "defaultAt": "2026-11-01T06:34:28.473Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -46192,8 +46181,8 @@
    "status": "complete",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
-   "branch": "claude/agent-jobs",
+   "pendingId": "agent-jobs",
+   "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T06:45:35.923Z",
    "updatedAt": "2026-11-01T07:20:52.680Z",
@@ -46208,7 +46197,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxgucex06nhjt",
+     "uid": "st-mvxgvlsd01fcyc",
      "title": "",
      "text": "job-type@1 asset type: rules, both validators, schema, starters, check",
      "model": "Opus",
@@ -46226,11 +46215,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T06:57:23.537Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxgucex074nsi",
+     "uid": "st-mvxgvlsd0293k0",
      "title": "",
      "text": "Hire the crew: six agents, skills, notes",
      "model": "Opus",
@@ -46248,11 +46237,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T06:57:23.883Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxgucex081nj9",
+     "uid": "st-mvxgvlsd03awaj",
      "title": "",
      "text": "Router: agent-job.mjs (owner, duty, budget, brief, headless launch, run recorded), unassigned + hire",
      "model": "Opus",
@@ -46270,11 +46259,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T06:57:24.342Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxgucex095s1f",
+     "uid": "st-mvxgvlsd04j995",
      "title": "",
      "text": "Breakroom Jobs view + card jobs + console button + server routes",
      "model": "Opus",
@@ -46292,11 +46281,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T06:57:24.812Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxgucex0ay55n",
+     "uid": "st-mvxgvlsd055pzx",
      "title": "",
      "text": "Tests, RULES section, install_steps Part J, screenshots, report",
      "model": "Opus",
@@ -46314,7 +46303,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T07:20:51.024Z"
+     "updatedAt": "2026-11-01T07:21:10.015Z"
     }
    ],
    "profiles": [
@@ -46325,12 +46314,28 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-01T06:45:35.923Z",
+    "builtAt": "2026-11-01T07:20:52.680Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mvxgvlsd01fcyc": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd0293k0": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd03awaj": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd04j995": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd055pzx": "2026-11-01T06:45:35.924Z"
+    }
+   },
    "queue": null,
-   "defaultAt": "2026-11-01T06:45:35.924Z",
+   "defaultAt": "2026-11-01T06:46:34.730Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -46355,7 +46360,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxh9i0i017q3e",
+     "uid": "st-mvxgz2hi015wpg",
      "title": "",
      "text": "Recon: how the demo walkthrough + tour recorder were made; write it down",
      "model": "Opus",
@@ -46373,11 +46378,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxh9i0i021lp1",
+     "uid": "st-mvxgz2hi02i512",
      "title": "",
      "text": "Walkthrough script (chapters, Amber narration, highlights) + walkthrough-video@1 validator",
      "model": "Opus",
@@ -46395,11 +46400,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxh9i0i030ii6",
+     "uid": "st-mvxgz2hi03cx64",
      "title": "",
      "text": "Recorder: seeded demo data via request routing, highlights, masking, TTS, assemble",
      "model": "Opus",
@@ -46417,11 +46422,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxh9i0i04olcy",
+     "uid": "st-mvxgz2hi04zss1",
      "title": "",
      "text": "Record the live app at 412x915, publish behind the wall",
      "model": "Opus",
@@ -46439,11 +46444,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxh9i0i05vih4",
+     "uid": "st-mvxgz2hi05nnds",
      "title": "",
      "text": "Player in AmberX: Home entry, app menu, Help",
      "model": "Opus",
@@ -46461,11 +46466,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     },
     {
      "id": "s6",
-     "uid": "st-mvxh9i0i069usu",
+     "uid": "st-mvxgz2hi06n9o0",
      "title": "",
      "text": "Rebuild command + console button; tests (entry, player, script, secrets scan)",
      "model": "Opus",
@@ -46483,11 +46488,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     },
     {
      "id": "s7",
-     "uid": "st-mvxh9i0i073iir",
+     "uid": "st-mvxgz2hi07r0cp",
      "title": "",
      "text": "Checks, screenshots, report, merge main, push",
      "model": "Opus",
@@ -46505,7 +46510,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     }
    ],
    "profiles": [
@@ -46529,17 +46534,17 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mvxh9i0i017q3e": "2026-11-01T06:47:21.597Z",
-     "st-mvxh9i0i021lp1": "2026-11-01T06:47:21.597Z",
-     "st-mvxh9i0i030ii6": "2026-11-01T06:47:21.597Z",
-     "st-mvxh9i0i04olcy": "2026-11-01T06:47:21.597Z",
-     "st-mvxh9i0i05vih4": "2026-11-01T06:47:21.597Z",
-     "st-mvxh9i0i069usu": "2026-11-01T06:47:21.597Z",
-     "st-mvxh9i0i073iir": "2026-11-01T06:47:21.597Z"
+     "st-mvxgz2hi015wpg": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi02i512": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi03cx64": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi04zss1": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi05nnds": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi06n9o0": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi07r0cp": "2026-11-01T06:47:21.597Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-01T06:57:23.017Z",
+   "defaultAt": "2026-11-01T06:49:16.318Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -46564,7 +46569,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxh9i0i08y2g0",
+     "uid": "st-mvxi42qo01gcfe",
      "title": "",
      "text": "session@1 schema, JS validator, redaction, chain hash, fixtures + check",
      "model": "Opus",
@@ -46582,11 +46587,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxh9i0i09lna7",
+     "uid": "st-mvxi42qo02qg6m",
      "title": "",
      "text": "SQLite+FTS5 store with upsert, versions, seen badges",
      "model": "Opus",
@@ -46604,11 +46609,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxh9i0i0a9is5",
+     "uid": "st-mvxi42qo0363sx",
      "title": "",
      "text": "Ingesters: claude.ai export zip, Claude Code JSONL incremental, build logs, hub drop",
      "model": "Opus",
@@ -46626,11 +46631,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxh9i0i0buv1r",
+     "uid": "st-mvxi42qo04ngtp",
      "title": "",
      "text": "Server routes + sync timer + check for updates",
      "model": "Opus",
@@ -46648,11 +46653,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxh9i0i0cadv9",
+     "uid": "st-mvxi42qo05j01u",
      "title": "",
      "text": "Audio: Piper setup, two-voice mixer, mp3 + chapters, cloud providers, background jobs",
      "model": "Opus",
@@ -46670,11 +46675,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s6",
-     "uid": "st-mvxh9i0i0d90nn",
+     "uid": "st-mvxi42qo06m5ro",
      "title": "",
      "text": "Web viewer: DataGrid list, search, bubbles, export, audio player, settings",
      "model": "Opus",
@@ -46692,11 +46697,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s7",
-     "uid": "st-mvxh9i0i0ev8fo",
+     "uid": "st-mvxi42qo07cehx",
      "title": "",
      "text": "Tests, lifecycle, deploy mounts, AmberX entry, RULES line, install steps",
      "model": "Opus",
@@ -46714,11 +46719,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s8",
-     "uid": "st-mvxh9i0i0ft71x",
+     "uid": "st-mvxi42qo088yyg",
      "title": "",
      "text": "Checks, screenshots to UI Review, report, merge main, push",
      "model": "Opus",
@@ -46736,7 +46741,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T06:57:23.017Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     }
    ],
    "profiles": [
@@ -46760,18 +46765,18 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mvxh9i0i08y2g0": "2026-11-01T06:50:37.080Z",
-     "st-mvxh9i0i09lna7": "2026-11-01T06:50:37.080Z",
-     "st-mvxh9i0i0a9is5": "2026-11-01T06:50:37.080Z",
-     "st-mvxh9i0i0buv1r": "2026-11-01T06:50:37.080Z",
-     "st-mvxh9i0i0cadv9": "2026-11-01T06:50:37.080Z",
-     "st-mvxh9i0i0d90nn": "2026-11-01T06:50:37.080Z",
-     "st-mvxh9i0i0ev8fo": "2026-11-01T06:50:37.080Z",
-     "st-mvxh9i0i0ft71x": "2026-11-01T06:50:37.080Z"
+     "st-mvxi42qo01gcfe": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo02qg6m": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo0363sx": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo04ngtp": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo05j01u": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo06m5ro": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo07cehx": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo088yyg": "2026-11-01T06:50:37.080Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-01T06:57:23.017Z",
+   "defaultAt": "2026-11-01T07:21:09.522Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -46796,7 +46801,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxi3noc01ntx2",
+     "uid": "st-mvxi42qp094n9t",
      "title": "",
      "text": "Token broker (framework/cli/github-app.mjs + github-token.mjs): manifest, conversion, JWT, installation + user tokens, cache, lock",
      "model": "Opus",
@@ -46814,11 +46819,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:20:50.028Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxi3nod02qe49",
+     "uid": "st-mvxi42qp0a6j49",
      "title": "",
      "text": "git credential helper + gh wrapper + repo create",
      "model": "Opus",
@@ -46836,11 +46841,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:20:50.028Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxi3nod03tmqq",
+     "uid": "st-mvxi42qp0bnbf1",
      "title": "",
      "text": "Console plugin github-app: routes, keeper, health checks, settings UI",
      "model": "Opus",
@@ -46858,11 +46863,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:20:50.028Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxi3nod04joxv",
+     "uid": "st-mvxi42qp0c0sjt",
      "title": "",
      "text": "Point callers at the broker (key check on old token, push-banner probe)",
      "model": "Opus",
@@ -46880,11 +46885,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:20:50.028Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxi3nod05z4en",
+     "uid": "st-mvxi42qp0d9vqz",
      "title": "",
      "text": "Tests, screenshots, install_steps, report, push",
      "model": "Opus",
@@ -46902,7 +46907,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:20:50.028Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     }
    ],
    "profiles": [
@@ -46926,15 +46931,15 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mvxi3noc01ntx2": "2026-11-01T07:17:49.321Z",
-     "st-mvxi3nod02qe49": "2026-11-01T07:17:49.321Z",
-     "st-mvxi3nod03tmqq": "2026-11-01T07:17:49.321Z",
-     "st-mvxi3nod04joxv": "2026-11-01T07:17:49.321Z",
-     "st-mvxi3nod05z4en": "2026-11-01T07:17:49.321Z"
+     "st-mvxi42qp094n9t": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0a6j49": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0bnbf1": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0c0sjt": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0d9vqz": "2026-11-01T07:17:49.321Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-01T07:20:50.028Z",
+   "defaultAt": "2026-11-01T07:21:09.522Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

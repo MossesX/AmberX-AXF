@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T07:20:52.732Z",
+ "updatedAt": "2026-11-01T07:21:35.944Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -8068,7 +8068,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i017q3e"
+     "uid": "st-mvxgz2hi015wpg"
     },
     {
      "id": "s2",
@@ -8086,7 +8086,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i021lp1"
+     "uid": "st-mvxgz2hi02i512"
     },
     {
      "id": "s3",
@@ -8104,7 +8104,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i030ii6"
+     "uid": "st-mvxgz2hi03cx64"
     },
     {
      "id": "s4",
@@ -8122,7 +8122,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i04olcy"
+     "uid": "st-mvxgz2hi04zss1"
     },
     {
      "id": "s5",
@@ -8140,7 +8140,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i05vih4"
+     "uid": "st-mvxgz2hi05nnds"
     },
     {
      "id": "s6",
@@ -8158,7 +8158,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i069usu"
+     "uid": "st-mvxgz2hi06n9o0"
     },
     {
      "id": "s7",
@@ -8176,7 +8176,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i073iir"
+     "uid": "st-mvxgz2hi07r0cp"
     }
    ]
   },
@@ -8213,7 +8213,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i08y2g0"
+     "uid": "st-mvxi42qo01gcfe"
     },
     {
      "id": "s2",
@@ -8231,7 +8231,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i09lna7"
+     "uid": "st-mvxi42qo02qg6m"
     },
     {
      "id": "s3",
@@ -8249,7 +8249,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i0a9is5"
+     "uid": "st-mvxi42qo0363sx"
     },
     {
      "id": "s4",
@@ -8267,7 +8267,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i0buv1r"
+     "uid": "st-mvxi42qo04ngtp"
     },
     {
      "id": "s5",
@@ -8285,7 +8285,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i0cadv9"
+     "uid": "st-mvxi42qo05j01u"
     },
     {
      "id": "s6",
@@ -8303,7 +8303,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i0d90nn"
+     "uid": "st-mvxi42qo06m5ro"
     },
     {
      "id": "s7",
@@ -8321,7 +8321,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i0ev8fo"
+     "uid": "st-mvxi42qo07cehx"
     },
     {
      "id": "s8",
@@ -8339,7 +8339,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxh9i0i0ft71x"
+     "uid": "st-mvxi42qo088yyg"
     }
    ]
   },
@@ -8376,7 +8376,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi3noc01ntx2"
+     "uid": "st-mvxi42qp094n9t"
     },
     {
      "id": "s2",
@@ -8394,7 +8394,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi3nod02qe49"
+     "uid": "st-mvxi42qp0a6j49"
     },
     {
      "id": "s3",
@@ -8412,7 +8412,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi3nod03tmqq"
+     "uid": "st-mvxi42qp0bnbf1"
     },
     {
      "id": "s4",
@@ -8430,7 +8430,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi3nod04joxv"
+     "uid": "st-mvxi42qp0c0sjt"
     },
     {
      "id": "s5",
@@ -8448,7 +8448,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi3nod05z4en"
+     "uid": "st-mvxi42qp0d9vqz"
     }
    ]
   }

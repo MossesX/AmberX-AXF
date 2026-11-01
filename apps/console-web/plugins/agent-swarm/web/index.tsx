@@ -1,9 +1,15 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import { Slot, useSlotFilled } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, SwarmCostChip, SwarmPage } from './ui';
 import { COLOR_BY_VIBE_ACTION, KEYS } from './chat-settings';
 import { VIBE_COLORS } from './swarm-core.mjs';
 import { appMenu } from './menu';
+
+function Desks() {
+  const filled = useSlotFilled('swarm.settings.desks');
+  return filled ? <Slot name="swarm.settings.desks" /> : <p className="fx-small fx-muted" style={{ margin: 0 }}>No agent cap installed: every on-duty agent may run at once.</p>;
+}
 
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.agent-swarm',
@@ -27,5 +33,9 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsTabs: [{ id: 'agent-swarm', label: 'Agent swarm', icon: 'user', order: 91, parent: 'plugins' }],
-  settingsPanels: [{ id: 'agent-swarm.lifecycle', tab: 'agent-swarm', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [
+    // Desks: how many agents may work at once. Filled by whichever plugin provides the VPS-wide agent cap (slot swarm.settings.desks).
+    { id: 'agent-swarm.desks', tab: 'agent-swarm', title: 'Desks', icon: 'layers', order: 15, render: () => <Desks /> },
+    { id: 'agent-swarm.lifecycle', tab: 'agent-swarm', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+  ],
 };
