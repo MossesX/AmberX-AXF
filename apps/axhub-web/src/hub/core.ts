@@ -241,3 +241,56 @@ export function stepGroups(steps: HandoffStepView[]): { name: string; steps: Han
   for (const s of steps) groups.set(s.group, [...(groups.get(s.group) ?? []), s]);
   return [...groups].map(([name, list]) => ({ name, steps: list, done: list.filter((s) => s.done).length }));
 }
+
+/* ─────────────────────────────────────────────────────────── who asked (axHub decision 108) */
+
+/** The badge order for the source filter and the sort: people first, then unattended, then the hub. */
+export const SOURCE_ORDER = ['claude_ai', 'claude_code', 'headless', 'console', 'agent', 'system', 'unknown'] as const;
+export const SOURCE_LABEL: Record<string, string> = {
+  claude_ai: 'Claude.ai', claude_code: 'Claude Code', headless: 'Headless', console: 'Console', agent: 'Agent', system: 'System', unknown: 'Unknown',
+};
+
+interface SourceRow { source?: { kind: string; label: string; who: string } }
+
+/** A row's source kind ('unknown' when the hub sent none or a kind this page doesn't know). */
+export const sourceKind = (r: SourceRow): string => (r.source && Object.hasOwn(SOURCE_LABEL, r.source.kind) ? r.source.kind : 'unknown');
+/** A row's who: the session, build or agent name ('' when it adds nothing beyond the badge). */
+export const sourceWho = (r: SourceRow): string => (r.source && r.source.who && r.source.who !== r.source.label ? r.source.who : '');
+
+/** The source filter chips: every kind on the page, in badge order, with its count. */
+export function sourceChips(rows: readonly SourceRow[]): { kind: string; label: string; count: number }[] {
+  const n = new Map<string, number>();
+  for (const r of rows) n.set(sourceKind(r), (n.get(sourceKind(r)) ?? 0) + 1);
+  return SOURCE_ORDER.filter((k) => n.has(k)).map((k) => ({ kind: k, label: SOURCE_LABEL[k]!, count: n.get(k)! }));
+}
+
+interface TimedRow { status: string; createdAt: string; expiresAt: string; showExpires?: boolean; veto?: { secondsLeft: number; state?: string } }
+
+/**
+ * Sort key of the countdown column: seconds until it runs (held) or expires (waiting); shelved after those; decided
+ * requests last (Infinity).
+ */
+export function countdownKey(r: TimedRow, now: number = Date.now()): number {
+  if (r.status === 'held' && r.veto) return r.veto.state === 'shelved' ? 1e9 + r.veto.secondsLeft : r.veto.secondsLeft;
+  if (r.showExpires) { const t = Date.parse(r.expiresAt); return Number.isFinite(t) ? Math.max(0, (t - now) / 1000) : 1e10; }
+  return Number.POSITIVE_INFINITY;
+}
+
+/** Sort key of the Requested column: when it was asked (ms; unknown = 0). */
+export const requestedKey = (r: Pick<TimedRow, 'createdAt'>): number => { const t = Date.parse(r.createdAt); return Number.isFinite(t) ? t : 0; };
+
+/** Next column sort after a header tap: same column flips, a new one starts ascending, `null` = the hub's order. */
+export function nextSort(cur: { col: string; dir: 1 | -1 } | null, col: string | null): { col: string; dir: 1 | -1 } | null {
+  if (col === null) return null;
+  return cur && cur.col === col ? { col, dir: cur.dir === 1 ? -1 : 1 } : { col, dir: 1 };
+}
+
+/**
+ * The hub's reply to a tap shows at once (Running, Denied, Approved …) until the grid's next read changes that row; a
+ * reply is kept with the revision + status of the row it answered.
+ */
+export interface KeptReply<T> { base: string; item: T }
+export const replyBase = (r: { revision: number; status: string }): string => `${r.revision}:${r.status}`;
+export function shownRow<T extends { id: string; revision: number; status: string }>(fromGrid: T, kept: KeptReply<T> | undefined): T {
+  return kept && kept.base === replyBase(fromGrid) && (kept.item as { id: string }).id === fromGrid.id ? kept.item : fromGrid;
+}

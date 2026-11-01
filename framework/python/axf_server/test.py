@@ -701,4 +701,36 @@ c, gt = hubclient(FakeHub(), route="bogus")
 check(c.route() == "hub", "unknown route setting = hub")
 check(gh_hub.HubGitHubClient(lambda: "", hub=gh_hub.HubLink("https://hub.test", lambda: "t")).has_token(), "hub configured counts as a token")
 
+# who asked (axHub decision #108): every axHub MCP request says X-Axhub-Session
+from axf_server import hub_session  # noqa: E402
+
+check(hub_session.session_value("approval-source") == "approval-source" and hub_session.session_value("Src Test!") == "Src-Test", "session names fit the hub's pattern")
+check(hub_session.session_value("") == "" and hub_session.session_value("!!!") == "" and len(hub_session.session_value("x" * 99)) == 60, "empty names drop, long ones are cut to 60")
+check(hub_session.agent_session("Vinny") == "agent:Vinny" and hub_session.agent_session("") == "", "agents say agent:<name>")
+check(hub_session.headers() == {"x-axhub-session": "console"} and hub_session.headers("bad name") == {}, "default console; a bad value sends nothing")
+with hub_session.acting_as("agent:Mosses"):
+    check(hub_session.headers() == {"x-axhub-session": "agent:Mosses"}, "inside an agent's call: its name")
+check(hub_session.headers() == {"x-axhub-session": "console"}, "after it: console again")
+
+
+class HeaderHub(FakeHub):
+    def __init__(self) -> None:
+        super().__init__()
+        self.sessions: list[str] = []
+
+    def __call__(self, rq: http.Request) -> http.Response:
+        self.sessions.append(rq.headers.get("x-axhub-session", ""))
+        return super().__call__(rq)
+
+
+hh = HeaderHub()
+c, gt = hubclient(hh)
+c.paginate(github.repo_path("MossesX/AmberX-AXF", "pulls", query={"state": "all", "per_page": 1}))
+check(hh.sessions and set(hh.sessions) == {"console"}, "the console's GitHub link says console on every request")
+hh2 = HeaderHub()
+c, gt = hubclient(hh2)
+with hub_session.acting_as("agent:Vinny"):
+    c.paginate(github.repo_path("MossesX/AmberX-AXF", "pulls", query={"state": "all", "per_page": 1}))
+check(set(hh2.sessions) == {"agent:Vinny"}, "an agent's GitHub call says agent:<name>")
+
 print(f"axf_server self-test ok: {n} checks")

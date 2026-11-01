@@ -16,6 +16,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { Button, Chip, Container, Icon, Note, useRuntime } from '../../react';
 import { HubWatcher, accountUrl, loginUrl, normalizeHub, HUB_DEFAULT, type HubWatchState } from './index';
 import { expiry, fetchHubApps, formatWhen, statusNote, type AppsFeed } from './apps';
+import { HUB_SOURCE_ICON, HUB_SOURCE_TONE, sourceText, type HubSource } from './source';
 
 /** Window event that asks every open hub view to read the hub again (an app's "Check now" action fires it). */
 export const HUB_CHECK_EVENT = 'axf:hub-check';
@@ -121,6 +122,21 @@ export function HubStatusNote({ hub, state, what = 'this' }: { hub: string; stat
 }
 
 /**
+ * Who asked (axHub decision 108): the source badge (Claude.ai / Claude Code / Headless / Console / Agent / System) and
+ * the session, build or agent name. Nothing when the hub didn't say (an older hub). Framework Chip + Icon only.
+ */
+export function HubSourceBadge({ source, who = true }: { source: HubSource | null | undefined; who?: boolean }) {
+  if (!source) return null;
+  const name = who && source.who && source.who !== source.label ? source.who : '';
+  return (
+    <span className="fx-row axf-hub-source" title={[sourceText(source), source.client].filter(Boolean).join(' · ')} data-source={source.kind}>
+      <Chip tone={HUB_SOURCE_TONE[source.kind]}><Icon name={HUB_SOURCE_ICON[source.kind]} size={12} /> {source.label}</Chip>
+      {name && <strong className="axf-hub-source__who">{name}</strong>}
+    </span>
+  );
+}
+
+/**
  * The approvals waiting, one card each (tool, what it runs, when it was asked, time left) with **Review on the hub**.
  * Shows an "All clear" card when nothing waits and a "more than shown" note when the hub has more than the feed lists.
  */
@@ -140,8 +156,13 @@ export function HubApprovalList({ state }: { state: HubWatchState }) {
       {state.pending.map((a) => {
         const left = expiry(a);
         return (
-          <Container key={a.id} title={a.tool} icon="shield">
+          <Container key={a.id} title={a.title || a.tool} icon="shield">
             <div className="fx-stack">
+              {/* Who asked (axHub 108), then the tool as a small chip under the reason title. */}
+              <div className="fx-row fx-row--wrap">
+                <HubSourceBadge source={a.source} />
+                {a.title && <Chip>{a.tool}</Chip>}
+              </div>
               {a.summary && <p className="fx-mono">{a.summary}</p>}
               <div className="fx-row fx-row--wrap fx-muted">
                 <span><Icon name="clock" /> asked {formatWhen(a.createdAt)}</span>

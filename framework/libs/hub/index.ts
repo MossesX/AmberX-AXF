@@ -17,6 +17,7 @@ import { HUB_DEFAULT, fetchHubFeed, normalizeHub, approvalsUrl, type HubFeed, ty
 
 export * from './hub';
 export * from './apps';
+export * from './source';
 
 export interface HubWatchState extends HubFeed {
   /** 'idle' until the first answer. */

@@ -19,11 +19,12 @@
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
+import { Button, Chip, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
+import { HubSourceBadge } from '../hub/react';
 import { HUB_DEFAULT, normalizeHub } from '../hub/hub';
 import { formatCountdown } from '../hub/veto';
 import {
-  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, freshIds, goneIds, goneMessage, isUrgent, itemLine, rowOrder,
+  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, freshIds, goneIds, goneMessage, isUrgent, itemLine, rowOrder, rowTimes,
   approvalsWatcher, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult,
 } from './index';
 import './approvals.css';
@@ -263,11 +264,18 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
 function Row({ item, busy, onDecide }: { item: ApprovalItem; busy: string; onDecide: (d: ApprovalDecision) => void }) {
   const left = countdownOf(item);
   const urgent = left !== null && left <= 30;
+  const times = rowTimes(item);
   return (
     <li className={`axf-approvals__item${item.kind === 'held' ? ' is-held' : ''}`}>
       <div className="axf-approvals__text">
+        {/* What it is first (the reason title), then who asked (axHub 108), the tool as a small chip, when, and the countdown. */}
         <strong className="axf-approvals__title" title={item.title}>{item.title}</strong>
-        <span className={`fx-small axf-approvals__line${urgent ? ' is-urgent' : ''}`} role={left !== null ? 'timer' : undefined}>{itemLine(item)}</span>
+        <span className="fx-row fx-row--wrap fx-row--tight axf-approvals__meta">
+          <HubSourceBadge source={item.source} />
+          {item.title !== `Run ${item.tool}` && <Chip>{item.tool}</Chip>}
+          {times.asked && <span className="fx-small fx-muted">{times.asked}</span>}
+          <span className={`fx-small axf-approvals__line${urgent ? ' is-urgent' : ''}`} role={left !== null ? 'timer' : undefined}>{times.countdown || itemLine(item)}</span>
+        </span>
         {item.description && <span className="fx-small fx-muted axf-approvals__desc">{item.description}</span>}
         {item.command && <code className="fx-mono fx-small axf-approvals__cmd" title={item.command}>{item.command}</code>}
       </div>

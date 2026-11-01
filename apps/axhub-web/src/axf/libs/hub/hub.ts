@@ -18,6 +18,7 @@
  * so later work plugs in without renaming anything.
  */
 
+import { parseSource, type HubSource } from './source';
 export const HUB_LIBRARY_ID = 'ai.amberx.axf.hub';
 export const HUB_DEFAULT = 'https://axhub.amberxai.com';
 /** Largest feed reply read (bytes); anything bigger is refused. */
@@ -145,7 +146,13 @@ export type HubFeedStatus = 'ok' | 'signed-out' | 'not-admin' | 'unreachable';
 export const HUB_FEED_STATUSES: readonly HubFeedStatus[] = ['ok', 'signed-out', 'not-admin', 'unreachable'];
 
 /** One call waiting for approval, as the hub's feed lists it; `url` is always built here from the id. */
-export interface HubApproval { id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string }
+export interface HubApproval {
+  id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string;
+  /** What it is: the caller's reason title (axHub decision #99), when the hub sent one. */
+  title?: string;
+  /** Who asked (axHub decision 108), when the hub sent it. */
+  source?: HubSource;
+}
 
 export interface HubFeed {
   status: HubFeedStatus;
@@ -196,10 +203,18 @@ export function interpretFeed(base: string, status: number, body: string): HubFe
       createdAt: (str(p, 'createdAt') ?? '').slice(0, HUB_FIELD_CAPS.time),
       expiresAt: (str(p, 'expiresAt') ?? '').slice(0, HUB_FIELD_CAPS.time),
       url,
+      ...titleAndSource(p),
     });
   }
   const c = typeof j.count === 'number' && Number.isFinite(j.count) ? Math.min(1_000_000, Math.max(0, Math.floor(j.count))) : pending.length;
   return { status: 'ok', count: Math.max(c, pending.length), pending, approvalsUrl: approvalsUrl(base), error: '' };
+}
+
+/** The reason title and the source of one entry, only when the hub sent them (older hubs: neither). */
+function titleAndSource(p: Record<string, unknown>): Pick<HubApproval, 'title' | 'source'> {
+  const title = (str(p, 'title') ?? '').replace(/[\u0000-\u001f\u007f]+/g, ' ').trim().slice(0, HUB_FIELD_CAPS.summary);
+  const source = parseSource(p.source);
+  return { ...(title ? { title } : {}), ...(source ? { source } : {}) };
 }
 
 /* ---------------------------------------------------------------- ring once per new approval */

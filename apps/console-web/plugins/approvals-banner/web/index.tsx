@@ -35,6 +35,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
+import { sourceText } from '@console/axf/libs/hub/source';
 import { fetchVetoFeed, formatCountdown, onVetoHost, secondsLeftNow, vetoHost, VETO_ACTIONS, VETO_WARNING_SECONDS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
 import { act, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
@@ -180,8 +181,8 @@ async function decidePending(p: Pending, d: ApprovalDecision) {
   const decide = approvalsHost().decide;
   if (!decide) { openReview(p.id); return; }
   const item: ApprovalItem = {
-    kind: 'approval', id: p.id, tool: p.tool, title: `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
-    createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null,
+    kind: 'approval', id: p.id, tool: p.tool, title: p.title || `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
+    createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null, source: p.source ?? null,
   };
   try {
     const r = await decide(item, d);
@@ -207,9 +208,11 @@ function PendingRow({ p, hide }: { p: Pending; hide?: () => void }) {
   return (
     <div className="axp-approvals-banner__row axp-approvals-banner__pending">
       <BannerIcon icon="shield" working size={20} />
-      <button type="button" data-fx-row className="axp-approvals-banner__text" title={`${p.tool}\n${shortSummary(p)}`} onClick={() => openReview(p.id)}>
-        <span className="axp-approvals-banner__tool">{p.tool}</span>
-        <span className="axp-approvals-banner__sum">{shortSummary(p)}</span>
+      <button type="button" data-fx-row className="axp-approvals-banner__text" title={[sourceText(p.source), p.title, p.tool, shortSummary(p)].filter(Boolean).join('\n')} onClick={() => openReview(p.id)}>
+        {/* Who asked (axHub 108) and what it is (the reason title) first; the tool after. */}
+        {p.source && <span className="axp-approvals-banner__tool">{sourceText(p.source)}</span>}
+        <span className="axp-approvals-banner__tool">{p.title || p.tool}</span>
+        <span className="axp-approvals-banner__sum">{p.title ? p.tool : shortSummary(p)}</span>
       </button>
       <PendingButtons p={p} />
       {hide && <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>}

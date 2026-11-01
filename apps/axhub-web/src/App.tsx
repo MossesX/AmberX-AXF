@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { AppShell, AssetStudio, installLibraries, useRuntime, type ViewMap } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { library as dataGridLibrary } from './axf/libs/datagrid';
 import { hubSyncLibrary } from './axf/libs/hubsync';
 import { dialogs } from './dialogs';
 import { Approvals } from './views/Approvals';
@@ -47,7 +48,7 @@ const views: ViewMap = {
  * settings on axHub (same on every device) and adds Settings → Plugins → axHub sync; the look stays the developer one.
  * Installed axHub web plugins (src/plugins, catalog kind `axhub`) come after them.
  */
-const libraries = [settingsLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
+const libraries = [settingsLibrary, dataGridLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

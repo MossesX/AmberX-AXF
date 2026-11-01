@@ -33,3 +33,10 @@
   /* the request's own page: the pair takes the whole width, two big halves */
   .axp-axhub-held--big > .axp-axhub-pair, [data-axf-anchor="approval-actions"] > .axp-axhub-pair { display: grid; flex: 1 1 100%; }
 }
+/* Approvals grid (axHub 108 who asked): the title gives way first (ellipsis), the tool chip and the buttons never shrink.
+   Layout only: the chips and buttons are the framework's. */
+.axp-axhub-what { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-axhub-what__title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-axhub-what__tool { flex: 0 0 auto; font-size: var(--fx-type-root-xs); }
+.axp-axhub-who { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-axhub-source { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; min-width: 0; }
