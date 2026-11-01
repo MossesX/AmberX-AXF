@@ -149,7 +149,8 @@ class VetoWatcher {
       const due = held.find((c) => !this.alarmed.has(c.id) && alarmDue(cfg, { secondsLeft: secondsLeftNow(c, now), shelved: c.shelved, approvedNow: c.approvedNow }));
       if (due) { this.alarmed.add(due.id); this.ringingFor = due.id; this.alarm.start(cfg); }
     }
-    for (const id of [...this.alarmed]) if (!held.some((c) => c.id === id)) this.alarmed.delete(id);
+    // Kept after a call leaves the list (a read that misses it must not ring it again); only the oldest go, past 200.
+    for (const id of [...this.alarmed].slice(0, Math.max(0, this.alarmed.size - 200))) this.alarmed.delete(id);
     // Notices: browser notifications while the page is open, unless the native side raises them.
     if (native || this.get(ALARM_KEYS.notices) === false) return;
     const plan = notifyPlan(loadSent(), held, now);

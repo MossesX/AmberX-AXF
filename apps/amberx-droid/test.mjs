@@ -119,6 +119,17 @@ ok(statusNote('not-admin', '').includes('users page'), 'no permission points at 
 eq(statusNote('unreachable', 'Boom.'), 'Boom.', 'unreachable shows why');
 eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 
+// The look is axHub's shared appearance document (appearance@1), live: the app attaches the hub source at start, like
+// the console and axhub-web (amberx-look-fix, Oct 31 2026).
+{
+  const { readFileSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const main = readFileSync(`${here}src/main.tsx`, 'utf8');
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  ok(/attachAppearanceSource\(new HubAppearanceSource\(/.test(main), 'main attaches the hub appearance source');
+  eq(man.developer?.hub, 'https://axhub.amberxai.com', 'developer app: the look comes from axHub');
+}
+
 // The look comes from axHub's shared appearance document, so this app must ship every colour and style theme
 // the console (the other app in Patches) ships: a missing one would fall back to this app's default.
 {
@@ -985,6 +996,14 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     p = vt.notifyPlan(p.sent, [c], NOW + 180_000);
     eq(p.send.map((x) => x.phase), ['running'], 'notify: running');
     eq(vt.notifyPlan([], [c], NOW + 170_000).send.map((x) => x.phase), ['warning'], 'notify: first seen late = one card');
+    // Brett's Oct 31 recording ("dunk dunk dunk"): a read that misses the call must not make it ring again.
+    let q = vt.notifyPlan([], [c], NOW);
+    q = vt.notifyPlan(q.sent, [], NOW + 5_000);
+    eq(vt.notifyPlan(q.sent, [c], NOW + 10_000).send.length, 0, 'notify: a call missing from one read does not ring again');
+    q = vt.notifyPlan(q.sent, [c], NOW + 151_000);
+    eq(q.send.map((x) => x.phase), ['warning'], 'notify: the warning still comes once');
+    q = vt.notifyPlan(q.sent, [], NOW + 152_000);
+    eq(vt.notifyPlan(q.sent, [c], NOW + 155_000).send.length, 0, 'notify: and not again after a miss');
   }
   const push = vt.vetoFromPush(HUB, JSON.stringify({ type: 'veto', phase: 'warning', id: ID1, jobId: 'job_abc-1', title: 'Restart web', command: 'docker restart web', runsAt: '2026-10-29T02:03:00.000Z', secondsLeft: 30, denyUrl: `${HUB}/auth/api/approvals/${ID1}/deny`, streamUrl: `${HUB}/auth/api/jobs/job_abc-1/stream`, approvalUrl: `${HUB}/auth/admin/approvals/${ID1}` }), NOW);
   ok(push && push.phase === 'warning' && push.call.command === 'docker restart web' && push.call.secondsLeft === 30, 'push: veto push read');
