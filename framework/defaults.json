@@ -37,5 +37,6 @@
   "typography": "compact",
   "density": "compact",
   "sizing": "compact",
+  "agent-card": "corporate-badge",
   "uac-policy": "standard"
 }

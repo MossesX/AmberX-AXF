@@ -6,6 +6,7 @@
 import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
 import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
+import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { enforceDefaults } from './build-defaults.mjs';
@@ -153,6 +154,8 @@ export function validateAsset(raw) {
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(raw.data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with core (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, raw.data));
+  // agent-card@1: ONE validator shared with core (core/engines/agent-card-rules.mjs)
+  errors.push(...agentCardErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
   errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
@@ -747,6 +750,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === 'context-menu') props.targets = { type: 'object', required: ts.nested?.targets ?? [], additionalProperties: { type: 'array', items: menuItem } };
     // scale assets (typography, density, sizing): every group optional, fields typed + ranged from the shared registry
     if (isScaleType(type)) Object.assign(props, scaleSchemaProperties(type));
+    if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),

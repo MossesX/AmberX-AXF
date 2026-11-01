@@ -39,6 +39,8 @@ final class HubRules {
     private static final Pattern CSRF = Pattern.compile("\"csrf\"\\s*:\\s*\"([A-Za-z0-9_\\-]{8,200})\"");
     /** "Approve everything" never covers a root shell on the VPS (Brett, Oct 22 2026). */
     static final Set<String> NOT_IN_ALL = Set.of("vps.run");
+    /** Never approved by the phone on its own: starting a recording needs Brett's own tap (axHub decision #108). */
+    static final Set<String> NEVER_AUTO = Set.of("amberx.recorder_start");
 
     /** https://host[:port] or null. */
     static String normalize(String raw) {
@@ -295,6 +297,7 @@ final class HubRules {
     }
 
     static boolean autoApproves(boolean on, boolean all, String raw, String tool) {
+        if (NEVER_AUTO.contains(tool)) return false;
         return (all && !tool.isEmpty() && !NOT_IN_ALL.contains(tool)) || (on && matches(patterns(raw), tool));
     }
 
@@ -428,6 +431,38 @@ final class HubRules {
             }
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /* ---------------------------------------------------------------- AXPP (axHub decision #108) */
+
+    static final String AXPP_PATH = "/axpp/v1/";
+
+    /**
+     * POST an AXPP message to the hub with the phone's hub session (`X-AXPP: axpp@1`, the hub as Origin, no redirects),
+     * only to `/axpp/v1/hello|next|answer` on the one hub. `next` is a long poll, hence its own read timeout.
+     */
+    static Reply axpp(String route, String body, String cookie, int readTimeoutMs) throws IOException {
+        if (!route.matches("hello|next|answer")) throw new IOException("not an AXPP route");
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length > PUT_MAX_BYTES) throw new IOException("message too large");
+        HttpURLConnection c = (HttpURLConnection) new URL(HUB + AXPP_PATH + route).openConnection();
+        try {
+            c.setInstanceFollowRedirects(false);
+            c.setConnectTimeout(10_000); c.setReadTimeout(readTimeoutMs); c.setUseCaches(false);
+            c.setRequestMethod("POST"); c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setRequestProperty("Origin", HUB);
+            c.setRequestProperty("X-AXPP", "axpp@1");
+            if (cookie != null) c.setRequestProperty("Cookie", cookie);
+            c.getOutputStream().write(bytes);
+            int code = c.getResponseCode();
+            InputStream in = code >= 400 ? c.getErrorStream() : code == 204 ? null : c.getInputStream();
+            String reply = in == null ? "" : readLimited(in, FEED_MAX_BYTES);
+            return new Reply(code, reply, c.getHeaderField("Location"), null);
+        } finally {
+            c.disconnect();
         }
     }
 

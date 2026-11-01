@@ -162,6 +162,7 @@ public class WatchService extends Service {
         thread = new HandlerThread("amberx-watch");
         thread.start();
         work = new Handler(thread.getLooper());
+        AxppLink.ensure(this); // keeps the axHub link (recorder control, axHub decision #108) up while the watch runs
     }
 
     @Override

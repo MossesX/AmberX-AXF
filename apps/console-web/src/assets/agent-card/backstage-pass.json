@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "agent-card",
+  "id": "backstage-pass",
+  "name": "Backstage pass",
+  "version": "1.0.0",
+  "description": "Dark pass with a neon accent: the status badge big, name, role and the catchphrase.",
+  "author": "AmberX AXF",
+  "tags": [
+    "id-card",
+    "vertical",
+    "dark"
+  ],
+  "data": {
+    "design": "backstage",
+    "orientation": "vertical",
+    "logo": "corner",
+    "surface": "inverse",
+    "accent": "brand-2",
+    "finish": "neon",
+    "photo": "small",
+    "code": "qr",
+    "front": [
+      "status",
+      "name",
+      "role",
+      "catchphrase"
+    ],
+    "back": [
+      "specialty",
+      "employeeId",
+      "hiredAt"
+    ],
+    "labels": {
+      "status": "Access"
+    }
+  }
+}
