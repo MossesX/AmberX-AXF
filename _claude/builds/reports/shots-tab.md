@@ -1,6 +1,6 @@
 # UI Review → Screenshots tab (`shots-tab`, Nov 1 2026)
 
-Headless VPS build, Opus, one session, branch `claude/shots-tab` → pushed to `main`.
+Headless VPS build, Opus, one session, branch `claude/shots-tab`. **Not pushed:** the VPS GitHub token answers 401 (both the console env file and the container; no `GIT_CONFIG_*` in the environment), so `git push origin HEAD:main` fails. Committed and merged with origin/main (e46b8079) in `/root/axf-builds/shots-tab`; banner item `blocked:github-token-shots-tab` raised with the steps.
 
 **Ask (Brett):** UI Review only showed planned build screens waiting for approve / reject. There was no place for
 ad-hoc screenshots: a session checking a screen like the Breakroom, live captures, PR before/after, his own uploads.
@@ -48,6 +48,19 @@ built `dist/`; passes 56/56 once the console is built). CI runs on Node 22; this
 Captured with `bash /tmp/shots-demo/make.sh` (demo data through `shot.mjs --local` + one `review.mjs submit` titled
 `Breakroom check: desk`) and `AXF_APPEARANCE_HUB=off AXF_UI_REVIEW_DIR=/tmp/shots-demo/data node framework/cli/rebuild-shots.mjs
 --shots _claude/memory/docs/ui-review/screenshots-tab/shots.json …`.
+
+## Also fixed (main's red after the recorder merge)
+
+Merging main brought two red checks from the recorder change (e46b8079): `check-theme` read `#108` in three comments
+as a colour (reworded to "decision 108"), and `plugin-lifecycle check output-recorder` flagged its marked STATUS.md
+line because `_claude/memory/STATUS.md` wasn't in its `lifecycle.mentions` (added). Both green after.
+
+## To carry on (push)
+
+New GitHub token (github.com → fine-grained, MossesX/AmberX-AXF, Contents + Pull requests read/write) saved under
+console Keys, then in `/root/axf-builds/shots-tab`: `git fetch origin && git merge origin/main`, rerun
+`python3 apps/console-web/plugins/ui-review/test.py`, `npx -y tsx apps/console-web/plugins/ui-review/test.mts`,
+`node framework/cli/check-theme.mjs`, then `git push origin HEAD:main`.
 
 ## Notes / gaps
 
