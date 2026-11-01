@@ -70,11 +70,20 @@ public class AmberxNativePlugin extends Plugin {
 
     /* ---------------------------------------------------------------- hands-free events (from WatchService) */
 
-    /** A wake phrase (or, always armed, a whole command) heard while the app is on screen: true when delivered. */
+    private static final java.util.concurrent.atomic.AtomicLong seq = new java.util.concurrent.atomic.AtomicLong();
+
+    /** A unique id for an event the page acts on (it runs each id once, kept across opens). */
+    static String eventId() { return "w" + Long.toString(System.currentTimeMillis(), 36) + "-" + seq.incrementAndGet(); }
+
+    /**
+     * A wake phrase (or, always armed, a whole command) heard while the app is on screen: true when delivered. It is
+     * never retained for a page that isn't listening (Nov 1 2026: Capacitor kept every one and replayed them all into the
+     * page that loaded next, so opening AmberX ran old sentences and said "Note saved" again). Each carries id + at.
+     */
     static boolean wakeInApp(String phrase, String text) {
         AmberxNativePlugin p = current;
-        if (p == null) return false;
-        p.notifyListeners("wake", new JSObject().put("phrase", phrase).put("text", text), true);
+        if (p == null || !p.hasListeners("wake")) return false;
+        p.notifyListeners("wake", new JSObject().put("phrase", phrase).put("text", text).put("id", eventId()).put("at", System.currentTimeMillis()));
         return true;
     }
 
@@ -105,7 +114,14 @@ public class AmberxNativePlugin extends Plugin {
         String veto = intent.getStringExtra(MainActivity.EXTRA_VETO);
         if (veto != null) p.notifyListeners("veto", new JSObject().put("id", veto).put("action", "open"), true);
         String wake = intent.getStringExtra(MainActivity.EXTRA_WAKE);
-        if (wake != null) p.notifyListeners("wake", new JSObject().put("phrase", wake).put("text", intent.getStringExtra(MainActivity.EXTRA_WAKE_TEXT)), true);
+        if (wake != null) {
+            // Retained until the page listens (the app was opened by this wake hit), with its id and time: the page runs
+            // it once and drops it when it is stale, so a later open never replays it.
+            String id = intent.getStringExtra(MainActivity.EXTRA_WAKE_ID);
+            long at = intent.getLongExtra(MainActivity.EXTRA_WAKE_AT, System.currentTimeMillis());
+            p.notifyListeners("wake", new JSObject().put("phrase", wake).put("text", intent.getStringExtra(MainActivity.EXTRA_WAKE_TEXT))
+                .put("id", id != null ? id : eventId()).put("at", at), true);
+        }
     }
 
     /** A held command was denied, approved or shelved (or that failed) from its notification. */
@@ -283,7 +299,7 @@ public class AmberxNativePlugin extends Plugin {
     @PluginMethod
     public void speak(PluginCall call) {
         String text = call.getString("text", "");
-        if (tts == null || !ttsReady || text.isEmpty()) { call.resolve(); return; }
+        if (tts == null || !ttsReady || text.isEmpty() || Quiet.on(getContext())) { call.resolve(); return; }
         tts.setLanguage(Locale.forLanguageTag(call.getString("lang", "en-US")));
         String voice = call.getString("voice", "");
         if (voice != null && !voice.isEmpty()) {
@@ -299,6 +315,15 @@ public class AmberxNativePlugin extends Plugin {
         int mode = Boolean.TRUE.equals(call.getBoolean("queue", false)) ? TextToSpeech.QUEUE_ADD : TextToSpeech.QUEUE_FLUSH;
         tts.speak(text.length() > 2000 ? text.substring(0, 2000) : text, mode, params, id);
         call.resolve();
+    }
+
+    /** The Quiet switch (Settings → Sound and microphone): no speech, no alarm, silent notifications, at once. */
+    @PluginMethod
+    public void quiet(PluginCall call) {
+        boolean q = Boolean.TRUE.equals(call.getBoolean("quiet", false));
+        Quiet.set(getContext(), q);
+        if (q && tts != null) { tts.stop(); releaseHold(); }
+        call.resolve(new JSObject().put("quiet", q));
     }
 
     @PluginMethod
