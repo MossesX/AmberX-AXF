@@ -1,0 +1,90 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261026-81a1b59035",
+  "createdAt": "2026-10-26T01:41:08.647Z",
+  "updatedAt": "2026-10-26T18:23:16.994Z",
+  "kind": "edit",
+  "title": "Move axHub to console-style pages",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Hub JSON API (axHub repo)",
+      "state": "done",
+      "startedAt": "2026-10-26T01:41:20.237Z",
+      "finishedAt": "2026-10-26T02:14:04.465Z"
+    },
+    {
+      "text": "New pages in the AXHub web app",
+      "state": "done",
+      "startedAt": "2026-10-26T02:14:05.566Z",
+      "finishedAt": "2026-10-26T02:14:05.566Z"
+    },
+    {
+      "text": "AmberX shell auto-approve on the JSON API",
+      "state": "done",
+      "startedAt": "2026-10-26T02:14:06.032Z",
+      "finishedAt": "2026-10-26T02:14:06.032Z"
+    },
+    {
+      "text": "Docs, decision #96, PRs",
+      "state": "done",
+      "startedAt": "2026-10-26T02:14:06.515Z",
+      "finishedAt": "2026-10-26T02:14:06.515Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Hub HTML pages deleted; old addresses redirect to the AXHub web app's new console-style pages (approvals, request+postpone, auto-approve, log, users, account, apps, handoff, sign out) over a session+CSRF JSON API. Drafts: AmberX-AXF #100, axHub #8.",
+    "branch": "claude/project-thread-139zmj",
+    "commits": [],
+    "tests": {
+      "axhub-web test.mjs": {
+        "before": "72",
+        "after": "169"
+      },
+      "axHub pnpm test": {
+        "before": "380",
+        "after": "380"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/100",
+      "pr2": "https://github.com/MossesX/axHub/pull/8"
+    }
+  },
+  "closed": {
+    "at": "2026-10-26T18:23:16.994Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "axhub-pages-console-style"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-26T01:41:08.647Z",
+  "finishedAt": "2026-10-26T02:14:06.938Z",
+  "lastSeenAt": "2026-10-26T02:14:06.875Z",
+  "estimate": {
+    "minutes": 420,
+    "costUsd": 58.8
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-139zmj",
+  "areas": [
+    "apps/axhub-web",
+    "framework/libs/hub"
+  ],
+  "doing": "Hub JSON API (axHub repo)",
+  "progress": 1.0
+}

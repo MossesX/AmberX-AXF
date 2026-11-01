@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-f08aa60ac0",
+  "createdAt": "2026-10-30T23:00:33.577Z",
+  "updatedAt": "2026-10-30T23:02:09.403Z",
+  "kind": "fix",
+  "title": "Fix: Hub /projects folder configured",
+  "asked": "Systems check fix failed (- **For you:** nothing to do by hand. Point this systems-check fix at the console's Mosses chat instead of this session. `AXF_PUBLIC_URL` is stuck the same way, so both can go there together.); handed to headless Claude Code on the VPS.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "systems-check",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Fix (shell allowed): headless Claude Code on the VPS",
+      "state": "queued"
+    },
+    {
+      "text": "Check again",
+      "state": "queued"
+    }
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T23:00:33.000Z",
+  "lastSeenAt": "2026-10-30T23:02:09.403Z",
+  "branch": "fix/syscheck-routine-env-axhub-projects-dir",
+  "doing": "Launched on the VPS (headless Claude Code)"
+}

@@ -1,0 +1,79 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-6c6f82a1-3abf-47c2-bb86-4072d2fe3c22",
+ "source": "claude-code",
+ "sessionId": "6c6f82a1-3abf-47c2-bb86-4072d2fe3c22",
+ "project": "amberx-axf",
+ "title": "You're running the systems check for Brett's AmberX AXF Dev Console. Read the codebase digest below and propose EXTRA c…",
+ "startedAt": "2026-10-31T07:46:17.917Z",
+ "endedAt": "2026-10-31T07:47:01.965Z",
+ "minutes": 1,
+ "system": {
+  "host": "srv1837178",
+  "container": "axf-console",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.316",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/axf",
+  "repo": "",
+  "branch": "main"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-31T07:46:18.071Z",
+   "kind": "prompt",
+   "text": "You're running the systems check for Brett's AmberX AXF Dev Console. Read the codebase digest below and propose EXTRA checks that would catch real setup problems the existing checks miss (a credential a plugin needs that isn't set, a capability a feature depends on, a file a deploy needs, a public endpoint that should answer). Answer with ONLY a JSON object, no prose: {\"checks\": [{\"id\": \"kebab-id\", \"kind\": \"env|file|json|service|plugin|http\", \"params\": {...}, \"title\": \"short title\", \"service\": \"console|github|claude|vps|coolify|axhub|data|plugins|routine\", \"severity\": \"error|warn|info\", \"why\"…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 8,
+    "output": 4878,
+    "cacheRead": 216457,
+    "cacheWrite": 1425,
+    "thinking": 230
+   },
+   "costUsd": 0.1481,
+   "costEstimated": false,
+   "seconds": 44,
+   "tools": {
+    "Glob": 2,
+    "Grep": 1
+   },
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "{\"checks\": [ {\"id\": \"env-axf-public-url\", \"kind\": \"env\", \"params\": {\"name\": \"AXF_PUBLIC_URL\"}, \"title\": \"Console public URL set\", \"service\": \"console\", \"severity\": \"warn\", \"why\": \"Push links, veto notices and UI Review links need the console's public address, and they break without it.\", \"instructi…"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 8,
+  "output": 4878,
+  "cacheRead": 216457,
+  "cacheWrite": 1425,
+  "thinking": 230,
+  "costUsd": 0.1481,
+  "costEstimated": false,
+  "toolCalls": 3,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.1523
+ },
+ "ingestedAt": "2026-10-31T13:52:07.106Z"
+}

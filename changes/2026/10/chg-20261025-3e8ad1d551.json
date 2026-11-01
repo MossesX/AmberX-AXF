@@ -1,0 +1,65 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-3e8ad1d551",
+  "createdAt": "2026-10-25T20:22:54.445Z",
+  "updatedAt": "2026-10-29T07:02:41.364Z",
+  "kind": "build",
+  "title": "Context menu designer: action picker window, filter dialog, load app menus",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Actions floating window with search + Filter dialog (Plugins/Framework/Application), load app context menus; PR #91",
+    "branch": "claude/project-thread-85vrhz",
+    "commits": [
+      {
+        "sha": "28f6a16"
+      }
+    ],
+    "filesChanged": 20,
+    "tests": {
+      "context-menu-designer test.mts": {
+        "before": "28",
+        "after": "52"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/91"
+    }
+  },
+  "closed": {
+    "at": "2026-10-29T07:02:41.364Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "context-menu-designer-actions"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T20:22:54.445Z",
+  "finishedAt": "2026-10-25T20:30:05.574Z",
+  "lastSeenAt": "2026-10-25T20:23:06.484Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-85vrhz",
+  "areas": [
+    "apps/console-web/plugins/context-menu-designer",
+    "framework/core/engines/actions.ts",
+    "framework/react/library.ts"
+  ],
+  "progress": 1.0
+}

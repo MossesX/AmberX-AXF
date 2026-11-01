@@ -1,0 +1,73 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-7e21f40a-0aa3-44d2-93f2-0063e1dc515a",
+ "source": "claude-code",
+ "sessionId": "7e21f40a-0aa3-44d2-93f2-0063e1dc515a",
+ "project": "other",
+ "title": "reply with the single word: ready",
+ "startedAt": "2026-08-22T06:04:06.139Z",
+ "endedAt": "2026-08-22T06:04:06.280Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "gizmox-web-green",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.222",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-08-22T06:04:06.236Z",
+   "kind": "prompt",
+   "text": "reply with the single word: ready",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Not logged in · Please run /login"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0
+ },
+ "ingestedAt": "2026-10-21T19:16:27.200Z"
+}

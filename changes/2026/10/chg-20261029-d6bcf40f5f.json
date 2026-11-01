@@ -1,0 +1,41 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-d6bcf40f5f",
+  "createdAt": "2026-10-29T18:04:30.824Z",
+  "updatedAt": "2026-10-29T18:04:30.824Z",
+  "kind": "fix",
+  "title": "BLOCKED, needs you: AmberX APK signing key + push (fix-apk-signing)",
+  "asked": "Brett Oct 29 2026: new AmberX APK says 'App not installed'. Fix it so it never happens again; when Claude can't do something, put a wizard in the banner.",
+  "repos": ["MossesX/AmberX-AXF"],
+  "model": "opus",
+  "who": {"where": "claude.ai", "host": "cloud"},
+  "steps": [
+    {"text": "Diagnose: build 720 is valid (zip, v2 signature, native libs checked on the VPS); builds 717 and 720 have different signing certs, so ANDROID_DEBUG_KEYSTORE is not set", "state": "done"},
+    {"text": "Write check-apk.mjs + CI steps (installer checks on AmberX and every catalog APK, expected signer) and commit it: /tmp/axf-apkfix on the VPS", "state": "done"},
+    {"text": "WIZARD 1 (you or Mosses): push the commit in /tmp/axf-apkfix to branch fix/apk-signing (claude.ai has no GitHub login for pushes)", "state": "queued"},
+    {"text": "WIZARD 2 (Mosses, root): make ~/.android-keys/axf-debug.keystore (alias androiddebugkey, password android, RSA 2048, ~30 years, mode 600)", "state": "queued"},
+    {"text": "WIZARD 3 (Mosses): save it base64-encoded as GitHub secret ANDROID_DEBUG_KEYSTORE on MossesX/AmberX-AXF", "state": "queued"},
+    {"text": "WIZARD 4 (Mosses): write the cert's SHA-256 (lowercase hex, no colons) to .github/apk-signer.sha256 on fix/apk-signing, push, open the PR, send Brett the merge approval", "state": "queued"},
+    {"text": "WIZARD 5: after merge, check the next 'Android framework + console' run passes the new APK install checks; reinstall each app once", "state": "queued"}
+  ],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {"kind": "orchestrator", "id": "fix-apk-signing"},
+  "surface": "claude-ai",
+  "estimate": {"minutes": 10, "costUsd": 0},
+  "costEstimated": true,
+  "branch": "fix/apk-signing",
+  "areas": [".github/workflows", "framework/cli", "apps/amberx-droid"],
+  "doing": "Waiting on you: claude.ai is not allowed to push or save GitHub secrets",
+  "progress": 0.3,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "branch": "fix/apk-signing",
+    "pushed": false,
+    "plan": "One stable debug signing key for every CI app build + check-apk.mjs (zip, aapt2 badging, apksigner, zipalign -p, arm64 ABI, expected signer) on the AmberX APK and every catalog APK.",
+    "next": "Wizard steps 1-5 above. Paste to Mosses: \"Do fix-apk-signing: push /tmp/axf-apkfix to fix/apk-signing; make ~/.android-keys/axf-debug.keystore (alias androiddebugkey, password android); save it base64 as secret ANDROID_DEBUG_KEYSTORE on MossesX/AmberX-AXF; write its cert SHA-256 to .github/apk-signer.sha256 on the branch; open the PR and send me the merge approval.\"",
+    "files": ["framework/cli/check-apk.mjs", ".github/workflows/android.yml", "_claude/builds/profiles/refactor/orchestrator.json"]
+  }
+}

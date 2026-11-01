@@ -1,0 +1,40 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261023-aed05bb05c",
+  "createdAt": "2026-10-23T05:43:56.721Z",
+  "updatedAt": "2026-10-23T12:29:13.700Z",
+  "kind": "build",
+  "title": "Deploy Walkthrough Studio",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": null,
+  "closed": {
+    "at": "2026-10-23T12:29:13.700Z",
+    "by": "console"
+  },
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "pending",
+    "id": "walkthrough-studio-deploy"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-23T05:43:56.721Z",
+  "lastSeenAt": "2026-10-23T05:43:57.319Z",
+  "estimate": {
+    "minutes": 45,
+    "costUsd": 6.3
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/walkthrough-studio"
+  ]
+}

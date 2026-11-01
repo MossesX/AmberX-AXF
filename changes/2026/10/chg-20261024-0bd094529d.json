@@ -1,0 +1,45 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-0bd094529d",
+  "createdAt": "2026-10-24T16:07:29.735Z",
+  "updatedAt": "2026-10-24T17:57:20.207Z",
+  "kind": "fix",
+  "title": "Switch VPS Claude Code to plan login",
+  "asked": "Make Claude Code on the VPS use the Claude plan, not ANTHROPIC_API_KEY",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Checked only: no API key set anywhere on srv1837178; login shell uses oauth_token (Claude plan), AXF_CLAUDE_AUTH=plan. Nothing removed.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-24T17:08:35.266Z",
+    "by": "build-manager"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-24T16:07:29.735Z",
+  "finishedAt": "2026-10-24T17:08:35.261Z",
+  "lastSeenAt": "2026-10-24T16:07:29.735Z",
+  "estimate": {
+    "minutes": 30,
+    "costUsd": 4.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "deploy"
+  ],
+  "progress": 1.0
+}

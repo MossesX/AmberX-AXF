@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261031-6fb3210bba",
+  "createdAt": "2026-10-31T14:01:40.796Z",
+  "updatedAt": "2026-10-31T14:01:51.211Z",
+  "kind": "build",
+  "title": "launch-session self-test",
+  "asked": "Say OK",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "BLOCKED: no git push credentials on the VPS for MossesX/AmberX-AXF (gh auth login / credential helper)",
+      "state": "failed",
+      "startedAt": "2026-10-31T14:01:41.063Z",
+      "finishedAt": "2026-10-31T14:01:41.063Z"
+    }
+  ],
+  "result": {
+    "state": "cancelled",
+    "summary": "self-test of axf-launch-session (fake claude); worktree and branch removed",
+    "branch": "claude/urgent-20261031-1401-8a08",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "cancelled",
+  "status": "failed",
+  "surface": "headless",
+  "startedAt": "2026-10-31T14:01:40.796Z",
+  "finishedAt": "2026-10-31T14:01:41.161Z",
+  "lastSeenAt": "2026-10-31T14:01:41.063Z",
+  "branch": "claude/urgent-20261031-1401-8a08",
+  "progress": 1
+}

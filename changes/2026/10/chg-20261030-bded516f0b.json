@@ -1,0 +1,80 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261030-bded516f0b",
+  "createdAt": "2026-10-30T23:02:16.732Z",
+  "updatedAt": "2026-10-30T23:03:55.326Z",
+  "kind": "fix",
+  "title": "# Fix a failing AXF Dev Console systems check: Demo site answers The console's systems check report…",
+  "asked": "# Fix a failing AXF Dev Console systems check: Demo site answers The console's systems check reported this, and its automatic fix failed. Fix the cause, then re-check. - Check id: `routine:http-demo-site` (service vps, status warn) - What it says: couldn't run: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011) - How the fix failed: If step 2 shows ACME rate-limit or DNS errors, the reinstall in step 3 won't clear it. DNS is something I can fix through the Hostinger connector, so you still won't have to do it yourself. Details: - The demo deploy pulls the site branch every 2 minutes; if this fails, the pull or the proxy is broken. - http {\"url\": \"https://axf.amberxai.com/\", \"expect\": [200]} How it's fixed by hand: - Check the deploy workflow run on GitHub, then the VPS pull cron (host-update-cron) and the Traefik route for axf.amberxai.com. Rules: - Fix only this check. Change nothing unrelated; never delete data, volumes, containers or other people's files. - Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/). - Code changes go on this worktree's branch only: commit and push the branch, never main, never merge. - When done, refresh the host report: `bash /opt/axf/deploy/console-doctor.sh --report`. - Record steps and the result on your change-log entry (the hooks do most of it; `changes.mjs step|result last …`). - You may run shell commands on the VPS (you run as root): prefer the smallest, reversible change.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "e303d80d-30b",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Diagnose: no container/route for axf.amberxai.com (only legacy xaf-amberxai), Traefik default cert",
+      "state": "done",
+      "startedAt": "2026-10-30T23:03:47.919Z",
+      "finishedAt": "2026-10-30T23:03:47.919Z"
+    },
+    {
+      "text": "Add axf-amberxai nginx container + Traefik labels + 2-min pull cron (install.sh 3a, old xaf left untouched)",
+      "state": "done",
+      "startedAt": "2026-10-30T23:03:47.979Z",
+      "finishedAt": "2026-10-30T23:03:47.979Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "VPS-only fix: demo site now served at https://axf.amberxai.com (Let's Encrypt, 200). No repo changes. Legacy xaf-amberxai setup still running alongside.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "surface": "console-launch",
+  "startedAt": "2026-10-30T23:02:16.732Z",
+  "finishedAt": "2026-10-30T23:03:48.045Z",
+  "lastSeenAt": "2026-10-30T23:03:47.979Z",
+  "actual": {
+    "minutes": 2,
+    "costUsd": 0.4291,
+    "inputTokens": 24,
+    "outputTokens": 4284,
+    "cacheReadTokens": 591335,
+    "cacheWriteTokens": 45017,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-fixes/fix-syscheck-routine-http-demo-site",
+    "branch": "fix/syscheck-routine-http-demo-site",
+    "base": "33bf1434667a6d2939b71b84a412e894f81ebd65",
+    "head": "33bf1434667a6d2939b71b84a412e894f81ebd65",
+    "pushed": true,
+    "dirty": 10,
+    "files": [
+      ".axf-brief.md",
+      ".axf-fix.jsonl",
+      ".axf-fix.log",
+      "apps/amberx-droid/_claude/",
+      "apps/axhub-android/_claude/",
+      "apps/axhub-web/_claude/",
+      "apps/patches-web/_claude/",
+      "apps/patches/_claude/",
+      "apps/voicevault/_claude/",
+      "apps/walkthrough-studio/_claude/"
+    ],
+    "at": "2026-10-30T23:03:55.411Z"
+  }
+}

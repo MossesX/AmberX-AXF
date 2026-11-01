@@ -1,0 +1,25 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-20978e17cd",
+  "createdAt": "2026-11-01T06:16:32.773Z",
+  "updatedAt": "2026-11-01T06:16:32.773Z",
+  "kind": "fix",
+  "title": "Auto fix: GitHub token",
+  "asked": "Systems check auto-fix (Send GitHub calls through axHub) for github-token, by health.",
+  "repos": [],
+  "model": "",
+  "who": {
+    "user": "systems-check"
+  },
+  "steps": [],
+  "result": {
+    "state": "failed",
+    "summary": "GitHub through axHub doesn't work either (GitHub 403: \"github\" answered HTTP 403 (text from the service): {\"message\":\"API rate limit exceeded for user ID 4969071. If you reach out to GitHub Support for help, please include the request ID BA4A)",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "failed",
+  "status": "failed"
+}

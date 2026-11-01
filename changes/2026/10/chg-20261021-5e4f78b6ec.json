@@ -1,0 +1,103 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-5e4f78b6ec",
+  "createdAt": "2026-10-21T17:13:12.112Z",
+  "updatedAt": "2026-10-22T02:58:26.133Z",
+  "kind": "build",
+  "title": "Auto fix: anything fixable from a terminal (host, containers, Coolify API), approval on each",
+  "asked": "Auto fix should fix everything that can be fixed from the Coolify terminal or any terminal (host, containers, Coolify env vars and settings), not just a short list; keep Brett's approval on every command; only sign-ins stay manual.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "claude-ai",
+    "host": "claude.ai"
+  },
+  "steps": [
+    {
+      "text": "Fix registry: host, container and Coolify fix kinds; checks declare their fix (25 min)",
+      "state": "done",
+      "startedAt": "2026-10-21T17:13:12.112Z",
+      "finishedAt": "2026-10-21T17:31:00.000Z"
+    },
+    {
+      "text": "Coolify fixes: deploy/coolify-fix.py on the VPS + Coolify app checks from coolify-expect.json (25 min)",
+      "state": "done",
+      "startedAt": "2026-10-21T17:31:00.000Z",
+      "finishedAt": "2026-10-21T17:37:00.000Z"
+    },
+    {
+      "text": "Container fixes + plugin/routine checks can declare fixes (validated, still approved) (25 min)",
+      "state": "done",
+      "startedAt": "2026-10-21T17:37:00.000Z",
+      "finishedAt": "2026-10-21T17:40:00.000Z"
+    },
+    {
+      "text": "Web: no change needed (new fixes arrive as host-type fixes the banner already runs); Auto fix all for them after patches-banners",
+      "state": "skipped",
+      "note": "systems-check/web is in the running patches-banners build"
+    },
+    {
+      "text": "Tests, docs, PR, CI (25 min)",
+      "state": "done",
+      "startedAt": "2026-10-21T17:40:00.000Z",
+      "finishedAt": "2026-10-21T17:58:00.000Z",
+      "note": "test.py 80\u2192114; activity test fixed; CI green on a468952"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "PR #9 open (not merged), CI green. Auto fix covers host, container and Coolify API fixes through axHub vps.run with approval on every command; Coolify checks for axHub's variables; deploy/coolify-fix.py. Follow-up: Auto fix all for terminal fixes after patches-banners.",
+    "branch": "feat/autofix-any-terminal",
+    "commits": [
+      {
+        "sha": "f7a60f0"
+      },
+      {
+        "sha": "a468952"
+      }
+    ],
+    "filesChanged": 14,
+    "tests": {
+      "systems-check test.py": {
+        "after": "80\u2192114"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/9"
+    }
+  },
+  "closed": {
+    "at": "2026-10-22T02:58:26.133Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "autofix-any-terminal"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-21T17:13:12.112Z",
+  "finishedAt": "2026-10-21T17:58:00.000Z",
+  "lastSeenAt": "2026-10-21T17:58:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "actual": {
+    "minutes": 45
+  },
+  "costEstimated": true,
+  "branch": "feat/autofix-any-terminal",
+  "areas": [
+    "apps/console-web/plugins/systems-check/server",
+    "apps/console-web/plugins/systems-check/test.py",
+    "apps/console-web/plugins/systems-check/README.md",
+    "deploy/coolify-fix.py",
+    "framework/cli/plugin-lifecycle.mjs"
+  ],
+  "doing": "Finished: PR #9, CI green",
+  "progress": 1.0
+}

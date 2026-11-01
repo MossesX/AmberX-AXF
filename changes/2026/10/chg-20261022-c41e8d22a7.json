@@ -1,0 +1,90 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261022-c41e8d22a7",
+  "createdAt": "2026-10-22T10:35:00.000Z",
+  "updatedAt": "2026-10-22T13:33:16.222Z",
+  "kind": "edit",
+  "title": "Plugins inherit the app's style: every plugin + library control is a framework control (+ CI check)",
+  "asked": "All plugin UIs conform to the style theme engine so plugins inherit style from the app. If the app changes button style the plugins button style changes.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "claude-code",
+    "host": "claude.ai/code"
+  },
+  "steps": [
+    {
+      "text": "Save the rule (_claude/rules)",
+      "state": "done"
+    },
+    {
+      "text": "Framework: Button size sm + success/quiet tones, IconButton, Segmented, fx-seg, tappable fx-chip, data-fx-row, page vs window fx-tab",
+      "state": "done"
+    },
+    {
+      "text": "CI check framework/cli/check-controls.mjs (155 findings at start)",
+      "state": "done"
+    },
+    {
+      "text": "Framework libs settings/alerts/mcp converted",
+      "state": "done"
+    },
+    {
+      "text": "18 console plugins converted (5 parallel agents)",
+      "state": "done"
+    },
+    {
+      "text": "Typecheck, build, tests, commit, PR #21",
+      "state": "done"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "PR #21 (branch claude/yo-3t9p2d, dfa7618): 155 controls converted, check-controls 155 -> 0, all 22 plugin self-test suites pass, tsc + vite build + check-theme + menu-reach pass. Not screenshot-verified.",
+    "branch": "claude/yo-3t9p2d",
+    "commits": [
+      {
+        "sha": "dfa7618"
+      }
+    ],
+    "filesChanged": 84,
+    "tests": {
+      "check-controls findings": {
+        "after": "155 -> 0"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/21"
+    }
+  },
+  "closed": {
+    "at": "2026-10-22T13:33:16.222Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "plugins-inherit-style"
+  },
+  "surface": "cloud-claude-code",
+  "startedAt": "2026-10-22T10:35:00.000Z",
+  "finishedAt": "2026-10-22T11:00:00.000Z",
+  "lastSeenAt": "2026-10-22T11:00:00.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "branch": "claude/yo-3t9p2d",
+  "areas": [
+    "apps/console-web/plugins",
+    "framework/react/components/Controls.tsx",
+    "framework/ui/axf.css",
+    "framework/libs",
+    "framework/cli/check-controls.mjs"
+  ]
+}

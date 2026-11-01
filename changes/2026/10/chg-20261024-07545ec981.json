@@ -1,0 +1,51 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-07545ec981",
+  "createdAt": "2026-10-24T19:55:42.864Z",
+  "updatedAt": "2026-10-25T10:48:40.933Z",
+  "kind": "fix",
+  "title": "Fix axHub wip/projects-manifests: pull main in failed",
+  "asked": "Push banner: pull main in failed (the banner's Pull main in failed; Brett tapped Repair); handed to headless Claude Code on the VPS.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "console",
+    "user": "push-banner",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Fix and push wip/projects-manifests (edits + git only)",
+      "state": "queued"
+    },
+    {
+      "text": "CI runs again on the branch",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "Couldn't start Claude Code on the VPS: bash: -c: line 1: `set -e; mkdir -p '/root/axf-fixes/repos'; if [ ! -d '/root/axf-fixes/repos/MossesX-axHub' ]; then git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'; fi; git -C '/root/axf-fixes/repos/MossesX-axHub' fetc",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-25T10:48:40.933Z",
+    "by": "console"
+  },
+  "state": "failed",
+  "status": "failed",
+  "surface": "console-launch",
+  "startedAt": "2026-10-24T19:55:42.000Z",
+  "finishedAt": "2026-10-24T19:56:45.099Z",
+  "lastSeenAt": "2026-10-24T19:55:43.167Z",
+  "branch": "wip/projects-manifests",
+  "doing": "Waiting for approval on axHub"
+}

@@ -1,0 +1,56 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261029-addb1d7333",
+  "createdAt": "2026-10-29T10:34:54.488Z",
+  "updatedAt": "2026-10-29T10:34:54.585Z",
+  "kind": "build",
+  "title": "Style packages \u2014 Fable rebuild of style-package@1",
+  "asked": "Started from the Build manager (Start build now).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "console",
+    "user": "build-manager",
+    "host": "console"
+  },
+  "steps": [
+    {
+      "text": "Approve on axHub",
+      "state": "running"
+    },
+    {
+      "text": "Build (headless Claude Code on the VPS)",
+      "state": "queued"
+    },
+    {
+      "text": "Verify nothing broke",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "failed",
+    "summary": "Launch failed on the VPS.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "failed",
+  "status": "failed",
+  "buildRef": {
+    "kind": "pending",
+    "id": "style-package-fable"
+  },
+  "surface": "console-launch",
+  "startedAt": "2026-10-29T10:34:54.000Z",
+  "finishedAt": "2026-10-29T10:34:54.585Z",
+  "estimate": {
+    "minutes": 95,
+    "costUsd": 26.125
+  },
+  "costEstimated": true,
+  "branch": "fable/style-package-fable",
+  "areas": []
+}

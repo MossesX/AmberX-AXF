@@ -9,8 +9,8 @@
 # `axf-<slug>` in the current folder. The console's Terminal plugin lists `axf-*` tmux sessions on the VPS and opens
 # each new one in a VPS tab attached to it, in the terminal window brought to the front. The stream is printed as
 # readable lines (deploy/claude-stream.mjs) and kept: <log> = what you see, <log minus .log>.jsonl = the raw stream.
-# When it finishes the result stays on screen for closeFinishedAfterSec (agent cap settings, default 2 min; Enter closes
-# it sooner), then the tmux session ends. Without the cap (AXF_SLOTS=off) it waits for Enter up to a day as before.
+# When it finishes and nobody is attached, the tmux session ends after closeFinishedAfterSec (agent cap settings, default
+# 2 min; 120 s without the cap), logs kept. If a client is attached it waits for Enter up to a day.
 # Without tmux it falls back to the old `nohup … &` (nothing to attach to; the systems check offers to install tmux).
 # Activity banner: before Claude starts, `activity.mjs hooks ensure` adds any Claude Code hook event missing from the
 # running user's ~/.claude/settings.json (root or axfbuild alike), so headless sessions report and close their lines.
@@ -100,12 +100,19 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
-  close=86400
-  if [[ -n "$slot" ]] && slots_on; then   # finished = the slot is free now; the window closes by itself after the grace
+  # Nobody attached (the usual headless run): close ~2 min after claude exits, logs stay. Someone watching keeps the
+  # old wait for Enter (up to a day). Finished sessions piling up used to block the cap and the queue (Nov 1 2026).
+  session_now="$(tmux display-message -p '#S' 2>/dev/null || true)"
+  clients=0; [[ -n "$session_now" ]] && clients="$(tmux list-clients -t "=$session_now" 2>/dev/null | wc -l)"
+  close=120; (( clients > 0 )) && close=86400
+  if [[ -n "$slot" ]] && slots_on; then   # finished = the slot is free now
     node "$SLOTS" finish "$slot" --exit "$st" >/dev/null 2>&1 || true
-    close="$(node "$SLOTS" get closeFinishedAfterSec 2>/dev/null || echo 120)"; [[ "$close" =~ ^[0-9]+$ ]] || close=120
+    if (( clients == 0 )); then close="$(node "$SLOTS" get closeFinishedAfterSec 2>/dev/null || echo 120)"; [[ "$close" =~ ^[0-9]+$ ]] || close=120; fi
   fi
-  if (( close > 0 )); then read -r -t "$close" -p "Closes by itself in ${close}s (Enter closes it now). " _ || true; fi
+  if (( close > 0 )); then
+    if (( clients > 0 )); then read -r -t "$close" -p "Enter closes it (waits up to ${close}s). " _ || true
+    else printf 'Closes by itself in %ss.\n' "$close"; sleep "$close"; fi
+  fi
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit "$st" >/dev/null 2>&1
   exit "$st"
 fi

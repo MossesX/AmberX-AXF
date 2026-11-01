@@ -1,0 +1,46 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261023-a643a07614",
+  "createdAt": "2026-10-23T05:37:28.570Z",
+  "updatedAt": "2026-10-23T12:29:14.166Z",
+  "kind": "build",
+  "title": "Systems check: rebake entry per out-of-date app with Auto fix",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "rebake.mjs + systems-check rebake rows with Auto fix (PR)",
+    "branch": "ccr-46e5de6c-d9d9wh",
+    "commits": [
+      {
+        "sha": "24e0ac1"
+      }
+    ],
+    "tests": {
+      "systems-check test.py": {
+        "before": "113",
+        "after": "118"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-23T12:29:14.166Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-23T05:37:28.570Z",
+  "finishedAt": "2026-10-23T05:40:06.567Z",
+  "lastSeenAt": "2026-10-23T05:37:28.570Z",
+  "progress": 1.0
+}

@@ -1,0 +1,73 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-a2ef4351-3066-4366-8c83-dc74b888eb05",
+ "source": "claude-code",
+ "sessionId": "a2ef4351-3066-4366-8c83-dc74b888eb05",
+ "project": "other",
+ "title": "reply with the single word: ready",
+ "startedAt": "2026-08-22T04:41:36.152Z",
+ "endedAt": "2026-08-22T04:41:38.295Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "gizmox-web-green",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.222",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-08-22T04:41:36.276Z",
+   "kind": "prompt",
+   "text": "reply with the single word: ready",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 2,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Failed to authenticate. API Error: 401 OAuth access token has been revoked."
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0
+ },
+ "ingestedAt": "2026-10-21T19:16:27.202Z"
+}

@@ -1,0 +1,124 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-ca057a1b-9a5a-4329-a774-92fc7c1290f5",
+ "source": "claude-code",
+ "sessionId": "ca057a1b-9a5a-4329-a774-92fc7c1290f5",
+ "project": "other",
+ "title": "login",
+ "startedAt": "2026-10-18T11:09:17.154Z",
+ "endedAt": "2026-10-18T11:12:10.237Z",
+ "minutes": 3,
+ "system": {
+  "host": "srv1837178",
+  "container": "9fca435733cc",
+  "app": "Claude Code (terminal)",
+  "appVersion": "2.1.302",
+  "entrypoint": "cli",
+  "surface": "vps-claude-code",
+  "device": "moshi",
+  "via": "moshi",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-10-18T11:09:17.156Z",
+   "kind": "prompt",
+   "text": "login",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 412,
+    "cacheRead": 67063,
+    "cacheWrite": 17988,
+    "thinking": 149
+   },
+   "costUsd": 0.1116,
+   "costEstimated": false,
+   "seconds": 6,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Which login do you need? - **Claude Code account**: type `/login` at the prompt. - **Hostinger MCP** (needs auth in this session): say \"hostinger\" and I'll start it. - **Figma**: also needs auth. Say \"figma\" and I'll start it. - **GitHub CLI** (`gh`): run `! gh auth login`. - **Something else** (ax…"
+  },
+  {
+   "i": 2,
+   "at": "2026-10-18T11:12:10.235Z",
+   "kind": "prompt",
+   "text": "/login login",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": ""
+  },
+  {
+   "i": 3,
+   "at": "2026-10-18T11:12:10.235Z",
+   "kind": "prompt",
+   "text": "Login successful",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": ""
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 3,
+  "turns": 3,
+  "input": 4,
+  "output": 412,
+  "cacheRead": 67063,
+  "cacheWrite": 17988,
+  "thinking": 149,
+  "costUsd": 0.1116,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-10-31T13:52:03.981Z"
+}

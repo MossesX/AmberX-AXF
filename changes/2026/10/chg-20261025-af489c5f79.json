@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261025-af489c5f79",
+  "createdAt": "2026-10-25T20:32:50.138Z",
+  "updatedAt": "2026-10-29T07:02:40.878Z",
+  "kind": "build",
+  "title": "Drag and snap banner and toolbar widgets",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "user": "console",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Arrange mode: drag + snap widgets on banner and toolbars, saved per host, hot render. Draft PR #92.",
+    "branch": "claude/project-thread-c4xw4s",
+    "commits": [
+      {
+        "sha": "71166ab"
+      }
+    ],
+    "filesChanged": 29,
+    "tests": {
+      "check-widgets": {
+        "before": "215",
+        "after": "241"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/92"
+    }
+  },
+  "closed": {
+    "at": "2026-10-29T07:02:40.878Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "widget-arrange"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-25T20:32:50.138Z",
+  "finishedAt": "2026-10-25T20:41:26.913Z",
+  "lastSeenAt": "2026-10-25T20:32:56.956Z",
+  "estimate": {
+    "minutes": 150,
+    "costUsd": 21.0
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-c4xw4s",
+  "areas": [
+    "framework/core",
+    "framework/react",
+    "framework/ui",
+    "framework/spec"
+  ],
+  "progress": 1.0
+}

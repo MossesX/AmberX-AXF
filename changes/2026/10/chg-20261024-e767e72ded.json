@@ -1,0 +1,42 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-e767e72ded",
+  "createdAt": "2026-10-24T15:08:02.749Z",
+  "updatedAt": "2026-10-24T17:08:52.713Z",
+  "kind": "build",
+  "title": "axHub sync plugin + library, Voice Vault sync",
+  "asked": "",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "lib-hubsync + hub-sync plugin + Voice Vault 0.2.0 sync (cloud session)",
+    "branch": "claude/project-thread-u0oyjm",
+    "commits": [],
+    "tests": {
+      "check-hubsync": {
+        "before": "0",
+        "after": "28"
+      }
+    },
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-24T17:08:52.713Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-24T15:08:02.749Z",
+  "finishedAt": "2026-10-24T15:08:04.206Z",
+  "lastSeenAt": "2026-10-24T15:08:02.749Z",
+  "progress": 1.0
+}

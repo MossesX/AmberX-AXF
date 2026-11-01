@@ -1,0 +1,82 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261027-b9f1e2a7c4",
+  "createdAt": "2026-10-27T19:00:00.000Z",
+  "updatedAt": "2026-10-28T02:01:51.445Z",
+  "kind": "build",
+  "title": "Build profiles + Build profiles console plugin (main framework, refactor)",
+  "asked": "Create multiple build profiles and a console plugin to select and save one. Each build profile holds plans, build queue, pending builds, tracking, and all work stuff. Name current one main framework and then start new one called refactor",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "claude-ai",
+    "host": "claude.ai cloud session"
+  },
+  "steps": [
+    {
+      "text": "Core registry + persist profile layer + orchestrator per profile",
+      "state": "done"
+    },
+    {
+      "text": "Python mirror + server routes",
+      "state": "done"
+    },
+    {
+      "text": "Console plugin",
+      "state": "done"
+    },
+    {
+      "text": "Tests, docs, PR",
+      "state": "done"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "build-profiles@1: Main framework (base, original paths) + Refactor (empty). persist.mjs dataPath follows the active profile; profiles.mjs CLI; /api/profiles + Python mirror; console plugin with banner chip + picker. Tests 30/30.",
+    "branch": "claude/build-profiles",
+    "commits": [
+      {
+        "sha": "7a2b00c"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/127"
+    }
+  },
+  "closed": {
+    "at": "2026-10-28T02:01:51.445Z",
+    "by": "console"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "orchestrator",
+    "id": "build-profiles"
+  },
+  "surface": "claude-ai",
+  "startedAt": "2026-10-27T19:00:00.000Z",
+  "finishedAt": "2026-10-27T19:22:00.000Z",
+  "lastSeenAt": "2026-10-27T19:22:00.000Z",
+  "estimate": {
+    "minutes": 115,
+    "costUsd": 16.1
+  },
+  "actual": {
+    "minutes": 22
+  },
+  "costEstimated": true,
+  "branch": "claude/build-profiles",
+  "areas": [
+    "framework/cli/persist.mjs",
+    "framework/cli/profiles.mjs",
+    "framework/plan",
+    "apps/console-web/server",
+    "apps/console-web/plugins/build-profiles",
+    "apps/console-web/plugins/build-orchestrator",
+    "apps/console-web/plugins/build-manager/server",
+    "_claude/builds"
+  ]
+}
