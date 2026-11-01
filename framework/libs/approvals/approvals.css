@@ -49,7 +49,7 @@
 .axf-apx.is-held { border-color: var(--fx-warning) }
 .axf-apx__head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); min-width: 0 }
 .axf-apx__sum { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: var(--fx-dens-gap-xs); padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer }
-.axf-apx__sum:focus-visible, .axf-apx__caret:focus-visible { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: var(--fx-dens-gap-xs) }
+.axf-apx__sum:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm) }
 .axf-apx__top { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axf-apx__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axf-apx__src { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs) }
