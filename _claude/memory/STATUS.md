@@ -164,3 +164,15 @@ Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Re
 ## Session recording through axHub (Nov 1 2026, rec-control, Opus)
 
 Claude drives AmberX's existing Audio Output Recorder through axHub's MCP: service `amberx` (axHub decision #108) — `recorder_start {session_name, group?, note?}` is a straight approval (never veto, never auto-approved; title `Start recording: <session_name>`), `recorder_stop` / `recorder_status` run directly. The phone is the AXPP device: `AxppLink.java` (hello / long poll / answer with the hub session, started by the recorder plugin and WatchService), `RecorderControl.java` (part names `<session> - <YYYY-MM-DD HH-mm> - partN`, session parsing; JUnit `RecorderControlTest`). A remote start sets the session and opens the recorder's own consent flow (Android's capture prompt) plus a "Start recording: <session>" notification; the recording notification says "Recording: <session> … mic off" with Stop. Parts carry `group`/`session`/`note` in their axHub index; the recordings list groups a session's parts (`byGroup`). Phone and web never auto-approve `amberx.recorder_start`. No microphone path exists (the opt-in mic switch Brett mentioned isn't built). Report: `_claude/builds/reports/rec-control.md`. <!-- axf-plugin:output-recorder -->
+
+## GitHub App for the whole stack (Nov 1 2026, github-app, Opus) <!-- axf-plugin:github-app -->
+- Console plugin `github-app` (Settings → Plugins → GitHub): GitHub App manifest flow on MossesX (Create → Install on All
+  repositories → Authorize as Brett). Broker `framework/cli/github-token.mjs` (lib `github-app.mjs`): app JWT (RS256),
+  installation tokens cached and renewed at 50 min, user token refreshed under a lock (refresh token rolled), repo creation,
+  health. Credentials in `<console>/.axf-console/github-app/` (0700/0600), never in git or a browser.
+- The keeper keeps the console's `GITHUB_TOKEN` on the installation token (old PAT in `GITHUB_TOKEN_PAT`, used again if the
+  app can't mint), so every plugin and subprocess uses the app; systems check GitHub route default `auto`; "GitHub token"
+  item tests the old token. VPS: `axf-git-cred` (app first, PAT fallback) and a `gh` wrapper (`framework/deploy/`).
+- Health items `github-app` and `github-app-user`. `axf repo create <name> --private`. Report `_claude/builds/reports/github-app.md`.
+- Follow-up: axHub's github connector still on its own token.
+

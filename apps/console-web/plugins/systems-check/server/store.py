@@ -29,7 +29,7 @@ def _read(p: Path, default: Any) -> Any:
 DEFAULTS: dict[str, Any] = {"$axf": "systems-check-settings@1", "ai": {"systems": False, "whatsnew": False}, "whatsNewBanner": True,
                            "claudeOnFail": False, "claudeShell": False,
                            # github@1 (Oct 30 2026): GitHub through axHub first ("hub") or the local GITHUB_TOKEN first ("local")
-                           "githubRoute": "hub",
+                           "githubRoute": "auto",
                            # health@1 auto-fix per check: auto | ask (show the red item with its Auto fix) | off; unset = the fix's default
                            "autoFix": {}}
 AUTOFIX_MODES = ("auto", "ask", "off")
@@ -38,7 +38,7 @@ AUTOFIX_MODES = ("auto", "ask", "off")
 def settings() -> dict[str, Any]:
     raw = _read(data_dir() / "settings.json", {})
     out = {**DEFAULTS, **raw, "ai": {**DEFAULTS["ai"], **(raw.get("ai") or {})}}
-    out["githubRoute"] = out["githubRoute"] if out.get("githubRoute") in ("hub", "local") else "hub"
+    out["githubRoute"] = out["githubRoute"] if out.get("githubRoute") in ("hub", "local", "auto") else "auto"
     af = raw.get("autoFix") if isinstance(raw.get("autoFix"), dict) else {}
     out["autoFix"] = {str(k)[:80]: v for k, v in af.items() if v in AUTOFIX_MODES}
     return out
@@ -54,7 +54,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k in ("whatsNewBanner", "claudeOnFail", "claudeShell"):
             if k in patch:
                 s[k] = bool(patch[k])
-        if patch.get("githubRoute") in ("hub", "local"):
+        if patch.get("githubRoute") in ("hub", "local", "auto"):
             s["githubRoute"] = patch["githubRoute"]
         if isinstance(patch.get("autoFix"), dict):  # per check; a check not listed uses its fix's default
             for k, v in list(patch["autoFix"].items())[:200]:

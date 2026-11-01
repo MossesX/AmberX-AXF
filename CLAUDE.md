@@ -111,6 +111,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 - Feature status lives in `framework/catalog/status.json`. Build order and completion live in `framework/plan/build-queue.json`, which the MCP tools `build_next` and `build_step` drive. Update both, then run `tracker.mjs`, whenever something lands.
 - Model policy: per step in the Build orchestrator (Fable for contracts/engines/migrations/cross-app GUI behaviour, Opus otherwise); approval only at a model switch.
 - No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.
+- **GitHub goes through the GitHub App (Nov 1 2026):** get tokens from the broker `framework/cli/github-token.mjs` (`installation` | `user` | `token` | `repo create`), never a new personal token; the console keeps `GITHUB_TOKEN` on the app's installation token, the old PAT is only the fallback. Setup: Settings → Plugins → GitHub. <!-- axf-plugin:github-app -->
 
 ## Related repos
 

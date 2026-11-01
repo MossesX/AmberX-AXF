@@ -346,7 +346,7 @@ On claude.ai in a browser → **Settings → Connectors**:
 
 ---
 
-### Replace the GitHub token (when it dies or expires)
+### Replace the GitHub token (when it dies or expires; only the fallback once Part F2 is done)
 
 Signs: the push banner or auto-merge says 401 / Bad credentials, builds finish but say "pushed: no", or the
 health banner shows GitHub red. axHub has its own GitHub token in its vault; this one is the console's and the
@@ -362,6 +362,25 @@ server's git push.
 7. Done. Git push on the VPS reads the same token through `/usr/local/bin/axf-git-cred` (set as the credential
    helper for /opt/axf and every build worktree), so stuck build branches can be pushed straight away. Tell Claude
    "done" and it pushes them and opens the PRs.
+
+---
+
+## Part F2: GitHub App (no more tokens) <!-- axf-plugin:github-app -->
+
+Personal tokens die (expiry, revokes, 401s) and a fine-grained one can't create repos. The console makes its own
+private GitHub App instead and mints its tokens from the app's key, so nothing expires for good. Three taps, once:
+
+1. Console → **Settings → Plugins → GitHub** → **Create GitHub App** → on GitHub tap **Create GitHub App** (name
+   taken? add a suffix in the console's name field and tap Create again).
+2. GitHub opens the install page by itself: pick **All repositories** → **Install**.
+3. Back in the console: **Authorize as Brett** → **Authorize** on GitHub (lets the console create repos).
+
+That's it. The GitHub App item in the systems check goes green. git on the VPS (`/usr/local/bin/axf-git-cred`), `gh`
+(`/usr/local/bin/gh`), the push banner, CI reads, the activity feed and every console plugin now use the app; the old
+token stays as the fallback until you delete it (Keys banner). New repos: `axf repo create <name> --private`.
+Credentials live on the console server only, in `/opt/axf/.axf-console/github-app/` (owner-only). If the app is ever
+deleted or its key revoked, the GitHub App item turns red: tap Fix and do the three taps again.
+VPS helpers (once per server, root): `sh framework/deploy/install-github-helpers.sh`.
 
 ---
 

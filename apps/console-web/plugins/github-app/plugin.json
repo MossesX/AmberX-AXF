@@ -1,0 +1,49 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.github-app",
+  "name": "GitHub",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "One-click GitHub App for the whole stack (github-app@1): Settings → Plugins → GitHub makes a private GitHub App on MossesX through GitHub's manifest flow (Create → Install on All repositories → Authorize as Brett). The console then mints its own installation tokens from the app's key (1 h, renewed at 50 min: they never die for good) and keeps GITHUB_TOKEN on them, so git, gh, the push banner, CI reads and the activity feed use the app; the old personal token stays as the fallback. A user token from the same app (refreshed by itself) creates repos. Health items for the app key, installation, token, rate limit and user token. Keys and tokens stay on the console server (.axf-console/github-app, 0700/0600) and never reach a browser; the broker is framework/cli/github-token.mjs.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "service:axf.github-app@1",
+    "settings-tab:github-app"
+  ],
+  "optional": [
+    "service:axf.health@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-01"
+  },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/github-app",
+    "env": [
+      "AXF_GITHUB_APP_DIR",
+      "AXF_GITHUB_APP_KEEPER",
+      "AXF_GITHUB_APP_KEEP_S",
+      "GITHUB_TOKEN_PAT",
+      "AXF_GITHUB_TOKEN_SOURCE"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "install_steps.md",
+      "_claude/THREADS.md"
+    ]
+  },
+  "opens": false
+}

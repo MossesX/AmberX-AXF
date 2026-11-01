@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| GitHub App for the whole stack (`github-app`, Opus, headless): one-click GitHub App (manifest flow: Create → Install on All repositories → Authorize as Brett), token broker `framework/cli/github-token.mjs` (installation tokens minted from the app key, renewed at 50 min; user token refreshed, rolled), console keeper puts `GITHUB_TOKEN` on the app (old PAT = fallback), git credential helper + gh wrapper on the VPS, health items, `axf repo create`; axp-backup finish timer creates its 3 repos once authorized | done (waiting on Brett's 3 taps) | `claude/github-app` → main | — | Brett: Settings → Plugins → GitHub, 3 taps. Follow-up: axHub's github connector on the app. Report `_claude/builds/reports/github-app.md` | 2026-11-01 |
 | Expandable approval rows (approval-expand, Opus, headless): caret far right, details in place (reason, exact call + copy, who asked, tool/policy/risk, timeline, result + output tail, Deny/Approve inside), stays open on refresh; one shared lib-approvals row in the axHub list, console banner, AmberX view, title-bar popover, and the app-menu "Waiting for approvals" dropdown (menu rows `expand`, AppMenu `registerMenuRowDetails`); axHub grid rows open on tap with the same panel | done (on main 5e9b3475) | main (direct push, Brett's brief) | — | UI Review r-20261101-396ffb92 waiting. Report `_claude/builds/reports/approval-expand.md` | 2026-11-01 |
 | Watch live (Brett: "Watch live = HOT RENDER"): a Watch live link on every running build (Build manager, Build orchestrator) and approval details pops up the screen the session is changing, element outlined, hot-rendering; headless launcher starts previews, console proxies /preview behind auth, `axf focus` | testing | `claude/watch-live` | — (pushes to main) | waiting for approval-expand on main, merge, retest, push; Brett: UI Review r-20261101-ksry601 | 2026-11-01 |
 | Who asked, on every approval (Brett: "every approval just says vps.run"): axHub decision 109 records the source (Claude.ai / Claude Code / Headless / Console / Agent / System) + session/build/agent name + MCP client on every held/confirm request; console, agents and headless builds send `X-Axhub-Session`; approvals grid (DataGrid: Source, Who, What, Requested, Countdown; sortable, source filter), dropdown rows, request page and AmberX hub view show it (headless `approval-source`, Opus) | done | `claude/approval-source` (AXF + axHub), pushed to main | — | axHub redeploys from main (Coolify); UI Review shots not taken (headless) | Nov 1 2026 |
@@ -114,6 +115,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### GitHub App (`github-app`, Opus) — branch `claude/github-app`, on main
+- **Asked:** one GitHub App for the stack (no more dying tokens; repo creation), one-click setup, broker, every caller on it, health + banner, then finish the axp-backup push.
+- **Done:** broker + plugin + helpers + checks; VPS helpers installed (`/usr/local/bin/axf-git-cred`, `/usr/local/bin/gh`); `/root/axp-backup/bin/finish.sh` creates the 3 private repos with the app's user token on its next 15-min run after Brett authorizes, then pushes (secret scan in backup.sh unchanged).
+- **Waits on Brett:** console → Settings → Plugins → GitHub: Create GitHub App → Install (All repositories) → Authorize as Brett.
+- **Left (follow-up thread):** axHub's github connector still uses its own token (MossesX/axHub: add app auth via the same JWT exchange, test with pnpm test on node:22, redeploy via Coolify). The axp-backup branch's repo copy of finish.sh (`deploy/axp-backup/`) doesn't have the repo-create step; the live copy does.
+- **Checks:** `node framework/spec/check-github-app.mjs`, `python3 apps/console-web/plugins/github-app/test.py`, `node framework/cli/github-token.mjs status --live`. <!-- axf-plugin:github-app -->
 
 ### Who asked, on every approval (axHub decision 109) — branch `claude/approval-source` (AXF + axHub)
 
