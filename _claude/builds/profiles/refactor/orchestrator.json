@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T02:26:59.912Z",
+ "updatedAt": "2026-11-01T02:28:35.407Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7813,19 +7813,23 @@
    "title": "Orchestrator ↔ Pending builds auto-sync (Build manager follows)",
    "category": "Builds",
    "detail": "Brett, Oct 27 2026 20:46: all builds go to the orchestrator, which splits them into Fable/Opus steps and sends them out to Pending builds and the Build manager; they always stay in sync. Bridge until builds-one-page (paused) merges the datasets. Every orchestrator save rewrites the profile Pending list; every Pending change (console, CLI, MCP, plugins) flows back into the orchestrator. Profile: Refactor.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
    "branch": "claude/orch-pending-sync",
    "pr": "",
    "createdAt": "2026-10-28T01:07:25.673Z",
-   "updatedAt": "2026-10-28T01:11:04.754Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-01T02:28:35.357Z",
+   "builtAt": "2026-11-01T02:28:34.899Z",
    "notes": [
     {
      "text": "Built on Opus, branch claude/orch-pending-sync, PR #143; s3 ticks when merged.",
      "at": "2026-10-28T01:11:04.754Z"
+    },
+    {
+     "text": "s3 closed by Leftovers (claude/leftovers): the bridge was retired by urgent-builds (one store), so the rule now describes the store; CI test = check-builds-store.mjs + builds-store verify (already in android.yml); README already updated. No PR: pushed to main per Brett's leftovers brief.",
+     "at": "2026-11-01T02:28:35.357Z"
     }
    ],
    "approvals": [],
@@ -7884,8 +7888,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:28:34.899Z",
      "note": "",
      "uid": "st-ekx7gd"
     }
