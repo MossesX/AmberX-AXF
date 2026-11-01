@@ -19,36 +19,22 @@
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
+import { Button, Chip, Icon, useOptionalRuntime, usePortalRoot } from '../../react';
+import { HubSourceBadge } from '../hub/react';
 import { HUB_DEFAULT, normalizeHub } from '../hub/hub';
 import { formatCountdown } from '../hub/veto';
 import {
-  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, canDecideHere, countdownOf, decideOnHub, freshIds, goneIds, goneMessage, isUrgent, itemLine, rowOrder,
+  APPROVALS_OPEN_EVENT, DECISION_LABELS, badgeLabel, badgeText, countdownOf, freshIds, goneIds, goneMessage, isUrgent, itemLine, rowOrder, rowTimes,
   approvalsWatcher, type ApprovalDecision, type ApprovalItem, type ApprovalsState, type DecideResult,
 } from './index';
+import { approvalsHost, decideApproval, onApprovalsHost, openHubPage } from './host';
 import './approvals.css';
 
 /* ---------------------------------------------------------------- the host seam */
 
-/** What an app plugs in: its hub, whether the hub frames its approval page for this origin, its own deciding path. */
-export interface ApprovalsHost {
-  hub?: string;
-  /** The hub allows this app's origin to frame its approval page (AXHUB_APPROVALS_FRAME_ANCESTORS). */
-  frame?: boolean;
-  /** The app's own way to decide (resolves with the result, or `opened: true` when it showed the hub page). */
-  decide?: (item: ApprovalItem, decision: ApprovalDecision) => Promise<DecideResult>;
-  /** How hub pages open (default `window.open`). */
-  open?: (url: string) => void;
-  /** Poll period (ms). */
-  everyMs?: number;
-}
-
-let host: ApprovalsHost = {};
-const hostSubs = new Set<() => void>();
-/** Merges into the app's approvals host (later calls win per key). */
-export function setApprovalsHost(h: ApprovalsHost): void { host = { ...host, ...h }; hostSubs.forEach((f) => f()); }
-export const approvalsHost = (): ApprovalsHost => host;
-const useHost = () => useSyncExternalStore((f) => { hostSubs.add(f); return () => { hostSubs.delete(f); }; }, () => host, () => host);
+// The seam lives in host.ts (no React) so the application menu's Approve / Deny decide the same way.
+export { setApprovalsHost, approvalsHost, decideApproval, type ApprovalsHost } from './host';
+const useHost = () => useSyncExternalStore(onApprovalsHost, approvalsHost, approvalsHost);
 
 let pendingOpen: { id: string | null } | null = null;
 let mounted = 0;
@@ -213,19 +199,12 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
     return () => { document.removeEventListener('keydown', key); document.removeEventListener('pointerdown', down, true); };
   }, [anchor, onClose]);
 
-  const openPage = (url: string) => { if (host.open) host.open(url); else globalThis.open?.(url, '_blank', 'noopener,noreferrer'); };
-
   const run = async (item: ApprovalItem, d: ApprovalDecision) => {
     setBusy(`${item.id}:${d}`);
     acted.current.set(item.id, item);
     try {
-      let r: DecideResult;
-      if (host.decide) r = await host.decide(item, d);
-      else if (canDecideHere(hub, globalThis.location?.origin)) r = await decideOnHub(hub, item, d);
-      else if (frame) { setFramed(item); r = { ok: true, opened: true, message: '' }; }
-      else { openPage(item.url); r = { ok: true, opened: true, message: '' }; }
+      const r: DecideResult = await decideApproval(hub, item, d, frame ? { openPage: setFramed } : {});
       if (!r.opened) { toast(r.message, r.ok ? 'success' : 'danger'); if (r.ok) acted.current.delete(item.id); }
-      void approvalsWatcher(hub).check();
     } catch (e) {
       toast((e as Error)?.message || 'Something went wrong.', 'danger');
     } finally {
@@ -254,7 +233,7 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
           {more > 0 && <li className="fx-muted fx-small">…and {more} more on the hub.</li>}
         </ul>
       )}
-      {!framed && <div className="axf-approvals__foot"><a className="fx-small" href={state.approvalsUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => { if (host.open) { e.preventDefault(); host.open(state.approvalsUrl); } }}>All approvals on axHub <Icon name="external" size={12} /></a></div>}
+      {!framed && <div className="axf-approvals__foot"><a className="fx-small" href={state.approvalsUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => { if (approvalsHost().open) { e.preventDefault(); openHubPage(state.approvalsUrl); } }}>All approvals on axHub <Icon name="external" size={12} /></a></div>}
     </div>,
     root,
   );
@@ -263,11 +242,18 @@ function Popover({ hub, state, anchor, frame, first, onClose }: { hub: string; s
 function Row({ item, busy, onDecide }: { item: ApprovalItem; busy: string; onDecide: (d: ApprovalDecision) => void }) {
   const left = countdownOf(item);
   const urgent = left !== null && left <= 30;
+  const times = rowTimes(item);
   return (
     <li className={`axf-approvals__item${item.kind === 'held' ? ' is-held' : ''}`}>
       <div className="axf-approvals__text">
+        {/* What it is first (the reason title), then who asked (axHub 109), the tool as a small chip, when, and the countdown. */}
         <strong className="axf-approvals__title" title={item.title}>{item.title}</strong>
-        <span className={`fx-small axf-approvals__line${urgent ? ' is-urgent' : ''}`} role={left !== null ? 'timer' : undefined}>{itemLine(item)}</span>
+        <span className="fx-row fx-row--wrap fx-row--tight axf-approvals__meta">
+          <HubSourceBadge source={item.source} />
+          {item.title !== `Run ${item.tool}` && <Chip>{item.tool}</Chip>}
+          {times.asked && <span className="fx-small fx-muted">{times.asked}</span>}
+          <span className={`fx-small axf-approvals__line${urgent ? ' is-urgent' : ''}`} role={left !== null ? 'timer' : undefined}>{times.countdown || itemLine(item)}</span>
+        </span>
         {item.description && <span className="fx-small fx-muted axf-approvals__desc">{item.description}</span>}
         {item.command && <code className="fx-mono fx-small axf-approvals__cmd" title={item.command}>{item.command}</code>}
       </div>

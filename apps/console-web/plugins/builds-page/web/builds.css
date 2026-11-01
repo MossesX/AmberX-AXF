@@ -1,0 +1,47 @@
+/* Builds page: layout only. Every control is a framework control; colours, sizes and motion come from theme tokens. */
+.axp-builds { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl) }
+.axp-builds__head h1 { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-lg) }
+.axp-builds__sub { margin: 0 }
+.axp-builds__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-lg) }
+.axp-builds__pick { flex: 0 1 calc(var(--fx-font-size) * 18); min-width: 0 }
+.axp-builds__grow { flex: 1 1 auto }
+.axp-builds__inline { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-builds__name { cursor: text; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: none; -webkit-touch-callout: none }
+.axp-builds__rename { width: 100%; min-width: calc(var(--fx-font-size) * 10) }
+.axp-builds__menu-backdrop { background: transparent }
+.axp-builds__menu { position: fixed; min-width: calc(var(--fx-font-size) * 9) }
+.axp-builds__cell-title { display: flex; flex-direction: column; min-width: 0; width: 100%; gap: var(--fx-dens-gap-2xs) }
+.axp-builds__cell-title > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-builds__bar-cell { display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100% }
+.axp-builds__bar-cell > .fx-meter { flex: 1 1 auto }
+.axp-builds__num, .axp-builds__pct { font-variant-numeric: tabular-nums }
+.axp-builds__pct { margin-left: auto; font-size: var(--fx-type-root-lg) }
+/* the number moves while a build runs (the meter's own stripes / motion come from the meter asset) */
+.axp-builds__num[data-active], .axp-builds__pct[data-active], .fx-widget-counter[title$="% building"] .fx-widget-counter__num { animation: axp-builds-pulse calc(var(--fx-motion) * 6) var(--fx-ease) infinite alternate }
+@keyframes axp-builds-pulse { from { opacity: 1 } to { opacity: calc(1 - var(--fx-opacity-muted) * 0.8) } }
+@media (prefers-reduced-motion: reduce) { .axp-builds__num[data-active], .axp-builds__pct[data-active], .fx-widget-counter[title$="% building"] .fx-widget-counter__num { animation: none } }
+.axp-builds__draft { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-warning); border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-builds__draft-log { flex: 1 0 100%; margin: 0; padding-left: var(--fx-dens-gap-3xl) }
+.axp-builds__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-builds__detail p { margin: 0; overflow-wrap: anywhere }
+.axp-builds__text { white-space: pre-wrap }
+.axp-builds__steps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-builds__steps li { display: grid; grid-template-columns: calc(var(--fx-space) * 14) auto auto 1fr; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-builds__steps li.is-done > span:last-child { text-decoration: line-through; color: var(--fx-muted) }
+.axp-builds__notes { margin: 0; padding-left: var(--fx-dens-gap-3xl) }
+.axp-builds__steps-view { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-builds__dialog { width: min(100%, calc(var(--fx-font-size) * 44)) }
+.axp-builds__dialog-body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-builds__dialog-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--fx-dens-gap-md) }
+.axp-builds__dialog-foot > .fx-small { margin-right: auto }
+.axp-builds__n { display: flex; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-builds__n input { width: calc(var(--fx-font-size) * 6) }
+.axp-builds__n--wide { flex-direction: column; align-items: stretch }
+.axp-builds__n--wide textarea { width: 100% }
+.axp-builds__proposals { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); max-height: 50vh; overflow: auto }
+.axp-builds__proposal { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm) }
+.axp-builds__proposal.is-dragging { opacity: var(--fx-opacity-muted) }
+.axp-builds__proposal-head { display: flex; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-builds__proposal-head input { flex: 1 1 auto; min-width: 0 }
+.axp-builds__proposal-steps { margin: 0; padding-left: var(--fx-dens-gap-4xl) }
+@media (max-width: 640px) { .axp-builds__pick { flex: 1 1 100% } .axp-builds__steps li { grid-template-columns: calc(var(--fx-space) * 10) auto 1fr } .axp-builds__steps li > .fx-chip { display: none } }

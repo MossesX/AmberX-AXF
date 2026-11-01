@@ -1670,6 +1670,24 @@ async def _alert_on_crash(request: Request, exc: Exception) -> JSONResponse:
 app.add_exception_handler(Exception, _alert_on_crash)
 
 
+# ---------------------------------------------------------------- Watch live (watch-live@1)
+import previews  # noqa: E402 — headless sessions' live previews, proxied at /preview/<session>/<app>/ (server/previews.py)
+
+
+def _preview_allowed(conn: HTTPConnection, _session: str, _app: str) -> bool:
+    """Same people as the console API: a wall admin, the console token, or anyone on an open console (no token, no wall)."""
+    c = wall.wall_caller(conn.headers)
+    if c:
+        return c.admin
+    tok = current_token()
+    if not tok:
+        return not wall.trusted()
+    return _token_ok(conn, tok)
+
+
+previews.mount(app, ROOT, current_token, _preview_allowed)
+
+
 # ---------------------------------------------------------------- the console itself
 
 if DIST.exists():

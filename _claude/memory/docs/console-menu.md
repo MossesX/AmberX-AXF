@@ -51,7 +51,7 @@ Help       Keyboard shortcuts · Documentation · Plugin guide · Systems check 
 Live lists: `console.pending` (open pending items → Pending builds, row flashed), `console.queue` (steps not done →
 Build queue, row flashed), `console.features` (plan features not built → feature window), `console.libraries`,
 `console.modules`, `console.boilerplates` (→ the page, row flashed / picked), `console.plugins` (→ Plugin Manager),
-`build-manager.remaining` (→ Build manager row), `approvals.list` (→ the review dialog), `app-tabs.tabs`; plus the
+`build-manager.remaining` (→ Build manager row), `approvals.list` (→ the review dialog; since Nov 1 2026 each row also carries red Deny + green Approve, framework AppMenu row `buttons` + provider `act`), `app-tabs.tabs`; plus the
 framework's `views`, `nav`, `toolbar`, `settings`, `windows`, `dialogs`, `chrome`.
 
 New actions: `console.search`, `console.open:<pilot|demo|axhub|axhub-approvals|axhub-apps|axhub-users|axhub-account|plugin-guide|docs>`

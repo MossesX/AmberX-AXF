@@ -14,8 +14,12 @@ export function matches(list: readonly string[], tool: string): boolean {
   return list.some((p) => p === '*' || p === tool || (p.endsWith('.*') && tool.startsWith(p.slice(0, -1)) && tool.length > p.length - 1));
 }
 
-/** "Approve everything" never covers vps.run; the tool list does when it names it (or `*`). */
+/** Never approved by the phone on its own, whatever the settings say: starting a recording needs Brett's own tap (axHub decision 108). */
+export const NEVER_AUTO: readonly string[] = ['amberx.recorder_start'];
+
+/** "Approve everything" never covers vps.run; the tool list does when it names it (or `*`). Never NEVER_AUTO. */
 export function autoApproves(on: boolean, all: boolean, raw: unknown, tool: string): boolean {
+  if (NEVER_AUTO.includes(tool)) return false;
   return (all && tool !== '' && !NOT_IN_ALL.includes(tool)) || (on && matches(patterns(raw), tool));
 }
 

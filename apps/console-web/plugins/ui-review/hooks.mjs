@@ -21,11 +21,12 @@ export async function onInstall(ctx) {
   const moved = migrateOld(ctx);
   ctx.log(moved.length ? `moved the Design packs data in: ${moved.join(', ')}` : `ready: ${ctx.dataDir}`);
 }
-export async function onUninstall(ctx) { ctx.log('removing the review items, their screenshots and the design-pack picks'); }
+export async function onUninstall(ctx) { ctx.log('removing the review items, their screenshots, the Screenshots tab pictures and the design-pack picks'); }
 export async function checks(ctx) {
   const ix = join(ctx.dir, 'packs/index.json');
   return [
     { id: 'data-folder', ok: existsSync(ctx.dataDir), detail: ctx.dataDir },
+    { id: 'screenshots', ok: existsSync(join(ctx.dir, 'shots.mjs')) && existsSync(join(ctx.dir, 'server/screenshots.py')), detail: 'Screenshots tab: shots.mjs + server/screenshots.py (data in screenshots/)' },
     { id: 'kinds', ok: existsSync(join(ctx.dir, 'kinds.json')), detail: 'kinds.json (open registry of sections)' },
     { id: 'design-packs', ok: existsSync(ix), detail: existsSync(ix) ? `${JSON.parse(readFileSync(ix, 'utf8')).packs.length} packs` : 'packs/index.json missing' },
   ];

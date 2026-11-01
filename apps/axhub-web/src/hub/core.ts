@@ -241,3 +241,84 @@ export function stepGroups(steps: HandoffStepView[]): { name: string; steps: Han
   for (const s of steps) groups.set(s.group, [...(groups.get(s.group) ?? []), s]);
   return [...groups].map(([name, list]) => ({ name, steps: list, done: list.filter((s) => s.done).length }));
 }
+
+/* ---------------------------------------------------------------- refreshes that keep the page (Nov 1 2026) */
+
+/**
+ * Brett, Nov 1 2026: the approvals screen flashed "Reading the hub" over and over while a countdown ran. A page shows its
+ * loading line only before its first answer; later reads update what is on screen in place.
+ */
+export const showReading = (data: unknown, error: string): boolean => data === null && !error;
+
+/** Failed reads in a row before a page that already shows data says the hub can't be reached (one blip stays quiet). */
+export const MISSES_SHOWN = 2;
+
+/** The error a page shows: at once when nothing is on screen yet, else only once `misses` reads in a row failed. */
+export const shownError = (hasData: boolean, error: string, misses: number): string =>
+  !error ? '' : !hasData || misses >= MISSES_SHOWN ? error : '';
+
+/**
+ * A session re-read (tab back in view, an expired CSRF value) that couldn't reach the hub (no answer, 5xx, 429) keeps the
+ * signed-in page as it is: swapping it for an error note and back remounted every page under it.
+ */
+export const keepSessionOnFailure = (phase: string, status: number): boolean =>
+  phase === 'ready' && (status === 0 || status === 429 || status >= 500);
+
+/** Same JSON = same answer: kept as the old value so nothing under it re-renders. */
+export const sameJson = (a: unknown, b: unknown): boolean => {
+  if (a === b) return true;
+  try { return JSON.stringify(a) === JSON.stringify(b); } catch { return false; }
+};
+
+/* ─────────────────────────────────────────────────────────── who asked (axHub decision 109) */
+
+/** The badge order for the source filter and the sort: people first, then unattended, then the hub. */
+export const SOURCE_ORDER = ['claude_ai', 'claude_code', 'headless', 'console', 'agent', 'system', 'unknown'] as const;
+export const SOURCE_LABEL: Record<string, string> = {
+  claude_ai: 'Claude.ai', claude_code: 'Claude Code', headless: 'Headless', console: 'Console', agent: 'Agent', system: 'System', unknown: 'Unknown',
+};
+
+interface SourceRow { source?: { kind: string; label: string; who: string } }
+
+/** A row's source kind ('unknown' when the hub sent none or a kind this page doesn't know). */
+export const sourceKind = (r: SourceRow): string => (r.source && Object.hasOwn(SOURCE_LABEL, r.source.kind) ? r.source.kind : 'unknown');
+/** A row's who: the session, build or agent name ('' when it adds nothing beyond the badge). */
+export const sourceWho = (r: SourceRow): string => (r.source && r.source.who && r.source.who !== r.source.label ? r.source.who : '');
+
+/** The source filter chips: every kind on the page, in badge order, with its count. */
+export function sourceChips(rows: readonly SourceRow[]): { kind: string; label: string; count: number }[] {
+  const n = new Map<string, number>();
+  for (const r of rows) n.set(sourceKind(r), (n.get(sourceKind(r)) ?? 0) + 1);
+  return SOURCE_ORDER.filter((k) => n.has(k)).map((k) => ({ kind: k, label: SOURCE_LABEL[k]!, count: n.get(k)! }));
+}
+
+interface TimedRow { status: string; createdAt: string; expiresAt: string; showExpires?: boolean; veto?: { secondsLeft: number; state?: string } }
+
+/**
+ * Sort key of the countdown column: seconds until it runs (held) or expires (waiting); shelved after those; decided
+ * requests last (Infinity).
+ */
+export function countdownKey(r: TimedRow, now: number = Date.now()): number {
+  if (r.status === 'held' && r.veto) return r.veto.state === 'shelved' ? 1e9 + r.veto.secondsLeft : r.veto.secondsLeft;
+  if (r.showExpires) { const t = Date.parse(r.expiresAt); return Number.isFinite(t) ? Math.max(0, (t - now) / 1000) : 1e10; }
+  return Number.POSITIVE_INFINITY;
+}
+
+/** Sort key of the Requested column: when it was asked (ms; unknown = 0). */
+export const requestedKey = (r: Pick<TimedRow, 'createdAt'>): number => { const t = Date.parse(r.createdAt); return Number.isFinite(t) ? t : 0; };
+
+/** Next column sort after a header tap: same column flips, a new one starts ascending, `null` = the hub's order. */
+export function nextSort(cur: { col: string; dir: 1 | -1 } | null, col: string | null): { col: string; dir: 1 | -1 } | null {
+  if (col === null) return null;
+  return cur && cur.col === col ? { col, dir: cur.dir === 1 ? -1 : 1 } : { col, dir: 1 };
+}
+
+/**
+ * The hub's reply to a tap shows at once (Running, Denied, Approved …) until the grid's next read changes that row; a
+ * reply is kept with the revision + status of the row it answered.
+ */
+export interface KeptReply<T> { base: string; item: T }
+export const replyBase = (r: { revision: number; status: string }): string => `${r.revision}:${r.status}`;
+export function shownRow<T extends { id: string; revision: number; status: string }>(fromGrid: T, kept: KeptReply<T> | undefined): T {
+  return kept && kept.base === replyBase(fromGrid) && (kept.item as { id: string }).id === fromGrid.id ? kept.item : fromGrid;
+}

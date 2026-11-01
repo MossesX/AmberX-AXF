@@ -46,6 +46,8 @@ function normStep(s, i) {
   const o = s && typeof s === 'object' ? s : {};
   return {
     id: str(o.id, 40) || `s${i + 1}`,
+    ...(str(o.uid, 60) ? { uid: str(o.uid, 60) } : {}), // builds@1 step record id: never changes (store, Steps view)
+    ...(str(o.title, 200) ? { title: str(o.title, 200) } : {}), // a renamed step shows its title instead of its text
     text: str(o.text, 2000),
     model: MODELS.includes(o.model) ? o.model : 'Opus',
     why: str(o.why, 300),
@@ -165,6 +167,8 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 /** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
 export function derivedStatus(build, rules) {
   if (['blocked', 'failed', 'archived'].includes(build.status)) return build.status;
+  if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
+  if (build.status === 'complete' && !build.steps.some((s) => s.done)) return 'complete'; // built without ticking its steps
   const n = nextUp(build, rules);
   if (n.done) return 'complete';
   if (n.needsApproval) return 'waiting';
@@ -205,6 +209,8 @@ export function brief(build, rules = DEFAULT_RULES) {
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — then commit _claude/builds/orchestrator.json with your work.`,
+    'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
+    'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --title "…" --app … --screen … --source check --session … (UI Review → Screenshots), never the review queue.',
   ];
   return lines.filter(Boolean).join('\n');
 }
@@ -231,6 +237,8 @@ export function apply(state, change) {
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;
     }
     case 'update': { b = find(); for (const k of ['title', 'detail', 'branch', 'pr', 'category']) if (typeof c[k] === 'string') b[k] = str(c[k], k === 'detail' ? 8000 : k === 'category' ? 60 : 300); if (Array.isArray(c.steps)) b.steps = c.steps.map(normStep); log.push(`updated ${b.id}`); break; }
+    case 'rename': { b = find(); const t = str(c.title, 300).trim(); if (!t) throw new Error('a build needs a name'); b.title = t; log.push(`${b.id} renamed "${t}"`); break; } // the id never changes
+    case 'rename-step': { b = find(); const st = stepOf(b); const t = str(c.title, 200).trim(); if (!t) throw new Error('a step needs a name'); st.title = t; log.push(`${b.id} ${st.id} renamed "${t}"`); break; }
     case 'remove': { b = find(); s.builds = s.builds.filter((x) => x !== b); log.push(`removed ${b.id}`); break; }
     case 'status': { b = find(); if (!STATUSES.includes(c.status)) throw new Error(`unknown status ${c.status}`); b.status = c.status; b.builtAt = c.status === 'complete' ? now() : ''; log.push(`${b.id} → ${c.status}`); break; }
     case 'archive': { b = find(); b.status = 'archived'; log.push(`archived ${b.id}`); break; }

@@ -11,6 +11,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/review-core.mjs';
+import * as sc from './web/shots-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let n = 0; const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -144,6 +145,80 @@ t('rebuild-shots has the --submit option, found by capability', () => {
   const src = readFileSync(join(HERE, '../../../../framework/cli/rebuild-shots.mjs'), 'utf8');
   assert.match(src, /args\.submit/); assert.match(src, /service:ui-review@1/); assert.ok(!src.includes('plugins/ui-review'), 'never by folder name');
   const pj = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8')); assert.ok(pj.provides.includes('service:ui-review@1'));
+});
+
+t('screenshots core: normShot, pairs, filters, sorting, groups', () => {
+  const { shot, problems } = sc.normShot({ title: ' Home ', source: 'check', pr: '#7', pair: 'BR 1', side: 'after', file: 's-1.png', extra: 1, takenAt: '2026-11-01T02:03:04.567Z' }, { now: AT });
+  assert.deepEqual(problems, []); assert.equal(shot.title, 'Home'); assert.equal(shot.pr, 7); assert.equal(shot.pair, 'br-1'); assert.equal(shot.side, 'after');
+  assert.equal(shot.takenAt, '2026-11-01T02:03:04Z'); assert.equal(shot.extra, 1); assert.equal(shot.$axf, 'ui-screenshot@1'); assert.match(shot.id, /^s-20261030-/);
+  assert.equal(sc.normShot({ title: 'x', source: 'nope' }).shot.source, 'manual');
+  assert.equal(sc.normShot({ file: 'home-phone.png' }).shot.title, 'Home');
+  assert.equal(sc.normShot({ file: 'home-phone.png' }).shot.viewport, 'phone');
+  assert.equal(sc.normShot({ title: 'x', side: 'after' }).shot.side, '', 'no pair, no side');
+  assert.equal(sc.normShot({ title: '', pr: 'x' }).problems.length, 2); assert.equal(sc.normShot({ title: 'x', file: '../a.png' }).problems.length, 1);
+  const a = { ...sc.normShot({ id: 'a', title: 'A', app: 'Breakroom', screen: '/b', source: 'check', pair: 'p', side: 'before', takenAt: '2026-10-31T10:00:00Z' }).shot };
+  const b = { ...sc.normShot({ id: 'b', title: 'B', app: 'Console', source: 'pr', pair: 'p', side: 'after', viewport: 'phone', takenAt: '2026-11-01T10:00:00Z' }).shot };
+  const c = { ...sc.normShot({ id: 'c', title: 'C note', source: 'manual', note: 'clock overlaps', takenAt: '2026-11-01T11:00:00Z' }).shot };
+  const xs = [a, b, c];
+  assert.equal(sc.sideFor([a], 'p'), 'after'); assert.equal(sc.sideFor([], 'p'), 'before'); assert.equal(sc.sideFor([a], ''), '');
+  assert.deepEqual(Object.values(sc.pairOf(xs, b)).map((x) => x.id), ['a', 'b']); assert.equal(sc.pairOf(xs, c), null); assert.equal(sc.pairOf([a], a), null);
+  assert.deepEqual(sc.filterShots(xs, { q: 'overlaps' }).map((x) => x.id), ['c']);
+  assert.deepEqual(sc.filterShots(xs, { app: 'Breakroom' }).map((x) => x.id), ['a']);
+  assert.deepEqual(sc.filterShots(xs, { viewport: 'phone' }).map((x) => x.id), ['b']);
+  assert.deepEqual(sc.sortShots(xs).map((x) => x.id), ['c', 'b', 'a']); assert.deepEqual(sc.sortShots(xs, 'oldest').map((x) => x.id), ['a', 'b', 'c']);
+  assert.deepEqual(sc.groupShots(xs, 'day').map((g) => [g.id, g.shots.length]), [['2026-11-01', 2], ['2026-10-31', 1]]);
+  assert.deepEqual(sc.groupShots(xs, 'app').map((g) => g.label), ['Breakroom', 'Console', 'No app']);
+  assert.deepEqual(sc.groupShots(xs, 'source').map((g) => g.label), ['Check', 'PR', 'Upload']);
+  assert.equal(sc.groupShots(xs, 'none')[0].shots.length, 3);
+});
+
+t('screenshots core: migrateItems moves only "Breakroom check:" items', () => {
+  const items = [
+    mk({ id: 'r-1', title: 'Breakroom check: home', app: 'Breakroom', shots: ['items/r-1/home-phone.png', 'items/r-1/home-desktop.png'] }),
+    mk({ id: 'r-2', title: 'Breakroom lobby' }), { id: 'pack:x', title: 'Breakroom check: pack' },
+  ];
+  const r = sc.migrateItems(items, { now: AT });
+  assert.deepEqual(r.moved, ['r-1']); assert.deepEqual(r.keep.map((x) => x.id), ['r-2', 'pack:x']);
+  assert.deepEqual(r.shots.map((x) => [x.shot.viewport, x.shot.source, x.from]), [['phone', 'check', 'items/r-1/home-phone.png'], ['desktop', 'check', 'items/r-1/home-desktop.png']]);
+  assert.equal(r.shots[0].shot.migratedFrom, 'r-1'); assert.equal(r.shots[0].shot.app, 'Breakroom');
+});
+
+t('shot CLI: add (local) → pair → list → promote → migrate; never in the review queue', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'ui-shots-test-'));
+  const env = { ...process.env, AXF_UI_REVIEW_DIR: dir }; delete env.AXF_CONSOLE_URL; delete env.AXF_TOKEN;
+  const shot = (...a) => spawnSync(process.execPath, [join(HERE, '../../../../framework/cli/shot.mjs'), ...a], { env, encoding: 'utf8' });
+  const axf = (...a) => spawnSync(process.execPath, [join(HERE, '../../../../framework/cli/axf.mjs'), ...a], { env, encoding: 'utf8' });
+  const img = readFileSync(join(HERE, 'packs', JSON.parse(readFileSync(join(HERE, 'packs/index.json'), 'utf8')).packs[0].files[0].src));
+  const p = join(dir, 'breakroom-home-phone.png'), d = join(dir, 'breakroom-home-desktop.png'); writeFileSync(p, img); writeFileSync(d, img);
+  const one = shot('--local', p, '--title', 'Breakroom home', '--app', 'Breakroom', '--screen', '/breakroom', '--source', 'check', '--session', 's-9', '--pair', 'br', '--json');
+  assert.equal(one.status, 0, one.stderr);
+  const a = JSON.parse(one.stdout).shots[0];
+  assert.equal(a.viewport, 'phone'); assert.equal(a.side, 'before'); assert.equal(a.session, 's-9'); assert.ok(existsSync(join(dir, 'screenshots', 'files', a.file)));
+  const two = axf('shot', d, '--pair', 'br', '--source', 'pr', '--json'); assert.equal(two.status, 0, two.stderr);
+  const b = JSON.parse(two.stdout).shots[0]; assert.equal(b.title, 'Breakroom home'); assert.equal(b.side, 'after'); assert.equal(b.viewport, 'desktop');
+  assert.equal(JSON.parse(shot('list', '--app', 'Breakroom', '--json').stdout).shots.length, 1);
+  assert.ok(!existsSync(join(dir, 'items.json')), 'saving screenshots never writes the review queue');
+  assert.notEqual(shot(p, '--source', 'nope').status, 0); assert.notEqual(shot(join(dir, 'nope.png')).status, 0); assert.notEqual(shot('add').status, 0); assert.match(shot().stdout, /--source/, 'no arguments = help');
+  writeFileSync(join(dir, 'fake.png'), 'not a png'); assert.notEqual(shot(join(dir, 'fake.png')).status, 0, 'content is checked, not only the name');
+  const pr = shot('promote', a.id, '--json'); assert.equal(pr.status, 0, pr.stderr);
+  const item = JSON.parse(pr.stdout).items[0]; assert.equal(item.status, 'waiting'); assert.equal(item.fromShot, a.id);
+  assert.deepEqual(item.shots.map((x) => x.src), [`items/${item.id}/breakroom-phone.png`]);
+  assert.deepEqual(JSON.parse(readFileSync(join(dir, 'screenshots', 'index.json'), 'utf8')).shots.find((x) => x.id === a.id).promoted, [item.id]);
+  // migration: a check session's items in the review queue move out
+  const rev = (...x) => spawnSync(process.execPath, [join(HERE, 'review.mjs'), ...x], { env, encoding: 'utf8' });
+  assert.equal(rev('submit', '--kind', 'screen', '--title', 'Breakroom check: lobby', '--app', 'Breakroom', '--shots', `${p},${d}`).status, 0);
+  const mig = shot('migrate', '--json'); assert.equal(mig.status, 0, mig.stderr);
+  const m = JSON.parse(mig.stdout); assert.equal(m.moved.length, 1); assert.equal(m.shots.length, 2);
+  const left = JSON.parse(readFileSync(join(dir, 'items.json'), 'utf8')).items.map((x) => x.title);
+  assert.deepEqual(left, ['Breakroom home'], 'only the promoted item stays in the queue');
+  assert.equal(JSON.parse(shot('list', '--json').stdout).shots.length, 4);
+  assert.equal(JSON.parse(shot('migrate', '--json').stdout).moved.length, 0, 'idempotent');
+});
+
+t('shot.mjs finds its handler by capability (ui-screenshots@1), never by folder name', () => {
+  const src = readFileSync(join(HERE, '../../../../framework/cli/shot.mjs'), 'utf8');
+  assert.match(src, /service:ui-screenshots@1/); assert.ok(!src.includes('plugins/ui-review'));
+  assert.ok(JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8')).provides.includes('service:ui-screenshots@1'));
 });
 
 console.log(`ui-review: ${n} checks ok`);

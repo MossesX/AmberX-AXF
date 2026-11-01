@@ -10,9 +10,11 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   GET  shot?path=r<n>/<file> | items/<id>/<file>    one screenshot (png/jpg/webp)
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, holds = don't merge yet
+  …    shots/*                Screenshots tab (ui-screenshot@1, screenshots.py): ad-hoc pictures that never enter this
+                              queue; shots/promote sends one in ("Send to review"), shots/migrate moves "Breakroom check:" items out
 
 Capability ui-review@1 (plugin_services): state(branch, pr), holds(branch, pr), items(branch, pr), submit(fields, shots).
-Data folder (AXF_UI_REVIEW_DIR): items.json, shots/<id>/, picks.json, kinds.json. On first start the old Design
+Data folder (AXF_UI_REVIEW_DIR): items.json, shots/<id>/, picks.json, kinds.json, screenshots/ (index.json + files/). On first start the old Design
 packs data folder (its picks) moves in here.
 """
 from __future__ import annotations
@@ -33,6 +35,8 @@ from fastapi.responses import FileResponse
 
 import console_context as cx
 import plugin_services
+
+from .screenshots import Store as ShotStore, router_for as shots_router
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -264,11 +268,34 @@ class UiReviewService:
         return submit(fields, shots)
 
 
+shots = ShotStore(data_dir)
+
+
+def promote_shot(shot: dict, raw: bytes, opts: dict) -> dict:
+    """Send to review: a screenshot becomes a normal review item (its picture copied; the screenshot stays)."""
+    ext = (shot.get("file") or "x.png").rsplit(".", 1)[-1]
+    name = f"{re.sub(r'[^a-z0-9]+', '-', (shot.get('screen') or shot.get('title') or 'screen').lower()).strip('-')[:80] or 'screen'}-{shot.get('viewport') or 'desktop'}.{ext}"
+    notes = "\n".join(x for x in [shot.get("note") or "", f"Sent from Screenshots ({shot['id']})."] if x)
+    fields = {"kind": opts.get("kind") or "screen", "title": opts.get("title") or shot.get("title"), "app": shot.get("app", ""), "build": shot.get("build", ""),
+              "branch": shot.get("branch", ""), "pr": shot.get("pr"), "notes": notes, "source": "screenshots", "by": opts.get("by") or "brett", "fromShot": shot["id"]}
+    return submit(fields, [(name, shot.get("viewport") or "", raw)])
+
+
+def migrate_shots() -> dict:
+    """Review items titled "Breakroom check: …" (a check session's pictures) move into Screenshots."""
+    return shots.migrate(_items_doc, lambda d: _write(data_dir() / "items.json", d), data_dir() / "shots", _lock)
+
+
 try:
     migrate()
 except OSError:
     pass  # a read-only checkout: the page still works, the picks stay where they were
+try:
+    migrate_shots()
+except OSError:
+    pass
 plugin_services.provide("ui-review@1", UiReviewService(), FOLDER)
+router.include_router(shots_router(shots, promote_shot, migrate_shots))
 
 
 async def _json(request: Request, limit: int = 65536) -> dict:

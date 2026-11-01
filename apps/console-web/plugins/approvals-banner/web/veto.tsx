@@ -15,9 +15,10 @@
  */
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, Note } from '@console/axf/react';
+import { WatchLiveFor } from '@console/watchLive';
 import {
   formatCountdown, notifyPlan, runVetoAction, secondsLeftNow, vetoHost, VETO_ACTION_LABELS, VETO_WARNING_SECONDS,
-  type VetoAction, type VetoCall, type VetoPhase,
+  type VetoAction, type VetoActionResult, type VetoCall, type VetoPhase,
 } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, type AlarmConfig } from './alarm';
 
@@ -41,13 +42,18 @@ export interface VetoDeps {
 
 /** Runs one action and reports it; the alarm for that call stops at once. */
 export async function act(d: VetoDeps, c: VetoCall, action: VetoAction): Promise<boolean> {
+  return (await actResult(d, c, action)).ok;
+}
+
+/** {@link act} with the hub's whole answer (the application menu's row shows it in place: Running / Denied). */
+export async function actResult(d: VetoDeps, c: VetoCall, action: VetoAction): Promise<VetoActionResult> {
   watch.silence(c.id);
   const r = await runVetoAction(d.hub(), c, action);
   if (r.ok) d.toast(`${DONE_TEXT[action]} ${c.title}`, action === 'deny' ? 'success' : 'info');
   else if (r.opened) d.toast(`Opened it on axHub to ${VETO_ACTION_LABELS[action].toLowerCase()} it there.`, 'info');
   else d.toast(`Couldn't ${VETO_ACTION_LABELS[action].toLowerCase()} it${r.error ? `: ${r.error}` : ''}.`, 'danger');
   d.refresh();
-  return r.ok;
+  return r;
 }
 
 /**
@@ -102,6 +108,7 @@ export function VetoScreen({ c, deps, onClose }: { c: VetoCall | null; deps: Vet
         <strong>Deny</strong> stops it. <strong>Approve</strong> runs it right away. <strong>Shelve</strong> pauses the countdown; it waits until you approve or deny it.
       </p>
       <VetoButtons c={c} deps={deps} onDone={onClose} />
+      <WatchLiveFor text={`${c.title} ${c.command} ${c.tool}`} />
       <a className="fx-small" href={c.url} target="_blank" rel="noopener noreferrer">Open it on axHub <Icon name="external" size={12} /></a>
     </div>
   );
