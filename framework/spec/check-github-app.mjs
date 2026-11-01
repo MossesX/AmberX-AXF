@@ -94,6 +94,7 @@ const run = (cmd, args, env = {}, input = '') => new Promise((res) => {
   let stdout = ''; let stderr = '';
   p.stdout.on('data', (d) => { stdout += d; }); p.stderr.on('data', (d) => { stderr += d; });
   p.on('close', (status) => res({ status, stdout, stderr }));
+  p.stdin.on('error', () => { /* the child may exit before reading stdin */ });
   p.stdin.end(input);
 });
 const cli = (args, env = {}, input = '') => new Promise((res) => {
@@ -101,6 +102,7 @@ const cli = (args, env = {}, input = '') => new Promise((res) => {
   let stdout = ''; let stderr = '';
   p.stdout.on('data', (d) => { stdout += d; }); p.stderr.on('data', (d) => { stderr += d; });
   p.on('close', (status) => res({ status, stdout, stderr }));
+  p.stdin.on('error', () => { /* the child may exit before reading stdin */ });
   p.stdin.end(input);
 });
 
