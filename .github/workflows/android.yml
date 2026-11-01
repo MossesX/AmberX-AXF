@@ -42,7 +42,8 @@ jobs:
       - run: node framework/spec/check-build-steps.mjs              # small-steps rule: pending + build-queue step cores
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
-      - run: node framework/spec/check-orch-sync.mjs                # orchestrator <-> Pending builds sync (pure + real writers on temp files)
+      - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
       - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
@@ -156,6 +157,7 @@ jobs:
             npx -y tsx framework/spec/check-looktokens.mts             # look@1 tokens: only-changed storage, compact to no space, theme-token CSS
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
             npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
+            (cd apps/axhub-web && npx -y tsx scripts/refresh-check.mts)  # AXHub web app: refreshes, failed reads, look re-reads and countdown ticks never flash "Reading the hub" or remount rows
             npx -y tsx apps/amberx-droid/test.mjs                      # AmberX: hub rules + voice command matching + monitoring / auto-approval rules
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
@@ -170,6 +172,7 @@ jobs:
             npx -y tsx framework/spec/check-ashes.mts                   # AshesUI: components, owners (plugin + model), contrast, rows, element tree
             npx -y tsx framework/spec/check-hubstatus.mts               # axHub status badge: red unless settings come live from axHub
             npx -y tsx framework/spec/check-approvals.mts               # lib-approvals: approvals + held calls in one list, badge words, deciding rules, watcher
+            npx -y tsx framework/spec/check-approvals-menu.mts          # app menu Waiting for approval: Deny / Approve on every row, flips in place (jsdom)
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
             npx -y tsx framework/spec/check-hubsync.mts                # lib-hubsync: look/settings/data config, follow source, settings mirror on a fake hub
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)

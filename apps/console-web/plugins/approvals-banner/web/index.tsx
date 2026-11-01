@@ -38,9 +38,11 @@ import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval,
 import { sourceText } from '@console/axf/libs/hub/source';
 import { fetchVetoFeed, formatCountdown, onVetoHost, secondsLeftNow, vetoHost, VETO_ACTIONS, VETO_WARNING_SECONDS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
-import { act, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
+import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
 import { approvalsHost } from '@console/axf/libs/approvals/react';
-import type { ApprovalDecision, ApprovalItem } from '@console/axf/libs/approvals';
+import { heldDecisions, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
+import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
+import type { MenuActResult, MenuItem } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
@@ -177,18 +179,58 @@ function HeldRow({ c }: { c: VetoCall }) {
  * from its own pages (Origin + CSRF), so the app's own deciding path goes first (AmberX: the signed-in hub web view);
  * otherwise the hub's page opens in the review dialog, where the tap is confirmed. The console never approves itself.
  */
-async function decidePending(p: Pending, d: ApprovalDecision) {
+async function decidePending(p: Pending, d: ApprovalDecision): Promise<DecideResult> {
   const decide = approvalsHost().decide;
-  if (!decide) { openReview(p.id); return; }
+  if (!decide) { openReview(p.id); return { ok: true, opened: true, message: '' }; }
   const item: ApprovalItem = {
     kind: 'approval', id: p.id, tool: p.tool, title: p.title || `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
     createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null, source: p.source ?? null,
   };
+  let r: DecideResult;
   try {
-    const r = await decide(item, d);
+    r = await decide(item, d);
     if (!r.opened) runtime?.toast(r.message, r.ok ? 'success' : 'danger', 'Approvals');
-  } catch (e) { runtime?.toast((e as Error)?.message || 'Something went wrong.', 'danger', 'Approvals'); }
+  } catch (e) { r = { ok: false, message: (e as Error)?.message || 'Something went wrong.' }; runtime?.toast(r.message, 'danger', 'Approvals'); }
   void checkNow();
+  return r;
+}
+
+/* ---------------- the application menu's live list: Deny / Approve on every row ---------------- */
+
+/**
+ * Rows for Console → Approvals waiting and Apps → axHub → Waiting for approval: held calls (live countdown, Shelved
+ * when paused) then calls waiting for an approval, each with red Deny and green Approve on the row (framework AppMenu
+ * LiveRow). Approve on a held call runs it now (veto@1 approve-now), Deny stops it; an approval decides through the
+ * app's own path or opens the review dialog (the row stays). The row reads Running / Denied in place, then drops off.
+ */
+export function menuRows(s: Pick<State, 'held' | 'pending'>): MenuItem[] {
+  return [
+    ...s.held.map((x): MenuItem => ({
+      id: `held:${x.id}`, label: x.title, icon: x.shelved ? 'pause' : 'clock', action: `approvals.veto:${x.id}`, detail: x.command || x.tool,
+      deadline: x.readAt + x.secondsLeft * 1000, ...(x.shelved ? { paused: 'Shelved' } : {}),
+      buttons: decisionButtons({ kind: 'held', decisions: heldDecisions(x) }),
+    })),
+    ...s.pending.map((x): MenuItem => ({
+      id: `approval:${x.id}`, label: `${x.tool}: ${shortSummary(x)}`, icon: 'shield', action: `approvals.review:${x.id}`, detail: x.tool,
+      buttons: decisionButtons({ kind: 'approval', decisions: ['approve', 'decline'] }),
+    })),
+  ];
+}
+
+/** One row button: the same routes as the banner's buttons (veto@1 for held calls, the deciding path for approvals). */
+export async function menuAct(rowId: string, buttonId: string): Promise<MenuActResult> {
+  const [kind, id] = [rowId.slice(0, rowId.indexOf(':')), rowId.slice(rowId.indexOf(':') + 1)];
+  const d = buttonId as ApprovalDecision;
+  if (kind === 'held') {
+    const c = st.held.find((x) => x.id === id);
+    if (!c) return { ok: false, message: 'That call is no longer held.' };
+    const r = await actResult(deps, c, d === 'approve' ? 'approve-now' : 'deny'); // toasts by itself
+    return r.ok ? { ok: true, state: decidedState({ kind: 'held' }, d) } : r.opened ? { ok: true, keep: true } : { ok: false };
+  }
+  const p = st.pending.find((x) => x.id === id);
+  if (!p) return { ok: false, message: 'That one is no longer waiting.' };
+  const r = await decidePending(p, d === 'approve' ? 'approve' : 'decline'); // toasts by itself
+  return r.opened ? { ok: true, keep: true } : r.ok ? { ok: true, state: decidedState({ kind: 'approval' }, d) } : { ok: false };
 }
 
 /** Deny (red) and Approve (green), big targets that never shrink: the row's text gives way first. */
@@ -371,7 +413,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.5.0',
+  version: '0.5.1',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -379,11 +421,9 @@ export const plugin: AxfWebLibrary = {
       items: async () => {
         await checkNow();
         if (st.status !== 'ok') return [{ id: 'status', label: st.status === 'signed-out' ? 'Sign in to axHub to see approvals' : st.status === 'not-admin' ? 'Approvals are for hub admins' : 'axHub not reachable', icon: 'info', action: 'approvals.open' }];
-        return [
-          ...st.held.map((x) => ({ id: `held:${x.id}`, label: `${x.shelved ? 'Shelved' : `Held ${formatCountdown(secondsLeftNow(x))}`}: ${x.title}`, icon: x.shelved ? 'pause' : 'clock', action: `approvals.veto:${x.id}` })),
-          ...st.pending.map((x) => ({ id: `approval:${x.id}`, label: `${x.tool}: ${shortSummary(x)}`, icon: 'shield', action: `approvals.review:${x.id}` })),
-        ];
+        return menuRows(st);
       },
+      act: menuAct,
     },
   },
   register(rt) {

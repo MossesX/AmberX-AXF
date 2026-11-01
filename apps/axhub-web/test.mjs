@@ -6,6 +6,7 @@
  *
  * Nothing here touches the network: every case is a hand-written reply.
  */
+import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
@@ -301,6 +302,11 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(/h3 \{[^}]*text-overflow: ellipsis/.test(css) && /\.axp-axhub-pair > \.fx-btn \{[^}]*white-space: nowrap/.test(css), 'the title is cut first, never the buttons');
 }
 
+/* ---------------------------------------------------------------- refreshes keep the page (Nov 1 2026) */
+eq([showReading(null, ''), showReading({ items: [] }, ''), showReading(null, 'down')], [true, false, false], 'the loading line only before the first answer');
+eq([shownError(false, 'down', 1), shownError(true, 'down', 1), shownError(true, 'down', MISSES_SHOWN), shownError(true, '', 5)], ['down', '', 'down', ''], 'an error over data shows only after a second miss in a row');
+eq([keepSessionOnFailure('ready', 0), keepSessionOnFailure('ready', 502), keepSessionOnFailure('ready', 429), keepSessionOnFailure('ready', 404), keepSessionOnFailure('loading', 0)], [true, true, true, false, false], 'a session re-read blip keeps a signed-in page; an answer or the first read does not');
+eq([sameJson({ a: 1 }, { a: 1 }), sameJson({ a: 1 }, { a: 2 }), sameJson(null, null)], [true, false, true], 'same JSON = same answer');
 // who asked (axHub decision 109): source column, filter chips, sort keys, the reply shown at once
 {
   const src = (kind, who, label) => ({ source: { kind, label: label ?? kind, who } });

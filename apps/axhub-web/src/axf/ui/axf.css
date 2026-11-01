@@ -346,6 +346,23 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 }
 .fx-menu__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); color: var(--fx-muted); }
 .fx-menu__error { color: var(--fx-danger); }
+/* live-list rows with buttons (AppMenu LiveRow: Deny / Approve on each waiting approval). The text gives way first
+   (min-width: 0 + ellipsis); the buttons never shrink and are big tap targets, sized from the theme's spacing. */
+.fx-menu__live { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; padding-right: var(--fx-dens-gap-md); }
+.fx-dropdown:has(.fx-menu__live), .fx-menu__sub:has(.fx-menu__live) { min-width: min(calc(var(--fx-space) * 46), calc(100vw - 16px)); }
+.fx-menu__live-main { flex: 1 1 auto; min-width: 0; }
+.fx-menu__live-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.fx-menu__live-label { overflow: hidden; text-overflow: ellipsis; }
+.fx-menu__live-detail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.fx-menu__live-tags { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; font-size: var(--fx-type-scale-xs); }
+.fx-menu__count { flex: none; font-variant-numeric: tabular-nums; font-weight: 600; font-size: var(--fx-type-scale-sm); color: var(--fx-warning); }
+.fx-menu__count.is-urgent { color: var(--fx-danger); }
+.fx-menu__count.is-paused { color: var(--fx-muted); font-weight: 500; }
+.fx-menu__acts { flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-md); }
+.fx-menu__acts > .fx-btn { flex: none; min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4.5)); min-width: calc(var(--fx-space) * 11); justify-content: center; }
+.fx-menu__live-state { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4.5)); padding: 0 var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); font-weight: 600; color: var(--fx-success); }
+.fx-menu__live.is-done .fx-menu__live-main { opacity: var(--fx-opacity-muted); }
+@media (max-width: 720px) { .fx-menu__acts > .fx-btn, .fx-menu__live-state { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); } }
 .fx-menu__spinner {
   width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--fx-border); border-top-color: var(--fx-accent);
   animation: fx-spin calc(var(--fx-motion) * 4) linear infinite;

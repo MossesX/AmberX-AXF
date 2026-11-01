@@ -100,6 +100,48 @@ export interface MenuItem {
   order?: number;
   before?: string;
   after?: string;
+  /* ---- live-list rows only (a provider's items; engines/appmenu.ts) ---- */
+  /** buttons on the row itself (e.g. Deny / Approve): run without closing the menu, the row flips in place */
+  buttons?: MenuItemButton[];
+  /** a second, muted line under the label */
+  detail?: string;
+  /** local-clock time (ms) a live countdown on the row reaches 0 */
+  deadline?: number;
+  /** text shown instead of the countdown while it is paused (e.g. `Shelved`) */
+  paused?: string;
+  /** a small badge before the second line (e.g. who asked: `Headless`), drawn as a framework chip */
+  tag?: MenuItemTag;
+  /** a small chip after the badge (e.g. the tool, `vps.run`) */
+  chip?: string;
+}
+
+/** A live-list row's badge (`MenuItem.tag`). */
+export interface MenuItemTag {
+  label: string;
+  tone?: 'accent' | 'success' | 'warning' | 'danger';
+  /** tooltip */
+  title?: string;
+}
+
+/** A button on a live-list row (`MenuItem.buttons`): the provider's `act` runs it, else `action` is dispatched. */
+export interface MenuItemButton {
+  id: string;
+  label: string;
+  icon?: string;
+  tone?: 'success' | 'danger' | 'neutral' | 'primary';
+  action?: string;
+  requires?: string;
+}
+
+/** What a row button did (`AppMenuProvider.act`): the row shows `state` in place, then drops off unless `keep`. */
+export interface MenuActResult {
+  ok: boolean;
+  /** what the row reads now (`Running`, `Denied`); default `Done` when ok */
+  state?: string;
+  /** a toast for the result (none when absent: the provider may have told the user itself) */
+  message?: string;
+  /** the row stays (e.g. the decision opened a page elsewhere) */
+  keep?: boolean;
 }
 
 /* ---------- themes ---------- */

@@ -1,7 +1,8 @@
 {
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "pending@1",
- "updatedAt": "2026-10-31T23:53:18.792Z",
- "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+ "updatedAt": "2026-11-01T00:37:27.424Z",
+ "artifact": "",
  "items": [
   {
    "id": "agent-swarm",
@@ -22,115 +23,115 @@
    "subPrompts": [
     {
      "text": "[Fable] FIRST: preview page rendering all 4 card designs with sample agents in the current theme; ping Brett to pick the default",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T23:53:03.077Z"
     },
     {
      "text": "[Fable] Agent roster + agent@1 skills: Kotlin/Compose, React UI, Python server, plugin manifests, assets/themes, tests, docs, merge-fixer; each skill file under one page",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:46.960Z"
     },
     {
      "text": "[Fable] Card designer (edit layout/fields/logo, Save as new) + default picker + per-agent override + editable identity fields",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T23:53:03.146Z"
     },
     {
      "text": "[Fable] agent-card@1 asset type + 4 branded starter card assets (logo slot, theme tokens only), web + Android renderers",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T23:53:03.224Z"
     },
     {
      "text": "[Fable] Job planner: split a build into jobs, pick agent + cheapest capable model, file leases, overlap sequencing",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.016Z"
     },
     {
      "text": "[Fable] Context packer: per-job minimal brief (task, leased files, extracted snippets, cached shared prefix), no repo-wide reads",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.066Z"
     },
     {
      "text": "[Opus] Headless runner: claude -p per job with model, max turns, token budget, allowed tools, worktree, kill on overrun, structured JSON report",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.161Z"
     },
     {
      "text": "[Opus] Orchestrator-owned shared files + pre-push lease check + batch merge handoff",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.208Z"
     },
     {
      "text": "[Opus] Cost meter: tokens and dollars per agent/job/build, shown in the orchestrator",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.256Z"
     },
     {
      "text": "[Opus] Pilot run on one queued Angel build, compare tokens vs a single session; tune budgets",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.309Z"
     },
     {
      "text": "[Opus] Full Amber persona (few lines) in the cached shared prefix (reports + anything said to Brett; code/commits clean)",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.362Z"
     },
     {
      "text": "[Opus] Agent statuses in Agent manager (dropdown + note, custom statuses, medical-leave return date); orchestrator respects them",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.414Z"
     },
     {
      "text": "[Opus] Per-agent spend on the row (all time, week, today, avg/job) + spend cap auto-bench",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.467Z"
     },
     {
      "text": "[Fable] Agent cards + profiles: avatars, specialty, hire date, stats, catchphrase, bio, feed",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.567Z"
     },
     {
      "text": "[Fable] Group chat: Boss assignments, agent reports/handoffs, cheap-model banter, global + per-agent switch",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.620Z"
     },
     {
      "text": "[Opus] Suspend (timed), rage-quit after N failures, rehire; history + chat posts",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.718Z"
     },
     {
      "text": "[Opus] Salary = weekly budget (spent/left on card), broke stops work, raises/docks, under-budget bonuses, coworker reactions in chat",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.766Z"
     },
     {
      "text": "[Fable] Chat settings suite: vibe 1-500 ceiling with scoring + tone-down/drop, chattiness/cussing/drama sliders, per-agent overrides, banter budget, presets, live preview, color-by-vibe checkbox",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.872Z"
     },
     {
      "text": "[Opus] Tests + docs",
-     "at": "2026-10-31T05:27:46.906Z",
+     "at": "2026-10-31T23:41:15.585Z",
      "done": true,
      "doneAt": "2026-10-31T05:27:47.975Z"
     }
@@ -155,37 +156,37 @@
    "subPrompts": [
     {
      "text": "[Fable] Start: read the Opus version (apps/console-web/plugins/agent-swarm) and its tests; redesign the contracts agent@1, agent-skill@1, swarm-roster@1, swarm-job@1, swarm-report@1 as framework contracts (asset-types / schemas) where they belong",
-     "at": "2026-10-31T05:27:48.056Z",
+     "at": "2026-11-01T00:27:19.617Z",
      "estimate": "30 min"
     },
     {
      "text": "[Fable] Job planner: model tiers, skill matching, lease overlap and wave sequencing reviewed and replaced where better; keep the planner tests passing or replace them with stronger ones",
-     "at": "2026-10-31T05:27:48.056Z",
+     "at": "2026-11-01T00:27:19.617Z",
      "estimate": "30 min"
     },
     {
      "text": "[Fable] Context packer + cached shared prefix: measure brief sizes, tighten snippet extraction",
-     "at": "2026-10-31T05:27:48.056Z",
+     "at": "2026-11-01T00:27:19.617Z",
      "estimate": "25 min"
     },
     {
      "text": "[Fable] Agent cards/profiles: avatars and card layout as assets (everything-is-an-asset rule), not component-drawn",
-     "at": "2026-10-31T05:27:48.056Z",
+     "at": "2026-11-01T00:27:19.617Z",
      "estimate": "30 min"
     },
     {
      "text": "[Fable] Group chat contract (swarm-state@1 messages, Boss work lines, banter batch)",
-     "at": "2026-10-31T05:27:48.056Z",
+     "at": "2026-11-01T00:27:19.617Z",
      "estimate": "30 min"
     },
     {
      "text": "[Fable] Vibe engine: scoring, ceiling, tone-down/drop as a pure engine with a fixture",
-     "at": "2026-10-31T05:27:48.056Z",
+     "at": "2026-11-01T00:27:19.617Z",
      "estimate": "30 min"
     },
     {
      "text": "[Opus] Differences report _claude/memory/docs/rebuilds/agent-swarm.md + LOG.md entry + screenshots",
-     "at": "2026-10-31T05:27:48.056Z",
+     "at": "2026-11-01T00:27:19.617Z",
      "estimate": "20 min"
     }
    ],

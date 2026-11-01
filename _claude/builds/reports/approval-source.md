@@ -74,14 +74,28 @@ is **decision 109** (renumbered in both repos before the push).
   `amberx-droid/.../monitor/web/core.ts`), which the theme check reads as a colour: main's theme step was red. Took the
   `#` out.
 
+## Second merge: menu-approve + flicker landed (Nov 1, ~01:40)
+
+- The application menu's **Waiting for approvals** list (menu-approve, `framework/libs/approvals/menu.ts`) now shows
+  who asked too: live menu rows gained two optional fields, `MenuItem.tag` (the source badge, framework Chip with its
+  tone) and `MenuItem.chip` (the tool), passed through `core/engines/appmenu.ts` and drawn by `AppMenu` `LiveRow`
+  before the second line; that line is now "approval-source · 1 min ago · docker ps". Title stays first, Deny /
+  Approve stay on the row. Android twin recorded in PORTING.md (deferred). `check-approvals-menu.mts` 57/57 (+4).
+- The flicker fix kept: unchanged rows keep the same object (same JSON), the grid's cells are memoised;
+  `scripts/refresh-check.mts` now finds grid rows and loads `.css` imports as empty modules: 15/15 (no "Reading the
+  hub" flash, no row remount, countdown ticks only its number).
+- Re-run on the merged tree: engine steps, theme, controls, plugin pages, add-ons, lifecycle, all four app builds,
+  theme swap, alerts/MCP/axf_server fixtures (incl. axhub-web test 263 + refresh-check), plugin `test.mts` (Node 22):
+  green. Same pre-existing tracker/plugins check failures as main.
+
 ## Not done / blocked
 
-- **Push:** this VPS has no working GitHub credential. The console's `GITHUB_TOKEN` (helper `axf-git-cred`) and the gh
+- **Push (resolved at ~01:30):** for most of the run this VPS had no working GitHub credential. The console's `GITHUB_TOKEN` (helper `axf-git-cred`) and the gh
   token answer 401, and the brief's `GIT_CONFIG_*` never reached this session (the launcher bug above). axHub calls
-  from this session aren't permitted, so the hub's GitHub service couldn't push either. Both branches are committed
-  locally; THREADS.md has the carry-on block. The dead token is the systems check's existing GitHub item.
-- **menu-approve** hadn't landed on AXF main by the end of the 40-minute wait (same push problem). Expect a small
-  conflict in `framework/libs/approvals/react.tsx` `Row` when it merges: keep both.
+  from this session aren't permitted, so the hub's GitHub service couldn't push either. The token was fixed around 01:30 (auth
+  retried every minute); axHub then landed on main (648b11b) and AXF after the merge below. The dead token is the systems check's existing GitHub item.
+- menu-approve hadn't landed by the end of the 40-minute wait (same push problem); it landed later and is merged
+  (section above).
 - UI Review screenshots not taken (headless, no signed-in hub to render real approvals).
 - Pre-existing on main, not this build: `tracker.mjs --check` and `plugins.mjs --check` fail on untouched origin/main
   too (also in a clean node:22 container).

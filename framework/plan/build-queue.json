@@ -1,6 +1,13 @@
 {
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "build-queue@1",
  "order": [
+  "x.assets.designer",
+  "x.assets.browser",
+  "x.plugins.manager",
+  "x.assets.templates",
+  "x.console.pending",
+  "x.lib.mcp",
   "x.assets",
   "x.engines",
   "x.kernel",
@@ -47,21 +54,198 @@
   "x.lib.files",
   "x.lib.charts",
   "x.console.repo",
-  "x.assets.designer",
-  "x.assets.browser",
-  "x.plugins.manager",
-  "x.assets.templates",
-  "x.console.pending",
-  "x.lib.mcp",
-  "x.lib.hub"
+  "x.lib.hub",
+  "x.projects"
  ],
  "steps": {
-  "x.kernel": {
-   "completedAt": "1970-01-01T00:00:00.000Z",
-   "completedBy": "baseline",
+  "x.assets.designer": {
+   "estimate": "8 h",
+   "steps": [
+    {
+     "text": "Plugin skeleton: copy `apps/console-web/plugins/_template` to `plugins/asset-designer` (id `ai.amberx.axf.console.asset-designer`, `uiEditor: \"builder\"`, lifecycle block, `install.mjs`/`uninstall.mjs`), nav → Plugins → Asset designer, Settings → Plugins sub-tab (parent `plugins`). `node framework/cli/plugin-lifecycle.mjs check asset-designer` passes; console tsc + vite build pass.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Designer shell `web/Designer.tsx`: type picker (every non-attachable type from `asset-types.json` the designer covers: nav-menu, drawer, app-menu, context-menu, toolbar, layout, style-theme, color-theme), id + label fields, Save/Cancel; `useEditorSync()` so it reloads values on focus (UI-editor rule). Saves nothing yet.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validation gate: every save runs `validateAsset` from the baked `src/axf/core/validate.ts`; errors shown inline next to the field they name; Save disabled until clean. Server route `POST /api/plugins/asset-designer/validate` mirrors it with the CLI validator (`framework/core/project-check.mjs` pattern). Test in `test.py`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Storage: designed assets saved as asset@1 files under `.axf-console/plugins/asset-designer/assets/<type>/<id>.json` (lifecycle dataDir), served by `GET /api/plugins/asset-designer/assets`, registered into the runtime on load like the theme-manager plugin does (`registry.register`, origin `asset-designer`). Built-in ids refused.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Menu editor (nav-menu, app-menu, context-menu): tree of items (label, icon, action, children, divider), drag to reorder, action picker from `rt.actions.list()`, live preview via `rt.swap` on a `ad-preview-<type>` id. Reuses `MenuList.tsx` for the preview.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Toolbar editor: items (icon, label, action, badge counter), `density`/`surface`/`divider`/`collapsible`, widgets start/end picker from `attachable` types (engine-rpc `app-defaults` → `widgets`), live preview through the React `Toolbar`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "`drawer` asset type: add it to `asset-types.json` (hideable chrome, `side` left/right, `width`, `items` like nav-menu, `modal`), `layout.slots` accept it in the `drawer` region, starter `framework/assets/drawer/amberx-side.json`, `framework/defaults.json` names it. Validators on all three ports accept it (Kotlin: `AssetTypeSpec` resource); fixture case in `layout-slots.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Drawer rendering: React `components/Chrome.tsx` draws the drawer region; Compose `axf-ui/components/Chrome.kt` the same (swipe from the edge, scrim from `--fx-opacity-scrim`). Drawer editor in the designer (same editor as nav-menu plus side/width/modal).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Layout editor: region grid (9 regions from `layout.slots`), per-region size/visibility, `data.slots` overrides with accepted-type chips; preview through `compileLayout`. Hidden slots greyed like Appearance does.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Color-theme editor: token groups from the theme engine (`core/engines/theme.ts` token list), colour pickers, contrast warnings (reuse `theme-manager/web/rollEngine.ts` checks), light/dark pair, preview via `rt.swap`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Style-theme editor: space, radii, borders, font sizes, opacity tokens (`opacityDisabled/Muted/Hover/Tint/Scrim/Glass`), density; preview; numbers clamped to the ranges known themes use.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Templates hook: \"Start from\" picker listing starters + designed assets + (later) `x.assets.templates` entries; Duplicate / Rename / Export JSON / Import JSON (validated). Export writes a file a user can drop into an app's assets folder.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Installed by default: plugin `enabled: true` in the console's plugin defaults, `framework/catalog/plugins.json` entry (planned → built resolves by itself), `node framework/cli/plugins.mjs --check`, status.json + tracker; Plugin Manager shows it.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android face (first slice): `axf-devtools` gets an `AssetDesignerModule` placeholder route `asset-designer` listing designed assets received from the console (read-only), so the plugin-inventory shows it on both ports; full editors stay web-only for now (noted as a placeholder capability `axf.designer`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: plugin `test.py` (validate route, storage, built-in id refused, lifecycle), web unit cases for the drawer slot + layout compile, CI line; `uninstall.mjs --all` leaves nothing (`check --after-uninstall`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets.designer` built via `build_step`, pending item complete.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.assets.browser": {
+   "estimate": "5 h",
+   "steps": [
+    {
+     "text": "Plugin skeleton `apps/console-web/plugins/asset-browser` from `_template` (id `ai.amberx.axf.console.asset-browser`, lifecycle, install/uninstall, nav → Plugins → Asset browser, settings sub-tab). Lifecycle check + console build pass.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Sources: server route `GET /api/plugins/asset-browser/sources` lists asset folders it may read: framework starters (`framework/assets`), every app under `apps/*/src/assets` or `app/src/main/assets/axf` (from `framework/cli/app-bundle.mjs list`), designed assets (asset-designer dataDir when present). Never follows symlinks; roots only.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Browse view: grid by type → source → asset, search box (reuses `consoleSearch.ts` provider pattern), type chips from `asset-types.json`, counts per source. Rows show id, label, origin, tier.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Preview: `AssetPreview.tsx` from `framework/react/studio` renders the selected asset in a card; for chrome types a live preview on an `ab-preview-<type>` swap like theme-manager; \"Apply here\" = `rt.swap(type, id)` after `registry.register`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Import: drop/paste JSON or pick a file → `validateAsset` → preview → install into a chosen target (console runtime, or an app folder through `POST /api/plugins/asset-browser/install {source, target, type, id}` that writes the file only inside allowed app asset folders; built-in ids refused; backups under the plugin dataDir).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Export: single asset or a pack (zip of asset@1 files + `pack.json`), served by `GET …/export?ids=`; packs are what the plugin runtime (`x.plugins`, PACK kind) will load later, so write the `pack@1` shape now in `framework/schemas/asset-pack.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hot-swap across apps: for apps running `axf dev` (`framework/cli/dev-server.mjs`), \"Push to device\" posts the asset to the dev server's folder so the HotReloader picks it up; list dev servers from settings (`axf.devServer`). Error card when none.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Installed by default + Android: enabled in console plugin defaults, `plugins.json` catalog entry, `plugins.mjs --check`; Android `axf-devtools` route `asset-browser` showing the bundled assets by type with Apply (uses `AssetRegistry` + `AxfRuntime.swap`), so Settings → Plugins lists it on both ports.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: `test.py` (sources never leave roots, import validation, built-in refusal, export pack shape), lifecycle check, CI line.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: report `_claude/memory/docs/rebuilds/asset-browser.md` + LOG.md + web screenshots, CLAUDE.md Status, plan `x.assets.browser` built, pending complete.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.plugins.manager": {
+   "estimate": "30 min"
+  },
+  "x.assets.templates": {
+   "estimate": "7 h",
+   "steps": [
+    {
+     "text": "Template index: `framework/assets/templates/index.json` (`asset-templates@1`: id, type, label, tags, file) + loader `listAssetTemplates(type)` in `framework/cli/build-engine.mjs`; engine-rpc `asset-templates`, console `GET /api/asset-templates?type=`. Empty list works end to end.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validation in CI: `framework/spec/check-asset-templates.mjs` loads every template, runs `validateAsset`, checks unique ids, ≥ 10 per covered type once a type is marked `complete` in the index, and that each type has a `default`. Wire into `android.yml` (node job).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "nav-menu ×10: side nav, bottom tabs, rail, grouped sections, icon-only, with badges, two-level, settings-first, admin, minimal. Each a valid `nav-menu` asset in `framework/assets/templates/nav-menu/`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "app-menu ×10 (file/edit/view style menus, single-page apps, tool apps…) + context-menu ×10 (text, list row, card, media, dev, file, link, minimal, with submenus, keyboard hints).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "toolbar ×10: editor, media, search-first, compact icons, labelled, split start/end with widgets, status-heavy (counters/progress), collapsible, roomy, minimal.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "layout ×10: dashboard, master-detail, sidebar-left/right, bottom-nav phone, kiosk, editor + inspector, chat, settings, full-bleed, three-pane. Each with `data.slots` where it narrows a region.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "drawer ×10 (needs `asset-designer` step 7's `drawer` type): left/right, modal/non-modal, wide/narrow, with header, grouped, icon rail, account-first, admin, minimal.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "color-theme ×10 light + ×10 dark (pairs): contrast-checked with `theme-manager/web/rollEngine.ts` checks run from a script; names in one family (`arctic-daylight` style). Each pair shares a `pair` tag.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "style-theme ×10: glass, flat, outlined, dense, roomy, rounded, square, hairline, soft, print. Numbers inside ranges known themes use; every opacity token present.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Defaults: `framework/defaults.json` + `framework/app-defaults.json` reviewed so every type has a default template id (new field `templates.default.<type>` read by `axf init` for \"start from a template\"); `axf init --template-set <id>` option registered in `build-options.json` only if it sets a token, else as an init argument.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Previews: `framework/cli/rebuild-shots.mjs`-style script `framework/cli/template-shots.mjs` renders each template in the demo app headless (phone + desktop) to `framework/assets/templates/<type>/shots/`; `index.json` entries get `shot`. Run once; commit shots ≤ 60 KB each (`framework/cli/shrink-shots.py`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android: templates bundled into `axf-assets` as a resource folder so Compose previews (`ComponentGallery.kt`) and the future Android designer read the same files; `AssetTemplates` Kotlin loader + a unit test that every bundled template validates.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hooks: asset-designer \"Start from\" and Build Pilot's designers list templates by type (console `GET /api/asset-templates`); asset-browser shows a Templates source. Add the `templates` capability to `app-defaults` engine-rpc.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: regenerate fixtures touched (`gen-fixtures.mts`), CI green, report `_claude/memory/docs/rebuilds/asset-templates.md`, CLAUDE.md Status, plan `x.assets.templates` built, pending complete.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.console.pending": {
+   "completedAt": "2026-10-18T04:22:02.883Z",
+   "completedBy": "feature-tracker",
+   "deps": []
+  },
+  "x.lib.mcp": {
+   "completedAt": "2026-10-21T04:48:23.349Z",
+   "completedBy": "feature-tracker",
    "deps": [
-    "x.assets",
-    "x.engines"
+    "x.plugins"
    ]
   },
   "x.assets": {
@@ -74,6 +258,14 @@
    "completedBy": "baseline",
    "deps": [
     "x.assets"
+   ]
+  },
+  "x.kernel": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.assets",
+    "x.engines"
    ]
   },
   "x.conformance": {
@@ -102,14 +294,6 @@
     "x.kernel"
    ]
   },
-  "x.libs.browser": {
-   "completedAt": "1970-01-01T00:00:00.000Z",
-   "completedBy": "baseline",
-   "deps": [
-    "x.windows",
-    "x.engine.install"
-   ]
-  },
   "x.android.showcase": {
    "completedAt": "1970-01-01T00:00:00.000Z",
    "completedBy": "baseline",
@@ -132,14 +316,6 @@
     "x.web.core"
    ]
   },
-  "x.web.demo": {
-   "completedAt": "1970-01-01T00:00:00.000Z",
-   "completedBy": "baseline",
-   "deps": [
-    "x.web.core",
-    "x.deploy.site"
-   ]
-  },
   "x.engine.cli": {
    "completedAt": "1970-01-01T00:00:00.000Z",
    "completedBy": "baseline",
@@ -150,6 +326,14 @@
    "completedBy": "baseline",
    "deps": [
     "x.engine.cli"
+   ]
+  },
+  "x.libs.browser": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.windows",
+    "x.engine.install"
    ]
   },
   "x.librarytemplates": {
@@ -200,6 +384,14 @@
    "completedBy": "baseline",
    "deps": []
   },
+  "x.web.demo": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.web.core",
+    "x.deploy.site"
+   ]
+  },
   "x.console.build": {
    "completedAt": "2026-10-17T16:21:12.015Z",
    "completedBy": "feature-tracker",
@@ -214,23 +406,6 @@
    "deps": [
     "x.console.api",
     "x.console.build"
-   ]
-  },
-  "x.console.pending": {
-   "completedAt": "2026-10-18T04:22:02.883Z",
-   "completedBy": "feature-tracker",
-   "deps": []
-  },
-  "x.projects": {
-   "completedAt": "2026-10-18T14:17:14.449Z",
-   "completedBy": "feature-tracker",
-   "deps": []
-  },
-  "x.lib.mcp": {
-   "completedAt": "2026-10-21T04:48:23.349Z",
-   "completedBy": "feature-tracker",
-   "deps": [
-    "x.plugins"
    ]
   },
   "x.modules": {
@@ -269,6 +444,9 @@
      "estimate": "30 min"
     }
    ]
+  },
+  "x.deploy.console": {
+   "estimate": "30 min"
   },
   "x.state": {
    "estimate": "4 h",
@@ -340,113 +518,6 @@
     }
    ]
   },
-  "x.plugins": {
-   "estimate": "5 h",
-   "steps": [
-    {
-     "text": "Design check (no code): read `contract/Plugin.kt` (PACK/MODULE/SCRIPT, scopes, `PluginLoader`), `framework/schemas/asset-pack.json` if asset-browser made it, and the plugin-catalog format; write `_claude/memory/docs/plugin-runtime.md`: what a PACK may carry (assets, action macros, string packs), install sources (file, URL, QR, console catalog), grants UI, and what stays placeholder (MODULE code loading, SCRIPT).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Pack format on every port: `framework/schemas/plugin-pack.json` (`pack@1`: manifest plugin@1 + files list + hashes) validated by TS (`core/plugins-pack.ts`), Kotlin (`PluginManifest` + pack reader) and Python (catalog engine); fixture `spec/fixtures/plugin-pack.json` (good pack, over-scope pack refused, bad hash).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Android loader, PACK only: `axf-platform-android` `PackLoader implements PluginLoader` — stage from file/URL (OkHttp, no redirects, size cap), verify hashes, keep under `filesDir/plugins/<id>/`, states STAGED→DISABLED→ENABLED; `axf.plugins` placeholder replaced for PACK, MODULE/SCRIPT still answer NotImplemented.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Android apply: an enabled pack registers its assets into `AssetRegistry` (origin = plugin id, conflicts reported as diagnostics) and its macros into `ExtensionPoints.MACROS`; disable/uninstall removes exactly those; unit test with a fixture pack.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Grants: scopes requested vs granted stored in KV; a pack asking beyond `PACK_MAX` is BLOCKED; Settings → Plugins (lib-settings) shows each pack with its scopes and an Enable switch; `PluginManagerModule` lists packs via `PluginInventoryHost`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Sources: `ExtensionPoints.PLUGIN_SOURCES` gets two contributions — local file picker and console catalog (`GET /api/plugin-catalog?kind=pack` through the console client in lib-hub or a plain URL setting); QR stays placeholder.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Web loader: `framework/libs/plugins` (web `PackLoader`: fetch pack JSON, validate, register assets/macros into `rt`, enable/disable persisted in settings); the console installs it; Settings → Plugins lists packs beside libraries.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Catalog publish for packs: `plugin-catalog.mjs` kind `pack` (files = asset JSON only, validated by `validateAsset`), console Plugin Manager → Install view lists packs; `check-plugin-catalog.mjs` cases.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Tests + CI: Kotlin `PackLoaderTest` (fixture pack, hash refusal, scope block, remove leaves nothing), web unit via `check-plugin-pack.mts`, CI lines; written without a compiler for the Kotlin part.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Docs + status: PORTING.md \"Plugins after install\", plan android placeholder → built (PACK), web → built, status.json + tracker, `build_step complete`; MODULE/SCRIPT remain placeholders (named in the tracker).",
-     "estimate": "30 min"
-    }
-   ]
-  },
-  "x.work": {
-   "estimate": "3 h",
-   "steps": [
-    {
-     "text": "Web contract: `framework/core/work.ts` = Kotlin `contract/Work.kt` (`WorkSpec`, `WorkConstraints`, policies, states, `WorkRegistry` of workers by id); fixture `spec/fixtures/work.json` (unique + KEEP/REPLACE/APPEND rules, backoff computation, constraint evaluation with explicit inputs).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Android scheduler: `axf-platform-android` `WorkManagerScheduler` mapping `WorkSpec` → WorkManager requests (constraints, backoff, unique work policy), `WorkRegistry` dispatch inside one `AxfWorker`; capability `axf.work` real; periodic + one-shot; progress through `WorkState` flow. Written without a compiler.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Web scheduler: `framework/libs/work` with a `setTimeout`/visibility-aware scheduler (one-shot + periodic while the page lives, persisted queue in settings so a reload re-enqueues), constraints evaluated with `navigator.connection`/battery where available, else ignored with a terminal note.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Workers registry: `ExtensionPoints.WORKERS` typed (`WorkerContribution {id, run}`) on Kotlin + web; the alerts library's 3-minute poll becomes the first web worker; Android console showcase registers a demo periodic worker (logs a line).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Tests: Kotlin `WorkConformanceTest` (fixture) + `WorkManagerSchedulerTest` with `WorkManagerTestInitHelper`; web `check-work.mts`; CI lines.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Docs + status: PORTING.md \"Background work\", plan android placeholder → built, web → built, features `k.scheduler`/`dv.bg` built, tracker, `build_step complete`.",
-     "estimate": "30 min"
-    }
-   ]
-  },
-  "x.session": {
-   "estimate": "3.5 h",
-   "steps": [
-    {
-     "text": "Web contract: `framework/core/session.ts` = Kotlin `contract/Session.kt` (`Principal`, `Session`, `SessionState`, `SessionProvider`, `AnonymousSession`, `AuditEntry`, `AuditLog`, `MemoryAuditLog`); `rt.session` replaces the ad-hoc principal in `runtime.ts` (`bindPrincipal` keeps working, built on it); fixture `spec/fixtures/session.json` (state transitions, audit cap).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Audit log everywhere: every UAC-denied action, swap, settings write of a locked key and bound-principal refusal records an `AuditEntry` (web + Kotlin, same action names); Settings → Account & security → **Audit** list (last 100) in `libs/settings` and Android `SettingsScreen`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Real provider, axHub: `lib-hub` gets `AxhubSessionProvider` (web: `/api/me` + hub cookie; Android: the AXHub app's cookie-jar sign-in) mapping hub role/perms → `Principal`; the console's `account.tsx` reads `rt.session` instead of its own fetch; first non-mock provider.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Kotlin: `AuthProviders` extension point typed (`AUTH_PROVIDERS` → `SessionProvider`), `lib-accounts` picks the first registered provider (mock stays as fallback module `lib-accounts-mock`); `SessionConformanceTest` replays the fixture; written without a compiler.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Persistence: session survives restart (Kotlin KV `<key>:session` minus secrets; web settings), `EXPIRED`/`LOCKED` transitions on expiry and app lock (lib-lock hooks `LOCKED`); fixture cases for expiry.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Tests + CI: `check-session.mts`, Kotlin test, console `test_wall_users.py` unchanged; CI lines.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Docs + status: PORTING.md \"Session + audit\", plan android/web partial → built, status.json + tracker, `build_step complete`; warning \"No real sign-in provider yet\" cleared.",
-     "estimate": "30 min"
-    }
-   ]
-  },
   "x.libs.core": {
    "estimate": "6 h",
    "steps": [
@@ -496,6 +567,85 @@
     },
     {
      "text": "Docs: PORTING.md \"Core libraries\", CLAUDE.md Status bullet, `_claude/memory/docs/libs-core.md` finished with what stayed placeholder (Play Billing).",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.engine.uiport": {
+   "estimate": "2.5 h",
+   "steps": [
+    {
+     "text": "Real-library trial: run `axf import-ui --name Cupertino --kit cupertino --source git --path <compose-cupertino repo>` into a scratch android-compose app (`/tmp`), read `tokens.map.json`, list what the codemod missed (patterns + counts) in `_claude/memory/docs/uiport-trial.md`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Codemod fixes from the trial: extend `ROLE_MAP`/`guessToken` in `framework/cli/ui-port.mjs` for the missed Compose patterns (e.g. `MaterialTheme.colorScheme.x`, `Modifier.padding(Nn.dp)` → space tokens), unit cases in `framework/spec/check-uiport.mjs` (new; fixture snippets in `spec/fixtures/uiport/`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kit overrides: generated `kit-<id>` module gets per-kind override files from the library's components (mapping table in `tokens.map.json` → `components.map.json`), default components kept where unmapped; the ui-kit asset lists `covers`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web side: `import-ui` for npm libraries (MUI first) generating `framework/libs/kit-<id>` from the `ui-kit` library template with the same maps; `check-theme.mjs` passes on the output.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "CI + status: `check-uiport.mjs` in `android.yml` (node job) + the existing fake-lib import sweep; plan warnings cleared, status.json + tracker, `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.engine.dev": {
+   "estimate": "2 h",
+   "steps": [
+    {
+     "text": "Web hot reload: `framework/react` `useDevServer(url)` long-polls `/events` from `dev-server.mjs` and re-registers changed assets (`registry.register` + `rt.refreshFromSaved`); `axf dev` prints the URL; demo app opts in with `?axfDev=`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android end to end on the emulator (CI): `rebuild-shots.yml`-style job step that starts `axf dev --framework` on the runner, points the emulator at `10.0.2.2:7070` (setting `axf.devServer`, flag `axf.hotReload`), edits a theme file, screenshots before/after and asserts the pixel diff > 0.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Robustness: dev server validates every changed file before announcing it (invalid → `/events` carries `error` and the device shows a terminal line), ignores editor temp files, handles rename/delete; `check-dev-server.mjs` test with a temp folder.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: README section \"Live reload on a phone\" (PC IP, same Wi-Fi), plan warning cleared, status.json + tracker, `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.session": {
+   "estimate": "3.5 h",
+   "steps": [
+    {
+     "text": "Web contract: `framework/core/session.ts` = Kotlin `contract/Session.kt` (`Principal`, `Session`, `SessionState`, `SessionProvider`, `AnonymousSession`, `AuditEntry`, `AuditLog`, `MemoryAuditLog`); `rt.session` replaces the ad-hoc principal in `runtime.ts` (`bindPrincipal` keeps working, built on it); fixture `spec/fixtures/session.json` (state transitions, audit cap).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Audit log everywhere: every UAC-denied action, swap, settings write of a locked key and bound-principal refusal records an `AuditEntry` (web + Kotlin, same action names); Settings → Account & security → **Audit** list (last 100) in `libs/settings` and Android `SettingsScreen`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Real provider, axHub: `lib-hub` gets `AxhubSessionProvider` (web: `/api/me` + hub cookie; Android: the AXHub app's cookie-jar sign-in) mapping hub role/perms → `Principal`; the console's `account.tsx` reads `rt.session` instead of its own fetch; first non-mock provider.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin: `AuthProviders` extension point typed (`AUTH_PROVIDERS` → `SessionProvider`), `lib-accounts` picks the first registered provider (mock stays as fallback module `lib-accounts-mock`); `SessionConformanceTest` replays the fixture; written without a compiler.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Persistence: session survives restart (Kotlin KV `<key>:session` minus secrets; web settings), `EXPIRED`/`LOCKED` transitions on expiry and app lock (lib-lock hooks `LOCKED`); fixture cases for expiry.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + CI: `check-session.mts`, Kotlin test, console `test_wall_users.py` unchanged; CI lines.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"Session + audit\", plan android/web partial → built, status.json + tracker, `build_step complete`; warning \"No real sign-in provider yet\" cleared.",
      "estimate": "30 min"
     }
    ]
@@ -573,79 +723,79 @@
     }
    ]
   },
-  "x.engine.uiport": {
-   "estimate": "2.5 h",
+  "x.plugins": {
+   "estimate": "5 h",
    "steps": [
     {
-     "text": "Real-library trial: run `axf import-ui --name Cupertino --kit cupertino --source git --path <compose-cupertino repo>` into a scratch android-compose app (`/tmp`), read `tokens.map.json`, list what the codemod missed (patterns + counts) in `_claude/memory/docs/uiport-trial.md`.",
+     "text": "Design check (no code): read `contract/Plugin.kt` (PACK/MODULE/SCRIPT, scopes, `PluginLoader`), `framework/schemas/asset-pack.json` if asset-browser made it, and the plugin-catalog format; write `_claude/memory/docs/plugin-runtime.md`: what a PACK may carry (assets, action macros, string packs), install sources (file, URL, QR, console catalog), grants UI, and what stays placeholder (MODULE code loading, SCRIPT).",
      "estimate": "30 min"
     },
     {
-     "text": "Codemod fixes from the trial: extend `ROLE_MAP`/`guessToken` in `framework/cli/ui-port.mjs` for the missed Compose patterns (e.g. `MaterialTheme.colorScheme.x`, `Modifier.padding(Nn.dp)` → space tokens), unit cases in `framework/spec/check-uiport.mjs` (new; fixture snippets in `spec/fixtures/uiport/`).",
+     "text": "Pack format on every port: `framework/schemas/plugin-pack.json` (`pack@1`: manifest plugin@1 + files list + hashes) validated by TS (`core/plugins-pack.ts`), Kotlin (`PluginManifest` + pack reader) and Python (catalog engine); fixture `spec/fixtures/plugin-pack.json` (good pack, over-scope pack refused, bad hash).",
      "estimate": "30 min"
     },
     {
-     "text": "Kit overrides: generated `kit-<id>` module gets per-kind override files from the library's components (mapping table in `tokens.map.json` → `components.map.json`), default components kept where unmapped; the ui-kit asset lists `covers`.",
+     "text": "Android loader, PACK only: `axf-platform-android` `PackLoader implements PluginLoader` — stage from file/URL (OkHttp, no redirects, size cap), verify hashes, keep under `filesDir/plugins/<id>/`, states STAGED→DISABLED→ENABLED; `axf.plugins` placeholder replaced for PACK, MODULE/SCRIPT still answer NotImplemented.",
      "estimate": "30 min"
     },
     {
-     "text": "Web side: `import-ui` for npm libraries (MUI first) generating `framework/libs/kit-<id>` from the `ui-kit` library template with the same maps; `check-theme.mjs` passes on the output.",
+     "text": "Android apply: an enabled pack registers its assets into `AssetRegistry` (origin = plugin id, conflicts reported as diagnostics) and its macros into `ExtensionPoints.MACROS`; disable/uninstall removes exactly those; unit test with a fixture pack.",
      "estimate": "30 min"
     },
     {
-     "text": "CI + status: `check-uiport.mjs` in `android.yml` (node job) + the existing fake-lib import sweep; plan warnings cleared, status.json + tracker, `build_step complete`.",
+     "text": "Grants: scopes requested vs granted stored in KV; a pack asking beyond `PACK_MAX` is BLOCKED; Settings → Plugins (lib-settings) shows each pack with its scopes and an Enable switch; `PluginManagerModule` lists packs via `PluginInventoryHost`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Sources: `ExtensionPoints.PLUGIN_SOURCES` gets two contributions — local file picker and console catalog (`GET /api/plugin-catalog?kind=pack` through the console client in lib-hub or a plain URL setting); QR stays placeholder.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web loader: `framework/libs/plugins` (web `PackLoader`: fetch pack JSON, validate, register assets/macros into `rt`, enable/disable persisted in settings); the console installs it; Settings → Plugins lists packs beside libraries.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Catalog publish for packs: `plugin-catalog.mjs` kind `pack` (files = asset JSON only, validated by `validateAsset`), console Plugin Manager → Install view lists packs; `check-plugin-catalog.mjs` cases.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + CI: Kotlin `PackLoaderTest` (fixture pack, hash refusal, scope block, remove leaves nothing), web unit via `check-plugin-pack.mts`, CI lines; written without a compiler for the Kotlin part.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"Plugins after install\", plan android placeholder → built (PACK), web → built, status.json + tracker, `build_step complete`; MODULE/SCRIPT remain placeholders (named in the tracker).",
      "estimate": "30 min"
     }
    ]
   },
-  "x.engine.dev": {
-   "estimate": "2 h",
+  "x.work": {
+   "estimate": "3 h",
    "steps": [
     {
-     "text": "Web hot reload: `framework/react` `useDevServer(url)` long-polls `/events` from `dev-server.mjs` and re-registers changed assets (`registry.register` + `rt.refreshFromSaved`); `axf dev` prints the URL; demo app opts in with `?axfDev=`.",
+     "text": "Web contract: `framework/core/work.ts` = Kotlin `contract/Work.kt` (`WorkSpec`, `WorkConstraints`, policies, states, `WorkRegistry` of workers by id); fixture `spec/fixtures/work.json` (unique + KEEP/REPLACE/APPEND rules, backoff computation, constraint evaluation with explicit inputs).",
      "estimate": "30 min"
     },
     {
-     "text": "Android end to end on the emulator (CI): `rebuild-shots.yml`-style job step that starts `axf dev --framework` on the runner, points the emulator at `10.0.2.2:7070` (setting `axf.devServer`, flag `axf.hotReload`), edits a theme file, screenshots before/after and asserts the pixel diff > 0.",
+     "text": "Android scheduler: `axf-platform-android` `WorkManagerScheduler` mapping `WorkSpec` → WorkManager requests (constraints, backoff, unique work policy), `WorkRegistry` dispatch inside one `AxfWorker`; capability `axf.work` real; periodic + one-shot; progress through `WorkState` flow. Written without a compiler.",
      "estimate": "30 min"
     },
     {
-     "text": "Robustness: dev server validates every changed file before announcing it (invalid → `/events` carries `error` and the device shows a terminal line), ignores editor temp files, handles rename/delete; `check-dev-server.mjs` test with a temp folder.",
+     "text": "Web scheduler: `framework/libs/work` with a `setTimeout`/visibility-aware scheduler (one-shot + periodic while the page lives, persisted queue in settings so a reload re-enqueues), constraints evaluated with `navigator.connection`/battery where available, else ignored with a terminal note.",
      "estimate": "30 min"
     },
     {
-     "text": "Docs + status: README section \"Live reload on a phone\" (PC IP, same Wi-Fi), plan warning cleared, status.json + tracker, `build_step complete`.",
+     "text": "Workers registry: `ExtensionPoints.WORKERS` typed (`WorkerContribution {id, run}`) on Kotlin + web; the alerts library's 3-minute poll becomes the first web worker; Android console showcase registers a demo periodic worker (logs a line).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: Kotlin `WorkConformanceTest` (fixture) + `WorkManagerSchedulerTest` with `WorkManagerTestInitHelper`; web `check-work.mts`; CI lines.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"Background work\", plan android placeholder → built, web → built, features `k.scheduler`/`dv.bg` built, tracker, `build_step complete`.",
      "estimate": "30 min"
     }
    ]
-  },
-  "x.console.repo": {
-   "estimate": "2.5 h",
-   "steps": [
-    {
-     "text": "BRETT says go (rule: not until he does) and picks the dependency style: tagged framework version via git tag + `npm pack`-style tarball, or a git submodule. Record in decisions.md.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Framework packaging: `framework/cli/axf.mjs pack-framework <tag>` producing `axf-framework-<tag>.tgz` (core, react, ui, schemas, libs, plan cores) + a GitHub release asset on tag push (`release.yml`).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Repo split: create `MossesX/axf-console` (exists on GitHub first), move `apps/console-web` with history (`git subtree split`), manifest `location` + `repo.exists: true`, `_claude/` + CLAUDE.md via `claude-project`; CI there re-bakes from the tagged tarball instead of `../../framework`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "This repo: `apps/console-web` becomes a thin pointer (README + manifest `location` pointing at the new repo), `install-console.sh` clones the console repo; `deploy/` scripts and `android.yml` console job updated.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Verify: console builds in its repo against the tag, deploy on the VPS from the new clone, `/api/health` + `/mcp` ok; status + `build_step complete`.",
-     "estimate": "30 min"
-    }
-   ]
-  },
-  "x.deploy.console": {
-   "estimate": "30 min"
   },
   "x.showcase.packs": {
    "estimate": "3 h",
@@ -966,185 +1116,33 @@
     }
    ]
   },
-  "x.assets.designer": {
-   "estimate": "8 h",
+  "x.console.repo": {
+   "estimate": "2.5 h",
    "steps": [
     {
-     "text": "Plugin skeleton: copy `apps/console-web/plugins/_template` to `plugins/asset-designer` (id `ai.amberx.axf.console.asset-designer`, `uiEditor: \"builder\"`, lifecycle block, `install.mjs`/`uninstall.mjs`), nav → Plugins → Asset designer, Settings → Plugins sub-tab (parent `plugins`). `node framework/cli/plugin-lifecycle.mjs check asset-designer` passes; console tsc + vite build pass.",
+     "text": "BRETT says go (rule: not until he does) and picks the dependency style: tagged framework version via git tag + `npm pack`-style tarball, or a git submodule. Record in decisions.md.",
      "estimate": "30 min"
     },
     {
-     "text": "Designer shell `web/Designer.tsx`: type picker (every non-attachable type from `asset-types.json` the designer covers: nav-menu, drawer, app-menu, context-menu, toolbar, layout, style-theme, color-theme), id + label fields, Save/Cancel; `useEditorSync()` so it reloads values on focus (UI-editor rule). Saves nothing yet.",
+     "text": "Framework packaging: `framework/cli/axf.mjs pack-framework <tag>` producing `axf-framework-<tag>.tgz` (core, react, ui, schemas, libs, plan cores) + a GitHub release asset on tag push (`release.yml`).",
      "estimate": "30 min"
     },
     {
-     "text": "Validation gate: every save runs `validateAsset` from the baked `src/axf/core/validate.ts`; errors shown inline next to the field they name; Save disabled until clean. Server route `POST /api/plugins/asset-designer/validate` mirrors it with the CLI validator (`framework/core/project-check.mjs` pattern). Test in `test.py`.",
+     "text": "Repo split: create `MossesX/axf-console` (exists on GitHub first), move `apps/console-web` with history (`git subtree split`), manifest `location` + `repo.exists: true`, `_claude/` + CLAUDE.md via `claude-project`; CI there re-bakes from the tagged tarball instead of `../../framework`.",
      "estimate": "30 min"
     },
     {
-     "text": "Storage: designed assets saved as asset@1 files under `.axf-console/plugins/asset-designer/assets/<type>/<id>.json` (lifecycle dataDir), served by `GET /api/plugins/asset-designer/assets`, registered into the runtime on load like the theme-manager plugin does (`registry.register`, origin `asset-designer`). Built-in ids refused.",
+     "text": "This repo: `apps/console-web` becomes a thin pointer (README + manifest `location` pointing at the new repo), `install-console.sh` clones the console repo; `deploy/` scripts and `android.yml` console job updated.",
      "estimate": "30 min"
     },
     {
-     "text": "Menu editor (nav-menu, app-menu, context-menu): tree of items (label, icon, action, children, divider), drag to reorder, action picker from `rt.actions.list()`, live preview via `rt.swap` on a `ad-preview-<type>` id. Reuses `MenuList.tsx` for the preview.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Toolbar editor: items (icon, label, action, badge counter), `density`/`surface`/`divider`/`collapsible`, widgets start/end picker from `attachable` types (engine-rpc `app-defaults` → `widgets`), live preview through the React `Toolbar`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "`drawer` asset type: add it to `asset-types.json` (hideable chrome, `side` left/right, `width`, `items` like nav-menu, `modal`), `layout.slots` accept it in the `drawer` region, starter `framework/assets/drawer/amberx-side.json`, `framework/defaults.json` names it. Validators on all three ports accept it (Kotlin: `AssetTypeSpec` resource); fixture case in `layout-slots.json`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Drawer rendering: React `components/Chrome.tsx` draws the drawer region; Compose `axf-ui/components/Chrome.kt` the same (swipe from the edge, scrim from `--fx-opacity-scrim`). Drawer editor in the designer (same editor as nav-menu plus side/width/modal).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Layout editor: region grid (9 regions from `layout.slots`), per-region size/visibility, `data.slots` overrides with accepted-type chips; preview through `compileLayout`. Hidden slots greyed like Appearance does.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Color-theme editor: token groups from the theme engine (`core/engines/theme.ts` token list), colour pickers, contrast warnings (reuse `theme-manager/web/rollEngine.ts` checks), light/dark pair, preview via `rt.swap`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Style-theme editor: space, radii, borders, font sizes, opacity tokens (`opacityDisabled/Muted/Hover/Tint/Scrim/Glass`), density; preview; numbers clamped to the ranges known themes use.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Templates hook: \"Start from\" picker listing starters + designed assets + (later) `x.assets.templates` entries; Duplicate / Rename / Export JSON / Import JSON (validated). Export writes a file a user can drop into an app's assets folder.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Installed by default: plugin `enabled: true` in the console's plugin defaults, `framework/catalog/plugins.json` entry (planned → built resolves by itself), `node framework/cli/plugins.mjs --check`, status.json + tracker; Plugin Manager shows it.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Android face (first slice): `axf-devtools` gets an `AssetDesignerModule` placeholder route `asset-designer` listing designed assets received from the console (read-only), so the plugin-inventory shows it on both ports; full editors stay web-only for now (noted as a placeholder capability `axf.designer`).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Tests: plugin `test.py` (validate route, storage, built-in id refused, lifecycle), web unit cases for the drawer slot + layout compile, CI line; `uninstall.mjs --all` leaves nothing (`check --after-uninstall`).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets.designer` built via `build_step`, pending item complete.",
+     "text": "Verify: console builds in its repo against the tag, deploy on the VPS from the new clone, `/api/health` + `/mcp` ok; status + `build_step complete`.",
      "estimate": "30 min"
     }
    ]
-  },
-  "x.assets.browser": {
-   "estimate": "5 h",
-   "steps": [
-    {
-     "text": "Plugin skeleton `apps/console-web/plugins/asset-browser` from `_template` (id `ai.amberx.axf.console.asset-browser`, lifecycle, install/uninstall, nav → Plugins → Asset browser, settings sub-tab). Lifecycle check + console build pass.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Sources: server route `GET /api/plugins/asset-browser/sources` lists asset folders it may read: framework starters (`framework/assets`), every app under `apps/*/src/assets` or `app/src/main/assets/axf` (from `framework/cli/app-bundle.mjs list`), designed assets (asset-designer dataDir when present). Never follows symlinks; roots only.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Browse view: grid by type → source → asset, search box (reuses `consoleSearch.ts` provider pattern), type chips from `asset-types.json`, counts per source. Rows show id, label, origin, tier.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Preview: `AssetPreview.tsx` from `framework/react/studio` renders the selected asset in a card; for chrome types a live preview on an `ab-preview-<type>` swap like theme-manager; \"Apply here\" = `rt.swap(type, id)` after `registry.register`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Import: drop/paste JSON or pick a file → `validateAsset` → preview → install into a chosen target (console runtime, or an app folder through `POST /api/plugins/asset-browser/install {source, target, type, id}` that writes the file only inside allowed app asset folders; built-in ids refused; backups under the plugin dataDir).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Export: single asset or a pack (zip of asset@1 files + `pack.json`), served by `GET …/export?ids=`; packs are what the plugin runtime (`x.plugins`, PACK kind) will load later, so write the `pack@1` shape now in `framework/schemas/asset-pack.json`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Hot-swap across apps: for apps running `axf dev` (`framework/cli/dev-server.mjs`), \"Push to device\" posts the asset to the dev server's folder so the HotReloader picks it up; list dev servers from settings (`axf.devServer`). Error card when none.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Installed by default + Android: enabled in console plugin defaults, `plugins.json` catalog entry, `plugins.mjs --check`; Android `axf-devtools` route `asset-browser` showing the bundled assets by type with Apply (uses `AssetRegistry` + `AxfRuntime.swap`), so Settings → Plugins lists it on both ports.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Tests: `test.py` (sources never leave roots, import validation, built-in refusal, export pack shape), lifecycle check, CI line.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Close: report `_claude/memory/docs/rebuilds/asset-browser.md` + LOG.md + web screenshots, CLAUDE.md Status, plan `x.assets.browser` built, pending complete.",
-     "estimate": "30 min"
-    }
-   ]
-  },
-  "x.assets.templates": {
-   "estimate": "7 h",
-   "steps": [
-    {
-     "text": "Template index: `framework/assets/templates/index.json` (`asset-templates@1`: id, type, label, tags, file) + loader `listAssetTemplates(type)` in `framework/cli/build-engine.mjs`; engine-rpc `asset-templates`, console `GET /api/asset-templates?type=`. Empty list works end to end.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Validation in CI: `framework/spec/check-asset-templates.mjs` loads every template, runs `validateAsset`, checks unique ids, ≥ 10 per covered type once a type is marked `complete` in the index, and that each type has a `default`. Wire into `android.yml` (node job).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "nav-menu ×10: side nav, bottom tabs, rail, grouped sections, icon-only, with badges, two-level, settings-first, admin, minimal. Each a valid `nav-menu` asset in `framework/assets/templates/nav-menu/`.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "app-menu ×10 (file/edit/view style menus, single-page apps, tool apps…) + context-menu ×10 (text, list row, card, media, dev, file, link, minimal, with submenus, keyboard hints).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "toolbar ×10: editor, media, search-first, compact icons, labelled, split start/end with widgets, status-heavy (counters/progress), collapsible, roomy, minimal.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "layout ×10: dashboard, master-detail, sidebar-left/right, bottom-nav phone, kiosk, editor + inspector, chat, settings, full-bleed, three-pane. Each with `data.slots` where it narrows a region.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "drawer ×10 (needs `asset-designer` step 7's `drawer` type): left/right, modal/non-modal, wide/narrow, with header, grouped, icon rail, account-first, admin, minimal.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "color-theme ×10 light + ×10 dark (pairs): contrast-checked with `theme-manager/web/rollEngine.ts` checks run from a script; names in one family (`arctic-daylight` style). Each pair shares a `pair` tag.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "style-theme ×10: glass, flat, outlined, dense, roomy, rounded, square, hairline, soft, print. Numbers inside ranges known themes use; every opacity token present.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Defaults: `framework/defaults.json` + `framework/app-defaults.json` reviewed so every type has a default template id (new field `templates.default.<type>` read by `axf init` for \"start from a template\"); `axf init --template-set <id>` option registered in `build-options.json` only if it sets a token, else as an init argument.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Previews: `framework/cli/rebuild-shots.mjs`-style script `framework/cli/template-shots.mjs` renders each template in the demo app headless (phone + desktop) to `framework/assets/templates/<type>/shots/`; `index.json` entries get `shot`. Run once; commit shots ≤ 60 KB each (`framework/cli/shrink-shots.py`).",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Android: templates bundled into `axf-assets` as a resource folder so Compose previews (`ComponentGallery.kt`) and the future Android designer read the same files; `AssetTemplates` Kotlin loader + a unit test that every bundled template validates.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Hooks: asset-designer \"Start from\" and Build Pilot's designers list templates by type (console `GET /api/asset-templates`); asset-browser shows a Templates source. Add the `templates` capability to `app-defaults` engine-rpc.",
-     "estimate": "30 min"
-    },
-    {
-     "text": "Close: regenerate fixtures touched (`gen-fixtures.mts`), CI green, report `_claude/memory/docs/rebuilds/asset-templates.md`, CLAUDE.md Status, plan `x.assets.templates` built, pending complete.",
-     "estimate": "30 min"
-    }
-   ]
-  },
-  "x.plugins.manager": {
-   "estimate": "30 min"
   },
   "x.lib.hub": {
+   "estimate": "3 h",
    "steps": [
     {
      "text": "AXPP design note with axHub: typed call / job / event shapes, errors mapped to the INTEROP wire codes, what the hub serves first",
@@ -1170,8 +1168,12 @@
      "text": "Tests, PORTING.md deferred Kotlin twin (Android on hold), docs + CLAUDE.md Status",
      "estimate": "30 min"
     }
-   ],
-   "estimate": "3 h"
+   ]
+  },
+  "x.projects": {
+   "completedAt": "2026-10-18T14:17:14.449Z",
+   "completedBy": "feature-tracker",
+   "deps": []
   }
  },
  "dirty": true,

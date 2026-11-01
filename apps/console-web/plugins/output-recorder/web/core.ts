@@ -215,7 +215,7 @@ export interface Recording {
   sha256: string;
   uploadedAt: string;
   deleted: boolean;
-  /** The recording group on axHub (a session's name when started through axHub, decision 108); '' = none. */
+  /** The recording group on axHub (a session's name when started through axHub, axHub decision 108); '' = none. */
   group: string;
   /** The session it belongs to and its note, when started through axHub. */
   session: string;

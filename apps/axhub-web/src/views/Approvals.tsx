@@ -8,11 +8,11 @@
  * refused) — never with a token, so an AI client can't approve its own call. Approve sits on a row only when the row
  * shows the complete call; a longer one opens its page first.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { hubPost } from '../hub/api';
-import { countdownKey, nextSort, relTime, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, SOURCE_LABEL, SOURCE_ORDER, waitingCount, waitingTitle, type KeptReply } from '../hub/core';
+import { countdownKey, nextSort, relTime, replyBase, requestedKey, sameJson, showReading, shownRow, sourceChips, sourceKind, sourceWho, SOURCE_LABEL, SOURCE_ORDER, waitingCount, waitingTitle, type KeptReply } from '../hub/core';
 import { clearDatasetTransform, DataGrid, setDatasetTransform, type GridColumn, type GridGroup, type GridSort } from '../axf/libs/datagrid';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, SOURCE_TONE, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
@@ -44,7 +44,10 @@ function ApprovalsGrid() {
   // Pending requests + held calls counting down (the hub's `waiting` is pending only): matches the banner's count.
   const waiting = waitingCount(g);
 
-  const after = async () => { await grid.reload(); checkHubNow(); };
+  const reload = grid.reload;
+  // One function for the page's life (per address), so the rows (memo) don't re-render because the parent did.
+  const after = useCallback(async () => { await reload(); checkHubNow(); }, [reload]);
+  const onRowDone = useCallback(() => void after(), [after]);
 
   return (
     <div className="fx-stack fx-stack--lg">
@@ -78,9 +81,10 @@ function ApprovalsGrid() {
         </div>
       )}
 
-      {!g && !grid.error && <p className="fx-muted">Reading the hub…</p>}
+      {/* Only before the first answer: a refresh keeps the list on screen and updates its rows in place. */}
+      {showReading(g, grid.error) && <p className="fx-muted">Reading the hub…</p>}
       {g && g.items.length === 0 && <Note tone="success" icon="check">{g.filter === 'all' ? 'No requests yet.' : 'None with this status.'}</Note>}
-      {g && g.items.length > 0 && <ApprovalsTable items={g.items} onDone={() => void after()} />}
+      {g && g.items.length > 0 && <ApprovalsTable items={g.items} onDone={onRowDone} />}
 
       {g && g.pages > 1 && (
         <div className="fx-row fx-row--wrap">
@@ -168,7 +172,19 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
   const [expanded, setExpanded] = useState<string[]>([]);
   const [only, setOnly] = useState<string>('');
   const [replies, setReplies] = useState<Record<string, KeptReply<ApprovalItem>>>({});
-  const rows = useMemo(() => items.map((i) => shownRow(i, replies[i.id])), [items, replies]);
+  // Same JSON as the last read = the same object (flicker fix, Nov 1 2026): memoised cells of unchanged rows don't redraw.
+  const kept = useRef(new Map<string, ApprovalItem>());
+  const rows = useMemo(() => {
+    const next = new Map<string, ApprovalItem>();
+    const out = items.map((i) => {
+      const was = kept.current.get(i.id);
+      const base = was && sameJson(was, i) ? was : i;
+      next.set(i.id, base);
+      return shownRow(base, replies[i.id]);
+    });
+    kept.current = next;
+    return out;
+  }, [items, replies]);
   const chips = sourceChips(items);
 
   // The source filter is a transform on the grid's dataset, so the grid (and anything else showing it) agrees.
@@ -232,29 +248,29 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
 }
 
 /** Source badge (Claude.ai / Claude Code / Headless / Console / Agent / System); the client in its tooltip. */
-function SourceCell({ item }: { item: ApprovalItem }) {
+const SourceCell = memo(function SourceCell({ item }: { item: ApprovalItem }) {
   const kind = sourceKind(item);
   const label = item.source?.label || SOURCE_LABEL[kind]!;
   const client = [item.source?.client, item.source?.clientVersion].filter(Boolean).join(' ');
   return <span title={client ? `${label} · ${client}` : label} data-source={kind}><Chip tone={SOURCE_TONE[kind]}>{label}</Chip></span>;
-}
+});
 
 /** The reason title first (truncates first), then the tool as a small chip. The row opens below (or Details). */
-function WhatCell({ item }: { item: ApprovalItem }) {
+const WhatCell = memo(function WhatCell({ item }: { item: ApprovalItem }) {
   return (
     <span className="axp-axhub-what">
       <strong className="axp-axhub-what__title" title={item.title}>{item.title}</strong>
       <span className="axp-axhub-what__tool"><Chip>{item.tool}</Chip></span>
     </span>
   );
-}
+});
 
 /** Held: the live countdown; waiting: the time left; decided: its status. */
-function CountdownCell({ item }: { item: ApprovalItem }) {
+const CountdownCell = memo(function CountdownCell({ item }: { item: ApprovalItem }) {
   if (isHeld(item)) return <HeldChip item={item} />;
   if (item.showExpires) return <Chip tone={STATUS_TONE[item.status]}>{relTime(item.expiresAt)}</Chip>;
   return <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>;
-}
+});
 
 /** Deny / Approve now on a waiting row (the hub's reply shows at once). */
 function RowDecideCell({ item, onDone }: { item: ApprovalItem; onDone: (next?: ApprovalItem) => void }) {

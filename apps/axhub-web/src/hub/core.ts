@@ -242,6 +242,34 @@ export function stepGroups(steps: HandoffStepView[]): { name: string; steps: Han
   return [...groups].map(([name, list]) => ({ name, steps: list, done: list.filter((s) => s.done).length }));
 }
 
+/* ---------------------------------------------------------------- refreshes that keep the page (Nov 1 2026) */
+
+/**
+ * Brett, Nov 1 2026: the approvals screen flashed "Reading the hub" over and over while a countdown ran. A page shows its
+ * loading line only before its first answer; later reads update what is on screen in place.
+ */
+export const showReading = (data: unknown, error: string): boolean => data === null && !error;
+
+/** Failed reads in a row before a page that already shows data says the hub can't be reached (one blip stays quiet). */
+export const MISSES_SHOWN = 2;
+
+/** The error a page shows: at once when nothing is on screen yet, else only once `misses` reads in a row failed. */
+export const shownError = (hasData: boolean, error: string, misses: number): string =>
+  !error ? '' : !hasData || misses >= MISSES_SHOWN ? error : '';
+
+/**
+ * A session re-read (tab back in view, an expired CSRF value) that couldn't reach the hub (no answer, 5xx, 429) keeps the
+ * signed-in page as it is: swapping it for an error note and back remounted every page under it.
+ */
+export const keepSessionOnFailure = (phase: string, status: number): boolean =>
+  phase === 'ready' && (status === 0 || status === 429 || status >= 500);
+
+/** Same JSON = same answer: kept as the old value so nothing under it re-renders. */
+export const sameJson = (a: unknown, b: unknown): boolean => {
+  if (a === b) return true;
+  try { return JSON.stringify(a) === JSON.stringify(b); } catch { return false; }
+};
+
 /* ─────────────────────────────────────────────────────────── who asked (axHub decision 109) */
 
 /** The badge order for the source filter and the sort: people first, then unattended, then the hub. */
