@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.approvals-banner",
   "name": "Approvals banner",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
