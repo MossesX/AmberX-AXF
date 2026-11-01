@@ -376,7 +376,12 @@ public class WatchService extends Service {
     static void appMic(boolean on) {
         appListening = on;
         WatchService w = running;
-        if (w != null) w.main.post(() -> { if (wakeMode(w)) w.listenLoop(); });
+        // Classic mode used to keep Google's recognizer running while AmberX talked, so it heard its own reply as the
+        // next command (the "nothing in Inbox" loop, Oct 31 2026): stop it now; the loop starts again once the mic is free.
+        if (w != null) w.main.post(() -> {
+            if (wakeMode(w)) w.listenLoop();
+            else if (on && w.recognizer != null) { w.pauseListening(); w.main.postDelayed(w::listenLoop, 1_000); }
+        });
     }
 
     private class WakeEvents implements WakeListener.Events {

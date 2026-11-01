@@ -7,6 +7,7 @@ import { Approvals } from './views/Approvals';
 import { useHubBannerCount } from './axf/libs/hub/react';
 import { HUB } from './hub/useHub';
 import { loadPlugins } from './plugins';
+import { secureScreenLibrary } from './securescreen';
 import { VIEW_TAB_KIND, ViewPane, registerWindowActions } from './windows/ViewWindow';
 import './windows/windows.css';
 
@@ -22,9 +23,10 @@ const views: ViewMap = {
 
 /**
  * Libraries this app ships. lib-settings gives it the settings interface (Appearance, Account & security, Connections,
- * Plugins, About). lib-hubsync keeps its settings on axHub (same on every device). The plugins come after them.
+ * Plugins, About). lib-hubsync keeps its settings on axHub (same on every device). The screen-capture setting (no
+ * FLAG_SECURE unless opted in, `securescreen.ts`) is AmberX's own. The plugins come after them.
  */
-const libraries = [settingsLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
+const libraries = [settingsLibrary, hubSyncLibrary, secureScreenLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

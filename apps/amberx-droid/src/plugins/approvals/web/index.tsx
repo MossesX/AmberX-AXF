@@ -39,7 +39,7 @@ export const library: AxfWebLibrary = {
   register(rt) {
     setRuntime(rt);
     startVeto();
-    // lib-approvals (assistant title bars): this app's hub, no framing (the hub frames only the console), and the
+    // lib-approvals (assistant title bars): this app's hub, no framing (the phone opens hub pages in its signed-in hub view), and the
     // phone's deciding path. Removing this plugin leaves the badge on its defaults (hub pages open in the hub view).
     setApprovalsHost({ hub: HUB, frame: false, decide: decideFromPhone, open: (url) => void native.hubOpen({ url }).catch(() => undefined) });
     setVetoHooks({
