@@ -2,7 +2,8 @@
 /**
  * Audio Output Recorder self-test: the pure rules (settings, ids, hub paths, parts under 64 KB, base64, the index
  * check), the recorder state machine, a fake axHub data server (list, download with checksum, delete = stubs) and the
- * controller against a fake native bridge. Plus static checks on the native side: no microphone, one consent flow.
+ * controller against a fake native bridge. Plus static checks on the native side: the mic only as an opt-in second
+ * track (left = mic, right = playback), released on stop, no second listener; one consent flow.
  *   node --experimental-strip-types apps/console-web/plugins/output-recorder/test.mts   (or npx -y tsx …)
  */
 import assert from 'node:assert/strict';
@@ -11,6 +12,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import {
   DEFAULTS, HUB_DOC_MAX, K, PART_BYTES, REC_IDLE, HubRecordings, byDay, byGroup, cleanSession, sessionPartName, capHours, chunkBytes, chunkName, cleanProject, dataUrl, fromBase64, hubHours, hubOf,
   idDate, idOfIndex, indexPath, isChunkId, normalizeIndex, partCount, partPath, readSettings, recReduce, splitParts, toBase64,
+  TRACKS, busySpans, micLine,
 } from './web/core.ts';
 import { createController } from './web/store.ts';
 
@@ -41,11 +43,60 @@ await t('sessions from axHub: part names (twin of RecorderControl.partName), gro
 await t('settings: defaults, bounds, bad values', () => {
   assert.deepEqual(readSettings(() => undefined), DEFAULTS);
   const s = readSettings((k) => ({ [K.kbps]: '64', [K.channels]: 2, [K.chunkMin]: 999, [K.capMb]: 1, [K.whenFull]: 'drop-oldest', [K.skipSilent]: false, [K.project]: 'My-Recs' } as Record<string, unknown>)[k]);
-  assert.deepEqual(s, { kbps: 64, channels: 2, chunkMin: 60, capMb: 50, whenFull: 'drop-oldest', skipSilent: false, project: 'my-recs' });
+  assert.deepEqual(s, { kbps: 64, channels: 2, chunkMin: 60, capMb: 50, whenFull: 'drop-oldest', skipSilent: false, project: 'my-recs', mic: false });
   assert.equal(readSettings((k) => (k === K.kbps ? 33 : undefined)).kbps, 32);
   assert.equal(cleanProject('../etc'), 'amberx-recordings');
   assert.equal(cleanProject('amberx-axf'), 'amberx-axf');
   assert.equal(cleanProject(''), 'amberx-recordings');
+});
+
+await t('mic: "Record my mic too" is off by default, on only when explicitly true', () => {
+  assert.equal(DEFAULTS.mic, false);
+  assert.equal(readSettings(() => undefined).mic, false);
+  for (const v of ['true', 1, 'on', null, {}]) assert.equal(readSettings((k) => (k === K.mic ? v : undefined)).mic, false, String(v));
+  assert.equal(readSettings((k) => (k === K.mic ? true : undefined)).mic, true);
+  assert.equal(K.mic, 'output-recorder.mic');
+  assert.deepEqual(TRACKS, { left: 'mic', right: 'playback' });
+  assert.equal(micLine(false, false), 'mic off');
+  assert.equal(micLine(true, false), 'playback + mic');
+  assert.equal(micLine(true, true), 'mic busy: playback only');
+});
+
+await t('mic: busy and back, stop mic, stop releases it (state)', () => {
+  let s = recReduce(REC_IDLE, { type: 'native', e: { state: 'recording', startedAt: '2026-11-01T09:00:00.000Z', mic: true } });
+  assert.equal(s.mic, true);
+  assert.equal(s.micBusy, '');
+  s = recReduce(s, { type: 'native', e: { state: 'micBusy', reason: 'silenced', message: 'another app is using the mic' } });
+  assert.equal(s.running, true); // the recording goes on
+  assert.equal(s.micBusy, 'silenced');
+  assert.match(s.note, /playback only/);
+  s = recReduce(s, { type: 'native', e: { state: 'micBack' } });
+  assert.equal(s.micBusy, '');
+  s = recReduce(s, { type: 'native', e: { state: 'micBusy', reason: 'stopped' } });
+  assert.equal(s.mic, false); // Stop mic from the notification
+  assert.equal(s.running, true);
+  s = recReduce(s, { type: 'native', e: { state: 'stopped' } });
+  assert.equal(s.mic, false);
+  assert.equal(s.micBusy, '');
+  // a recording started before the page opened
+  s = recReduce(REC_IDLE, { type: 'status', status: { running: true, startedAt: 'x', mic: true, micBusy: 'unavailable' } });
+  assert.deepEqual([s.mic, s.micBusy], [true, 'unavailable']);
+  s = recReduce(s, { type: 'status', status: { running: false } });
+  assert.deepEqual([s.mic, s.micBusy], [false, '']);
+  // a playback-only recording never shows a mic
+  assert.equal(recReduce(REC_IDLE, { type: 'native', e: { state: 'recording', startedAt: 'x' } }).mic, false);
+});
+
+await t('mic: the index of a two-track chunk (tracks, busy spans checked)', () => {
+  const id = '20261101-090000-abcd';
+  const base = { $axf: 'audio-recording@1', id, bytes: 10, parts: 1 };
+  const r = normalizeIndex({ ...base, mic: true, tracks: { left: 'mic', right: 'playback' }, micBusy: [{ fromMs: 0, toMs: 4000, reason: 'unavailable' }, { fromMs: 9000, toMs: 8000, reason: 'x' }, { fromMs: 10_000, toMs: 12_000, reason: 'odd' }] }, id)!;
+  assert.equal(r.mic, true);
+  assert.deepEqual(r.micBusy, [{ fromMs: 0, toMs: 4000, reason: 'unavailable' }, { fromMs: 10_000, toMs: 12_000, reason: 'unavailable' }]);
+  const plain = normalizeIndex(base, id)!;
+  assert.equal(plain.mic, false);
+  assert.deepEqual(plain.micBusy, []);
+  assert.equal(busySpans(Array.from({ length: 500 }, (_, i) => ({ fromMs: i, toMs: i + 1, reason: 'silenced' }))).length, 100);
 });
 
 await t('sizes: chunk, cap hours, hub hours', () => {
@@ -223,6 +274,8 @@ function fakeBridge() {
   const b = {
     async status() { calls.push({ m: 'status' }); return { running, startedAt: running ? '2026-10-31T01:00:00.000Z' : null, upload: 'offline', message: 'axHub can’t be reached', waiting: 1, waitingBytes: 7e6, capBytes: 209715200, nextTryAt: '', lastUploadAt: '', settings: DEFAULTS }; },
     async start() { calls.push({ m: 'start' }); },
+    micGrant: true,
+    async micPermission() { calls.push({ m: 'micPermission' }); return { granted: b.micGrant }; },
     async stop() { calls.push({ m: 'stop' }); },
     async configure(o) { calls.push({ m: 'configure', o }); return { settings: o }; },
     async queue() { calls.push({ m: 'queue' }); return { chunks: queue }; },
@@ -294,6 +347,22 @@ await t('controller: list from axHub, play, share, send to Audio Extract, delete
   assert.deepEqual(c.get().busy, {});
 });
 
+await t('controller: mic permission asked only when the toggle is turned on; refused = stays off', async () => {
+  const f = fakeBridge();
+  const toasts: string[] = [];
+  const c = createController(f.b, { settings: () => DEFAULTS, hub: () => 'https://axhub.amberxai.com', toast: (x) => toasts.push(x) });
+  await c.attach();
+  assert.ok(!f.calls.some((x) => x.m === 'micPermission')); // attaching never asks
+  assert.equal(await c.micToggled(false), true);
+  assert.ok(!f.calls.some((x) => x.m === 'micPermission')); // turning it off never asks
+  assert.equal(await c.micToggled(true), true);
+  assert.equal(f.calls.filter((x) => x.m === 'micPermission').length, 1);
+  f.b.micGrant = false;
+  assert.equal(await c.micToggled(true), false);
+  assert.match(toasts.at(-1)!, /stays off/);
+  assert.equal(await createController(null, { settings: () => DEFAULTS, hub: () => 'x' }).micToggled(true), true); // console: nothing to ask
+});
+
 await t('controller without the native side (the console): list only, start refuses politely', async () => {
   const hub = fakeHub();
   hub.upload('20261030-101500-aaaa', audio(10));
@@ -313,14 +382,58 @@ await t('controller without the native side (the console): list only, start refu
 const root = new URL('../../../../', import.meta.url);
 const java = (f: string) => readFileSync(new URL(`apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/${f}`, root), 'utf8');
 
-await t('native: never the microphone', () => {
-  for (const f of ['OutputRecordService.java', 'OutputRecordStartActivity.java', 'OutputRecorderPlugin.java', 'OutputRecordUploader.java', 'OutputRecordQueue.java', 'OutputRecordTile.java']) {
-    const src = java(f).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ''); // code only, not the comments that say "never the microphone"
-    assert.ok(!/setAudioSource|AudioSource\.|MediaRecorder|SpeechRecognizer/.test(src), `${f} must not touch the microphone`);
+const code = (f: string) => java(f).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ''); // code only, not the comments
+
+await t('native: the mic only in the recorder service, only opt-in, VOICE_RECOGNITION (never a privacy-sensitive source)', () => {
+  for (const f of ['OutputRecordStartActivity.java', 'OutputRecorderPlugin.java', 'OutputRecordUploader.java', 'OutputRecordQueue.java', 'OutputRecordTile.java', 'TwoTrack.java', 'RecorderControl.java']) {
+    assert.ok(!/setAudioSource|AudioSource\.|MediaRecorder|SpeechRecognizer|new AudioRecord/.test(code(f)), `${f} must not open the microphone`);
   }
-  const svc = java('OutputRecordService.java');
+  const svc = code('OutputRecordService.java');
   assert.match(svc, /setAudioPlaybackCaptureConfig\(cfg\)/);
   assert.match(svc, /FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION/);
+  assert.equal((svc.match(/setAudioSource\(/g) ?? []).length, 1, 'one mic AudioRecord');
+  assert.match(svc, /setAudioSource\(android\.media\.MediaRecorder\.AudioSource\.VOICE_RECOGNITION\)/);
+  assert.ok(!/VOICE_COMMUNICATION|CAMCORDER/.test(svc), 'never a privacy-sensitive source (it would take the mic from a call / the Claude app)');
+  assert.ok(!/SpeechRecognizer/.test(svc), 'a plain capture: no recognizer');
+  // opened only when the setting / the approved start asks for it
+  assert.match(svc, /boolean wantMic = OutputRecordQueue\.micWanted\(this\);/);
+  assert.match(svc, /if \(micOn\) \{\s*if \(!micAllowed\)[^\n]*\n\s*else openMic\(\);/);
+  assert.match(code('OutputRecordQueue.java'), /boolean mic = false;/);
+  assert.match(code('OutputRecordQueue.java'), /s\.mic = p\.getBoolean\("mic", false\);/);
+  const mf = readFileSync(new URL('apps/amberx-droid/android/app/src/main/AndroidManifest.xml', root), 'utf8');
+  assert.match(mf, /\.OutputRecordService"[\s\S]*?mediaProjection\|microphone/);
+});
+
+await t('native: two tracks (left = mic, right = playback), mic busy = playback only + marked, release on stop', () => {
+  const svc = code('OutputRecordService.java');
+  const tt = code('TwoTrack.java');
+  assert.match(tt, /LEFT = "mic"/);
+  assert.match(tt, /RIGHT = "playback"/);
+  assert.match(svc, /channels = micOn \? 2 : s\.channels;/);
+  assert.match(svc, /TwoTrack\.mixBlock\(micRing, playRing, micClock,/);
+  assert.match(svc, /meta\.put\("tracks", TwoTrack\.tracks\(\)\)/);
+  assert.match(svc, /meta\.put\("micBusy", spans\)/);
+  assert.match(code('OutputRecordUploader.java'), /index\.put\("micBusy"/);
+  // busy: refused, silenced (reported by Android), stopped delivering → marked + notification, never a failure
+  assert.match(svc, /isClientSilenced\(\)/);
+  assert.match(svc, /micBusy\(TwoTrack\.BUSY_UNAVAILABLE/);
+  assert.match(svc, /micBusy\(TwoTrack\.BUSY_SILENCED/);
+  assert.match(svc, /"Mic busy: recording playback only"/);
+  assert.ok(!/fail\([^)]*mic/i.test(svc), 'a busy mic never fails the recording');
+  // privacy: the notification says so, Stop mic is on it, the mic goes the moment the recording stops
+  assert.match(svc, /"Recording: playback \+ mic"/);
+  assert.match(svc, /"Stop mic", stopMic/);
+  assert.match(svc, /ACTION_STOP_MIC\.equals\(a\)\) stopMic\(\)/);
+  assert.match(svc, /private void release\(\) \{\s*micStop = true;\s*releaseMic\(\);/);
+  assert.match(svc, /m\.release\(\)/);
+});
+
+await t('native: no second listener (one recorder event listener, set only by the plugin)', () => {
+  for (const f of ['OutputRecordService.java', 'AxppLink.java', 'OutputRecordStartActivity.java', 'OutputRecordTile.java', 'OutputRecordUploader.java', 'TwoTrack.java']) {
+    assert.ok(!/OutputRecordService\.listener\s*=|\blistener\s*=\s*[^=]/.test(code(f).replace(/static volatile Listener listener;/, '')), `${f} must not add a recorder listener`);
+    assert.ok(!/notifyListeners|addListener|registerAudioRecordingCallback/.test(code(f)), `${f} must not subscribe to anything new`);
+  }
+  assert.equal((code('OutputRecorderPlugin.java').match(/OutputRecordService\.listener = e ->/g) ?? []).length, 1);
 });
 
 await t('native: one consent flow (switch and tile), manifest, part size twin', () => {
@@ -339,11 +452,13 @@ await t('native: one consent flow (switch and tile), manifest, part size twin', 
   assert.ok(existsSync(new URL('apps/console-web/plugins/output-recorder/README.md', root)));
 });
 
-await t('sessions from axHub: native side names parts, groups them, never the mic, never auto-approved', () => {
+await t('sessions from axHub: native side names parts, groups them, mic as asked, never auto-approved', () => {
   assert.match(java('OutputRecordService.java'), /RecorderControl\.partName\(/);
   assert.match(java('OutputRecordUploader.java'), /"group", "session", "note"/);
   assert.match(java('RecorderControl.java'), /" - part" \+/);
-  assert.match(java('AxppLink.java'), /\.put\("mic", false\)/);
+  assert.match(java('AxppLink.java'), /\.put\("mic", OutputRecordService\.running && OutputRecordService\.micOn\)/);
+  assert.match(java('AxppLink.java'), /\.put\("micDefault", OutputRecordQueue\.settings\(c\)\.mic\)/);
+  assert.match(java('RecorderControl.java'), /static boolean micFor\(Boolean sessionMic, boolean setting\)/);
   assert.match(java('HubRules.java'), /NEVER_AUTO = Set\.of\("amberx\.recorder_start"\)/);
 });
 

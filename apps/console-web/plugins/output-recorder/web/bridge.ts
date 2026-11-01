@@ -18,6 +18,8 @@ export interface NativeStatus {
   capBytes: number;
   nextTryAt: string;
   lastUploadAt: string;
+  mic?: boolean;
+  micBusy?: string | null;
   settings: Omit<Settings, never>;
 }
 
@@ -28,6 +30,8 @@ export interface OutputRecorderBridge {
   /** Android's prompts (audio permission once, notifications once, capture every time), then records; `recorder` events follow. */
   start(): Promise<void>;
   stop(): Promise<void>;
+  /** "Record my mic too" was switched on: Android's audio permission, asked only now (and only if it isn't there). */
+  micPermission(): Promise<{ granted: boolean }>;
   /** Settings for the recorder and the quick-settings tile (from the next start). */
   configure(o: Partial<Settings>): Promise<{ settings: Settings }>;
   /** Chunks on the phone waiting for axHub, oldest first. */
