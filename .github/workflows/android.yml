@@ -153,6 +153,7 @@ jobs:
             npx -y tsx framework/spec/check-looktokens.mts             # look@1 tokens: only-changed storage, compact to no space, theme-token CSS
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
             npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
+            (cd apps/axhub-web && npx -y tsx scripts/refresh-check.mts)  # AXHub web app: refreshes, failed reads, look re-reads and countdown ticks never flash "Reading the hub" or remount rows
             npx -y tsx apps/amberx-droid/test.mjs                      # AmberX: hub rules + voice command matching + monitoring / auto-approval rules
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
