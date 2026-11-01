@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 20,
- "updatedAt": "2026-11-01T02:28:35.407Z",
+ "rev": 23,
+ "updatedAt": "2026-11-01T02:31:12.848Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -35384,15 +35384,15 @@
    "title": "Veto everywhere: every axHub call that needs Brett runs after the 3-minute countdown unless denied",
    "category": "axHub",
    "detail": "Brett Oct 30 2026 (voice): it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/veto-everywhere + claude/veto-complete (AXF + axHub)",
    "pr": "",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-10-30T18:15:09.704Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-01T02:31:12.796Z",
+   "builtAt": "2026-11-01T02:31:12.147Z",
    "notes": [
     {
      "text": "PRs for axHub + AXF claude/veto-everywhere and feat/agent-voice sent as a veto call (vps.run, job be895ba4). Merging the axHub PR is Brett's (push banner Merge, or tell the session to send it); then the hub redeploys and GitHub writes go veto.",
@@ -35401,6 +35401,10 @@
     {
      "text": "Oct 30 2026 (Brett voice): 90 s countdown, Approve now + Shelve (axHub decision #104), veto banner plugin owns notices / veto screen / alarm and loads in AmberX; AmberX native alarm (alarm stream) + notice buttons. Branch claude/veto-complete in AXF and axHub (on #19). Clashes checked: veto-window, axhub-github-write and approval-costs are archived (not queued); axhub-auto-approve-all was already removed; nothing veto-related on the pending list or build queue. Live hub: tools set before #104 keep 180 s until axhub services veto <ns> <tool> 90 30 runs (veto call sent).",
      "at": "2026-10-30T18:15:09.703Z"
+    },
+    {
+     "text": "s3+s9 closed by Leftovers: axHub claude/veto-everywhere + veto-complete are on axHub main, the live server runs 209951f (server default AXHUB_CONFIRM_AS=veto, 90 s); docs already cover 90 s + Approve/Shelve; shared RULES deduped (stale 3-minute veto copy, older auto-merge + chores copies removed). Tests: axHub pnpm test 514/514 (Node 22), AmberX test.mjs 2045/2045 + tsc, approvals-banner 10/10.",
+     "at": "2026-11-01T02:31:12.796Z"
     }
    ],
    "approvals": [],
@@ -35464,12 +35468,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:31:11.676Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:31:11.714Z"
     },
     {
      "id": "s4",
@@ -35596,12 +35600,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:31:12.146Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:31:12.190Z"
     }
    ],
    "profiles": [
@@ -35612,7 +35616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
