@@ -631,4 +631,40 @@ r = spec_["run"]()
 check(r["status"] == "error" and "AXHUB_TOKEN" in r["summary"], "health: no route at all = red, says which keys")
 plugin_services.withdraw("fake-github")
 plugin_services.withdraw("fake-health")
+
+# UI Review holds the batch merge (ui-review s9): waiting / changes / rejected = skipped, the next PR gets its turn
+class FakeReview:
+    def __init__(self): self.st, self.asked = {}, []
+    def state(self, branch="", pr=None):
+        self.asked.append((branch, pr))
+        s = self.st.get(branch) or self.st.get(pr) or "none"
+        return {"state": s, "holds": s not in ("none", "approved")}
+fr = FakeReview()
+plugin_services.provide("ui-review@1", fr, "fake-ui-review")
+os.environ["GITHUB_TOKEN"] = TOKEN
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "" and fr.asked[-1] == ("feat/a", 18), "UI Review: nothing submitted = free")
+fr.st["feat/a"] = "waiting"
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "waiting", "UI Review waiting = held")
+check(mod.PUSHES.ui_hold("MossesX/axHub", 18, "other") == "" and fr.asked[-1] == ("other", None), "other repos: matched by branch only (PR numbers are AmberX-AXF's)")
+r = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+check(r.status_code == 409 and "UI Review" in r.json()["detail"], "Merge refuses a PR held by UI Review")
+fr.st["feat/a"] = "rejected"
+x18 = next(x for x in STATE["pulls"] if x["number"] == 18)
+STATE["checks"][x18["head"]["sha"]] = [{"status": "completed", "conclusion": "success", "name": "CI"}]  # green: only UI Review stops it
+STATE["behind"]["feat/a"] = 0
+n_merged = len(STATE["merged"])
+clock["t"] += 999
+res = mod.PUSHES.auto_merge()
+hit = [x for x in res if x.get("pr") == "MossesX/AmberX-AXF#18"]
+check(hit and hit[0].get("held") == "rejected" and len(STATE["merged"]) == n_merged, "auto-merge: a rejected PR is skipped, not merged")
+fr.st["feat/a"] = "approved"
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "UI Review approved = free again")
+clock["t"] += 999
+res = mod.PUSHES.auto_merge()
+check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][0] == R + "/pulls/18/merge", "auto-merge: approved in UI Review = merges")
+def boom(*a, **k): raise RuntimeError("broken")
+fr.state = boom
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "unknown", "UI Review broken: held, never merged blind")
+plugin_services.withdraw("fake-ui-review")
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "no UI Review plugin: nothing held")
 print(f"push-banner: {ok} checks passed")

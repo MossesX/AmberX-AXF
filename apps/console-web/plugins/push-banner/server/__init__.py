@@ -41,7 +41,9 @@ one round every 3 minutes (settings autoMerge + autoPr, both on by default):
   1. autoPr: every branch ahead of main without an open PR gets one (main, site, go-pass, gh-pages and hidden ones never);
   2. ready PRs go oldest first, one at a time per repo: a PR behind its base gets the base pulled in (head pinned) and
      waits for CI on its new head; it merges only when it is 0 behind, mergeable, not a draft and CI passed on the
-     pinned head. At most one merge per round, so the next PR is brought up to date with the new main first. A pull
+     pinned head, and its UI Review (ui-review@1) isn't waiting, asking for changes or rejected (a held PR is skipped,
+     the next one gets its turn; Merge refuses it too). At most one merge per round, so the next PR is brought up to
+     date with the new main first. A pull
      that conflicts lands in "Pull failed" (and Fix with Claude when that is on) and is skipped until it is retried;
   3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
      may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
@@ -86,6 +88,8 @@ CACHE_S = 120
 GITHUB_CAP = "axf.github@1"   # GitHub through axHub first, local GITHUB_TOKEN fallback (systems check, githubsvc.py)
 HEALTH_CAP = "axf.health@1"   # the banners' live checks (systems check, health.py)
 HEALTH_ID = "push-banner-github"
+UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
+UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
 MAX_BRANCHES = 150  # per repo, newest first by GitHub's listing
@@ -518,6 +522,19 @@ class Pushes:
         self._forget()
         return {"number": p.get("number") if isinstance(p, dict) else None, "url": _safe_url(p.get("html_url")) if isinstance(p, dict) else "", "existing": False}
 
+    def ui_hold(self, repo: str, number: int, branch: str) -> str:
+        """The UI Review state that holds this PR ('' = free to merge). ui-review@1 items carry a branch and a PR number
+        but no repo, so PR numbers count only for the console's own repo; other repos match by branch. Without the
+        UI Review plugin nothing is held."""
+        svc = claudefix.plugin_services.get(UI_REVIEW_CAP)
+        if svc is None or not (branch or number):
+            return ""
+        try:
+            st = svc.state(branch, number if repo == UI_REVIEW_REPO else None)
+        except Exception:  # noqa: BLE001 — UI Review broken: don't merge blind
+            return "unknown"
+        return str(st.get("state") or "waiting") if st.get("holds") else ""
+
     def merge(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
             raise HTTPException(400, "send {repo, number, confirm}")
@@ -535,6 +552,9 @@ class Pushes:
                 raise HTTPException(409, "that PR isn't open")
             if p.get("draft") is True:
                 raise HTTPException(409, "that PR is a draft")
+            held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200))
+            if held:
+                raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
             task = self._task(repo, p, "merge", "merge it")
             sha = _text((p.get("head") or {}).get("sha"), 40)
             pbase = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200) or "main"
@@ -616,6 +636,10 @@ class Pushes:
                 line = {"pr": key, "title": p.get("title", "")}
                 if p.get("ci") in ("failure", "none", "unknown"):
                     continue  # nothing to do until it is fixed (or, without CI, never)
+                held = self.ui_hold(repo, p["number"], p.get("head") or "")
+                if held:  # waiting on Brett in UI Review: the next PR gets its turn
+                    done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
+                    continue
                 try:
                     behind = self._behind(gh, repo, base, p["sha"]) if p.get("sha") else None
                 except (github.GitHubError, ValueError):

@@ -127,8 +127,10 @@ shots)`. HTTP: `GET /api/plugins/ui-review/state?branch=&pr=`. CLI: `review.mjs 
 held). The state is the strictest of the branch's / PR's items: rejected > changes > waiting > approved; `none`
 when nothing was submitted. `holds` is true for waiting, changes and rejected.
 
-**Follow-up (not built here):** the push banner's batch merge should hold PRs whose `ui-review@1` state holds. The
-push-banner plugin is being changed by another build, so it was not touched; orchestrator `ui-review` step s9.
+**Merges wait for UI Review (Nov 1 2026, orchestrator `ui-review` s9):** the push banner reads `ui-review@1` `state()`
+before every merge: a PR whose items are waiting, have changes asked or are rejected is skipped by auto-merge (the
+next PR gets its turn) and refused by Merge, until Brett approves it here. PR numbers count for AmberX-AXF only (items
+carry no repo); other repos match by branch. If this plugin errors, the PR is held, never merged blind.
 
 ## Checks
 

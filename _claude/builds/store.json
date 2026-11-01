@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 28,
- "updatedAt": "2026-11-01T02:34:25.256Z",
+ "rev": 30,
+ "updatedAt": "2026-11-01T02:36:08.008Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -40195,19 +40195,23 @@
    "title": "UI Review: one plugin where Brett approves every UI a build makes (Design packs renamed and widened)",
    "category": "Console",
    "detail": "Brett, Oct 30 2026 (voice, driving): rename the Design packs console plugin to UI Review (folder ui-review) and make it one all-in-one UI approval plugin. Every UI a build makes is submitted there for his approval, separated by kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Items: title, kind, app, build/branch/PR, desktop + phone shots, notes, status (waiting / approved / changes asked / rejected), his comment, history. Views: tree, collapsible grid, grid with sub-grids, gallery, compare; multi-select + bulk decisions in every view. Builds submit through review.mjs, the plugin API and rebuild-shots --submit; capability ui-review@1. Design-pack picks (MAX 3) migrate. Profile: Angel. Web only.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review",
    "pr": "",
    "createdAt": "2026-10-30T17:59:21.357Z",
-   "updatedAt": "2026-10-30T18:25:02.743Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-01T02:36:07.977Z",
+   "builtAt": "2026-11-01T02:36:07.629Z",
    "notes": [
     {
      "text": "s1–s8 built on claude/ui-review (Opus, Oct 30). s9 waits for the push-banner build: its batch merge should call ui-review@1 holds(branch, pr). push-banner deliberately not edited here.",
      "at": "2026-10-30T18:25:02.743Z"
+    },
+    {
+     "text": "s9 done by Leftovers: push banner auto-merge skips and Merge refuses PRs whose ui-review@1 state holds (waiting/changes/rejected; error = held); PR numbers only for AmberX-AXF, other repos by branch. push-banner test 141→150.",
+     "at": "2026-11-01T02:36:07.977Z"
     }
    ],
    "approvals": [],
@@ -40403,12 +40407,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:36:07.629Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-10-31T23:41:15.585Z"
+     "updatedAt": "2026-11-01T02:36:07.665Z"
     }
    ],
    "profiles": [
@@ -40419,7 +40423,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
