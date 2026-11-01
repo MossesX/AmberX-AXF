@@ -1,4 +1,5 @@
-/* Activity banner: same shape as the other console banners. Theme tokens only. */
+/* Activity banner: same shape as the other console banners. Theme tokens only. Open, the whole banner stays within
+   about 30% of the screen (Brett, Oct 31 2026): the list scrolls inside. */
 .axp-activity { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
 .axp-activity--idle { --axf-banner-tone: var(--fx-success) }
 .axp-activity--failed { --axf-banner-tone: var(--fx-danger) }
@@ -12,7 +13,7 @@ button.axp-activity__summary { all: unset; flex: 1; min-width: 0; display: flex;
 .axp-activity__spin { display: inline-flex; color: var(--fx-accent); animation: axp-activity-spin 1.2s linear infinite }
 @keyframes axp-activity-spin { to { transform: rotate(360deg) } }
 @media (prefers-reduced-motion: reduce) { .axp-activity__spin, .axp-activity__state--running { animation: none } }
-.axp-activity__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md); max-height: min(60vh, calc(var(--fx-row-h) * 18)); overflow: auto }
+.axp-activity__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md); max-height: calc(30vh - var(--fx-row-h) - var(--fx-dens-gap-md) * 2); min-height: var(--fx-row-h); overflow: auto; overscroll-behavior: contain }
 .axp-activity__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .axp-activity__item { border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
 button.axp-activity__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); min-width: 0 }

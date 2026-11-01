@@ -17,7 +17,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Container, Icon, Section, SelectField, Switch, TextField, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Section, SelectField, Switch, TextField, BannerIcon, BANNER_PREFS_KEY } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -26,7 +26,7 @@ import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.activity';
 const FOLDER = 'activity';
-const VERSION = '0.3.0';
+const VERSION = '0.4.0';
 const POLL_MS = 4_000;
 const DONE_FLASH_MS = 20_000;
 const ACTIVE = new Set(['queued', 'running', 'waiting']);
@@ -35,17 +35,27 @@ type State = 'queued' | 'running' | 'waiting' | 'held' | 'done' | 'failed' | 'ca
 /** A button an item carries (the feed checked it): the first one on a held item is its Continue. */
 interface ItemAction { label: string; action: string; icon?: string }
 interface Step { name: string; state: State }
-interface Item { id: string; source: string; kind: string; title: string; detail: string; state: State; progress?: number; startedAt: number; updatedAt: number; finishedAt?: number; url?: string; by?: string; steps?: Step[]; origin?: string; reported?: boolean; actions?: ItemAction[]; pending?: string }
+/** `change` = the session's Codebase changes entry, folded into its row by the feed (one row per session). */
+interface Item { id: string; source: string; kind: string; title: string; detail: string; state: State; progress?: number; startedAt: number; updatedAt: number; finishedAt?: number; url?: string; by?: string; steps?: Step[]; origin?: string; reported?: boolean; actions?: ItemAction[]; pending?: string; change?: { id: string; title: string; state: State } }
 /** What the browser does when something finishes (stored with the feed's settings, same on every device). */
 interface OnDone { sound: 'off' | 'all' | 'failed'; toast: boolean; expandOnDone: boolean; openResult: boolean; onClose: 'changes' | 'delete' }
 interface Feed { items: Item[]; active: number; held?: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }>; complete?: OnDone }
 interface Job { name: string; state: State; startedAt?: number; finishedAt?: number; url?: string; steps: Step[] }
 interface Detail { id: string; jobs?: Job[]; progress?: number | null }
-/** `open` = the banner is expanded (it launches expanded; "_" folds it to one line); `pinned` = shown on request (action) even when idle. */
+/**
+ * `open` = the banner is expanded. It launches folded to its one counts line (Brett, Oct 31 2026: the open list took
+ * almost half the phone screen); only this banner's own "When it appears: Open" choice launches it open. "_" folds it
+ * again. `pinned` = shown on request (action) even when idle.
+ */
 interface Store { feed: Feed | null; error: string; hiddenFor: string; open: boolean; pinned: boolean }
 
 let runtime: AxfRuntime | null = null;
-let st: Store = { feed: null, error: '', hiddenFor: '', open: true, pinned: false };
+let st: Store = { feed: null, error: '', hiddenFor: '', open: false, pinned: false };
+/** This banner's own saved launch choice (not the all-banners default): 'expanded' opens it at launch. */
+export const launchesOpen = (prefs: unknown) => {
+  const own = prefs && typeof prefs === 'object' ? (prefs as Record<string, { launch?: unknown } | undefined>).activity : undefined;
+  return own?.launch === 'expanded';
+};
 const subs = new Set<() => void>();
 const set = (p: Partial<Store>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 const useStore = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
@@ -208,6 +218,7 @@ function ItemDetail({ it, now }: { it: Item; now: number }) {
         <dt>Last update</dt><dd>{ago(it.updatedAt, now)}</dd>
         {it.by ? <><dt>By</dt><dd>{it.by}</dd></> : null}
         <dt>From</dt><dd>{st.feed?.sources[it.source]?.label ?? it.source}</dd>
+        {it.change ? <><dt>Change log</dt><dd>{it.change.title} · {STATE_LABEL[it.change.state] ?? it.change.state}</dd></> : null}
       </dl>
       {it.steps?.length ? <Steps steps={it.steps} /> : null}
       {gh && (d?.jobs?.length ? (
@@ -330,9 +341,8 @@ function Row({ it, now }: { it: Item; now: number }) {
 function ActivityBanner() {
   const s = useStore();
   const [showDone, setShowDone] = useState(false);
-  const [launchOpen] = useBannerLaunchOpen();
-  // Banner settings → "When it appears: minimized" folds it once at launch.
-  useEffect(() => { start(); if (!launchOpen) set({ open: false }); }, []);
+  // Folded at launch unless this banner's own Banner settings say "When it appears: Open".
+  useEffect(() => { start(); if (runtime && launchesOpen(runtime.settings.get(BANNER_PREFS_KEY))) set({ open: true }); }, []);
   const items = s.feed?.items ?? [];
   const active = items.filter((i) => ACTIVE.has(i.state));
   const held = items.filter((i) => i.state === 'held');
@@ -351,7 +361,6 @@ function ActivityBanner() {
   if (!active.length && !held.length && !justDone.length && s.pinned && !finished.length) return null;
 
   const failed = (active.length ? [] : justDone).some((i) => i.state === 'failed' || i.state === 'stale');
-  const first = active[0];
   const stuckN = items.filter((i) => isStuck(i, now)).length;
   const heldNote = held.length ? `${held.length} on hold` : '';
   const summary = active.length
@@ -370,8 +379,7 @@ function ActivityBanner() {
             {active.length > 0 && Number.isFinite(oldest) && <span className="axp-activity__time">{dur(now - oldest)}</span>}
             <Icon name={s.open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
-          {first ? <span className="axp-activity__lead">{first.title}{active.length > 1 ? ` +${active.length - 1} more` : ''}</span>
-            : held[0] ? <span className="axp-activity__lead">{held[0].title}{held.length > 1 ? ` +${held.length - 1} more` : ''} · waits for you</span> : null}
+          {/* one line, counts only (Brett, Oct 31 2026): what each item is shows when it's opened */}
         </button>
         {/* "_" minimizes (folds the banner to its one-line summary; tap the summary to expand it again). It never hides the banner (Brett, Oct 21 2026). */}
         {s.open && <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => set({ open: false })}><Icon name="minimize" size={16} /></button>}
@@ -405,7 +413,7 @@ function ActivityBanner() {
 
 interface PushResult { at: number; title: string; hub: string | null; alert: string | null }
 interface Config extends OnDone {
-  sources: Record<string, boolean>; repos: string[]; lingerS: number; reportTtlS: number; sourceLabels: Record<string, string>;
+  sources: Record<string, boolean>; repos: string[]; lingerS: number; reportTtlS: number; childTtlS: number; sourceLabels: Record<string, string>;
   autoRemove: boolean; keepFailed: boolean; onAutoRemove: 'changes' | 'delete';
   push: 'off' | 'all' | 'done' | 'failed'; pushLevel: 'info' | 'warning' | 'error'; pushMinS: number;
   lastPush?: PushResult | null; hubInbox?: string | null; changesOn?: boolean;
@@ -461,6 +469,7 @@ function SettingsPanel() {
                   <Button tone="neutral" icon="refresh" onClick={() => void refresh()}>Check now</Button>
                 </div>
                 <NumberField label="Mark a reported item “No word” after (minutes)" value={Math.round(cfg.reportTtlS / 60)} onSave={(n) => void save({ reportTtlS: Math.max(1, n) * 60 })} />
+                <NumberField label="Drop a Claude Code command line with no word after (minutes)" value={Math.round(cfg.childTtlS / 60)} hint="A push, pull, merge, delete or build line whose tool never said it finished. Lines also go once their session stops." onSave={(n) => void save({ childTtlS: Math.max(1, n) * 60 })} />
               </div>
             </Section>
 

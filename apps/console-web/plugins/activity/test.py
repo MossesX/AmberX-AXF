@@ -74,10 +74,8 @@ def fake_gh(path: str):
     calls.append(path)
     if "/jobs" in path:
         return JOBS
-    for k, v in RUNS.items():
-        if f"status={k}&" in path:
-            return {"workflow_runs": v if "AmberX-AXF" in path else []}
-    return {"workflow_runs": []}
+    # one list per repo (newest first): what runs or waits now plus what just finished
+    return {"workflow_runs": [r for v in RUNS.values() for r in v] if "AmberX-AXF" in path else []}
 
 
 mod.FEED._gh_get = fake_gh
@@ -107,7 +105,8 @@ check(snap["active"] == 2, "active count = running + queued")
 check(snap["items"][0]["state"] in ("running", "queued") and snap["items"][-1]["state"] == "failed", "active items first")
 n = len(calls)
 c.get("/p/items")
-check(len(calls) == n, "GitHub answers are cached (20 s)")
+check(len(calls) == n, "GitHub answers are cached (60 s)")
+check(n == 1 and all("per_page=20" in x and "status=" not in x for x in calls), "one runs call per watched repo (was four per repo)")
 d = c.get("/p/detail", params={"id": "gh:MossesX/AmberX-AXF:11"}).json()
 check(d["jobs"][0]["steps"][1] == {"name": "Gradle", "state": "running"} and abs(d["progress"] - 1 / 3) < 1e-9, "jobs + steps + progress for a run")
 check(c.get("/p/detail", params={"id": "gh:Someone/Else:1"}).status_code == 404, "details only for watched repos")
@@ -134,6 +133,48 @@ snap = c.get("/p/items").json()
 check(any("500" in e for e in snap["errors"]), "a GitHub error is reported, the feed still answers")
 mod.FEED._gh_get = fake_gh
 mod.FEED._gh_cache = None
+
+
+def limited(path):
+    calls.append(path)
+    raise RuntimeError("GitHub 403: API rate limit exceeded for user ID 1234.")
+
+
+mod.FEED._gh_get = limited
+mod.FEED.set_config({"repos": ["MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot"]})
+n = len(calls)
+snap = c.get("/p/items").json()
+check(len(calls) == n + 1 and any("rate limit is used up" in e and "isn't a missing permission" in e for e in snap["errors"]), "a rate-limit 403 says so (not a permission) and stops after the first repo")
+mod.FEED._gh_cache = None
+c.get("/p/items")
+check(len(calls) == n + 1 and mod.FEED.github_status()["backoffUntil"], "…then GitHub is left alone for 10 minutes")
+hc = sys.modules["axf_console_plugins.activity_test.health"]
+check(hc.github_check(mod.FEED.github_status(), True)["status"] == "warn" and "paused until" in hc.github_check(mod.FEED.github_status(), True)["summary"], "health item: amber while it backs off, with the reason")
+check(hc.github_check({"errors": ["GitHub MossesX/axHub: GitHub 401: Bad credentials"], "checkedAt": 1}, True)["status"] == "error", "health item: red with GitHub's own words on a refused read")
+NOW[0] += 11 * 60
+mod.FEED._gh_get = fake_gh
+mod.FEED._gh_cache = None
+check(any(i["id"] == "gh:MossesX/AmberX-AXF:11" for i in c.get("/p/items").json()["items"]), "after the back-off it reads again")
+NOW[0] -= 11 * 60
+mod.FEED.set_config({"repos": ["MossesX/AmberX-AXF"]})
+mod.FEED._gh_cache = None
+
+
+class FakeHub:
+    def __init__(self):
+        self.paths = []
+
+    def has_token(self):
+        return True
+
+    def get(self, path):
+        self.paths.append(path)
+        return {"workflow_runs": []}
+
+
+hub = FakeHub()
+gf = feed_mod.Feed(Path(tempfile.mkdtemp()), ROOT, default_repos=["MossesX/AmberX-AXF"], github_token=lambda: "", github_client=lambda: hub, now=lambda: NOW[0])
+check(not any("no token" in e for e in gf.snapshot()["errors"]) and len(hub.paths) == 1, "with axf.github@1 the feed reads through it (axHub), no local token needed")
 
 print("reports")
 r = c.post("/p/report", json={"id": "backup", "title": "Backing up password=hunter2secret", "steps": [{"name": "copy", "state": "running"}], "url": "http://evil"})
@@ -345,6 +386,103 @@ check(any(h["id"] == "hold:android-framework-update" and h["actions"][0]["label"
 check(all(feed_mod.clean_actions(h["actions"]) == h["actions"] for h in shipped["holds"]), "every shipped button passes the checks")
 check(c.post("/p/continue", json={"id": "hold:nope"}).status_code == 404, "POST continue: unknown id → 404")
 
+print("command lines (ghosts) + one row per session")
+gdir = Path(tempfile.mkdtemp(prefix="axf-activity-ghosts-"))
+(gdir / "reports").mkdir()
+nowms = int(NOW[0] * 1000)
+
+
+def put(iid, state, upd_s_ago, **k):
+    (gdir / "reports" / (iid.replace(":", "_") + ".json")).write_text(json.dumps({"id": iid, "title": k.pop("title", iid), "state": state, "startedAt": nowms - 3600_000, "updatedAt": nowms - upd_s_ago * 1000, "source": "claude-code", **k}))
+
+
+put("claude:live-1", "running", 10)
+put("claude:live-1:toolu_fresh", "running", 60, kind="push")
+put("claude:live-1:toolu_quiet", "running", 400, kind="merge")
+put("claude:ended-2", "done", 900, finishedAt=nowms - 900_000)
+put("claude:ended-2:toolu_a", "running", 1200, kind="pull")
+put("claude:ended-2:toolu_b", "done", 1200, kind="build", finishedAt=nowms - 1200_000)
+put("claude:gone-3:toolu_c", "running", 30, kind="delete")
+
+
+class Changes:
+    def activity(self):
+        return [{"id": "changes:chg-20261101-aaaaaa", "source": "changes", "kind": "fix", "title": "Activity banner fix", "state": "running",
+                 "startedAt": nowms - 600_000, "updatedAt": nowms - 5_000, "changeId": "chg-20261101-aaaaaa", "session": "live-1", "progress": 0.5},
+                {"id": "changes:chg-20261101-bbbbbb", "source": "changes", "kind": "build", "title": "claude.ai build", "state": "running",
+                 "startedAt": nowms - 600_000, "updatedAt": nowms - 5_000, "session": "other-9"}]
+
+
+gfeed = feed_mod.Feed(gdir, ROOT, services=lambda: [("axf.changes@1", Changes())], now=lambda: NOW[0])
+gfeed.set_config({"sources": {"github": False}})
+snap = gfeed.snapshot()
+ids = {i["id"]: i for i in snap["items"]}
+check("claude:live-1:toolu_fresh" in ids, "a running command line of a live session shows")
+check("claude:live-1:toolu_quiet" not in ids and not (gdir / "reports" / "claude_live-1_toolu_quiet.json").exists(), "expiry: a command line with no word for 5 min is dropped (not 'No word' / stuck)")
+check(not any(k.startswith("claude:ended-2:") for k in ids) and not (gdir / "reports" / "claude_ended-2_toolu_a.json").exists(), "a session that ended takes its command lines with it")
+check("claude:gone-3:toolu_c" not in ids, "a command line without a session doesn't show")
+row = ids.get("claude:live-1")
+check("changes:chg-20261101-aaaaaa" not in ids and row and row["changeId"] == "chg-20261101-aaaaaa" and row["change"]["title"] == "Activity banner fix" and row["progress"] == 0.5,
+      "one row per session: its change-log entry is folded into the session's row")
+check("changes:chg-20261101-bbbbbb" in ids, "an entry with no Claude Code row (claude.ai, scripts) keeps its own row")
+check(snap["active"] == 3, f"counts: session + its live push + the claude.ai entry = 3 (was 7 with ghosts and the double) — got {snap['active']}")
+check(gfeed.config()["childTtlS"] == 300 and gfeed.set_config({"childTtlS": 30})["childTtlS"] == 60, "command-line expiry is a setting (5 min, at least 1)")
+
+print("holds read the builds store")
+sdir = Path(tempfile.mkdtemp(prefix="axf-activity-store-"))
+store = {"$axf": "builds@1", "builds": [{"id": "android-framework-update", "pendingId": "android-framework-update", "status": "pending", "pending": {"status": "pending"}},
+                                        {"id": "done-one", "status": "complete", "pending": {"status": "complete"}},
+                                        {"id": "risky", "status": "pending", "pending": {"status": "unsafe"}},
+                                        {"id": "gone", "status": "pending", "deleted": True}]}
+(sdir / "store.json").write_text(json.dumps(store))
+os.environ["AXF_BUILDS_STORE"] = str(sdir / "store.json")
+check(mod.builds_store_file() == sdir / "store.json", "the store is found the way builds-store.mjs finds it")
+check([mod._pending_status(x) for x in ("android-framework-update", "done-one", "risky", "gone", "nope")] == ["pending", "complete", "unsafe", "missing", "missing"],
+      "a hold's pending build: status from the builds store (pending, complete, unsafe, deleted/absent = missing)")
+os.environ["AXF_BUILDS_STORE"] = str(sdir / "absent.json")
+check(mod._pending_status("android-framework-update") is None, "an unreadable store = unknown (the hold stays)")
+os.environ.pop("AXF_BUILDS_STORE")
+real = mod.build_status(json.loads((REPO / "_claude" / "builds" / "store.json").read_text()), "android-framework-update")
+check(real in ("pending", "unsafe", "complete", "missing"), f"the repo's store answers for the shipped hold ({real})")
+
+print("hook health check")
+H = 3600_000
+note = lambda user, **ev: {"user": user, "settings": f"/home/{user}/.claude/settings.json", "missing": ev.pop("missing", []), "events": ev}  # noqa: E731
+r = hc.hooks_check([note("root", missing=["PostToolUse"], PreToolUse=nowms)], [], nowms)
+check(r["status"] == "error" and "PostToolUse" in r["summary"] and "never close" in r["details"][0], "red: PostToolUse missing from a user's settings")
+r = hc.hooks_check([note("axfbuild", PreToolUse=nowms, PostToolUse=nowms - 2 * H)], [], nowms)
+check(r["status"] == "error" and "stopped arriving for axfbuild" in r["summary"], "red: PreToolUse keeps coming, PostToolUse doesn't")
+r = hc.hooks_check([note("root", PreToolUse=nowms - H, PostToolUse=nowms - H)], [{"id": "changes:x", "title": "A build", "updatedAt": nowms - 60_000}], nowms)
+check(r["status"] == "error" and "stopped arriving" in r["summary"] and "A build" in r["details"][0], "red: hook events stopped while the change log shows a session working")
+r = hc.hooks_check([note("root", PreToolUse=nowms - 30_000, PostToolUse=nowms - 20_000), note("axfbuild", UserPromptSubmit=nowms - H)], [{"id": "changes:x", "updatedAt": nowms - 60_000}], nowms)
+check(r["status"] == "ok" and "root, axfbuild" in r["summary"], "green: every user's hooks complete and reporting")
+check(hc.hooks_check([], [], nowms)["status"] == "ok", "green when nothing is working and nothing reported")
+check('hooks ensure --all' in hc.fix_command(), "Auto fix runs hooks ensure --all on the VPS")
+
+
+class Reg:
+    def __init__(self):
+        self.specs, self.cmds = [], []
+        self.vps_run = lambda cmd: self.cmds.append(cmd) or {"state": "started", "message": "veto"}
+
+    def register(self, spec, owner=""):
+        self.specs.append(spec)
+
+
+reg = Reg()
+plugin_services.provide("axf.health@1", reg, "systems-check")
+hc._done = False
+check(hc.ensure(mod.FEED, DATA, changes=lambda: None) and {x["id"] for x in reg.specs} == {"activity-hooks", "activity-github"}, "both checks register on axf.health@1")
+hook_spec = next(x for x in reg.specs if x["id"] == "activity-hooks")
+check(hook_spec["autoFix"]["run"]()["state"] == "started" and reg.cmds == [hc.fix_command()], "its Auto fix sends the one fixed command as a veto call")
+
+print("banner: collapsed, at most ~30% open")
+tsx = (HERE / "web" / "index.tsx").read_text()
+css = (HERE / "web" / "activity.css").read_text()
+check("open: false, pinned: false" in tsx and "useBannerLaunchOpen" not in tsx, "it launches folded to one line")
+check("axp-activity__lead" not in tsx, "the folded line is counts only")
+check("max-height: calc(30vh" in css and "overflow: auto" in css.split("axp-activity__body")[1].split("}")[0], "open, the list is capped near 30% of the screen and scrolls inside")
+
 print("activity.mjs (node)")
 node = subprocess.run(["node", "--version"], capture_output=True, text=True)
 if node.returncode == 0:
@@ -380,12 +518,37 @@ if node.returncode == 0:
     run_("hook", inp=ev(hook_event_name="PostToolUse", tool_name="Bash", tool_use_id="toolu_01MERGE", tool_input={"command": "git merge main"}, tool_response={"is_error": True}))
     check(json.loads((DATA / "reports" / "claude_abc-123_toolu_01MERGE.json").read_text())["state"] == "failed", "a failed merge shows failed")
     check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["kind"] == "thinking", "back to thinking after a tool")
-    kinds = subprocess.run(["node", "--input-type=module", "-e", f"import {{activityKind as k}} from {json.dumps(cli)}; console.log(JSON.stringify([k('Bash',{{command:'git pull'}}),k('Bash',{{command:'rm -rf dist'}}),k('Bash',{{command:'npm run build'}}),k('Bash',{{command:'git rebase main'}}),k('Write',{{}}),k('Bash',{{command:'ls'}})]))"], capture_output=True, text=True, env=env)
+    kinds = subprocess.run(["node", "--input-type=module", "-e", f"import {{activityKind as k}} from {json.dumps(cli)}; console.log(JSON.stringify([k('Bash',{{command:'git pull'}}),k('Bash',{{command:'rm -rf docs/old'}}),k('Bash',{{command:'npm run build'}}),k('Bash',{{command:'git rebase main'}}),k('Write',{{}}),k('Bash',{{command:'ls'}})]))"], capture_output=True, text=True, env=env)
     check(json.loads(kinds.stdout) == ["pull", "delete", "build", "merge", "edit", None], "pull, delete, build, merge and edit are told apart")
+    CASES = {"git merge-base HEAD origin/main": None, "git rev-parse --abbrev-ref HEAD": None, "git log --oneline -5": None, "git status --short": None,
+             "git diff origin/main...HEAD": None, "git stash list": None, "git merge origin/main": "merge", "git push origin HEAD:main": "push",
+             "rm -rf /tmp/axf-x": None, 'rm -f "$TMPDIR/a.json"': None, "rm -rf src/axf && mkdir -p src/axf": None, "rm -rf dist node_modules": None,
+             "cd apps/demo && rm -rf build": None, "docker rm old-box": None, "rm apps/console-web/src/App.tsx": "delete",
+             "rm -f /tmp/a.json notes.md": "delete", "git branch -D old": "delete", "git rm -r framework/x": "delete",
+             "cat > /tmp/poll.sh <<'EOF'\ngit merge-base a b && git merge x\nrm -rf apps\nEOF\nbash /tmp/poll.sh": None,
+             "cat > /tmp/w.sh <<EOF\ngit push\nEOF": None, 'grep -n "git push" notes.md': None, "git commit -m 'git merge later'": None,
+             "git fetch origin -q && git merge-base HEAD origin/main": "pull", "cat <<'EOF' > x\nhi\nEOF\ngit push origin b": "push"}
+    got = subprocess.run(["node", "--input-type=module", "-e", f"import {{activityKind as k}} from {json.dumps(cli)}; console.log(JSON.stringify({json.dumps(list(CASES))}.map((c) => k('Bash', {{command: c}}))))"], capture_output=True, text=True, env=env)
+    bad = [f"{c!r}: {g}" for (c, w), g in zip(CASES.items(), json.loads(got.stdout)) if g != w]
+    check(not bad, f"matching: merge-base / rev-parse / log / status / diff are reads, rm of temp or build scratch isn't Deleting {bad}")
     run_("hook", inp=ev(hook_event_name="Notification", message="Claude needs your permission"))
     check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["state"] == "waiting", "waiting for you")
+    run_("hook", inp=ev(hook_event_name="PreToolUse", tool_name="Bash", tool_use_id="toolu_01GHOST", tool_input={"command": "git pull --ff-only"}))
+    run_("hook", inp=ev(hook_event_name="PreToolUse", tool_name="Bash", tool_use_id="toolu_01GHOS2", tool_input={"command": "npm run build"}))
+    j = json.loads((DATA / "reports" / "claude_abc-123.json").read_text())
+    check(j["open"] == ["claude:abc-123:toolu_01GHOST", "claude:abc-123:toolu_01GHOS2"], "the session knows its open command lines")
     run_("hook", inp=ev(hook_event_name="Stop"))
     check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["state"] == "done", "Stop → done")
+    check(all(json.loads((DATA / "reports" / f"claude_abc-123_{t}.json").read_text())["state"] == "done" for t in ("toolu_01GHOST", "toolu_01GHOS2")),
+          "ghosts: Stop closes every command line the session left open (no PostToolUse came)")
+    check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["open"] == [], "…and forgets them")
+    # a line the session didn't list (lost in a race) is still found in the folder and closed on SessionEnd
+    run_("hook", inp=ev(hook_event_name="UserPromptSubmit", prompt="again"))
+    (DATA / "reports" / "claude_abc-123_toolu_01LOST.json").write_text(json.dumps({"id": "claude:abc-123:toolu_01LOST", "title": "Pushing · x", "state": "running", "startedAt": 1, "updatedAt": 1}))
+    run_("hook", inp=ev(hook_event_name="SessionEnd"))
+    check(json.loads((DATA / "reports" / "claude_abc-123_toolu_01LOST.json").read_text())["state"] == "done", "SessionEnd closes unlisted lines found in the folder")
+    hn = json.loads((DATA / "hooks" / f"{os.environ.get('USER') or __import__('getpass').getuser()}.json").read_text())
+    check(hn["$axf"] == "activity-hooks@1" and hn["events"]["SessionEnd"] and hn["events"]["PreToolUse"] and "PostToolUse" in hn["missing"], "every hook event is noted per user, with what its settings lack")
     check(run_("hook", inp="not json").returncode == 0, "a bad hook input never fails Claude Code")
     settings = Path(env["HOME"]) / ".claude" / "settings.json"
     settings.parent.mkdir()
@@ -398,6 +561,15 @@ if node.returncode == 0:
     run_("hooks", "remove")
     s = json.loads(settings.read_text())
     check(s["hooks"] == {"Stop": [{"hooks": [{"type": "command", "command": "echo mine"}]}]} and s["model"] == "opus", "hooks remove leaves exactly what was there")
+    # an old install (before PostToolUse): status says what's missing, ensure adds only that
+    old = {"model": "opus", "hooks": {ev: [{"hooks": [{"type": "command", "command": f'node "{cli}" hook', "timeout": 5}]}] for ev in ("UserPromptSubmit", "PreToolUse", "Notification", "Stop", "SessionEnd")}}
+    settings.write_text(json.dumps(old))
+    r = run_("hooks", "status", "--exit-code")
+    check(r.returncode == 1 and "missing PostToolUse" in r.stdout, "hooks status: an install without PostToolUse is incomplete")
+    r = run_("hooks", "ensure")
+    s = json.loads(settings.read_text())
+    check("fixed" in r.stdout and "PostToolUse" in s["hooks"] and s["hooks"]["PostToolUse"][0]["matcher"] == "*" and len(s["hooks"]["Stop"]) == 1 and s["model"] == "opus", "hooks ensure re-registers PostToolUse, nothing doubled")
+    check(run_("hooks", "ensure").stdout.startswith("ok") and run_("hooks", "status", "--exit-code").returncode == 0, "…and leaves a complete install alone")
 else:
     print("  (node not found: skipped)")
 

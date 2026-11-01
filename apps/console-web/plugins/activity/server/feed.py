@@ -15,6 +15,10 @@ Sources (each can be switched off in Settings → Plugins → Activity):
   reports    anything that reports itself: POST report, the axf.activity@1 service, or a JSON file in reports/ (written by
              activity.mjs on the VPS, e.g. from Claude Code hooks). An active report not updated for report_ttl_s turns
              stale; finished ones are dropped after linger_s.
+             A Claude Code session's command lines (`claude:<sid>:<tool id>`: a push, pull, merge, delete or build) are
+             dropped once they've had no word for child_ttl_s (5 min) or their session (`claude:<sid>`) has ended, so a
+             line whose PostToolUse never came can't sit there as a ghost (Oct 31 2026). A session's Codebase changes
+             entry (same session id) is folded into its row: one row per session.
 
 Never holds a secret: GitHub calls go through lib-github (axf_server.github: the token to api.github.com only, no
 redirects, owner/name checked before any URL), and every title/detail is
@@ -72,6 +76,11 @@ def clean_actions(raw: Any) -> list[dict[str, str]]:
         out.append(b)
     return out
 ID_RE = re.compile(r"^[A-Za-z0-9_.:@/+-]{1,160}$")
+SESSION_RE = re.compile(r"^[A-Za-z0-9-]{4,40}$")
+# claude:<sid> = a Claude Code session; claude:<sid>:<tool id> = one of its command lines (activity.mjs hookChild)
+CLAUDE_RE = re.compile(r"^claude:([A-Za-z0-9-]{1,40})(?::([A-Za-z0-9_-]{1,40}))?$")
+GH_CACHE_S = 60          # one runs list per repo a minute, whatever the number of open tabs
+GH_BACKOFF_S = 10 * 60   # after a rate-limit answer, GitHub is left alone this long
 MAX_REPORTS = 200
 
 _SECRET = re.compile(
@@ -146,6 +155,8 @@ def norm(raw: Any, source: str, now_ms: int) -> dict[str, Any] | None:
         pass
     if isinstance(raw.get("changeId"), str) and re.match(r"^chg-\d{8}-[0-9a-f]{6,16}$", raw["changeId"]):
         it["changeId"] = raw["changeId"]
+    if isinstance(raw.get("session"), str) and SESSION_RE.match(raw["session"]):
+        it["session"] = raw["session"]
     url = _https(raw.get("url")) if raw.get("url") else None
     if url:
         it["url"] = url
@@ -180,6 +191,8 @@ class Feed:
                  services: Callable[[], list[tuple[str, Any]]] = lambda: [],
                  live_sessions: Callable[[], Any] = lambda: None,
                  github_get: Callable[[str], Any] | None = None,
+                 # axf.github@1's client (reads through axHub, the local token as fallback), or None
+                 github_client: Callable[[], Any] = lambda: None,
                  holds_file: Path | None = None,
                  # status of a pending build by id: its status, "missing" when not on the list, None when unreadable
                  pending_status: Callable[[str], str | None] = lambda pid: None,
@@ -193,9 +206,11 @@ class Feed:
         self.holds_file = holds_file
         self.pending_status = pending_status
         self.now = now
+        self.github_client = github_client
         self._gh_get = github_get or self._github_get
         self._lock = threading.Lock()
         self._gh_cache: tuple[float, list[dict[str, Any]], list[str]] | None = None
+        self._gh_backoff: tuple[float, str] | None = None  # (until, why) after a rate-limit answer
         self._detail_cache: dict[str, tuple[float, dict[str, Any]]] = {}
         self._extra: dict[str, tuple[str, Callable[[], list[dict[str, Any]]]]] = {}
 
@@ -216,6 +231,7 @@ class Feed:
             "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and github.valid_repo(r)][:20],
             "lingerS": int(c.get("lingerS", 600)) if str(c.get("lingerS", "")).isdigit() else 600,
             "reportTtlS": int(c.get("reportTtlS", 1800)) if str(c.get("reportTtlS", "")).isdigit() else 1800,
+            "childTtlS": int(c.get("childTtlS", 300)) if str(c.get("childTtlS", "")).isdigit() else 300,
             **complete.clean(c),
         }
 
@@ -231,7 +247,7 @@ class Feed:
                 raise ValueError(f"repos must look like owner/name: {bad[:3]}")
             c["repos"] = list(dict.fromkeys(patch["repos"]))[:20]
         c = complete.patch(c, patch)
-        for k, lo, hi in (("lingerS", 0, 86400), ("reportTtlS", 60, 86400)):
+        for k, lo, hi in (("lingerS", 0, 86400), ("reportTtlS", 60, 86400), ("childTtlS", 60, 3600)):
             if k in patch:
                 try:
                     c[k] = max(lo, min(hi, int(patch[k])))
@@ -348,10 +364,20 @@ class Feed:
         out = []
         if not self.reports_dir.is_dir():
             return out
+        loaded = []
         for p in sorted(self.reports_dir.glob("*.json"))[: MAX_REPORTS * 2]:
             raw = self._read_report(p)
             it = norm(raw, "reports", now) if raw else None
-            if not it:
+            if it:
+                loaded.append((p, it))
+        sessions = {m.group(1): it for _, it in loaded if (m := CLAUDE_RE.match(it["id"])) and not m.group(2)}
+        for p, it in loaded:
+            m = CLAUDE_RE.match(it["id"])
+            if m and m.group(2) and self._child_gone(it, sessions.get(m.group(1)), cfg, now):
+                try:
+                    p.unlink()  # a command line whose session ended, or that went quiet: a ghost, not stuck work
+                except OSError:
+                    pass
                 continue
             if it["state"] in ACTIVE and now - it["updatedAt"] > cfg["reportTtlS"] * 1000:
                 it["state"] = "stale"
@@ -366,6 +392,14 @@ class Feed:
             it["reported"] = True
             out.append(it)
         return out
+
+    @staticmethod
+    def _child_gone(it: dict[str, Any], parent: dict[str, Any] | None, cfg: dict[str, Any], now: int) -> bool:
+        """A Claude Code command line that shouldn't show any more: its session is gone or has ended (every line of
+        it goes), or it is still 'running' with no word for childTtlS (its PostToolUse never came)."""
+        if parent is None or parent["state"] not in ACTIVE:
+            return True
+        return it["state"] in ACTIVE and now - it["updatedAt"] > cfg["childTtlS"] * 1000
 
     # ---------------- work on hold (holds.json in the plugin folder: code, so it ships with the repo)
 
@@ -448,33 +482,70 @@ class Feed:
 
     # ---------------- GitHub Actions
 
-    def _github_get(self, path: str) -> Any:
+    def _client(self) -> Any:
+        """axf.github@1's client when the systems check provides it (reads through axHub, so the console's own token
+        isn't spent on polling), else plain lib-github on GITHUB_TOKEN."""
+        try:
+            hub = self.github_client()
+        except Exception:  # noqa: BLE001 — without it: the local token
+            hub = None
+        if hub is not None:
+            return hub
         if not self.github_token():
             raise RuntimeError("no GitHub token")
         # lib-github: the token to api.github.com only, never follows a redirect, 4 MB cap
-        gh = github.GitHubClient(self.github_token, user_agent="axf-console-activity", timeout=12, max_bytes=4_000_000)
+        return github.GitHubClient(self.github_token, user_agent="axf-console-activity", timeout=12, max_bytes=4_000_000)
+
+    def _github_get(self, path: str) -> Any:
         try:
-            return gh.get(path)
+            return self._client().get(path)
         except github.GitHubError as e:
-            raise RuntimeError(f"GitHub answered {e.status}" if e.status else str(e)) from None
+            raise RuntimeError(str(e) or f"GitHub answered {e.status}") from None
+
+    def _can_github(self) -> bool:
+        try:
+            hub = self.github_client()
+        except Exception:  # noqa: BLE001
+            hub = None
+        return bool(self.github_token()) or (hub is not None and hub.has_token())
+
+    @staticmethod
+    def rate_limited(msg: str) -> bool:
+        return bool(re.search(r"rate limit|\b429\b|secondary rate", msg, re.I))
+
+    def github_status(self) -> dict[str, Any]:
+        """How the GitHub part of the feed is doing (the systems check reads it): the errors of its last read and any
+        rate-limit back-off."""
+        c = self._gh_cache
+        b = self._gh_backoff if self._gh_backoff and self._gh_backoff[0] > self.now() else None
+        return {"checkedAt": c[0] if c else None, "errors": list(c[2]) if c else [], "backoffUntil": b[0] if b else None, "backoffWhy": b[1] if b else ""}
 
     def _github(self, cfg: dict[str, Any], now: int) -> tuple[list[dict[str, Any]], list[str]]:
-        if self._gh_cache and self.now() - self._gh_cache[0] < 20:
+        if self._gh_cache and self.now() - self._gh_cache[0] < GH_CACHE_S:
             return self._gh_cache[1], self._gh_cache[2]
-        if not self.github_token():
+        if self._gh_backoff and self.now() < self._gh_backoff[0]:
+            mins = max(1, round((self._gh_backoff[0] - self.now()) / 60))
+            return [], [f"GitHub: {self._gh_backoff[1]} Trying again in {mins} min."]
+        if not self._can_github():
             return [], ["GitHub: no token (Keys needed → GitHub)"]
         items: list[dict[str, Any]] = []
         errors: list[str] = []
         for repo in cfg["repos"]:
             runs: dict[int, dict[str, Any]] = {}
             try:
-                for status in ("in_progress", "queued", "waiting"):
-                    for r in self._gh_get(github.repo_path(repo, "actions", "runs", query={"status": status, "per_page": 30})).get("workflow_runs", []):
-                        runs[int(r.get("id") or 0)] = r
-                for r in self._gh_get(github.repo_path(repo, "actions", "runs", query={"status": "completed", "per_page": 10})).get("workflow_runs", []):
+                # one call per repo (was four: in_progress, queued, waiting, completed): the newest runs hold what is
+                # running or queued now plus what just finished
+                for r in self._gh_get(github.repo_path(repo, "actions", "runs", query={"per_page": 20})).get("workflow_runs", []):
                     runs.setdefault(int(r.get("id") or 0), r)
             except Exception as e:  # noqa: BLE001 — one repo failing doesn't hide the others
-                errors.append(f"GitHub {repo}: {redact(e, 120)}")
+                msg = redact(e, 200)
+                if self.rate_limited(msg):
+                    why = ("the token's hourly rate limit is used up (GitHub answered 403/429: rate limit exceeded); "
+                           "it isn't a missing permission.")
+                    self._gh_backoff = (self.now() + GH_BACKOFF_S, why)
+                    errors.append(f"GitHub: {why} Trying again in {GH_BACKOFF_S // 60} min.")
+                    break
+                errors.append(f"GitHub {repo}: {msg}")
                 continue
             for rid, r in runs.items():
                 state = _gh_state(str(r.get("status") or ""), r.get("conclusion"))
@@ -607,6 +678,7 @@ class Feed:
         if cfg["sources"]["holds"]:
             run("Holds", lambda: self._holds(cfg, now))
 
+        items = self.fold_sessions(items)
         seen: set[str] = set(self._dismissed(now))
         uniq = []
         for it in items:
@@ -622,6 +694,25 @@ class Feed:
         return {"items": uniq, "active": len(active), "held": len(held), "errors": errors[:10], "checkedAt": now,
                 "sources": {k: {"label": v, "on": cfg["sources"][k]} for k, v in SOURCES.items()},
                 "complete": {k: cfg[k] for k in ("sound", "toast", "expandOnDone", "openResult", "onClose")}}
+
+    @staticmethod
+    def fold_sessions(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """One row per Claude Code session: its Codebase changes entry (same session id, `session`) goes into the
+        session's row (changeId, progress, the entry's title) instead of showing as a second row."""
+        rows = {m.group(1): it for it in items if (m := CLAUDE_RE.match(it["id"])) and not m.group(2)}
+        out = []
+        for it in items:
+            sid = it.get("session")
+            row = rows.get(sid) if sid and it.get("source") == "changes" else None
+            if row is None:
+                out.append(it)
+                continue
+            if it.get("changeId"):
+                row.setdefault("changeId", it["changeId"])
+            if "progress" in it and "progress" not in row:
+                row["progress"] = it["progress"]
+            row["change"] = {"id": it["id"], "title": it["title"], "state": it["state"]}
+        return out
 
     def detail(self, iid: str) -> dict[str, Any]:
         if iid.startswith("gh:"):

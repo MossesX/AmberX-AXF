@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.activity",
   "name": "Activity banner",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -41,7 +41,7 @@
       "AXF_NOTIFY_INBOX"
     ],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md"
+      "CLAUDE.md", "_claude/memory/STATUS.md", "deploy/claude-headless.sh"
     ]
   },
   "opens": false

@@ -47,7 +47,9 @@ if (!playwright) { try { playwright = await import('playwright'); } catch { cons
 const token = 'shots-' + Math.random().toString(36).slice(2, 12);
 const data = mkdtempSync(join(tmpdir(), 'axf-shots-'));
 const apiPort = await freePort(), webPort = args['web-port'] ? Number(args['web-port']) : await freePort();
-const extraEnv = Object.fromEntries([].concat(args.env ?? []).filter((x) => typeof x === 'string').map((kv) => { const i = kv.indexOf('='); return [kv.slice(0, i), kv.slice(i + 1)]; }));
+// every --env counts (args keeps only the last value of a repeated flag)
+const envArgs = process.argv.slice(2).flatMap((v, i, all) => (v === '--env' && typeof all[i + 1] === 'string' && all[i + 1].includes('=') ? [all[i + 1]] : []));
+const extraEnv = Object.fromEntries(envArgs.map((kv) => { const i = kv.indexOf('='); return [kv.slice(0, i), kv.slice(i + 1)]; }));
 const env = { ...process.env, ...extraEnv, AXF_TOKEN: token, AXF_DATA_DIR: data, AXF_TOKEN_FILE: join(data, 'env'), AXF_STATE: join(data, 'state.json'), AXF_API: `http://127.0.0.1:${apiPort}` };
 const procs = [];
 const run = (cmd, argv, cwd) => { const p = spawn(cmd, argv, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'], detached: true }); let log = ''; p.stdout.on('data', (d) => { log += d; }); p.stderr.on('data', (d) => { log += d; }); p.log = () => log.slice(-4000); procs.push(p); return p; };
