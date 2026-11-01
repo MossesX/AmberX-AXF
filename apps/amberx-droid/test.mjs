@@ -1395,8 +1395,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     const ma = java('MainActivity.java');
     ok(/if \(state == null && !fromHistory\)/.test(ma) && /setIntent\(spent\(intent\)\)/.test(ma), 'android: the launch intent\'s wake sentence is handed over once (not on re-create or an open from Recents)');
     ok(/EXTRA_WAKE_ID, AmberxNativePlugin\.eventId\(\)\)/.test(ws), 'android: wake hits that open the app carry an id');
-    const veto = readFileSync(new URL('../console-web/plugins/approvals-banner/web/veto.tsx', import.meta.url), 'utf8');
-    ok(/const may = soundAllowed\(\);/.test(veto) && /approvals-banner\.alarmed/.test(veto), 'veto alarm: only the sound owner rings, rung calls kept on the device');
+    ok(/\[SOUND_OWNER_KEY\] = api/.test(sound) && L.SOUND_OWNER_KEY === '__axfSoundOwner', 'sound-owner@1 is on globalThis for console plugins (the veto alarm asks it before ringing)');
     const mon = src('plugins/monitor/web/index.tsx');
     ok(/new DingGate\(deviceStore\(\), 'amberx\.monitor\.seen'\)/.test(mon), 'monitor: browser approval notices go through the ding gate');
   }
