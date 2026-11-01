@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T02:31:12.848Z",
+ "updatedAt": "2026-11-01T02:31:46.612Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -7043,19 +7043,23 @@
    "title": "Agent voice plugin: agents speak + per-agent narrator console, live status light, Assistant mic",
    "category": "Voice",
    "detail": "Brett Oct 29 2026: Build a plugin giving agents the ability to speak, with a full powerful per-agent configuration console and every bell and whistle a narrator should have. When a voice agent is selected a live status icon lights up on the main application and the Assistant window. A microphone in the Assistant window: when selected, a tooltip notes the selected agent's name is missing permission — unless the plugin isn't installed, then it says so with links to install, or a hook to install it with the agent. Powerful microphone configuration with integrated features and settings that never conflict with other listening (AmberX notes/dictation and voice/wake). Voices: both device + cloud, with hooks to its settings in multiple places. Profile: Refactor. Model: Opus (web console plugin + AmberX native seam).",
-   "status": "waiting",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "feat/agent-voice",
    "pr": "",
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "updatedAt": "2026-10-30T12:06:02.017Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-01T02:31:46.572Z",
+   "builtAt": "2026-11-01T02:31:46.110Z",
    "notes": [
     {
      "text": "s1-s8 done on feat/agent-voice; PR create held on axHub (approval 45ca37d6). s9 left: CI + merge approval.",
      "at": "2026-10-30T12:06:01.970Z"
+    },
+    {
+     "text": "s9 closed by Leftovers: it was 'waiting' only on the PR approval (45ca37d6) + merge; feat/agent-voice is fully on main, so nothing waits on Brett. plugin-lifecycle check clean, test.py 37/37, test.mts 22/22.",
+     "at": "2026-11-01T02:31:46.572Z"
     }
    ],
    "approvals": [],
@@ -7217,8 +7221,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-01T02:31:46.110Z",
      "note": "",
      "uid": "st-tq3y47"
     }
