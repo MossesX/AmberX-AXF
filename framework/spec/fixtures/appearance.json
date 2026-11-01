@@ -365,6 +365,17 @@
       "ok": "#218c5a",
       "scheme": "light"
     },
+    "hub-night": {
+      "bg": "#0f1012",
+      "fg": "#ebedf0",
+      "muted": "#9aa1ab",
+      "card": "#16181b",
+      "line": "#2b3036",
+      "accent": "#f5a524",
+      "danger": "#f06a6a",
+      "ok": "#3fcf8e",
+      "scheme": "dark"
+    },
     "linen-slate": {
       "bg": "#f8f6f4",
       "fg": "#2d2316",

@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "hub-night",
+  "name": "Hub Night",
+  "version": "1.0.0",
+  "description": "The default colours every app inherits from axHub: graphite neutrals, AmberX amber accent, clear status colours that read on a phone at night.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "dark",
+    "amber"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0f1012",
+      "surface": "#16181b",
+      "surface2": "#1c1f23",
+      "surface3": "#262a2f",
+      "text": "#ebedf0",
+      "muted": "#9aa1ab",
+      "border": "#2b3036",
+      "accent": "#f5a524",
+      "accentText": "#1a1205",
+      "accentSoft": "rgba(245,165,36,0.14)",
+      "danger": "#f06a6a",
+      "success": "#3fcf8e",
+      "warning": "#f5c04a",
+      "info": "#5aaefc",
+      "focus": "#f5a524",
+      "shadow": "rgba(0,0,0,0.5)"
+    }
+  }
+}

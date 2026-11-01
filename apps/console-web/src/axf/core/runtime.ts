@@ -25,7 +25,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { DESIGN_APPLIED_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designPackageSlots, isAppearanceSetting, normalizeDesignPackage, packageSettingsPlan } from './engines/designpackage';
+import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
@@ -289,7 +289,7 @@ export class AxfRuntime {
     // Look settings (Sliders, per-asset tokens, banner looks, rolls…) are shared through the axHub look like the slots
     // (Nov 1 2026, Brett: "Any theme change applies to all"): every local change goes to the hub document.
     this.settings.onAnyChange((key, value) => {
-      if (isAppearanceSetting(key)) this.pushAppearance({ settings: { [key]: value ?? null } });
+      if (isAppearanceSetting(key) && !isRetiredLookSetting(key)) this.pushAppearance({ settings: { [key]: value ?? null } });
     });
     // Hot render (Brett, Oct 23 2026): "whenever settings are changed that affect the UI, render immediately". Any
     // settings change is a state change, so everything that reads a setting while it renders (banners, chrome, plugin
@@ -446,6 +446,7 @@ export class AxfRuntime {
    */
   private applyAppearance(doc: AppearanceDocument | null): void {
     this.lastAppearance = doc;
+    let retired: string[] = [];
     const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
     this.applyingAppearance = true;
     try {
@@ -467,12 +468,23 @@ export class AxfRuntime {
       if (this.spacing() !== sp) this.settings.set(SPACING_KEY, sp);
       // Look settings: a document that lists them owns them all (keys it doesn't list are cleared here); an older one
       // without the field leaves this app's own alone (they are sent up once, below, so the hub takes them over).
+      // Retired look settings (Sliders, per-asset tokens, rolls, banners' Apply to all) are never applied (Nov 1 2026).
       if (doc?.settings) {
+        const shared = Object.fromEntries(Object.entries(doc.settings).filter(([k]) => !isRetiredLookSetting(k)));
         const saved = this.settings.savedValues();
-        for (const [k, v] of Object.entries(doc.settings)) {
+        for (const [k, v] of Object.entries(shared)) {
           if (isAppearanceSetting(k) && JSON.stringify(saved[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
         }
-        for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(doc.settings, k)) this.settings.clear(k);
+        for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(shared, k)) this.settings.clear(k);
+        retired = Object.keys(doc.settings).filter(isRetiredLookSetting);
+      }
+      // A loaded design package decides the style and colour theme; only a recorded override beats it (Nov 1 2026).
+      const pkgId = active[DESIGN_PACKAGE_TYPE as AssetType];
+      const pkgAsset = pkgId ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, pkgId) : undefined;
+      if (pkgAsset) {
+        const overrides = normalizeDesignOverrides(doc?.settings ? doc.settings[DESIGN_OVERRIDES_KEY] : this.settings.get(DESIGN_OVERRIDES_KEY));
+        const look = designLookSlots(normalizeDesignPackage(pkgAsset.data), overrides, { 'style-theme': active['style-theme' as AssetType], 'color-theme': active['color-theme' as AssetType] }, (t, id) => this.registry.has(t as AssetType, id));
+        for (const t of DESIGN_OVERRIDABLE) { const v = look[t]; if (v) active[t as AssetType] = v; }
       }
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
       // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
@@ -486,6 +498,8 @@ export class AxfRuntime {
     } finally {
       this.applyingAppearance = false;
     }
+    // A document still carrying retired look settings is cleaned once (the next one won't list them).
+    if (retired.length) this.pushAppearance({ settings: Object.fromEntries(retired.map((k) => [k, null])) });
     // The hub doesn't hold look settings yet: this app's become the shared ones (sent once; the next document lists them).
     if (doc && !doc.settings) {
       const mine = this.lookSettings();
@@ -496,7 +510,7 @@ export class AxfRuntime {
   /** This app's saved look settings (the keys `isAppearanceSetting` counts), as the hub document carries them. */
   private lookSettings(): Record<string, SettingValue> {
     const out: Record<string, SettingValue> = {};
-    for (const [k, v] of Object.entries(this.settings.savedValues())) if (isAppearanceSetting(k) && v !== null) out[k] = v;
+    for (const [k, v] of Object.entries(this.settings.savedValues())) if (isAppearanceSetting(k) && !isRetiredLookSetting(k) && v !== null) out[k] = v;
     return out;
   }
 
@@ -1017,8 +1031,28 @@ export class AxfRuntime {
       }
     }
     this.set(patch, true);
+    this.recordDesignOverride(type, next); // a look setting: it reaches the hub with the other look settings
     if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
     return true;
+  }
+
+  /** The style / colour theme overrides on top of the loaded design package (engines/designpackage.ts, precedence rule). */
+  designOverrides(): DesignOverrides { return this.loadedDesignPackage() ? normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)) : {}; }
+
+  /** The design package in force (its data), or null when none is loaded. */
+  private loadedDesignPackage() {
+    const id = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
+    const a = id ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id) : undefined;
+    return a ? normalizeDesignPackage(a.data) : null;
+  }
+
+  /** A style or colour pick while a package is loaded: record (or drop) its override. Returns the new overrides, or null when nothing changed. */
+  private recordDesignOverride(type: string, id: string): DesignOverrides | null {
+    const next = overrideAfterPick(this.loadedDesignPackage(), normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)), type, id);
+    if (!next) return null;
+    if (Object.keys(next).length) this.settings.set(DESIGN_OVERRIDES_KEY, next as unknown as SettingValue);
+    else this.settings.clear(DESIGN_OVERRIDES_KEY);
+    return next;
   }
 
   swapAll(targets: Partial<ActiveAssets>) {
@@ -1237,6 +1271,8 @@ export class AxfRuntime {
     const pkg = normalizeDesignPackage(a.data);
     const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
     for (const k of plan.clear) this.settings.clear(k);
+    // loading a package (again) clears the individual style / colour overrides (precedence rule)
+    if (this.settings.get(DESIGN_OVERRIDES_KEY) !== null) this.settings.clear(DESIGN_OVERRIDES_KEY);
     for (const [k, v] of Object.entries(plan.set)) this.settings.set(k, v as SettingValue);
     const hidden: Record<string, boolean | null> = {};
     if (pkg.extras) for (const t of ASSET_TYPES) {

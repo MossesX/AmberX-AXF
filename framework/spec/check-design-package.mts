@@ -11,8 +11,7 @@ import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import {
   DESIGN_THEMES, captureDesignPackage, designPackageErrors, designPackageSlots, fromAppearancePackage, isAppearanceSetting,
-  normalizeDesignPackage, packageSettingsPlan, registerAppearanceSettingPrefix,
-} from '../core/engines/designpackage';
+  normalizeDesignPackage, packageSettingsPlan, registerAppearanceSettingPrefix, DESIGN_OVERRIDES_KEY, designLookLabel, designLookSlots, isRetiredLookSetting, normalizeDesignOverrides, overrideAfterPick } from '../core/engines/designpackage';
 import { BEHAVIOR_ENUMS, BEHAVIOR_RANGES, BEHAVIOR_SWITCHES, DEFAULT_BEHAVIOR, behaviorErrors, behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from '../core/engines/behavior';
 import * as engine from '../cli/build-engine.mjs';
 import { DEFAULT_WINDOW_PLACEMENT, WindowManager, minimizeTargetFor, placeNewWindow, snapCoord } from '../core/engines/windows';
@@ -76,7 +75,33 @@ const cap = captureDesignPackage(env);
 eq(cap, { 'style-theme': 's', 'color-theme': 'a', layout: 'l', 'behavior-theme': 'b', extras: { slots: { toolbar: 't' }, spacing: 'compact', hidden: { toolbar: true }, settings: { 'axf.custom.button': { all: true } } } }, 'capture: four themes + the rest as extras');
 eq(captureDesignPackage(env, false), { 'style-theme': 's', 'color-theme': 'a', layout: 'l', 'behavior-theme': 'b' }, 'capture themes only');
 eq(designPackageErrors(cap), [], 'a captured package validates');
-eq(packageSettingsPlan(cap, ['axf.custom.button', 'axf.roll.slot.x', 'other']), { set: { 'axf.custom.button': { all: true } }, clear: ['axf.roll.slot.x'] }, 'with extras: the whole look (clears the rest of the look only)');
+eq(packageSettingsPlan(cap, ['axf.custom.button', 'axf.roll.slot.x', 'other']), { set: {}, clear: ['axf.custom.button', 'axf.roll.slot.x'] }, 'with extras: the whole look (clears the rest of the look only; retired look settings are never set)');
+{
+  const withBanner = { ...cap, extras: { ...cap.extras!, settings: { 'axf.banners.prefs': { a: { launch: 'expanded' } }, 'axf.look': { x: 1 } } } };
+  eq(packageSettingsPlan(withBanner, []).set, { 'axf.banners.prefs': { a: { launch: 'expanded' } } }, 'plugin look settings (banners) are still set; the retired Sliders are not');
+}
+
+/* ---- precedence: a loaded design package wins over the individual picks (Nov 1 2026) ---- */
+{
+  const has = (t: string, id: string) => ({ 'style-theme': ['hub', 'fresh', 'glass'], 'color-theme': ['hub-night', 'fresh-light'] } as Record<string, string[]>)[t]?.includes(id) ?? false;
+  const pkg = { 'style-theme': 'hub', 'color-theme': 'hub-night', layout: 'l', 'behavior-theme': 'b' };
+  eq(designLookSlots(pkg, {}, { 'style-theme': 'glass', 'color-theme': 'fresh-light' }, has), { 'style-theme': 'hub', 'color-theme': 'hub-night' }, 'package loaded: the individual picks are not applied');
+  eq(designLookSlots(pkg, { 'style-theme': 'fresh' }, { 'style-theme': 'glass', 'color-theme': 'fresh-light' }, has), { 'style-theme': 'fresh', 'color-theme': 'hub-night' }, 'a style override changes only the style');
+  eq(designLookSlots(pkg, { 'color-theme': 'gone' }, {}, has), { 'style-theme': 'hub', 'color-theme': 'hub-night' }, 'an override the app does not have falls back to the package');
+  eq(designLookSlots(null, { 'style-theme': 'fresh' }, { 'style-theme': 'glass' }, has), { 'style-theme': 'glass' }, 'no package: the picks, overrides ignored');
+  eq(designLookSlots({ ...pkg, 'style-theme': 'missing' }, {}, { 'style-theme': 'glass' }, has), { 'style-theme': 'glass', 'color-theme': 'hub-night' }, 'a package theme the app lacks keeps the pick');
+  eq(overrideAfterPick(pkg, {}, 'style-theme', 'fresh'), { 'style-theme': 'fresh' }, 'picking a style records an override');
+  eq(overrideAfterPick(pkg, { 'style-theme': 'fresh' }, 'style-theme', 'hub'), {}, 'picking the package\'s own style drops it');
+  eq(overrideAfterPick(pkg, {}, 'toolbar', 'x'), null, 'other slots never override');
+  eq(overrideAfterPick(null, {}, 'style-theme', 'fresh'), null, 'no package, no override');
+  eq(normalizeDesignOverrides({ 'style-theme': 'ok', 'color-theme': 'Bad Id', layout: 'x' }), { 'style-theme': 'ok' }, 'overrides normalized');
+  eq(normalizeDesignOverrides('nope'), {}, 'garbage = no overrides');
+  eq(designLookLabel('Hub Default', {}), 'Hub Default', 'label, untouched');
+  eq(designLookLabel('Hub Default', { 'style-theme': 'a', 'color-theme': 'b' }), 'Hub Default (style and colour changed)', 'label, both changed');
+  ok(isAppearanceSetting(DESIGN_OVERRIDES_KEY), 'overrides ride the shared look');
+  ok(isRetiredLookSetting('axf.look') && isRetiredLookSetting('axf.custom.button') && isRetiredLookSetting('axf.roll.slot.x'), 'Sliders, per-asset tokens and rolls are retired');
+  ok(!isRetiredLookSetting('axf.banners.look') && !isRetiredLookSetting('axf.banners.prefs') && !isRetiredLookSetting(DESIGN_OVERRIDES_KEY) && !isRetiredLookSetting('axf.lookout'), 'plugin look settings and the overrides are not');
+}
 eq(packageSettingsPlan(full, ['axf.custom.button']), { set: {}, clear: [] }, 'without extras: other settings untouched');
 const old = { slots: { 'style-theme': 's', 'color-theme': 'c', layout: 'l', toolbar: 't', 'uac-policy': 'p' }, spacing: 'tight', hidden: { toolbar: false } };
 eq(fromAppearancePackage(old), { 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'standard', extras: { slots: { toolbar: 't' }, spacing: 'tight', hidden: { toolbar: false } } }, 'old appearance package converts');
