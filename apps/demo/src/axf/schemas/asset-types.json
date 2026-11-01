@@ -1435,6 +1435,47 @@
         "labels": "{ field: label } to rename a field on this design (up to 24 characters)"
       }
     },
+    "job-type": {
+      "label": "Job type",
+      "group": "Agents",
+      "icon": "layers",
+      "description": "A recurring kind of work a hired swarm agent owns (job-type@1, rules core/engines/job-type-rules.mjs): the owning specialty (an agent skill id), default model, token budget per run, trigger (on demand, schedule, event), the brief template the agent gets ({{placeholders}} from declared inputs and built-ins) and where its outputs go (report path, UI Review group name with a timestamp). Routed by framework/cli/agent-job.mjs. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "specialty",
+        "budget",
+        "trigger",
+        "brief"
+      ],
+      "enums": {
+        "model": [
+          "haiku",
+          "sonnet",
+          "opus",
+          "fable"
+        ]
+      },
+      "nested": {
+        "budget": [
+          "tokens"
+        ],
+        "trigger": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "model": "default model for a run (haiku, sonnet, opus, fable); default sonnet",
+        "readOnly": "true = the job changes nothing, only reports",
+        "tools": "tool names the run gets (default: the owning agent's tools; read-only jobs get read tools only)",
+        "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",
+        "command": "a command the job runs (e.g. a re-record command), shown in the brief",
+        "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

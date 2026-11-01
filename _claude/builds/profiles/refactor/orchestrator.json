@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-01T07:27:15.131Z",
+ "updatedAt": "2026-11-01T07:28:13.082Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -8038,16 +8038,16 @@
   {
    "id": "amberx-walkthrough",
    "title": "AmberX app walkthrough video (narrated, chapters, player in the app, one-command re-record)",
-   "category": "AmberX",
+   "category": "",
    "detail": "Brett Nov 1 2026: a narrated walkthrough of the AmberX app like the one on demo.amberxai.com, made with the existing tour recorder tooling (Playwright + Piper + ffmpeg), seeded demo data, phone layout, player with chapters in AmberX (Home, app menu, Help), media on the server behind the wall, one command + console button to re-record. Profile: refactor (active; headless session, no card possible).",
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
-   "branch": "claude/amberx-walkthrough",
+   "pendingId": "amberx-walkthrough",
+   "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T06:47:21.596Z",
-   "updatedAt": "2026-11-01T07:27:15.053Z",
+   "updatedAt": "2026-11-01T07:28:13.050Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -8066,9 +8066,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:11.781Z",
+     "doneAt": "2026-11-01T07:28:11.709Z",
      "note": "",
-     "uid": "st-mvxgwlya08xvw5"
+     "uid": "st-mvxgz2hi015wpg"
     },
     {
      "id": "s2",
@@ -8084,9 +8084,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:12.608Z",
+     "doneAt": "2026-11-01T07:28:12.065Z",
      "note": "",
-     "uid": "st-mvxgwlya094la5"
+     "uid": "st-mvxgz2hi02i512"
     },
     {
      "id": "s3",
@@ -8102,9 +8102,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:13.236Z",
+     "doneAt": "2026-11-01T07:28:12.400Z",
      "note": "",
-     "uid": "st-mvxgwlya0am9uu"
+     "uid": "st-mvxgz2hi03cx64"
     },
     {
      "id": "s4",
@@ -8122,7 +8122,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxgwlya0bjixd"
+     "uid": "st-mvxgz2hi04zss1"
     },
     {
      "id": "s5",
@@ -8138,9 +8138,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:13.963Z",
+     "doneAt": "2026-11-01T07:28:12.713Z",
      "note": "",
-     "uid": "st-mvxgwlya0cnnbt"
+     "uid": "st-mvxgz2hi05nnds"
     },
     {
      "id": "s6",
@@ -8156,9 +8156,9 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:15.053Z",
+     "doneAt": "2026-11-01T07:28:13.050Z",
      "note": "",
-     "uid": "st-mvxgwlya0dd9jp"
+     "uid": "st-mvxgz2hi06n9o0"
     },
     {
      "id": "s7",
@@ -8176,116 +8176,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxgwlya0e5f7i"
-    }
-   ]
-  },
-  {
-   "id": "github-app",
-   "title": "GitHub App for the whole stack: one-click setup, tokens that never die",
-   "category": "",
-   "detail": "",
-   "status": "pending",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "github-app",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-11-01T07:17:49.320Z",
-   "updatedAt": "2026-11-01T07:17:49.320Z",
-   "builtAt": "",
-   "notes": [],
-   "approvals": [],
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Token broker (framework/cli/github-app.mjs + github-token.mjs): manifest, conversion, JWT, installation + user tokens, cache, lock",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mvxi9nby01uodg"
-    },
-    {
-     "id": "s2",
-     "text": "git credential helper + gh wrapper + repo create",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mvxi9nby02k61e"
-    },
-    {
-     "id": "s3",
-     "text": "Console plugin github-app: routes, keeper, health checks, settings UI",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mvxi9nby03c7nc"
-    },
-    {
-     "id": "s4",
-     "text": "Point callers at the broker (key check on old token, push-banner probe)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mvxi9nby04i8bd"
-    },
-    {
-     "id": "s5",
-     "text": "Tests, screenshots, install_steps, report, push",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mvxi9nby05hqgt"
+     "uid": "st-mvxgz2hi07r0cp"
     }
    ]
   },
@@ -8322,7 +8213,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby06bofn"
+     "uid": "st-mvxi42qo01gcfe"
     },
     {
      "id": "s2",
@@ -8340,7 +8231,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby075vno"
+     "uid": "st-mvxi42qo02qg6m"
     },
     {
      "id": "s3",
@@ -8358,7 +8249,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby08cpas"
+     "uid": "st-mvxi42qo0363sx"
     },
     {
      "id": "s4",
@@ -8376,7 +8267,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby09l1a2"
+     "uid": "st-mvxi42qo04ngtp"
     },
     {
      "id": "s5",
@@ -8394,7 +8285,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby0advju"
+     "uid": "st-mvxi42qo05j01u"
     },
     {
      "id": "s6",
@@ -8412,7 +8303,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby0bp8z7"
+     "uid": "st-mvxi42qo06m5ro"
     },
     {
      "id": "s7",
@@ -8430,7 +8321,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby0c9ix4"
+     "uid": "st-mvxi42qo07cehx"
     },
     {
      "id": "s8",
@@ -8448,7 +8339,116 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mvxi9nby0dp3w0"
+     "uid": "st-mvxi42qo088yyg"
+    }
+   ]
+  },
+  {
+   "id": "github-app",
+   "title": "GitHub App for the whole stack: one-click setup, tokens that never die",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "github-app",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-01T07:17:49.320Z",
+   "updatedAt": "2026-11-01T07:17:49.320Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Token broker (framework/cli/github-app.mjs + github-token.mjs): manifest, conversion, JWT, installation + user tokens, cache, lock",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvxi42qp094n9t"
+    },
+    {
+     "id": "s2",
+     "text": "git credential helper + gh wrapper + repo create",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvxi42qp0a6j49"
+    },
+    {
+     "id": "s3",
+     "text": "Console plugin github-app: routes, keeper, health checks, settings UI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvxi42qp0bnbf1"
+    },
+    {
+     "id": "s4",
+     "text": "Point callers at the broker (key check on old token, push-banner probe)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvxi42qp0c0sjt"
+    },
+    {
+     "id": "s5",
+     "text": "Tests, screenshots, install_steps, report, push",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvxi42qp0d9vqz"
     }
    ]
   }

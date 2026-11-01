@@ -11,6 +11,7 @@ import type { AxfRuntime } from '../../../axf/core';
 import { Button, Checkbox, Container, Note, Segmented, SelectField, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { isNative, native } from '../../../native';
 import { HOLDER_LABEL, micLease } from '../../../miclease';
+import { mayMakeSound } from '../../../sound';
 import { addItem, findList, flatTree, localDay, parseIntent, type ItemKind } from '../../notes/web/core';
 import { NOTES_ID, deviceName, load as loadNotes, mutate, snapshot as notesSnapshot, useNotes } from '../../notes/web/store';
 import { aiReady, parseNote } from '../../ai/web/client';
@@ -47,7 +48,7 @@ const lang = (rt: AxfRuntime) => { const v = rt.settings.get(K.lang); return typ
 
 /** Two short tones (up = start, down = stop) through Web Audio; silent where it isn't there. */
 function beep(rt: AxfRuntime, up: boolean) {
-  if (rt.settings.get(K.beep) === false) return;
+  if (rt.settings.get(K.beep) === false || !mayMakeSound()) return;
   try {
     const Ctx = (globalThis as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext }).AudioContext ?? (globalThis as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Ctx) return;

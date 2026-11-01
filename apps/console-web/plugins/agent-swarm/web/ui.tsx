@@ -7,22 +7,28 @@ import { Avatar, CrewTab } from './cards';
 import { CardsTab } from './idcards';
 import { ChatTab } from './chat';
 import { ChatSettingsTab } from './chat-settings';
+import { JobTypesTab, useJobs } from './jobs';
 import { FOLDER, ModelChip, api, fmtTime, statusText, useSwarm, type Act, type Agent, type AgentState, type Job, type Pay, type Res, type Slot, type Spend, type StatusDef, type SwarmState } from './ui-types';
 import './swarm.css';
 
 export { FOLDER };
 
 /*
- * Agent swarm page: a tab group. Jobs = a build split into jobs (agent, model, budget, leases, waves); Cost = the
+ * Agent swarm page (the Breakroom): a tab group. Jobs = recurring job types and the hired agent who owns each (jobs.tsx);
+ * Build plan = a build split into jobs (agent, model, budget, leases, waves); Cost = the
  * cost meter per agent, build and job. All rules are in swarm-core.mjs; the server reads through swarm.mjs.
  */
 
-const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'cards', label: 'ID cards', icon: 'star' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'jobs', label: 'Jobs', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }, { id: 'chat', label: 'Group chat', icon: 'bell' }, { id: 'chat-settings', label: 'Chat settings', icon: 'sliders' }] as const;
+const TABS = [{ id: 'crew', label: 'Crew', icon: 'grid' }, { id: 'cards', label: 'ID cards', icon: 'star' }, { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'job-types', label: 'Jobs', icon: 'clock' }, { id: 'jobs', label: 'Build plan', icon: 'layers' }, { id: 'cost', label: 'Cost', icon: 'chart' }, { id: 'chat', label: 'Group chat', icon: 'bell' }, { id: 'chat-settings', label: 'Chat settings', icon: 'sliders' }] as const;
 type Tab = (typeof TABS)[number]['id'];
 
 export function SwarmPage() {
   const rt = useRuntime();
   const { state, error, load, act } = useSwarm();
+  const jobs = useJobs();
+  // which job types each agent owns (its card lists them)
+  const jobsBy = useMemo(() => { const m: Record<string, { id: string; name: string }[]> = {}; for (const j of jobs.jobs ?? []) for (const o of j.owners) (m[o.id] ??= []).push({ id: j.id, name: j.name }); return m; }, [jobs.jobs]);
+  const openAgent = (id: string) => { consoleApi.writeLocal('swarm-profile', id); setTab('crew'); };
   const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('swarm-tab', 'crew'));
   const stats = useMemo(() => (state ? Object.fromEntries(state.roster.agents.map((a) => [a.id, core.agentStats(state.runs, a.id, state.prices)])) : {}), [state]);
   const doAct: Act = async (c) => { const l = await act(c); for (const x of l ?? []) rt.terminal.log('swarm', x, 'ok'); return l; };
@@ -36,14 +42,15 @@ export function SwarmPage() {
           <h1>Agent swarm</h1>
           <p className="fx-muted">Specialist agents run headless, one job each, on the cheapest model that can do it.</p>
         </div>
-        <div className="fx-row fx-row--wrap"><Button icon="refresh" onClick={() => load().then(() => rt.terminal.log('swarm', 'reloaded', 'ok'))}>Reload</Button></div>
+        <div className="fx-row fx-row--wrap"><Button icon="refresh" onClick={() => Promise.all([load(), jobs.load()]).then(() => rt.terminal.log('swarm', 'reloaded', 'ok'))}>Reload</Button></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       {state.problems.length > 0 && <div className="pl-note is-warn"><Icon name="alert" size={14} />{state.problems.join(' · ')}</div>}
       <div className="fx-tabs" role="tablist" aria-label="Agent swarm">
         {TABS.map((t) => <button key={t.id} role="tab" className="fx-tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}><Icon name={t.icon} size={14} />{t.label}</button>)}
       </div>
-      {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} onFeed={() => setTab('cost')} />}
+      {tab === 'crew' && <CrewTab state={state} stats={stats} act={doAct} jobsBy={jobsBy} onFeed={() => setTab('cost')} />}
+      {tab === 'job-types' && <JobTypesTab jobs={jobs.jobs} error={jobs.error} reload={async () => { await Promise.all([jobs.load(), load()]); }} onAgent={openAgent} />}
       {tab === 'cards' && <CardsTab state={state} stats={stats} act={doAct} photo={(a) => <Avatar a={a} size={120} />} />}
       {tab === 'agents' && <AgentsTab state={state} act={doAct} />}
       {tab === 'jobs' && <JobsTab state={state} />}

@@ -480,3 +480,49 @@ you save) with a real agent in the current theme. **Make default** picks the des
 opens the designer (fields per side, labels, logo place, finish) and saves a new design. On a profile, **ID card**
 picks a design for that agent and edits their card details (name, role, specialty, photo link, employee ID, internal
 email, hire date, catchphrase, signature). Cards take their colours from the theme, so a theme switch rebrands them.
+
+## Part J: Jobs and the crew
+
+Recurring work (walkthrough videos, site checks, screenshots, landing builds, banner cleanup, voice QA) is done by
+hired agents who each own a **job type**, not by anonymous one-off builds. Job types are `job-type@1` assets in
+`framework/assets/job-type/`; the crew is in the agent swarm's roster. Console → Builds → **Agent swarm → Jobs**. <!-- axf-plugin:agent-swarm -->
+
+### Step 32. Meet the crew
+
+| Agent | Owns | Model | Trigger |
+| --- | --- | --- | --- |
+| Reel Rhonda | AmberX walkthrough video (`amberx-walkthrough`) | Sonnet | on demand |
+| Ping Paulie | Site health check (`site-check`, read-only) | Sonnet | every 6 h |
+| Snap Sully | UI Review screenshots (`ui-screenshots`) | Sonnet | on demand |
+| Landin' Lenny | Land a finished build (`land-build`) | Opus | event `build.finished` |
+| Janitor Joey | Banner cleanup (`banner-cleanup`) | Sonnet | daily 09:00 UTC |
+| Earl the Ear | Voice listener QA (`listener-qa`) | Sonnet | event `amberx.voice-regression` |
+
+They are normal swarm agents: ID cards, statuses, salaries (weekly budgets) and the group chat all work the same
+(Part I). They never get build steps from the planner (`jobsOnly`). Each card lists the jobs the agent owns.
+
+### Step 33. Run a job
+
+1. **Agent swarm → Jobs**: one card per job type with its owner, trigger, last run, next scheduled run and cost.
+2. Tap **Run**, fill the inputs (blank = the default), **Preview brief** to see exactly what the agent gets, then
+   **Start**. The run opens in the console's Terminal as `axf-<agent>-<job>`.
+3. From a shell (or any Claude session): `node framework/cli/agent-job.mjs <job-type> --input key=value` (run in `/opt/axf`,
+   or `docker exec axf-console …`). `--dry-run` prints the brief and the command; `list` shows everything.
+4. A run is refused (exit 3, reason printed) when the owner is off duty, benched or broke, or its pay left this week
+   is under the run's cap. Fix it on the Agents tab (status, salary, top up), then run again.
+
+### Step 34. Schedules and events
+
+- `node framework/cli/agent-job.mjs due --run` starts every scheduled job that is due. To run it on its own, add a
+  cron line on the VPS, e.g. `*/30 * * * * cd /opt/axf && node framework/cli/agent-job.mjs due --run`.
+- `node framework/cli/agent-job.mjs event build.finished --run --input branch=<b>` starts the jobs an event triggers.
+- Finished runs are booked on the agent (stats, spend, report in the chat) the next time Jobs is opened, or with
+  `agent-job.mjs sweep`. Each run's final report is kept in the swarm's data folder (`job-reports/<run>.md`).
+
+### Step 35. A new kind of job
+
+1. Copy a file in `framework/assets/job-type/`, give it a new `id`, the owning `specialty`, model, budget, trigger,
+   brief (with `{{input}}` placeholders) and outputs (a UI Review group name must carry `{{when}}`).
+2. `node framework/cli/axf.mjs validate --framework` must pass.
+3. If nobody has that specialty, **Jobs** shows **Unassigned job** with **Hire**: one tap adds an agent who owns it
+   (`agent-job.mjs hire <job-type>` does the same). Rename them on their ID card.

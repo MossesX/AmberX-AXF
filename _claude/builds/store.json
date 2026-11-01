@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 45,
- "updatedAt": "2026-11-01T07:27:15.131Z",
+ "rev": 54,
+ "updatedAt": "2026-11-01T07:28:13.082Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -46029,8 +46029,8 @@
    "status": "complete",
    "hidden": false,
    "source": "console",
-   "pendingId": "agent-cap",
-   "branch": "",
+   "pendingId": "",
+   "branch": "claude/agent-cap",
    "pr": "",
    "createdAt": "2026-11-01T06:34:28.472Z",
    "updatedAt": "2026-11-01T07:21:35.917Z",
@@ -46045,7 +46045,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxgvx1a01v2dc",
+     "uid": "st-mvxgg1eb06o57k",
      "title": "",
      "text": "agent-slots@1 engine + CLI (framework/cli/agent-slots.mjs): settings, registry, queue, claim/release, heavy lock, memory guard, sweep",
      "model": "Opus",
@@ -46061,13 +46061,13 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:06.666Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T06:46:49.301Z"
+     "updatedAt": "2026-11-01T06:41:06.696Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxgvx1a02asxb",
+     "uid": "st-mvxgg1eb07k5ks",
      "title": "",
      "text": "deploy/claude-headless.sh + swarm runner go through the slots; finished sessions auto-close",
      "model": "Opus",
@@ -46083,13 +46083,13 @@
      "done": true,
      "doneAt": "2026-11-01T06:41:07.129Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T06:46:49.301Z"
+     "updatedAt": "2026-11-01T06:41:07.159Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxgvx1a03y678",
+     "uid": "st-mvxgg1eb08p2cy",
      "title": "",
      "text": "agent-slots console plugin: API, settings panel (Settings + Breakroom), Builds-page queue, banner summary slot, swarm desks",
      "model": "Opus",
@@ -46107,11 +46107,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T06:49:16.991Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxgvx1a041par",
+     "uid": "st-mvxgg1eb09dz7w",
      "title": "",
      "text": "systems-check memory guard / swap item",
      "model": "Opus",
@@ -46129,11 +46129,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T06:49:17.476Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxgvx1a05p14j",
+     "uid": "st-mvxgg1eb0amj99",
      "title": "",
      "text": "tests, full check block, screenshots, report, push",
      "model": "Opus",
@@ -46151,7 +46151,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:34:28.473Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T07:21:33.871Z"
     }
    ],
    "profiles": [
@@ -46162,28 +46162,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-01T06:34:28.472Z",
-    "builtAt": "2026-11-01T07:21:35.917Z",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mvxgvx1a01v2dc": "2026-11-01T06:34:28.473Z",
-     "st-mvxgvx1a02asxb": "2026-11-01T06:34:28.473Z",
-     "st-mvxgvx1a03y678": "2026-11-01T06:34:28.473Z",
-     "st-mvxgvx1a041par": "2026-11-01T06:34:28.473Z",
-     "st-mvxgvx1a05p14j": "2026-11-01T06:34:28.473Z"
-    }
-   },
+   "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-01T06:46:49.301Z",
+   "defaultAt": "2026-11-01T06:34:28.473Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -46213,7 +46197,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxgvx1a06nabk",
+     "uid": "st-mvxgvlsd01fcyc",
      "title": "",
      "text": "job-type@1 asset type: rules, both validators, schema, starters, check",
      "model": "Opus",
@@ -46231,11 +46215,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxgvx1a07yrza",
+     "uid": "st-mvxgvlsd0293k0",
      "title": "",
      "text": "Hire the crew: six agents, skills, notes",
      "model": "Opus",
@@ -46253,11 +46237,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxgvx1a084i9x",
+     "uid": "st-mvxgvlsd03awaj",
      "title": "",
      "text": "Router: agent-job.mjs (owner, duty, budget, brief, headless launch, run recorded), unassigned + hire",
      "model": "Opus",
@@ -46275,11 +46259,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxgvx1a094y74",
+     "uid": "st-mvxgvlsd04j995",
      "title": "",
      "text": "Breakroom Jobs view + card jobs + console button + server routes",
      "model": "Opus",
@@ -46297,11 +46281,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T07:15:42.109Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxgvx1a0a8lwt",
+     "uid": "st-mvxgvlsd055pzx",
      "title": "",
      "text": "Tests, RULES section, install_steps Part J, screenshots, report",
      "model": "Opus",
@@ -46319,7 +46303,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:45:35.924Z",
-     "updatedAt": "2026-11-01T07:25:29.807Z"
+     "updatedAt": "2026-11-01T07:21:10.015Z"
     }
    ],
    "profiles": [
@@ -46330,7 +46314,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -46343,15 +46327,15 @@
     "builtAt": "2026-11-01T07:20:52.680Z",
     "prefixSteps": true,
     "stepAt": {
-     "st-mvxgvx1a06nabk": "2026-11-01T06:45:35.924Z",
-     "st-mvxgvx1a07yrza": "2026-11-01T06:45:35.924Z",
-     "st-mvxgvx1a084i9x": "2026-11-01T06:45:35.924Z",
-     "st-mvxgvx1a094y74": "2026-11-01T06:45:35.924Z",
-     "st-mvxgvx1a0a8lwt": "2026-11-01T06:45:35.924Z"
+     "st-mvxgvlsd01fcyc": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd0293k0": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd03awaj": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd04j995": "2026-11-01T06:45:35.924Z",
+     "st-mvxgvlsd055pzx": "2026-11-01T06:45:35.924Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-01T06:46:49.301Z",
+   "defaultAt": "2026-11-01T06:46:34.730Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -46360,23 +46344,23 @@
   {
    "id": "amberx-walkthrough",
    "title": "AmberX app walkthrough video (narrated, chapters, player in the app, one-command re-record)",
-   "category": "AmberX",
+   "category": "",
    "detail": "Brett Nov 1 2026: a narrated walkthrough of the AmberX app like the one on demo.amberxai.com, made with the existing tour recorder tooling (Playwright + Piper + ffmpeg), seeded demo data, phone layout, player with chapters in AmberX (Home, app menu, Help), media on the server behind the wall, one command + console button to re-record. Profile: refactor (active; headless session, no card possible).",
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
-   "branch": "claude/amberx-walkthrough",
+   "pendingId": "amberx-walkthrough",
+   "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T06:47:21.596Z",
-   "updatedAt": "2026-11-01T07:27:15.053Z",
+   "updatedAt": "2026-11-01T07:28:13.050Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxgwlya08xvw5",
+     "uid": "st-mvxgz2hi015wpg",
      "title": "",
      "text": "Recon: how the demo walkthrough + tour recorder were made; write it down",
      "model": "Opus",
@@ -46390,15 +46374,15 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:11.781Z",
+     "doneAt": "2026-11-01T07:28:11.709Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T07:27:11.917Z"
+     "updatedAt": "2026-11-01T07:28:11.743Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxgwlya094la5",
+     "uid": "st-mvxgz2hi02i512",
      "title": "",
      "text": "Walkthrough script (chapters, Amber narration, highlights) + walkthrough-video@1 validator",
      "model": "Opus",
@@ -46412,15 +46396,15 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:12.608Z",
+     "doneAt": "2026-11-01T07:28:12.065Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T07:27:12.648Z"
+     "updatedAt": "2026-11-01T07:28:12.099Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxgwlya0am9uu",
+     "uid": "st-mvxgz2hi03cx64",
      "title": "",
      "text": "Recorder: seeded demo data via request routing, highlights, masking, TTS, assemble",
      "model": "Opus",
@@ -46434,15 +46418,15 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:13.236Z",
+     "doneAt": "2026-11-01T07:28:12.400Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T07:27:13.302Z"
+     "updatedAt": "2026-11-01T07:28:12.434Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxgwlya0bjixd",
+     "uid": "st-mvxgz2hi04zss1",
      "title": "",
      "text": "Record the live app at 412x915, publish behind the wall",
      "model": "Opus",
@@ -46460,11 +46444,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:47:21.597Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxgwlya0cnnbt",
+     "uid": "st-mvxgz2hi05nnds",
      "title": "",
      "text": "Player in AmberX: Home entry, app menu, Help",
      "model": "Opus",
@@ -46478,15 +46462,15 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:13.963Z",
+     "doneAt": "2026-11-01T07:28:12.713Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T07:27:14.081Z"
+     "updatedAt": "2026-11-01T07:28:12.743Z"
     },
     {
      "id": "s6",
-     "uid": "st-mvxgwlya0dd9jp",
+     "uid": "st-mvxgz2hi06n9o0",
      "title": "",
      "text": "Rebuild command + console button; tests (entry, player, script, secrets scan)",
      "model": "Opus",
@@ -46500,15 +46484,15 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-01T07:27:15.053Z",
+     "doneAt": "2026-11-01T07:28:13.050Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T07:27:15.131Z"
+     "updatedAt": "2026-11-01T07:28:13.082Z"
     },
     {
      "id": "s7",
-     "uid": "st-mvxgwlya0e5f7i",
+     "uid": "st-mvxgz2hi07r0cp",
      "title": "",
      "text": "Checks, screenshots, report, merge main, push",
      "model": "Opus",
@@ -46526,7 +46510,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:47:21.597Z",
-     "updatedAt": "2026-11-01T06:47:21.597Z"
+     "updatedAt": "2026-11-01T06:49:16.318Z"
     }
    ],
    "profiles": [
@@ -46540,172 +46524,27 @@
    "rev": 6,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
-   "queue": null,
-   "defaultAt": "2026-11-01T06:47:21.597Z",
-   "rearranged": false,
-   "removedSteps": [],
-   "legacy": [],
-   "copies": []
-  },
-  {
-   "id": "github-app",
-   "title": "GitHub App for the whole stack: one-click setup, tokens that never die",
-   "category": "",
-   "detail": "",
-   "status": "pending",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "github-app",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-11-01T07:17:49.320Z",
-   "updatedAt": "2026-11-01T07:17:49.320Z",
-   "builtAt": "",
-   "notes": [],
-   "approvals": [],
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mvxi9nby01uodg",
-     "title": "",
-     "text": "Token broker (framework/cli/github-app.mjs + github-token.mjs): manifest, conversion, JWT, installation + user tokens, cache, lock",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mvxi9nby02k61e",
-     "title": "",
-     "text": "git credential helper + gh wrapper + repo create",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mvxi9nby03c7nc",
-     "title": "",
-     "text": "Console plugin github-app: routes, keeper, health checks, settings UI",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mvxi9nby04i8bd",
-     "title": "",
-     "text": "Point callers at the broker (key check on old token, push-banner probe)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mvxi9nby05hqgt",
-     "title": "",
-     "text": "Tests, screenshots, install_steps, report, push",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-01T07:17:49.321Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
-    }
-   ],
-   "profiles": [
-    "refactor"
-   ],
-   "order": {
-    "refactor": 48
-   },
-   "kind": "build",
-   "planRef": "",
-   "rev": 1,
-   "deleted": false,
-   "deletedAt": "",
    "pending": {
     "model": "Opus",
     "status": "pending",
     "estimate": "",
     "source": "console",
     "planId": "",
-    "createdAt": "2026-11-01T07:17:49.320Z",
+    "createdAt": "2026-11-01T06:47:21.596Z",
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mvxi9nby01uodg": "2026-11-01T07:17:49.321Z",
-     "st-mvxi9nby02k61e": "2026-11-01T07:17:49.321Z",
-     "st-mvxi9nby03c7nc": "2026-11-01T07:17:49.321Z",
-     "st-mvxi9nby04i8bd": "2026-11-01T07:17:49.321Z",
-     "st-mvxi9nby05hqgt": "2026-11-01T07:17:49.321Z"
+     "st-mvxgz2hi015wpg": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi02i512": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi03cx64": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi04zss1": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi05nnds": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi06n9o0": "2026-11-01T06:47:21.597Z",
+     "st-mvxgz2hi07r0cp": "2026-11-01T06:47:21.597Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-01T07:25:29.538Z",
+   "defaultAt": "2026-11-01T06:49:16.318Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -46730,7 +46569,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mvxi9nby06bofn",
+     "uid": "st-mvxi42qo01gcfe",
      "title": "",
      "text": "session@1 schema, JS validator, redaction, chain hash, fixtures + check",
      "model": "Opus",
@@ -46748,11 +46587,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s2",
-     "uid": "st-mvxi9nby075vno",
+     "uid": "st-mvxi42qo02qg6m",
      "title": "",
      "text": "SQLite+FTS5 store with upsert, versions, seen badges",
      "model": "Opus",
@@ -46770,11 +46609,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s3",
-     "uid": "st-mvxi9nby08cpas",
+     "uid": "st-mvxi42qo0363sx",
      "title": "",
      "text": "Ingesters: claude.ai export zip, Claude Code JSONL incremental, build logs, hub drop",
      "model": "Opus",
@@ -46792,11 +46631,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s4",
-     "uid": "st-mvxi9nby09l1a2",
+     "uid": "st-mvxi42qo04ngtp",
      "title": "",
      "text": "Server routes + sync timer + check for updates",
      "model": "Opus",
@@ -46814,11 +46653,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s5",
-     "uid": "st-mvxi9nby0advju",
+     "uid": "st-mvxi42qo05j01u",
      "title": "",
      "text": "Audio: Piper setup, two-voice mixer, mp3 + chapters, cloud providers, background jobs",
      "model": "Opus",
@@ -46836,11 +46675,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s6",
-     "uid": "st-mvxi9nby0bp8z7",
+     "uid": "st-mvxi42qo06m5ro",
      "title": "",
      "text": "Web viewer: DataGrid list, search, bubbles, export, audio player, settings",
      "model": "Opus",
@@ -46858,11 +46697,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s7",
-     "uid": "st-mvxi9nby0c9ix4",
+     "uid": "st-mvxi42qo07cehx",
      "title": "",
      "text": "Tests, lifecycle, deploy mounts, AmberX entry, RULES line, install steps",
      "model": "Opus",
@@ -46880,11 +46719,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     },
     {
      "id": "s8",
-     "uid": "st-mvxi9nby0dp3w0",
+     "uid": "st-mvxi42qo088yyg",
      "title": "",
      "text": "Checks, screenshots to UI Review, report, merge main, push",
      "model": "Opus",
@@ -46902,7 +46741,173 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-01T06:50:37.080Z",
-     "updatedAt": "2026-11-01T07:25:29.538Z"
+     "updatedAt": "2026-11-01T07:21:09.522Z"
+    }
+   ],
+   "profiles": [
+    "refactor"
+   ],
+   "order": {
+    "refactor": 48
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-01T06:50:37.079Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mvxi42qo01gcfe": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo02qg6m": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo0363sx": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo04ngtp": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo05j01u": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo06m5ro": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo07cehx": "2026-11-01T06:50:37.080Z",
+     "st-mvxi42qo088yyg": "2026-11-01T06:50:37.080Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-01T07:21:09.522Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "github-app",
+   "title": "GitHub App for the whole stack: one-click setup, tokens that never die",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "github-app",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-01T07:17:49.320Z",
+   "updatedAt": "2026-11-01T07:17:49.320Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mvxi42qp094n9t",
+     "title": "",
+     "text": "Token broker (framework/cli/github-app.mjs + github-token.mjs): manifest, conversion, JWT, installation + user tokens, cache, lock",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-01T07:17:49.321Z",
+     "updatedAt": "2026-11-01T07:21:09.522Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mvxi42qp0a6j49",
+     "title": "",
+     "text": "git credential helper + gh wrapper + repo create",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-01T07:17:49.321Z",
+     "updatedAt": "2026-11-01T07:21:09.522Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mvxi42qp0bnbf1",
+     "title": "",
+     "text": "Console plugin github-app: routes, keeper, health checks, settings UI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-01T07:17:49.321Z",
+     "updatedAt": "2026-11-01T07:21:09.522Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mvxi42qp0c0sjt",
+     "title": "",
+     "text": "Point callers at the broker (key check on old token, push-banner probe)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-01T07:17:49.321Z",
+     "updatedAt": "2026-11-01T07:21:09.522Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mvxi42qp0d9vqz",
+     "title": "",
+     "text": "Tests, screenshots, install_steps, report, push",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-01T07:17:49.321Z",
+     "updatedAt": "2026-11-01T07:21:09.522Z"
     }
    ],
    "profiles": [
@@ -46922,22 +46927,19 @@
     "estimate": "",
     "source": "console",
     "planId": "",
-    "createdAt": "2026-11-01T06:50:37.079Z",
+    "createdAt": "2026-11-01T07:17:49.320Z",
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mvxi9nby06bofn": "2026-11-01T06:50:37.080Z",
-     "st-mvxi9nby075vno": "2026-11-01T06:50:37.080Z",
-     "st-mvxi9nby08cpas": "2026-11-01T06:50:37.080Z",
-     "st-mvxi9nby09l1a2": "2026-11-01T06:50:37.080Z",
-     "st-mvxi9nby0advju": "2026-11-01T06:50:37.080Z",
-     "st-mvxi9nby0bp8z7": "2026-11-01T06:50:37.080Z",
-     "st-mvxi9nby0c9ix4": "2026-11-01T06:50:37.080Z",
-     "st-mvxi9nby0dp3w0": "2026-11-01T06:50:37.080Z"
+     "st-mvxi42qp094n9t": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0a6j49": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0bnbf1": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0c0sjt": "2026-11-01T07:17:49.321Z",
+     "st-mvxi42qp0d9vqz": "2026-11-01T07:17:49.321Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-01T07:25:29.538Z",
+   "defaultAt": "2026-11-01T07:21:09.522Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

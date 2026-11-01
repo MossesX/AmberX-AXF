@@ -29,6 +29,7 @@ import * as core from './web/swarm-core.mjs';
 import { orchestratorPath } from '../../../../framework/cli/persist.mjs';
 import { spawnSync } from 'node:child_process';
 import { runJob, worktreeFor } from './runner.mjs';
+import { withSlot } from '../../../../framework/cli/agent-slots.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -43,10 +44,20 @@ export function writeJson(f, data) {
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(data, null, 1)}\n`); renameSync(tmp, f);
 }
 
-export function loadRoster() { return core.normRoster(readJson(join(HERE, 'agents/roster.json'), { agents: [] })); }
+/** The roster file plus agents hired from the Breakroom (one-tap hires for job types, kept in the swarm state). */
+export function loadRoster() {
+  const r = core.normRoster(readJson(join(HERE, 'agents/roster.json'), { agents: [] }));
+  const hired = readJson(stateFile(), {}).hired;
+  if (Array.isArray(hired)) for (const a of hired.map(core.normAgent)) if (a.id && !r.agents.some((x) => x.id === a.id)) r.agents.push(a);
+  return r;
+}
 export function loadSkills() {
   const dir = join(HERE, 'agents/skills');
-  return Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith('.md')).map((f) => { const s = core.parseSkill(readFileSync(join(dir, f), 'utf8')); return [s.id, s]; }));
+  const files = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith('.md')).map((f) => { const s = core.parseSkill(readFileSync(join(dir, f), 'utf8')); return [s.id, s]; }));
+  // skill pages of Breakroom hires (made from their job type) live in the swarm state
+  const hs = readJson(stateFile(), {}).hiredSkills ?? {};
+  for (const [k, v] of Object.entries(hs)) if (!files[k] && typeof v?.body === 'string') files[k] = { id: k, title: String(v.title ?? k), schema: 'agent-skill@1', body: v.body.slice(0, core.SKILL_MAX_CHARS), lines: v.body.split('\n').length, chars: Math.min(v.body.length, core.SKILL_MAX_CHARS) };
+  return files;
 }
 export function loadTracker() { const f = trackerFile(); return existsSync(f) ? readJson(f, { builds: [] }) : { builds: [] }; }
 export function findBuilds(ids) {
@@ -107,7 +118,11 @@ export async function run(buildId, ref, opts = {}) {
   const wt = opts.cwd ? { path: opts.cwd, branch: '' } : worktreeFor(repoRoot(), dataDir(), job, opts.base);
   const roster = loadRoster();
   say([core.assignLine(job, roster), ...core.leaseLines({ jobs: [job, ...plan([buildId]).jobs.filter((x) => job.after.includes(x.id))] }, roster).filter((l) => l.jobId === job.id)]);
-  const rec = await runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
+  // agent-slots@1: the swarm shares the VPS-wide cap with every headless session; over it, the agent waits for a desk.
+  const go = () => runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
+  const rec = process.env.AXF_SLOTS === 'off' ? await go()
+    : await withSlot({ name: `swarm-${job.id}`, kind: 'swarm', agent: agent.id, priority: opts.priority, by: 'agent-swarm',
+      onQueued: (r) => say([{ from: core.BOSS.id, kind: 'status', text: `${agent.name} is waiting for a desk (position ${r.position} in the queue, ${r.used}/${r.cap} running).` }]) }, go);
   chatAfterRun(rec, roster);
   const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
   const st = loadState(); const as = st.agents[agent.id];

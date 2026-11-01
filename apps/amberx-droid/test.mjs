@@ -1172,7 +1172,7 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   // The wiring: every reply goes through the gate, holds the mic, and hands-free drops its own echo.
   const vui = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
   ok(/shouldSpeak\(gate, text/.test(vui) && /holdMic: true/.test(vui), 'voice: say() goes through the gate and holds the mic');
-  ok((vui.match(/heardEcho\(/g) ?? []).length >= 2, 'voice: wake + heard events drop AmberX\'s own voice');
+  ok(/heardEcho\(text\)/.test(vui) && /isEcho\(ctx\.gate, text/.test(readFileSync(new URL('./src/plugins/voice/web/wakeflow.ts', import.meta.url), 'utf8')) && /wakeAction\(e, \{/.test(vui), 'voice: wake + heard events drop AmberX\'s own voice');
   ok((vui.match(/native\.speak\(/g) ?? []).length === 1, 'voice: say() is the only place that speaks');
   const dui = readFileSync(new URL('./src/plugins/dictation/web/index.tsx', import.meta.url), 'utf8');
   ok(!/native\.speak\(/.test(dui) && /heardEcho\(/.test(dui), 'dictation: speaks through the gate and never dictates its own reply');
@@ -1237,6 +1237,208 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   ok(/rt\.actions\.get\('walkthrough\.open'\)/.test(home) && /Watch the walkthrough/.test(home), 'walkthrough: Home shows the card when the plugin is there');
   const css = readFileSync(new URL('./src/plugins/walkthrough/web/walkthrough.css', import.meta.url), 'utf8');
   ok(!/#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b(?![^{]*@media)/i.test(css.replace(/@media[^{]*\{/g, '').replace(/999px/g, '')), 'walkthrough: stylesheet uses theme tokens only');
+}
+
+/* ---------------------------------------------------------------- one listener per event (Nov 1 2026: "Note saved" on a loop, Chrome dinging) */
+{
+  const L = await import('./src/listeners.ts');
+  const sg = await import('./src/plugins/voice/web/speechgate.ts');
+  const wf = await import('./src/plugins/voice/web/wakeflow.ts');
+  const notes = await import('./src/plugins/notes/web/core.ts');
+  const java = (f) => readFileSync(new URL(`./android/app/src/main/java/ai/amberx/droid/${f}`, import.meta.url), 'utf8');
+  const src = (f) => readFileSync(new URL(`./src/${f}`, import.meta.url), 'utf8');
+  const WAKE = ['hey amberx', 'okay amberx'];
+
+  // What the phone's recognizer heard tonight while AmberX said "Note saved to Inbox." (hub notes, Nov 1, 125 saves).
+  const HEARD_TONIGHT = ['no save ten bucks', 'no ten bucks', 'no safety inbox', 'note save ten bucks', 'no safety bucks', 'tonight and save ten bucks',
+    'tonight and saved inbox', 'q might and save ten bucks', 'no saved ten bucks', 'no save bucks', 'no safety'];
+
+  /** The phone, simulated: AmberX says the notes reply for every save; the mic hears a mis-heard copy `lag` ms after it
+   * stops talking (always armed, no wake phrase), and the page decides what to do with it, `rounds` times. */
+  const phone = (rounds, lag) => {
+    const gate = sg.newGate();
+    const handled = new L.HandledIds(L.memoryStore(), 'h');
+    const store = notes.emptyStore();
+    let now = 1_000_000, spoken = 0, saved = 0, n = 0;
+    const sayIt = (text, opts) => { if (sg.shouldSpeak(gate, text, now, opts).speak) { spoken += 1; sg.markSpeaking(gate, text, now); now += sg.speechMs(text); sg.markDone(gate, now); } };
+    // Brett says one note, on purpose, with the wake phrase.
+    const first = wf.wakeAction({ phrase: '', text: 'hey amberx note buy milk', id: 'w0', at: now }, { gate, handled, now, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+    if (first.do === 'handle') { const i = notes.parseIntent(first.text); const r = notes.applyIntent(store, i, { now: new Date(now).toISOString() }); saved += 1; sayIt(r.say, { change: r.changed }); }
+    // The mic only hears AmberX after AmberX spoke: each round is the echo of the last thing it said.
+    let last = -1;
+    for (let k = 0; k < rounds; k++) {
+      if (spoken === last) break; // it said nothing: no echo, the loop is over
+      last = spoken;
+      now += lag;
+      const heard = HEARD_TONIGHT[k % HEARD_TONIGHT.length];
+      const a = wf.wakeAction({ phrase: '', text: heard, id: `w${++n}`, at: now }, { gate, handled, now, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+      if (a.do !== 'handle') { now += 3000; continue; }
+      // The AI notes parser turns any sentence into a note (that is how "no save ten bucks" became one): it only gets
+      // sentences addressed to AmberX; unprompted ones reach the local parser and the save-loop breaker.
+      const i = notes.parseIntent(a.text) ?? (a.armed ? null : { action: 'add', kind: 'note', text: a.text });
+      if (!i || (a.armed && !sg.armedSaveAllowed(gate, now))) { now += 3000; continue; }
+      const r = notes.applyIntent(store, i, { now: new Date(now).toISOString() });
+      saved += 1;
+      if (a.armed) sg.noteArmedSave(gate, now);
+      sayIt(r.say, { change: r.changed });
+    }
+    return { spoken, saved };
+  };
+  const loop = phone(40, 1200);
+  eq(loop, { spoken: 1, saved: 1 }, 'note saved loop: one save by voice = exactly one "Note saved", its echo (40 mis-heard copies) saves nothing');
+  const late = phone(40, 3500);
+  eq(late.saved, 1, 'note saved loop: echoes 3.5 s after it talks still save nothing');
+  // Even an echo the filters can't catch (heard long after) stops: the loop breaker pauses unprompted saves after 3.
+  {
+    const g = sg.newGate();
+    let paused = false;
+    for (let k = 0; k < 3; k++) paused = sg.noteArmedSave(g, 10_000 + k * 6000);
+    ok(paused && !sg.armedSaveAllowed(g, 30_000) && sg.armedSaveAllowed(g, 30_000 + sg.SAVE_PAUSE_MS), 'note saved loop: three unprompted saves in a minute pause unprompted saves for two minutes');
+    const h = sg.newGate();
+    let said = 0;
+    for (let k = 0; k < 6; k++) { const t = k * 7000; if (sg.shouldSpeak(h, 'Note saved to Inbox.', t, { change: true }).speak) { said += 1; sg.markSpeaking(h, 'Note saved to Inbox.', t); sg.markDone(h, t + 1500); } }
+    eq(said, 2, 'loop guard: the same reply said twice in a minute is not said a third time, even as a change');
+    ok(sg.shouldSpeak(h, 'Note saved to Inbox.', 40_000, { asked: true }).speak, 'loop guard: an answer to a question is still said');
+  }
+  for (const t of ['no save ten bucks', 'note save ten bucks', 'no safety inbox', 'tonight and saved inbox']) {
+    const g = sg.newGate(); sg.markSpeaking(g, 'Note saved to Inbox.', 0); sg.markDone(g, 1500);
+    ok(sg.isEcho(g, t, 9000), `echo: "${t}" (mis-heard "Note saved to Inbox.") is AmberX's own voice`);
+  }
+  {
+    const g = sg.newGate(); sg.markSpeaking(g, 'Note saved to Inbox.', 0); sg.markDone(g, 1500);
+    ok(sg.isEcho(g, 'no ten bucks', 4000, { armed: true }) && sg.isEcho(g, 'safety', 5000, { armed: true }), 'echo: unprompted words within 4 s of AmberX talking are its own voice');
+    ok(!sg.isEcho(g, 'open approvals', 9000) && !sg.isEcho(g, 'add a todo call mom', 9000) && !sg.isEcho(g, 'whats waiting', 9000), 'echo: real commands after it are still heard');
+    ok(!sg.isEcho(g, 'yes', 2500), 'echo: a short answer to a question is heard');
+  }
+
+  // Open / resume ×10 speaks nothing: events handed over from before the page loaded are stale or already handled.
+  {
+    const store = L.memoryStore();
+    let spoken = 0;
+    const retained = [{ phrase: '', text: 'note save ten bucks', id: 'w-old-1', at: 1_000 }, { phrase: '', text: 'no safety inbox', id: 'w-old-2', at: 2_000 }];
+    for (let open = 0; open < 10; open++) {
+      const gate = sg.newGate(); // a fresh page every open
+      const handled = new L.HandledIds(store, 'amberx.voice.handled');
+      const now = 60_000 + open * 30_000;
+      for (const e of retained) { const a = wf.wakeAction(e, { gate, handled, now, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }); if (a.do !== 'ignore') spoken += 1; }
+    }
+    eq(spoken, 0, 'open/resume ×10: retained or replayed wake sentences run nothing and speak nothing');
+    const handled = new L.HandledIds(store, 'amberx.voice.handled');
+    const gate = sg.newGate();
+    const e = { phrase: 'hey amberx', text: 'hey amberx whats waiting', id: 'w-new', at: 500_000 };
+    eq(wf.wakeAction(e, { gate, handled, now: 501_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }).do, 'handle', 'a fresh wake hit runs');
+    eq(wf.wakeAction(e, { gate, handled: new L.HandledIds(store, 'amberx.voice.handled'), now: 502_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }), { do: 'ignore', why: 'replayed' }, 'the same wake hit again (reopen, reconnect) is a replay');
+    eq(wf.wakeAction({ phrase: '', text: 'open approvals', id: 'x', at: 0 }, { gate, handled, now: 30_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }).why, 'stale', 'a wake hit older than 20 s is stale');
+    eq(wf.wakeAction({ phrase: '', text: 'open approvals', id: 'y', at: 30_000 }, { gate, handled, now: 30_100, owner: false, waiting: false, busy: false, wake: WAKE, alwaysArmed: true }).why, 'not-owner', 'a tab that is not the device owner stays silent');
+    const armed = wf.wakeAction({ phrase: '', text: 'buy milk tomorrow', id: 'z1', at: 40_000 }, { gate, handled, now: 40_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+    ok(armed.do === 'handle' && armed.armed === true, 'always armed, no wake phrase: unprompted (no AI notes, no spoken "don\'t know")');
+    const addressed = wf.wakeAction({ phrase: '', text: 'hey amberx buy milk tomorrow', id: 'z2', at: 40_000 }, { gate, handled, now: 40_000, owner: true, waiting: false, busy: false, wake: WAKE, alwaysArmed: true });
+    ok(addressed.do === 'handle' && addressed.armed === false, 'with the wake phrase it is addressed to AmberX');
+    // Replayed SSE / hub events after a reconnect are silent: the same ids again = replays.
+    const sse = new L.HandledIds(L.memoryStore(), 'sse');
+    const ids = ['e1', 'e2', 'e3'];
+    const firstPass = ids.filter((id) => L.eventVerdict({ id, at: 100 }, sse, 200).run).length;
+    const replay = ids.filter((id) => L.eventVerdict({ id, at: 100 }, sse, 300).run).length;
+    eq([firstPass, replay], [3, 0], 'replayed events after a reconnect are silent');
+  }
+
+  // Listeners count stays 1 after 20 resume cycles.
+  {
+    const live = new Map();
+    const add = (ev) => { live.set(ev, (live.get(ev) ?? 0) + 1); return { remove: () => live.set(ev, live.get(ev) - 1) }; };
+    const subs = new L.Subscriptions();
+    for (let i = 0; i < 20; i++) for (const ev of ['wake', 'heard', 'spoken', 'level', 'monitor', 'voiceSettings']) subs.bind(ev, () => add(ev));
+    await new Promise((r) => setTimeout(r, 0));
+    eq([...live.values()], [1, 1, 1, 1, 1, 1], 'listeners: one per event after 20 register / resume cycles');
+    subs.clear(); await new Promise((r) => setTimeout(r, 0));
+    eq([...live.values()].reduce((a, b) => a + b, 0), 0, 'listeners: all removed on clear');
+    const voiceUi = src('plugins/voice/web/index.tsx');
+    ok(!/void native\.addListener\(/.test(voiceUi) && /nativeSubs\.bind\('wake'/.test(voiceUi), 'voice: every native listener is bound by key (no stacking)');
+  }
+
+  // Two tabs + the app open = one ding per new approval.
+  {
+    const bus = new Set();
+    const channel = () => { const fns = new Set(); const ch = { post: (m) => bus.forEach((c) => c !== ch && c.fns.forEach((f) => f(m))), onMessage: (f) => { fns.add(f); return () => fns.delete(f); }, close: () => bus.delete(ch), fns }; bus.add(ch); return ch; };
+    let t = 0;
+    const a = L.createOwner({ id: 'tab-a', channel: channel(), now: () => t });
+    const b = L.createOwner({ id: 'tab-b', channel: channel(), now: () => t });
+    for (let i = 0; i < 4; i++) { t += L.HEARTBEAT_MS; a.tick(t); b.tick(t); }
+    eq([a.isOwner(), b.isOwner()].filter(Boolean).length, 1, 'owner: two tabs elect exactly one owner');
+    const c = L.createOwner({ id: 'tab-0', channel: channel(), now: () => t });
+    for (let i = 0; i < 4; i++) { t += L.HEARTBEAT_MS; a.tick(t); b.tick(t); c.tick(t); }
+    eq([a.isOwner(), b.isOwner(), c.isOwner()].filter(Boolean).length, 1, 'owner: a third tab opening (even with a lower id) does not make two owners');
+    const was = [a, b, c].find((x) => x.isOwner());
+    was.close();
+    for (let i = 0; i < 5; i++) { t += L.HEARTBEAT_MS; for (const x of [a, b, c]) if (x !== was) x.tick(t); }
+    eq([a, b, c].filter((x) => x !== was && x.isOwner()).length, 1, 'owner: when the owner tab closes another takes over');
+    const solo = L.createOwner({ id: 'webview' });
+    ok(solo.isOwner(), 'owner: the Android app\'s web view (alone) owns');
+
+    // The phone: the AmberX app (rings natively) + two Chrome tabs (sounds off in a phone browser by default).
+    const ua = 'Mozilla/5.0 (Linux; Android 16; SM-S948U) Chrome/141 Mobile';
+    ok(L.deviceSoundsDefault({ native: true, userAgent: ua }) && !L.deviceSoundsDefault({ native: false, userAgent: ua }) && L.deviceSoundsDefault({ native: false, userAgent: 'Mozilla/5.0 (Windows NT 10.0) Chrome/141' }),
+      'browser sounds: off by default in a phone browser (the app rings there), on in a desktop browser and in the app');
+    const app = { gate: new L.DingGate(L.memoryStore()), allowed: () => L.soundAllowed({ quiet: false, owner: true, deviceSounds: true }) };
+    const chromeStore = L.memoryStore();
+    const tabs = [a, b].map((o) => ({ gate: new L.DingGate(chromeStore), allowed: () => L.soundAllowed({ quiet: false, owner: o.isOwner(), deviceSounds: L.deviceSoundsDefault({ native: false, userAgent: ua }) }) }));
+    let dings = 0;
+    const read = (ids, now) => { for (const x of [app, ...tabs]) if (x.gate.read(ids, now, x.allowed()).ding) dings += 1; };
+    read([], 0); // opening: all clear
+    read([], 5_000); read([], 10_000); // refreshes / heartbeats with nothing waiting
+    eq(dings, 0, 'dings: "All clear", refreshes and heartbeats never ding');
+    read(['ap-1'], 20_000);
+    eq(dings, 1, 'dings: one new approval with the app + two phone tabs open = one ding');
+    read(['ap-1', 'ap-2'], 24_000);
+    eq(dings, 1, 'dings: rate-limited (a second new one within 8 s stays silent)');
+    read(['ap-1', 'ap-2'], 30_000); read(['ap-1', 'ap-2'], 40_000);
+    eq(dings, 1, 'dings: the same approvals on later reads never ding again');
+    read(['ap-1', 'ap-2', 'ap-3'], 60_000);
+    eq(dings, 2, 'dings: the next new approval after the gap dings once');
+    const reopened = new L.DingGate(chromeStore);
+    reopened.read(['ap-1', 'ap-2', 'ap-3'], 70_000, true);
+    eq(reopened.read(['ap-1', 'ap-2', 'ap-3'], 80_000, true).ding, false, 'dings: a reopened tab never rings what was already seen');
+    ok(!L.soundAllowed({ quiet: true, owner: true, deviceSounds: true }), 'Quiet: nothing may make a sound');
+  }
+
+  // The browser recognizer: no ding loop.
+  {
+    eq(L.restartDelay(0), 250, 'browser hands-free: a normal end restarts at once');
+    eq([1, 2, 3, 4].map(L.restartDelay), [1000, 2000, 4000, 8000], 'browser hands-free: quick ends back off');
+    eq(L.restartDelay(13), null, 'browser hands-free: gives up when the mic stays busy');
+    let starts = 0, wait = 0, quick = 0;
+    while (wait < 60_000) { starts += 1; quick += 1; const d = L.restartDelay(quick); if (d === null) break; wait += d; }
+    ok(starts <= 8, `browser hands-free: a minute with the mic held elsewhere starts it ${starts} times (was ~600: a ding every 100 ms)`);
+    ok(L.FATAL_RECOGNITION.includes('not-allowed') && L.FATAL_RECOGNITION.includes('audio-capture'), 'browser hands-free: a refused or busy mic stops it');
+    const nat = src('native.ts');
+    ok(/restartDelay\(quick\)/.test(nat) && !/rec\.onend = \(\) => \{ if \(webVoice\.rec === rec && document\.visibilityState === 'visible'\) \{ try \{ rec\.start\(\)/.test(nat), 'browser hands-free: no instant restart left');
+    const voiceUi = src('plugins/voice/web/index.tsx');
+    ok(/!isNative\(\) && \(!deviceHandsFree\(\) \|\| !isSoundOwner\(\)\)\) cfg = \{ \.\.\.cfg, handsFree: false \}/.test(voiceUi), 'browser hands-free: only the owner tab, only when switched on for this browser (mic released otherwise)');
+    ok(/if \(!mayMakeSound\(\)\) return;/.test(voiceUi), 'voice: say() checks Quiet and the owner');
+  }
+
+  // Mic released when hands-free is off; Quiet; native wiring.
+  {
+    const nat = src('native.ts');
+    ok(/if \(!cfg\.handsFree \|\| !Recognition\) return;/.test(nat) && /webVoiceStop\(\);\n  webVoice\.cfg = cfg;/.test(nat), 'mic: browser hands-free off = recognizer and mic stream released');
+    const ws = java('WatchService.java');
+    ok(/boolean on = prefs\(this\)\.getBoolean\("on", false\) \|\| handsFree\(this\);\s*if \(!on \|\| !wantsMic\(\) \|\| !micGranted\(\)\) \{ stopListening\(\); return; \}/.test(ws), 'mic: Android lets go of the microphone when hands-free is off');
+    const sound = src('sound.tsx');
+    ok(/key: K\.quiet, label: 'Quiet', kind: 'toggle', default: false/.test(sound), 'Quiet: a switch in Settings → Sound and microphone, off by default');
+    ok(/native\.quiet\(\{ quiet: true \}\)/.test(sound) && /native\.stopSpeaking\(\)/.test(sound) && /native\.vetoAlarmStop\(\)/.test(sound), 'Quiet: stops speech and the alarm at once');
+    ok(/data-amberx-mic-holder/.test(sound) && /Hands-free \(AmberX\\'s listening service\)/.test(sound), 'Settings shows who holds the microphone');
+    ok(src('App.tsx').includes('soundLibrary'), 'App installs Sound and microphone');
+    const plug = java('AmberxNativePlugin.java');
+    ok(/public void quiet\(PluginCall call\)/.test(plug) && /Quiet\.on\(getContext\(\)\)\) \{ call\.resolve\(\); return; \}/.test(plug), 'android: speak says nothing while Quiet');
+    ok(/if \(Quiet\.on\(c\)\) return;/.test(java('VetoAlarm.java')), 'android: the alarm never rings while Quiet');
+    ok(/p == null \|\| !p\.hasListeners\("wake"\)/.test(plug) && /\.put\("id", eventId\(\)\)\.put\("at", System\.currentTimeMillis\(\)\)\);/.test(plug), 'android: in-app wake hits are not retained for the next page, and carry id + at');
+    const ma = java('MainActivity.java');
+    ok(/if \(state == null && !fromHistory\)/.test(ma) && /setIntent\(spent\(intent\)\)/.test(ma), 'android: the launch intent\'s wake sentence is handed over once (not on re-create or an open from Recents)');
+    ok(/EXTRA_WAKE_ID, AmberxNativePlugin\.eventId\(\)\)/.test(ws), 'android: wake hits that open the app carry an id');
+    ok(/\[SOUND_OWNER_KEY\] = api/.test(sound) && L.SOUND_OWNER_KEY === '__axfSoundOwner', 'sound-owner@1 is on globalThis for console plugins (the veto alarm asks it before ringing)');
+    const mon = src('plugins/monitor/web/index.tsx');
+    ok(/new DingGate\(deviceStore\(\), 'amberx\.monitor\.seen'\)/.test(mon), 'monitor: browser approval notices go through the ding gate');
+  }
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

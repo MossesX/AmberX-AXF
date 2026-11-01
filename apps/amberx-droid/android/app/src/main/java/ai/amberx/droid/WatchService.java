@@ -604,9 +604,11 @@ public class WatchService extends Service {
         if (overlay != null) overlay.flashWake();
         // On screen: straight to the web side, no alert, no activity start.
         if (inApp && AmberxNativePlugin.wakeInApp(phrase, text)) return;
+        // Every wake hit carries an id and a time: the page runs it once, and never a stale one (no replay on open).
         Intent open = new Intent(this, MainActivity.class)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            .putExtra(MainActivity.EXTRA_WAKE, phrase).putExtra(MainActivity.EXTRA_WAKE_TEXT, text);
+            .putExtra(MainActivity.EXTRA_WAKE, phrase).putExtra(MainActivity.EXTRA_WAKE_TEXT, text)
+            .putExtra(MainActivity.EXTRA_WAKE_ID, AmberxNativePlugin.eventId()).putExtra(MainActivity.EXTRA_WAKE_AT, System.currentTimeMillis());
         PendingIntent pi = PendingIntent.getActivity(this, 2, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         boolean command = phrase.isEmpty() || !SpeechTuning.compact(text).equals(SpeechTuning.compact(phrase));
         String what = command ? "Heard \"" + text + "\". Tap to run it." : "Heard \"" + phrase + "\". Tap to talk.";
@@ -674,6 +676,7 @@ public class WatchService extends Service {
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setPublicVersion(new NotificationCompat.Builder(this, channel).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Approval waiting").build());
         if (full) b.setCategory(NotificationCompat.CATEGORY_REMINDER);
+        if (Quiet.on(this)) b.setSilent(true); // Quiet: shown, never heard
         return b.build();
     }
 
