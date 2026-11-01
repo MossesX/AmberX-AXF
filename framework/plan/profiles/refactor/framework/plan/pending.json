@@ -2913,11 +2913,15 @@
    "title": "Agent voice plugin: agents speak + per-agent narrator console, live status light, Assistant mic",
    "detail": "Brett Oct 29 2026: Build a plugin giving agents the ability to speak, with a full powerful per-agent configuration console and every bell and whistle a narrator should have. When a voice agent is selected a live status icon lights up on the main application and the Assistant window. A microphone in the Assistant window: when selected, a tooltip notes the selected agent's name is missing permission — unless the plugin isn't installed, then it says so with links to install, or a hook to install it with the agent. Powerful microphone configuration with integrated features and settings that never conflict with other listening (AmberX notes/dictation and voice/wake). Voices: both device + cloud, with hooks to its settings in multiple places. Profile: Refactor. Model: Opus (web console plugin + AmberX native seam).",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "s1-s8 done on feat/agent-voice; PR create held on axHub (approval 45ca37d6). s9 left: CI + merge approval.",
      "at": "2026-10-30T12:06:01.970Z"
+    },
+    {
+     "text": "s9 closed by Leftovers: it was 'waiting' only on the PR approval (45ca37d6) + merge; feat/agent-voice is fully on main, so nothing waits on Brett. plugin-lifecycle check clean, test.py 37/37, test.mts 22/22.",
+     "at": "2026-11-01T02:31:46.572Z"
     }
    ],
    "subPrompts": [
@@ -2980,12 +2984,14 @@
     {
      "text": "[Opus] Lifecycle (install/uninstall/hooks), docs, checks, PR + merge approval",
      "at": "2026-10-30T11:36:24.622Z",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-01T02:31:46.110Z"
     }
    ],
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-30T12:06:02.017Z",
+   "builtAt": "2026-11-01T02:31:46.110Z",
+   "updatedAt": "2026-11-01T02:31:46.572Z",
    "source": "console"
   },
   {
@@ -3439,6 +3445,55 @@
    "createdAt": "2026-11-01T00:35:23.969Z",
    "builtAt": "2026-11-01T01:40:06.071Z",
    "updatedAt": "2026-11-01T01:40:06.584Z",
+   "source": "console"
+  },
+  {
+   "id": "amberx-walkthrough",
+   "title": "AmberX app walkthrough video (narrated, chapters, player in the app, one-command re-record)",
+   "detail": "Brett Nov 1 2026: a narrated walkthrough of the AmberX app like the one on demo.amberxai.com, made with the existing tour recorder tooling (Playwright + Piper + ffmpeg), seeded demo data, phone layout, player with chapters in AmberX (Home, app menu, Help), media on the server behind the wall, one command + console button to re-record. Profile: refactor (active; headless session, no card possible).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Recon: how the demo walkthrough + tour recorder were made; write it down",
+     "at": "2026-11-01T06:47:21.597Z",
+     "estimate": "20m"
+    },
+    {
+     "text": "[Opus] Walkthrough script (chapters, Amber narration, highlights) + walkthrough-video@1 validator",
+     "at": "2026-11-01T06:47:21.597Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Recorder: seeded demo data via request routing, highlights, masking, TTS, assemble",
+     "at": "2026-11-01T06:47:21.597Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Record the live app at 412x915, publish behind the wall",
+     "at": "2026-11-01T06:47:21.597Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Player in AmberX: Home entry, app menu, Help",
+     "at": "2026-11-01T06:47:21.597Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Rebuild command + console button; tests (entry, player, script, secrets scan)",
+     "at": "2026-11-01T06:47:21.597Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Checks, screenshots, report, merge main, push",
+     "at": "2026-11-01T06:47:21.597Z",
+     "estimate": "30m"
+    }
+   ],
+   "createdAt": "2026-11-01T06:47:21.596Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-01T06:47:21.596Z",
    "source": "console"
   }
  ]

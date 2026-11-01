@@ -17,7 +17,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Container, Icon, Section, SelectField, Switch, TextField, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Section, SelectField, Slot, Switch, TextField, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -367,6 +367,8 @@ function ActivityBanner() {
         <button type="button" data-fx-row className="axp-activity__summary" aria-expanded={s.open} onClick={() => set({ open: !s.open })}>
           <span className="axp-activity__top">
             <strong>{summary}</strong>
+            {/* one-line extras from other plugins (agent-slots: "slots 4/6 · 2 queued") */}
+            <Slot name="activity.summary" props={{ active: active.length }} />
             {active.length > 0 && Number.isFinite(oldest) && <span className="axp-activity__time">{dur(now - oldest)}</span>}
             <Icon name={s.open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
