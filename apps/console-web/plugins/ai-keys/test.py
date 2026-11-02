@@ -74,6 +74,15 @@ def refresher(refresh):
 
 
 mod.REFRESHER = refresher
+PROFILE_CALLS: list[str] = []
+
+
+def profiler(access):
+    PROFILE_CALLS.append(access)
+    return {"email": f"acct{access[-2:]}@example.com", "name": "Brett", "org": "Brett's org"}
+
+
+mod.PROFILER = profiler
 svc = lambda: plugin_services.get("axf.ai-keys@1")  # noqa: E731
 A1, A2, S1 = sorted(GOOD)[0], sorted(GOOD)[1], "sk-ant-oat01-" + "c" * 40
 
@@ -211,6 +220,33 @@ providers.key_override = lambda p: (svc().active_key(p.get("kind", "")) if svc()
 check(providers.resolve_key({"kind": "anthropic", "key": "own"}) == A1, "assistant: active key replaces the profile's key")
 check(providers.resolve_key({"kind": "openai", "key": "own"}) == "own", "assistant: other providers keep their own key")
 check(providers.resolve_key({"kind": "anthropic", "key": "own", "noKeyOverride": True}) == "own", "assistant: key tests use the key under test")
+# Several Claude accounts (Nov 2 2026): every pair shows its account email; a limit hit switches to the next account.
+rows = [k for k in c.get("/p/keys").json()["keys"] if k["kind"] == "claude-code"]
+check(rows and all(k["email"].endswith("@example.com") for k in rows), "accounts: every subscription pair shows its account email")
+acct = svc().active_account("claude-code")
+check(acct.get("email", "").endswith("@example.com") and "key" not in acct and svc().active_key("claude-code") not in json.dumps(acct), "accounts: the active account's email, never its token")
+check(mod.LIMIT_RE.search("You've hit your weekly limit · resets 7am (UTC)") and mod.LIMIT_RE.search("Claude usage limit reached")
+      and not mod.LIMIT_RE.search("connection refused"), "accounts: weekly / usage limits are recognised, other errors aren't")
+R4 = "sk-ant-ort01-r" + "v" * 39
+creds3 = {"claudeAiOauth": {"accessToken": "sk-ant-oat01-" + "w" * 40, "refreshToken": R4, "expiresAt": mod._now() - 1000}}
+r = c.post("/p/keys", json={"credentials": json.dumps(creds3), "label": "Second account"})
+check(r.status_code == 200, "accounts: a second Claude account is added")
+spare = r.json()["key"]["id"]
+was = mod._load()["active"]["claude-code"]
+check(was != spare, "accounts: a second account doesn't take over by itself")
+TAPPED = {svc().active_key("claude-code")}
+def limit_probe(kind, key, model):
+    if key in TAPPED or key in {mod._load()["keys"][k]["key"] for k in mod._load()["keys"] if k not in (spare,) and mod._load()["keys"][k]["kind"] == "claude-code"}:
+        raise RuntimeError("You've hit your weekly limit · resets 7am (UTC)")
+mod.CREDIT_PROBE = limit_probe
+r = c.post("/p/switch", json={"kind": "claude-code", "reason": "test build"}).json()
+check(r["switched"] and r["switched"]["to"] == spare and mod._load()["active"]["claude-code"] == spare, "switch: a limit hit moves to the next account that answers")
+check(mod._load()["keys"][was].get("limitedAt") and r["account"]["email"].endswith("@example.com"), "switch: the tapped account is marked and the new one's email returned")
+check(all(svc().active_key("claude-code") not in json.dumps(r) for _ in [0]), "switch: no token in the answer")
+mod.CREDIT_PROBE = lambda kind, key, model: (_ for _ in ()).throw(RuntimeError("You've hit your weekly limit"))
+r = c.post("/p/switch", json={"kind": "claude-code"}).json()
+check(r["switched"] is None and mod._load()["active"]["claude-code"] == spare, "switch: every account tapped leaves the active one alone")
+check(c.post("/p/switch", json={"kind": "nope"}).status_code == 400, "switch: unknown kind refused")
 plugin_services.withdraw("ai-keys")
 check(providers.resolve_key({"kind": "anthropic", "key": "own"}) == "own", "plugin off: the profile's own key applies")
 print(f"all {ok} checks passed")

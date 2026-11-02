@@ -26,7 +26,7 @@ interface Test { ok: boolean; at: number; ms: number; detail?: string; error?: s
 interface KeyRow {
   id: string; label: string; kind: 'anthropic' | 'claude-code'; kindLabel: string; hint: string; active: boolean; createdAt: number; lastTest: Test | null;
   pair?: boolean; needsRefresh?: boolean; refreshHint?: string; expiresAt?: number | null; refreshedAt?: number | null;
-  refreshError?: { at: number; error: string } | null; subscriptionType?: string | null;
+  refreshError?: { at: number; error: string } | null; subscriptionType?: string | null; email?: string; accountName?: string; limitedAt?: number | null;
 }
 interface VpsLog { at: number; level: string; text: string }
 interface Vps { state: string; via?: string; at?: number; label?: string; approval?: string; error?: string; log: VpsLog[]; direct: boolean; command: string }
@@ -47,6 +47,8 @@ function KeyItem({ k, busy, run }: { k: KeyRow; busy: boolean; run: (fn: () => P
         <code className="fx-muted">{k.hint}</code>
         {k.pair && <code className="fx-muted">refresh {k.refreshHint}</code>}
         {k.subscriptionType && <span className="fx-chip">{k.subscriptionType}</span>}
+        {k.email && <span className="fx-chip" title={k.accountName || 'Claude account'}>{k.email}</span>}
+        {k.limitedAt && !k.active && <span className="fx-chip" title="Hit a usage or weekly limit; re-test it once the limit resets">limit hit</span>}
       </div>
       <p className="fx-muted" style={{ margin: 0 }}>
         {t ? (t.ok ? `Works · tested ${when(t.at)}${t.detail ? ` · ${t.detail}` : ''}` : `Failed ${when(t.at)}: ${t.error}`) : 'Not tested yet'}
