@@ -139,7 +139,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 - Model: s1-s3 Fable (contracts/engines, cross-app GUI), s4-s12 Opus. Approve the Fable->Opus switch at s4.
 - Branch: `claude/xlayout` from main (not made yet). Read first: apps/molly, framework/core/engines/embed.ts, framework/schemas/asset-types.json, the Patches rule in _claude/rules/RULES.md (Patches only; Molly may merge chrome).
 - Checks: check-theme, check-controls, plugin-lifecycle check, project validate, Molly build, fixtures.
-- First message: "Carry on xlayout (Big Dog) from s1 on Fable: `AXF_BUILD_PROFILE=big-dog node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief xlayout`."
+- First message: "Carry on xlayout (Big Dog) from s1 on Fable: `AXF_BUILD_PROFILE=big-dog node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief xlayout`." <!-- axf-plugin:build-orchestrator -->
 
 ### Molly (`molly-opus`, Big Dog, Opus) — branch `claude/project-thread-nxdu3m`, PR #230
 - Asked: "Can we combine amberx, axhub, and console into 1 interface but still keep separate apps"; "Build new build profile for it called Big Dog"; "Do it in opus, I'll do another one in fable later, call the opus one molly at molly.amberxai.com". Brett said go (Nov 2) and that it can run without his approval.
