@@ -63,8 +63,7 @@ if (CHAPTERS.some((c) => deviceOf(c) === 'phone' && (!c.url || c.url.startsWith(
   const ctx = await browser.newContext({ viewport: VIEW, isMobile: true, hasTouch: true, storageState: `${OUT}/state.json` });
   await installDemoHub(ctx, seed, []);
   const page = await ctx.newPage();
-  const url = ch.url ?? (ch.slide ? `${EXPLAINER}#${ch.slide}` : WALKTHROUGH.url);
-  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(WALKTHROUGH.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
   for (let t = 0; t < 8; t++) {
     await page.waitForTimeout(2500);
     const c = page.getByRole('button', { name: 'Close dialog' }).filter({ visible: true });
