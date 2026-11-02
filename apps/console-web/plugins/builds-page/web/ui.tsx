@@ -294,7 +294,18 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   );
 }
 
+/** Tick a step done (or take the tick off), at once: the same record the orchestrator ticks. */
+function StepTick({ s, toast }: { s: StepV; toast: (m: string, k?: 'danger' | 'success' | 'info') => void }) {
+  return (
+    <span className="axp-builds__tick" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+      <Checkbox label="" title={s.done ? `Mark ${s.id} not done` : `Mark ${s.id} done`} checked={s.done}
+        onChange={(done) => void send('ops', { ops: [{ op: 'step-done', build: s.build, uid: s.uid, done }] }, toast)} />
+    </span>
+  );
+}
+
 function BuildDetail({ b }: { b: BuildV }) {
+  const rt = useRuntime();
   return (
     <div className="axp-builds__detail">
       {b.detail && <p className="axp-builds__text">{b.detail}</p>}
@@ -302,6 +313,7 @@ function BuildDetail({ b }: { b: BuildV }) {
       <ol className="axp-builds__steps">
         {b.steps.map((s) => (
           <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''}>
+            <StepTick s={s} toast={rt.toast} />
             <Bar p={{ total: 1, done: s.done ? 1 : 0, pct: s.done ? 100 : 0, active: s.next && b.status === 'running' }} label={`${s.id}: ${s.done ? 'done' : s.next ? 'next' : 'to do'}`} />
             <span className="fx-mono fx-small">{s.id}</span> <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
           </li>
@@ -340,6 +352,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
     render: (s) => <span onClick={(e) => e.stopPropagation()}>{selectMode === 'switches' ? <Switch label="Select" hideLabel checked={sel.includes(s.uid)} onChange={() => toggle(s.uid)} /> : <Checkbox label="" title="Select" checked={sel.includes(s.uid)} onChange={() => toggle(s.uid)} />}</span> }];
   const columns: GridColumn<StepV>[] = [
     ...selCol,
+    { id: 'done', label: 'Done', width: 'calc(var(--fx-space) * 6)', fixed: true, render: (s) => <StepTick s={s} toast={rt.toast} /> },
     { id: 'step', label: 'Step', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true,
       render: (s) => (
         <span className="axp-builds__cell-title" onPointerDown={(e) => { if (e.pointerType === 'mouse') return; window.clearTimeout(press.current); press.current = window.setTimeout(() => toggle(s.uid), 550); }} onPointerUp={() => window.clearTimeout(press.current)} onPointerLeave={() => window.clearTimeout(press.current)}>

@@ -104,3 +104,19 @@ export async function installDemoHub(context, seed, log = []) {
   });
   return { blocked, files };
 }
+
+/**
+ * The read-only layer for desktop chapters (the console and axHub, shown as they are): every page and read goes through,
+ * every write (POST / PUT / PATCH / DELETE) to any amberxai.com app is answered here and never reaches the server, so
+ * the recording can click through forms and buttons without changing anything. What's on screen is still checked by
+ * check.mjs --scan (key-like strings, the recorder account's values), and password / key fields are blurred.
+ */
+export async function installReadOnly(context, log = []) {
+  await context.route(/^https:\/\/([a-z0-9-]+\.)*amberxai\.com\//, async (route) => {
+    const req = route.request();
+    const m = req.method();
+    if (m === 'GET' || m === 'HEAD' || m === 'OPTIONS') return route.continue();
+    log.push(`  read-only: write kept in the browser: ${m} ${new URL(req.url()).pathname}`);
+    return json(route, { ok: true, state: 'demo' });
+  });
+}

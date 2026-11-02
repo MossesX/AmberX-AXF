@@ -11,12 +11,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Segmented, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import type { AxfRuntime } from '../../../axf/core';
-import { SPEEDS, WALKTHROUGH_BASE, chapterAt, clock, nextStart, parseIndex, previousStart, speedOf, type WalkthroughIndex } from './core';
+import { DEFAULT_WALKTHROUGH, SPEEDS, WALKTHROUGH_BASE, chapterAt, clock, nextStart, parseIndex, parseList, previousStart, sizeLabel, speedOf, type WalkthroughEntry, type WalkthroughIndex } from './core';
+import { VoiceEditor } from './voice';
 import './walkthrough.css';
 
 export const WALKTHROUGH_ID = 'ai.amberx.amberx.walkthrough';
 const VIEW = 'walkthrough';
-const K = { speed: 'amberx.walkthrough.speed' } as const;
+const K = { speed: 'amberx.walkthrough.speed', pick: 'amberx.walkthrough.pick' } as const;
 
 /** A chapter asked for before the page was open (walkthrough.open:<id>); the page seeks there once it has the index. */
 let pending: string | null = null;
@@ -29,11 +30,24 @@ export function openWalkthrough(rt: AxfRuntime, chapter?: string) {
 
 type Load = { phase: 'loading' } | { phase: 'ready'; index: WalkthroughIndex } | { phase: 'missing' } | { phase: 'error'; message: string };
 
-function useIndex(): Load {
+/** Every recorded walkthrough (the AmberX tour when the server is older and has no list). */
+function useList(): WalkthroughEntry[] {
+  const [list, set] = useState<WalkthroughEntry[]>([]);
+  useEffect(() => {
+    let live = true;
+    fetch(`${WALKTHROUGH_BASE}walkthroughs.json`, { credentials: 'include', cache: 'no-cache' })
+      .then((r) => (r.ok ? r.json() : null)).then((j) => live && set(parseList(j))).catch(() => undefined);
+    return () => { live = false; };
+  }, []);
+  return list;
+}
+
+function useIndex(base: string): Load {
   const [s, set] = useState<Load>({ phase: 'loading' });
   useEffect(() => {
     let live = true;
-    fetch(`${WALKTHROUGH_BASE}chapters.json`, { credentials: 'include', cache: 'no-cache' })
+    set({ phase: 'loading' });
+    fetch(`${WALKTHROUGH_BASE}${base}chapters.json`, { credentials: 'include', cache: 'no-cache' })
       .then(async (r) => {
         if (!live) return;
         if (r.status === 404) return set({ phase: 'missing' });
@@ -43,11 +57,24 @@ function useIndex(): Load {
       })
       .catch(() => live && set({ phase: 'error', message: "Can't reach the AmberX server." }));
     return () => { live = false; };
-  }, []);
+  }, [base]);
   return s;
 }
 
-function Player({ index }: { index: WalkthroughIndex }) {
+/** Download: the full video and its smaller copies, saved as files (the server sends them as attachments). */
+function Downloads({ index, base }: { index: WalkthroughIndex; base: string }) {
+  return (
+    <div className="fx-row fx-row--wrap axp-walkthrough__downloads" role="group" aria-label="Download the video">
+      {index.downloads.map((d) => (
+        <a key={d.file} className="fx-btn" href={`${WALKTHROUGH_BASE}${base}${d.file}?download=1`} download>
+          Download {d.label}{d.bytes ? ` · ${sizeLabel(d.bytes)}` : ''}
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function Player({ index, base }: { index: WalkthroughIndex; base: string }) {
   const rt = useRuntime();
   const video = useRef<HTMLVideoElement>(null);
   const [t, setT] = useState(0);
@@ -80,12 +107,12 @@ function Player({ index }: { index: WalkthroughIndex }) {
   useEffect(() => { setOpen((o) => o ?? ch.id); }, [ch.id]);
 
   return (
-    <div className="axp-walkthrough__player">
+    <div className={`axp-walkthrough__player${index.wide ? ' axp-walkthrough__player--wide' : ''}`}>
       <div className="axp-walkthrough__stage">
-        <video ref={video} className="axp-walkthrough__video" controls playsInline preload="metadata" controlsList="nodownload"
-          poster={WALKTHROUGH_BASE + index.poster} src={WALKTHROUGH_BASE + index.video}
+        <video ref={video} className={`axp-walkthrough__video${index.wide ? ' axp-walkthrough__video--wide' : ''}`} controls playsInline preload="metadata" controlsList="nodownload"
+          poster={WALKTHROUGH_BASE + base + index.poster} src={WALKTHROUGH_BASE + base + index.video}
           onTimeUpdate={(e) => setT(e.currentTarget.currentTime)} onLoadedMetadata={(e) => { e.currentTarget.playbackRate = speed; }}>
-          <track kind="captions" srcLang="en" label="English" src={WALKTHROUGH_BASE + index.captions} default />
+          <track kind="captions" srcLang="en" label="English" src={WALKTHROUGH_BASE + base + index.captions} default />
         </video>
       </div>
       <div className="fx-stack axp-walkthrough__side">
@@ -106,6 +133,7 @@ function Player({ index }: { index: WalkthroughIndex }) {
           <Button icon="chevron-right" disabled={nextStart(index, t) === null} onClick={() => { const n = nextStart(index, t); if (n !== null) seek(n); }}>Next chapter</Button>
           <span className="fx-muted axp-walkthrough__time">{clock(t)} / {clock(index.duration)}</span>
         </div>
+        <Downloads index={index} base={base} />
         <Segmented size="sm" label="Playback speed" value={String(speed)} onChange={(v) => { const s = speedOf(v); setSpeed(s); rt.settings.set(K.speed, s); }}
           options={SPEEDS.map((s) => ({ value: String(s), label: `${s}×` }))} />
         <nav className="axp-walkthrough__index" aria-label="Chapters">
@@ -139,23 +167,41 @@ function Player({ index }: { index: WalkthroughIndex }) {
 }
 
 export function WalkthroughPage() {
-  const s = useIndex();
+  const rt = useRuntime();
+  const list = useList();
+  const [pick, setPick] = useState<string>(() => String(rt.settings.get(K.pick) || DEFAULT_WALKTHROUGH));
+  const [mode, setMode] = useState<'watch' | 'voice'>('watch');
+  const entry = list.find((w) => w.id === pick) ?? list[0] ?? { id: DEFAULT_WALKTHROUGH, title: 'AmberX walkthrough', duration: 0, recordedAt: '', base: '' };
+  const s = useIndex(entry.base);
+  const choose = (id: string) => { setPick(id); rt.settings.set(K.pick, id); };
   return (
     <div className="fx-stack fx-stack--lg axp-walkthrough">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Help · Walkthrough</p>
-          <h1>AmberX walkthrough</h1>
+          <h1>{s.phase === 'ready' ? s.index.title : entry.title}</h1>
           <p className="fx-muted">
-            Amber shows you every part of the app, narrated, with captions. Skip to any chapter
+            Amber shows you around, narrated, with captions. Skip to any chapter, download the video, or change her voice and words
             {s.phase === 'ready' ? ` (${s.index.chapters.length} chapters, ${clock(s.index.duration)})` : ''}.
           </p>
         </div>
       </header>
-      {s.phase === 'loading' && <div className="axp-walkthrough__skeleton" aria-busy="true" aria-label="Loading the walkthrough" />}
-      {s.phase === 'missing' && <p className="fx-muted">The walkthrough hasn't been recorded on this server yet. An admin records it with <code>bash apps/amberx-droid/walkthrough/rebuild.sh</code> (or the Dev Console's Re-record button).</p>}
-      {s.phase === 'error' && <p className="fx-muted" role="alert">{s.message}</p>}
-      {s.phase === 'ready' && <Player index={s.index} />}
+      <div className="fx-row fx-row--wrap">
+        {list.length > 1 && (
+          <Segmented label="Which walkthrough" value={entry.id} onChange={(v) => { choose(v); pending = null; }}
+            options={list.map((w) => ({ value: w.id, label: w.duration ? `${w.title} · ${clock(w.duration)}` : w.title }))} />
+        )}
+        <Segmented label="Watch or edit" value={mode} onChange={(v) => setMode(v === 'voice' ? 'voice' : 'watch')}
+          options={[{ value: 'watch', label: 'Watch' }, { value: 'voice', label: 'Edit the voice' }]} />
+      </div>
+      {mode === 'voice' ? <VoiceEditor key={entry.id} id={entry.id} base={entry.base} /> : (
+        <>
+          {s.phase === 'loading' && <div className="axp-walkthrough__skeleton" aria-busy="true" aria-label="Loading the walkthrough" />}
+          {s.phase === 'missing' && <p className="fx-muted">This walkthrough hasn't been recorded on this server yet. Edit the voice, then Re-record, or an admin runs <code>WALKTHROUGH={entry.id} bash apps/amberx-droid/walkthrough/rebuild.sh</code>.</p>}
+          {s.phase === 'error' && <p className="fx-muted" role="alert">{s.message}</p>}
+          {s.phase === 'ready' && <Player key={entry.id} index={s.index} base={entry.base} />}
+        </>
+      )}
     </div>
   );
 }
@@ -163,7 +209,7 @@ export function WalkthroughPage() {
 export const library: AxfWebLibrary = {
   id: WALKTHROUGH_ID,
   label: 'Walkthrough',
-  version: '0.1.0',
+  version: '0.2.0',
   builtWith: { model: 'opus', builtAt: '2026-11-01' },
   views: { [VIEW]: { title: 'Walkthrough', icon: 'play', keywords: ['walkthrough', 'video', 'tour', 'help', 'how to'], render: () => <WalkthroughPage /> } },
   nav: { label: 'Help', items: [{ id: VIEW, label: 'Walkthrough', icon: 'play', view: VIEW }] },

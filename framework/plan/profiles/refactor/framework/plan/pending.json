@@ -3620,6 +3620,222 @@
    "builtAt": "",
    "updatedAt": "2026-11-01T07:17:49.320Z",
    "source": "console"
+  },
+  {
+   "id": "stack-walkthrough",
+   "title": "Whole-stack walkthrough plugin (AmberX, editable voice, video download)",
+   "detail": "Plan: _claude/memory/docs/walkthrough-everything.md. Brett Nov 1: 90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Shared loader: pick a walkthrough by WALKTHROUGH env, apply voice/narration overrides (voice.json)",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:39:10.877Z"
+    },
+    {
+     "text": "[Opus] tts.mjs + record.mjs + assemble.mjs read the loader; AmberX tour unchanged",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:39:11.252Z"
+    },
+    {
+     "text": "[Opus] Per-chapter url/viewport/device; one recorded context per device kind",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:00.655Z"
+    },
+    {
+     "text": "[Opus] Explainer page (diagram slides served by the recorder), slide() helper",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:00.902Z"
+    },
+    {
+     "text": "[Opus] Read-only guard for console + axHub chapters (writes answered in the browser)",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:01.140Z"
+    },
+    {
+     "text": "[Opus] Assemble: per-scene cut with freeze-frame when a clip grows, letterbox phone into 1080p",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:50.034Z"
+    },
+    {
+     "text": "[Opus] Assemble: 1080p + 720p download copies, per-walkthrough publish folder",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:41:50.257Z"
+    },
+    {
+     "text": "[Opus] rebuild.sh: WALKTHROUGH, VOICE, VOICE_ONLY (re-voice without re-recording), voice download by name",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:42:15.684Z"
+    },
+    {
+     "text": "[Opus] Server: /api/walkthrough/<id>/<file>, walkthroughs.json, download with attachment header",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:42:58.670Z"
+    },
+    {
+     "text": "[Opus] Script ch1 cold open + ch2 asset@1",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:44:38.285Z"
+    },
+    {
+     "text": "[Opus] Script ch3 engines + ch4 two ports",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:45:09.902Z"
+    },
+    {
+     "text": "[Opus] Script ch5 build engine + CLI",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:45:30.621Z"
+    },
+    {
+     "text": "[Opus] Script ch6 Dev Console tour",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:45:52.729Z"
+    },
+    {
+     "text": "[Opus] Script ch7 plugins",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:46:15.036Z"
+    },
+    {
+     "text": "[Opus] Script ch8 builds + orchestrator",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:46:35.147Z"
+    },
+    {
+     "text": "[Opus] Script ch9 changes log, UI Review, systems check",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:47:01.821Z"
+    },
+    {
+     "text": "[Opus] Script ch10 agents + ch11 axHub",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:47:31.373Z"
+    },
+    {
+     "text": "[Opus] Script ch12 veto + ch13 AmberX",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:48:05.128Z"
+    },
+    {
+     "text": "[Opus] Script ch14 VPS + ch15 MCP + ch16 close; check.mjs passes",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:49:01.061Z"
+    },
+    {
+     "text": "[Opus] Script extra: straight answers; order chapters; ~90 min check",
+     "at": "2026-11-01T22:49:14.054Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:49:42.935Z"
+    },
+    {
+     "text": "[Opus] Script extra: the family of apps + what it is worth",
+     "at": "2026-11-01T22:49:13.777Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:50:15.151Z"
+    },
+    {
+     "text": "[Opus] Script extra: Claude everywhere (threads, memory, Go pass) + voice and Molly",
+     "at": "2026-11-01T22:49:13.405Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:50:42.206Z"
+    },
+    {
+     "text": "[Opus] Script extra: a build from ask to merge + making a new look",
+     "at": "2026-11-01T22:49:13.127Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:51:55.917Z"
+    },
+    {
+     "text": "[Opus] Plugin: walkthrough picker (AmberX tour / The whole stack) + Download button",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:32.281Z"
+    },
+    {
+     "text": "[Opus] Plugin: voice editor (voice, speed, per-scene narration), overrides saved on axHub",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:32.543Z"
+    },
+    {
+     "text": "[Opus] Plugin: Re-voice / Re-record button through the console (veto call), molly-guide takes walkthrough + overrides",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:32.811Z"
+    },
+    {
+     "text": "[Opus] Tests (test.mjs, server tests), typecheck, theme + controls checks",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:56:33.085Z"
+    },
+    {
+     "text": "[Opus] Docs: README, plan doc, THREADS, PR ready",
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-01T22:58:58.048Z"
+    },
+    {
+     "text": "[Opus] Record + publish on the VPS (unattended run, job agent)",
+     "at": "2026-11-01T22:38:15.392Z"
+    }
+   ],
+   "createdAt": "2026-11-01T22:38:15.391Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-01T22:58:58.048Z",
+   "source": "console"
+  },
+  {
+   "id": "orch-step-click",
+   "title": "Fix: can't click steps in the Build orchestrator",
+   "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Repro on the live console (desktop + phone): which click fails (tick, row open, model, move) and why",
+     "at": "2026-11-01T23:09:37.032Z",
+     "done": true,
+     "doneAt": "2026-11-02T00:30:06.083Z"
+    },
+    {
+     "text": "[Opus] Fix (nested grid click bubbling, disabled state or tap target) + test",
+     "at": "2026-11-01T23:09:37.032Z",
+     "done": true,
+     "doneAt": "2026-11-02T00:30:06.534Z"
+    },
+    {
+     "text": "[Opus] UI Review shots, PR",
+     "at": "2026-11-01T23:09:37.032Z"
+    }
+   ],
+   "createdAt": "2026-11-01T23:09:37.031Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-02T00:30:06.535Z",
+   "source": "console"
   }
  ]
 }

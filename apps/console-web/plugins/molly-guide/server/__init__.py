@@ -16,6 +16,7 @@ Data: `walkthroughs.json` (last WALK_KEEP) in this plugin's own data folder; not
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -102,11 +103,35 @@ RERECORD_COMMAND = (f"cd {VPS_CHECKOUT} && mkdir -p /opt/amberx-walkthrough-rec 
                     "nohup bash apps/amberx-droid/walkthrough/rebuild.sh > /opt/amberx-walkthrough-rec/rebuild.log 2>&1 &")
 RERECORD_REASON = "Re-record the AmberX walkthrough video"
 _rerecord: dict[str, Any] = {"state": "idle", "message": "", "at": 0}
+_WT_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 
 
-def _send_rerecord(svc: Any) -> None:
+def rerecord_command(walkthrough: str = "amberx-app", voice_only: bool = False, overrides: dict[str, Any] | None = None) -> tuple[str, str]:
+    """The VPS command and the veto notice's title for one walkthrough. Voice edits (walkthrough-voice@1, checked by AmberX's
+    server) ride along base64-encoded, so nothing in them can reach the shell; VOICE_ONLY re-voices and re-cuts without
+    re-recording (minutes instead of the full run)."""
+    if not _WT_ID.match(walkthrough):
+        raise HTTPException(400, "bad walkthrough id")
+    if walkthrough == "amberx-app" and not voice_only and not overrides:
+        return RERECORD_COMMAND, RERECORD_REASON
+    env = f"WALKTHROUGH={walkthrough}"
+    if voice_only:
+        env += " VOICE_ONLY=1"
+    if overrides:
+        raw = json.dumps(overrides, separators=(",", ":"))
+        if len(raw) > 64 * 1024:
+            raise HTTPException(413, "too many edits for one re-voice (64 KB at most)")
+        env += " VOICE_OVERRIDES_B64=" + base64.b64encode(raw.encode()).decode()
+    log = f"/opt/amberx-walkthrough-rec/rebuild-{walkthrough}.log"
+    cmd = (f"cd {VPS_CHECKOUT} && mkdir -p /opt/amberx-walkthrough-rec && "
+           f"{env} nohup bash apps/amberx-droid/walkthrough/rebuild.sh > {log} 2>&1 &")
+    what = "Re-voice" if voice_only else "Re-record"
+    return cmd, f"{what} the {'AmberX' if walkthrough == 'amberx-app' else walkthrough} walkthrough video"
+
+
+def _send_rerecord(svc: Any, command: str = RERECORD_COMMAND, reason: str = RERECORD_REASON) -> None:
     try:
-        r = svc.call("vps.run", {"command": RERECORD_COMMAND}, reason=RERECORD_REASON)
+        r = svc.call("vps.run", {"command": command}, reason=reason)
         msg = ("Sent to axHub: it runs when the countdown ends unless you deny it. The new video is live in AmberX about "
                "15 minutes later.") if r.get("confirm") or r.get("ok") is not None else str(r)[:300]
         _rerecord.update(state="sent", message=msg, at=time.time())
@@ -120,7 +145,10 @@ def rerecord_status() -> dict[str, Any]:
 
 
 @router.post("/amberx-walkthrough/rerecord")
-def rerecord() -> dict[str, Any]:
+def rerecord(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    b = body or {}
+    command, reason = rerecord_command(str(b.get("walkthrough") or "amberx-app"), b.get("voiceOnly") is True,
+                                       b.get("overrides") if isinstance(b.get("overrides"), dict) else None)
     svc = plugin_services.get("axf.vinny@1")
     if svc is None:
         raise HTTPException(503, "Re-recording goes through Vinny: switch the Agent manager on.")
@@ -130,7 +158,7 @@ def rerecord() -> dict[str, Any]:
     if _rerecord["state"] == "sending" and time.time() - _rerecord["at"] < 120:
         return dict(_rerecord)
     _rerecord.update(state="sending", message="Sending it to axHub…", at=time.time())
-    threading.Thread(target=_send_rerecord, args=(svc,), daemon=True).start()
+    threading.Thread(target=_send_rerecord, args=(svc, command, reason), daemon=True).start()
     return dict(_rerecord)
 
 
