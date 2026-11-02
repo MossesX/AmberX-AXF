@@ -43,13 +43,16 @@ for (const ch of timeline) {
     const need = lead + dur + 0.6;
     return { s, from, to, dur, lead, span: Math.max(to - from, need), hold: Math.max(0, need - (to - from)) };
   });
-  const inputs = ['-i', `${OUT}/raw/${ch.id}.webm`], filters = [];
+  // One seeked input per cut (not one input split into many trims): ffmpeg then never buffers the whole chapter's frames
+  // for the later cuts, which got a long chapter killed for memory.
+  const n = cuts.length, inputs = [], filters = [];
+  cuts.forEach((c) => inputs.push('-ss', c.from.toFixed(3), '-to', c.to.toFixed(3), '-i', `${OUT}/raw/${ch.id}.webm`));
   cuts.forEach((c, k) => {
-    filters.push(`[0:v]trim=${c.from.toFixed(3)}:${c.to.toFixed(3)},setpts=PTS-STARTPTS${c.hold ? `,tpad=stop_mode=clone:stop_duration=${c.hold.toFixed(3)}` : ''},`
+    filters.push(`[${k}:v]setpts=PTS-STARTPTS${c.hold ? `,tpad=stop_mode=clone:stop_duration=${c.hold.toFixed(3)}` : ''},`
       + `fps=30,scale=${W}:${H}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=${PAD},setsar=1,format=yuv420p[v${k}]`);
     inputs.push('-i', `${OUT}/audio/${ch.id}-${c.s.i}.wav`);
     const delay = c.lead ? `adelay=${Math.round(c.lead * 1000)}:all=1,` : '';
-    filters.push(`[${k + 1}:a]aresample=48000,${delay}apad,atrim=0:${c.span.toFixed(3)},asetpts=N/SR/TB[a${k}]`);
+    filters.push(`[${n + k}:a]aresample=48000,${delay}apad,atrim=0:${c.span.toFixed(3)},asetpts=N/SR/TB[a${k}]`);
   });
   filters.push(`${cuts.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${cuts.length}:v=1:a=1[v][a]`);
   const mp4 = `${TMP}/${ch.id}.mp4`;
