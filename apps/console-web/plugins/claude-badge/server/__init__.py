@@ -25,7 +25,7 @@ from axf_server import storage
 router = APIRouter()
 _lock = threading.Lock()
 # Same wording the AI assistant's credit check matches (ai-assistant `_NO_CREDIT`); kept here so no plugin is named.
-NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota|payment required|\b402\b", re.I)
+NO_CREDIT = re.compile(r"hit your (?:weekly |daily |session |5-hour )?limit|weekly limit|credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota|payment required|\b402\b", re.I)
 STATES = ("ok", "no-credit", "error")
 PROMPT = "Connection check from the AmberX console. Reply with one word: OK."
 
@@ -77,6 +77,12 @@ def run_test() -> dict[str, Any]:
     res["name"] = pretty_model(res["model"]) if res["ok"] else ""
     res["claude"] = res["name"].startswith("Claude")
     res["state"] = classify(res["ok"], res["error"])
+    keys = plugin_services.get("axf.ai-keys@1")  # the signed-in Claude account's email, when the AI keys plugin has one
+    try:
+        acct = keys.active_account("claude-code") if keys and hasattr(keys, "active_account") else {}
+    except Exception:  # noqa: BLE001 — the badge never fails over the email
+        acct = {}
+    res["account"] = str((acct or {}).get("email") or "")
     _save(res)
     said = {"ok": "ok, " + (res["name"] or "model unknown"), "no-credit": "out of credits (" + res["error"][:120] + ")", "error": "unavailable (" + res["error"][:120] + ")"}
     cx.log("system", f"AI connection: {said[res['state']]}", "ok" if res["ok"] else "warn")

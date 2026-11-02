@@ -385,15 +385,23 @@ is active at a time, and it drives **both** the console and the VPS.
   to `/root/.claude/.credentials.json` (directly, or through Vinny with your approval on axHub; **Write to the VPS
   now** forces it). Every new Claude Code session on the VPS, and every headless session the console or axHub starts,
   then runs on that account.
-- **Add an account:** sign in to it once with `/login` in Claude Code anywhere, copy `~/.claude/.credentials.json`,
-  and paste it into AI keys → Add → **Credentials file** ([section 6](#6-claude-subscription-tokens)).
+- **Add an account:** console → long-press → **Manage Claude accounts…** → **Add account**. The wizard shows every
+  command: a separate sign-in on the VPS (`CLAUDE_CONFIG_DIR=~/.claude-add claude`, then `/login`), printing its
+  credentials, pasting them in, and deleting the extra sign-in afterwards. Each key is checked the moment it's
+  entered and the wizard won't go on until it passes. AI keys → Add → **Credentials file** still works too
+  ([section 6](#6-claude-subscription-tokens)).
+- **Priority:** in **Manage Claude accounts** every account is a row; expand it to test the access token and the
+  pair separately and see the email, plan and renewal. Drag rows by their handle (or the up / down buttons) to set
+  the order: when the active account hits a limit, the next one down that still answers takes over.
 - **Commands on the VPS through axHub** (Vinny, Auto fix, `vps.run`) don't use a Claude account: they run as root
   over axHub's SSH service after your approval. Only the Claude Code a command *starts* uses the active account.
-- **See which account is live:** the **Claude badge** on the banner (green = working, amber = out of credits).
+- **See which account is live:** the **Claude badge** on the banner (green = working, amber = out of credits); its
+  tooltip names the active account's email. Every subscription row in AI keys shows its account's email too.
   Vinny's "retrieve email address" skill shows the email the VPS is signed in with.
 - **Out of credits:** the systems check's `claude-credits` check tests the active account and, when it's out, makes
   the first saved account that answers active (console and VPS together), then opens AI keys so you can see or
   change the pick.
+- **A build hits the weekly limit:** when a headless build stops on "You've hit your weekly limit" (or any usage or credit limit), `deploy/claude-headless.sh` runs `apps/console-web/plugins/ai-keys/switch.mjs`: AI keys marks that account *limit hit*, makes the next saved account that still answers active, writes it to the VPS, and the build starts again on it (up to 3 switches; `AXF_ACCOUNT_SWITCHES=0` turns it off). It needs the console token (`AXF_TOKEN` in `/opt/axf/.axf-console/env`) and, when the console isn't at `https://console.amberxai.com`, `AXF_CONSOLE_URL`. Re-test a *limit hit* account once its limit resets. <!-- axf-plugin:ai-keys -->
 
 ---
 

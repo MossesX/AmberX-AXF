@@ -19,7 +19,15 @@ so no token is ever in a command or an approval page).
 Routes: GET /keys · POST /keys {label, key} · PATCH /keys/{id} {label} · DELETE /keys/{id} · POST /keys/{id}/test ·
 POST /active {kind, id}  (id "" = no active key of that kind: the assistant profile's own key applies again) ·
 POST /keys {label, key, refresh} | {label, credentials} for a pair · PATCH /keys/{id} {refresh} adds the refresh token
-to an older single token · GET /vps · POST /vps/sync
+to an older single token · GET /vps · POST /vps/sync · POST /switch {kind, reason} · POST /order {ids} (account
+priority) · POST /validate {step, …} (the add-account wizard checks one step without saving or renewing anything) ·
+POST /keys/{id}/test {part: "access"} tests only the access token (no renewal)
+
+Several Claude accounts (Brett, Nov 2 2026): every subscription pair shows the email of the Claude account it belongs to
+(Anthropic's OAuth profile, looked up when the pair is added, re-tested or first refreshed; never blocks a save). When a
+headless build stops on "You've hit your weekly limit" (or any usage/credit limit), deploy/claude-headless.sh calls
+POST /switch: the next saved account that still answers becomes active, is written to the VPS, and the build re-runs on
+it. The banner's Claude badge names the active account's email.
 """
 from __future__ import annotations
 
@@ -52,6 +60,10 @@ OAUTH_CLIENT_ID = os.environ.get("AXF_CLAUDE_OAUTH_CLIENT_ID") or "9d1c250a-e61b
 REFRESH_AHEAD_MS = 30 * 60 * 1000  # the thread refreshes pairs this close to expiry
 FRESH_MS = 5 * 60 * 1000  # a read refreshes a pair this close to expiry
 VPS_LOG_MAX = 30
+PROFILE_URL = os.environ.get("AXF_CLAUDE_PROFILE_URL") or "https://api.anthropic.com/api/oauth/profile"
+# A Claude account that can't take more work right now: out of credits, or over its weekly / daily / 5-hour limit.
+LIMIT_RE = re.compile(r"hit your (?:weekly |daily |session |5-hour )?limit|weekly limit|usage limit|limit reached|rate limit"
+                      r"|credit balance|out of credits?|insufficient[ _-]?(?:credit|funds|balance)|quota|payment required|\b402\b", re.I)
 
 
 def data_dir() -> Path:
@@ -66,7 +78,15 @@ def _load() -> dict[str, Any]:
     keys = raw.get("keys") if isinstance(raw.get("keys"), dict) else {}
     active = raw.get("active") if isinstance(raw.get("active"), dict) else {}
     vps = raw.get("vps") if isinstance(raw.get("vps"), dict) else {}
-    return {"keys": keys, "active": {k: str(active.get(k) or "") for k in KINDS}, "vps": vps}
+    order = [str(x) for x in raw.get("order") or [] if str(x) in keys]
+    return {"keys": keys, "active": {k: str(active.get(k) or "") for k in KINDS}, "vps": vps, "order": order}
+
+
+def ranked(db: dict[str, Any], kind: str) -> list[str]:
+    """Ids of `kind` in priority order: the saved order first, then the rest newest first."""
+    ids = [k for k, v in db["keys"].items() if v.get("kind") == kind]
+    pos = {k: i for i, k in enumerate(db.get("order") or [])}
+    return sorted(ids, key=lambda k: (pos.get(k, len(pos)), -(db["keys"][k].get("createdAt") or 0)))
 
 
 def _save(db: dict[str, Any]) -> None:
@@ -117,6 +137,47 @@ def _default_refresh(refresh: str) -> dict[str, Any]:
 
 
 REFRESHER: Callable[[str], dict[str, Any]] = _default_refresh  # replaced by the self-test
+
+
+def _default_profile(access: str) -> dict[str, Any]:
+    """The Claude account behind a subscription access token: {email, name, org}. Raises on failure."""
+    r = http.request("GET", PROFILE_URL, headers={"Authorization": f"Bearer {access}", "anthropic-beta": "oauth-2025-04-20",
+                                                  "Accept": "application/json"}, timeout=15, max_bytes=64_000)
+    if not r.ok:
+        raise RuntimeError(f"profile refused ({r.status})")
+    d = r.json() or {}
+    acc = d.get("account") if isinstance(d.get("account"), dict) else {}
+    org = d.get("organization") if isinstance(d.get("organization"), dict) else {}
+    email = str(acc.get("email_address") or acc.get("email") or "")[:200]
+    if "@" not in email:
+        raise RuntimeError("the profile had no email")
+    return {"email": email, "name": str(acc.get("display_name") or acc.get("full_name") or "")[:120], "org": str(org.get("name") or "")[:120]}
+
+
+PROFILER: Callable[[str], dict[str, Any]] = _default_profile  # replaced by the self-test
+
+
+def fill_profile(kid: str, force: bool = False) -> None:
+    """Look up and keep the account email of one subscription pair (best effort: a failure is only noted)."""
+    with _lock:
+        rec = dict(_load()["keys"].get(kid) or {})
+    if rec.get("kind") != "claude-code" or not rec.get("key") or (rec.get("email") and not force):
+        return
+    try:
+        prof, err = PROFILER(rec["key"]), ""
+    except Exception as e:  # noqa: BLE001
+        prof, err = {}, _hide(str(e), rec.get("key", ""), rec.get("refresh", ""))
+    with _lock:
+        db = _load()
+        r = db["keys"].get(kid)
+        if not r:
+            return
+        if prof.get("email"):
+            r["email"], r["accountName"], r["org"] = prof["email"], prof.get("name") or "", prof.get("org") or ""
+            r.pop("profileError", None)
+        else:
+            r["profileError"] = err or "no email"
+        _save(db)
 
 
 def _now() -> int:
@@ -226,6 +287,9 @@ def refresh_record(kid: str, force: bool = False, ahead_ms: int = FRESH_MS) -> b
         r.pop("refreshError", None)
         _save(db)
         active = db["active"].get("claude-code") == kid
+        needs_email = not r.get("email")
+    if needs_email:
+        fill_profile(kid)
     if active:
         sync_vps_soon("the active pair was refreshed")
     return True
@@ -248,13 +312,16 @@ def public(kid: str, rec: dict[str, Any], active: dict[str, str]) -> dict[str, A
             "pair": bool(rec.get("refresh")), "needsRefresh": not is_pair(rec),
             "refreshHint": ("…" + str(rec["refresh"])[-4:]) if rec.get("refresh") else "",
             "expiresAt": rec.get("expiresAt"), "refreshedAt": rec.get("refreshedAt"), "refreshError": rec.get("refreshError"),
-            "subscriptionType": rec.get("subscriptionType")}
+            "subscriptionType": rec.get("subscriptionType"), "email": rec.get("email") or "", "accountName": rec.get("accountName") or "",
+            "limitedAt": rec.get("limitedAt"), "org": rec.get("org") or "", "accessTest": rec.get("accessTest")}
 
 
 def listing(db: dict[str, Any] | None = None) -> dict[str, Any]:
     db = db or _load()
-    rows = [public(k, v, db["active"]) for k, v in db["keys"].items()]
-    rows.sort(key=lambda r: (r["kind"] or "", -(r["createdAt"] or 0)))
+    rows = []
+    for kind in KINDS:
+        for i, k in enumerate(ranked(db, kind)):
+            rows.append({**public(k, db["keys"][k], db["active"]), "priority": i + 1})
     return {"keys": rows, "active": db["active"], "kinds": [{"id": k, "label": v} for k, v in KINDS.items()], "vps": vps_public(db)}
 
 
@@ -326,6 +393,9 @@ def _add_pair(pair: dict[str, Any], label: str, activate: bool) -> dict[str, Any
             db["active"]["claude-code"] = kid
         _save(db)
     cx.log("system", f"AI keys: added {KINDS['claude-code']} pair {rec['label']}", "ok")
+    fill_profile(kid)
+    with _lock:
+        db = _load()
     if became:
         sync_vps_soon("a new pair became active")
     return {"key": public(kid, db["keys"][kid], db["active"]), **listing(db)}
@@ -369,9 +439,10 @@ def _complete_pair(kid: str, body: dict[str, Any]) -> dict[str, Any]:
         active = db["active"].get("claude-code") == kid
     if not test["ok"]:
         raise _err(400, f"the pair didn't authorise: {test['error'] or 'no answer'}")
+    fill_profile(kid)
     if active:
         sync_vps_soon("the active token got its refresh token")
-    return listing(db)
+    return listing()
 
 
 @router.delete("/keys/{kid}")
@@ -394,11 +465,19 @@ def delete_key(kid: str) -> dict[str, Any]:
 
 
 @router.post("/keys/{kid}/test")
-def test_key(kid: str) -> dict[str, Any]:
+def test_key(kid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
     with _lock:
         rec = _load()["keys"].get(kid)
     if not rec:
         raise _err(404, "no such key")
+    if (body or {}).get("part") == "access":  # just the access token: one tiny turn, nothing renewed
+        res = run_test(rec["kind"], rec["key"])
+        with _lock:
+            db = _load()
+            if kid in db["keys"]:
+                db["keys"][kid]["accessTest"] = res
+                _save(db)
+        return {"test": res, **listing(db)}
     rotated = None
     if rec["kind"] == "claude-code" and rec.get("refresh"):
         res, rotated = validate_pair({k: rec.get(k) for k in ("key", "refresh", "expiresAt", "scopes", "subscriptionType")})
@@ -415,6 +494,12 @@ def test_key(kid: str) -> dict[str, Any]:
                 _apply_pair(db["keys"][kid], rotated)
             _save(db)
         active = db["active"].get("claude-code") == kid
+    if rec["kind"] == "claude-code" and res.get("ok"):
+        fill_profile(kid, force=True)
+        with _lock:
+            db = _load()
+            db["keys"].get(kid, {}).pop("limitedAt", None)
+            _save(db)
     if rotated and active:
         sync_vps_soon("the active pair was re-tested (and so rotated)")
     return {"test": res, **listing(db)}
@@ -462,7 +547,7 @@ class KeysService:
         with _lock:
             db = _load()
         was = db["active"].get(kind) or ""
-        cands = sorted(((k, v) for k, v in db["keys"].items() if v.get("kind") == kind and k != was and is_pair(v)), key=lambda kv: -(kv[1].get("createdAt") or 0))
+        cands = [(k, db["keys"][k]) for k in ranked(db, kind) if k != was and is_pair(db["keys"][k])]  # priority order (drag to set)
         tried: list[dict[str, Any]] = []
         for kid, rec in cands:
             err = ""
@@ -503,6 +588,95 @@ class KeysService:
 
     def list(self) -> dict[str, Any]:
         return listing()
+
+    def active_account(self, kind: str = "claude-code") -> dict[str, Any]:
+        """The active key of `kind` without the key: {id, label, email, name, kind} ({} when none)."""
+        with _lock:
+            db = _load()
+        kid = db["active"].get(kind) or ""
+        rec = db["keys"].get(kid) if kid else None
+        if not rec:
+            return {}
+        return {"id": kid, "label": rec.get("label") or kid, "email": rec.get("email") or "", "name": rec.get("accountName") or "", "kind": kind}
+
+
+@router.post("/switch")
+def switch_account(body: dict[str, Any]) -> dict[str, Any]:
+    """The active account hit a limit (a headless build's "You've hit your weekly limit", say): mark it and make the next
+    saved account that still answers the active one (written to the VPS). {switched: null} when none can take over."""
+    kind = str(body.get("kind") or "claude-code")
+    if kind not in KINDS:
+        raise _err(400, f"kind is one of {', '.join(KINDS)}")
+    reason = str(body.get("reason") or "")[:200]
+    with _lock:
+        db = _load()
+        was = db["active"].get(kind) or ""
+        if was in db["keys"]:
+            db["keys"][was]["limitedAt"] = _now()
+            _save(db)
+    r = KeysService().credit_switch(kind, None, lambda m: bool(LIMIT_RE.search(m)))
+    lab = (db["keys"].get(was) or {}).get("label") or "the active account"
+    if r["switched"]:
+        cx.log("system", f"AI keys: {lab} hit a limit{(' (' + reason + ')') if reason else ''}; switched to {r['switched']['label']}", "warn")
+    else:
+        cx.log("system", f"AI keys: {lab} hit a limit and no other saved account could take over", "error")
+    return {**r, "account": KeysService().active_account(kind), "vps": vps_public(_load())}
+
+
+@router.post("/order")
+def set_order(body: dict[str, Any]) -> dict[str, Any]:
+    """Account priority (drag and drop in Manage Claude accounts): `ids` first to last. Unknown ids are dropped; saved
+    keys left out keep their place after the listed ones. The switch on a limit hit tries accounts in this order."""
+    ids = [str(x) for x in body.get("ids") or [] if isinstance(x, str)]
+    with _lock:
+        db = _load()
+        seen: set[str] = set()
+        order = [k for k in ids if k in db["keys"] and not (k in seen or seen.add(k))]
+        db["order"] = order + [k for k in db["order"] if k not in seen]
+        _save(db)
+    return listing(db)
+
+
+@router.post("/validate")
+def validate_step(body: dict[str, Any]) -> dict[str, Any]:
+    """One step of the add-account wizard, checked at once without saving or renewing anything (a refresh token can only
+    be checked by renewing it, so the wizard's last step saves through POST /keys). Steps: `access` {key} · `credentials`
+    {credentials} · `api` {key}. Answers {ok, error, email?, name?, expired?}; a key is never echoed."""
+    step = str(body.get("step") or "")
+    out: dict[str, Any] = {"ok": False, "error": ""}
+    if step == "api":
+        key = re.sub(r"\s+", "", str(body.get("key") or ""))
+        if not KEY_RE.match(key) or kind_of(key) != "anthropic":
+            return {**out, "error": "that isn't an Anthropic API key (it starts with sk-ant-api…)"}
+        with _lock:
+            if _dupe(_load(), key):
+                return {**out, "error": "that key is already saved"}
+        t = run_test("anthropic", key)
+        return {**out, "ok": t["ok"], "error": t.get("error") or "", "detail": t.get("detail") or ""}
+    if step == "access":
+        pair = {"key": re.sub(r"\s+", "", str(body.get("key") or "")), "refresh": "", "expiresAt": None}
+        if not pair["key"].startswith("sk-ant-oat") or not KEY_RE.match(pair["key"]):
+            return {**out, "error": "that isn't an access token (it starts with sk-ant-oat…)"}
+    elif step == "credentials":
+        try:
+            pair = parse_pair({"credentials": body.get("credentials")}) or {}
+        except HTTPException as e:
+            return {**out, "error": str(e.detail)}
+    else:
+        return {**out, "error": "step is one of access, credentials, api"}
+    with _lock:
+        if _dupe(_load(), pair["key"], pair.get("refresh", "")):
+            return {**out, "error": "that account's token is already saved"}
+    expired = bool(pair.get("expiresAt")) and pair["expiresAt"] <= _now()
+    if not expired:
+        t = run_test("claude-code", pair["key"])
+        if not t["ok"]:
+            return {**out, "error": f"the access token was refused: {_hide(t.get('error') or 'no answer', pair['key'], pair.get('refresh', ''))}"}
+    try:
+        prof = PROFILER(pair["key"]) if not expired else {}
+    except Exception:  # noqa: BLE001 — the email is a nicety, never a reason to stop
+        prof = {}
+    return {"ok": True, "error": "", "expired": expired, "email": prof.get("email") or "", "name": prof.get("name") or ""}
 
 
 # --- Claude Code's credentials on the VPS -------------------------------------------------------------------------
