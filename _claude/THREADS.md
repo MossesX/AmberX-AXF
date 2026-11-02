@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| xLayout: Molly as ONE app (Brett Nov 2 13:46 ET: one banner, app menu, nav, context menu across AmberX + axHub + Console; IDE switch with draggable/resizable/dockable panes, pane limit, 10 preset layouts with preview; up to 3 plugin toolbars, Toolbar designer from settings hook + right-click any toolbar; open in main/floating/pane). Orchestrator `xlayout` (Big Dog), s1-s3 Fable, s4-s12 Opus. Replaces queued 'Molly: one app' | queued (needs a Fable session; VPS build account limited till Nov 3 07:00 UTC) | `claude/xlayout` (not made yet) | - | run s1-s3 on Fable | 2026-11-02 |
 | Molly: one interface for AmberX, axHub and the Dev Console (Brett Nov 2: combine them into one interface, keep them separate apps; Opus version named Molly at molly.amberxai.com, Fable version later) | deploy | `claude/project-thread-nxdu3m` | #230 merged | first VPS install failed (old GitHub token); installer now uses the GitHub App broker (follow-up PR); DNS A record molly needs Brett; UI Review shots | 2026-11-02 |
 | Whole-stack walkthrough plugin (Brett Nov 1: ~90 min narrated walkthrough of framework, console, AmberX, axHub, VPS, MCP in Amber's voice; AmberX plugin with editable voice + downloadable video) | review | `claude/project-thread-646cjb` | #229 | built; next: merge, then record on the VPS (`WALKTHROUGH=stack bash apps/amberx-droid/walkthrough/rebuild.sh`, veto call); plan `_claude/memory/docs/walkthrough-everything.md` (12 steps, ~7 h, Opus). Queued (waits for go): orchestrator `orch-step-click`, Brett can't click Build orchestrator steps | 2026-11-01 |
 | One default look from axHub + design theme precedence (Brett Nov 1: new default style + colour theme every app inherits, combined into a default design theme; a loaded design theme wins, a later style/colour pick overrides only its part; app Settings → Appearance selection only, plugin settings untouched; banners didn't compress). Opus now, Fable review later (claude.ai session: VPS account out of weekly credits) | review | `claude/one-look-opus` | #228 | UI Review shots (none from claude.ai); Fable review of the list in the report; Kotlin twin deferred (PORTING.md). Report `_claude/builds/reports/one-look-opus.md` | Nov 1 2026 |
@@ -132,6 +133,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### xLayout (orchestrator `xlayout`, profile Big Dog)
+- Asked (Brett Nov 2 2026 13:46 ET, in full in the orchestrator build's detail): Molly must look like ONE app. Plugin xLayout renders a single banner, application menu, navigation menu and context menu over the whole page, merging AmberX, axHub web and the Dev Console; IDE-style switch (draggable, resizable, dockable panes, pane limit, ~10 preset layouts with preview before apply); plugin toolbars (up to 3, show/hide + default location in the plugin's settings); Toolbar designer dialog opened from a settings hook and from right-click on any toolbar, items from every plugin/screen, opening in main area, floating window or (IDE on) a pane. Standalone apps stay exactly as they are.
+- Model: s1-s3 Fable (contracts/engines, cross-app GUI), s4-s12 Opus. Approve the Fable->Opus switch at s4.
+- Branch: `claude/xlayout` from main (not made yet). Read first: apps/molly, framework/core/engines/embed.ts, framework/schemas/asset-types.json, the Patches rule in _claude/rules/RULES.md (Patches only; Molly may merge chrome).
+- Checks: check-theme, check-controls, plugin-lifecycle check, project validate, Molly build, fixtures.
+- First message: "Carry on xlayout (Big Dog) from s1 on Fable: `AXF_BUILD_PROFILE=big-dog node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief xlayout`."
 
 ### Molly (`molly-opus`, Big Dog, Opus) — branch `claude/project-thread-nxdu3m`, PR #230
 - Asked: "Can we combine amberx, axhub, and console into 1 interface but still keep separate apps"; "Build new build profile for it called Big Dog"; "Do it in opus, I'll do another one in fable later, call the opus one molly at molly.amberxai.com". Brett said go (Nov 2) and that it can run without his approval.
