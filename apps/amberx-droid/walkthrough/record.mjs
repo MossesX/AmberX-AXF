@@ -162,12 +162,17 @@ function helpers(page, log) {
     // a view on a desktop AXF app (console, axHub): its nav link, else the banner search
     view: (name, label) => soft(`view ${name}`, async () => {
       await unring();
-      let l = page.locator(`[data-axf-view-link="${name}"], .fx-nav__item[title^="${name}"]`).filter({ visible: true }).first();
-      if (await l.count()) { await ring(l, label ?? name); await page.waitForTimeout(700); await l.click({ timeout: 4000 }); }
-      else {
+      const search = async () => {
         const q = page.locator('.fx-banner .fx-search input, .fx-search input').filter({ visible: true }).first();
         await q.click({ timeout: 4000 }); await q.fill(''); await q.pressSequentially(name, { delay: 40 }); await page.waitForTimeout(900); await q.press('Enter');
-      }
+      };
+      let l = page.locator(`[data-axf-view-link="${name}"], .fx-nav__item[title^="${name}"]`).filter({ visible: true }).first();
+      if (await l.count()) {
+        await ring(l, label ?? name); await page.waitForTimeout(700);
+        // A nav link can be in the DOM and "visible" yet covered (a collapsed group, the highlight ring, a narrow
+        // layout): fall back to a forced click, then to search, instead of leaving the scene on the wrong page.
+        await l.click({ timeout: 4000 }).catch(async () => { await unring(); await l.click({ timeout: 2000, force: true }); }).catch(search);
+      } else await search();
       await page.waitForTimeout(1800); await unring();
     }),
     hl: (sel, label) => soft(`hl ${sel}`, async () => { await ring(loc(sel), label); }),
