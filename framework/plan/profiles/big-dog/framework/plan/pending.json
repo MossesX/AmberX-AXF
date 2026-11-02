@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "pending@1",
- "updatedAt": "2026-11-02T14:39:53.408Z",
+ "updatedAt": "2026-11-02T18:49:26.602Z",
  "artifact": "",
  "items": [
   {
@@ -138,6 +138,85 @@
    "createdAt": "2026-11-02T12:53:49.841Z",
    "builtAt": "2026-11-02T14:39:53.393Z",
    "updatedAt": "2026-11-02T14:39:53.392Z",
+   "source": "console"
+  },
+  {
+   "id": "xlayout",
+   "title": "xLayout: Molly as one app (one banner, app menu, nav, context menu, toolbars) + IDE panes + plugin toolbars",
+   "detail": "Brett Nov 2 2026 13:46 ET: Molly is whack. Create application menus, navigation menus, context menus, toolbars and a banner that integrate all the apps (AmberX, axHub web, Dev Console): only ONE banner, application menu, navigation menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps. New plugin xLayout renders it that way. A switch makes it IDE style: draggable, resizable, dockable panes. Plugin toolbars: from the plugin's settings, show/hide up to 3 toolbars and set each default location. A hook in those settings opens a Toolbar designer dialog: pick items from a list of every plugin and screen; each item opens in the main area or a floating window, or (IDE mode on) a pane. Right-clicking any toolbar also has a hook to open the Toolbar designer. IDE mode limits the number of panes and offers ~10 predetermined pane layouts with a preview before applying. Molly-only: standalone, each app stays exactly as it is. Replaces the queued 'Molly: one app' item. Rules: assets/tokens only, framework controls, settings level toolbar, plugin lifecycle, UI Review.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
+     "at": "2026-11-02T18:49:26.580Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Fable] xlayout@1 asset type (Fable): chrome-merge model, pane tree, pane limit, 10 layout presets as data, 3 toolbar slots (visible, location), toolbar items + open target (main|floating|pane); asset-types.json, validators, reference engine, fixture",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Fable] Unified chrome engine (Fable): merge each app's app menu, nav, context menu, toolbars and banner widgets into one namespaced model; guests send chrome as data, host runs picks back (embed@1 takes, Molly host only)",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Fable] Pane engine (Fable): dock/split/drag/resize tree, pane limit, apply a preset with content kept, open-in-pane routing",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] xLayout plugin scaffold in Molly: plugin.json, install/uninstall, Settings → Plugins → xLayout sub-tab (level toolbar), IDE mode switch",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] One banner + application menu + navigation menu + context menu across the whole page in Molly",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Guests (AmberX, axHub web, Console) send menus/nav/context/toolbars as data under Molly and hide their own; standalone unchanged",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] IDE pane host: draggable, resizable, dockable panes; open-in-pane",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Layout picker: 10 preset pane layouts, preview before apply, pane limit enforced",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Plugin toolbars: up to 3 per plugin/screen, show/hide, default location, in the plugin's settings",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "20m"
+    },
+    {
+     "text": "[Opus] Toolbar designer dialog: items from every plugin and screen, open target main/floating/pane; opened from the settings hook and right-click on any toolbar",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Tests, check-theme/check-controls, help packs, lifecycle check",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] UI Review shots (desktop + phone), PR, THREADS",
+     "at": "2026-11-02T18:47:31.125Z",
+     "estimate": "20m"
+    }
+   ],
+   "createdAt": "2026-11-02T18:47:31.123Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-02T18:49:26.580Z",
    "source": "console"
   }
  ]
