@@ -247,6 +247,38 @@ mod.CREDIT_PROBE = lambda kind, key, model: (_ for _ in ()).throw(RuntimeError("
 r = c.post("/p/switch", json={"kind": "claude-code"}).json()
 check(r["switched"] is None and mod._load()["active"]["claude-code"] == spare, "switch: every account tapped leaves the active one alone")
 check(c.post("/p/switch", json={"kind": "nope"}).status_code == 400, "switch: unknown kind refused")
+# Manage Claude accounts: priority by drag and drop, per-key tests, the add-account wizard's step checks.
+cc = lambda: [k["id"] for k in c.get("/p/keys").json()["keys"] if k["kind"] == "claude-code"]  # noqa: E731
+ids = cc()
+r = c.post("/p/order", json={"ids": list(reversed(ids)) + ["ghost"]}).json()
+check([k["id"] for k in r["keys"] if k["kind"] == "claude-code"] == list(reversed(ids)) and "ghost" not in json.dumps(r), "order: accounts listed in the saved priority, unknown ids dropped")
+check([k["priority"] for k in r["keys"] if k["kind"] == "claude-code"] == list(range(1, len(ids) + 1)), "order: each row carries its priority")
+c.post("/p/order", json={"ids": [ids[-1]]})
+check(cc()[0] == ids[-1] and sorted(cc()) == sorted(ids), "order: ids left out keep their place after the listed ones")
+first = cc()[0]
+mod.CREDIT_PROBE = lambda kind, key, model: None
+db = mod._load(); db["active"]["claude-code"] = cc()[1]; mod._save(db)
+r = c.post("/p/switch", json={"kind": "claude-code"}).json()
+check(r["switched"] and r["switched"]["to"] == first, "order: a limit hit tries accounts in priority order")
+before = mod._load()["keys"][first]["key"]
+r = c.post(f"/p/keys/{first}/test", json={"part": "access"}).json()
+check(r["test"]["ok"] and mod._load()["keys"][first]["key"] == before and mod._load()["keys"][first]["accessTest"]["ok"], "test: the access token alone, nothing renewed")
+spent = len(SPENT)
+v = c.post("/p/validate", json={"step": "access", "key": "sk-ant-oat01-" + "c" * 40}).json()
+check(v["ok"] and v["email"].endswith("@example.com") and len(SPENT) == spent, "wizard: a working access token passes with its email, nothing renewed")
+v = c.post("/p/validate", json={"step": "access", "key": "sk-ant-oat01-" + "q" * 40}).json()
+check(not v["ok"] and "refused" in v["error"] and "qqqq" not in json.dumps(v), "wizard: a dead access token stops the wizard, not echoed")
+check(not c.post("/p/validate", json={"step": "access", "key": "nope"}).json()["ok"], "wizard: not an access token")
+v = c.post("/p/validate", json={"step": "access", "key": svc().active_key("claude-code")}).json()
+check(not v["ok"] and "already saved" in v["error"], "wizard: an account already saved is caught at the first step")
+R5 = "sk-ant-ort01-r" + "y" * 39
+v = c.post("/p/validate", json={"step": "credentials", "credentials": json.dumps({"claudeAiOauth": {"accessToken": "sk-ant-oat01-" + "z" * 40, "refreshToken": R5, "expiresAt": mod._now() - 1}})}).json()
+check(v["ok"] and v["expired"] and R5 not in SPENT, "wizard: an expired credentials file passes the paste step without spending its refresh token")
+check(not c.post("/p/validate", json={"step": "credentials", "credentials": "{nope"}).json()["ok"], "wizard: a paste that isn't the credentials file")
+GOOD.add("sk-ant-api03-" + "f" * 40)
+check(c.post("/p/validate", json={"step": "api", "key": "sk-ant-api03-" + "f" * 40}).json()["ok"], "wizard: a working API key passes")
+check(not c.post("/p/validate", json={"step": "api", "key": BAD}).json()["ok"], "wizard: a dead API key stops the wizard")
+check(not c.post("/p/validate", json={"step": "nope"}).json()["ok"], "wizard: unknown step")
 plugin_services.withdraw("ai-keys")
 check(providers.resolve_key({"kind": "anthropic", "key": "own"}) == "own", "plugin off: the profile's own key applies")
 print(f"all {ok} checks passed")

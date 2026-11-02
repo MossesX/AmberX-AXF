@@ -385,8 +385,14 @@ is active at a time, and it drives **both** the console and the VPS.
   to `/root/.claude/.credentials.json` (directly, or through Vinny with your approval on axHub; **Write to the VPS
   now** forces it). Every new Claude Code session on the VPS, and every headless session the console or axHub starts,
   then runs on that account.
-- **Add an account:** sign in to it once with `/login` in Claude Code anywhere, copy `~/.claude/.credentials.json`,
-  and paste it into AI keys → Add → **Credentials file** ([section 6](#6-claude-subscription-tokens)).
+- **Add an account:** console → long-press → **Manage Claude accounts…** → **Add account**. The wizard shows every
+  command: a separate sign-in on the VPS (`CLAUDE_CONFIG_DIR=~/.claude-add claude`, then `/login`), printing its
+  credentials, pasting them in, and deleting the extra sign-in afterwards. Each key is checked the moment it's
+  entered and the wizard won't go on until it passes. AI keys → Add → **Credentials file** still works too
+  ([section 6](#6-claude-subscription-tokens)).
+- **Priority:** in **Manage Claude accounts** every account is a row; expand it to test the access token and the
+  pair separately and see the email, plan and renewal. Drag rows by their handle (or the up / down buttons) to set
+  the order: when the active account hits a limit, the next one down that still answers takes over.
 - **Commands on the VPS through axHub** (Vinny, Auto fix, `vps.run`) don't use a Claude account: they run as root
   over axHub's SSH service after your approval. Only the Claude Code a command *starts* uses the active account.
 - **See which account is live:** the **Claude badge** on the banner (green = working, amber = out of credits); its

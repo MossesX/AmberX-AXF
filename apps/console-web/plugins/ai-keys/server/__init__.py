@@ -19,7 +19,9 @@ so no token is ever in a command or an approval page).
 Routes: GET /keys · POST /keys {label, key} · PATCH /keys/{id} {label} · DELETE /keys/{id} · POST /keys/{id}/test ·
 POST /active {kind, id}  (id "" = no active key of that kind: the assistant profile's own key applies again) ·
 POST /keys {label, key, refresh} | {label, credentials} for a pair · PATCH /keys/{id} {refresh} adds the refresh token
-to an older single token · GET /vps · POST /vps/sync · POST /switch {kind, reason}
+to an older single token · GET /vps · POST /vps/sync · POST /switch {kind, reason} · POST /order {ids} (account
+priority) · POST /validate {step, …} (the add-account wizard checks one step without saving or renewing anything) ·
+POST /keys/{id}/test {part: "access"} tests only the access token (no renewal)
 
 Several Claude accounts (Brett, Nov 2 2026): every subscription pair shows the email of the Claude account it belongs to
 (Anthropic's OAuth profile, looked up when the pair is added, re-tested or first refreshed; never blocks a save). When a
@@ -76,7 +78,15 @@ def _load() -> dict[str, Any]:
     keys = raw.get("keys") if isinstance(raw.get("keys"), dict) else {}
     active = raw.get("active") if isinstance(raw.get("active"), dict) else {}
     vps = raw.get("vps") if isinstance(raw.get("vps"), dict) else {}
-    return {"keys": keys, "active": {k: str(active.get(k) or "") for k in KINDS}, "vps": vps}
+    order = [str(x) for x in raw.get("order") or [] if str(x) in keys]
+    return {"keys": keys, "active": {k: str(active.get(k) or "") for k in KINDS}, "vps": vps, "order": order}
+
+
+def ranked(db: dict[str, Any], kind: str) -> list[str]:
+    """Ids of `kind` in priority order: the saved order first, then the rest newest first."""
+    ids = [k for k, v in db["keys"].items() if v.get("kind") == kind]
+    pos = {k: i for i, k in enumerate(db.get("order") or [])}
+    return sorted(ids, key=lambda k: (pos.get(k, len(pos)), -(db["keys"][k].get("createdAt") or 0)))
 
 
 def _save(db: dict[str, Any]) -> None:
@@ -303,13 +313,15 @@ def public(kid: str, rec: dict[str, Any], active: dict[str, str]) -> dict[str, A
             "refreshHint": ("…" + str(rec["refresh"])[-4:]) if rec.get("refresh") else "",
             "expiresAt": rec.get("expiresAt"), "refreshedAt": rec.get("refreshedAt"), "refreshError": rec.get("refreshError"),
             "subscriptionType": rec.get("subscriptionType"), "email": rec.get("email") or "", "accountName": rec.get("accountName") or "",
-            "limitedAt": rec.get("limitedAt")}
+            "limitedAt": rec.get("limitedAt"), "org": rec.get("org") or "", "accessTest": rec.get("accessTest")}
 
 
 def listing(db: dict[str, Any] | None = None) -> dict[str, Any]:
     db = db or _load()
-    rows = [public(k, v, db["active"]) for k, v in db["keys"].items()]
-    rows.sort(key=lambda r: (r["kind"] or "", -(r["createdAt"] or 0)))
+    rows = []
+    for kind in KINDS:
+        for i, k in enumerate(ranked(db, kind)):
+            rows.append({**public(k, db["keys"][k], db["active"]), "priority": i + 1})
     return {"keys": rows, "active": db["active"], "kinds": [{"id": k, "label": v} for k, v in KINDS.items()], "vps": vps_public(db)}
 
 
@@ -453,11 +465,19 @@ def delete_key(kid: str) -> dict[str, Any]:
 
 
 @router.post("/keys/{kid}/test")
-def test_key(kid: str) -> dict[str, Any]:
+def test_key(kid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
     with _lock:
         rec = _load()["keys"].get(kid)
     if not rec:
         raise _err(404, "no such key")
+    if (body or {}).get("part") == "access":  # just the access token: one tiny turn, nothing renewed
+        res = run_test(rec["kind"], rec["key"])
+        with _lock:
+            db = _load()
+            if kid in db["keys"]:
+                db["keys"][kid]["accessTest"] = res
+                _save(db)
+        return {"test": res, **listing(db)}
     rotated = None
     if rec["kind"] == "claude-code" and rec.get("refresh"):
         res, rotated = validate_pair({k: rec.get(k) for k in ("key", "refresh", "expiresAt", "scopes", "subscriptionType")})
@@ -527,7 +547,7 @@ class KeysService:
         with _lock:
             db = _load()
         was = db["active"].get(kind) or ""
-        cands = sorted(((k, v) for k, v in db["keys"].items() if v.get("kind") == kind and k != was and is_pair(v)), key=lambda kv: -(kv[1].get("createdAt") or 0))
+        cands = [(k, db["keys"][k]) for k in ranked(db, kind) if k != was and is_pair(db["keys"][k])]  # priority order (drag to set)
         tried: list[dict[str, Any]] = []
         for kid, rec in cands:
             err = ""
@@ -601,6 +621,62 @@ def switch_account(body: dict[str, Any]) -> dict[str, Any]:
     else:
         cx.log("system", f"AI keys: {lab} hit a limit and no other saved account could take over", "error")
     return {**r, "account": KeysService().active_account(kind), "vps": vps_public(_load())}
+
+
+@router.post("/order")
+def set_order(body: dict[str, Any]) -> dict[str, Any]:
+    """Account priority (drag and drop in Manage Claude accounts): `ids` first to last. Unknown ids are dropped; saved
+    keys left out keep their place after the listed ones. The switch on a limit hit tries accounts in this order."""
+    ids = [str(x) for x in body.get("ids") or [] if isinstance(x, str)]
+    with _lock:
+        db = _load()
+        seen: set[str] = set()
+        order = [k for k in ids if k in db["keys"] and not (k in seen or seen.add(k))]
+        db["order"] = order + [k for k in db["order"] if k not in seen]
+        _save(db)
+    return listing(db)
+
+
+@router.post("/validate")
+def validate_step(body: dict[str, Any]) -> dict[str, Any]:
+    """One step of the add-account wizard, checked at once without saving or renewing anything (a refresh token can only
+    be checked by renewing it, so the wizard's last step saves through POST /keys). Steps: `access` {key} · `credentials`
+    {credentials} · `api` {key}. Answers {ok, error, email?, name?, expired?}; a key is never echoed."""
+    step = str(body.get("step") or "")
+    out: dict[str, Any] = {"ok": False, "error": ""}
+    if step == "api":
+        key = re.sub(r"\s+", "", str(body.get("key") or ""))
+        if not KEY_RE.match(key) or kind_of(key) != "anthropic":
+            return {**out, "error": "that isn't an Anthropic API key (it starts with sk-ant-api…)"}
+        with _lock:
+            if _dupe(_load(), key):
+                return {**out, "error": "that key is already saved"}
+        t = run_test("anthropic", key)
+        return {**out, "ok": t["ok"], "error": t.get("error") or "", "detail": t.get("detail") or ""}
+    if step == "access":
+        pair = {"key": re.sub(r"\s+", "", str(body.get("key") or "")), "refresh": "", "expiresAt": None}
+        if not pair["key"].startswith("sk-ant-oat") or not KEY_RE.match(pair["key"]):
+            return {**out, "error": "that isn't an access token (it starts with sk-ant-oat…)"}
+    elif step == "credentials":
+        try:
+            pair = parse_pair({"credentials": body.get("credentials")}) or {}
+        except HTTPException as e:
+            return {**out, "error": str(e.detail)}
+    else:
+        return {**out, "error": "step is one of access, credentials, api"}
+    with _lock:
+        if _dupe(_load(), pair["key"], pair.get("refresh", "")):
+            return {**out, "error": "that account's token is already saved"}
+    expired = bool(pair.get("expiresAt")) and pair["expiresAt"] <= _now()
+    if not expired:
+        t = run_test("claude-code", pair["key"])
+        if not t["ok"]:
+            return {**out, "error": f"the access token was refused: {_hide(t.get('error') or 'no answer', pair['key'], pair.get('refresh', ''))}"}
+    try:
+        prof = PROFILER(pair["key"]) if not expired else {}
+    except Exception:  # noqa: BLE001 — the email is a nicety, never a reason to stop
+        prof = {}
+    return {"ok": True, "error": "", "expired": expired, "email": prof.get("email") or "", "name": prof.get("name") or ""}
 
 
 # --- Claude Code's credentials on the VPS -------------------------------------------------------------------------
