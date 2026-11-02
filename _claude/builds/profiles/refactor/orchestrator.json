@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-02T03:37:45.154Z",
+ "updatedAt": "2026-11-02T05:32:27.322Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -8467,15 +8467,15 @@
    "title": "Whole-stack walkthrough plugin (AmberX, editable voice, video download)",
    "category": "AmberX",
    "detail": "Plan: _claude/memory/docs/walkthrough-everything.md. Brett Nov 1: 90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/project-thread-646cjb",
    "pr": "229",
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "updatedAt": "2026-11-01T22:58:58.048Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-02T05:32:27.281Z",
+   "builtAt": "2026-11-02T05:32:27.282Z",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -8998,8 +8998,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T05:32:27.280Z",
      "note": "",
      "uid": "st-mvyevgxe1eg5fj"
     }
