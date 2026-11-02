@@ -14,6 +14,18 @@ import { fileURLToPath } from 'node:url';
 const OUT = process.env.OUT || '/out';
 const { CHAPTERS, WALKTHROUGH } = await loadWalkthrough();
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean);
+// RANDOM_LOOK=<chapter ids>: those chapters are recorded under a random design package (LOOK_POOL_B64: id -> slots, from
+// rebuild.sh). Only this browser's copy of the hub's appearance document is rewritten, so the shared look never changes.
+const RANDOM_LOOK = (process.env.RANDOM_LOOK || '').split(',').filter(Boolean);
+const LOOK_POOL = (() => { try { return JSON.parse(Buffer.from(process.env.LOOK_POOL_B64 || '', 'base64').toString() || '{}'); } catch { return {}; } })();
+let forcedLook = null; // { id, slots } while a RANDOM_LOOK chapter records
+let lastLook = '';
+function pickLook() {
+  const ids = Object.keys(LOOK_POOL).filter((id) => id !== lastLook);
+  if (!ids.length) return null;
+  const id = ids[Math.floor(Math.random() * ids.length)]; lastLook = id;
+  return { id, slots: LOOK_POOL[id] };
+}
 // Devices a chapter can be recorded on (chapter.device, default the walkthrough's): the phone layout with demo data, or
 // a desktop browser for the console and axHub (read live, every write answered in the browser) and the explainer slides.
 const DEVICES = {
@@ -92,6 +104,15 @@ async function contextFor(kind) {
   await c.route(`${EXPLAINER}**`, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: explainerHtml() }));
   if (d.data === 'demo') demo = await installDemoHub(c, seed, hubLog);
   else await installReadOnly(c, hubLog);
+  // Registered last so it wins: the appearance document as this recording should see it (RANDOM_LOOK chapters).
+  await c.route(/\/data\/shared\/settings\/appearance\.json/, async (route) => {
+    if (!forcedLook || route.request().method() !== 'GET') return route.fallback();
+    const res = await route.fetch().catch(() => null);
+    let doc = { $axf: 'appearance@1' };
+    try { if (res && res.ok()) doc = await res.json(); } catch { /* keep the frame */ }
+    doc.slots = { ...(doc.slots || {}), ...forcedLook.slots };
+    return route.fulfill({ status: 200, contentType: 'application/json', headers: { 'cache-control': 'no-store' }, body: JSON.stringify(doc) });
+  });
   contexts[kind] = c;
   return c;
 }
@@ -252,13 +273,14 @@ for (const ch of CHAPTERS) {
   const kind = deviceOf(ch);
   VIEW = DEVICES[kind].viewport;
   const ctx = await contextFor(kind);
+  forcedLook = RANDOM_LOOK.includes(ch.id) ? pickLook() : null;
   const page = await ctx.newPage();
   const t0 = Date.now();
-  const log = [`## ${ch.id}`];
+  const log = [`## ${ch.id}${forcedLook ? ` (look: ${forcedLook.id})` : ''}`];
   const h = helpers(page, log);
   await page.goto(WALKTHROUGH.url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch((e) => log.push(`  ! open: ${e.message}`));
   await page.waitForTimeout(5000);
-  const look = await designPackageOf(page);
+  const look = forcedLook ? forcedLook.id : await designPackageOf(page);
   if (ch.start && ch.start !== 'home' && kind === 'phone') await h.go(ch.start);
   const lead = (Date.now() - t0) / 1000;
   const scenes = [];

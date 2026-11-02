@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-02T18:49:26.602Z",
+ "updatedAt": "2026-11-02T19:41:23.535Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -9075,6 +9075,61 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mvyfzsuq06fyyb"
+    }
+   ]
+  },
+  {
+   "id": "walkthrough-random-look",
+   "title": "Walkthrough: random design package for stack chapters 5-10 (recording-only look)",
+   "category": "",
+   "detail": "Brett Nov 2 2026 14:36 ET: for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/walkthrough-random-look",
+   "pr": "",
+   "createdAt": "2026-11-02T19:41:22.804Z",
+   "updatedAt": "2026-11-02T19:41:23.513Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "RANDOM_LOOK=<chapter ids> in rebuild.sh + record.mjs: design-package pool, random pack per chapter, appearance GET rewritten in the recorder browser only, look recorded in segments",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-02T19:41:23.513Z",
+     "note": "",
+     "uid": "st-mvznzuvs03bn32"
+    },
+    {
+     "id": "s2",
+     "text": "Re-record cli, console, plugins, builds, guardrails, agents on the VPS with RANDOM_LOOK; publish",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvznzuvs047lx2"
     }
    ]
   }
