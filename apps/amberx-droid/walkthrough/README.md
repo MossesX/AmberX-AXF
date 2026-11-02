@@ -57,3 +57,12 @@ Where things live: work files `/opt/amberx-walkthrough-rec/` (voice, audio cache
 files in AmberX's data folder `/opt/amberx-web/.app/data/walkthrough/`, served by the AmberX server at
 `/api/walkthrough/*` behind the hub's wall. The recorder account is `/root/.tour-recorder.env` (root only). The image is
 the AmberX Tour recorder's (`amberx-tour-recorder`, built from `/opt/amberx-tour/recorder`).
+
+## One video per chapter (Nov 2 2026)
+
+Assembly keeps every chapter as its own video, `publish/chapters/<id>.mp4`, listed in `publish/segments.json`
+(walkthrough-segments@1: length, version, design package shown while it was recorded, recorded and cut times). A chapter
+is cut again only when what goes into it changed (its recording, cuts, clips, words or output settings), and its version
+goes up; the full video is the chapter videos joined. `ONLY=<chapter> bash rebuild.sh` re-records just that chapter.
+AmberX → Walkthrough → **Chapters** lists them, plays one, and sends **Re-record** for one chapter as a veto call
+(AmberX server `POST /api/walkthrough/<id>/render {chapter}` → console → axHub `vps.run`).

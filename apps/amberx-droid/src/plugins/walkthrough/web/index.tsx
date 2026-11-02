@@ -12,6 +12,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Segmented, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import type { AxfRuntime } from '../../../axf/core';
 import { DEFAULT_WALKTHROUGH, SPEEDS, WALKTHROUGH_BASE, chapterAt, clock, nextStart, parseIndex, parseList, previousStart, sizeLabel, speedOf, type WalkthroughEntry, type WalkthroughIndex } from './core';
+import { ChaptersView } from './chapters';
 import { VoiceEditor } from './voice';
 import './walkthrough.css';
 
@@ -170,7 +171,7 @@ export function WalkthroughPage() {
   const rt = useRuntime();
   const list = useList();
   const [pick, setPick] = useState<string>(() => String(rt.settings.get(K.pick) || DEFAULT_WALKTHROUGH));
-  const [mode, setMode] = useState<'watch' | 'voice'>('watch');
+  const [mode, setMode] = useState<'watch' | 'chapters' | 'voice'>('watch');
   const entry = list.find((w) => w.id === pick) ?? list[0] ?? { id: DEFAULT_WALKTHROUGH, title: 'AmberX walkthrough', duration: 0, recordedAt: '', base: '' };
   const s = useIndex(entry.base);
   const choose = (id: string) => { setPick(id); rt.settings.set(K.pick, id); };
@@ -191,10 +192,10 @@ export function WalkthroughPage() {
           <Segmented label="Which walkthrough" value={entry.id} onChange={(v) => { choose(v); pending = null; }}
             options={list.map((w) => ({ value: w.id, label: w.duration ? `${w.title} · ${clock(w.duration)}` : w.title }))} />
         )}
-        <Segmented label="Watch or edit" value={mode} onChange={(v) => setMode(v === 'voice' ? 'voice' : 'watch')}
-          options={[{ value: 'watch', label: 'Watch' }, { value: 'voice', label: 'Edit the voice' }]} />
+        <Segmented label="Watch or edit" value={mode} onChange={(v) => setMode(v === 'voice' || v === 'chapters' ? v : 'watch')}
+          options={[{ value: 'watch', label: 'Watch' }, { value: 'chapters', label: 'Chapters' }, { value: 'voice', label: 'Edit the voice' }]} />
       </div>
-      {mode === 'voice' ? <VoiceEditor key={entry.id} id={entry.id} base={entry.base} /> : (
+      {mode === 'chapters' ? <ChaptersView key={entry.id} id={entry.id} base={entry.base} /> : mode === 'voice' ? <VoiceEditor key={entry.id} id={entry.id} base={entry.base} /> : (
         <>
           {s.phase === 'loading' && <div className="axp-walkthrough__skeleton" aria-busy="true" aria-label="Loading the walkthrough" />}
           {s.phase === 'missing' && <p className="fx-muted">This walkthrough hasn't been recorded on this server yet. Edit the voice, then Re-record, or an admin runs <code>WALKTHROUGH={entry.id} bash apps/amberx-droid/walkthrough/rebuild.sh</code>.</p>}
@@ -209,7 +210,7 @@ export function WalkthroughPage() {
 export const library: AxfWebLibrary = {
   id: WALKTHROUGH_ID,
   label: 'Walkthrough',
-  version: '0.2.0',
+  version: '0.3.0',
   builtWith: { model: 'opus', builtAt: '2026-11-01' },
   views: { [VIEW]: { title: 'Walkthrough', icon: 'play', keywords: ['walkthrough', 'video', 'tour', 'help', 'how to'], render: () => <WalkthroughPage /> } },
   nav: { label: 'Help', items: [{ id: VIEW, label: 'Walkthrough', icon: 'play', view: VIEW }] },

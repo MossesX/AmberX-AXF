@@ -340,6 +340,9 @@ rv = c.post("/api/walkthrough/stack/render", headers=AP, json={"voiceOnly": True
 check("walkthrough re-voice: sent to the console with clean edits", rv.status_code == 200 and fc.calls[-1] == ("POST", main.WALKTHROUGH_RENDER,
       {"walkthrough": "stack", "voiceOnly": True, "overrides": {"voice": "en_US-amy-medium", "speed": None, "lines": {"open-0": "Yo kid"}}}), (rv.status_code, fc.calls[-1:]))
 check("walkthrough re-voice: hub admins only", c.post("/api/walkthrough/stack/render", headers={**signed("ann", role="user", perms=""), "origin": ORIGIN}, json={}).status_code == 403)
+rc = c.post("/api/walkthrough/stack/render", headers=AP, json={"voiceOnly": True, "chapter": "veto"})
+check("walkthrough: one chapter re-recorded (never voice-only)", rc.status_code == 200 and fc.calls[-1][2] == {"walkthrough": "stack", "voiceOnly": False, "overrides": {"voice": None, "speed": None, "lines": {}}, "chapter": "veto"}, fc.calls[-1:])
+check("walkthrough: bad chapter id refused", c.post("/api/walkthrough/stack/render", headers=AP, json={"chapter": "../x"}).status_code == 400)
 check("walkthrough re-voice: bad id refused", c.post("/api/walkthrough/Bad!/render", headers=AP, json={}).status_code == 404)
 main.console_client = _real
 
@@ -514,6 +517,18 @@ dl = c.get("/api/walkthrough/stack/walkthrough-720.mp4?download=1", headers=A)
 check("walkthrough download copy saved as a file", dl.status_code == 200 and 'attachment; filename="axf-stack-walkthrough-720.mp4"' == dl.headers.get("content-disposition"), dl.headers)
 check("walkthrough folders serve only their own files", c.get("/api/walkthrough/stack/secret.mp4", headers=A).status_code == 404
       and c.get("/api/walkthrough/amberx-app/chapters.json", headers=A).status_code == 404 and c.get("/api/walkthrough/Bad_ID/chapters.json", headers=A).status_code == 404)
+# one video per chapter (chapters/<id>.mp4, versions in segments.json)
+(wt / "stack" / "chapters").mkdir(exist_ok=True)
+(wt / "stack" / "chapters" / "veto.mp4").write_bytes(b"v" * 32)
+(wt / "stack" / "segments.json").write_text('{"chapters": [{"id": "veto", "version": 2}]}')
+(wt / "chapters").mkdir(exist_ok=True)
+(wt / "chapters" / "home.mp4").write_bytes(b"h" * 16)
+check("walkthrough segments list served", c.get("/api/walkthrough/stack/segments.json", headers=A).json()["chapters"][0]["version"] == 2)
+cv = c.get("/api/walkthrough/stack/chapters/veto.mp4?download=1", headers=A)
+check("chapter video served, downloads as a file", cv.status_code == 200 and cv.headers.get("content-type") == "video/mp4" and 'filename="axf-stack-veto.mp4"' in cv.headers.get("content-disposition", ""), cv.status_code)
+check("AmberX tour chapter video at its id", c.get("/api/walkthrough/amberx-app/chapters/home.mp4", headers=A).status_code == 200)
+check("chapter videos: only <id>.mp4, behind the wall", c.get("/api/walkthrough/stack/chapters/veto.txt", headers=A).status_code == 404
+      and c.get("/api/walkthrough/stack/chapters/nope.mp4", headers=A).status_code == 404 and c.get("/api/walkthrough/stack/chapters/veto.mp4").status_code == 401)
 
 print(f"amberx server: {ok} passed, {fail} failed")
 sys.exit(1 if fail else 0)

@@ -90,7 +90,7 @@ USER_ROUTES = frozenset({("GET", "/api/health"), ("GET", "/api/me"), ("GET", "/a
                          ("POST", "/api/ai/prompt")})
 # The recorded walkthrough (walkthrough/rebuild.sh writes these into $AMBERX_DATA_DIR/walkthrough); nothing else is served.
 WALKTHROUGH_FILES = {"walkthrough.mp4": "video/mp4", "walkthrough.vtt": "text/vtt", "chapters.json": "application/json",
-                     "poster.jpg": "image/jpeg", "script.json": "application/json"}
+                     "poster.jpg": "image/jpeg", "script.json": "application/json", "segments.json": "application/json"}
 WALKTHROUGH_COPY = re.compile(r"^walkthrough-(\d{3,4})\.mp4$")  # smaller download copies (walkthrough-720.mp4)
 WALKTHROUGH_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")  # other walkthroughs: $AMBERX_DATA_DIR/walkthrough/<id>/
 WALKTHROUGH_DEFAULT = "amberx-app"  # the AmberX tour, at the folder's top level
@@ -277,7 +277,12 @@ def make_app(router: Router | None = None) -> FastAPI:
         if not WALKTHROUGH_ID.match(wid):
             raise HTTPException(404, "no such walkthrough")
         b = await body_of(request)
-        body = {"walkthrough": wid, "voiceOnly": b.get("voiceOnly") is not False, "overrides": walkthrough_edits(b.get("overrides"))}
+        body: dict[str, Any] = {"walkthrough": wid, "voiceOnly": b.get("voiceOnly") is not False, "overrides": walkthrough_edits(b.get("overrides"))}
+        chapter = b.get("chapter")
+        if chapter is not None:  # re-record one chapter: the other chapters' videos are kept
+            if not isinstance(chapter, str) or not WALKTHROUGH_ID.match(chapter):
+                raise HTTPException(400, "bad chapter id")
+            body.update(chapter=chapter, voiceOnly=False)
         c = console_client()
         if c is None:
             raise HTTPException(503, "The console isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
@@ -287,6 +292,20 @@ def make_app(router: Router | None = None) -> FastAPI:
             raise HTTPException(502, f"The console didn't take it: {str(e)[:300]}") from None
         r = r if isinstance(r, dict) else {}
         return {"state": str(r.get("state") or "sent")[:20], "message": str(r.get("message") or "")[:400]}
+
+    @app.get("/api/walkthrough/{wid}/chapters/{name}")
+    def walkthrough_chapter(wid: str, name: str, download: int = 0) -> Any:
+        """One chapter's own video (chapters/<chapter>.mp4, listed with its version in segments.json)."""
+        if not WALKTHROUGH_ID.match(wid) or not name.endswith(".mp4") or not WALKTHROUGH_ID.match(name[:-4]):
+            raise HTTPException(404, "no such chapter video")
+        folder = DATA / "walkthrough" / ("" if wid == WALKTHROUGH_DEFAULT else wid) / "chapters"
+        f = folder / name
+        if not f.is_file():
+            raise HTTPException(404, "that chapter hasn't been cut into its own video yet")
+        headers = {"Cache-Control": "private, max-age=300"}
+        if download:
+            headers["Content-Disposition"] = f'attachment; filename="axf-{wid}-{name}"'
+        return FileResponse(f, media_type="video/mp4", headers=headers)
 
     @app.get("/api/walkthrough/{wid}/{name}")
     def walkthrough_other(wid: str, name: str, download: int = 0) -> Any:
