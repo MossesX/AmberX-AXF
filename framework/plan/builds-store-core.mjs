@@ -726,9 +726,12 @@ export function verifyNothingLost(sources, store) {
  * A rename with an empty title is refused. Ids never change.
  */
 export const DRAFT_OPS = ['reorder-steps', 'reorder-builds', 'rename-build', 'rename-step', 'rename-profile', 'divide-step', 'harvest', 'restore-default'];
+/** Ops applied at once only, never drafted: { op: 'step-done', build, uid, done } ticks a step (or takes the tick off). */
+export const NOW_OPS = ['step-done'];
 
-export function validateOp(op) {
-  if (!op || !DRAFT_OPS.includes(op.op)) throw new Error(`unknown draft op ${op?.op}`);
+export function validateOp(op, { now = false } = {}) {
+  if (!op || !(DRAFT_OPS.includes(op.op) || (now && NOW_OPS.includes(op.op)))) throw new Error(`unknown ${now ? '' : 'draft '}op ${op?.op}`);
+  if (op.op === 'step-done' && (!str(op.build) || !str(op.uid))) throw new Error('tick a step by its build and uid');
   if (op.op === 'rename-build' && !str(op.title).trim()) throw new Error('a build needs a name');
   if (op.op === 'rename-step' && !str(op.title).trim()) throw new Error('a step needs a name');
   if (op.op === 'rename-profile' && !str(op.name).trim()) throw new Error('a profile needs a name');
@@ -765,8 +768,8 @@ export function previewDraft(store, profile) {
 
 /** Apply ops at once (no draft): the Builds view's renames and reorders. Same rules as a draft. */
 export function applyNow(store, profile, ops, { now = nowIso(), by = 'console' } = {}) {
-  for (const op of ops) validateOp(op);
-  const r = applyOps(clone(store), profile, ops, { now, by });
+  for (const op of ops) validateOp(op, { now: true });
+  const r = applyOps(clone(store), profile, ops, { now, by, direct: true });
   r.store.updatedAt = now;
   return r;
 }
@@ -783,14 +786,20 @@ export function applyDraft(store, profile, { now = nowIso(), by = 'console' } = 
 
 function stepIdIn(b, want) { const ids = new Set(b.steps.map((s) => s.id)); if (want && !ids.has(want)) return want; let n = b.steps.length + 1; while (ids.has(`s${n}`)) n += 1; return `s${n}`; }
 
-function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false } = {}) {
+function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false, direct = false } = {}) {
   const log = [];
   let profileName = null;
   const get = (id) => { const b = s.builds.find((x) => x.id === id && !x.deleted); if (!b) throw new Error(`no build "${id}"`); return b; };
   const touched = new Set();
   for (const op of ops) {
-    validateOp(op);
+    validateOp(op, { now: direct });
     switch (op.op) {
+      case 'step-done': {
+        const b = get(op.build); const st = b.steps.find((x) => x.uid === op.uid); if (!st) throw new Error(`no step ${op.uid} in ${b.id}`);
+        st.done = op.done !== false; st.doneAt = st.done ? now : ''; st.updatedAt = now; touched.add(b.id);
+        if (b.status !== 'complete' && b.steps.every((x) => x.skip || x.done)) b.builtAt = now; // the status itself follows below, like every op
+        log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break;
+      }
       case 'reorder-steps': {
         const b = get(op.build);
         const by_ = new Map(b.steps.map((x) => [x.uid, x]));

@@ -193,6 +193,16 @@ t('rename through the store: id unchanged, empty refused', () => {
   assert.equal(pend.loadPending().items.find((x) => x.id === 'from-cli').title, 'Named');
   assert.throws(() => c.applyNow(io.loadStore(), 'refactor', [{ op: 'rename-build', id: 'from-cli', title: '' }]), /needs a name/);
 });
+t('a step is ticked at once from the Builds page (never drafted), and the build status follows', () => {
+  const uid = () => io.loadStore().builds.find((x) => x.id === 'from-cli').steps[0].uid;
+  io.withStore((s) => c.applyNow(s, 'refactor', [{ op: 'step-done', build: 'from-cli', uid: uid(), done: false }]).store, { by: 'test', action: 'tick' });
+  let b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, false); assert.equal(b.status, 'running');
+  assert.equal(orchView().builds.find((x) => x.id === 'from-cli').steps[0].done, false);
+  io.withStore((s) => c.applyNow(s, 'refactor', [{ op: 'step-done', build: 'from-cli', uid: uid(), done: true }]).store, { by: 'test', action: 'tick' });
+  b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, true); assert.equal(b.status, 'complete'); assert.ok(b.steps[0].doneAt);
+  assert.throws(() => c.addDraftOp(io.loadStore(), 'refactor', { op: 'step-done', build: 'from-cli', uid: uid() }), /unknown draft op/);
+  assert.throws(() => c.applyNow(io.loadStore(), 'refactor', [{ op: 'step-done', build: 'from-cli', uid: 'nope' }]), /no step/);
+});
 t('every write is versioned in the journal and can be restored', () => {
   const s = io.loadStore(); assert.ok(s.rev >= 4, `rev ${s.rev}`);
   const h = io.journalOf('from-cli'); assert.ok(h.length >= 3);

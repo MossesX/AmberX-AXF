@@ -3817,11 +3817,15 @@
    "subPrompts": [
     {
      "text": "[Opus] Repro on the live console (desktop + phone): which click fails (tick, row open, model, move) and why",
-     "at": "2026-11-01T23:09:37.032Z"
+     "at": "2026-11-01T23:09:37.032Z",
+     "done": true,
+     "doneAt": "2026-11-02T00:30:06.083Z"
     },
     {
      "text": "[Opus] Fix (nested grid click bubbling, disabled state or tap target) + test",
-     "at": "2026-11-01T23:09:37.032Z"
+     "at": "2026-11-01T23:09:37.032Z",
+     "done": true,
+     "doneAt": "2026-11-02T00:30:06.534Z"
     },
     {
      "text": "[Opus] UI Review shots, PR",
@@ -3830,7 +3834,7 @@
    ],
    "createdAt": "2026-11-01T23:09:37.031Z",
    "builtAt": "",
-   "updatedAt": "2026-11-01T23:09:37.031Z",
+   "updatedAt": "2026-11-02T00:30:06.535Z",
    "source": "console"
   }
  ]
