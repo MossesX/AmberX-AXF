@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "pending@1",
- "updatedAt": "2026-11-02T05:32:27.322Z",
+ "updatedAt": "2026-11-02T12:58:09.735Z",
  "artifact": "",
  "items": [
   {
@@ -82,6 +82,60 @@
    "createdAt": "2026-11-02T02:43:38.594Z",
    "builtAt": "",
    "updatedAt": "2026-11-02T03:37:45.139Z",
+   "source": "console"
+  },
+  {
+   "id": "walkthrough-chapters",
+   "title": "Walkthrough: one video per chapter, re-record a chapter, Chapters view",
+   "detail": "Brett Nov 2: break each chapter into its own video so one chapter can be re-recorded alone; a view listing every chapter with length and the version of its video segment.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Assembly keeps each chapter video: publish chapters/<id>.mp4 + segments.json (length, version, recordedAt, hash)",
+     "at": "2026-11-02T12:53:49.841Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-02T12:55:30.051Z"
+    },
+    {
+     "text": "[Opus] Re-record one chapter: ONLY=<id> records + cuts just that chapter, bumps its version, re-joins the full video from the kept segments",
+     "at": "2026-11-02T12:53:49.841Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-02T12:55:30.798Z"
+    },
+    {
+     "text": "[Opus] Server: serve segments.json and chapter videos; render route takes a chapter",
+     "at": "2026-11-02T12:53:49.841Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-02T12:56:18.967Z"
+    },
+    {
+     "text": "[Opus] Chapters view in the Walkthrough plugin: chapter, length, version, date, play, Re-record",
+     "at": "2026-11-02T12:53:49.841Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-02T12:58:09.311Z"
+    },
+    {
+     "text": "[Opus] Tests (server, molly-guide, app), checks, PR",
+     "at": "2026-11-02T12:53:49.841Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-02T12:58:09.721Z"
+    },
+    {
+     "text": "[Opus] Split the published video into chapters on the VPS (assembly only)",
+     "at": "2026-11-02T12:53:49.841Z",
+     "estimate": "10 min"
+    }
+   ],
+   "createdAt": "2026-11-02T12:53:49.841Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-02T12:58:09.721Z",
    "source": "console"
   }
  ]

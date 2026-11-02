@@ -102,4 +102,7 @@ check("WALKTHROUGH=stack VOICE_ONLY=1" in cmd and "rebuild-stack.log" in cmd and
       and "rm -rf" not in cmd, "rerecord: edits travel base64 only, never as shell text")
 check(why2 == "Re-voice the stack walkthrough video", "rerecord: re-voice notice names the walkthrough")
 check(c.post("/mg/amberx-walkthrough/rerecord", json={"walkthrough": "bad id;"}).status_code == 400, "rerecord: bad walkthrough id refused")
+cmd3, why3 = mg.rerecord_command("stack", False, None, "veto")
+check("WALKTHROUGH=stack ONLY=veto nohup" in cmd3 and why3 == "Re-record chapter veto of the stack walkthrough", "rerecord: one chapter (ONLY=), named in the notice")
+check(c.post("/mg/amberx-walkthrough/rerecord", json={"walkthrough": "stack", "chapter": "x; rm"}).status_code == 400, "rerecord: bad chapter id refused")
 print(f"all {ok} checks passed")

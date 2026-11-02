@@ -1252,6 +1252,10 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(wt.editsOf(script, 'en_US-amy-medium', 1.1, {}), { voice: 'en_US-amy-medium', speed: 1.1, lines: {} }, 'walkthrough voice: voice and speed when changed');
   eq(wt.normalizeEdits({ voice: 'robot', speed: 9, lines: { 'open-0': 'x'.repeat(900) } }).lines['open-0'].length, 400, 'walkthrough voice: unknown voice / speed dropped, lines capped');
   eq(wt.editCount({ voice: 'en_US-amy-medium', speed: null, lines: { a: 'x', b: 'y' } }), 3, 'walkthrough voice: change count');
+  // one video per chapter (segments.json, Nov 2 2026)
+  const segs = wt.parseSegments({ chapters: [{ id: 'veto', title: 'The veto', version: 3, duration: 201.4, bytes: 9e6, look: 'soft-studio', recordedAt: '2026-11-02T03:10:00Z' }, { id: '../x' }, null, { id: 'open' }] });
+  eq(segs.map((c) => [c.id, c.file, c.version]), [['veto', 'chapters/veto.mp4', 3], ['open', 'chapters/open.mp4', 1]], 'walkthrough chapters: segments read, bad ids dropped, version at least 1');
+  eq([wt.lookLabel('soft-studio'), wt.lookLabel(''), wt.lookLabel('design-package.midnight_pro')], ['Soft studio', '', 'Midnight pro'], 'walkthrough chapters: design package names');
   const ld = await import('./walkthrough/load.mjs');
   eq([ld.voicePath('en_US-kristin-medium'), ld.voicePath('en_GB-jenny_dioco-medium')], ['en/en_US/kristin/medium', 'en/en_GB/jenny_dioco/medium'], 'walkthrough voice: Piper download path from the name');
   eq(ld.VOICES, wt.VOICES.map((v) => v.id), 'walkthrough voice: the recorder and the editor offer the same voices');

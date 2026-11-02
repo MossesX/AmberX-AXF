@@ -189,3 +189,27 @@ export function editsOf(script: ScriptDoc, voice: string, speed: number, drafts:
 
 /** How many changes an edit set holds (lines + voice + speed), for the button labels. */
 export const editCount = (e: Edits) => Object.keys(e.lines).length + (e.voice ? 1 : 0) + (e.speed !== null ? 1 : 0);
+
+/** One chapter's own video (walkthrough-segments@1, segments.json): its version goes up each time it is cut again. */
+export interface ChapterVideo { id: string; title: string; file: string; version: number; duration: number; bytes: number; look: string; recordedAt: string; cutAt: string }
+
+export function parseSegments(raw: unknown): ChapterVideo[] {
+  const o = raw && typeof raw === 'object' ? (raw as { chapters?: unknown }) : {};
+  const list = Array.isArray(o.chapters) ? o.chapters : [];
+  const str = (v: unknown, n = 120) => (typeof v === 'string' ? v.slice(0, n) : '');
+  const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : 0);
+  return list.flatMap((x) => {
+    if (!x || typeof x !== 'object') return [];
+    const c = x as Record<string, unknown>;
+    const id = str(c.id, 40);
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(id)) return [];
+    return [{ id, title: str(c.title) || id, file: `chapters/${id}.mp4`, version: Math.max(1, Math.floor(num(c.version))), duration: num(c.duration),
+      bytes: num(c.bytes), look: str(c.look, 80), recordedAt: str(c.recordedAt, 40), cutAt: str(c.cutAt, 40) }];
+  });
+}
+
+/** A design package id as a name ("soft-studio" → "Soft studio"); '' when none was applied. */
+export function lookLabel(id: string): string {
+  const t = id.replace(/^design[-.]?package[-.:]?/i, '').replace(/[-_.]+/g, ' ').trim();
+  return t ? t[0]!.toUpperCase() + t.slice(1) : '';
+}

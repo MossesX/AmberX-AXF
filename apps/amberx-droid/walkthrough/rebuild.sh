@@ -6,7 +6,8 @@
 #   VOICE_OVERRIDES_B64=… bash …/rebuild.sh                  the voice edits from AmberX (walkthrough-voice@1, base64 JSON)
 #
 #   bash apps/amberx-droid/walkthrough/rebuild.sh            everything (~15 min)
-#   ONLY=home,settings bash …/rebuild.sh                    just those chapters, the rest kept from the last run
+#   ONLY=home,settings bash …/rebuild.sh                    re-record just those chapters; the others' videos are kept
+#                                                           (publish/chapters/<id>.mp4, versions in segments.json)
 #   NO_PUBLISH=1 bash …/rebuild.sh                           record and check, don't publish
 #   UI_CHECK=1 bash …/rebuild.sh                             after publishing, check the entry + player on the live app
 #
@@ -57,8 +58,10 @@ say "secrets scan"
 node "$HERE/check.mjs" --scan "$WORK"
 if [ -n "${NO_PUBLISH:-}" ]; then say "recorded in $WORK/publish (not published)"; exit 0; fi
 mkdir -p "$PUBLISH"
-cp "$WORK/publish/"walkthrough*.mp4 "$WORK/publish/"{walkthrough.vtt,chapters.json,poster.jpg,script.json} "$PUBLISH/"
-chmod 644 "$PUBLISH"/*
+mkdir -p "$PUBLISH/chapters"
+cp "$WORK/publish/"walkthrough*.mp4 "$WORK/publish/"{walkthrough.vtt,chapters.json,segments.json,poster.jpg,script.json} "$PUBLISH/"
+cp "$WORK/publish/chapters/"*.mp4 "$PUBLISH/chapters/"
+chmod 755 "$PUBLISH/chapters"; chmod 644 "$PUBLISH"/*.* "$PUBLISH/chapters/"*
 chown -R --reference="$PUBLISH/.." "$PUBLISH" 2>/dev/null || true   # same owner as AmberX's data folder
 say "published to $PUBLISH (AmberX → Walkthrough)"
 if [ -n "${UI_CHECK:-}" ]; then

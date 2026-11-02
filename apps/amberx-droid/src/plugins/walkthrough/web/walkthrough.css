@@ -57,3 +57,4 @@
 .axp-walkthrough__script { max-height: none; }
 .axp-walkthrough__lines { gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); }
 .axp-walkthrough__line { gap: var(--fx-dens-gap-xs); }
+.axp-walkthrough__chapter-video { padding-block: var(--fx-dens-gap-sm) }

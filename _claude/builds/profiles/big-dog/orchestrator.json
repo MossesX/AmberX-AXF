@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-02T05:32:27.322Z",
+ "updatedAt": "2026-11-02T12:58:09.735Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -205,6 +205,144 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mvynn1ft0kck8e"
+    }
+   ]
+  },
+  {
+   "id": "walkthrough-chapters",
+   "title": "Walkthrough: one video per chapter, re-record a chapter, Chapters view",
+   "category": "",
+   "detail": "Brett Nov 2: break each chapter into its own video so one chapter can be re-recorded alone; a view listing every chapter with length and the version of its video segment.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-02T12:53:49.841Z",
+   "updatedAt": "2026-11-02T12:58:09.721Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Assembly keeps each chapter video: publish chapters/<id>.mp4 + segments.json (length, version, recordedAt, hash)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/amberx-droid/walkthrough/assemble.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-02T12:55:30.051Z",
+     "note": "",
+     "uid": "st-mvz9fquu07f4v8"
+    },
+    {
+     "id": "s2",
+     "text": "Re-record one chapter: ONLY=<id> records + cuts just that chapter, bumps its version, re-joins the full video from the kept segments",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/amberx-droid/walkthrough/rebuild.sh",
+      "apps/amberx-droid/walkthrough/run.sh",
+      "apps/amberx-droid/walkthrough/assemble.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-02T12:55:30.798Z",
+     "note": "",
+     "uid": "st-mvz9fquu08atkk"
+    },
+    {
+     "id": "s3",
+     "text": "Server: serve segments.json and chapter videos; render route takes a chapter",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/amberx-droid/server/main.py",
+      "apps/console-web/plugins/molly-guide/server/__init__.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-02T12:56:18.967Z",
+     "note": "",
+     "uid": "st-mvz9fquu094k0y"
+    },
+    {
+     "id": "s4",
+     "text": "Chapters view in the Walkthrough plugin: chapter, length, version, date, play, Re-record",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/amberx-droid/src/plugins/walkthrough/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-02T12:58:09.311Z",
+     "note": "",
+     "uid": "st-mvz9fquu0ao974"
+    },
+    {
+     "id": "s5",
+     "text": "Tests (server, molly-guide, app), checks, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-02T12:58:09.721Z",
+     "note": "",
+     "uid": "st-mvz9fquu0bbsik"
+    },
+    {
+     "id": "s6",
+     "text": "Split the published video into chapters on the VPS (assembly only)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mvz9fquu0c09os"
     }
    ]
   }

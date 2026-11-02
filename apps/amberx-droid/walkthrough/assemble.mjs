@@ -2,8 +2,9 @@
 // H.264 + AAC, faststart), walkthrough.vtt (one cue per sentence), chapters.json (walkthrough-video@1 index: chapters
 // with start times and their scenes as indexed segments, the same shape as the demo.amberxai.com player's INDEX) and
 // poster.jpg. Adapted from the AmberX Tour recorder's assemble.mjs.
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
 import { loadWalkthrough } from './load.mjs';
 
 const OUT = process.env.OUT || '/out';
@@ -12,6 +13,15 @@ const PUB = `${OUT}/publish`;
 const TMP = `${OUT}/tmp`;
 mkdirSync(PUB, { recursive: true });
 mkdirSync(TMP, { recursive: true });
+// Every chapter is its own published video (publish/chapters/<id>.mp4) with a version in segments.json
+// (walkthrough-segments@1). A chapter is cut again only when what goes into it changed (its recording, cuts, clips,
+// words or the output settings); otherwise the last cut is kept, so re-recording one chapter (ONLY=<id>) re-cuts only
+// that one and the full video is the kept chapters joined.
+const SEG = `${PUB}/chapters`;
+mkdirSync(SEG, { recursive: true });
+let lastSegments = {};
+try { for (const x of JSON.parse(readFileSync(`${PUB}/segments.json`, 'utf8')).chapters ?? []) lastSegments[x.id] = x; } catch { /* first cut */ }
+const videos = [];
 // The frame every chapter is fitted into: the walkthrough's `output` (the AmberX tour: phone 720×1600; the whole-stack
 // one: 1920×1080, its phone chapters letterboxed in the middle).
 const W = WALKTHROUGH.output?.width ?? 720, H = WALKTHROUGH.output?.height ?? 1600;
@@ -55,9 +65,27 @@ for (const ch of timeline) {
     filters.push(`[${n + k}:a]aresample=48000,${delay}apad,atrim=0:${c.span.toFixed(3)},asetpts=N/SR/TB[a${k}]`);
   });
   filters.push(`${cuts.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${cuts.length}:v=1:a=1[v][a]`);
-  const mp4 = `${TMP}/${ch.id}.mp4`;
-  ff([...inputs, '-filter_complex', filters.join(';'), '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', WALKTHROUGH.output?.preset ?? 'medium',
-    '-crf', String(WALKTHROUGH.output?.crf ?? 27), '-c:a', 'aac', '-b:a', '96k', '-ar', '48000', mp4]);
+  const mp4 = `${SEG}/${ch.id}.mp4`;
+  const raw = `${OUT}/raw/${ch.id}.webm`;
+  const rs = statSync(raw);
+  const key = createHash('sha256').update(JSON.stringify({
+    raw: [rs.size, rs.mtimeMs], cuts: cuts.map((c) => [c.from, c.to, c.span, c.dur, c.lead, says.get(`${ch.id}-${c.s.i}`) ?? c.s.say]),
+    out: [W, H, PAD, WALKTHROUGH.output?.preset, WALKTHROUGH.output?.crf],
+    clips: cuts.map((c) => { try { const a = statSync(`${OUT}/audio/${ch.id}-${c.s.i}.wav`); return [a.size, a.mtimeMs]; } catch { return null; } }),
+  })).digest('hex').slice(0, 16);
+  const last = lastSegments[ch.id];
+  const reuse = last && last.key === key && existsSync(mp4);
+  if (!reuse) {
+    ff([...inputs, '-filter_complex', filters.join(';'), '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', WALKTHROUGH.output?.preset ?? 'medium',
+      '-crf', String(WALKTHROUGH.output?.crf ?? 27), '-c:a', 'aac', '-b:a', '96k', '-ar', '48000', '-movflags', '+faststart', mp4]);
+  }
+  videos.push({
+    id: ch.id, title: ch.title, file: `chapters/${ch.id}.mp4`, key, look: ch.look ?? last?.look ?? '',
+    version: reuse ? last.version : (last?.version ?? 0) + 1,
+    recordedAt: ch.recordedAt ?? (reuse ? last.recordedAt : new Date(rs.mtimeMs).toISOString()),
+    cutAt: reuse ? last.cutAt : new Date().toISOString(),
+    duration: r1(cuts.reduce((n, c) => n + c.span, 0)), bytes: statSync(mp4).size,
+  });
   parts.push(mp4);
   const segments = [];
   let at = offset;
@@ -101,4 +129,6 @@ const index = {
   video: 'walkthrough.mp4', captions: 'walkthrough.vtt', poster: 'poster.jpg', downloads, chapters,
 };
 writeFileSync(`${PUB}/chapters.json`, JSON.stringify(index, null, 1));
-console.log(`walkthrough: ${(offset / 60).toFixed(1)} min, ${chapters.length} chapters, ${cues.length} captions, ${(index.bytes / 1e6).toFixed(1)} MB`);
+writeFileSync(`${PUB}/segments.json`, JSON.stringify({ $axf: 'walkthrough-segments@1', id: WALKTHROUGH.id, updatedAt: index.recordedAt, chapters: videos }, null, 1));
+const recut = videos.filter((x) => lastSegments[x.id]?.key !== x.key).map((x) => x.id);
+console.log(`walkthrough: ${(offset / 60).toFixed(1)} min, ${chapters.length} chapters (${recut.length ? `cut: ${recut.join(', ')}` : 'all kept'}), ${cues.length} captions, ${(index.bytes / 1e6).toFixed(1)} MB`);

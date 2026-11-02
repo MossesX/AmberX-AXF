@@ -235,6 +235,17 @@ const visibleText = (page) => page.evaluate(() => {
   return `${document.body.innerText}\n${out.join('\n')}`;
 }).catch(() => '');
 
+// The design package the app showed while the chapter was recorded (the runtime's applied-package setting, kept in the
+// app's settings in localStorage); '' when none is applied or the page isn't an app.
+async function designPackageOf(page) {
+  return page.evaluate(() => {
+    for (let i = 0; i < localStorage.length; i++) {
+      try { const v = JSON.parse(localStorage.getItem(localStorage.key(i)) ?? 'null'); const id = v && typeof v === 'object' ? v['axf.appearance.design'] : null; if (typeof id === 'string' && id) return id; } catch { /* not JSON */ }
+    }
+    return '';
+  }).catch(() => '');
+}
+
 const timeline = [];
 for (const ch of CHAPTERS) {
   if (ONLY.length && !ONLY.includes(ch.id)) continue;
@@ -247,6 +258,7 @@ for (const ch of CHAPTERS) {
   const h = helpers(page, log);
   await page.goto(WALKTHROUGH.url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch((e) => log.push(`  ! open: ${e.message}`));
   await page.waitForTimeout(5000);
+  const look = await designPackageOf(page);
   if (ch.start && ch.start !== 'home' && kind === 'phone') await h.go(ch.start);
   const lead = (Date.now() - t0) / 1000;
   const scenes = [];
@@ -266,7 +278,7 @@ for (const ch of CHAPTERS) {
   const video = page.video();
   await page.close();
   renameSync(await video.path(), `${OUT}/raw/${ch.id}.webm`);
-  timeline.push({ id: ch.id, title: ch.title, device: kind, viewport: VIEW, lead, scenes });
+  timeline.push({ id: ch.id, title: ch.title, device: kind, viewport: VIEW, lead, scenes, look, recordedAt: new Date().toISOString() });
   console.log(log.join('\n'));
 }
 for (const c of Object.values(contexts)) await c.close();
