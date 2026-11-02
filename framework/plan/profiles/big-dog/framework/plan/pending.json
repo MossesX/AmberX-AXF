@@ -1,0 +1,88 @@
+{
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
+ "$axf": "pending@1",
+ "updatedAt": "2026-11-02T03:37:45.154Z",
+ "artifact": "",
+ "items": [
+  {
+   "id": "molly-opus",
+   "title": "Molly: one interface for AmberX, axHub and the Dev Console (Opus)",
+   "detail": "Brett, Nov 2 2026: combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Project manifest apps/molly/project.manifest.json, add Molly to framework/schemas/shared-assets.json, plan notes",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:33.665Z"
+    },
+    {
+     "text": "[Opus] Scaffold apps/molly with axf init (react-ts), baked framework + shared assets, landing screen + settings interface",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:34.056Z"
+    },
+    {
+     "text": "[Opus] Shell: app switcher (AmberX / axHub / Console) and one banner, from menu/toolbar/layout assets only",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:34.590Z"
+    },
+    {
+     "text": "[Opus] App frames: each app at its own URL, kept alive per tab, deep links #/<app>/<route>, plain URLs (no embed marker)",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:35.010Z"
+    },
+    {
+     "text": "[Opus] Framing check: confirm each app lets molly.amberxai.com frame it; if not, add only a frame-ancestors allow header (no app UI change)",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:35.418Z"
+    },
+    {
+     "text": "[Opus] One hub sign-in and look from axHub (hubstatus badge red until live), settings on axHub, no storage picker",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:45.139Z"
+    },
+    {
+     "text": "[Opus] Checks: check-theme, check-controls, project validate, typecheck/build, shared-assets check, add Molly to CI",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:35.795Z"
+    },
+    {
+     "text": "[Opus] Separation test: the three apps' builds and files unchanged (diff limited to apps/molly + config), each still runs alone",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:36.219Z"
+    },
+    {
+     "text": "[Opus] Deploy: static image + Coolify app, DNS A record molly.amberxai.com to the VPS, DNS log line",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] UI Review: desktop + phone shots submitted, PR opened (waits on review)",
+     "at": "2026-11-02T02:43:38.596Z",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-11-02T02:43:38.594Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-02T03:37:45.139Z",
+   "source": "console"
+  }
+ ]
+}

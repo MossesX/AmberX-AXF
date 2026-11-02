@@ -1,0 +1,24 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.workspace",
+  "module": "lib-workspace",
+  "name": "Workspace (IDE panes, layouts, docked + floating toolbars)",
+  "description": "An IDE-style workspace for any app: panes in four areas (left, center, right, bottom) with tabs and splitters, floating pane windows, named workspace layouts, maximise, any pane shown / hidden / moved / floated at any time (tab drag, pane menu, context menu, app menu, toolbar). Toolbars: the app's defaults plus as many as a person adds, each docked on any edge or floating (drag the grip; drop near an edge to dock), items dragged to reorder or onto the trash, and a customizer listing every command in a categorized, sortable, searchable tree. On a phone every pane becomes a tab of one area. Kept per viewer on the device. Harvested Oct 22 2026 from Walkthrough Studio.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.workspace",
+  "params": [],
+  "parts": [
+    { "id": "areas", "label": "Pane areas + tabs", "description": "Left, center, right and bottom areas; panes are tabs; drag a tab to another area." },
+    { "id": "splitters", "label": "Resizable areas", "description": "Drag the edges between areas.", "requires": ["areas"] },
+    { "id": "layouts", "label": "Workspace layouts", "description": "Named arrangements of the panes (the app defines them); each remembers its changes.", "requires": ["areas"], "params": [ { "key": "default", "label": "Layout at first start (id)", "type": "text", "default": "" } ] },
+    { "id": "floating-panes", "label": "Floating panes", "description": "Any pane can float as a window on the window engine's physics: drag with snapping to the workspace edges and other panes, half / quarter zones, drop onto another pane to split it, resize from all 8 edges and corners (touch too), maximize / restore, minimize to a chip. No keep-on-screen.", "requires": ["areas"] },
+    { "id": "maximise", "label": "Maximise an area", "description": "One area fills the workspace until you go back.", "requires": ["areas"] },
+    { "id": "toolbars", "label": "Toolbars", "description": "The app's default toolbars plus any number a person adds, docked top / bottom / left / right.", "params": [ { "key": "max", "label": "Most toolbars (0 = no limit)", "type": "number", "min": 0, "max": 50, "default": 0 }, { "key": "labels", "label": "Labels on new toolbars", "type": "bool", "default": false } ] },
+    { "id": "floating-toolbars", "label": "Floating toolbars", "description": "Drag a toolbar's grip to float it; drop it near an edge to dock it again.", "requires": ["toolbars"] },
+    { "id": "customizer", "label": "Toolbar customizer", "description": "Every command, pane, layout, framework action, view, setting and look in a categorized, sortable, searchable tree; drag or tap + to add.", "requires": ["toolbars"] },
+    { "id": "phone", "label": "Phone layout", "description": "Below the breakpoint every visible pane is a tab of one area and side toolbars hide.", "params": [ { "key": "breakpoint", "label": "Phone below (px)", "type": "number", "min": 320, "max": 1200, "default": 760 } ] }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/workspace" } },
+  "placeholders": [ { "capability": "axf.workspace.android", "note": "Compose port — Android on hold." }, { "capability": "axf.workspace.assets", "note": "Workspace layouts and user toolbars as asset@1 types (hot-swappable, shareable) — parked for the Fable rebuild." }, { "capability": "axf.workspace.hub", "note": "Workspace state kept on axHub's data server for every device — not built." } ]
+}

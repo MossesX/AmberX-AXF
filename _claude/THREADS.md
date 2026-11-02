@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Molly: one interface for AmberX, axHub and the Dev Console (Brett Nov 2: combine them into one interface, keep them separate apps; Opus version named Molly at molly.amberxai.com, Fable version later) | working | `claude/project-thread-nxdu3m` | #230 | app built (`apps/molly`), 8/10 steps; next: deploy (Coolify app + DNS A record molly), UI Review shots | 2026-11-02 |
 | Whole-stack walkthrough plugin (Brett Nov 1: ~90 min narrated walkthrough of framework, console, AmberX, axHub, VPS, MCP in Amber's voice; AmberX plugin with editable voice + downloadable video) | review | `claude/project-thread-646cjb` | #229 | built; next: merge, then record on the VPS (`WALKTHROUGH=stack bash apps/amberx-droid/walkthrough/rebuild.sh`, veto call); plan `_claude/memory/docs/walkthrough-everything.md` (12 steps, ~7 h, Opus). Queued (waits for go): orchestrator `orch-step-click`, Brett can't click Build orchestrator steps | 2026-11-01 |
 | One default look from axHub + design theme precedence (Brett Nov 1: new default style + colour theme every app inherits, combined into a default design theme; a loaded design theme wins, a later style/colour pick overrides only its part; app Settings → Appearance selection only, plugin settings untouched; banners didn't compress). Opus now, Fable review later (claude.ai session: VPS account out of weekly credits) | review | `claude/one-look-opus` | #228 | UI Review shots (none from claude.ai); Fable review of the list in the report; Kotlin twin deferred (PORTING.md). Report `_claude/builds/reports/one-look-opus.md` | Nov 1 2026 |
 | One look from axHub + every app ships every shareable asset (Brett Nov 1: "apps only get appearance from axhub period", "any theme change applies to all", "ship all assets that can be shared"; Patches, demo, Walkthrough left out). No follow switch, no console look tabs, look settings in appearance@1, shared set baked at src/axf/assets (claude.ai session, Opus: the Fable headless build hit the weekly limit) | review | `claude/hub-look-all-assets` | #225 | Fable review of the appearance@1 `settings` contract + `shared` flag; Kotlin twin deferred (PORTING.md). Report `_claude/builds/reports/hub-look-all-assets.md` | Nov 1 2026 |
@@ -131,6 +132,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 
 ## To carry on
+
+### Molly (`molly-opus`, Big Dog, Opus) — branch `claude/project-thread-nxdu3m`, PR #230
+- Asked: "Can we combine amberx, axhub, and console into 1 interface but still keep separate apps"; "Build new build profile for it called Big Dog"; "Do it in opus, I'll do another one in fable later, call the opus one molly at molly.amberxai.com". Brett said go (Nov 2) and that it can run without his approval.
+- Done: profile `big-dog`; app `apps/molly` (manifest, shared assets, nav/app-menu/toolbar assets, kept-alive frames in `src/molly/FrameDeck.tsx`, deep links `#/<app>/<route>`, Dockerfile + nginx, CI build step); axHub web + AmberX `frame-ancestors` allow molly. Steps s1–s8 ticked. <!-- axf-plugin:build-orchestrator -->
+- Left: s9 deploy (Coolify app from `apps/molly/Dockerfile`, DNS A record `molly` → VPS, DNS log line, redeploy axHub web + AmberX for the header), s10 UI Review shots.
+- Checks: `cd apps/molly && npm run build`; `node framework/cli/shared-assets.mjs check --all`; `node framework/cli/project.mjs validate --all`.
+- First message: "Carry on molly-opus (Big Dog) from s9 on branch claude/project-thread-nxdu3m."
 
 ### Whole-stack walkthrough plugin (Refactor, Opus) — branch `claude/project-thread-646cjb`
 - **Asked (Brett, Nov 1 2026):** "Build a guided browser narrated walkthrough like the one in amberx app but 90 minutes long about the whole framework, console, amberx, axhub, vps, mcp server everything explain how incredibly unique, powerful, and valuable it is use cussing and ri accent street slang thick download as video too." Then: "Wanna be able to edit voice make it a plugin for amberx with downloadable video."

@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "density",
+  "id": "dense",
+  "name": "Dense",
+  "version": "1.1.0",
+  "description": "Data-desk density: the smallest gaps and paddings, 2.2-line rows.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dense",
+    "data"
+  ],
+  "data": {
+    "gap": {
+      "2xs": 0.08,
+      "xs": 0.15,
+      "sm": 0.25,
+      "md": 0.35,
+      "lg": 0.5,
+      "xl": 0.65,
+      "2xl": 1,
+      "3xl": 1.3,
+      "4xl": 2
+    },
+    "pad": {
+      "control": 0.4,
+      "card": 1.1,
+      "page": 1.25,
+      "row": 0.5,
+      "cell": 0.5
+    },
+    "row": {
+      "list": 2.2,
+      "table": 2,
+      "menu": 2,
+      "control": 2
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "molly",
+  "name": "Molly menu",
+  "version": "0.1.0",
+  "description": "Molly's application menu: switch apps, reload or open the one on screen on its own, settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "molly"
+  ],
+  "data": {
+    "menus": [
+      {
+        "id": "molly",
+        "label": "Molly",
+        "items": [
+          {
+            "id": "go-home",
+            "label": "Start page",
+            "icon": "home",
+            "action": "nav:home"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "go-amberx",
+            "label": "AmberX",
+            "icon": "sparkles",
+            "action": "nav:amberx"
+          },
+          {
+            "id": "go-axhub",
+            "label": "axHub",
+            "icon": "shield",
+            "action": "nav:axhub"
+          },
+          {
+            "id": "go-console",
+            "label": "Console",
+            "icon": "terminal",
+            "action": "nav:console"
+          },
+          {
+            "id": "s2",
+            "separator": true
+          },
+          {
+            "id": "reload",
+            "label": "Reload this app",
+            "icon": "refresh",
+            "action": "molly.reload"
+          },
+          {
+            "id": "own",
+            "label": "Open this app on its own",
+            "icon": "external",
+            "action": "molly.own-tab"
+          },
+          {
+            "id": "s3",
+            "separator": true
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "action": "nav:account"
+          }
+        ]
+      }
+    ]
+  }
+}

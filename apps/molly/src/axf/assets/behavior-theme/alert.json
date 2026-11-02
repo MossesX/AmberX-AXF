@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "alert",
+  "name": "Alert",
+  "version": "1.0.0",
+  "description": "Built to get attention: full sound and strong haptics on notices, long-lived toasts, always confirm.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:ops-monitor"
+  ],
+  "data": {
+    "motion": {
+      "speed": "fast",
+      "easing": "emphasized",
+      "reduced": "system",
+      "entrance": "none"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "darken",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 500,
+      "doubleTapMs": 260,
+      "dragThreshold": 8
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "dim",
+      "popupOpen": "slide",
+      "drawerOpen": "slide",
+      "snap": true,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top-right",
+      "toastMs": 8000,
+      "sound": "full",
+      "vibration": "strong",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}

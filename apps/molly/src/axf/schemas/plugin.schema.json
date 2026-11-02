@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/plugin.schema.json",
+  "title": "AmberX AXF plugin manifest (plugin@1)",
+  "type": "object",
+  "required": [
+    "$axf",
+    "id",
+    "name",
+    "version",
+    "kind",
+    "apiLevel",
+    "builtWith"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "plugin@1"
+    },
+    "id": {
+      "type": "string",
+      "description": "namespaced, e.g. com.example.myplugin"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "pack",
+        "module",
+        "script"
+      ]
+    },
+    "apiLevel": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "minFrameworkVersion": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "provides": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "assets",
+          "actions",
+          "routes",
+          "settings",
+          "menu_items",
+          "network",
+          "files",
+          "notifications",
+          "background",
+          "device",
+          "identity",
+          "billing"
+        ]
+      }
+    },
+    "entry": {
+      "type": "string",
+      "description": "module: entry class; pack: entry asset or macro id"
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "host app ids, * for any"
+    },
+    "signed": {
+      "type": "boolean"
+    },
+    "optional": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "capabilities used when present (service:<name>@<v>); the plugin works without them"
+    },
+    "enabledByDefault": {
+      "type": "boolean"
+    },
+    "uiEditor": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "theme",
+          "style",
+          "layout",
+          "manager",
+          "builder"
+        ]
+      },
+      "description": "UI-editing plugin kinds: last save wins per key; reload current values on open/load/focus (useEditorSync / refreshFromSaved)"
+    },
+    "banner": {
+      "description": "Does this plugin include a banner (the live banners above every page, AxfWebLibrary.banners)? false (default) = none; otherwise the ids of the banners it contributes. Every declared banner gets the shared banner settings (Hide, Hide all banners, the hide timer). Checked against the plugin's web code by plugins.mjs --check.",
+      "default": false,
+      "oneOf": [
+        {
+          "const": false
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          }
+        }
+      ]
+    },
+    "tabable": {
+      "description": "Can a host app add this plugin to its tab group (e.g. Patches' tabs)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "required": [
+            "view"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "view": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+              "description": "the view id the tab shows (embed@1 page view:<id>)"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "icon": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+            }
+          }
+        }
+      ]
+    },
+    "builtWith": {
+      "description": "The model that built this plugin and when (Brett, Oct 23 2026): every plugin, new and existing, records it; it shows as a badge wherever plugin info shows. Required by the build engine (build-defaults@1 rules plugin.builtWith.model / plugin.builtWith.builtAt). Only one copy of a plugin is ever installed: the same plugin built by two models is never installed twice (a rebuild replaces the old build, see Plugin Update).",
+      "type": "object",
+      "required": [
+        "model",
+        "builtAt"
+      ],
+      "properties": {
+        "model": {
+          "enum": [
+            "fable",
+            "opus",
+            "sonnet",
+            "haiku"
+          ],
+          "description": "the model family that built this version"
+        },
+        "builtAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "the date this version was built (YYYY-MM-DD)"
+        },
+        "rebuildOf": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "what it rebuilds (e.g. the Opus build it replaced)"
+        },
+        "replacedBy": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "the build that will replace it (e.g. a parked Fable rebuild)"
+        },
+        "replaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ids of other plugins this one replaces: never installed next to them"
+        },
+        "branch": {
+          "type": "string",
+          "maxLength": 120
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "description": "plugin-lifecycle@1: dataDir, env, mentions"
+    },
+    "opens": {
+      "description": "Where the plugin's primary UI (opensUi, else its first page, else its first dialog) opens by default: the main application area, a floating window, a dialog or a tab group (engines/placement.ts). Its settings tab carries the choice (setting axf.placement.<id>), which wins. false = it has no page or dialog. Filled by the build engine (build-defaults@1 plugin.opens.main: main).",
+      "default": "main",
+      "enum": [
+        "main",
+        "window",
+        "dialog",
+        "tab",
+        false
+      ]
+    },
+    "opensUi": {
+      "type": "string",
+      "pattern": "^(view|dialog):[a-z0-9][a-z0-9._-]{0,63}$",
+      "description": "which of its UIs moves with opens (default: its first page, else its first dialog)"
+    },
+    "help": {
+      "type": "string",
+      "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."
+    }
+  }
+}

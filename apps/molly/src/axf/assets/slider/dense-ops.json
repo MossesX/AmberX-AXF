@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "dense-ops",
+  "name": "Dense Ops slider",
+  "version": "1.0.0",
+  "description": "Dense Ops: bar thumb on a 3 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "dense",
+    "compact",
+    "data"
+  ],
+  "data": {
+    "track": 3,
+    "thumb": "bar",
+    "thumbSize": 12,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": true
+  }
+}
