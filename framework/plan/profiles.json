@@ -1,6 +1,6 @@
 {
  "$axf": "build-profiles@1",
- "updatedAt": "2026-10-31T12:18:00.000Z",
+ "updatedAt": "2026-11-02T02:43:37.666Z",
  "active": "refactor",
  "profiles": [
   {
@@ -39,6 +39,14 @@
    "description": "Urgent profile (Brett, Oct 31 2026): master data cleanup + live progress bars. On hold until Brett says go.",
    "createdAt": "2026-10-31T12:18:00.000Z",
    "updatedAt": "2026-10-31T12:18:00.000Z",
+   "catalog": false
+  },
+  {
+   "id": "big-dog",
+   "name": "Big Dog",
+   "description": "Molly: one interface (molly.amberxai.com) hosting AmberX, axHub and the Dev Console, each app still running on its own, untouched. Opus version; a Fable version comes later in its own build.",
+   "createdAt": "2026-11-02T02:43:37.642Z",
+   "updatedAt": "2026-11-02T02:43:37.654Z",
    "catalog": false
   }
  ]
