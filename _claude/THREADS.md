@@ -135,7 +135,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ### Molly (`molly-opus`, Big Dog, Opus) — branch `claude/project-thread-nxdu3m`
 - Asked: "Can we combine amberx, axhub, and console into 1 interface but still keep separate apps"; "Build new build profile for it called Big Dog"; "Will it mess with the other apps, can they still run separate"; "Do it in opus, I'll do another one in fable later, call the opus one molly at molly.amberxai.com".
-- Done: profile `big-dog` created (not selected); orchestrator build `molly-opus` added with 10 Opus steps (`AXF_BUILD_PROFILE=big-dog node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief molly-opus`).
+- Done: profile `big-dog` created (not selected); orchestrator build `molly-opus` added with 10 Opus steps (`AXF_BUILD_PROFILE=big-dog node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief molly-opus`). <!-- axf-plugin:build-orchestrator -->
 - Design: new app `apps/molly` shows each app at its own live URL in kept-alive frames (plain URLs, no embed marker, no takes); the three apps are not edited, only a frame-ancestors header if framing is blocked. Patches untouched.
 - Waits on: Brett's go (project rule: queued items run only on his word). Then work the steps in order on Opus.
 - First message: "Run molly-opus on the Big Dog profile, branch claude/project-thread-nxdu3m, start at s1."
