@@ -1,0 +1,57 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "project-hub",
+  "name": "Project Hub",
+  "version": "1.0.0",
+  "description": "Project Hub: project management. Lists the pages it can; each app shows the ones it has. Pairs with the Organized behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:organized"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "label": "Projects",
+        "items": [
+          {
+            "id": "standards-projects",
+            "label": "Projects",
+            "icon": "folder",
+            "view": "standards-projects"
+          },
+          {
+            "id": "projects",
+            "label": "Hub projects",
+            "icon": "folder",
+            "view": "projects"
+          },
+          {
+            "id": "standards-rules",
+            "label": "Manifest rules",
+            "icon": "shield",
+            "view": "standards-rules"
+          }
+        ]
+      },
+      {
+        "label": "Plan",
+        "items": [
+          {
+            "id": "plan",
+            "label": "Plan",
+            "icon": "list",
+            "view": "plan"
+          },
+          {
+            "id": "tracker",
+            "label": "Tracker",
+            "icon": "chart",
+            "view": "tracker"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "molly",
+    "name": "Molly",
+    "version": "0.1.0"
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "react-ts"
+  },
+  "initializedAt": "2026-11-02T03:31:43.359Z",
+  "targets": [
+    "web"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "fresh-light",
+    "style-theme": "fresh",
+    "layout": "classic-ide",
+    "behavior-theme": "standard",
+    "design-package": "hub-default",
+    "app-menu": "molly",
+    "toolbar": "molly",
+    "nav-menu": "molly",
+    "context-menu": "compact-classic",
+    "tab-group": "underline",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "gauge": "classic-arc",
+    "meter": "striped-pill",
+    "banner": "amberx-thin",
+    "branding": "amberx",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "fresh-day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "settings": "standard",
+    "interface": "fresh",
+    "typography": "compact",
+    "density": "compact",
+    "sizing": "compact",
+    "agent-card": "corporate-badge",
+    "help": "framework",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar"
+  ],
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Hashes of the baked framework files, used for conformance checks."
+    },
+    {
+      "path": "src/axf",
+      "purpose": "Baked framework runtime: engines, React layer and base CSS. Managed by the build engine."
+    },
+    {
+      "path": "src/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type."
+    },
+    {
+      "path": "src/views",
+      "purpose": "App views registered with the shell."
+    },
+    {
+      "path": "src/actions.ts",
+      "purpose": "Handlers bound to the standard action vocabulary."
+    },
+    {
+      "path": "src/dialogs.tsx",
+      "purpose": "App-specific dialogs opened through the dialog engine."
+    },
+    {
+      "path": "public",
+      "purpose": "Static files served as-is."
+    }
+  ],
+  "developer": {
+    "hub": "https://axhub.amberxai.com"
+  }
+}

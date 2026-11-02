@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "command-deck",
+  "name": "Command Deck slider",
+  "version": "1.0.0",
+  "description": "Command Deck: bar thumb on a 3 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "command",
+    "ops"
+  ],
+  "data": {
+    "track": 3,
+    "thumb": "bar",
+    "thumbSize": 12,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": true
+  }
+}

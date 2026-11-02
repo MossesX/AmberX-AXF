@@ -1,0 +1,175 @@
+{
+  "$id": "axf/asset-types.android",
+  "description": "Asset types added by the Android port. Layered on top of asset-types.json by the Kotlin kernel (AssetTypeRegistry.builtin). All are optional slots: an app may have none. Modules may register further types at runtime.",
+  "frameworkVersion": "0.2.0",
+  "types": {
+    "screen-template": {
+      "label": "Screen template",
+      "group": "Templates",
+      "icon": "layout",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "kind",
+        "regions"
+      ],
+      "enums": {
+        "kind": [
+          "list-detail",
+          "dashboard",
+          "wizard",
+          "settings",
+          "feed",
+          "editor",
+          "player",
+          "map",
+          "chat",
+          "profile",
+          "landing",
+          "custom"
+        ]
+      }
+    },
+    "string-pack": {
+      "label": "String pack",
+      "group": "Packs",
+      "icon": "type",
+      "optional": true,
+      "swapTier": "RESTART",
+      "required": [
+        "locale",
+        "strings"
+      ]
+    },
+    "image-pack": {
+      "label": "Image pack",
+      "group": "Packs",
+      "icon": "image",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "images"
+      ]
+    },
+    "font-pack": {
+      "label": "Font pack",
+      "group": "Packs",
+      "icon": "type",
+      "optional": true,
+      "swapTier": "LIVE",
+      "required": [
+        "fonts"
+      ]
+    },
+    "motion-pack": {
+      "label": "Motion pack",
+      "group": "Packs",
+      "icon": "zap",
+      "optional": true,
+      "swapTier": "LIVE",
+      "required": [
+        "durations",
+        "easings"
+      ],
+      "nested": {
+        "durations": [
+          "short",
+          "medium",
+          "long"
+        ]
+      }
+    },
+    "settings-schema": {
+      "label": "Settings schema",
+      "group": "System",
+      "icon": "settings",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "groups"
+      ]
+    },
+    "nav-graph": {
+      "label": "Navigation graph",
+      "group": "Navigation",
+      "icon": "grid",
+      "optional": true,
+      "swapTier": "RESTART",
+      "required": [
+        "start",
+        "routes"
+      ]
+    },
+    "widget": {
+      "label": "Home-screen widget",
+      "group": "Android",
+      "icon": "box",
+      "optional": true,
+      "swapTier": "RESTART",
+      "required": [
+        "size",
+        "content"
+      ],
+      "enums": {
+        "size": [
+          "small",
+          "medium",
+          "large",
+          "extra-large"
+        ]
+      }
+    },
+    "notification-style": {
+      "label": "Notification style",
+      "group": "Android",
+      "icon": "bell",
+      "optional": true,
+      "swapTier": "LIVE",
+      "required": [
+        "channels",
+        "importance"
+      ],
+      "enums": {
+        "importance": [
+          "min",
+          "low",
+          "default",
+          "high"
+        ]
+      }
+    },
+    "ui-kit": {
+      "label": "UI kit",
+      "group": "System",
+      "icon": "grid",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "kit"
+      ],
+      "description": "Which registered UI kit renders the abstract components; `overrides` maps component kinds to other kits."
+    },
+    "window": {
+      "label": "Window",
+      "group": "System",
+      "icon": "box",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "kind",
+        "toolbarsAllowed"
+      ],
+      "enums": {
+        "kind": [
+          "main",
+          "dock",
+          "tool",
+          "dialog",
+          "panel",
+          "floating"
+        ]
+      },
+      "description": "Window schema: how windows of a kind are built — toolbars allowed/forced, default minimize corner + mode, default size. Floating/dock windows force toolbars on."
+    }
+  }
+}

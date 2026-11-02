@@ -1,0 +1,16 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.plugintheme",
+  "module": "lib-plugintheme",
+  "name": "Plugin theme override (each plugin's own tokens over the app's theme)",
+  "description": "Every plugin UI gets a theme override on top of the app's (axHub) theme: Settings → Plugins → <plugin> → Appearance has a Theme override switch and a collapsible container with every layout, colour, style and animation token, edited as a grouped form, a token tree (tri-state groups, search) or raw JSON; copy from another plugin or a colour / style theme asset; reset per token, group or all; live preview. Switch it from right-click inside any plugin UI, the toolbar button or Plugins ▸ All plugins ▸ <plugin> ▸ Theme override. Stored as setting axf.plugin.<id>.look = { on, tokens: { \"--fx-…\": value } }, applied as CSS variables on every root carrying data-axf-plugin=\"<id>\". withPluginTheme(lib, {id, name}) wraps a plugin's web library (no per-plugin code). Built Oct 28 2026 (Opus); not a cross-port contract (Fable plugin-theme@1 skipped).",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.plugintheme",
+  "params": [],
+  "ports": { "web": { "status": "compiled", "dir": "libs/plugintheme" } },
+  "placeholders": [
+    { "capability": "axf.plugintheme.android", "note": "Compose port (a scoped AxfTheme per plugin) — Android on hold." },
+    { "capability": "axf.plugintheme.contract", "note": "plugin-theme@1 contract, scoped engine and fixture (Fable) — skipped by Brett Oct 28 2026; this storage shape is what it would adopt." }
+  ]
+}

@@ -547,7 +547,7 @@ def make_app(router: Router | None = None) -> FastAPI:
 
     # ---------------------------------------------------------------- the built web app, single-page fallback
 
-    SEC = {"X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin", "X-Frame-Options": "SAMEORIGIN"}
+    SEC = {"X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin", "Content-Security-Policy": "frame-ancestors 'self' https://molly.amberxai.com"}
 
     @app.get("/healthz", include_in_schema=False)
     def healthz() -> Response:

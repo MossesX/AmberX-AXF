@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "boardroom",
+  "name": "Boardroom container",
+  "version": "1.0.0",
+  "description": "Boardroom: card with a divided header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "formal",
+    "enterprise",
+    "formal"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "divided",
+    "padding": "lg",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "molly",
+  "name": "Molly toolbar",
+  "version": "0.1.0",
+  "description": "Molly's toolbar: one tap per app, reload, open on its own.",
+  "author": "AmberX AXF",
+  "tags": [
+    "molly"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "apps",
+        "items": [
+          {
+            "id": "home",
+            "icon": "home",
+            "label": "Molly",
+            "action": "nav:home"
+          },
+          {
+            "id": "amberx",
+            "icon": "sparkles",
+            "label": "AmberX",
+            "action": "nav:amberx"
+          },
+          {
+            "id": "axhub",
+            "icon": "shield",
+            "label": "axHub",
+            "action": "nav:axhub"
+          },
+          {
+            "id": "console",
+            "icon": "terminal",
+            "label": "Console",
+            "action": "nav:console"
+          }
+        ]
+      },
+      {
+        "id": "frame",
+        "items": [
+          {
+            "id": "reload",
+            "icon": "refresh",
+            "label": "Reload this app",
+            "action": "molly.reload"
+          },
+          {
+            "id": "own",
+            "icon": "external",
+            "label": "Open this app on its own",
+            "action": "molly.own-tab"
+          }
+        ]
+      }
+    ]
+  }
+}

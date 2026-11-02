@@ -1,0 +1,5 @@
+/* Molly: layout only. Colours, sizes and borders come from the engine tokens; the frames are laid over each view's slot. */
+.molly-slot { flex: 1; align-self: stretch; min-height: 0; height: 100%; }
+.molly-deck { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+.molly-frame { position: fixed; border: 0; background: var(--fx-bg); pointer-events: auto; }
+.molly-frame[data-on='false'] { visibility: hidden; pointer-events: none; }

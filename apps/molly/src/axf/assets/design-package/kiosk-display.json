@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "kiosk-display",
+  "name": "Kiosk Display",
+  "version": "1.0.0",
+  "description": "Chrome-free, big-target and forgiving: for kiosks, wall displays and shared screens.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "kiosk"
+  ],
+  "data": {
+    "style-theme": "soft-touch",
+    "color-theme": "saffron-day",
+    "layout": "kiosk",
+    "behavior-theme": "kiosk",
+    "extras": {
+      "slots": {
+        "style-package": "kiosk-bold",
+        "toolbar": "kiosk-lite",
+        "context-menu": "locked-down",
+        "typography": "standard",
+        "density": "roomy",
+        "sizing": "touch"
+      },
+      "spacing": "regular"
+    }
+  }
+}

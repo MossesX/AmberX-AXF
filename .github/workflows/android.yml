@@ -120,6 +120,11 @@ jobs:
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
           npm install --no-audit --no-fund --silent && npm run build
+      - name: molly — re-bake the framework into it and build it
+        working-directory: apps/molly
+        run: |
+          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
+          npm install --no-audit --no-fund --silent && npm run build
       - name: walkthrough-studio — re-bake the framework into it and build it
         working-directory: apps/walkthrough-studio
         run: |

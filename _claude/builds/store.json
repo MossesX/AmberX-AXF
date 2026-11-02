@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 129,
- "updatedAt": "2026-11-02T02:44:04.455Z",
+ "rev": 138,
+ "updatedAt": "2026-11-02T03:37:45.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -47948,14 +47948,14 @@
    "title": "Molly: one interface for AmberX, axHub and the Dev Console (Opus)",
    "category": "Big Dog",
    "detail": "Brett, Nov 2 2026: combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/project-thread-nxdu3m",
+   "pr": "230",
    "createdAt": "2026-11-02T02:43:38.594Z",
-   "updatedAt": "2026-11-02T02:44:04.439Z",
+   "updatedAt": "2026-11-02T03:37:45.139Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -47975,12 +47975,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:33.665Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:00.562Z"
+     "updatedAt": "2026-11-02T03:37:33.678Z"
     },
     {
      "id": "s2",
@@ -47997,12 +47997,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:34.056Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:01.009Z"
+     "updatedAt": "2026-11-02T03:37:34.070Z"
     },
     {
      "id": "s3",
@@ -48019,12 +48019,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:34.590Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:01.469Z"
+     "updatedAt": "2026-11-02T03:37:34.608Z"
     },
     {
      "id": "s4",
@@ -48041,12 +48041,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:35.010Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:01.885Z"
+     "updatedAt": "2026-11-02T03:37:35.025Z"
     },
     {
      "id": "s5",
@@ -48063,12 +48063,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:35.418Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:02.324Z"
+     "updatedAt": "2026-11-02T03:37:35.432Z"
     },
     {
      "id": "s6",
@@ -48085,12 +48085,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 2,
+     "done": true,
+     "doneAt": "2026-11-02T03:37:45.139Z",
+     "note": "look from axHub via HubAppearanceSource (developer.hub); each framed app keeps its own sign-in, axHub wall cookies are same-site",
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:02.743Z"
+     "updatedAt": "2026-11-02T03:37:45.154Z"
     },
     {
      "id": "s7",
@@ -48107,12 +48107,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:35.795Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:03.177Z"
+     "updatedAt": "2026-11-02T03:37:35.806Z"
     },
     {
      "id": "s8",
@@ -48129,12 +48129,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-02T03:37:36.219Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T02:43:38.596Z",
-     "updatedAt": "2026-11-02T02:44:03.632Z"
+     "updatedAt": "2026-11-02T03:37:36.231Z"
     },
     {
      "id": "s9",
@@ -48189,7 +48189,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

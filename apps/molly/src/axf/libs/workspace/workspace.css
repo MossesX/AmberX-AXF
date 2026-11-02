@@ -1,0 +1,75 @@
+/* lib-workspace — theme tokens only; controls are framework controls, this only lays them out */
+.axf-ws { position: relative; height: 100%; display: flex; flex-direction: column; min-height: 0; background: var(--fx-bg); }
+.axf-ws-body { flex: 1 1 auto; display: flex; min-height: 0; }
+.axf-ws[data-axf-dock-hint='top'] { box-shadow: inset 0 calc(var(--fx-border-w) * 3) 0 var(--fx-accent); }
+.axf-ws[data-axf-dock-hint='bottom'] { box-shadow: inset 0 calc(var(--fx-border-w) * -3) 0 var(--fx-accent); }
+.axf-ws[data-axf-dock-hint='left'] { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent); }
+.axf-ws[data-axf-dock-hint='right'] { box-shadow: inset calc(var(--fx-border-w) * -3) 0 0 var(--fx-accent); }
+.axf-ws-areas {
+  flex: 1 1 auto; min-width: 0; min-height: 0; display: grid;
+  grid-template-columns: var(--axf-ws-left) auto 1fr auto var(--axf-ws-right);
+  grid-template-rows: 1fr auto var(--axf-ws-bottom);
+  grid-template-areas: "left lsplit center rsplit right" "bsplit bsplit bsplit bsplit bsplit" "bottom bottom bottom bottom bottom";
+}
+.axf-ws-areas--one { grid-template-columns: 1fr; grid-template-rows: 1fr; grid-template-areas: "center"; }
+.axf-ws-areas--one > .axf-ws-area { grid-area: center; }
+.axf-ws-area { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); position: relative; }
+.axf-ws-area--left { grid-area: left; } .axf-ws-area--center { grid-area: center; } .axf-ws-area--right { grid-area: right; } .axf-ws-area--bottom { grid-area: bottom; }
+.axf-ws-area.is-empty { align-items: center; justify-content: center; }
+.axf-ws-empty { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-4xl); text-align: center; color: var(--fx-muted); }
+.axf-ws-tabs { display: flex; align-items: center; overflow-x: auto; flex: none; border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); scrollbar-width: thin; }
+.axf-ws-tab { flex: none; user-select: none; -webkit-user-select: none; }
+.axf-ws-body2 { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.axf-ws-split { background: var(--fx-border); touch-action: none; }
+.axf-ws-split:hover { background: var(--fx-accent); }
+.axf-ws-split--left, .axf-ws-gap--left { grid-area: lsplit; width: calc(var(--fx-border-w) * 4); cursor: col-resize; }
+.axf-ws-split--right, .axf-ws-gap--right { grid-area: rsplit; width: calc(var(--fx-border-w) * 4); cursor: col-resize; }
+.axf-ws-split--bottom, .axf-ws-gap--bottom { grid-area: bsplit; height: calc(var(--fx-border-w) * 4); cursor: row-resize; }
+.axf-ws-gap--left, .axf-ws-gap--right, .axf-ws-gap--bottom { cursor: default; }
+/* floating panes (s19): the window engine's physics; the 8 resize handles are the framework's (.fx-window__edge, sized like a window's), so no CSS `resize` and no size floor here (FLOAT_MIN in the store) */
+.axf-ws-float { position: absolute; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+.axf-ws-float.is-maximized { border-radius: 0; box-shadow: none; }
+.axf-ws-float__head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); cursor: move; touch-action: none; user-select: none; position: relative; z-index: 1; }
+.axf-ws-float__body { position: relative; z-index: 1; }
+.axf-ws-chips { position: absolute; left: 0; bottom: 0; z-index: 45; display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); }
+.axf-ws-preview { position: absolute; z-index: 39; }
+.axf-ws-float__body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.axf-ws-dock { display: flex; flex-wrap: wrap; background: var(--fx-surface2); }
+.axf-ws-dock--top { border-bottom: var(--fx-border-w) solid var(--fx-border); flex-direction: column; }
+.axf-ws-dock--bottom { border-top: var(--fx-border-w) solid var(--fx-border); flex-direction: column; }
+.axf-ws-dock--left { border-inline-end: var(--fx-border-w) solid var(--fx-border); }
+.axf-ws-dock--right { border-inline-start: var(--fx-border-w) solid var(--fx-border); }
+.axf-ws-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); user-select: none; -webkit-user-select: none; }
+.axf-ws-dock--top .axf-ws-toolbar + .axf-ws-toolbar, .axf-ws-dock--bottom .axf-ws-toolbar + .axf-ws-toolbar { border-top: var(--fx-border-w) solid var(--fx-border); }
+.axf-ws-toolbar--v { flex-direction: column; flex-wrap: nowrap; overflow-y: auto; }
+.axf-ws-grip { padding: 0 var(--fx-dens-gap-xs); }
+.axf-ws-sep { align-self: stretch; width: var(--fx-border-w); margin: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); background: var(--fx-border); position: relative; }
+.axf-ws-toolbar--v .axf-ws-sep { width: auto; height: var(--fx-border-w); margin: var(--fx-dens-gap-md) 0; }
+.axf-ws-item { position: relative; display: inline-flex; }
+.axf-ws-item.is-on::after { content: ''; position: absolute; left: 20%; right: 20%; bottom: 0; height: calc(var(--fx-border-w) * 2); border-radius: 999px; background: var(--fx-accent); pointer-events: none; }
+.axf-ws-end { flex: 1 1 auto; min-width: calc(var(--fx-space) * 3); align-self: stretch; position: relative; }
+.axf-ws-tbfloat { position: absolute; z-index: 60; padding: 0; }
+.axf-ws-tbfloat .axf-ws-toolbar { max-width: min(90vw, calc(var(--fx-space) * 110)); }
+.fx-dialog:has(.axf-ws-cust) { width: min(1200px, 96vw); }
+.axf-ws-cust { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.6fr); gap: var(--fx-dens-gap-3xl); max-height: 72vh; width: 100%; }
+.axf-ws-cust__col { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); min-height: 0; overflow: auto; }
+.axf-ws-cust__foot { grid-column: 1 / -1; }
+.axf-ws-h { margin: 0; font-size: var(--fx-font-size); }
+.axf-ws-count { font-size: var(--fx-type-root-xs); color: var(--fx-muted); font-weight: normal; }
+.axf-ws-row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); width: 100%; box-sizing: border-box; }
+.axf-ws-row:hover { background: var(--fx-surface2); }
+.axf-ws-row.is-active { background: var(--fx-accent-soft); }
+.axf-ws-list, .axf-ws-cmdtree, .axf-ws-cmdtree ul { list-style: none; margin: 0; padding: 0; }
+.axf-ws-drop { padding: var(--fx-dens-gap-xl); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); text-align: center; color: var(--fx-muted); font-size: var(--fx-type-root-sm); position: relative; }
+.axf-ws-cmd { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); position: relative; user-select: none; -webkit-user-select: none; }
+.axf-ws-cmd:hover { background: var(--fx-surface2); }
+.axf-ws-cmd__text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.axf-ws-cmd__spec { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axf-ws-cmdhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; min-height: var(--fx-row-h); box-sizing: border-box; }
+.axf-ws-cmdgroup { border-inline-start: var(--fx-border-w) solid var(--fx-border); margin-inline-start: var(--fx-dens-gap-xl); }
+.axf-ws-cust .axf-ws-search { flex: none; margin-left: 0; min-width: 0; }
+.axf-ws-cust .axf-ws-filter { flex: 1 1 auto; min-width: 0; width: auto; }
+.axf-ws-cust .axf-ws-sort { flex: none; width: auto; }
+.axf-ws-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+@media (max-width: 900px) { .axf-ws-cust { grid-template-columns: 1fr; max-height: none; } }
+@media (max-width: 760px) { .axf-ws-toolbar { overflow-x: auto; flex-wrap: nowrap; } }

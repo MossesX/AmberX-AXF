@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "molly",
+  "name": "Molly navigation",
+  "version": "0.1.0",
+  "description": "Molly: its start page, the three apps it holds, account and settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "molly"
+  ],
+  "data": {
+    "style": "list",
+    "header": "Molly",
+    "sections": [
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Molly",
+            "icon": "home",
+            "view": "home"
+          }
+        ]
+      },
+      {
+        "label": "Apps",
+        "items": [
+          {
+            "id": "amberx",
+            "label": "AmberX",
+            "icon": "sparkles",
+            "view": "amberx"
+          },
+          {
+            "id": "axhub",
+            "label": "axHub",
+            "icon": "shield",
+            "view": "axhub"
+          },
+          {
+            "id": "console",
+            "label": "Console",
+            "icon": "terminal",
+            "view": "console"
+          }
+        ]
+      },
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ]
+  }
+}
