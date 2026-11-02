@@ -44,6 +44,7 @@ apps/
   demo/         web demo (untouched `axf init` output) -> axf.amberxai.com
   console-web/  web Dev Console (React/TS) + server/ (FastAPI, mcp_server.py)
   console/      Android showcase of the console (ai.amberx.axf.console)
+  molly/        Molly: one interface for AmberX, axHub and the console (apps stay separate) -> molly.amberxai.com, build profile Big Dog
 deploy/         install.sh (demo), install-console.sh (sources framework/deploy/axf-deploy.sh), dryrun/ (before/after harness), panel/ (/panel UI)
 _claude/        Claude files (rules/, instructions/, memory/, shared/), synced with /projects/amberx-axf/_claude
 project.manifest.json   this repo's project manifest (apps/* have their own)
