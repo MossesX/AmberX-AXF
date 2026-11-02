@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "pending@1",
- "updatedAt": "2026-11-02T12:58:09.735Z",
+ "updatedAt": "2026-11-02T14:39:53.408Z",
  "artifact": "",
  "items": [
   {
@@ -89,7 +89,7 @@
    "title": "Walkthrough: one video per chapter, re-record a chapter, Chapters view",
    "detail": "Brett Nov 2: break each chapter into its own video so one chapter can be re-recorded alone; a view listing every chapter with length and the version of its video segment.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [],
    "subPrompts": [
     {
@@ -130,12 +130,14 @@
     {
      "text": "[Opus] Split the published video into chapters on the VPS (assembly only)",
      "at": "2026-11-02T12:53:49.841Z",
-     "estimate": "10 min"
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-02T14:39:53.392Z"
     }
    ],
    "createdAt": "2026-11-02T12:53:49.841Z",
-   "builtAt": "",
-   "updatedAt": "2026-11-02T12:58:09.721Z",
+   "builtAt": "2026-11-02T14:39:53.393Z",
+   "updatedAt": "2026-11-02T14:39:53.392Z",
    "source": "console"
   }
  ]
