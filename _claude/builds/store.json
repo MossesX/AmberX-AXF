@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 147,
- "updatedAt": "2026-11-02T18:47:31.154Z",
+ "rev": 149,
+ "updatedAt": "2026-11-02T18:49:26.602Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -48392,9 +48392,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-02T18:47:31.123Z",
+   "updatedAt": "2026-11-02T18:49:26.580Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
+     "at": "2026-11-02T18:49:26.580Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -48598,7 +48603,7 @@
     {
      "id": "s10",
      "uid": "st-mvzm2laq0mvdp5",
-     "title": "",
+     "title": "Toolbar designer as its OWN plugin (toolbar-designer): own folder, plugin.json, install/uninstall, settings sub-tab; dialog lists every plugin + screen, open target main/floating/pane; hooks from xLay",
      "text": "Toolbar designer dialog: items from every plugin and screen, open target main/floating/pane; opened from the settings hook and right-click on any toolbar",
      "model": "Opus",
      "why": "",
@@ -48613,9 +48618,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-02T18:49:25.863Z"
     },
     {
      "id": "s11",
@@ -48670,7 +48675,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
