@@ -3626,7 +3626,7 @@
    "title": "Whole-stack walkthrough plugin (AmberX, editable voice, video download)",
    "detail": "Plan: _claude/memory/docs/walkthrough-everything.md. Brett Nov 1: 90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [],
    "subPrompts": [
     {
@@ -3799,12 +3799,14 @@
     },
     {
      "text": "[Opus] Record + publish on the VPS (unattended run, job agent)",
-     "at": "2026-11-01T22:38:15.392Z"
+     "at": "2026-11-01T22:38:15.392Z",
+     "done": true,
+     "doneAt": "2026-11-02T05:32:27.280Z"
     }
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
-   "builtAt": "",
-   "updatedAt": "2026-11-01T22:58:58.048Z",
+   "builtAt": "2026-11-02T05:32:27.282Z",
+   "updatedAt": "2026-11-02T05:32:27.281Z",
    "source": "console"
   },
   {
