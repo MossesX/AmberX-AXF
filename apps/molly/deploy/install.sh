@@ -37,6 +37,12 @@ command -v docker >/dev/null || { say "Docker is required (Coolify installs it).
 command -v git >/dev/null || { apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git; }
 
 # ---- 1. repo ----
+# GitHub goes through the GitHub App: the token broker first (installation token), then the console's saved token.
+BROKER="$AXF_DIR/framework/cli/github-token.mjs"
+# (host node if there is one, else the console container, which runs the broker for the console)
+CONSOLE_BROKER="docker exec axf-console sh -c 'for d in /opt/axf /app /srv/axf; do [ -f \$d/framework/cli/github-token.mjs ] && exec node \$d/framework/cli/github-token.mjs token; done; exit 1'"
+broker_token() { { command -v node >/dev/null && [ -f "$BROKER" ] && node "$BROKER" token 2>/dev/null; } || eval "$CONSOLE_BROKER" 2>/dev/null || true; }
+[ -n "${GITHUB_TOKEN:-}" ] || GITHUB_TOKEN="$(broker_token)"
 # The console keeps its GitHub token in its env file or in the credentials it saved from the systems check (secrets.env).
 for f in "$AXF_DIR/.axf-console/env" "$AXF_DIR/.axf-console/secrets.env"; do
   if [ -z "${GITHUB_TOKEN:-}" ] && [ -f "$f" ]; then GITHUB_TOKEN="$(sed -n 's/^GITHUB_TOKEN=//p' "$f" | head -n1)"; fi
@@ -92,7 +98,8 @@ fi
 
 # ---- 4. auto-update ----
 # shellcheck disable=SC2016  # the fetch command is written into the update script as is
-AXF_UPDATE_PRELUDE="T=\$(sed -n 's/^GITHUB_TOKEN=//p' \"$AXF_DIR/.axf-console/env\" \"$AXF_DIR/.axf-console/secrets.env\" 2>/dev/null | head -n1)
+AXF_UPDATE_PRELUDE="T=\$({ command -v node >/dev/null && node \"$BROKER\" token 2>/dev/null; } || $CONSOLE_BROKER 2>/dev/null)
+[ -n \"\$T\" ] || T=\$(sed -n 's/^GITHUB_TOKEN=//p' \"$AXF_DIR/.axf-console/env\" \"$AXF_DIR/.axf-console/secrets.env\" 2>/dev/null | head -n1)
 H=(); [ -n \"\$T\" ] && H=(-c \"http.https://github.com/.extraheader=AUTHORIZATION: basic \$(printf 'x-access-token:%s' \"\$T\" | base64 -w0)\")" \
 AXF_UPDATE_FETCH='git "${H[@]}"' \
   axf_update_script "/usr/local/bin/$NAME-update" "$DIR" "$BRANCH" "/var/log/$NAME-update.log" \
