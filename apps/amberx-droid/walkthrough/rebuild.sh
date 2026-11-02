@@ -8,6 +8,8 @@
 #   bash apps/amberx-droid/walkthrough/rebuild.sh            everything (~15 min)
 #   ONLY=home,settings bash …/rebuild.sh                    re-record just those chapters; the others' videos are kept
 #                                                           (publish/chapters/<id>.mp4, versions in segments.json)
+#   RANDOM_LOOK=cli,console bash …/rebuild.sh               record those chapters under a random design package, in the
+#                                                           recorder's browser only (the shared look on axHub is untouched)
 #   NO_PUBLISH=1 bash …/rebuild.sh                           record and check, don't publish
 #   UI_CHECK=1 bash …/rebuild.sh                             after publishing, check the entry + player on the live app
 #
@@ -25,6 +27,18 @@ WORK="${AMBERX_WALKTHROUGH_WORK:-/opt/amberx-walkthrough-rec}$SUB"
 PUBLISH="${AMBERX_WALKTHROUGH_PUBLISH:-/opt/amberx-web/.app/data/walkthrough}$SUB"
 ENVF="${AMBERX_WALKTHROUGH_ENV:-/root/.tour-recorder.env}"
 IMAGE="${AMBERX_WALKTHROUGH_IMAGE:-amberx-tour-recorder}"
+# Design packages the recorder may pick for RANDOM_LOOK chapters: id -> appearance slots (from framework/assets/design-package).
+LOOK_POOL_B64=""
+if [ -n "${RANDOM_LOOK:-}" ]; then
+  LOOK_POOL_B64="$(node -e '
+    const fs = require("fs"), p = require("path"), dir = process.argv[1], pool = {};
+    for (const f of fs.readdirSync(dir)) { if (!f.endsWith(".json")) continue;
+      try { const a = JSON.parse(fs.readFileSync(p.join(dir, f), "utf8")), d = a.data || {}, slots = {};
+        for (const [k, v] of Object.entries(d)) if (typeof v === "string") slots[k] = v;
+        Object.assign(slots, (d.extras && d.extras.slots) || {});
+        if (a.id && Object.keys(slots).length) pool[a.id] = slots; } catch {} }
+    process.stdout.write(Buffer.from(JSON.stringify(pool)).toString("base64"));' "$HERE/../../../framework/assets/design-package")"
+fi
 say() { printf '\033[1;33m[walkthrough]\033[0m %s\n' "$*"; }
 
 [ -r "$ENVF" ] || { echo "No recorder account: $ENVF (HUB_USER=…, HUB_PASS=…, chmod 600)." >&2; exit 2; }
@@ -51,6 +65,7 @@ if [ ! -s "$WORK/voice/$VOICE.onnx" ]; then
 fi
 say "${VOICE_ONLY:+re-voicing}${VOICE_ONLY:-recording} (voice $VOICE, live apps, assembly)"
 docker run --rm --name "amberx-walkthrough-rec-$WT" --env-file "$ENVF" -e OUT=/out -e ONLY="${ONLY:-}" -e WALKTHROUGH="$WT" -e VOICE_ONLY="${VOICE_ONLY:-}" \
+  -e RANDOM_LOOK="${RANDOM_LOOK:-}" -e LOOK_POOL_B64="$LOOK_POOL_B64" \
   -e VOICE_MODEL="/voice/$VOICE.onnx" \
   -v "$HERE:/rec:ro" -v "$WORK:/out" -v "$WORK/voice:/voice:ro" "$IMAGE" bash /rec/run.sh 2>&1 | tee "$WORK/run.log"
 rm -f "$WORK/state.json"

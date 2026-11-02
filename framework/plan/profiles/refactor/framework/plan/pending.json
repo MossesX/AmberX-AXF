@@ -3838,6 +3838,32 @@
    "builtAt": "",
    "updatedAt": "2026-11-02T00:30:06.535Z",
    "source": "console"
+  },
+  {
+   "id": "walkthrough-random-look",
+   "title": "Walkthrough: random design package for stack chapters 5-10 (recording-only look)",
+   "detail": "Brett Nov 2 2026 14:36 ET: for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] RANDOM_LOOK=<chapter ids> in rebuild.sh + record.mjs: design-package pool, random pack per chapter, appearance GET rewritten in the recorder browser only, look recorded in segments",
+     "at": "2026-11-02T19:41:22.806Z",
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-02T19:41:23.513Z"
+    },
+    {
+     "text": "[Opus] Re-record cli, console, plugins, builds, guardrails, agents on the VPS with RANDOM_LOOK; publish",
+     "at": "2026-11-02T19:41:22.806Z",
+     "estimate": "30m"
+    }
+   ],
+   "createdAt": "2026-11-02T19:41:22.804Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-02T19:41:23.513Z",
+   "source": "console"
   }
  ]
 }
