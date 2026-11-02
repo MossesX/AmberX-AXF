@@ -43,7 +43,7 @@
     "mentions": [
       "CLAUDE.md", "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
-      "install_instructions.md"
+      "install_instructions.md", "deploy/claude-headless.sh"
     ]
   },
   "opens": "main"

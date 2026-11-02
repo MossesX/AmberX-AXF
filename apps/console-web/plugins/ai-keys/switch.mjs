@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * claude-switch — the Claude account running headless builds hit a limit: switch to the next saved account (Brett, Nov 2 2026).
+ * ai-keys switch — the Claude account running headless builds hit a limit: switch to the next saved account (Brett, Nov 2 2026).
  *
- *   node framework/cli/claude-switch.mjs [--reason "<why>"] [--wait <seconds>]
+ *   node apps/console-web/plugins/ai-keys/switch.mjs [--reason "<why>"] [--wait <seconds>]
  *
  * Asks the Dev Console's AI keys plugin (POST /api/plugins/ai-keys/switch) to mark the active Claude subscription as
  * limited and make the next saved account that still answers the active one. AI keys then writes that account to
@@ -31,7 +31,7 @@ const token = process.env.AXF_TOKEN || fromEnvFile('AXF_TOKEN');
 const base = (process.env.AXF_CONSOLE_URL || fromEnvFile('AXF_CONSOLE_URL') || 'https://console.amberxai.com').replace(/\/+$/, '');
 const waitMs = Math.max(0, Number(flag('wait', 900)) || 0) * 1000;
 const reason = String(flag('reason', 'a headless build hit its limit')).slice(0, 200);
-const fail = (msg) => { console.error(`claude-switch: ${msg}`); process.exit(1); };
+const fail = (msg) => { console.error(`ai-keys switch: ${msg}`); process.exit(1); };
 
 async function call(method, path, body) {
   const r = await fetch(`${base}/api/plugins/ai-keys/${path}`, {

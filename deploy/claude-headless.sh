@@ -92,7 +92,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
   # Several Claude accounts (Nov 2 2026, Brett): when the run stops on a usage limit ("You've hit your weekly limit"),
-  # AI keys switches to the next saved account that still answers and writes it to the VPS (framework/cli/claude-switch.mjs),
+  # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
   while :; do
@@ -104,9 +104,10 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     st=${PIPESTATUS[0]}
     (( switches < max_switches )) || break
     tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
-    command -v node >/dev/null && [[ -f "$HERE/../framework/cli/claude-switch.mjs" ]] || break
+    sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
+    command -v node >/dev/null && [[ -f "$sw_js" ]] || break
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
-    sw="$(node "$HERE/../framework/cli/claude-switch.mjs" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
+    sw="$(node "$sw_js" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
     printf '%s · starting again\n\n' "$sw"
     switches=$((switches + 1))
   done
