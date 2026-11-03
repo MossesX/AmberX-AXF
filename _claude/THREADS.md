@@ -867,3 +867,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:40 UTC · `terminal-vps-host` note (current) · foreign-write
 - 2026-11-03 19:40 UTC · `terminal-vps-host` s5 done, → complete (current) · orchestrator
 - 2026-11-03 19:40 UTC · `terminal-vps-host` → built, branch claude/terminal-vps-host, PR #274 (current) · builds-live
+- 2026-11-03 19:42 UTC · `terminal-vps-host` s5 done, → complete (current) · foreign-write
+- 2026-11-03 19:43 UTC · `home-cards-live` added (6 steps) (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards-live` note (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards-live` → running (urgent) · orchestrator
