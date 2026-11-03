@@ -688,3 +688,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:35 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:35 UTC · `land-everything` s9 done (urgent) · orchestrator
 - 2026-11-03 17:42 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 17:45 UTC · `console-wake` s3 done (urgent) · orchestrator
