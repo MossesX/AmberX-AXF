@@ -569,7 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:21 UTC · `agent-pick` s7 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:21 UTC · `agent-pick` s8 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:31 UTC · `terminal-vps-host` added (5 steps) (current) · orchestrator
 - 2026-11-03 19:31 UTC · `terminal-vps-host` → running (current) · orchestrator
@@ -969,3 +968,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:26 UTC · `gizmo-companion` s8 done (current) · orchestrator
 - 2026-11-03 23:27 UTC · `molly-banners` note (current) · foreign-write
 - 2026-11-03 23:28 UTC · `gizmo-companion` s14 done (current) · orchestrator
+- 2026-11-03 23:36 UTC · `gizmo-companion` PR #296, note (current) · reconciler
