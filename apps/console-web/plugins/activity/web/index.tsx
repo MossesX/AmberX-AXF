@@ -479,7 +479,7 @@ function SettingsPanel() {
               <div className="fx-stack">
                 <SelectField label="Push a notification to the phone through axHub" value={cfg.push}
                   options={[{ value: 'off', label: 'Off' }, { value: 'all', label: 'Everything that finishes' }, { value: 'done', label: 'Only what finished well' }, { value: 'failed', label: 'Only failures' }]}
-                  hint={cfg.hubInbox ? `Written to axHub's notifications inbox and raised as a console alert (Patches, ntfy and web push deliver it to the phone).` : 'axHub\'s shared folder isn\'t mounted here: only the console alert goes out.'}
+                  hint={cfg.hubInbox ? `Written to axHub's notifications inbox and raised as a console alert (AmberX, ntfy and web push deliver it to the phone).` : 'axHub\'s shared folder isn\'t mounted here: only the console alert goes out.'}
                   onChange={(v) => void save({ push: v as Config['push'] })} />
                 {cfg.push !== 'off' && (
                   <>

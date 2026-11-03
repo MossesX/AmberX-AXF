@@ -13,11 +13,6 @@
       "manifest": "plugin@1",
       "allow": null
     },
-    "pilot": {
-      "label": "Build Pilot plugin",
-      "manifest": "pilot-plugin@1",
-      "allow": "^(plugin\\.json|README\\.md|web\\/.+)$"
-    },
     "axhub": {
       "label": "axHub web plugin",
       "manifest": "axhub-plugin@1",
@@ -36,7 +31,7 @@
       "expect": ""
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "plugin.json",
       "expect": ""
     },
@@ -46,7 +41,7 @@
       "expect": "web/a b.ts: \"a b.ts\" is not allowed in a plugin path"
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "web/a b.ts",
       "expect": "web/a b.ts: \"a b.ts\" is not allowed in a plugin path"
     },
@@ -56,7 +51,7 @@
       "expect": ""
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "web/ok-1_2@3+4.ts",
       "expect": ""
     },
@@ -66,7 +61,7 @@
       "expect": "dist/x.js: dist is never shipped"
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "dist/x.js",
       "expect": "dist/x.js: dist is never shipped"
     },
@@ -76,7 +71,7 @@
       "expect": "a//b: \"\" is not allowed in a plugin path"
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "a//b",
       "expect": "a//b: \"\" is not allowed in a plugin path"
     },
@@ -86,7 +81,7 @@
       "expect": "empty path"
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "",
       "expect": "empty path"
     },
@@ -96,7 +91,7 @@
       "expect": "web/app.KEY: looks like a secret and is never shipped"
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "web/app.KEY",
       "expect": "web/app.KEY: looks like a secret and is never shipped"
     },
@@ -106,22 +101,22 @@
       "expect": ""
     },
     {
-      "kind": "pilot",
+      "kind": "axhub",
       "path": "README.md",
       "expect": ""
     }
   ],
   "cases": [
     {
-      "name": "valid pilot plugin",
+      "name": "valid axhub plugin",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyIkYXhmIjoiYXhodWItcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "README.md",
@@ -135,10 +130,10 @@
       },
       "expect": {
         "ok": true,
-        "id": "ai.amberx.pilot.extra-steps",
+        "id": "ai.amberx.axhub.extra-steps",
         "name": "Extra steps",
         "version": "1.2.0",
-        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+        "sha256": "e7e07348e42cbd0f8fc7136ee88e9b844d9fcd530656df1b2e7ff038286aa4ce",
         "bytes": 139
       }
     },
@@ -230,12 +225,12 @@
       "name": "matching sha256 in the package",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyIkYXhmIjoiYXhodWItcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "README.md",
@@ -246,14 +241,14 @@
             "b64": "ZXhwb3J0IGNvbnN0IHBsdWdpbiA9IHt9Owo="
           }
         ],
-        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740"
+        "sha256": "e7e07348e42cbd0f8fc7136ee88e9b844d9fcd530656df1b2e7ff038286aa4ce"
       },
       "expect": {
         "ok": true,
-        "id": "ai.amberx.pilot.extra-steps",
+        "id": "ai.amberx.axhub.extra-steps",
         "name": "Extra steps",
         "version": "1.2.0",
-        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+        "sha256": "e7e07348e42cbd0f8fc7136ee88e9b844d9fcd530656df1b2e7ff038286aa4ce",
         "bytes": 139
       }
     },
@@ -261,12 +256,12 @@
       "name": "sha256 in the package does not match",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyIkYXhmIjoiYXhodWItcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "README.md",
@@ -288,12 +283,12 @@
       "name": "catalog entry hash does not match",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyIkYXhmIjoiYXhodWItcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "README.md",
@@ -315,12 +310,12 @@
       "name": "catalog entry hash matches",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyIkYXhmIjoiYXhodWItcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "README.md",
@@ -332,13 +327,13 @@
           }
         ]
       },
-      "expectSha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+      "expectSha256": "e7e07348e42cbd0f8fc7136ee88e9b844d9fcd530656df1b2e7ff038286aa4ce",
       "expect": {
         "ok": true,
-        "id": "ai.amberx.pilot.extra-steps",
+        "id": "ai.amberx.axhub.extra-steps",
         "name": "Extra steps",
         "version": "1.2.0",
-        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+        "sha256": "e7e07348e42cbd0f8fc7136ee88e9b844d9fcd530656df1b2e7ff038286aa4ce",
         "bytes": 139
       }
     },
@@ -651,15 +646,15 @@
       }
     },
     {
-      "name": "pilot plugins carry web files only",
+      "name": "axhub plugins carry web files only",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyIkYXhmIjoiYXhodWItcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "README.md",
@@ -677,7 +672,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "server/__init__.py: a Build Pilot plugin may only carry ^(plugin\\.json|README\\.md|web\\/.+)$"
+        "error": "server/__init__.py: a axHub web plugin may only carry ^(plugin\\.json|README\\.md|web\\/.+)$"
       }
     },
     {
@@ -794,12 +789,12 @@
       "name": "wrong manifest tag for the kind",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "web/x.ts",
@@ -809,19 +804,19 @@
       },
       "expect": {
         "ok": false,
-        "error": "plugin.json must be pilot-plugin@1 (got \"plugin@1\")"
+        "error": "plugin.json must be axhub-plugin@1 (got \"plugin@1\")"
       }
     },
     {
       "name": "manifest tag missing",
       "pkg": {
         "$axf": "plugin-package@1",
-        "kind": "pilot",
+        "kind": "axhub",
         "folder": "extra-steps",
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+            "b64": "eyJpZCI6ImFpLmFtYmVyeC5heGh1Yi5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
           },
           {
             "path": "web/x.ts",
@@ -831,7 +826,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "plugin.json must be pilot-plugin@1 (got undefined)"
+        "error": "plugin.json must be axhub-plugin@1 (got undefined)"
       }
     },
     {
@@ -849,7 +844,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "plugin.json id must be a dotted lowercase id (e.g. ai.amberx.pilot.my-plugin); plugin.json needs a name (≤ 80 characters); plugin.json needs a version like 1.2.3"
+        "error": "plugin.json id must be a dotted lowercase id (e.g. ai.amberx.axhub.my-plugin); plugin.json needs a name (≤ 80 characters); plugin.json needs a version like 1.2.3"
       }
     },
     {
@@ -961,7 +956,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "../a: \"..\" is not allowed in a plugin path; .env: \".env\" is not allowed in a plugin path; plugin.json id must be a dotted lowercase id (e.g. ai.amberx.pilot.my-plugin); plugin.json needs a version like 1.2.3"
+        "error": "../a: \"..\" is not allowed in a plugin path; .env: \".env\" is not allowed in a plugin path; plugin.json id must be a dotted lowercase id (e.g. ai.amberx.axhub.my-plugin); plugin.json needs a version like 1.2.3"
       }
     },
     {
@@ -979,7 +974,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "unknown plugin kind \"desktop\" (known: console, pilot, axhub, amberx)"
+        "error": "unknown plugin kind \"desktop\" (known: console, axhub, amberx)"
       }
     },
     {
@@ -996,7 +991,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "unknown plugin kind \"undefined\" (known: console, pilot, axhub, amberx)"
+        "error": "unknown plugin kind \"undefined\" (known: console, axhub, amberx)"
       }
     },
     {

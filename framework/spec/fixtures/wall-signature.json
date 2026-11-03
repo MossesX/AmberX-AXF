@@ -71,7 +71,7 @@
     },
     {
       "name": "wrong host (signed for another site)",
-      "sig": "v1.1790000000.008a9aeeb202e8cf47d43cae9897de0d95ff3a3a12fbfaa5688b267e20aee02e",
+      "sig": "v1.1790000000.aed8b6499cb41a2075fef71f3ca98db6492a3f40fa595af1dd1892b045d358af",
       "user": "conrad",
       "role": "user",
       "perms": "console.themes,assistant.chat",

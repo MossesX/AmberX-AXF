@@ -10,7 +10,12 @@
    "detail": "Brett, Oct 29 2026: \"Design a bunch more cards for the console home screen. If plugins with data or dynamic content don't have a card, design one for them from scratch (you decide what to display and how). Plugins can now carry cards that can be designed in the future SDK and attached to the plugin as assets. Console Home detects all card assets attached to plugins and shows or hides them, but always rendered. The card layout can show or hide all cards detected.\"\n\nDecisions (cards): profile Angel (new, this is its first build; nothing built in the asking session); Fable contract first, then Opus.\nCard designs: one per plugin with data/dynamic content (31 plugins + 5 existing Home cards). No card: _template, basic-filter, plugin-switches, plugins-menu (tools with no data of their own).\nClash check Oct 29: no open build touches Home or cards (refactor profile all complete; main-framework pending items unrelated).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch angel/home-cards-queue (PR #171); PR #171; PR #171 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] card@1 asset type in framework/schemas/asset-types.json (+ axf schemas): id, owner (plugin id or \"console\"), title, icon, kind (stat | list | meter | chart | feed | status | actions | custom), size (s | m | l | wide | tall), data {service (plugin_services capability), path, refreshSec, live:boolean}, slots (headline, value, sub, rows, sparkline, actions), emptyState, actions (ids run through the action engine), level (Simple/Basic/Developer/Administrator), minRole (UAC), defaultVisible, order, category. Open registry: unknown kinds render the custom slot, never fail.",
@@ -105,7 +110,7 @@
    ],
    "createdAt": "2026-10-29T18:34:15.248Z",
    "builtAt": "",
-   "updatedAt": "2026-10-29T18:34:09.324Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "orchestrator"
   },
   {
@@ -114,7 +119,12 @@
    "detail": "Brett, Oct 30 2026 (voice, then 'Go' in text): the app takes up way too much space; Settings is a wall of buttons. Packs only reskin; fix how the screens are built. Agreed plan: settings as short lists you tap into (like phone settings), dropdowns instead of rows of buttons, tight spacing everywhere; start with Settings and show before/after screenshots. Profile: Angel. Layouts stay as they are (Brett: 'Nah' to new layouts). Web first; Android twin of the settings renderer recorded as deferred (Android hold).",
    "model": "Opus",
    "status": "complete",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #175; PR #175 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Before screenshots of every Settings page (phone + desktop) and a list of what wastes space",
@@ -161,7 +171,7 @@
    ],
    "createdAt": "2026-10-30T13:01:42.736Z",
    "builtAt": "2026-10-30T13:06:41.972Z",
-   "updatedAt": "2026-10-30T13:06:42.016Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -301,6 +311,10 @@
     {
      "text": "Oct 31 2026 (Opus, headless): s3–s5 on claude/ui-all-assets — compact defaults tightened, 7 text + 9 spacing steps, root text twins, scale-adopt codemod moved ~1,720 sizes in 80 files (axf.css, console, all plugin pages, libs, AmberX, axhub-web, Walkthrough, templates), check-theme rule scale, theme-swap swaps the three types, 26 design packages name them, report _claude/builds/reports/ui-all-assets-2026-10-31.md",
      "at": "2026-10-31T09:07:22.073Z"
+    },
+    {
+     "text": "Reconciler: PR #181; PR #181 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -342,7 +356,7 @@
    ],
    "createdAt": "2026-10-30T17:31:49.428Z",
    "builtAt": "2026-10-31T09:07:22.007Z",
-   "updatedAt": "2026-10-31T09:07:22.074Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -397,15 +411,24 @@
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #192; PR #192 names s1, s2, s4 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] Pointer model",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Fable] Panel + pin/drag/resize",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Fable] Compose port, then web",
@@ -413,12 +436,14 @@
     },
     {
      "text": "[Opus] Tests + docs",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     }
    ],
    "createdAt": "2026-10-31T09:07:21.792Z",
    "builtAt": "",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -461,7 +486,12 @@
    "detail": "Brett, Oct 30 2026 (voice): Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #191; PR #191 merged; PR #191 names s2 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Fable] Schema",
@@ -469,7 +499,9 @@
     },
     {
      "text": "[Fable] Web engine + renderer",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Fable] Android engine + Compose",
@@ -482,7 +514,7 @@
    ],
    "createdAt": "2026-10-31T09:07:21.792Z",
    "builtAt": "",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -513,40 +545,59 @@
    "detail": "Brett, Oct 30 2026 (voice): a full-blown session browser for regular Claude sessions AND every headless agent run, monitoring in real time. Live grid, collapsible rows like every other grid: agent, build, job, model, status badge (running, done, failed, killed for budget), tokens, dollars, duration, started time; updates live. Expand a row: plain-English rundown of what it built and exactly what changed (item, what was wrong, before/after), taken from real commits and file changes. Tabs: Context (all text that flowed into its context and what it said back), Tools (every command and file edit), Conversation for regular sessions. Watch a running agent live and kill it. Links to PR/commit/file. Sort, search, filter. Built on Session check-in archive + Codebase changes log + the agent-swarm runner's JSON reports and stream logs. Prices everywhere: the row shows the run's exact total cost (from usage). Expanded 'what it did' shows a price next to every line (estimated: tokens of the turns that produced that change, labelled 'est.'). Context tab: cost per turn; Tools tab: cost per command. Totals at the bottom plus a per-model breakdown.",
    "model": "Opus",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #195; PR #195 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Run store: ingest Claude sessions + headless agent stream logs/reports, live feed",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Fable] Live grid: collapsible rows, badges, tokens/cost, sort/search/filter",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Fable] Row detail: plain-English what it built + exact before/after changes from commits",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Fable] Context, Tools and Conversation tabs",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Opus] Live watch + kill for running agents",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Opus] Prices: exact run total on the row, est. price per what-it-did line, cost per turn/command, per-model totals",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Opus] Tests + docs",
-     "at": "2026-10-31T09:07:21.792Z"
+     "at": "2026-10-31T09:07:21.792Z",
+     "done": true,
+     "doneAt": "2026-11-03T13:57:06.541Z"
     }
    ],
    "createdAt": "2026-10-31T09:07:21.792Z",
    "builtAt": "",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -663,6 +714,10 @@
     {
      "text": "s3-s5 recorded done with a plain step update, NOT a model-switch approval: the Fable→Opus gate is for starting a phase, and this work had already shipped in PR #194 (e46b8079). No approval was recorded for Brett.",
      "at": "2026-11-01T02:37:21.093Z"
+    },
+    {
+     "text": "Reconciler: PR #194; PR #194 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -699,7 +754,7 @@
    ],
    "createdAt": "2026-10-31T09:07:21.792Z",
    "builtAt": "2026-11-01T02:37:25.448Z",
-   "updatedAt": "2026-11-01T02:37:25.448Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -784,6 +839,10 @@
     {
      "text": "s7+s12 done by Leftovers (claude/leftovers): push banner builds its client from axf.github@1 (reads through axHub, local GITHUB_TOKEN fallback; writes still local), lists branches with no local token, and registers its own health@1 check push-banner-github (red no route / amber reads only / green). push-banner test.py 132→141, systems-check 216/216.",
      "at": "2026-11-01T02:34:25.216Z"
+    },
+    {
+     "text": "Reconciler: PR #182; PR #182 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -874,7 +933,7 @@
    ],
    "createdAt": "2026-10-30T18:21:59.378Z",
    "builtAt": "2026-11-01T02:34:24.794Z",
-   "updatedAt": "2026-11-01T02:34:25.216Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -891,6 +950,10 @@
     {
      "text": "s9 done by Leftovers: push banner auto-merge skips and Merge refuses PRs whose ui-review@1 state holds (waiting/changes/rejected; error = held); PR numbers only for AmberX-AXF, other repos by branch. push-banner test 141→150.",
      "at": "2026-11-01T02:36:07.977Z"
+    },
+    {
+     "text": "Reconciler: PR #184; PR #184 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -960,7 +1023,7 @@
    ],
    "createdAt": "2026-10-30T17:59:21.357Z",
    "builtAt": "2026-11-01T02:36:07.629Z",
-   "updatedAt": "2026-11-01T02:36:07.977Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -973,6 +1036,10 @@
     {
      "text": "Built on claude/plans (12/12 steps). Push + PR + closing #159 sent as a veto call (no GitHub credentials in the sandbox). Report: _claude/memory/docs/plan-studio/README.md",
      "at": "2026-10-30T19:00:33.519Z"
+    },
+    {
+     "text": "Reconciler: PR #185; PR #185 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1063,7 +1130,7 @@
    ],
    "createdAt": "2026-10-30T18:21:11.429Z",
    "builtAt": "2026-10-30T19:00:33.461Z",
-   "updatedAt": "2026-10-30T19:00:38.179Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -1080,6 +1147,10 @@
     {
      "text": "s7 closed by Leftovers: claude/audio-extract is on main; test.mts 24/24, AmberX test.mjs 2045/2045 + tsc (Node 22), plugin-lifecycle clean. The new AmberX APK comes from CI (amberx-debug.apk).",
      "at": "2026-11-01T02:36:26.239Z"
+    },
+    {
+     "text": "Reconciler: PR #187; PR #187 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1135,7 +1206,7 @@
    ],
    "createdAt": "2026-10-30T21:56:25.813Z",
    "builtAt": "2026-11-01T02:36:25.826Z",
-   "updatedAt": "2026-11-01T02:36:26.239Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   }
  ]

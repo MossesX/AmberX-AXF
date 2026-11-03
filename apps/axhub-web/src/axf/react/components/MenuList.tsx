@@ -65,14 +65,14 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
   const rt = useRuntime();
   useAxfState();
   const [openSub, setOpenSub] = useState<string | null>(null);
-  // Hooks the host app took over (embed@1 takes, e.g. Settings inside Patches) are dropped like hidden items.
+  // Hooks the host app took over (embed@1 takes, e.g. Settings) are dropped like hidden items.
   const visible = filterMenu(dropTaken(items, rt), (r) => rt.gate(r));
 
   return (
     <ul className="fx-menu" role="menu">
       {visible.map((item) => {
         if (item.separator) return <li key={item.id} className={item.spacer ? 'fx-menu__spacer' : 'fx-menu__sep'} role="separator" />;
-        // a hook of a function the host locks (plugins inside Patches) stays, greyed out with its note
+        // a hook of a function the host locks (e.g. plugins) stays, greyed out with its note
         const hostLock = item.action ? rt.lockedByHost({ action: item.action }) : null;
         const locked = rt.gate(item.requires) === 'disable' || !!hostLock;
         // a live list (`provider`, rt.registerAppMenuProvider) is a submenu filled when it opens

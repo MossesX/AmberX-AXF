@@ -196,7 +196,7 @@ export function controlsInAssets(dir) {
   return out;
 }
 
-/** Apps that ship the framework's help pack in src/assets/help (Patches is paused; demo keeps its old baked framework). */
+/** Apps that ship the framework's help pack in src/assets/help (demo keeps its old baked framework). */
 export const HELP_APPS = ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio'];
 const sharesAssets = (app) => { try { return JSON.parse(readFileSync(join(ROOT, 'framework/schemas/shared-assets.json'), 'utf8')).apps.includes(`apps/${app}`); } catch { return false; } };
 const FRAMEWORK_HELP = 'framework/assets/help';

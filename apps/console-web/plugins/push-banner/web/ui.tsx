@@ -463,7 +463,7 @@ function ClaudeSettings() {
     <div className="fx-stack">
       <h4 className="axp-push-banner__group-title">When a pull or merge fails</h4>
       <Switch label="Hand failures to Mosses (Claude Code on the VPS)" checked={c.on} onChange={(v) => save({ claudeOnFail: v })}
-        hint="A Pull main in that hits conflicts, or a Merge GitHub refuses (conflicts, failed CI), is handed to Mosses, who asks axHub to start headless Claude Code (Opus) on the VPS on that branch in AmberX-AXF, axHub or Build-Pilot. Nothing starts until you approve it on axHub. It shows in the building banner, pushes only to that branch and never merges. Conflicted entries also get a Fix with Claude button." />
+        hint="A Pull main in that hits conflicts, or a Merge GitHub refuses (conflicts, failed CI), is handed to Mosses, who asks axHub to start headless Claude Code (Opus) on the VPS on that branch in AmberX-AXF or axHub. Nothing starts until you approve it on axHub. It shows in the building banner, pushes only to that branch and never merges. Conflicted entries also get a Fix with Claude button." />
       <Switch label="Let it run any shell command" checked={c.shell} disabled={!c.on} onChange={(v) => save({ claudeShell: v })}
         hint="Off: it can edit files and run git (fetch, merge, commit, push to that branch) only. On: any command on the VPS as root, still approved per launch." />
       {c.on && !c.hubToken && <p className="fx-small axp-push-banner__note is-danger">Needs the axHub token on the console (Keys needed → axHub connection).</p>}

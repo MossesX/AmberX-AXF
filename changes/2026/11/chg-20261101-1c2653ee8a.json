@@ -1,0 +1,80 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-1c2653ee8a",
+  "createdAt": "2026-11-01T20:50:26.907Z",
+  "updatedAt": "2026-11-01T20:50:27.457Z",
+  "kind": "build",
+  "title": "# Build: one-look-opus (Opus now, Fable review later) Brett, Nov 1 2026 (voice, verbatim): \"How com…",
+  "asked": "# Build: one-look-opus (Opus now, Fable review later) Brett, Nov 1 2026 (voice, verbatim): \"How come the refactor didn't compress banners. I need a new default style and color theme that GizmoX, amberx, and axhub all inherit from axhub. Change in one changed all. Then I need the 2 new themes to be combined into a default design theme. When a design theme is loaded the individual style and color themes are not applied. Only when something changes is the design pack overridden with the individual packs. Remove all appearance and theme editing abilities from the settings interface that is read from axHub and changes every apps interface only allow selecting design, style, and color themes.\" Then: \"Build it on opus now fable later.\" A Fable run named `one-look-default` was started and stopped within a minute; ignore its folder/branch, start fresh from main. GizmoX = the Dev Console, renamed GizmoX AI Studio in PR #226 (`apps/console-web`). AmberX = `apps/amberx-droid`. axHub = `apps/axhub-web`. Patches, demo and Walkthrough Studio stay out. ## Read first CLAUDE.md + imports, `_claude/shared/rules/RULES.md`, `_claude/THREADS.md`, STATUS.md, and the reports `_claude/builds/reports/hub-look-all-assets.md` (PR #225: appearance only from axHub, appearance@1 `settings` map, shared assets) and `banner-fix.md`. Build on appearance@1 and the existing design-package / style / colour theme asset types; do not make a parallel system. ## 1. Banners didn't compress — find out why and fix it Likely cause (verify, don't assume): banner-fix only compacted the activity banner; hub-look-all-assets kept `banner/amberx-thin` as a per-app override in all three apps because the framework copy is pinned by the banner/roll fixtures and Kotlin kernel tests. Also check whether older banner look settings carried in appearance@1 `settings` override the compact ones. Make every banner in all three apps compact (one line, tokens only), move the newer amberx-thin into the framework copy, drop the per-app overrides, update fixtures + Kotlin tests together. Before/after screenshots, phone and desktop, in UI Review, group \"One look - Nov 1\". ## 2. New default style theme + colour theme, owned by axHub - Create one new default **style theme** and one new default **colour theme** (fresh, clean, phone-first, compact). They live in `framework/assets`, are shared, and are the defaults all three apps inherit through axHub's appearance@1 document. - One source of truth: changing the style or colour theme in any app changes it in every app, live. Extend `framework/spec/check-hub-look.mts` to prove it across all three apps. ## 3. Default design theme (design package) = those two combined New default design package that sets exactly the new style theme + new colour theme (plus whatever slots a design package normally carries). It is the out-of-the-box look for all three apps. ## 4. Precedence rule (contract — spec it) - When a design package is loaded, the individual style and colour theme selections are NOT applied; the package wins. - Only when the user then changes the style theme or colour theme does that individual pick override the package's value for that part (the other part stays from the package). Show this state clearly (e.g. \"Design: X (style changed)\"). - Loading a design package again clears the individual overrides. - Write the rule into the appearance@1 spec (TS reference engine) and a PORTING.md note for the Kotlin twin, with tests (load package → picks ignored; change style → only style overrides; reload package → overrides cleared; all three apps agree). ## 5. Settings interface (read from axHub, drives every app): selection only - Remove every appearance/theme **editing** ability from the shared Settings interface: look tokens / Apply-to-all levels, Sliders, per-asset tokens, banner look editing, spacing/scale tweaks, colour/style editors, any \"edit theme\" or \"save as package\" actions. - Keep only three pickers: **Design theme**, **Style theme**, **Colou…",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "26d0077d-d4b",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-01T20:50:26.907Z",
+  "finishedAt": "2026-11-01T20:50:27.457Z",
+  "lastSeenAt": "2026-11-01T20:50:26.907Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/one-look-opus",
+    "branch": "claude/one-look-opus",
+    "base": "4f13de1d85c330822834267d259254926516fdc1",
+    "head": "4f13de1d85c330822834267d259254926516fdc1",
+    "pushed": true,
+    "dirty": 23,
+    "files": [
+      "_claude/sessions/",
+      "changes/2026/11/chg-20261101-108cbd3d47.json",
+      "changes/2026/11/chg-20261101-1c2b64bcf9.json",
+      "changes/2026/11/chg-20261101-2354795a4f.json",
+      "changes/2026/11/chg-20261101-2560c34543.json",
+      "changes/2026/11/chg-20261101-2b7c5db07b.json",
+      "changes/2026/11/chg-20261101-2f247c6891.json",
+      "changes/2026/11/chg-20261101-4b7b8d5726.json",
+      "changes/2026/11/chg-20261101-5a98df913a.json",
+      "changes/2026/11/chg-20261101-5d59b692a8.json",
+      "changes/2026/11/chg-20261101-a83c2abebc.json",
+      "changes/2026/11/chg-20261101-c501acb3f3.json",
+      "changes/2026/11/chg-20261101-dd4adcce3d.json",
+      "changes/2026/11/chg-20261101-ebabdc3fed.json",
+      "changes/2026/11/chg-20261101-f178462b59.json",
+      "changes/2026/11/chg-20261101-f9aa8e2eb7.json",
+      "sessions/archive/2026/11/cc-09caef8d-b01d-4164-b5bd-9e3466851f76.json",
+      "sessions/archive/2026/11/cc-62bd7be6-1f14-495b-b324-ddf6ad9013f9.json",
+      "sessions/archive/2026/11/cc-72b10fe2-e5ac-4c10-8b90-4436ae06458c.json",
+      "sessions/archive/2026/11/cc-af198f8e-1029-469b-9294-a1274481637f.json",
+      "sessions/archive/2026/11/cc-c33bc905-9b60-4381-ab7a-b395130ab59d.json",
+      "sessions/archive/2026/11/cc-e841401a-e73d-4a33-b678-acd82c511663.json",
+      "sessions/archive/2026/11/cc-ef566660-e59d-46a8-8c2c-7a14cbed0c22.json"
+    ],
+    "at": "2026-11-01T20:50:27.557Z"
+  }
+}

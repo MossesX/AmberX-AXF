@@ -306,6 +306,120 @@
         "title": "Make a new key",
         "text": "Makes a new SSH key for a connection.",
         "kind": "button"
+      },
+      {
+        "target": "slow",
+        "title": "Slow",
+        "text": "The context chain types each rule out slowly, so you can read along as the agent picks it up.",
+        "kind": "tab"
+      },
+      {
+        "target": "normal",
+        "title": "Normal",
+        "text": "The context chain's default pace: a little slower than reading speed.",
+        "kind": "tab"
+      },
+      {
+        "target": "fast",
+        "title": "Fast",
+        "text": "The context chain reveals rules quickly; still one at a time.",
+        "kind": "tab"
+      },
+      {
+        "target": "all",
+        "title": "All",
+        "text": "Shows the whole context chain at once, no typing out.",
+        "kind": "tab"
+      },
+      {
+        "target": "skip-to-the-end",
+        "title": "Skip to the end",
+        "text": "Stops the slow reveal and shows every file and rule the session has taken in so far.",
+        "kind": "button"
+      },
+      {
+        "target": "pause",
+        "title": "Pause",
+        "text": "Pauses the context chain's reveal where it is. Play carries on.",
+        "kind": "button"
+      },
+      {
+        "target": "play",
+        "title": "Play",
+        "text": "Carries on revealing the context chain.",
+        "kind": "button"
+      },
+      {
+        "target": "kill-session",
+        "title": "Kill session",
+        "text": "Ends this tab's tmux session for good: whatever runs in it stops, on every device attached to it. Closing the tab only detaches.",
+        "kind": "button"
+      },
+      {
+        "target": "kill-session-2",
+        "title": "Kill session…",
+        "text": "Asks first, then ends this tab's tmux session for good. Closing the tab only detaches, like closing Moshi.",
+        "kind": "menu"
+      },
+      {
+        "target": "open-in-moshi-copy-command",
+        "title": "Open in Moshi",
+        "text": "Copies the command that attaches this same session from the Moshi app (mosh to the VPS, then tmux attach). Both stay live at once.",
+        "kind": "menu"
+      },
+      {
+        "target": "side-by-side",
+        "title": "Side by side",
+        "text": "Shows the session and its context chain next to each other. Remembered for this tab.",
+        "kind": "menu"
+      },
+      {
+        "target": "stacked",
+        "title": "Stacked",
+        "text": "Shows the context chain under the session. Remembered for this tab.",
+        "kind": "menu"
+      },
+      {
+        "target": "no-split",
+        "title": "No split",
+        "text": "Hides the context chain; the tab shows only the session.",
+        "kind": "menu"
+      },
+      {
+        "target": "session",
+        "title": "Session",
+        "text": "On a phone the two panes swipe: this jumps to the live session.",
+        "kind": "tab"
+      },
+      {
+        "target": "context-chain",
+        "title": "Context chain",
+        "text": "Every file the session reads, in the order it reads them (CLAUDE.md, its imports, rules, then each Read), with the rules it picks up typed out one at a time.",
+        "kind": "tab"
+      },
+      {
+        "target": "tabs-live-in-tmux-sessions-survive-reloads-sleep-and-restarts-attach-from-moshi",
+        "title": "Tabs live in tmux sessions",
+        "text": "VPS and console tabs run inside tmux on the server, so a reload, a sleeping phone or a console restart re-attaches with the scrollback replayed. Moshi can attach the same session.",
+        "kind": "toggle"
+      },
+      {
+        "target": "headless-tabs-show-the-context-chain-next-to-the-session",
+        "title": "Context chain in headless tabs",
+        "text": "Headless build tabs split into the live session and its context chain.",
+        "kind": "toggle"
+      },
+      {
+        "target": "split-for-new-headless-tabs",
+        "title": "Split for new headless tabs",
+        "text": "How new headless tabs split: side by side, stacked or not at all. Each tab can change it in its menu.",
+        "kind": "field"
+      },
+      {
+        "target": "context-chain-speed",
+        "title": "Context chain speed",
+        "text": "How fast the context chain types out the rules a session picks up. Slow is slower than real time on purpose.",
+        "kind": "field"
       }
     ],
     "intros": []
