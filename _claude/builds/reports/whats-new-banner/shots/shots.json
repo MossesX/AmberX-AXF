@@ -1,0 +1,66 @@
+[
+ {
+  "name": "banner",
+  "steps": [
+   {
+    "eval": "new Promise(r=>{const t=setInterval(()=>{if(window.AXF){clearInterval(t);r(1)}},200)})",
+    "wait": 1500
+   },
+   {
+    "eval": "window.scrollTo(0,0)",
+    "wait": 400
+   },
+   {
+    "eval": "document.querySelector(\"[data-axf-origin='ai.amberx.axf.console.whats-shipped']\")?.scrollIntoView({inline:'end'})",
+    "wait": 600
+   }
+  ]
+ },
+ {
+  "name": "panel-by-date",
+  "steps": [
+   {
+    "eval": "new Promise(r=>{const t=setInterval(()=>{if(window.AXF){clearInterval(t);r(1)}},200)})",
+    "wait": 1500
+   },
+   {
+    "eval": "AXF.dispatch('whats-shipped.open')",
+    "wait": 3000
+   }
+  ]
+ },
+ {
+  "name": "panel-by-app",
+  "steps": [
+   {
+    "eval": "new Promise(r=>{const t=setInterval(()=>{if(window.AXF){clearInterval(t);r(1)}},200)})",
+    "wait": 1500
+   },
+   {
+    "eval": "AXF.dispatch('whats-shipped.open')",
+    "wait": 6000
+   },
+   {
+    "eval": "document.querySelectorAll('.axp-whats-shipped .fx-seg__opt')[2].click()",
+    "wait": 1200
+   },
+   {
+    "eval": "document.querySelector('.axp-whats-shipped__head').click()",
+    "wait": 1000
+   }
+  ]
+ },
+ {
+  "name": "settings",
+  "steps": [
+   {
+    "eval": "new Promise(r=>{const t=setInterval(()=>{if(window.AXF){clearInterval(t);r(1)}},200)})",
+    "wait": 1500
+   },
+   {
+    "eval": "AXF.dispatch('settings.open:whats-shipped')",
+    "wait": 2500
+   }
+  ]
+ }
+]

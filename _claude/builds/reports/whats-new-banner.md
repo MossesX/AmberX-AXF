@@ -38,7 +38,7 @@ Urgent profile, 5 steps, branch `claude/whats-new-banner`. Requested by Brett, N
 
 ## Screenshots
 
-Phone + desktop in `_claude/memory/docs/whats-new-banner/shots/after/` (banner, panel by date, panel by app with an item open, settings). Taken offline (`AXF_APPEARANCE_HUB=off`, git source, no token).
+Phone + desktop in `_claude/builds/reports/whats-new-banner/shots/after/` (banner, panel by date, panel by app with an item open, settings). Taken offline (`AXF_APPEARANCE_HUB=off`, git source, no token).
 
 ## Known gaps
 
