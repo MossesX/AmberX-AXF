@@ -31,7 +31,11 @@
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/token-control",
-    "env": ["AXF_CONTROL_SALT", "AXF_APPEARANCE_FILE", "AXF_AMBERX_NOTES_DIR"],
+    "env": [
+      "AXF_CONTROL_SALT",
+      "AXF_APPEARANCE_FILE",
+      "AXF_AMBERX_NOTES_DIR"
+    ],
     "mentions": [
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
@@ -39,7 +43,8 @@
       "apps/console-web/plugins/README.md",
       "framework/spec/CONTROL.md",
       "framework/cli/axf.mjs",
-      "apps/console-web/server/mcp_server.py"
+      "apps/console-web/server/mcp_server.py",
+      ".github/workflows/android.yml"
     ]
   },
   "builtWith": {

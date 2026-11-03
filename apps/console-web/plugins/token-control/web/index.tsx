@@ -223,7 +223,7 @@ function TokenControlView() {
   const tryIt = (c: Partial<ControlCommand>) => { setPreset({ ...c }); setTab('try'); };
   return (
     <div className="fx-stack fx-stack--lg axf-tc">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Token control</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Token control</h1><p className="fx-muted">Change any token, AmberX note or planner item, and see the same command as an API call, an MCP tool and a CLI line.</p></div></header>
       <Segmented label="Token control" value={tab} onChange={setTab} className="axf-tc-wrap" options={[
         { value: 'tokens', label: <span data-help="tc-tab-tokens">Tokens</span>, icon: 'sliders' },
         { value: 'try', label: <span data-help="tc-tab-try">Try it</span>, icon: 'play' },

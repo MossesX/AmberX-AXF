@@ -66,6 +66,8 @@ jobs:
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
         run: node apps/console-web/plugins/project-wizard/test.mjs
+      - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
+        run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
