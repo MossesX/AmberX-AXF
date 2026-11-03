@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 167,
- "updatedAt": "2026-11-03T13:54:40.315Z",
+ "rev": 168,
+ "updatedAt": "2026-11-03T13:55:03.272Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49695,7 +49695,7 @@
    "branch": "claude/orch-live-sync",
    "pr": "",
    "createdAt": "2026-11-03T13:39:29.176Z",
-   "updatedAt": "2026-11-03T13:53:26.701Z",
+   "updatedAt": "2026-11-03T13:55:02.244Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -49740,12 +49740,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T13:55:02.244Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T13:39:29.177Z",
-     "updatedAt": "2026-11-03T13:39:29.177Z"
+     "updatedAt": "2026-11-03T13:55:02.277Z"
     },
     {
      "id": "s3",
@@ -49866,7 +49866,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
