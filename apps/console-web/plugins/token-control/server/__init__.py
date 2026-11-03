@@ -107,7 +107,15 @@ def _parse(v: str) -> Any:
         return v
 
 
+def _console(command: dict[str, Any]) -> Any:
+    """The provider of console.* targets (the Console commands plugin, where the open consoles are), or None."""
+    return plugin_services.get("console-commands@1") if str(command.get("target") or "").startswith("console.") else None
+
+
 def _go(request: Request, command: dict[str, Any]) -> JSONResponse:
+    svc = _console(command)
+    if svc is not None:
+        return answer(svc.run_for(request, command))
     grants, name = caller(request)
     return answer(run(command, grants, by=command.get("by") or name))
 
@@ -180,7 +188,8 @@ class Control:
     router = router
 
     def run(self, command: dict[str, Any], grants: list[str] | None = None, by: str = "") -> dict[str, Any]:
-        return run(command, grants, by)
+        svc = _console(command)
+        return svc.run(command, grants, by) if svc is not None else run(command, grants, by)
 
     def registry(self) -> Any:
         return meta("registry")

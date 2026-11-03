@@ -9,8 +9,6 @@
  *   node control.mjs run                       one command as JSON on stdin ({command, grants?, by?}) → the answer as JSON
  *   node control.mjs <op> <target> [path] …     list | get | set | reset | add | remove | act (see `help`)
  *   node control.mjs targets | tools | routes | schema | registry | audit [n] | where | help
- *   node control.mjs console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | close | where
- *                    | list [screens|dialogs|settings|actions|clients] [words]     (`axf console …`; always sent to the console)
  *   --remote [url]   send it to a console instead (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN)
  *   --json           print the raw answer
  *
@@ -27,16 +25,12 @@ import { ControlError, audit, confirmSalt, readAudit } from './lib/common.mjs';
 import { appearanceFile, runTokens } from './lib/tokens.mjs';
 import { notesDir, runAmberx } from './lib/amberx.mjs';
 import { runPlanner } from './lib/planner.mjs';
-import { runConsoleCommand } from '../../../../framework/core/engines/console-commands.mjs';
-import { randomBytes } from 'node:crypto';
 
 /**
  * Run one control@1 command. `grants` = the caller's permissions (the console token = ['*']; a wall user's role
  * grants; already capped for a remote caller). `preset` = fields an alias fixes (`axf todo …` → kind todo).
- * `context` = what only the console server knows: `clients` (the caller's open consoles and their catalogs) for the
- * console domain; the answer then carries `deliver` ({ to, message }) for the server to send and strip.
  */
-export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now(), context = null } = {}) {
+export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now() } = {}) {
   const c = normalizeControl(raw);
   if (!c.by && by) c.by = by;
   // an alias preset (kind) is a filter on list and a default on add
@@ -51,7 +45,8 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
   }
   const domain = CONTROL_TARGETS[c.target].domain;
   try {
-    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : domain === 'console' ? runConsole(c, context, grants, now) : await runPlanner(c);
+    if (domain === 'console') throw new ControlError(CONTROL_WIRE.NOT_IMPLEMENTED, 'console commands are run by the Console commands plugin where the open consoles are: POST /api/control or /api/console on the console, or axf console …');
+    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : await runPlanner(c);
     const at = new Date(now).toISOString();
     if (gate.effect !== 'read') audit({ by: c.by || 'unknown', reason: c.reason ?? '', op: c.op, target: c.target, path: c.path, action: c.action, value: c.value, input: c.input });
     return controlResult(c, data, { by: c.by || 'unknown', reason: c.reason ?? '', at });
@@ -61,61 +56,7 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
   }
 }
 
-/** The console domain: resolved against the open consoles the server hands in (core/engines/console-commands.mjs). */
-function runConsole(c, context, grants, now) {
-  if (!context || !Array.isArray(context.clients)) {
-    throw new ControlError(CONTROL_WIRE.NOT_IMPLEMENTED, 'console commands run in the console server, where the open consoles are: axf console … sends them there (AXF_CONSOLE_URL), or POST /api/control');
-  }
-  const r = runConsoleCommand(c, { clients: context.clients, grants, salt: confirmSalt(), now, id: `cc-${now.toString(36)}-${randomBytes(3).toString('hex')}`, by: c.by ?? '' });
-  if (!r.ok) { const { ok: _ok, code, message, ...extra } = r; throw new ControlError(code, message, extra); }
-  return r.deliver ? { ...r.data, deliver: r.deliver } : r.data;
-}
-
 /* ------------------------------------------------------------------ CLI → command */
-
-const CONSOLE_LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-
-/**
- * `axf console …` words → a control@1 command of the console domain, or { error }.
- *   open <screen words> · dialog <id|words> · settings <tab|plugins/<id>|words> [--anchor a] · action <id|words> [args…]
- *   back · home · close · where · list [screens|dialogs|settings|actions|clients] [words] · clients
- *   --to recent|all|<client id> · --confirm <token> (a destructive action's second call)
- */
-export function consoleCommandFromArgv(argv) {
-  const f = flags(argv);
-  const [verb, ...rest] = f._[0] === 'console' ? f._.slice(1) : f._;
-  const words = rest.join(' ').trim();
-  const input = { ...(typeof f.to === 'string' ? { to: f.to } : {}), ...(typeof f.anchor === 'string' ? { anchor: f.anchor } : {}), ...(typeof f.arg === 'string' ? { arg: f.arg } : {}) };
-  const usage = 'usage: axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | close | where | list [screens|dialogs|settings|actions|clients] [words]';
-  const act = (target, action, path) => (path ? { op: 'act', target, path, action, ...(Object.keys(input).length ? { input } : {}) } : null);
-  let cmd = null;
-  switch (verb) {
-    case 'open': case 'screen': case 'go': cmd = act('console.screens', 'open', words); break;
-    case 'dialog': cmd = act('console.dialogs', 'open', words); break;
-    case 'settings': case 'setting': cmd = act('console.settings', 'open', words); break;
-    case 'action': case 'run': {
-      const [id, ...args] = rest;
-      cmd = act('console.actions', 'run', id);
-      if (cmd && args.length) cmd.input = { ...(cmd.input ?? {}), args };
-      if (cmd && typeof f.confirm === 'string') cmd.confirm = f.confirm;
-      break;
-    }
-    case 'back': case 'home': case 'close': cmd = act('console.nav', verb, 'here'); break;
-    case 'where': case 'here': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
-    case 'clients': cmd = { op: 'list', target: 'console.clients' }; break;
-    case 'list': case 'ls': {
-      const kind = CONSOLE_LIST_KINDS[rest[0]];
-      const q = (kind ? rest.slice(1) : rest).join(' ').trim();
-      cmd = { op: 'list', target: kind ?? 'console.screens', ...(q || f.limit ? { select: { ...(q ? { q } : {}), ...(f.limit ? { limit: Number(f.limit) } : {}) } } : {}) };
-      break;
-    }
-    default: return { error: usage };
-  }
-  if (!cmd) return { error: usage };
-  if (typeof f.by === 'string') cmd.by = f.by;
-  if (typeof f.reason === 'string') cmd.reason = f.reason;
-  return { command: cmd, remote: f.remote ?? true, json: !!f.json };
-}
 
 const TOKEN_SETS = ['theme', 'style', 'layout', 'typography', 'density', 'sizing', 'look', 'custom', 'slots'];
 
@@ -220,7 +161,6 @@ export function formatAnswer(r) {
     if (r.code === 'confirmation_required') return `${r.message}\nconfirm token: ${r.confirm}`;
     return `${r.code}: ${r.message}`;
   }
-  if (r.target?.startsWith('console.')) return formatConsole(r);
   if (r.op === 'list') {
     const rows = r.items ?? [];
     if (!rows.length) return r.note ?? 'nothing';
@@ -237,22 +177,6 @@ export function formatAnswer(r) {
   if (r.op === 'remove') return `removed ${r.removed} (${r.target} ${r.path})`;
   const what = r.item ? (r.item.title ?? r.item.name ?? `${r.item.id} = ${show(r.item.value)}`) : '';
   return `${r.changed === false ? 'unchanged' : 'done'}: ${r.op}${r.action ? ` ${r.action}` : ''} ${r.target}${r.path ? ` ${r.path}` : ''}${what ? ` → ${what}` : ''}${r.text ? `\n${r.text}` : ''}`;
-}
-
-/** A console answer as a person reads it. */
-function formatConsole(r) {
-  if (r.op === 'list') {
-    const rows = r.items ?? [];
-    if (!rows.length) return r.target === 'console.clients' ? 'no console is open right now' : 'nothing matches';
-    if (r.target === 'console.clients') return rows.map((c) => `${c.id.padEnd(24)} ${(c.device || '').padEnd(8)} ${(c.here?.screen ?? '').padEnd(22)} ${c.lastUsed}  ${c.title}`).join('\n');
-    return `${rows.map((i) => `${i.id.padEnd(30)} ${i.label}${i.params ? '  (needs args)' : ''}`).join('\n')}${r.total > rows.length ? `\n… ${r.total - rows.length} more (add words, or --limit N)` : ''}`;
-  }
-  if (r.op === 'get') return r.item ? `${r.item.kind} ${r.item.id}: ${r.item.label}${r.item.detail ? ` — ${r.item.detail}` : ''}` : `here: ${Object.entries(r.value ?? {}).map(([k, v]) => `${k} ${v}`).join(' · ') || 'unknown'}`;
-  const sent = r.delivered ?? [];
-  const done = sent.filter((d) => d.ok);
-  const what = r.item ? `${r.item.label} (${r.item.id})` : r.action;
-  if (!sent.length) return `sent ${r.action} ${what} — no console answered yet`;
-  return `${done.length ? '✓' : '✗'} ${r.action} ${what} → ${sent.map((d) => `${d.client}: ${d.ok ? d.message || 'done' : `failed: ${d.message}`}`).join(' · ')}`;
 }
 
 function help() {
@@ -272,10 +196,6 @@ function help() {
     '  axf plan add "Voice macros" --field category="Apps > AmberX"',
     '  axf build step token-control s5 --profile urgent',
     '  axf control act planner.builds token-control note --field text="halfway"',
-    '  axf console open plan studio          (Brett\'s open console goes there; --to all for every open one)',
-    '  axf console settings plugins/token-control',
-    '  axf console action terminal.open',
-    '  axf console list screens build        · axf console back · axf console where · axf console clients',
     '', 'Flags: --select k=v · --field k=v · --list <id> · --profile <id> · --confirm <token> · --by · --reason · --remote [url] · --json',
     'Targets: ' + CONTROL_TARGET_IDS.join(', '),
   ].join('\n');
@@ -293,7 +213,7 @@ export async function main(argv) {
   if (cmd === 'run') {
     const body = JSON.parse(argv[1] && argv[1].startsWith('{') ? argv[1] : readFileSync(0, 'utf8'));
     const env = body && body.command ? body : { command: body };
-    console.log(JSON.stringify(await runControl(env.command, { grants: Array.isArray(env.grants) ? env.grants : ['*'], by: env.by ?? '', preset: env.preset ?? null, context: env.context ?? null })));
+    console.log(JSON.stringify(await runControl(env.command, { grants: Array.isArray(env.grants) ? env.grants : ['*'], by: env.by ?? '', preset: env.preset ?? null })));
     return 0;
   }
   if (cmd === 'targets') { out(CONTROL_TARGETS, CONTROL_TARGET_IDS.map((id) => `${id.padEnd(18)} ${CONTROL_TARGETS[id].ops.join(',').padEnd(30)} ${CONTROL_TARGETS[id].label}`).join('\n')); return 0; }
@@ -304,7 +224,7 @@ export async function main(argv) {
   if (cmd === 'audit') { const rows = readAudit(Number(argv[1]) || 30); out(rows, rows.map((r) => `${r.at} ${r.by} ${r.op} ${r.target}${r.path ? ` ${r.path}` : ''}${r.action ? ` ${r.action}` : ''}${r.reason ? ` — ${r.reason}` : ''}`).join('\n') || 'no writes yet'); return 0; }
   if (cmd === 'where') { out({ appearance: appearanceFile(), amberx: notesDir() }, `look: ${appearanceFile()}\nAmberX notes: ${notesDir()}`); return 0; }
 
-  const parsed = cmd === 'console' ? consoleCommandFromArgv(argv) : commandFromArgv(argv);
+  const parsed = commandFromArgv(argv);
   if (parsed.error) { console.error(parsed.error); return 2; }
   const { command, preset, remote } = parsed;
   if (parsed.profile && command.target === 'planner.builds') {
@@ -325,7 +245,7 @@ export async function main(argv) {
   } else r = await runControl(command, { grants: ['*'] });
   out(r, formatAnswer(r));
   if (!r.ok && r.code === 'confirmation_required') {
-    if (!json) console.log(`repeat to ${command.target === 'console.actions' ? 'run it' : 'delete'}: axf ${argv.filter((a) => a !== '--json').map(q).join(' ')} --confirm ${r.confirm}`);
+    if (!json) console.log(`repeat to delete: axf ${argv.filter((a) => a !== '--json').map(q).join(' ')} --confirm ${r.confirm}`);
     return 3;
   }
   return r.ok ? 0 : 1;
