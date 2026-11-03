@@ -775,3 +775,54 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:25 UTC · `builds-one-page` s16-15 done, s13 done, → complete, note (refactor) · foreign-write
 - 2026-11-03 18:25 UTC · `auto-land` s2 done (urgent) · orchestrator
 - 2026-11-03 18:25 UTC · `auto-land` s3 done (urgent) · orchestrator
+- 2026-11-03 18:28 UTC · `auto-land` s4 done (urgent) · orchestrator
+- 2026-11-03 18:28 UTC · `auto-land` s5 done (urgent) · orchestrator
+- 2026-11-03 18:28 UTC · `auto-land` note (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
+- 2026-11-03 18:29 UTC · `crew-live` s2 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `crew-live` s4 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s3 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s4 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s5 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s6 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s7 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s8 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s9 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s11 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s12 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s13 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `md-studio` s14 done (urgent) · orchestrator
+- 2026-11-03 18:29 UTC · `toolbar-tap-confirm` s2 done, → running (urgent) · orchestrator
+- 2026-11-03 18:30 UTC · `auto-land` branch claude/auto-land-2, PR #270, note (urgent) · reconciler
+- 2026-11-03 18:30 UTC · `auto-land` s6 done (urgent) · orchestrator
+- 2026-11-03 18:30 UTC · `auto-land` s7 done (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` branch claude/md-studio, PR #271 (urgent) · builds-live
+- 2026-11-03 18:31 UTC · `md-studio` s10 done, → complete (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` note (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` → built (urgent) · orchestrator
+- 2026-11-03 18:32 UTC · `crew-live` s3 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s4 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s5 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s6 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s7 done (urgent) · orchestrator
+- 2026-11-03 18:36 UTC · `crew-live` s6 done (urgent) · orchestrator
+- 2026-11-03 18:37 UTC · `auto-land` s8 done, → built (urgent) · orchestrator
+- 2026-11-03 18:37 UTC · `auto-land` note (urgent) · orchestrator
+- 2026-11-03 18:37 UTC · `toolbar-tap-confirm` s3 done (urgent) · orchestrator
+- 2026-11-03 18:51 UTC · `toolbar-tap-confirm` s1 done (urgent) · orchestrator
+- 2026-11-03 18:52 UTC · `toolbar-tap-confirm` PR #272 (urgent) · builds-live
+- 2026-11-03 18:52 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
+- 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
+- 2026-11-03 18:58 UTC · `crew-live` s5 done (urgent) · orchestrator
+- 2026-11-03 19:00 UTC · `crew-live` PR #273 (urgent) · builds-live
+- 2026-11-03 19:01 UTC · `crew-live` s7 done, → built (urgent) · orchestrator
+- 2026-11-03 19:01 UTC · `crew-live` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `follow-amber` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` branch claude/claude-settings (urgent) · builds-live
+- 2026-11-03 19:02 UTC · `follow-amber` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `follow-amber` → running (urgent) · orchestrator
+- 2026-11-03 19:04 UTC · `agent-pick` added (9 steps) (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:05 UTC · `follow-amber` s1 done (urgent) · orchestrator
+- 2026-11-03 19:05 UTC · `follow-amber` s1 done (urgent) · foreign-write
