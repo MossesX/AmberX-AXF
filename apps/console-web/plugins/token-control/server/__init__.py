@@ -396,8 +396,8 @@ class Control:
         if not active or via not in ("console", "local") or not who:
             return {"ok": False, "code": "denied", "message": "no pass of Brett's own to renew"}
         approver = {"via": via, "name": who if who.endswith("(standing)") else f"{who} (standing)"}
-        cmd = {"op": "act", "target": PASS, "path": _scope({"scope": scope}), "action": "grant", "input": input_, "by": "claude-settings", "reason": reason}
-        return run(cmd, ["*"], by="claude-settings", approver=approver)
+        cmd = {"op": "act", "target": PASS, "path": _scope({"scope": scope}), "action": "grant", "input": input_, "by": "no-wait-standing", "reason": reason}
+        return run(cmd, ["*"], by="no-wait-standing", approver=approver)
 
     def pass_publication(self) -> Any:
         """The veto pass publication (what GET pass answers, unsigned) for in-process readers."""

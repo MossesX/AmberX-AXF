@@ -6,9 +6,9 @@
     { "id": "follow", "label": "Follow Amber", "icon": "eye", "order": 20, "description": "Shared with the Follow Amber switch: one setting, read by both." },
     { "id": "builds", "label": "Builds", "icon": "layers", "order": 30, "description": "How Claude starts and pays for builds." },
     { "id": "verification", "label": "Verification", "icon": "shield", "order": 40, "description": "How much Claude trusts the live builds store." },
-    { "id": "talking", "label": "Talking", "icon": "message", "order": 50, "description": "How Amber talks to Brett (voice and chat)." },
+    { "id": "talking", "label": "Talking", "icon": "mic", "order": 50, "description": "How Amber talks to Brett (voice and chat)." },
     { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 60, "description": "What gets pushed to the AmberX app, and when it stays quiet." },
-    { "id": "memory", "label": "Memory and notes", "icon": "book", "order": 70, "description": "What Claude writes down for later sessions." }
+    { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." }
   ],
   "settings": [
     { "key": "noWait.enabled", "group": "no-wait", "label": "No wait", "kind": "toggle", "default": false, "owner": true, "level": "simple", "effect": "pass",
