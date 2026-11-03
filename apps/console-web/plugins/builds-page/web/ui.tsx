@@ -50,8 +50,8 @@ async function send(path: string, body: Record<string, unknown>, toast?: (m: str
   finally { set({ busy: false }); }
 }
 
-const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { running: 'accent', complete: 'success', waiting: 'warning', blocked: 'warning', failed: 'danger' };
-const STATUS_LABEL: Record<string, string> = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', complete: 'Complete', archived: 'Archived' };
+const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { running: 'accent', built: 'success', complete: 'success', waiting: 'warning', blocked: 'warning', failed: 'danger' };
+const STATUS_LABEL: Record<string, string> = { pending: 'Pending', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
 const fmtMin = (m: number) => (!m ? '' : m < 60 ? `${m} min` : `${Math.round(m / 30) / 2} h`);
 const stepName = (s: StepV): string => s.title || (s.text.split('\n')[0] ?? '');
 const isPhone = () => globalThis.matchMedia?.('(pointer: coarse)').matches ?? false;
@@ -194,7 +194,7 @@ const FILTERS: { value: Filter; label: string; title: string }[] = [
   { value: 'archived', label: 'Archived', title: 'Archived (merged into another build, recovered from history)' },
   { value: 'all', label: 'All', title: 'Every build of the profile' },
 ];
-const keep = (f: Filter) => (b: BuildV) => f === 'all' ? true : f === 'complete' ? b.status === 'complete' : f === 'archived' ? b.status === 'archived' : f === 'queue' ? b.kind === 'epic' || !!b.planRef : !['complete', 'archived'].includes(b.status);
+const keep = (f: Filter) => (b: BuildV) => f === 'all' ? true : f === 'complete' ? (b.status === 'complete' || b.status === 'built') : f === 'archived' ? b.status === 'archived' : f === 'queue' ? b.kind === 'epic' || !!b.planRef : !['complete', 'archived'].includes(b.status);
 
 export function BuildsPage() {
   const rt = useRuntime();
@@ -280,7 +280,7 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   return (
     <DataGrid<BuildV> id="builds.builds" label="Builds" groups={groups} columns={columns} rowId={(b) => b.id} rowLabel={(b) => b.title} hidden={[]}
       expanded={expanded} onToggleExpand={(id) => setExpanded(expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id])}
-      rowTone={(b) => (b.status === 'complete' ? 'success' : b.status === 'running' ? 'accent' : b.status === 'failed' ? 'danger' : ['blocked', 'waiting'].includes(b.status) ? 'warning' : 'muted')}
+      rowTone={(b) => (b.status === 'complete' || b.status === 'built' ? 'success' : b.status === 'running' ? 'accent' : b.status === 'failed' ? 'danger' : ['blocked', 'waiting'].includes(b.status) ? 'warning' : 'muted')}
       rowRef={(b) => ({ kind: 'build', id: b.id })}
       onMove={(item, target, pos) => {
         if (item.kind !== 'row' || target.kind !== 'row' || item.id === target.id) return;
