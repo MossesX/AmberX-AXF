@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T16:07:20.586Z",
+ "updatedAt": "2026-11-03T16:07:26.461Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1268,9 +1268,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T15:32:07.476Z",
+   "updatedAt": "2026-11-03T16:07:25.644Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
+     "at": "2026-11-03T16:07:25.644Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
