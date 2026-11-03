@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 191,
- "updatedAt": "2026-11-03T16:08:42.974Z",
+ "rev": 194,
+ "updatedAt": "2026-11-03T16:14:15.248Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50177,12 +50177,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:07:30.479Z",
+   "updatedAt": "2026-11-03T16:14:14.427Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
      "at": "2026-11-03T16:07:25.644Z"
+    },
+    {
+     "text": "Landed claude/agent-chats-hub (PR #248) on main at 92be01a0",
+     "at": "2026-11-03T16:14:09.456Z"
     }
    ],
    "approvals": [],
@@ -50224,12 +50228,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:14:14.427Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:14:14.450Z"
     },
     {
      "id": "s3",
@@ -50438,7 +50442,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50461,7 +50465,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:58:12.029Z",
-   "updatedAt": "2026-11-03T16:07:20.795Z",
+   "updatedAt": "2026-11-03T16:12:16.094Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -50591,12 +50595,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:12:16.094Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:58:12.030Z",
-     "updatedAt": "2026-11-03T15:58:12.030Z"
+     "updatedAt": "2026-11-03T16:12:16.133Z"
     },
     {
      "id": "s7",
@@ -50651,7 +50655,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
