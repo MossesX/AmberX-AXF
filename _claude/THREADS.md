@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:29 UTC · `md-studio` s4 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s5 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s6 done (urgent) · orchestrator
 - 2026-11-03 18:29 UTC · `md-studio` s7 done (urgent) · orchestrator
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:18 UTC · `gizmo-companion` added (19 steps) (current) · orchestrator
 - 2026-11-03 22:18 UTC · `gizmo-companion` → running (current) · orchestrator
 - 2026-11-03 22:18 UTC · `gizmo-companion` note (current) · orchestrator
+- 2026-11-03 22:26 UTC · `gizmo-companion` s1 done (current) · orchestrator
