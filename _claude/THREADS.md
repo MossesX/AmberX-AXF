@@ -617,3 +617,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:48 UTC · `dock-engine` → complete, merged (urgent) · builds-live
 - 2026-11-03 16:48 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:48 UTC · `xlayout` → complete, merged (big-dog) · builds-live
+- 2026-11-03 16:48 UTC · `land-everything` s6 done (urgent) · orchestrator
