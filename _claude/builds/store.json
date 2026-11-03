@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 307,
- "updatedAt": "2026-11-03T18:08:19.163Z",
+ "rev": 308,
+ "updatedAt": "2026-11-03T18:08:45.067Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50685,10 +50685,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-everything",
    "pr": "",
+   "mergedAt": "2026-11-03T18:07:44.501Z",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T18:07:13.043Z",
+   "updatedAt": "2026-11-03T18:07:45.052Z",
    "builtAt": "2026-11-03T18:07:13.043Z",
    "notes": [
     {
@@ -51018,7 +51019,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
