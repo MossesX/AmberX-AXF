@@ -7,6 +7,7 @@ import { stylePackageErrors } from './engines/stylepackage';
 import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { scaleErrors } from './engines/scale-rules.mjs';
+import { layoutErrors } from './engines/layout-rules.mjs';
 import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
@@ -87,6 +88,8 @@ export function validateAsset(raw: unknown): ValidationResult {
     if (!isObj(inner)) continue;
     for (const nk of keys) if (!(nk in inner)) errors.push(`data.${k}.${nk} is required`);
   }
+  // layout tokens (every layout parameter is a token): ONE validator shared with the build engine (core/engines/layout-rules.mjs)
+  errors.push(...layoutErrors(raw.type, data));
   if (raw.type === 'layout' && 'slots' in data) errors.push(...validateSlots(data.slots, (t) => isAssetType(t)));
   if (raw.type === 'layout' && 'repeat' in data) errors.push(...validateRepeat(data.repeat, (t) => isAssetType(t)));
   // Menu items (app-menu menus, context-menu targets): optional fields provider / badge / checked / order / before / after.

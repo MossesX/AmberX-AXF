@@ -757,7 +757,7 @@ const CSS = `
 .axf-settings--tabs-side .axf-settings__tabs{display:flex;flex-direction:column;align-items:stretch;gap:calc(var(--fx-space)/2)}
 .axf-settings--tabs-side .axf-settings__tabs>*{justify-content:flex-start}
 .axf-settings--nodesc .axf-settings__hint,.axf-settings--nodesc .axf-settings__desc{display:none}
-@media (max-width:640px){.axf-settings__split{grid-template-columns:1fr}.axf-settings--tabs-side .axf-settings__tabs{flex-direction:row;flex-wrap:wrap}}
+:where([data-fx-small]) .axf-settings__split {grid-template-columns:1fr} :where([data-fx-small]) .axf-settings--tabs-side .axf-settings__tabs {flex-direction:row;flex-wrap:wrap}
 [data-reduced-motion] *{transition:none!important;animation:none!important}
 
 /* ---- compact settings (Oct 30 2026, Brett: short lists you tap into, dropdowns, tight spacing) ---- */
@@ -810,7 +810,7 @@ const CSS = `
 .axf-settings__search{max-width:none!important}
 .axf-settings>.axf-settings__search{flex:none;margin-left:0;width:100%;box-sizing:border-box;min-height:calc(var(--fx-font-size)*2.4)}
 .axf-settings__gbody .axf-settings__label>:not(:first-child){font-size:var(--fx-type-scale-xs);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-@media (max-width:640px){.axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg)){flex-direction:column;align-items:stretch;gap:var(--fx-dens-gap-md)}.axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__label{flex:none!important}.axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__control{max-width:none!important;width:100%;flex:none!important;justify-content:flex-start}.axf-settings__gbody .axf-settings__row{flex-wrap:wrap}.axf-settings__gbody .axf-settings__label{flex:1 1 calc(var(--fx-font-size)*10)}.axf-settings__gbody .axf-settings__control{max-width:100%;flex:1 1 100%;justify-content:flex-start}.axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch){flex-wrap:nowrap}.axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) .axf-settings__control{flex:0 0 auto;max-width:60%}}
+:where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg)) {flex-direction:column;align-items:stretch;gap:var(--fx-dens-gap-md)} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__label {flex:none!important} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:is(:has(.axf-settings__control--pair),:has(select),:has(.fx-seg))>.axf-settings__control {max-width:none!important;width:100%;flex:none!important;justify-content:flex-start} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row {flex-wrap:wrap} :where([data-fx-small]) .axf-settings__gbody .axf-settings__label {flex:1 1 calc(var(--fx-font-size)*10)} :where([data-fx-small]) .axf-settings__gbody .axf-settings__control {max-width:100%;flex:1 1 100%;justify-content:flex-start} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) {flex-wrap:nowrap} :where([data-fx-small]) .axf-settings__gbody .axf-settings__row:has(.fx-switch, .axf-settings__switch) .axf-settings__control {flex:0 0 auto;max-width:60%}
 `;
 
 function injectStyles(): void {
