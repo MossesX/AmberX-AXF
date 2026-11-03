@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:12:24.917Z",
+ "updatedAt": "2026-11-03T21:12:44.773Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1560,14 +1560,14 @@
    "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
    "category": "Ops",
    "detail": "Found by window-resize-fix (#278): main CI red on three jobs, blocking auto-merge for every PR. Agent: Earl the Ear (headless).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
+   "pendingId": "urgent-main-ci-green",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T21:12:18.212Z",
-   "updatedAt": "2026-11-03T21:12:18.212Z",
+   "updatedAt": "2026-11-03T21:12:22.113Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -1586,10 +1586,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:20.518Z",
      "note": "",
-     "uid": "st-mw16on0s06f8hs"
+     "uid": "st-mw16p28t01j6hk"
     },
     {
      "id": "s2",
@@ -1604,10 +1604,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:22.113Z",
      "note": "",
-     "uid": "st-mw16on0s07twwn"
+     "uid": "st-mw16p28t02ktid"
     },
     {
      "id": "s3",
@@ -1625,7 +1625,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw16on0s080oj5"
+     "uid": "st-mw16p28t03lupa"
     },
     {
      "id": "s4",
@@ -1643,7 +1643,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw16on0s09bkwg"
+     "uid": "st-mw16p28t04rlr2"
     },
     {
      "id": "s5",
@@ -1661,7 +1661,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw16on0s0apxt0"
+     "uid": "st-mw16p28t05mvwt"
     }
    ]
   }

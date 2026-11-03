@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 467,
- "updatedAt": "2026-11-03T21:12:24.917Z",
+ "rev": 468,
+ "updatedAt": "2026-11-03T21:12:44.773Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -59639,14 +59639,14 @@
    "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
    "category": "Ops",
    "detail": "Found by window-resize-fix (#278): main CI red on three jobs, blocking auto-merge for every PR. Agent: Earl the Ear (headless).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
+   "pendingId": "urgent-main-ci-green",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T21:12:18.212Z",
-   "updatedAt": "2026-11-03T21:12:18.212Z",
+   "updatedAt": "2026-11-03T21:12:22.113Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -59654,7 +59654,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw16on0s06f8hs",
+     "uid": "st-mw16p28t01j6hk",
      "title": "",
      "text": "Read the latest failing main CI run and get the exact failures",
      "model": "Opus",
@@ -59667,16 +59667,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:20.518Z",
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:18.219Z"
+     "updatedAt": "2026-11-03T21:12:37.871Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw16on0s07twwn",
+     "uid": "st-mw16p28t02ktid",
      "title": "",
      "text": "Fix each failure at the root (widgets fixture, xlayout opens, Kotlin banner test)",
      "model": "Opus",
@@ -59689,16 +59689,16 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:22.113Z",
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:18.219Z"
+     "updatedAt": "2026-11-03T21:12:37.871Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw16on0s080oj5",
+     "uid": "st-mw16p28t03lupa",
      "title": "",
      "text": "Get main green: small PR; refresh the waiting PRs from main",
      "model": "Opus",
@@ -59716,11 +59716,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:18.219Z"
+     "updatedAt": "2026-11-03T21:12:37.871Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw16on0s09bkwg",
+     "uid": "st-mw16p28t04rlr2",
      "title": "",
      "text": "health@1 check: red banner item when main CI is red, with an Auto fix that queues an ops-fix job",
      "model": "Opus",
@@ -59738,11 +59738,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:18.219Z"
+     "updatedAt": "2026-11-03T21:12:37.871Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw16on0s0apxt0",
+     "uid": "st-mw16p28t05mvwt",
      "title": "",
      "text": "Report, THREADS, store steps",
      "model": "Opus",
@@ -59760,7 +59760,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:18.219Z"
+     "updatedAt": "2026-11-03T21:12:37.871Z"
     }
    ],
    "profiles": [
@@ -59774,9 +59774,25 @@
    "rev": 1,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T21:12:18.212Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw16p28t01j6hk": "2026-11-03T21:12:18.219Z",
+     "st-mw16p28t02ktid": "2026-11-03T21:12:18.219Z",
+     "st-mw16p28t03lupa": "2026-11-03T21:12:18.219Z",
+     "st-mw16p28t04rlr2": "2026-11-03T21:12:18.219Z",
+     "st-mw16p28t05mvwt": "2026-11-03T21:12:18.219Z"
+    }
+   },
    "queue": null,
-   "defaultAt": "2026-11-03T21:12:18.219Z",
+   "defaultAt": "2026-11-03T21:12:37.871Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
