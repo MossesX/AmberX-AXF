@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 552,
- "updatedAt": "2026-11-03T23:25:00.528Z",
+ "rev": 553,
+ "updatedAt": "2026-11-03T23:27:14.951Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -62081,10 +62081,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/molly-nav-submenus",
+   "pr": "#295",
    "createdAt": "2026-11-03T21:55:24.277Z",
-   "updatedAt": "2026-11-03T21:55:24.277Z",
+   "updatedAt": "2026-11-03T23:26:36.144Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -65619,7 +65619,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -65992,7 +65992,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:23:29.528Z",
+   "updatedAt": "2026-11-03T23:25:42.552Z",
    "builtAt": "",
    "notes": [
     {
@@ -66066,12 +66066,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:21:17.735Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:26:30.353Z"
     },
     {
      "id": "s4",
@@ -66088,12 +66088,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:22:06.848Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:26:30.353Z"
     },
     {
      "id": "s5",
@@ -66110,12 +66110,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:22:57.049Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:26:30.353Z"
     },
     {
      "id": "s6",
@@ -66132,12 +66132,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:24:21.333Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:26:30.353Z"
     },
     {
      "id": "s7",
@@ -66154,12 +66154,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:25:42.552Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:26:30.353Z"
     },
     {
      "id": "s8",
@@ -66437,7 +66437,37 @@
    "rev": 6,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "session",
+    "planId": "",
+    "createdAt": "2026-11-03T22:18:50.820Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw1927q50kp8hq": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50lgz29": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50mxxmp": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50nom6p": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50o4880": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50ph88r": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50qynnq": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50rs6y6": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50sx2kp": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50ts2ss": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50u3iw6": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50vzd3o": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50wktdc": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50xfddn": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50yrq9q": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q50zl3ym": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q510yqiw": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q511lo8v": "2026-11-03T22:18:50.824Z",
+     "st-mw1927q512l9n0": "2026-11-03T22:18:50.824Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:18:50.824Z",
    "rearranged": false,
