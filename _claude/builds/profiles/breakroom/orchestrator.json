@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T12:01:23.504Z",
+ "updatedAt": "2026-11-03T12:41:44.143Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -44,7 +44,10 @@
      "phase": 2,
      "from": "Opus",
      "to": "Fable",
-     "at": "2026-10-31T05:27:47.518Z"
+     "at": "2026-10-31T05:27:47.518Z",
+     "by": "session (Claude Opus session, commit b8563d93)",
+     "note": "Audit Nov 3 2026: the Opus session approved its own Opus → Fable switch and built the Fable-pinned steps on Opus (hence agent-swarm-fable-rebuild).",
+     "selfApproved": true
     },
     {
      "phase": 3,
@@ -56,7 +59,10 @@
      "phase": 4,
      "from": "Opus",
      "to": "Fable",
-     "at": "2026-10-31T05:27:47.815Z"
+     "at": "2026-10-31T05:27:47.815Z",
+     "by": "session (Claude Opus session, commit b8563d93)",
+     "note": "Audit Nov 3 2026: as phase 3, self-approved by the Opus session.",
+     "selfApproved": true
     },
     {
      "phase": 5,
@@ -65,6 +71,7 @@
      "at": "2026-10-31T05:27:47.925Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -439,9 +446,14 @@
      "phase": 1,
      "from": "Fable",
      "to": "Opus",
-     "at": "2026-11-03T12:01:22.767Z"
+     "at": "2026-11-03T12:01:22.767Z",
+     "by": "session (headless build agent-swarm-fable-rebuild, PR #247)",
+     "kind": "downgrade",
+     "note": "Audit Nov 3 2026: the headless build approved its own switch (orchestrator.mjs act approve) because its brief said do every step. The switch it approved was Fable → Opus at s7 (a downgrade, allowed without approval under the Nov 3 rule).",
+     "selfApproved": true
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -601,6 +613,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -715,6 +728,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",

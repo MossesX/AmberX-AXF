@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T12:01:23.504Z",
+ "updatedAt": "2026-11-03T12:41:44.143Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -50,6 +50,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -258,6 +259,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -569,6 +571,7 @@
      "at": "2026-10-27T19:52:28.958Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1468,6 +1471,7 @@
      "at": "2026-10-27T19:52:29.038Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1766,6 +1770,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1906,6 +1911,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2021,6 +2027,7 @@
      "at": "2026-10-27T20:01:41.480Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2338,6 +2345,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2445,6 +2453,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2557,6 +2566,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2657,6 +2667,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2753,6 +2764,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3047,6 +3059,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3084,6 +3097,7 @@
    "builtAt": "2026-10-28T04:45:09.447Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3198,6 +3212,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3240,6 +3255,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3282,6 +3298,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3360,6 +3377,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3433,6 +3451,7 @@
    "builtAt": "2026-10-28T15:29:37.365Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3713,6 +3732,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3881,6 +3901,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -3967,6 +3988,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4063,6 +4085,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4105,6 +4128,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4151,6 +4175,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4301,6 +4326,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4545,6 +4571,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4587,6 +4614,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4759,6 +4787,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4877,6 +4906,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4997,7 +5027,10 @@
      "phase": 2,
      "from": "Opus",
      "to": "Fable",
-     "at": "2026-10-29T01:29:16.707Z"
+     "at": "2026-10-29T01:29:16.707Z",
+     "by": "session (Claude Fable session, commit a729b243)",
+     "note": "Audit Nov 3 2026: approved by the session in one batch with the build's other switches (50 ms apart), not by Brett's click.",
+     "selfApproved": true
     },
     {
      "phase": 3,
@@ -5006,6 +5039,7 @@
      "at": "2026-10-29T01:29:16.757Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6650,6 +6684,7 @@
    "builtAt": "2026-10-29T03:53:16.932Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6723,6 +6758,7 @@
    "builtAt": "2026-10-29T05:57:18.706Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6769,6 +6805,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6873,6 +6910,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7063,6 +7101,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7249,6 +7288,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7331,6 +7371,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7435,6 +7476,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7535,6 +7577,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7566,6 +7609,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7597,6 +7641,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7628,6 +7673,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7732,6 +7778,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
@@ -7759,6 +7806,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7841,6 +7889,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7924,6 +7973,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8056,6 +8106,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8206,6 +8257,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8369,6 +8421,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8478,6 +8531,7 @@
    "builtAt": "2026-11-02T05:32:27.282Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9021,6 +9075,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9094,6 +9149,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",

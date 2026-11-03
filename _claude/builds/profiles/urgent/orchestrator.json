@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T12:01:23.504Z",
+ "updatedAt": "2026-11-03T12:41:44.143Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -34,6 +34,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -269,6 +270,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -360,6 +362,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -559,6 +562,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -668,6 +672,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -920,6 +925,134 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw02yrmz0s00qx"
+    }
+   ]
+  },
+  {
+   "id": "model-upgrade-approval",
+   "title": "Model upgrades need Brett's approval; downgrades don't",
+   "category": "Urgent",
+   "detail": "Brett Nov 3 2026 (voice): a headless build approved its own phase switch. Downgrade = allowed, recorded; upgrade = Brett's approval only (console click or axHub confirm), never self-approved. Ranking in model-policy (Fable above Opus). Replaces the stopped model-switch-approval build.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/model-upgrade-approval",
+   "pr": "",
+   "createdAt": "2026-11-03T12:41:39.428Z",
+   "updatedAt": "2026-11-03T12:41:44.092Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Ranking + switch rules in model-policy; framework/core/model-switch.mjs (who may approve, phases, held steps)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:40.209Z",
+     "note": "",
+     "uid": "st-mw0ofxx6072tca"
+    },
+    {
+     "id": "s2",
+     "text": "Orchestrator core: downgrade passes + recorded, upgrade needs approver; request-upgrade/deny-upgrade; edit-step raise; briefs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:40.868Z",
+     "note": "",
+     "uid": "st-mw0ofxx608i9e9"
+    },
+    {
+     "id": "s3",
+     "text": "CLI + console server + console MCP tool (axHub confirm path): approver only from Brett",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:41.835Z",
+     "note": "",
+     "uid": "st-mw0ofxx609lb7d"
+    },
+    {
+     "id": "s4",
+     "text": "Launcher gate (model-gate.mjs from claude-headless.sh) + swarm planner gate",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:42.956Z",
+     "note": "",
+     "uid": "st-mw0ofxx60a8q4g"
+    },
+    {
+     "id": "s5",
+     "text": "Audit + mark self-approved; rules, decisions, README, CLAUDE.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T12:41:44.092Z",
+     "note": "",
+     "uid": "st-mw0ofxx60bt5fj"
+    },
+    {
+     "id": "s6",
+     "text": "Tests (orchestrator, swarm, model-policy, server), THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0ofxx60clwya"
     }
    ]
   }
