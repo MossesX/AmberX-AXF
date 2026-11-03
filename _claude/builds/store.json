@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 418,
- "updatedAt": "2026-11-03T20:12:37.394Z",
+ "rev": 419,
+ "updatedAt": "2026-11-03T20:12:50.060Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55394,7 +55394,7 @@
    "title": "Window resize fix + Terminal settings dialog placement (urgent)",
    "category": "Bug fix",
    "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -55402,8 +55402,8 @@
    "pr": "#278",
    "mergedAt": "2026-11-03T20:06:05Z",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T20:10:46.177Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T20:12:38.085Z",
+   "builtAt": "2026-11-03T20:12:35.030Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
@@ -55412,6 +55412,10 @@
     {
      "text": "Reconciler: PR #278; PR #278 merged",
      "at": "2026-11-03T20:10:46.177Z"
+    },
+    {
+     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
+     "at": "2026-11-03T20:12:36.260Z"
     }
    ],
    "approvals": [],
@@ -55476,12 +55480,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:12:35.030Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:32:33.504Z",
-     "updatedAt": "2026-11-03T19:32:33.504Z"
+     "updatedAt": "2026-11-03T20:12:35.077Z"
     }
    ],
    "profiles": [
@@ -55492,7 +55496,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {

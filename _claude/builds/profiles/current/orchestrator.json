@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:12:37.394Z",
+ "updatedAt": "2026-11-03T20:12:50.060Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133,7 +133,7 @@
    "title": "Window resize fix + Terminal settings dialog placement (urgent)",
    "category": "Bug fix",
    "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -141,8 +141,8 @@
    "pr": "#278",
    "mergedAt": "2026-11-03T20:06:05Z",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T20:10:46.177Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T20:12:38.085Z",
+   "builtAt": "2026-11-03T20:12:35.030Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
@@ -151,6 +151,10 @@
     {
      "text": "Reconciler: PR #278; PR #278 merged",
      "at": "2026-11-03T20:10:46.177Z"
+    },
+    {
+     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
+     "at": "2026-11-03T20:12:36.260Z"
     }
    ],
    "approvals": [],
@@ -205,8 +209,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:12:35.030Z",
      "note": "",
      "uid": "st-mw134d6a0601hn"
     }
