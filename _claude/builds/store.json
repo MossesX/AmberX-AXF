@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 357,
- "updatedAt": "2026-11-03T19:05:32.715Z",
+ "rev": 358,
+ "updatedAt": "2026-11-03T19:06:21.495Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -54396,14 +54396,14 @@
    "title": "Claude plugin: Claude settings on axHub (No wait, builds, talking, notifications), read by every session",
    "category": "Claude",
    "detail": "Brett, Nov 3 2026 (voice): a Claude plugin with a whole bunch of settings for Claude, kept on axHub, that every Claude session checks and acts on. No wait (owner-only) = a standing all-scope veto pass created on Brett's signed-in click, revoked when switched off; Include irreversible (owner-only); builds, verification, talking, notifications, memory groups; open registry. MCP claude_settings_get (read) / claude_settings_set (non-owner settings only). Agent: Janitor Joey.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-settings",
    "pr": "",
    "createdAt": "2026-11-03T19:02:12.964Z",
-   "updatedAt": "2026-11-03T19:02:14.613Z",
+   "updatedAt": "2026-11-03T19:06:08.978Z",
    "builtAt": "",
    "notes": [
     {
@@ -54429,12 +54429,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:06:08.978Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:02:12.965Z",
-     "updatedAt": "2026-11-03T19:02:12.965Z"
+     "updatedAt": "2026-11-03T19:06:09.014Z"
     },
     {
      "id": "s2",
@@ -54577,7 +54577,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
