@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 192,
- "updatedAt": "2026-11-03T16:14:05.276Z",
+ "rev": 193,
+ "updatedAt": "2026-11-03T16:14:10.101Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50177,12 +50177,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:07:30.479Z",
+   "updatedAt": "2026-11-03T16:14:09.456Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
      "at": "2026-11-03T16:07:25.644Z"
+    },
+    {
+     "text": "Landed claude/agent-chats-hub (PR #248) on main at 92be01a0",
+     "at": "2026-11-03T16:14:09.456Z"
     }
    ],
    "approvals": [],
@@ -50438,7 +50442,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
