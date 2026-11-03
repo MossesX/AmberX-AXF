@@ -22,6 +22,7 @@
  *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
  *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
+ *           pass.scopes (timed veto passes, core/engines/control-pass.mjs) |
  *           plugins.commands | plugins.reads
  *   path    the token id / entity id (get, set, reset, remove, act; reset without a path = everything of the target)
  *   value   what to set (set) or the new entity (add)
@@ -38,10 +39,11 @@
  */
 import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
+import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
 
 export const CONTROL_FRAME = 'control@1';
 export const CONTROL_OPS = ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'];
-export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'console', 'plugins'];
+export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'console', 'pass', 'plugins'];
 /** What each op does to the world (the MCP annotations and the permission it needs come from this). */
 export const CONTROL_EFFECT = { list: 'read', get: 'read', set: 'write', reset: 'write', add: 'write', remove: 'destructive', act: 'write' };
 /** Permission suffix per effect: control.<domain>.<suffix>. `navigate` (open a screen, go back) changes what a screen
@@ -99,8 +101,8 @@ export const CONTROL_TARGETS = {
   'tokens.look': { domain: 'tokens', label: 'Look tokens', ops: TOKEN_OPS, paths: 'host', value: 'host', doc: 'look@1 (core/engines/looktokens.ts): compact, row height, text size, corners, tone, motion, banner behaviour… The running app lists the ids; a set stores only what changed.' },
   'tokens.custom': { domain: 'tokens', label: 'Per-asset custom tokens', ops: TOKEN_OPS, paths: 'host', value: 'host', pathShape: '<asset type>.<token>[@<asset id>]', doc: 'asset-customize@1 (core/engines/customize.ts): the extra tokens of every customizable asset type (button.radius, toolbar.iconSet, …), shared or per asset id.' },
   'tokens.slots': { domain: 'tokens', label: 'Active asset per slot', ops: TOKEN_OPS, paths: 'host', value: 'asset-id', doc: 'Which asset is active for each appearance slot (color-theme, style-theme, layout, button, …): set = hot-swap (runtime.swap), reset = the app default. Shared through the axHub look like every other look change.' },
-  'amberx.items': { domain: 'amberx', label: 'AmberX notes, to-dos and tasks', ops: ENTITY_OPS, paths: 'entity', fields: ITEM_FIELDS, select: { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', deep: 'boolean', status: 'enum:open,doing,done,not-done', tag: 'string', q: 'string', pinned: 'boolean', starred: 'boolean', due: 'enum:overdue,today,upcoming,later,none', limit: 'number' }, acts: { done: {}, undone: {}, move: { list: 'string' }, merge: { ids: 'string[]' }, pin: { on: 'boolean' }, star: { on: 'boolean' }, check: { item: 'string', done: 'boolean' } }, doc: 'amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.' },
-  'amberx.lists': { domain: 'amberx', label: 'AmberX lists', ops: ENTITY_OPS, paths: 'entity', fields: LIST_FIELDS, select: { parent: 'string|null', q: 'string' }, acts: { move: { parent: 'string|null' }, reorder: { ids: 'string[]' }, rename: { name: 'string' } }, doc: 'The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).', protected: ['inbox', 'plugins', 'voice-notes'] },
+  'amberx.items': { domain: 'amberx', label: 'AmberX notes, to-dos and tasks', ops: ENTITY_OPS, paths: 'entity', fields: ITEM_FIELDS, select: { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', deep: 'boolean', status: 'enum:open,doing,done,not-done', tag: 'string', q: 'string', pinned: 'boolean', starred: 'boolean', due: 'enum:overdue,today,upcoming,later,none', limit: 'number' }, acts: { done: {}, undone: {}, move: { list: 'string' }, merge: { ids: 'string[]' }, pin: { on: 'boolean' }, star: { on: 'boolean' }, check: { item: 'string', done: 'boolean' } }, irreversible: ['remove'], doc: 'amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.' },
+  'amberx.lists': { domain: 'amberx', label: 'AmberX lists', ops: ENTITY_OPS, paths: 'entity', fields: LIST_FIELDS, select: { parent: 'string|null', q: 'string' }, acts: { move: { parent: 'string|null' }, reorder: { ids: 'string[]' }, rename: { name: 'string' } }, irreversible: ['remove'], doc: 'The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).', protected: ['inbox', 'plugins', 'voice-notes'] },
   'planner.plans': { domain: 'planner', label: 'Plan Studio plans', ops: ENTITY_OPS, paths: 'entity', fields: PLAN_FIELDS, select: { status: 'string', priority: 'string', category: 'string', tag: 'string', project: 'string', q: 'string', limit: 'number' }, acts: { park: {}, build: { profile: 'string', buildId: 'string' }, restore: { version: 'number' }, export: { format: 'enum:json,md' }, step: { step: 'string', done: 'boolean' }, comment: { text: 'string' } }, doc: 'plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build.' },
   'planner.builds': { domain: 'planner', label: 'Build orchestrator builds', ops: ENTITY_OPS, paths: 'entity', fields: BUILD_FIELDS, select: { profile: 'string', status: 'string', category: 'string', q: 'string', includeHidden: 'boolean', limit: 'number' }, acts: { step: { step: 'string', done: 'boolean' }, approve: { phase: 'number' }, status: { status: 'string' }, note: { text: 'string' }, rename: { title: 'string' }, 'rename-step': { step: 'string', title: 'string' }, 'add-step': { text: 'string', model: 'enum:Fable,Opus', estimate: 'string', after: 'string' }, 'edit-step': { step: 'string', patch: 'object' }, 'skip-step': { step: 'string', why: 'string' }, 'remove-step': { step: 'string', why: 'string' }, 'move-step': { step: 'string', to: 'number' }, archive: {}, hide: {}, unhide: {} }, stepFields: STEP_FIELDS, doc: 'builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.' },
   'console.screens': { domain: 'console', label: 'Console screens', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { open: {} }, actEffect: { open: 'navigate' }, doc: `Every screen (view) the open console has, its plugins' too. path = the view id, its title or words to search for ("plan studio", "builds"); act open shows it. ${CONSOLE_DELIVERY}` },
@@ -109,10 +111,17 @@ export const CONTROL_TARGETS = {
   'console.actions': { domain: 'console', label: 'Console actions', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every registered action (the action bus: menus, toolbars, search). act run runs it in the open console under its own policy: an action that only navigates needs control.console.navigate, one that changes data needs control.console.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments ("swap:color-theme:dark" or ["color-theme", "dark"]). ${CONSOLE_DELIVERY}` },
   'console.nav': { domain: 'console', label: 'Console navigation', ops: ['get', 'act'], paths: 'static', acts: { back: {}, home: {}, close: {} }, actEffect: { back: 'navigate', home: 'navigate', close: 'navigate' }, doc: `Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). ${CONSOLE_DELIVERY}` },
   'console.clients': { domain: 'console', label: 'Open consoles', ops: ['list'], paths: 'host', select: { limit: 'number' }, doc: 'The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise.' },
+  'pass.scopes': { domain: 'pass', label: 'Veto passes', ops: ['list', 'get', 'act'], paths: 'scope', scopes: PASS_SCOPE_IDS, acts: PASS_ACTS, doc: 'Timed veto passes (control-pass@1): "allow everything for the next 30 minutes". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can\'t. The pass target itself is never covered.' },
   'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
   'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
+
+/** Can't this command be undone? (a hard delete nothing brings back: the target lists the op in `irreversible`) */
+export function controlIrreversible(raw) {
+  const c = isObj(raw) ? raw : {};
+  return !!CONTROL_TARGETS[c.target]?.irreversible?.includes(c.op);
+}
 
 /** Short CLI aliases: `axf token …` = tokens.<x>, `axf note|todo|task …` = amberx.items with kind preset, and so on. */
 export const CONTROL_ALIASES = {
@@ -124,6 +133,7 @@ export const CONTROL_ALIASES = {
   plan: { target: 'planner.plans' },
   build: { target: 'planner.builds' },
   console: { target: 'console.*', note: 'axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]' },
+  pass: { target: 'pass.scopes', note: 'axf pass grant 30 (everything) · axf pass grant 30 --scope theme · status · revoke · undo (also `axf token pass …`)' },
   plugins: { target: 'plugins.*', note: 'axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin\'s commands and reads)' },
 };
 
@@ -160,6 +170,7 @@ export function controlPaths(target) {
       ];
     }
     case 'console.nav': return [{ id: 'here', kind: 'location' }];
+    case PASS_TARGET: return PASS_SCOPE_IDS.map((id) => ({ id, kind: 'scope', label: PASS_SCOPES[id].label, targets: [...PASS_SCOPES[id].targets], ops: [...PASS_SCOPES[id].ops] }));
     default: return null;
   }
 }
@@ -230,6 +241,7 @@ export function controlErrors(raw) {
   if (!t.ops.includes(c.op)) errors.push(`${c.target} does not take ${c.op} (it takes ${t.ops.join(', ')})`);
   const needsPath = ['get', 'set', 'remove', 'act'].includes(c.op);
   if (needsPath && (typeof c.path !== 'string' || !c.path)) errors.push(`${c.op} needs a path (${t.paths === 'entity' ? 'the id' : 'the token id'})`);
+  else if (t.paths === 'scope') { if (c.path !== undefined && !(typeof c.path === 'string' && PASS_SCOPE_IDS.includes(c.path))) errors.push(`${c.target} has no scope ${String(c.path)} (${PASS_SCOPE_IDS.join(', ')})`); }
   else if (c.path !== undefined && (typeof c.path !== 'string' || !ID.test(c.path) && !/^[A-Za-z0-9][\w.:@/ -]{0,159}$/.test(c.path))) errors.push('path must be a short id');
   else if (c.path && t.paths === 'static' && controlPathKnown(c.target, c.path) === false) errors.push(`${c.target} has no token ${c.path} (control list ${c.target} names them)`);
   if (['list', 'add'].includes(c.op) && c.path !== undefined) errors.push(`${c.op} takes no path`);
@@ -250,7 +262,8 @@ export function controlErrors(raw) {
     else {
       const wants = t.acts[c.action];
       const input = isObj(c.input) ? c.input : {};
-      for (const [k, decl] of Object.entries(wants)) { if (!(k in input)) errors.push(`action ${c.action} needs input.${k}`); else { const e = typeError(`input.${k}`, decl, input[k]); if (e) errors.push(e); } }
+      if (t.paths === 'scope') { if (c.action === 'grant') errors.push(...passGrantErrors(c.path, input)); else if (wants.request !== undefined && typeof input.request !== 'string') errors.push(`action ${c.action} needs input.request`); }
+      else for (const [k, decl] of Object.entries(wants)) { if (!(k in input)) errors.push(`action ${c.action} needs input.${k}`); else { const e = typeError(`input.${k}`, decl, input[k]); if (e) errors.push(e); } }
     }
   } else if (c.action !== undefined) errors.push('only act takes an action');
   if (c.op === 'list' && c.select !== undefined) {
@@ -302,7 +315,8 @@ export function controlGranted(grants, perm) {
 
 /**
  * Gate a command before running it. `grants` = the caller's permissions (its role's, already capped by the app's
- * UAC role for a remote caller); `opts.salt` + `opts.now` for the confirm token. Returns { ok: true, effect, requires,
+ * UAC role for a remote caller); `opts.salt` + `opts.now` for the confirm token; `opts.passCovers` = an active veto
+ * pass covers this command (control-pass@1, worked out by the runner), so a delete runs without the confirm token. Returns { ok: true, effect, requires,
  * command } or { ok: false, code, message, requires?, confirm? } (confirmation_required carries the token to send back).
  */
 export function controlGate(raw, grants, opts = {}) {
@@ -316,7 +330,7 @@ export function controlGate(raw, grants, opts = {}) {
   if (!controlGranted(grants, requires)) return { ok: false, code: CONTROL_WIRE.DENIED, message: `${c.op} ${c.target} needs ${requires}`, requires, effect };
   const errors = controlErrors(c);
   if (errors.length) return { ok: false, code: CONTROL_WIRE.VALIDATION, message: errors.join('; '), errors, requires, effect };
-  if (effect === 'destructive') {
+  if (effect === 'destructive' && !opts.passCovers) {
     const salt = opts.salt ?? '';
     if (!controlConfirmValid(c, c.confirm, salt, opts.now)) {
       return { ok: false, code: CONTROL_WIRE.CONFIRMATION_REQUIRED, message: `${c.op} ${c.target} ${c.path} deletes; send the same command again with this confirm token within ${CONTROL_CONFIRM_TTL_MS / 60000} minutes`, requires, effect, confirm: controlConfirmToken(c, salt, opts.now), ttlMs: CONTROL_CONFIRM_TTL_MS };
@@ -421,6 +435,8 @@ export function controlCli() {
       'axf control remove <target> <path> [--confirm <token>]   (first run prints the token)',
       'axf control act <target> <path> <action> [json input]',
       'axf control targets | tools | routes | schema',
+      'axf pass grant [minutes] [--scope all|theme|style|layout|tokens] [--include-irreversible] [--reason why]   (everything by default; Brett approves it once)',
+      'axf pass status · axf pass revoke [--scope …] · axf pass undo [--scope …]   (also axf token pass grant theme 30)',
     ],
     aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : v.target === 'console.*' || v.target === 'plugins.*' ? v.note : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
     targets: CONTROL_TARGET_IDS,

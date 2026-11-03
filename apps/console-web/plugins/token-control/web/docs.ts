@@ -138,6 +138,28 @@ Reads are marked read-only, removes destructive. A failure raises a tool error w
 Names resolve by id, title or a few words, against what the open console reports (plugins' screens included). Opening only **navigates** (\`control.console.navigate\`). An action that changes data needs \`control.console.write\` plus the permission the action itself requires; one that deletes or resets answers \`confirmation_required\` with a token first, like a remove. The same commands work as control@1 here: \`{ "op": "act", "target": "console.screens", "path": "plan studio", "action": "open" }\`.`,
   },
   {
+    id: 'passes',
+    title: 'Veto passes: 30 minutes to do whatever Brett says, without a veto on every call',
+    body: `Every changing call through axHub waits on a veto countdown. A **pass** lets commands run at once for a while: "allow everything for the next 30 minutes". By default it covers everything; a narrower scope covers only token changes.
+
+\`\`\`sh
+axf pass grant 30 --reason "redo the console look"      # everything, 30 min
+axf pass grant 30 --scope theme                         # only theme changes
+axf pass grant 30 --include-irreversible                # hard deletes too
+axf pass status
+axf pass undo        # put back what can be put back, list the rest
+axf pass revoke
+\`\`\`
+
+- **Scopes**: \`all\` (the default: every command through the API, MCP or CLI on every plugin, and every call axHub holds), or \`theme\`, \`style\`, \`layout\`, \`tokens\` (the three) for token set / reset only. Minutes 1 to 240 (default 30; Settings → Plugins → Token control → Veto passes sets the longest).
+- **Brett approves each pass once.** A grant from Claude, an agent, the MCP tool \`pass_grant\` or a script is only a request: it shows on the banner (Pass) with Approve / Deny, or waits for his approval in axHub. From his own console session it is on at once. A pass never covers granting another pass.
+- **Deletes**: under \`all\`, ordinary deletes (plans, builds) run without the confirm token. Irreversible ones (AmberX notes, to-dos and lists are deleted on every device for good; tools axHub marks irreversible) still confirm unless the pass was granted with \`include_irreversible\`.
+- **While it runs**: the banner shows "Everything: 29:41 left" (or the scope) with Extend, Undo and Revoke, and warns two minutes before the end. Every change is logged (who, token, old → new, or the command) and Undo rolls back every token in one go and names what it can't roll back.
+- **It ends on the server's clock**: no app or tool can keep it alive past its time.
+
+REST: \`POST /api/plugins/token-control/pass/grant {scope?, minutes, reason, include_irreversible?}\`, \`GET …/pass/status\`, \`POST …/pass/revoke | undo {scope?}\`, \`GET …/pass/check?call=service.tool\`. MCP: \`pass_grant\`, \`pass_status\`, \`pass_revoke\`, \`pass_undo\` (also under the old \`token_pass_*\` names). The axHub side reads the signed \`GET …/pass\` (framework/spec/CONTROL.md → Veto passes).`,
+  },
+  {
     id: 'plugins',
     title: 'Plugins: every plugin\'s commands and reads',
     body: `Every plugin, existing and new, exposes **everything it can do** through control@1 with no extra work: the Plugin commands plugin reads each plugin's server routes (GET = a read, POST / PUT = a command, DELETE = a delete), its registered actions (they run in Brett's open console), its data folder (\`data\`, \`data-file\`, secrets redacted) and \`info\`, plus what its plugin.json \`commands\` block declares (titles, input schemas, flags, skips that say why).

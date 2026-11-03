@@ -2,18 +2,19 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.token-control",
   "name": "Token control",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "One API, MCP server and CLI for everything control@1 covers: every theme, style, layout, typography, density and sizing token (a set is an override that rides the axHub look, so every app follows), the active asset per slot, every AmberX note, to-do, task and list, and the planner (Plan Studio plans, orchestrator builds and their steps). REST under /api/control, MCP tools control_* and amberx_* on the console's /mcp (and through axHub), CLI `axf control` with the aliases `axf token | note | todo | task | list | plan | build`. Deletes always need a confirm token. Interactive docs with try-it panels for all three, generated from the control@1 schema.",
+  "description": "One API, MCP server and CLI for everything control@1 covers: every theme, style, layout, typography, density and sizing token (a set is an override that rides the axHub look, so every app follows), the active asset per slot, every AmberX note, to-do, task and list, and the planner (Plan Studio plans, orchestrator builds and their steps). REST under /api/control, MCP tools control_* and amberx_* on the console's /mcp (and through axHub), CLI `axf control` with the aliases `axf token | note | todo | task | list | plan | build`. Deletes always need a confirm token. Interactive docs with try-it panels for all three, generated from the control@1 schema. Veto passes (control-pass@1): \"allow everything for the next 30 minutes\" — Brett approves a timed pass once and every command (scope all, the default; or only token set / reset in a narrow scope) skips the axHub veto until it ends (irreversible deletes only when included); banner chip with a live countdown, audit + undo, signed publication for axHub at GET /api/plugins/token-control/pass.",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "view:token-control",
     "settings-tab:token-control",
-    "service:control@1"
+    "service:control@1",
+    "banner:token-pass"
   ],
   "scopes": [
     "ROUTES"
@@ -22,7 +23,9 @@
   "optional": [
     "plans@1"
   ],
-  "banner": false,
+  "banner": [
+    "token-pass"
+  ],
   "tabable": {
     "view": "token-control",
     "label": "Token control",
@@ -34,7 +37,13 @@
     "env": [
       "AXF_CONTROL_SALT",
       "AXF_APPEARANCE_FILE",
-      "AXF_AMBERX_NOTES_DIR"
+      "AXF_AMBERX_NOTES_DIR",
+      "AXF_PASS_SECRET",
+      "AXF_PASS_MAX_MINUTES",
+      "AXF_THREADS_FILE",
+      "AXF_TIMEZONE",
+      "AXF_OWNER",
+      "AXF_NO_TTY_APPROVAL"
     ],
     "mentions": [
       "CLAUDE.md",
@@ -44,7 +53,8 @@
       "framework/spec/CONTROL.md",
       "framework/cli/axf.mjs",
       "apps/console-web/server/mcp_server.py",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "apps/console-web/server/test_mcp_tools.py"
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },

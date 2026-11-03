@@ -44,6 +44,7 @@
  *   axf control <op> <target> …  control@1 (framework/spec/CONTROL.md): tokens, AmberX items/lists, plans, builds
  *   axf token <set> <op> …       axf token layout set navWidth 200 · axf token theme reset accent · axf token slots set color-theme <id>
  *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
+ *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
  *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
@@ -63,7 +64,7 @@ const [cmd, ...rest] = process.argv.slice(2);
 
 // control@1 commands go to the plugin that provides the capability (never by folder name). `axf list <dir>` (assets)
 // stays as it was: `axf list` routes to control only when its next word is a control op or a list verb.
-const CONTROL_WORDS = new Set(['control', 'token', 'tokens', 'note', 'todo', 'task', 'plan', 'build']);
+const CONTROL_WORDS = new Set(['control', 'token', 'tokens', 'note', 'todo', 'task', 'plan', 'build', 'pass']);
 const CONTROL_LIST_WORDS = new Set(['list', 'get', 'set', 'reset', 'add', 'remove', 'act', 'move', 'reorder', 'rename']);
 if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0]))) {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');

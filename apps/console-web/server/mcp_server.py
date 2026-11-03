@@ -575,12 +575,15 @@ def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, An
 
 CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                    "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
-                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients",
+                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
                    "plugins.commands", "plugins.reads")
 ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                         "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
-                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients",
+                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
                         "plugins.commands", "plugins.reads"]
+PassScope = Literal["all", "theme", "style", "layout", "tokens"]
+# all = everything (the default since build pass-all); tokens = theme, style and layout together
+PASS_SCOPE_IDS = {"all": "all", "theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "tokens": "tokens.*"}
 DESTRUCTIVE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=False)
 IDEMPOTENT = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 
@@ -644,7 +647,9 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         planner.builds: step {step, done}, approve {phase}, status {status}, note {text}, rename {title},
         rename-step {step, title}, add-step {text, model, estimate, after}, edit-step {step, patch},
         skip-step {step, why}, remove-step {step, why}, move-step {step, to}, archive, hide, unhide
-        (input.profile picks the build profile)."""
+        (input.profile picks the build profile). pass.scopes (path all|tokens.theme|style|layout|*): grant {minutes,
+        reason, include_irreversible} (a request Brett approves), revoke, undo; approve / deny only work from Brett's
+        own session."""
         return await go({"op": "act", "target": target, "path": path, "action": action, "input": input or {}, "by": by, "reason": reason})
 
     # AmberX shortcuts (the same commands, named for what people ask)
@@ -691,6 +696,41 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         """Delete an AmberX item (and its subtasks). First call answers confirmation_required with a token; confirm with
         the user, then call again with it."""
         return await go({"op": "remove", "target": "amberx.items", "path": id, "confirm": confirm})
+
+    # Veto passes (control-pass@1, CONTROL.md → Veto passes): "allow everything for the next 30 minutes". pass_* are the
+    # names; token_pass_* (build theme-veto-pass) stay as the same tools under their old names.
+
+    async def pass_grant(scope: PassScope = "all", minutes: int = 30, reason: str = "", include_irreversible: bool = False, by: str = "") -> dict[str, Any]:
+        """Ask for a timed veto pass. scope all (the default) = every command through the API, MCP or CLI on every
+        plugin and every call axHub holds runs without the veto countdown, ordinary deletes without the confirm token;
+        theme / style / layout / tokens = only token set / reset there. Irreversible deletes (AmberX hard deletes, tools
+        axHub marks irreversible) still confirm unless include_irreversible (all only). This only files a request:
+        Brett approves it once (console banner → Pass, or axHub's approval), never this tool. Minutes 1-240 (default
+        30). Asking again for a scope with an active pass replaces it from the approval on. Tell Brett in one line that
+        it is waiting."""
+        inp: dict[str, Any] = {"minutes": minutes, **({"reason": reason} if reason else {}), **({"include_irreversible": True} if include_irreversible else {})}
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "grant", "input": inp, "by": by, "reason": reason})
+
+    async def pass_status(scope: Literal["", "all", "theme", "style", "layout", "tokens"] = "") -> dict[str, Any]:
+        """Which veto passes are on, until when, and any request waiting for Brett, in plain words ("Every command runs
+        without veto until 10:42 AM"). No scope = every scope."""
+        if scope:
+            return await go({"op": "get", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope]})
+        return await go({"op": "list", "target": "pass.scopes"})
+
+    async def pass_revoke(scope: PassScope = "all", by: str = "", reason: str = "") -> dict[str, Any]:
+        """End a veto pass now (and withdraw a waiting request for it): commands in the scope need the veto again."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "revoke", "input": {}, "by": by, "reason": reason})
+
+    async def pass_undo(scope: PassScope = "all", by: str = "", reason: str = "") -> dict[str, Any]:
+        """Roll back what the scope's latest pass changed that can be rolled back (every token goes back to what it was
+        before the pass first touched it) and list what can't (`notUndoable`: AmberX, planner and other commands, each
+        named). The pass itself stays as it is."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "undo", "input": {}, "by": by, "reason": reason})
+
+    for fn, ann in ((pass_grant, WRITE), (pass_status, READ), (pass_revoke, IDEMPOTENT), (pass_undo, WRITE)):
+        mcp.tool(annotations=ann)(fn)
+        mcp.tool(name=f"token_{fn.__name__}", annotations=ann, description=f"Same as {fn.__name__} (old name). {fn.__doc__}")(fn)
 
     @mcp.tool(annotations=WRITE)
     async def plan_park(title: str, summary: str = "", category: str = "", body: str = "") -> dict[str, Any]:

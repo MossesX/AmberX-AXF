@@ -1,0 +1,162 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-63341a6fe1",
+  "createdAt": "2026-11-03T15:17:23.097Z",
+  "updatedAt": "2026-11-03T15:39:10.856Z",
+  "kind": "build",
+  "title": "# Build: axhub-veto-pass (axHub repo) Requested by Brett, Nov 3 2026 (voice).",
+  "asked": "# Build: axhub-veto-pass (axHub repo) Requested by Brett, Nov 3 2026 (voice). GO given. Build it now. ## What Brett wants When he talks to Claude and changes theme colours in the AmberX console, he doesn't want a veto countdown on every change. He says \"allow theme changes for the next 30 minutes\" and, for that window, matching calls run immediately. The AmberX-AXF side (build `theme-veto-pass`, token-control plugin, control@1 `pass` resource) is being built in parallel; this is axHub's half. ## Steps - s1 Timed policy passes in axHub's policy engine: a pass = {service, tool pattern(s) or scope, expiresAt, grantedBy, reason}. While active, calls matching it skip the veto/confirm hold and run at once ('ran under pass <id>' in the approvals log). Server-side expiry. Never covers tools annotated destructive/delete (those keep their policy). - s2 Granting a pass requires the owner: it's created only by an approved call (the grant itself goes through one veto/confirm that must be approved or allowed to run by Brett) or by Brett in the axHub web UI. A headless session/agent can't self-grant (same idea as decision 109 X-Axhub-Session + the model-upgrade-approval rule). - s3 Built-in tool `axhub.pass_grant {service, scope|tools, minutes, reason}`, `axhub.pass_status`, `axhub.pass_revoke`; and honour passes published by the AmberX console's token-control plugin (`GET /api/plugins/token-control/pass`, scope stamps on calls) per the contract written by the AmberX-side build (coordinate: put the contract in docs/ and match it). - s4 Read-only tools: tools annotated readOnly on any service run without veto when the service policy is the recommended default (reads allow, writes veto, deletes confirm); add that as a policy preset and apply it to the console services (`axf-console`, token-control) when they're registered. - s5 axHub web: active passes with countdown, revoke/extend, and the approvals log filter 'ran under pass'. - s6 Tests, docs, decision log entry, CLAUDE.md status, PR. Code, comments and commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "728abed5-643",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "s1 timed passes in core policy (PassBook, storage, migration 6)",
+      "state": "done",
+      "startedAt": "2026-11-03T15:24:50.306Z",
+      "finishedAt": "2026-11-03T15:24:50.306Z"
+    },
+    {
+      "text": "s2+s3 owner-only grant + axhub.pass_* tools",
+      "state": "done",
+      "startedAt": "2026-11-03T15:24:50.399Z",
+      "finishedAt": "2026-11-03T15:38:54.581Z"
+    },
+    {
+      "text": "s2+s3 owner-only grant + axhub.pass_* tools + console feed",
+      "state": "done",
+      "startedAt": "2026-11-03T15:35:17.289Z",
+      "finishedAt": "2026-11-03T15:35:17.289Z"
+    },
+    {
+      "text": "s4 recommended preset",
+      "state": "done",
+      "startedAt": "2026-11-03T15:35:17.373Z",
+      "finishedAt": "2026-11-03T15:35:17.373Z"
+    },
+    {
+      "text": "s6 tests, docs, decision #112, PR #33",
+      "state": "done",
+      "startedAt": "2026-11-03T15:35:17.471Z",
+      "finishedAt": "2026-11-03T15:35:17.471Z"
+    },
+    {
+      "text": "s5 AXHub web Passes screen (AXF apps/axhub-web)",
+      "state": "done",
+      "startedAt": "2026-11-03T15:35:17.562Z",
+      "finishedAt": "2026-11-03T15:38:54.489Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Timed policy passes (pass@1), owner-only axhub.pass_grant (ownerGrant), pass_status/revoke, console pass feed (control-pass@1), recommended preset, web API + AXHub web Passes screen, 'ran under pass' log filter; decision #112",
+    "branch": "claude/axhub-veto-pass",
+    "commits": [
+      {
+        "sha": "1856d280ef560b2e4e8559dbeb904b178c53982a"
+      }
+    ],
+    "tests": {
+      "axHub pnpm test": {
+        "before": "517",
+        "after": "545"
+      },
+      "axhub-web self-test": {
+        "before": "240",
+        "after": "254"
+      }
+    },
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/261"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "axhub-veto-pass"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-03T15:17:23.097Z",
+  "finishedAt": "2026-11-03T15:38:54.581Z",
+  "lastSeenAt": "2026-11-03T15:38:54.489Z",
+  "estimate": {
+    "minutes": 150,
+    "costUsd": 21
+  },
+  "actual": {
+    "minutes": 22,
+    "costUsd": 7.9857,
+    "inputTokens": 198,
+    "outputTokens": 113460,
+    "cacheReadTokens": 20838487,
+    "cacheWriteTokens": 309600,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/axhub-veto-pass",
+  "areas": [
+    "packages/core/src",
+    "packages/server/src",
+    "packages/server/test",
+    "docs",
+    "project/initialization"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/axhub-veto-pass",
+    "branch": "claude/axhub-veto-pass",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "1856d280ef560b2e4e8559dbeb904b178c53982a",
+    "pushed": true,
+    "dirty": 2,
+    "pr": "https://github.com/MossesX/axHub/pull/33",
+    "plan": "hub side on axHub PR #33; web screen in AXF worktree claude/axhub-veto-pass-web",
+    "next": "Passes screen + log filter in apps/axhub-web",
+    "files": [
+      "CLAUDE.md",
+      "docs/cli.md",
+      "docs/roadmap.md",
+      "docs/veto-pass.md",
+      "examples/README.md",
+      "packages/core/src/builtin.ts",
+      "packages/core/src/hub.ts",
+      "packages/core/src/index.ts",
+      "packages/core/src/memory-storage.ts",
+      "packages/core/src/model.ts",
+      "packages/core/src/passes.ts",
+      "packages/core/src/policy.ts",
+      "packages/core/src/registry.ts",
+      "packages/core/src/schemas.ts",
+      "packages/core/src/storage.ts",
+      "packages/core/test/passes.test.ts",
+      "packages/server/src/app.ts",
+      "packages/server/src/approval-log.ts",
+      "packages/server/src/approvals-web.ts",
+      "packages/server/src/cli.ts",
+      "packages/server/src/main.ts",
+      "packages/server/src/mcp.ts",
+      "packages/server/src/pass-feed.ts",
+      "packages/server/src/passes-web.ts",
+      "packages/server/src/web.ts",
+      "packages/server/test/passes.test.ts",
+      "packages/storage-sqlite/src/migrations.ts",
+      "packages/storage-sqlite/src/sqlite-storage.ts",
+      "packages/storage-sqlite/test/storage-contract.test.ts",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      ".axf-watch-live.log",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-03T15:39:10.914Z"
+  }
+}

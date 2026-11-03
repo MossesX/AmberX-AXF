@@ -12,7 +12,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   CONTROL_ALIASES, CONTROL_EFFECT, CONTROL_FRAME, CONTROL_OPS, CONTROL_PERMISSIONS, CONTROL_TARGETS, CONTROL_TARGET_IDS, CONTROL_WIRE,
-  canonicalControl, controlCli, controlConfirmToken, controlConfirmValid, controlErrors, controlFailure, controlGate, controlGranted, controlPaths, controlPermission, controlRegistry, controlResult, controlRoutes, controlSchema, controlTools, normalizeControl,
+  canonicalControl, controlCli, controlIrreversible, controlConfirmToken, controlConfirmValid, controlErrors, controlFailure, controlGate, controlGranted, controlPaths, controlPermission, controlRegistry, controlResult, controlRoutes, controlSchema, controlTools, normalizeControl,
 } from '../core/engines/control-rules.mjs';
 import { layoutFieldNames } from '../core/engines/layout-rules.mjs';
 import { SCALE_FIELDS, SCALE_ENUMS } from '../core/engines/scale-rules.mjs';
@@ -30,10 +30,10 @@ const spec = read('framework/schemas/asset-types.json');
 eq([...CONTROL_OPS], ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'], 'seven ops');
 eq(CONTROL_EFFECT.remove, 'destructive', 'remove is destructive');
 eq(CONTROL_EFFECT.act, 'write', 'act writes');
-ok(CONTROL_TARGET_IDS.length === 21, `21 targets (${CONTROL_TARGET_IDS.length})`);
+ok(CONTROL_TARGET_IDS.length === 22, `22 targets (${CONTROL_TARGET_IDS.length})`);
 eq(CONTROL_TARGET_IDS.slice(0, 13), ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.look', 'tokens.custom', 'tokens.slots', 'amberx.items', 'amberx.lists', 'planner.plans', 'planner.builds'], 'targets are append-only');
 for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
-  ok(/^(tokens|amberx|planner|console|plugins)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
+  ok(/^(tokens|amberx|planner|console|pass|plugins)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
   ok(t.ops.every((o) => CONTROL_OPS.includes(o)), `${id} ops known`);
   ok(t.doc.length > 30, `${id} documented`);
   if (t.paths === 'entity') { ok(t.fields && Object.keys(t.fields).length > 3, `${id} has fields`); ok(t.ops.includes('remove') && t.ops.includes('act'), `${id} is a full entity target`); }
@@ -41,15 +41,16 @@ for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
   if (t.domain === 'console') ok(!t.ops.includes('set') && !t.ops.includes('reset'), `${id}: the console is opened and run, never set`);
   for (const [verb, eff] of Object.entries(t.actEffect ?? {})) ok(verb in (t.acts ?? {}) && ['navigate', 'read', 'write', 'destructive'].includes(eff), `${id} act ${verb} effect ${eff}`);
 }
-eq(Object.keys(CONTROL_PERMISSIONS).length, 16, 'five domains × read / write / delete, plus console navigate');
+eq(Object.keys(CONTROL_PERMISSIONS).length, 19, 'six domains × read / write / delete, plus console navigate');
 eq(controlPermission('plugins.reads', 'act', 'read'), 'control.plugins.read', 'a plugin read only reads');
 eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write', 'a plugin command writes (a deleting one asks for more)');
-eq(CONTROL_TARGET_IDS.slice(19), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console ones (append-only)');
+eq(CONTROL_TARGET_IDS.slice(20), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console and pass ones (append-only)');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');
 eq(controlPermission('console.nav', 'act', 'back'), 'control.console.navigate', 'going back only navigates');
 eq(controlPermission('console.actions', 'act', 'run'), 'control.console.write', 'running an action writes (the host may ask for more)');
 eq(controlPermission('console.actions', 'list'), 'control.console.read', 'listing reads');
 eq(controlPermission('amberx.items', 'act', 'done'), 'control.amberx.write', 'other acts keep the op effect');
+eq(controlPermission('pass.scopes', 'act'), 'control.pass.write', 'a pass grant / revoke / undo is a write');
 eq(controlPermission('tokens.layout', 'set'), 'control.tokens.write', 'permission from domain + effect');
 eq(controlPermission('amberx.items', 'remove'), 'control.amberx.delete', 'delete permission');
 eq(controlPermission('planner.builds', 'list'), 'control.planner.read', 'read permission');
@@ -117,6 +118,9 @@ ok(second.ok && second.effect === 'destructive', 'the same command with the toke
 eq(controlGate({ ...remove, path: 'it-43', confirm: first.ok ? '' : first.confirm }, ['*'], { salt, now: NOW }).code, 'confirmation_required', 'the token does not confirm another record');
 eq(controlGate({ ...remove, confirm: first.ok ? '' : first.confirm }, ['*'], { salt: 'other', now: NOW }).code, 'confirmation_required', 'another salt refuses it');
 eq(controlGate({ ...remove, confirm: first.ok ? '' : first.confirm }, ['*'], { salt, now: NOW + 25 * 60_000 }).code, 'confirmation_required', 'expired after two buckets');
+ok(controlGate(remove, ['*'], { salt, now: NOW, passCovers: true }).ok, 'a delete an active pass covers runs without the token (pass-all)');
+ok(controlIrreversible({ op: 'remove', target: 'amberx.items' }) && controlIrreversible({ op: 'remove', target: 'amberx.lists' }), 'AmberX hard deletes are marked irreversible');
+ok(!controlIrreversible({ op: 'remove', target: 'planner.plans' }) && !controlIrreversible({ op: 'remove', target: 'planner.builds' }) && !controlIrreversible({ op: 'set', target: 'amberx.items' }), 'plan and build deletes can be brought back: not irreversible');
 ok(controlConfirmValid(remove, controlConfirmToken(remove, salt, NOW), salt, NOW + 10 * 60_000), 'good in the next bucket');
 eq(canonicalControl({ reason: 'x', path: 'it-42', target: 'amberx.items', op: 'remove' }), canonicalControl(remove), 'canonical form ignores by / reason and key order');
 ok(canonicalControl({ ...remove, value: { b: 1, a: 2 } }) === canonicalControl({ ...remove, value: { a: 2, b: 1 } }), 'nested keys sorted');
@@ -139,7 +143,7 @@ const routes = controlRoutes();
 ok(routes.length === 8 && routes.every((x) => (x.path as string).startsWith('/api/control')), 'routes under /api/control');
 eq(routes.find((x) => x.op === 'remove')!.method, 'DELETE', 'remove is DELETE');
 const cli = controlCli();
-ok(cli.usage.length === 8 && Object.keys(cli.aliases).length === Object.keys(CONTROL_ALIASES).length, 'CLI usage + aliases');
+ok(cli.usage.length === 10 && Object.keys(cli.aliases).length === Object.keys(CONTROL_ALIASES).length, 'CLI usage + aliases');
 ok(cli.aliases.todo!.includes('kind=todo'), 'the todo alias presets the kind');
 const schema = controlSchema();
 eq((schema.properties as { op: { enum: string[] } }).op.enum, [...CONTROL_OPS], 'schema ops');
