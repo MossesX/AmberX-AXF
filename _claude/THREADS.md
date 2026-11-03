@@ -741,3 +741,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:02 UTC · `builds-one-page` s16 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done (refactor) · foreign-write
 - 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · foreign-write
+- 2026-11-03 18:06 UTC · `land-everything` s10 done (urgent) · orchestrator
+- 2026-11-03 18:07 UTC · `land-everything` s11 done, → complete (urgent) · orchestrator
+- 2026-11-03 18:07 UTC · `builds-one-page` s7 done, s8 done, s9 done, s10 done, s11 done, s15 done, s30 done, s30 done (refactor) · foreign-write
+- 2026-11-03 18:07 UTC · `menu-scroll` s1 done, → running (urgent) · orchestrator
+- 2026-11-03 18:07 UTC · `menu-scroll` s2 done (urgent) · orchestrator
+- 2026-11-03 18:07 UTC · `menu-scroll` s3 done (urgent) · orchestrator
+- 2026-11-03 18:07 UTC · `menu-scroll` s4 done (urgent) · orchestrator
+- 2026-11-03 18:07 UTC · `land-everything` branch claude/land-everything, merged (urgent) · builds-live
+- 2026-11-03 18:09 UTC · `land-everything` note (urgent) · orchestrator

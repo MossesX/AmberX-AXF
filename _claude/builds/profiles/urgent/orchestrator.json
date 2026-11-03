@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:06:29.124Z",
+ "updatedAt": "2026-11-03T18:09:17.538Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2622,15 +2622,16 @@
    "title": "Land everything: merge finished branches to main and deploy",
    "category": "Urgent",
    "detail": "Brett, Nov 3 2026 (voice): land the finished work on main and deploy; UI Review waived except banners (banner-pack, banner-editor, banners-one not landed).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-everything",
    "pr": "",
+   "mergedAt": "2026-11-03T18:07:44.501Z",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T18:06:18.697Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T18:09:05.304Z",
+   "builtAt": "2026-11-03T18:07:13.043Z",
    "notes": [
     {
      "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
@@ -2703,6 +2704,10 @@
     {
      "text": "Landed claude/axhub-veto-pass-web (PR #261) on main at bc344492",
      "at": "2026-11-03T17:42:37.105Z"
+    },
+    {
+     "text": "Done: 17 AmberX-AXF PRs + 3 axHub PRs on main, all four apps redeployed and healthy, axf-console registered on axHub (recommended preset). Report _claude/builds/reports/land-everything.md",
+     "at": "2026-11-03T18:09:05.304Z"
     }
    ],
    "approvals": [],
@@ -2883,8 +2888,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:06:47.832Z",
      "note": "",
      "uid": "st-mw0uj4uc0l84ua"
     },
@@ -2901,8 +2906,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:07:13.043Z",
      "note": "",
      "uid": "st-mw0uj4uc0mytjc"
     }
@@ -3023,14 +3028,14 @@
    "title": "Scrollable menus that stay on screen",
    "category": "Framework > Menus",
    "detail": "Brett, Nov 3 2026 (voice): application menus need to be scrollable when they reach beyond the screen. Framework level: menubar dropdowns, submenus, context and overflow menus cap to the available viewport height (safe areas, banner, keyboard via visualViewport), scroll inside with fade hints, flip/shift before scrolling, submenus open left at the right edge. Tokens only. Agent: Janitor Joey.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/menu-scroll",
    "pr": "",
    "createdAt": "2026-11-03T17:56:44.297Z",
-   "updatedAt": "2026-11-03T17:56:44.297Z",
+   "updatedAt": "2026-11-03T18:07:32.800Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -3049,8 +3054,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:07:26.699Z",
      "note": "",
      "uid": "st-mw0zp51a07fsw1"
     },
@@ -3067,8 +3072,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:07:28.958Z",
      "note": "",
      "uid": "st-mw0zp51a08w87d"
     },
@@ -3085,8 +3090,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:07:31.060Z",
      "note": "",
      "uid": "st-mw0zp51a09tapx"
     },
@@ -3103,8 +3108,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:07:32.800Z",
      "note": "",
      "uid": "st-mw0zp51a0aimnm"
     },
