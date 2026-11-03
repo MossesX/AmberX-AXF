@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "smart-menus-help",
+  "name": "Menus help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Menus plugin (smart menus).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:smart-menus",
+    "entries": [
+      { "target": "view:smart-menus", "title": "Menus", "text": "Smart sections in every menu and how every menu looks. The menu's own items never move; Talking about, Pinned, Suggested and items for this target sit above them.", "kind": "screen" },
+      { "target": "smart-menus", "title": "Menus settings", "text": "Sections, behaviour, look, per-menu overrides, Talking about and learning for every context menu and app menu." },
+      { "target": "smart-menus-sections", "title": "Sections", "text": "Which dynamic sections every menu shows, in what order, how many items each, and their labels. The menu's own items always stay last, in their own order." },
+      { "target": "smart-menus-look", "title": "Menu look", "text": "Colours (picked from the theme, so a theme swap still restyles menus), fonts, sizes, corners, width, animation and hover. Changes apply to every menu in every app at once." },
+      { "target": "smart-menus-preview", "title": "Live preview", "text": "A sample menu drawn by the real menu renderer with the look you are editing, every section shown." },
+      { "target": "menu-section", "title": "Menu section", "text": "A dynamic section of this menu (Talking about, Pinned, Suggested or For this). Tap the heading to fold or unfold it." }
+    ],
+    "intros": [
+      { "screen": "smart-menus", "title": "Menus", "steps": [
+        { "say": "This is where every menu's smart sections and look are set. The menus' own items never move.", "target": "" },
+        { "say": "Start with Sections to pick what shows above each menu, or Look to restyle every menu.", "target": "smart-menus-sections" }
+      ] }
+    ]
+  }
+}

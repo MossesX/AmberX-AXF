@@ -1,0 +1,317 @@
+{
+  "$axf": "smart-menu-fixture@1",
+  "contextKey": "ctx:build-card|build-card|has-pr,running|builds",
+  "parseState": [
+    "running",
+    "has-pr"
+  ],
+  "when": {
+    "hasPr": true,
+    "failed": false,
+    "notRunning": false,
+    "anyState": true,
+    "screen": true,
+    "phone": false,
+    "topicBuild": true,
+    "topicNote": false
+  },
+  "scores": [
+    {
+      "id": "delete",
+      "score": 8.302,
+      "frecency": 7.926,
+      "elsewhere": 0,
+      "timeOfDay": 0.376,
+      "sequence": 0,
+      "why": "You use it at this time"
+    },
+    {
+      "id": "log",
+      "score": 5.24,
+      "frecency": 4.939,
+      "elsewhere": 0,
+      "timeOfDay": 0.301,
+      "sequence": 0,
+      "why": "You use it at this time"
+    },
+    {
+      "id": "open",
+      "score": 2.5,
+      "frecency": 2,
+      "elsewhere": 0,
+      "timeOfDay": 0.5,
+      "sequence": 0,
+      "why": "You use it at this time"
+    },
+    {
+      "id": "open-pr",
+      "score": 2.5,
+      "frecency": 1,
+      "elsewhere": 0,
+      "timeOfDay": 0.5,
+      "sequence": 1,
+      "why": "Often next"
+    },
+    {
+      "id": "copy-id",
+      "score": 1.094,
+      "frecency": 0.594,
+      "elsewhere": 0,
+      "timeOfDay": 0.5,
+      "sequence": 0,
+      "why": "Used often here"
+    },
+    {
+      "id": "rename",
+      "score": 0.744,
+      "frecency": 0,
+      "elsewhere": 0.744,
+      "timeOfDay": 0,
+      "sequence": 0,
+      "why": "Used often elsewhere"
+    },
+    {
+      "id": "stop",
+      "score": 0,
+      "frecency": 0,
+      "elsewhere": 0,
+      "timeOfDay": 0,
+      "sequence": 0,
+      "why": "Used often here"
+    }
+  ],
+  "composed": {
+    "items": [
+      {
+        "id": "smart:talking",
+        "heading": true,
+        "label": "Talking about",
+        "icon": "mic",
+        "section": "talking"
+      },
+      {
+        "id": "talking:topic.open-build@build:toolbar-tap-confirm",
+        "label": "Open Toolbar build",
+        "icon": "hammer",
+        "action": "builds.open:toolbar-tap-confirm",
+        "source": "topic.open-build",
+        "hint": "Toolbar build",
+        "section": "talking"
+      },
+      {
+        "id": "smart-sep:pinned",
+        "separator": true
+      },
+      {
+        "id": "smart:pinned",
+        "heading": true,
+        "label": "Pinned",
+        "icon": "star",
+        "section": "pinned"
+      },
+      {
+        "id": "pinned:copy-id",
+        "label": "Copy id",
+        "icon": "copy",
+        "action": "builds.copy-id",
+        "source": "copy-id",
+        "section": "pinned"
+      },
+      {
+        "id": "smart-sep:suggested",
+        "separator": true
+      },
+      {
+        "id": "smart:suggested",
+        "heading": true,
+        "label": "Suggested",
+        "icon": "sparkles",
+        "section": "suggested"
+      },
+      {
+        "id": "suggested:log",
+        "label": "Log",
+        "action": "builds.log",
+        "source": "log",
+        "section": "suggested",
+        "hint": "You use it at this time"
+      },
+      {
+        "id": "suggested:open",
+        "label": "Open",
+        "icon": "external",
+        "action": "builds.open",
+        "source": "open",
+        "section": "suggested",
+        "hint": "You use it at this time"
+      },
+      {
+        "id": "suggested:open-pr",
+        "label": "Open PR",
+        "icon": "git-pull-request",
+        "action": "builds.pr",
+        "when": {
+          "state": "has-pr"
+        },
+        "source": "open-pr",
+        "section": "suggested",
+        "hint": "Often next"
+      },
+      {
+        "id": "suggested:rename",
+        "label": "Rename",
+        "action": "builds.rename",
+        "source": "rename",
+        "section": "suggested",
+        "hint": "Used often elsewhere"
+      },
+      {
+        "id": "smart-sep:static",
+        "separator": true
+      },
+      {
+        "id": "open",
+        "label": "Open",
+        "icon": "external",
+        "action": "builds.open"
+      },
+      {
+        "id": "copy-id",
+        "label": "Copy id",
+        "icon": "copy",
+        "action": "builds.copy-id"
+      },
+      {
+        "id": "sep1",
+        "separator": true
+      },
+      {
+        "id": "more",
+        "label": "More",
+        "icon": "dots",
+        "items": [
+          {
+            "id": "log",
+            "label": "Log",
+            "action": "builds.log"
+          },
+          {
+            "id": "rename",
+            "label": "Rename",
+            "action": "builds.rename"
+          }
+        ]
+      },
+      {
+        "id": "sep2",
+        "separator": true
+      },
+      {
+        "id": "delete",
+        "label": "Delete",
+        "icon": "trash",
+        "action": "builds.delete"
+      },
+      {
+        "id": "stop",
+        "label": "Stop",
+        "icon": "square",
+        "action": "builds.stop",
+        "when": {
+          "state": "running"
+        }
+      }
+    ],
+    "sections": [
+      {
+        "kind": "talking",
+        "ids": [
+          "topic.open-build"
+        ]
+      },
+      {
+        "kind": "pinned",
+        "ids": [
+          "copy-id"
+        ]
+      },
+      {
+        "kind": "suggested",
+        "ids": [
+          "log",
+          "open",
+          "open-pr",
+          "rename"
+        ]
+      }
+    ]
+  },
+  "plain": [
+    "open",
+    "copy-id",
+    "sep1",
+    "more",
+    "open-pr",
+    "sep2",
+    "delete",
+    "stop"
+  ],
+  "topics": [
+    "build:toolbar-tap-confirm",
+    "plugin:menus"
+  ],
+  "topicItems": [
+    [
+      "topic.open-build@build:toolbar-tap-confirm",
+      "Open Toolbar build",
+      "builds.open:toolbar-tap-confirm"
+    ]
+  ],
+  "look": {
+    "vars": {
+      "--fx-menu-bg": "color-mix(in srgb, var(--fx-surface) 80%, transparent)",
+      "--fx-menu-text": "var(--fx-text)",
+      "--fx-menu-hover": "var(--fx-accent-soft)",
+      "--fx-menu-heading": "var(--fx-muted)",
+      "--fx-menu-sep": "var(--fx-border)",
+      "--fx-menu-icon": "var(--fx-muted)",
+      "--fx-menu-hint": "var(--fx-muted)",
+      "--fx-menu-border": "var(--fx-border)",
+      "--fx-menu-badge": "var(--fx-accent)",
+      "--fx-menu-talking": "var(--fx-info)",
+      "--fx-menu-pinned": "var(--fx-warning)",
+      "--fx-menu-suggested": "var(--fx-warning)",
+      "--fx-menu-context": "var(--fx-success)",
+      "--fx-menu-blur": "calc(var(--fx-blur) * 0)",
+      "--fx-menu-shadow": "var(--fx-shadow-lg)",
+      "--fx-font-menu": "var(--fx-font)",
+      "--fx-menu-font-size": "calc(var(--fx-font-size) * 1.6)",
+      "--fx-menu-weight": "400",
+      "--fx-menu-tracking": "0em",
+      "--fx-menu-heading-size": "calc(var(--fx-font-size) * 1.2480000000000002)",
+      "--fx-menu-heading-case": "uppercase",
+      "--fx-menu-icon-k": "1",
+      "--fx-menu-density": "1",
+      "--fx-menu-radius": "calc(var(--fx-radius-md) * 1)",
+      "--fx-menu-min-w": "calc(var(--fx-space) * 25)",
+      "--fx-menu-max-w": "calc(var(--fx-space) * 60)",
+      "--fx-menu-duration": "calc(var(--fx-motion) * 1)",
+      "--fx-menu-ease": "cubic-bezier(.2,0,0,1)",
+      "--fx-menu-stagger": "0ms"
+    },
+    "attrs": {
+      "data-fx-menu-anim": "drop",
+      "data-fx-menu-hover": "tint",
+      "data-fx-menu-pulse": "on"
+    }
+  },
+  "lookReduced": {
+    "data-fx-menu-anim": "none",
+    "data-fx-menu-hover": "tint",
+    "data-fx-menu-pulse": "off"
+  },
+  "lookOverride": {
+    "--fx-menu-font-size": "calc(var(--fx-font-size) * 1.2)",
+    "--fx-menu-heading-size": "calc(var(--fx-font-size) * 0.9359999999999999)"
+  }
+}

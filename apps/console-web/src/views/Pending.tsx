@@ -144,7 +144,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
     navigator.clipboard?.writeText(brief).then(() => rt.toast(`Brief for "${it.title}" copied`, 'success'), () => rt.toast('Clipboard blocked', 'warning'));
   };
   return (
-    <article className={`pd-card is-${it.status}`} role="listitem" data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id}>
+    <article className={`pd-card is-${it.status}`} role="listitem" data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id} data-fx-ctx-state={it.status}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{it.title}<span className="fx-muted fx-small fx-mono"> {it.id}</span></h2>
         <button className={`fx-chip ${STATUS_TONE[it.status]}`} aria-expanded={statusOpen} aria-label={`Status: ${core.STATUS_LABEL[it.status]}. Change`} onClick={() => setStatusOpen((o) => !o)}>{core.STATUS_LABEL[it.status]}</button>

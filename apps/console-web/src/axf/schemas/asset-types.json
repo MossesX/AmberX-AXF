@@ -221,7 +221,8 @@
         "density": "compact | regular (default) | roomy — menubar height",
         "surface": "flat (default) | raised | glass",
         "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
-        "items[].provider|badge|checked|order|before|after": "see menuItems"
+        "items[].provider|badge|checked|order|before|after": "see menuItems",
+        "menus[].sections": "smart menus: the dynamic sections this top-level menu shows (same shape as context-menu `sections`); default the Menus plugin's"
       },
       "hideable": true
     },
@@ -341,7 +342,9 @@
       },
       "hideable": true,
       "optional_fields": {
-        "contributions": "boolean — false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+        "contributions": "boolean — false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true",
+        "sections": "smart menus (engines/smartmenu.ts): the dynamic sections every context menu shows and where, a list of { kind: talking|pinned|suggested|context|static, on?, max?, label?, icon?, collapsed? }; static = the target's own items in their own order. Default Talking about, Pinned, Suggested, context, static. Drawn by the Menus plugin; without it menus stay static",
+        "targetSections": "object — target → sections list for one target (overrides `sections` there)"
       }
     },
     "tab-group": {
@@ -1593,7 +1596,9 @@
       "order": "number — placement among siblings (default 100)",
       "before": "string — sibling id to go before",
       "after": "string — sibling id to go after",
-      "spacer": "boolean — with separator: true, an empty gap instead of a rule"
+      "spacer": "boolean — with separator: true, an empty gap instead of a rule",
+      "when": "object — smart menus: show only where it holds { target?, menu?, state?, anyState?, notState?, screen?, device?: phone|desktop, topic? } (strings or lists; state words come from data-fx-ctx-state). Matching conditional items form the context section; a `topic` item shows in Talking about with {id}/{label} filled from the topic",
+      "destructive": "boolean — deletes, stops or throws away something: never promoted into a dynamic section (default guessed from the action / id words)"
     },
     "checkedKinds": [
       "setting",

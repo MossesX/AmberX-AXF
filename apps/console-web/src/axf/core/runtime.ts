@@ -28,6 +28,7 @@ import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, typ
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
+import { filterWhen, menuLookOverride, menuLookStyle, parseMenuState, type MenuLook, type MenuOpen } from './engines/smartmenu';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
@@ -145,6 +146,31 @@ export interface ContextContribution {
   target?: string;
   order?: number;
   items: import('./engines/windows').MenuEntry[];
+}
+
+/** The menus' look setting (engines/smartmenu.ts MenuLook); an appearance setting (designpackage.ts PREFIXES). */
+export const MENU_LOOK_KEY = 'axf.menus.look';
+
+/**
+ * Smart menus seam (engines/smartmenu.ts, smart-menu@1): one provider (the Menus plugin) turns a menu's static items
+ * into the list drawn at open time (dynamic sections above the fixed items) and learns from what is picked. None set =
+ * every menu is its plain static menu, with conditional (`when`) items filtered.
+ */
+export interface MenuSectionsProvider {
+  module: string;
+  compose(open: MenuOpen, items: MenuItem[]): MenuItem[];
+  picked?(open: MenuOpen, item: MenuItem): void;
+  /** how menus open and are driven (absent fields = the framework's own behaviour) */
+  behavior?(): MenuBehavior;
+}
+
+/** Menu behaviour a provider may set: menubar menus open on hover (desktop), long-press time (phone), digit keys. */
+export interface MenuBehavior {
+  openOnHover?: boolean;
+  /** ms; 0 / absent = the behaviour theme's long-press time */
+  longPressMs?: number;
+  /** 1-9 run the menu's dynamic-section items, Escape closes */
+  keyboard?: boolean;
 }
 
 /**
@@ -781,6 +807,54 @@ export class AxfRuntime {
     this.registerAppMenuProvider('windows', { items: fromSearch(['window'], 'monitor', (f) => (f.id ? `windows.restore:${f.id}` : undefined)), max: 20, module: 'axf' });
     this.registerAppMenuProvider('dialogs', { items: fromSearch(['dialog'], 'box', (f) => (f.id ? `dialog:${f.id}` : undefined)), max: 30, module: 'axf' });
     this.registerAppMenuProvider('chrome', { items: () => chromeToggleItems(), module: 'axf' });
+  }
+
+  /* ---------------- smart menus (engines/smartmenu.ts) ---------------- */
+
+  private menuSectionsProvider: MenuSectionsProvider | null = null;
+
+  /** Called by the provider when what it would draw changed (settings, topics, pins): open menus redraw. */
+  menuSectionsChanged(): void { this.set({}); }
+
+  /** Plug in the dynamic-sections provider (the Menus plugin); returns the remover. A second one replaces the first. */
+  setMenuSections(p: MenuSectionsProvider): () => void {
+    this.menuSectionsProvider = p;
+    this.set({});
+    return () => { if (this.menuSectionsProvider === p) { this.menuSectionsProvider = null; this.set({}); } };
+  }
+
+  /** The provider's menu behaviour (empty = the framework's own). */
+  menuBehavior(): MenuBehavior {
+    try { return this.menuSectionsProvider?.behavior?.() ?? {}; } catch { return {}; }
+  }
+
+  /** The provider's module, or null (plain static menus). */
+  menuSectionsModule(): string | null { return this.menuSectionsProvider?.module ?? null; }
+
+  /** Where a menu is being opened: per-menu key, target, its state words, the current screen and the device. */
+  menuOpen(kind: MenuOpen['kind'], id: string, more: { payload?: string; state?: string[] | string } = {}): MenuOpen {
+    const phone = !!globalThis.matchMedia?.('(max-width: 760px)').matches;
+    const state = Array.isArray(more.state) ? more.state : parseMenuState(more.state);
+    return { kind, menu: `${kind === 'context' ? 'ctx' : 'app'}:${id}`, target: id, ...(more.payload ? { payload: more.payload } : {}), state, screen: this.state.view, device: phone ? 'phone' : 'desktop' };
+  }
+
+  /** The items to draw for a menu: the provider's sections, else the static items with conditional ones filtered. */
+  menuDraw<T extends MenuItem>(open: MenuOpen, items: T[]): T[] {
+    const p = this.menuSectionsProvider;
+    if (p) {
+      try { return p.compose(open, items) as T[]; } catch (e) { this.terminal.warn('menus', `smart sections failed for ${open.menu}: ${String(e)}`); }
+    }
+    return filterWhen(items, open) as T[];
+  }
+
+  /** The look vars one menu overrides (Menus plugin → per-menu look), set on that menu's box; empty = the app-wide look. */
+  menuLookVars(menu: string): Record<string, string> {
+    return menuLookOverride(this.settings.get(MENU_LOOK_KEY) as MenuLook | undefined, menu, this.prefersReducedMotion());
+  }
+
+  /** Tell the provider an item was picked (it learns from it); never throws. */
+  menuPicked(open: MenuOpen, item: MenuItem): void {
+    try { this.menuSectionsProvider?.picked?.(open, item); } catch { /* learning never blocks the action */ }
   }
 
   /* ---------------- contributed context-menu items ---------------- */
@@ -1710,11 +1784,11 @@ export class AxfRuntime {
     this.set({ toasts: this.state.toasts.filter((t) => t.id !== id) });
   }
 
-  openContext(x: number, y: number, target: string, payload?: string) {
+  openContext(x: number, y: number, target: string, payload?: string, state?: string[]) {
     // A host that takes the context menu (embed@1 `context-menu`, Molly's xLayout) shows its one menu for this app.
     if (this.forwardContext(x, y, target, payload)) return;
     if (this.slotHidden('context-menu')) return;
-    this.set({ context: { x, y, target, payload, scope: this.uiScope } });
+    this.set({ context: { x, y, target, payload, scope: this.uiScope, ...(state?.length ? { state } : {}) } });
   }
 
   closeContext() {
@@ -2072,6 +2146,8 @@ export class AxfRuntime {
     const reducedMotion = this.prefersReducedMotion();
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
     parts.push(behaviorStyle(behavior, reducedMotion));
+    // smart menus' look (engines/smartmenu.ts; setting axf.menus.look, an appearance setting shared through axHub)
+    parts.push(menuLookStyle(this.settings.get(MENU_LOOK_KEY) as MenuLook | undefined, reducedMotion));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
@@ -2208,7 +2284,7 @@ export class AxfRuntime {
       scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
       // anything opened through the scoped view belongs to the scope (its own hosts draw it)
       openDialog: { value: (did: string, props?: Record<string, unknown>) => { base.enterScope(scopeId); base.openDialog(did, props); } },
-      openContext: { value: (x: number, y: number, target: string, payload?: string) => { base.enterScope(scopeId); base.openContext(x, y, target, payload); } },
+      openContext: { value: (x: number, y: number, target: string, payload?: string, state?: string[]) => { base.enterScope(scopeId); base.openContext(x, y, target, payload, state); } },
       toast: { value: (message: string, kind?: Toast['kind'], title?: string) => { base.enterScope(scopeId); base.toast(message, kind, title); } },
     });
     this.scopes.set(scopeId, view);

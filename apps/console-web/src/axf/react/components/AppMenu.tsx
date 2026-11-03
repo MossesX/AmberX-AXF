@@ -14,8 +14,9 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import type { CompiledMenuButton } from '../../core/engines/appmenu';
 import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu';
-import { MenuSub } from './MenuList';
-import { useRuntime } from '../AxfProvider';
+import type { MenuOpen } from '../../core/engines/smartmenu';
+import { MenuHeading, MenuSub, useFoldedSections } from './MenuList';
+import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Button, Chip, Kbd } from './Controls';
 
@@ -60,6 +61,8 @@ interface ListProps {
   /** phone: enter a submenu (drill down) instead of opening a flyout */
   onEnter?: (item: CompiledMenuItem) => void;
   autoFocus?: boolean;
+  /** where the menu was opened (smart menus): picks go to `rt.menuPicked` */
+  open?: MenuOpen;
 }
 
 /** How long a row shows what its button did before it drops off the list. */
@@ -183,8 +186,9 @@ function LiveRow({ item, onGone }: { item: CompiledMenuItem; onGone: (id: string
 const focusables = (root: HTMLElement | null) => root ? Array.from(root.querySelectorAll<HTMLButtonElement>(':scope > li > [role="menuitem"]:not(:disabled)')) : [];
 
 /** One level of the menu. Submenus open as flyouts (desktop) or through `onEnter` (phone). */
-export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListProps) {
+export function AppMenuList({ items, depth, onDone, onEnter, autoFocus, open }: ListProps) {
   const rt = useRuntime();
+  const fold = useFoldedSections(items);
   const [openSub, setOpenSub] = useState<string | null>(null);
   const [gone, setGone] = useState<ReadonlySet<string>>(() => new Set());
   const onGone = useCallback((id: string) => setGone((g) => new Set(g).add(id)), []);
@@ -219,10 +223,12 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
       {shown.map((item) => {
         if (item.buttons?.length) return <LiveRow key={item.id} item={item} onGone={onGone} />;
         if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" />;
+        if (item.heading) return <MenuHeading key={item.id} item={item} folded={fold.folded.has(item.section ?? item.id)} onToggle={() => fold.toggle(item.section ?? item.id)} />;
+        if (fold.hidden(item)) return null;
         const hasSub = !!item.items || !!item.provider;
         const sub = hasSub && openSub === item.id && !onEnter;
         return (
-          <li key={item.id} className={`fx-menu__li ${sub ? 'is-open' : ''}`} onMouseEnter={() => !onEnter && setOpenSub(hasSub ? item.id : null)}>
+          <li key={item.id} className={`fx-menu__li ${sub ? 'is-open' : ''}`} data-axf-section={item.section} onMouseEnter={() => !onEnter && setOpenSub(hasSub ? item.id : null)}>
             <button
               type="button"
               role={item.check !== undefined ? 'menuitemcheckbox' : 'menuitem'}
@@ -237,6 +243,7 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
               onClick={(e) => {
                 if (hasSub) { e.stopPropagation(); if (onEnter) onEnter(item); else setOpenSub(item.id); return; }
                 onDone();
+                if (open) rt.menuPicked(open, item);
                 if (item.action) rt.dispatch(item.action);
               }}
             >
@@ -244,13 +251,14 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
                 ? <span className="fx-menu__check" aria-hidden="true">{item.check && <Icon name="check" size={14} />}</span>
                 : <span className="fx-menu__icon">{item.locked ? <Icon name="lock" size={14} /> : <Icon name={item.icon} size={15} />}</span>}
               <span className="fx-menu__label">{item.label}</span>
+              {item.hint && <span className="fx-menu__hint">{item.hint}</span>}
               {item.count !== undefined && item.count > 0 && <span className="fx-menu__badge" aria-label={`${item.count} new`}>{item.count > 99 ? '99+' : item.count}</span>}
               {item.shortcut && <Kbd>{item.shortcut}</Kbd>}
               {hasSub && <Icon name="chevron-right" size={14} className="fx-menu__chevron" />}
             </button>
             {sub && (
               <MenuSub role="presentation">
-                <SubmenuBody item={item} depth={depth + 1} onDone={onDone} open />
+                <SubmenuBody item={item} depth={depth + 1} onDone={onDone} open menu={open} />
               </MenuSub>
             )}
           </li>
@@ -261,15 +269,15 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
 }
 
 /** The items of a submenu: the compiled ones, or the live list loaded on open. */
-function SubmenuBody({ item, depth, onDone, onEnter, open, autoFocus }: { item: CompiledMenuItem; depth: number; onDone: () => void; onEnter?: (i: CompiledMenuItem) => void; open: boolean; autoFocus?: boolean }) {
+function SubmenuBody({ item, depth, onDone, onEnter, open, autoFocus, menu }: { item: CompiledMenuItem; depth: number; onDone: () => void; onEnter?: (i: CompiledMenuItem) => void; open: boolean; autoFocus?: boolean; menu?: MenuOpen }) {
   const loaded = useProviderItems(item.provider, open, depth - 1);
   if (item.provider) {
     if (!loaded || loaded.state === 'loading') return <div className="fx-menu__row fx-menu__loading" role="status"><span className="fx-menu__spinner" aria-hidden="true" />Loading…</div>;
     if (loaded.state === 'error') return <div className="fx-menu__row fx-menu__error" role="alert"><Icon name="alert" size={14} />Couldn't load this list</div>;
     if (!loaded.items.length) return <div className="fx-menu__row fx-menu__empty">Nothing here</div>;
-    return <AppMenuList items={loaded.items} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} />;
+    return <AppMenuList items={loaded.items} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} open={menu} />;
   }
-  return <AppMenuList items={item.items ?? []} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} />;
+  return <AppMenuList items={item.items ?? []} depth={depth} onDone={onDone} onEnter={onEnter} autoFocus={autoFocus} open={menu} />;
 }
 
 /**
@@ -277,7 +285,12 @@ function SubmenuBody({ item, depth, onDone, onEnter, open, autoFocus }: { item: 
  * pushes a panel with a Back row (Escape or Back pops it; Escape at the root closes the menu).
  */
 export function AppMenuDropdown({ menu, onDone }: { menu: CompiledMenu; onDone: () => void }) {
+  const rt = useRuntime();
+  useAxfState(); // redraw when the sections change while open (topics arrive, a pin is set)
   const phone = useIsPhone();
+  // smart menus (engines/smartmenu.ts): dynamic sections above this menu's fixed items, worked out when it opens
+  const [open] = useState(() => rt.menuOpen('app', menu.id));
+  const drawn = rt.menuDraw(open, menu.items);
   const [stack, setStack] = useState<CompiledMenuItem[]>([]);
   const enter = useCallback((item: CompiledMenuItem) => setStack((s) => [...s, item]), []);
   const back = useCallback(() => setStack((s) => s.slice(0, -1)), []);
@@ -288,17 +301,17 @@ export function AppMenuDropdown({ menu, onDone }: { menu: CompiledMenu; onDone: 
   };
   const top = stack[stack.length - 1];
   return (
-    <div className={`fx-dropdown fx-popover ${phone ? 'fx-dropdown--phone' : ''}`} onKeyDown={onKey} data-axf-menu={menu.id} data-axf-menu-origin={menu.origin}>
+    <div className={`fx-dropdown fx-popover ${phone ? 'fx-dropdown--phone' : ''}`} onKeyDown={onKey} data-axf-menu={menu.id} data-axf-menu-origin={menu.origin} style={rt.menuLookVars(open.menu)}>
       {phone && top ? (
         <>
           <button type="button" className="fx-menu__back" onClick={back} aria-label={`Back to ${stack.length > 1 ? stack[stack.length - 2]!.label : menu.label}`}>
             <Icon name="chevron-left" size={14} />
             <span className="fx-menu__label">{top.label}</span>
           </button>
-          <SubmenuBody key={stack.map((s) => s.id).join('/')} item={top} depth={stack.length + 1} onDone={onDone} onEnter={enter} open autoFocus />
+          <SubmenuBody key={stack.map((s) => s.id).join('/')} item={top} depth={stack.length + 1} onDone={onDone} onEnter={enter} open autoFocus menu={open} />
         </>
       ) : (
-        <AppMenuList items={menu.items} depth={1} onDone={onDone} onEnter={phone ? enter : undefined} autoFocus />
+        <AppMenuList items={drawn} depth={1} onDone={onDone} onEnter={phone ? enter : undefined} autoFocus open={open} />
       )}
     </div>
   );
