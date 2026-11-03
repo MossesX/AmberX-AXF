@@ -20,7 +20,7 @@ export function OutputTerminalPane({ channel, height }: { channel?: string | nul
   const onScroll = () => { const el = ref.current; if (!el) return; setFollow(el.scrollHeight - el.scrollTop - el.clientHeight < 8); };
   return (
     <div className="fx-terminal" style={height ? { height } : undefined}>
-      <div className="fx-terminal__bar">
+      <div className="fx-terminal__bar" role="toolbar" aria-label="Output channels">
         <button className={`fx-chip ${filter === null ? 'is-selected' : ''}`} onClick={() => setFilter(null)}>all</button>
         {term.channels().map((c) => <button key={c} className={`fx-chip ${filter === c ? 'is-selected' : ''}`} onClick={() => setFilter(c)}>{c}</button>)}
         <span className="fx-tabgroup__spacer" />
