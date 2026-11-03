@@ -1,0 +1,57 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "ops-fix",
+  "name": "Fix a red or stuck PR",
+  "version": "1.0.0",
+  "description": "Fix one pull request that can't merge: failing CI, conflicts with main, or a branch that is far behind. Sent from Git status → Fix. Works on the PR's own branch, never on main.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "git",
+    "ci"
+  ],
+  "data": {
+    "specialty": "merge-fixer",
+    "model": "opus",
+    "budget": {
+      "tokens": 400000,
+      "maxTurns": 50,
+      "usd": 6
+    },
+    "trigger": {
+      "kind": "on-demand"
+    },
+    "inputs": [
+      {
+        "id": "repo",
+        "label": "Repo",
+        "default": "MossesX/AmberX-AXF"
+      },
+      {
+        "id": "pr",
+        "label": "PR number",
+        "default": ""
+      },
+      {
+        "id": "branch",
+        "label": "Branch",
+        "required": true
+      },
+      {
+        "id": "problem",
+        "label": "What is wrong",
+        "default": "CI is red on the PR's head commit"
+      },
+      {
+        "id": "lines",
+        "label": "Failing lines",
+        "default": ""
+      }
+    ],
+    "brief": "Fix {{repo}} PR #{{pr}} (branch {{branch}}). Problem: {{problem}}.\nFailing lines seen by Git status:\n{{lines}}\n1. git fetch origin; check out {{branch}}; merge origin/main into it (never rebase, never force-push, never push to main).\n2. Bookkeeping clashes (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, tracker.json): keep both sides' lines, regenerate generated files.\n3. Find the real cause of each failing check from its log (gh run view --log-failed) and fix it in the smallest change that keeps the PR's intent. Code clashes you can't settle from both sides' intent: stop and report them.\n4. Run the failing checks locally where they can run, push the branch, and let CI re-run.\nReport what was wrong, what you changed (commits) and anything that still needs a person.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/ops-fix/{{stamp}}.md"
+    }
+  }
+}

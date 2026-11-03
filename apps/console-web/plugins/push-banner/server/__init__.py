@@ -48,6 +48,11 @@ one round every 3 minutes (settings autoMerge + autoPr, both on by default):
   3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
      may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
 
+Capability axf.push@1 (PushService below): the same reads and writes for other plugins (the Git status board):
+snapshot, detail, checks with failing lines, files with diffs, merged since, merge, update, rerun failed CI, close a PR,
+delete a stale branch. A PR held through axf.merge-holds@1 (Git status → Hold) is skipped by auto-merge and refused by
+Merge, like a UI Review hold.
+
 main is never pushed to: a branch reaches main only through its PR. GitHub is reached through `axf.github@1` (the
 systems check's capability: axHub first, the local GITHUB_TOKEN as the fallback, Settings → Plugins → Systems check →
 GitHub route), so the banner still lists branches while the local token is dead; writes (PRs, merges, branch updates
@@ -89,6 +94,8 @@ GITHUB_CAP = "axf.github@1"   # GitHub through axHub first, local GITHUB_TOKEN f
 HEALTH_CAP = "axf.health@1"   # the banners' live checks (systems check, health.py)
 HEALTH_ID = "push-banner-github"
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
+MERGE_HOLDS_CAP = "axf.merge-holds@1"  # PRs put on hold by hand (Git status board) don't merge either
+PUSH_CAP = "axf.push@1"  # what this banner knows and does, for other plugins (Git status board)
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
@@ -535,6 +542,17 @@ class Pushes:
             return "unknown"
         return str(st.get("state") or "waiting") if st.get("holds") else ""
 
+    def merge_hold(self, repo: str, number: int, branch: str) -> str:
+        """Why a merge hold (axf.merge-holds@1, e.g. Git status → Hold) keeps this PR from merging ('' = none). Without a
+        provider nothing is held; a broken provider holds nothing either (UI Review already guards the risky part)."""
+        svc = claudefix.plugin_services.get(MERGE_HOLDS_CAP)
+        if svc is None:
+            return ""
+        try:
+            return _text(svc.held(repo, number, branch) or "", 200)
+        except Exception:  # noqa: BLE001
+            return ""
+
     def merge(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
             raise HTTPException(400, "send {repo, number, confirm}")
@@ -555,6 +573,9 @@ class Pushes:
             held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200))
             if held:
                 raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
+            hold = self.merge_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200))
+            if hold:
+                raise HTTPException(409, f"on hold: {hold}")
             task = self._task(repo, p, "merge", "merge it")
             sha = _text((p.get("head") or {}).get("sha"), 40)
             pbase = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200) or "main"
@@ -639,6 +660,10 @@ class Pushes:
                 held = self.ui_hold(repo, p["number"], p.get("head") or "")
                 if held:  # waiting on Brett in UI Review: the next PR gets its turn
                     done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
+                    continue
+                hold = self.merge_hold(repo, p["number"], p.get("head") or "")
+                if hold:  # put on hold by hand (Git status → Hold): the next PR gets its turn
+                    done.append({**line, "merged": False, "held": "hold", "why": f"on hold: {hold}"})
                     continue
                 try:
                     behind = self._behind(gh, repo, base, p["sha"]) if p.get("sha") else None
@@ -952,6 +977,149 @@ class ProtectionChecks:
 
 
 claudefix.plugin_services.provide("axf.syscheck.items@1:push-protection", ProtectionChecks(), "push-banner")
+
+class PushService:
+    """axf.push@1: what the push banner knows and does, for other plugins (the Git status board). Reads share the
+    banner's 2-minute cache; writes go through the banner's own checks (merge pins the head, refuses held / behind / red
+    PRs; update pulls the base in) and show in the Activity banner like the banner's own buttons."""
+    version = 1
+
+    def snapshot(self, force: bool = False) -> dict[str, Any]:
+        """GET /branches: {checkedAt, repos: [{repo, base, branches, pulls, error}], done, failed, error}."""
+        ensure_health()
+        return PUSHES.branches(force=force)
+
+    def config(self) -> dict[str, Any]:
+        return PUSHES.config()
+
+    def detail(self, repo: str, number: int | None = None, branch: str | None = None) -> dict[str, Any]:
+        return PUSHES.detail(repo, number, branch)
+
+    def merge(self, repo: str, number: int) -> dict[str, Any]:
+        return _tracked("merge", "Merge", {"repo": repo, "number": number, "confirm": f"{repo}#{number}"}, PUSHES.merge)
+
+    def update(self, repo: str, number: int | None = None, branch: str | None = None) -> dict[str, Any]:
+        body = {"repo": repo, "number": number, "confirm": f"{repo}#{number}"} if number else {"repo": repo, "branch": branch, "confirm": f"{repo}:{branch}"}
+        return _tracked("pull", "Pull main into", body, PUSHES.update)
+
+    def merge_ready(self) -> list[dict[str, Any]]:
+        """One auto-merge round now (oldest ready PR first, one merge per round)."""
+        return PUSHES.auto_merge()
+
+    def _watched(self, repo: str) -> None:
+        if repo not in PUSHES.config()["repos"]:
+            raise HTTPException(400, "that repo isn't watched here")
+
+    def checks(self, repo: str, sha: str, max_lines: int = 20) -> list[dict[str, Any]]:
+        """Every check run on a commit with its failing lines (annotations, then the run's summary)."""
+        self._watched(repo)
+        if not SHA_RE.match(str(sha or "")):
+            raise HTTPException(400, "sha is a commit id")
+        gh = PUSHES.gh()
+        out: list[dict[str, Any]] = []
+        for r in PUSHES._checks(gh, repo, sha)[:60]:
+            item = {"id": r.get("id") if isinstance(r.get("id"), int) else None, "name": _text(r.get("name"), 120), "status": _text(r.get("status"), 20),
+                    "conclusion": _text(r.get("conclusion"), 20), "url": _safe_url(r.get("html_url")), "startedAt": _text(r.get("started_at"), 40),
+                    "completedAt": _text(r.get("completed_at"), 40), "lines": []}
+            bad = item["conclusion"] in ("failure", "timed_out", "cancelled", "action_required", "startup_failure")
+            if bad and item["id"]:
+                try:
+                    ann = gh.get(github.repo_path(repo, "check-runs", item["id"], "annotations", query={"per_page": 50}))
+                    for a in ann if isinstance(ann, list) else []:
+                        if isinstance(a, dict) and len(item["lines"]) < max_lines:
+                            where = f"{_text(a.get('path'), 120)}:{a.get('start_line')}" if a.get("path") and a.get("path") != ".github" else ""
+                            item["lines"].append(_text(f"{where} {a.get('message') or ''}".strip(), 300))
+                except (github.GitHubError, ValueError):
+                    pass
+                o = r.get("output") if isinstance(r.get("output"), dict) else {}
+                for ln in str(o.get("summary") or o.get("text") or "").splitlines():
+                    if ln.strip() and len(item["lines"]) < max_lines:
+                        item["lines"].append(_text(ln.strip(), 300))
+            out.append(item)
+        return out
+
+    def files(self, repo: str, number: int, max_patch: int = 12_000) -> list[dict[str, Any]]:
+        """A PR's changed files with their diffs (each patch capped)."""
+        self._watched(repo)
+        gh = PUSHES.gh()
+        rows = gh.paginate(github.repo_path(repo, "pulls", int(number), "files", query={"per_page": 100}), max_pages=3, max_items=300)
+        return [{"file": _text(f.get("filename"), 300), "status": _text(f.get("status"), 20), "additions": f.get("additions") if isinstance(f.get("additions"), int) else 0,
+                 "deletions": f.get("deletions") if isinstance(f.get("deletions"), int) else 0, "patch": str(f.get("patch") or "")[:max_patch]}
+                for f in rows if isinstance(f, dict)]
+
+    def rerun(self, repo: str, sha: str) -> dict[str, Any]:
+        """Re-runs the failed jobs of every finished, failed workflow run on a commit (local token: Actions write)."""
+        self._watched(repo)
+        if not SHA_RE.match(str(sha or "")):
+            raise HTTPException(400, "sha is a commit id")
+        if not PUSHES.has_local():
+            raise HTTPException(409, "re-running CI needs the console's GITHUB_TOKEN (Actions: read and write)")
+        gh = PUSHES.gh()
+        runs = gh.get(github.repo_path(repo, "actions", "runs", query={"head_sha": sha, "per_page": 30}))
+        done, why = [], []
+        for r in (runs.get("workflow_runs") if isinstance(runs, dict) else None) or []:
+            if not isinstance(r, dict) or r.get("status") != "completed" or r.get("conclusion") in ("success", "skipped", "neutral"):
+                continue
+            try:
+                gh.json("POST", github.repo_path(repo, "actions", "runs", r.get("id"), "rerun-failed-jobs"))
+                done.append(_text(r.get("name"), 120))
+            except github.GitHubError as e:
+                why.append(f"{_text(r.get('name'), 80)}: {_text(str(e), 160)}")
+        PUSHES._forget()
+        return {"rerun": done, "errors": why}
+
+    def close(self, repo: str, number: int) -> dict[str, Any]:
+        """Closes an open PR (its branch stays)."""
+        self._watched(repo)
+        if not PUSHES.has_local():
+            raise HTTPException(409, "closing a PR needs the console's GITHUB_TOKEN")
+        try:
+            p = PUSHES.gh().json("PATCH", github.repo_path(repo, "pulls", int(number)), {"state": "closed"})
+        except github.GitHubError as e:
+            raise HTTPException(502, _text(str(e))) from None
+        PUSHES._forget()
+        return {"closed": isinstance(p, dict) and p.get("state") == "closed", "number": number}
+
+    def delete_branch(self, repo: str, branch: str) -> dict[str, Any]:
+        """Deletes a same-repo branch that has no open PR (Kill on a stale branch). Never the default or protected names."""
+        self._watched(repo)
+        if not valid_branch(branch) or branch in NO_AUTO_PR or branch in ALWAYS_HIDDEN:
+            raise HTTPException(400, "that branch can't be deleted here")
+        if not PUSHES.has_local():
+            raise HTTPException(409, "deleting a branch needs the console's GITHUB_TOKEN")
+        gh = PUSHES.gh()
+        owner = repo.split("/")[0]
+        open_ = gh.get(github.repo_path(repo, "pulls", query={"state": "open", "head": f"{owner}:{branch}"}))
+        if isinstance(open_, list) and open_:
+            raise HTTPException(409, f"{branch} still has an open PR: close it first")
+        try:
+            gh.json("DELETE", github.repo_path(repo, "git", "refs", "heads", branch))
+        except github.GitHubError as e:
+            raise HTTPException(502, _text(str(e))) from None
+        PUSHES._forget()
+        return {"deleted": branch}
+
+    def merged(self, since: str, limit: int = 40) -> list[dict[str, Any]]:
+        """PRs merged into each watched repo since an ISO time (newest first)."""
+        gh = PUSHES.gh()
+        out: list[dict[str, Any]] = []
+        for repo in PUSHES.config()["repos"]:
+            try:
+                rows = gh.get(github.repo_path(repo, "pulls", query={"state": "closed", "sort": "updated", "direction": "desc", "per_page": 50}))
+            except (github.GitHubError, ValueError):
+                continue
+            for p in rows if isinstance(rows, list) else []:
+                at = _text(p.get("merged_at"), 40) if isinstance(p, dict) else ""
+                if at and at >= since:
+                    out.append({"repo": repo, "number": p.get("number"), "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")),
+                                "head": _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200),
+                                "mergedAt": at, "sha": _text(p.get("merge_commit_sha"), 40), "author": _text((p.get("user") or {}).get("login") if isinstance(p.get("user"), dict) else "", 60)})
+        out.sort(key=lambda x: x["mergedAt"], reverse=True)
+        return out[:limit]
+
+
+claudefix.plugin_services.provide(PUSH_CAP, PushService(), "push-banner")
+
 
 AUTO_MERGE_EVERY_S = max(60, int(os.environ.get("AXF_PUSH_AUTOMERGE_S", "180") or 180))
 
