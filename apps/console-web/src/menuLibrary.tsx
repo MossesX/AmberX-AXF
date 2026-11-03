@@ -284,8 +284,10 @@ export const menuLibrary: AxfWebLibrary = {
     rt.actions.register('console.open', ([key]) => { const to = key ? OPEN[key] : undefined; if (to) openTab(to()); else rt.toast(`Nothing to open for "${key ?? ''}".`, 'warning'); }, { label: 'Open an app or page in a new tab', params: true, searchable: false });
     rt.actions.register('console.reveal', ([view, text, how]) => { if (view) reveal(rt, view, decodeURIComponent(text ?? ''), how === 'pick'); }, { label: 'Show a row in a view', params: true, searchable: false });
     rt.actions.register('console.pending.open', ([id]) => {
-      rt.navigate('pending');
       const want = decodeURIComponent(id ?? '');
+      // the one Builds page (when its plugin is on) opens the Pending view on that build
+      if (rt.actions.get('builds.open')) { rt.dispatch(`builds.open:pending:${encodeURIComponent(want ? `build=${want}` : '')}`); return; }
+      rt.navigate('pending');
       if (want) flashWhenReady(() => [...document.querySelectorAll('[data-fx-ctx-target="axf-pending-item"]')].find((el) => el.getAttribute('data-fx-ctx-payload') === want) ?? null, 4000);
     }, { label: 'Open a pending build', params: true, searchable: false });
     rt.actions.register('console.queue.open', ([id]) => {

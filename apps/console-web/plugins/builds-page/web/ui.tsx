@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as RKeyboardEvent, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, useRuntime } from '@console/axf/react';
-import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
+import { Button, Checkbox, Chip, Icon, IconButton, Meter, Segmented, SelectField, Slot, Switch, TextField, useRuntime } from '@console/axf/react';
+import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
+import { pendingPost } from '@console/api';
 import './builds.css';
 
 /*
- * The Builds page (master cleanup, Oct 31 2026): one page over the one builds store (builds@1). Views:
- *   Builds  one row per build: live progress bar, status, steps, time left; rename in place; drag to reorder.
+ * The Builds page (master cleanup Oct 31 2026; one page for every builds list Nov 1 2026): one page over the one
+ * builds store (builds@1). Views Pending · Queue · Plan · Tracker · Orchestrator (one table, see VIEWS) and:
  *   Steps   every atomic step as its own stored record, for one build or the whole profile. Multi-select, drag to
  *           reorder steps and builds, divide, harvest / split into N, Restore default, rename. All a DRAFT until
  *           Apply (saved on the server, survives a restart); Discard drops it.
@@ -22,7 +23,10 @@ export const api = pluginApi(FOLDER, 'Builds', { unavailable: 'The Builds page i
 
 export type Progress = { total: number; done: number; pct: number; active: boolean; status?: string };
 export type StepV = { uid: string; id: string; title: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; done: boolean; doneAt: string; skip: boolean; note: string; rev: number; origin?: { build: string; step: string; how: string }; index: number; build: string; buildTitle: string; kind: string; target: string; next: boolean };
-export type BuildV = { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[] };
+export type PlanInfo = { id: string; title: string; area: string; status: string; priority: string; wave: number | null; effort: string; summary: string; acceptance: { text: string; done: boolean }[]; dependsOn: string[]; ports: Record<string, string> };
+export type PhaseV = { index: number; name: string; model: string; from: string; uids: string[]; steps: number; done: number; minutes: number; gate: boolean; kind: string; upgrade: boolean; approved: boolean; requested: boolean };
+export type BuildV = { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[];
+  minutes: number; cost: number; model: string; summary: string; phases: PhaseV[]; plan: PlanInfo | null; pending: { model: string; estimate: string; source: string; planId: string } | null; queue: { estimate: string; completedAt: string; rework: unknown } | null };
 type ProfileV = { id: string; name: string; base: boolean; builds: number; progress: Progress & { builds: number; complete: number } };
 export type Op = Record<string, unknown> & { op: string };
 type StateV = { ok: boolean; error?: string; rev: number; profile: string; active: string; profiles: ProfileV[]; progress: Progress & { builds: number; complete: number }; builds: BuildV[]; draft: { ops: Op[]; count: number; updatedAt: string; log: string[] }; log?: string[] };
@@ -33,6 +37,7 @@ let st: { state: StateV | null; error: string; busy: boolean } = { state: null, 
 const subs = new Set<() => void>();
 const set = (p: Partial<typeof st>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 export const useBuilds = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
+export const peekBuilds = () => st.state;
 let wantProfile = '';
 export async function reload(profile = wantProfile) {
   wantProfile = profile;
@@ -185,25 +190,74 @@ function ConfirmDialog({ title, text, yes, onYes, onClose }: { title: string; te
 
 /* ---------------- the page ---------------- */
 
-type View = 'builds' | 'steps';
-type Filter = 'open' | 'all' | 'complete' | 'archived' | 'queue';
+/*
+ * Views (Brett, Oct 27 + Nov 1 2026: one Builds page, a toolbar switches the view, all over the one store). Every view
+ * but Steps is the same table (one-line rows, caret far right, rows expand to the nested info), each with its own
+ * default filter, grouping, columns and detail. 1–6 on the keyboard, `builds.open:<view>[:<query>]`, axf://builds?view=…
+ */
+export type View = 'pending' | 'queue' | 'plan' | 'tracker' | 'orchestrator' | 'steps';
+export const VIEWS: { value: View; label: string; icon: string; title: string }[] = [
+  { value: 'pending', label: 'Pending', icon: 'clock', title: 'Pending builds: what is still to build, newest first' },
+  { value: 'queue', label: 'Queue', icon: 'play', title: 'Build queue: open builds in build order (drag to reorder)' },
+  { value: 'plan', label: 'Plan', icon: 'layers', title: 'Plan: builds by plan area, with acceptance, ports and dependencies' },
+  { value: 'tracker', label: 'Tracker', icon: 'check-circle', title: 'Tracker: progress per category' },
+  { value: 'orchestrator', label: 'Orchestrator', icon: 'layers', title: 'Orchestrator: phases, model switches and steps per build' },
+  { value: 'steps', label: 'Steps', icon: 'list', title: 'Steps: every atomic step; reorder, divide, harvest (a draft until Apply)' },
+];
+/** Old view ids (the Builds view before Nov 1 2026, old screens) → the view that took them over. */
+export const VIEW_OF: Record<string, View> = { builds: 'orchestrator', pending: 'pending', build: 'queue', queue: 'queue', 'build-queue': 'queue', plan: 'plan', tracker: 'tracker', 'build-orchestrator': 'orchestrator', orchestrator: 'orchestrator', steps: 'steps' };
+
+type Filter = 'open' | 'all' | 'complete' | 'archived' | 'hidden';
 const FILTERS: { value: Filter; label: string; title: string }[] = [
   { value: 'open', label: 'Open', title: 'Pending, running, waiting, blocked, failed' },
-  { value: 'queue', label: 'Queue', title: 'Plan epics in queue order' },
   { value: 'complete', label: 'Done', title: 'Complete' },
   { value: 'archived', label: 'Archived', title: 'Archived (merged into another build, recovered from history)' },
-  { value: 'all', label: 'All', title: 'Every build of the profile' },
+  { value: 'hidden', label: 'Hidden', title: 'Builds you hid' },
+  { value: 'all', label: 'All', title: 'Every build of the profile (hidden ones too)' },
 ];
-const keep = (f: Filter) => (b: BuildV) => f === 'all' ? true : f === 'complete' ? (b.status === 'complete' || b.status === 'built') : f === 'archived' ? b.status === 'archived' : f === 'queue' ? b.kind === 'epic' || !!b.planRef : !['complete', 'archived'].includes(b.status);
+const isFilter = (v: unknown): v is Filter => FILTERS.some((x) => x.value === v);
+const keep = (f: Filter) => (b: BuildV) => f === 'hidden' ? b.hidden : f === 'all' ? true : b.hidden ? false : f === 'complete' ? (b.status === 'complete' || b.status === 'built') : f === 'archived' ? b.status === 'archived' : !['complete', 'archived'].includes(b.status);
+
+/** What a link or another plugin asked the page to show (taken once the page is up). */
+export type Want = { view?: View; filter?: Filter; q?: string; build?: string };
+let want: Want | null = null;
+const wantSubs = new Set<() => void>();
+export function openBuilds(rt: { navigate: (v: string) => void }, w: Want) { want = w; wantSubs.forEach((f) => f()); rt.navigate(VIEW); }
+/** `axf://builds?view=pending&filter=open&q=grid&build=<id>` (also `builds?…`, `?…`, `view=…`) → what to show. */
+export function parseBuildsLink(href: string): Want {
+  const q = new URLSearchParams(href.replace(/^axf:\/\//, '').replace(/^#?\/?builds/, '').replace(/^[?:]/, ''));
+  const v = q.get('view') ?? ''; const f = q.get('filter') ?? '';
+  return { ...(VIEW_OF[v] ? { view: VIEW_OF[v] } : {}), ...(isFilter(f) ? { filter: f } : {}), ...(q.get('q') ? { q: q.get('q')! } : {}), ...(q.get('build') ? { build: q.get('build')! } : {}) };
+}
+export const buildsLink = (w: Want) => `axf://builds?${new URLSearchParams(Object.entries(w).filter(([, v]) => v) as [string, string][]).toString()}`;
+
+const matches = (needle: string) => (b: BuildV) => !needle || `${b.title} ${b.id} ${b.category} ${b.detail} ${b.model} ${b.plan?.area ?? ''}`.toLowerCase().includes(needle);
 
 export function BuildsPage() {
   const rt = useRuntime();
   const s = useBuilds();
-  const [view, setView] = useState<View>(() => (rt.settings.get(KEYS.view) as View) || 'builds');
-  const [filter, setFilter] = useState<Filter>(() => (rt.settings.get(KEYS.filter) as Filter) || 'open');
+  const [view, setViewRaw] = useState<View>(() => { const v = rt.settings.get(KEYS.view) as string; return VIEW_OF[v] ?? 'pending'; });
+  const [filter, setFilter] = useState<Filter>(() => { const f = rt.settings.get(KEYS.filter); return isFilter(f) ? f : 'open'; });
+  const [q, setQ] = useState('');
+  const [focus, setFocus] = useState('');
+  const setView = (v: View) => setViewRaw(v);
   useEffect(() => { rt.settings.set(KEYS.view, view); }, [view]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { rt.settings.set(KEYS.filter, filter); }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => rt.actions.register('builds.view', ([v]) => { if (v === 'steps' || v === 'builds') setView(v); }, { label: 'Builds page view', params: true }), []); // eslint-disable-line react-hooks/exhaustive-deps
+  // a link / menu / banner asked for a view: take it now and whenever another comes in
+  useEffect(() => {
+    const take = () => { if (!want) return; const w = want; want = null; if (w.view) setView(w.view); if (w.filter) setFilter(w.filter); if (w.q != null) setQ(w.q); if (w.build) { setFocus(w.build); setFilter('all'); } };
+    take(); wantSubs.add(take); return () => { wantSubs.delete(take); };
+  }, []);
+  // 1–6 switch the view (not while typing, not with a modifier)
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey || rt.getState().dialog) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      const v = VIEWS[Number(e.key) - 1]; if (v) { e.preventDefault(); setView(v.value); }
+    };
+    addEventListener('keydown', k); return () => removeEventListener('keydown', k);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // live: poll while the page is visible, and again on focus
   useEffect(() => {
     void reload((rt.settings.get(KEYS.profile) as string) || '');
@@ -215,27 +269,36 @@ export function BuildsPage() {
   const state = s.state;
   if (!state) return <div className="fx-page axp-builds"><p className="fx-muted">{s.error || 'Loading the builds store…'}</p></div>;
   const prof = state.profiles.find((p) => p.id === state.profile);
-  const builds = state.builds.filter(keep(filter));
+  const needle = q.trim().toLowerCase();
+  const builds = state.builds.filter((b) => (focus ? b.id === focus : keep(filter)(b)) && matches(needle)(b));
+  const meta = VIEWS.find((v) => v.value === view)!;
   return (
-    <div className="fx-page axp-builds">
+    <div className="fx-page axp-builds" data-view={view}>
       <header className="fx-pagehead axp-builds__head">
         <div>
-          <p className="fx-eyebrow">Builds · one store for every profile · rev {state.rev}</p>
-          <h1 className="axp-builds__title"><InlineName label="Profile name" value={prof?.name ?? state.profile} onSave={(name) => send('rename-profile', { id: state.profile, name }, rt.toast)} /><span className="fx-small fx-muted fx-mono">{state.profile}</span><span className="axp-builds__pct" data-active={state.progress.active || undefined} aria-label={`Profile ${state.progress.pct}% built`}>{state.progress.pct}%</span></h1>
+          <p className="fx-eyebrow">Builds · {meta.label} · rev {state.rev}</p>
+          <h1 className="axp-builds__title"><InlineName label="Profile name" value={prof?.name ?? state.profile} onSave={(name) => send('rename-profile', { id: state.profile, name }, rt.toast)} /><span className="fx-small fx-muted fx-mono axp-builds__wide">{state.profile}</span><span className="axp-builds__pct" data-active={state.progress.active || undefined} aria-label={`Profile ${state.progress.pct}% built`}>{state.progress.pct}%</span></h1>
           <p className="fx-muted axp-builds__sub">{state.progress.complete}/{state.progress.builds} builds complete · {state.progress.done}/{state.progress.total} steps{state.profile !== state.active ? ` · the console's active profile is ${state.active}` : ''}</p>
         </div>
       </header>
       <Meter value={state.progress.pct} active={state.progress.active} done={state.progress.pct === 100} label={`${prof?.name ?? state.profile}: ${state.progress.done} of ${state.progress.total} steps`} />
+      <div className="axp-builds__views" role="toolbar" aria-label="Builds views">
+        <Segmented label="View" size="sm" value={view} onChange={setView} options={VIEWS.map((v, i) => ({ value: v.value, label: v.label, icon: v.icon, title: `${v.title} (${i + 1})` }))} />
+      </div>
       <div className="axp-builds__bar">
         <SelectField label="Profile" value={state.profile} options={state.profiles.map((p) => ({ value: p.id, label: `${p.name} — ${p.progress.pct}%` }))} onChange={(v) => { rt.settings.set(KEYS.profile, v); void reload(v); }} className="axp-builds__pick" />
-        <Segmented label="View" value={view} onChange={setView} options={[{ value: 'builds', label: 'Builds', icon: 'list' }, { value: 'steps', label: 'Steps', icon: 'layers' }]} />
-        <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
+        <TextField label="Find" value={q} onChange={setQ} placeholder="Name, id, category, model…" className="axp-builds__find" />
+        <Segmented label="Show" size="sm" value={filter} onChange={(f) => { setFilter(f); setFocus(''); }} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
+        {focus && <Chip tone="accent">{focus} <IconButton icon="x" label="Show every build" onClick={() => setFocus('')} /></Chip>}
+        <span className="axp-builds__grow" />
+        <Slot name="builds.toolbar" props={{ page: view }} />
+        <IconButton icon="link" label="Copy a link to this view" onClick={() => { void navigator.clipboard?.writeText(buildsLink({ view, filter, q, build: focus })); rt.toast('Link copied (axf://builds…).', 'success'); }} />
       </div>
       <DraftBar state={state} />
       {/* other plugins' panels above the list (e.g. agent-slots: the queue of headless runs waiting for a slot) */}
-      <Slot name="builds.top" props={{ profile: state.profile }} />
+      <Slot name="builds.top" props={{ profile: state.profile, view }} />
       {s.error && <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {s.error}</p>}
-      {view === 'builds' ? <BuildsView state={state} builds={builds} /> : <StepsView state={state} builds={builds} />}
+      {view === 'steps' ? <StepsView state={state} builds={builds} /> : <BuildsTable key={view} view={view} state={state} builds={builds} onView={setView} />}
     </div>
   );
 }
@@ -263,36 +326,223 @@ function StatusChip({ b }: { b: BuildV }) { return <Chip tone={STATUS_TONE[b.sta
 function Bar({ p, label }: { p: Progress; label: string }) {
   return <span className="axp-builds__bar-cell"><Meter small value={p.pct} active={p.active} done={p.pct === 100} label={label} /><span className="fx-small axp-builds__num" data-active={p.active || undefined}>{p.pct}%</span></span>;
 }
+const fmtCost = (c: number) => (c ? `$${c < 10 ? c.toFixed(2) : Math.round(c)}` : '');
+const fmtWhen = (iso: string) => { if (!iso) return ''; const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
+const PLAN_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { built: 'success', partial: 'accent', 'in-progress': 'accent', blocked: 'danger', placeholder: 'warning' };
 
-function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
+/** Per view: its columns (ids), hidden-by-default columns, default sort and grouping. */
+const COLS: Record<Exclude<View, 'steps'>, { cols: string[]; hidden: string[]; sort: GridSort; group: (b: BuildV) => string | null; drag?: boolean }> = {
+  pending: { cols: ['title', 'status', 'model', 'time', 'cost', 'progress', 'created', 'updated'], hidden: ['created', 'updated', 'progress'], sort: { col: 'updated', dir: -1 }, group: () => null },
+  queue: { cols: ['order', 'title', 'status', 'progress', 'left', 'feature', 'created', 'updated'], hidden: ['created', 'updated', 'feature'], sort: null, group: () => null, drag: true },
+  plan: { cols: ['title', 'planStatus', 'priority', 'wave', 'progress', 'created', 'updated'], hidden: ['created', 'updated', 'wave'], sort: { col: 'updated', dir: -1 }, group: (b) => b.plan?.area || b.category || 'No plan area' },
+  tracker: { cols: ['title', 'status', 'progress', 'steps', 'created', 'updated'], hidden: ['created', 'updated'], sort: { col: 'updated', dir: -1 }, group: (b) => b.category || 'Uncategorised' },
+  orchestrator: { cols: ['title', 'status', 'model', 'progress', 'steps', 'left', 'cost', 'created', 'updated'], hidden: ['created', 'updated', 'cost'], sort: { col: 'updated', dir: -1 }, group: () => null },
+};
+const sortKey = (v: View) => `builds.sort.${v}`;
+const colsKey = (v: View) => `builds.cols.${v}`;
+
+/** The selection hook (pending-grid-view): double-click "Select" to turn multi-select on; then single clicks pick rows. */
+function useMultiSelect(ids: string[]) {
+  const [on, setOn] = useState(false);
+  const [sel, setSel] = useState<string[]>([]);
+  useEffect(() => { setSel((x) => x.filter((id) => ids.includes(id))); }, [ids.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
+  const toggle = (id: string) => setSel((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]));
+  return { on, setOn, sel, setSel, toggle };
+}
+
+function BuildsTable({ view, state, builds, onView }: { view: Exclude<View, 'steps'>; state: StateV; builds: BuildV[]; onView: (v: View) => void }) {
   const rt = useRuntime();
+  const cfg = COLS[view];
   const [expanded, setExpanded] = useState<string[]>([]);
+  const [collapsed, setCollapsed] = useState<string[]>([]);
+  // saved as "col:1" / "col:-1", "" = the view's own order; nothing saved = the view's default (newest first)
+  const [sort, setSort] = useState<GridSort>(() => { const v = rt.settings.get(sortKey(view)); if (typeof v !== 'string') return cfg.sort; const [col, dir] = v.split(':'); return col ? { col, dir: dir === '1' ? 1 : -1 } : null; });
+  const [hidden, setHidden] = useState<string[]>(() => (rt.settings.get(colsKey(view)) as string[] | undefined) ?? cfg.hidden);
+  const [openIn, setOpenIn] = useState(false);
+  const [confirm, setConfirm] = useState<null | 'delete' | 'archive'>(null);
+  const [adding, setAdding] = useState(false);
+  const ms = useMultiSelect(builds.map((b) => b.id));
+  const flashRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { rt.settings.set(sortKey(view), sort ? `${sort.col}:${sort.dir}` : ''); }, [sort]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { rt.settings.set(colsKey(view), hidden); }, [hidden]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (builds.length === 1) setExpanded([builds[0]!.id]); }, [builds.length === 1 ? builds[0]!.id : '']); // eslint-disable-line react-hooks/exhaustive-deps
   const rename = (b: BuildV) => (title: string) => send('ops', { ops: [{ op: 'rename-build', id: b.id, title }] }, rt.toast);
-  const columns: GridColumn<BuildV>[] = [
-    { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 30), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
-      render: (b) => <span className="axp-builds__cell-title"><InlineName label="Build name" value={b.title} onSave={rename(b)} /><span className="fx-small fx-muted fx-mono">{b.id}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((p) => p !== state.profile).join(', ')}` : ''}</span></span> },
-    { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
-    { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
-    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
-    { id: 'left', label: 'Left', width: 'calc(var(--fx-space) * 10)', align: 'end', sortable: true, sortValue: (b) => b.minutesLeft, render: (b) => <span className="fx-small">{fmtMin(b.minutesLeft)}</span> },
-  ];
-  const groups: GridGroup<BuildV>[] = [{ id: 'all', title: `${builds.length} build(s)`, rows: builds, groups: [], fixed: true, progress: state.progress.pct }];
+  const now = (ops: Op[], ok?: string) => send('ops', { ops }, rt.toast).then((r) => { if (r && ok) rt.toast(ok, 'success'); return r; });
+  const all: Record<string, GridColumn<BuildV>> = {
+    order: { id: 'order', label: '#', width: 'calc(var(--fx-space) * 6)', align: 'end', render: (b) => <span className="fx-small fx-muted">{b.order + 1}</span> },
+    title: { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-space) * 24), 4fr)', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
+      render: (b) => <span className="axp-builds__cell-one"><InlineName label="Build name" value={b.title} onSave={rename(b)} />{b.hidden && <Chip>hidden</Chip>}<span className="fx-small fx-muted axp-builds__wide axp-builds__ellipsis">{b.summary !== b.title ? b.summary : ''}</span></span> },
+    status: { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (b) => b.status, render: (b) => <StatusChip b={b} /> },
+    model: { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 12)', sortable: true, sortValue: (b) => b.model, render: (b) => <span className="fx-small">{b.model}</span> },
+    time: { id: 'time', label: 'Time', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.minutes, render: (b) => <span className="fx-small">{fmtMin(b.minutes)}</span> },
+    left: { id: 'left', label: 'Left', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.minutesLeft, render: (b) => <span className="fx-small">{fmtMin(b.minutesLeft)}</span> },
+    cost: { id: 'cost', label: 'Cost', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.cost, render: (b) => <span className="fx-small" title="Estimate: minutes × the model's price per minute">{fmtCost(b.cost)}</span> },
+    progress: { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 18)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
+    steps: { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 8)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
+    feature: { id: 'feature', label: 'Feature', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', sortable: true, sortValue: (b) => b.planRef, render: (b) => <span className="fx-small fx-mono axp-builds__ellipsis">{b.planRef}</span> },
+    planStatus: { id: 'planStatus', label: 'Plan', width: 'calc(var(--fx-space) * 13)', sortable: true, sortValue: (b) => b.plan?.status ?? '', render: (b) => (b.plan ? <Chip tone={PLAN_TONE[b.plan.status]}>{b.plan.status}</Chip> : <span className="fx-small fx-muted">not in plan</span>) },
+    priority: { id: 'priority', label: 'Pri', width: 'calc(var(--fx-space) * 7)', sortable: true, sortValue: (b) => b.plan?.priority ?? 'P9', render: (b) => <span className="fx-small">{b.plan?.priority}</span> },
+    wave: { id: 'wave', label: 'Wave', width: 'calc(var(--fx-space) * 7)', align: 'end', sortable: true, sortValue: (b) => b.plan?.wave ?? 99, render: (b) => <span className="fx-small">{b.plan?.wave ?? ''}</span> },
+    created: { id: 'created', label: 'Created', width: 'calc(var(--fx-space) * 15)', sortable: true, sortValue: (b) => b.createdAt, render: (b) => <span className="fx-small fx-muted">{fmtWhen(b.createdAt)}</span> },
+    updated: { id: 'updated', label: 'Updated', width: 'calc(var(--fx-space) * 15)', sortable: true, sortValue: (b) => b.updatedAt, render: (b) => <span className="fx-small fx-muted">{fmtWhen(b.updatedAt)}</span> },
+  };
+  const selCol: GridColumn<BuildV>[] = ms.on ? [{ id: 'sel', label: '', width: 'calc(var(--fx-space) * 5)', fixed: true, render: (b) => <span onClick={(e) => e.stopPropagation()}><Checkbox label="" title="Select" checked={ms.sel.includes(b.id)} onChange={() => ms.toggle(b.id)} /></span> }] : [];
+  const columns = [...selCol, ...cfg.cols.map((c) => all[c]!)];
+  const groupOf = cfg.group;
+  const named = new Map<string, BuildV[]>();
+  for (const b of builds) { const g = groupOf(b) ?? ''; named.set(g, [...(named.get(g) ?? []), b]); }
+  const pct = (rows: BuildV[]) => { const t = rows.reduce((a, b) => a + b.progress.total, 0); return t ? Math.round((rows.reduce((a, b) => a + b.progress.done, 0) / t) * 100) : 0; };
+  const groups: GridGroup<BuildV>[] = [...named.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([g, rows]) => ({
+    id: g || 'all', title: g || `${rows.length} build(s)`, rows, groups: [], fixed: true, collapsed: collapsed.includes(g || 'all'), progress: pct(rows),
+    counts: <span className="fx-small">{rows.filter((b) => b.status === 'complete').length}/{rows.length}</span>,
+  }));
+  const picked = builds.filter((b) => ms.sel.includes(b.id));
+  const none = !picked.length;
+  const activate = () => {
+    ms.setOn(true);
+    // flash the top row's hover look three times, then say what to do
+    const row = flashRef.current?.querySelector('.axf-grid-row');
+    row?.classList.add('axp-builds__flash'); window.setTimeout(() => row?.classList.remove('axp-builds__flash'), 1200);
+    rt.toast('Select items: tap or click rows to add them.', 'info', 'Multi-select on');
+  };
   return (
-    <DataGrid<BuildV> id="builds.builds" label="Builds" groups={groups} columns={columns} rowId={(b) => b.id} rowLabel={(b) => b.title} hidden={[]}
-      expanded={expanded} onToggleExpand={(id) => setExpanded(expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id])}
-      rowTone={(b) => (b.status === 'complete' || b.status === 'built' ? 'success' : b.status === 'running' ? 'accent' : b.status === 'failed' ? 'danger' : ['blocked', 'waiting'].includes(b.status) ? 'warning' : 'muted')}
-      rowRef={(b) => ({ kind: 'build', id: b.id })}
-      onMove={(item, target, pos) => {
-        if (item.kind !== 'row' || target.kind !== 'row' || item.id === target.id) return;
-        const ids = state.builds.map((b) => b.id).filter((id) => id !== item.id);
-        const at = ids.indexOf(target.id) + (pos === 'after' ? 1 : 0);
-        ids.splice(at, 0, item.id);
-        void send('ops', { ops: [{ op: 'reorder-builds', ids }] }, rt.toast);
-      }}
-      renderDetail={(b) => <BuildDetail b={b} />}
-      empty={<p className="fx-muted">No builds here.</p>} />
+    <div className="axp-builds__table" ref={flashRef}>
+      <div className="axp-builds__bar axp-builds__tools" role="toolbar" aria-label="Selected builds">
+        <Button size="sm" icon="check-circle" tone={ms.on ? 'primary' : undefined} title={ms.on ? 'Multi-select is on: click to turn it off' : 'Activate multi-select with a double-click'}
+          onDoubleClick={() => !ms.on && activate()} onClick={() => { if (ms.on) { ms.setOn(false); ms.setSel([]); } }}>{ms.on ? `${ms.sel.length} selected` : 'Select'}</Button>
+        {ms.on && <Button size="sm" icon="list" onClick={() => ms.setSel(ms.sel.length === builds.length ? [] : builds.map((b) => b.id))}>{ms.sel.length === builds.length && builds.length ? 'None' : 'All'}</Button>}
+        <Button size="sm" icon="archive" disabled={none} onClick={() => setConfirm('archive')}>Archive</Button>
+        <Button size="sm" icon="trash" disabled={none} onClick={() => setConfirm('delete')}>Delete</Button>
+        <Button size="sm" icon="eye" disabled={none || picked.every((b) => b.hidden)} onClick={() => void now([{ op: 'hide', ids: picked.map((b) => b.id) }], `${picked.length} hidden`)}>Hide</Button>
+        <Button size="sm" icon="eye" disabled={none || !picked.some((b) => b.hidden)} onClick={() => void now([{ op: 'unhide', ids: picked.map((b) => b.id) }], `${picked.length} shown again`)}>Unhide</Button>
+        <span className="axp-builds__rel">
+          <Button size="sm" icon="external" disabled={none} title="Open the selected builds in another view" onClick={() => setOpenIn(!openIn)}>Open in…</Button>
+          {openIn && !none && (
+            <div className="fx-menu axp-builds__popover" role="menu" onMouseLeave={() => setOpenIn(false)}>
+              {VIEWS.filter((v) => v.value !== view).map((v) => <button key={v.value} type="button" role="menuitem" className="fx-menu__item" onClick={() => { setOpenIn(false); if (picked.length === 1) openBuilds(rt, { view: v.value, build: picked[0]!.id }); else onView(v.value); }}><Icon name={v.icon} size={14} /> {v.label}</button>)}
+              <button type="button" role="menuitem" className="fx-menu__item" onClick={() => { setOpenIn(false); rt.dispatch('nav:build-manager'); }}><Icon name="play" size={14} /> Build manager</button>
+            </div>
+          )}
+        </span>
+        <span className="axp-builds__grow" />
+        {view === 'pending' && <Button size="sm" icon="plus" onClick={() => setAdding(true)}>New build</Button>}
+        {view === 'plan' && <Button size="sm" icon="edit" title="The plan feature editor (acceptance, previews, media)" onClick={() => rt.navigate('plan-editor')}>Plan editor</Button>}
+        {view === 'orchestrator' && <Button size="sm" icon="edit" title="Add builds, edit and move steps, orchestrator rules" onClick={() => rt.navigate('orchestrator-editor')}>Orchestrator editor</Button>}
+        {view === 'tracker' && <Button size="sm" icon="check-circle" title="Catalog features: built / partial / planned (status.json)" onClick={() => rt.navigate('feature-tracker')}>Feature tracker</Button>}
+      </div>
+      <DataGrid<BuildV> id={`builds.${view}`} label={`Builds · ${view}`} groups={groups} columns={columns} rowId={(b) => b.id} rowLabel={(b) => b.title}
+        hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c)) ? h.filter((x) => x !== c) : [...h, c])} onShowAll={() => setHidden([])}
+        sort={sort} onSort={(c) => setSort((s) => (c == null ? null : s?.col === c ? (s.dir === -1 ? { col: c, dir: 1 } : null) : { col: c, dir: -1 }))}
+        expanded={expanded} onToggleExpand={(id) => setExpanded(expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id])}
+        onToggleGroup={(id) => setCollapsed(collapsed.includes(id) ? collapsed.filter((x) => x !== id) : [...collapsed, id])}
+        multi={ms.sel} onRowClick={(b, e) => { if (ms.on || e.ctrlKey || e.metaKey) { ms.toggle(b.id); } }}
+        rowTone={(b) => (b.status === 'complete' ? 'success' : b.status === 'running' ? 'accent' : b.status === 'failed' ? 'danger' : ['blocked', 'waiting'].includes(b.status) ? 'warning' : 'muted')}
+        rowRef={(b) => ({ kind: 'build', id: b.id })} compact
+        onMove={cfg.drag && !sort ? (item, target, pos) => {
+          if (item.kind !== 'row' || target.kind !== 'row' || item.id === target.id) return;
+          const ids = state.builds.map((b) => b.id).filter((id) => id !== item.id);
+          ids.splice(ids.indexOf(target.id) + (pos === 'after' ? 1 : 0), 0, item.id);
+          void send('ops', { ops: [{ op: 'reorder-builds', ids }] }, rt.toast);
+        } : undefined}
+        renderDetail={(b) => <BuildDetail b={b} view={view} />}
+        empty={<p className="fx-muted">No builds here.</p>} />
+      {confirm && (
+        <ConfirmDialog title={confirm === 'delete' ? 'Delete builds' : 'Archive builds'} yes={confirm === 'delete' ? 'Delete' : 'Archive'} onClose={() => setConfirm(null)}
+          text={`${confirm === 'delete' ? 'Delete' : 'Archive'} ${picked.length} build(s): ${picked.map((b) => b.title).join(', ')}? ${confirm === 'delete' ? 'They leave every list; the journal keeps them (builds-store.mjs restore <id> <rev>).' : 'They move to Archived; set a status to bring one back.'}`}
+          onYes={() => void now([{ op: confirm, ids: picked.map((b) => b.id) }], `${picked.length} ${confirm === 'delete' ? 'deleted' : 'archived'}`).then((ok) => ok && ms.setSel([]))} />
+      )}
+      {adding && <AddDialog onClose={() => setAdding(false)} />}
+    </div>
   );
 }
+
+/** New build (Pending view): through the pending route, which writes the one store like every other writer. */
+function AddDialog({ onClose }: { onClose: () => void }) {
+  const rt = useRuntime();
+  const [title, setTitle] = useState('');
+  const [detail, setDetail] = useState('');
+  const [model, setModel] = useState<'Opus' | 'Fable'>('Opus');
+  const [estimate, setEstimate] = useState('');
+  const ok = async () => {
+    const r = await pendingPost({ action: 'add', title: title.trim(), detail, model, status: 'pending', ...(estimate.trim() ? { estimate: estimate.trim() } : {}) } as never);
+    if (!r.ok) { rt.toast(r.error ?? 'Could not add it', 'danger'); return; }
+    rt.toast(`Added “${title.trim()}”`, 'success'); onClose(); void reload();
+  };
+  return (
+    <Dialog title="New build" icon="plus" onClose={onClose} foot={<><Button onClick={onClose}>Cancel</Button><Button tone="primary" icon="check" disabled={!title.trim()} onClick={() => void ok()}>Add</Button></>}>
+      <TextField label="Name" value={title} onChange={setTitle} autoFocus />
+      <TextField label="What to build" value={detail} onChange={setDetail} rows={4} />
+      <Segmented label="Model" value={model} onChange={setModel} options={[{ value: 'Opus', label: 'Opus' }, { value: 'Fable', label: 'Fable' }]} />
+      <TextField label="Estimate" value={estimate} onChange={setEstimate} placeholder="e.g. 45 min, 2 h" />
+    </Dialog>
+  );
+}
+
+const briefOf = (b: BuildV) => {
+  const left = b.steps.filter((s) => !s.done && !s.skip);
+  return [`Continue build "${b.title}" (${b.id})${b.branch ? ` on branch ${b.branch}` : ''}. Status ${b.status}, ${b.progress.done}/${b.progress.total} steps done.`,
+    ...(left.length ? ['Steps left:', ...left.map((s) => `[ ] ${s.id} [${s.model}]${s.estimate ? ` (~${s.estimate})` : ''} ${stepName(s)}`)] : ['No steps left.']),
+    `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${b.id} <stepId> done`].join('\n');
+};
+
+/** A build's nested info, per view. Steps tick in place (at once, versioned); Orchestrator nests them under phases. */
+function BuildDetail({ b, view }: { b: BuildV; view: Exclude<View, 'steps'> }) {
+  const rt = useRuntime();
+  const [note, setNote] = useState('');
+  const tick = (s: StepV) => send('ops', { ops: [{ op: 'step-done', build: b.id, uid: s.uid, done: !s.done }] }, rt.toast);
+  const step = (s: StepV) => (
+    <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''}>
+      <Checkbox label="" title={s.done ? 'Mark not done' : 'Mark done'} checked={s.done} onChange={() => void tick(s)} />
+      <span className="fx-mono fx-small">{s.id}</span> <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
+    </li>
+  );
+  const p = b.plan;
+  return (
+    <div className="axp-builds__detail">
+      {b.detail && <p className="axp-builds__text">{b.detail}</p>}
+      <p className="fx-small fx-muted">
+        <span className="fx-mono">{b.id}</span>{b.category ? ` · ${b.category}` : ''}{b.model ? ` · ${b.model}` : ''}{b.minutes ? ` · ${fmtMin(b.minutes)}` : ''}{b.cost ? ` · ~${fmtCost(b.cost)}` : ''}
+        {b.branch ? ` · branch ${b.branch}` : ''}{b.pr ? ` · PR ${b.pr}` : ''} · added {fmtWhen(b.createdAt)} · updated {fmtWhen(b.updatedAt)}{b.profiles.length > 1 ? ` · also in ${b.profiles.filter((x) => x !== b.profiles[0]).join(', ')}` : ''}
+      </p>
+      {(view === 'plan' || view === 'queue') && p && (
+        <div className="axp-builds__nest">
+          <p className="fx-small"><strong>Plan feature</strong> <span className="fx-mono">{p.id}</span> · <Chip tone={PLAN_TONE[p.status]}>{p.status}</Chip> {p.priority} · wave {p.wave ?? '–'} · {p.effort}</p>
+          {p.summary && <p className="fx-small">{p.summary}</p>}
+          {p.acceptance.length > 0 && <ul className="axp-builds__checks fx-small">{p.acceptance.map((a, i) => <li key={i}><Icon name={a.done ? 'check' : 'minus'} size={12} /> {a.text}</li>)}</ul>}
+          {Object.keys(p.ports).length > 0 && <p className="fx-small"><strong>Ports</strong> {Object.entries(p.ports).map(([k, v]) => `${k}: ${v}`).join(' · ')}</p>}
+          {p.dependsOn.length > 0 && <p className="fx-small"><strong>Depends on</strong> <span className="fx-mono">{p.dependsOn.join(', ')}</span></p>}
+        </div>
+      )}
+      {view === 'queue' && b.queue?.rework != null && <p className="fx-small"><strong>Rework</strong> {JSON.stringify(b.queue.rework)}</p>}
+      {view === 'pending' && b.pending && <p className="fx-small fx-muted">Pending: waits on {b.pending.model || b.model}{b.pending.estimate ? ` · ${b.pending.estimate}` : ''}{b.pending.source ? ` · from ${b.pending.source}` : ''}{b.pending.planId ? ` · plan ${b.pending.planId}` : ''}</p>}
+      {view === 'orchestrator' ? (
+        <div className="axp-builds__phases">
+          {b.phases.map((ph) => (
+            <section key={ph.index} className="axp-builds__phase">
+              <p className="fx-small axp-builds__phase-head"><strong>{ph.name}</strong> · {ph.model} · {ph.done}/{ph.steps} · {fmtMin(ph.minutes)}
+                {ph.gate && !ph.upgrade && <Chip>{ph.from} → {ph.model} · downgrade, passes</Chip>}
+                {ph.upgrade && (ph.approved ? <Chip tone="success">{ph.from} → {ph.model} approved by Brett</Chip>
+                  : <><Chip tone="warning">{ph.from} → {ph.model}: needs Brett{ph.requested ? ' · asked' : ''}</Chip>
+                    <Button size="sm" icon="layers" title="Upgrades are approved in the Orchestrator editor, by Brett only" onClick={() => rt.navigate('orchestrator-editor')}>Open in the orchestrator</Button></>)}</p>
+              <ol className="axp-builds__steps">{b.steps.filter((s) => ph.uids.includes(s.uid)).map(step)}</ol>
+            </section>
+          ))}
+        </div>
+      ) : b.steps.length > 0 && <ol className="axp-builds__steps">{b.steps.map(step)}</ol>}
+      {b.notes.length > 0 && <ul className="fx-small fx-muted axp-builds__notes">{b.notes.map((n, i) => <li key={i}>{n.at ? `${fmtWhen(n.at)} · ` : ''}{n.text}</li>)}</ul>}
+      <div className="axp-builds__bar">
+        <SelectField label="Status" value={b.status} options={Object.entries(STATUS_LABEL).map(([value, label]) => ({ value, label }))} onChange={(v) => void send('ops', { ops: [{ op: 'set-status', ids: [b.id], status: v }] }, rt.toast)} className="axp-builds__pick" />
+        <TextField label="Note" value={note} onChange={setNote} placeholder="Add a note" className="axp-builds__find" />
+        <Button size="sm" icon="plus" disabled={!note.trim()} onClick={() => void send('ops', { ops: [{ op: 'note', id: b.id, text: note }] }, rt.toast).then((ok) => ok && setNote(''))}>Add note</Button>
+        <span className="axp-builds__grow" />
+        <Button size="sm" icon="terminal" title="Copy a first message that carries this build on" onClick={() => { void navigator.clipboard?.writeText(briefOf(b)); rt.toast('Brief copied.', 'success'); }}>Copy brief</Button>
+        <Button size="sm" icon="copy" title="Copy a link that opens this build" onClick={() => { void navigator.clipboard?.writeText(buildsLink({ view, build: b.id })); rt.toast('Link copied.', 'success'); }}>Link</Button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Steps view ---------------- */
 
 /** Tick a step done (or take the tick off), at once: the same record the orchestrator ticks. */
 function StepTick({ s, toast }: { s: StepV; toast: (m: string, k?: 'danger' | 'success' | 'info') => void }) {
@@ -303,28 +553,6 @@ function StepTick({ s, toast }: { s: StepV; toast: (m: string, k?: 'danger' | 's
     </span>
   );
 }
-
-function BuildDetail({ b }: { b: BuildV }) {
-  const rt = useRuntime();
-  return (
-    <div className="axp-builds__detail">
-      {b.detail && <p className="axp-builds__text">{b.detail}</p>}
-      <p className="fx-small fx-muted">{b.kind === 'epic' ? `Plan epic ${b.planRef} · ` : ''}{b.branch ? `branch ${b.branch} · ` : ''}{b.pr ? `PR ${b.pr} · ` : ''}rev {b.rev}{b.rearranged ? ' · rearranged (Restore default in the Steps view)' : ''}</p>
-      <ol className="axp-builds__steps">
-        {b.steps.map((s) => (
-          <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''}>
-            <StepTick s={s} toast={rt.toast} />
-            <Bar p={{ total: 1, done: s.done ? 1 : 0, pct: s.done ? 100 : 0, active: s.next && b.status === 'running' }} label={`${s.id}: ${s.done ? 'done' : s.next ? 'next' : 'to do'}`} />
-            <span className="fx-mono fx-small">{s.id}</span> <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
-          </li>
-        ))}
-      </ol>
-      {b.notes.length > 0 && <ul className="fx-small fx-muted axp-builds__notes">{b.notes.map((n, i) => <li key={i}>{n.text}</li>)}</ul>}
-    </div>
-  );
-}
-
-/* ---------------- Steps view ---------------- */
 
 function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rt = useRuntime();

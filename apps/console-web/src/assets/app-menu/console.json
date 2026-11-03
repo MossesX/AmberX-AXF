@@ -190,6 +190,20 @@
             "order": 31
           },
           {
+            "id": "plan-editor",
+            "label": "Plan editor",
+            "icon": "edit",
+            "action": "nav:plan-editor",
+            "order": 32
+          },
+          {
+            "id": "feature-tracker",
+            "label": "Feature tracker",
+            "icon": "check-circle",
+            "action": "nav:feature-tracker",
+            "order": 33
+          },
+          {
             "id": "s2",
             "separator": true,
             "order": 40

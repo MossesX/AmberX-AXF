@@ -1,0 +1,108 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "builds-page-help",
+  "name": "builds-page help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:builds-page.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:builds-page",
+    "entries": [
+      {
+        "target": "action:builds.open:pending",
+        "title": "Pending",
+        "text": "Opens the Builds page on the Pending view: what is still to build, newest first.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:builds.open:queue",
+        "title": "Queue",
+        "text": "Opens the Builds page on the Queue view: open builds in build order. Drag rows to reorder them.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:builds.open:orchestrator",
+        "title": "Orchestrator",
+        "text": "Opens the Builds page on the Orchestrator view: each build's phases, model switches and steps.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "show-every-build",
+        "title": "Show every build",
+        "text": "Stops focusing on one build and shows every build in this view again.",
+        "kind": "button"
+      },
+      {
+        "target": "copy-a-link-to-this-view",
+        "title": "Copy a link to this view",
+        "text": "Copies an axf://builds link to this view with its filter, search and focused build. Opening the link brings you back here.",
+        "kind": "button"
+      },
+      {
+        "target": "hide",
+        "title": "Hide",
+        "text": "Hides the selected builds. They stay in the store and show under the Hidden filter, where you can unhide them.",
+        "kind": "button"
+      },
+      {
+        "target": "new-build",
+        "title": "New build",
+        "text": "Adds a new build to the active profile. The orchestrator owns it and splits it into steps.",
+        "kind": "button"
+      },
+      {
+        "target": "plan-editor",
+        "title": "Plan editor",
+        "text": "Opens the full Plan editor (acceptance, previews, media) for plan features.",
+        "kind": "button"
+      },
+      {
+        "target": "orchestrator-editor",
+        "title": "Orchestrator editor",
+        "text": "Opens the full Orchestrator editor: add builds, edit and move steps, set the orchestrator rules.",
+        "kind": "button"
+      },
+      {
+        "target": "what-to-build",
+        "title": "What to build",
+        "text": "Describe the build in one or two plain sentences. It becomes the build's name and detail.",
+        "kind": "field"
+      },
+      {
+        "target": "opus",
+        "title": "Opus",
+        "text": "Pins the new build's first step to Opus.",
+        "kind": "tab"
+      },
+      {
+        "target": "fable",
+        "title": "Fable",
+        "text": "Pins the new build's first step to Fable. Use it for contracts, engines, schemas and migrations.",
+        "kind": "tab"
+      },
+      {
+        "target": "estimate",
+        "title": "Estimate",
+        "text": "Your time estimate, e.g. 30 min or 2 h. Builds over 30 minutes are split into smaller steps.",
+        "kind": "field"
+      },
+      {
+        "target": "open-in-the-orchestrator",
+        "title": "Open in the orchestrator",
+        "text": "This phase is a model upgrade, and only Brett can approve that. Opens the Orchestrator editor, where his own click approves it.",
+        "kind": "button"
+      },
+      {
+        "target": "link",
+        "title": "Link",
+        "text": "Copies an axf://builds link that opens this build on the Builds page.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

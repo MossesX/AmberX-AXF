@@ -32,13 +32,269 @@
     "dataDir": ".axf-console/plugins/builds-page",
     "env": [],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
       "_claude/THREADS.md",
       "_claude/builds/README.md",
       "apps/console-web/plugins/README.md"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "opus", "builtAt": "2026-10-31" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "view",
+        "route": "GET /view/{name}",
+        "title": "Read a Builds view",
+        "description": "One view of the Builds page over the one builds store: pending, queue, plan, tracker, orchestrator or steps. Same filters as the page (open, complete, archived, hidden, all), find text, or one build. Newest first; the queue in build order.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "queue",
+                "plan",
+                "tracker",
+                "orchestrator",
+                "steps"
+              ]
+            },
+            "profile": {
+              "type": "string",
+              "description": "build profile id (default: the active profile)"
+            },
+            "filter": {
+              "type": "string",
+              "enum": [
+                "open",
+                "complete",
+                "archived",
+                "hidden",
+                "all"
+              ]
+            },
+            "q": {
+              "type": "string"
+            },
+            "build": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "tick",
+        "route": "POST /tick",
+        "title": "Tick a build step",
+        "description": "Mark one step of a build done (or not done with done: false), at once; the build's status follows. Same record the orchestrator ticks.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "description": "build profile id (default: the active profile)"
+            },
+            "build": {
+              "type": "string"
+            },
+            "step": {
+              "type": "string",
+              "description": "step id, e.g. s3"
+            },
+            "uid": {
+              "type": "string"
+            },
+            "done": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "build"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "status",
+        "route": "POST /status",
+        "title": "Set build status",
+        "description": "Set the status of the selected builds (pending, running, waiting, blocked, failed, built, complete, archived).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "description": "build profile id (default: the active profile)"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "description": "build ids"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "running",
+                "waiting",
+                "blocked",
+                "failed",
+                "built",
+                "complete",
+                "archived"
+              ]
+            }
+          },
+          "required": [
+            "ids",
+            "status"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "hide",
+        "route": "POST /hide",
+        "title": "Hide builds",
+        "description": "Hide the selected builds from every view except Hidden.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "description": "build profile id (default: the active profile)"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "description": "build ids"
+            }
+          },
+          "required": [
+            "ids"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "unhide",
+        "route": "POST /unhide",
+        "title": "Unhide builds",
+        "description": "Show hidden builds again.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "description": "build profile id (default: the active profile)"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "description": "build ids"
+            }
+          },
+          "required": [
+            "ids"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "archive",
+        "route": "POST /archive",
+        "title": "Archive builds",
+        "description": "Archive the selected builds (kept, off the open list).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "description": "build profile id (default: the active profile)"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "description": "build ids"
+            }
+          },
+          "required": [
+            "ids"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "note",
+        "route": "POST /note",
+        "title": "Add a note to a build",
+        "description": "Add a dated note to one build.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "description": "build profile id (default: the active profile)"
+            },
+            "id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "delete",
+        "route": "DELETE /build/{build_id}",
+        "title": "Delete a build",
+        "description": "Soft-delete one build: it leaves every view and stays in the journal (builds-store.mjs restore <id> <rev> brings it back).",
+        "destructive": true,
+        "confirm": true
+      },
+      {
+        "id": "ops",
+        "route": "POST /ops",
+        "title": "Apply page ops",
+        "description": "Apply the page's immediate ops at once: rename-build, rename-step, reorder-builds, reorder-steps, step-done, set-status, hide, unhide, archive, delete, note. Model-switch approvals are not ops here (the orchestrator holds upgrades for Brett)."
+      },
+      {
+        "id": "draft",
+        "route": "POST /draft",
+        "title": "Add a Steps-view draft op",
+        "description": "Add one op to the profile's Steps-view draft (reorder, divide, harvest, restore default); nothing changes until apply."
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-31"
+  },
   "opens": "main"
 }

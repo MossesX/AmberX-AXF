@@ -213,5 +213,18 @@ t('every write is versioned in the journal and can be restored', () => {
 io.withStore((s) => c.addDraftOp(s, 'refactor', { op: 'rename-build', id: 'shared', title: 'Draft name' }), { by: 'test', action: 'draft' });
 t('draft survives a reload, Apply writes it', () => { assert.equal(c.draftOf(io.loadStore(), 'refactor').ops.length, 1); io.applyDraftNow('refactor', 'test'); assert.equal(io.loadStore().builds.find((x) => x.id === 'shared').title, 'Draft name'); assert.equal(c.draftOf(io.loadStore(), 'refactor').ops.length, 0); });
 t('the store on disk leaves out an unchanged default breakdown', () => { const raw = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.ok(raw.builds.some((b) => !('defaultSteps' in b))); });
+t('Builds page ops apply at once and never go through a draft', () => {
+  const s0 = io.loadStore(); const b = s0.builds.find((x) => x.id === 'shared'); const uid = b.steps[0].uid;
+  let r = c.applyNow(s0, 'refactor', [{ op: 'tick-step', build: 'shared', uid, done: true }]);
+  assert.equal(r.store.builds.find((x) => x.id === 'shared').steps[0].done, true);
+  r = c.applyNow(r.store, 'refactor', [{ op: 'hide', ids: ['shared'] }, { op: 'note', id: 'shared', text: 'from the grid' }, { op: 'set-status', ids: ['shared'], status: 'blocked' }]);
+  const h = r.store.builds.find((x) => x.id === 'shared'); assert.equal(h.hidden, true); assert.equal(h.status, 'blocked'); assert.ok(h.notes.some((x) => x.text === 'from the grid'));
+  r = c.applyNow(r.store, 'refactor', [{ op: 'archive', ids: ['shared'] }, { op: 'delete', ids: ['from-cli'] }]);
+  assert.equal(r.store.builds.find((x) => x.id === 'shared').status, 'archived');
+  assert.ok(!c.buildsOf(r.store, 'refactor').some((x) => x.id === 'from-cli')); assert.ok(r.store.builds.find((x) => x.id === 'from-cli').deleted);
+  assert.throws(() => c.applyNow(s0, 'refactor', [{ op: 'archive', ids: [] }]), /select the builds/);
+  assert.throws(() => c.applyNow(s0, 'refactor', [{ op: 'approve', id: 'shared', phase: 1, from: 'Opus', to: 'Fable' }]), /unknown op approve/); // model switches go through the orchestrator's gate
+  assert.throws(() => c.addDraftOp(s0, 'refactor', { op: 'archive', ids: ['shared'] }), /unknown draft op/);
+});
 
 console.log(`builds-store: ${n} checks passed`);
