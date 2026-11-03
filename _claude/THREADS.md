@@ -917,3 +917,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:00 UTC · `home-cards-live` s2 done (urgent) · orchestrator
 - 2026-11-03 20:00 UTC · `home-cards-live` s4 done (urgent) · orchestrator
 - 2026-11-03 20:00 UTC · `home-cards-live` s5 done (urgent) · orchestrator
+- 2026-11-03 20:01 UTC · `window-resize-fix` s2 done (current) · foreign-write
