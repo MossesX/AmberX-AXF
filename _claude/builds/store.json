@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 308,
- "updatedAt": "2026-11-03T18:08:45.067Z",
+ "rev": 309,
+ "updatedAt": "2026-11-03T18:09:17.538Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50689,7 +50689,7 @@
    "pr": "",
    "mergedAt": "2026-11-03T18:07:44.501Z",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T18:07:45.052Z",
+   "updatedAt": "2026-11-03T18:09:05.304Z",
    "builtAt": "2026-11-03T18:07:13.043Z",
    "notes": [
     {
@@ -50763,6 +50763,10 @@
     {
      "text": "Landed claude/axhub-veto-pass-web (PR #261) on main at bc344492",
      "at": "2026-11-03T17:42:37.105Z"
+    },
+    {
+     "text": "Done: 17 AmberX-AXF PRs + 3 axHub PRs on main, all four apps redeployed and healthy, axf-console registered on axHub (recommended preset). Report _claude/builds/reports/land-everything.md",
+     "at": "2026-11-03T18:09:05.304Z"
     }
    ],
    "approvals": [],
@@ -51019,7 +51023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
