@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 416,
- "updatedAt": "2026-11-03T20:10:09.476Z",
+ "rev": 417,
+ "updatedAt": "2026-11-03T20:10:49.082Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55399,14 +55399,19 @@
    "source": "console",
    "pendingId": "window-resize-fix",
    "branch": "claude/window-resize-fix",
-   "pr": "",
+   "pr": "#278",
+   "mergedAt": "2026-11-03T20:06:05Z",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T20:00:43.692Z",
+   "updatedAt": "2026-11-03T20:10:46.177Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
      "at": "2026-11-03T20:00:43.692Z"
+    },
+    {
+     "text": "Reconciler: PR #278; PR #278 merged",
+     "at": "2026-11-03T20:10:46.177Z"
     }
    ],
    "approvals": [],
@@ -55487,7 +55492,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {

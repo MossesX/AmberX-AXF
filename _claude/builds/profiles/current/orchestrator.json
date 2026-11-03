@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:10:09.476Z",
+ "updatedAt": "2026-11-03T20:10:49.082Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -138,14 +138,19 @@
    "source": "console",
    "pendingId": "window-resize-fix",
    "branch": "claude/window-resize-fix",
-   "pr": "",
+   "pr": "#278",
+   "mergedAt": "2026-11-03T20:06:05Z",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T20:00:43.692Z",
+   "updatedAt": "2026-11-03T20:10:46.177Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
      "at": "2026-11-03T20:00:43.692Z"
+    },
+    {
+     "text": "Reconciler: PR #278; PR #278 merged",
+     "at": "2026-11-03T20:10:46.177Z"
     }
    ],
    "approvals": [],
