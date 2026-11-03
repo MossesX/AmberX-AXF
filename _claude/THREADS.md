@@ -661,3 +661,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:17 UTC · `land-everything` s8 done (urgent) · orchestrator
 - 2026-11-03 17:17 UTC · `land-everything` note (urgent) · foreign-write
 - 2026-11-03 17:19 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 17:22 UTC · `console-wake` added (6 steps) (urgent) · orchestrator
