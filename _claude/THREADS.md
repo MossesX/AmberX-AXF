@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-appearance-lock` branch claude/amberx-appearance-lock, PR #126, merged, note (main-framework, refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-handsfree` merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · orchestrator
 - 2026-11-03 20:47 UTC · `banner-ref-links` → running (current) · orchestrator
 - 2026-11-03 20:56 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 20:56 UTC · `banner-ref-links` s1 done (current) · orchestrator
