@@ -52,7 +52,7 @@ export function touchesUi(build, files = []) {
  * (Ctrl+K) types to reach the screen for the "before" shot; empty = no live capture for that app yet.
  */
 export const SCREENS = [
-  { id: 'ui-review', app: 'console-web', title: 'UI Review', search: 'UI Review', words: /\bui review\b|\bpredicted\b|\bscreenshots tab\b/i },
+  { id: 'ui-review', app: 'console-web', title: 'UI Review', search: 'Open UI Review', words: /\bui review\b|\bpredicted\b|\bscreenshots tab\b/i },
   { id: 'settings', app: 'console-web', title: 'Settings', search: 'Settings', words: /\bsettings?\b|\bpreferences?\b/i },
   { id: 'home', app: 'console-web', title: 'Home', search: 'Home', words: /\bhome\b|\bhome cards?\b/i },
   { id: 'breakroom', app: 'console-web', title: 'Breakroom', search: 'Breakroom', words: /\bbreakroom\b|\bcrew\b|\bagents? (?:grid|cards?|avatars?)\b/i },
@@ -110,7 +110,7 @@ export function labelsOf(text) {
   const out = [];
   for (const m of t.matchAll(/['‘"“]([^'’"”]{2,70})['’"”]/g)) out.push(m[1].trim());
   for (const m of t.matchAll(/([A-Z][\w']*(?: [\w']+){0,3}(?:\s?\/\s?[A-Z]?[\w']*(?: [\w']+){0,3}){1,5})/g)) {
-    if (m[1].includes('/')) out.push(...m[1].split(/\s?\/\s?/).map((x) => x.trim()).filter((x) => x.length > 1 && !/^(REST|MCP|CLI)$/.test(x)));
+    if (m[1].includes('/')) out.push(...m[1].split(/\s?\/\s?/).map((x) => x.trim().replace(/\s+(?:buttons?|badges?|tabs?|chips?|links?|options?)$/i, '')).filter((x) => x.length > 1 && !/^(REST|MCP|CLI)$/.test(x)));
   }
   return [...new Set(out)].slice(0, 6);
 }
@@ -133,7 +133,7 @@ export function blockFor(step) {
   const labels = labelsOf(t);
   const title = headline(t);
   switch (kind.type) {
-    case 'settings': return { type: 'settings', title: 'Settings', rows: (labels.length ? labels : [title]).slice(0, 3).map((l) => ({ label: l, on: /\bdefault on\b/i.test(t), hint: str(detailOf(t).replace(l, '').replace(/^[\s:'"‘’“”-]+/, ''), 160) })) };
+    case 'settings': return { type: 'settings', title: 'Settings', rows: (labels.length ? labels : [title]).slice(0, 3).map((l) => ({ label: l, on: /\bdefault on\b/i.test(t), hint: str(detailOf(t).replace(l, '').replace(/^\S+(?: \S+)?:\s*/, '').replace(/\(\s*\)|['"‘’“”]/g, '').replace(/^[\s:;,-]+/, ''), 160) })) };
     case 'dialog': return { type: 'dialog', title: labels[0] ?? title, text: detailOf(t), actions: labels.length > 1 ? labels.slice(1, 4) : ['OK', 'Cancel'] };
     case 'toolbar': return { type: 'toolbar', title, items: labels.length ? labels : title.split(/,| and /).map((x) => str(x, 24)).filter(Boolean).slice(0, 5) };
     case 'chips': return { type: 'chips', title, items: labels.length ? labels : [title] };
