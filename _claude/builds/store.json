@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 558,
- "updatedAt": "2026-11-03T23:46:15.833Z",
+ "rev": 559,
+ "updatedAt": "2026-11-03T23:50:21.229Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -62115,7 +62115,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:27:31.439Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s2",
@@ -62137,7 +62137,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:29:00.850Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s3",
@@ -62159,7 +62159,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:30:20.649Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s4",
@@ -62181,7 +62181,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:55:24.280Z",
-     "updatedAt": "2026-11-03T23:31:36.050Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s5",
@@ -66657,7 +66657,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:58.725Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s3",
@@ -66679,7 +66679,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:58.725Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s4",
@@ -66856,7 +66856,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s4",
@@ -66878,7 +66878,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s5",
@@ -66900,7 +66900,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s6",
@@ -66922,7 +66922,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s7",
@@ -66944,7 +66944,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:53.247Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s8",
@@ -66966,7 +66966,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:28:18.131Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s9",
@@ -67098,7 +67098,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:28:49.646Z"
+     "updatedAt": "2026-11-03T23:49:49.041Z"
     },
     {
      "id": "s15",
@@ -67280,6 +67280,204 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mw1cb5mu010evs",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw1cb5mu0207qa",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw1cb5mu03g4ch",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw1cb5mu040fd7",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw1cb5mu056ttd",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mw1cb5mu06pbq4",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mw1cb5mu07pngh",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mw1cb5mu08773n",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mw1cb5mu09d7om",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:49:45.931Z"
+    },
+    {
+     "id": "s10-9",
      "uid": "st-mw1b9zcp016lrm",
      "title": "",
      "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
@@ -67301,7 +67499,7 @@
      "updatedAt": "2026-11-03T23:20:51.046Z"
     },
     {
-     "id": "s2",
+     "id": "s11-10",
      "uid": "st-mw1b9zcp029a4k",
      "title": "",
      "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
@@ -67323,7 +67521,7 @@
      "updatedAt": "2026-11-03T23:20:51.046Z"
     },
     {
-     "id": "s3",
+     "id": "s12-11",
      "uid": "st-mw1b9zcp038x3v",
      "title": "",
      "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
