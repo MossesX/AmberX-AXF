@@ -24,7 +24,7 @@ const PRICING = loadPricing();
 const usd = (model, min) => (min ? formatUsd(costForMinutes(model, min, PRICING)) : '');
 import { activeProfile } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
-import { absorbQueue, projectQueue } from '../plan/builds-store-core.mjs';
+import { absorbQueue, projectQueue, storeSummary } from '../plan/builds-store-core.mjs';
 
 /*
  * Since the master cleanup (Oct 31 2026) the queue is the order field of the plan-epic builds in the one builds store
@@ -53,7 +53,13 @@ function commit(changes, q, by, log) {
 
 export function queueView() {
   const q = loadQueueState();
-  return { state: q ?? core.emptyQueue(), view: core.computeQueue(loadPlan().features, q) };
+  return { state: q ?? core.emptyQueue(), view: core.computeQueue(loadPlan().features, q), builds: buildsSummary() };
+}
+
+/** Every build in the one store (all profiles), so a profile without plan epics never reads as "0 builds". */
+export function buildsSummary() {
+  if (LEGACY) return null;
+  try { return storeSummary(loadStore(), profile()); } catch (e) { return { error: String(e.message || e).slice(0, 200), total: 0 }; }
 }
 
 /** Two-way sync (console start, after plan/status writes). */
