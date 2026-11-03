@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:45:08.810Z",
+ "updatedAt": "2026-11-03T17:45:20.384Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2431,16 +2431,21 @@
    "title": "Console wake: console commands always reach a console (queue + deliver on reconnect, wake via AmberX when closed)",
    "category": "Urgent",
    "detail": "Brett Nov 3 2026 (voice): console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/console-wake",
+   "pr": "#266",
    "createdAt": "2026-11-03T17:22:15.174Z",
-   "updatedAt": "2026-11-03T17:45:03.367Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T17:45:07.866Z",
+   "builtAt": "2026-11-03T17:45:06.485Z",
+   "notes": [
+    {
+     "text": "Agent Ping Paulie (AXF_AGENT launcher support not used: recorded here). PRs: AmberX-AXF #266 (claude/console-wake), axHub #35 (claude/amberx-open-url). UI Review r-20261103-177ac4f1 waiting. Report _claude/builds/reports/console-wake.md. Brett: install the new AmberX APK (checklist-one).",
+     "at": "2026-11-03T17:45:07.408Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2511,8 +2516,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:45:04.652Z",
      "note": "",
      "uid": "st-mw0ygshp0ajpyd"
     },
@@ -2529,8 +2534,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:45:05.490Z",
      "note": "",
      "uid": "st-mw0ygshp0bvfnd"
     },
@@ -2547,8 +2552,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:45:06.485Z",
      "note": "",
      "uid": "st-mw0ygshp0cuh19"
     }

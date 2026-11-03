@@ -689,3 +689,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:35 UTC · `land-everything` s9 done (urgent) · orchestrator
 - 2026-11-03 17:42 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` s3 done (urgent) · orchestrator
+- 2026-11-03 17:45 UTC · `console-wake` s4 done (urgent) · orchestrator
+- 2026-11-03 17:45 UTC · `console-wake` s5 done (urgent) · orchestrator
+- 2026-11-03 17:45 UTC · `console-wake` s6 done, → complete (urgent) · orchestrator
+- 2026-11-03 17:45 UTC · `console-wake` note (urgent) · orchestrator
+- 2026-11-03 17:45 UTC · `console-wake` → built, branch claude/console-wake, PR #266 (urgent) · builds-live
