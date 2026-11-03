@@ -247,6 +247,90 @@
    "builtAt": "",
    "updatedAt": "2026-11-03T02:32:22.611Z",
    "source": "console"
+  },
+  {
+   "id": "token-control",
+   "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
+   "detail": "Brett Nov 2 2026 21:38 ET: new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Fable] Every layout parameter becomes a token: layout asset type/schema, engine, fixtures (audit what's still literal)",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Fable] Layout tokens reach every framework component; check-theme flags any layout literal",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Fable] control@1 contract: one command schema for tokens (list/get/set/reset across theme, style, layout), AmberX entities (tasks, to-dos, notes, everything), planner (Plan Studio plans + orchestrator builds); auth, deletes need confirm",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Plugin scaffold token-control: plugin.json, install/uninstall, Settings > Plugins sub-tab, help pack",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "20m"
+    },
+    {
+     "text": "[Opus] Server: REST API for tokens; writes go to the axHub appearance document / asset overrides so every app follows",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] MCP server for tokens; registered as an axHub service and in .mcp.json for Claude",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] CLI client: axf token list/get/set/reset, plus notes, to-dos, tasks, plans, builds",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] AmberX API: CRUD for tasks, to-dos, notes and every other AmberX entity (folded in from amberx-full-mcp-api)",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] AmberX as MCP tools through axHub, deletes confirm",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Planner control: Plan Studio plans + orchestrator builds/steps through API, MCP and CLI",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Shared JS client library used by the CLI and the console UI",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Interactive docs: try-it panels for API, MCP and CLI generated from the control@1 schema",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] Docs: guides, examples, help packs for every command",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "25m"
+    },
+    {
+     "text": "[Opus] Tests, check-theme/check-controls, lifecycle, UI Review shots, PR",
+     "at": "2026-11-03T02:40:26.205Z",
+     "estimate": "30m"
+    }
+   ],
+   "createdAt": "2026-11-03T02:40:26.204Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T02:40:26.204Z",
+   "source": "console"
   }
  ]
 }
