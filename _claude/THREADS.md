@@ -568,9 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:25 UTC · `builds-one-page` s16-15 done, s13 done, → complete, note (refactor) · foreign-write
-- 2026-11-03 18:25 UTC · `auto-land` s2 done (urgent) · orchestrator
-- 2026-11-03 18:25 UTC · `auto-land` s3 done (urgent) · orchestrator
 - 2026-11-03 18:28 UTC · `auto-land` s4 done (urgent) · orchestrator
 - 2026-11-03 18:28 UTC · `auto-land` s5 done (urgent) · orchestrator
 - 2026-11-03 18:28 UTC · `auto-land` note (urgent) · orchestrator
@@ -968,3 +965,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:14 UTC · `molly-nav-submenus` added (80 steps) (current) · foreign-write
 - 2026-11-03 22:14 UTC · `terminal-tabs-left` added (5 steps) (current) · foreign-write
 - 2026-11-03 22:14 UTC · `molly-banners` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `whats-new-open-fix` s2 done (current) · orchestrator
+- 2026-11-03 22:14 UTC · `whats-new-open-fix` s3 done (current) · orchestrator
+- 2026-11-03 22:14 UTC · `whats-new-open-fix` s4 done (current) · orchestrator
