@@ -604,3 +604,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:24 UTC · `kill-patches-pilot` → running, note (urgent) · orchestrator
 - 2026-11-03 16:24 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
 - 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
+- 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator

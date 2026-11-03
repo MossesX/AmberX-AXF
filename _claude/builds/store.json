@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 230,
- "updatedAt": "2026-11-03T16:29:47.184Z",
+ "rev": 231,
+ "updatedAt": "2026-11-03T16:29:52.821Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50269,7 +50269,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:24:07.209Z",
+   "updatedAt": "2026-11-03T16:29:52.087Z",
    "builtAt": "",
    "notes": [
     {
@@ -50291,6 +50291,10 @@
     {
      "text": "Landed claude/kill-patches-pilot (PR #258) on main at e697c302",
      "at": "2026-11-03T16:24:00.634Z"
+    },
+    {
+     "text": "Landed claude/headless-tabs (PR #259) on main at a8186b83",
+     "at": "2026-11-03T16:29:52.087Z"
     }
    ],
    "approvals": [],
@@ -50546,7 +50550,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
