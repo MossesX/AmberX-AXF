@@ -65,6 +65,12 @@ so plugins' screens are found too. Every act takes `input.to`: `recent` (default
 Delivery and resolution: `core/engines/console-commands.mjs`; the console server's `console-commands` plugin keeps one mailbox
 per signed-in user (the console token and hub admins share the owner's) and streams to each open console, which runs the command
 through its own runtime (`rt.search.focus`, `rt.dispatch`) and acks what it opened.
+A command never fails just because no console is connected (build console-wake, Nov 3 2026): the engine flags that failure
+`noConsole: true`, and the server queues an `act` for `recent`/`all` (per user, TTL 2 min by default) and delivers it once to the first
+console that says hello (checked first against that user's last catalog, so a wrong name still answers `not_found` at once). The call
+waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked through axHub (`amberx.open_url`, amberxai.com only)
+to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
+(`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
 
 ## Auth
 
