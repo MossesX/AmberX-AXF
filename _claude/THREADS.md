@@ -573,3 +573,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
 - 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
 - 2026-11-03 15:32 UTC · `land-everything` → running (urgent) · orchestrator
+- 2026-11-03 15:58 UTC · `crew-retrain` added (8 steps) (breakroom) · orchestrator
+- 2026-11-03 15:58 UTC · `crew-retrain` → running (breakroom) · orchestrator
+- 2026-11-03 15:58 UTC · `crew-retrain` s1 done (breakroom) · orchestrator
+- 2026-11-03 16:05 UTC · `crew-retrain` s2 done (breakroom) · orchestrator
+- 2026-11-03 16:05 UTC · `crew-retrain` s3 done (breakroom) · orchestrator
+- 2026-11-03 16:05 UTC · `crew-retrain` s4 done (breakroom) · orchestrator
