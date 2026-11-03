@@ -37,7 +37,7 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                                                 "prompt": "", "icon": "sparkles", "color": "", "connection": "console"}],
                             "defaultClaudeProfile": "default",
                             # headless tabs (Nov 3 2026): persistent tmux-backed tabs, split pane, context chain pacing
-                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True}
+                            "persistTabs": True, "splitDefault": "side", "chainSpeed": "normal", "showChain": True, "sessionsNav": True}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
@@ -125,7 +125,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k in ("windowsLook", "mica", "toolbar", "cursorBlink", "closeConfirm"):
             if k in patch:
                 s[k] = bool(patch[k])
-        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless", "persistTabs", "showChain"):
+        for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless", "persistTabs", "showChain", "sessionsNav"):
             if k in patch:
                 s[k] = bool(patch[k])
         if "user" in patch:

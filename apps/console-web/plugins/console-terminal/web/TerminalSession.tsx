@@ -20,8 +20,8 @@ import { persistable, tmuxName } from './headless-core';
 /** Is this tmux session still there? (the link ended: re-attach, or the session itself ended) */
 async function tmuxAlive(name: string, where: string | null | undefined): Promise<boolean> {
   try {
-    const r = await call<{ vps: { items: TmuxSession[] }; console: TmuxSession[] }>('tmux');
-    return (where === 'console' ? r.console : r.vps.items).some((x) => x.name === name);
+    const r = await call<{ vps: { items: TmuxSession[] }; console: TmuxSession[]; mine?: TmuxSession[] }>('tmux');
+    return [...(where === 'console' ? r.console : r.vps.items), ...(r.mine ?? []).filter((x) => x.where === (where ?? 'vps'))].some((x) => x.name === name);
   } catch { return true; } // can't tell: try to attach (the server says if it ended)
 }
 
@@ -72,6 +72,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
   const [ctrlOn, setCtrlOn] = useState(false);
 
   const send = (data: string) => {
+    if (openRef.current.readOnly) return; // a mirror: Jump in to type
     const ws = wsRef.current;
     if (ws && ws.readyState === WebSocket.OPEN) ws.send(new TextEncoder().encode(data));
     if (mosh && /^[\x20-\x7e]+$/.test(data)) setPending((p) => (p + data).slice(-80)); // predictive echo until the server answers
@@ -266,6 +267,13 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
     <button type="button" role="menuitem" className="fx-menu__item" disabled={disabled} onClick={() => { setMenu(null); fn(); }}><Icon name={icon} size={13} /> {label}</button>
   );
 
+  /** Jump in: the read-only mirror becomes a writable link on the same tmux session (scrollback replayed). */
+  const jumpIn = () => {
+    const o: Open = { ...openRef.current, readOnly: false }; openRef.current = o; patchSession(session.id, { open: o });
+    const srv = tabSessions.get(tab.id); const ws = wsRef.current; wsRef.current = null; ws?.close();
+    if (srv) void call(`sessions/${srv}`, { method: 'DELETE' }).catch(() => undefined);
+    tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); alive.current = true; void start(o);
+  };
   const restart = () => { alive.current = true; tabSessions.delete(tab.id); offset.current = 0; termRef.current?.reset(); void start(openRef.current); };
   // the host's toolbar and tab strip act on this session through its control handle
   useEffect(() => {
@@ -305,6 +313,12 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
           <button type="button" className="fx-iconbtn" onClick={() => searchRef.current?.findNext(search)}><Icon name="chevron-down" size={14} /></button>
           <button type="button" className="fx-iconbtn" onClick={() => setSearch(null)}><Icon name="x" size={14} /></button>
         </form>
+      )}
+      {open.readOnly && (
+        <div className={`${P}__mirror`} role="status">
+          <Icon name="eye" size={14} /><span className="fx-grow">Mirror, read-only: you see {open.attach ?? 'this session'} live; nothing you type reaches it.</span>
+          <Button tone="primary" icon="edit" onClick={jumpIn}>Jump in</Button>
+        </div>
       )}
       {pasteAsk !== null && (
         <div className={`${P}__warn`} role="alertdialog">

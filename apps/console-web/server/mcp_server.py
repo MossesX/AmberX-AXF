@@ -25,6 +25,8 @@ from pathlib import Path
 from typing import Any, Callable, Literal
 
 import anyio
+import contextvars
+import time
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
@@ -49,7 +51,10 @@ Model switches: a downgrade (Fable → Opus) is fine; an UPGRADE (Opus → Fable
 ask (orchestrator.mjs request-upgrade); never approve one yourself.
 When you finish building a step, call `build_step` with action "complete": the epic and its linked features are
 marked built in the feature tracker, and steps that depended on it are re-checked for rework.
-After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true)."""
+After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true).
+Chat and voice sessions (claude.ai, Amber): whenever you act, post one short line of what you are saying or doing with
+`console_session_note` (same `session` name every time, your claude.ai link as `url` when you know it). Brett watches it
+live in the Terminal's sessions nav and jumps in from there."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
@@ -109,13 +114,23 @@ def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[
     return out
 
 
+# Who is calling /mcp right now (the console's endpoint sets it from the request's X-Axhub-Session / client headers), so
+# each tool call lands in that session's mirror feed in the Terminal's sessions nav.
+CALLER: contextvars.ContextVar[str] = contextvars.ContextVar("axf_mcp_caller", default="")
+
+
 def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
-                 console: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
+                 console: Callable[[dict[str, Any]], dict[str, Any]] | None = None, notes: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+                 on_call: Callable[[str, str, dict[str, Any], bool, str, int], None] | None = None) -> MCPServer:
     """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict; `control(command)` runs
     one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools); `console(command)`
-    runs one command of the console domain in the caller's open console (None = no console_* tools)."""
+    runs one command of the console domain in the caller's open console (None = no console_* tools); `notes(line)` posts
+    a line into a session's mirror feed (None = no console_session_note); `on_call(caller, tool, args, ok, error, ms)`
+    is told about every tool call (the sessions nav's feed; never fails a call)."""
     mcp = MCPServer(name="amberx-axf", title="GizmoX AI Studio", version="0.2.0", instructions=INSTRUCTIONS,
                     website_url="https://console.amberxai.com")
+    if on_call is not None:
+        _watch_calls(mcp, on_call)
 
     async def run(op: str, **args: Any) -> dict[str, Any]:
         r = await anyio.to_thread.run_sync(lambda: call(op, **args))
@@ -525,6 +540,11 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     if console is not None:
         _register_console_tools(mcp, console)
 
+    # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
+
+    if notes is not None:
+        _register_session_tools(mcp, notes)
+
     # ------------------------------------------------------------------ resources + prompt
 
     @mcp.resource("axf://build-queue", name="build-queue", title="Build queue", mime_type="application/json",
@@ -812,6 +832,80 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "list", "target": "console.clients"})
 
 
+def _watch_calls(mcp: MCPServer, on_call: Callable[[str, str, dict[str, Any], bool, str, int], None]) -> None:
+    """Tell `on_call` about every tool call (who, which tool, its arguments, ok or the error, how long). Wraps the tool
+    manager, so it sees exactly what MCPServer.call_tool runs; a failing listener never fails the call."""
+    tm = mcp._tool_manager  # noqa: SLF001
+    inner = tm.call_tool
+
+    async def call_tool(name: str, arguments: dict[str, Any], *a: Any, **kw: Any) -> Any:
+        t0, ok, err = time.monotonic(), True, ""
+        try:
+            return await inner(name, arguments, *a, **kw)
+        except Exception as e:
+            ok, err = False, str(e)[:200]
+            raise
+        finally:
+            try:
+                on_call(CALLER.get(), name, dict(arguments or {}), ok, err, int((time.monotonic() - t0) * 1000))
+            except Exception:  # noqa: BLE001
+                pass
+
+    tm.call_tool = call_tool  # type: ignore[method-assign]
+
+
+def _register_session_tools(mcp: MCPServer, notes: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
+    """console_session_note: a Claude session (claude.ai chat or voice, Claude Code) posts what it is saying or doing as
+    one short line into its own mirror feed, which Brett watches in the Terminal's sessions nav (My sessions)."""
+
+    @mcp.tool(annotations=WRITE)
+    async def console_session_note(text: str, session: str, source: Literal["claude-ai-text", "claude-ai-voice", "claude-code", "agent", "other"] = "claude-ai-text",
+                                   agent: str = "", url: str = "", title: str = "", model: str = "") -> dict[str, Any]:
+        """Post one short line (what you are saying or doing right now) into your own session's live mirror in Brett's
+        Dev Console (Terminal → sessions nav → My sessions). `session` = your chat's name, the same every time (e.g. the
+        thread name); `url` = this chat's https://claude.ai/chat/… link when you know it (Jump in opens it); `agent` = the
+        agent you speak as (agent-pick). Call it when you act: before an axHub call, a build, or a long answer. Free: no
+        tokens are spent on the console's side."""
+        line = {k: v for k, v in {"text": text, "session": session, "source": source, "agent": agent, "url": url, "title": title, "model": model}.items() if v}
+        r = await anyio.to_thread.run_sync(lambda: notes(line))
+        if not r.get("ok"):
+            raise ToolError(str(r.get("error") or "could not post the note"))
+        return r
+
+
+def session_note_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
+    """console_session_note through capability axf.session-feed@1 (the Terminal plugin) when the console runs. A local
+    stdio clone has no session feed: the tool says so (chat sessions reach the console's /mcp through axHub)."""
+
+    def run(line: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import plugin_services  # the console's registry (absent in stdio mode)
+        except ImportError:
+            return {"ok": False, "error": "no session feed here: console_session_note works on the console's /mcp (through axHub), not a local stdio clone"}
+        svc = plugin_services.get("axf.session-feed@1")
+        if svc is None:
+            return {"ok": False, "error": "no plugin provides axf.session-feed@1 (the Terminal plugin is off or not installed)"}
+        try:
+            text, session = line.pop("text"), line.pop("session")
+            return svc.note(session, text, **line)
+        except (KeyError, ValueError) as e:
+            return {"ok": False, "error": str(e)}
+
+    return run
+
+
+def feed_recorder() -> Callable[[str, str, dict[str, Any], bool, str, int], None]:
+    """Every console MCP tool call into its caller's mirror feed (axf.session-feed@1), when the Terminal plugin is on."""
+
+    def rec(caller: str, tool: str, args: dict[str, Any], ok: bool, err: str, ms: int) -> None:
+        import plugin_services
+        svc = plugin_services.get("axf.session-feed@1")
+        if svc is not None:
+            svc.record_call(caller, tool, args, ok, err, ms)
+
+    return rec
+
+
 def console_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
     """Console commands through the capability when the console runs (its open consoles are there); in stdio mode
     (a local clone) they are sent to the console itself: AXF_CONSOLE_URL (default https://console.amberxai.com) with
@@ -905,4 +999,4 @@ if __name__ == "__main__":
     root = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[3])).resolve()
     if not (root / "framework" / "cli" / "engine-rpc.mjs").exists():
         sys.exit(f"AXF_ROOT {root} is not an AmberX AXF checkout")
-    build_server(_local_call(root), control=control_runner(root), console=console_runner(root)).run()
+    build_server(_local_call(root), control=control_runner(root), console=console_runner(root), notes=session_note_runner()).run()

@@ -16,7 +16,7 @@ export const LEVELS: Record<string, Level> = {
   fontFamily: 'basic', cursorStyle: 'basic', mica: 'basic', newTab: 'basic', tabWidth: 'basic', closeConfirm: 'basic', copyOnSelect: 'basic', pasteWarn: 'basic',
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
-  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic',
+  persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
 
@@ -87,6 +87,7 @@ export function HeadlessPanel() {
   return (
     <div className="fx-stack axp-terminal-settings">
       <L k="persistTabs"><Switch label="Tabs live in tmux sessions (survive reloads, sleep and restarts; attach from Moshi)" checked={s.persistTabs} onChange={(v) => save({ persistTabs: v })} /></L>
+      <L k="sessionsNav"><Switch label="Sessions list on the left of every terminal window (My sessions, Agents, Connections)" checked={s.sessionsNav !== false} onChange={(v) => save({ sessionsNav: v })} /></L>
       <L k="showChain"><Switch label="Headless tabs show the context chain next to the session" checked={s.showChain} onChange={(v) => save({ showChain: v })} /></L>
       <div className="axp-terminal__cols">
         <L k="splitDefault"><SelectField label="Split for new headless tabs" value={s.splitDefault} options={[{ value: 'side', label: 'Side by side' }, { value: 'stacked', label: 'Stacked' }, { value: 'none', label: 'No split' }]} onChange={(v) => save({ splitDefault: v as Settings['splitDefault'] })} /></L>
