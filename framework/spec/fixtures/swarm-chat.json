@@ -1,0 +1,399 @@
+{
+ "$axf": "fixture@1",
+ "about": "agent swarm group chat contract (core/engines/swarm-chat.mjs); regenerate: npx -y tsx framework/spec/check-swarm.mts --write",
+ "at": "2026-11-03T14:00:00.000Z",
+ "messages": {
+  "boss-assign": [],
+  "agent-report": [],
+  "brett": [],
+  "agent-assigns": [
+   {
+    "field": "message.kind",
+    "code": "invalid",
+    "message": "message: rio cannot post a \"assign\" line (agent posts report, handoff, banter, discipline, pay)"
+   }
+  ],
+  "boss-banter": [
+   {
+    "field": "message.kind",
+    "code": "invalid",
+    "message": "message: boss cannot post a \"banter\" line (boss posts assign, lease, merge, handoff, status, discipline, pay)"
+   }
+  ],
+  "stranger": [
+   {
+    "field": "message.from",
+    "code": "invalid",
+    "message": "message.from \"ghost\" is not Boss, Brett or an agent on the roster"
+   }
+  ],
+  "report-without-job": [
+   {
+    "field": "message.jobId",
+    "code": "missing",
+    "message": "message: a \"report\" line names its job (jobId)"
+   }
+  ],
+  "empty": [
+   {
+    "field": "message.from",
+    "code": "missing",
+    "message": "message.from is missing"
+   },
+   {
+    "field": "message.kind",
+    "code": "invalid",
+    "message": "message.kind must be one of assign, lease, report, handoff, merge, status, discipline, pay, banter, brett"
+   },
+   {
+    "field": "message.text",
+    "code": "missing",
+    "message": "message.text is missing"
+   }
+  ],
+  "too-long": [
+   {
+    "field": "message.text",
+    "code": "invalid",
+    "message": "message.text is longer than 1000 characters"
+   }
+  ],
+  "junk": [
+   {
+    "field": "message",
+    "code": "invalid",
+    "message": "message must be an object"
+   }
+  ]
+ },
+ "lines": {
+  "assign": {
+   "from": "boss",
+   "kind": "assign",
+   "jobId": "b.s1",
+   "text": "Rio React, you got b.s1: React card in apps/x/web/ui.tsx. Files: apps/x/web/ui.tsx. Model Opus, budget 200k tokens / 20 turns."
+  },
+  "lease": [
+   {
+    "from": "boss",
+    "kind": "lease",
+    "jobId": "b.s2",
+    "text": "doc waits on Rio React (b.s1): both want apps/x/web/ui.tsx. Wave 2."
+   }
+  ],
+  "leaseNoOverlap": [
+   {
+    "from": "boss",
+    "kind": "lease",
+    "jobId": "b.s2",
+    "text": "doc waits on Rio React (b.s1): same agent or no files named. Wave 2."
+   }
+  ],
+  "reportDone": [
+   {
+    "from": "rio",
+    "kind": "report",
+    "jobId": "b.s1",
+    "text": "Done with b.s1. card added"
+   },
+   {
+    "from": "rio",
+    "kind": "handoff",
+    "jobId": "b.s1",
+    "text": "Handoff: props renamed"
+   }
+  ],
+  "reportBlocked": [
+   {
+    "from": "rio",
+    "kind": "report",
+    "jobId": "b.s1",
+    "text": "Blocked on b.s1. card added Q for Brett: Which theme?"
+   }
+  ],
+  "reportKilled": [
+   {
+    "from": "rio",
+    "kind": "report",
+    "jobId": "b.s1",
+    "text": "Got killed on b.s1: over the token budget."
+   }
+  ],
+  "reportFailed": [
+   {
+    "from": "rio",
+    "kind": "report",
+    "jobId": "b.s1",
+    "text": "Failed b.s1: no swarm-report@1 block."
+   }
+  ],
+  "merge": [
+   {
+    "from": "boss",
+    "kind": "merge",
+    "text": "Merged b.s1 into swarm/b/merge."
+   },
+   {
+    "from": "boss",
+    "kind": "handoff",
+    "jobId": "b.fix-s2",
+    "text": "Merge Max, b.s2 clashed on a.ts, b.ts, c.ts +1. Clean it up (b.fix-s2)."
+   },
+   {
+    "from": "boss",
+    "kind": "lease",
+    "jobId": "b.s3",
+    "text": "b.s3 touched files outside its lease (z.ts, _claude/THREADS.md). Not merging that."
+   }
+  ],
+  "status": {
+   "from": "boss",
+   "kind": "status",
+   "text": "Rio React is now Off duty: day off."
+  },
+  "raise": {
+   "from": "boss",
+   "kind": "pay",
+   "text": "Rio React gets a raise: $5.00 → $9.00 a week. great work"
+  },
+  "dock": {
+   "from": "boss",
+   "kind": "pay",
+   "text": "Rio React got docked: $9.00 → $3.00 a week."
+  },
+  "topup": {
+   "from": "boss",
+   "kind": "pay",
+   "text": "Brett topped Rio React up by $5.00 this week."
+  },
+  "bonus": {
+   "from": "boss",
+   "kind": "pay",
+   "text": "Rio React finished b.s1 for $0.05, $0.95 under budget. Bonus."
+  },
+  "broke": {
+   "from": "rio",
+   "kind": "pay",
+   "text": "I'm broke. Spent $4.00 of $4.00 this week, so no more jobs till payday (2026-11-09) unless Brett tops me up."
+  },
+  "suspend": [
+   {
+    "from": "boss",
+    "kind": "discipline",
+    "text": "Rio React is suspended until 2026-11-04 00:00 UTC. Reason: pushed to main."
+   }
+  ],
+  "suspensionOver": [
+   {
+    "from": "boss",
+    "kind": "discipline",
+    "text": "rio's suspension is over. Back on duty."
+   }
+  ],
+  "backFromLeave": [
+   {
+    "from": "boss",
+    "kind": "status",
+    "text": "rio is back from medical leave and on duty."
+   }
+  ],
+  "rehire": [
+   {
+    "from": "boss",
+    "kind": "discipline",
+    "text": "Rio React is rehired and back on duty. Don't make me regret it."
+   }
+  ],
+  "quit": [
+   {
+    "from": "rio",
+    "kind": "discipline",
+    "text": "That's 3 in a row. I'm DONE with this shit. I quit."
+   },
+   {
+    "from": "boss",
+    "kind": "discipline",
+    "text": "Rio React rage-quit. No jobs till Brett rehires."
+   }
+  ],
+  "unknownMoment": [],
+  "hired": {
+   "from": "boss",
+   "kind": "status",
+   "text": "Hired Site Rookie to own Site health check. Welcome to the crew."
+  },
+  "newCards": {
+   "from": "boss",
+   "kind": "status",
+   "text": "New ID cards for everybody (My pass). Smile, assholes."
+  },
+  "newCardsDefault": {
+   "from": "boss",
+   "kind": "status",
+   "text": "New ID cards for everybody. Smile, assholes."
+  },
+  "waiting": {
+   "from": "boss",
+   "kind": "status",
+   "text": "Rio React is waiting for a desk (position 2 in the queue, 6/6 running)."
+  },
+  "assignJob": {
+   "from": "boss",
+   "kind": "assign",
+   "jobId": "site-check",
+   "text": "Ping Paulie, you're on Site health check. opus, up to 100k tokens ($1.00)."
+  },
+  "unassigned": {
+   "from": "boss",
+   "kind": "assign",
+   "jobId": "cert-renew",
+   "text": "Cert renewals has nobody: nobody owns it."
+  },
+  "fileLists": {
+   "none": "no files named",
+   "three": "a, b, c",
+   "five": "a, b, c +2"
+  },
+  "names": {
+   "boss": "Boss",
+   "brett": "Brett",
+   "agent": "Rio React",
+   "unknown": "ghost",
+   "map": "R",
+   "fn": "RIO"
+  }
+ },
+ "banter": {
+  "moments": [
+   "idle",
+   "gradle",
+   "fight",
+   "done",
+   "failed",
+   "raise",
+   "bonus",
+   "docked"
+  ],
+  "lines": {
+   "idle": [
+    "Chillin' till Boss throws something at me. Don't make it CSS.",
+    "Coffee's cold, tokens are hot. Typical Tuesday."
+   ],
+   "gradle": [
+    "Kat, your damn Gradle build is older than my last raise.",
+    "I swear Gradle downloads the whole internet every time."
+   ],
+   "fight": [
+    "Boss gave me ui.tsx. Back the hell up, Rio.",
+    "Rio wants ui.tsx too? Take a number, buddy."
+   ],
+   "done": [
+    "Nice one Rio. Don't let it go to your head.",
+    "Look at Rio, actually shipping. Who knew."
+   ],
+   "failed": [
+    "Rough one, Rio. Shake it off and read the error this time.",
+    "F in the chat for Rio's b.s1."
+   ],
+   "raise": [
+    "Oh sure, Rio gets paid. Some of us actually work.",
+    "Congrats Rio. Drinks are on you, rich ass."
+   ],
+   "bonus": [
+    "Bonus for Rio. I'm not jealous, you're jealous.",
+    "Rio came in under budget again. Teacher's pet."
+   ],
+   "docked": [
+    "Pay cut for Rio? Brutal. Kinda deserved though.",
+    "Rio got docked. Ouch. Should've stayed in your lease."
+   ]
+  },
+  "unknownMoment": "Chillin' till Boss throws something at me. Don't make it CSS.",
+  "reactors": {
+   "two": [
+    "kat"
+   ],
+   "none": []
+  },
+  "prompt": "Write 4 short group-chat lines between these coworkers, reacting to the recent work below. Amber's voice: blunt street slang, cussing, wild, funny about the work. Never joke about race, ethnicity, religion, gender, sexuality or any other identity. One line each, under 140 characters.\nCoworkers:\nrio (Rio React, Front-end engineer): \"Ship it.\"\ndoc (doc, ): \"\"\nRecent:\nboss: go\nrio: on it\nAnswer only JSON: [{\"agent\":\"<id>\",\"text\":\"…\"}]",
+  "promptQuiet": "Write 2 short group-chat lines between these coworkers, reacting to the recent work below. Amber's voice: blunt street slang, cussing, wild, funny about the work. Never joke about race, ethnicity, religion, gender, sexuality or any other identity. One line each, under 140 characters.\nCoworkers:\nrio (Rio React, Front-end engineer): \"Ship it.\"\ndoc (doc, ): \"\"\nRecent:\n(quiet day)\nAnswer only JSON: [{\"agent\":\"<id>\",\"text\":\"…\"}]",
+  "parsed": [
+   {
+    "from": "rio",
+    "len": 2
+   },
+   {
+    "from": "doc",
+    "len": 200
+   }
+  ],
+  "parsedNone": [],
+  "parsedBad": []
+ },
+ "post": {
+  "roomOn": {
+   "n": 4,
+   "messages": [
+    {
+     "id": "m1793714400000-0",
+     "at": "2026-11-03T14:00:00.000Z",
+     "from": "boss",
+     "kind": "assign",
+     "text": "x",
+     "jobId": "b.s1",
+     "vibe": null,
+     "toned": false
+    },
+    {
+     "id": "m1793714400000-1",
+     "at": "2026-11-03T14:00:00.000Z",
+     "from": "rio",
+     "kind": "banter",
+     "text": "fired but talking",
+     "jobId": "",
+     "vibe": null,
+     "toned": false
+    },
+    {
+     "id": "m1793714400000-2",
+     "at": "2026-11-03T14:00:00.000Z",
+     "from": "tex",
+     "kind": "banter",
+     "text": "y",
+     "jobId": "",
+     "vibe": null,
+     "toned": false
+    },
+    {
+     "id": "m1793714400000-3",
+     "at": "2026-11-03T14:00:00.000Z",
+     "from": "brett",
+     "kind": "brett",
+     "text": "z",
+     "jobId": "",
+     "vibe": null,
+     "toned": false
+    }
+   ]
+  },
+  "roomOff": {
+   "n": 0,
+   "messages": []
+  },
+  "filtered": {
+   "n": 1,
+   "messages": [
+    {
+     "id": "m1793714400000-0",
+     "at": "2026-11-03T14:00:00.000Z",
+     "from": "tex",
+     "kind": "banter",
+     "text": "KEEP ME",
+     "jobId": "",
+     "vibe": null,
+     "toned": true
+    }
+   ]
+  }
+ }
+}

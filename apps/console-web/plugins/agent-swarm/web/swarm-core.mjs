@@ -11,6 +11,8 @@
 
 import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_IDS as POLICY_IDS, MODEL_TIERS as POLICY_TIERS, coerceModel, modelForWork, modelKey } from '../../../../../framework/core/model-policy.mjs';
 import * as rules from '../../../../../framework/core/engines/swarm-rules.mjs';
+import * as chat from '../../../../../framework/core/engines/swarm-chat.mjs';
+import { reactCount, vibeFilter } from '../../../../../framework/core/engines/swarm-vibe.mjs';
 
 // ---------------------------------------------------------------- contracts (framework/core/engines/swarm-rules.mjs)
 
@@ -509,8 +511,8 @@ function setStatus(st, id, to, note, at, by = 'brett', extra = {}) {
 export function tick(state, at) {
   const log = [];
   for (const [id, as] of Object.entries(state.agents)) {
-    if (as.status === 'suspended' && as.until && as.until <= at) { log.push(setStatus(state, id, 'on-duty', 'suspension over', at, 'boss')); post(state, [{ from: BOSS.id, kind: 'discipline', text: `${id}'s suspension is over. Back on duty.` }], at); }
-    if (as.status === 'medical-leave' && as.until && as.until <= at) { log.push(setStatus(state, id, 'on-duty', 'back from medical leave', at, 'boss')); post(state, [{ from: BOSS.id, kind: 'status', text: `${id} is back from medical leave and on duty.` }], at); }
+    if (as.status === 'suspended' && as.until && as.until <= at) { log.push(setStatus(state, id, 'on-duty', 'suspension over', at, 'boss')); post(state, disciplineLines('suspension-over', id), at); }
+    if (as.status === 'medical-leave' && as.until && as.until <= at) { log.push(setStatus(state, id, 'on-duty', 'back from medical leave', at, 'boss')); post(state, disciplineLines('back-from-leave', id), at); }
   }
   return { state, log };
 }
@@ -525,7 +527,7 @@ export function applyChange(state, change, roster, at) {
       if (c.status === 'medical-leave' && !(str(c.until, 40) > at)) throw new Error('medical leave needs a return date in the future');
       if (c.status === 'custom' && !str(c.name, 40).trim()) throw new Error('a custom status needs a name');
       log.push(setStatus(s, c.agent, c.status, c.note, at, 'brett', c));
-      post(s, [{ from: BOSS.id, kind: 'status', text: `${nameOf(roster, c.agent)} is now ${statusLabel(s.agents[c.agent])}${c.note ? `: ${str(c.note, 200)}` : ''}.` }], at); break;
+      post(s, [statusLine(c.agent, statusLabel(s.agents[c.agent]), c.note, roster)], at); break;
     }
     case 'salary': { // raise or dock, posted by Boss, with coworker reactions
       const a = roster.agents.find((x) => x.id === c.agent); const as = s.agents[c.agent]; if (!a || !as) throw new Error(`no agent "${c.agent}"`);
@@ -533,7 +535,7 @@ export function applyChange(state, change, roster, at) {
       if (to === from) throw new Error('that is the same salary');
       const kind = to > from ? 'raise' : 'dock'; as.salary = to; as.pay.push({ at, kind, from, to, note: str(c.note, 200) });
       log.push(`${c.agent}: ${kind === 'raise' ? 'raise' : 'docked'} ${fmtUsd(from)} → ${fmtUsd(to)} a week`);
-      post(s, [{ from: BOSS.id, kind: 'pay', text: kind === 'raise' ? `${a.name} gets a raise: ${fmtUsd(from)} → ${fmtUsd(to)} a week.${c.note ? ` ${str(c.note, 200)}` : ''}` : `${a.name} got docked: ${fmtUsd(from)} → ${fmtUsd(to)} a week.${c.note ? ` ${str(c.note, 200)}` : ''}` }], at);
+      post(s, [payLine(kind, a.id, { from, to, note: c.note }, roster)], at);
       for (const r of reactors(s, roster, a.id, reactCount(s, at), `${at}${a.id}`)) post(s, [{ from: r.id, kind: 'banter', text: banterLine(kind === 'raise' ? 'raise' : 'docked', `${at}${r.id}`, { other: a.name }) }], at);
       break;
     }
@@ -541,7 +543,7 @@ export function applyChange(state, change, roster, at) {
       const a = roster.agents.find((x) => x.id === c.agent); const as = s.agents[c.agent]; if (!a || !as) throw new Error(`no agent "${c.agent}"`);
       const usd = num(c.usd, 0, 0, 100000); if (!usd) throw new Error('top up by more than $0');
       as.topups.push({ at, usd }); as.brokeSaid = ''; log.push(`${c.agent}: topped up ${fmtUsd(usd)}`);
-      post(s, [{ from: BOSS.id, kind: 'pay', text: `Brett topped ${a.name} up by ${fmtUsd(usd)} this week.` }], at); break;
+      post(s, [payLine('topup', a.id, { usd }, roster)], at); break;
     }
     case 'chat': { // global and per-agent switches
       if (typeof c.enabled === 'boolean') { s.chat.enabled = c.enabled; log.push(`group chat ${c.enabled ? 'on' : 'off'}`); }
@@ -574,13 +576,13 @@ export function applyChange(state, change, roster, at) {
       if (!(until > at)) throw new Error('a suspension needs an end in the future');
       if (!reason) throw new Error('say why');
       log.push(setStatus(s, c.agent, 'suspended', reason, at, 'brett', { until }));
-      post(s, [{ from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, c.agent)} is suspended until ${until.slice(0, 16).replace('T', ' ')} UTC. Reason: ${reason}.` }], at); break;
+      post(s, disciplineLines('suspend', c.agent, { until, reason }, roster), at); break;
     }
     case 'rehire': {
       const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`);
       if (as.status === 'on-duty') throw new Error('already on duty');
       log.push(setStatus(s, c.agent, 'on-duty', str(c.note, 300) || 'rehired', at)); as.failStreak = 0;
-      post(s, [{ from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, c.agent)} is rehired and back on duty. Don't make me regret it.` }], at); break;
+      post(s, disciplineLines('rehire', c.agent, {}, roster), at); break;
     }
     case 'rules': { if (c.rageQuitAfter != null) s.rules.rageQuitAfter = num(c.rageQuitAfter, 3, 1, 50) | 0; log.push(`rage-quit after ${s.rules.rageQuitAfter} failed jobs in a row`); break; }
     case 'identity': { // ID card fields; blank = back to the roster's / derived value
@@ -599,7 +601,7 @@ export function applyChange(state, change, roster, at) {
     case 'card-default': {
       const id = str(c.design, 48); if (id && !isCardId(id)) throw new Error('not a card design id');
       s.cards.default = id; log.push(`default card design ${id || "the app's"}`);
-      post(s, [{ from: BOSS.id, kind: 'status', text: `New ID cards for everybody${id ? ` (${str(c.name, 60) || id})` : ''}. Smile, assholes.` }], at); break;
+      post(s, [newCardsLine(id ? str(c.name, 60) || id : '')], at); break;
     }
     case 'card-save': { // Save as new: a new design asset (never overwrites a starter id)
       const d = normCardDesign(c.asset);
@@ -665,7 +667,7 @@ export function payCheck(state, roster, runs, table, at) {
     const as = state.agents[a.id]; const p = payOf(a, as, runs, table, at);
     if (p.broke && as.brokeSaid < p.periodStart && worksOf(as) !== false) {
       as.brokeSaid = at; log.push(`${a.id}: broke till ${p.payday.slice(0, 10)}`);
-      post(state, [{ from: a.id, kind: 'pay', text: `I'm broke. Spent ${fmtUsd(p.spent)} of ${fmtUsd(p.salary + p.topups)} this week, so no more jobs till payday (${p.payday.slice(0, 10)}) unless Brett tops me up.` }], at);
+      post(state, [brokeLine(a.id, p)], at);
     }
   }
   return log;
@@ -688,100 +690,14 @@ export { avatarColors, avatarModel } from '../../../../../framework/core/engines
 
 // ---------------------------------------------------------------- group chat
 
-/** Is this agent's voice on? (Boss and Brett only need the global switch.) */
-export const chatOn = (state, from) => state.chat.enabled && (from === BOSS.id || from === 'brett' || state.chat.agents[from] !== false);
+// The chat contract (who says what, Boss's work lines, the banter bank and batch) is the framework's: swarm-chat.mjs.
+export { chatOn, assignLine, reportLines, mergeLines, statusLine, payLine, brokeLine, disciplineLines, hiredLine, newCardsLine, waitingLine, messageErrors, SPEAKERS, JOB_KINDS, BANTER, BANTER_MOMENTS, banterLine, reactors, banterPrompt, parseBanter } from '../../../../../framework/core/engines/swarm-chat.mjs';
+const { assignLine, statusLine, payLine, brokeLine, disciplineLines, newCardsLine, banterLine, reactors } = chat;
 
-/**
- * Post messages. Global switch off = nothing is kept and no banter is asked for (zero cost). An agent switched off
- * stays quiet; Boss still posts its work. Returns how many were posted.
- */
-export function post(state, msgs, at) {
-  let n = 0;
-  for (const raw of msgs) {
-    if (!raw?.text || !chatOn(state, raw.from)) continue;
-    const m = state.chatSettings ? vibeFilter(raw, state.chatSettings) : raw; // over the ceiling = toned down or dropped
-    if (!m) continue;
-    const id = `m${Date.parse(at) || 0}-${state.messages.length}`;
-    state.messages.push(normMessage({ ...m, id, at: m.at || at }, state.messages.length)); n += 1;
-  }
-  if (state.messages.length > CHAT_MAX) state.messages.splice(0, state.messages.length - CHAT_MAX);
-  return n;
-}
-
-const fileList = (l) => (l.length ? (l.length > 3 ? `${l.slice(0, 3).join(', ')} +${l.length - 3}` : l.join(', ')) : 'no files named');
-const nameOf = (roster, id) => roster.agents.find((a) => a.id === id)?.name ?? (id === BOSS.id ? BOSS.name : id);
-
-/** Boss's assignment line: task, files, model, budget. */
-export function assignLine(job, roster) {
-  return { from: BOSS.id, kind: 'assign', jobId: job.id, text: `${nameOf(roster, job.agent)}, you got ${job.id}: ${str(job.text, 160)}. Files: ${fileList(job.leases)}. Model ${MODEL_LABEL[job.model] ?? job.model}, budget ${fmtTokens(job.budget.tokens)} tokens / ${job.budget.maxTurns} turns.` };
-}
-/** Boss's lease decisions for a plan: who waits for whom, over which files. */
-export function leaseLines(plan, roster) {
-  const out = [];
-  for (const j of plan.jobs) {
-    if (!j.after.length) continue;
-    const e = plan.jobs.find((x) => x.id === j.after[j.after.length - 1]);
-    const shared = e ? j.leases.filter((f) => e.leases.some((l) => leasesOverlap([f], [l]))) : [];
-    out.push({ from: BOSS.id, kind: 'lease', jobId: j.id, text: `${nameOf(roster, j.agent)} waits on ${nameOf(roster, e?.agent)} (${e?.id}): ${shared.length ? `both want ${fileList(shared)}` : 'same agent or no files named'}. Wave ${j.wave + 1}.` });
-  }
-  return out;
-}
-/** The agent's own report line, and its handoff when it left one. */
-export function reportLines(run, roster) {
-  const r = run.report; const who = run.agent;
-  const head = run.status === 'done' ? `Done with ${run.jobId}` : run.status === 'killed' ? `Got killed on ${run.jobId}: ${run.reason}` : run.status === 'blocked' ? `Blocked on ${run.jobId}` : `Failed ${run.jobId}${run.reason ? `: ${run.reason}` : ''}`;
-  const out = [{ from: who, kind: 'report', jobId: run.jobId, text: `${head}.${r?.summary ? ` ${r.summary}` : ''}${r?.question ? ` Q for Brett: ${r.question}` : ''}` }];
-  if (r?.handoff) out.push({ from: who, kind: 'handoff', jobId: run.jobId, text: `Handoff: ${r.handoff}` });
-  return out;
-}
-export function mergeLines(res, roster) {
-  const out = [];
-  if (res.merged.length) out.push({ from: BOSS.id, kind: 'merge', text: `Merged ${res.merged.join(', ')} into ${res.branch}.` });
-  for (const c of res.conflicts) out.push({ from: BOSS.id, kind: 'handoff', jobId: c.fixer, text: `${nameOf(roster, 'max')}, ${c.job} clashed on ${fileList(c.files)}. Clean it up (${c.fixer}).` });
-  for (const r of res.refused) out.push({ from: BOSS.id, kind: 'lease', jobId: r.job, text: `${r.job} touched files outside its lease (${fileList([...r.outside, ...r.shared])}). Not merging that.` });
-  return out;
-}
-
-/**
- * Banter bank: zero-token lines in Amber's voice, by moment. {me} = speaker, {other} = coworker, {file}, {job}.
- * No jokes about anyone's identity, ever. A cheap-model batch can add more (banterPrompt / parseBanter).
- */
-export const BANTER = {
-  idle: ['Anybody else just staring at the queue like it owes us money?', 'Chillin\' till Boss throws something at me. Don\'t make it CSS.', 'Coffee\'s cold, tokens are hot. Typical Tuesday.', 'Who keeps leaving half-merged branches in the fridge?'],
-  gradle: ['Gradle\'s running. Cracking a beer, wake me up in twenty.', 'Kat, your damn Gradle build is older than my last raise.', 'I swear Gradle downloads the whole internet every time.'],
-  fight: ['{other}, get your hands off {file}, that shit\'s leased to me.', 'Boss gave me {file}. Back the hell up, {other}.', '{other} wants {file} too? Take a number, buddy.'],
-  done: ['{other} finished {job}? Took long enough, damn.', 'Nice one {other}. Don\'t let it go to your head.', 'Look at {other}, actually shipping. Who knew.'],
-  failed: ['{other} blew up {job}. Somebody check on them.', 'Rough one, {other}. Shake it off and read the error this time.', 'F in the chat for {other}\'s {job}.'],
-  raise: ['A raise for {other}? For WHAT? I fixed three conflicts this week.', 'Oh sure, {other} gets paid. Some of us actually work.', 'Congrats {other}. Drinks are on you, rich ass.'],
-  bonus: ['{other} came in under budget again. Teacher\'s pet.', 'Bonus for {other}. I\'m not jealous, you\'re jealous.'],
-  docked: ['{other} got docked. Ouch. Should\'ve stayed in your lease.', 'Pay cut for {other}? Brutal. Kinda deserved though.'],
-};
-
-/** Pick a banter line (deterministic from `seed`, so tests and replays match). */
-export function banterLine(moment, seed, vars = {}) {
-  const pool = BANTER[moment] ?? BANTER.idle;
-  let h = 0; for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return pool[h % pool.length].replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? k);
-}
-
-/** Coworkers who react to an event (not the subject; switched-on, working agents), up to `n`. */
-export function reactors(state, roster, subject, n, seed) {
-  const pool = roster.agents.filter((a) => a.id !== subject && chatOn(state, a.id) && !['fired', 'quit'].includes(state.agents[a.id]?.status));
-  let h = 0; for (const ch of String(seed)) h = (h * 33 + ch.charCodeAt(0)) >>> 0;
-  return Array.from({ length: Math.min(n, pool.length) }, (_, i) => pool[(h + i * 3) % pool.length]).filter((a, i, arr) => arr.indexOf(a) === i);
-}
-
-/** Prompt for one cheap batch of banter lines (small model, no tools, one turn). */
-export function banterPrompt(roster, recent, n = 6) {
-  const who = roster.agents.map((a) => `${a.id} (${a.name}, ${a.role}): "${a.catchphrase}"`).join('\n');
-  const lines = recent.slice(-12).map((m) => `${m.from}: ${m.text}`).join('\n');
-  return `Write ${n} short group-chat lines between these coworkers, reacting to the recent work below. Amber's voice: blunt street slang, cussing, wild, funny about the work. Never joke about race, ethnicity, religion, gender, sexuality or any other identity. One line each, under 140 characters.\nCoworkers:\n${who}\nRecent:\n${lines || '(quiet day)'}\nAnswer only JSON: [{"agent":"<id>","text":"…"}]`;
-}
-export function parseBanter(text, roster) {
-  const m = /\[[\s\S]*\]/.exec(str(text, 20000)); if (!m) return [];
-  try { return JSON.parse(m[0]).filter((x) => roster.agents.some((a) => a.id === x?.agent) && typeof x.text === 'string').slice(0, 20).map((x) => ({ from: x.agent, kind: 'banter', text: str(x.text, 200) })); }
-  catch { return []; }
-}
+/** Post messages through the switches and the vibe ceiling (over it = toned down or dropped). Returns how many were posted. */
+export const post = (state, msgs, at) => chat.post(state, msgs, at, (m) => (state.chatSettings ? vibeFilter(m, state.chatSettings) : m));
+/** Boss's lease decisions for a plan, with the planner's own overlap test. */
+export const leaseLines = (plan, roster) => chat.leaseLines(plan, roster, leasesOverlap);
 
 // ---------------------------------------------------------------- discipline
 
@@ -797,8 +713,8 @@ export function recordRun(state, run, roster, at, table = null) {
     const cap = budgetUsd({ budget: run.budget, model: run.model }, table); const cost = runCost(run, table);
     if (cost < cap) {
       const usd = Math.round((cap - cost) * 100) / 100; as.bonuses.push({ at, jobId: run.jobId, usd });
-      const name = nameOf(roster, run.agent); log.push(`${run.agent}: bonus ${fmtUsd(usd)}`);
-      post(state, [{ from: BOSS.id, kind: 'pay', text: `${name} finished ${run.jobId} for ${fmtUsd(cost)}, ${fmtUsd(usd)} under budget. Bonus.` }], at);
+      const name = chat.namer(roster)(run.agent); log.push(`${run.agent}: bonus ${fmtUsd(usd)}`);
+      post(state, [payLine('bonus', run.agent, { jobId: run.jobId, cost, usd }, roster)], at);
       for (const r of reactors(state, roster, run.agent, reactCount(state, at), `${run.jobId}bonus`)) post(state, [{ from: r.id, kind: 'banter', text: banterLine('bonus', `${run.jobId}${r.id}`, { other: name }) }], at);
     }
   }
@@ -806,7 +722,7 @@ export function recordRun(state, run, roster, at, table = null) {
   else if (run.status !== 'blocked') as.failStreak += 1;
   if (as.failStreak >= state.rules.rageQuitAfter && !['quit', 'fired'].includes(as.status)) {
     log.push(setStatus(state, run.agent, 'quit', `rage-quit after ${as.failStreak} failed jobs in a row`, at, run.agent));
-    post(state, [{ from: run.agent, kind: 'discipline', text: `That's ${as.failStreak} in a row. I'm DONE with this shit. I quit.` }, { from: BOSS.id, kind: 'discipline', text: `${nameOf(roster, run.agent)} rage-quit. No jobs till Brett rehires.` }], at);
+    post(state, disciplineLines('quit', run.agent, { streak: as.failStreak }, roster), at);
   }
   return log;
 }
@@ -815,91 +731,5 @@ export function recordRun(state, run, roster, at, table = null) {
 // VIBE, SLIDERS, PRESETS, DEFAULT_PRESET, VIBE_COLORS and normChatSettings are the contract's (swarm-rules.mjs).
 
 const slider = (v, d, max = 100) => Math.round(num(v, d, 0, max));
-/** The sliders that apply to one speaker: global, then its own overrides. */
-export const settingsFor = (cs, from) => ({ ...cs, ...(cs.overrides?.[from] ?? {}) });
-
-const CUSS = [
-  { re: /\bfuck(ing|in'|ed|er)?\b/gi, level: 2, clean: (m) => (/ing|in'/i.test(m) ? 'freaking' : 'freak') },
-  { re: /\bshit(ty)?\b/gi, level: 2, clean: (m) => (/ty$/i.test(m) ? 'crappy' : 'stuff') },
-  { re: /\bbitch\w*\b/gi, level: 2, clean: () => 'complain' },
-  { re: /\bass\b/gi, level: 1, clean: () => 'butt' },
-  { re: /\bdamn(ed)?\b/gi, level: 1, clean: () => 'darn' },
-  { re: /\bhell\b/gi, level: 1, clean: () => 'heck' },
-  { re: /\bcrap\b/gi, level: 1, clean: () => 'junk' },
-];
-const SARCASM = [/\boh sure\b/i, /\bwho knew\b/i, /\btook (?:you )?long enough\b/i, /\bteacher'?s pet\b/i, /\btypical\b/i, /\bnot jealous\b/i, /\bdon'?t let it go to your head\b/i, /\bactually (?:work|shipping)\b/i, /\bkinda deserved\b/i];
-const DRAMA = [/\bjealous\b/i, /\bback (?:the \w+ )?off\b|\bback the \w+ up\b/i, /\bget your hands off\b/i, /\bfor what\b/i, /\bdeserved\b/i, /\brich\b/i, /\bi quit\b/i, /\bregret\b/i, /\bclashed\b/i, /\bblew up\b/i, /\btake a number\b/i, /\bF in the chat\b/i];
-const SLANG = [/\byo\b/i, /\bbro\b/i, /\bain'?t\b/i, /\by'all\b/i, /\bbuddy\b/i, /\bgonna\b/i];
-/** Topics a joke may never be about, whatever the settings. */
-const IDENTITY = /\b(race|racial|ethnic\w*|religio\w*|muslim\w*|christian\w*|jew(ish)?|hindu\w*|gay|lesbian|trans\w*gender|transgender|queer|gender|sexuality|black people|white people|asian\w*|latin[oa]s?|immigrant\w*)\b/i;
-
-/** A message's vibe score, 1–500, from its words (no model). Work messages built by Boss score low. */
-export function scoreVibe(text, kind = 'banter') {
-  const t = str(text, 2000);
-  let s = WORK_KINDS.includes(kind) && kind !== 'brett' ? 1 : 40;
-  for (const c of CUSS) s += (t.match(c.re)?.length ?? 0) * (c.level === 2 ? 70 : 30);
-  s += (t.match(/\b[A-Z]{3,}\b/g) ?? []).filter((w) => !/^(API|CSS|TSX|MCP|JSON|UTC|CLI|USD|PR|CI|URL|SDK)$/.test(w)).length * 25;
-  s += Math.min(5, (t.match(/!/g) ?? []).length) * 12;
-  s += SARCASM.filter((r) => r.test(t)).length * 45;
-  s += DRAMA.filter((r) => r.test(t)).length * 40;
-  s += SLANG.filter((r) => r.test(t)).length * 8;
-  return Math.max(VIBE.min, Math.min(VIBE.max, Math.round(s)));
-}
-/** Cussing slider 0–100: under 34 every cuss word is cleaned, under 67 the strong ones. */
-export function cleanCussing(text, cussing) {
-  const keep = cussing >= 67 ? 2 : cussing >= 34 ? 1 : 0;
-  let t = str(text, 2000);
-  for (const c of CUSS) if (c.level > keep) t = t.replace(c.re, (m) => { const r = c.clean(m); return m[0] === m[0].toUpperCase() ? r[0].toUpperCase() + r.slice(1) : r; });
-  return t;
-}
-/** Tone a line down: no shouting, no pile of exclamation marks, no sarcastic asides. */
-export function calmDown(text) {
-  let t = str(text, 2000).replace(/\b([A-Z]{3,})\b/g, (w) => (/^(API|CSS|TSX|MCP|JSON|UTC|CLI|USD|CI|URL|SDK)$/.test(w) ? w : w.toLowerCase())).replace(/!+/g, '.').replace(/\.\.+/g, '.');
-  // a sarcastic sentence goes as a whole (cutting just the phrase leaves nonsense)
-  return t.split(/(?<=[.?])\s+/).filter((x) => !SARCASM.some((r) => r.test(x))).join(' ').trim();
-}
-
-/**
- * Run one message through the speaker's settings. Returns the message to show (with `vibe` and `toned`) or null
- * when it's dropped. The vibe setting is a hard ceiling: a line above it is cleaned, then calmed; banter still
- * above is dropped. Work lines are never dropped (only toned down). Brett's own lines are scored, never changed.
- * Identity jokes are dropped whatever the settings; drama lines need the drama slider.
- */
-export function vibeFilter(msg, cs) {
-  const k = msg.kind; const set = settingsFor(cs, msg.from);
-  if (k === 'brett') return { ...msg, vibe: scoreVibe(msg.text, k), toned: false };
-  const work = WORK_KINDS.includes(k);
-  if (!work && IDENTITY.test(msg.text)) return null;
-  if (!work && set.drama < 30 && DRAMA.some((r) => r.test(msg.text))) return null;
-  let text = cleanCussing(msg.text, set.cussing); let score = scoreVibe(text, k);
-  if (score > set.vibe) { text = calmDown(cleanCussing(text, 0)); score = scoreVibe(text, k); }
-  if ((score > set.vibe || !text) && !work) return null;
-  return { ...msg, text, vibe: Math.min(score, set.vibe), toned: text !== msg.text };
-}
-
-/** How many coworkers react to an event at this chattiness (0 = assignments only). */
-export const reactionsFor = (cs) => (cs.chattiness < 20 ? 0 : cs.chattiness < 60 ? 1 : 2);
-/** Paid banter is allowed today: chattiness up, chat on, today's banter spend under the daily budget. */
-export function banterAllowed(state, at) {
-  const cs = state.chatSettings; const d = dayStart(at);
-  const today = state.banterSpend.filter((b) => b.at >= d).reduce((t, b) => t + b.usd, 0);
-  if (!state.chat.enabled) return { ok: false, why: 'the group chat is off', today };
-  if (cs.chattiness < 40) return { ok: false, why: 'chattiness is too low for paid banter', today };
-  if (today >= cs.banterBudget) return { ok: false, why: `today's banter budget (${fmtUsd(cs.banterBudget)}) is spent; quiet till tomorrow`, today };
-  return { ok: true, why: '', today };
-}
-
-/** The live preview line: one sample per moment, run through the settings as they are now. */
-export function previewLine(cs, from = 'rio', seed = 'preview') {
-  const raw = cs.vibe > 300 ? 'Oh sure, TEX gets a raise. For WHAT? I fixed three damn conflicts this week, rich ass!!' : cs.vibe > 150 ? 'Boss gave me ui.tsx. Back the hell up, Tex, that shit\'s leased to me.' : 'Gradle\'s running. Cracking a beer, wake me up in twenty.';
-  const m = vibeFilter({ from, kind: 'banter', text: raw }, cs);
-  return m ?? { from, kind: 'banter', text: '(dropped: above the vibe ceiling)', vibe: null, toned: true, dropped: true, seed };
-}
-/** Color by vibe: how strong the tint is, 0–1 (light near 1, darkest at the ceiling). */
-export const vibeShade = (score, ceiling) => (score == null ? 0 : Math.max(0.08, Math.min(1, score / Math.max(1, ceiling))));
-/** Coworker reactions per event: by chattiness, none once today's banter budget is spent (quiet when hit). */
-export function reactCount(state, at) {
-  const cs = state.chatSettings; if (!cs) return 1;
-  const d = dayStart(at); const today = state.banterSpend.filter((b) => b.at >= d).reduce((t, b) => t + b.usd, 0);
-  return cs.banterBudget > 0 && today >= cs.banterBudget ? 0 : reactionsFor(cs);
-}
+// The engine is the framework's (swarm-vibe.mjs): scoring, the ceiling, cleaning, calming, reactions, the daily banter budget, the preview.
+export { settingsFor, scoreVibe, cleanCussing, calmDown, vibeFilter, reactionsFor, banterAllowed, banterToday, previewLine, vibeShade, reactCount, VIBE_WORDS, VIBE_WEIGHTS, VIBE_LEVELS, PREVIEW_LINES } from '../../../../../framework/core/engines/swarm-vibe.mjs';

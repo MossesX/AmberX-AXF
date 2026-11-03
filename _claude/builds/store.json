@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 160,
- "updatedAt": "2026-11-03T11:44:46.905Z",
+ "rev": 163,
+ "updatedAt": "2026-11-03T11:54:12.098Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -276,6 +276,10 @@
    "breakroom": {
     "artifact": "",
     "updatedAt": "2026-11-01T02:11:52.634Z"
+   },
+   "big-dog": {
+    "artifact": "",
+    "updatedAt": "2026-11-03T11:52:58.737Z"
    }
   }
  },
@@ -45645,14 +45649,14 @@
    "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
    "category": "Breakroom",
    "detail": "Fable suggested, Opus chosen rule: s1-s3, s11, s12, s15 of agent-swarm were pinned to Fable and built on Opus (branch claude/agent-swarm). The Fable build starts by reading and then replacing the Opus version.",
-   "status": "running",
+   "status": "waiting",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-03T11:44:46.881Z",
+   "updatedAt": "2026-11-03T11:54:12.080Z",
    "builtAt": "",
    "notes": [
     {
@@ -45778,12 +45782,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:11.600Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:54:11.626Z"
     },
     {
      "id": "s6",
@@ -45800,12 +45804,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:54:12.080Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T00:27:19.617Z"
+     "updatedAt": "2026-11-03T11:54:12.098Z"
     },
     {
      "id": "s7",
@@ -45838,7 +45842,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -48392,7 +48396,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T02:32:23.313Z",
+   "updatedAt": "2026-11-03T11:52:58.707Z",
    "builtAt": "",
    "notes": [
     {
@@ -48402,6 +48406,10 @@
     {
      "text": "Nov 2 21:30 ET: s3 pane engine is covered by Urgent build dock-engine (shared with MD Studio + Theme Editor); s7/s8 build on it. Don't build s3 separately.",
      "at": "2026-11-03T02:32:23.312Z"
+    },
+    {
+     "text": "s3 (pane engine) covered by dock-engine (Urgent, complete on branch claude/molly-fable): core/engines/dock.ts + DockHost. s1-s2 built on Fable on the same branch (xlayout@1, chrome@1). s4-s12 are the Opus phase: run from this branch after it merges.",
+     "at": "2026-11-03T11:26:12.532Z"
     }
    ],
    "approvals": [],
@@ -48421,12 +48429,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:10.521Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s2",
@@ -48443,12 +48451,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:11.187Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s3",
@@ -48465,12 +48473,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:26:11.848Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s4",
@@ -48679,10 +48687,33 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-02T18:47:31.123Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mvzm2laq0d1lyo": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0e7r3v": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0fclz5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0gvbw5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0h9whn": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0ibbrv": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0j8ndz": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0kh5x0": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0llcwd": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0mvdp5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0n3jer": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0oes0p": "2026-11-02T18:47:31.125Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-02T18:47:31.125Z",
    "rearranged": false,

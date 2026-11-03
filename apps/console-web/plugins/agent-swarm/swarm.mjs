@@ -138,7 +138,7 @@ export async function run(buildId, ref, opts = {}) {
   const go = () => runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
   const rec = process.env.AXF_SLOTS === 'off' ? await go()
     : await withSlot({ name: `swarm-${job.id}`, kind: 'swarm', agent: agent.id, priority: opts.priority, by: 'agent-swarm',
-      onQueued: (r) => say([{ from: core.BOSS.id, kind: 'status', text: `${agent.name} is waiting for a desk (position ${r.position} in the queue, ${r.used}/${r.cap} running).` }]) }, go);
+      onQueued: (r) => say([core.waitingLine(agent.name, r)]) }, go);
   chatAfterRun(rec, roster);
   const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
   const st = loadState(); const as = st.agents[agent.id];
