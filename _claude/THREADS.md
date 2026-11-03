@@ -837,3 +837,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:11 UTC · `follow-amber` s3 done (urgent) · orchestrator
 - 2026-11-03 19:11 UTC · `follow-amber` s4 done (urgent) · orchestrator
 - 2026-11-03 19:12 UTC · `ui-review-shots` s2 done (urgent) · orchestrator
+- 2026-11-03 19:12 UTC · `claude-settings` s4 done (urgent) · orchestrator
