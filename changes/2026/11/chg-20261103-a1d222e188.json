@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261103-a1d222e188",
   "createdAt": "2026-11-03T14:04:32.864Z",
-  "updatedAt": "2026-11-03T14:08:51.338Z",
+  "updatedAt": "2026-11-03T14:10:52.945Z",
   "kind": "build",
   "title": "# Build: whats-new-banner (Urgent profile) Requested by Brett, Nov 3 2026 (voice).",
   "asked": "# Build: whats-new-banner (Urgent profile) Requested by Brett, Nov 3 2026 (voice). GO given. Build it now. ## First - Register in the Urgent profile through the orchestrator/store (id `whats-new-banner`, branch claude/whats-new-banner) with the steps below + in-progress banner entry, per standing rules. Check the pending queue. - Running in parallel: `orch-live-sync` (live store writes to main, reconciler, banners/THREADS follow the store, per-step branch/pr/merged fields), `notes-vault`, `headless-tabs`. Never hand-edit store.json; use the orchestrator CLI. Reuse orch-live-sync's events (framework/cli/builds-live.mjs, reconciler) if they are on main when you need them; otherwise read the store + GitHub merged PRs directly and leave a seam to switch over. ## What Brett wants A **What's new** banner that shows new features that have been pushed out (merged to main and deployed), filterable/groupable **by date, by build, and by app** (all three). ## Steps - s1 Feed: a `whats-new@1` feed built from what actually shipped: builds/steps whose code merged to main (store merged/mergedAt, merged PRs, build reports' Added/Changed sections, Codebase Changes plugin entries). Each item: title (plain-language feature, from the build report/PR, not commit-speak), build id, profile, apps affected (from changed paths: apps/console-web, axhub-web, amberx-droid, molly, plugins/<x> -> app/plugin names), date merged, deployed yes/no (deploy workflow run for that commit), links (PR, report). Server route + cached file; updates when the store/merges change (no model tokens). - s2 Banner: a `whats-new` banner asset/widget (banner-pack conventions, works in the banner editor and gallery): compact ticker of the newest shipped features with an unread count; tap opens a panel. - s3 Panel: list grouped by Date (Today / Yesterday / this week / older), By build, or By app (segmented switch, remembered); search; per-item details (what it does, where to find it, PR/report links); mark read / mark all read; 'new since last visit' highlighting. - s4 Settings: show/hide the banner, which apps to include, how far back, only deployed vs merged. - s5 Help pack, tests, check-theme/check-controls, lifecycle, UI Review shots (phone + desktop), report `_claude/builds/reports/whats-new-banner.md`, THREADS.md, PR. Mark each step done through the store as you finish it. Tokens only, follows the hub look. Android: deferred gap in PORTING.md. Code, comments and commits stay clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
@@ -21,6 +21,11 @@
       "text": "s1 feed: whats-new@1 server + cache",
       "state": "running",
       "startedAt": "2026-11-03T14:06:43.513Z"
+    },
+    {
+      "text": "s2-s4 banner widget, panel, settings",
+      "state": "running",
+      "startedAt": "2026-11-03T14:09:31.942Z"
     }
   ],
   "result": null,
@@ -33,7 +38,7 @@
   },
   "surface": "headless",
   "startedAt": "2026-11-03T14:04:32.864Z",
-  "lastSeenAt": "2026-11-03T14:08:51.338Z",
+  "lastSeenAt": "2026-11-03T14:10:52.945Z",
   "estimate": {
     "minutes": 135,
     "costUsd": 18.9
@@ -45,7 +50,7 @@
     "framework/core",
     "_claude"
   ],
-  "doing": "Running: Write plugin metadata and lifecycle scripts",
+  "doing": "Running: Typecheck console-web",
   "progress": 0,
   "resume": {
     "repo": "MossesX/AmberX-AXF",

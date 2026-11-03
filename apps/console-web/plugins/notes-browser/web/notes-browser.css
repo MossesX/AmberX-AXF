@@ -1,0 +1,16 @@
+/* Notes browser: layout only (controls are framework components); theme tokens only. */
+.axp-notes-browser__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-notes-browser__lead { margin: 0 }
+.axp-notes-browser__ask { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 14), 1fr)); align-items: end; gap: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-lg) }
+.axp-notes-browser__cols { display: grid; grid-template-columns: minmax(calc(var(--fx-space) * 20), 2fr) minmax(0, 5fr); gap: var(--fx-dens-gap-xl); min-height: 0 }
+.axp-notes-browser__side { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-notes-browser__tree { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); max-height: min(72vh, calc(var(--fx-row-h) * 28)); overflow: auto }
+.axp-notes-browser__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs) }
+.axp-notes-browser__folder, .axp-notes-browser__note { width: 100%; text-align: start; gap: var(--fx-dens-gap-sm) }
+.axp-notes-browser__note.is-nested { margin-inline-start: var(--fx-dens-gap-xl); width: calc(100% - var(--fx-dens-gap-xl)) }
+.axp-notes-browser__label { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); overflow: hidden }
+.axp-notes-browser__sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-notes-browser__main { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-notes-browser__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-md) }
+.axp-notes-browser__doc { max-height: min(72vh, calc(var(--fx-row-h) * 28)); overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-xl) }
+@media (max-width: 720px) { .axp-notes-browser__cols { grid-template-columns: minmax(0, 1fr) } .axp-notes-browser__tree { max-height: calc(var(--fx-row-h) * 10) } }

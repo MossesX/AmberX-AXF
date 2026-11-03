@@ -234,6 +234,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Reconciler: PR #166 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -562,7 +566,7 @@
    ],
    "createdAt": "2026-10-27T16:57:15.399Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
-   "updatedAt": "2026-10-30T18:10:39.641Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -1068,6 +1072,10 @@
     {
      "text": "Merged in PR #141 (claude/amberx-handsfree)",
      "at": "2026-10-28T19:08:50.203Z"
+    },
+    {
+     "text": "Reconciler: PR #141 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1102,7 +1110,7 @@
    ],
    "createdAt": "2026-10-27T23:42:02.902Z",
    "builtAt": "2026-10-28T19:08:50.137Z",
-   "updatedAt": "2026-10-28T19:08:50.204Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -1115,6 +1123,10 @@
     {
      "text": "Built and merged in PR #144; live on amberx.amberxai.com (new FastAPI server) Oct 28 02:34 UTC.",
      "at": "2026-10-28T02:35:00.000Z"
+    },
+    {
+     "text": "Reconciler: PR #144 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1226,7 +1238,7 @@
    ],
    "createdAt": "2026-10-28T00:32:23.016Z",
    "builtAt": "2026-10-28T02:35:09.837Z",
-   "updatedAt": "2026-10-28T02:35:09.837Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -1239,6 +1251,10 @@
     {
      "text": "Merged PR #146 (5cc390d), branch fix/interface-scope-settings",
      "at": "2026-10-28T04:36:58.577Z"
+    },
+    {
+     "text": "Reconciler: PR #146 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1252,7 +1268,7 @@
    ],
    "createdAt": "2026-10-28T03:03:09.005Z",
    "builtAt": "2026-10-28T04:36:58.472Z",
-   "updatedAt": "2026-10-28T04:36:58.577Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -1314,6 +1330,10 @@
     {
      "text": "Merged PR #148 (1359f5f), branch fix/hubsync-own-look-source",
      "at": "2026-10-28T05:19:54.279Z"
+    },
+    {
+     "text": "Reconciler: PR #148 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1327,7 +1347,7 @@
    ],
    "createdAt": "2026-10-28T05:10:31.665Z",
    "builtAt": "2026-10-28T05:19:54.195Z",
-   "updatedAt": "2026-10-28T05:19:54.279Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -1340,6 +1360,10 @@
     {
      "text": "Merged PR #149, branch fix/banner-snap",
      "at": "2026-10-28T09:55:08.019Z"
+    },
+    {
+     "text": "Reconciler: PR #149 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1353,7 +1377,7 @@
    ],
    "createdAt": "2026-10-28T05:01:49.680Z",
    "builtAt": "2026-10-28T09:55:07.941Z",
-   "updatedAt": "2026-10-28T09:55:08.020Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -1366,6 +1390,10 @@
     {
      "text": "Merged in PR #151 (claude/banner-fix-fallback)",
      "at": "2026-10-28T10:11:22.506Z"
+    },
+    {
+     "text": "Reconciler: PR #152; PR #152 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1393,7 +1421,7 @@
    ],
    "createdAt": "2026-10-28T09:55:19.427Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
-   "updatedAt": "2026-10-28T10:11:22.506Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -1406,6 +1434,10 @@
     {
      "text": "Merged PR #154, branch claude/amberx-push",
      "at": "2026-10-28T14:52:00.673Z"
+    },
+    {
+     "text": "Reconciler: PR #154 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1433,7 +1465,7 @@
    ],
    "createdAt": "2026-10-28T14:39:25.869Z",
    "builtAt": "2026-10-28T14:52:00.612Z",
-   "updatedAt": "2026-10-28T14:52:00.673Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -1442,7 +1474,12 @@
    "detail": "Brett Oct 28 2026 09:53: lots of voice commands for notes and todo, categories in a tab group dialog (Notes, Tasks, Developer, AI snippets), each with tab + trigger; sortable filterable searchable grid in a scrolling pane, rows expand to details + per-command settings, record button (two matching recordings or pick predefined); inner tab group Commands / Chains & wizards; voice wizard for recording/editing chains; AI-unavailable page with fix hooks; new agent Molly on axHub (like Mosses/Vinny): root VPS through approvals, knows the codebase, answers questions, narrated console walkthroughs in a floating window with next/previous. One agent, here (Brett).",
    "model": "Opus",
    "status": "complete",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #153 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] voice-command@1 core: categories (notes, tasks, developer, snippets), commands with tab + trigger, kinds action/chain/wizard, slots, per-command settings, recordings; matcher picks category by trigger + tab context; tests",
@@ -1545,7 +1582,7 @@
    ],
    "createdAt": "2026-10-28T13:59:55.535Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
-   "updatedAt": "2026-10-28T15:29:37.365Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -1702,6 +1739,10 @@
     {
      "text": "Merged PR #156, branch claude/amberx-assistant-agents",
      "at": "2026-10-28T15:54:37.605Z"
+    },
+    {
+     "text": "Reconciler: PR #156 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1715,7 +1756,7 @@
    ],
    "createdAt": "2026-10-28T15:41:17.167Z",
    "builtAt": "2026-10-28T15:54:37.523Z",
-   "updatedAt": "2026-10-28T15:54:37.605Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -1728,6 +1769,10 @@
     {
      "text": "Merged PR #157, branch claude/amberx-claude-tokens",
      "at": "2026-10-28T17:04:41.549Z"
+    },
+    {
+     "text": "Reconciler: PR #157 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -1741,7 +1786,7 @@
    ],
    "createdAt": "2026-10-28T16:55:24.086Z",
    "builtAt": "2026-10-28T17:04:41.490Z",
-   "updatedAt": "2026-10-28T17:04:41.550Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -2124,6 +2169,10 @@
     {
      "text": "Oct 29 2026 03:08 EDT (Brett): 'Make the matrix a plugin accessible from Build in the app menu' — feature-matrix s62–s67 un-skipped and built now; app menu Build ▸ Feature matrix added to s65.",
      "at": "2026-10-29T07:08:32.671Z"
+    },
+    {
+     "text": "Reconciler: PR #168 names s87, s88, s89 done; PR #166 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -2712,7 +2761,7 @@
    ],
    "createdAt": "2026-10-28T19:31:15.654Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
-   "updatedAt": "2026-10-29T07:38:54.593Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -2721,7 +2770,12 @@
    "detail": "Brett Oct 28 21:08: Mosses could not build; the Claude Code provider hard-blocked Edit/Write/Bash. Picked: live /axf folder, Bash free there, Refactor profile. Build agents get Edit/Write/MultiEdit/Bash in the CLI provider (admins only) plus repo_git_push / repo_open_pr run by the console with GITHUB_TOKEN.",
    "model": "Opus",
    "status": "complete",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #164 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] providers.py build mode",
@@ -2744,7 +2798,7 @@
    ],
    "createdAt": "2026-10-29T03:53:16.640Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
-   "updatedAt": "2026-10-29T03:53:16.932Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -2753,7 +2807,12 @@
    "detail": "Brett Oct 29 01:41: Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
    "model": "Opus",
    "status": "complete",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #167; PR #167 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Deny Task/Agent in the CLI provider; drop the env scrub flag; tests, PR, merge, deploy",
@@ -2764,7 +2823,7 @@
    ],
    "createdAt": "2026-10-29T05:57:18.585Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
-   "updatedAt": "2026-10-29T05:57:18.705Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -2836,6 +2895,10 @@
     {
      "text": "s3+s9 closed by Leftovers: axHub claude/veto-everywhere + veto-complete are on axHub main, the live server runs 209951f (server default AXHUB_CONFIRM_AS=veto, 90 s); docs already cover 90 s + Approve/Shelve; shared RULES deduped (stale 3-minute veto copy, older auto-merge + chores copies removed). Tests: axHub pnpm test 514/514 (Node 22), AmberX test.mjs 2045/2045 + tsc, approvals-banner 10/10.",
      "at": "2026-11-01T02:31:12.796Z"
+    },
+    {
+     "text": "Reconciler: PR #176; PR #176 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -2844,14 +2907,14 @@
      "at": "2026-10-30T13:20:06.580Z",
      "estimate": "20 min",
      "done": true,
-     "doneAt": "2026-11-01T02:31:12.796Z"
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Opus] Shared rules: veto replaces approvals + retry + merge-approval rules; remove conflicting pending item axhub-auto-approve-all",
      "at": "2026-10-30T13:20:06.580Z",
      "estimate": "10 min",
      "done": true,
-     "doneAt": "2026-11-01T02:31:12.796Z"
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Opus] axHub PR + merge + redeploy (veto calls), then GitHub writes/PRs/merges run on the countdown",
@@ -2865,7 +2928,7 @@
      "at": "2026-10-30T13:20:06.580Z",
      "estimate": "25 min",
      "done": true,
-     "doneAt": "2026-11-01T02:31:12.796Z"
+     "doneAt": "2026-11-03T13:57:06.541Z"
     },
     {
      "text": "[Opus] axHub (decision #104): Approve now + Shelve next to Deny (core state machine, routes approve-now/shelve with Deny's guards, CLI, feeds, shelved/cleared push phases), default countdown 90 s; tests 450 -> 458",
@@ -2905,7 +2968,7 @@
    ],
    "createdAt": "2026-10-30T13:20:06.580Z",
    "builtAt": "2026-11-01T02:31:12.147Z",
-   "updatedAt": "2026-11-01T02:31:12.796Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -2922,6 +2985,10 @@
     {
      "text": "s9 closed by Leftovers: it was 'waiting' only on the PR approval (45ca37d6) + merge; feat/agent-voice is fully on main, so nothing waits on Brett. plugin-lifecycle check clean, test.py 37/37, test.mts 22/22.",
      "at": "2026-11-01T02:31:46.572Z"
+    },
+    {
+     "text": "Reconciler: PR #177; PR #177 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -2991,7 +3058,7 @@
    ],
    "createdAt": "2026-10-30T11:36:24.622Z",
    "builtAt": "2026-11-01T02:31:46.110Z",
-   "updatedAt": "2026-11-01T02:31:46.572Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -3004,6 +3071,10 @@
     {
      "text": "Built on branch claude/pr-only-merge (push banner 0.5.0); PR opened through the push banner (veto call). test.py 132 checks.",
      "at": "2026-10-30T18:04:28.290Z"
+    },
+    {
+     "text": "Reconciler: PR #183; PR #183 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -3031,7 +3102,7 @@
    ],
    "createdAt": "2026-10-30T17:55:48.511Z",
    "builtAt": "2026-10-30T18:04:28.210Z",
-   "updatedAt": "2026-10-30T18:04:28.290Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -3048,6 +3119,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/apply-all-levels (PR #115); PR #115; PR #115 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -3082,7 +3157,7 @@
    ],
    "createdAt": "2026-10-27T03:19:49.625Z",
    "builtAt": "2026-10-27T03:19:49.625Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -3103,6 +3178,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-empty-shell (PR #118); PR #118; PR #118 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -3137,7 +3216,7 @@
    ],
    "createdAt": "2026-10-27T03:48:42.596Z",
    "builtAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -3154,12 +3233,16 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/fresh-look-done (PR #120); PR #120; PR #120 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-27T04:05:32.031Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -3180,12 +3263,16 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/design-packages-10 (PR #124); PR #124; PR #124 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-27T17:25:19.327Z",
    "builtAt": "2026-10-27T17:25:19.327Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -3206,12 +3293,16 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-orchestrator (PR #122); PR #122; PR #122 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-27T16:39:39.618Z",
    "builtAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-10-27T16:44:18.183Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat",
    "estimate": "30 min"
   },
@@ -3233,6 +3324,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-profiles (PR #127); PR #127; PR #127 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -3267,7 +3362,7 @@
    ],
    "createdAt": "2026-10-27T19:00:00.000Z",
    "builtAt": "2026-10-27T19:30:00.000Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat",
    "estimate": "2 h"
   },
@@ -3289,12 +3384,16 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-appearance-lock (PR #126); PR #126; PR #126 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-27T19:05:30.186Z",
    "builtAt": "2026-10-27T19:23:01.118Z",
-   "updatedAt": "2026-10-27T19:23:01.225Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat",
    "estimate": "1 h"
   },
@@ -3356,6 +3455,10 @@
     {
      "text": "s3 closed by Leftovers (claude/leftovers): the bridge was retired by urgent-builds (one store), so the rule now describes the store; CI test = check-builds-store.mjs + builds-store verify (already in android.yml); README already updated. No PR: pushed to main per Brett's leftovers brief.",
      "at": "2026-11-01T02:28:35.357Z"
+    },
+    {
+     "text": "Reconciler: PR #143; PR #143 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "subPrompts": [
@@ -3383,7 +3486,7 @@
    ],
    "createdAt": "2026-10-28T01:07:25.673Z",
    "builtAt": "2026-11-01T02:28:34.899Z",
-   "updatedAt": "2026-11-01T02:28:35.357Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "chat"
   },
   {
@@ -3627,7 +3730,12 @@
    "detail": "Plan: _claude/memory/docs/walkthrough-everything.md. Brett Nov 1: 90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
    "model": "Opus",
    "status": "complete",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #229 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Shared loader: pick a walkthrough by WALKTHROUGH env, apply voice/narration overrides (voice.json)",
@@ -3806,7 +3914,7 @@
    ],
    "createdAt": "2026-11-01T22:38:15.391Z",
    "builtAt": "2026-11-02T05:32:27.282Z",
-   "updatedAt": "2026-11-02T05:32:27.281Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   },
   {
@@ -3815,28 +3923,36 @@
    "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
    "model": "Opus",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Estimates added (orch-live-sync s6): the small-steps check needs one on every step.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Repro on the live console (desktop + phone): which click fails (tick, row open, model, move) and why",
      "at": "2026-11-01T23:09:37.032Z",
+     "estimate": "20m",
      "done": true,
      "doneAt": "2026-11-02T00:30:06.083Z"
     },
     {
      "text": "[Opus] Fix (nested grid click bubbling, disabled state or tap target) + test",
      "at": "2026-11-01T23:09:37.032Z",
+     "estimate": "30m",
      "done": true,
      "doneAt": "2026-11-02T00:30:06.534Z"
     },
     {
      "text": "[Opus] UI Review shots, PR",
-     "at": "2026-11-01T23:09:37.032Z"
+     "at": "2026-11-01T23:09:37.032Z",
+     "estimate": "15m"
     }
    ],
    "createdAt": "2026-11-01T23:09:37.031Z",
    "builtAt": "",
-   "updatedAt": "2026-11-02T00:30:06.535Z",
+   "updatedAt": "2026-11-03T13:56:31.369Z",
    "source": "console"
   },
   {
@@ -3845,7 +3961,12 @@
    "detail": "Brett Nov 2 2026 14:36 ET: for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
    "model": "Opus",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #240; PR #240 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] RANDOM_LOOK=<chapter ids> in rebuild.sh + record.mjs: design-package pool, random pack per chapter, appearance GET rewritten in the recorder browser only, look recorded in segments",
@@ -3862,7 +3983,7 @@
    ],
    "createdAt": "2026-11-02T19:41:22.804Z",
    "builtAt": "",
-   "updatedAt": "2026-11-02T19:41:23.513Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "source": "console"
   }
  ]
