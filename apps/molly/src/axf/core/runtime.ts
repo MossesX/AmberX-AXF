@@ -1015,6 +1015,9 @@ export class AxfRuntime {
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
+    // A design package is never "just a slot": moving it means loading the package (its themes, extras; overrides
+    // cleared), or every other app on the hub would show the package while this one kept the old themes (Nov 3 2026).
+    if (type === DESIGN_PACKAGE_TYPE) return this.applyDesignPackage(next);
     if (next === this.state.active[type] && type !== STYLE_PACKAGE_TYPE) return true;
     this.terminal.ok('hot-swap', `${type}: ${this.state.active[type]} → ${next}`);
     // a style package is a set of controls: picking one swaps every member it names (engines/stylepackage.ts)
@@ -1155,8 +1158,7 @@ export class AxfRuntime {
    * Chrome that belongs to the host while this app runs inside it (embed@1): what it hides for the whole app (its banner
    * by default, plus what a taken function hides, e.g. the app menu). On a page the host shows alone (settings page
    * mode) every bit of chrome is hidden for that page only, so only the whole-app part counts. Settings leave rows about
-   * this chrome out instead of greying them (Brett, Oct 23 2026: "if a program runs inside Patches don't grey out its
-   * settings").
+   * this chrome out instead of greying them (Brett, Oct 23 2026: settings of chrome a host owns aren't greyed out).
    */
   slotOwnedByHost(type: AssetType): boolean {
     const e = this.embedded;
@@ -1249,8 +1251,14 @@ export class AxfRuntime {
     return captureDesignPackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() }, withExtras);
   }
 
-  /** The design package last applied in this app, if any (Restore default appearance forgets it). */
+  /**
+   * The design package loaded in this app, if any: the `design-package` slot, which rides the shared look, so every app
+   * on the hub names the same one (the local `axf.appearance.design` note is only written for older readers; a slot
+   * that is a known package always wins over it, Nov 3 2026). After Restore default appearance: the app's default package.
+   */
   appliedDesignPackage(): string | undefined {
+    const active = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
+    if (active && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, active)) return active;
     let v = this.settings.get(DESIGN_APPLIED_KEY);
     if (typeof v !== 'string') {
       // the retired appearance package's pick: the shipped packages kept their ids, so move it over once
@@ -1264,7 +1272,7 @@ export class AxfRuntime {
    * Apply design package `id`: its style, colour, layout and behaviour themes; and when it carries extras, the other
    * slots, spacing, shown / hidden chrome and the other appearance settings too (the whole look).
    */
-  applyDesignPackage(id: string): boolean {
+  applyDesignPackage(id: string, opts: { quiet?: boolean } = {}): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
@@ -1290,6 +1298,7 @@ export class AxfRuntime {
     this.settings.set(DESIGN_APPLIED_KEY, id);
     if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
     this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
+    if (opts.quiet) return true; // part of a bigger step (Restore default): that step says what happened
     this.toast(`${a.name} applied.`, 'success', 'Design package');
     this.lookApplied('design-package', id);
     return true;
@@ -1324,6 +1333,10 @@ export class AxfRuntime {
     for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
     this.reset();
     this.pushAppearance({ spacing: this.spacing() });
+    // The default look is the app's default design theme, loaded in full (its spacing and chrome too), with no style
+    // or colour override left (precedence rule 3): Restore = load the default design package again (Nov 3 2026).
+    const def = (this.manifest.defaults as Record<string, string | undefined>)[DESIGN_PACKAGE_TYPE];
+    if (def && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, def)) this.applyDesignPackage(def, { quiet: true });
     this.terminal.ok('hot-swap', 'default appearance restored');
     this.toast('Default appearance restored.', 'success', 'Appearance');
     this.lookApplied('default', '');
@@ -1622,9 +1635,9 @@ export class AxfRuntime {
 
   navigate(view: string) {
     if (this.openPlaced(`view:${view}`)) return;
-    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    // A view the host took over (embed@1 takes: e.g. the settings view) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
-    // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
+    // A view of a function the host locks (e.g. plugins): say who manages it instead of opening it.
     const lock = this.lockedByHost({ view });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
@@ -1666,9 +1679,9 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
-    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    // A hook of a function the host took over (embed@1): the host does it (e.g. a host's combined settings).
     if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
-    // A hook of a function the host locks (plugins inside Patches): shown greyed out; running it only says who manages it.
+    // A hook of a function the host locks (e.g. plugins): shown greyed out; running it only says who manages it.
     const lock = this.lockedByHost({ action: spec });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return false; }
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
@@ -1688,8 +1701,8 @@ export class AxfRuntime {
   }
 
   /**
-   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins
-   * inside Patches)? Returns the note to show (`Plugins are managed in Patches`), or null. Chrome keeps such hooks on
+   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins)?
+   * Returns the note to show (`Plugins are managed in <host>`), or null. Chrome keeps such hooks on
    * screen greyed out with the note as their tooltip.
    */
   lockedByHost(what: { action?: string; view?: string; provider?: string }): string | null {
@@ -1699,7 +1712,7 @@ export class AxfRuntime {
     return embedLockNote(e, fn);
   }
 
-  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in Patches`), or null. */
+  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in <host>`), or null. */
   hostLockNote(fn: string): string | null { return embedLockNote(this.embedded, fn); }
 
   /* ---------------- embed@1: the host manages this app's plugins (take `plugins`) ---------------- */

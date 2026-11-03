@@ -1,0 +1,104 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-96d2707b-a5c2-4c58-9453-ca2ece815d24",
+ "source": "claude-code",
+ "sessionId": "96d2707b-a5c2-4c58-9453-ca2ece815d24",
+ "project": "other",
+ "title": "# Model UPGRADES need Brett's approval; downgrades don't (Urgent, Opus) Replaces the stopped build model-switch-approva…",
+ "startedAt": "2026-11-03T12:28:36.259Z",
+ "endedAt": "2026-11-03T12:43:11.257Z",
+ "minutes": 15,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/model-upgrade-approval",
+  "repo": "",
+  "branch": "claude/model-upgrade-approval"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T12:28:36.380Z",
+   "kind": "prompt",
+   "text": "# Model UPGRADES need Brett's approval; downgrades don't (Urgent, Opus) Replaces the stopped build model-switch-approval (folder /root/axf-builds/model-switch-approval, ignore any work there). Brett Nov 3 2026 (voice), angry: a headless build (agent-swarm-fable-rebuild, PR #247) approved its own Opus -> Fable phase switch in the orchestrator (`orchestrator.mjs act approve`) because its brief said \"do every step\". Brett: \"It cannot be switching the model without my approval. That's not even a veto. That's an approval.\" Then: \"You can downgrade, but you can't upgrade.\" New project rule (add to …",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 196,
+    "output": 80561,
+    "cacheRead": 14484038,
+    "cacheWrite": 210850,
+    "thinking": 22520
+   },
+   "costUsd": 5.563,
+   "costEstimated": false,
+   "seconds": 874,
+   "tools": {
+    "Bash": 93,
+    "ToolSearch": 1,
+    "mcp__claude_ai_axHub__list_services": 1,
+    "Write": 3,
+    "Read": 1
+   },
+   "commands": 93,
+   "files": [
+    "/root/axf-builds/model-upgrade-approval/framework/core/model-switch.mjs",
+    "/root/axf-builds/model-upgrade-approval/framework/cli/model-gate.mjs",
+    "/root/axf-builds/model-upgrade-approval/apps/console-web/plugins/build-orchestrator/server/test_upgrade.py"
+   ],
+   "changeIds": [
+    "chg-20261103-fb4fedc0c0"
+   ],
+   "features": [
+    "orchestrator:model-upgrade-approval",
+    "breakroom:agent-swarm",
+    "queue:model-switch-approval",
+    "pending:agent-swarm-fable-rebuild"
+   ],
+   "output": "Done, boss. PR #253 is open and the push banner will merge it once CI is green: https://github.com/MossesX/AmberX-AXF/pull/253 **What it does now** - **Downgrades** (Fable → Opus) go through by themselves and get logged on the build. - **Upgrades** (Opus → Fable) wait for you, period. Only your sig…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/model-upgrade-approval/framework/core/model-switch.mjs",
+  "/root/axf-builds/model-upgrade-approval/framework/cli/model-gate.mjs",
+  "/root/axf-builds/model-upgrade-approval/apps/console-web/plugins/build-orchestrator/server/test_upgrade.py"
+ ],
+ "changeIds": [
+  "chg-20261103-fb4fedc0c0"
+ ],
+ "features": [
+  "orchestrator:model-upgrade-approval",
+  "breakroom:agent-swarm",
+  "queue:model-switch-approval",
+  "pending:agent-swarm-fable-rebuild"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 196,
+  "output": 80561,
+  "cacheRead": 14484038,
+  "cacheWrite": 210850,
+  "thinking": 22520,
+  "costUsd": 5.563,
+  "costEstimated": false,
+  "toolCalls": 99,
+  "commands": 93,
+  "filesTouched": 3,
+  "reportedUsd": 6.1956
+ },
+ "ingestedAt": "2026-11-03T12:43:11.723Z"
+}

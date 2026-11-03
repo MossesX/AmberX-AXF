@@ -16,7 +16,7 @@ const installed = [
 const catalog = [
   { kind: 'console', folder: 'theme-manager', id: 'a.theme', name: 'Theme manager', version: '0.3.0', versions: ['0.1.0', '0.2.0', '0.3.0'], models: { '0.1.0': 'opus', '0.2.0': 'opus', '0.3.0': 'fable' } },
   { kind: 'console', folder: 'todo-manager', id: 'a.todo', name: 'Todo manager', version: '0.1.0', versions: ['0.1.0'], models: { '0.1.0': 'opus' } },
-  { kind: 'pilot', folder: 'agent-manager', id: 'a.agents', name: 'x', version: '9.0.0' },
+  { kind: 'axhub', folder: 'agent-manager', id: 'a.agents', name: 'x', version: '9.0.0' },
 ];
 const pending = [{ id: rebuildId('todo-manager', 'fable'), status: 'pending' }];
 const r = rows(installed, catalog, pending);

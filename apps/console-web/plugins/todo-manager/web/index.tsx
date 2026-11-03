@@ -1,6 +1,6 @@
 /**
  * Todo manager (console plugin): lists, groups, notes, to-dos and tasks. Ported from xGallery's developer task manager.
- * Tabable (plugin.json → "tabable"): a host such as Patches can show its page as a tab of its own; the console shows
+ * Tabable (plugin.json → "tabable"): a host app can show its page as a tab of its own; the console shows
  * that page alone (embed@1 page `view:todo-manager`), so `TodoView` drops its page heading there.
  */
 import { useRuntime } from '@console/axf/react';

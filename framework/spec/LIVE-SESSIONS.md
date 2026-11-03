@@ -17,7 +17,7 @@ again. These features belong to the **assistant plugin**; the kernel only carrie
 
 | Piece | Web (reference) | Kotlin kernel | Python (`framework/python`) |
 | --- | --- | --- | --- |
-| Contract + host side | `framework/core/live-session.ts` | `ai.amberx.axf.kernel.live` | `axf.assistant_host.sessions` (log + reducer + `SessionHosts` open registry + `LocalHost` + `PlaceholderHost`); the console's ai-assistant plugin and Build Pilot's server run on it |
+| Contract + host side | `framework/core/live-session.ts` | `ai.amberx.axf.kernel.live` | `axf.assistant_host.sessions` (log + reducer + `SessionHosts` open registry + `LocalHost` + `PlaceholderHost`); the console's ai-assistant plugin runs on it |
 | Conformance | `spec/fixtures/live-session.json` (from `gen-fixtures.mts`) | `LiveSessionConformanceTest` | `framework/python/axf/assistant_host/test.py` replays the same fixture (CI) |
 
 - **States:** `idle` · `running` · `waiting` · `closed` (`closed` is final).

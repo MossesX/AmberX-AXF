@@ -48,8 +48,8 @@ eq(solo.embedded, null, 'standalone: no embed');
 eq(solo.slotHidden('banner'), false, 'standalone: banner shown');
 eq(solo.slotHiddenByHost('banner'), false, 'standalone: not by host');
 
-const inside = make({ host: 'patches', hidden: ['banner'] });
-eq(inside.embedded, { host: 'patches', hidden: ['banner'] }, 'embedded: host known');
+const inside = make({ host: 'host', hidden: ['banner'] });
+eq(inside.embedded, { host: 'host', hidden: ['banner'] }, 'embedded: host known');
 eq(inside.slotHidden('banner'), true, 'embedded: banner hidden');
 eq(inside.slotHiddenByHost('banner'), true, 'embedded: by the host');
 eq(inside.slotHidden('toolbar'), solo.slotHidden('toolbar'), 'embedded: other chrome untouched');
@@ -66,15 +66,15 @@ inside.settings.set(HIDE_KEY('banner'), false);
 eq(inside.slotHidden('banner'), true, 'embedded: forced over a saved false');
 eq(inside.settings.get(HIDE_KEY('banner')), false, 'embedded: saved choice kept');
 // Hidden slots list = host's over user's over app's.
-const both = make({ host: 'patches', hidden: ['banner', 'toolbar'] });
+const both = make({ host: 'host', hidden: ['banner', 'toolbar'] });
 both.settings.set(HIDE_KEY('toolbar'), false);
 eq(both.hiddenSlots().includes('toolbar') && both.hiddenSlots().includes('banner'), true, 'embedded: two forced');
 // Detection from the page when `embed` is omitted: no page here → standalone.
 eq(make(undefined).embedded, null, 'no page: standalone');
 // Node's navigator is a getter-only global: define over it for the test, then put it back.
 const navDesc = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
-Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { userAgent: 'Mozilla/5.0 AXF-Embed/patches/none' } });
-eq(make(undefined).embedded, { host: 'patches', hidden: [] }, 'page ua: detected (none hidden)');
+Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { userAgent: 'Mozilla/5.0 AXF-Embed/host/none' } });
+eq(make(undefined).embedded, { host: 'host', hidden: [] }, 'page ua: detected (none hidden)');
 Object.defineProperty(globalThis, 'location', { configurable: true, value: { search: '?axf-embed=dev-console' } });
 eq(make(undefined).embedded, { host: 'dev-console', hidden: ['banner'] }, 'page query wins');
 delete (globalThis as { location?: unknown }).location;
@@ -104,7 +104,7 @@ for (const c of t.viewPages) { eq(embedPage(c.input), c.page, `view page ${c.inp
 for (const c of t.viewUrls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `view url ${c.url}`);
 for (const c of t.viewDetect) eq(embedFromQueryFull(c.search), c.embed, `view detect ${c.search}`);
 for (const c of t.pluginTabs) eq(parseEmbedMessage(c.input), c.message, 'plugin tabs');
-eq(skipReason({ host: 'patches', hidden: ['banner'], page: 'view:todos' }, ['embedded']), null, 'a view page never skips');
+eq(skipReason({ host: 'host', hidden: ['banner'], page: 'view:todos' }, ['embedded']), null, 'a view page never skips');
 for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);
 // Old embed.json shapes are unchanged by the extension (no takes/page keys appear on them).
 for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old for ${c.input}`);
@@ -114,7 +114,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   const posted: unknown[] = [];
   (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
   let ran = 0;
-  const taken = make({ host: 'patches', hidden: ['banner'], takes: ['settings'] });
+  const taken = make({ host: 'host', hidden: ['banner'], takes: ['settings'] });
   taken.actions.register('app.settings', () => { ran++; }, { label: 'Settings' });
   taken.actions.register('settings.open', () => { ran++; }, { label: 'Open a settings tab', params: true });
   eq(taken.hostTakes('settings'), true, 'takes: settings');
@@ -136,7 +136,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   const solo2 = make(null);
   eq(/"action":"app\.settings"/.test(JSON.stringify(solo2.appMenu())), true, 'standalone app menu keeps Settings');
   // Page mode: the settings page itself opens its tabs (settings is never taken on its own page).
-  const pageRt = make({ host: 'patches', hidden: ['banner'], takes: ['notifications'], page: 'settings' });
+  const pageRt = make({ host: 'host', hidden: ['banner'], takes: ['notifications'], page: 'settings' });
   let opened = '';
   pageRt.actions.register('settings.open', ([tab]) => { opened = String(tab); }, { label: 'Open', params: true });
   pageRt.dispatch('settings.open:about');
@@ -150,7 +150,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
 {
   const posted: { type?: string; menus?: { id: string; label: string; items: { id: string; label: string; items?: unknown[] }[] }[] }[] = [];
   (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
-  const guest = make({ host: 'patches', hidden: ['app-menu', 'banner'], takes: ['settings', 'app-menu'] });
+  const guest = make({ host: 'host', hidden: ['app-menu', 'banner'], takes: ['settings', 'app-menu'] });
   eq(guest.slotHidden('app-menu'), true, 'app-menu taken: the app hides its menu bar');
   let ran = 0;
   guest.actions.register('test.menu-item', () => { ran++; }, { label: 'Test item' });
@@ -167,7 +167,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq(ran, 1, 'app-menu: run runs the item it sent');
   eq(guest.runSharedMenuItem('m99.0'), false, 'app-menu: an id it never sent runs nothing');
   eq(await guest.shareAppMenu(), false, 'app-menu: unchanged menu not sent again');
-  const pageGuest = make({ host: 'patches', hidden: ['app-menu', 'banner'], takes: ['app-menu'], page: 'settings' });
+  const pageGuest = make({ host: 'host', hidden: ['app-menu', 'banner'], takes: ['app-menu'], page: 'settings' });
   eq(await pageGuest.shareAppMenu({ force: true }), false, 'app-menu: a settings page never shares its menu');
   const solo3 = make(null);
   eq(await solo3.shareAppMenu({ force: true }), false, 'app-menu: standalone app shares nothing');
@@ -178,12 +178,12 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
 {
   const { embedSkipReason } = await import('../core/engines/embed');
   const { installLibraries } = await import('../react/library');
-  const host = { host: 'patches', hidden: ['app-menu', 'banner'], takes: ['settings', 'app-menu'] };
+  const host = { host: 'host', hidden: ['app-menu', 'banner'], takes: ['settings', 'app-menu'] };
   eq(embedSkipReason(null, ['embedded']), null, 'skipWhen: standalone always loads');
-  eq(embedSkipReason(host, ['embedded']), 'patches does this itself', 'skipWhen embedded: any host');
-  eq(embedSkipReason(host, ['take:settings']), 'patches takes settings over', 'skipWhen take:<fn>');
+  eq(embedSkipReason(host, ['embedded']), 'host does this itself', 'skipWhen embedded: any host');
+  eq(embedSkipReason(host, ['take:settings']), 'host takes settings over', 'skipWhen take:<fn>');
   eq(embedSkipReason(host, ['take:notifications']), null, 'skipWhen take:<fn> the host does not take');
-  eq(embedSkipReason(host, ['hidden:banner']), 'patches hides the banner', 'skipWhen hidden:<type>');
+  eq(embedSkipReason(host, ['hidden:banner']), 'host hides the banner', 'skipWhen hidden:<type>');
   eq(embedSkipReason(host, ['hidden:toolbar']), null, 'skipWhen hidden:<type> the host shows');
   eq(embedSkipReason({ ...host, page: 'settings' }, ['embedded']), null, 'page mode never skips (its tabs must all be there)');
   eq(embedSkipReason(host, undefined), null, 'no skipWhen: loads');
@@ -192,7 +192,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   const inHost = make(host);
   installLibraries(inHost, [lib('keep'), lib('tabs', ['embedded']), lib('bell', ['hidden:banner']), lib('notify', ['take:notifications'])] as never);
   eq(registered, ['keep', 'notify'], 'inside the host: only what it needs is installed');
-  eq(inHost.skippedLibraries.map((l) => `${l.id}: ${l.reason}`), ['tabs: patches does this itself', 'bell: patches hides the banner'], 'skipped plugins listed with why');
+  eq(inHost.skippedLibraries.map((l) => `${l.id}: ${l.reason}`), ['tabs: host does this itself', 'bell: host hides the banner'], 'skipped plugins listed with why');
   eq(inHost.libraries.map((l) => l.id), ['keep', 'notify'], 'skipped plugins are not in the installed list');
   eq(inHost.terminal.lines.some((l) => /2 plugin\(s\) not loaded \(tabs, bell\)/.test(l.text)), true, 'launch log: one summary line');
   registered.length = 0;
@@ -202,12 +202,12 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq(alone.skippedLibraries.length, 0, 'standalone: nothing skipped');
 }
 
-/* ---------- runtime: banner settings taken by the host (Patches' Banners tab) ---------- */
+/* ---------- runtime: banner settings taken by the host (the host's Banners tab) ---------- */
 {
   const posted: unknown[] = [];
   (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
   let ran = 0;
-  const taken = make({ host: 'patches', hidden: ['banner'], takes: ['settings', 'banners'] });
+  const taken = make({ host: 'host', hidden: ['banner'], takes: ['settings', 'banners'] });
   taken.actions.register('banners.settings', () => { ran++; }, { label: 'Banner settings', params: true });
   eq(taken.hostTakes('banners'), true, 'takes: banners');
   eq(taken.takenByHost({ view: 'banners' }), true, 'taken: banners view');
@@ -217,7 +217,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq(ran, 0, 'banner settings never open here');
   eq(posted, [{ $axf: 'embed@1', type: 'open-settings', tab: 'banners:push-banner' }, { $axf: 'embed@1', type: 'open-settings', tab: 'banners' }, { $axf: 'embed@1', type: 'open-settings', tab: 'banners' }], 'banner settings asked the host');
   eq(embedPage('banners'), 'banners', 'banners is a page a host can show');
-  const page = make({ host: 'patches', hidden: ['banner'], takes: ['settings'], page: 'banners' });
+  const page = make({ host: 'host', hidden: ['banner'], takes: ['settings'], page: 'banners' });
   eq(page.hostTakes('banners'), false, 'the banners page keeps its own function');
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }
@@ -227,15 +227,15 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   const posted: unknown[] = [];
   (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
   let ran = 0;
-  const rt = make({ host: 'patches', hidden: ['banner'], takes: ['settings', 'plugins'] });
+  const rt = make({ host: 'host', hidden: ['banner'], takes: ['settings', 'plugins'] });
   rt.actions.register('plugin-manager.open', () => { ran++; }, { label: 'Plugin Manager', params: true });
   rt.actions.register('alerts.open', () => { ran++; }, { label: 'Alerts' });
   eq(rt.hostTakes('plugins'), true, 'takes: plugins');
   eq(rt.takenByHost({ action: 'plugin-manager.open' }), false, 'plugin hooks are not dropped');
-  eq(rt.lockedByHost({ action: 'plugin-manager.open' }), 'Plugins are managed in Patches', 'plugin hooks are locked with a note');
-  eq(rt.lockedByHost({ view: 'plugin-manager' }), 'Plugins are managed in Patches', 'plugin manager view locked');
+  eq(rt.lockedByHost({ action: 'plugin-manager.open' }), 'Plugins are managed in Host', 'plugin hooks are locked with a note');
+  eq(rt.lockedByHost({ view: 'plugin-manager' }), 'Plugins are managed in Host', 'plugin manager view locked');
   eq(rt.lockedByHost({ action: 'alerts.open' }), null, 'other hooks not locked');
-  eq(rt.hostLockNote('plugins'), 'Plugins are managed in Patches', 'lock note for Settings → Plugins');
+  eq(rt.hostLockNote('plugins'), 'Plugins are managed in Host', 'lock note for Settings → Plugins');
   eq(rt.dispatch('plugin-manager.open:x'), false, 'locked hook does not run');
   rt.navigate('plugin-manager');
   eq(rt.getState().view === 'plugin-manager', false, 'locked view does not open');
@@ -261,7 +261,7 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   const solo = make(null);
   eq(solo.lockedByHost({ action: 'plugin-manager.open' }), null, 'standalone: nothing locked');
   eq(solo.reportPluginsToHost([]), false, 'standalone: nothing reported');
-  const other = make({ host: 'patches', hidden: ['banner'], takes: ['settings'] });
+  const other = make({ host: 'host', hidden: ['banner'], takes: ['settings'] });
   eq(other.hostLockNote('plugins'), null, 'host without the take: no note');
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }

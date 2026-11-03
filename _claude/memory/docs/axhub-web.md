@@ -5,7 +5,7 @@ The Fable follow-up is parked as pending item **`axhub-web-hub-rules`** (harvest
 
 ## What it is
 
-axHub's own web front end, built on AmberX AXF like the Dev Console and Build Pilot: a **developer app**
+axHub's own web front end, built on AmberX AXF like the Dev Console: a **developer app**
 (`developer: { hub }`), so its look and spacing come from the hub's shared appearance document and it waits for the
 hub rather than running without it. It is a guest, not a replacement: the hub keeps serving its own pages, and every
 decision still happens there.
@@ -38,7 +38,7 @@ The app holds **no hub token**. Both feeds are read with the browser's own hub s
   `../../etc/passwd` or `evil.sh` never becomes a button.
 - Nothing in the app can approve, reject or change anything on the hub.
 - Hub pages are opened with `noopener,noreferrer`.
-- Inside a host app (Patches) the framework's embed@1 layer hides the chrome the host shows; nothing else changes.
+- Inside a host app the framework's embed@1 layer hides the chrome the host shows; nothing else changes.
 
 ## The hub side (axHub decision #90)
 
@@ -76,7 +76,7 @@ navigations to the hub and work either way.
   /opt/axhub-web/apps/axhub-web/deploy/install.sh --remove` (container, update script and cron gone; Traefik drops the
   routes and the hub answers `/` again). The Mosses agent tab was asked for and then scratched by Brett (Oct 23 2026).
 
-- **Console / Patches look + lib-hub harvest (Oct 23 2026, Opus, PR #30):** banner = the console's (search, day/night,
+- **Console look + lib-hub harvest (Oct 23 2026, Opus, PR #30):** banner = the console's (search, day/night,
   clock) + an approvals counter; layout `axhub-console` (menu bar, toolbar and nav kept by Brett's pick, no inspector or
   status bar); toolbar `axhub-web` with live search; app menu shaped like the console's with live **Waiting for
   approval ▸** and **Download the latest ▸** lists. The catalog rules, hub hooks, approvals list and hub menu now live in
@@ -85,7 +85,5 @@ navigations to the hub and work either way.
 
 ## Related, deliberately not touched
 
-- **`patches-web-settings-notify`** (in flight on `feat/patches-web`, another session): the Patches **web** app must
-  follow the hub appearance the same way this app does. Noted on that pending item instead of edited here.
 - **`axhub-theme-freeze`** (Fable): appearance@1 carrying theme bodies. This app reads whatever the document names
   today and will follow bodies when that lands, with no change here.

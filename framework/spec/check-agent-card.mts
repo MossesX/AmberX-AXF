@@ -10,7 +10,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { appearanceSlotTypes } from '../core/engines/appearance';
-import { AGENT_CARD_SAMPLE, CARD_ENUMS, CARD_FIELDS, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AGENT_CARD_SAMPLE, AVATAR_GEAR_PARTS, AVATAR_HAIR, AVATAR_PAINTS, CARD_ENUMS, CARD_FIELDS, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AVATAR_FACES, AVATAR_GEAR, AVATAR_TOKENS } from '../core/engines/swarm-rules.mjs';
 import * as engine from '../cli/build-engine.mjs';
 
 let n = 0;
@@ -74,6 +75,25 @@ const lic = starters.find((a) => a.id === 'license')!;
 eq(cardModel(lic.data, AGENT_CARD_SAMPLE.identity).front.find((l) => l.id === 'hiredAt')?.label, 'Issued', 'license: issue date = hire date');
 ok(starters.find((a) => a.id === 'trading-card')!.data.back.includes('successRate'), 'trading card: stats on the back');
 eq(read('framework/defaults.json')['agent-card'], 'corporate-badge', 'defaults.json names a starter');
+
+/* ---- avatar: data every port draws from, theme tokens only (fixture → avatar) ---- */
+eq(fx.avatar.sample, avatarModel(AGENT_CARD_SAMPLE.avatar), 'the sample agent\'s avatar model');
+eq(fx.avatar.junk, avatarModel('nope'), 'avatar from junk = round face, hair 0, no gear, hue 0');
+for (const [k, v] of Object.entries(fx.avatar.faces)) eq(avatarModel({ face: k }).parts.find((p) => p.id === 'face'), v, `face ${k}`);
+for (const [k, v] of Object.entries(fx.avatar.gear)) eq(avatarModel({ gear: k }).parts.filter((p) => p.id.startsWith('gear')), v, `gear ${k}`);
+for (const [k, v] of Object.entries(fx.avatar.hues)) eq(avatarColors({ hue: Number(k), hair: 0 }), v, `hue ${k} picks its token pair`);
+eq(Object.keys(fx.avatar.faces).sort(), [...AVATAR_FACES].sort(), 'fixture covers every face');
+eq(Object.keys(fx.avatar.gear).sort(), [...AVATAR_GEAR].sort(), 'fixture covers every gear');
+eq(AVATAR_HAIR.length, 6, 'six hair shapes (agent@1 hair 0–5)');
+for (const face of AVATAR_FACES) for (const gear of AVATAR_GEAR) for (let hair = 0; hair < 6; hair += 1) {
+  const m = avatarModel({ face, hair, gear, hue: (hair * 61) % 360 });
+  assert.ok(m.parts.every((p) => AVATAR_PAINTS.includes(p.paint) && ['circle', 'rect', 'ellipse', 'path'].includes(p.tag)), `${face}/${hair}/${gear}: every part has a known paint and shape`);
+  assert.ok(AVATAR_TOKENS.includes(m.tokens.hair) && AVATAR_TOKENS.includes(m.tokens.shirt), `${face}/${hair}/${gear}: tokens only`);
+  assert.equal(new Set(m.parts.map((p) => p.id)).size, m.parts.length, `${face}/${hair}/${gear}: part ids unique`);
+}
+n += 1;
+ok(Object.values(AVATAR_GEAR_PARTS).flat().every((p) => !('fill' in p.attrs) && !('stroke' in p.attrs) && !('style' in p.attrs)), 'no part carries a colour: paints are roles and tokens');
+ok(JSON.stringify(avatarModel({ hue: 44 }).tokens) !== JSON.stringify(avatarModel({ hue: 46 }).tokens), 'hue bands pick different token pairs');
 
 /* ---- schema ---- */
 const schema = read('framework/schemas/json/agent-card.schema.json');

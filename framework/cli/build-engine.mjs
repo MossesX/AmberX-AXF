@@ -12,6 +12,7 @@ import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engine
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
+import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -450,7 +451,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * apps left on defaults look identical.
  */
 /**
- * Designed assets an app ships with (Build Pilot's banner / toolbar designers, …): asset@1 documents written into the
+ * Designed assets an app ships with (banner / toolbar designers, …): asset@1 documents written into the
  * app's own assets folder before the slot picks are checked, so a pick may name one of them. Each is validated like a
  * framework asset; ids must not collide with a framework starter of the same type.
  */
@@ -817,6 +818,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // model-policy@1: which models work may run on (Opus or Fable, never Sonnet), the snapshot Python readers use
   const mreg = join(FRAMEWORK_DIR, 'schemas/model-policy.json');
   writeFileSync(mreg, JSON.stringify(MODEL_POLICY, null, 2) + '\n'); written.push(mreg);
+  // agent swarm contracts (agent@1 … swarm-run@1): JSON Schemas + the registry snapshot (core/engines/swarm-rules.mjs)
+  for (const [n, schema] of Object.entries(swarmJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const swreg = join(FRAMEWORK_DIR, 'schemas/swarm.json');
+  writeFileSync(swreg, JSON.stringify(SWARM, null, 2) + '\n'); written.push(swreg);
   return written;
 }
 
@@ -874,7 +879,7 @@ export function listModules() {
   return [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
     const readme = join(ANDROID_DIR, name, 'README.md');
     const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
-    // Modules this one builds on: its Gradle `project(":x")` dependencies (Build Pilot highlights them when one is picked).
+    // Modules this one builds on: its Gradle `project(":x")` dependencies (a designer highlights them when one is picked).
     const gradle = join(ANDROID_DIR, name, 'build.gradle.kts');
     const dependsOn = existsSync(gradle) ? [...new Set([...readFileSync(gradle, 'utf8').matchAll(/project\(\s*"(:[^"]+)"\s*\)/g)].map((m) => m[1].slice(1)).filter((d) => d !== name))] : [];
     return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first, dependsOn };

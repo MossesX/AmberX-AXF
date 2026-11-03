@@ -228,17 +228,17 @@ write('hide.json', {
 });
 // Embed marker (core/engines/embed.ts): a host app's mark on the pages it embeds, from the query or the user agent; the hidden chrome it implies.
 {
-  const hosts = ['patches', 'Patches', ' patches ', 'dev-console', 'a', '', '-bad', 'bad id', 'x'.repeat(32), 'x'.repeat(33), 'UPPER-9', null, 12];
+  const hosts = ['host', 'Host', ' host ', 'dev-console', 'a', '', '-bad', 'bad id', 'x'.repeat(32), 'x'.repeat(33), 'UPPER-9', null, 12];
   const hiddenInputs: (string | string[] | null)[] = [null, '', 'banner', 'banner,toolbar', 'toolbar+banner', 'layout', 'banner,layout,nav-menu', ['toolbar', 'toolbar', 'Banner'], ' banner , toolbar ', 'none', 'banner,none', [], ['nothing']];
-  const queries = ['', '?', '?x=1', '?axf-embed=patches', '?axf-embed=patches&axf-embed-hide=banner,toolbar', '?a=b&axf-embed=Patches&axf-embed-hide=layout', '?axf-embed=bad%20id', '?axf-embed=', 'axf-embed=patches&axf-embed-hide=toolbar', '?axf-embed-hide=toolbar'];
+  const queries = ['', '?', '?x=1', '?axf-embed=host', '?axf-embed=host&axf-embed-hide=banner,toolbar', '?a=b&axf-embed=Host&axf-embed-hide=layout', '?axf-embed=bad%20id', '?axf-embed=', 'axf-embed=host&axf-embed-hide=toolbar', '?axf-embed-hide=toolbar'];
   const agents = [
-    'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches',
-    'Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar',
-    'Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36',
+    'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/host',
+    'Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/host/banner+toolbar',
+    'Mozilla/5.0 (X11; Linux) AXF-Embed/host/layout Safari/537.36',
     'Mozilla/5.0 AXF-Embed/Bad_Host',
     'Mozilla/5.0 (AXF-Embed/dev-console; wv)',
-    'Mozilla/5.0 NotAXF-Embed/patches',
-    'Mozilla/5.0 AXF-Embed/patches/none Chrome/130',
+    'Mozilla/5.0 NotAXF-Embed/host',
+    'Mozilla/5.0 AXF-Embed/host/none Chrome/130',
     'Mozilla/5.0 Chrome/130',
     '',
   ];
@@ -250,9 +250,9 @@ write('hide.json', {
     queries: queries.map((q) => ({ input: q, embed: embedFromQuery(q) })),
     userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgent(ua) })),
     // The query wins over the user agent; either alone counts; neither = standalone.
-    detect: [['?axf-embed=patches', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
-    suffix: [['patches', undefined], ['patches', ['banner']], ['patches', ['banner', 'toolbar']], ['patches', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['patches', ['nothing']], ['patches', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
-    urls: [['https://console.amberxai.com/', 'patches', undefined], ['https://console.amberxai.com/?x=1#view', 'patches', undefined], ['https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'patches', ['banner']], ['https://axhub.amberxai.com/apps', 'patches', ['banner', 'toolbar']], ['https://h/p#only-hash', 'patches', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
+    detect: [['?axf-embed=host', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
+    suffix: [['host', undefined], ['host', ['banner']], ['host', ['banner', 'toolbar']], ['host', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['host', ['nothing']], ['host', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
+    urls: [['https://console.amberxai.com/', 'host', undefined], ['https://console.amberxai.com/?x=1#view', 'host', undefined], ['https://other.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'host', ['banner']], ['https://axhub.amberxai.com/apps', 'host', ['banner', 'toolbar']], ['https://h/p#only-hash', 'host', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
   });
 }
 // What a host takes over + page mode + host/guest messages (embed@1 extension, core/engines/embed.ts; Oct 21 2026).
@@ -260,25 +260,25 @@ write('hide.json', {
   const takeInputs: (string | string[] | null)[] = [null, '', 'settings', 'notifications,settings', 'settings+notifications', 'Settings', 'nothing', 'settings,none', ['settings', 'settings'], ' notifications '];
   const pageInputs: unknown[] = [null, '', 'settings', 'SETTINGS', 'notifications', 'nothing', 3];
   const queries = [
-    '?axf-embed=patches',
-    '?axf-embed=patches&axf-embed-take=settings',
-    '?axf-embed=patches&axf-embed-take=settings,notifications',
-    '?axf-embed=patches&axf-embed-take=bogus',
-    '?axf-embed=patches&axf-embed-page=settings',
-    '?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings',
-    '?axf-embed=patches&axf-embed-page=notifications',
+    '?axf-embed=host',
+    '?axf-embed=host&axf-embed-take=settings',
+    '?axf-embed=host&axf-embed-take=settings,notifications',
+    '?axf-embed=host&axf-embed-take=bogus',
+    '?axf-embed=host&axf-embed-page=settings',
+    '?axf-embed=host&axf-embed-take=settings,notifications&axf-embed-page=settings',
+    '?axf-embed=host&axf-embed-page=notifications',
     '?axf-embed-take=settings',
   ];
   const agents = [
-    'Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications',
-    'Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings',
-    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none',
+    'Mozilla/5.0 Chrome/130 AXF-Embed/host AXF-Embed-Take/settings+notifications',
+    'Mozilla/5.0 AXF-Embed/host/banner+toolbar AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/none',
     'Mozilla/5.0 AXF-Embed-Take/settings',
-    'Mozilla/5.0 AXF-Embed/patches',
-    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu',
-    'Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu',
+    'Mozilla/5.0 AXF-Embed/host',
+    'Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/settings+notifications+app-menu',
+    'Mozilla/5.0 AXF-Embed/host/none AXF-Embed-Take/app-menu',
   ];
-  const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
+  const e = (takes: string[] | undefined, page?: string) => ({ host: 'host', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
   const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', 'plugin-manager.open', 'nav:plugin-manager', '', null];
   write('embed-takes.json', {
     uaToken: EMBED_TAKE_UA_TOKEN,
@@ -287,18 +287,18 @@ write('hide.json', {
     pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
     queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
     userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
-    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=patches', agents[5]], ['?axf-embed=patches&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
+    detect: [['?axf-embed=host', agents[0]], ['?axf-embed=host&axf-embed-page=settings', agents[0]], ['?axf-embed=host&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=host', agents[5]], ['?axf-embed=host&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
     takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications']), e(['settings', 'plugins'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
     takenView: [e(['settings']), e(undefined), e(['plugins'])].flatMap((em) => ['settings', 'home', 'plugin-manager', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
     takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
-    suffix: [['patches', null, ['settings', 'notifications', 'app-menu']], ['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
+    suffix: [['host', null, ['settings', 'notifications', 'app-menu']], ['host', null, ['settings', 'notifications']], ['host', ['banner'], []], ['host', ['banner', 'toolbar'], ['settings']], ['host', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
     urls: [
       ['https://console.amberxai.com/', { takes: ['settings', 'notifications'] }],
       ['https://console.amberxai.com/?x=1#a', { takes: ['settings'], page: 'settings' }],
-      ['https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
-      ['https://pilot.amberxai.com/', {}],
+      ['https://other.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
+      ['https://other.amberxai.com/', {}],
       ['https://console.amberxai.com/', { takes: ['settings', 'app-menu'] }],
-    ].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
+    ].map(([u, o]) => ({ url: u, host: 'host', opts: o, out: embedUrlFull(u as string, 'host', o as never) })),
     links: ['https://axhub.amberxai.com/apps', 'http://x.example/', 'view:alerts', 'settings:appearance', 'javascript:alert(1)', 'https://u:p@h/', 'view:', ''].map((l) => ({ link: l, ok: embedLinkOk(l) })),
     messages: [
       { $axf: 'embed@1', type: 'open-settings' },
@@ -335,7 +335,7 @@ write('hide.json', {
       ['array'],
       null,
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
-    // Locked functions (plugins inside Patches): hooks kept greyed out with a note. Web only so far (Kotlin deferred, PORTING.md).
+    // Locked functions (e.g. plugins): hooks kept greyed out with a note. Web only so far (Kotlin deferred, PORTING.md).
     locked: [e(['settings', 'plugins']), e(['settings']), e(['plugins'], 'settings'), e(undefined)].flatMap((em) =>
       ['plugin-manager.open', 'plugin-manager.view:cards', 'plugin-switches.open', 'plugin-catalog.install', 'nav:plugin-manager', 'app.settings', 'alerts.open', '', null]
         .map((a) => ({ embed: em, action: a, fn: embedLockedBy(em, a), note: embedLockNote(em, embedLockedBy(em, a)) }))),
@@ -352,8 +352,8 @@ write('hide.json', {
     // View pages (`view:<id>`: one view alone, e.g. a tabable plugin as a host's tab) and plugin tabs in a plugin report.
     // Web only so far (Kotlin deferred, PORTING.md).
     viewPages: ['view:todos', ' view:todos ', 'view:', 'view:bad id', 'view:a/b', `view:${'x'.repeat(70)}`, 'View:Alerts'].map((p) => ({ input: p, page: embedPage(p), view: embedPageView(embedPage(p)) })),
-    viewUrls: [['https://console.amberxai.com/', { takes: ['settings', 'banners', 'plugins'], page: 'view:todos' }]].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
-    viewDetect: ['?axf-embed=patches&axf-embed-take=settings,plugins&axf-embed-page=view:todos'].map((q) => ({ search: q, embed: embedFromQueryFull(q) })),
+    viewUrls: [['https://console.amberxai.com/', { takes: ['settings', 'banners', 'plugins'], page: 'view:todos' }]].map(([u, o]) => ({ url: u, host: 'host', opts: o, out: embedUrlFull(u as string, 'host', o as never) })),
+    viewDetect: ['?axf-embed=host&axf-embed-take=settings,plugins&axf-embed-page=view:todos'].map((q) => ({ search: q, embed: embedFromQueryFull(q) })),
     pluginTabs: [
       { $axf: 'embed@1', type: 'plugins', plugins: [
         { id: 'ai.amberx.axf.example.alpha', name: 'Todos', on: true, tab: { view: 'todos', label: ' Todos\n', icon: 'list' } },
@@ -384,12 +384,12 @@ write('hide.json', {
     parsed: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, parseAppearance(v)])),
     resolved: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, resolveAppearance(parseAppearance(v), has)])),
     merged: {
-      'slot-over-full': mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z'),
+      'slot-over-full': mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'axhub-web', '2026-10-21T01:00:00Z'),
       'hidden-clear': mergeAppearance(base, { hidden: { toolbar: null, 'app-menu': true } }, 'axf-console', '2026-10-21T01:00:00Z'),
       'spacing-only-into-null': mergeAppearance(null, { spacing: 'regular' }, 'axhub-android', '2026-10-21T01:00:00Z'),
       'keeps-other-apps-slots': mergeAppearance(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'pilot-only-type': 'thing', layout: 'focus-top' } })), { slots: { layout: 'classic-ide' } }, 'axf-console', '2026-10-21T01:00:00Z'),
     },
-    serialized: serializeAppearance(mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z')),
+    serialized: serializeAppearance(mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'axhub-web', '2026-10-21T01:00:00Z')),
     palette: Object.fromEntries(load('color-theme').map((a) => [a.id, paletteFromColorTheme(a.data)])),
     retryMs: Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 20].map((n) => [n, appearanceRetryMs(n)])),
   });
@@ -1236,26 +1236,26 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   ];
   // The app catalog (libs/hub/apps.ts, harvested from apps/axhub-web Oct 23 2026). Kotlin twin deferred (PORTING.md).
   const SHA = 'a'.repeat(64);
-  const bld = (over: Record<string, unknown> = {}) => ({ version: '0.1.0', build: 12, file: 'patches-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
-  const app = (over: Record<string, unknown> = {}) => ({ project: 'patches', name: 'Patches', platform: 'android', latest: bld(), versions: [bld()], ...over });
+  const bld = (over: Record<string, unknown> = {}) => ({ version: '0.1.0', build: 12, file: 'notes-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
+  const app = (over: Record<string, unknown> = {}) => ({ project: 'notes', name: 'Notes', platform: 'android', latest: bld(), versions: [bld()], ...over });
   const cat = (apps: unknown, updatedAt: unknown = '2026-10-21T18:05:00.000Z') => JSON.stringify({ updatedAt, apps });
   const appsCases: [string, number, string][] = [
     ['ok-one', 200, cat([app()])],
     ['ok-empty', 200, cat([])],
-    ['ok-earlier-builds', 200, cat([app({ versions: [bld(), bld({ version: '0.0.9', build: 11, file: 'patches-0.0.9-b11.apk' }), bld({ version: '0.0.8', build: 10, file: 'patches-0.0.8-b10.apk' })] })])],
+    ['ok-earlier-builds', 200, cat([app({ versions: [bld(), bld({ version: '0.0.9', build: 11, file: 'notes-0.0.9-b11.apk' }), bld({ version: '0.0.8', build: 10, file: 'notes-0.0.8-b10.apk' })] })])],
     ['ok-sorted-by-name', 200, cat([app({ project: 'voice-vault', name: 'Voice Vault', latest: bld({ file: 'voice-vault-0.1.0-b3.apk' }), versions: [] }), app({ project: 'axhub-android', name: 'AXHub', latest: bld({ file: 'axhub-android-0.1.0-b9.apk' }), versions: [] })])],
     ['ok-name-and-platform-default', 200, cat([app({ name: undefined, platform: 42 })])],
     ['ok-latest-from-versions', 200, cat([app({ latest: null })])],
-    ['bad-project-dropped', 200, cat([app({ project: '../etc' }), app({ project: 'Patches' }), app({ project: '' }), app()])],
+    ['bad-project-dropped', 200, cat([app({ project: '../etc' }), app({ project: 'Notes' }), app({ project: '' }), app()])],
     ['duplicate-project-dropped', 200, cat([app(), app({ name: 'Again' })])],
-    ['bad-file-dropped', 200, cat([app({ latest: bld({ file: '../../etc/passwd' }), versions: [bld({ file: 'evil.sh' }), bld({ file: 'patches.apk' })] })])],
-    ['bad-size-dropped', 200, cat([app({ latest: bld({ size: -1 }), versions: [bld({ size: 'big', file: 'patches-0.1.0-b13.apk' }), bld({ size: 5e9, file: 'patches-0.1.0-b14.apk' })] })])],
+    ['bad-file-dropped', 200, cat([app({ latest: bld({ file: '../../etc/passwd' }), versions: [bld({ file: 'evil.sh' }), bld({ file: 'notes.apk' })] })])],
+    ['bad-size-dropped', 200, cat([app({ latest: bld({ size: -1 }), versions: [bld({ size: 'big', file: 'notes-0.1.0-b13.apk' }), bld({ size: 5e9, file: 'notes-0.1.0-b14.apk' })] })])],
     ['foreign-url-ignored', 200, cat([app({ latest: bld({ url: 'https://evil.example/x.apk' }) })])],
     ['bad-sha-and-build', 200, cat([app({ latest: bld({ sha256: 'xyz', build: -4 }) })])],
-    ['duplicate-files-dropped', 200, cat([app({ versions: [bld(), bld(), bld({ version: '0.0.9', build: 11, file: 'patches-0.0.9-b11.apk' })] })])],
-    ['too-many-versions', 200, cat([app({ versions: Array.from({ length: 9 }, (_, i) => bld({ build: i + 1, file: `patches-0.1.0-b${i + 1}.apk` })) })])],
+    ['duplicate-files-dropped', 200, cat([app({ versions: [bld(), bld(), bld({ version: '0.0.9', build: 11, file: 'notes-0.0.9-b11.apk' })] })])],
+    ['too-many-versions', 200, cat([app({ versions: Array.from({ length: 9 }, (_, i) => bld({ build: i + 1, file: `notes-0.1.0-b${i + 1}.apk` })) })])],
     ['too-many-apps', 200, cat(Array.from({ length: APPS_MAX + 5 }, (_, i) => app({ project: `app-${String(i).padStart(3, '0')}`, name: `App ${String(i).padStart(3, '0')}`, latest: bld({ file: `app-${String(i).padStart(3, '0')}-0.1.0-b1.apk` }), versions: [] })))],
-    ['apps-not-array', 200, cat({ project: 'patches' })],
+    ['apps-not-array', 200, cat({ project: 'notes' })],
     ['entries-not-objects', 200, cat(['x', null, [1], 5, app()])],
     ['updated-at-capped', 200, cat([], 'x'.repeat(100))],
     ['status-401', 401, JSON.stringify({ signedIn: false })],

@@ -1118,8 +1118,7 @@ export class AxfRuntime {
    * Chrome that belongs to the host while this app runs inside it (embed@1): what it hides for the whole app (its banner
    * by default, plus what a taken function hides, e.g. the app menu). On a page the host shows alone (settings page
    * mode) every bit of chrome is hidden for that page only, so only the whole-app part counts. Settings leave rows about
-   * this chrome out instead of greying them (Brett, Oct 23 2026: "if a program runs inside Patches don't grey out its
-   * settings").
+   * this chrome out instead of greying them (Brett, Oct 23 2026: settings of chrome a host owns aren't greyed out).
    */
   slotOwnedByHost(type: AssetType): boolean {
     const e = this.embedded;
@@ -1583,9 +1582,9 @@ export class AxfRuntime {
 
   navigate(view: string) {
     if (this.openPlaced(`view:${view}`)) return;
-    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    // A view the host took over (embed@1 takes: e.g. the settings view) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
-    // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
+    // A view of a function the host locks (e.g. plugins): say who manages it instead of opening it.
     const lock = this.lockedByHost({ view });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
@@ -1627,9 +1626,9 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
-    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    // A hook of a function the host took over (embed@1): the host does it (e.g. a host's combined settings).
     if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
-    // A hook of a function the host locks (plugins inside Patches): shown greyed out; running it only says who manages it.
+    // A hook of a function the host locks (e.g. plugins): shown greyed out; running it only says who manages it.
     const lock = this.lockedByHost({ action: spec });
     if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return false; }
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
@@ -1649,8 +1648,8 @@ export class AxfRuntime {
   }
 
   /**
-   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins
-   * inside Patches)? Returns the note to show (`Plugins are managed in Patches`), or null. Chrome keeps such hooks on
+   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins)?
+   * Returns the note to show (`Plugins are managed in <host>`), or null. Chrome keeps such hooks on
    * screen greyed out with the note as their tooltip.
    */
   lockedByHost(what: { action?: string; view?: string; provider?: string }): string | null {
@@ -1660,7 +1659,7 @@ export class AxfRuntime {
     return embedLockNote(e, fn);
   }
 
-  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in Patches`), or null. */
+  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in <host>`), or null. */
   hostLockNote(fn: string): string | null { return embedLockNote(this.embedded, fn); }
 
   /* ---------------- embed@1: the host manages this app's plugins (take `plugins`) ---------------- */

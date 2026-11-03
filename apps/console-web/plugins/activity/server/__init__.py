@@ -88,7 +88,7 @@ def _pending_status(pid: str) -> str | None:
         return None
 
 
-FEED = Feed(data_dir(), cx.ROOT, default_repos=[r for r in (cx.GITHUB_REPO or "MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot") if r],
+FEED = Feed(data_dir(), cx.ROOT, default_repos=[r for r in (cx.GITHUB_REPO or "MossesX/AmberX-AXF", "MossesX/axHub") if r],
             services=_services, live_sessions=lambda: plugin_services.get("axf.live-sessions@1"),
             holds_file=Path(__file__).resolve().parents[1] / "holds.json", pending_status=_pending_status,
             github_client=lambda: _github_client())

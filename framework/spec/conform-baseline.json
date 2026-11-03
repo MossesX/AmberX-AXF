@@ -1,6 +1,6 @@
 {
   "schema": "conform-baseline@1",
-  "note": "Asset-conformance findings in frozen code (Android on hold, Patches paused). check-theme.mjs fails if a file goes above its count; fix and run --update-baseline to shrink it. New files never get an entry.",
+  "note": "Asset-conformance findings in frozen code (Android on hold). check-theme.mjs fails if a file goes above its count; fix and run --update-baseline to shrink it. New files never get an entry.",
   "total": 300,
   "files": {
     "apps/console/app/src/main/kotlin/app/views/BoilerplatesView.kt": 21,
@@ -12,7 +12,6 @@
     "apps/console/app/src/main/kotlin/app/views/TrackerView.kt": 4,
     "apps/console/app/src/main/kotlin/app/views/UiLibrariesView.kt": 2,
     "apps/console/app/src/main/kotlin/app/views/WizardsView.kt": 12,
-    "apps/patches-web/src/patches.css": 14,
     "framework/android/axf-devtools/src/main/kotlin/ai/amberx/axf/devtools/DevtoolsScreens.kt": 8,
     "framework/android/axf-devtools/src/main/kotlin/ai/amberx/axf/devtools/PluginManagerScreen.kt": 26,
     "framework/android/axf-ui/src/main/kotlin/ai/amberx/axf/ui/components/Banner.kt": 2,

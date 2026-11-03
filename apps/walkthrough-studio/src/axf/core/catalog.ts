@@ -13,7 +13,7 @@
  * consoles share: library install parameters (default text, wizard answer → JSON, validation) and `libraryCards`, the
  * catalog-driven list of framework libraries (catalog items that name a library, every library@1, every `lib-*` module
  * the tracker knows), so a new library appears by itself. Kotlin: `ai.amberx.axf.kernel.catalog` (same names, same
- * defaults); both replay spec/fixtures/catalog.json. Build Pilot keeps its own server-shaped `Catalog` (templates,
+ * defaults); both replay spec/fixtures/catalog.json. Other apps may keep their own server-shaped `Catalog` (templates,
  * build options, …) and uses these for the parts that are framework files.
  */
 

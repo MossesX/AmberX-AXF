@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/swarm-run.schema.json",
+  "title": "AmberX AXF swarm run (swarm-run@1)",
+  "description": "Generated from framework/core/engines/swarm-rules.mjs. One run of a job: a build step by the swarm runner (kind build) or a job type by a hired agent (kind job).",
+  "type": "object",
+  "required": [
+    "jobId",
+    "agent",
+    "model",
+    "startedAt",
+    "status"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "swarm-run@1"
+    },
+    "kind": {
+      "enum": [
+        "build",
+        "job"
+      ]
+    },
+    "jobId": {
+      "type": "string"
+    },
+    "buildId": {
+      "type": "string"
+    },
+    "stepId": {
+      "type": "string"
+    },
+    "jobType": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,39}$"
+    },
+    "model": {
+      "enum": [
+        "opus",
+        "fable"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "endedAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        {
+          "const": ""
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "running",
+        "done",
+        "failed",
+        "blocked",
+        "killed",
+        "error"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "report": {
+      "anyOf": [
+        {
+          "$ref": "axf/swarm-report.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "usage": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "number"
+            },
+            "output": {
+              "type": "number"
+            },
+            "cacheRead": {
+              "type": "number"
+            },
+            "cacheWrite": {
+              "type": "number"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "budgetTokens": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxTurns": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "turns": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reportedCost": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cwd": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "worktree": {
+      "type": "string"
+    },
+    "session": {
+      "type": "string"
+    },
+    "tmux": {
+      "type": "string"
+    },
+    "log": {
+      "type": "string"
+    },
+    "briefFile": {
+      "type": "string"
+    },
+    "reportPath": {
+      "type": "string"
+    },
+    "reportFile": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
+    },
+    "lease": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "outside": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        },
+        "shared": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 5000,
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "briefTokens": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "queued": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "integer"
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

@@ -6,7 +6,7 @@
 Replays framework/spec/fixtures/assistant.json against axf.contracts.assistant and
 framework/spec/fixtures/agents.json against axf.contracts.agents — the same files the TS references
 (framework/core/assistant.ts, agents.ts) generate and the Kotlin kernel replays (AssistantConformanceTest,
-AgentsConformanceTest). Hosts (console plugins, Build Pilot) don't need to replay them again.
+AgentsConformanceTest). Hosts (console plugins, other apps) don't need to replay them again.
 """
 from __future__ import annotations
 

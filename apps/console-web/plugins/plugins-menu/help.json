@@ -174,9 +174,9 @@
         "draft": true
       },
       {
-        "target": "list-build-pilot-plugins-too",
-        "title": "List Build Pilot plugins too",
-        "text": "Turns “List Build Pilot plugins too” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
+        "target": "list-other-apps-plugins-too",
+        "title": "List other apps' plugins too",
+        "text": "Turns “List other apps' plugins too” on or off. It takes effect straight away and is remembered. Part of Plugins menu.",
         "kind": "toggle",
         "draft": true
       },
