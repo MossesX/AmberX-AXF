@@ -938,3 +938,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:13 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
 - 2026-11-03 20:13 UTC · `smart-menus` s4 done (urgent) · orchestrator
 - 2026-11-03 20:13 UTC · `smart-menus` s5 done (urgent) · orchestrator
+- 2026-11-03 20:14 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
