@@ -568,8 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
-- 2026-11-03 16:41 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator
 - 2026-11-03 16:48 UTC · `dock-engine` → complete, merged (urgent) · builds-live
 - 2026-11-03 16:48 UTC · `land-everything` note (urgent) · orchestrator
@@ -968,3 +966,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:38 UTC · `molly-console-commands` s1 done, s2 done (current) · foreign-write
 - 2026-11-03 21:38 UTC · `whats-new-open-fix` s1 done, note (current) · foreign-write
 - 2026-11-03 21:45 UTC · `banner-ref-links` s5 done, → complete (current) · orchestrator
+- 2026-11-03 21:45 UTC · `banner-ref-links` → built, PR #287 (current) · builds-live
+- 2026-11-03 21:45 UTC · `banner-ref-links` note (current) · orchestrator
