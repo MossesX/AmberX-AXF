@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:51:45.649Z",
+ "updatedAt": "2026-11-03T22:55:24.141Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2998,13 +2998,18 @@
    "pendingId": "",
    "branch": "claude/urgent-main-ci-green",
    "pr": "#284",
+   "mergedAt": "2026-11-03T22:42:17Z",
    "createdAt": "2026-11-03T21:12:18.212Z",
-   "updatedAt": "2026-11-03T21:31:51.198Z",
+   "updatedAt": "2026-11-03T22:54:25.249Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
      "at": "2026-11-03T21:31:51.198Z"
+    },
+    {
+     "text": "Reconciler: PR #284 merged",
+     "at": "2026-11-03T22:54:25.249Z"
     }
    ],
    "approvals": [],
@@ -6268,9 +6273,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-tabs-left",
-   "pr": "",
+   "pr": "#293",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:48:44.541Z",
+   "updatedAt": "2026-11-03T22:54:25.249Z",
    "builtAt": "",
    "notes": [
     {
@@ -6280,6 +6285,10 @@
     {
      "text": "Agent: Janitor Joey. Overlap: terminal-sessions-nav #286 (open) adds a left rail; stack kept inside __body so it sits beside the rail after merge; stack-inside-rail option is a follow-up once #286 lands. terminal-drag-chain-tree (running) rewrites strip pointer code; this build hides strip tabs by CSS only.",
      "at": "2026-11-03T22:39:58.535Z"
+    },
+    {
+     "text": "Reconciler: PR #293",
+     "at": "2026-11-03T22:54:25.249Z"
     }
    ],
    "approvals": [],
