@@ -690,6 +690,11 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-dialog__head h2 { font-size: var(--fx-type-scale-lg); flex: 1; }
 .fx-dialog__head > svg { color: var(--fx-accent); }
 .fx-dialog__body { padding: var(--fx-dens-gap-3xl); overflow: auto; }
+/* phones: the title bar is the swipe-down handle, and the close button is a full finger-sized target */
+@media (pointer: coarse) {
+  .fx-dialog__head { touch-action: none; }
+  .fx-dialog__head .fx-iconbtn { min-width: max(calc(var(--fx-space) * 5.5), 2.75rem); min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+}
 [data-fx-dialog-header='accent-bar'] .fx-dialog { border-top: calc(var(--fx-border-w) * 4) solid var(--fx-accent); }
 [data-fx-dialog-header='filled'] .fx-dialog__head { background: var(--fx-accent); color: var(--fx-accent-text); border-bottom: 0; }
 [data-fx-dialog-header='filled'] .fx-dialog__head > svg, [data-fx-dialog-header='filled'] .fx-dialog__head .fx-iconbtn { color: var(--fx-accent-text); }

@@ -67,7 +67,14 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
       return [true, `opened ${m.label ?? m.target} settings`];
     case 'run': return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
-    case 'close': if (!rt.getState().dialog) return [true, 'no dialog was open']; rt.closeDialog(); return [true, 'closed the dialog'];
+    case 'close': {
+      const open = rt.getState().dialog;
+      if (!open) return [true, 'no dialog was open'];
+      // a named dialog closes only when it is the one open (a placed copy's id ends with it)
+      if (m.target && open.id !== m.target && !open.id.endsWith(`:${m.target}`)) return [true, `${m.label ?? m.target} wasn't open (${open.id} is), left it`];
+      rt.closeDialog();
+      return [true, `closed ${m.label ?? open.id}`];
+    }
     case 'home': rt.navigate(rt.manifest.startView ?? 'home'); return [true, `went home (${rt.getState().view})`];
     case 'back': {
       if (rt.getState().dialog) { rt.closeDialog(); return [true, 'closed the dialog']; }

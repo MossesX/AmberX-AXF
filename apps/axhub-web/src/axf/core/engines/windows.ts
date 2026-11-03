@@ -353,6 +353,11 @@ export class WindowManager {
   placement: WindowPlacementRules = { ...DEFAULT_WINDOW_PLACEMENT };
   /** The viewport the UI reports (for `center` stacking and keeping windows on screen); null = unknown. */
   viewport: { width: number; height: number } | null = null;
+  /**
+   * Where the app's fixed chrome along the top ends (banner, menu bar, banner strip), read when a window opens; the UI
+   * sets it. New floating windows open below it so they never cover what is tapped there (0 = no chrome / unknown).
+   */
+  chromeTop: () => number = () => 0;
   /** Last position per remember-key (title or origin) for `stack: remember`. */
   private readonly remembered = new Map<string, { x: number; y: number }>();
   setPlacement(rules: Partial<WindowPlacementRules>) { this.placement = { ...DEFAULT_WINDOW_PLACEMENT, ...rules }; }
@@ -390,7 +395,11 @@ export class WindowManager {
     const wid = this.nextId('win');
     const count = this._state.windows.filter(isFloating).length;
     const at = placeNewWindow(this.placement, count, { width, height }, this.viewport, this.remembered.get(title) ?? null);
-    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', ...opts, x: x ?? at.x, y: y ?? at.y, width, height, z: this.topZ(s) })], focused: wid }));
+    // below the top chrome, shrunk to fit under it when the viewport is known (never under the minimum height)
+    const top = Math.max(0, Math.round(this.chromeTop()));
+    const wy = Math.max(y ?? at.y, top);
+    const h = this.viewport ? Math.max(Math.min(height, this.viewport.height - wy), Math.min(height, opts.minHeight ?? 160)) : height;
+    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', ...opts, x: x ?? at.x, y: wy, width, height: h, z: this.topZ(s) })], focused: wid }));
     this.openGroup(tabs, wid);
     return wid;
   }

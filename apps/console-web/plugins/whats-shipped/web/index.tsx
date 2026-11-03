@@ -251,6 +251,9 @@ export const plugin: AxfWebLibrary = {
   provides: ['banner.status.whats-shipped'],
   register(rt) {
     rt.actions.register('whats-shipped.open', () => rt.openDialog('whats-shipped.panel'), { label: "Show what's new" });
+    // the app-wide "open What's new" hook: anything else that says What's new (the systems check's strip) opens this
+    // panel through it without naming this plugin
+    rt.actions.register('whats-new.open', () => rt.openDialog('whats-shipped.panel'), { label: "Open the What's new panel", searchable: false });
     rt.actions.register('whats-shipped.read-all', () => setRead(rt, items().map((i) => i.id)), { label: "Mark everything in What's new read" });
     rt.actions.register('whats-shipped.check', () => void refresh(true), { label: "Check what's new now" });
     if (!runtime) for (const k of [KEYS.show, KEYS.ticker, KEYS.read]) rt.settings.onChange(k, () => { if (runtime) paint(runtime); });
