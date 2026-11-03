@@ -871,3 +871,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:43 UTC · `home-cards-live` added (6 steps) (urgent) · orchestrator
 - 2026-11-03 19:43 UTC · `home-cards-live` note (urgent) · orchestrator
 - 2026-11-03 19:43 UTC · `home-cards-live` → running (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards` note (angel) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards` → archived (angel) · orchestrator
