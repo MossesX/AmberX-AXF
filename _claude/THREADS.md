@@ -684,3 +684,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:26 UTC · `pass-all` PR #264, merged (urgent) · builds-live
 - 2026-11-03 17:26 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:31 UTC · `console-wake` s2 done (urgent) · orchestrator
+- 2026-11-03 17:34 UTC · `plugin-commands-auto` PR #263, merged (urgent) · builds-live

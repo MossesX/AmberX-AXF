@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 272,
- "updatedAt": "2026-11-03T17:31:24.603Z",
+ "rev": 273,
+ "updatedAt": "2026-11-03T17:34:54.378Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50517,11 +50517,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 9
+    "urgent": 10
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50862,11 +50862,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 14
+    "urgent": 16
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51252,11 +51252,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 12
+    "urgent": 13
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51480,11 +51480,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 13
+    "urgent": 14
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51678,11 +51678,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 10
+    "urgent": 11
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51832,11 +51832,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 11
+    "urgent": 12
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52052,11 +52052,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 7
+    "urgent": 8
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52398,11 +52398,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 13
+    "urgent": 15
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52750,11 +52750,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 8
+    "urgent": 9
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -52775,9 +52775,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-commands-auto",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/263",
+   "pr": "#263",
+   "mergedAt": "2026-11-03T17:34:51.924Z",
    "createdAt": "2026-11-03T15:19:27.930Z",
-   "updatedAt": "2026-11-03T15:55:55.142Z",
+   "updatedAt": "2026-11-03T17:34:52.755Z",
    "builtAt": "2026-11-03T15:55:54.169Z",
    "notes": [
     {
@@ -52925,11 +52926,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 6
+    "urgent": 7
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
