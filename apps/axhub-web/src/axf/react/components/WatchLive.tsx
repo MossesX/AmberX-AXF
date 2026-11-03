@@ -89,7 +89,7 @@ export function WatchLiveWindow({ preview, onClose }: { preview: WatchLivePrevie
         <Icon name="eye" size={14} />
         <strong className="fx-watchlive__title">Watch live · {preview.label ?? preview.app}</strong>
         {focusText && <span className="fx-watchlive__focus" title={preview.focus?.selector}>{focusText}</span>}
-        <span className="fx-watchlive__tools">
+        <span className="fx-watchlive__tools" role="toolbar" aria-label="Watch live">
           <IconButton icon="refresh" label="Reload the preview" onClick={() => setRev((r) => r + 1)} />
           <IconButton icon="external" label="Open in a new tab" onClick={() => window.open(src, '_blank', 'noopener')} />
           <IconButton icon="x" label="Close" onClick={onClose} />

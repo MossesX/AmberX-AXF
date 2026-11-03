@@ -91,7 +91,7 @@ export function ActionsTab() {
   const srcIcon = (s: ActionSource) => SOURCES.find((x) => x.id === s)?.icon ?? 'zap';
   return (
     <div className="axp-ctxd-act">
-      <div className="axp-ctxd-act__bar">
+      <div className="axp-ctxd-act__bar" role="toolbar" aria-label="Actions search">
         <input className="fx-input" type="search" aria-label="Search actions" value={q} placeholder="Search actions: name, id or plugin" onChange={(e) => { setQ(e.target.value); setLimit(PAGE); }} autoFocus />
         <span className="axp-ctxd-act__filter">
           <Button size="sm" icon="sliders" onClick={() => rt.openDialog(FILTER_DIALOG)}>Filter</Button>

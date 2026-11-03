@@ -321,7 +321,7 @@ export function TerminalSession({ s: session, active, onClose, onRename }: { s: 
           {conn === 'closed' && <Button tone="ghost" icon="refresh" onClick={restart}>Start again</Button>}
         </div>
       )}
-      <div className={`${P}__keys`} role="toolbar" aria-label="Extra keys">
+      <div className={`${P}__keys`} role="toolbar" aria-label="Extra keys" data-axf-tap-confirm="off" data-axf-tap-confirm-reason="soft keyboard keys: every tap types a key, a confirm tap would type nothing">
         {KEYS.map((k) => (
           <button key={k.label} type="button" className={`fx-chip ${P}__key ${k.mod && ctrlOn ? 'is-on' : ''}`} onClick={() => {
             if (k.mod) { ctrl.current = !ctrl.current; setCtrlOn(ctrl.current); } else if (k.seq) send(k.seq);

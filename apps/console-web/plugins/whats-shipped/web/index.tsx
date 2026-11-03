@@ -173,7 +173,7 @@ function Panel() {
   const pick = (g: GroupBy) => { setBy(g); rt?.settings.set(KEYS.group, g); };
   return (
     <div className="fx-stack axp-whats-shipped">
-      <div className="fx-row fx-row--wrap axp-whats-shipped__bar">
+      <div className="fx-row fx-row--wrap axp-whats-shipped__bar" role="toolbar" aria-label="What's shipped">
         <Segmented label="Group" value={by} onChange={pick} options={GROUPS.map((g) => ({ value: g, label: GROUP_LABEL[g], icon: GROUP_ICON[g] }))} />
         <TextField label="Search" value={q} onChange={setQ} placeholder="Search features, builds, apps" className="axp-whats-shipped__search" />
       </div>

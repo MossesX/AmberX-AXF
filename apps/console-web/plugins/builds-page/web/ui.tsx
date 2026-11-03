@@ -226,7 +226,7 @@ export function BuildsPage() {
         </div>
       </header>
       <Meter value={state.progress.pct} active={state.progress.active} done={state.progress.pct === 100} label={`${prof?.name ?? state.profile}: ${state.progress.done} of ${state.progress.total} steps`} />
-      <div className="axp-builds__bar">
+      <div className="axp-builds__bar" role="toolbar" aria-label="Builds view">
         <SelectField label="Profile" value={state.profile} options={state.profiles.map((p) => ({ value: p.id, label: `${p.name} — ${p.progress.pct}%` }))} onChange={(v) => { rt.settings.set(KEYS.profile, v); void reload(v); }} className="axp-builds__pick" />
         <Segmented label="View" value={view} onChange={setView} options={[{ value: 'builds', label: 'Builds', icon: 'list' }, { value: 'steps', label: 'Steps', icon: 'layers' }]} />
         <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
@@ -373,7 +373,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
   const rearranged = shown.filter((b) => b.rearranged && b.hasDefault);
   return (
     <div className="axp-builds__steps-view">
-      <div className="axp-builds__bar">
+      <div className="axp-builds__bar" role="toolbar" aria-label="Steps selection">
         <SelectField label="Scope" value={scope} empty="Every build in the profile" options={state.builds.map((b) => ({ value: b.id, label: b.title }))} onChange={(v) => { setScope(v); setSel([]); }} className="axp-builds__pick" />
         <span className="fx-small fx-muted">{sel.length ? `${sel.length} selected` : isPhone() ? 'Long-press or tap to select' : 'Ctrl+click to select more, Shift+click for a range'}</span>
         <span className="axp-builds__grow" />

@@ -187,7 +187,7 @@ export function ThemeManager() {
 
       <div className={`${P}__main`}>
         <section className={`${P}__treebox`}>
-          <div className={`${P}__bar`}>
+          <div className={`${P}__bar`} role="toolbar" aria-label="Token tree">
             <input className="fx-input fx-grow" placeholder="Filter the tree" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Filter the tree" />
             <select className={`fx-input ${P}__tickpick`} aria-label="Tick a preset" value="" onChange={(e) => {
               const v = e.target.value; e.target.value = '';
@@ -327,7 +327,7 @@ function SavedThemes({ onApply }: { onApply: (type: string, id: string) => void 
   };
   return (
     <section className="fx-stack">
-      <div className={`${P}__bar`}>
+      <div className={`${P}__bar`} role="toolbar" aria-label="Saved themes">
         <strong className="fx-grow">Saved themes</strong>
         <label className="fx-chip"><Icon name="upload" size={12} /> Import asset JSON<input type="file" accept="application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} /></label>
       </div>
