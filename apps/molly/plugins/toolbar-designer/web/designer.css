@@ -10,4 +10,4 @@
 .axp-toolbar-designer__row--on .fx-field { flex: 1 1 100%; order: 9; }
 .axp-toolbar-designer__label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-toolbar-designer__code { margin: 0; white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-font-size); }
-@media (max-width: 480px) { .axp-toolbar-designer__head, .axp-toolbar-designer__cols { grid-template-columns: minmax(0, 1fr); } }
+:where([data-fx-tiny]) .axp-toolbar-designer__head, :where([data-fx-tiny]) .axp-toolbar-designer__cols { grid-template-columns: minmax(0, 1fr); }
