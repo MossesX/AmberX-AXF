@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 471,
- "updatedAt": "2026-11-03T21:17:55.721Z",
+ "rev": 472,
+ "updatedAt": "2026-11-03T21:18:23.918Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55530,15 +55530,15 @@
    "title": "Home cards draw live data: one card engine (card@1 binding), Add card, drag to Home, suggested cards",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice): \"I shouldn't need to build cards. I should draw dynamic data.\" One card engine draws any plugin read command (control@1 / plugin-commands-auto) as number, list, meter, chart, feed, table or status, live or every N s. Add card on Home (plugin -> read command -> live preview -> smart view -> fields -> Save), drag any hook onto Home, layout (reorder, size, show/hide, context menu) saved per user on axHub, Suggested cards. Zero code, zero agents, zero tokens. Replaces pending item home-cards. Agent: Ping Paulie.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/home-cards-live",
    "pr": "#283",
    "createdAt": "2026-11-03T19:43:04.673Z",
-   "updatedAt": "2026-11-03T21:05:22.440Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T21:17:55.434Z",
+   "builtAt": "2026-11-03T21:17:53.520Z",
    "notes": [
     {
      "text": "Agent: Ping Paulie (headless, Opus). All steps Opus; no model switch. Replaces pending home-cards (angel).",
@@ -55547,6 +55547,10 @@
     {
      "text": "Reconciler: branch claude/home-cards-live (no PR yet)",
      "at": "2026-11-03T21:00:30.825Z"
+    },
+    {
+     "text": "s3: Home drop target + draggable Plugin commands reads built; drops covered by check-card.mjs (cardFromDrop), a real browser drag was not exercised. PR #283, UI Review r-20261103-88aadcbf waiting.",
+     "at": "2026-11-03T21:17:47.027Z"
     },
     {
      "text": "Reconciler: PR #283",
@@ -55619,12 +55623,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:17:50.508Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:43:04.674Z",
-     "updatedAt": "2026-11-03T19:43:04.674Z"
+     "updatedAt": "2026-11-03T21:17:50.626Z"
     },
     {
      "id": "s4",
@@ -55685,12 +55689,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:17:53.520Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:43:04.674Z",
-     "updatedAt": "2026-11-03T19:43:04.674Z"
+     "updatedAt": "2026-11-03T21:17:53.697Z"
     }
    ],
    "profiles": [
@@ -55701,7 +55705,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

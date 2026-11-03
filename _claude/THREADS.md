@@ -568,10 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `agent-swarm-fable-rebuild` branch claude/agent-swarm-fable-rebuild, PR #247, merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `stack-walkthrough` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `molly-opus` merged, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `xlayout` s12 done, → built, branch claude/xlayout-opus, PR #252, note (big-dog) · reconciler
 - 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
 - 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
@@ -968,3 +964,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:17 UTC · `molly-console-commands` added (28 steps) (current) · foreign-write
 - 2026-11-03 21:17 UTC · `git-status-board` added (12 steps) (current) · foreign-write
 - 2026-11-03 21:17 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:17 UTC · `home-cards-live` note (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` s3 done (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` s6 done, → complete (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` → built, PR #283 (urgent) · builds-live
