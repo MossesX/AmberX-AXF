@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T16:07:41.096Z",
+ "updatedAt": "2026-11-03T16:07:53.914Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1090,16 +1090,21 @@
    "title": "Pass all: timed pass covers every command by default",
    "category": "Token control",
    "detail": "Brett, Nov 3 2026 (voice), correcting theme-veto-pass: \"It's 30 minutes to do whatever I tell you.\" control@1 pass gains scope all (default): any command through API, MCP or CLI on every plugin runs without the veto while the pass is live. Narrow scopes stay. Ordinary deletes covered by all; commands marked irreversible still confirm unless include_irreversible. Grant still needs Brett once. axHub side: build axhub-pass-all (same scope + flag). Banner chip names the scope; undo lists what cannot be rolled back. Based on claude/theme-veto-pass (PR #262).",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/pass-all",
    "pr": "",
    "createdAt": "2026-11-03T15:53:52.125Z",
-   "updatedAt": "2026-11-03T16:07:38.814Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T16:07:53.873Z",
+   "builtAt": "2026-11-03T16:07:53.371Z",
+   "notes": [
+    {
+     "text": "All 5 steps done. Commits fast-forwarded onto claude/theme-veto-pass (PR #262). UI Review r-20261103-7cd5aa8b waiting. axHub side: build axhub-pass-all.",
+     "at": "2026-11-03T16:07:53.873Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -1187,8 +1192,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:07:53.371Z",
      "note": "",
      "uid": "st-mw0vb4lw0axukf"
     }
