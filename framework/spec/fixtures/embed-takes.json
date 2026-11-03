@@ -5,7 +5,11 @@
     "notifications",
     "app-menu",
     "banners",
-    "plugins"
+    "plugins",
+    "nav-menu",
+    "context-menu",
+    "toolbar",
+    "widgets"
   ],
   "takes": [
     {
@@ -98,18 +102,18 @@
   ],
   "queries": [
     {
-      "input": "?axf-embed=patches",
+      "input": "?axf-embed=host",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
       }
     },
     {
-      "input": "?axf-embed=patches&axf-embed-take=settings",
+      "input": "?axf-embed=host&axf-embed-take=settings",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -119,9 +123,9 @@
       }
     },
     {
-      "input": "?axf-embed=patches&axf-embed-take=settings,notifications",
+      "input": "?axf-embed=host&axf-embed-take=settings,notifications",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -132,18 +136,18 @@
       }
     },
     {
-      "input": "?axf-embed=patches&axf-embed-take=bogus",
+      "input": "?axf-embed=host&axf-embed-take=bogus",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
       }
     },
     {
-      "input": "?axf-embed=patches&axf-embed-page=settings",
+      "input": "?axf-embed=host&axf-embed-page=settings",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu",
           "toolbar",
@@ -156,9 +160,9 @@
       }
     },
     {
-      "input": "?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings",
+      "input": "?axf-embed=host&axf-embed-take=settings,notifications&axf-embed-page=settings",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu",
           "toolbar",
@@ -174,9 +178,9 @@
       }
     },
     {
-      "input": "?axf-embed=patches&axf-embed-page=notifications",
+      "input": "?axf-embed=host&axf-embed-page=notifications",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -189,9 +193,9 @@
   ],
   "userAgents": [
     {
-      "input": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "input": "Mozilla/5.0 Chrome/130 AXF-Embed/host AXF-Embed-Take/settings+notifications",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -202,9 +206,9 @@
       }
     },
     {
-      "input": "Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings",
+      "input": "Mozilla/5.0 AXF-Embed/host/banner+toolbar AXF-Embed-Take/settings",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "toolbar",
           "banner"
@@ -215,9 +219,9 @@
       }
     },
     {
-      "input": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none",
+      "input": "Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/none",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -228,18 +232,18 @@
       "embed": null
     },
     {
-      "input": "Mozilla/5.0 AXF-Embed/patches",
+      "input": "Mozilla/5.0 AXF-Embed/host",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
       }
     },
     {
-      "input": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu",
+      "input": "Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/settings+notifications+app-menu",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu",
           "banner"
@@ -252,9 +256,9 @@
       }
     },
     {
-      "input": "Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu",
+      "input": "Mozilla/5.0 AXF-Embed/host/none AXF-Embed-Take/app-menu",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu"
         ],
@@ -266,10 +270,10 @@
   ],
   "detect": [
     {
-      "search": "?axf-embed=patches",
-      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "search": "?axf-embed=host",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/host AXF-Embed-Take/settings+notifications",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -280,10 +284,10 @@
       }
     },
     {
-      "search": "?axf-embed=patches&axf-embed-page=settings",
-      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "search": "?axf-embed=host&axf-embed-page=settings",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/host AXF-Embed-Take/settings+notifications",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu",
           "toolbar",
@@ -299,10 +303,10 @@
       }
     },
     {
-      "search": "?axf-embed=patches&axf-embed-take=notifications",
-      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "search": "?axf-embed=host&axf-embed-take=notifications",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/host AXF-Embed-Take/settings+notifications",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -313,9 +317,9 @@
     },
     {
       "search": "",
-      "userAgent": "Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings",
+      "userAgent": "Mozilla/5.0 AXF-Embed/host/banner+toolbar AXF-Embed-Take/settings",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "toolbar",
           "banner"
@@ -327,7 +331,7 @@
     },
     {
       "search": "?axf-embed=other",
-      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/host AXF-Embed-Take/settings+notifications",
       "embed": {
         "host": "other",
         "hidden": [
@@ -336,10 +340,10 @@
       }
     },
     {
-      "search": "?axf-embed=patches",
-      "userAgent": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu",
+      "search": "?axf-embed=host",
+      "userAgent": "Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/settings+notifications+app-menu",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu",
           "banner"
@@ -352,10 +356,10 @@
       }
     },
     {
-      "search": "?axf-embed=patches&axf-embed-page=settings",
-      "userAgent": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu",
+      "search": "?axf-embed=host&axf-embed-page=settings",
+      "userAgent": "Mozilla/5.0 AXF-Embed/host AXF-Embed-Take/settings+notifications+app-menu",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu",
           "toolbar",
@@ -375,7 +379,7 @@
   "takenBy": [
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -388,7 +392,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -401,7 +405,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -414,7 +418,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -427,7 +431,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -440,7 +444,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -453,7 +457,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -466,7 +470,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -479,7 +483,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -492,7 +496,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -505,7 +509,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -518,7 +522,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -531,7 +535,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -544,7 +548,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -557,7 +561,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -570,7 +574,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -583,7 +587,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -596,7 +600,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -609,7 +613,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -622,7 +626,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -635,7 +639,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -648,7 +652,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -661,7 +665,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -671,7 +675,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -681,7 +685,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -691,7 +695,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -701,7 +705,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -711,7 +715,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -721,7 +725,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -731,7 +735,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -741,7 +745,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -751,7 +755,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -761,7 +765,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -771,7 +775,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -785,7 +789,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -799,7 +803,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -813,7 +817,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -827,7 +831,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -841,7 +845,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -855,7 +859,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -869,7 +873,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -883,7 +887,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -897,7 +901,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -911,7 +915,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -925,7 +929,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -939,7 +943,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -953,7 +957,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -967,7 +971,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -981,7 +985,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -995,7 +999,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1009,7 +1013,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1023,7 +1027,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1037,7 +1041,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1051,7 +1055,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1065,7 +1069,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1081,7 +1085,7 @@
   "takenView": [
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1094,7 +1098,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1107,7 +1111,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1120,7 +1124,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1133,7 +1137,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -1143,7 +1147,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -1153,7 +1157,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -1163,7 +1167,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -1173,7 +1177,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1186,7 +1190,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1199,7 +1203,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1212,7 +1216,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1227,7 +1231,7 @@
   "takenProvider": [
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1240,7 +1244,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -1253,7 +1257,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -1263,7 +1267,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -1274,34 +1278,34 @@
   ],
   "suffix": [
     {
-      "host": "patches",
+      "host": "host",
       "hidden": null,
       "takes": [
         "settings",
         "notifications",
         "app-menu"
       ],
-      "suffix": "AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu"
+      "suffix": "AXF-Embed/host AXF-Embed-Take/settings+notifications+app-menu"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": null,
       "takes": [
         "settings",
         "notifications"
       ],
-      "suffix": "AXF-Embed/patches AXF-Embed-Take/settings+notifications"
+      "suffix": "AXF-Embed/host AXF-Embed-Take/settings+notifications"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "banner"
       ],
       "takes": [],
-      "suffix": "AXF-Embed/patches"
+      "suffix": "AXF-Embed/host"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": [
         "banner",
         "toolbar"
@@ -1309,64 +1313,64 @@
       "takes": [
         "settings"
       ],
-      "suffix": "AXF-Embed/patches/toolbar+banner AXF-Embed-Take/settings"
+      "suffix": "AXF-Embed/host/toolbar+banner AXF-Embed-Take/settings"
     },
     {
-      "host": "patches",
+      "host": "host",
       "hidden": null,
       "takes": [
         "bogus"
       ],
-      "suffix": "AXF-Embed/patches"
+      "suffix": "AXF-Embed/host"
     }
   ],
   "urls": [
     {
       "url": "https://console.amberxai.com/",
-      "host": "patches",
+      "host": "host",
       "opts": {
         "takes": [
           "settings",
           "notifications"
         ]
       },
-      "out": "https://console.amberxai.com/?axf-embed=patches&axf-embed-take=settings,notifications"
+      "out": "https://console.amberxai.com/?axf-embed=host&axf-embed-take=settings,notifications"
     },
     {
       "url": "https://console.amberxai.com/?x=1#a",
-      "host": "patches",
+      "host": "host",
       "opts": {
         "takes": [
           "settings"
         ],
         "page": "settings"
       },
-      "out": "https://console.amberxai.com/?x=1&axf-embed=patches&axf-embed-page=settings#a"
+      "out": "https://console.amberxai.com/?x=1&axf-embed=host&axf-embed-page=settings#a"
     },
     {
-      "url": "https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old",
-      "host": "patches",
+      "url": "https://other.amberxai.com/?axf-embed-take=old&axf-embed-page=old",
+      "host": "host",
       "opts": {
         "page": "settings"
       },
-      "out": "https://pilot.amberxai.com/?axf-embed=patches&axf-embed-page=settings"
+      "out": "https://other.amberxai.com/?axf-embed=host&axf-embed-page=settings"
     },
     {
-      "url": "https://pilot.amberxai.com/",
-      "host": "patches",
+      "url": "https://other.amberxai.com/",
+      "host": "host",
       "opts": {},
-      "out": "https://pilot.amberxai.com/?axf-embed=patches"
+      "out": "https://other.amberxai.com/?axf-embed=host"
     },
     {
       "url": "https://console.amberxai.com/",
-      "host": "patches",
+      "host": "host",
       "opts": {
         "takes": [
           "settings",
           "app-menu"
         ]
       },
-      "out": "https://console.amberxai.com/?axf-embed=patches&axf-embed-take=settings,app-menu"
+      "out": "https://console.amberxai.com/?axf-embed=host&axf-embed-take=settings,app-menu"
     }
   ],
   "links": [
@@ -2095,7 +2099,7 @@
   "locked": [
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2106,11 +2110,11 @@
       },
       "action": "plugin-manager.open",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2121,11 +2125,11 @@
       },
       "action": "plugin-manager.view:cards",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2136,11 +2140,11 @@
       },
       "action": "plugin-switches.open",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2151,11 +2155,11 @@
       },
       "action": "plugin-catalog.install",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2166,11 +2170,11 @@
       },
       "action": "nav:plugin-manager",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2185,7 +2189,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2200,7 +2204,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2215,7 +2219,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2230,7 +2234,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2244,7 +2248,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2258,7 +2262,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2272,7 +2276,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2286,7 +2290,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2300,7 +2304,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2314,7 +2318,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2328,7 +2332,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2342,7 +2346,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2356,7 +2360,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2367,11 +2371,11 @@
       },
       "action": "plugin-manager.open",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2382,11 +2386,11 @@
       },
       "action": "plugin-manager.view:cards",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2397,11 +2401,11 @@
       },
       "action": "plugin-switches.open",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2412,11 +2416,11 @@
       },
       "action": "plugin-catalog.install",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2427,11 +2431,11 @@
       },
       "action": "nav:plugin-manager",
       "fn": "plugins",
-      "note": "Plugins are managed in Patches"
+      "note": "Plugins are managed in Host"
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2446,7 +2450,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2461,7 +2465,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2476,7 +2480,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ],
@@ -2491,7 +2495,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2502,7 +2506,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2513,7 +2517,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2524,7 +2528,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2535,7 +2539,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2546,7 +2550,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2557,7 +2561,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2568,7 +2572,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -2579,7 +2583,7 @@
     },
     {
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "banner"
         ]
@@ -3748,7 +3752,7 @@
   "viewUrls": [
     {
       "url": "https://console.amberxai.com/",
-      "host": "patches",
+      "host": "host",
       "opts": {
         "takes": [
           "settings",
@@ -3757,14 +3761,14 @@
         ],
         "page": "view:todos"
       },
-      "out": "https://console.amberxai.com/?axf-embed=patches&axf-embed-take=settings,banners,plugins&axf-embed-page=view%3Atodos"
+      "out": "https://console.amberxai.com/?axf-embed=host&axf-embed-take=settings,banners,plugins&axf-embed-page=view%3Atodos"
     }
   ],
   "viewDetect": [
     {
-      "search": "?axf-embed=patches&axf-embed-take=settings,plugins&axf-embed-page=view:todos",
+      "search": "?axf-embed=host&axf-embed-take=settings,plugins&axf-embed-page=view:todos",
       "embed": {
-        "host": "patches",
+        "host": "host",
         "hidden": [
           "app-menu",
           "toolbar",

@@ -2,10 +2,10 @@
 
 One copy of what every AXF server app on the VPS (Hostinger, Coolify, Traefik, axHub) repeats in its installer.
 `axf-deploy.sh` defines bash functions only (no options set, nothing runs on source) and is safe under
-`set -euo pipefail`. Harvested Oct 21 2026 from `deploy/install-console.sh` and Build Pilot's `deploy/install.sh`.
+`set -euo pipefail`. Harvested Oct 21 2026 from `deploy/install-console.sh` and an earlier app installer.
 
 Used by: `deploy/install-console.sh` (the Dev Console), the `web-fastapi-wall` app template (baked into the app as
-`src/axf/deploy/axf-deploy.sh`, sourced by its `deploy/install.sh`). Build Pilot: see "Adopting it" below.
+`src/axf/deploy/axf-deploy.sh`, sourced by its `deploy/install.sh`).
 
 | Function | What it does |
 | --- | --- |
@@ -64,18 +64,3 @@ The full example is `framework/templates/web-fastapi-wall/deploy/install.sh`.
 - `sudo bash deploy/dryrun/compare.sh [ref]` — runs `deploy/install-console.sh` at `ref` and as it is now against fake
   docker/git/curl in a private mount namespace (11 scenarios) and diffs every `docker` argument, the output and the
   files under `.axf-console`. Run it before changing the console installer or these helpers.
-
-## Adopting it in Build Pilot (separate repo; steps, not done here)
-
-1. Bake the file: `cp ../amberx-axf/framework/deploy/axf-deploy.sh deploy/axf-deploy.sh` (or extend
-   `scripts/bake-contracts.mjs` to copy it and record its hash in `axf-contracts.lock.json`).
-2. In `deploy/install.sh` after the clone: `. "$DIR/deploy/axf-deploy.sh"`.
-3. Replace lines 92-93 with `axf_stop_container "$NAME"`; 117-119 with `if axf_coolify_proxy_running; then NET="$(axf_coolify_network)"`.
-4. Wall (124-161): `axf_save_choice "$WALLF" "${BP_WALL:-}"`, `WALL="$(axf_wall_mode "$WALLF" "$WALL_HUB")"`, keep its
-   own "reuse the console's wall secret, never create one" rule, then
-   `axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB")"` (admins only: no user_paths).
-5. Run (163-170): `axf_coolify_run "$R" "$DOMAIN" "$PORT" "$NET" "$NAME:latest" "${COMMON[@]}" --network "$NET" "${WALL_ARGS[@]}"`.
-6. Update script (179-195): `AXF_UPDATE_PRELUDE` = its two token lines, `AXF_UPDATE_FETCH='git "${H[@]}"'`,
-   markers `"$STATE/wall-waiting" "$STATE/data/rebuild-requested"`, then `axf_cron_file build-pilot` with its two lines
-   (the 5-minute flock one and the per-minute rebuild one). Note the script becomes 0700 (was 0755).
-7. Diff `docker run` arguments before/after with a copy of `deploy/dryrun/` pointed at Build Pilot's installer.

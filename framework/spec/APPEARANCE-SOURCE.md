@@ -11,7 +11,7 @@ is a settings document on the hub, never fetched from the hub's web app. A chang
 there and every other one follows live. **When axHub is down, a developer app doesn't run**: it shows a
 "Waiting for axHub" screen until the hub is back. No local fallback, no default-theme operation, no cached copy.
 
-Developer apps: the AXF Dev Console (web and Android), Build Pilot (web now, Android when it exists), axHub's own
+Developer apps: the AXF Dev Console (web and Android), axHub's own
 pages, the AXHub phone app, and any future app that opts in. **Not** every app built on AXF: an ordinary app keeps its
 own local settings. Voice Vault is deliberately out (offline password vault).
 
@@ -93,7 +93,7 @@ What the runtime does with it:
 ## Implementations
 
 - **Web** `framework/react/hubAppearance.ts` → `HubAppearanceSource({ hub, appId })`: fetch with `credentials: 'include'`
-  (the browser's hub session cookie; the console, Build Pilot and the hub are same-site under `.amberxai.com`),
+  (the browser's hub session cookie; the console and the hub are same-site under `.amberxai.com`),
   `If-Match` on every save, 409 → re-read + re-merge our keys + one retry, SSE live updates (polling when `live: false`),
   backoff, re-read on `focus` / `online`. https only (http for localhost). Attached by `src/main.tsx` when the manifest has
   `developer.hub` (`axf init --developer [hub]`); the console attaches it from `/api/me` → `appearanceHub`
@@ -148,7 +148,6 @@ a hub outage already blocks it at the proxy. **Emergency paths (unchanged, docum
    off (decision Oct 21 2026: a saved `.axf-console/wall` = `off` makes `/api/me` report `appearanceHub: "off"`), so
    the console runs on its own local settings while the hub is repaired. `AXF_WALL=on` brings both back. An explicit
    `AXF_APPEARANCE_HUB` always wins (`off`, or another hub).
-3. Build Pilot: `VITE_AXF_HUB` at build time; its server has no hub dependency.
 
 Security: the document is not an injection path (ids validated against the app's registry, values shape-checked,
 unknown fields dropped, size-capped, `uac-policy` excluded, the hub refuses non-JSON and oversized bodies); hub down

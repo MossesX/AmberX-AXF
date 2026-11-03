@@ -72,13 +72,13 @@ class AppearanceConformanceTest {
         val f = fixture("appearance.json")
         val base = AppearanceEngine.parse(docs.getValue("full"))
         val m = f.getValue("merged").jsonObject
-        assertEquals(m.getValue("slot-over-full").jsonObject, AppearanceEngine.merge(base, AppearanceChange(slots = mapOf("color-theme" to "neon-tide")), "build-pilot", "2026-10-21T01:00:00Z").toJson())
+        assertEquals(m.getValue("slot-over-full").jsonObject, AppearanceEngine.merge(base, AppearanceChange(slots = mapOf("color-theme" to "neon-tide")), "axhub-web", "2026-10-21T01:00:00Z").toJson())
         assertEquals(m.getValue("hidden-clear").jsonObject, AppearanceEngine.merge(base, AppearanceChange(hidden = mapOf("toolbar" to null, "app-menu" to true)), "axf-console", "2026-10-21T01:00:00Z").toJson())
         assertEquals(m.getValue("spacing-only-into-null").jsonObject, AppearanceEngine.merge(null, AppearanceChange(spacing = Spacing.REGULAR), "axhub-android", "2026-10-21T01:00:00Z").toJson())
         val other = AppearanceEngine.parse("""{"${'$'}axf":"appearance@1","slots":{"pilot-only-type":"thing","layout":"focus-top"}}""")
         assertEquals(m.getValue("keeps-other-apps-slots").jsonObject, AppearanceEngine.merge(other, AppearanceChange(slots = mapOf("layout" to "classic-ide")), "axf-console", "2026-10-21T01:00:00Z").toJson())
         // serialized text parses to the same document (key order is the engine's; whitespace differs from TS's pretty print)
-        assertEquals(f.getValue("serialized").jsonPrimitive.content.parseJsonObject(), AppearanceEngine.merge(base, AppearanceChange(slots = mapOf("color-theme" to "neon-tide")), "build-pilot", "2026-10-21T01:00:00Z").serialize().parseJsonObject())
+        assertEquals(f.getValue("serialized").jsonPrimitive.content.parseJsonObject(), AppearanceEngine.merge(base, AppearanceChange(slots = mapOf("color-theme" to "neon-tide")), "axhub-web", "2026-10-21T01:00:00Z").serialize().parseJsonObject())
         for (file in File(assetsDir, "color-theme").listFiles()!!) {
             val a = file.readText().parseJsonObject()!!
             val expected = f.getValue("palette").jsonObject.getValue(a.getValue("id").jsonPrimitive.content).jsonObject.mapValues { it.value.jsonPrimitive.content }

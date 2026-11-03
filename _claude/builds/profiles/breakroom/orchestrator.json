@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T16:07:53.914Z",
+ "updatedAt": "2026-11-03T17:09:42.955Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -20,6 +20,7 @@
    "pendingId": "",
    "branch": "claude/agent-swarm",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
+   "mergedAt": "2026-11-01T00:13:51Z",
    "createdAt": "2026-10-31T05:27:46.906Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
@@ -423,8 +424,9 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/agent-swarm-fable-rebuild",
+   "pr": "#247",
+   "mergedAt": "2026-11-03T12:10:18Z",
    "createdAt": "2026-10-31T05:27:48.056Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-03T12:01:23.473Z",
@@ -819,18 +821,23 @@
   {
    "id": "crew-retrain",
    "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
-   "category": "",
+   "category": "Breakroom",
    "detail": "Brett, Nov 3 2026 (voice). Retrain, don't fire: every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
-   "pendingId": "crew-retrain",
-   "branch": "",
-   "pr": "",
+   "pendingId": "",
+   "branch": "claude/crew-retrain",
+   "pr": "#265",
    "createdAt": "2026-11-03T15:58:12.029Z",
-   "updatedAt": "2026-11-03T16:07:20.795Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T16:23:06.193Z",
+   "builtAt": "2026-11-03T16:23:05.239Z",
+   "notes": [
+    {
+     "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
+     "at": "2026-11-03T16:23:06.193Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -849,7 +856,7 @@
      "done": true,
      "doneAt": "2026-11-03T15:58:19.537Z",
      "note": "",
-     "uid": "st-mw0vk25701b9u3"
+     "uid": "st-mw0vgp5h09uh1v"
     },
     {
      "id": "s2",
@@ -867,7 +874,7 @@
      "done": true,
      "doneAt": "2026-11-03T16:05:30.656Z",
      "note": "",
-     "uid": "st-mw0vk25702cg2b"
+     "uid": "st-mw0vgp5h0agp3p"
     },
     {
      "id": "s3",
@@ -885,7 +892,7 @@
      "done": true,
      "doneAt": "2026-11-03T16:05:31.738Z",
      "note": "",
-     "uid": "st-mw0vk25703txde"
+     "uid": "st-mw0vgp5h0b9ziq"
     },
     {
      "id": "s4",
@@ -903,7 +910,7 @@
      "done": true,
      "doneAt": "2026-11-03T16:05:32.857Z",
      "note": "",
-     "uid": "st-mw0vk25704kfg7"
+     "uid": "st-mw0vgp5h0cj1uk"
     },
     {
      "id": "s5",
@@ -921,7 +928,7 @@
      "done": true,
      "doneAt": "2026-11-03T16:07:20.795Z",
      "note": "",
-     "uid": "st-mw0vk25705tmlu"
+     "uid": "st-mw0vgp5h0ded72"
     },
     {
      "id": "s6",
@@ -936,10 +943,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:12:16.094Z",
      "note": "",
-     "uid": "st-mw0vk25706yx6z"
+     "uid": "st-mw0vgp5h0e19ae"
     },
     {
      "id": "s7",
@@ -954,10 +961,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:23:04.430Z",
      "note": "",
-     "uid": "st-mw0vk25707cdis"
+     "uid": "st-mw0vgp5h0fhwcm"
     },
     {
      "id": "s8",
@@ -972,10 +979,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:23:05.239Z",
      "note": "",
-     "uid": "st-mw0vk257085r2e"
+     "uid": "st-mw0vgp5h0g53iq"
     }
    ]
   }

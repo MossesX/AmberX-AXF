@@ -133,9 +133,9 @@ const response = (chunks: string[], status = 200, headers: Record<string, string
   eq(STANDARD_MESSAGES.unavailable('Snapshot Manager'), 'Snapshot Manager is disabled or its server part is not running.', 'standard 404 sentence');
   eq(dispositionName('attachment; filename="app-debug.apk"', 'x'), 'app-debug.apk', 'download name'); eq(dispositionName('attachment; filename="../x"', 'f.bin'), 'f.bin', 'no paths in download names');
   // unreachable
-  const down = createApiClient({ url: (p) => p, tokens, fetch: async () => { throw new TypeError('fetch failed'); }, messages: { unreachable: 'The Build Pilot server is not reachable.' } });
+  const down = createApiClient({ url: (p) => p, tokens, fetch: async () => { throw new TypeError('fetch failed'); }, messages: { unreachable: 'The app server is not reachable.' } });
   let e: unknown; try { await down.call('x'); } catch (x) { e = x; }
-  ok(e instanceof ApiError && e.status === 0 && e.message === 'The Build Pilot server is not reachable.', 'unreachable → ApiError 0');
+  ok(e instanceof ApiError && e.status === 0 && e.message === 'The app server is not reachable.', 'unreachable → ApiError 0');
   reply.status = 200; reply.body = 'PNG'; reply.headers = { 'content-type': 'text/plain' };
   try { await api.blob('img', undefined, /^image\//); e = null; } catch (x) { e = x; }
   ok(e instanceof ApiError && e.status === 415, 'blob refuses an unexpected type');

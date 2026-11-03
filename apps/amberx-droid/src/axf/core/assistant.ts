@@ -3,7 +3,7 @@
  * `ai.amberx.axf.kernel.assistant` (Assistant.kt) and the Python port `framework/python/axf/contracts/assistant.py`;
  * conformance fixtures: spec/fixtures/assistant.json (gen-fixtures.mts).
  *
- * What every AXF app shares when it ships an assistant (the Dev Console today, Build Pilot next, Android later):
+ * What every AXF app shares when it ships an assistant (the Dev Console today, Android later):
  *   - the provider registry (framework/schemas/ai-providers.json): kinds, protocols, key env names, suggested models;
  *   - the canonical chat message + stream event shapes every provider protocol maps to;
  *   - the conversation record (ai-conversation@1) and its per-conversation settings;
@@ -141,7 +141,7 @@ export interface Message {
 
 /**
  * What the app attaches to a turn: the view it was sent from, its title, selected text, a note — plus `extra`, an
- * open bag for host-specific context (Build Pilot's `projectId`, …). Well-known keys live in `CHAT_CONTEXT_KEYS`; any
+ * open bag for host-specific context (a `projectId`, …). Well-known keys live in `CHAT_CONTEXT_KEYS`; any
  * other key passes through untouched, so a host never needs a one-off field. `normalizeChatContext` is the rule every
  * port applies before storing or using a context (sizes capped, bad shapes dropped).
  */
@@ -149,7 +149,7 @@ export interface ChatContext { view?: string; title?: string; selection?: string
 
 /** Well-known `extra` keys (documented in spec/ASSISTANT.md); hosts may add their own. */
 export const CHAT_CONTEXT_KEYS = {
-  /** id of the project the chat is about (Build Pilot); 1–64 chars */
+  /** id of the project the chat is about; 1–64 chars */
   projectId: 'projectId',
   /** id of the app (`axf.manifest.json` name or project manifest name) the chat is about */
   appId: 'appId',
@@ -404,7 +404,7 @@ export interface AssistantStatus {
 }
 
 /**
- * Transport-agnostic assistant client. The console plugin's HTTP API is the reference; Build Pilot or an Android app
+ * Transport-agnostic assistant client. The console plugin's HTTP API is the reference; another app or an Android app
  * implement the same methods over their own transport (HTTP, AXPP, in-process). Replies are live sessions: `send`
  * only watches, `follow` reattaches by seq, and aborting a watch never stops the reply.
  */

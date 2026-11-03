@@ -46,6 +46,8 @@
  *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
  *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
  *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
+ *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | where | list [kind] [words] | clients
+ *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  */
 import { join, relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
@@ -72,6 +74,19 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   if (!dir) { console.error('no plugin provides control@1 (install the Token control plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
   process.exit(await main([cmd, ...rest]));
+}
+// console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
+if (cmd === 'console') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:console-commands@1') && exists(joinPath(plugins, d, 'console.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides console-commands@1 (install the Console commands plugin)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
+  process.exit(await main(rest));
 }
 const flags = {};
 const args = [];

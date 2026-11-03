@@ -4,7 +4,7 @@
   "id": "developer-apps",
   "name": "Developer apps",
   "version": "1.0.0",
-  "description": "One settings interface for Brett's developer apps (Dev Console, Build Pilot, Patches, axHub web): side tabs with search, Plugins before Connections, and the same shared Developer options in every app that loads it.",
+  "description": "One settings interface for Brett's developer apps (Dev Console, axHub web): side tabs with search, Plugins before Connections, and the same shared Developer options in every app that loads it.",
   "author": "AmberX AXF",
   "tags": ["developer", "shared"],
   "data": {

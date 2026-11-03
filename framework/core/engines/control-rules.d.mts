@@ -1,7 +1,7 @@
 // Types for control-rules.mjs (control@1: one command schema for tokens, AmberX entities and the planner).
 export type ControlOp = 'list' | 'get' | 'set' | 'reset' | 'add' | 'remove' | 'act';
-export type ControlEffect = 'read' | 'write' | 'destructive';
-export type ControlDomain = 'tokens' | 'amberx' | 'planner';
+export type ControlEffect = 'read' | 'write' | 'destructive' | 'navigate';
+export type ControlDomain = 'tokens' | 'amberx' | 'planner' | 'console';
 export type ControlWireCode = 'invalid' | 'denied' | 'not_found' | 'validation' | 'confirmation_required' | 'not_implemented' | 'unexpected';
 export interface ControlCommand {
   $axf?: 'control@1';
@@ -27,6 +27,8 @@ export interface ControlTarget {
   fields?: Record<string, string>;
   select?: Record<string, string>;
   acts?: Record<string, Record<string, string>>;
+  /** The effect of an act verb when it differs from `write` (console navigation). */
+  actEffect?: Record<string, ControlEffect>;
   stepFields?: Record<string, string>;
   protected?: readonly string[];
   doc: string;
@@ -52,7 +54,8 @@ export const CONTROL_DOMAIN_LABELS: Record<ControlDomain, string>;
 export function isControlTarget(t: unknown): t is string;
 export function controlDomain(target: string): ControlDomain | null;
 export function controlEffect(op: string): ControlEffect | null;
-export function controlPermission(target: string, op: string): string | null;
+export function controlEffectOf(target: string, op: string, action?: string): ControlEffect | null;
+export function controlPermission(target: string, op: string, action?: string): string | null;
 export function controlPaths(target: string): ControlPath[] | null;
 export function controlPathKnown(target: string, path: string): boolean | null;
 export function normalizeControl(raw: unknown): ControlCommand;

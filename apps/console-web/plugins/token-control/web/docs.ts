@@ -121,6 +121,23 @@ Status codes: 400 invalid · 403 denied · 404 not_found · 409 confirmation_req
 Reads are marked read-only, removes destructive. A failure raises a tool error with its code; a delete's first call returns the confirm token as data, so ask the user before sending it back.`,
   },
   {
+    id: 'console',
+    title: 'Console: load a screen for Brett',
+    body: `The \`console.*\` targets move Brett's **open console** (the Console commands plugin runs them; the console used last gets them, \`input.to\` = \`all\` or a client id for others).
+
+| Say | MCP tool (console /mcp, also through axHub) | REST | CLI |
+|---|---|---|---|
+| open Plan Studio | \`console_open {screen: "plan studio"}\` | \`POST /api/console/open {"screen": "plan studio"}\` | \`axf console open plan studio\` |
+| open a plugin's settings | \`console_settings {tab: "plugins/token-control"}\` | \`POST /api/console/settings {"tab": …}\` | \`axf console settings plugins/token-control\` |
+| open a dialog | \`console_dialog {dialog: "asset-json"}\` | \`POST /api/console/dialog {"id": …}\` | \`axf console dialog asset-json\` |
+| run an action | \`console_action {action: "terminal.open"}\` | \`POST /api/console/action {"id": …}\` | \`axf console action terminal.open\` |
+| back / home / close | \`console_back {move: "back"}\` | \`POST /api/console/back\` | \`axf console back\` |
+| where is it | \`console_where\` | \`GET /api/console/where\` | \`axf console where\` |
+| what can it open | \`console_list {kind: "screens", q: "build"}\` | \`GET /api/console/list?kind=screens&q=build\` | \`axf console list screens build\` |
+
+Names resolve by id, title or a few words, against what the open console reports (plugins' screens included). Opening only **navigates** (\`control.console.navigate\`). An action that changes data needs \`control.console.write\` plus the permission the action itself requires; one that deletes or resets answers \`confirmation_required\` with a token first, like a remove. The same commands work as control@1 here: \`{ "op": "act", "target": "console.screens", "path": "plan studio", "action": "open" }\`.`,
+  },
+  {
     id: 'passes',
     title: 'Veto passes: 30 minutes to do whatever Brett says, without a veto on every call',
     body: `Every changing call through axHub waits on a veto countdown. A **pass** lets commands run at once for a while: "allow everything for the next 30 minutes". By default it covers everything; a narrower scope covers only token changes.

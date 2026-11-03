@@ -71,6 +71,7 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
   }
   const domain = CONTROL_TARGETS[c.target].domain;
   try {
+    if (domain === 'console') throw new ControlError(CONTROL_WIRE.NOT_IMPLEMENTED, 'console commands are run by the Console commands plugin where the open consoles are: POST /api/control or /api/console on the console, or axf console …');
     const scope = gate.effect === 'read' ? null : passScopeOf(c);
     const tokenWrite = !!pass && domain === 'tokens' && ['set', 'reset'].includes(c.op);
     const before = tokenWrite ? tokenStateOrNull(c) : null;

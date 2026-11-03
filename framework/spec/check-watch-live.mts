@@ -67,7 +67,7 @@ eq(cli.CONTRACT, WATCH_LIVE_CONTRACT, 'one contract name');
 eq(cli.touchedApps(['apps/console-web/plugins/build-manager/web/ui.tsx', 'framework/assets/toolbar/x.json', 'README.md']), ['console-web', 'framework'], 'touched apps');
 eq(cli.touchedApps(['apps/console/app/src/main/assets/axf/assets/toolbar/t.json', 'apps/amberx-droid/android/app/x.java', 'apps/amberx-droid/src/App.tsx']), ['amberx-droid', 'console'], 'android shell + AmberX web layer (not its native folder)');
 eq(cli.touchedApps(['framework/templates/react-ts/src/App.tsx', 'framework/boilerplates/notes/x.json']), ['framework'], 'templates + boilerplates render through the framework shell');
-for (const app of ['console-web', 'axhub-web', 'amberx-droid', 'patches-web', 'walkthrough-studio', 'demo', 'framework', 'console', 'axhub-android', 'voicevault']) ok(cli.TARGETS.some((t: { app: string }) => t.app === app), `target ${app}`);
+for (const app of ['console-web', 'axhub-web', 'amberx-droid', 'walkthrough-studio', 'demo', 'framework', 'console', 'axhub-android', 'voicevault']) ok(cli.TARGETS.some((t: { app: string }) => t.app === app), `target ${app}`);
 ok(cli.TARGETS.filter((t: { android?: boolean }) => t.android).every((t: { kind: string; assets?: unknown }) => t.kind === 'shell' && t.assets), 'android targets render their assets through the web shell');
 eq(cli.guessSelector('apps/console-web/src/assets/toolbar/main.json'), '[class*="fx-toolbar"]', 'asset → its control');
 eq(cli.guessSelector('apps/console-web/plugins/build-manager/web/ui.tsx'), '[class*="axp-build-manager"], [class*="build-manager"]', 'plugin → its classes');

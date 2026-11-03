@@ -7,10 +7,13 @@ import { stylePackageErrors } from './engines/stylepackage';
 import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { scaleErrors } from './engines/scale-rules.mjs';
+import { layoutErrors } from './engines/layout-rules.mjs';
 import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
+import { dockLayoutErrors } from './engines/dock';
+import { xlayoutErrors } from './engines/xlayout';
 
 export interface ValidationResult {
   ok: boolean;
@@ -87,6 +90,8 @@ export function validateAsset(raw: unknown): ValidationResult {
     if (!isObj(inner)) continue;
     for (const nk of keys) if (!(nk in inner)) errors.push(`data.${k}.${nk} is required`);
   }
+  // layout tokens (every layout parameter is a token): ONE validator shared with the build engine (core/engines/layout-rules.mjs)
+  errors.push(...layoutErrors(raw.type, data));
   if (raw.type === 'layout' && 'slots' in data) errors.push(...validateSlots(data.slots, (t) => isAssetType(t)));
   if (raw.type === 'layout' && 'repeat' in data) errors.push(...validateRepeat(data.repeat, (t) => isAssetType(t)));
   // Menu items (app-menu menus, context-menu targets): optional fields provider / badge / checked / order / before / after.
@@ -104,6 +109,10 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'style-package') errors.push(...stylePackageErrors(data));
   if (raw.type === 'interface') errors.push(...interfaceErrors(data));
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
+  // dock-layout@1 (core/engines/dock.ts): pane numbers 1..n once each, panes = leaves, ≤ 12
+  if (raw.type === 'dock-layout') errors.push(...dockLayoutErrors(data));
+  // xlayout@1 (core/engines/xlayout.ts): apps, merge modes, IDE block, three toolbar slots
+  if (raw.type === 'xlayout') errors.push(...xlayoutErrors(data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with the build engine (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, data));
   // help@1: ONE validator shared with the build engine (core/engines/help-rules.mjs)

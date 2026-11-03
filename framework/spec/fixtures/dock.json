@@ -1,0 +1,6446 @@
+{
+  "contract": "dock@1",
+  "rules": {
+    "paneLimit": 6,
+    "minWeight": 0.1,
+    "headerBand": 36,
+    "edgeBand": 16,
+    "centreFraction": 0.5,
+    "splitRatio": 0.5,
+    "rootRatio": 0.3
+  },
+  "sides": [
+    "left",
+    "right",
+    "top",
+    "bottom"
+  ],
+  "zoneList": [
+    "header",
+    "centre",
+    "left",
+    "right",
+    "top",
+    "bottom"
+  ],
+  "maxPresetPanes": 12,
+  "normalizeRules": [
+    {
+      "input": null,
+      "rules": {
+        "paneLimit": 6,
+        "minWeight": 0.1,
+        "headerBand": 36,
+        "edgeBand": 16,
+        "centreFraction": 0.5,
+        "splitRatio": 0.5,
+        "rootRatio": 0.3
+      }
+    },
+    {
+      "input": {},
+      "rules": {
+        "paneLimit": 6,
+        "minWeight": 0.1,
+        "headerBand": 36,
+        "edgeBand": 16,
+        "centreFraction": 0.5,
+        "splitRatio": 0.5,
+        "rootRatio": 0.3
+      }
+    },
+    {
+      "input": {
+        "paneLimit": 3
+      },
+      "rules": {
+        "paneLimit": 3,
+        "minWeight": 0.1,
+        "headerBand": 36,
+        "edgeBand": 16,
+        "centreFraction": 0.5,
+        "splitRatio": 0.5,
+        "rootRatio": 0.3
+      }
+    },
+    {
+      "input": {
+        "paneLimit": 0,
+        "minWeight": 2,
+        "headerBand": -4,
+        "edgeBand": 3.7,
+        "centreFraction": 1.5,
+        "splitRatio": 0.05,
+        "rootRatio": "x"
+      },
+      "rules": {
+        "paneLimit": 1,
+        "minWeight": 0.45,
+        "headerBand": 0,
+        "edgeBand": 4,
+        "centreFraction": 0.9,
+        "splitRatio": 0.1,
+        "rootRatio": 0.3
+      }
+    },
+    {
+      "input": {
+        "paneLimit": 99.9
+      },
+      "rules": {
+        "paneLimit": 64,
+        "minWeight": 0.1,
+        "headerBand": 36,
+        "edgeBand": 16,
+        "centreFraction": 0.5,
+        "splitRatio": 0.5,
+        "rootRatio": 0.3
+      }
+    }
+  ],
+  "weights": [
+    {
+      "weights": [
+        1,
+        1
+      ],
+      "n": 2,
+      "min": null,
+      "out": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "weights": [
+        3,
+        1
+      ],
+      "n": 2,
+      "min": null,
+      "out": [
+        0.75,
+        0.25
+      ]
+    },
+    {
+      "weights": [
+        1,
+        1,
+        1
+      ],
+      "n": 3,
+      "min": null,
+      "out": [
+        0.333333,
+        0.333333,
+        0.333333
+      ]
+    },
+    {
+      "weights": [
+        0.02,
+        0.98
+      ],
+      "n": 2,
+      "min": null,
+      "out": [
+        0.1,
+        0.9
+      ]
+    },
+    {
+      "weights": [
+        0.01,
+        0.01,
+        0.98
+      ],
+      "n": 3,
+      "min": null,
+      "out": [
+        0.1,
+        0.1,
+        0.8
+      ]
+    },
+    {
+      "weights": [
+        -1,
+        null,
+        2
+      ],
+      "n": 3,
+      "min": null,
+      "out": [
+        0.25,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "weights": [],
+      "n": 4,
+      "min": null,
+      "out": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "weights": [
+        5
+      ],
+      "n": 1,
+      "min": null,
+      "out": [
+        1
+      ]
+    },
+    {
+      "weights": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "n": 12,
+      "min": 0.1,
+      "out": [
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333,
+        0.083333
+      ]
+    },
+    {
+      "weights": [
+        0.5,
+        0.5
+      ],
+      "n": 2,
+      "min": 0.3,
+      "out": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "weights": [
+        0.9,
+        0.1
+      ],
+      "n": 2,
+      "min": 0.2,
+      "out": [
+        0.8,
+        0.2
+      ]
+    }
+  ],
+  "normalize": [
+    {
+      "name": "null",
+      "tree": null,
+      "out": null,
+      "panes": 0
+    },
+    {
+      "name": "leaf",
+      "tree": {
+        "kind": "leaf",
+        "groupId": "a"
+      },
+      "out": {
+        "kind": "leaf",
+        "groupId": "a"
+      },
+      "panes": 1
+    },
+    {
+      "name": "two equal",
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          }
+        ],
+        "weights": [
+          1,
+          1
+        ]
+      },
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          }
+        ],
+        "weights": [
+          0.5,
+          0.5
+        ]
+      },
+      "panes": 2
+    },
+    {
+      "name": "flatten same orientation + collapse one child + fix weights",
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              1,
+              3
+            ]
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "d"
+              }
+            ],
+            "weights": [
+              1
+            ]
+          }
+        ],
+        "weights": [
+          2,
+          2,
+          0
+        ]
+      },
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "d"
+          }
+        ],
+        "weights": [
+          0.4,
+          0.1,
+          0.3,
+          0.2
+        ]
+      },
+      "panes": 4
+    },
+    {
+      "name": "grid kept",
+      "tree": {
+        "kind": "grid",
+        "rows": 2,
+        "cols": 2,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "d"
+          }
+        ]
+      },
+      "out": {
+        "kind": "grid",
+        "rows": 2,
+        "cols": 2,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "d"
+          }
+        ]
+      },
+      "panes": 4
+    },
+    {
+      "name": "grid with a nested split cell",
+      "tree": {
+        "kind": "grid",
+        "rows": 1,
+        "cols": 2,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      "out": {
+        "kind": "grid",
+        "rows": 1,
+        "cols": 2,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.5,
+              0.5
+            ]
+          }
+        ]
+      },
+      "panes": 3
+    },
+    {
+      "name": "single grid cell collapses",
+      "tree": {
+        "kind": "grid",
+        "rows": 1,
+        "cols": 1,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          }
+        ]
+      },
+      "out": {
+        "kind": "leaf",
+        "groupId": "a"
+      },
+      "panes": 1
+    },
+    {
+      "name": "empty split",
+      "tree": {
+        "kind": "split",
+        "vertical": true,
+        "children": [],
+        "weights": []
+      },
+      "out": null,
+      "panes": 0
+    }
+  ],
+  "paths": {
+    "tree": {
+      "kind": "split",
+      "vertical": false,
+      "children": [
+        {
+          "kind": "leaf",
+          "groupId": "a"
+        },
+        {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "b"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "c"
+            }
+          ],
+          "weights": [
+            0.6,
+            0.4
+          ]
+        }
+      ],
+      "weights": [
+        0.3,
+        0.7
+      ]
+    },
+    "of": [
+      {
+        "group": "a",
+        "path": [
+          0
+        ]
+      },
+      {
+        "group": "b",
+        "path": [
+          1,
+          0
+        ]
+      },
+      {
+        "group": "c",
+        "path": [
+          1,
+          1
+        ]
+      },
+      {
+        "group": "zzz",
+        "path": null
+      }
+    ],
+    "at": [
+      {
+        "path": [],
+        "node": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      },
+      {
+        "path": [
+          0
+        ],
+        "node": {
+          "kind": "leaf",
+          "groupId": "a"
+        }
+      },
+      {
+        "path": [
+          1
+        ],
+        "node": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "b"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "c"
+            }
+          ],
+          "weights": [
+            0.6,
+            0.4
+          ]
+        }
+      },
+      {
+        "path": [
+          1,
+          0
+        ],
+        "node": {
+          "kind": "leaf",
+          "groupId": "b"
+        }
+      },
+      {
+        "path": [
+          1,
+          1
+        ],
+        "node": {
+          "kind": "leaf",
+          "groupId": "c"
+        }
+      },
+      {
+        "path": [
+          1,
+          2
+        ],
+        "node": null
+      },
+      {
+        "path": [
+          0,
+          0
+        ],
+        "node": null
+      }
+    ]
+  },
+  "split": {
+    "base": {
+      "kind": "split",
+      "vertical": false,
+      "children": [
+        {
+          "kind": "leaf",
+          "groupId": "a"
+        },
+        {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "b"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "c"
+            }
+          ],
+          "weights": [
+            0.6,
+            0.4
+          ]
+        }
+      ],
+      "weights": [
+        0.3,
+        0.7
+      ]
+    },
+    "cases": [
+      {
+        "name": "a-left",
+        "group": "a",
+        "side": "left",
+        "ratio": null,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "new"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.15,
+            0.15,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "a-right",
+        "group": "a",
+        "side": "right",
+        "ratio": null,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "new"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.15,
+            0.15,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "a-top",
+        "group": "a",
+        "side": "top",
+        "ratio": null,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "new"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "a"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "a-bottom",
+        "group": "a",
+        "side": "bottom",
+        "ratio": null,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "a"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "new"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "b-top",
+        "group": "b",
+        "side": "top",
+        "ratio": null,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "new"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.3,
+                0.3,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "b-bottom-0.25",
+        "group": "b",
+        "side": "bottom",
+        "ratio": 0.25,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "new"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.45,
+                0.15,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "c-left",
+        "group": "c",
+        "side": "left",
+        "ratio": null,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "split",
+                  "vertical": false,
+                  "children": [
+                    {
+                      "kind": "leaf",
+                      "groupId": "new"
+                    },
+                    {
+                      "kind": "leaf",
+                      "groupId": "c"
+                    }
+                  ],
+                  "weights": [
+                    0.5,
+                    0.5
+                  ]
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "c-right-0.3",
+        "group": "c",
+        "side": "right",
+        "ratio": 0.3,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "split",
+                  "vertical": false,
+                  "children": [
+                    {
+                      "kind": "leaf",
+                      "groupId": "c"
+                    },
+                    {
+                      "kind": "leaf",
+                      "groupId": "new"
+                    }
+                  ],
+                  "weights": [
+                    0.7,
+                    0.3
+                  ]
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      },
+      {
+        "name": "zzz-left",
+        "group": "zzz",
+        "side": "left",
+        "ratio": null,
+        "out": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.6,
+                0.4
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        }
+      }
+    ]
+  },
+  "splitRoot": [
+    {
+      "side": "left",
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      },
+      "ratio": null,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "new"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.21,
+          0.49
+        ]
+      }
+    },
+    {
+      "side": "right",
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      },
+      "ratio": null,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          },
+          {
+            "kind": "leaf",
+            "groupId": "new"
+          }
+        ],
+        "weights": [
+          0.21,
+          0.49,
+          0.3
+        ]
+      }
+    },
+    {
+      "side": "top",
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      },
+      "ratio": null,
+      "out": {
+        "kind": "split",
+        "vertical": true,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "new"
+          },
+          {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "a"
+              },
+              {
+                "kind": "split",
+                "vertical": true,
+                "children": [
+                  {
+                    "kind": "leaf",
+                    "groupId": "b"
+                  },
+                  {
+                    "kind": "leaf",
+                    "groupId": "c"
+                  }
+                ],
+                "weights": [
+                  0.6,
+                  0.4
+                ]
+              }
+            ],
+            "weights": [
+              0.3,
+              0.7
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "side": "bottom",
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      },
+      "ratio": 0.5,
+      "out": {
+        "kind": "split",
+        "vertical": true,
+        "children": [
+          {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "a"
+              },
+              {
+                "kind": "split",
+                "vertical": true,
+                "children": [
+                  {
+                    "kind": "leaf",
+                    "groupId": "b"
+                  },
+                  {
+                    "kind": "leaf",
+                    "groupId": "c"
+                  }
+                ],
+                "weights": [
+                  0.6,
+                  0.4
+                ]
+              }
+            ],
+            "weights": [
+              0.3,
+              0.7
+            ]
+          },
+          {
+            "kind": "leaf",
+            "groupId": "new"
+          }
+        ],
+        "weights": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "side": "right",
+      "tree": null,
+      "ratio": null,
+      "out": {
+        "kind": "leaf",
+        "groupId": "new"
+      }
+    },
+    {
+      "side": "left",
+      "tree": {
+        "kind": "leaf",
+        "groupId": "a"
+      },
+      "ratio": null,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "new"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "side": "top",
+      "tree": {
+        "kind": "split",
+        "vertical": true,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          }
+        ],
+        "weights": [
+          1,
+          1
+        ]
+      },
+      "ratio": null,
+      "out": {
+        "kind": "split",
+        "vertical": true,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "new"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          }
+        ],
+        "weights": [
+          0.3,
+          0.35,
+          0.35
+        ]
+      }
+    }
+  ],
+  "remove": [
+    {
+      "group": "a",
+      "out": {
+        "kind": "split",
+        "vertical": true,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          }
+        ],
+        "weights": [
+          0.6,
+          0.4
+        ]
+      }
+    },
+    {
+      "group": "b",
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "group": "c",
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "group": "zzz",
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "group": "a",
+      "out": null
+    }
+  ],
+  "resize": [
+    {
+      "path": [],
+      "index": 0,
+      "delta": 0.1,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.4,
+          0.6
+        ]
+      }
+    },
+    {
+      "path": [],
+      "index": 0,
+      "delta": -0.1,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.2,
+          0.8
+        ]
+      }
+    },
+    {
+      "path": [],
+      "index": 0,
+      "delta": 0.9,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.9,
+          0.1
+        ]
+      }
+    },
+    {
+      "path": [],
+      "index": 0,
+      "delta": -5,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.1,
+          0.9
+        ]
+      }
+    },
+    {
+      "path": [
+        1
+      ],
+      "index": 0,
+      "delta": 0.2,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.8,
+              0.2
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "path": [
+        1
+      ],
+      "index": 0,
+      "delta": -0.35,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.25,
+              0.75
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "path": [
+        1
+      ],
+      "index": 1,
+      "delta": 0.1,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "path": [],
+      "index": 5,
+      "delta": 0.1,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "path": [
+        9
+      ],
+      "index": 0,
+      "delta": 0.1,
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "path": [],
+      "index": 0,
+      "delta": "NaN",
+      "out": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.6,
+              0.4
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      }
+    }
+  ],
+  "zones": {
+    "box": {
+      "groupId": "a",
+      "rect": {
+        "x": 100,
+        "y": 50,
+        "width": 300,
+        "height": 200
+      },
+      "header": 32
+    },
+    "probes": [
+      {
+        "px": 250,
+        "py": 60,
+        "zone": "header",
+        "zoneDefaultHeader": "header"
+      },
+      {
+        "px": 250,
+        "py": 81,
+        "zone": "header",
+        "zoneDefaultHeader": "header"
+      },
+      {
+        "px": 250,
+        "py": 82,
+        "zone": "header",
+        "zoneDefaultHeader": "header"
+      },
+      {
+        "px": 250,
+        "py": 150,
+        "zone": "centre",
+        "zoneDefaultHeader": "centre"
+      },
+      {
+        "px": 110,
+        "py": 150,
+        "zone": "left",
+        "zoneDefaultHeader": "left"
+      },
+      {
+        "px": 390,
+        "py": 150,
+        "zone": "right",
+        "zoneDefaultHeader": "right"
+      },
+      {
+        "px": 250,
+        "py": 90,
+        "zone": "top",
+        "zoneDefaultHeader": "top"
+      },
+      {
+        "px": 250,
+        "py": 245,
+        "zone": "bottom",
+        "zoneDefaultHeader": "bottom"
+      },
+      {
+        "px": 120,
+        "py": 240,
+        "zone": "bottom",
+        "zoneDefaultHeader": "bottom"
+      },
+      {
+        "px": 380,
+        "py": 90,
+        "zone": "top",
+        "zoneDefaultHeader": "top"
+      },
+      {
+        "px": 99,
+        "py": 100,
+        "zone": null,
+        "zoneDefaultHeader": null
+      },
+      {
+        "px": 401,
+        "py": 100,
+        "zone": null,
+        "zoneDefaultHeader": null
+      },
+      {
+        "px": 250,
+        "py": 49,
+        "zone": null,
+        "zoneDefaultHeader": null
+      },
+      {
+        "px": 250,
+        "py": 251,
+        "zone": null,
+        "zoneDefaultHeader": null
+      },
+      {
+        "px": 175,
+        "py": 100,
+        "zone": "top",
+        "zoneDefaultHeader": "top"
+      },
+      {
+        "px": 176,
+        "py": 100,
+        "zone": "top",
+        "zoneDefaultHeader": "top"
+      },
+      {
+        "px": 250,
+        "py": 125,
+        "zone": "centre",
+        "zoneDefaultHeader": "top"
+      },
+      {
+        "px": 250,
+        "py": 124,
+        "zone": "centre",
+        "zoneDefaultHeader": "top"
+      }
+    ]
+  },
+  "headerIndex": [
+    {
+      "px": 0,
+      "rights": [
+        60,
+        120,
+        180
+      ],
+      "index": 0
+    },
+    {
+      "px": 89,
+      "rights": [
+        60,
+        120,
+        180
+      ],
+      "index": 1
+    },
+    {
+      "px": 90,
+      "rights": [
+        60,
+        120,
+        180
+      ],
+      "index": 2
+    },
+    {
+      "px": 150,
+      "rights": [
+        60,
+        120,
+        180
+      ],
+      "index": 3
+    },
+    {
+      "px": 1000,
+      "rights": [
+        60,
+        120,
+        180
+      ],
+      "index": 3
+    },
+    {
+      "px": 10,
+      "rights": [],
+      "index": 0
+    },
+    {
+      "px": 59,
+      "rights": [
+        60
+      ],
+      "index": 1
+    },
+    {
+      "px": 60,
+      "rights": [
+        60
+      ],
+      "index": 1
+    }
+  ],
+  "drops": {
+    "host": {
+      "x": 0,
+      "y": 0,
+      "width": 800,
+      "height": 600
+    },
+    "boxes": [
+      {
+        "groupId": "a",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 240,
+          "height": 600
+        },
+        "header": 32
+      },
+      {
+        "groupId": "b",
+        "rect": {
+          "x": 240,
+          "y": 0,
+          "width": 560,
+          "height": 420
+        },
+        "header": 32
+      },
+      {
+        "groupId": "c",
+        "rect": {
+          "x": 240,
+          "y": 420,
+          "width": 560,
+          "height": 180
+        },
+        "header": 32
+      }
+    ],
+    "tabRights": {
+      "a": [
+        60
+      ],
+      "b": [
+        300,
+        360,
+        420
+      ],
+      "c": []
+    },
+    "probes": [
+      {
+        "px": 8,
+        "py": 300,
+        "drop": {
+          "target": "root",
+          "zone": "left"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 240,
+          "height": 600
+        }
+      },
+      {
+        "px": 792,
+        "py": 300,
+        "drop": {
+          "target": "root",
+          "zone": "right"
+        },
+        "rect": {
+          "x": 560,
+          "y": 0,
+          "width": 240,
+          "height": 600
+        }
+      },
+      {
+        "px": 400,
+        "py": 8,
+        "drop": {
+          "target": "root",
+          "zone": "top"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 180
+        }
+      },
+      {
+        "px": 400,
+        "py": 592,
+        "drop": {
+          "target": "root",
+          "zone": "bottom"
+        },
+        "rect": {
+          "x": 0,
+          "y": 420,
+          "width": 800,
+          "height": 180
+        }
+      },
+      {
+        "px": 120,
+        "py": 10,
+        "drop": {
+          "target": "root",
+          "zone": "top"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 180
+        }
+      },
+      {
+        "px": 120,
+        "py": 300,
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "centre"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 240,
+          "height": 600
+        }
+      },
+      {
+        "px": 20,
+        "py": 300,
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "left"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 120,
+          "height": 600
+        }
+      },
+      {
+        "px": 220,
+        "py": 300,
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "right"
+        },
+        "rect": {
+          "x": 120,
+          "y": 0,
+          "width": 120,
+          "height": 600
+        }
+      },
+      {
+        "px": 120,
+        "py": 60,
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "top"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 240,
+          "height": 300
+        }
+      },
+      {
+        "px": 120,
+        "py": 560,
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "bottom"
+        },
+        "rect": {
+          "x": 0,
+          "y": 300,
+          "width": 240,
+          "height": 300
+        }
+      },
+      {
+        "px": 330,
+        "py": 10,
+        "drop": {
+          "target": "root",
+          "zone": "top"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 180
+        }
+      },
+      {
+        "px": 500,
+        "py": 10,
+        "drop": {
+          "target": "root",
+          "zone": "top"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 180
+        }
+      },
+      {
+        "px": 520,
+        "py": 200,
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "centre"
+        },
+        "rect": {
+          "x": 240,
+          "y": 0,
+          "width": 560,
+          "height": 420
+        }
+      },
+      {
+        "px": 260,
+        "py": 200,
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "left"
+        },
+        "rect": {
+          "x": 240,
+          "y": 0,
+          "width": 280,
+          "height": 420
+        }
+      },
+      {
+        "px": 780,
+        "py": 200,
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "right"
+        },
+        "rect": {
+          "x": 520,
+          "y": 0,
+          "width": 280,
+          "height": 420
+        }
+      },
+      {
+        "px": 520,
+        "py": 60,
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "top"
+        },
+        "rect": {
+          "x": 240,
+          "y": 0,
+          "width": 560,
+          "height": 210
+        }
+      },
+      {
+        "px": 520,
+        "py": 400,
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "bottom"
+        },
+        "rect": {
+          "x": 240,
+          "y": 210,
+          "width": 560,
+          "height": 210
+        }
+      },
+      {
+        "px": 520,
+        "py": 500,
+        "drop": {
+          "target": "group",
+          "groupId": "c",
+          "zone": "centre"
+        },
+        "rect": {
+          "x": 240,
+          "y": 420,
+          "width": 560,
+          "height": 180
+        }
+      },
+      {
+        "px": 250,
+        "py": 500,
+        "drop": {
+          "target": "group",
+          "groupId": "c",
+          "zone": "left"
+        },
+        "rect": {
+          "x": 240,
+          "y": 420,
+          "width": 280,
+          "height": 180
+        }
+      },
+      {
+        "px": 900,
+        "py": 300,
+        "drop": null,
+        "rect": null
+      },
+      {
+        "px": -1,
+        "py": 300,
+        "drop": null,
+        "rect": null
+      },
+      {
+        "px": 16,
+        "py": 300,
+        "drop": {
+          "target": "root",
+          "zone": "left"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 240,
+          "height": 600
+        }
+      },
+      {
+        "px": 17,
+        "py": 300,
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "left"
+        },
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 120,
+          "height": 600
+        }
+      }
+    ],
+    "noBoxesEdge": null
+  },
+  "apply": {
+    "state": {
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              0.7,
+              0.3
+            ]
+          }
+        ],
+        "weights": [
+          0.3,
+          0.7
+        ]
+      },
+      "groups": {
+        "a": {
+          "tabs": [
+            "t1",
+            "t2"
+          ],
+          "active": 0,
+          "windowId": "main"
+        },
+        "b": {
+          "tabs": [
+            "t3"
+          ],
+          "active": 0,
+          "windowId": "main"
+        },
+        "c": {
+          "tabs": [
+            "t4",
+            "t5",
+            "t6"
+          ],
+          "active": 0,
+          "windowId": "main"
+        }
+      }
+    },
+    "cases": [
+      {
+        "name": "header: t1 to b at 0",
+        "tab": "t1",
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "header",
+          "index": 0
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t1",
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "header: t1 within a to the end",
+        "tab": "t1",
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "header",
+          "index": 2
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t2",
+              "t1"
+            ],
+            "active": 1,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "header: t2 within a to the start",
+        "tab": "t2",
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "header",
+          "index": 0
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t2",
+              "t1"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "centre: t3 joins c (b empties, its leaf goes)",
+        "tab": "t3",
+        "drop": {
+          "target": "group",
+          "groupId": "c",
+          "zone": "centre"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "c"
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6",
+              "t3"
+            ],
+            "active": 3,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "side: t4 splits a on the right",
+        "tab": "t4",
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "right"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "new"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.15,
+            0.15,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "new": {
+            "tabs": [
+              "t4"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "side: t4 splits b below (joins the vertical split)",
+        "tab": "t4",
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "bottom"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "new"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.35,
+                0.35,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "new": {
+            "tabs": [
+              "t4"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "side: t3 (only tab) onto its own side = unchanged",
+        "tab": "t3",
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "left"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": true,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "side: t3 (only tab) onto its own header = reorder only",
+        "tab": "t3",
+        "drop": {
+          "target": "group",
+          "groupId": "b",
+          "zone": "header",
+          "index": 0
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "root: t5 along the top",
+        "tab": "t5",
+        "drop": {
+          "target": "root",
+          "zone": "top"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "new"
+            },
+            {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "a"
+                },
+                {
+                  "kind": "split",
+                  "vertical": true,
+                  "children": [
+                    {
+                      "kind": "leaf",
+                      "groupId": "b"
+                    },
+                    {
+                      "kind": "leaf",
+                      "groupId": "c"
+                    }
+                  ],
+                  "weights": [
+                    0.7,
+                    0.3
+                  ]
+                }
+              ],
+              "weights": [
+                0.3,
+                0.7
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "new": {
+            "tabs": [
+              "t5"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "root: t5 along the left of a left-right split joins it",
+        "tab": "t5",
+        "drop": {
+          "target": "root",
+          "zone": "left"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "new"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.21,
+            0.49
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "new": {
+            "tabs": [
+              "t5"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "limit 3: a side drop joins the target as a tab",
+        "tab": "t4",
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "left"
+        },
+        "rules": {
+          "paneLimit": 3
+        },
+        "limited": true,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t4"
+            ],
+            "active": 2,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "limit 3: a root drop joins the first pane",
+        "tab": "t4",
+        "drop": {
+          "target": "root",
+          "zone": "bottom"
+        },
+        "rules": {
+          "paneLimit": 3
+        },
+        "limited": true,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t4"
+            ],
+            "active": 2,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "limit 3: moving the only tab of a pane to a side still fits",
+        "tab": "t3",
+        "drop": {
+          "target": "group",
+          "groupId": "a",
+          "zone": "top"
+        },
+        "rules": {
+          "paneLimit": 3
+        },
+        "limited": false,
+        "unchanged": false,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "new"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "a"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            },
+            {
+              "kind": "leaf",
+              "groupId": "c"
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "new": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "unknown tab = unchanged",
+        "tab": "nope",
+        "drop": {
+          "target": "root",
+          "zone": "top"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": true,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "name": "unknown group = unchanged",
+        "tab": "t1",
+        "drop": {
+          "target": "group",
+          "groupId": "zzz",
+          "zone": "centre"
+        },
+        "rules": null,
+        "limited": false,
+        "unchanged": true,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              "t3"
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              "t4",
+              "t5",
+              "t6"
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      }
+    ]
+  },
+  "limit": {
+    "state": {
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "d"
+          }
+        ],
+        "weights": [
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "groups": {
+        "a": [
+          "t1"
+        ],
+        "b": [
+          "t2"
+        ],
+        "c": [
+          "t3",
+          "t4"
+        ],
+        "d": [
+          "t5"
+        ],
+        "x": [
+          "t9"
+        ]
+      }
+    },
+    "paneLimit": 2,
+    "out": {
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          }
+        ],
+        "weights": [
+          0.5,
+          0.5
+        ]
+      },
+      "groups": {
+        "a": [
+          "t1"
+        ],
+        "b": [
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "x": [
+          "t9"
+        ]
+      }
+    }
+  },
+  "snapshot": {
+    "$axf": "dock@1",
+    "tree": {
+      "kind": "split",
+      "vertical": false,
+      "children": [
+        {
+          "kind": "leaf",
+          "groupId": "a"
+        },
+        {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "b"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "c"
+            }
+          ],
+          "weights": [
+            0.7,
+            0.3
+          ]
+        }
+      ],
+      "weights": [
+        0.3,
+        0.7
+      ]
+    },
+    "groups": {
+      "a": {
+        "tabs": [
+          {
+            "id": "t1",
+            "title": "T1",
+            "kind": "doc",
+            "payload": "p/t1"
+          },
+          {
+            "id": "t2",
+            "title": "T2",
+            "kind": "doc",
+            "payload": "p/t2"
+          }
+        ],
+        "active": 0
+      },
+      "b": {
+        "tabs": [
+          {
+            "id": "t3",
+            "title": "T3",
+            "kind": "doc",
+            "payload": "p/t3"
+          }
+        ],
+        "active": 0
+      },
+      "c": {
+        "tabs": [
+          {
+            "id": "t4",
+            "title": "T4",
+            "kind": "doc",
+            "payload": "p/t4"
+          },
+          {
+            "id": "t5",
+            "title": "T5",
+            "kind": "doc",
+            "payload": "p/t5"
+          },
+          {
+            "id": "t6",
+            "title": "T6",
+            "kind": "doc",
+            "payload": "p/t6"
+          }
+        ],
+        "active": 0
+      }
+    }
+  },
+  "restore": [
+    {
+      "name": "round trip",
+      "raw": {
+        "$axf": "dock@1",
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              {
+                "id": "t1",
+                "title": "T1",
+                "kind": "doc",
+                "payload": "p/t1"
+              },
+              {
+                "id": "t2",
+                "title": "T2",
+                "kind": "doc",
+                "payload": "p/t2"
+              }
+            ],
+            "active": 0
+          },
+          "b": {
+            "tabs": [
+              {
+                "id": "t3",
+                "title": "T3",
+                "kind": "doc",
+                "payload": "p/t3"
+              }
+            ],
+            "active": 0
+          },
+          "c": {
+            "tabs": [
+              {
+                "id": "t4",
+                "title": "T4",
+                "kind": "doc",
+                "payload": "p/t4"
+              },
+              {
+                "id": "t5",
+                "title": "T5",
+                "kind": "doc",
+                "payload": "p/t5"
+              },
+              {
+                "id": "t6",
+                "title": "T6",
+                "kind": "doc",
+                "payload": "p/t6"
+              }
+            ],
+            "active": 0
+          }
+        }
+      },
+      "out": {
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              {
+                "id": "t1",
+                "title": "T1",
+                "kind": "doc",
+                "payload": "p/t1"
+              },
+              {
+                "id": "t2",
+                "title": "T2",
+                "kind": "doc",
+                "payload": "p/t2"
+              }
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              {
+                "id": "t3",
+                "title": "T3",
+                "kind": "doc",
+                "payload": "p/t3"
+              }
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "c": {
+            "tabs": [
+              {
+                "id": "t4",
+                "title": "T4",
+                "kind": "doc",
+                "payload": "p/t4"
+              },
+              {
+                "id": "t5",
+                "title": "T5",
+                "kind": "doc",
+                "payload": "p/t5"
+              },
+              {
+                "id": "t6",
+                "title": "T6",
+                "kind": "doc",
+                "payload": "p/t6"
+              }
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      }
+    },
+    {
+      "name": "junk cleaned",
+      "raw": {
+        "$axf": "dock@1",
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "ghost"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "b"
+                },
+                "junk",
+                {
+                  "kind": "leaf",
+                  "groupId": "c"
+                }
+              ],
+              "weights": [
+                1,
+                "x",
+                1
+              ]
+            }
+          ],
+          "weights": [
+            1,
+            1,
+            2
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              {
+                "id": "t1",
+                "title": "T1",
+                "kind": "doc"
+              },
+              {
+                "id": "t1",
+                "title": "again",
+                "kind": "doc"
+              },
+              {
+                "id": "bad id!",
+                "kind": "doc"
+              },
+              {
+                "kind": "doc"
+              }
+            ],
+            "active": 9
+          },
+          "b": {
+            "tabs": [
+              {
+                "id": "t3",
+                "kind": "doc",
+                "payload": "p",
+                "icon": "file",
+                "closable": false
+              }
+            ],
+            "active": -2
+          },
+          "c": {
+            "tabs": [
+              {
+                "id": "t1",
+                "title": "dup across groups",
+                "kind": "doc"
+              }
+            ]
+          },
+          "bad id!": {
+            "tabs": [
+              {
+                "id": "z",
+                "kind": "doc"
+              }
+            ]
+          },
+          "orphan": {
+            "tabs": [
+              {
+                "id": "t8",
+                "kind": "doc"
+              }
+            ],
+            "active": 0
+          },
+          "empty": {
+            "tabs": []
+          }
+        }
+      },
+      "out": {
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "b"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "orphan"
+            }
+          ],
+          "weights": [
+            0.233333,
+            0.466667,
+            0.3
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              {
+                "id": "t1",
+                "title": "T1",
+                "kind": "doc"
+              },
+              {
+                "id": "t1",
+                "title": "again",
+                "kind": "doc"
+              }
+            ],
+            "active": 1,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              {
+                "id": "t3",
+                "title": "t3",
+                "kind": "doc",
+                "payload": "p",
+                "icon": "file",
+                "closable": false
+              }
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "orphan": {
+            "tabs": [
+              {
+                "id": "t8",
+                "title": "t8",
+                "kind": "doc"
+              }
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      }
+    },
+    {
+      "name": "not a dock",
+      "raw": {
+        "$axf": "windows@1",
+        "groups": {}
+      },
+      "out": null
+    },
+    {
+      "name": "no groups",
+      "raw": {
+        "$axf": "dock@1",
+        "groups": {}
+      },
+      "out": null
+    },
+    {
+      "name": "string",
+      "raw": "nope",
+      "out": null
+    },
+    {
+      "name": "over the limit",
+      "raw": {
+        "$axf": "dock@1",
+        "tree": null,
+        "groups": {
+          "a": {
+            "tabs": [
+              {
+                "id": "a1",
+                "kind": "doc"
+              }
+            ]
+          },
+          "b": {
+            "tabs": [
+              {
+                "id": "b1",
+                "kind": "doc"
+              }
+            ]
+          },
+          "c": {
+            "tabs": [
+              {
+                "id": "c1",
+                "kind": "doc"
+              }
+            ]
+          }
+        }
+      },
+      "out": {
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "a"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "b"
+            }
+          ],
+          "weights": [
+            0.7,
+            0.3
+          ]
+        },
+        "groups": {
+          "a": {
+            "tabs": [
+              {
+                "id": "a1",
+                "title": "a1",
+                "kind": "doc"
+              }
+            ],
+            "active": 0,
+            "windowId": "main"
+          },
+          "b": {
+            "tabs": [
+              {
+                "id": "b1",
+                "title": "b1",
+                "kind": "doc"
+              },
+              {
+                "id": "c1",
+                "title": "c1",
+                "kind": "doc"
+              }
+            ],
+            "active": 0,
+            "windowId": "main"
+          }
+        }
+      }
+    }
+  ],
+  "parseTab": [
+    {
+      "raw": {
+        "id": "t",
+        "kind": "doc"
+      },
+      "tab": {
+        "id": "t",
+        "title": "t",
+        "kind": "doc"
+      }
+    },
+    {
+      "raw": {
+        "id": "t",
+        "title": "T",
+        "kind": "doc",
+        "payload": "p",
+        "icon": "file",
+        "closable": false
+      },
+      "tab": {
+        "id": "t",
+        "title": "T",
+        "kind": "doc",
+        "payload": "p",
+        "icon": "file",
+        "closable": false
+      }
+    },
+    {
+      "raw": {
+        "id": "bad id!",
+        "kind": "doc"
+      },
+      "tab": null
+    },
+    {
+      "raw": {
+        "id": "t",
+        "kind": "bad kind!"
+      },
+      "tab": null
+    },
+    {
+      "raw": {
+        "id": "t",
+        "kind": "doc",
+        "icon": "Bad Icon",
+        "closable": true
+      },
+      "tab": {
+        "id": "t",
+        "title": "t",
+        "kind": "doc"
+      }
+    },
+    {
+      "raw": "x",
+      "tab": null
+    },
+    {
+      "raw": null,
+      "tab": null
+    },
+    {
+      "raw": {
+        "id": "t",
+        "kind": "doc",
+        "payload": 7
+      },
+      "tab": {
+        "id": "t",
+        "title": "t",
+        "kind": "doc"
+      }
+    }
+  ],
+  "parseTree": [
+    {
+      "raw": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "ghost"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              "junk",
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              1,
+              "x",
+              1
+            ]
+          }
+        ],
+        "weights": [
+          1,
+          1,
+          2
+        ]
+      },
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "groupId": "b"
+              },
+              {
+                "kind": "leaf",
+                "groupId": "c"
+              }
+            ],
+            "weights": [
+              1,
+              1
+            ]
+          }
+        ],
+        "weights": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "raw": {
+        "kind": "leaf",
+        "groupId": "a"
+      },
+      "tree": {
+        "kind": "leaf",
+        "groupId": "a"
+      }
+    },
+    {
+      "raw": {
+        "kind": "leaf",
+        "groupId": "nope"
+      },
+      "tree": null
+    },
+    {
+      "raw": {
+        "kind": "grid",
+        "rows": 2,
+        "cols": 2,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "nope"
+          }
+        ]
+      },
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          }
+        ],
+        "weights": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "raw": {
+        "kind": "grid",
+        "rows": 1,
+        "cols": 3,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          }
+        ]
+      },
+      "tree": {
+        "kind": "grid",
+        "rows": 1,
+        "cols": 3,
+        "cells": [
+          {
+            "kind": "leaf",
+            "groupId": "a"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "b"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "c"
+          }
+        ]
+      }
+    },
+    {
+      "raw": {
+        "kind": "what"
+      },
+      "tree": null
+    },
+    {
+      "raw": [],
+      "tree": null
+    }
+  ],
+  "presets": {
+    "starters": {
+      "grid-2x2": {
+        "normalized": {
+          "panes": 4,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "split",
+                "vertical": false,
+                "children": [
+                  {
+                    "kind": "leaf",
+                    "pane": 1
+                  },
+                  {
+                    "kind": "leaf",
+                    "pane": 2
+                  }
+                ],
+                "weights": [
+                  0.5,
+                  0.5
+                ]
+              },
+              {
+                "kind": "split",
+                "vertical": false,
+                "children": [
+                  {
+                    "kind": "leaf",
+                    "pane": 3
+                  },
+                  {
+                    "kind": "leaf",
+                    "pane": 4
+                  }
+                ],
+                "weights": [
+                  0.5,
+                  0.5
+                ]
+              }
+            ],
+            "weights": [
+              0.5,
+              0.5
+            ]
+          },
+          "hint": "Four equal panes in a two by two grid.",
+          "main": 1
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "g1"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "g2"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            },
+            {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "g3"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "g4"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 47,
+              "height": 31
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 49,
+              "y": 0,
+              "width": 47,
+              "height": 31
+            }
+          },
+          {
+            "pane": 3,
+            "rect": {
+              "x": 0,
+              "y": 33,
+              "width": 47,
+              "height": 31
+            }
+          },
+          {
+            "pane": 4,
+            "rect": {
+              "x": 49,
+              "y": 33,
+              "width": 47,
+              "height": 31
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"4 pane layout\"><rect x=\"0\" y=\"0\" width=\"47\" height=\"31\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"49\" y=\"0\" width=\"47\" height=\"31\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"0\" y=\"33\" width=\"47\" height=\"31\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"49\" y=\"33\" width=\"47\" height=\"31\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "ide": {
+        "normalized": {
+          "panes": 4,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "split",
+                "vertical": true,
+                "children": [
+                  {
+                    "kind": "leaf",
+                    "pane": 2
+                  },
+                  {
+                    "kind": "leaf",
+                    "pane": 3
+                  }
+                ],
+                "weights": [
+                  0.7,
+                  0.3
+                ]
+              },
+              {
+                "kind": "leaf",
+                "pane": 4
+              }
+            ],
+            "weights": [
+              0.22,
+              0.56,
+              0.22
+            ]
+          },
+          "hint": "Tree on the left, editor over a terminal in the middle, inspector on the right.",
+          "main": 2
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "g2"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "g3"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g4"
+            }
+          ],
+          "weights": [
+            0.22,
+            0.56,
+            0.22
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 20.24,
+              "height": 64
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 22.24,
+              "y": 0,
+              "width": 51.52,
+              "height": 43.4
+            }
+          },
+          {
+            "pane": 3,
+            "rect": {
+              "x": 22.24,
+              "y": 45.4,
+              "width": 51.52,
+              "height": 18.6
+            }
+          },
+          {
+            "pane": 4,
+            "rect": {
+              "x": 75.76,
+              "y": 0,
+              "width": 20.24,
+              "height": 64
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"4 pane layout\"><rect x=\"0\" y=\"0\" width=\"20.24\" height=\"64\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"22.24\" y=\"0\" width=\"51.52\" height=\"43.4\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"22.24\" y=\"45.4\" width=\"51.52\" height=\"18.6\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"75.76\" y=\"0\" width=\"20.24\" height=\"64\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "main-bottom": {
+        "normalized": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              }
+            ],
+            "weights": [
+              0.7,
+              0.3
+            ]
+          },
+          "hint": "A main pane with a shorter pane below it (a terminal or output).",
+          "main": 1
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.7,
+            0.3
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 96,
+              "height": 43.4
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 0,
+              "y": 45.4,
+              "width": 96,
+              "height": 18.6
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"2 pane layout\"><rect x=\"0\" y=\"0\" width=\"96\" height=\"43.4\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"0\" y=\"45.4\" width=\"96\" height=\"18.6\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "main-side": {
+        "normalized": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              }
+            ],
+            "weights": [
+              0.68,
+              0.32
+            ]
+          },
+          "hint": "A wide main pane with a narrower side pane on the right.",
+          "main": 1
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.68,
+            0.32
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 63.92,
+              "height": 64
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 65.92,
+              "y": 0,
+              "width": 30.08,
+              "height": 64
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"2 pane layout\"><rect x=\"0\" y=\"0\" width=\"63.92\" height=\"64\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"65.92\" y=\"0\" width=\"30.08\" height=\"64\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "side-main": {
+        "normalized": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              }
+            ],
+            "weights": [
+              0.3,
+              0.7
+            ]
+          },
+          "hint": "A narrow side pane on the left (a tree or outline) and the main pane.",
+          "main": 2
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 28.2,
+              "height": 64
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 30.2,
+              "y": 0,
+              "width": 65.8,
+              "height": 64
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"2 pane layout\"><rect x=\"0\" y=\"0\" width=\"28.2\" height=\"64\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"30.2\" y=\"0\" width=\"65.8\" height=\"64\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "single": {
+        "normalized": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "hint": "Everything in one pane with tabs.",
+          "main": 1
+        },
+        "errors": [],
+        "tree": {
+          "kind": "leaf",
+          "groupId": "g1"
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 96,
+              "height": 64
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"1 pane layout\"><rect x=\"0\" y=\"0\" width=\"96\" height=\"64\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "three-columns": {
+        "normalized": {
+          "panes": 3,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              },
+              {
+                "kind": "leaf",
+                "pane": 3
+              }
+            ],
+            "weights": [
+              0.333333,
+              0.333333,
+              0.333333
+            ]
+          },
+          "hint": "Three equal panes side by side (compare two files against a third).",
+          "main": 2
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g3"
+            }
+          ],
+          "weights": [
+            0.333333,
+            0.333333,
+            0.333333
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 30.67,
+              "height": 64
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 32.67,
+              "y": 0,
+              "width": 30.67,
+              "height": 64
+            }
+          },
+          {
+            "pane": 3,
+            "rect": {
+              "x": 65.33,
+              "y": 0,
+              "width": 30.67,
+              "height": 64
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"3 pane layout\"><rect x=\"0\" y=\"0\" width=\"30.67\" height=\"64\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"32.67\" y=\"0\" width=\"30.67\" height=\"64\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"65.33\" y=\"0\" width=\"30.67\" height=\"64\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "top-two-below": {
+        "normalized": {
+          "panes": 3,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "split",
+                "vertical": false,
+                "children": [
+                  {
+                    "kind": "leaf",
+                    "pane": 2
+                  },
+                  {
+                    "kind": "leaf",
+                    "pane": 3
+                  }
+                ],
+                "weights": [
+                  0.5,
+                  0.5
+                ]
+              }
+            ],
+            "weights": [
+              0.55,
+              0.45
+            ]
+          },
+          "hint": "One wide pane over two half-width panes.",
+          "main": 1
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "g2"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "g3"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            }
+          ],
+          "weights": [
+            0.55,
+            0.45
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 96,
+              "height": 34.1
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 0,
+              "y": 36.1,
+              "width": 47,
+              "height": 27.9
+            }
+          },
+          {
+            "pane": 3,
+            "rect": {
+              "x": 49,
+              "y": 36.1,
+              "width": 47,
+              "height": 27.9
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"3 pane layout\"><rect x=\"0\" y=\"0\" width=\"96\" height=\"34.1\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"0\" y=\"36.1\" width=\"47\" height=\"27.9\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"49\" y=\"36.1\" width=\"47\" height=\"27.9\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "two-columns": {
+        "normalized": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              }
+            ],
+            "weights": [
+              0.5,
+              0.5
+            ]
+          },
+          "hint": "Two panes side by side.",
+          "main": 1
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 47,
+              "height": 64
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 49,
+              "y": 0,
+              "width": 47,
+              "height": 64
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"2 pane layout\"><rect x=\"0\" y=\"0\" width=\"47\" height=\"64\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"49\" y=\"0\" width=\"47\" height=\"64\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      },
+      "two-rows": {
+        "normalized": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              }
+            ],
+            "weights": [
+              0.5,
+              0.5
+            ]
+          },
+          "hint": "One pane above another.",
+          "main": 1
+        },
+        "errors": [],
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "rects": [
+          {
+            "pane": 1,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 96,
+              "height": 31
+            }
+          },
+          {
+            "pane": 2,
+            "rect": {
+              "x": 0,
+              "y": 33,
+              "width": 96,
+              "height": 31
+            }
+          }
+        ],
+        "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 64\" width=\"96\" height=\"64\" role=\"img\" aria-label=\"2 pane layout\"><rect x=\"0\" y=\"0\" width=\"96\" height=\"31\" rx=\"2\" fill=\"var(--fx-accent)\" fill-opacity=\"var(--fx-opacity-tint)\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/><rect x=\"0\" y=\"33\" width=\"96\" height=\"31\" rx=\"2\" fill=\"var(--fx-surface2)\" fill-opacity=\"1\" stroke=\"var(--fx-border)\" stroke-width=\"1\"/></svg>"
+      }
+    },
+    "bad": [
+      {
+        "name": "nothing",
+        "raw": null,
+        "normalized": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "main": 1
+        },
+        "errors": [
+          "data must be an object"
+        ]
+      },
+      {
+        "name": "string",
+        "raw": "x",
+        "normalized": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "main": 1
+        },
+        "errors": [
+          "data must be an object"
+        ]
+      },
+      {
+        "name": "repeat pane",
+        "raw": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 1
+              }
+            ],
+            "weights": [
+              1,
+              1
+            ]
+          }
+        },
+        "normalized": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "main": 1
+        },
+        "errors": [
+          "data.tree numbers a pane twice"
+        ]
+      },
+      {
+        "name": "gap in numbering",
+        "raw": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 3
+              }
+            ],
+            "weights": [
+              1,
+              1
+            ]
+          }
+        },
+        "normalized": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "main": 1
+        },
+        "errors": [
+          "data.tree pane numbers must be 1..2"
+        ]
+      },
+      {
+        "name": "panes mismatch",
+        "raw": {
+          "panes": 3,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              }
+            ],
+            "weights": [
+              1,
+              1
+            ]
+          }
+        },
+        "normalized": {
+          "panes": 2,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              }
+            ],
+            "weights": [
+              0.5,
+              0.5
+            ]
+          },
+          "main": 1
+        },
+        "errors": [
+          "data.panes must be 2 (the leaves of data.tree)"
+        ]
+      },
+      {
+        "name": "one-child split collapses",
+        "raw": {
+          "panes": 1,
+          "tree": {
+            "kind": "split",
+            "vertical": true,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              }
+            ],
+            "weights": [
+              1
+            ]
+          }
+        },
+        "normalized": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "main": 1
+        },
+        "errors": []
+      },
+      {
+        "name": "bad main + hint",
+        "raw": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "main": 4,
+          "hint": 7
+        },
+        "normalized": {
+          "panes": 1,
+          "tree": {
+            "kind": "leaf",
+            "pane": 1
+          },
+          "main": 1
+        },
+        "errors": [
+          "data.main must be 1..1",
+          "data.hint must be a string"
+        ]
+      },
+      {
+        "name": "too many",
+        "raw": {
+          "panes": 13,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              },
+              {
+                "kind": "leaf",
+                "pane": 3
+              },
+              {
+                "kind": "leaf",
+                "pane": 4
+              },
+              {
+                "kind": "leaf",
+                "pane": 5
+              },
+              {
+                "kind": "leaf",
+                "pane": 6
+              },
+              {
+                "kind": "leaf",
+                "pane": 7
+              },
+              {
+                "kind": "leaf",
+                "pane": 8
+              },
+              {
+                "kind": "leaf",
+                "pane": 9
+              },
+              {
+                "kind": "leaf",
+                "pane": 10
+              },
+              {
+                "kind": "leaf",
+                "pane": 11
+              },
+              {
+                "kind": "leaf",
+                "pane": 12
+              },
+              {
+                "kind": "leaf",
+                "pane": 13
+              }
+            ],
+            "weights": []
+          }
+        },
+        "normalized": {
+          "panes": 12,
+          "tree": {
+            "kind": "split",
+            "vertical": false,
+            "children": [
+              {
+                "kind": "leaf",
+                "pane": 1
+              },
+              {
+                "kind": "leaf",
+                "pane": 2
+              },
+              {
+                "kind": "leaf",
+                "pane": 3
+              },
+              {
+                "kind": "leaf",
+                "pane": 4
+              },
+              {
+                "kind": "leaf",
+                "pane": 5
+              },
+              {
+                "kind": "leaf",
+                "pane": 6
+              },
+              {
+                "kind": "leaf",
+                "pane": 7
+              },
+              {
+                "kind": "leaf",
+                "pane": 8
+              },
+              {
+                "kind": "leaf",
+                "pane": 9
+              },
+              {
+                "kind": "leaf",
+                "pane": 10
+              },
+              {
+                "kind": "leaf",
+                "pane": 11
+              },
+              {
+                "kind": "leaf",
+                "pane": 12
+              }
+            ],
+            "weights": [
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333,
+              0.083333
+            ]
+          },
+          "main": 1
+        },
+        "errors": [
+          "data.panes must be 12 (the leaves of data.tree)"
+        ]
+      }
+    ],
+    "apply": [
+      {
+        "preset": "grid-2x2",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "g1"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "g2"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            },
+            {
+              "kind": "leaf",
+              "groupId": "new-3"
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t3",
+              "t4"
+            ],
+            "windowId": "main"
+          },
+          "new-3": {
+            "tabs": [
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "ide",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "split",
+              "vertical": true,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "g2"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "new-3"
+                }
+              ],
+              "weights": [
+                0.7,
+                0.3
+              ]
+            }
+          ],
+          "weights": [
+            0.282051,
+            0.717949
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t3",
+              "t4"
+            ],
+            "windowId": "main"
+          },
+          "new-3": {
+            "tabs": [
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "main-bottom",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.7,
+            0.3
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t4",
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "main-side",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.68,
+            0.32
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t4",
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "side-main",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.3,
+            0.7
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t4",
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "single",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "leaf",
+          "groupId": "g1"
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t3",
+              "t4",
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "three-columns",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "new-3"
+            }
+          ],
+          "weights": [
+            0.333333,
+            0.333333,
+            0.333333
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t3",
+              "t4"
+            ],
+            "windowId": "main"
+          },
+          "new-3": {
+            "tabs": [
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "top-two-below",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "groupId": "g2"
+                },
+                {
+                  "kind": "leaf",
+                  "groupId": "new-3"
+                }
+              ],
+              "weights": [
+                0.5,
+                0.5
+              ]
+            }
+          ],
+          "weights": [
+            0.55,
+            0.45
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t3",
+              "t4"
+            ],
+            "windowId": "main"
+          },
+          "new-3": {
+            "tabs": [
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "two-columns",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": false,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t4",
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      },
+      {
+        "preset": "two-rows",
+        "tabs": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5"
+        ],
+        "paneLimit": 3,
+        "tree": {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "groupId": "g1"
+            },
+            {
+              "kind": "leaf",
+              "groupId": "g2"
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "groups": {
+          "far": {
+            "tabs": [
+              "t9"
+            ],
+            "windowId": "win-2"
+          },
+          "g1": {
+            "tabs": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "windowId": "main"
+          },
+          "g2": {
+            "tabs": [
+              "t4",
+              "t5"
+            ],
+            "windowId": "main"
+          }
+        }
+      }
+    ],
+    "applyState": {
+      "tree": {
+        "kind": "split",
+        "vertical": false,
+        "children": [
+          {
+            "kind": "leaf",
+            "groupId": "g1"
+          },
+          {
+            "kind": "leaf",
+            "groupId": "g2"
+          }
+        ],
+        "weights": [
+          1,
+          1
+        ]
+      },
+      "groups": {
+        "g1": {
+          "tabs": [
+            {
+              "id": "t1",
+              "title": "T1",
+              "kind": "doc",
+              "payload": "p/t1"
+            },
+            {
+              "id": "t2",
+              "title": "T2",
+              "kind": "doc",
+              "payload": "p/t2"
+            },
+            {
+              "id": "t3",
+              "title": "T3",
+              "kind": "doc",
+              "payload": "p/t3"
+            }
+          ],
+          "active": 0,
+          "windowId": "main"
+        },
+        "g2": {
+          "tabs": [
+            {
+              "id": "t4",
+              "title": "T4",
+              "kind": "doc",
+              "payload": "p/t4"
+            },
+            {
+              "id": "t5",
+              "title": "T5",
+              "kind": "doc",
+              "payload": "p/t5"
+            }
+          ],
+          "active": 0,
+          "windowId": "main"
+        },
+        "far": {
+          "tabs": [
+            {
+              "id": "t9",
+              "title": "T9",
+              "kind": "doc",
+              "payload": "p/t9"
+            }
+          ],
+          "active": 0,
+          "windowId": "win-2"
+        }
+      }
+    },
+    "applyEmpty": {
+      "tree": null,
+      "groups": {}
+    }
+  }
+}

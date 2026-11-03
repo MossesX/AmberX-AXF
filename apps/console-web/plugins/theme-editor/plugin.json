@@ -1,0 +1,47 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.theme-editor",
+  "name": "Theme editor",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Edit colour and style themes token by token. A Colour section and a Style section, each collapsible, with collapsible categories listing every token the asset types and known themes have (new tokens show up by themselves). Copy a theme, save it as a standard asset@1 theme, load any theme; edits preview live and apply through the hub look, so every app follows. Toolbar views: tree, grid, swatches, compare. Uses the Theme manager's token tree (axf.token-tree@1). Nav → Plugins → Theme editor; Settings → Plugins → Theme editor.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:theme-editor",
+    "settings-tab:theme-editor",
+    "action:theme-editor.open"
+  ],
+  "requires": [
+    "service:axf.token-tree@1"
+  ],
+  "optional": [],
+  "uiEditor": [
+    "theme",
+    "style"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/theme-editor",
+    "env": [
+      "AXF_THEME_EDITOR_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "userGrantable": true,
+  "help": "help.json",
+  "opens": "main"
+}

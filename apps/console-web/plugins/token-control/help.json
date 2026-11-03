@@ -100,7 +100,7 @@
       {
         "target": "target",
         "title": "Target",
-        "text": "What the command works on: a token set, AmberX notes and lists, Plan Studio plans, orchestrator builds, or veto passes.",
+        "text": "What the command works on: a token set, AmberX notes and lists, Plan Studio plans, orchestrator builds, veto passes, or the open console.",
         "kind": "field"
       },
       {

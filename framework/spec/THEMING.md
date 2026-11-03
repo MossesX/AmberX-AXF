@@ -105,7 +105,7 @@ them in). Kotlin Compose files get the same treatment: no `Color(0x…)`, `.sp` 
 Material controls (use `Axf.colors` / `Axf.type` / `Axf.space` / `Axf.shapes` and the `Axf*` controls).
 Exempt: token/asset definition files (framework/core engines, `framework/ui/axf.css`'s own `--fx-*` defaults and optional
 component-token fallbacks, axf-ui's `theme/` package, the controls in `axf-ui/components`). Frozen code (Android on hold,
-Patches paused) is held to `framework/spec/conform-baseline.json`, which may only shrink (`--update-baseline`).
+is held to `framework/spec/conform-baseline.json`, which may only shrink (`--update-baseline`).
 `node framework/cli/check-controls.mjs` holds every web `<button>` to the framework controls the same way. `axf init`
 runs the theme check on what it generates and refuses to finish on a finding.
 

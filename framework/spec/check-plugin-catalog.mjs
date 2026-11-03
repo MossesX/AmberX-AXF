@@ -48,7 +48,7 @@ check('index shows newest + all versions', e.version === '1.1.0' && e.versions.j
 check('index records the model per version', e.builtWith?.model === 'opus' && e.models?.['1.0.0'] === 'opus' && e.models?.['1.1.0'] === 'opus');
 check('old version still readable', cat.getPackage('console', 'hello-world', '1.0.0').version === '1.0.0');
 throws('id under another folder refused', () => cat.publishPackage({ ...cat.pack(src, 'console'), folder: 'hello-two' }), /already in the catalog/);
-check('list filters by kind', cat.list({ kind: 'pilot' }).items.length === 0 && cat.list({ kind: 'console' }).items.length === 1);
+check('list filters by kind', cat.list({ kind: 'axhub' }).items.length === 0 && cat.list({ kind: 'console' }).items.length === 1);
 
 // tampering with a stored package is caught on read
 const pf = join(process.env.AXF_PLUGIN_CATALOG, 'packages/console/hello-world/1.1.0.json');
@@ -66,9 +66,9 @@ throws('absolute path refused', () => cat.verifyPackage(bad([{ path: '/etc/x', b
 throws('secret file refused', () => cat.verifyPackage(bad([{ path: 'server/id_rsa', b64: '' }])));
 throws('dot segment refused', () => cat.verifyPackage(bad([{ path: 'a/./b', b64: '' }])));
 throws('duplicate path refused', () => cat.verifyPackage(bad([{ path: 'web/a.ts', b64: '' }, { path: 'WEB/a.ts', b64: '' }])));
-throws('pilot plugin with server code refused', () => cat.verifyPackage({ ...bad([{ path: 'server/x.py', b64: '' }]), kind: 'pilot' }));
+throws('axhub plugin with server code refused', () => cat.verifyPackage({ ...bad([{ path: 'server/x.py', b64: '' }]), kind: 'axhub' }));
 throws('unknown kind refused', () => cat.verifyPackage({ ...bad([]), kind: 'other' }), /unknown plugin kind/);
-throws('wrong manifest schema refused', () => cat.verifyPackage({ ...bad([]), kind: 'pilot' }), /pilot-plugin@1/);
+throws('wrong manifest schema refused', () => cat.verifyPackage({ ...bad([]), kind: 'axhub' }), /axhub-plugin@1/);
 const linkDir = join(tmp, 'linked');
 mkdirSync(linkDir);
 writeFileSync(join(linkDir, 'plugin.json'), JSON.stringify(man));
@@ -105,8 +105,8 @@ let badHash = null; try { await cat.installConsolePackage(viaPkg, { noState: tru
 check('install-package refuses a package that does not match its archive index', /does not match/.test(badHash?.message ?? ''));
 const again2 = await cat.installConsolePackage(viaPkg, { noState: true, update: true, sha256: viaPkg.sha256 });
 check('install-package installs a verified package in place', again2.updated === true && again2.version === '2.0.0');
-let pilotPkg = null; try { await cat.installConsolePackage({ ...viaPkg, kind: 'pilot' }, { noState: true }); } catch (x) { pilotPkg = x; }
-check('install-package refuses other kinds', !!pilotPkg);
+let webPkg = null; try { await cat.installConsolePackage({ ...viaPkg, kind: 'axhub' }, { noState: true }); } catch (x) { webPkg = x; }
+check('install-package refuses other kinds', !!webPkg);
 const inst = await import('../cli/plugin-instances.mjs');
 check('folder stem drops model suffixes', inst.folderStem('theme-manager-fable') === 'theme-manager' && inst.folderStem('a-plugin-opus') === 'a');
 check('instanceClashes finds two builds of one plugin', inst.instanceClashes([{ folder: 'x', manifest: { id: 'a.b.x', name: 'X', builtWith: { model: 'opus' } } }, { folder: 'x-fable', manifest: { id: 'a.b.x2', name: 'X two', builtWith: { model: 'fable' } } }]).length === 1);

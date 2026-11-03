@@ -228,8 +228,8 @@ For the claude.ai connector (OAuth, decisions #97 and #98). **Nothing is require
 | `AXHUB_OAUTH_REDIRECT_URIS` | optional; default allows `https://claude.ai/api/mcp/auth_callback` and `https://claude.com/api/mcp/auth_callback` | Where axHub may send you back after sign-in. Set it only if Anthropic changes the address. |
 | `AXHUB_OAUTH_ACCESS_HOURS` / `AXHUB_OAUTH_REFRESH_DAYS` | optional; default 1 hour / 30 days | How long the connector's tokens last. claude.ai renews the access token by itself; after 30 days unused you tap Connect again. |
 
-For the console and Patches: `AXHUB_DATA_ORIGINS`, `AXHUB_APPROVALS_FRAME_ANCESTORS`, `AXHUB_APPS_FRAME_ANCESTORS`,
-`AXHUB_EMBED_FRAME_ANCESTORS` (each `https://console.amberxai.com` and/or `https://patches.amberxai.com`) let
+For the console: `AXHUB_DATA_ORIGINS`, `AXHUB_APPROVALS_FRAME_ANCESTORS`, `AXHUB_APPS_FRAME_ANCESTORS`,
+`AXHUB_EMBED_FRAME_ANCESTORS` (each `https://console.amberxai.com`) let
 those sites read hub data or show hub pages inside them.
 
 Tick **Is Secret / Locked** on every secret. Never tick **Build Variable**, because build variables can end up
@@ -493,7 +493,7 @@ by name (`_claude/handoff/SECRETS.md`), and you enter it in its destination your
 
 | Need | How | Where it goes |
 | --- | --- | --- |
-| **Fine-grained token** (console, axHub) | github.com → Settings → Developer settings → Fine-grained tokens → Generate. Owner `MossesX`; repos AmberX-AXF, axHub, Build-Pilot; permissions **Contents** read/write, **Pull requests** read/write, **Actions** read/write, **Metadata** read; 90 days | Console systems check `GITHUB_TOKEN`; axHub `axhub vault set github-token`; optional `GITHUB_TOKEN=… bash deploy/install-console.sh` |
+| **Fine-grained token** (console, axHub) | github.com → Settings → Developer settings → Fine-grained tokens → Generate. Owner `MossesX`; repos AmberX-AXF, axHub; permissions **Contents** read/write, **Pull requests** read/write, **Actions** read/write, **Metadata** read; 90 days | Console systems check `GITHUB_TOKEN`; axHub `axhub vault set github-token`; optional `GITHUB_TOKEN=… bash deploy/install-console.sh` |
 | **Claude GitHub app** (claude.ai/code, claude.ai) | claude.ai → Settings → Connectors → GitHub → connect as MossesX; on GitHub, give the **Claude** app access to the repos | GitHub → Settings → Applications |
 | **gh on the VPS** | `gh auth login` (GitHub.com, HTTPS, browser or token), then `gh auth setup-git` | `~/.config/gh` (0600) |
 | **Coolify's access to the repo** | GitHub App source in Coolify (preferred), or a deploy key: Coolify → Keys & Tokens → Private Keys → ED25519 → public half in the repo's **Settings → Deploy keys** (read-only) | Coolify |

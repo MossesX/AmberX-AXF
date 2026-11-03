@@ -2,7 +2,10 @@
 // claude-stream.mjs — turns Claude Code's `--output-format stream-json --verbose` lines into readable terminal text
 // (used by deploy/claude-headless.sh, so a headless session watched in the console's Terminal reads like a session).
 // stdin: one JSON event per line; anything that isn't JSON is passed through unchanged. Never exits on a bad line.
+// --meter <file> --chain <file> [--session s] [--name n] [--agent a] [--model m]: also keep the live cost meter and the
+// context chain for the console (deploy/claude-meter.mjs), rewritten at most once a second and when the stream ends.
 import { createInterface } from 'node:readline';
+import { createMeter, readJson, writeJson } from './claude-meter.mjs';
 
 const dim = (s) => `\x1b[2m${s}\x1b[0m`;
 const bold = (s) => `\x1b[1m${s}\x1b[0m`;
@@ -49,11 +52,35 @@ export function render(ev) {
   return [];
 }
 
+/** --flag value pairs. Pure. */
+export function parseArgs(argv) {
+  const o = {};
+  for (let i = 0; i < argv.length; i++) if (argv[i].startsWith('--') && i + 1 < argv.length) { o[argv[i].slice(2)] = argv[i + 1]; i++; }
+  return o;
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
+  const o = parseArgs(process.argv.slice(2));
+  let meter = null;
+  if (o.meter) {
+    try {
+      meter = createMeter({ session: o.session ?? '', name: o.name ?? '', agent: o.agent ?? '', model: o.model ?? '', cwd: process.cwd(), prev: readJson(o.meter), prevChain: o.chain ? readJson(o.chain) : null });
+    } catch { meter = null; }
+  }
+  let dirty = false; let chainAt = -1;
+  const flush = () => {
+    if (!meter || !dirty) return; dirty = false;
+    writeJson(o.meter, meter.snapshot());
+    if (o.chain && meter.chainVersion !== chainAt) { chainAt = meter.chainVersion; writeJson(o.chain, meter.chain()); }
+  };
+  if (meter) { dirty = true; flush(); }
+  const timer = meter ? setInterval(flush, 1000) : null;
   const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
   rl.on('line', (line) => {
     let ev = null;
     try { ev = JSON.parse(line); } catch { process.stdout.write(`${line}\n`); return; }
+    if (meter) { try { meter.add(ev); dirty = true; } catch { /* never stop the stream */ } }
     for (const l of render(ev)) process.stdout.write(`${l}\n`);
   });
+  rl.on('close', () => { if (meter) { meter.end(); dirty = true; flush(); clearInterval(timer); } });
 }

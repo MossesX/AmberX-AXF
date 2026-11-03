@@ -108,9 +108,11 @@ def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[
     return out
 
 
-def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
+def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+                 console: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
     """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict; `control(command)` runs
-    one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools)."""
+    one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools); `console(command)`
+    runs one command of the console domain in the caller's open console (None = no console_* tools)."""
     mcp = MCPServer(name="amberx-axf", title="GizmoX AI Studio", version="0.2.0", instructions=INSTRUCTIONS,
                     website_url="https://console.amberxai.com")
 
@@ -503,6 +505,11 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     if control is not None:
         _register_control_tools(mcp, control)
 
+    # ------------------------------------------------------------------ console commands (Console commands plugin): load screens in the open console
+
+    if console is not None:
+        _register_console_tools(mcp, console)
+
     # ------------------------------------------------------------------ resources + prompt
 
     @mcp.resource("axf://build-queue", name="build-queue", title="Build queue", mime_type="application/json",
@@ -532,9 +539,11 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
 
 CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
-                   "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds", "pass.scopes")
+                   "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
+                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes")
 ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
-                        "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds", "pass.scopes"]
+                        "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
+                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes"]
 PassScope = Literal["all", "theme", "style", "layout", "tokens"]
 # all = everything (the default since build pass-all); tokens = theme, style and layout together
 PASS_SCOPE_IDS = {"all": "all", "theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "tokens": "tokens.*"}
@@ -692,6 +701,117 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         return await go({"op": "add", "target": "planner.plans", "value": {k: v for k, v in {"title": title, "summary": summary, "category": category, "body": body, "status": "parked"}.items() if v}})
 
 
+# ---------------------------------------------------------------------- console commands (control@1 console domain)
+
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients")
+Delivery = str  # "recent" (the console used last), "all", or a client id from console_clients
+
+
+def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
+    """The console_* tools (= CONSOLE_TOOLS in core/engines/console-commands.mjs): what a Claude session calls when Brett
+    says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message). A
+    failure raises a ToolError with its wire code, except confirmation_required (returned, so the token is seen)."""
+
+    async def go(command: dict[str, Any]) -> dict[str, Any]:
+        command = {k: v for k, v in command.items() if v not in (None, "", {})}
+        command.setdefault("by", "mcp")
+        r = await anyio.to_thread.run_sync(lambda: console(command))
+        if not r.get("ok") and r.get("code") != "confirmation_required":
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    def inp(to: str, **more: Any) -> dict[str, Any]:
+        d = {k: v for k, v in more.items() if v not in (None, "", [])}
+        if to and to != "recent":
+            d["to"] = to
+        return d
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
+        """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
+        `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
+        "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
+        return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_dialog(dialog: str, arg: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a dialog in the open console by id, title or words (`arg` = the dialog's optional argument)."""
+        return await go({"op": "act", "target": "console.dialogs", "path": dialog, "action": "open", "input": inp(to, arg=arg)})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_settings(tab: str, anchor: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a Settings tab or sub-tab in the open console: its id ("appearance"), "plugins/<plugin>" for a plugin's
+        sub-tab under Settings → Plugins, or its title. `anchor` scrolls to one setting ("setting:<key>") or group."""
+        return await go({"op": "act", "target": "console.settings", "path": tab, "action": "open", "input": inp(to, anchor=anchor)})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_action(action: str, args: list[str] | None = None, confirm: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Run a registered action in the open console (menus, toolbar, search all use them): its id ("terminal.open"),
+        a spec with arguments ("swap:color-theme:dark") or its label. Actions that only navigate run straight away; one
+        that changes data needs the permission the action itself requires; one that deletes or resets answers
+        confirmation_required with `confirm`: tell Brett what it will do, then call again with that token."""
+        return await go({"op": "act", "target": "console.actions", "path": action, "action": "run", "input": inp(to, args=args or None), "confirm": confirm})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_back(move: Literal["back", "home", "close"] = "back", to: Delivery = "recent") -> dict[str, Any]:
+        """Move the open console: back (closes an open dialog first, else the screen before), home, or close (the dialog)."""
+        return await go({"op": "act", "target": "console.nav", "path": "here", "action": move, "input": inp(to)})
+
+    @mcp.tool(annotations=READ)
+    async def console_where() -> dict[str, Any]:
+        """Where Brett's open console is now: screen, open dialog, settings tab, and which console that is."""
+        return await go({"op": "get", "target": "console.nav", "path": "here"})
+
+    @mcp.tool(annotations=READ)
+    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
+        """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs or actions,
+        best matches for `q` first (all of them when q is empty)."""
+        return await go({"op": "list", "target": f"console.{kind}", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 500))}.items() if v}})
+
+    @mcp.tool(annotations=READ)
+    async def console_clients() -> dict[str, Any]:
+        """The consoles open right now (one per browser tab: id, device, screen, last used). Commands go to the one
+        used last unless `to` names another (or "all")."""
+        return await go({"op": "list", "target": "console.clients"})
+
+
+def console_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
+    """Console commands through the capability when the console runs (its open consoles are there); in stdio mode
+    (a local clone) they are sent to the console itself: AXF_CONSOLE_URL (default https://console.amberxai.com) with
+    AXF_TOKEN, since only the console knows Brett's open browser tabs."""
+
+    def remote(command: dict[str, Any]) -> dict[str, Any]:
+        import urllib.error
+        import urllib.request
+        url = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/console"
+        req = urllib.request.Request(url, data=json.dumps({"$axf": "control@1", **command}).encode(), method="POST",
+                                     headers={"content-type": "application/json", **({"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {})})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as res:
+                return json.loads(res.read().decode() or "{}")
+        except urllib.error.HTTPError as e:
+            try:
+                return json.loads(e.read().decode() or "{}")
+            except ValueError:
+                return {"ok": False, "code": "unexpected", "message": f"{e.code} from {url}"}
+        except (OSError, ValueError) as e:
+            return {"ok": False, "code": "unexpected", "message": f"could not reach {url}: {str(e)[:200]}"}
+
+    def run(command: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import plugin_services  # the console's registry (absent in stdio mode)
+        except ImportError:
+            return remote(command)
+        if any(s["name"] == "console-commands@1" for s in plugin_services.available()):
+            svc = plugin_services.get("console-commands@1")
+            if svc is None:
+                return {"ok": False, "code": "not_implemented", "message": "the Console commands plugin is turned off (Settings → Plugins)"}
+            return svc.run(command, ["*"], str(command.get("by") or "mcp"))
+        return {"ok": False, "code": "not_implemented", "message": "no plugin provides console-commands@1 (the Console commands plugin)"}
+
+    return run
+
+
 def control_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
     """control@1 through the capability: the console's enabled provider (plugin_services) when the console runs, else
     (stdio against a clone) the runner of the plugin whose plugin.json provides service:control@1."""
@@ -748,4 +868,4 @@ if __name__ == "__main__":
     root = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[3])).resolve()
     if not (root / "framework" / "cli" / "engine-rpc.mjs").exists():
         sys.exit(f"AXF_ROOT {root} is not an AmberX AXF checkout")
-    build_server(_local_call(root), control=control_runner(root)).run()
+    build_server(_local_call(root), control=control_runner(root), console=console_runner(root)).run()

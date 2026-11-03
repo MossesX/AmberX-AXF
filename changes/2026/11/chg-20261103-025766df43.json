@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261103-025766df43",
   "createdAt": "2026-11-03T14:09:14.031Z",
-  "updatedAt": "2026-11-03T14:16:27.007Z",
+  "updatedAt": "2026-11-03T14:10:56.283Z",
   "kind": "build",
   "title": "# Build: amberx-backup-fix (Urgent profile) Requested by Brett, Nov 3 2026 (voice).",
   "asked": "# Build: amberx-backup-fix (Urgent profile) Requested by Brett, Nov 3 2026 (voice). GO given. Ops fix, do it now. ## Problem On the VPS, container `amberx-app-backup-1` (image postgres:17, part of the `amberx-app` compose stack with amberx-app-postgres-1, api, web, jobs, media, redis) is stuck in a restart loop (`Restarting (2)`). AmberX app database backups are failing. ## Do 1. Register in the Urgent profile via the orchestrator CLI (id `amberx-backup-fix`) + banner entry. Never hand-edit store.json (orch-live-sync is running). 2. Diagnose: `docker logs --tail 200 amberx-app-backup-1`, `docker inspect` (command, env, mounts, restart policy), find the compose file / Coolify app for amberx-app (docker inspect labels com.docker.compose.project.working_dir / coolify labels). Typical causes: wrong PGHOST/password/db name, missing script or not executable, backup volume path missing or full (check `df`), version mismatch, cron entrypoint exiting. 3. Fix the root cause in the stack's compose/config (through Coolify if it's a Coolify app so the fix survives redeploys). Do NOT touch amberx-app-postgres-1's data volume. Never drop or overwrite data. 4. Verify: container stays Up for 5+ minutes, run one backup now, confirm a fresh dump file exists and is non-empty and restorable (`pg_restore --list` or gunzip -t), and that a schedule is in place (daily) with retention. 5. Add a health alert: if the backup container restarts repeatedly or the newest dump is older than 26 h, raise a banner alert / hub notification. 6. Report `_claude/builds/reports/amberx-backup-fix.md` (cause, fix, where the backups live, schedule), THREADS.md line, commit any repo-side change via PR. Mark steps done through the store. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
@@ -16,110 +16,38 @@
     "user": "root",
     "host": "srv1837178"
   },
-  "steps": [
-    {
-      "text": "Diagnose restart loop",
-      "state": "done",
-      "startedAt": "2026-11-03T14:13:34.498Z",
-      "finishedAt": "2026-11-03T14:13:34.498Z"
-    },
-    {
-      "text": "Fix backup.sh CRLF + compose entrypoint/healthcheck",
-      "state": "done",
-      "startedAt": "2026-11-03T14:13:34.619Z",
-      "finishedAt": "2026-11-03T14:13:34.619Z"
-    },
-    {
-      "text": "Verify dump + scratch restore",
-      "state": "done",
-      "startedAt": "2026-11-03T14:13:34.727Z",
-      "finishedAt": "2026-11-03T14:13:34.727Z"
-    },
-    {
-      "text": "Health item amberx-backups",
-      "state": "done",
-      "startedAt": "2026-11-03T14:13:34.796Z",
-      "finishedAt": "2026-11-03T14:13:34.796Z"
-    },
-    {
-      "text": "Report, THREADS, PR #257",
-      "state": "done",
-      "startedAt": "2026-11-03T14:13:34.866Z",
-      "finishedAt": "2026-11-03T14:13:34.866Z"
-    }
-  ],
-  "result": {
-    "state": "done",
-    "summary": "amberx-app-backup-1 restart loop fixed (backup.sh CRLF); fresh dump verified by scratch restore; health item amberx-backups",
-    "branch": "claude/amberx-backup-fix",
-    "commits": [
-      {
-        "sha": "15d53052"
-      }
-    ],
-    "filesChanged": 4,
-    "tests": {
-      "systems-check": {
-        "before": "216",
-        "after": "222"
-      }
-    },
-    "links": {
-      "report": "_claude/builds/reports/amberx-backup-fix.md"
-    }
-  },
+  "steps": [],
+  "result": null,
   "closed": null,
-  "state": "done",
-  "status": "done",
+  "state": "running",
+  "status": "running",
   "buildRef": {
     "kind": "orch",
     "id": "amberx-backup-fix"
   },
   "surface": "headless",
   "startedAt": "2026-11-03T14:09:14.031Z",
-  "finishedAt": "2026-11-03T14:16:18.601Z",
-  "lastSeenAt": "2026-11-03T14:16:16.746Z",
+  "lastSeenAt": "2026-11-03T14:10:56.283Z",
   "estimate": {
     "minutes": 80,
     "costUsd": 11.2
   },
-  "actual": {
-    "minutes": 7,
-    "costUsd": 1.7263,
-    "inputTokens": 86,
-    "outputTokens": 20634,
-    "cacheReadTokens": 3810049,
-    "cacheWriteTokens": 110252,
-    "source": "transcript"
-  },
-  "costEstimated": false,
+  "costEstimated": true,
   "branch": "claude/amberx-backup-fix",
   "areas": [
     "apps/console-web/plugins/systems-check",
     "_claude/builds"
   ],
-  "progress": 1,
+  "doing": "Running: Archive old dumps outside rotation dir",
   "resume": {
     "repo": "MossesX/AmberX-AXF",
     "folder": "/root/axf-builds/amberx-backup-fix",
     "branch": "claude/amberx-backup-fix",
     "base": "ae86ee0332cf181a65b914a9f81d1d94458fb4e4",
-    "head": "15d53052a74af92e21b66310881a2e83c6e313e9",
+    "head": "ae86ee0332cf181a65b914a9f81d1d94458fb4e4",
     "pushed": true,
-    "dirty": 130,
+    "dirty": 122,
     "files": [
-      "_claude/THREADS.md",
-      "_claude/builds/reports/amberx-backup-fix.md",
-      "apps/console-web/plugins/systems-check/server/healthchecks.py",
-      "apps/console-web/plugins/systems-check/test.py",
-      "_claude/builds/journal/2026-11.jsonl",
-      "_claude/builds/orchestrator.json",
-      "_claude/builds/profiles/angel/orchestrator.json",
-      "_claude/builds/profiles/big-dog/orchestrator.json",
-      "_claude/builds/profiles/breakroom/orchestrator.json",
-      "_claude/builds/profiles/refactor/orchestrator.json",
-      "_claude/builds/profiles/urgent/orchestrator.json",
-      "_claude/builds/store.json",
       "_claude/builds/reports/notes-vault.md",
       "_claude/builds/store.json.live.json",
       "_claude/shared/notes/",
@@ -243,6 +171,6 @@
       "sessions/archive/2026/11/cc-f02db073-b9b2-4df9-acb5-beddf338387c.json",
       "sessions/archive/2026/11/cc-f80cfb05-9d0d-4849-8430-2a2778978417.json"
     ],
-    "at": "2026-11-03T14:16:27.139Z"
+    "at": "2026-11-03T14:09:14.997Z"
   }
 }

@@ -5,7 +5,7 @@
  * app's button asset, style theme and spacing restyle it:
  *
  *   - its className carries a framework control class: fx-btn (or <Button>), fx-iconbtn (<IconButton>), fx-chip,
- *     fx-seg__opt (<Segmented>), fx-tab, fx-menu__item, fx-nav__item; or
+ *     fx-seg__opt (<Segmented>), fx-tab, fx-menu__item, fx-nav__item, fx-toolbtn (a toolbar button, styled by the toolbar asset); or
  *   - it is a whole row / card you tap, marked `data-fx-row` (no control chrome of its own; the plugin lays it out).
  *
  * And a plugin's own class on such a control may lay it out (margin, flex, order, width…) but never restyle it: rules
@@ -26,9 +26,9 @@ const roots = args.filter((a) => !a.startsWith('--')).map((a) => resolve(ROOT, a
 /**
  * Asset conformance (Brett, Oct 31 2026, build asset-conform): every web UI is held to it, handwritten or generated —
  * plugins and libraries, framework React views, every app's own UI and what the build system generates from (app
- * templates, library templates, the plugin template). Patches is paused (Brett, Oct 28 2026) and is left as it is.
+ * templates, library templates, the plugin template).
  */
-const APPS = (() => { try { return readdirSync(join(ROOT, 'apps')).filter((a) => !a.startsWith('patches')); } catch { return []; } })();
+const APPS = (() => { try { return readdirSync(join(ROOT, 'apps')); } catch { return []; } })();
 const ROOTS = roots.length ? roots : [
   join(ROOT, 'framework/libs'), join(ROOT, 'framework/react'), join(ROOT, 'framework/templates'), join(ROOT, 'framework/library-templates'),
   ...APPS.flatMap((a) => [join(ROOT, 'apps', a, 'plugins'), join(ROOT, 'apps', a, 'src')]),
@@ -36,7 +36,7 @@ const ROOTS = roots.length ? roots : [
 /** Where the framework's controls and chrome are defined: their buttons ARE the controls (allowlisted). */
 const DEFINES = ['framework/react/components', 'framework/react/windows'];
 
-export const CONTROL_CLASSES = ['fx-btn', 'fx-iconbtn', 'fx-chip', 'fx-seg__opt', 'fx-tab', 'fx-menu__item', 'fx-nav__item'];
+export const CONTROL_CLASSES = ['fx-btn', 'fx-iconbtn', 'fx-chip', 'fx-seg__opt', 'fx-tab', 'fx-menu__item', 'fx-nav__item', 'fx-toolbtn'];
 export const RESTYLE_PROPS = ['background', 'background-color', 'color', 'border', 'border-color', 'border-radius', 'padding', 'font-size', 'font-weight', 'box-shadow', 'text-transform'];
 
 function walk(dir, out = []) {
