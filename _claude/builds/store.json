@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 191,
- "updatedAt": "2026-11-03T16:12:18.409Z",
+ "rev": 200,
+ "updatedAt": "2026-11-03T16:23:06.909Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -29288,7 +29288,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T23:01:35.786Z",
-   "updatedAt": "2026-10-28T19:31:15.654Z",
+   "updatedAt": "2026-11-03T14:24:40.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -29310,6 +29310,10 @@
     {
      "text": "Imported from Main framework (Brett, Oct 27 2026 18:40: everything from today and the refactor goes into the Refactor profile).",
      "at": "2026-10-27T22:41:47.258Z"
+    },
+    {
+     "text": "Retired Nov 3 2026: Patches is retired, so the Tools tab in Patches web (s3) is gone; the Tools plugin itself is unaffected.",
+     "at": "2026-11-03T14:24:40.470Z"
     }
    ],
    "approvals": [],
@@ -29411,7 +29415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -50173,12 +50177,24 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:07:30.479Z",
+   "updatedAt": "2026-11-03T16:23:06.879Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
      "at": "2026-11-03T16:07:25.644Z"
+    },
+    {
+     "text": "Landed claude/agent-chats-hub (PR #248) on main at 92be01a0",
+     "at": "2026-11-03T16:14:09.456Z"
+    },
+    {
+     "text": "Correction: agent-chats-hub landed at c985c38d",
+     "at": "2026-11-03T16:14:37.124Z"
+    },
+    {
+     "text": "crew-retrain (PR #265, Breakroom) is ready too: land it last, after the rest. It changes deploy/claude-headless.sh (every launch booked on a named agent).",
+     "at": "2026-11-03T16:23:06.879Z"
     }
    ],
    "approvals": [],
@@ -50220,12 +50236,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:14:14.427Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:14:14.450Z"
     },
     {
      "id": "s3",
@@ -50434,7 +50450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50450,16 +50466,21 @@
    "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
    "category": "Breakroom",
    "detail": "Brett, Nov 3 2026 (voice). Retrain, don't fire: every swarm agent can take every job type (skills, home job as preference only); new job types feature-build and ops-fix; router picks any free agent under budget; every headless launch is assigned to a named agent first and booked on its card; back-assign today's headless builds; Breakroom cards show skills, home job, current job. Booked on Landin' Lenny.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/crew-retrain",
+   "pr": "#265",
    "createdAt": "2026-11-03T15:58:12.029Z",
-   "updatedAt": "2026-11-03T16:12:16.094Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T16:23:06.193Z",
+   "builtAt": "2026-11-03T16:23:05.239Z",
+   "notes": [
+    {
+     "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
+     "at": "2026-11-03T16:23:06.193Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -50609,12 +50630,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:23:04.430Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:58:12.030Z",
-     "updatedAt": "2026-11-03T15:58:12.030Z"
+     "updatedAt": "2026-11-03T16:23:04.461Z"
     },
     {
      "id": "s8",
@@ -50631,12 +50652,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:23:05.239Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:58:12.030Z",
-     "updatedAt": "2026-11-03T15:58:12.030Z"
+     "updatedAt": "2026-11-03T16:23:05.267Z"
     }
    ],
    "profiles": [
@@ -50647,7 +50668,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
