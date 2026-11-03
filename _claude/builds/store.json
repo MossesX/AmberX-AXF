@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 460,
- "updatedAt": "2026-11-03T21:02:32.786Z",
+ "rev": 461,
+ "updatedAt": "2026-11-03T21:05:24.242Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55537,7 +55537,7 @@
    "branch": "claude/home-cards-live",
    "pr": "",
    "createdAt": "2026-11-03T19:43:04.673Z",
-   "updatedAt": "2026-11-03T21:00:30.825Z",
+   "updatedAt": "2026-11-03T21:05:22.440Z",
    "builtAt": "",
    "notes": [
     {
