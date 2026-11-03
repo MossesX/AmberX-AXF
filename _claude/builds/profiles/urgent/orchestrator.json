@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:25:24.685Z",
+ "updatedAt": "2026-11-03T20:26:50.209Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4076,19 +4076,23 @@
    "title": "Follow Amber: the console opens what Amber talks about, and axHub approvals pop up in the console",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice). One switch in the Dev Console, Follow Amber. On: whenever Amber mentions a console screen, dialog, build, setting or plugin she calls console_show and the console opens it, focused and highlighted; every axHub held/confirm call for Brett pops up as an approval dialog in the console (title, description, collapsible call, countdown, one-tap Approve / Deny, queue). Off: nothing auto-opens. Navigation tools never wait on a veto. Agent: Reel Rhonda.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/follow-amber",
-   "pr": "",
+   "pr": "#280",
    "createdAt": "2026-11-03T19:02:35.761Z",
-   "updatedAt": "2026-11-03T19:21:00.653Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T20:26:42.655Z",
+   "builtAt": "2026-11-03T20:26:39.090Z",
    "notes": [
     {
      "text": "Agent: Reel Rhonda (headless, Opus). All steps Opus; no model switch.",
      "at": "2026-11-03T19:02:37.612Z"
+    },
+    {
+     "text": "All 7 steps done in PR #280, UI Review r-20261103-758c9fad. axHub follow-ups: frame-ancestors must list console.amberxai.com (Patches still listed); desktop one-tap needs axHub to accept decisions from the owner's cookie-domain apps.",
+     "at": "2026-11-03T20:26:42.655Z"
     },
     {
      "text": "agent-pick (claude/agent-pick) pops the Claude agent picker through its own ask watcher (claude-session plugin polls GET /asks every 5 s, Brett's session only) plus a bell alert and a held axHub approval (axf.claude_session_answer). When follow-amber's pop-up stream lands, route those asks through it (dialog id claude.picker, props {ask}).",
@@ -4219,8 +4223,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:26:39.090Z",
      "note": "",
      "uid": "st-mw121tzm0ehrwl"
     }
