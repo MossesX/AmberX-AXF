@@ -878,7 +878,9 @@ from starlette.types import Receive, Scope, Send  # noqa: E402
 
 from mcp_server import build_server  # noqa: E402
 
-_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since])
+from mcp_server import control_runner  # noqa: E402
+_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
+                    control=control_runner(ROOT))
 # Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
 # the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.
 _mcp_http = _mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
