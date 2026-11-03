@@ -73,7 +73,16 @@ BACKFILL_TABLE
 
 ## Screenshots
 
-SHOTS_TABLE
+| What | Phone | Desktop |
+|---|---|---|
+| A predicted item opened: badge, *Predicted / Now (main)* switch, $0.00 rules cost, Approve look / Ask changes / Reject look | ![](ui-review-predicted/shots/ui-review-predicted-item-phone.png) | ![](ui-review-predicted/shots/ui-review-predicted-item-desktop.png) |
+| The mockup page itself (this build's own predicted look) | ![](ui-review-predicted/shots/predicted-ui-review-phone.png) | ![](ui-review-predicted/shots/predicted-ui-review-desktop.png) |
+| Settings → Plugins → UI Review → *Predicted looks* | ![](ui-review-predicted/shots/ui-review-look-setting-phone.png) | ![](ui-review-predicted/shots/ui-review-look-setting-desktop.png) |
+| Backfill example: `toolbar-tap-confirm` predicted Toolbars screen | ![](ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-phone.png) | ![](ui-review-predicted/shots/backfill-toolbar-tap-confirm-predicted-desktop.png) |
+
+Also fixed on the way (the phone shot shows it): UI Review's item detail used the desktop columns on phones (the
+wide rules' `:where(:not([data-fx-narrow]))` matches any ancestor), so the screenshot list, preview and facts
+overlapped; phone overrides put the stacked layout back.
 
 ## Known gaps
 
