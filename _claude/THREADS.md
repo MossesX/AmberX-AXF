@@ -568,8 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:02 UTC · `builds-one-page-done` s3 done (urgent) · snap-sully
-- 2026-11-03 18:02 UTC · `builds-one-page` s7 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s8 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s9 done (refactor) · snap-sully
 - 2026-11-03 18:02 UTC · `builds-one-page` s10 done (refactor) · snap-sully
@@ -968,3 +966,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:01 UTC · `terminal-drag-chain-tree` s2 done (current) · foreign-write
 - 2026-11-03 22:01 UTC · `git-status-board` s4 done (current) · claude-session (Snap Sully)
 - 2026-11-03 22:01 UTC · `git-status-board` s5 done (current) · claude-session (Snap Sully)
+- 2026-11-03 22:03 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:03 UTC · `terminal-tabs-left` added (5 steps) (current) · foreign-write
