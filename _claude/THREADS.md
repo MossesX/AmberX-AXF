@@ -825,3 +825,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:02 UTC · `follow-amber` → running (urgent) · orchestrator
 - 2026-11-03 19:04 UTC · `agent-pick` added (9 steps) (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:05 UTC · `follow-amber` s1 done (urgent) · orchestrator
+- 2026-11-03 19:05 UTC · `follow-amber` s1 done (urgent) · foreign-write
