@@ -4,5 +4,6 @@
   "name": "Voice control",
   "version": "0.3.0",
   "description": "Talk to AmberX: hands-free listening (wake phrase or always armed, on screen and in the background), a detection overlay on Android, a command list built from the app's pages and actions, note and task sentences, spoken replies.",
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-29" }
 }

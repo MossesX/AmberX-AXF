@@ -137,4 +137,18 @@ Reads are marked read-only, removes destructive. A failure raises a tool error w
 
 Names resolve by id, title or a few words, against what the open console reports (plugins' screens included). Opening only **navigates** (\`control.console.navigate\`). An action that changes data needs \`control.console.write\` plus the permission the action itself requires; one that deletes or resets answers \`confirmation_required\` with a token first, like a remove. The same commands work as control@1 here: \`{ "op": "act", "target": "console.screens", "path": "plan studio", "action": "open" }\`.`,
   },
+  {
+    id: 'plugins',
+    title: 'Plugins: every plugin\'s commands and reads',
+    body: `Every plugin, existing and new, exposes **everything it can do** through control@1 with no extra work: the Plugin commands plugin reads each plugin's server routes (GET = a read, POST / PUT = a command, DELETE = a delete), its registered actions (they run in Brett's open console), its data folder (\`data\`, \`data-file\`, secrets redacted) and \`info\`, plus what its plugin.json \`commands\` block declares (titles, input schemas, flags, skips that say why).
+
+| Do | MCP tool (console /mcp, also through axHub) | REST | CLI |
+|---|---|---|---|
+| what can a plugin do | \`plugin_commands {plugin: "<plugin>"}\` | \`GET /api/control/<plugin>\` | \`axf <plugin>\` (\`axf plugins\` lists them) |
+| read something | \`<plugin>_<read>\` or \`plugin_read {path: "<plugin>/<read>"}\` | \`GET /api/control/<plugin>/<read>?field=…\` | \`axf <plugin> <read> --field …\` |
+| run a command | \`<plugin>_<command> {input: {…}}\` or \`plugin_run {path, input}\` | \`POST /api/control/<plugin>/<command>\` with the input as the body | \`axf <plugin> <command> --field value …\` |
+| delete (two steps) | first call → \`confirmation_required\` + token, then again with \`confirm\` | \`DELETE /api/control/<plugin>/<command>?confirm=…\` | \`--confirm <token>\` |
+
+As control@1: \`{ "op": "act", "target": "plugins.reads", "path": "<plugin>/<read>", "action": "read" }\` and \`{ "op": "act", "target": "plugins.commands", "path": "<plugin>/<command>", "action": "run", "input": {…} }\`; \`list\` filters by \`plugin\`, \`effect\`, \`q\`. Permissions: \`control.plugins.read\` reads, \`control.plugins.write\` runs, \`control.plugins.delete\` + a confirm token deletes. The tools follow installs, removals and on / off switches by themselves; the Plugin commands page lists every command with its REST route, MCP tool and CLI line.`,
+  },
 ];

@@ -40,6 +40,7 @@
       "_claude/memory/docs/rebuilds/feature-matrix-plugin.md"
     ]
   },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-10-29"

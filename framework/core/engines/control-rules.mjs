@@ -5,7 +5,9 @@
  * and their lists) and the planner (Plan Studio plans, orchestrator builds and their steps). Since build
  * console-commands (Brett, Nov 3 2026): the `console` domain, so a Claude session can load screens, dialogs and
  * settings tabs in Brett's open console, run its registered actions and go back (core/engines/console-commands.mjs
- * resolves and delivers them; the running console reports what it has).
+ * resolves and delivers them; the running console reports what it has). Since build plugin-commands-auto (Brett,
+ * Nov 3 2026): the `plugins` domain, every plugin's commands and reads made automatically from its routes, actions,
+ * data folder and plugin.json (core/engines/plugin-commands.mjs).
  *
  * ONE registry: the ops, the targets (what each one is, the ops it takes, its paths and fields, its verbs), the
  * permissions, the effect of each op, the confirm rule for deletes, the result envelope, and the projections every
@@ -19,7 +21,8 @@
  *   op      list | get | set | reset | add | remove | act
  *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
- *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients
+ *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
+ *           plugins.commands | plugins.reads
  *   path    the token id / entity id (get, set, reset, remove, act; reset without a path = everything of the target)
  *   value   what to set (set) or the new entity (add)
  *   action  the verb for `act` (per target: done, move, approve, step, …)
@@ -38,7 +41,7 @@ import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken
 
 export const CONTROL_FRAME = 'control@1';
 export const CONTROL_OPS = ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'];
-export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'console'];
+export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'console', 'plugins'];
 /** What each op does to the world (the MCP annotations and the permission it needs come from this). */
 export const CONTROL_EFFECT = { list: 'read', get: 'read', set: 'write', reset: 'write', add: 'write', remove: 'destructive', act: 'write' };
 /** Permission suffix per effect: control.<domain>.<suffix>. `navigate` (open a screen, go back) changes what a screen
@@ -74,6 +77,7 @@ const BUILD_FIELDS = { title: 'string', category: 'string', detail: 'string', st
 const STEP_FIELDS = { text: 'string', title: 'string', model: 'enum:Fable,Opus', estimate: 'string', why: 'string', phase: 'string', group: 'string', files: 'string[]', checks: 'string[]', done: 'boolean', note: 'string' };
 
 const CONSOLE_SELECT = { q: 'string', limit: 'number', client: 'string' };
+const PLUGIN_SELECT = { plugin: 'string', app: 'string', effect: 'enum:read,write,destructive,navigate', q: 'string', limit: 'number' };
 const CONSOLE_DELIVERY = 'Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).';
 
 const scalePaths = (type) => [...Object.keys(SCALE_FIELDS[type]), ...Object.keys(SCALE_ENUMS[type] ?? {})];
@@ -105,6 +109,8 @@ export const CONTROL_TARGETS = {
   'console.actions': { domain: 'console', label: 'Console actions', ops: ['list', 'get', 'act'], paths: 'host', select: CONSOLE_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every registered action (the action bus: menus, toolbars, search). act run runs it in the open console under its own policy: an action that only navigates needs control.console.navigate, one that changes data needs control.console.write plus the permission the action itself requires, and a destructive one also a confirm token. input.args = its arguments ("swap:color-theme:dark" or ["color-theme", "dark"]). ${CONSOLE_DELIVERY}` },
   'console.nav': { domain: 'console', label: 'Console navigation', ops: ['get', 'act'], paths: 'static', acts: { back: {}, home: {}, close: {} }, actEffect: { back: 'navigate', home: 'navigate', close: 'navigate' }, doc: `Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). ${CONSOLE_DELIVERY}` },
   'console.clients': { domain: 'console', label: 'Open consoles', ops: ['list'], paths: 'host', select: { limit: 'number' }, doc: 'The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise.' },
+  'plugins.commands': { domain: 'plugins', label: 'Plugin commands', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { run: {} }, actEffect: { run: 'write' }, doc: `Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.` },
+  'plugins.reads': { domain: 'plugins', label: 'Plugin reads', ops: ['list', 'get', 'act'], paths: 'host', select: PLUGIN_SELECT, acts: { read: {} }, actEffect: { read: 'read' }, doc: 'Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -118,6 +124,7 @@ export const CONTROL_ALIASES = {
   plan: { target: 'planner.plans' },
   build: { target: 'planner.builds' },
   console: { target: 'console.*', note: 'axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]' },
+  plugins: { target: 'plugins.*', note: 'axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin\'s commands and reads)' },
 };
 
 /* ================================================================== helpers */
@@ -125,7 +132,7 @@ export const CONTROL_ALIASES = {
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:@/-]{0,159}$/;
 const COLOR = /^(#[0-9a-fA-F]{3,8}|(rgb|hsl)a?\(\s*[\d.%]+\s*[, ]\s*[\d.%]+\s*[, ]\s*[\d.%]+\s*([,/]\s*[\d.%]+\s*)?\)|transparent|currentColor)$/;
-const PLAIN = { tokens: 'tokens', amberx: 'amberx', planner: 'planner', console: 'console' };
+const PLAIN = { tokens: 'tokens', amberx: 'amberx', planner: 'planner', console: 'console', plugins: 'plugins' };
 
 export const isControlTarget = (t) => typeof t === 'string' && t in CONTROL_TARGETS;
 export const controlDomain = (target) => CONTROL_TARGETS[target]?.domain ?? null;
@@ -415,7 +422,7 @@ export function controlCli() {
       'axf control act <target> <path> <action> [json input]',
       'axf control targets | tools | routes | schema',
     ],
-    aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : v.target === 'console.*' ? v.note : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
+    aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : v.target === 'console.*' || v.target === 'plugins.*' ? v.note : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
     targets: CONTROL_TARGET_IDS,
   };
 }

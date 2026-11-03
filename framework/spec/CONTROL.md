@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `plugins.commands` · `plugins.reads` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -66,9 +66,23 @@ Delivery and resolution: `core/engines/console-commands.mjs`; the console server
 per signed-in user (the console token and hub admins share the owner's) and streams to each open console, which runs the command
 through its own runtime (`rt.search.focus`, `rt.dispatch`) and acks what it opened.
 
+**Plugins** (`plugins.commands`, `plugins.reads`, build plugin-commands-auto, Nov 3 2026, Brett: "every plugin, existing and
+new, automatically exposes all of its commands and reads"): one registry (`core/engines/plugin-commands.mjs`, plugin-commands@1)
+made from what every plugin already has — its server routes (GET = a read, POST/PUT/PATCH = a command, DELETE or a deleting word =
+destructive), its registered web actions (run in the open console through the Console commands plugin, like `console.actions`),
+its data folder (`data`, `data-file`, secrets redacted) and `info` — plus plugin.json `commands` (titles, input schemas, flags,
+extra commands, skips that say why). `path` = `<plugin>/<command>`; `plugins.reads` takes `act read`, `plugins.commands` takes
+`act run`, both with `input` = what the command takes; `list` filters by `plugin`, `app`, `effect`, `q`. A command that deletes needs
+`control.plugins.delete` and a confirm token (the same two-step flow as `remove`). Every transport is generated from the registry
+and follows installs and uninstalls by itself: REST `GET|POST|DELETE /api/control/<plugin>/<command>`, MCP tools
+`<plugin>_<command>` (annotations from the effect) plus `plugin_commands`, `plugin_read`, `plugin_run`, and the CLI
+`axf <plugin> <command> [--field value]…` / `axf plugins [plugin]`. Runner: the Plugin commands plugin
+(`apps/console-web/plugins/plugin-commands`, capability `plugin-commands@1`). The lifecycle check fails a plugin whose route or
+action can't be exposed, whose declarations name something gone, or that has no reads without saying why (`commands.noReads`).
+
 ## Auth
 
-Permissions: `control.<domain>.read | write | delete` (`control.tokens.write`, `control.amberx.delete`, …), plus
+Permissions: `control.<domain>.read | write | delete` (`control.tokens.write`, `control.amberx.delete`, `control.plugins.read`, …), plus
 `control.console.navigate` for console verbs that only navigate, declared in an app's
 uac-policy; `control.*`, `control.<domain>.*` and `*` are wildcards (the UAC engine's own rule). The console token = the admin role;
 a call through axHub carries the hub user's role; a remote caller never exceeds the app's own UAC role (INTEROP.md). The gate, in order:

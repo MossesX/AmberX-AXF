@@ -47,6 +47,7 @@
       ".github/workflows/android.yml"
     ]
   },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-11-03"

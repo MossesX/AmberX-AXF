@@ -540,10 +540,12 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
 CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                    "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
-                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients")
+                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients",
+                   "plugins.commands", "plugins.reads")
 ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
                         "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
-                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients"]
+                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients",
+                        "plugins.commands", "plugins.reads"]
 DESTRUCTIVE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=False)
 IDEMPOTENT = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 

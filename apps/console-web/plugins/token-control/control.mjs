@@ -45,6 +45,7 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
   }
   const domain = CONTROL_TARGETS[c.target].domain;
   try {
+    if (domain === 'plugins') throw new ControlError(CONTROL_WIRE.NOT_IMPLEMENTED, 'plugin commands are run by the Plugin commands plugin where the plugins are: POST /api/control on the console, its <plugin>_<command> MCP tools, or axf <plugin> <command>');
     if (domain === 'console') throw new ControlError(CONTROL_WIRE.NOT_IMPLEMENTED, 'console commands are run by the Console commands plugin where the open consoles are: POST /api/control or /api/console on the console, or axf console …');
     const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : await runPlanner(c);
     const at = new Date(now).toISOString();

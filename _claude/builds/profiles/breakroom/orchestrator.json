@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T12:55:35.007Z",
+ "updatedAt": "2026-11-03T15:40:36.093Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -21,7 +21,7 @@
    "branch": "claude/agent-swarm",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
    "createdAt": "2026-10-31T05:27:46.906Z",
-   "updatedAt": "2026-10-31T23:53:03.393Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
    "notes": [
     {
@@ -31,6 +31,10 @@
     {
      "text": "s1/s3/s4 (Fable-pinned: card preview, card designer, agent-card@1 asset type) built on Opus Oct 31 2026 per Brett's go-live brief; folded into the parked Fable rebuild agent-swarm-fable-rebuild. Default card design picked as corporate-badge (headless run, Brett changes it in Swarm -> ID cards -> Make default). Android renderer deferred (Android on hold, PORTING.md). Branch claude/agent-swarm, pushed to main.",
      "at": "2026-10-31T23:53:03.302Z"
+    },
+    {
+     "text": "Reconciler: PR #196 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -422,7 +426,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-03T12:01:23.473Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-03T12:01:23.473Z",
    "notes": [
     {
@@ -432,6 +436,10 @@
     {
      "text": "Nov 1 2026, Fable review (claude/fable-review, report _claude/builds/reports/fable-review.md): verdict REBUILD, this build. Reviewed OK and NOT to be rebuilt: agent-card@1 (one rules file drives both validators, fixture, defaults, open enums) and job-type@1 (now on the model policy). What the rebuild must do: move the swarm contracts (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1, swarm-report@1) out of the plugin into framework/core/engines/swarm-rules.mjs with ONE registry, a JSON snapshot in framework/schemas, JSON Schemas, a fixture in framework/spec/fixtures and a check in CI; a swarm-run@1 record shared with agent jobs (kind job); every model choice through framework/core/model-policy.mjs (already applied: roster and planner run Opus or Fable only). The 19-step Opus build stays in place until this lands.",
      "at": "2026-11-01T11:25:25.676Z"
+    },
+    {
+     "text": "Reconciler: branch claude/agent-swarm-fable-rebuild (PR #247); PR #247; PR #247 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [

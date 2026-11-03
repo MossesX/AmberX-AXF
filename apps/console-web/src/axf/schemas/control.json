@@ -35,13 +35,20 @@
       "back": "navigate",
       "home": "navigate",
       "close": "navigate"
+    },
+    "plugins.commands": {
+      "run": "write"
+    },
+    "plugins.reads": {
+      "read": "read"
     }
   },
   "domains": [
     "tokens",
     "amberx",
     "planner",
-    "console"
+    "console",
+    "plugins"
   ],
   "permissions": {
     "control.tokens.read": "tokens: read",
@@ -56,6 +63,9 @@
     "control.console.read": "console: read",
     "control.console.write": "console: write",
     "control.console.delete": "console: delete",
+    "control.plugins.read": "plugins: read",
+    "control.plugins.write": "plugins: write",
+    "control.plugins.delete": "plugins: delete",
     "control.console.navigate": "console: navigate"
   },
   "wire": {
@@ -1632,6 +1642,54 @@
         "limit": "number"
       },
       "doc": "The consoles open right now for the caller (one per browser tab: id, app, title, device, screen, last used). Console commands go to the one used last unless input.to says otherwise."
+    },
+    "plugins.commands": {
+      "domain": "plugins",
+      "label": "Plugin commands",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "plugin": "string",
+        "app": "string",
+        "effect": "enum:read,write,destructive,navigate",
+        "q": "string",
+        "limit": "number"
+      },
+      "acts": {
+        "run": {}
+      },
+      "actEffect": {
+        "run": "write"
+      },
+      "doc": "Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions."
+    },
+    "plugins.reads": {
+      "domain": "plugins",
+      "label": "Plugin reads",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "plugin": "string",
+        "app": "string",
+        "effect": "enum:read,write,destructive,navigate",
+        "q": "string",
+        "limit": "number"
+      },
+      "acts": {
+        "read": {}
+      },
+      "actEffect": {
+        "read": "read"
+      },
+      "doc": "Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query)."
     }
   },
   "aliases": {
@@ -1669,6 +1727,10 @@
     "console": {
       "target": "console.*",
       "note": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]"
+    },
+    "plugins": {
+      "target": "plugins.*",
+      "note": "axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin's commands and reads)"
     }
   },
   "tools": [
@@ -1703,7 +1765,9 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "plugins.commands",
+              "plugins.reads"
             ],
             "description": "what to control"
           },
@@ -1753,7 +1817,9 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "plugins.commands",
+              "plugins.reads"
             ],
             "description": "what to control"
           },
@@ -1804,7 +1870,9 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "plugins.commands",
+              "plugins.reads"
             ],
             "description": "what to control"
           },
@@ -1862,7 +1930,9 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "plugins.commands",
+              "plugins.reads"
             ],
             "description": "what to control"
           },
@@ -1920,7 +1990,9 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "plugins.commands",
+              "plugins.reads"
             ],
             "description": "what to control"
           },
@@ -1978,7 +2050,9 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "plugins.commands",
+              "plugins.reads"
             ],
             "description": "what to control"
           },
@@ -2040,7 +2114,9 @@
               "console.settings",
               "console.actions",
               "console.nav",
-              "console.clients"
+              "console.clients",
+              "plugins.commands",
+              "plugins.reads"
             ],
             "description": "what to control"
           },
@@ -2142,7 +2218,8 @@
       "list": "axf list <op> … = axf control <op> amberx.lists",
       "plan": "axf plan <op> … = axf control <op> planner.plans",
       "build": "axf build <op> … = axf control <op> planner.builds",
-      "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]"
+      "console": "axf console open <screen> | dialog <id> | settings <tab> | action <id> [args] | back | home | where | list [screens|dialogs|settings|actions|clients] [words]",
+      "plugins": "axf plugins [plugin] | axf <plugin> <command> [--field value]… (every plugin's commands and reads)"
     },
     "targets": [
       "tokens.theme",
@@ -2163,7 +2240,9 @@
       "console.settings",
       "console.actions",
       "console.nav",
-      "console.clients"
+      "console.clients",
+      "plugins.commands",
+      "plugins.reads"
     ]
   },
   "schema": {
@@ -2210,7 +2289,9 @@
           "console.settings",
           "console.actions",
           "console.nav",
-          "console.clients"
+          "console.clients",
+          "plugins.commands",
+          "plugins.reads"
         ]
       },
       "path": {
@@ -3162,6 +3243,74 @@
           "limit": {
             "type": "number"
           }
+        },
+        "paths": "host"
+      },
+      "plugins.commands": {
+        "description": "Every command of every plugin, made automatically from what the plugin has (core/engines/plugin-commands.mjs): its server routes, its registered actions and its plugin.json commands. path = <plugin>/<command> (list names them); act run runs it with input = what it takes. A command that deletes needs control.plugins.delete and a confirm token (the same two-step flow as remove); an action runs in the open console like console.actions.",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "plugin": {
+            "type": "string"
+          },
+          "app": {
+            "type": "string"
+          },
+          "effect": {
+            "enum": [
+              "read",
+              "write",
+              "destructive",
+              "navigate"
+            ]
+          },
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "acts": {
+          "run": {}
+        },
+        "paths": "host"
+      },
+      "plugins.reads": {
+        "description": "Everything a plugin lets you read: its GET routes, its data folder (data, data-file) and its info. path = <plugin>/<read>; act read answers it (input = its query).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "plugin": {
+            "type": "string"
+          },
+          "app": {
+            "type": "string"
+          },
+          "effect": {
+            "enum": [
+              "read",
+              "write",
+              "destructive",
+              "navigate"
+            ]
+          },
+          "q": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "acts": {
+          "read": {}
         },
         "paths": "host"
       }

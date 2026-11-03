@@ -40,6 +40,10 @@ CLI = Path(__file__).resolve().parent.parent / "control.mjs"
 ROOT = CLI.parents[4]
 STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "confirmation_required": 409, "not_implemented": 501, "unexpected": 500}
 POLICY = ROOT / "apps" / "console-web" / "src" / "assets" / "uac-policy" / "console-access.json"
+try:  # the control@1 target ids (framework/schemas/control.json): anything else under /api/control is a plugin's
+    TARGETS = frozenset(json.loads((ROOT / "framework" / "schemas" / "control.json").read_text())["targets"])
+except (OSError, ValueError, KeyError):
+    TARGETS = frozenset()
 
 
 def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", timeout: int = 60) -> dict[str, Any]:
@@ -113,8 +117,23 @@ def _console(command: dict[str, Any]) -> Any:
     return plugin_services.get("console-commands@1") if str(command.get("target") or "").startswith("console.") else None
 
 
+def _plugins(command: dict[str, Any]) -> Any:
+    """The provider of plugins.* targets and of /api/control/<plugin>/<command> (the Plugin commands plugin), or None."""
+    target = str(command.get("target") or "")
+    svc = plugin_services.get("plugin-commands@1")
+    if svc is None or (target in TARGETS and not target.startswith("plugins.")):
+        return None
+    return svc if svc.handles(target) else None
+
+
 async def _go(request: Request, command: dict[str, Any]) -> JSONResponse:
     """Off the event loop: the runner is a subprocess, and a console command waits for the consoles' acks on this loop."""
+    pc = _plugins(command)
+    if pc is not None:
+        if not str(command.get("target") or "").startswith("plugins."):
+            command = pc.from_rest(request.method, command, dict(request.query_params), await _body(request))
+        grants, name = caller(request)
+        return answer(await run_in_threadpool(lambda: pc.run(command, grants, command.get("by") or name, request)))
     svc = _console(command)
     if svc is not None:
         return answer(await run_in_threadpool(svc.run_for, request, command))
@@ -177,6 +196,14 @@ async def add(target: str, request: Request) -> JSONResponse:
     return await _go(request, {"op": "add", "target": target, "value": b.get("value"), **_audit_fields(b)})
 
 
+@router.post("/{target}/{path:path}")
+async def plugin_command(target: str, path: str, request: Request) -> JSONResponse:
+    """POST /api/control/<plugin>/<command>: a plugin command (plugin-commands@1); control@1 targets take no POST here."""
+    if _plugins({"target": target}) is None:
+        return answer({"$axf": "control@1", "ok": False, "code": "not_found", "message": f"no plugin or control@1 route {target}/{path}"})
+    return await _go(request, {"op": "act", "target": target, "path": path})
+
+
 @router.delete("/{target}/{path:path}")
 async def remove(target: str, path: str, request: Request) -> JSONResponse:
     b = await _body(request)
@@ -190,6 +217,9 @@ class Control:
     router = router
 
     def run(self, command: dict[str, Any], grants: list[str] | None = None, by: str = "") -> dict[str, Any]:
+        pc = _plugins(command) if str(command.get("target") or "").startswith("plugins.") else None
+        if pc is not None:
+            return pc.run(command, grants, by)
         svc = _console(command)
         return svc.run(command, grants, by) if svc is not None else run(command, grants, by)
 

@@ -929,7 +929,8 @@ def mcp_info(request: Request) -> dict[str, Any]:
 #   web/index.tsx        exports `plugin: AxfWebLibrary` (views, nav, actions) — bundled by Vite
 #   server/__init__.py   optional; exports `router: fastapi.APIRouter`, mounted at /api/plugins/<folder>/
 # Every plugin route requires the console token for EVERY method (not only writes), and answers 404
-# while the plugin is disabled. Plugin routes are never exposed through the console's MCP server.
+# while the plugin is disabled. Plugin routes reach the console's MCP server only through control@1's plugins domain
+# (the Plugin commands plugin: gated per command, deletes need a confirm token).
 # Folders starting with "_" (templates) are ignored.
 
 import importlib.util
@@ -1190,6 +1191,7 @@ import credentials  # noqa: E402
 credentials.init(ROOT)
 console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
                             data_path=PROFILES.data_path, build_profile=PROFILES.active,
+                            asgi_app=app, mcp_server=_mcp,
                             log=log, plugin_enabled=plugin_enabled, set_plugin_enabled=lambda f, on: set_plugin_enabled(f, {"enabled": on}), terminal_lines=lambda: list(_state.get("terminal", [])))
 
 load_plugins()

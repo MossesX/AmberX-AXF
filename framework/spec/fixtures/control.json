@@ -283,6 +283,35 @@
     "console-clients": {
       "op": "list",
       "target": "console.clients"
+    },
+    "plugin-list": {
+      "op": "list",
+      "target": "plugins.commands",
+      "select": {
+        "plugin": "example"
+      }
+    },
+    "plugin-read": {
+      "op": "act",
+      "target": "plugins.reads",
+      "path": "example/state",
+      "action": "read"
+    },
+    "plugin-run": {
+      "op": "act",
+      "target": "plugins.commands",
+      "path": "example/entries",
+      "action": "run",
+      "input": {
+        "title": "x"
+      },
+      "by": "claude"
+    },
+    "plugin-set": {
+      "op": "set",
+      "target": "plugins.commands",
+      "path": "example/state",
+      "value": 1
     }
   },
   "registry": {
@@ -321,6 +350,12 @@
         "back": "navigate",
         "home": "navigate",
         "close": "navigate"
+      },
+      "plugins.commands": {
+        "run": "write"
+      },
+      "plugins.reads": {
+        "read": "read"
       }
     },
     "permissions": {
@@ -336,6 +371,9 @@
       "control.console.read": "console: read",
       "control.console.write": "console: write",
       "control.console.delete": "console: delete",
+      "control.plugins.read": "plugins: read",
+      "control.plugins.write": "plugins: write",
+      "control.plugins.delete": "plugins: delete",
       "control.console.navigate": "console: navigate"
     },
     "targets": [
@@ -357,7 +395,9 @@
       "console.settings",
       "console.actions",
       "console.nav",
-      "console.clients"
+      "console.clients",
+      "plugins.commands",
+      "plugins.reads"
     ],
     "targetOps": {
       "tokens.theme": [
@@ -472,6 +512,16 @@
       ],
       "console.clients": [
         "list"
+      ],
+      "plugins.commands": [
+        "list",
+        "get",
+        "act"
+      ],
+      "plugins.reads": [
+        "list",
+        "get",
+        "act"
       ]
     }
   },
@@ -639,7 +689,9 @@
     "console.nav": [
       "here"
     ],
-    "console.clients": null
+    "console.clients": null,
+    "plugins.commands": null,
+    "plugins.reads": null
   },
   "normalize": {
     "list-layout": {
@@ -968,6 +1020,39 @@
       "$axf": "control@1",
       "op": "list",
       "target": "console.clients"
+    },
+    "plugin-list": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "plugins.commands",
+      "select": {
+        "plugin": "example"
+      }
+    },
+    "plugin-read": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "plugins.reads",
+      "path": "example/state",
+      "action": "read"
+    },
+    "plugin-run": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "plugins.commands",
+      "path": "example/entries",
+      "action": "run",
+      "input": {
+        "title": "x"
+      },
+      "by": "claude"
+    },
+    "plugin-set": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "plugins.commands",
+      "path": "example/state",
+      "value": 1
     }
   },
   "errors": {
@@ -1027,7 +1112,7 @@
       "op must be one of: list, get, set, reset, add, remove, act"
     ],
     "wrong-target": [
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, plugins.commands, plugins.reads"
     ],
     "token-op-on-entity": [
       "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
@@ -1043,7 +1128,7 @@
     ],
     "not-an-object": [
       "op must be one of: list, get, set, reset, add, remove, act",
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, plugins.commands, plugins.reads"
     ],
     "console-open-screen": [],
     "console-open-settings": [],
@@ -1056,7 +1141,13 @@
     "console-set-screen": [
       "console.screens does not take set (it takes list, get, act)"
     ],
-    "console-clients": []
+    "console-clients": [],
+    "plugin-list": [],
+    "plugin-read": [],
+    "plugin-run": [],
+    "plugin-set": [
+      "plugins.commands does not take set (it takes list, get, act)"
+    ]
   },
   "gate": {
     "admin": {
@@ -1293,6 +1384,27 @@
         "ok": true,
         "effect": "read",
         "requires": "control.console.read"
+      },
+      "plugin-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-read": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-run": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.plugins.write"
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
       }
     },
     "control": {
@@ -1529,6 +1641,27 @@
         "ok": true,
         "effect": "read",
         "requires": "control.console.read"
+      },
+      "plugin-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-read": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-run": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.plugins.write"
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
       }
     },
     "tokens": {
@@ -1778,6 +1911,30 @@
         "ok": false,
         "code": "denied",
         "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
         "confirm": null
       }
     },
@@ -2035,6 +2192,30 @@
         "code": "denied",
         "requires": "control.console.read",
         "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
       }
     },
     "amberx-writer": {
@@ -2290,6 +2471,30 @@
         "ok": false,
         "code": "denied",
         "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
         "confirm": null
       }
     },
@@ -2551,6 +2756,30 @@
         "code": "denied",
         "requires": "control.console.read",
         "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
       }
     },
     "console-navigator": {
@@ -2806,6 +3035,312 @@
         "ok": true,
         "effect": "read",
         "requires": "control.console.read"
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "plugin-reader": {
+      "list-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "get-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-read": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
       }
     }
   },

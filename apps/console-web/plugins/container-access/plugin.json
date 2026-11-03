@@ -12,6 +12,7 @@
   "optional": ["service:axf.snapshots@1"],
   "scopes": ["ROUTES", "DOCKER"],
   "enabledByDefault": true,
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "banner": false,
   "tabable": false,

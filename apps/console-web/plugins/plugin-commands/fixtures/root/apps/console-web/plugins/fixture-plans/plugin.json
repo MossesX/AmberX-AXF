@@ -1,0 +1,17 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.fixture-plans",
+  "name": "Fixture plans",
+  "version": "0.1.0",
+  "description": "A test plugin with a read route, a command route, an action and a data folder.",
+  "provides": ["view:fixture-plans"],
+  "lifecycle": { "$axf": "plugin-lifecycle@1", "dataDir": "data/fixture-plans" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "POST /search", "id": "search", "title": "Search plans", "readOnly": true, "input": { "type": "object", "properties": { "q": { "type": "string" } }, "required": ["q"] } },
+      { "route": "GET /events", "skip": "server-sent events" }
+    ]
+  }
+}

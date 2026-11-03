@@ -30,18 +30,21 @@ const spec = read('framework/schemas/asset-types.json');
 eq([...CONTROL_OPS], ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'], 'seven ops');
 eq(CONTROL_EFFECT.remove, 'destructive', 'remove is destructive');
 eq(CONTROL_EFFECT.act, 'write', 'act writes');
-ok(CONTROL_TARGET_IDS.length === 19, `19 targets (${CONTROL_TARGET_IDS.length})`);
+ok(CONTROL_TARGET_IDS.length === 21, `21 targets (${CONTROL_TARGET_IDS.length})`);
 eq(CONTROL_TARGET_IDS.slice(0, 13), ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.look', 'tokens.custom', 'tokens.slots', 'amberx.items', 'amberx.lists', 'planner.plans', 'planner.builds'], 'targets are append-only');
 for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
-  ok(/^(tokens|amberx|planner|console)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
+  ok(/^(tokens|amberx|planner|console|plugins)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
   ok(t.ops.every((o) => CONTROL_OPS.includes(o)), `${id} ops known`);
   ok(t.doc.length > 30, `${id} documented`);
   if (t.paths === 'entity') { ok(t.fields && Object.keys(t.fields).length > 3, `${id} has fields`); ok(t.ops.includes('remove') && t.ops.includes('act'), `${id} is a full entity target`); }
-  else ok(!t.ops.includes('remove') && !t.ops.includes('add'), `${id}: tokens and console targets are never added or removed`);
+  else ok(!t.ops.includes('remove') && !t.ops.includes('add'), `${id}: tokens, console and plugin targets are never added or removed`);
   if (t.domain === 'console') ok(!t.ops.includes('set') && !t.ops.includes('reset'), `${id}: the console is opened and run, never set`);
-  for (const [verb, eff] of Object.entries(t.actEffect ?? {})) ok(verb in (t.acts ?? {}) && ['navigate', 'write', 'destructive'].includes(eff), `${id} act ${verb} effect ${eff}`);
+  for (const [verb, eff] of Object.entries(t.actEffect ?? {})) ok(verb in (t.acts ?? {}) && ['navigate', 'read', 'write', 'destructive'].includes(eff), `${id} act ${verb} effect ${eff}`);
 }
-eq(Object.keys(CONTROL_PERMISSIONS).length, 13, 'four domains × read / write / delete, plus console navigate');
+eq(Object.keys(CONTROL_PERMISSIONS).length, 16, 'five domains × read / write / delete, plus console navigate');
+eq(controlPermission('plugins.reads', 'act', 'read'), 'control.plugins.read', 'a plugin read only reads');
+eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write', 'a plugin command writes (a deleting one asks for more)');
+eq(CONTROL_TARGET_IDS.slice(19), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console ones (append-only)');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');
 eq(controlPermission('console.nav', 'act', 'back'), 'control.console.navigate', 'going back only navigates');
 eq(controlPermission('console.actions', 'act', 'run'), 'control.console.write', 'running an action writes (the host may ask for more)');
@@ -147,6 +150,7 @@ eq(read('framework/schemas/control.json'), JSON.parse(JSON.stringify(controlRegi
 const fx = read('framework/spec/fixtures/control.json');
 eq(fx.registry.targets, CONTROL_TARGET_IDS, 'fixture targets');
 for (const [k, c] of Object.entries<unknown>(fx.commands)) { eq(controlErrors(c), fx.errors[k], `fixture errors ${k}`); eq(normalizeControl(c), fx.normalize[k], `fixture normalize ${k}`); }
+ok(fx.gate['plugin-reader']['plugin-read'].ok && fx.gate['plugin-reader']['plugin-run'].code === 'denied' && fx.gate.admin['plugin-run'].ok, 'fixture plugin gate cases');
 ok(fx.gate['console-navigator']['console-open-screen'].ok && fx.gate['console-navigator']['console-back'].ok && fx.gate['console-navigator']['console-run-action'].code === 'denied' && fx.gate.admin['console-set-screen'].code === 'invalid', 'fixture console gate cases');
 ok(fx.gate.none['list-layout'].code === 'denied' && fx.gate.admin['remove-item'].code === 'confirmation_required' && fx.gate.reader['set-layout'].code === 'denied' && fx.gate['amberx-writer']['add-item'].ok, 'fixture gate cases');
 eq(controlConfirmToken(remove, 'fixture-salt', NOW), fx.confirm.token, 'fixture confirm token (same hash on every port)');
@@ -155,6 +159,7 @@ eq(controlConfirmToken(remove, 'fixture-salt', NOW), fx.confirm.token, 'fixture 
 const doc = readFileSync(new URL('framework/spec/CONTROL.md', root), 'utf8');
 for (const id of CONTROL_TARGET_IDS) ok(doc.includes(`\`${id}\``), `CONTROL.md names ${id}`);
 ok(doc.includes('control.console.navigate'), 'CONTROL.md covers console navigation');
+ok(doc.includes('plugins.commands') && doc.includes('plugins.reads'), 'CONTROL.md covers plugin commands');
 ok(doc.includes('confirmation_required') && doc.includes('control.<domain>.read | write | delete'), 'CONTROL.md covers confirm + permissions');
 
 console.log(`✓ control@1 — ${n} checks, ${CONTROL_TARGET_IDS.length} targets, ${tools.length} tools`);

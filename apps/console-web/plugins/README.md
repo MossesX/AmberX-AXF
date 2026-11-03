@@ -151,6 +151,34 @@ template's `help.json`; draft the rest from your code with `node framework/cli/h
 and edit the drafts into plain English (drop `draft`). CI fails if help coverage falls (`help-coverage.mjs --check`,
 ratchet `framework/spec/help-coverage.json`). Rules: `framework/core/engines/help-rules.mjs`.
 
+## Commands (plugin-commands@1, Nov 3 2026) — everything a plugin can do is reachable by Claude, the API and the CLI
+
+Brett drives the console by talking to Claude through axHub, so every plugin exposes all of its commands and reads
+through control@1 (`plugins.commands`, `plugins.reads`; `framework/spec/CONTROL.md`) with no per-plugin wiring. The
+registry is made from what the plugin already has (`framework/core/engines/plugin-commands.mjs`): its server routes
+(GET = a read; POST / PUT / PATCH = a command; DELETE, or a path that says delete / reset / restore / clear …, = a delete
+that needs a confirm token), its registered actions (`rt.actions.register('<id>', …, { label })`, run in the open
+console), its data folder (`data`, `data-file`, secrets redacted) and `info`. Each one is then on REST
+(`/api/control/<plugin>/<command>`), MCP (`<plugin>_<command>` with read-only / destructive annotations, plus
+`plugin_commands`, `plugin_read`, `plugin_run`) and the CLI (`axf <plugin> <command> --field value`, `axf plugins`),
+added and removed as plugins are installed, removed or turned on and off.
+
+Every plugin.json carries the block (the template has it):
+
+```json
+"commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
+  { "route": "POST /search", "id": "search", "title": "Search plans", "readOnly": true,
+    "input": { "type": "object", "properties": { "q": { "type": "string" } }, "required": ["q"] } },
+  { "route": "GET /events", "skip": "server-sent events stream, not a command" }
+] }
+```
+
+`items` give a command a better id, title, description, input schema or output, fix a flag the words got wrong
+(`readOnly`, `destructive`, `confirm`, `navigate`), add a command, or skip a route / action **with a reason**. Keep route
+paths string literals so they can be read. `noReads: "<why>"` only when the plugin truly has nothing to read. The
+lifecycle check and CI fail a plugin whose route or action can't be exposed, whose declaration names something gone, that
+skips without a reason, has no reads, or has no block: `node framework/cli/plugin-commands.mjs check [folder]`.
+
 ## Menus and UI editors
 
 - **Menu links are contributions, not asset edits:** `contextMenu: [{ id, target: 'default', items }]` on the `AxfWebLibrary` adds items to a context-menu target (`default` = right-click / long-press anywhere). They leave with the plugin (disabled or removed), so no asset ever names a plugin.
