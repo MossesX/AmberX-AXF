@@ -59,6 +59,9 @@ CHANGES = "axf.changes@1"
 CONTAINERS = "axf.containers@1"
 HOLDS_CAP = "axf.merge-holds@1"
 BOARD_CACHE_S = 15
+# A forced GitHub re-read costs the push banner ~5 calls per branch and PR (hundreds): at most one every 2 minutes,
+# whoever taps Check now (GitHub's hourly limit is shared with the push banner's auto-merge).
+FORCE_GITHUB_EVERY_S = 120
 SIDE_CACHE_S = 60
 MAX_BATCHES = 40
 MAX_BATCH_ITEMS = 30
@@ -256,6 +259,7 @@ class Board:
         self.at = 0.0
         self.val: dict[str, Any] | None = None
         self.running = False
+        self.forced_github = 0.0
 
     def _run(self, force: bool) -> None:
         try:
@@ -301,7 +305,10 @@ class Board:
             errors["github"] = "the Push banner plugin is off, so GitHub isn't read (Settings → Plugins → Push banner)"
         else:
             try:
-                snap = push.snapshot(force=force) or {}
+                hard = force and time.time() - self.forced_github >= FORCE_GITHUB_EVERY_S
+                if hard:
+                    self.forced_github = time.time()
+                snap = push.snapshot(force=hard) or {}
                 if snap.get("error"):
                     errors["github"] = _text(snap["error"], 200)
             except Exception as e:  # noqa: BLE001

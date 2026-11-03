@@ -95,6 +95,42 @@
         "title": "Merge next",
         "text": "Merges the first ready PR in this batch's order (pulling main in first when it is behind), or says what the first one waits for.",
         "kind": "button"
+      },
+      {
+        "target": "view:git-status",
+        "title": "Git status",
+        "text": "Every PR, branch and VPS checkout in one page: pick a tab to see what needs pushing, pulling, CI, merging, what is held and why, what merged today, what runs where and what is stale. Tap a row to open it.",
+        "kind": "screen"
+      },
+      {
+        "target": "git-status",
+        "title": "Git status settings",
+        "text": "Install and uninstall Git status. It keeps only its holds and push batches.",
+        "kind": "tab"
+      },
+      {
+        "target": "new-batch",
+        "title": "New batch",
+        "text": "Starts a push batch with this PR in it; add more from their rows.",
+        "kind": "button"
+      },
+      {
+        "target": "open-ui-review",
+        "title": "Open UI Review",
+        "text": "Opens UI Review, where the screenshots holding this PR wait for your approval.",
+        "kind": "button"
+      },
+      {
+        "target": "remove-batch",
+        "title": "Remove batch",
+        "text": "Deletes this push batch. Its PRs stay open.",
+        "kind": "button"
+      },
+      {
+        "target": "take-out-of-batch",
+        "title": "Take out of batch",
+        "text": "Takes this PR out of the batch; it stays open.",
+        "kind": "button"
       }
     ],
     "intros": []

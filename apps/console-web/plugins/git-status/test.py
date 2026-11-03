@@ -204,6 +204,12 @@ try:
             check(False, f"kill {bad} refused")
         except HTTPException as e:
             check(e.status_code == 400, f"kill {bad['key']} refused")
+    forced: list = []
+    real = services["axf.push@1"].snapshot
+    services["axf.push@1"].snapshot = lambda force=False: (forced.append(force), real(force))[1]
+    srv.BOARD.forced_github = 0.0
+    srv.BOARD.get(force=True, wait=True); srv.BOARD.get(force=True, wait=True)
+    check(forced == [True, False], "Check now re-reads GitHub at most every 2 minutes (the hourly limit is shared)")
     services.pop("axf.push@1")
     srv._changed()
     check("github" in srv.BOARD.get(force=True, wait=True)["errors"], "push banner off: the board says why instead of breaking")
