@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T13:56:32.231Z",
+ "updatedAt": "2026-11-03T13:57:07.084Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -640,8 +640,9 @@
    "pendingId": "",
    "branch": "claude/refactor-all",
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
+   "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-10-30T18:10:39.641Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
@@ -699,6 +700,10 @@
     {
      "text": "Stopped by Brett Oct 28 2026 15:26 EDT. Remaining steps moved into build refactor-all (one build, new session); its items are in matrix refactor-all. Don't continue here.",
      "at": "2026-10-28T19:31:15.654Z"
+    },
+    {
+     "text": "Reconciler: PR #166 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [
@@ -11987,10 +11992,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "apply-all-levels",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/apply-all-levels",
+   "pr": "#115",
+   "mergedAt": "2026-10-27T03:33:15Z",
    "createdAt": "2026-10-27T03:19:49.625Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:19:49.625Z",
    "notes": [
     {
@@ -12000,6 +12006,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/apply-all-levels (PR #115); PR #115; PR #115 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -12191,10 +12201,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "amberx-empty-shell",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/amberx-empty-shell",
+   "pr": "#118",
+   "mergedAt": "2026-10-27T03:54:31Z",
    "createdAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T03:48:42.596Z",
    "notes": [
     {
@@ -12208,6 +12219,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-empty-shell (PR #118); PR #118; PR #118 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -12295,10 +12310,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "fresh-look",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/fresh-look-done",
+   "pr": "#120",
+   "mergedAt": "2026-10-27T22:25:38Z",
    "createdAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
    "notes": [
     {
@@ -12308,6 +12324,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/fresh-look-done (PR #120); PR #120; PR #120 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -12498,10 +12518,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "design-packages-10",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/design-packages-10",
+   "pr": "#124",
+   "mergedAt": "2026-10-27T17:59:47Z",
    "createdAt": "2026-10-27T17:25:19.327Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T17:25:19.327Z",
    "notes": [
     {
@@ -12515,6 +12536,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/design-packages-10 (PR #124); PR #124; PR #124 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -12529,10 +12554,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "build-orchestrator",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/build-orchestrator",
+   "pr": "#122",
+   "mergedAt": "2026-10-27T18:17:28Z",
    "createdAt": "2026-10-27T16:39:39.618Z",
-   "updatedAt": "2026-10-27T16:44:18.183Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T16:39:39.618Z",
    "notes": [
     {
@@ -12546,6 +12572,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-orchestrator (PR #122); PR #122; PR #122 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -12560,10 +12590,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "build-profiles",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/build-profiles",
+   "pr": "#127",
+   "mergedAt": "2026-10-27T22:12:19Z",
    "createdAt": "2026-10-27T19:00:00.000Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:30:00.000Z",
    "notes": [
     {
@@ -12577,6 +12608,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/build-profiles (PR #127); PR #127; PR #127 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],
@@ -12664,10 +12699,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "amberx-appearance-lock",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/amberx-appearance-lock",
+   "pr": "#126",
+   "mergedAt": "2026-10-27T19:22:41Z",
    "createdAt": "2026-10-27T19:05:30.186Z",
-   "updatedAt": "2026-10-27T19:23:01.225Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-27T19:23:01.118Z",
    "notes": [
     {
@@ -12681,6 +12717,10 @@
     {
      "text": "Added to the orchestrator from Pending builds (Brett, Oct 27 2026 20:46: all builds go through the orchestrator).",
      "at": "2026-10-28T00:47:31.318Z"
+    },
+    {
+     "text": "Reconciler: branch claude/amberx-appearance-lock (PR #126); PR #126; PR #126 merged",
+     "at": "2026-11-03T13:57:06.541Z"
     }
    ],
    "approvals": [],

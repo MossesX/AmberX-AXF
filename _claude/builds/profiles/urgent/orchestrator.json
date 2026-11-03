@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T13:56:32.231Z",
+ "updatedAt": "2026-11-03T13:57:07.084Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -363,12 +363,18 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/md-studio-theme-editor-plan",
+   "pr": "#242",
+   "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T02:32:21.910Z",
+   "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
