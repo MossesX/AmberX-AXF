@@ -1424,3 +1424,41 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 }
 :where([data-fx-small]) .fx-help-panel { left: var(--fx-dens-gap-lg); right: var(--fx-dens-gap-lg); bottom: var(--fx-dens-gap-lg); width: auto; }
 :where([data-fx-small]) .fx-help-intro { bottom: var(--fx-dens-gap-lg); }
+
+/* ---------------------------------------------------------------- data cards (card@1, react/components/DataCard.tsx)
+   One card engine draws any data; every value here is a token, so a theme or scale swap restyles every card. */
+.fx-dcard { min-width: 0 }
+.fx-dcard--wide { grid-column: 1 / -1 }
+.fx-dcard--l { grid-row: span 2 }
+.fx-dcard--s .fx-dcard__big { font-size: var(--fx-type-scale-lg) }
+.fx-dcard__note { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-scale-sm) }
+.fx-dcard__note.is-error { color: var(--fx-danger) }
+.fx-dcard__number { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__big { font-family: var(--fx-font-display); font-size: var(--fx-type-scale-2xl); font-weight: var(--fx-type-weights-strong); line-height: 1; color: var(--fx-text); font-variant-numeric: tabular-nums }
+.fx-dcard__unit { color: var(--fx-muted); font-size: var(--fx-type-scale-sm) }
+.fx-dcard__sub { color: var(--fx-muted); font-size: var(--fx-type-scale-xs); min-width: 0; overflow: hidden; text-overflow: ellipsis }
+.fx-dcard__status { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__dot { flex: none; width: calc(var(--fx-space) * 1.25); height: calc(var(--fx-space) * 1.25); border-radius: 999px; background: var(--fx-muted) }
+.fx-dcard__dot.is-success { background: var(--fx-success) }
+.fx-dcard__dot.is-warning { background: var(--fx-warning) }
+.fx-dcard__dot.is-danger { background: var(--fx-danger) }
+.fx-dcard__dot.is-accent { background: var(--fx-accent) }
+.fx-dcard__state { font-size: var(--fx-type-scale-lg); font-weight: var(--fx-type-weights-strong); text-transform: capitalize }
+.fx-dcard__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.fx-dcard__item { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--fx-dens-gap-sm); padding-block: var(--fx-dens-gap-xs); border-bottom: var(--fx-border-w) solid color-mix(in srgb, var(--fx-border) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.fx-dcard__item:last-child { border-bottom: 0 }
+.fx-dcard__item > .fx-dcard__sub { grid-column: 1 / -1 }
+.fx-dcard__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.fx-dcard__meters { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__meter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; align-items: center; gap: var(--fx-dens-gap-sm) }
+.fx-dcard__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-sm) }
+.fx-dcard__num { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); font-variant-numeric: tabular-nums }
+.fx-dcard__chart { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.fx-dcard__svg { width: 100%; height: calc(var(--fx-space) * 10); display: block; overflow: visible }
+.fx-dcard__chart.is-spark .fx-dcard__svg { height: calc(var(--fx-space) * 4) }
+.fx-dcard__line { fill: none; stroke: var(--fx-accent); stroke-width: calc(var(--fx-border-w) * 2); stroke-linejoin: round; stroke-linecap: round }
+.fx-dcard__area { fill: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); stroke: none }
+.fx-dcard__bars { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-xs); height: calc(var(--fx-space) * 10) }
+.fx-dcard__bar { flex: 1 1 0; min-width: 0; background: var(--fx-accent); border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0 }
+.fx-dcard__table { font-size: var(--fx-type-scale-sm) }
+.fx-dcard__table td { overflow-wrap: anywhere }

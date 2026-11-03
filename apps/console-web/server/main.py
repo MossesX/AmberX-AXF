@@ -5,6 +5,7 @@ FastAPI service that fronts the framework's build engine (framework/cli, Node) f
   GET  /api/health | catalog | tracker | libraries | boilerplates | boilerplates/items | modules | templates | ported-kits | project | terminal
   POST /api/status | project | boilerplates/save | init | validate | new-asset | new-module | new-demo | install | import-ui
   GET  /api/events        server-sent events: every engine log line as it happens (the console's output terminal follows it)
+  GET|PUT /api/home/layout  the caller's Home cards layout (home-layout@1), kept on axHub (/projects/<project>/_data/home-cards/<user>.json)
   /                        the built console (apps/console-web/dist) when present
 
 Run locally:  cd apps/console-web/server && pip install -r requirements.txt && uvicorn main:app --port 7090 --reload
@@ -542,6 +543,59 @@ def plan_media_file(name: str) -> FileResponse:
     if not str(f).startswith(str(media)) or not f.is_file():
         raise HTTPException(404, "not found")
     return FileResponse(f)
+
+
+# Home cards (card@1 + home-layout@1, framework/core/engines/card-rules.mjs): each signed-in user's Home layout (their
+# cards, order, sizes, hidden ones, dismissed suggestions) kept on axHub at /projects/<project>/_data/home-cards/<user>.json
+# where /projects is mounted (the repo's .axf-console/home-cards/ otherwise). The console token and hub admins are the
+# owner. The engine normalises the layout on both sides; the server only keeps it.
+HOME_LAYOUT_MAX = 256 * 1024
+
+
+def _home_dir() -> tuple[Path, str]:
+    root = _persist_root()
+    return ((root / "home-cards"), "hub") if root else ((ROOT / ".axf-console" / "home-cards"), "local")
+
+
+def _home_user(request: Request) -> str:
+    u = getattr(request.state, "axf_user", None)
+    if u is None or getattr(u, "admin", False) or u is wall.TOKEN_CALLER:
+        return "owner"
+    name = "".join(ch if ch.isalnum() or ch in "-_." else "-" for ch in str(getattr(u, "name", "") or "")).strip("-.")[:64]
+    return f"user-{name}" if name else "owner"
+
+
+@app.get("/api/home/layout", dependencies=[Depends(auth)])
+def home_layout_get(request: Request) -> dict[str, Any]:
+    d, where = _home_dir()
+    user = _home_user(request)
+    f = d / f"{user}.json"
+    try:
+        layout = json.loads(f.read_text()) if f.is_file() else None
+    except (OSError, ValueError):
+        layout = None
+    return {"layout": layout if isinstance(layout, dict) else None, "user": user, "where": where}
+
+
+@app.put("/api/home/layout", dependencies=[Depends(auth)])
+async def home_layout_put(request: Request) -> dict[str, Any]:
+    raw = await request.body()
+    if len(raw) > HOME_LAYOUT_MAX:
+        raise HTTPException(413, "the Home layout is too big")
+    try:
+        body = json.loads(raw or b"{}")
+    except ValueError:
+        raise HTTPException(400, "not JSON")
+    layout = body.get("layout") if isinstance(body, dict) else None
+    if not isinstance(layout, dict) or layout.get("$axf") != "home-layout@1":
+        raise HTTPException(400, "layout must be a home-layout@1 object")
+    d, where = _home_dir()
+    user = _home_user(request)
+    d.mkdir(parents=True, exist_ok=True)
+    tmp = d / f".{user}.json.tmp"
+    tmp.write_text(json.dumps({**layout, "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1))
+    tmp.replace(d / f"{user}.json")
+    return {"ok": True, "user": user, "where": where}
 
 
 @app.get("/api/project")

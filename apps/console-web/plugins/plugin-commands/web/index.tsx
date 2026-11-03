@@ -5,10 +5,11 @@
  * the two MCP switches and the last commands run.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Note, Segmented, Switch, TextField, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Chip, Container, Note, Segmented, Switch, TextField, useRuntime, type AxfWebLibrary } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { commandToolName, pluginCommandCli, type PluginCommandEntry, type PluginCommand } from '@console/axf/core/engines/plugin-commands.mjs';
+import { CARD_DROP_MIME, cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { appMenu } from './menu';
 import './plugin-commands.css';
 
@@ -39,14 +40,19 @@ function CommandRow({ p, c }: { p: PluginCommandEntry; c: PluginCommand }) {
   };
   const cli = pluginCommandCli({ plugins: [{ ...p, commands: [c] }] }).commands[0]?.usage ?? '';
   const here = p.app === 'console-web' && p.enabled !== false;
+  const rt = useRuntime();
+  // A read can be drawn on Home: drag the row onto Home, or Add to Home (card@1; the card dialog opens prefilled).
+  const ref = { plugin: p.folder, command: c.id, title: `${p.name}: ${c.title}` };
+  const asCard = here && c.kind === 'read';
   return (
-    <li className="axf-pc__row">
+    <li className="axf-pc__row" draggable={asCard} onDragStart={asCard ? (e) => { e.dataTransfer.setData(CARD_DROP_MIME, JSON.stringify(cardFromDrop(ref))); e.dataTransfer.setData('text/plain', `${p.folder}/${c.id}`); } : undefined}>
       <div className="axf-pc__head">
         <code className="axf-pc__id">{c.id}</code>
         <span>{c.title}</span>
         <Chip>{c.effect === 'read' ? 'read' : c.effect === 'destructive' ? 'deletes' : c.effect === 'navigate' ? 'opens' : 'changes'}</Chip>
         {c.confirm && <Chip>confirm</Chip>}
         {here && <Button size="sm" icon={open ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen(!open)} data-help="pc-details">{open ? 'Less' : 'Try'}</Button>}
+        {asCard && <Button size="sm" icon="plus" onClick={() => rt.openDialog('home-card', { draft: cardFromDrop(ref) })} data-help="pc-card">Add to Home</Button>}
       </div>
       {open && (
         <div className="fx-stack axf-pc__body">

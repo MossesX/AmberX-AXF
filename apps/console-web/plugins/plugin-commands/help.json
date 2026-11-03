@@ -66,6 +66,11 @@
         "target": "one-tool-per-command-off-only-plugin-commands-plugin-read-and-plugin-run",
         "title": "One tool per command",
         "text": "On: every command and read gets its own MCP tool named <plugin>_<command>. Off: only plugin_commands, plugin_read and plugin_run, which reach the same commands by path."
+      },
+      {
+        "target": "pc-card",
+        "title": "Add to Home",
+        "text": "Draws this read as a card on Home: the card dialog opens with it picked, shows the live result and preselects a view from the data's shape. You can also drag the row onto Home."
       }
     ]
   }
