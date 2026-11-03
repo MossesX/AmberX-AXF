@@ -972,5 +972,431 @@
         "next": "b"
       }
     ]
+  },
+  "edit": {
+    "sides": [
+      "left",
+      "center",
+      "right"
+    ],
+    "types": [
+      "badge",
+      "clock",
+      "search-bar",
+      "status"
+    ],
+    "own": [
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right"
+      },
+      {
+        "type": "badge",
+        "id": "new",
+        "at": "left"
+      }
+    ],
+    "extra": [
+      {
+        "type": "search-bar",
+        "id": "compact",
+        "at": "center",
+        "origin": "p"
+      }
+    ],
+    "plain": {
+      "left": [
+        {
+          "key": "badge:new",
+          "type": "badge",
+          "id": "new",
+          "at": "left",
+          "order": 10,
+          "origin": "asset"
+        }
+      ],
+      "center": [
+        {
+          "key": "search-bar:compact",
+          "type": "search-bar",
+          "id": "compact",
+          "at": "center",
+          "order": 1000,
+          "origin": "p"
+        }
+      ],
+      "right": [
+        {
+          "key": "clock:digital-12h",
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "right",
+          "order": 0,
+          "origin": "asset"
+        }
+      ]
+    },
+    "normalize": {
+      "in": {
+        "a:b": {
+          "at": "left",
+          "order": 1,
+          "hidden": true
+        },
+        "c:d": {
+          "at": "right",
+          "order": 2,
+          "added": true,
+          "hidden": "yes"
+        },
+        "e:f": {
+          "at": "left",
+          "order": 3,
+          "added": 1
+        }
+      },
+      "out": {
+        "a:b": {
+          "at": "left",
+          "order": 1,
+          "hidden": true
+        },
+        "c:d": {
+          "at": "right",
+          "order": 2,
+          "added": true
+        },
+        "e:f": {
+          "at": "left",
+          "order": 3
+        }
+      }
+    },
+    "steps": [
+      {
+        "op": "remove",
+        "key": "clock:digital-12h",
+        "arrange": {
+          "clock:digital-12h": {
+            "at": "right",
+            "order": 0,
+            "hidden": true
+          }
+        },
+        "placed": {
+          "left": [
+            {
+              "key": "badge:new",
+              "type": "badge",
+              "id": "new",
+              "at": "left",
+              "order": 10,
+              "origin": "asset"
+            }
+          ],
+          "center": [
+            {
+              "key": "search-bar:compact",
+              "type": "search-bar",
+              "id": "compact",
+              "at": "center",
+              "order": 1000,
+              "origin": "p"
+            }
+          ],
+          "right": []
+        }
+      },
+      {
+        "op": "add",
+        "key": "search-bar:everything",
+        "side": "left",
+        "index": 0,
+        "arrange": {
+          "clock:digital-12h": {
+            "at": "right",
+            "order": 0,
+            "hidden": true
+          },
+          "search-bar:everything": {
+            "at": "left",
+            "order": 0,
+            "added": true
+          },
+          "badge:new": {
+            "at": "left",
+            "order": 10
+          },
+          "search-bar:compact": {
+            "at": "center",
+            "order": 0
+          }
+        },
+        "placed": {
+          "left": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "left",
+              "order": 0,
+              "origin": "arrange"
+            },
+            {
+              "key": "badge:new",
+              "type": "badge",
+              "id": "new",
+              "at": "left",
+              "order": 10,
+              "origin": "asset"
+            }
+          ],
+          "center": [
+            {
+              "key": "search-bar:compact",
+              "type": "search-bar",
+              "id": "compact",
+              "at": "center",
+              "order": 0,
+              "origin": "p"
+            }
+          ],
+          "right": []
+        }
+      },
+      {
+        "op": "add",
+        "key": "clock:digital-12h",
+        "side": "center",
+        "index": 99,
+        "arrange": {
+          "clock:digital-12h": {
+            "at": "center",
+            "order": 10
+          },
+          "search-bar:everything": {
+            "at": "left",
+            "order": 0,
+            "added": true
+          },
+          "badge:new": {
+            "at": "left",
+            "order": 10
+          },
+          "search-bar:compact": {
+            "at": "center",
+            "order": 0
+          }
+        },
+        "placed": {
+          "left": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "left",
+              "order": 0,
+              "origin": "arrange"
+            },
+            {
+              "key": "badge:new",
+              "type": "badge",
+              "id": "new",
+              "at": "left",
+              "order": 10,
+              "origin": "asset"
+            }
+          ],
+          "center": [
+            {
+              "key": "search-bar:compact",
+              "type": "search-bar",
+              "id": "compact",
+              "at": "center",
+              "order": 0,
+              "origin": "p"
+            },
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "center",
+              "order": 10,
+              "origin": "asset"
+            }
+          ],
+          "right": []
+        }
+      },
+      {
+        "op": "move",
+        "key": "search-bar:everything",
+        "side": "right",
+        "index": 0,
+        "arrange": {
+          "clock:digital-12h": {
+            "at": "center",
+            "order": 10
+          },
+          "search-bar:everything": {
+            "at": "right",
+            "order": 0,
+            "added": true
+          },
+          "badge:new": {
+            "at": "left",
+            "order": 0
+          },
+          "search-bar:compact": {
+            "at": "center",
+            "order": 0
+          }
+        },
+        "placed": {
+          "left": [
+            {
+              "key": "badge:new",
+              "type": "badge",
+              "id": "new",
+              "at": "left",
+              "order": 0,
+              "origin": "asset"
+            }
+          ],
+          "center": [
+            {
+              "key": "search-bar:compact",
+              "type": "search-bar",
+              "id": "compact",
+              "at": "center",
+              "order": 0,
+              "origin": "p"
+            },
+            {
+              "key": "clock:digital-12h",
+              "type": "clock",
+              "id": "digital-12h",
+              "at": "center",
+              "order": 10,
+              "origin": "asset"
+            }
+          ],
+          "right": [
+            {
+              "key": "search-bar:everything",
+              "type": "search-bar",
+              "id": "everything",
+              "at": "right",
+              "order": 0,
+              "origin": "arrange"
+            }
+          ]
+        }
+      },
+      {
+        "op": "remove",
+        "key": "search-bar:everything",
+        "arrange": {
+          "clock:digital-12h": {
+            "at": "center",
+            "order": 10
+          },
+          "badge:new": {
+            "at": "left",
+            "order": 0
+          },
+          "search-bar:compact": {
+            "at": "center",
+            "order": 0
+          }
+        }
+      }
+    ],
+    "noops": {
+      "remove-unknown": {},
+      "add-placed": {},
+      "add-wrong-type": {},
+      "add-bad-side": {},
+      "add-bad-key": {}
+    },
+    "palette": {
+      "candidates": [
+        {
+          "type": "clock",
+          "id": "digital-12h"
+        },
+        {
+          "type": "clock",
+          "id": "digital-24h"
+        },
+        {
+          "type": "badge",
+          "id": "new"
+        },
+        {
+          "type": "search-bar",
+          "id": "everything"
+        },
+        {
+          "type": "button",
+          "id": "x"
+        },
+        {
+          "type": "clock",
+          "id": "digital-24h"
+        }
+      ],
+      "arrange": {
+        "clock:digital-12h": {
+          "at": "right",
+          "order": 0,
+          "hidden": true
+        }
+      },
+      "placed": {
+        "left": [
+          {
+            "key": "badge:new",
+            "type": "badge",
+            "id": "new",
+            "at": "left",
+            "order": 10,
+            "origin": "asset"
+          }
+        ],
+        "center": [
+          {
+            "key": "search-bar:compact",
+            "type": "search-bar",
+            "id": "compact",
+            "at": "center",
+            "order": 1000,
+            "origin": "p"
+          }
+        ],
+        "right": []
+      },
+      "out": [
+        {
+          "key": "clock:digital-12h",
+          "type": "clock",
+          "id": "digital-12h",
+          "removed": true
+        },
+        {
+          "key": "clock:digital-24h",
+          "type": "clock",
+          "id": "digital-24h",
+          "removed": false
+        },
+        {
+          "key": "search-bar:everything",
+          "type": "search-bar",
+          "id": "everything",
+          "removed": false
+        }
+      ]
+    }
   }
 }

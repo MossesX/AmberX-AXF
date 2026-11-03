@@ -19,7 +19,7 @@ import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide'
 import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
-import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, addToHost, avatarInitials, counterText, hostPalette, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, removeFromHost, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -485,6 +485,38 @@ write('spacing.json', {
     'toolbar-badge-refused': { host: 'toolbar', list: [{ type: 'badge', id: 'new', at: 'start' }, { type: 'clock', id: 'digital-24h', at: 'left' }] },
     'not-a-host': { host: 'button', list: [{ type: 'badge', id: 'new', at: 'left' }] },
   };
+  // Banner editor (Nov 3 2026): the arrangement layer with removed (`hidden`) and palette-added (`added`) entries.
+  const eSides = ['left', 'center', 'right'];
+  const eTypes = ['badge', 'clock', 'search-bar', 'status'];
+  const eOwn = [{ type: 'clock', id: 'digital-12h', at: 'right' }, { type: 'badge', id: 'new', at: 'left' }];
+  const eExtra = [{ type: 'search-bar', id: 'compact', at: 'center', origin: 'p' }];
+  const ePlain = placeOnHost(eOwn, eExtra, has, eTypes, eSides);
+  const removed = removeFromHost(ePlain, {}, 'clock:digital-12h', eSides);
+  const removedPlaced = placeOnHost(eOwn, eExtra, has, eTypes, eSides, removed);
+  const added = addToHost(removedPlaced, removed, 'search-bar:everything', 'left', 0, eSides, eTypes);
+  const addedPlaced = placeOnHost(eOwn, eExtra, has, eTypes, eSides, added);
+  const restored = addToHost(addedPlaced, added, 'clock:digital-12h', 'center', 99, eSides, eTypes);
+  const movedAdded = moveOnHost(placeOnHost(eOwn, eExtra, has, eTypes, eSides, restored), restored, 'search-bar:everything', 'right', 0, eSides);
+  const candidates = [{ type: 'clock', id: 'digital-12h' }, { type: 'clock', id: 'digital-24h' }, { type: 'badge', id: 'new' }, { type: 'search-bar', id: 'everything' }, { type: 'button', id: 'x' }, { type: 'clock', id: 'digital-24h' }];
+  const edit = {
+    sides: eSides, types: eTypes, own: eOwn, extra: eExtra, plain: ePlain,
+    normalize: { in: { 'a:b': { at: 'left', order: 1, hidden: true }, 'c:d': { at: 'right', order: 2, added: true, hidden: 'yes' }, 'e:f': { at: 'left', order: 3, added: 1 } }, out: normalizeArrangement({ 'a:b': { at: 'left', order: 1, hidden: true }, 'c:d': { at: 'right', order: 2, added: true, hidden: 'yes' }, 'e:f': { at: 'left', order: 3, added: 1 } }, eSides) },
+    steps: [
+      { op: 'remove', key: 'clock:digital-12h', arrange: removed, placed: removedPlaced },
+      { op: 'add', key: 'search-bar:everything', side: 'left', index: 0, arrange: added, placed: addedPlaced },
+      { op: 'add', key: 'clock:digital-12h', side: 'center', index: 99, arrange: restored, placed: placeOnHost(eOwn, eExtra, has, eTypes, eSides, restored) },
+      { op: 'move', key: 'search-bar:everything', side: 'right', index: 0, arrange: movedAdded, placed: placeOnHost(eOwn, eExtra, has, eTypes, eSides, movedAdded) },
+      { op: 'remove', key: 'search-bar:everything', arrange: removeFromHost(placeOnHost(eOwn, eExtra, has, eTypes, eSides, movedAdded), movedAdded, 'search-bar:everything', eSides) },
+    ],
+    noops: {
+      'remove-unknown': removeFromHost(ePlain, {}, 'clock:nope', eSides),
+      'add-placed': addToHost(ePlain, {}, 'badge:new', 'left', 0, eSides, eTypes),
+      'add-wrong-type': addToHost(ePlain, {}, 'button:x', 'left', 0, eSides, eTypes),
+      'add-bad-side': addToHost(ePlain, {}, 'clock:digital-24h', 'up', 0, eSides, eTypes),
+      'add-bad-key': addToHost(ePlain, {}, 'clock', 'left', 0, eSides, eTypes),
+    },
+    palette: { candidates, arrange: removed, placed: removedPlaced, out: hostPalette(removedPlaced, removed, candidates, eTypes) },
+  };
   write('widgets.json', {
     widgetTypes: WIDGET_TYPES,
     attachableTypes: ATTACHABLE_ASSET_TYPES,
@@ -496,6 +528,7 @@ write('spacing.json', {
     exists: [...exists].sort(),
     toolbar: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { toolbar: c.toolbar, extra: c.extra, placed: placeToolbarWidgets(c.toolbar as never, c.extra as never, has) }])),
     kinds,
+    edit,
   });
 }
 write('components.json', {
