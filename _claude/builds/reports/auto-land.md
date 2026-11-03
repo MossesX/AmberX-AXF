@@ -42,7 +42,7 @@ waiting, and merging main into it now conflicts in code (`apps/console-web/plugi
 | s4 blocked | One reason per build in plain words (`held`, `code`, `conflict`, `push`, `pr`, `dependency`, `ci` with the failing checks, `ui`), shown on the PR in the banner instead of the generic one, and pushed to Brett once per (reason, head) as a console alert `land:<build>` (resolved when it lands). Only `conflict` and `ci` create an agent job (`agent-job.mjs land-build`, once per head; the router picks the agent). CI running / not started yet is a quiet wait. |
 | s5 console | The console said 0 because overview / build queue / plan counted plan features and plan-epic steps only, and the console's profile (Angel) has orchestrator builds but no plan epics. `storeSummary()` (builds store core) rides on the `build-queue` and `plan` engine reads and the MCP `overview` / `build_queue` tools. New systems check **Console sees the builds** (red when Build manager entries are running with a fresh heartbeat and the console reads 0 builds). |
 | s6 settings + commands | Settings → Plugins → Push banner → **Auto-land finished builds** (on) and **Wait for UI Review** (on), the list of finished builds with Land now / Hold / Release. Commands declared once in `land-core.mjs` `LAND_COMMANDS`: REST `GET /land`, `GET /land/blocked`, `POST /land/now|hold|release` (the server runs the same `land.mjs` command), MCP + console commands through plugin.json `commands` (plugin-commands@1), CLI `land.mjs list|blocked|now|hold|release`. |
-| s7 tests | `land/land.test.mjs` (84 checks, CI step): **fails if anything in the merge pipeline imports or launches a model client**, the rules, and whole rounds on fake builds (real throwaway git origin + worktree, fake GitHub + console). Push banner `test.py` 150 → 167. `build-orchestrator/test.py` (new, 5). |
+| s7 tests | `land/land.test.mjs` (84 checks, CI step): **fails if anything in the merge pipeline imports or launches a model client**, the rules, and whole rounds on fake builds (real throwaway git origin + worktree, fake GitHub + console; CI and mergeable cached per head so a round costs about one GitHub call). Push banner `test.py` 150 → 167. `build-orchestrator/test.py` (new, 5). |
 
 Not done as asked: Brett said "Settings > Builds". Plugin settings must live in their own plugin's tab (removable
 plugins, no folder names across plugins), so the switches are on the push banner's tab next to Auto-merge.
@@ -55,7 +55,7 @@ plugins, no folder names across plugins), so the switches are on the push banner
 
 ## Checks
 
-`land.test.mjs` 84 ✓ · push-banner `test.py` 167 ✓ · `build-orchestrator/test.py` 5 ✓ · `test_upgrade.py` 12 ✓ ·
+`land.test.mjs` 85 ✓ · push-banner `test.py` 167 ✓ · `build-orchestrator/test.py` 5 ✓ · `test_upgrade.py` 12 ✓ ·
 `test_mcp_tools.py` 139 ✓ · `check-builds-store` 37 ✓ · `check-build-steps` 44 ✓ · `check-plugin-commands` 57 ✓ ·
 `check-help.mts` 228 ✓ · help coverage 100% · check-theme / check-controls / check-plugin-pages ✓ · console `tsc` ✓ ·
 plugin lifecycle push-banner clean (apart from local gitignored files).

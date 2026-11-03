@@ -262,6 +262,9 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   let order = core.landOrder(cands, { after: ctl.after || {}, contains });
   const nowFirst = (ctl.now || []).filter((id) => order.some((o) => o.id === id));
   order = [...nowFirst.map((id) => order.find((o) => o.id === id)), ...order.filter((o) => !nowFirst.includes(o.id))];
+  // GitHub calls stay near one a round (the token is shared with the banner and the reconciler): CI and mergeable are
+  // kept per head and asked again only when the head, or main, moved, or CI was still running
+  const mainSha = git(['rev-parse', `${s.remote}/${s.base}`]).out || '';
   let pulls = [];
   try { pulls = await gh('GET', `/repos/${s.slug}/pulls?state=open&per_page=100`); } catch (e) { log(`pulls: ${e.message}`); }
   const prOf = (br) => (Array.isArray(pulls) ? pulls : []).find((p) => p?.head?.ref === br && p?.base?.ref === s.base && (p?.head?.repo?.full_name || '').toLowerCase() === s.slug.toLowerCase());
@@ -285,9 +288,11 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
         if (!remoteHas(b.branch) && !facts.pushError) facts.pushError = `${b.branch} is not on GitHub and has no worktree here`;
         let pr = prOf(b.branch);
         if (!facts.code && !facts.pushError) {
-          let full = null;
-          if (pr) { try { full = await gh('GET', `/repos/${s.slug}/pulls/${pr.number}`); } catch { /* next round */ } }
-          if (codeBehind({ s, git, br: b.branch }) || full?.mergeable === false || nowFirst.includes(b.id)) {
+          const headNow = git(['rev-parse', `${s.remote}/${b.branch}`]).out || '';
+          let mergeable = old.head === headNow && prev.mainSha === mainSha ? old.mergeable : undefined;
+          if (pr && mergeable === undefined) { try { mergeable = (await gh('GET', `/repos/${s.slug}/pulls/${pr.number}`))?.mergeable; } catch { /* next round */ } }
+          it.mergeable = typeof mergeable === 'boolean' ? mergeable : null;
+          if (codeBehind({ s, git, br: b.branch }) || mergeable === false || nowFirst.includes(b.id)) {
             const m = mergeMain({ s, git, b, dry });
             if (m.conflicts?.length) facts.conflicts = m.conflicts;
             else if (m.pushError) facts.pushError = m.pushError;
@@ -301,9 +306,13 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
         if (pr) { it.pr = pr.number; it.url = pr.html_url || ''; }
         it.head = git(['rev-parse', `${s.remote}/${b.branch}`]).out || '';
         if (it.head && !facts.code && !facts.conflicts && !facts.pushError) {
-          let runs = [];
-          try { runs = (await gh('GET', `/repos/${s.slug}/commits/${it.head}/check-runs?per_page=100`))?.check_runs || []; } catch { facts.ci = 'running'; }
-          if (!facts.ci) Object.assign(facts, ciOf(runs));
+          if (old.head === it.head && ['success', 'failure'].includes(old.ci)) Object.assign(facts, { ci: old.ci, failing: old.failing || [] });
+          else {
+            let runs = [];
+            try { runs = (await gh('GET', `/repos/${s.slug}/commits/${it.head}/check-runs?per_page=100`))?.check_runs || []; } catch { facts.ci = 'running'; }
+            if (!facts.ci) Object.assign(facts, ciOf(runs));
+          }
+          it.ci = facts.ci; it.failing = facts.failing || [];
           if (facts.ci === 'none' && !dry && old.dispatched !== it.head) {
             try { await gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow}/dispatches`, { ref: b.branch }); it.dispatched = it.head; } catch (e) { log(`dispatch ${b.id}: ${e.message}`); }
           } else if (old.dispatched === it.head) it.dispatched = it.head;
@@ -331,7 +340,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   // builds that left the list (merged, or no longer finished): their alert goes
   const gone = [...prevItems.keys()].filter((id) => !items.some((x) => x.id === id) && prevItems.get(id)?.pushed);
   if (gone.length && !dry && !only) await api('POST', '/api/alerts/resolve', { keys: gone.map(core.alertKey) });
-  const st = { $axf: core.LAND_FRAME, at, on: true, waitUi: cfg.landWaitUi, order: items.map((x) => x.pr).filter(Boolean), managed: items.map((x) => x.pr).filter(Boolean),
+  const st = { $axf: core.LAND_FRAME, at, on: true, waitUi: cfg.landWaitUi, mainSha, order: items.map((x) => x.pr).filter(Boolean), managed: items.map((x) => x.pr).filter(Boolean),
     items: only ? [...items, ...(prev.items || []).filter((x) => x.id !== only)] : items };
   if (!dry) { writeJson(stateFile(s), st); const c = readControl(s); if (c.now?.length) writeJson(controlFile(s), { ...c, now: c.now.filter((id) => !items.some((x) => x.id === id)) }); }
   return st;

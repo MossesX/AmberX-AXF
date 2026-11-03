@@ -183,10 +183,12 @@ check(existsSync(join(wtDir, '.brief.md')) && sh(['log', '--name-only', '--forma
 check(!sh(['log', '--name-only', '--format=', '-5', 'origin/claude/wt'], repo).includes('wt.jsonl'), 'wt: the jsonl log was not committed');
 check(existsSync(join(wtDir, '.claude-sync-hold')), 'wt: claude-sync is told to leave the finished worktree alone');
 // second round: nothing new = no second push, no second agent job
-const pushes = calls.api.filter((c) => c.path === '/api/alerts').length; const jobs = calls.jobs.length;
+const pushes = calls.api.filter((c) => c.path === '/api/alerts').length; const jobs = calls.jobs.length; const ghBefore = calls.gh.length;
 const st2 = await round({ s, git, gh, api, agentJob: (job) => { calls.jobs.push(job); return { exit: 0 }; } });
 check(calls.api.filter((c) => c.path === '/api/alerts').length === pushes && calls.jobs.length === jobs, 'round 2: the same reasons are not pushed again, no second agent job');
 check(st2.items.find((x) => x.id === 'clash').since === by.clash.since, 'round 2: "since" stays');
+const asked = calls.gh.slice(ghBefore);
+check(!asked.some((c) => c.includes(headOf('claude/green')) || c.includes('/pulls/52')), 'round 2: a head whose CI already finished is not asked again (shared token)');
 // release the hold; a code change in a worktree blocks it
 control(s, 'release', 'held');
 put('wt.ts', 'changed but never committed\n', wtDir); spawnSync('touch', ['-d', old.toISOString(), join(wtDir, 'wt.ts')]);
