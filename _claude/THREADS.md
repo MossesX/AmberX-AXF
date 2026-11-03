@@ -761,3 +761,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:16 UTC · `menu-scroll` note (urgent) · orchestrator
 - 2026-11-03 18:16 UTC · `menu-scroll` → built, PR #268 (urgent) · builds-live
 - 2026-11-03 18:20 UTC · `auto-land` s1 done, → running (urgent) · orchestrator
+- 2026-11-03 18:22 UTC · `builds-one-page-done` PR #269 (urgent) · builds-live
