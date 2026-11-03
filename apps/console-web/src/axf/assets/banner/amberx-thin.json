@@ -24,13 +24,13 @@
         "at": "center"
       },
       {
-        "type": "clock",
-        "id": "digital-12h",
+        "type": "theme-switch",
+        "id": "day-night",
         "at": "right"
       },
       {
-        "type": "theme-switch",
-        "id": "day-night",
+        "type": "clock",
+        "id": "digital-12h",
         "at": "right"
       }
     ],

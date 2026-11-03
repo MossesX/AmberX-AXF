@@ -214,38 +214,53 @@
    "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
    "detail": "Brett Nov 2 2026 21:30 ET: theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on claude/theme-editor, PR #243 (waiting in UI Review r-20261103-6a35ef38). Panes use the existing layout; switch to the dock engine once dock-engine lands.",
+     "at": "2026-11-03T11:09:57.836Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "[Opus] Plugin scaffold + use the Theme manager's token tree via a capability service",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "20m"
+     "estimate": "20m",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:10.322Z"
     },
     {
      "text": "[Opus] Colour and Style sections, collapsible, with collapsible categories listing every token (from asset types)",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:10.665Z"
     },
     {
      "text": "[Opus] Copy, save, load themes (asset@1), live apply through the hub look",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:11.007Z"
     },
     {
      "text": "[Opus] Toolbar with multiple views (tree, grid, swatches, compare)",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "30m"
+     "estimate": "30m",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:11.411Z"
     },
     {
      "text": "[Opus] Tests, checks, lifecycle, UI Review shots, PR",
      "at": "2026-11-03T02:32:22.612Z",
-     "estimate": "25m"
+     "estimate": "25m",
+     "done": true,
+     "doneAt": "2026-11-03T11:09:43.662Z"
     }
    ],
    "createdAt": "2026-11-03T02:32:22.611Z",
-   "builtAt": "",
-   "updatedAt": "2026-11-03T02:32:22.611Z",
+   "builtAt": "2026-11-03T11:09:51.572Z",
+   "updatedAt": "2026-11-03T11:09:57.836Z",
    "source": "console"
   },
   {

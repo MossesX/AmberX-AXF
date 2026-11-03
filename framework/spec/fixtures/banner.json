@@ -70,13 +70,13 @@
             "at": "center"
           },
           {
-            "type": "clock",
-            "id": "digital-12h",
+            "type": "theme-switch",
+            "id": "day-night",
             "at": "right"
           },
           {
-            "type": "theme-switch",
-            "id": "day-night",
+            "type": "clock",
+            "id": "digital-12h",
             "at": "right"
           }
         ],
@@ -101,7 +101,7 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 10,
+            "order": 20,
             "origin": "asset"
           }
         ]
@@ -122,13 +122,13 @@
             "at": "center"
           },
           {
-            "type": "clock",
-            "id": "digital-12h",
+            "type": "theme-switch",
+            "id": "day-night",
             "at": "right"
           },
           {
-            "type": "theme-switch",
-            "id": "day-night",
+            "type": "clock",
+            "id": "digital-12h",
             "at": "right"
           }
         ],
@@ -170,7 +170,7 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 10,
+            "order": 20,
             "origin": "asset"
           }
         ]
@@ -191,13 +191,13 @@
             "at": "center"
           },
           {
-            "type": "clock",
-            "id": "digital-12h",
+            "type": "theme-switch",
+            "id": "day-night",
             "at": "right"
           },
           {
-            "type": "theme-switch",
-            "id": "day-night",
+            "type": "clock",
+            "id": "digital-12h",
             "at": "right"
           }
         ],
@@ -249,13 +249,13 @@
             "at": "center"
           },
           {
-            "type": "clock",
-            "id": "digital-12h",
+            "type": "theme-switch",
+            "id": "day-night",
             "at": "right"
           },
           {
-            "type": "theme-switch",
-            "id": "day-night",
+            "type": "clock",
+            "id": "digital-12h",
             "at": "right"
           }
         ],
@@ -296,7 +296,7 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 10,
+            "order": 20,
             "origin": "asset"
           }
         ]
