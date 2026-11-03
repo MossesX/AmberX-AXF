@@ -926,3 +926,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:06 UTC · `profile-manager` added (6 steps) (current) · foreign-write
 - 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, note (current) · reconciler
 - 2026-11-03 20:10 UTC · `window-resize-fix` PR #278, merged, note (current) · reconciler
+- 2026-11-03 19:59 UTC · `window-resize-fix` s2 done (current) · orchestrator
+- 2026-11-03 20:00 UTC · `window-resize-fix` note (current) · foreign-write
+- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, PR #278 (current) · builds-live
+- 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · foreign-write
+- 2026-11-03 20:12 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write

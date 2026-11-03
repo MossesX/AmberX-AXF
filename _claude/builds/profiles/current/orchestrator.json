@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:10:49.082Z",
+ "updatedAt": "2026-11-03T20:12:37.394Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136,7 +136,7 @@
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "window-resize-fix",
+   "pendingId": "",
    "branch": "claude/window-resize-fix",
    "pr": "#278",
    "mergedAt": "2026-11-03T20:06:05Z",
@@ -172,7 +172,7 @@
      "done": true,
      "doneAt": "2026-11-03T19:47:23.937Z",
      "note": "",
-     "uid": "st-mw134p8001p42n"
+     "uid": "st-mw134d6a04twsq"
     },
     {
      "id": "s2",
@@ -190,7 +190,7 @@
      "done": true,
      "doneAt": "2026-11-03T19:59:32.298Z",
      "note": "",
-     "uid": "st-mw134p8002sqdt"
+     "uid": "st-mw134d6a05nreq"
     },
     {
      "id": "s3",
@@ -208,7 +208,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw134p8003s7i3"
+     "uid": "st-mw134d6a0601hn"
     }
    ]
   },
