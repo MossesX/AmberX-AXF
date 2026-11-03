@@ -1516,6 +1516,62 @@
         "title": "Id",
         "text": "The id column: Its id — the name the code uses. Tap the header to sort by it.",
         "kind": "column"
+      },
+      {
+        "target": "action:banner.edit",
+        "title": "Edit banner",
+        "text": "Turns on the banner editor: drag widgets to move them (they snap between the others), tap × to remove one, Add puts any banner widget back. Done or Esc leaves.",
+        "more": "Your arrangement is part of the look on axHub, so every app on the framework shows the same banner. On a phone, long-press the banner to start; on a desktop, right-click it and pick Edit banner. Settings → Appearance → Banner has it too.",
+        "tryIt": "Right-click the banner → Edit banner.",
+        "related": [
+          "banner-editor.add",
+          "banner-editor.undo",
+          "banner-editor.reset"
+        ],
+        "kind": "menu-item"
+      },
+      {
+        "target": "banner-editor.bar",
+        "title": "Banner editor",
+        "text": "You're editing the banner. Drag a widget to move it, tap its × (or drag it well off the bar) to remove it, and use Add to bring widgets back.",
+        "tryIt": "Drag the clock to the other side.",
+        "kind": "control"
+      },
+      {
+        "target": "banner-editor.remove",
+        "title": "Remove widget",
+        "text": "Takes this widget off the banner in every app. It stays in Add, so you can put it back any time; Undo takes the removal back.",
+        "kind": "button"
+      },
+      {
+        "target": "banner-editor.add",
+        "title": "Add a widget",
+        "text": "Lists every banner widget that isn't on the banner now (ones you removed first). Tap one to put it at the right end, then drag it where you want it.",
+        "kind": "button"
+      },
+      {
+        "target": "banner-editor.undo",
+        "title": "Undo",
+        "text": "Takes back your last move, removal, addition or reset on the banner. Ctrl+Z (Cmd+Z) does the same while you edit.",
+        "kind": "button"
+      },
+      {
+        "target": "banner-editor.reset",
+        "title": "Reset banner",
+        "text": "Puts the banner back the way the app ships it: removed widgets come back, ones you added go. Undo takes it back.",
+        "kind": "button"
+      },
+      {
+        "target": "banner-editor.done",
+        "title": "Done",
+        "text": "Leaves the banner editor. Everything you changed is already saved. Esc does the same.",
+        "kind": "button"
+      },
+      {
+        "target": "action:widgets.undo",
+        "title": "Undo last banner change",
+        "text": "Takes back the last move, removal, addition or reset of the banner's widgets.",
+        "kind": "menu-item"
       }
     ],
     "intros": [

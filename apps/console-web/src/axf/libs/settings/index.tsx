@@ -888,6 +888,19 @@ export const library: AxfWebLibrary = {
       ],
     },
     {
+      // Banner editor (Brett, Nov 3 2026): the same edit mode as long-press / right-click → Edit banner
+      id: 'axf.banner.editor',
+      label: 'Banner',
+      icon: 'edit',
+      tab: 'appearance',
+      order: 25,
+      description: 'Move, remove and add the widgets on the banner. The arrangement is part of the look, so every app follows.',
+      settings: [
+        { key: 'axf.banner.editor.open', label: 'Edit banner', kind: 'action', target: 'banner.edit:on', icon: 'edit', requires: 'assets.swap', description: 'Also: long-press the banner on a phone, or right-click it → Edit banner.' },
+        { key: 'axf.banner.editor.reset', label: 'Put banner widgets back', kind: 'action', target: 'widgets.reset:banner', icon: 'refresh', requires: 'assets.swap', description: 'Back to the banner the app ships, removed widgets included.' },
+      ],
+    },
+    {
       // Help mode (Brett, Nov 1 2026): the same switch as the ? in the menu bar, F1 and Help → Help mode; per device
       id: 'axf.help',
       label: 'Help mode',

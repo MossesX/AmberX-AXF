@@ -86,7 +86,7 @@ export function Banner() {
   // a lockup / wordmark already carries the brand name, so the asset's own logo text is only shown next to a plain mark
   const showText = data.logo?.text && (!drawsMark || brand?.mode === 'mark' || brand?.mode === 'animated');
   return (
-    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''} ${host.className}`.trim()} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner" data-fx-brand-mode={host['data-fx-brand-mode']}>
+    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''}${arrange.drag?.off ? ' is-drop-off' : ''} ${host.className}`.trim()} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner" data-fx-brand-mode={host['data-fx-brand-mode']}>
       {BANNER_SIDES.map((side) => (
         <div key={side} className={`fx-banner__side is-${side}`} {...arrange.sideProps(side)}>
           {side === 'left' && data.logo?.show !== false && (

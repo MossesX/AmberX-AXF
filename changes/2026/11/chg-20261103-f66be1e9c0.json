@@ -1,0 +1,103 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261103-f66be1e9c0",
+  "createdAt": "2026-11-03T10:51:14.834Z",
+  "updatedAt": "2026-11-03T10:58:47.894Z",
+  "kind": "build",
+  "title": "# Relaunch of axhub-mcp-service (Opus) The original build `axhub-mcp-service` died instantly on the…",
+  "asked": "# Relaunch of axhub-mcp-service (Opus) The original build `axhub-mcp-service` died instantly on the weekly usage limit (Nov 2). Its full brief is at /root/axf-builds/axhub-mcp-service/.brief.md: read that file first and do exactly what it asks, on this branch (claude/axhub-mcp-service-2). Summary: add an `mcp` service type to axHub (connect outside MCP servers as axHub services) plus a `hostinger-mcp` service; writes need confirm. Check origin/main first and don't redo anything already landed. Brett OK'd auto-merge for this build: when tests pass, open the PR and land it. One session, no sub-agents. Never print secrets. Commit + push often. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "81f383ea-70f",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "mcp connector: SSE fallback + policy hints + tests",
+      "state": "done",
+      "startedAt": "2026-11-03T10:55:21.316Z",
+      "finishedAt": "2026-11-03T10:55:21.316Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "mcp services: SSE fallback, readOnlyNames/readOnlyTools/confirmWrites hints, hostinger-mcp service (off until hostinger-mcp-token); decision #112; PR #31",
+    "branch": "claude/axhub-mcp-service-2",
+    "commits": [
+      {
+        "sha": "f671e83"
+      }
+    ],
+    "tests": {
+      "pnpm test": {
+        "before": "517",
+        "after": "526"
+      }
+    },
+    "links": {
+      "report": "https://github.com/MossesX/axHub/pull/31"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "axhub-mcp-service"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-03T10:51:14.834Z",
+  "finishedAt": "2026-11-03T10:58:37.772Z",
+  "lastSeenAt": "2026-11-03T10:58:37.664Z",
+  "estimate": {
+    "minutes": 60,
+    "costUsd": 15
+  },
+  "actual": {
+    "minutes": 7,
+    "costUsd": 1.9095,
+    "inputTokens": 74,
+    "outputTokens": 35496,
+    "cacheReadTokens": 3332612,
+    "cacheWriteTokens": 106545,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/axhub-mcp-service-2",
+  "areas": [
+    "packages/connectors/mcp-proxy",
+    "packages/server/src",
+    "examples",
+    "docs",
+    "project/initialization"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/axhub-mcp-service-2",
+    "branch": "claude/axhub-mcp-service-2",
+    "base": "998f03f164bfb991bf4a313c3b617b33f2691d77",
+    "head": "f671e83a5d897e73c2b6945f5efacdb211c18f83",
+    "pushed": true,
+    "dirty": 1,
+    "files": [
+      "CLAUDE.md",
+      "docs/roadmap.md",
+      "examples/README.md",
+      "packages/connectors/mcp-proxy/src/index.ts",
+      "packages/connectors/mcp-proxy/test/mcp-proxy.test.ts",
+      "packages/server/src/hostinger-mcp.ts",
+      "packages/server/src/main.ts",
+      "packages/server/test/hostinger-mcp.test.ts",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      ".axf-watch-live.log"
+    ],
+    "at": "2026-11-03T10:58:48.094Z"
+  }
+}
