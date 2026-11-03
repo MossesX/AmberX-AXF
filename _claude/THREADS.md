@@ -569,112 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:07 UTC · landed `claude/notes-vault` (PR#256) on main at 5a6311a3 · land-everything
-- 2026-11-03 16:14 UTC · landed `claude/agent-chats-hub` (PR#248) on main at c985c38d · land-everything
-- 2026-11-03 16:24 UTC · landed `claude/kill-patches-pilot` (PR#258) on main at e697c302 · land-everything
-- 2026-11-03 16:30 UTC · landed `claude/headless-tabs` (PR#259) on main at a8186b83 · land-everything
-- 2026-11-03 16:41 UTC · landed `claude/whats-new-banner` (PR#260) on main at 6ff111a1 · land-everything
-- 2026-11-03 16:48 UTC · landed `claude/molly-fable` (PR#245) on main at bffc2601 · land-everything
-- 2026-11-03 16:48 UTC · landed `claude/xlayout-opus` (PR#252) on main at bffc2601 · land-everything
-- 2026-11-03 17:03 UTC · landed `claude/token-control-opus` (PR#250) on main at 0a85ab65 · land-everything
-- 2026-11-03 17:04 UTC · landed `claude/console-commands` (PR#249) on main at 0a85ab65 · land-everything
-- 2026-11-03 17:09 UTC · landed `claude/theme-editor` (PR#243) on main at 6f20dd54 · land-everything
-- 2026-11-03 17:17 UTC · landed `claude/model-upgrade-approval` (PR#253) on main at 03d1d75f · land-everything
-- 2026-11-03 17:19 UTC · landed `claude/one-look-default-2` (PR#244) on main at 4ff2cc50 · land-everything
-- 2026-11-03 17:26 UTC · landed `claude/theme-veto-pass` (PR#262) on main at 16620d72 · land-everything
-- 2026-11-03 17:26 UTC · landed `claude/pass-all` (PR#264) on main at 16620d72 · land-everything
-- 2026-11-03 17:35 UTC · landed `claude/plugin-commands-auto` (PR#263) on main at cdd568c2 · land-everything
-- 2026-11-03 17:42 UTC · landed `claude/axhub-veto-pass-web` (PR#261) on main at bc344492 · land-everything
-- 2026-11-03 17:42 UTC · landed axHub `claude/kill-patches-pilot` (#32) at d3cf462 and `claude/axhub-veto-pass` (#33/#34) at 6334d34, deployed · land-everything
-- 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
-- 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
-- 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
-- 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
-- 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
-- 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `token-control` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, → built, branch claude/token-control-opus, PR #250, note (urgent) · orch-live-sync
-- 2026-11-03 13:57 UTC · `enterprise-branding` merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `apply-all-levels` branch claude/apply-all-levels, PR #115, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-orchestrator` branch claude/build-orchestrator, PR #122, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-appearance-lock` branch claude/amberx-appearance-lock, PR #126, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-handsfree` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-hubsync-look-source` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-banner-snap` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `banner-fix-fallback` PR #152, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-push` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-voice-center` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-assistant-agents` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-claude-tokens` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `refactor-all` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `mosses-build-tools` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `assistant-no-subagents` PR #167, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `veto-everywhere` PR #176, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `agent-voice` PR #177, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `pr-only-merge` PR #183, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `orch-pending-sync` PR #143, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `home-cards` branch angel/home-cards-queue, PR #171, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `settings-compact` PR #175, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `ui-all-assets` PR #181, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `session-history` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #195, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `audio-output-recorder` PR #194, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `live-key-checks` PR #182, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `ui-review` PR #184, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `plan-studio` PR #185, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `audio-extract` PR #187, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `agent-swarm` merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `agent-swarm-fable-rebuild` branch claude/agent-swarm-fable-rebuild, PR #247, merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `stack-walkthrough` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `molly-opus` merged, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `xlayout` s12 done, → built, branch claude/xlayout-opus, PR #252, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
-- 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
-- 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
-- 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
-- 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
-- 2026-11-03 14:45 UTC · `whats-new-banner` s1–s4 done, s5 tests/checks/shots done, PR opening (urgent) · claude/whats-new-banner
-- 2026-11-03 14:53 UTC · `whats-new-banner` s5 done, PR #260, UI Review r-20261103-8861306a waiting (urgent) · claude/whats-new-banner
-- 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
-- 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
-- 2026-11-03 15:32 UTC · `land-everything` → running (urgent) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` added (8 steps) (breakroom) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` → running (breakroom) · orchestrator
-- 2026-11-03 15:58 UTC · `crew-retrain` s1 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s2 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s3 done (breakroom) · orchestrator
-- 2026-11-03 16:05 UTC · `crew-retrain` s4 done (breakroom) · orchestrator
-- 2026-11-03 16:07 UTC · `notes-vault` PR #256, merged (urgent) · builds-live
-- 2026-11-03 16:07 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:07 UTC · `land-everything` s1 done (urgent) · orchestrator
-- 2026-11-03 16:07 UTC · `crew-retrain` s5 done (breakroom) · orchestrator
-- 2026-11-03 16:12 UTC · `crew-retrain` s6 done (breakroom) · orchestrator
-- 2026-11-03 16:14 UTC · `tools-plugin` note (refactor) · foreign-write
-- 2026-11-03 16:14 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:14 UTC · `land-everything` s2 done (urgent) · orchestrator
-- 2026-11-03 16:22 UTC · `tools-plugin` note (refactor) · foreign-write
-- 2026-11-03 16:22 UTC · `crew-retrain` branch claude/crew-retrain, PR #265 (breakroom) · builds-live
-- 2026-11-03 16:23 UTC · `crew-retrain` s7 done (breakroom) · orchestrator
-- 2026-11-03 16:23 UTC · `crew-retrain` s8 done, → built (breakroom) · orchestrator
-- 2026-11-03 16:23 UTC · `crew-retrain` note (breakroom) · orchestrator
-- 2026-11-03 16:23 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:23 UTC · `kill-patches-pilot` PR #258, merged (urgent) · builds-live
-- 2026-11-03 16:23 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `land-everything` s3 done (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `kill-patches-pilot` → running, note (urgent) · orchestrator
-- 2026-11-03 16:24 UTC · `kill-patches-pilot` → complete (urgent) · orchestrator
 - 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
 - 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:29 UTC · `land-everything` s4 done (urgent) · orchestrator
@@ -966,3 +860,112 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:26 UTC · `follow-amber` s7 done, → complete (urgent) · orchestrator
 - 2026-11-03 20:26 UTC · `follow-amber` → built, PR #280 (urgent) · orchestrator
 - 2026-11-03 20:26 UTC · `follow-amber` note (urgent) · orchestrator
+- 2026-11-03 20:30 UTC · `plugin-settings-placement` added (6 steps) (current) · orchestrator
+- 2026-11-03 20:30 UTC · `build-prompt-origin` s4 done (current) · orchestrator
+- 2026-11-03 20:31 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:31 UTC · `plugin-settings-placement` added (12 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 20:37 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 20:37 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `plugin-settings-placement` added (18 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `smart-menus` s6 done (urgent) · orchestrator
+- 2026-11-03 20:38 UTC · `build-prompt-origin` s4 done (current) · foreign-write
+- 2026-11-03 20:38 UTC · `plugin-settings-placement` added (36 steps) (current) · foreign-write
+- 2026-11-03 20:43 UTC · `smart-menus` PR #281 (urgent) · builds-live
+- 2026-11-03 20:43 UTC · `smart-menus` s7 done, → built (urgent) · orchestrator
+- 2026-11-03 20:43 UTC · `smart-menus` note (urgent) · orchestrator
+- 2026-11-03 20:44 UTC · `smart-menus` s7 done, → built (urgent) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `build-prompt-origin` s4 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s2 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s2 done (current) · orchestrator
+- 2026-11-03 20:49 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:49 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:53 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:53 UTC · `banner-ref-links` added (10 steps) (current) · foreign-write
+- 2026-11-03 20:53 UTC · `build-prompt-origin` s3 done (current) · orchestrator
+- 2026-11-03 20:53 UTC · `build-prompt-origin` s5 done, → complete (current) · orchestrator
+- 2026-11-03 20:53 UTC · `build-prompt-origin` → built, PR #282 (current) · builds-live
+- 2026-11-03 20:55 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s3 done, → running (current) · orchestrator
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s4 done (current) · orchestrator
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s5 done (current) · orchestrator
+- 2026-11-03 20:56 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · orchestrator
+- 2026-11-03 20:47 UTC · `banner-ref-links` → running (current) · orchestrator
+- 2026-11-03 20:56 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 20:56 UTC · `banner-ref-links` s1 done (current) · orchestrator
+- 2026-11-03 20:57 UTC · `banner-ref-links` → running, branch claude/banner-ref-links (current) · foreign-write
+- 2026-11-03 21:00 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
+- 2026-11-03 21:02 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 21:02 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:02 UTC · `banner-ref-links` s1 done (current) · foreign-write
+- 2026-11-03 21:05 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 21:05 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 21:05 UTC · `profile-manager` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:05 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:05 UTC · `plugin-settings-placement` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:05 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:05 UTC · `home-cards-live` branch claude/home-cards-live (urgent) · builds-live
+- 2026-11-03 21:03 UTC · `home-cards-live` PR #283, note (urgent) · reconciler
+- 2026-11-03 21:05 UTC · `molly-console-commands` added (7 steps) (current) · orchestrator
+- 2026-11-03 21:08 UTC · `molly-console-commands` added (7 steps) (current) · foreign-write
+- 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:54 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
+- 2026-11-03 21:11 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:11 UTC · `banner-ref-links` s1 done (current) · foreign-write
+- 2026-11-03 21:11 UTC · `molly-console-commands` added (14 steps) (current) · foreign-write
+- 2026-11-03 21:11 UTC · `git-status-board` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · orchestrator
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` s1 done, → running (current) · orchestrator
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` s2 done (current) · orchestrator
+- 2026-11-03 21:14 UTC · `urgent-main-ci-green` branch claude/urgent-main-ci-green, PR #284 (current) · builds-live
+- 2026-11-03 21:15 UTC · `urgent-main-ci-green` branch claude/urgent-main-ci-green, PR #284 (current) · foreign-write
+- 2026-11-03 21:17 UTC · `molly-console-commands` added (28 steps) (current) · foreign-write
+- 2026-11-03 21:17 UTC · `git-status-board` added (12 steps) (current) · foreign-write
+- 2026-11-03 21:17 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:17 UTC · `home-cards-live` note (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` s3 done (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` s6 done, → complete (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` → built, PR #283 (urgent) · builds-live
+- 2026-11-03 21:19 UTC · `molly-console-commands` added (56 steps) (current) · foreign-write
+- 2026-11-03 21:19 UTC · `git-status-board` added (24 steps) (current) · foreign-write
+- 2026-11-03 21:19 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:20 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:19 UTC · `banner-ref-links` s2 done (current) · orchestrator
+- 2026-11-03 21:19 UTC · `banner-ref-links` s3 done (current) · orchestrator
+- 2026-11-03 21:19 UTC · `banner-ref-links` s4 done (current) · orchestrator
+- 2026-11-03 21:22 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:23 UTC · `whats-new-open-fix` added (5 steps) (current) · orchestrator
+- 2026-11-03 21:23 UTC · `whats-new-open-fix` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:25 UTC · `whats-new-open-fix` added (10 steps) (current) · foreign-write
+- 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · claude-session (Snap Sully)
+- 2026-11-03 21:11 UTC · `batch-manager` note (angel) · claude-session (Snap Sully)
+- 2026-11-03 21:26 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:26 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:26 UTC · `whats-new-open-fix` added (20 steps) (current) · foreign-write
+- 2026-11-03 21:26 UTC · `git-status-board` s1 done, → running (current) · claude-session (Snap Sully)
+- 2026-11-03 21:26 UTC · `git-status-board` s2 done (current) · claude-session (Snap Sully)
+- 2026-11-03 21:27 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:30 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:30 UTC · `ui-review-predicted` PR #285 (urgent) · builds-live
+- 2026-11-03 21:30 UTC · `ui-review-predicted` PR #285, note (urgent) · reconciler
+- 2026-11-03 21:31 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:31 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:31 UTC · `whats-new-open-fix` added (40 steps) (current) · foreign-write
+- 2026-11-03 21:31 UTC · `urgent-main-ci-green` s4 done (current) · orchestrator
+- 2026-11-03 21:31 UTC · `urgent-main-ci-green` s5 done (current) · orchestrator
+- 2026-11-03 21:31 UTC · `urgent-main-ci-green` note (current) · orchestrator
+- 2026-11-03 21:35 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:35 UTC · `urgent-main-ci-green` s4 done, s5 done, note (current) · foreign-write
+- 2026-11-03 21:36 UTC · `whats-new-open-fix` s1 done, → running (current) · orchestrator
+- 2026-11-03 21:36 UTC · `whats-new-open-fix` note (current) · orchestrator
+- 2026-11-03 21:38 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:38 UTC · `urgent-main-ci-green` s4 done, s5 done, note (current) · foreign-write
+- 2026-11-03 21:38 UTC · `whats-new-open-fix` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:38 UTC · `molly-console-commands` s1 done, → running (current) · orchestrator
+- 2026-11-03 21:38 UTC · `molly-console-commands` s2 done (current) · orchestrator
