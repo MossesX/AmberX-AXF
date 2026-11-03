@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 176,
- "updatedAt": "2026-11-03T14:01:21.566Z",
+ "rev": 177,
+ "updatedAt": "2026-11-03T15:20:51.079Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49937,16 +49937,22 @@
    "title": "Orchestrator live sync: every step reaches main at once",
    "category": "Urgent",
    "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orch-live-sync",
    "pr": "#255",
+   "mergedAt": "2026-11-03T15:19:36Z",
    "createdAt": "2026-11-03T13:39:29.176Z",
-   "updatedAt": "2026-11-03T14:01:20.820Z",
+   "updatedAt": "2026-11-03T15:20:49.826Z",
    "builtAt": "2026-11-03T14:01:20.821Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: PR #255 merged; PR #255 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-03T15:20:49.826Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -50115,7 +50121,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
