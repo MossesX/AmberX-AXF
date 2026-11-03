@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T02:40:26.219Z",
+ "updatedAt": "2026-11-03T11:09:57.869Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -548,16 +548,21 @@
    "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET: theme editor plugin that lets you copy, save, load. Colour section and style section, each collapsible, with collapsible categories listing every possible token; toolbar with multiple views. Own plugin, reusing the Theme manager's token tree through a capability service (both stay installed). Look rule: saves go to the axHub appearance document / asset@1 themes.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T02:32:22.611Z",
-   "updatedAt": "2026-11-03T02:32:22.611Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T11:09:57.836Z",
+   "builtAt": "2026-11-03T11:09:51.572Z",
+   "notes": [
+    {
+     "text": "Built on claude/theme-editor, PR #243 (waiting in UI Review r-20261103-6a35ef38). Panes use the existing layout; switch to the dock engine once dock-engine lands.",
+     "at": "2026-11-03T11:09:57.836Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -573,8 +578,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:10.322Z",
      "note": "",
      "uid": "st-mw02oei306092d"
     },
@@ -591,8 +596,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:10.665Z",
      "note": "",
      "uid": "st-mw02oei3075o82"
     },
@@ -609,8 +614,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:11.007Z",
      "note": "",
      "uid": "st-mw02oei308ow81"
     },
@@ -627,8 +632,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T10:58:11.411Z",
      "note": "",
      "uid": "st-mw02oei309crve"
     },
@@ -645,8 +650,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:09:43.662Z",
      "note": "",
      "uid": "st-mw02oei30awyca"
     }
