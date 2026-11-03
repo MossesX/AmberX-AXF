@@ -22,8 +22,13 @@ export const APPEARANCE_PATH = 'settings/appearance.json';
 export const APPEARANCE_MAX_BYTES = 16 * 1024;
 /** Largest single look setting value (its JSON) the document carries. */
 export const APPEARANCE_SETTING_MAX_BYTES = 4 * 1024;
-/** Slots an appearance document never carries: access policies come from the account / the app, never from shared data; help packs are all in force at once (no pick to share). */
-export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help'];
+/**
+ * Slots an appearance document never carries: access policies come from the account / the app, never from shared data;
+ * help packs are all in force at once (no pick to share); `appearance-package` is the retired type the design package
+ * replaced (Oct 27 2026), so a document an older build wrote with that slot loses it on read, and the next write by any
+ * app drops it from the hub (one-shot clean, Nov 3 2026).
+ */
+export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package'];
 
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 /** A look settings key (`axf.look`, `axf.custom.button.amber`, …); which keys count is the runtime's call. */

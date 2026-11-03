@@ -73,6 +73,11 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right"
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "right"
           }
         ],
         "divider": true
@@ -119,6 +124,11 @@
           {
             "type": "clock",
             "id": "digital-12h",
+            "at": "right"
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
             "at": "right"
           }
         ],
@@ -184,6 +194,11 @@
             "type": "clock",
             "id": "digital-12h",
             "at": "right"
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "right"
           }
         ],
         "divider": true
@@ -236,6 +251,11 @@
           {
             "type": "clock",
             "id": "digital-12h",
+            "at": "right"
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
             "at": "right"
           }
         ],
