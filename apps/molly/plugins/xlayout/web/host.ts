@@ -187,8 +187,8 @@ export class ChromeHost {
       const items: NavItem[] = s.items.map((it) => {
         const own = it.id.slice(s.app!.length + 1);
         const view = `${s.app}/${own}`;
-        views[view] = { title: it.label, icon: it.icon ?? 'circle' };
-        const nav: NavItem = { id: `xl.${it.id}`, label: it.label, icon: it.icon ?? 'circle', view };
+        views[view] = { title: it.label, icon: it.icon ?? 'box' };
+        const nav: NavItem = { id: `xl.${it.id}`, label: it.label, icon: it.icon ?? 'box', view };
         if (it.badge) { const b = badgeName(it.id); this.rt.setBadge(b, it.badge); badges.add(b); nav.badge = b; }
         return nav;
       });

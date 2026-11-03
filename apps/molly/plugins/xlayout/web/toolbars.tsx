@@ -97,7 +97,7 @@ export function ToolbarEdge({ host, location }: { host: ChromeHost; location: To
     if (!t.items.length && !guest.length) continue;
     out.push(
       <Bar key={`x${t.slot}`} location={location} label={t.label} ctx={`xlayout|*|${t.slot}`}>
-        {t.items.map((it) => <Btn key={it.id} icon={it.icon ?? 'circle'} label={it.label} onClick={() => runToolbarItem(rt, host, it)} />)}
+        {t.items.map((it) => <Btn key={it.id} icon={it.icon ?? 'box'} label={it.label} onClick={() => runToolbarItem(rt, host, it)} />)}
         {guest.map((g) => (
           <span key={g.id} className="fx-toolbar__group" role="group" aria-label={g.label}>
             {g.items.map((it) => <Btn key={it.id} icon={it.icon} label={it.label} badge={it.badge} pressed={it.pressed} locked={it.locked} onClick={() => host.run(it.id)} />)}
@@ -118,7 +118,9 @@ export function ToolbarEdge({ host, location }: { host: ChromeHost; location: To
       );
     }
   }
-  return out.length ? <div className="axp-xlayout-edge" data-edge={location}>{out}</div> : null;
+  // the empty rest of the strip is a toolbar too (right-click → Customize toolbar acts on its first bar)
+  const first0 = (out[0] as { props?: { ctx?: string } } | undefined)?.props?.ctx;
+  return out.length ? <div className="axp-xlayout-edge" data-edge={location} data-fx-ctx-target={TOOLBAR_CTX} data-fx-ctx-payload={first0}>{out}</div> : null;
 }
 
 /** The app area with its toolbars on the edges they were put on. */

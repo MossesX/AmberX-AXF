@@ -118,7 +118,8 @@ export function AppMain({ app }: { app: string }) {
   const rt = useRuntime();
   useAxfState();
   const ide = effectiveXLayout(rt).ide.on;
-  return ide ? <Workspace app={app} /> : <AppSlot id={app} />;
+  // the app area already fills the main region edge to edge (xlayout.css), so the frame covers just its slot
+  return ide ? <Workspace app={app} /> : <AppSlot id={app} fill="self" />;
 }
 
 /** The presets the layout picker offers: the xlayout's list, kept to the dock-layout assets installed, in its order. */

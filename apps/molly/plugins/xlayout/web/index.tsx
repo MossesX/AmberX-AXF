@@ -3,10 +3,10 @@ import type { AxfRuntime } from '../../../src/axf/core';
 import { TOOLBAR_LOCATIONS, type ToolbarLocation } from '../../../src/axf/core/engines/xlayout';
 import { Button, SelectField, Switch, useAxfState, useRuntime } from '../../../src/axf/react';
 import type { AxfWebLibrary } from '../../../src/axf/react/library';
-import { appOfView, mollyService, setMollyHook } from '../../../src/molly/host';
+import { appOfView, mollyService, provideMollyService, setMollyHook } from '../../../src/molly/host';
 import { ChromeHost, RUN_ACTION } from './host';
-import { effectiveXLayout, FOLDER, K, PLUGIN_ID, SLOTS } from './model';
-import { declaredToolbars, barKey, TOOLBAR_CTX, WithToolbars } from './toolbars';
+import { effectiveXLayout, FOLDER, K, PLUGIN_ID, saveSlotItems, SLOTS } from './model';
+import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } from './toolbars';
 import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
 import helpPack from '../help.json';
 import './xlayout.css';
@@ -22,6 +22,19 @@ import './xlayout.css';
 /** The Toolbar designer's capability (its own plugin): open it for a toolbar, or say it isn't installed. */
 export const DESIGNER = 'axf.toolbar-designer@1';
 export interface ToolbarDesigner { open(target: { plugin: string; screen: string; slot: number }): void }
+
+/** xLayout's own capability (`axf.xlayout@1`): what the Toolbar designer reads and saves, without knowing this folder. */
+export const XLAYOUT_SERVICE = 'axf.xlayout@1';
+export interface XLayoutService {
+  /** the xlayout in force (apps, merge rules, IDE, the three toolbar slots) */
+  layout(): import('../../../src/axf/core/engines/xlayout').XLayoutData;
+  /** every app's chrome merged (menus, navigation, toolbars), for picking items */
+  chrome(): import('../../../src/axf/core/engines/chrome').UnifiedChrome;
+  /** save one slot's items (last save wins) */
+  saveSlot(slot: number, items: import('../../../src/axf/core/engines/xlayout').XToolbarItem[]): void;
+  /** run an item now (try it) */
+  run(item: import('../../../src/axf/core/engines/xlayout').XToolbarItem): void;
+}
 
 let host: ChromeHost | null = null;
 const theHost = () => host!;
@@ -149,6 +162,12 @@ export const plugin: AxfWebLibrary = {
       openApp(rt, app, target === 'pane' || target === 'floating' ? target : 'main');
     }, { label: 'Open an app in the main area, a floating window or a pane' });
     on('xlayout.customize', (_args, ctx) => customize(rt, ctx.payload), { label: 'Customize toolbar…' });
+    provideMollyService(PLUGIN_ID, XLAYOUT_SERVICE, {
+      layout: () => effectiveXLayout(rt),
+      chrome: () => h.chrome(),
+      saveSlot: (slot, items) => saveSlotItems(rt, slot, items),
+      run: (item) => runToolbarItem(rt, h, item),
+    } satisfies XLayoutService);
     rt.settings.onChange(K.paneLimit, () => rt.windows.setDockRules({ paneLimit: effectiveXLayout(rt).ide.paneLimit }));
   },
   tabs: { [APP_TAB]: (t) => <AppTab app={t.payload ?? ''} /> },
@@ -157,15 +176,15 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'xlayout', label: 'xLayout', icon: 'layout', order: 40, parent: 'plugins', description: 'Molly as one app: merged menus, IDE panes, toolbars.' }],
   settingsPanels: [
     { id: 'xlayout.ide', tab: 'xlayout', title: 'IDE mode', icon: 'layout', order: 10, render: () => <IdePanel /> },
-    { id: 'xlayout.toolbars', tab: 'xlayout', title: 'Toolbars', icon: 'tool', order: 20, render: () => <ToolbarsPanel /> },
-    { id: 'xlayout.apps', tab: 'xlayout', title: 'One app', icon: 'link', order: 30, render: () => <AppsPanel /> },
+    { id: 'xlayout.toolbars', tab: 'xlayout', title: 'Toolbars', icon: 'hammer', order: 20, render: () => <ToolbarsPanel /> },
+    { id: 'xlayout.apps', tab: 'xlayout', title: 'One app', icon: 'external', order: 30, render: () => <AppsPanel /> },
     { id: 'xlayout.lifecycle', tab: 'xlayout', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
   ],
   appMenu: [
     { id: 'xlayout.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 20, items: [
       { id: 'xlayout.ide', label: 'IDE mode', icon: 'layout', action: 'xlayout.ide', checked: 'setting:xlayout.ide.on' },
       { id: 'xlayout.layout', label: 'Pane layout…', icon: 'layout', action: 'xlayout.layout' },
-      { id: 'xlayout.open-pane', label: 'Open this app in a pane', icon: 'columns', action: 'xlayout.open:pane' },
+      { id: 'xlayout.open-pane', label: 'Open this app in a pane', icon: 'grid', action: 'xlayout.open:pane' },
       { id: 'xlayout.open-floating', label: 'Open this app in a floating window', icon: 'monitor', action: 'xlayout.open:floating' },
       { id: 'xlayout.settings', label: 'xLayout settings…', icon: 'settings', action: 'settings.open:xlayout' },
     ] },
@@ -176,7 +195,7 @@ export const plugin: AxfWebLibrary = {
       { id: 'xlayout.toolbar-settings', label: 'Toolbar settings…', icon: 'settings', action: 'settings.open:xlayout' },
     ] },
     { id: 'xlayout.nav', target: 'nav-item', items: [
-      { id: 'xlayout.nav-pane', label: 'Open in a pane', icon: 'columns', action: 'xlayout.open:pane:{payload}' },
+      { id: 'xlayout.nav-pane', label: 'Open in a pane', icon: 'grid', action: 'xlayout.open:pane:{payload}' },
       { id: 'xlayout.nav-floating', label: 'Open in a floating window', icon: 'monitor', action: 'xlayout.open:floating:{payload}' },
     ] },
   ],
