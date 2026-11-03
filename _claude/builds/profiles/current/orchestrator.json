@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:31:55.949Z",
+ "updatedAt": "2026-11-03T21:32:21.629Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3079,9 +3079,14 @@
    "branch": "claude/urgent-main-ci-green",
    "pr": "#284",
    "createdAt": "2026-11-03T21:12:18.212Z",
-   "updatedAt": "2026-11-03T21:14:36.294Z",
+   "updatedAt": "2026-11-03T21:31:51.198Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
+     "at": "2026-11-03T21:31:51.198Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -3152,8 +3157,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:47.371Z",
      "note": "",
      "uid": "st-mw16on0s09bkwg"
     },
@@ -3170,8 +3175,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:49.702Z",
      "note": "",
      "uid": "st-mw16on0s0apxt0"
     }

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 485,
- "updatedAt": "2026-11-03T21:31:55.949Z",
+ "rev": 486,
+ "updatedAt": "2026-11-03T21:32:21.629Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61506,9 +61506,14 @@
    "branch": "claude/urgent-main-ci-green",
    "pr": "#284",
    "createdAt": "2026-11-03T21:12:18.212Z",
-   "updatedAt": "2026-11-03T21:14:36.294Z",
+   "updatedAt": "2026-11-03T21:31:51.198Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
+     "at": "2026-11-03T21:31:51.198Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -61593,12 +61598,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:47.371Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:18.219Z"
+     "updatedAt": "2026-11-03T21:31:47.431Z"
     },
     {
      "id": "s5",
@@ -61615,12 +61620,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:49.702Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:12:18.219Z",
-     "updatedAt": "2026-11-03T21:12:18.219Z"
+     "updatedAt": "2026-11-03T21:31:49.760Z"
     }
    ],
    "profiles": [
@@ -61631,7 +61636,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
