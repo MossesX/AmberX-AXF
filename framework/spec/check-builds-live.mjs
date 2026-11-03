@@ -16,7 +16,7 @@ import * as rc from '../plan/builds-reconcile-core.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const LIVE = join(ROOT, 'framework/cli/builds-live.mjs');
-const ORCH = join(ROOT, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
+const ORCH = join(ROOT, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs');  // axf-plugin:build-orchestrator
 const STORE_REL = '_claude/builds/store.json';
 let pass = 0; let fail = 0;
 const check = (ok, what) => { if (ok) pass += 1; else { fail += 1; console.log(`✗ ${what}`); } };
