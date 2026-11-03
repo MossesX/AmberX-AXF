@@ -569,13 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:21 UTC · `agent-pick` s8 done (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:31 UTC · `terminal-vps-host` added (5 steps) (current) · orchestrator
-- 2026-11-03 19:31 UTC · `terminal-vps-host` → running (current) · orchestrator
-- 2026-11-03 19:31 UTC · `terminal-vps-host` s1 done (current) · orchestrator
-- 2026-11-03 19:31 UTC · `terminal-vps-host` s3 done (current) · orchestrator
-- 2026-11-03 19:31 UTC · `terminal-vps-host` note (current) · orchestrator
-- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
 - 2026-11-03 19:37 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
 - 2026-11-03 19:37 UTC · `terminal-vps-host` s2 done (current) · orchestrator
 - 2026-11-03 19:37 UTC · `terminal-vps-host` s4 done (current) · orchestrator
@@ -969,3 +962,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:27 UTC · `molly-banners` note (current) · foreign-write
 - 2026-11-03 23:28 UTC · `gizmo-companion` s14 done (current) · orchestrator
 - 2026-11-03 23:36 UTC · `gizmo-companion` PR #296, note (current) · reconciler
+- 2026-11-03 23:27 UTC · `molly-nav-submenus` s1 done, → running (current) · orchestrator
+- 2026-11-03 23:28 UTC · `gizmo-companion` s8 done (current) · foreign-write
+- 2026-11-03 23:28 UTC · `gizmo-companion` s14 done (current) · foreign-write
+- 2026-11-03 23:29 UTC · `molly-nav-submenus` s2 done (current) · orchestrator
+- 2026-11-03 23:30 UTC · `molly-nav-submenus` s3 done (current) · orchestrator
+- 2026-11-03 23:31 UTC · `molly-nav-submenus` s4 done (current) · orchestrator
+- 2026-11-03 23:32 UTC · `gizmo-companion` s15 done, s18 done (current) · foreign-write
