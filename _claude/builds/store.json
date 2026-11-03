@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 343,
- "updatedAt": "2026-11-03T18:51:33.990Z",
+ "rev": 344,
+ "updatedAt": "2026-11-03T18:52:16.210Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53883,9 +53883,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/toolbar-tap-confirm",
-   "pr": "",
+   "pr": "#272",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:51:21.801Z",
+   "updatedAt": "2026-11-03T18:52:05.710Z",
    "builtAt": "",
    "notes": [
     {
@@ -54367,7 +54367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
