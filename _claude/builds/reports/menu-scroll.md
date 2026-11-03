@@ -1,7 +1,9 @@
 # menu-scroll: menus stay on screen and scroll
 
 Brett, Nov 3 2026 (voice): "The application menus need to be scrollable when they reach beyond the screen."
-Profile Urgent, build `menu-scroll`, branch `claude/menu-scroll`. Assigned agent: Janitor Joey. Model: Opus.
+Profile Urgent, build `menu-scroll`, branch `claude/menu-scroll`, PR #268, UI Review `r-20261103-2637fd91`.
+Assigned agent: Janitor Joey (no `agent-job.mjs book` in this checkout, so the run is recorded here and in the store
+note; `AXF_AGENT=janitor-joey` was set for the store writes). Model: Opus.
 
 ## What changed
 
