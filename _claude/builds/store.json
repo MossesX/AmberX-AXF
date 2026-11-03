@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 440,
- "updatedAt": "2026-11-03T20:38:41.282Z",
+ "rev": 441,
+ "updatedAt": "2026-11-03T20:41:13.712Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55712,7 +55712,7 @@
    "branch": "claude/smart-menus",
    "pr": "",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T20:37:45.498Z",
+   "updatedAt": "2026-11-03T20:41:06.047Z",
    "builtAt": "",
    "notes": [
     {
@@ -55849,11 +55849,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T20:37:45.498Z",
+     "doneAt": "2026-11-03T20:41:06.047Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T19:45:20.636Z",
-     "updatedAt": "2026-11-03T20:37:45.573Z"
+     "updatedAt": "2026-11-03T20:41:06.079Z"
     },
     {
      "id": "s7",
@@ -55886,7 +55886,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
