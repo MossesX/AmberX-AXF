@@ -1,6 +1,6 @@
 {
  "$axf": "builds@1",
- "rev": 335,
+ "rev": 339,
  "updatedAt": "2026-11-03T18:37:10.608Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
@@ -49618,16 +49618,16 @@
    "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/md-studio-theme-editor-plan",
-   "pr": "#242",
+   "branch": "claude/md-studio",
+   "pr": "#271",
    "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T18:29:29.929Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T18:31:40.377Z",
+   "builtAt": "2026-11-03T18:31:29.681Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
@@ -49640,6 +49640,10 @@
     {
      "text": "Started Nov 3 2026 on claude/md-studio (Opus). Assigned agent: Reel Rhonda (reel-rhonda).",
      "at": "2026-11-03T17:54:32.152Z"
+    },
+    {
+     "text": "Built Nov 3 2026 on claude/md-studio, PR #271 (push banner merges). UI Review r-20261103-92e40cd7 waiting (group 'md-studio - Nov 3 6:30 PM'). Agent: Reel Rhonda. Gap: approval-row 'Open context in MD Studio' hooks in axHub/AmberX (deep link ready).",
+     "at": "2026-11-03T18:31:32.444Z"
     }
    ],
    "approvals": [],
@@ -49858,12 +49862,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:31:29.680Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:32:21.912Z",
-     "updatedAt": "2026-11-03T02:32:21.912Z"
+     "updatedAt": "2026-11-03T18:31:29.711Z"
     },
     {
      "id": "s11",
@@ -49965,7 +49969,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53689,7 +53693,7 @@
    "branch": "claude/crew-live",
    "pr": "",
    "createdAt": "2026-11-03T18:15:23.310Z",
-   "updatedAt": "2026-11-03T18:29:03.782Z",
+   "updatedAt": "2026-11-03T18:36:49.380Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -53754,12 +53758,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:32:15.869Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T18:15:23.310Z",
-     "updatedAt": "2026-11-03T18:15:23.310Z"
+     "updatedAt": "2026-11-03T18:32:15.899Z"
     },
     {
      "id": "s4",
@@ -53820,12 +53824,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:36:49.380Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T18:15:23.310Z",
-     "updatedAt": "2026-11-03T18:15:23.310Z"
+     "updatedAt": "2026-11-03T18:36:49.410Z"
     },
     {
      "id": "s7",
@@ -53858,7 +53862,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -53881,7 +53885,7 @@
    "branch": "claude/toolbar-tap-confirm",
    "pr": "",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:29:34.075Z",
+   "updatedAt": "2026-11-03T18:33:53.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -53973,12 +53977,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:33:51.650Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:33:51.680Z"
     },
     {
      "id": "s5",
@@ -53995,12 +53999,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:33:52.210Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:33:52.238Z"
     },
     {
      "id": "s6",
@@ -54017,12 +54021,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:33:52.778Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:33:52.809Z"
     },
     {
      "id": "s7",
@@ -54039,12 +54043,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:33:53.404Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:33:53.432Z"
     },
     {
      "id": "s8",
@@ -54363,7 +54367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
