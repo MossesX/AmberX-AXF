@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 347,
- "updatedAt": "2026-11-03T18:58:59.400Z",
+ "rev": 348,
+ "updatedAt": "2026-11-03T19:01:03.990Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53691,9 +53691,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/crew-live",
-   "pr": "",
+   "pr": "#273",
    "createdAt": "2026-11-03T18:15:23.310Z",
-   "updatedAt": "2026-11-03T18:58:47.946Z",
+   "updatedAt": "2026-11-03T19:00:50.036Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -53862,7 +53862,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

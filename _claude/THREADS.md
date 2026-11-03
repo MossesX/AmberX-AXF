@@ -814,3 +814,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:52 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
 - 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
 - 2026-11-03 18:58 UTC · `crew-live` s5 done (urgent) · orchestrator
+- 2026-11-03 19:00 UTC · `crew-live` PR #273 (urgent) · builds-live
