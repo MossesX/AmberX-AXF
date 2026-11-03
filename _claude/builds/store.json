@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 317,
- "updatedAt": "2026-11-03T18:20:51.871Z",
+ "rev": 318,
+ "updatedAt": "2026-11-03T18:21:18.924Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -28900,7 +28900,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "#134",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T18:20:21.482Z",
+   "updatedAt": "2026-11-03T18:20:22.188Z",
    "builtAt": "",
    "notes": [
     {
@@ -29266,28 +29266,6 @@
      "updatedAt": "2026-11-03T18:10:06.703Z"
     },
     {
-     "id": "s16-15",
-     "uid": "st-mw0zlwfb0171rx",
-     "title": "",
-     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-03T17:54:13.199Z",
-     "updatedAt": "2026-11-03T17:54:13.223Z"
-    },
-    {
      "id": "s16",
      "uid": "st-mw0zldp801my37",
      "title": "",
@@ -29340,7 +29318,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29398,6 +29376,33 @@
       "updatedAt": "2026-11-03T18:10:06.703Z"
      },
      "at": "2026-11-03T18:20:21.483Z",
+     "why": "removed in the orchestrator",
+     "by": "snap-sully"
+    },
+    {
+     "step": {
+      "id": "s16-15",
+      "uid": "st-mw0zlwfb0171rx",
+      "title": "",
+      "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "20 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-03T17:54:13.199Z",
+      "updatedAt": "2026-11-03T17:54:13.223Z"
+     },
+     "at": "2026-11-03T18:20:22.189Z",
      "why": "removed in the orchestrator",
      "by": "snap-sully"
     }
