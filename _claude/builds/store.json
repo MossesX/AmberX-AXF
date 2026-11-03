@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 539,
- "updatedAt": "2026-11-03T22:33:15.345Z",
+ "rev": 540,
+ "updatedAt": "2026-11-03T22:42:28.956Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -65616,12 +65616,16 @@
    "branch": "claude/terminal-tabs-left",
    "pr": "",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:31:02.349Z",
+   "updatedAt": "2026-11-03T22:39:58.535Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Clash note from terminal-drag-chain-tree (branch claude/terminal-drag-chain-tree): the framework now has WindowGrip (react/windows/WindowHost.tsx; orientation=\"column\" for a stacked tab list, put it first) and useTabPress (tap / horizontal drag reorder / press-and-hold or vertical pull drags the window / long-press menu). The Terminal strip uses them and dropped HTML5 tab drag. TerminalHost.tsx also gained the window menu (Terminal settings first), per-pane text size (A-/size/A+, Ctrl+wheel, pinch). The left/right stack should reuse WindowGrip + useTabPress (with vertical reorder) instead of its own drag; expect a TerminalHost merge.",
      "at": "2026-11-03T22:31:02.349Z"
+    },
+    {
+     "text": "Agent: Janitor Joey. Overlap: terminal-sessions-nav #286 (open) adds a left rail; stack kept inside __body so it sits beside the rail after merge; stack-inside-rail option is a follow-up once #286 lands. terminal-drag-chain-tree (running) rewrites strip pointer code; this build hides strip tabs by CSS only.",
+     "at": "2026-11-03T22:39:58.535Z"
     }
    ],
    "approvals": [],
@@ -65746,10 +65750,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T22:02:33.805Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw18h9tx06nare": "2026-11-03T22:02:33.806Z",
+     "st-mw18h9tx07o7cw": "2026-11-03T22:02:33.806Z",
+     "st-mw18h9tx08iedn": "2026-11-03T22:02:33.806Z",
+     "st-mw18h9tx09lepa": "2026-11-03T22:02:33.806Z",
+     "st-mw18h9tx0asht3": "2026-11-03T22:02:33.806Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:02:33.806Z",
    "rearranged": false,

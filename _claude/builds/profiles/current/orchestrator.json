@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:33:15.345Z",
+ "updatedAt": "2026-11-03T22:42:28.956Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6266,12 +6266,16 @@
    "branch": "claude/terminal-tabs-left",
    "pr": "",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:31:02.349Z",
+   "updatedAt": "2026-11-03T22:39:58.535Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Clash note from terminal-drag-chain-tree (branch claude/terminal-drag-chain-tree): the framework now has WindowGrip (react/windows/WindowHost.tsx; orientation=\"column\" for a stacked tab list, put it first) and useTabPress (tap / horizontal drag reorder / press-and-hold or vertical pull drags the window / long-press menu). The Terminal strip uses them and dropped HTML5 tab drag. TerminalHost.tsx also gained the window menu (Terminal settings first), per-pane text size (A-/size/A+, Ctrl+wheel, pinch). The left/right stack should reuse WindowGrip + useTabPress (with vertical reorder) instead of its own drag; expect a TerminalHost merge.",
      "at": "2026-11-03T22:31:02.349Z"
+    },
+    {
+     "text": "Agent: Janitor Joey. Overlap: terminal-sessions-nav #286 (open) adds a left rail; stack kept inside __body so it sits beside the rail after merge; stack-inside-rail option is a follow-up once #286 lands. terminal-drag-chain-tree (running) rewrites strip pointer code; this build hides strip tabs by CSS only.",
+     "at": "2026-11-03T22:39:58.535Z"
     }
    ],
    "approvals": [],
