@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 340,
- "updatedAt": "2026-11-03T18:37:20.916Z",
+ "rev": 341,
+ "updatedAt": "2026-11-03T18:37:42.338Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53462,7 +53462,7 @@
    "branch": "claude/auto-land-2",
    "pr": "#270",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:37:09.577Z",
+   "updatedAt": "2026-11-03T18:37:10.577Z",
    "builtAt": "2026-11-03T18:37:09.577Z",
    "notes": [
     {
@@ -53476,6 +53476,10 @@
     {
      "text": "Reconciler: branch claude/auto-land-2 (PR #270); PR #270",
      "at": "2026-11-03T18:30:27.096Z"
+    },
+    {
+     "text": "All 8 steps done. PR #270 (claude/auto-land-2), UI Review r-20261103-6537ada7 waiting. Related: #267 main CI fix, MossesX/axHub#36 claude-sync hold. Report _claude/builds/reports/auto-land.md. Goes live on merge (cron axf-auto-land).",
+     "at": "2026-11-03T18:37:10.577Z"
     }
    ],
    "approvals": [],
@@ -53666,7 +53670,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
