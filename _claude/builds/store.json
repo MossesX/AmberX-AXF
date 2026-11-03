@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 269,
- "updatedAt": "2026-11-03T17:25:58.964Z",
+ "rev": 270,
+ "updatedAt": "2026-11-03T17:26:11.821Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -52617,9 +52617,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/pass-all",
-   "pr": "",
+   "pr": "#264",
+   "mergedAt": "2026-11-03T17:26:06.916Z",
    "createdAt": "2026-11-03T15:53:52.125Z",
-   "updatedAt": "2026-11-03T16:07:53.873Z",
+   "updatedAt": "2026-11-03T17:26:07.052Z",
    "builtAt": "2026-11-03T16:07:53.371Z",
    "notes": [
     {
@@ -52749,7 +52750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
