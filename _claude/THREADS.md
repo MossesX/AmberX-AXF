@@ -823,3 +823,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:02 UTC · `claude-settings` branch claude/claude-settings (urgent) · builds-live
 - 2026-11-03 19:02 UTC · `follow-amber` note (urgent) · orchestrator
 - 2026-11-03 19:02 UTC · `follow-amber` → running (urgent) · orchestrator
+- 2026-11-03 19:04 UTC · `agent-pick` added (9 steps) (urgent) · Snap Sully (claude code)
