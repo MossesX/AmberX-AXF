@@ -1,0 +1,12 @@
+/* Menus plugin: layout only (controls are framework controls; the menus' look comes from axf.menus.look → --fx-menu-*). */
+.axp-smart-menus__sections { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+.axp-smart-menus__section-row, .axp-smart-menus__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-lg); }
+.axp-smart-menus__section-row { padding-bottom: var(--fx-dens-gap-lg); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-smart-menus__row-acts { display: flex; gap: var(--fx-dens-gap-md); margin-left: auto; }
+.axp-smart-menus__grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.axp-smart-menus__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 22), 1fr)); gap: var(--fx-dens-gap-lg); }
+.axp-smart-menus__look { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--fx-dens-gap-2xl); align-items: start; }
+.axp-smart-menus__preview { position: sticky; top: var(--fx-dens-gap-lg); }
+.axp-smart-menus__preview-box { position: static; }
+:where([data-fx-narrow]) .axp-smart-menus__look { grid-template-columns: minmax(0, 1fr); }
+:where([data-fx-narrow]) .axp-smart-menus__preview { position: static; order: -1; }

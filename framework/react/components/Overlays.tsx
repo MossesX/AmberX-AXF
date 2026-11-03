@@ -92,9 +92,6 @@ export function ToastHost() {
 export function ContextMenuHost() {
   const rt = useRuntime();
   const state = useAxfState();
-  const cm = useAsset('context-menu').data;
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const scope = useScopeId();
 
   useEffect(() => {
@@ -129,7 +126,8 @@ export function ContextMenuHost() {
       const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
       if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;
       start = { x: e.clientX, y: e.clientY };
-      timer = setTimeout(() => open(t, e.clientX, e.clientY), rt.behavior().interaction.longPressMs); // behaviour theme (was 550 ms)
+      // the Menus plugin's long-press time when set, else the behaviour theme's (was 550 ms)
+      timer = setTimeout(() => open(t, e.clientX, e.clientY), rt.menuBehavior().longPressMs || rt.behavior().interaction.longPressMs);
     };
     const cancel = (e: Event) => {
       const p = e as PointerEvent;
@@ -160,6 +158,17 @@ export function ContextMenuHost() {
     };
   }, [rt, scope]);
 
+  if (!state.context || (state.context.scope ?? '') !== scope) return null;
+  return <ContextMenuBox />;
+}
+
+/** The open context menu itself (its own component so its keyboard hook runs only while a menu is open). */
+function ContextMenuBox() {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const cm = useAsset('context-menu').data;
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   // Clamp inside the viewport once measured
   useLayoutEffect(() => {
     if (!state.context || !ref.current) return setPos(null);
@@ -168,9 +177,7 @@ export function ContextMenuHost() {
     const y = Math.min(state.context.y, window.innerHeight - r.height - 8);
     setPos({ x: Math.max(8, x), y: Math.max(8, y) });
   }, [state.context]);
-
-  if (!state.context || (state.context.scope ?? '') !== scope) return null;
-  const ctx = state.context;
+  const ctx = state.context!;
   // `contributions: false`: a target the asset defines shows only the asset's own items (e.g. context-menu/amber)
   const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));
   const contributed = own ? [] : rt.contributedContext(ctx.target);
@@ -186,18 +193,35 @@ export function ContextMenuHost() {
   // conditional (`when`) items that don't apply are just dropped
   const open = rt.menuOpen('context', ctx.target || 'default', { payload: ctx.payload, state: ctx.state });
   const items = rt.menuDraw(open, [...base, ...sep, ...more, ...(tail as unknown as typeof base)] as unknown as MenuItem[]);
+  // keyboard (Menus plugin → behaviour): 1-9 run the dynamic sections' items in order, Escape closes
+  const quick = items.filter((i) => i.section && !i.heading && i.action);
+  useEffect(() => {
+    if (!rt.menuBehavior().keyboard) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { rt.closeContext(); return; }
+      const n = /^[1-9]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey ? Number(e.key) : 0;
+      const item = n ? quick[n - 1] : undefined;
+      if (!item?.action) return;
+      e.preventDefault();
+      rt.closeContext();
+      rt.menuPicked(open, item);
+      rt.dispatch(item.action, { payload: ctx.payload });
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
   return (
     <div
       ref={ref}
       className="fx-ctx fx-popover"
-      style={{ ...rt.menuLookVars(open.menu), left: pos?.x ?? state.context.x, top: pos?.y ?? state.context.y, visibility: pos ? 'visible' : 'hidden' }}
+      style={{ ...rt.menuLookVars(open.menu), left: pos?.x ?? ctx.x, top: pos?.y ?? ctx.y, visibility: pos ? 'visible' : 'hidden' }}
       data-axf-menu={open.menu}
       onContextMenu={(e) => e.preventDefault()}
     >
       <MenuList
         items={items}
         open={open}
-        payload={state.context.payload}
+        payload={ctx.payload}
         onDone={() => rt.closeContext()}
         showIcons={cm.showIcons}
         showShortcuts={cm.showShortcuts}

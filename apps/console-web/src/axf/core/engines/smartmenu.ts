@@ -331,8 +331,10 @@ export function composeMenu(input: MenuComposeInput): ComposedMenu {
   const filtered = filterWhen(input.items, input.open, topics);
   const plain = filtered.filter((i) => !i.when?.topic);
   // conditional items are pulled out into the context section when it is on
-  const conditional = on('context') ? plain.filter((i) => !i.separator && i.when) : [];
-  const staticItems = tidy(on('context') ? plain.filter((i) => !i.when) : plain);
+  // destructive conditional items stay where the menu has them (never moved up into a section)
+  const lifted = (i: MenuItem) => !i.separator && !!i.when && !isDestructive(i);
+  const conditional = on('context') ? plain.filter(lifted) : [];
+  const staticItems = tidy(on('context') ? plain.filter((i) => !lifted(i)) : plain);
   const candidates = menuCandidates(filtered);
   const byId = new Map(candidates.map((c) => [c.id, c]));
   const used = new Set<string>();

@@ -63,7 +63,7 @@ export function MenuBar() {
               aria-expanded={open === m.id}
               data-axf-menu-btn={m.id}
               onClick={() => setOpen((o) => (o === m.id ? null : m.id))}
-              onMouseEnter={() => open && setOpen(m.id)}
+              onMouseEnter={() => (open || rt.menuBehavior().openOnHover) && setOpen(m.id)}
             >
               {m.label}
             </button>

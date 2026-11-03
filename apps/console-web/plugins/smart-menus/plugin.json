@@ -1,0 +1,57 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.smart-menus",
+  "name": "Menus",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Smart menus for every context menu and application menu: dynamic sections above each menu's fixed items (Talking about, Pinned, Suggested, and items for this target), learned from what you pick with plain arithmetic (no model calls), plus the menus' whole look (colours from the theme, fonts, sizes, animations, presets, per-menu overrides). Off or removed: every menu is its plain static menu.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:smart-menus",
+    "settings-tab:smart-menus",
+    "mcp:console_context"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/smart-menus",
+    "env": [
+      "AXF_SMART_MENUS_DIR",
+      "AXF_SMART_MENUS_SYNC"
+    ],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md", "_claude/shared/rules/RULES.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /state", "id": "state", "title": "Menu settings, pins, learning and topics", "description": "Everything the menus use for the caller: settings (sections, learning, suggestions, topic lifetime, per-menu overrides, behaviour), pinned items per menu, the pick log and the live topics.", "readOnly": true },
+      { "route": "PUT /settings", "id": "set-settings", "title": "Change menu settings", "description": "Merge menu settings: sections [{kind, on, max, label}], learning, suggestions (0-8), showWhy, topicTtlMin, perMenu {<menu>: {sections, off}}, behavior {openOnHover, longPressMs, keyboard}." },
+      { "route": "POST /picks", "id": "picks", "skip": "the open console reports picks as they happen; not a command" },
+      { "route": "POST /pins", "id": "pin", "title": "Pin or unpin a menu item", "description": "Pin an item to the top of one menu (menu = ctx:<target> or app:<menu id>, item = the item id; on=false unpins)." },
+      { "route": "POST /reset", "id": "reset-learning", "title": "Reset menu learning", "description": "Forget what the menus learned: one menu (menu), one context (key) or everything (neither).", "destructive": true, "confirm": true },
+      { "route": "GET /topics", "id": "topics", "title": "What the menus think we are talking about", "description": "The live Talking-about topics, newest first.", "readOnly": true },
+      { "route": "POST /topics", "id": "set-topics", "title": "Set what we are talking about", "description": "Topics [{kind: build|plugin|screen|pr|agent|setting|profile|note, id, label}] for every menu's Talking-about section; ttl_min (default 30), replace." },
+      { "route": "POST /topics/clear", "id": "clear-topics", "title": "Clear Talking about", "description": "Drop every topic." },
+      { "route": "GET /suggestions", "id": "suggestions", "title": "Menu suggestions", "description": "What each menu suggested the last time it opened (menu = one of them).", "readOnly": true },
+      { "route": "POST /suggestions", "skip": "the open console's own report; not a command" },
+      { "route": "GET /mcp", "skip": "status of the console_context tool; internal" }
+    ]
+  },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-03" },
+  "help": "help.json",
+  "opens": "main"
+}

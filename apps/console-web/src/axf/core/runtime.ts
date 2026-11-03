@@ -160,6 +160,17 @@ export interface MenuSectionsProvider {
   module: string;
   compose(open: MenuOpen, items: MenuItem[]): MenuItem[];
   picked?(open: MenuOpen, item: MenuItem): void;
+  /** how menus open and are driven (absent fields = the framework's own behaviour) */
+  behavior?(): MenuBehavior;
+}
+
+/** Menu behaviour a provider may set: menubar menus open on hover (desktop), long-press time (phone), digit keys. */
+export interface MenuBehavior {
+  openOnHover?: boolean;
+  /** ms; 0 / absent = the behaviour theme's long-press time */
+  longPressMs?: number;
+  /** 1-9 run the menu's dynamic-section items, Escape closes */
+  keyboard?: boolean;
 }
 
 /**
@@ -810,6 +821,11 @@ export class AxfRuntime {
     this.menuSectionsProvider = p;
     this.set({});
     return () => { if (this.menuSectionsProvider === p) { this.menuSectionsProvider = null; this.set({}); } };
+  }
+
+  /** The provider's menu behaviour (empty = the framework's own). */
+  menuBehavior(): MenuBehavior {
+    try { return this.menuSectionsProvider?.behavior?.() ?? {}; } catch { return {}; }
   }
 
   /** The provider's module, or null (plain static menus). */
