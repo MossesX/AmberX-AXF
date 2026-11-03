@@ -507,3 +507,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
 - 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
 - 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
+- 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
+- 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
+- 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
+- 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
+- 2026-11-03 13:56 UTC · `token-control` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, → built, branch claude/token-control-opus, PR #250, note (urgent) · orch-live-sync
