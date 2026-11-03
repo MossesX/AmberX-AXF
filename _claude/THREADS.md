@@ -769,3 +769,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:22 UTC · `builds-one-page-done` s5 done, → built (urgent) · snap-sully
 - 2026-11-03 18:22 UTC · `builds-one-page-done` note (urgent) · snap-sully
 - 2026-11-03 18:23 UTC · `builds-one-page` s13 done, → complete, note (refactor) · foreign-write
+- 2026-11-03 18:23 UTC · `toolbar-tap-confirm` added (21 steps) (urgent) · orchestrator
+- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` branch claude/toolbar-tap-confirm (urgent) · orchestrator
+- 2026-11-03 18:24 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
+- 2026-11-03 18:25 UTC · `builds-one-page` s16-15 done, s13 done, → complete, note (refactor) · foreign-write
+- 2026-11-03 18:25 UTC · `auto-land` s2 done (urgent) · orchestrator
+- 2026-11-03 18:25 UTC · `auto-land` s3 done (urgent) · orchestrator
