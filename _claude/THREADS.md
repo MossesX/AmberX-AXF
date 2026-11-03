@@ -945,3 +945,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:15 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
 - 2026-11-03 20:15 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
 - 2026-11-03 20:18 UTC · `ui-review-predicted` s1 done (urgent) · orchestrator
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s2 done (urgent) · orchestrator
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s3 done (urgent) · orchestrator
