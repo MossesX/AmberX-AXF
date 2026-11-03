@@ -1,26 +1,27 @@
 {
   "scopes": {
     "framework": {
-      "total": 106,
-      "covered": 106,
-      "written": 106,
+      "total": 114,
+      "covered": 114,
+      "written": 114,
       "drafts": 0,
       "percent": 100
     },
     "console-web": {
-      "total": 1198,
-      "covered": 1198,
-      "written": 499,
-      "drafts": 699,
+      "total": 1206,
+      "covered": 1206,
+      "written": 509,
+      "drafts": 697,
       "percent": 100
     },
     "axhub-web": {
-      "total": 174,
-      "covered": 174,
-      "written": 174,
+      "total": 173,
+      "covered": 173,
+      "written": 173,
       "drafts": 0,
       "percent": 100
     }
   },
-  "$doc": "Help coverage ratchet (framework/cli/help-coverage.mjs --check fails when a scope falls below these; --update raises them, never lowers)."
+  "$doc": "Help coverage ratchet (framework/cli/help-coverage.mjs --check fails when a scope falls below these; --update raises them, never lowers).",
+  "$note": "Nov 3 2026 (banner-pack): axhub-web 174 -> 173 because its Users 'Add' button now shares the id `add` with the framework banner editor's Add button, so it is counted under framework; nothing lost its help."
 }

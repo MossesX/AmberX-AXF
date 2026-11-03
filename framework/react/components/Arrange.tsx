@@ -198,6 +198,7 @@ export function ArrangeBar({ host, label }: { host: string; label: string }) {
       <span className="fx-arrange__hint">{editor ? 'Drag widgets to move them; they snap into place. × or drag off the bar removes one.' : `Drag the ${label} widgets to arrange them. They snap into place.`}</span>
       <span className="fx-arrange__actions fx-row">
         <Button size="sm" tone="quiet" icon="plus" aria-expanded={adding} data-axf-help-id="banner-editor.add" onClick={() => setAdding((v) => !v)} disabled={!palette.length && !adding}>Add{palette.length ? ` (${palette.length})` : ''}</Button>
+        {editor && <Button size="sm" tone="quiet" icon="grid" data-axf-help-id="action:banners.gallery" title="Start from another banner: the boilerplate gallery" onClick={() => { rt.setArranging(null); rt.dispatch('banners.gallery'); }}>Boilerplates</Button>}
         <Button size="sm" tone="quiet" icon="undo" data-axf-help-id="banner-editor.undo" disabled={!rt.canUndoArrange(host)} onClick={() => rt.undoHostArrangement(host)}>Undo</Button>
         <Button size="sm" tone="quiet" icon="refresh" data-axf-help-id="banner-editor.reset" disabled={!Object.keys(rt.hostArrangement(host)).length} onClick={() => rt.resetHostArrangement(host)}>Reset</Button>
         <Button size="sm" tone="primary" icon="check" data-axf-help-id="banner-editor.done" onClick={() => rt.setArranging(null)}>Done</Button>

@@ -2,9 +2,10 @@
  * Banner gallery (Brett, Nov 3 2026: "Build me a shitload of new banners … I want some boilerplates"): every banner
  * asset the app ships (the boilerplate pack in framework/assets/banner, tag `boilerplate`, plus any other banner) as a
  * card with a live preview drawn by the same engine and widgets as the real banner. Pick one = `rt.swap('banner', id)`,
- * which goes to the axHub appearance document, so every app follows. Then "Edit this banner" hands over to the banner
- * editor: a library that ships one registers it with `registerBannerEditor`; until then it starts Arrange widgets on
- * the banner (drag, snap). Filters by category (the asset's tags) and previews at desktop or phone (412 px) width.
+ * which goes to the axHub appearance document, so every app follows. Picking one also clears the banner editor's moves
+ * and removals (they are kept per host, not per banner), so a boilerplate always starts as it ships. Then Edit hands over
+ * to the banner editor (`banner.edit:on`: move, remove and add widgets; its bar links back here), or to an editor a
+ * library registers with `registerBannerEditor`. Filters by category (the asset's tags) and previews at desktop or phone (412 px) width.
  * Shown in Settings → Appearance, the `axf.banners.gallery` dialog and the banner's right-click menu. Theme tokens only.
  */
 import { useMemo, useState } from 'react';
@@ -38,19 +39,28 @@ export function registerBannerEditor(open: (rt: AxfRuntime, bannerId: string) =>
   editor = open;
   return () => { if (editor === open) editor = null; };
 }
-/** Opens the banner editor on a banner (Arrange widgets on the live banner until an editor is registered). */
+/** Opens the banner editor on a banner (the framework's edit mode on the live banner unless a library registered one). */
 export function editBanner(rt: AxfRuntime, bannerId: string): void {
   if (editor) { editor(rt, bannerId); return; }
-  rt.dispatch('widgets.arrange');
+  rt.closeDialog();
+  rt.dispatch('banner.edit:on');
 }
 
-/** The gallery's actions and the banner's right-click entry (installed once per runtime by the settings library). */
+/** Use a banner everywhere (axHub), starting from the arrangement it ships with. */
+export function pickBanner(rt: AxfRuntime, bannerId: string): boolean {
+  if (rt.getState().active.banner === bannerId) return true;
+  if (!rt.swap('banner', bannerId)) return false;
+  rt.dispatch('widgets.reset:banner');
+  return true;
+}
+
+/** The gallery's actions and the banner's right-click entry (installed once per runtime by the settings library); the
+ *  banner editor's own Edit banner entry sits next to it. */
 export function installBannerGallery(rt: AxfRuntime): void {
   rt.actions.register(BANNER_GALLERY_ACTION, () => rt.openDialog(BANNER_GALLERY_DIALOG), { label: 'Banner boilerplates: pick a banner' });
-  rt.actions.register(BANNER_EDIT_ACTION, ([id]) => editBanner(rt, id || rt.getState().active.banner || ''), { label: 'Edit the banner', params: true });
+  rt.actions.register(BANNER_EDIT_ACTION, ([id]) => editBanner(rt, id || rt.getState().active.banner || ''), { label: 'Edit the banner', params: true, searchable: false });
   rt.addContextItems({ id: 'axf.banners.gallery.ctx', module: 'axf', target: 'banner', order: 5, items: [
     { id: 'axf-banner-gallery', label: 'Banner boilerplates…', icon: 'grid', action: BANNER_GALLERY_ACTION },
-    { id: 'axf-banner-edit', label: 'Edit banner', icon: 'edit', action: BANNER_EDIT_ACTION },
   ] });
 }
 
@@ -143,10 +153,10 @@ export function BannerGallery() {
                 </div>
                 <p className="fx-muted fx-small fx-banner-gallery__desc">{b.description}</p>
                 <div className="fx-row fx-row--wrap">
-                  <Button size="sm" tone={on ? 'quiet' : 'primary'} icon={on ? 'check' : 'download'} disabled={locked || on} onClick={() => rt.swap('banner', b.id)}>
+                  <Button size="sm" tone={on ? 'quiet' : 'primary'} icon={on ? 'check' : 'download'} disabled={locked || on} onClick={() => pickBanner(rt, b.id)}>
                     {on ? 'In use' : 'Use this banner'}
                   </Button>
-                  <Button size="sm" tone="ghost" icon="edit" disabled={locked} onClick={() => { if (!on) rt.swap('banner', b.id); editBanner(rt, b.id); }}>Edit</Button>
+                  <Button size="sm" tone="ghost" icon="edit" disabled={locked} onClick={() => { if (pickBanner(rt, b.id)) editBanner(rt, b.id); }}>Edit</Button>
                 </div>
               </div>
             </article>

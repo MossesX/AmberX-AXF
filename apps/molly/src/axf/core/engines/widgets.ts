@@ -69,7 +69,12 @@ export const isWidgetType = (t: string) => WIDGET_TYPES.includes(t);
  * It is the top layer over the host's own list and what modules attach, so a widget dragged somewhere stays there
  * whoever attached it. Saved as a look setting (`axf.widgets.arrange.<host>`); keys that aren't attached are ignored.
  */
-export type HostArrangement = Record<string, { at: string; order: number }>;
+export type HostArrangement = Record<string, ArrangementEntry>;
+/**
+ * One arrangement entry. `hidden`: the person removed it (the host or a module still attaches it, it isn't drawn).
+ * `added`: the person put it on the host from the palette (nobody else attaches it). Flags are only written when true.
+ */
+export interface ArrangementEntry { at: string; order: number; hidden?: true; added?: true }
 
 /** Most entries an arrangement keeps (a host never needs more; a damaged setting can't grow without bound). */
 export const ARRANGEMENT_MAX = 200;
@@ -84,7 +89,8 @@ export function normalizeArrangement(raw: unknown, sides: readonly string[]): Ho
     if (!/^[a-z0-9-]{1,40}:[A-Za-z0-9._-]{1,80}$/.test(k) || !v || typeof v !== 'object') continue;
     const e = v as { at?: unknown; order?: unknown };
     if (typeof e.at !== 'string' || !sides.includes(e.at) || typeof e.order !== 'number' || !Number.isFinite(e.order)) continue;
-    out[k] = { at: e.at, order: e.order };
+    const f = v as { hidden?: unknown; added?: unknown };
+    out[k] = { at: e.at, order: e.order, ...(f.hidden === true ? { hidden: true as const } : {}), ...(f.added === true ? { added: true as const } : {}) };
     n++;
   }
   return out;
@@ -102,9 +108,68 @@ export function moveOnHost(placed: Record<string, PlacedAttachment[]>, prev: Hos
   for (const s of sides) lists[s] = lists[s]!.filter((k) => k !== key);
   const at = Math.max(0, Math.min(lists[side]!.length, Math.floor(Number.isFinite(index) ? index : lists[side]!.length)));
   lists[side]!.splice(at, 0, key);
+  return writeOrder(prev, lists, sides);
+}
+
+/** Every listed key gets its side and order (index × 10); its `added` flag stays, `hidden` goes (it is on the host). */
+function writeOrder(prev: HostArrangement, lists: Record<string, string[]>, sides: readonly string[]): HostArrangement {
   const out: HostArrangement = { ...prev };
-  for (const s of sides) lists[s]!.forEach((k, i) => { out[k] = { at: s, order: i * 10 }; });
+  for (const s of sides) lists[s]!.forEach((k, i) => { out[k] = { at: s, order: i * 10, ...(prev[k]?.added ? { added: true as const } : {}) }; });
   return out;
+}
+
+/** `type:id` split at the first colon (null when it isn't a key). */
+export function splitKey(key: string): { type: string; id: string } | null {
+  const i = typeof key === 'string' ? key.indexOf(':') : -1;
+  return i > 0 && i < key.length - 1 ? { type: key.slice(0, i), id: key.slice(i + 1) } : null;
+}
+
+/**
+ * Take one placed attachment off the host (banner editor: the × or a drag off the bar). Something the person added
+ * from the palette is simply forgotten; something the host or a module attaches is kept as `hidden` at its spot, so
+ * putting it back later lands where it was. Unknown keys change nothing.
+ */
+export function removeFromHost(placed: Record<string, PlacedAttachment[]>, prev: HostArrangement, key: string, sides: readonly string[]): HostArrangement {
+  const p = sides.flatMap((s) => placed[s] ?? []).find((x) => x.key === key);
+  if (!p) return { ...prev };
+  const out: HostArrangement = { ...prev };
+  if (prev[key]?.added) delete out[key];
+  else out[key] = { at: p.at, order: p.order, hidden: true };
+  return out;
+}
+
+/**
+ * Put an attachment that isn't on the host now (a removed one, or any asset of a type the host takes) at `side`,
+ * position `index`, and write the whole host's order like a move. A removed one comes back un-hidden; anything else is
+ * marked `added`. False-y cases (already placed, a type the host doesn't take, a bad side or key) change nothing.
+ */
+export function addToHost(placed: Record<string, PlacedAttachment[]>, prev: HostArrangement, key: string, side: string, index: number, sides: readonly string[], types: readonly string[]): HostArrangement {
+  const k = splitKey(key);
+  if (!k || !types.includes(k.type) || !sides.includes(side)) return { ...prev };
+  const lists: Record<string, string[]> = Object.fromEntries(sides.map((s) => [s, (placed[s] ?? []).map((p) => p.key)]));
+  if (sides.some((s) => lists[s]!.includes(key))) return { ...prev };
+  const at = Math.max(0, Math.min(lists[side]!.length, Math.floor(Number.isFinite(index) ? index : lists[side]!.length)));
+  lists[side]!.splice(at, 0, key);
+  const base: HostArrangement = { ...prev, [key]: { at: side, order: 0, ...(prev[key]?.hidden ? {} : { added: true as const }) } };
+  return writeOrder(base, lists, sides);
+}
+
+/**
+ * What the banner editor's palette offers: every candidate (`type:id` of an existing asset) of a type the host takes
+ * that isn't on the host now, removed ones first (they were there before), then in the candidates' order.
+ */
+export function hostPalette(placed: Record<string, PlacedAttachment[]>, arrange: HostArrangement | null | undefined, candidates: readonly { type: string; id: string }[], types: readonly string[]): { key: string; type: string; id: string; removed: boolean }[] {
+  const on = new Set(Object.values(placed).flat().map((p) => p.key));
+  const seen = new Set<string>();
+  const out: { key: string; type: string; id: string; removed: boolean }[] = [];
+  for (const c of candidates) {
+    if (!c || !types.includes(c.type) || typeof c.id !== 'string' || !c.id) continue;
+    const key = attachmentKey(c.type, c.id);
+    if (on.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    out.push({ key, type: c.type, id: c.id, removed: arrange?.[key]?.hidden === true });
+  }
+  return [...out.filter((x) => x.removed), ...out.filter((x) => !x.removed)];
 }
 
 /**
@@ -133,7 +198,16 @@ export function placeOnHost(own: HostAttachment[] | null | undefined, extra: Hos
   if (arrange) {
     for (const [key, p] of byKey) {
       const a = arrange[key];
-      if (a && sides.includes(a.at) && Number.isFinite(a.order)) byKey.set(key, { ...p, at: a.at, order: a.order });
+      if (!a) continue;
+      if (a.hidden) byKey.delete(key);
+      else if (sides.includes(a.at) && Number.isFinite(a.order)) byKey.set(key, { ...p, at: a.at, order: a.order });
+    }
+    // what the person added from the palette (the banner editor): placed like the host's own when the asset exists
+    for (const [key, a] of Object.entries(arrange)) {
+      if (!a?.added || a.hidden || byKey.has(key)) continue;
+      const k = splitKey(key);
+      if (!k || !types.includes(k.type) || !sides.includes(a.at) || !Number.isFinite(a.order) || !has(k.type, k.id)) continue;
+      byKey.set(key, { key, type: k.type, id: k.id, at: a.at, order: a.order, origin: 'arrange' });
     }
   }
   const out: Record<string, PlacedAttachment[]> = Object.fromEntries(sides.map((s) => [s, []]));
