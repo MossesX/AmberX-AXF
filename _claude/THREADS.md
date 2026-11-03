@@ -899,3 +899,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:56 UTC · `ui-review-shots` s4 done (urgent) · orchestrator
 - 2026-11-03 19:55 UTC · `agent-pick` s9 done, → built (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:55 UTC · `agent-pick` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:56 UTC · `ui-review-shots` s5 done, → complete (urgent) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` note (urgent) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` → built, PR #277 (urgent) · builds-live

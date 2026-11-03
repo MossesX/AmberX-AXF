@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:56:23.008Z",
+ "updatedAt": "2026-11-03T19:56:32.658Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4418,15 +4418,15 @@
    "title": "UI Review shows its pictures again",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-shots",
-   "pr": "",
+   "pr": "#277",
    "createdAt": "2026-11-03T19:09:04.730Z",
-   "updatedAt": "2026-11-03T19:56:07.408Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T19:56:13.817Z",
+   "builtAt": "2026-11-03T19:56:10.106Z",
    "notes": [
     {
      "text": "s1 cause: agent-slots + token-control pollers re-subscribe on every render (inline useSyncExternalStore subscribe), so each emit triggers another load: ~45 status calls/s from Brett's browser (35k in 30 min); shot fetches starve behind them. Files are all on disk and served 200.",
@@ -4435,6 +4435,10 @@
     {
      "text": "s3: no backfill needed — all 33 open items have every file in the live store (/opt/axf/.axf-console/plugins/ui-review/shots, bind-mounted, survives redeploys); no worktree holds stranded items. review.mjs now warns when a worktree submits without --console.",
      "at": "2026-11-03T19:13:13.263Z"
+    },
+    {
+     "text": "PR #277; UI Review r-20261103-17ef4a40 (group 'ui-review-shots - Nov 3 7:50 PM'); report _claude/builds/reports/ui-review-shots.md. Also fixed: phone zero-width preview (always-true :not([data-fx-narrow]) selector from layout-adopt).",
+     "at": "2026-11-03T19:56:12.304Z"
     }
    ],
    "approvals": [],
@@ -4525,8 +4529,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:56:10.106Z",
      "note": "",
      "uid": "st-mw12a64y0afy36"
     }
