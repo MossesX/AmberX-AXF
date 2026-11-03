@@ -568,8 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:48 UTC · landed `claude/xlayout-opus` (PR#252) on main at bffc2601 · land-everything
-- 2026-11-03 17:03 UTC · landed `claude/token-control-opus` (PR#250) on main at 0a85ab65 · land-everything
 - 2026-11-03 17:04 UTC · landed `claude/console-commands` (PR#249) on main at 0a85ab65 · land-everything
 - 2026-11-03 17:09 UTC · landed `claude/theme-editor` (PR#243) on main at 6f20dd54 · land-everything
 - 2026-11-03 17:17 UTC · landed `claude/model-upgrade-approval` (PR#253) on main at 03d1d75f · land-everything
@@ -968,3 +966,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 20:37 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
 - 2026-11-03 20:37 UTC · `plugin-settings-placement` added (18 steps) (current) · foreign-write
 - 2026-11-03 20:37 UTC · `smart-menus` s6 done (urgent) · orchestrator
+- 2026-11-03 20:38 UTC · `build-prompt-origin` s4 done (current) · foreign-write
+- 2026-11-03 20:38 UTC · `plugin-settings-placement` added (36 steps) (current) · foreign-write
