@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 258,
- "updatedAt": "2026-11-03T17:09:35.950Z",
+ "rev": 259,
+ "updatedAt": "2026-11-03T17:09:42.955Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50285,7 +50285,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:03:58.392Z",
+   "updatedAt": "2026-11-03T17:09:41.054Z",
    "builtAt": "",
    "notes": [
     {
@@ -50331,6 +50331,10 @@
     {
      "text": "Landed claude/console-commands (PR #249) on main at 0a85ab65",
      "at": "2026-11-03T17:03:52.083Z"
+    },
+    {
+     "text": "Landed claude/theme-editor (PR #243) on main at 6f20dd54",
+     "at": "2026-11-03T17:09:41.054Z"
     }
    ],
    "approvals": [],
@@ -50586,7 +50590,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
