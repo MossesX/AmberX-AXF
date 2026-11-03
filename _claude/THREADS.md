@@ -907,3 +907,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:59 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
 - 2026-11-03 19:59 UTC · `profile-manager` added (6 steps) (current) · orchestrator
 - 2026-11-03 19:59 UTC · `window-resize-fix` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 19:59 UTC · `smart-menus` s1 done (urgent) · orchestrator
+- 2026-11-03 19:59 UTC · `smart-menus` s2 done (urgent) · orchestrator
+- 2026-11-03 19:59 UTC · `smart-menus` s3 done (urgent) · orchestrator

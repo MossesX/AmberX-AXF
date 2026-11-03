@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:00:48.464Z",
+ "updatedAt": "2026-11-03T20:01:06.848Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4685,7 +4685,7 @@
    "branch": "claude/smart-menus",
    "pr": "",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T19:45:24.278Z",
+   "updatedAt": "2026-11-03T19:59:42.088Z",
    "builtAt": "",
    "notes": [
     {
@@ -4709,8 +4709,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:59:40.143Z",
      "note": "",
      "uid": "st-mw13kt3508ztno"
     },
@@ -4727,8 +4727,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:59:41.281Z",
      "note": "",
      "uid": "st-mw13kt35090ld5"
     },
@@ -4745,8 +4745,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:59:42.088Z",
      "note": "",
      "uid": "st-mw13kt350alzef"
     },
