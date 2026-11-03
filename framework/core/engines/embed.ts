@@ -378,7 +378,13 @@ export type EmbedMessage =
   /** guest → host (the host takes nav-menu / context-menu / toolbar / widgets): the app's chrome as data (chrome@1, engines/chrome.ts) */
   | { $axf: typeof EMBED_MESSAGE; type: 'chrome'; chrome: ChromeBundle }
   /** host → guest: send your chrome now (the host just loaded, or its layout changed) */
-  | { $axf: typeof EMBED_MESSAGE; type: 'chrome-request' };
+  | { $axf: typeof EMBED_MESSAGE; type: 'chrome-request' }
+  /**
+   * guest → host (the host takes `context-menu`): the user right-clicked (or long-pressed) at x, y in the guest's own
+   * viewport on `target` (its data-fx-ctx-target, `default` when none) with that element's payload; the host shows its
+   * one context menu there. Picks come back as `run` with the ids the guest sent in its chrome.
+   */
+  | { $axf: typeof EMBED_MESSAGE; type: 'context'; x: number; y: number; target: string; payload?: string };
 
 /**
  * One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). A tabable
@@ -426,7 +432,9 @@ export interface EmbedMenuItem {
 }
 export interface EmbedMenu { id: string; label: string; items: EmbedMenuItem[] }
 
-export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40, plugins: 200, pluginId: 120, version: 40 } as const;
+export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40, plugins: 200, pluginId: 120, version: 40, payload: 200 } as const;
+/** A context target a guest may name (data-fx-ctx-target values). */
+const CONTEXT_TARGET = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/;
 const MENU_ITEM_ID = /^[A-Za-z0-9][A-Za-z0-9._:\/-]{0,159}$/;
 const ICON_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
@@ -565,6 +573,15 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       return chrome ? { $axf: EMBED_MESSAGE, type: 'chrome', chrome } : null;
     }
     case 'chrome-request': return { $axf: EMBED_MESSAGE, type: 'chrome-request' };
+    case 'context': {
+      const coord = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(Math.round(v), 0), 100000) : null);
+      const x = coord(o.x), y = coord(o.y);
+      const target = typeof o.target === 'string' && CONTEXT_TARGET.test(o.target) ? o.target : 'default';
+      if (x === null || y === null) return null;
+      const out: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'context', x, y, target };
+      const payload = clip(o.payload, EMBED_MESSAGE_LIMITS.payload); if (payload) out.payload = payload;
+      return out;
+    }
     default: return null;
   }
 }

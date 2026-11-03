@@ -1661,6 +1661,8 @@ export class AxfRuntime {
   }
 
   openContext(x: number, y: number, target: string, payload?: string) {
+    // A host that takes the context menu (embed@1 `context-menu`, Molly's xLayout) shows its one menu for this app.
+    if (this.forwardContext(x, y, target, payload)) return;
     if (this.slotHidden('context-menu')) return;
     this.set({ context: { x, y, target, payload, scope: this.uiScope } });
   }
@@ -1957,7 +1959,21 @@ export class AxfRuntime {
   runSharedMenuItem(id: string): boolean {
     const action = this.sharedMenuRun.get(id);
     if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
-    return this.dispatch(action);
+    // a context-menu item runs with the payload of the element that was right-clicked here
+    const payload = id.startsWith('ctx.') ? this.forwardedContext?.payload : undefined;
+    return this.dispatch(action, payload ? { payload } : {});
+  }
+
+  /** The last right-click sent to the host (its payload is what a context item the host runs back acts on). */
+  private forwardedContext: { target: string; payload?: string } | null = null;
+
+  /** Send a right-click to a host that takes the context menu (`context` message); false = show it here as usual. */
+  forwardContext(x: number, y: number, target: string, payload?: string): boolean {
+    if (!this.hostTakes('context-menu') || this.embedded?.page) return false;
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'context', x, y, target, ...(payload ? { payload } : {}) };
+    if (!this.postToHost(msg)) return false;
+    this.forwardedContext = { target, ...(payload ? { payload } : {}) };
+    return true;
   }
 
   /* ---------------- rendering ---------------- */
