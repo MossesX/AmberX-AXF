@@ -50,6 +50,9 @@ t('read marks: unread, mark read, cap keeps live ids first', () => {
   assert.equal(out.length, c.MAX_READ);
   assert.equal(out[0], 'b');
 });
+t('first visit: older than 7 days counts as read', () => {
+  assert.deepEqual(c.firstRunRead(items, now), ['d']);
+});
 t('new since last visit', () => {
   assert.equal(c.isNewSince(items[0], at(1, 12)), true);
   assert.equal(c.isNewSince(items[1], at(1, 12)), false);

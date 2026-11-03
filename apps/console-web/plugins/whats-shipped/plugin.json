@@ -36,5 +36,5 @@
     ]
   },
   "help": "help.json",
-  "opens": false
+  "opens": "dialog"
 }

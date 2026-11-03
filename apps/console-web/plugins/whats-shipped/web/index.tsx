@@ -22,7 +22,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './whats-shipped.css';
-import { GROUPS, ID, KEYS, ago, groupItems, isNewSince, markRead, paintWhatsNew, readSet, search, unread, type Feed, type FeedItem, type GroupBy } from './core';
+import { GROUPS, ID, KEYS, ago, firstRunRead, groupItems, isNewSince, markRead, paintWhatsNew, readSet, search, unread, type Feed, type FeedItem, type GroupBy } from './core';
 import { appMenu } from './menu';
 
 const FOLDER = 'whats-shipped';
@@ -70,6 +70,7 @@ export async function refresh(force = false): Promise<void> {
   try {
     const feed = await api.call<Feed>(`feed${force ? '?refresh=true' : ''}`);
     set({ feed, error: feed.error ?? '', loading: false });
+    if (runtime && !Array.isArray(runtime.settings.get(KEYS.read))) runtime.settings.set(KEYS.read, firstRunRead(feed.items));
   } catch (e) {
     set({ error: (e as Error).message, loading: false });
   } finally {

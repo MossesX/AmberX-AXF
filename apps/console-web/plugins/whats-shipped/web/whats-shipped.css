@@ -1,6 +1,6 @@
 /* What's new: the panel and settings rows. The banner widget itself is the framework's `status` widget. Theme tokens only. */
 .axp-whats-shipped__bar { align-items: end }
-.axp-whats-shipped__search { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0 }
+.axp-whats-shipped__search { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
 .axp-whats-shipped__text { margin: 0; overflow-wrap: anywhere }
 .axp-whats-shipped__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
 .axp-whats-shipped__group-title { margin: 0; font-size: var(--fx-font-size); font-weight: 600 }
@@ -17,6 +17,6 @@
 .axp-whats-shipped__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding-top: var(--fx-dens-gap-sm); border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-whats-shipped__details { margin: 0; padding-left: var(--fx-dens-gap-2xl) }
 .axp-whats-shipped__link { text-decoration: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
-.axp-whats-shipped__app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 11), 1fr)); gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0 }
+.axp-whats-shipped__app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 12)), 1fr)); gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0 }
 /* Phones: the banner's right side is crowded; keep the dot and the count, drop the ticker text. */
 @media (max-width: 480px) { .fx-banner__item[data-axf-origin='ai.amberx.axf.console.whats-shipped'] .fx-widget-status > span:not(.fx-widget-status__dot) { max-width: calc(var(--fx-space) * 6); overflow: hidden; text-overflow: ellipsis; white-space: nowrap } }

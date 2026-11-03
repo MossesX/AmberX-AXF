@@ -83,6 +83,12 @@ export function markRead(read: Set<string>, ids: string[], feedIds: string[]): s
   return kept.slice(0, MAX_READ);
 }
 
+/** First visit on a device (no read marks yet): anything merged more than `days` ago counts as read, so the count starts small. */
+export function firstRunRead(items: FeedItem[], now = Date.now(), days = 7): string[] {
+  const cut = new Date(now - days * DAY).toISOString();
+  return items.filter((it) => it.mergedAt < cut).map((it) => it.id).slice(0, MAX_READ);
+}
+
 /** Merged after the last visit (no last visit = nothing is "new since", only unread). */
 export const isNewSince = (it: FeedItem, lastVisit: string) => !!lastVisit && it.mergedAt > lastVisit;
 

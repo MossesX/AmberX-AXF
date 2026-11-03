@@ -25,7 +25,7 @@ ROOT = TMP / "root"
 (ROOT / "apps" / "console-web" / "plugins" / "theme-editor").mkdir(parents=True)
 (ROOT / "apps" / "axhub-web").mkdir(parents=True)
 (ROOT / "apps" / "molly").mkdir(parents=True)
-(ROOT / "apps" / "molly" / "project.manifest.json").write_text(json.dumps({"name": "molly", "title": "Molly"}))
+(ROOT / "apps" / "molly" / "project.manifest.json").write_text(json.dumps({"name": "molly", "displayName": "Molly"}))
 (ROOT / "apps" / "console-web" / "plugins" / "theme-editor" / "plugin.json").write_text(json.dumps({"name": "Theme Editor"}))
 (ROOT / "_claude" / "builds" / "reports").mkdir(parents=True)
 STORE = {"builds": [

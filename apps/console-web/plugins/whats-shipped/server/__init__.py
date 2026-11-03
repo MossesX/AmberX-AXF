@@ -97,7 +97,7 @@ def app_names(root: Path) -> dict[str, dict[str, str]]:
     for d in sorted(apps.iterdir()) if apps.is_dir() else []:
         if d.is_dir():
             m = storage.read_json(d / "project.manifest.json", {})
-            out[f"app:{d.name}"] = {"label": APP_LABELS.get(d.name) or _text((m or {}).get("title") or d.name, 60)}
+            out[f"app:{d.name}"] = {"label": APP_LABELS.get(d.name) or _text((m or {}).get("displayName") or (m or {}).get("title") or d.name, 60)}
     plugins = apps / "console-web" / "plugins"
     for d in sorted(plugins.iterdir()) if plugins.is_dir() else []:
         if d.is_dir() and not d.name.startswith("_"):
