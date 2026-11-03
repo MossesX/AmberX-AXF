@@ -254,7 +254,8 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   const builds = (store.builds || []).filter((b) => !b.deleted);
   const byId = new Map(builds.map((b) => [b.id, b]));
   const prevItems = new Map((prev.items || []).map((x) => [x.id, x]));
-  let cands = builds.filter(core.isCandidate).filter((b) => !only || b.id === only);
+  let cands = core.uniqueByBranch(builds.filter(core.isCandidate).filter((b) => !only || b.id === only));
+  let merges = 0;
   const remoteHas = (br) => git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${br}`]).code === 0;
   const wts = worktrees(git);
   const contains = (a, b) => remoteHas(a.branch) && remoteHas(b.branch) && git(['merge-base', '--is-ancestor', `${s.remote}/${b.branch}`, `${s.remote}/${a.branch}`]).code === 0
@@ -269,9 +270,10 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   try { pulls = await gh('GET', `/repos/${s.slug}/pulls?state=open&per_page=100`); } catch (e) { log(`pulls: ${e.message}`); }
   const prOf = (br) => (Array.isArray(pulls) ? pulls : []).find((p) => p?.head?.ref === br && p?.base?.ref === s.base && (p?.head?.repo?.full_name || '').toLowerCase() === s.slug.toLowerCase());
   const items = [];
+  const candById = new Map(cands.map((c) => [c.id, c]));
   for (const o of order) {
-    const b = byId.get(o.id);
-    const it = { id: b.id, title: String(b.title || b.id).slice(0, 200), branch: b.branch, after: o.after, pr: null, head: '', state: 'waiting', reason: null, since: '', checkedAt: at };
+    const b = candById.get(o.id);
+    const it = { id: b.id, title: String(b.title || b.id).slice(0, 200), branch: b.branch, after: o.after, ...(b.alsoBuilds ? { alsoBuilds: b.alsoBuilds } : {}), pr: null, head: '', state: 'waiting', reason: null, since: '', checkedAt: at };
     const old = prevItems.get(b.id) || {};
     const facts = { held: ctl.holds?.[b.id] ? ctl.holds[b.id].why || true : '', waitUi: cfg.landWaitUi };
     try {
@@ -292,7 +294,10 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
           let mergeable = old.head === headNow && prev.mainSha === mainSha ? old.mergeable : undefined;
           if (pr && mergeable === undefined) { try { mergeable = (await gh('GET', `/repos/${s.slug}/pulls/${pr.number}`))?.mergeable; } catch { /* next round */ } }
           it.mergeable = typeof mergeable === 'boolean' ? mergeable : null;
-          if (codeBehind({ s, git, br: b.branch }) || mergeable === false || nowFirst.includes(b.id)) {
+          const wants = codeBehind({ s, git, br: b.branch }) || mergeable === false || nowFirst.includes(b.id);
+          if (wants && merges >= core.MAX_MAIN_MERGES && !nowFirst.includes(b.id)) { it.state = 'queued'; it.reason = { kind: 'running', text: `${b.id}: waits its turn to have main merged in (${core.MAX_MAIN_MERGES} a round).`, quiet: true }; it.since = old.since || at; items.push(it); continue; }
+          if (wants) {
+            merges++;
             const m = mergeMain({ s, git, b, dry });
             if (m.conflicts?.length) facts.conflicts = m.conflicts;
             else if (m.pushError) facts.pushError = m.pushError;

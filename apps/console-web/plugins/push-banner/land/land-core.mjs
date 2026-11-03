@@ -103,6 +103,16 @@ export function isCandidate(b) {
   return b.status === 'built' || ALL_DONE(b);
 }
 
+/** One landing per branch: builds that share a branch (a build and its "-done" follow-up) land as one, the first. */
+export function uniqueByBranch(cands) {
+  const first = new Map();
+  for (const b of cands) { const f = first.get(b.branch); if (f) (f.alsoBuilds ??= []).push(b.id); else first.set(b.branch, { ...b }); }
+  return [...first.values()];
+}
+
+/** At most this many branches get main merged in per round, so CI isn't flooded; the rest wait their turn (quiet). */
+export const MAX_MAIN_MERGES = 3;
+
 /** "Land after X" / "after X lands" in a build's notes or detail names a dependency (only ids of real builds). */
 export function noteDeps(b, ids) {
   const text = [str(b.detail, 8000), ...(Array.isArray(b.notes) ? b.notes.map((n) => str(n?.text, 2000)) : [])].join('\n').toLowerCase();

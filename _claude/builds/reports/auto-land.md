@@ -55,7 +55,7 @@ plugins, no folder names across plugins), so the switches are on the push banner
 
 ## Checks
 
-`land.test.mjs` 85 ✓ · push-banner `test.py` 167 ✓ · `build-orchestrator/test.py` 5 ✓ · `test_upgrade.py` 12 ✓ ·
+`land.test.mjs` 87 ✓ · push-banner `test.py` 167 ✓ · `build-orchestrator/test.py` 5 ✓ · `test_upgrade.py` 12 ✓ ·
 `test_mcp_tools.py` 139 ✓ · `check-builds-store` 37 ✓ · `check-build-steps` 44 ✓ · `check-plugin-commands` 57 ✓ ·
 `check-help.mts` 228 ✓ · help coverage 100% · check-theme / check-controls / check-plugin-pages ✓ · console `tsc` ✓ ·
 plugin lifecycle push-banner clean (apart from local gitignored files).

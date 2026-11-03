@@ -56,6 +56,9 @@ check(core.strayPlan(' M _claude/builds/journal/2026-11.jsonl').commit.length ==
 const B = (id, o = {}) => ({ id, title: id, branch: `claude/${id}`, status: 'built', steps: [{ id: 's1', done: true }], notes: [], ...o });
 check(core.isCandidate(B('a')) && core.isCandidate(B('b', { status: 'running' })), 'built, or every step done = a candidate');
 check(!core.isCandidate(B('c', { mergedAt: 'x' })) && !core.isCandidate(B('d', { status: 'complete' })) && !core.isCandidate(B('e', { branch: '' })) && !core.isCandidate(B('f', { status: 'running', steps: [{ done: false }] })), 'merged, complete, no branch or steps left = not a candidate');
+const ub = core.uniqueByBranch([B('one', { branch: 'claude/x' }), B('one-done', { branch: 'claude/x' }), B('two')]);
+check(ub.length === 2 && ub[0].alsoBuilds.join() === 'one-done', 'two builds on one branch land once (the first), the other named');
+check(core.MAX_MAIN_MERGES >= 1 && core.MAX_MAIN_MERGES <= 5, 'main is merged into a few branches a round, not all at once');
 const ids = new Set(['land-everything', 'x', 'y']);
 check(core.noteDeps(B('x', { notes: [{ text: "Land after land-everything's other PRs." }] }), ids).join() === 'land-everything', '"Land after X" in a note = a dependency');
 check(core.noteDeps(B('x', { detail: 'merge after nobody-knows' }), ids).length === 0, 'unknown ids are ignored');
