@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/swarm-roster.schema.json",
+  "title": "AmberX AXF swarm roster (swarm-roster@1)",
+  "description": "Generated from framework/core/engines/swarm-rules.mjs. The agents and the budget tune.",
+  "type": "object",
+  "required": [
+    "agents"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "swarm-roster@1"
+    },
+    "about": {
+      "type": "string"
+    },
+    "tune": {
+      "type": "object",
+      "properties": {
+        "scale": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 2
+        },
+        "basis": {
+          "type": "string",
+          "maxLength": 300
+        }
+      }
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "$ref": "axf/agent.schema.json"
+      }
+    }
+  }
+}

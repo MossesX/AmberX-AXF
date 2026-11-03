@@ -8,7 +8,7 @@
  * is loaded by default: no CLAUDE.md dump, no rules files, no MCP servers beyond what the launcher adds.
  */
 import { JOB_TYPE, isDue, jobInputs, jobTypeErrors, nextRun, normalizeJobType, renderJobBrief, timeWords } from '../../../../framework/core/engines/job-type-rules.mjs';
-import { BOSS, MODEL_IDS, MODEL_TIERS, budgetUsd, canWork, fmtTokens, fmtUsd, normAgent, payOf, runCost, statusLabel } from './web/swarm-core.mjs';
+import { BOSS, MODEL_IDS, MODEL_TIERS, budgetUsd, canWork, fmtTokens, fmtUsd, normAgent, normRun, payOf, runCost, statusLabel } from './web/swarm-core.mjs';
 
 export const JOB_RUN_KIND = 'job';
 export const NOTES_MAX = 1500;
@@ -106,13 +106,13 @@ export function jobArgs(jt, agent, model) {
   ];
 }
 
-/** A run record (swarm-run@1 with kind "job") written at launch; the sweep fills usage, status and report. */
+/** A run record (swarm-run@1 with kind "job", the contract shared with the swarm runner) written at launch; the sweep fills usage, status and report. */
 export function jobRunRecord(jt, agent, model, { runId, at, session, brief, cwd, branch = '', log, inputs }) {
-  return {
-    $axf: 'swarm-run@1', kind: JOB_RUN_KIND, jobId: runId, buildId: `job:${jt.id}`, stepId: jt.id, jobType: jt.id, agent: agent.id, model, startedAt: at, endedAt: '',
+  return normRun({
+    kind: JOB_RUN_KIND, jobId: runId, buildId: `job:${jt.id}`, stepId: jt.id, jobType: jt.id, agent: agent.id, model, startedAt: at, endedAt: '',
     status: 'running', reason: '', report: null, usage: null, reportedCost: null, turns: 0, budget: { tokens: jt.data.budget.tokens, maxTurns: jt.data.budget.maxTurns },
     session, cwd, branch, worktree: cwd, log, reportPath: brief.report, group: brief.group, inputs, briefTokens: brief.tokens,
-  };
+  });
 }
 
 /** Boss's line when a job goes out, and when nobody can take it. */

@@ -2,13 +2,24 @@
  * Agent swarm core. Pure: no fs, no DOM, no clock reads except through `now` arguments. Shared by the console page,
  * the CLI (../swarm.mjs), the runner, the server part and the tests.
  *
- * Contracts: swarm-roster@1 (agents/roster.json, each agent agent@1), agent-skill@1 (agents/skills/<id>.md),
- * swarm-state@1 (runtime state in the data folder), swarm-job@1 (a planned job), swarm-report@1 (an agent's report).
+ * The data contracts (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1,
+ * swarm-report@1) are the framework's: framework/core/engines/swarm-rules.mjs (one registry, normalizers, validators
+ * that name the field, JSON Schemas, fixture framework/spec/fixtures/swarm.json). This file re-exports them so every
+ * swarm surface keeps one import, and holds the engines that act on them: planner, context packer, runner tracking,
+ * cost meter, pay, statuses, chat lines, banter and the vibe filter.
  */
 
-// ---------------------------------------------------------------- roster (agent@1) and skills (agent-skill@1)
-
 import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_IDS as POLICY_IDS, MODEL_TIERS as POLICY_TIERS, coerceModel } from '../../../../../framework/core/model-policy.mjs';
+import * as rules from '../../../../../framework/core/engines/swarm-rules.mjs';
+
+// ---------------------------------------------------------------- contracts (framework/core/engines/swarm-rules.mjs)
+
+export {
+  SWARM, TAGS, STATUSES, PICKABLE, CHAT_KINDS, WORK_KINDS, BOSS, VIBE, SLIDERS, PRESETS, DEFAULT_PRESET, VIBE_COLORS, AVATAR_FACES, AVATAR_GEAR, AVATAR_TOKENS,
+  IDENTITY_FIELDS, SHARED_FILES, RUN_KINDS, REPORT_STATUSES, LEASE_KINDS, isAgentId, isCardId, isTimestamp, rejection,
+  normAgent, agentErrors, parseSkill, normSkill, skillErrors, normRoster, rosterErrors, normAgentState, normChat, normMessage, normChatSettings, normCardDesign, normCards, normState, stateErrors,
+  normJob, jobErrors, normReport, reportErrors, parseReport, emptyUsage, budgetTokens, normRun, runErrors, swarmErrors, normSwarm,
+} from '../../../../../framework/core/engines/swarm-rules.mjs';
 
 /**
  * Models from cheapest to dearest (the model policy's tier order). A job needs a tier; an agent runs the cheapest model
@@ -19,87 +30,26 @@ export const MODEL_TIERS = POLICY_TIERS;
 export { ALLOWED_MODELS, DEFAULT_MODEL };
 export const MODEL_LABEL = { haiku: 'Haiku', sonnet: 'Sonnet', opus: 'Opus', fable: 'Fable' };
 /** A skill file is one page at most. */
-export const SKILL_MAX_LINES = 50;
-export const SKILL_MAX_CHARS = 3000;
-export const AVATAR_FACES = ['round', 'square', 'tall'];
-export const AVATAR_GEAR = ['none', 'glasses', 'shades', 'cap', 'beanie', 'headphones'];
+export const SKILL_MAX_LINES = rules.SWARM.skill.maxLines;
+export const SKILL_MAX_CHARS = rules.SWARM.skill.maxChars;
+/** Runner statuses after a run ended (the contract's list without `running`). */
+export const RUN_STATUSES = rules.RUN_STATUSES.filter((s) => s !== 'running');
+export const CACHE_READ_WEIGHT = rules.SWARM.run.cacheReadWeight;
+export const REPORT_SCHEMA = rules.TAGS.report;
+export const CHAT_MAX = rules.SWARM.chat.max;
+export const DEFAULT_RULES = rules.SWARM.state.defaultRules;
+export const SMALL_JOB_MINUTES = rules.SWARM.state.smallJobMinutes;
 
+const { STATUSES, PICKABLE, BOSS, VIBE, SLIDERS, PRESETS, IDENTITY_FIELDS, SHARED_FILES, WORK_KINDS, isCardId, normState, normChatSettings, normMessage, normCardDesign } = rules;
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : '');
 const num = (v, d, lo = 0, hi = Infinity) => (Number.isFinite(Number(v)) ? Math.min(hi, Math.max(lo, Number(v))) : d);
 const list = (v, max = 40, len = 200) => (Array.isArray(v) ? v.map((x) => str(x, len)).filter(Boolean).slice(0, max) : []);
-const ID = /^[a-z][a-z0-9-]{0,39}$/;
 
-export function normAgent(a) {
-  const o = a && typeof a === 'object' ? a : {};
-  const models = [...new Set(list(o.models, 4, 20).filter((m) => MODEL_TIERS.includes(m)).map((m) => coerceModel(m)))].sort((x, y) => MODEL_TIERS.indexOf(x) - MODEL_TIERS.indexOf(y));
-  const av = o.avatar && typeof o.avatar === 'object' ? o.avatar : {};
-  return {
-    $axf: 'agent@1',
-    id: str(o.id, 40),
-    name: str(o.name, 60) || str(o.id, 40),
-    role: str(o.role, 80),
-    skill: str(o.skill, 40),
-    // hired for recurring job types (job-type@1) only: the build planner never hands them build steps
-    jobsOnly: o.jobsOnly === true,
-    specialty: str(o.specialty, 200),
-    keywords: list(o.keywords, 40, 40).map((k) => k.toLowerCase()),
-    paths: list(o.paths, 40, 200),
-    models: models.length ? models : [DEFAULT_MODEL],
-    tools: list(o.tools, 30, 120),
-    maxTurns: num(o.maxTurns, 20, 1, 200),
-    tokenBudget: num(o.tokenBudget, 300000, 1000, 10_000_000),
-    salary: num(o.salary, 10, 0, 10000),
-    hiredAt: str(o.hiredAt, 40),
-    avatar: { face: AVATAR_FACES.includes(av.face) ? av.face : 'round', hair: num(av.hair, 0, 0, 5) | 0, gear: AVATAR_GEAR.includes(av.gear) ? av.gear : 'none', hue: num(av.hue, 0, 0, 359) | 0 },
-    catchphrase: str(o.catchphrase, 160),
-    bio: str(o.bio, 600),
-  };
-}
-
-export function normRoster(r) {
-  const o = r && typeof r === 'object' ? r : {};
-  const tune = o.tune && typeof o.tune === 'object' ? { scale: num(o.tune.scale, 1, 0.25, 2), basis: str(o.tune.basis, 300) } : { scale: 1, basis: '' };
-  return { $axf: 'swarm-roster@1', tune, agents: (Array.isArray(o.agents) ? o.agents : []).map(normAgent) };
-}
-
-/** agent-skill@1: a markdown file with `---` front matter (`id`, `title`) and a body under one page. */
-export function parseSkill(md) {
-  const text = str(md, 20000);
-  const m = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(text);
-  const head = {};
-  if (m) for (const line of m[1].split('\n')) { const k = /^([$\w-]+):\s*(.*)$/.exec(line); if (k) head[k[1]] = k[2].trim(); }
-  const body = (m ? m[2] : text).trim();
-  return { id: head.id ?? '', title: head.title ?? '', schema: head.$axf ?? '', body, lines: body.split('\n').length, chars: body.length };
-}
-
-/** Problems with a roster and its skills ({ id: skill }), as plain sentences. Empty = fine. */
-export function checkRoster(roster, skills = {}) {
-  const p = [];
-  const seen = new Set();
-  for (const s of Object.values(skills)) {
-    if (s.schema !== 'agent-skill@1') p.push(`skill ${s.id || '?'}: front matter needs $axf: agent-skill@1`);
-    if (s.lines > SKILL_MAX_LINES || s.chars > SKILL_MAX_CHARS) p.push(`skill ${s.id}: longer than one page (${s.lines} lines, ${s.chars} chars)`);
-  }
-  for (const a of roster.agents) {
-    if (!ID.test(a.id)) p.push(`agent "${a.id}": id is lowercase letters, digits and dashes`);
-    if (seen.has(a.id)) p.push(`agent "${a.id}" is listed twice`);
-    seen.add(a.id);
-    if (!skills[a.skill]) p.push(`agent ${a.id}: no skill file for "${a.skill}"`);
-    if (!a.tools.length) p.push(`agent ${a.id}: no tools`);
-  }
-  return p;
-}
+/** Problems with a roster and its skills ({ id: skill }), as plain sentences (the contract's messages). Empty = fine. */
+export const checkRoster = (roster, skills = {}) => rules.rosterErrors(roster, skills).map((e) => e.message);
 
 // ---------------------------------------------------------------- job planner (swarm-job@1)
 
-/**
- * Files only the orchestrator writes, after a batch merge: shared notes, registries, catalogs and trackers. A job
- * never leases them; what it would have written there goes in its report's `notes` instead.
- */
-export const SHARED_FILES = [
-  '_claude/THREADS.md', '_claude/memory/STATUS.md', '_claude/memory/decisions.md', '_claude/builds/', 'tracker.json',
-  'framework/catalog/', 'framework/plan/', 'framework/catalog/plugins.json', 'CLAUDE.md', '_claude/rules/', '_claude/shared/',
-];
 const TIER_WORDS = {
   fable: /\b(contract|schema|migration|cross-port|kernel|engine internals?|asset type|design the)\b/i,
   opus: /\b(refactor|engine|kernel|security|migration|contract|runner|merge|lease|concurren\w*|planner|scor\w+)\b/i,
@@ -226,8 +176,6 @@ export function planJobs(builds, roster, opts = {}) {
 
 // ---------------------------------------------------------------- context packer
 
-export const REPORT_SCHEMA = 'swarm-report@1';
-export const REPORT_STATUSES = ['done', 'failed', 'blocked'];
 /**
  * The shared prefix: identical bytes for every job of every agent, so prompt caching applies across the swarm.
  * Nothing job-specific goes in here (no ids, dates, paths). The persona block is added by step s8.
@@ -298,9 +246,6 @@ export function packJob(job, { prefix, skill, snippets = [], handoffs = [] } = {
 
 /** Model ids for `claude --model`. */
 export const MODEL_IDS = POLICY_IDS;
-export const RUN_STATUSES = ['done', 'failed', 'blocked', 'killed', 'error'];
-/** Cache reads cost about a tenth of fresh input, so they count a tenth against a job's token budget. */
-export const CACHE_READ_WEIGHT = 0.1;
 
 /** Arguments for one headless Claude Code run: own system prompt (no default dump), no MCP servers, only the job's tools. */
 export function claudeArgs(brief, job, agent) {
@@ -316,16 +261,13 @@ export function claudeArgs(brief, job, agent) {
   ];
 }
 
-export const emptyUsage = () => ({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0 });
+const { emptyUsage, budgetTokens, parseReport } = rules;
 export function addUsage(u, raw) {
   const r = raw && typeof raw === 'object' ? raw : {};
   u.input += Number(r.input_tokens) || 0; u.output += Number(r.output_tokens) || 0;
   u.cacheRead += Number(r.cache_read_input_tokens) || 0; u.cacheWrite += Number(r.cache_creation_input_tokens) || 0;
   return u;
 }
-/** Tokens charged against a job's budget. */
-export const budgetTokens = (u) => Math.round(u.input + u.output + u.cacheWrite + u.cacheRead * CACHE_READ_WEIGHT);
-
 /**
  * Follow a stream-json run line by line. Returns the next tracker: usage so far, turns, the final result text and
  * whether the run is over budget (the runner kills it then).
@@ -343,21 +285,6 @@ export function trackLine(tr, line, budget) {
   return tr;
 }
 export const newTracker = () => ({ usage: emptyUsage(), turns: 0, final: false, text: '', isError: false, over: false, reportedCost: null, subtype: '' });
-
-/** The agent's swarm-report@1: the last fenced json block in its final message. */
-export function parseReport(text) {
-  const blocks = [...str(text, 200000).matchAll(/```json\s*([\s\S]*?)```/g)];
-  for (const m of blocks.reverse()) {
-    try {
-      const r = JSON.parse(m[1]);
-      if (r && REPORT_STATUSES.includes(r.status)) {
-        return { $axf: REPORT_SCHEMA, status: r.status, summary: str(r.summary, 600), files: list(r.files, 200, 300), checks: (Array.isArray(r.checks) ? r.checks : []).slice(0, 30).map((x) => ({ name: str(x?.name, 200), ok: x?.ok === true })),
-          notes: str(r.notes, 2000), handoff: str(r.handoff, 1000), question: str(r.question, 600) };
-      }
-    } catch { /* try the one before */ }
-  }
-  return null;
-}
 
 /** How a finished run ends up: killed / error / the report's status. */
 export function runOutcome(tr, { killed = '', exitCode = 0 } = {}) {
@@ -500,70 +427,10 @@ export function pilotReport(build, plan, briefs, table, heuristic, loadTokens, s
 }
 
 // ---------------------------------------------------------------- swarm state (swarm-state@1) and statuses
+// Shapes, statuses and normalizers are the contract's (swarm-rules.mjs); what follows acts on them.
 
-/**
- * Statuses an agent can have. `works`: true = gets work, false = skipped, 'small' = small jobs only.
- * Custom statuses are named by Brett with their own `works`.
- */
-export const STATUSES = {
-  'on-duty': { label: 'On duty', works: true, tone: 'success', about: 'Gets work.' },
-  'off-duty': { label: 'Off duty', works: false, tone: '', about: 'Skipped; keeps everything.' },
-  injured: { label: 'Injured', works: false, tone: 'danger', about: 'Keeps failing: no new jobs, flagged for a fix.' },
-  'medical-leave': { label: 'Medical leave', works: false, tone: 'warning', about: 'Benched until a date, then back on duty by itself.' },
-  probation: { label: 'Probation', works: 'small', tone: 'warning', about: 'Small jobs only; Brett is notified every run.' },
-  fired: { label: 'Fired', works: false, tone: 'danger', about: 'Never assigned again; kept greyed in history.' },
-  custom: { label: 'Custom', works: false, tone: 'accent', about: 'Brett names it and picks whether it gets work.' },
-  suspended: { label: 'Suspended', works: false, tone: 'danger', about: 'No jobs until the suspension ends, then back on duty by itself.' },
-  quit: { label: 'Quit', works: false, tone: 'danger', about: 'Rage-quit after too many failed jobs in a row; Rehire puts it back.' },
-};
-/** Statuses Brett sets from the dropdown; Suspended and Quit come from Suspend and rage-quit. */
-export const PICKABLE = ['on-duty', 'off-duty', 'injured', 'medical-leave', 'probation', 'fired', 'custom'];
-export const DEFAULT_RULES = { rageQuitAfter: 3 };
-export const SMALL_JOB_MINUTES = 15;
-
-export function normAgentState(s) {
-  const o = s && typeof s === 'object' ? s : {};
-  return {
-    status: Object.hasOwn(STATUSES, o.status) ? o.status : 'on-duty',
-    note: str(o.note, 300),
-    until: str(o.until, 40),
-    custom: { name: str(o.custom?.name, 40), works: o.custom?.works === true },
-    // salary = the weekly token budget in dollars (replaced the plain spend cap: an old cap becomes the salary); null = the roster's
-    salary: Number.isFinite(Number(o.salary)) && o.salary !== null && o.salary !== '' ? num(o.salary, 0, 0, 100000) : Number(o.cap) > 0 ? num(o.cap, 0, 0, 100000) : null,
-    topups: (Array.isArray(o.topups) ? o.topups : []).slice(-100).map((x) => ({ at: str(x?.at, 40), usd: num(x?.usd, 0, 0, 100000) })),
-    pay: (Array.isArray(o.pay) ? o.pay : []).slice(-100).map((x) => ({ at: str(x?.at, 40), kind: x?.kind === 'dock' ? 'dock' : 'raise', from: num(x?.from, 0), to: num(x?.to, 0), note: str(x?.note, 200) })),
-    bonuses: (Array.isArray(o.bonuses) ? o.bonuses : []).slice(-200).map((x) => ({ at: str(x?.at, 40), jobId: str(x?.jobId, 120), usd: num(x?.usd, 0) })),
-    brokeSaid: str(o.brokeSaid, 40),
-    failStreak: num(o.failStreak, 0, 0, 1000) | 0,
-    history: (Array.isArray(o.history) ? o.history : []).slice(-200).map((h) => ({ at: str(h?.at, 40), from: str(h?.from, 40), to: str(h?.to, 40), note: str(h?.note, 300), by: str(h?.by, 40) || 'brett' })),
-    // ID card: identity fields Brett edited (blank = the roster's) and a per-agent card design ('' = the default design)
-    identity: Object.fromEntries(IDENTITY_FIELDS.map((k) => [k, str(o.identity?.[k], k === 'photo' ? 600 : 200).trim()])),
-    card: CARD_ID.test(str(o.card, 48)) ? str(o.card, 48) : '',
-  };
-}
 // ---------------------------------------------------------------- ID cards (agent-card@1 designs; rules framework/core/engines/agent-card-rules.mjs)
 
-/** Identity fields an ID card shows that Brett may edit per agent (blank = the roster's value or a derived one). */
-export const IDENTITY_FIELDS = ['name', 'role', 'specialty', 'photo', 'employeeId', 'email', 'hiredAt', 'catchphrase', 'signature'];
-const CARD_ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
-const CARD_KEYS = ['design', 'orientation', 'logo', 'surface', 'accent', 'finish', 'photo', 'code', 'front', 'back', 'labels'];
-/** A saved card design, kept as an asset@1 envelope; data keeps only the agent-card keys (the renderer normalizes the rest). */
-export function normCardDesign(d) {
-  const o = d && typeof d === 'object' ? d : {};
-  const raw = o.data && typeof o.data === 'object' && !Array.isArray(o.data) ? o.data : {};
-  const data = {};
-  for (const k of CARD_KEYS) {
-    const v = raw[k];
-    if (k === 'front' || k === 'back') { if (Array.isArray(v)) data[k] = list(v, 12, 24); }
-    else if (k === 'labels') { if (v && typeof v === 'object' && !Array.isArray(v)) data[k] = Object.fromEntries(Object.entries(v).slice(0, 13).map(([lk, lv]) => [str(lk, 24), str(lv, 24)]).filter(([lk, lv]) => lk && lv)); }
-    else if (typeof v === 'string') data[k] = str(v, 24);
-  }
-  return { $axf: 'asset@1', type: 'agent-card', id: str(o.id, 48), name: str(o.name, 60) || str(o.id, 48), version: str(o.version, 20) || '1.0.0', author: str(o.author, 60) || 'Brett', data };
-}
-export function normCards(c) {
-  const o = c && typeof c === 'object' ? c : {};
-  return { default: CARD_ID.test(str(o.default, 48)) ? str(o.default, 48) : '', designs: (Array.isArray(o.designs) ? o.designs : []).slice(0, 50).map(normCardDesign).filter((d) => CARD_ID.test(d.id)) };
-}
 /** The identity a card shows: the roster's agent with Brett's edits on top, plus its status words. */
 export function cardIdentity(agent, as, statusWord = '') {
   const id = as?.identity ?? {};
@@ -572,17 +439,6 @@ export function cardIdentity(agent, as, statusWord = '') {
 }
 /** Which design an agent's card uses: its own pick, else the swarm's default, else '' (the app's active agent-card asset). */
 export const cardFor = (state, agentId) => state.agents[agentId]?.card || state.cards.default || '';
-
-export function normState(s, roster) {
-  const o = s && typeof s === 'object' ? s : {};
-  const agents = {};
-  for (const a of roster?.agents ?? []) agents[a.id] = normAgentState(o.agents?.[a.id]);
-  for (const [k, v] of Object.entries(o.agents ?? {})) if (!agents[k]) agents[k] = normAgentState(v); // keep history of agents taken off the roster
-  const rules = { rageQuitAfter: num(o.rules?.rageQuitAfter, DEFAULT_RULES.rageQuitAfter, 1, 50) | 0 };
-  return { $axf: 'swarm-state@1', updatedAt: str(o.updatedAt, 40), rules, agents, chat: normChat(o.chat), chatSettings: normChatSettings(o.chatSettings), messages: (Array.isArray(o.messages) ? o.messages : []).slice(-CHAT_MAX).map(normMsg), banterSpend: (Array.isArray(o.banterSpend) ? o.banterSpend : []).slice(-500).map((b) => ({ at: str(b?.at, 40), usd: Number(b?.usd) || 0 })), notices: (Array.isArray(o.notices) ? o.notices : []).slice(-200).map((n) => ({ at: str(n?.at, 40), agent: str(n?.agent, 40), text: str(n?.text, 400) })), cards: normCards(o.cards),
-    // one-tap hires for job types (agent-jobs): agents and their skill pages, kept here (the roster file is hand-kept)
-    hired: (Array.isArray(o.hired) ? o.hired : []).slice(0, 50).map(normAgent).filter((a) => ID.test(a.id)), hiredSkills: Object.fromEntries(Object.entries(o.hiredSkills && typeof o.hiredSkills === 'object' ? o.hiredSkills : {}).slice(0, 50).map(([k, v]) => [str(k, 40), { id: str(k, 40), title: str(v?.title, 80), body: str(v?.body, SKILL_MAX_CHARS) }])) };
-}
 
 export const statusLabel = (as) => (as.status === 'custom' ? as.custom.name || 'Custom' : STATUSES[as.status]?.label ?? as.status);
 const worksOf = (as) => (as.status === 'custom' ? as.custom.works : STATUSES[as.status]?.works);
@@ -697,17 +553,17 @@ export function applyChange(state, change, roster, at) {
     }
     case 'card': { // per-agent design ('' = the default)
       const as = s.agents[c.agent]; if (!as) throw new Error(`no agent "${c.agent}"`);
-      const id = str(c.design, 48); if (id && !CARD_ID.test(id)) throw new Error('not a card design id');
+      const id = str(c.design, 48); if (id && !isCardId(id)) throw new Error('not a card design id');
       as.card = id; log.push(`${c.agent}: card design ${id || 'default'}`); break;
     }
     case 'card-default': {
-      const id = str(c.design, 48); if (id && !CARD_ID.test(id)) throw new Error('not a card design id');
+      const id = str(c.design, 48); if (id && !isCardId(id)) throw new Error('not a card design id');
       s.cards.default = id; log.push(`default card design ${id || "the app's"}`);
       post(s, [{ from: BOSS.id, kind: 'status', text: `New ID cards for everybody${id ? ` (${str(c.name, 60) || id})` : ''}. Smile, assholes.` }], at); break;
     }
     case 'card-save': { // Save as new: a new design asset (never overwrites a starter id)
       const d = normCardDesign(c.asset);
-      if (!CARD_ID.test(d.id)) throw new Error('give the design an id (lowercase letters, digits, dashes)');
+      if (!isCardId(d.id)) throw new Error('give the design an id (lowercase letters, digits, dashes)');
       if ((c.taken ?? []).includes(d.id)) throw new Error(`"${d.id}" is already a design: pick another id`);
       s.cards.designs = [...s.cards.designs.filter((x) => x.id !== d.id), d].slice(-50);
       log.push(`card design "${d.name}" saved`); break;
@@ -787,29 +643,14 @@ export function agentStats(runs, agentId, table, feedSize = 10) {
   const feed = mine.slice(-feedSize).reverse().map((r) => ({ jobId: r.jobId, buildId: r.buildId, at: r.endedAt || r.startedAt, status: r.status, model: r.model, usd: runCost(r, table), summary: r.report?.summary ?? r.reason ?? '' }));
   return { runs: mine.length, done, failed, successRate: mine.length ? done / mine.length : null, favoriteModel: favorite, lastSeen: last, feed };
 }
-/** Avatar palette: theme colours only, so every avatar follows the theme; the agent's hue picks its pair. */
-export const AVATAR_TOKENS = ['--fx-brand-1', '--fx-brand-2', '--fx-brand-3', '--fx-accent', '--fx-info', '--fx-success', '--fx-warning', '--fx-danger'];
+/** Avatar colours: theme tokens only (the contract's AVATAR_TOKENS), so every avatar follows the theme; the agent's hue picks its pair. */
 export function avatarColors(av) {
-  const i = Math.floor((av?.hue ?? 0) / 45) % AVATAR_TOKENS.length;
-  return { hair: AVATAR_TOKENS[i], shirt: AVATAR_TOKENS[(i + 3 + (av?.hair ?? 0)) % AVATAR_TOKENS.length] };
+  const T = rules.AVATAR_TOKENS;
+  const i = Math.floor((av?.hue ?? 0) / 45) % T.length;
+  return { hair: T[i], shirt: T[(i + 3 + (av?.hair ?? 0)) % T.length] };
 }
 
 // ---------------------------------------------------------------- group chat
-
-export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett'];
-/** Work kinds are built from orchestrator messages and agent reports: no tokens. */
-export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett'];
-export const CHAT_MAX = 2000;
-export const BOSS = { id: 'boss', name: 'Boss' };
-
-export function normChat(c) {
-  const o = c && typeof c === 'object' ? c : {};
-  return {
-    enabled: o.enabled !== false,
-    agents: Object.fromEntries(Object.entries(o.agents && typeof o.agents === 'object' ? o.agents : {}).map(([k, v]) => [str(k, 40), v !== false])),
-  };
-}
-const normMsg = (m, i) => ({ id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind: CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter', text: str(m?.text, 1000), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true });
 
 /** Is this agent's voice on? (Boss and Brett only need the global switch.) */
 export const chatOn = (state, from) => state.chat.enabled && (from === BOSS.id || from === 'brett' || state.chat.agents[from] !== false);
@@ -825,7 +666,7 @@ export function post(state, msgs, at) {
     const m = state.chatSettings ? vibeFilter(raw, state.chatSettings) : raw; // over the ceiling = toned down or dropped
     if (!m) continue;
     const id = `m${Date.parse(at) || 0}-${state.messages.length}`;
-    state.messages.push(normMsg({ ...m, id, at: m.at || at }, state.messages.length)); n += 1;
+    state.messages.push(normMessage({ ...m, id, at: m.at || at }, state.messages.length)); n += 1;
   }
   if (state.messages.length > CHAT_MAX) state.messages.splice(0, state.messages.length - CHAT_MAX);
   return n;
@@ -935,36 +776,9 @@ export function recordRun(state, run, roster, at, table = null) {
 }
 
 // ---------------------------------------------------------------- chat settings: vibe ceiling, sliders, presets
-
-/** Vibe 1–500: 1 = straight to the point, no sarcasm; 100 = chill; 250 = full Amber; 500 = off the rails. */
-export const VIBE = { min: 1, max: 500, chill: 100, amber: 250 };
-export const SLIDERS = ['vibe', 'chattiness', 'cussing', 'drama'];
-export const PRESETS = {
-  business: { label: 'All business', vibe: 1, chattiness: 0, cussing: 0, drama: 0 },
-  crew: { label: 'Work crew', vibe: 100, chattiness: 35, cussing: 30, drama: 20 },
-  breakroom: { label: 'Break room', vibe: 250, chattiness: 65, cussing: 70, drama: 60 },
-  rails: { label: 'Off the rails', vibe: 500, chattiness: 100, cussing: 100, drama: 100 },
-};
-export const DEFAULT_PRESET = 'crew';
-/** Theme colours Brett can pick as the base for color-by-vibe. */
-export const VIBE_COLORS = ['accent', 'info', 'success', 'warning', 'danger', 'brand-1', 'brand-2', 'brand-3'];
+// VIBE, SLIDERS, PRESETS, DEFAULT_PRESET, VIBE_COLORS and normChatSettings are the contract's (swarm-rules.mjs).
 
 const slider = (v, d, max = 100) => Math.round(num(v, d, 0, max));
-export function normChatSettings(o) {
-  const x = o && typeof o === 'object' ? o : {};
-  const base = PRESETS[DEFAULT_PRESET];
-  const vals = (v, d) => ({ vibe: Math.round(num(v?.vibe, d.vibe, VIBE.min, VIBE.max)), chattiness: slider(v?.chattiness, d.chattiness), cussing: slider(v?.cussing, d.cussing), drama: slider(v?.drama, d.drama) });
-  const overrides = {};
-  for (const [k, v] of Object.entries(x.overrides && typeof x.overrides === 'object' ? x.overrides : {})) {
-    const o2 = {}; for (const s of SLIDERS) if (v && v[s] != null && Number.isFinite(Number(v[s]))) o2[s] = s === 'vibe' ? Math.round(num(v[s], 100, VIBE.min, VIBE.max)) : slider(v[s], 50);
-    if (Object.keys(o2).length) overrides[str(k, 40)] = o2;
-  }
-  return {
-    ...vals(x, base), preset: str(x.preset, 40) || DEFAULT_PRESET, overrides,
-    banterBudget: num(x.banterBudget, 0.5, 0, 1000),
-    saved: (Array.isArray(x.saved) ? x.saved : []).slice(0, 30).map((p) => ({ name: str(p?.name, 40), ...vals(p, base) })).filter((p) => p.name),
-  };
-}
 /** The sliders that apply to one speaker: global, then its own overrides. */
 export const settingsFor = (cs, from) => ({ ...cs, ...(cs.overrides?.[from] ?? {}) });
 

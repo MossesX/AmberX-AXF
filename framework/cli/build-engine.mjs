@@ -12,6 +12,7 @@ import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engine
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
+import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -817,6 +818,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // model-policy@1: which models work may run on (Opus or Fable, never Sonnet), the snapshot Python readers use
   const mreg = join(FRAMEWORK_DIR, 'schemas/model-policy.json');
   writeFileSync(mreg, JSON.stringify(MODEL_POLICY, null, 2) + '\n'); written.push(mreg);
+  // agent swarm contracts (agent@1 … swarm-run@1): JSON Schemas + the registry snapshot (core/engines/swarm-rules.mjs)
+  for (const [n, schema] of Object.entries(swarmJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const swreg = join(FRAMEWORK_DIR, 'schemas/swarm.json');
+  writeFileSync(swreg, JSON.stringify(SWARM, null, 2) + '\n'); written.push(swreg);
   return written;
 }
 

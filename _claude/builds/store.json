@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 156,
- "updatedAt": "2026-11-03T02:40:26.219Z",
+ "rev": 157,
+ "updatedAt": "2026-11-03T11:32:15.386Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -45645,14 +45645,14 @@
    "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
    "category": "Breakroom",
    "detail": "Fable suggested, Opus chosen rule: s1-s3, s11, s12, s15 of agent-swarm were pinned to Fable and built on Opus (branch claude/agent-swarm). The Fable build starts by reading and then replacing the Opus version.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-01T11:27:17.235Z",
+   "updatedAt": "2026-11-03T11:32:15.362Z",
    "builtAt": "",
    "notes": [
     {
@@ -45690,12 +45690,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T11:32:15.362Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-01T11:27:16.963Z"
+     "updatedAt": "2026-11-03T11:32:15.386Z"
     },
     {
      "id": "s2",
@@ -45838,7 +45838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
