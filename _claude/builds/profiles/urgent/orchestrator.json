@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T14:01:16.635Z",
+ "updatedAt": "2026-11-03T14:01:21.566Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -954,15 +954,15 @@
    "title": "Orchestrator live sync: every step reaches main at once",
    "category": "Urgent",
    "detail": "Brett, Nov 3 2026 (voice): every completed step, however small, must reach the orchestrator and show on main immediately, so banners and THREADS follow every step. Store writes go live to main as status-only commits; branch + PR auto-link; reconciler for open PRs and claude/* branches; banners + THREADS follow the store; session-start rule; backfill.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orch-live-sync",
    "pr": "#255",
    "createdAt": "2026-11-03T13:39:29.176Z",
-   "updatedAt": "2026-11-03T14:01:15.656Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T14:01:20.820Z",
+   "builtAt": "2026-11-03T14:01:20.821Z",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -1090,8 +1090,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:01:20.820Z",
      "note": "",
      "uid": "st-mw0qib740en9dq"
     }
