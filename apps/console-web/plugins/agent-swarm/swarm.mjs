@@ -13,6 +13,8 @@
  *   … act salary <agent> <usd> [note]     weekly salary = budget (higher = raise, lower = docked) · act topup <agent> <usd>
  *   … sessions                           runs with the agent's status and spend (for the session browser)
  *   … chat [n] | banter [--dry-run]      the group chat | one cheap small-model batch of banter
+ *   … mentions [n] [--negative]          chat messages about Brett (the boss, the owner), newest first, redacted
+ *   … chats-export                       rewrite the hub's read-only chat mirror now (breakroom-chats@1)
  *   … act chat on|off · act chat <agent> on|off · act say <text>
  *   … act suspend <agent> <hours> <reason> · act rehire <agent> · act rules <rage-quit N>
  *   … act preset business|crew|breakroom|rails · act vibe <1-500> · act --json '{"action":"chat-settings",…}'
@@ -26,7 +28,8 @@ import { existsSync, statSync, mkdirSync, readdirSync, readFileSync, renameSync,
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
-import { orchestratorPath } from '../../../../framework/cli/persist.mjs';
+import { orchestratorPath, persistRoot } from '../../../../framework/cli/persist.mjs';
+import * as watch from './web/chat-watch.mjs';
 import { spawnSync } from 'node:child_process';
 import { runJob, worktreeFor } from './runner.mjs';
 import { withSlot } from '../../../../framework/cli/agent-slots.mjs';
@@ -67,20 +70,45 @@ export function findBuilds(ids) {
 
 /** Swarm state (swarm-state@1): statuses, history, pay, chat. Time-driven changes are applied on every read. */
 export const stateFile = () => join(dataDir(), 'state.json');
+/**
+ * Read-only mirror of the group chat on the hub (breakroom-chats@1): <hub data>/agent-swarm/chats/, which sessions read
+ * with axhub.memory_read (project amberx-axf, area data). AXF_SWARM_CHATS_DIR overrides ("off" = none); a test data
+ * folder (AXF_SWARM_DIR) never mirrors unless that is set too.
+ */
+export function chatsDir() {
+  const env = process.env.AXF_SWARM_CHATS_DIR;
+  if (env !== undefined) return env && env !== 'off' ? env : null;
+  if (process.env.AXF_SWARM_DIR) return null;
+  const root = persistRoot(); return root ? join(root, watch.HUB_FOLDER) : null;
+}
+export function mirrorChats(st, { force = false } = {}) {
+  const dir = chatsDir(); if (!dir) return null;
+  const last = st.messages.at(-1);
+  const sig = `${st.messages.length}:${last?.id ?? ''}:${st.chat.enabled}:${loadRoster().agents.length}`;
+  if (!force && readJson(join(dir, 'index.json'), {})?.sig === sig) return dir;
+  try {
+    const docs = watch.chatDocs(st, loadRoster(), new Date().toISOString());
+    docs['index.json'].sig = sig;
+    for (const [f, doc] of Object.entries(docs)) writeJson(join(dir, f), doc); // index last: readers see whole documents
+  } catch (e) { console.error(`chat mirror skipped: ${e.message}`); return null; }
+  return dir;
+}
+/** Save the swarm state and refresh the hub mirror of its chat. */
+export function writeState(st) { writeJson(stateFile(), st); mirrorChats(st); }
 export function loadState() {
   const roster = loadRoster(); const at = new Date().toISOString();
   const st = core.normState(readJson(stateFile(), {}), roster); const t = core.tick(st, at);
   t.log.push(...core.payCheck(st, roster, loadRuns(), priceTable(), at));
-  if (t.log.length) { st.updatedAt = at; writeJson(stateFile(), st); }
+  if (t.log.length) { st.updatedAt = at; writeState(st); }
   return st;
 }
 /** Load the state, change it, save it. */
-export function withState(fn) { const st = loadState(); const r = fn(st); st.updatedAt = new Date().toISOString(); writeJson(stateFile(), st); return r; }
+export function withState(fn) { const st = loadState(); const r = fn(st); st.updatedAt = new Date().toISOString(); writeState(st); return r; }
 /** Post to the group chat (dropped when it's off). */
 export const say = (msgs) => withState((st) => core.post(st, msgs, new Date().toISOString()));
 export function act(change) {
   const r = core.applyChange(loadState(), change, loadRoster(), new Date().toISOString());
-  writeJson(stateFile(), r.state); return r;
+  writeState(r.state); return r;
 }
 /** Only agents whose status and pay let them work get jobs (broke = no new jobs till payday or a top-up). */
 export function eligibility(st = loadState()) {
@@ -126,7 +154,7 @@ export async function run(buildId, ref, opts = {}) {
   chatAfterRun(rec, roster);
   const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
   const st = loadState(); const as = st.agents[agent.id];
-  if (as && core.canWork(agent, as, job).notify) { st.notices.push({ at: rec.endedAt, agent: agent.id, text: `${agent.name} (probation) ran ${job.id}: ${rec.status}` }); writeJson(stateFile(), st); }
+  if (as && core.canWork(agent, as, job).notify) { st.notices.push({ at: rec.endedAt, agent: agent.id, text: `${agent.name} (probation) ran ${job.id}: ${rec.status}` }); writeState(st); }
   return saveRun({ ...rec, branch: wt.branch, worktree: wt.path, lease });
 }
 
@@ -296,6 +324,13 @@ export async function main(argv) {
     return out({ ok: true, sessions: rows }, rows.map((x) => `${x.jobId.padEnd(26)} ${x.name.padEnd(12)} ${x.status.padEnd(14)} ${x.run.padEnd(7)} ${core.fmtUsd(x.usd)}`).join('\n') || 'No runs yet.');
   }
   if (cmd === 'chat') { const st = loadState(); const n = Number(rest[0]) || 30; return out({ ok: true, chat: st.chat, messages: st.messages.slice(-n) }, st.chat.enabled ? st.messages.slice(-n).map((m) => `${m.at.slice(11, 16)} ${m.from.padEnd(6)} ${m.text}`).join('\n') || 'Quiet.' : 'The group chat is off.'); }
+  if (cmd === 'mentions') { // messages about Brett, newest first (redacted)
+    const st = loadState(); const n = Number(rest.find((a) => /^\d+$/.test(a))) || 50;
+    const list = watch.mentions(st, loadRoster(), { limit: n, negativeOnly: args.includes('--negative') });
+    return out({ ok: true, terms: watch.MENTION_TERMS.map((t) => t.id), count: list.length, negative: list.filter((m) => m.tone === 'negative').length, mentions: list },
+      list.map((m) => `${m.at.slice(0, 16).replace('T', ' ')} ${m.tone === 'negative' ? '!' : ' '} ${m.fromName.padEnd(14)} ${m.text}`).join('\n') || 'Nobody is talking about Brett.');
+  }
+  if (cmd === 'chats-export') { const dir = mirrorChats(loadState(), { force: true }); return out({ ok: !!dir, dir }, dir ? `mirrored to ${dir}` : 'no hub data folder here (AXF_SWARM_CHATS_DIR to set one)'); }
   if (cmd === 'banter') { const r = await banter({ dry: args.includes('--dry-run') }); return out({ ok: true, ...r }, r.dry ? r.prompt : r.skipped ?? `posted ${r.posted} lines for ${core.fmtUsd(r.usd)}`); }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }
   if (cmd === 'pack') { const [b, ref] = rest; const j = jobOf(plan([b]), ref); const p = pack(j); return out({ ok: true, job: j, brief: p }, `${p.system}\n\n=====\n${p.prompt}\n\n(~${p.tokens.system} + ${p.tokens.prompt} tokens)`); }
