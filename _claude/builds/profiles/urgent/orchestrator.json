@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:03:45.764Z",
+ "updatedAt": "2026-11-03T17:03:52.865Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1886,7 +1886,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:03:38.868Z",
+   "updatedAt": "2026-11-03T17:03:52.083Z",
    "builtAt": "",
    "notes": [
     {
@@ -1928,6 +1928,10 @@
     {
      "text": "Landed claude/token-control-opus (PR #250) on main at 0a85ab65",
      "at": "2026-11-03T17:03:38.868Z"
+    },
+    {
+     "text": "Landed claude/console-commands (PR #249) on main at 0a85ab65",
+     "at": "2026-11-03T17:03:52.083Z"
     }
    ],
    "approvals": [],

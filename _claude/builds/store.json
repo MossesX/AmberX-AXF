@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 255,
- "updatedAt": "2026-11-03T17:03:45.764Z",
+ "rev": 256,
+ "updatedAt": "2026-11-03T17:03:52.865Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50280,7 +50280,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:03:38.868Z",
+   "updatedAt": "2026-11-03T17:03:52.083Z",
    "builtAt": "",
    "notes": [
     {
@@ -50322,6 +50322,10 @@
     {
      "text": "Landed claude/token-control-opus (PR #250) on main at 0a85ab65",
      "at": "2026-11-03T17:03:38.868Z"
+    },
+    {
+     "text": "Landed claude/console-commands (PR #249) on main at 0a85ab65",
+     "at": "2026-11-03T17:03:52.083Z"
     }
    ],
    "approvals": [],
@@ -50577,7 +50581,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
