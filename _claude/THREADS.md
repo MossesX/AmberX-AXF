@@ -801,3 +801,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:31 UTC · `md-studio` note (urgent) · orchestrator
 - 2026-11-03 18:31 UTC · `md-studio` → built (urgent) · orchestrator
 - 2026-11-03 18:32 UTC · `crew-live` s3 done (urgent) · orchestrator
+- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s4 done (urgent) · orchestrator
