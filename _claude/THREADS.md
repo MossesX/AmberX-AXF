@@ -817,3 +817,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:00 UTC · `crew-live` PR #273 (urgent) · builds-live
 - 2026-11-03 19:01 UTC · `crew-live` s7 done, → built (urgent) · orchestrator
 - 2026-11-03 19:01 UTC · `crew-live` note (urgent) · orchestrator
+- 2026-11-03 19:02 UTC · `claude-settings` added (7 steps) (urgent) · orchestrator
