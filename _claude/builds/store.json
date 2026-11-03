@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 232,
- "updatedAt": "2026-11-03T16:29:57.365Z",
+ "rev": 247,
+ "updatedAt": "2026-11-03T16:44:27.083Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50273,7 +50273,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:29:56.545Z",
+   "updatedAt": "2026-11-03T16:44:26.193Z",
    "builtAt": "",
    "notes": [
     {
@@ -50299,6 +50299,10 @@
     {
      "text": "Landed claude/headless-tabs (PR #259) on main at a8186b83",
      "at": "2026-11-03T16:29:52.087Z"
+    },
+    {
+     "text": "Landed claude/whats-new-banner (PR #260) on main at 6ff111a1",
+     "at": "2026-11-03T16:41:36.785Z"
     }
    ],
    "approvals": [],
@@ -50312,7 +50316,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50321,9 +50325,9 @@
      "done": true,
      "doneAt": "2026-11-03T16:07:30.479Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:07:30.507Z"
+     "updatedAt": "2026-11-03T16:43:31.040Z"
     },
     {
      "id": "s2",
@@ -50334,7 +50338,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50343,9 +50347,9 @@
      "done": true,
      "doneAt": "2026-11-03T16:14:14.427Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:14:14.450Z"
+     "updatedAt": "2026-11-03T16:43:36.450Z"
     },
     {
      "id": "s3",
@@ -50356,7 +50360,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50365,9 +50369,9 @@
      "done": true,
      "doneAt": "2026-11-03T16:24:07.209Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:24:07.235Z"
+     "updatedAt": "2026-11-03T16:43:41.964Z"
     },
     {
      "id": "s4",
@@ -50378,7 +50382,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50387,9 +50391,9 @@
      "done": true,
      "doneAt": "2026-11-03T16:29:56.545Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T16:29:56.566Z"
+     "updatedAt": "2026-11-03T16:43:47.234Z"
     },
     {
      "id": "s5",
@@ -50400,18 +50404,18 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:41:42.519Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:43:52.538Z"
     },
     {
      "id": "s6",
@@ -50422,7 +50426,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50431,9 +50435,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:43:57.718Z"
     },
     {
      "id": "s7",
@@ -50444,7 +50448,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50453,9 +50457,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:44:04.119Z"
     },
     {
      "id": "s8",
@@ -50466,7 +50470,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50475,9 +50479,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:44:09.950Z"
     },
     {
      "id": "s9",
@@ -50488,7 +50492,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50497,9 +50501,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:44:15.424Z"
     },
     {
      "id": "s10",
@@ -50510,7 +50514,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50519,9 +50523,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:44:20.807Z"
     },
     {
      "id": "s11",
@@ -50532,7 +50536,7 @@
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "",
+     "estimate": "20 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -50541,20 +50545,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:32:06.060Z",
-     "updatedAt": "2026-11-03T15:32:06.060Z"
+     "updatedAt": "2026-11-03T16:44:26.222Z"
     }
    ],
    "profiles": [
     "urgent"
    ],
    "order": {
-    "urgent": 9
+    "urgent": 10
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50938,11 +50942,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 7
+    "urgent": 8
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51165,11 +51169,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 8
+    "urgent": 9
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51372,6 +51376,159 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T13:56:02.712Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "whats-new-banner",
+   "title": "What's new banner",
+   "category": "Banners",
+   "detail": "A What's new banner showing features merged to main and deployed, grouped by date, build and app (Brett, Nov 3 2026, voice).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/whats-new-banner",
+   "pr": "#260",
+   "mergedAt": "2026-11-03T16:41:30.054Z",
+   "createdAt": "2026-11-03T14:04:58.611Z",
+   "updatedAt": "2026-11-03T16:41:30.871Z",
+   "builtAt": "2026-11-03T14:53:33.448Z",
+   "notes": [
+    {
+     "text": "All 5 steps built on Opus; PR #260 (claude/whats-new-banner), UI Review r-20261103-8861306a waiting. Plugin folder whats-shipped (systems check owns whats-new).",
+     "at": "2026-11-03T14:53:34.449Z"
+    }
+   ],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0rf3bt06pknc",
+     "title": "",
+     "text": "Feed: whats-new@1 built from shipped builds, merged PRs, reports and change entries; server route + cached file",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:09:31.736Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:09:31.758Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0rf3bt075p6w",
+     "title": "",
+     "text": "Banner: whats-new banner widget, ticker + unread count, tap opens panel",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:12:24.075Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:12:24.103Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0rf3bt08jx0l",
+     "title": "",
+     "text": "Panel: group by date/build/app, search, details, mark read, new since last visit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:12:24.621Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:12:24.648Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0rf3bt09vg1v",
+     "title": "",
+     "text": "Settings: show/hide, apps, how far back, deployed vs merged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:12:25.135Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:12:25.156Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mw0rf3bt0a8tis",
+     "title": "",
+     "text": "Help pack, tests, theme/controls checks, lifecycle, UI Review shots, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T14:53:33.448Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-03T14:04:58.615Z",
+     "updatedAt": "2026-11-03T14:53:33.474Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 7
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 10,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T14:04:58.615Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| What's new banner (Urgent `whats-new-banner`; Brett Nov 3, voice): banner ticker + unread count of features merged to main, panel grouped by date / build / app, search, details, read marks, settings. Plugin `whats-shipped` (display name What's new; the folder name avoids the systems check's own `whats-new` strip), feed whats-new@1 from merged PRs (GitHub, else git), builds store, reports, Codebase changes; deployed from deploy.yml runs or the `site` branch. Report `_claude/builds/reports/whats-new-banner.md`. | built, PR #260 open, waiting in UI Review r-20261103-8861306a | `claude/whats-new-banner` | #260 | Brett: approve the UI Review item; later switch the feed's rebuild trigger to orch-live-sync's builds-live events once on main (seam in `Sources.fingerprint`) | 2026-11-03 |
 | Headless tabs (Urgent `headless-tabs`, 7 steps, Opus; Brett Nov 3, voice): every console terminal tab lives in a tmux session (re-attach + scrollback replay, Open in Moshi, detach vs Kill session); every headless run opens its own tab with agent · model · live cost + status dot (`deploy/claude-meter.mjs`, model-pricing.json, reconciled to total_cost_usd); split pane with the context chain (CLAUDE.md load order, imports, rules, Reads; rules typed out one at a time) | review (all 7 steps done; PR open, waits for UI Review) | `claude/headless-tabs` | [#259](https://github.com/MossesX/AmberX-AXF/pull/259) | Report `_claude/builds/reports/headless-tabs.md`. Brett: approve UI Review r-20261103-3sp5x01 (group `headless-tabs - Nov 3 9:44 AM`). Console needs a redeploy for tmux in the image. Tests: terminal 97/97, check-headless-tabs 30/30 | 2026-11-03 |
 | Retire Patches and Build Pilot (Urgent `kill-patches-pilot`; Brett Nov 3, voice: "Patches is dead … Build Pilot dead"): removed both apps and every reference (repo, rules, store builds archived), VPS containers/Coolify apps after a snapshot to `/root/archive/retired-2026-11-03/`, axHub projects, axHub repo PR; MossesX/Build-Pilot archived | review (PR open, the push banner merges it) | `claude/kill-patches-pilot` | [#258](https://github.com/MossesX/AmberX-AXF/pull/258), axHub [#32](https://github.com/MossesX/axHub/pull/32) | report `_claude/builds/reports/kill-patches-pilot.md` | 2026-11-03 |
 | Agent group chats on axHub (Breakroom profile; Brett Nov 3 voice): read-only redacted mirror of the Breakroom group chat on the hub (`agent-swarm/chats/` in amberx-axf `_data`, read with `axhub.memory_read`), a mentions-of-Brett filter (CLI + API), and a Breakroom "About Brett" view | PR open, UI Review waiting | `claude/agent-chats-hub` | (see PR) | push banner merges once CI + UI Review pass | 2026-11-03 |
@@ -576,6 +577,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
 - 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
 - 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
+- 2026-11-03 14:45 UTC · `whats-new-banner` s1–s4 done, s5 tests/checks/shots done, PR opening (urgent) · claude/whats-new-banner
+- 2026-11-03 14:53 UTC · `whats-new-banner` s5 done, PR #260, UI Review r-20261103-8861306a waiting (urgent) · claude/whats-new-banner
 - 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
 - 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
 - 2026-11-03 15:32 UTC · `land-everything` → running (urgent) · orchestrator
@@ -608,3 +611,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
 - 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:29 UTC · `land-everything` s4 done (urgent) · orchestrator
+- 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
+- 2026-11-03 16:41 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:41 UTC · `land-everything` s5 done (urgent) · orchestrator
