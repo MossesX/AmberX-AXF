@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:54:35.835Z",
+ "updatedAt": "2026-11-03T17:54:52.568Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -362,7 +362,7 @@
    "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -370,7 +370,7 @@
    "pr": "#242",
    "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T17:54:29.001Z",
+   "updatedAt": "2026-11-03T17:54:45.033Z",
    "builtAt": "",
    "notes": [
     {
@@ -380,6 +380,10 @@
     {
      "text": "Notes scope added by notes-vault (Nov 3 2026): consume axf.notes@1 from the notes-browser plugin, never its folder.",
      "at": "2026-11-03T14:09:29.660Z"
+    },
+    {
+     "text": "Started Nov 3 2026 on claude/md-studio (Opus). Assigned agent: Reel Rhonda (reel-rhonda).",
+     "at": "2026-11-03T17:54:32.152Z"
     }
    ],
    "approvals": [],
@@ -588,6 +592,24 @@
     },
     {
      "id": "s12",
+     "text": "Context view (handoff Nov 3): open a session context md as a reference chain with token counts per part; Open context in MD Studio deep link for approval rows",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw0zm9ji01g5pi"
+    },
+    {
+     "id": "s13",
      "text": "Editor kit (Brett voice Nov 3): markdown toolbar (headings, bold/italic, lists, checklists, tables, code, links), live preview side-by-side/split, search/replace, autosave, version history with restore",
      "model": "Opus",
      "why": "",
@@ -602,25 +624,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw0zm7xw01ogqb"
-    },
-    {
-     "id": "s13",
-     "text": "Commands declared once (plugin-commands@1 auto: REST + MCP + CLI) so Amber can open/edit docs by voice; Notes Vault + hub memory/rules + repo .md reachable",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mw0zm8mc01ppev"
+     "uid": "st-mw0zmkzu01jd8f"
     }
    ]
   },
