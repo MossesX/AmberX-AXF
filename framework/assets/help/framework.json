@@ -611,7 +611,7 @@
         "text": "Moves it one place down the list."
       },
       {
-        "target": "hide-it-inside-a-host-app-patches",
+        "target": "hide-it-inside-a-host-app",
         "title": "Hide inside a host app",
         "text": "Hides this banner when the app runs inside another app's frame, so you don't see two.",
         "kind": "toggle"

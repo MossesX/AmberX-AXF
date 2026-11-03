@@ -647,6 +647,14 @@ v = hc.veto_calls([{"id": "host-mosh", "state": "failed", "message": "Denied on 
 check(v["status"] == "warn" and len(v["details"]) == 1, "veto calls denied or expired: amber, one line each")
 ct = hc.containers([{"name": "amberx-app-backup-1", "state": "restarting", "status": "Restarting (1) 5 seconds ago"}, {"name": "axf-console", "state": "running", "status": "Up 2 hours"}])
 check(ct["status"] == "error" and "amberx-app-backup-1" in ct["summary"], "container in a restart loop: red, named")
+_bk = lambda st, status: [{"name": "amberx-app-postgres-1", "state": "running", "status": "Up 2 weeks (healthy)", "labels": {"com.docker.compose.project": "amberx-app", "com.docker.compose.service": "postgres"}},  # noqa: E731
+                          {"name": "amberx-app-backup-1", "state": st, "status": status, "labels": {"com.docker.compose.project": "amberx-app", "com.docker.compose.service": "backup"}}]
+check(hc.amberx_backups(_bk("restarting", "Restarting (2) 39 seconds ago"))["status"] == "error", "amberx backups: restart loop is red")
+check("26 h" in hc.amberx_backups(_bk("running", "Up 3 days (unhealthy)"))["summary"], "amberx backups: unhealthy = newest dump older than 26 h")
+check(hc.amberx_backups(_bk("exited", "Exited (2) 1 hour ago"))["status"] == "error", "amberx backups: stopped is red")
+check(hc.amberx_backups(_bk("running", "Up 5 minutes (healthy)"))["status"] == "ok", "amberx backups: up and healthy is green")
+check(hc.amberx_backups(_bk("running", "Up 5 minutes (healthy)")[:1])["status"] == "error", "amberx backups: stack without its backup container is red")
+check(hc.amberx_backups([{"name": "axf-console", "state": "running", "status": "Up"}])["status"] == "info", "amberx backups: no stack on this host is info")
 
 # the monitor: registry, since, hold amber, one push per red episode, resolve on green
 clock = [NOW]

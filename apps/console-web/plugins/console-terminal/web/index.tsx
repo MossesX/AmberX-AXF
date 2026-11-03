@@ -5,7 +5,7 @@ import { newTab, openFromContext } from './open';
 import { ConnectDialog, ConnectionDialog } from './connections';
 import { getSettings } from './api';
 import { applyProfile } from './profiles';
-import { AppearancePanel, BehaviourPanel, ProfilesPanel } from './look';
+import { AppearancePanel, BehaviourPanel, HeadlessPanel, ProfilesPanel } from './look';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
@@ -22,13 +22,16 @@ import { appMenu } from './menu';
  *  - actions terminal.open[:<target>:<payload>], terminal.new
  *  - approved VPS / shell commands (axf.hub-runs@1) open in a read-only output tab once they've run (RunOutputTab.tsx)
  *  - headless Claude Code sessions on the VPS (tmux axf-…, deploy/claude-headless.sh) open in a VPS tab attached to
- *    them, with the terminal window restored, focused and brought to the front (headless.ts)
+ *    them, with the terminal window restored, focused and brought to the front (headless.ts); the tab shows the agent,
+ *    model, live cost and status (meters.ts) and splits into the session and its context chain (SplitView, ChainPane)
+ *  - VPS and console tabs live in tmux sessions (axt-…): reload, sleep or a console restart re-attaches with the
+ *    scrollback replayed; Open in Moshi copies the attach command; Kill session ends one
  *  - Settings → Plugins → Terminal
  */
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Terminal',
-  version: '0.3.0',
+  version: '0.4.0',
   appMenu,
   provides: ['axf.terminal'],
   register(rt) {
@@ -59,6 +62,7 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'terminal.appearance', tab: 'terminal', title: 'Appearance', icon: 'palette', order: 4, render: () => <AppearancePanel /> },
     { id: 'terminal.behaviour', tab: 'terminal', title: 'Tabs & behaviour', icon: 'layout', order: 6, render: () => <BehaviourPanel /> },
+    { id: 'terminal.headless', tab: 'terminal', title: 'Headless tabs', icon: 'sparkles', order: 7, render: () => <HeadlessPanel /> },
     { id: 'terminal.profiles', tab: 'terminal', title: 'Claude Code profiles', icon: 'sparkles', order: 8, render: () => <ProfilesPanel /> },
     { id: 'terminal.general', tab: 'terminal', title: 'Sessions & shells', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },
     { id: 'terminal.vps', tab: 'terminal', title: 'VPS host', icon: 'monitor', order: 20, render: () => <div className="axp-terminal-settings"><VpsPanel /></div> },

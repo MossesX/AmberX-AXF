@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-62bd7be6-1f14-495b-b324-ddf6ad9013f9",
+ "source": "claude-code",
+ "sessionId": "62bd7be6-1f14-495b-b324-ddf6ad9013f9",
+ "project": "axhub",
+ "title": "# hub-only-look — apps take their appearance from axHub, period Brett's rule (Nov 1 2026, verbatim): \"The apps should o…",
+ "startedAt": "2026-11-01T17:33:27.122Z",
+ "endedAt": "2026-11-01T17:33:28.077Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/hub-only-look",
+  "repo": "",
+  "branch": "claude/hub-only-look"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T17:33:27.227Z",
+   "kind": "prompt",
+   "text": "# hub-only-look — apps take their appearance from axHub, period Brett's rule (Nov 1 2026, verbatim): \"The apps should only get appearance from axhub period.\" Also: \"if you select design package in one app it changes it for all! Any theme change applies to all.\" Today the look is the shared document `shared/settings/appearance.json` on axHub's data server (framework `HubAppearanceSource`, runtime `attachAppearanceSource` / `applyAppearance` / `pushAppearance`). PR #224 (1156332c) already made a hub-applied look bring the console back to its Main tab and closed the Active assets pane by default…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261101-5a98df913a"
+   ],
+   "features": [],
+   "output": "You've hit your weekly limit · resets Nov 3, 7am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261101-5a98df913a"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-01T17:33:28.282Z"
+}

@@ -26,9 +26,9 @@ const roots = args.filter((a) => !a.startsWith('--')).map((a) => resolve(ROOT, a
 /**
  * Asset conformance (Brett, Oct 31 2026, build asset-conform): every web UI is held to it, handwritten or generated —
  * plugins and libraries, framework React views, every app's own UI and what the build system generates from (app
- * templates, library templates, the plugin template). Patches is paused (Brett, Oct 28 2026) and is left as it is.
+ * templates, library templates, the plugin template).
  */
-const APPS = (() => { try { return readdirSync(join(ROOT, 'apps')).filter((a) => !a.startsWith('patches')); } catch { return []; } })();
+const APPS = (() => { try { return readdirSync(join(ROOT, 'apps')); } catch { return []; } })();
 const ROOTS = roots.length ? roots : [
   join(ROOT, 'framework/libs'), join(ROOT, 'framework/react'), join(ROOT, 'framework/templates'), join(ROOT, 'framework/library-templates'),
   ...APPS.flatMap((a) => [join(ROOT, 'apps', a, 'plugins'), join(ROOT, 'apps', a, 'src')]),

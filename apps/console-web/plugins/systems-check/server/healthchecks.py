@@ -122,6 +122,35 @@ def containers(items: list[dict[str, Any]]) -> dict[str, Any]:
             "details": [f"{c.get('name')}: {c.get('status')}" for c in bad], "names": [str(c.get("name")) for c in bad]}
 
 
+AMBERX_PROJECT = "amberx-app"
+AMBERX_BACKUP_MAX_AGE_H = 26
+
+
+def amberx_backups(items: list[dict[str, Any]]) -> dict[str, Any]:
+    """The AmberX app's nightly pg_dump sidecar (compose project `amberx-app`, service `backup`). Its compose healthcheck
+    fails once the newest dump in /opt/amberx-app/backups is older than 26 h, so `(unhealthy)` means stale backups."""
+    def svc(c: dict[str, Any]) -> tuple[str, str]:
+        lb = c.get("labels") or {}
+        return str(lb.get("com.docker.compose.project") or ""), str(lb.get("com.docker.compose.service") or "")
+    stack = [c for c in items if svc(c)[0] == AMBERX_PROJECT or str(c.get("name") or "").startswith(AMBERX_PROJECT + "-")]
+    if not stack:
+        return {"status": "info", "summary": "The AmberX app stack isn't on this host."}
+    bk = next((c for c in stack if svc(c) == (AMBERX_PROJECT, "backup") or str(c.get("name")) == f"{AMBERX_PROJECT}-backup-1"), None)
+    breaks = "AmberX app database backups: nothing new is written to /opt/amberx-app/backups."
+    fix = {"type": "host", "command": f"docker logs --tail 80 {bk.get('name') if bk else AMBERX_PROJECT + '-backup-1'}"}
+    if bk is None:
+        return {"status": "error", "summary": "The AmberX backup container is missing from the amberx-app stack.", "breaks": breaks, "fix": fix}
+    name, state, status = str(bk.get("name")), str(bk.get("state") or ""), str(bk.get("status") or "")
+    if state == "restarting" or "Restarting" in status:
+        return {"status": "error", "summary": f"{name} is in a restart loop, so no backups are being taken.", "details": [status], "breaks": breaks, "fix": fix}
+    if state != "running":
+        return {"status": "error", "summary": f"{name} isn't running ({state or 'unknown'}), so no backups are being taken.", "details": [status], "breaks": breaks, "fix": fix}
+    if "(unhealthy)" in status:
+        return {"status": "error", "summary": f"The newest AmberX database dump is older than {AMBERX_BACKUP_MAX_AGE_H} h.", "details": [status], "breaks": breaks, "fix": fix}
+    return {"status": "ok", "summary": f"{name} is up and the newest dump is under {AMBERX_BACKUP_MAX_AGE_H} h old." if "(healthy)" in status
+            else f"{name} is up ({status})."}
+
+
 # ---------------------------------------------------------------- registration
 
 DISK_FIX = "docker builder prune -af --filter until=72h && docker image prune -af --filter until=168h && df -h /"
@@ -231,6 +260,16 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
     reg.register({"id": "containers", "label": "Containers restarting", "service": "vps", "order": 35,
                   "when": lambda: plugin_services.get("axf.containers@1") is not None, "run": ctr,
                   "instructions": ["Read the container's last log lines (Fix runs docker logs through axHub), fix the cause, then redeploy it in Coolify."]}, OWNER)
+
+    def amberx_bk() -> dict[str, Any]:
+        svc = plugin_services.get("axf.containers@1")
+        if not svc.status().get("ok"):
+            return {"status": "unknown", "summary": "The Docker proxy isn't reachable, so the AmberX backup container can't be checked."}
+        return amberx_backups(svc.list())
+    reg.register({"id": "amberx-backups", "label": "AmberX app backups", "service": "vps", "order": 34, "interval": 15 * 60,
+                  "when": lambda: plugin_services.get("axf.containers@1") is not None, "run": amberx_bk,
+                  "instructions": ["Fix runs docker logs on the backup container through axHub; read the cause, fix it in /opt/amberx-app/src/deploy/prod, then: docker compose -p amberx-app --env-file /opt/amberx-app/.env up -d --no-deps backup.",
+                                   "Take a dump now: docker exec amberx-app-backup-1 /bin/sh /usr/local/bin/backup.sh --once (dumps live in /opt/amberx-app/backups, 14 days kept)."]}, OWNER)
 
     reg.register({"id": "disk", "label": "Disk space", "service": "vps", "order": 36, "run": lambda: probes.disk("/"),
                   "fix": {"type": "host", "command": DISK_FIX},

@@ -10,8 +10,6 @@ import { newPiece, newProject, newSection, uid, type Cue, type CueKind, type Pie
 
 const C = 'https://console.amberxai.com';
 const HUB = 'https://axhub.amberxai.com';
-const PILOT = 'https://pilot.amberxai.com';
-const PATCHES = 'https://patches.amberxai.com';
 const GH = 'https://github.com/MossesX/AmberX-AXF';
 
 interface P { t: string; k: string; n: string; c?: string[]; u?: string; e?: string; tags?: string[] }
@@ -37,7 +35,7 @@ function cue(s: string): Cue {
 const OUTLINE: T[] = [
   t('Welcome', 'play', [
     p('Cold open: one framework, every app', 'intro', 'This is AmberX AXF. One framework, several ports, and every piece of the screen you are looking at is a hot-swappable asset. In the next hour we will click through every setting, every engine and every plugin, and follow one click all the way from a button to axHub and back.', ['nav ' + C, 'wait 1', 'hl .fx-banner', 'hl .fx-menubar', 'hl .fx-nav', 'say Everything you see is an asset'], C, 'Swap the colour theme live while the narrator speaks: the whole console repaints in one frame.'),
-    p('The family of apps', 'concept', 'Four developer apps run on the framework: the Dev Console, Build Pilot, the AXHub web and phone apps, and Patches, which hosts the others in tabs. All of them read their look and settings from one document on axHub, so a change in one shows up in all of them.', ['nav ' + PATCHES, 'click Console tab', 'click Pilot tab', 'click axHub tab'], PATCHES, 'Change spacing in the Console tab, then switch to the Pilot tab: Pilot already uses the new spacing.'),
+    p('The family of apps', 'concept', 'Developer apps run on the framework: the Dev Console, the AXHub web and phone apps, and AmberX. All of them read their look and settings from one document on axHub, so a change in one shows up in all of them.', ['nav ' + C, 'say console · axHub · AmberX'], C, 'Change spacing in the console, then open axHub: it already uses the new spacing.'),
     p('How this video is organised', 'intro', 'We start with the asset model and the engines, then every settings tab, then the Dev Console and each of its plugins, then the data flows through axHub, MCP, GitHub automation, Coolify, Hostinger and Moshi. Chapter markers let you jump straight to any part.', ['say Chapters'], ''),
   ]),
 
@@ -80,7 +78,7 @@ const OUTLINE: T[] = [
       p('Actions registry', 'actionflow', 'Menus, toolbars, context menus and widgets never call code directly; they name an action spec like swap colon colour-theme colon next. The registry resolves it to a handler with its label and permission.', ['click Help', 'click Keyboard shortcuts'], C),
       p('Settings registry: last save wins', 'dataflow', 'Settings are saved per key and merged into what storage holds now, so two editors never revert each other. Editors reload current values whenever they open or regain focus.', ['say Last save wins, per key'], ''),
       p('Diagnostics and alerts engine', 'engine', 'The runtime reports conflicts, duplicate settings keys and crashes as diagnostics. The alerts engine keeps one alert per key: repeats bump the count, a worse severity escalates, a resolved one reopens.', ['click alerts bell', 'click an alert', 'click Acknowledge'], C),
-      p('Embed engine: one banner on screen', 'engine', 'When an app runs inside a host such as Patches it hides the chrome the host shows, and the host can take its settings, notifications, app menu, banners and plugins. The user\'s own saved choice is never touched.', ['nav ' + PATCHES, 'hl one banner'], PATCHES, 'Open the console alone, then inside Patches: its banner disappears because Patches shows one.'),
+      p('Embed engine: one banner on screen', 'engine', 'When an app runs inside a host app it hides the chrome the host shows, and the host can take its settings, notifications, app menu, banners and plugins. The user\'s own saved choice is never touched.', ['hl one banner'], C),
       p('Work engine: background jobs', 'engine', 'Jobs are data: an interval with bounds, a rule per outcome, back-off, one-time notices and conditions. The state machine decides; the host only runs, sleeps and stops.', ['say work@1'], ''),
     ]),
   ]),
@@ -148,7 +146,7 @@ const OUTLINE: T[] = [
     ]),
     t('Look and layout', 'palette', [
       p('Theme manager', 'plugin', 'Roll colour, style and layout over a token tree with locks and presets, preview live, and save as your own assets.', ['click Theme manager', 'click Roll'], C),
-      p('App tabs', 'plugin', 'A tab bar across the page, one tab per AmberX app. Inside Patches it contributes nothing.', ['hl App tabs'], C),
+      p('App tabs', 'plugin', 'A tab bar across the page, one tab per AmberX app. Inside a host app it contributes nothing.', ['hl App tabs'], C),
       p('Plugin switches', 'plugin', 'A plain on and off switch per plugin, asking first when a running plugin needs the one you turn off.', ['click Plugin switches'], C),
       p('Plugin Manager', 'plugin', 'Cards, table, detail and dependency graph for every plugin; install from the catalog, logs, files and lifecycle.', ['click Plugin Manager', 'click Table'], C),
     ]),
@@ -172,7 +170,7 @@ const OUTLINE: T[] = [
   t('Data on axHub', 'cloud', [
     p('The projects tree', 'dataflow', 'axHub has its own volume: slash projects. Each project has underscore claude for memory, instructions and rules, and underscore data with its shared files at the same paths as in the repo.', ['say /projects/<name>/_claude · /_data'], ''),
     p('Shared data: pending list, plan, queue', 'dataflow', 'The root manifest names the shared files. The console reads and writes them on axHub; the repo copies are synced snapshots.', ['nav ' + GH + '/blob/main/project.manifest.json', 'hl data.shared'], GH),
-    p('The data API and appearance@1', 'dataflow', 'Developer apps read slash data slash shared slash settings slash appearance dot json with their hub session. Writes carry If-Match; a conflict answers 409 with the current version; every change is pushed through slash data-events.', ['say GET /data · PUT If-Match · SSE /data-events'], '', 'Change the colour theme in the console: Build Pilot\'s open tab repaints within a second.'),
+    p('The data API and appearance@1', 'dataflow', 'Developer apps read slash data slash shared slash settings slash appearance dot json with their hub session. Writes carry If-Match; a conflict answers 409 with the current version; every change is pushed through slash data-events.', ['say GET /data · PUT If-Match · SSE /data-events'], '', 'Change the colour theme in the console: axHub\'s open tab repaints within a second.'),
     p('Hub down means waiting', 'concept', 'A developer app does not run without the hub: it shows Waiting for axHub with retries, never a stale copy.', ['say Waiting for axHub'], ''),
     p('claude-sync', 'workflow', 'claude-sync three-way syncs every project\'s Claude files and shared data with the hub, and holds conflicts for you to pick.', ['type terminal = claude-sync status', 'key Enter'], ''),
   ]),
@@ -198,13 +196,13 @@ const OUTLINE: T[] = [
 
   t('Coolify, Hostinger and Moshi', 'rocket', [
     p('Coolify and Traefik', 'integration', 'Coolify runs every app as a container behind Traefik, which owns ports 80 and 443. Labels add HTTPS redirects and the axHub wall middleware.', ['say Coolify → Traefik → app'], ''),
-    p('Auto-update cron', 'workflow', 'The console and Build Pilot rebuild from main every five minutes when GitHub has moved.', ['say /etc/cron.d/axf-console'], ''),
+    p('Auto-update cron', 'workflow', 'The console rebuilds from main every five minutes when GitHub has moved.', ['say /etc/cron.d/axf-console'], ''),
     p('Hostinger: VPS and DNS', 'integration', 'The VPS runs on Hostinger. New subdomains are A records to the VPS, changed through the Hostinger connector and logged on axHub.', ['nav https://hpanel.hostinger.com'], 'https://hpanel.hostinger.com'),
     p('Moshi: mosh from the phone', 'integration', 'Moshi keeps a mosh session to the VPS from the phone. UDP ports 60000 to 61000 must be open; claude-pick asks for the model and sign-in at launch.', ['say mosh · ufw 60000-61000 · claude-pick'], ''),
   ]),
 
   t('Wrap-up', 'star', [
-    p('What you can do next', 'outro', 'Open the console, pick a look, build an app with Build Pilot, and watch it arrive on your phone through the app catalog.', ['nav ' + PILOT], PILOT),
+    p('What you can do next', 'outro', 'Open the console, pick a look, build an app, and watch it arrive on your phone through the app catalog.', ['nav ' + C], C),
   ]),
 ];
 

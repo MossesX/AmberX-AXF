@@ -1,5 +1,5 @@
 /**
- * Form controls every AXF web app and plugin share (harvested Oct 21 2026 from Build Pilot's `src/pilot/ui.tsx` and
+ * Form controls every AXF web app and plugin share (harvested Oct 21 2026 from an app's `ui.tsx` and
  * the console's hand-rolled switches): Switch, Field, TextField, SelectField, ChoiceGrid, Note, Section and
  * LibraryParamField. Same names, props and behaviour as the Compose versions in `axf-ui/components/Forms.kt`.
  *

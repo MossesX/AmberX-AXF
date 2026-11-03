@@ -39,6 +39,15 @@ def state() -> dict[str, Any]:
     return _run("state")
 
 
+@router.get("/chat/mentions")
+def chat_mentions(limit: int = 100, negative: bool = False) -> dict[str, Any]:
+    """Group-chat messages about Brett (the boss, the owner), newest first, secrets redacted. Read-only."""
+    args = ["mentions", str(max(1, min(limit, 500)))]
+    if negative:
+        args.append("--negative")
+    return _run(*args)
+
+
 @router.get("/plan/{build_id}")
 def plan(build_id: str) -> dict[str, Any]:
     if not ID.match(build_id):

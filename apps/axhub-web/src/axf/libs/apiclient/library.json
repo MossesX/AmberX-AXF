@@ -3,7 +3,7 @@
   "id": "ai.amberx.axf.apiclient",
   "module": "lib-apiclient",
   "name": "API client (token, calls, streams)",
-  "description": "What every AXF web app needs to talk to its own server: the app's token in localStorage (every access wrapped, change event), Bearer call/post/put/patch/del with ApiError (message + HTTP status) and the standard 401/404 messages, file download and token-protected blobs, and a TokenDialog built from the framework's React controls and theme classes. Server-Sent Events come from framework/core/sse.ts (readSse, followSse with back-off). Harvested Oct 2026 from the Dev Console, its plugins and Build Pilot.",
+  "description": "What every AXF web app needs to talk to its own server: the app's token in localStorage (every access wrapped, change event), Bearer call/post/put/patch/del with ApiError (message + HTTP status) and the standard 401/404 messages, file download and token-protected blobs, and a TokenDialog built from the framework's React controls and theme classes. Server-Sent Events come from framework/core/sse.ts (readSse, followSse with back-off). Harvested Oct 2026 from the Dev Console and its plugins.",
   "features": [
     "w.realtime"
   ],

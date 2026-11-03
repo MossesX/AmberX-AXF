@@ -82,6 +82,17 @@ above = dropped; work lines are never dropped), chattiness, cussing and drama sl
 banter budget (quiet when hit), presets (All business, Work crew, Break room, Off the rails, plus your own), a live
 preview, and Color by vibe (also on the chat's right-click menu).
 
+**Read by AI sessions (read-only, Nov 3 2026):** every save of the swarm state mirrors the chat to the hub's shared
+data, secrets redacted (`web/chat-watch.mjs`): `/projects/amberx-axf/_data/agent-swarm/chats/` = `index.json`
+(breakroom-chats@1: the chats, counts, paths), `group.json` (breakroom-chat@1: the messages, speaker names) and
+`mentions.json` (breakroom-mentions@1: messages about Brett / the boss / the owner, newest first, each with chat, agent,
+time, matched terms and tone `negative|neutral`). A Claude session reads them with axHub `memory_read` (project
+`amberx-axf`, area `data`, path `agent-swarm/chats/mentions.json`); nothing there is ever read back into the swarm.
+A bare "Boss" is the orchestrator and Boss's and Brett's own posts never count. Also: `swarm.mjs mentions [n]
+[--negative]`, `swarm.mjs chats-export` (rewrite the mirror now), `GET /api/plugins/agent-swarm/chat/mentions`
+(`limit`, `negative`), and Breakroom → Group chat → **Everyone / About Brett / Negative**. `AXF_SWARM_CHATS_DIR`
+moves the mirror (`off` = none). Uninstall removes it.
+
 ## Jobs and the crew (agent jobs, Nov 1 2026)
 
 Recurring kinds of work are **job types** (`job-type@1` assets in `framework/assets/job-type/`, rules
@@ -108,7 +119,7 @@ build steps.
 ## Files
 
 - Code: this folder. Data: `.axf-console/plugins/agent-swarm/` (`state.json`, `runs.json`, `merges.json`,
-  `pilot-*.json`, `worktrees/`).
+  `pilot-*.json`, `worktrees/`); the read-only chat mirror on the hub (`agent-swarm/chats/` in amberx-axf `_data`).
 - Self-test: `node apps/console-web/plugins/agent-swarm/test.mjs`.
 - Remove: `node apps/console-web/plugins/agent-swarm/uninstall.mjs --all`.
 

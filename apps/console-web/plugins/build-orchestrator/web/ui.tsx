@@ -172,7 +172,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
     catch { rt.toast('Clipboard blocked', 'warning'); }
   };
   return (
-    <article className={`${embedded ? 'oc-embedded ' : ''}pd-card is-${b.status === 'complete' ? 'complete' : b.status === 'failed' ? 'failed' : b.status === 'blocked' ? 'broken' : 'pending'}`} role={embedded ? undefined : "listitem"} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={b.id}>
+    <article className={`${embedded ? 'oc-embedded ' : ''}pd-card is-${core.isFinished(b.status) ? 'complete' : b.status === 'failed' ? 'failed' : b.status === 'blocked' ? 'broken' : 'pending'}`} role={embedded ? undefined : "listitem"} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={b.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{embedded ? <span className="fx-small fx-muted">Build</span> : b.title}<span className="fx-muted fx-small fx-mono"> {b.id}</span>{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</h2>
         <button data-fx-row className={`pd-badge oc-badge is-${b.status}`} aria-expanded={statusOpen} aria-label={`Status: ${b.status}. Change`} onClick={() => setStatusOpen((o) => !o)}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</button>
@@ -187,7 +187,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         {p.total > 0 && <span className="pd-est"><Icon name="check-circle" size={13} />{p.done}/{p.total} steps{p.minutesLeft ? ` · ${core.formatMinutes(p.minutesLeft)} left` : ''}</span>}
         {core.MODELS.map((m) => (p.byModel as Record<string, number>)[m] ? <span key={m} className={`oc-model is-${m.toLowerCase()}`}>{m} {core.formatMinutes((p.byModel as Record<string, number>)[m])}</span> : null)}
         {p.switches > 0 && <span title="Model switches; each one waits for your approval"><Icon name="zap" size={13} />{p.switches} switch{p.switches === 1 ? '' : 'es'}</span>}
-        {split.needsSplit && b.status !== 'complete' && <span className="pd-split" title={split.reasons.join('; ')}><Icon name="alert" size={13} />needs splitting</span>}
+        {split.needsSplit && !core.isFinished(b.status) && <span className="pd-split" title={split.reasons.join('; ')}><Icon name="alert" size={13} />needs splitting</span>}
         {b.category && <span><Icon name="layers" size={13} />{b.category}</span>}
         {b.pendingId && <span className="fx-mono">pending:{b.pendingId}</span>}
         {b.branch && <span className="fx-mono">{b.branch}</span>}
@@ -198,7 +198,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           <Button tone="primary" icon="check" disabled={busy} onClick={() => act({ action: 'approve', id: b.id, phase: n.phase!.index })}>Approve switch to {n.phase.model}</Button>
         </div>
       )}
-      {!n.needsApproval && n.step && b.status !== 'complete' && <p className="fx-small fx-muted">Next: <b>{n.step.id}</b> on <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model}</span> — {n.step.text}</p>}
+      {!n.needsApproval && n.step && !core.isFinished(b.status) && <p className="fx-small fx-muted">Next: <b>{n.step.id}</b> on <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model}</span> — {n.step.text}</p>}
       {mode === 'edit' ? (
         <div className="fx-stack">
           <label className="pd-field">Title<input className="fx-input" value={title} onChange={(e) => setTitle(e.target.value)} /></label>
@@ -264,7 +264,7 @@ function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { inde
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
   return (
     <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
-      <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || b.status === 'complete' || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
+      <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
       <span className="oc-steptools">
@@ -461,7 +461,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
   });
   const cols: GridColumn<GStep>[] = [
     { id: 'done', label: 'Done', width: 'calc(var(--fx-font-size) * 3)', sortable: true, sortValue: (s) => (s.done ? 1 : 0),
-      render: (s) => <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || b.status === 'complete' || (s.locked && !s.done)} onClick={(e) => e.stopPropagation()} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={s.locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} /> },
+      render: (s) => <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (s.locked && !s.done)} onClick={(e) => e.stopPropagation()} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={s.locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} /> },
     { id: 'id', label: '#', width: 'calc(var(--fx-font-size) * 3.5)', sortable: true, sortValue: (s) => s.index, render: (s) => <span className="fx-small fx-mono">{s.id}{s.next && <span className="oc-flag"> next</span>}</span> },
     { id: 'text', label: 'Step', width: 'minmax(calc(var(--fx-font-size) * 14), calc(var(--fx-font-size) * 22))', fixed: true, sortable: true, sortValue: (s) => s.text.toLowerCase(),
       render: (s) => <span className="oc-cell-title" title={s.why ? `${s.text} — ${s.why}` : s.text}><span className={s.done ? 'oc-done' : ''}>{s.text}</span>{(s.why || s.session === 'new' || s.agent) && <span className="fx-small fx-muted">{s.why}{s.session === 'new' ? ' · new session' : ''}{s.agent ? ' · sub-agent ok' : ''}</span>}</span> },

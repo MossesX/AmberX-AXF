@@ -58,7 +58,7 @@ export interface AxfWebLibrary {
   /** Banners the app shows at the top of the page, above app tabs (slot `app.frame.banners`; e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
   /**
-   * Inside a host app (embed@1, e.g. Patches): when this library isn't needed there, because the host already does its
+   * Inside a host app (embed@1): when this library isn't needed there, because the host already does its
    * job or hides what it draws (`skipWhen`: `embedded` | `take:<fn>` | `hidden:<type>`; see engines/embed.ts
    * embedSkipReason). It is then not installed on that page and is listed in `rt.skippedLibraries`; standalone it loads.
    */

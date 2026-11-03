@@ -60,7 +60,7 @@ public sealed interface EmbedMessage {
  *   query        &axf-embed-take=<fn>[,<fn>]   &axf-embed-page=<fn>
  *   user agent   AXF-Embed-Take/<fn>[+<fn>]    (its own token, next to AXF-Embed/<host>)
  *
- * The host (Patches) marks its WebViews with [userAgentSuffix] and builds settings-page URLs with [embedUrl]; it reads
+ * The host marks its WebViews with [userAgentSuffix] and builds settings-page URLs with [embedUrl]; it reads
  * what a page sends through its JS bridge with [parseMessage].
  */
 public object EmbedTakes {
