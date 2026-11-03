@@ -568,10 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:53 UTC · `builds-one-page` s14 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` note (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` branch claude/builds-one-page-done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page-done` s2 done (urgent) · snap-sully
 - 2026-11-03 17:56 UTC · `builds-one-page` PR #134, note (refactor) · reconciler
 - 2026-11-03 17:56 UTC · `builds-one-page` note (refactor) · foreign-write
 - 2026-11-03 17:56 UTC · `menu-scroll` added (6 steps) (urgent) · orchestrator
@@ -968,3 +964,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:01 UTC · `whats-new-open-fix` s1 done, note (current) · foreign-write
 - 2026-11-03 22:01 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
 - 2026-11-03 22:01 UTC · `molly-nav-submenus` added (20 steps) (current) · foreign-write
+- 2026-11-03 21:59 UTC · `plugin-settings-placement` PR #289, note (current) · reconciler
+- 2026-11-03 22:02 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 22:02 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:02 UTC · `terminal-drag-chain-tree` s2 done (current) · foreign-write
