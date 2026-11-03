@@ -43,9 +43,10 @@ Start with `overview`, then `build_next` to see what to build next and which mod
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick
 one off with `pending_change(action="step", …)` or `build_steps(index=…, done=True)` as you finish it.
-Model policy (top three models only): Fable 5.1 where the work needs the strongest reasoning (kernel internals,
-porting, cross-port contracts, heavy refactors); Opus 5.5 for everything else; Sonnet 5.5 only where it is clearly
-enough. Security-adjacent work (servers, shells, auth, deploy) stays on Opus.
+Model policy (framework/core/model-policy.mjs): Opus or Fable only, never Sonnet or Haiku. Fable 5.1 for foundation
+work (kernel internals, porting, cross-port contracts, schemas, heavy refactors); Opus 5.5 for everything else.
+Model switches: a downgrade (Fable → Opus) is fine; an UPGRADE (Opus → Fable) needs Brett's approval. Stop at it and
+ask (orchestrator.mjs request-upgrade); never approve one yourself.
 When you finish building a step, call `build_step` with action "complete": the epic and its linked features are
 marked built in the feature tracker, and steps that depended on it are re-checked for rework.
 After reordering with `build_reorder`, call `build_reprocess` (apply=false to preview, then apply=true)."""
@@ -108,8 +109,11 @@ def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[
     return out
 
 
-def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None) -> MCPServer:
-    """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict."""
+def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+                 console: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
+    """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict; `control(command)` runs
+    one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools); `console(command)`
+    runs one command of the console domain in the caller's open console (None = no console_* tools)."""
     mcp = MCPServer(name="amberx-axf", title="GizmoX AI Studio", version="0.2.0", instructions=INSTRUCTIONS,
                     website_url="https://console.amberxai.com")
 
@@ -379,6 +383,20 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     # ------------------------------------------------------------------ Standards: project manifests
 
+    @mcp.tool(annotations=WRITE)
+    async def orchestrator_upgrade_approve(build: str, phase: int, request: str = "") -> dict[str, Any]:
+        """Brett approves a model UPGRADE (e.g. Opus → Fable) on one phase of a Build orchestrator build. axHub runs this
+        only after Brett approves it there (policy confirm, never veto); a session asks with
+        `orchestrator.mjs request-upgrade <build> <phase>`, sends this call once through axHub with its reason, and stops.
+        Never call it directly: a Claude session, headless build or agent calling it is refused and changes nothing.
+        Downgrades need no approval."""
+        if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,79}", build or "") or not (0 <= int(phase) < 200):
+            raise ToolError("build is an orchestrator build id and phase its 0-based index")
+        r = await anyio.to_thread.run_sync(lambda: upgrade_via_axhub(build, int(phase), request))
+        if not r.get("ok"):
+            raise ToolError(r.get("error") or "upgrade approval failed")
+        return {"build": build, "phase": phase, "log": r.get("log", [])}
+
     @mcp.tool(annotations=READ)
     async def project_list() -> dict[str, Any]:
         """Every project in the repo with a manifest (project.manifest.json, project-manifest@1): its name (= its folder
@@ -497,6 +515,16 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
             lines = [l for l in terminal(since)][-max(1, min(limit, 500)):]
             return {"lines": [f"[{l['channel']}] {l['level']}: {l['text']}" for l in lines], "last": lines[-1]["at"] if lines else since}
 
+    # ------------------------------------------------------------------ control@1 (Token control plugin): tokens, AmberX, planner
+
+    if control is not None:
+        _register_control_tools(mcp, control)
+
+    # ------------------------------------------------------------------ console commands (Console commands plugin): load screens in the open console
+
+    if console is not None:
+        _register_console_tools(mcp, console)
+
     # ------------------------------------------------------------------ resources + prompt
 
     @mcp.resource("axf://build-queue", name="build-queue", title="Build queue", mime_type="application/json",
@@ -523,6 +551,340 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     return mcp
 
 
+# ---------------------------------------------------------------------- model upgrades (Nov 3 2026)
+
+ORCH_CLI = Path(__file__).resolve().parents[1] / "plugins" / "build-orchestrator" / "orchestrator.mjs"
+
+
+def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, Any]:
+    """Record Brett's axHub approval of an upgrade in the orchestrator (framework/core/model-switch.mjs). The CLI still
+    refuses when this process runs inside a Claude session, headless build or agent (the local stdio server under Claude
+    Code), so only the console server, called by axHub after Brett's approval, records it."""
+    env = {k: v for k, v in os.environ.items() if k not in ("AXF_APPROVER", "AXF_APPROVER_VIA")}
+    env.update(AXF_APPROVER=f"brett (axHub approval{' ' + request[:60] if request else ''})", AXF_APPROVER_VIA="axhub", AXF_ACTOR="axhub-approval")
+    change = {"action": "approve", "id": build, "phase": phase}
+    p = subprocess.run(["node", str(ORCH_CLI), "act", json.dumps(change), "--json"], cwd=ORCH_CLI.parents[4], capture_output=True, text=True, timeout=60, env=env)
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+
+
+# ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
+
+CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
+                   "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
+                   "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
+                   "plugins.commands", "plugins.reads")
+ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
+                        "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds",
+                        "console.screens", "console.dialogs", "console.settings", "console.actions", "console.nav", "console.clients", "pass.scopes",
+                        "plugins.commands", "plugins.reads"]
+PassScope = Literal["all", "theme", "style", "layout", "tokens"]
+# all = everything (the default since build pass-all); tokens = theme, style and layout together
+PASS_SCOPE_IDS = {"all": "all", "theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "tokens": "tokens.*"}
+DESTRUCTIVE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=False)
+IDEMPOTENT = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+
+
+def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
+    """The seven control_* tools (one per op, as controlTools() in control-rules.mjs projects them) plus amberx_* and
+    plan_park shortcuts. A failure raises a ToolError with its wire code, except confirmation_required: that answer is
+    returned as data so the caller sees the confirm token to send back."""
+
+    async def go(command: dict[str, Any]) -> dict[str, Any]:
+        command = {k: v for k, v in command.items() if v not in (None, "")}
+        command.setdefault("by", "mcp")
+        r = await anyio.to_thread.run_sync(lambda: control(command))
+        if not r.get("ok") and r.get("code") != "confirmation_required":
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    @mcp.tool(annotations=READ)
+    async def control_list(target: ControlTarget, select: dict[str, Any] | None = None) -> dict[str, Any]:
+        """List the tokens of a token set (tokens.*: every id with its value now, the theme's own value and whether it is
+        overridden) or the records of an AmberX / planner target. `select` filters: amberx.items kind, list, deep,
+        status (open|doing|done|not-done), tag, q, pinned, starred, due (overdue|today|upcoming|later|none), limit;
+        amberx.lists parent, q; planner.plans status, priority, category, tag, project, q, limit; planner.builds profile,
+        status, category, q, includeHidden, limit."""
+        return await go({"op": "list", "target": target, "select": select or None})
+
+    @mcp.tool(annotations=READ)
+    async def control_get(target: ControlTarget, path: str) -> dict[str, Any]:
+        """One token (its value, the theme's value, unit, range) or one record by id."""
+        return await go({"op": "get", "target": target, "path": path})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def control_set(target: ControlTarget, path: str, value: Any, by: str = "", reason: str = "") -> dict[str, Any]:
+        """Set a token (an override in the axHub look: every app follows; tokens.slots = swap the active asset of a slot)
+        or change a record's fields (value = an object of fields)."""
+        return await go({"op": "set", "target": target, "path": path, "value": value, "by": by, "reason": reason})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def control_reset(target: ControlTarget, path: str = "", by: str = "", reason: str = "") -> dict[str, Any]:
+        """Drop a token override (every override of the set when path is left out; tokens.slots needs a slot)."""
+        return await go({"op": "reset", "target": target, "path": path, "by": by, "reason": reason})
+
+    @mcp.tool(annotations=WRITE)
+    async def control_add(target: ControlTarget, value: dict[str, Any], by: str = "", reason: str = "") -> dict[str, Any]:
+        """Add a record: an AmberX note / to-do / task (value.kind, text, title, list, due, tags, priority, checklist,
+        parent), a list (name, parent), a plan (title, summary, category…; parked unless status is given) or an
+        orchestrator build (title, detail, category, steps [{text, model Fable|Opus, estimate}])."""
+        return await go({"op": "add", "target": target, "value": value, "by": by, "reason": reason})
+
+    @mcp.tool(annotations=DESTRUCTIVE)
+    async def control_remove(target: ControlTarget, path: str, confirm: str = "", by: str = "", reason: str = "") -> dict[str, Any]:
+        """Delete a record. Needs a confirm token: the first call answers confirmation_required with `confirm`; tell the
+        user what will be deleted and call again with the same target and path plus that token within 10 minutes."""
+        return await go({"op": "remove", "target": target, "path": path, "confirm": confirm, "by": by, "reason": reason})
+
+    @mcp.tool(annotations=WRITE)
+    async def control_act(target: ControlTarget, path: str, action: str, input: dict[str, Any] | None = None, by: str = "", reason: str = "") -> dict[str, Any]:
+        """Run a verb on a record. amberx.items: done, undone, move {list}, merge {ids}, pin {on}, star {on},
+        check {item, done}. amberx.lists: move {parent}, reorder {ids}, rename {name}. planner.plans: park,
+        build {profile, buildId}, restore {version}, export {format json|md}, step {step, done}, comment {text}.
+        planner.builds: step {step, done}, approve {phase}, status {status}, note {text}, rename {title},
+        rename-step {step, title}, add-step {text, model, estimate, after}, edit-step {step, patch},
+        skip-step {step, why}, remove-step {step, why}, move-step {step, to}, archive, hide, unhide
+        (input.profile picks the build profile). pass.scopes (path all|tokens.theme|style|layout|*): grant {minutes,
+        reason, include_irreversible} (a request Brett approves), revoke, undo; approve / deny only work from Brett's
+        own session."""
+        return await go({"op": "act", "target": target, "path": path, "action": action, "input": input or {}, "by": by, "reason": reason})
+
+    # AmberX shortcuts (the same commands, named for what people ask)
+
+    @mcp.tool(annotations=READ)
+    async def amberx_find(q: str = "", kind: Literal["", "note", "todo", "task"] = "", list: str = "", status: Literal["", "open", "doing", "done", "not-done"] = "",
+                          due: Literal["", "overdue", "today", "upcoming", "later", "none"] = "", limit: int = 50) -> dict[str, Any]:
+        """Find AmberX notes, to-dos and tasks (every device's) by words, kind, list id, status or due bucket."""
+        select = {k: v for k, v in {"q": q, "kind": kind, "list": list, "status": status, "due": due}.items() if v}
+        select["limit"] = max(1, min(limit, 500))
+        return await go({"op": "list", "target": "amberx.items", "select": select})
+
+    @mcp.tool(annotations=WRITE)
+    async def amberx_add(text: str, kind: Literal["note", "todo", "task"] = "note", title: str = "", list: str = "", due: str = "",
+                         tags: list[str] | None = None, priority: Literal[0, 1, 2, 3] = 0) -> dict[str, Any]:
+        """Add an AmberX note, to-do or task (it shows on every device). `list` = a list id (amberx.lists; Inbox when
+        left out), `due` = YYYY-MM-DD, priority 0 none … 3 high."""
+        value: dict[str, Any] = {"kind": kind, "text": text, "priority": priority}
+        for k, v in (("title", title), ("list", list), ("due", due)):
+            if v:
+                value[k] = v
+        if tags:
+            value["tags"] = tags
+        return await go({"op": "add", "target": "amberx.items", "value": value})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def amberx_update(id: str, fields: dict[str, Any]) -> dict[str, Any]:
+        """Change an AmberX item's fields (title, text, summary, tags, pinned, starred, status, priority, due, checklist,
+        list, parent, url)."""
+        return await go({"op": "set", "target": "amberx.items", "path": id, "value": fields})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def amberx_done(id: str, done: bool = True) -> dict[str, Any]:
+        """Tick an AmberX to-do or task done (or back to open with done=false)."""
+        return await go({"op": "act", "target": "amberx.items", "path": id, "action": "done" if done else "undone", "input": {}})
+
+    @mcp.tool(annotations=WRITE)
+    async def amberx_move(id: str, list: str) -> dict[str, Any]:
+        """Move an AmberX item (and its subtasks) to another list (id, or a list name: "groceries")."""
+        return await go({"op": "act", "target": "amberx.items", "path": id, "action": "move", "input": {"list": list}})
+
+    @mcp.tool(annotations=DESTRUCTIVE)
+    async def amberx_remove(id: str, confirm: str = "") -> dict[str, Any]:
+        """Delete an AmberX item (and its subtasks). First call answers confirmation_required with a token; confirm with
+        the user, then call again with it."""
+        return await go({"op": "remove", "target": "amberx.items", "path": id, "confirm": confirm})
+
+    # Veto passes (control-pass@1, CONTROL.md → Veto passes): "allow everything for the next 30 minutes". pass_* are the
+    # names; token_pass_* (build theme-veto-pass) stay as the same tools under their old names.
+
+    async def pass_grant(scope: PassScope = "all", minutes: int = 30, reason: str = "", include_irreversible: bool = False, by: str = "") -> dict[str, Any]:
+        """Ask for a timed veto pass. scope all (the default) = every command through the API, MCP or CLI on every
+        plugin and every call axHub holds runs without the veto countdown, ordinary deletes without the confirm token;
+        theme / style / layout / tokens = only token set / reset there. Irreversible deletes (AmberX hard deletes, tools
+        axHub marks irreversible) still confirm unless include_irreversible (all only). This only files a request:
+        Brett approves it once (console banner → Pass, or axHub's approval), never this tool. Minutes 1-240 (default
+        30). Asking again for a scope with an active pass replaces it from the approval on. Tell Brett in one line that
+        it is waiting."""
+        inp: dict[str, Any] = {"minutes": minutes, **({"reason": reason} if reason else {}), **({"include_irreversible": True} if include_irreversible else {})}
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "grant", "input": inp, "by": by, "reason": reason})
+
+    async def pass_status(scope: Literal["", "all", "theme", "style", "layout", "tokens"] = "") -> dict[str, Any]:
+        """Which veto passes are on, until when, and any request waiting for Brett, in plain words ("Every command runs
+        without veto until 10:42 AM"). No scope = every scope."""
+        if scope:
+            return await go({"op": "get", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope]})
+        return await go({"op": "list", "target": "pass.scopes"})
+
+    async def pass_revoke(scope: PassScope = "all", by: str = "", reason: str = "") -> dict[str, Any]:
+        """End a veto pass now (and withdraw a waiting request for it): commands in the scope need the veto again."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "revoke", "input": {}, "by": by, "reason": reason})
+
+    async def pass_undo(scope: PassScope = "all", by: str = "", reason: str = "") -> dict[str, Any]:
+        """Roll back what the scope's latest pass changed that can be rolled back (every token goes back to what it was
+        before the pass first touched it) and list what can't (`notUndoable`: AmberX, planner and other commands, each
+        named). The pass itself stays as it is."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "undo", "input": {}, "by": by, "reason": reason})
+
+    for fn, ann in ((pass_grant, WRITE), (pass_status, READ), (pass_revoke, IDEMPOTENT), (pass_undo, WRITE)):
+        mcp.tool(annotations=ann)(fn)
+        mcp.tool(name=f"token_{fn.__name__}", annotations=ann, description=f"Same as {fn.__name__} (old name). {fn.__doc__}")(fn)
+
+    @mcp.tool(annotations=WRITE)
+    async def plan_park(title: str, summary: str = "", category: str = "", body: str = "") -> dict[str, Any]:
+        """"Put it in a plan for later": a parked Plan Studio plan (never a build; it becomes one only when Brett says)."""
+        return await go({"op": "add", "target": "planner.plans", "value": {k: v for k, v in {"title": title, "summary": summary, "category": category, "body": body, "status": "parked"}.items() if v}})
+
+
+# ---------------------------------------------------------------------- console commands (control@1 console domain)
+
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients")
+Delivery = str  # "recent" (the console used last), "all", or a client id from console_clients
+
+
+def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
+    """The console_* tools (= CONSOLE_TOOLS in core/engines/console-commands.mjs): what a Claude session calls when Brett
+    says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message). A
+    failure raises a ToolError with its wire code, except confirmation_required (returned, so the token is seen)."""
+
+    async def go(command: dict[str, Any]) -> dict[str, Any]:
+        command = {k: v for k, v in command.items() if v not in (None, "", {})}
+        command.setdefault("by", "mcp")
+        r = await anyio.to_thread.run_sync(lambda: console(command))
+        if not r.get("ok") and r.get("code") != "confirmation_required":
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    def inp(to: str, **more: Any) -> dict[str, Any]:
+        d = {k: v for k, v in more.items() if v not in (None, "", [])}
+        if to and to != "recent":
+            d["to"] = to
+        return d
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
+        """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
+        `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
+        "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
+        return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_dialog(dialog: str, arg: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a dialog in the open console by id, title or words (`arg` = the dialog's optional argument)."""
+        return await go({"op": "act", "target": "console.dialogs", "path": dialog, "action": "open", "input": inp(to, arg=arg)})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_settings(tab: str, anchor: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a Settings tab or sub-tab in the open console: its id ("appearance"), "plugins/<plugin>" for a plugin's
+        sub-tab under Settings → Plugins, or its title. `anchor` scrolls to one setting ("setting:<key>") or group."""
+        return await go({"op": "act", "target": "console.settings", "path": tab, "action": "open", "input": inp(to, anchor=anchor)})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_action(action: str, args: list[str] | None = None, confirm: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Run a registered action in the open console (menus, toolbar, search all use them): its id ("terminal.open"),
+        a spec with arguments ("swap:color-theme:dark") or its label. Actions that only navigate run straight away; one
+        that changes data needs the permission the action itself requires; one that deletes or resets answers
+        confirmation_required with `confirm`: tell Brett what it will do, then call again with that token."""
+        return await go({"op": "act", "target": "console.actions", "path": action, "action": "run", "input": inp(to, args=args or None), "confirm": confirm})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def console_back(move: Literal["back", "home", "close"] = "back", to: Delivery = "recent") -> dict[str, Any]:
+        """Move the open console: back (closes an open dialog first, else the screen before), home, or close (the dialog)."""
+        return await go({"op": "act", "target": "console.nav", "path": "here", "action": move, "input": inp(to)})
+
+    @mcp.tool(annotations=READ)
+    async def console_where() -> dict[str, Any]:
+        """Where Brett's open console is now: screen, open dialog, settings tab, and which console that is."""
+        return await go({"op": "get", "target": "console.nav", "path": "here"})
+
+    @mcp.tool(annotations=READ)
+    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
+        """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs or actions,
+        best matches for `q` first (all of them when q is empty)."""
+        return await go({"op": "list", "target": f"console.{kind}", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 500))}.items() if v}})
+
+    @mcp.tool(annotations=READ)
+    async def console_clients() -> dict[str, Any]:
+        """The consoles open right now (one per browser tab: id, device, screen, last used). Commands go to the one
+        used last unless `to` names another (or "all")."""
+        return await go({"op": "list", "target": "console.clients"})
+
+
+def console_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
+    """Console commands through the capability when the console runs (its open consoles are there); in stdio mode
+    (a local clone) they are sent to the console itself: AXF_CONSOLE_URL (default https://console.amberxai.com) with
+    AXF_TOKEN, since only the console knows Brett's open browser tabs."""
+
+    def remote(command: dict[str, Any]) -> dict[str, Any]:
+        import urllib.error
+        import urllib.request
+        url = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/console"
+        req = urllib.request.Request(url, data=json.dumps({"$axf": "control@1", **command}).encode(), method="POST",
+                                     headers={"content-type": "application/json", **({"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {})})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as res:
+                return json.loads(res.read().decode() or "{}")
+        except urllib.error.HTTPError as e:
+            try:
+                return json.loads(e.read().decode() or "{}")
+            except ValueError:
+                return {"ok": False, "code": "unexpected", "message": f"{e.code} from {url}"}
+        except (OSError, ValueError) as e:
+            return {"ok": False, "code": "unexpected", "message": f"could not reach {url}: {str(e)[:200]}"}
+
+    def run(command: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import plugin_services  # the console's registry (absent in stdio mode)
+        except ImportError:
+            return remote(command)
+        if any(s["name"] == "console-commands@1" for s in plugin_services.available()):
+            svc = plugin_services.get("console-commands@1")
+            if svc is None:
+                return {"ok": False, "code": "not_implemented", "message": "the Console commands plugin is turned off (Settings → Plugins)"}
+            return svc.run(command, ["*"], str(command.get("by") or "mcp"))
+        return {"ok": False, "code": "not_implemented", "message": "no plugin provides console-commands@1 (the Console commands plugin)"}
+
+    return run
+
+
+def control_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
+    """control@1 through the capability: the console's enabled provider (plugin_services) when the console runs, else
+    (stdio against a clone) the runner of the plugin whose plugin.json provides service:control@1."""
+
+    def local(command: dict[str, Any]) -> dict[str, Any]:
+        for pj in sorted((root / "apps" / "console-web" / "plugins").glob("*/plugin.json")):
+            try:
+                m = json.loads(pj.read_text())
+            except (OSError, ValueError):
+                continue
+            runner = pj.parent / "control.mjs"
+            if "service:control@1" in (m.get("provides") or []) and runner.exists():
+                p = subprocess.run(["node", str(runner), "run"], input=json.dumps({"command": command, "grants": ["*"], "by": command.get("by", "mcp")}),
+                                   cwd=root, capture_output=True, text=True, timeout=120)
+                lines = p.stdout.strip().splitlines()
+                try:
+                    return json.loads(lines[-1]) if lines else {"ok": False, "code": "unexpected", "message": p.stderr.strip()[-600:] or "no output"}
+                except json.JSONDecodeError:
+                    return {"ok": False, "code": "unexpected", "message": (p.stderr or p.stdout).strip()[-600:]}
+        return {"ok": False, "code": "not_implemented", "message": "no plugin provides control@1 (the Token control plugin)"}
+
+    def run(command: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import plugin_services  # the console's registry (absent in stdio mode)
+        except ImportError:
+            return local(command)
+        if any(s["name"] == "control@1" for s in plugin_services.available()):
+            svc = plugin_services.get("control@1")
+            if svc is None:
+                return {"ok": False, "code": "not_implemented", "message": "the Token control plugin is turned off (Settings → Plugins)"}
+            return svc.run(command, ["*"], str(command.get("by") or "mcp"))
+        return local(command)
+
+    return run
+
+
 # ---------------------------------------------------------------------- stdio (local clone)
 
 def _local_call(root: Path) -> Call:
@@ -543,4 +905,4 @@ if __name__ == "__main__":
     root = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[3])).resolve()
     if not (root / "framework" / "cli" / "engine-rpc.mjs").exists():
         sys.exit(f"AXF_ROOT {root} is not an AmberX AXF checkout")
-    build_server(_local_call(root)).run()
+    build_server(_local_call(root), control=control_runner(root), console=console_runner(root)).run()

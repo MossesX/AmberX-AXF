@@ -13,8 +13,8 @@ const skills = Object.fromEntries(readdirSync(here('./agents/skills/')).filter((
 
 // s1 roster + skills
 t('roster and skills are valid', () => assert.deepEqual(c.checkRoster(roster, skills), []));
-t('the eight build skills and the eight job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'docs', 'feature-build', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'ops-fix', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
-t('the job crew are all-rounders: every skill, a home job, nobody let go', () => { const crew = roster.agents.filter((a) => a.jobsOnly); assert.deepEqual(crew.map((a) => a.id).sort(), ['earl', 'joey', 'lenny', 'paulie', 'rhonda', 'sully']); for (const a of crew) { assert.ok(a.skills.includes('*'), a.id); assert.ok(a.home, a.id); assert.ok(a.models.includes('fable'), a.id); } });
+t('the eight build skills and the nine job-crew skills exist', () => assert.deepEqual(Object.keys(skills).sort(), ['assets-themes', 'banner-janitor', 'ci-fix', 'docs', 'feature-build', 'kotlin-compose', 'landing', 'listener-qa', 'merge-fixer', 'ops-fix', 'plugin-manifests', 'python-server', 'react-ui', 'screenshots', 'site-checks', 'tests', 'walkthroughs']));
+t('the job crew are all-rounders: every skill, a home job, nobody let go', () => { const crew = roster.agents.filter((a) => a.jobsOnly); assert.deepEqual(crew.map((a) => a.id).sort(), ['earl', 'gina', 'joey', 'lenny', 'paulie', 'rhonda', 'sully']); for (const a of crew) { assert.ok(a.skills.includes('*'), a.id); assert.ok(a.home, a.id); assert.ok(a.models.includes('fable'), a.id); } });
 t('job crew never gets build steps', () => { const p = c.planJobs([{ id: 'b', steps: [{ id: 's1', text: 'take screenshots of the site check page and land it', files: [] }] }], roster); assert.ok(p.jobs.every((j) => !roster.agents.find((a) => a.id === j.agent).jobsOnly)); });
 t('every skill is under one page', () => { for (const s of Object.values(skills)) assert.ok(s.lines <= c.SKILL_MAX_LINES && s.chars <= c.SKILL_MAX_CHARS, s.id); });
 t('models sort cheapest first, blocked ones coerced up (model policy: never Sonnet or Haiku)', () => { assert.deepEqual(c.normAgent({ id: 'x', models: ['opus', 'haiku', 'nope'] }).models, ['opus']); assert.deepEqual(c.normAgent({ id: 'y', models: ['fable', 'sonnet'] }).models, ['opus', 'fable']); assert.deepEqual(c.normAgent({ id: 'z' }).models, ['opus']); });
@@ -53,8 +53,23 @@ t('skill match picks the specialist', () => {
   assert.deepEqual(p.jobs.map((j) => j.agent), ['rio', 'py', 'doc']);
 });
 t('the model comes from the policy: the step\'s pin wins, else foundation words → Fable, else the default', () => {
-  const p = c.planJobs(B('b', [{ text: 'Update the README docs' }, { text: 'React card view' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }]), roster);
+  const b = { ...B('b', [{ text: 'Update the README docs' }, { text: 'React card view' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }]), approvals: [{ phase: 1, from: 'Opus', to: 'Fable', by: 'brett', via: 'console' }] };
+  const p = c.planJobs(b, roster);
   assert.deepEqual(p.jobs.map((j) => j.model), ['opus', 'opus', 'fable', 'opus'], 'cheap tiers run as Opus (model policy); an Opus pin holds even on engine words');
+});
+t('model upgrades need Brett: an unapproved Opus → Fable phase gets no job; a self-approval does not count; downgrades run', () => {
+  const steps = [{ text: 'Update the README docs' }, { text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Refactor the engine' }];
+  const none = c.planJobs(B('b', steps), roster);
+  assert.deepEqual(none.jobs.map((j) => j.stepId), ['s1', 's3']); assert.ok(none.warnings.some((w) => /b\.s2: waits for Brett/.test(w)));
+  const self = c.planJobs({ ...B('b', steps), approvals: [{ phase: 1, from: 'Opus', to: 'Fable', selfApproved: true }] }, roster);
+  assert.ok(!self.jobs.some((j) => j.stepId === 's2'));
+  const down = c.planJobs(B('d', [{ text: 'Design the agent contract schema', model: 'Fable' }, { text: 'Update the README docs' }]), roster);
+  assert.deepEqual(down.jobs.map((j) => j.model), ['fable', 'opus'], 'Fable → Opus needs nobody');
+});
+t('no step goes to an agent on a higher model than its pin', () => {
+  const only = { ...roster, agents: roster.agents.map((a) => ({ ...a, models: ['fable'] })) };
+  const p = c.planJobs(B('b', [{ text: 'Update the README docs' }]), only);
+  assert.equal(p.jobs.length, 0); assert.ok(p.warnings.some((w) => /model upgrade needs Brett's approval/.test(w)));
   const u = c.planJobs({ id: 'u', steps: [{ id: 's1', text: 'Tidy the React settings page copy' }, { id: 's2', text: 'New asset type + schema for cards in framework/assets/' }, { id: 's3', text: 'Kotlin twin of the React view', model: '[Fable] pinned' }, { id: 's4', text: 'docs', model: 'sonnet' }] }, roster);
   assert.deepEqual(u.jobs.map((j) => [j.tier, j.model]), [['opus', 'opus'], ['fable', 'fable'], ['fable', 'fable'], ['opus', 'opus']], 'unpinned: the policy\'s foundation rule; any pin spelling; a Sonnet pin runs as Opus');
   assert.equal(c.requiredTier({ text: 'kernel engine twin' }), 'fable'); assert.equal(c.requiredTier({ text: 'x', model: 'Opus 5.5' }), 'opus');
@@ -452,11 +467,11 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const site = types.find((x) => x.id === 'site-check');
   const crew = roster.agents.filter((a) => a.jobsOnly);
   const allOff = (st0, except = []) => crew.filter((a) => !except.includes(a.id)).reduce((st, a) => c.applyChange(st, { action: 'status', agent: a.id, status: 'off-duty', note: 'nap' }, roster, at).state, st0);
-  t('job types: eight, all valid, every crew member can take each, the home agent listed first', () => {
-    assert.equal(types.length, 8); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, crew.length, jt.id); assert.ok(o.every((a) => a.jobsOnly), jt.id); }
+  t('job types: nine, all valid, every crew member can take each, the home agent listed first', () => {
+    assert.equal(types.length, 9); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, crew.length, jt.id); assert.ok(o.every((a) => a.jobsOnly), jt.id); }
     for (const a of crew) assert.equal(jc.owners(types.find((x) => x.id === a.home), roster, c.normState({}, roster))[0].id, a.id, a.home);
     assert.ok(['feature-build', 'ops-fix'].every((id) => types.some((x) => x.id === id)));
-    assert.equal(jc.jobsOf(types, crew[0]).length, 8); assert.equal(jc.jobsOf(types, crew[0])[0].home, true);
+    assert.equal(jc.jobsOf(types, crew[0]).length, 9); assert.equal(jc.jobsOf(types, crew[0])[0].home, true);
     assert.ok(!jc.canTake(site, roster.agents.find((a) => a.id === 'rio')), 'build agents keep their own skill');
   });
   t('job-type validation: a bad job type is named and never routed', () => {
@@ -587,6 +602,34 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const p = jobs.book({ name: 'other-build', cwd: b }); assert.ok(p.agent.jobsOnly); assert.notEqual(p.agent.id, 'lenny', 'least busy');
     assert.throws(() => jobs.book({ name: 'x', agent: 'zed' }), /no agent "zed"/);
     assert.ok(sw.loadState().messages.some((m) => m.kind === 'assign' && /next-build/.test(m.text)));
+  });
+}
+
+// chat watch: read-only hub mirror + mentions of Brett (breakroom-chats@1)
+{
+  const w = await import('./web/chat-watch.mjs');
+  const st = { chat: { enabled: true }, messages: [
+    { id: 'a', at: '2026-11-03T10:00:00.000Z', from: 'boss', kind: 'assign', text: 'Brett wants this today.' },
+    { id: 'b', at: '2026-11-03T10:01:00.000Z', from: 'rio', kind: 'banter', text: 'Brett is a cheapskate, docked my pay again.' },
+    { id: 'c', at: '2026-11-03T10:02:00.000Z', from: 'kat', kind: 'report', text: 'Done. Q for Brett: which theme? key ghp_abcdefghijklmnopqrstuvwxyz0123456789' },
+    { id: 'd', at: '2026-11-03T10:03:00.000Z', from: 'kat', kind: 'banter', text: 'Boss gave me the merge, he said ship it.' },
+    { id: 'e', at: '2026-11-03T10:04:00.000Z', from: 'brett', kind: 'brett', text: 'Brett here.' },
+  ] };
+  t('mentions: about Brett only, newest first, Boss and Brett posts skipped, tone marked', () => {
+    const m = w.mentions(st, roster); assert.deepEqual(m.map((x) => x.id), ['c', 'b']);
+    assert.equal(m[1].tone, 'negative'); assert.equal(m[0].tone, 'neutral'); assert.deepEqual(w.mentions(st, roster, { negativeOnly: true }).map((x) => x.id), ['b']);
+    assert.equal(m[1].fromName, roster.agents.find((a) => a.id === 'rio').name);
+  });
+  t('a bare "Boss" is the orchestrator, "the boss" is Brett', () => { assert.deepEqual(w.mentionHits('Boss gave me the job'), []); assert.deepEqual(w.mentionHits('the boss docked me'), ['the boss']); assert.deepEqual(w.mentionHits('he said ok'), []); });
+  t('secrets are redacted on the way out', () => { const d = w.chatDocs(st, roster, '2026-11-03T11:00:00.000Z'); const all = JSON.stringify(d); assert.ok(!all.includes('ghp_abc')); assert.match(all, /redacted:github-token/); assert.equal(d['index.json'].readOnly, true); assert.equal(d['index.json'].mentions.path, 'agent-swarm/chats/mentions.json'); });
+  t('the hub mirror is written on save and only into its own folder', () => {
+    const d = mkdtempSync(join(tmpdir(), 'axf-chats-')); const hub = join(d, 'hub');
+    writeFileSync(join(d, 'state.json'), JSON.stringify(st));
+    const r = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'act', 'say', 'hi', 'crew', '--json'], { env: { ...process.env, AXF_SWARM_DIR: d, AXF_SWARM_CHATS_DIR: hub }, encoding: 'utf8' });
+    assert.equal(r.status, 0, r.stderr); assert.deepEqual(readdirSync(hub).sort(), ['group.json', 'index.json', 'mentions.json']);
+    const g = JSON.parse(readFileSync(join(hub, 'group.json'), 'utf8')); assert.equal(g.messages.at(-1).text, 'hi crew');
+    const m = spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, 'mentions', '--negative', '--json'], { env: { ...process.env, AXF_SWARM_DIR: d }, encoding: 'utf8' });
+    assert.equal(JSON.parse(m.stdout).count, 1);
   });
 }
 

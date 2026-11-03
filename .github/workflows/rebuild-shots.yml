@@ -71,7 +71,7 @@ jobs:
             const { execSync } = require("child_process");
             const changed = process.argv[1].split("\n").filter(Boolean);
             const apps = JSON.parse(execSync("node framework/cli/app-bundle.mjs list --android", { encoding: "utf8" }))
-              .filter((a) => !a.dir.startsWith("apps/shots-") && !a.dir.startsWith("apps/pilot-"));
+              .filter((a) => !a.dir.startsWith("apps/shots-"));
             const all = changed.some((f) => f.startsWith("framework/android/") || f.startsWith("framework/assets/") || f.startsWith("framework/schemas/") || f.startsWith("framework/templates/android-compose/"));
             const hit = apps.filter((a) => all || changed.some((f) => f.startsWith(a.dir + "/")));
             const captures = hit.flatMap((a) => ["before", "after"].map((side) => ({ ...a, side })));

@@ -113,7 +113,7 @@ export const LOOK_TOKENS: LookToken[] = [
   // behaviour
   { id: 'launch', label: 'When they appear', category: 'behaviour', level: 'basic', kind: 'choice', scopes: BANNER, inherit: 'expanded', pref: 'launch', options: [{ value: 'expanded', label: 'Open, with their list' }, { value: 'minimized', label: 'Minimized to one line' }] },
   { id: 'autoHide', label: 'Hide themselves', category: 'behaviour', level: 'basic', kind: 'choice', scopes: BANNER, inherit: '0', pref: 'autoHide', options: [0, 10, 30, 60, 300, 900].map((s) => ({ value: String(s), label: s === 0 ? 'Never' : s < 60 ? `After ${s} s with nothing new` : `After ${s / 60} min with nothing new` })) },
-  { id: 'hideInHost', label: 'Hide them inside a host app (Patches)', category: 'behaviour', level: 'advanced', kind: 'switch', scopes: BANNER, inherit: false, pref: 'hideInHost' },
+  { id: 'hideInHost', label: 'Hide them inside a host app', category: 'behaviour', level: 'advanced', kind: 'switch', scopes: BANNER, inherit: false, pref: 'hideInHost' },
 ];
 
 const BY_ID = new Map(LOOK_TOKENS.map((t) => [t.id, t]));

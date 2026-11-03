@@ -13,7 +13,8 @@
   "provides": [
     "view:theme-manager",
     "settings-tab:theme-manager",
-    "action:theme-manager.open"
+    "action:theme-manager.open",
+    "service:axf.token-tree@1"
   ],
   "uiEditor": [
     "theme",
@@ -24,6 +25,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "banner": false,
   "tabable": false,

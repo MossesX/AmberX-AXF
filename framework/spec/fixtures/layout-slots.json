@@ -35,7 +35,12 @@
           "popup",
           "context-menu"
         ]
-      }
+      },
+      "columnRegions": [
+        "nav",
+        "inspector",
+        "main"
+      ]
     }
   },
   "no-nav": {
@@ -73,7 +78,11 @@
           "popup",
           "context-menu"
         ]
-      }
+      },
+      "columnRegions": [
+        "inspector",
+        "main"
+      ]
     }
   },
   "no-toolbar": {
@@ -115,7 +124,12 @@
           "popup",
           "context-menu"
         ]
-      }
+      },
+      "columnRegions": [
+        "nav",
+        "inspector",
+        "main"
+      ]
     }
   },
   "overlay-dialog-only": {
@@ -156,7 +170,12 @@
         "overlay": [
           "dialog"
         ]
-      }
+      },
+      "columnRegions": [
+        "nav",
+        "inspector",
+        "main"
+      ]
     }
   },
   "hidden-nav": {
@@ -197,7 +216,11 @@
           "popup",
           "context-menu"
         ]
-      }
+      },
+      "columnRegions": [
+        "inspector",
+        "main"
+      ]
     }
   },
   "hidden-toolbar": {
@@ -238,7 +261,12 @@
           "popup",
           "context-menu"
         ]
-      }
+      },
+      "columnRegions": [
+        "nav",
+        "inspector",
+        "main"
+      ]
     }
   },
   "hidden-menubar": {
@@ -280,7 +308,12 @@
           "popup",
           "context-menu"
         ]
-      }
+      },
+      "columnRegions": [
+        "nav",
+        "inspector",
+        "main"
+      ]
     }
   },
   "hidden-all-chrome": {
@@ -323,7 +356,11 @@
           "popup",
           "context-menu"
         ]
-      }
+      },
+      "columnRegions": [
+        "inspector",
+        "main"
+      ]
     }
   }
 }

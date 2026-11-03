@@ -177,5 +177,5 @@ export const LEVELS_CSS = `
 .axf-levels__node.is-off>.axf-levels__row .axf-levels__label,.axf-levels__swatch.is-off{color:var(--fx-muted)}
 .axf-levels__node--tab>.axf-levels__row .axf-levels__label{font-weight:600}
 .axf-levels__state{flex:0 0 auto;font-size:var(--fx-type-scale-xs)}
-@media (max-width:640px){.axf-levels__cols{grid-template-columns:1fr}.axf-levels__col{max-height:34dvh}}
+:where([data-fx-small]) .axf-levels__cols {grid-template-columns:1fr} :where([data-fx-small]) .axf-levels__col {max-height:34dvh}
 `;

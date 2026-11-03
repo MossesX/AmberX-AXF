@@ -74,7 +74,7 @@ CONFIG_SPEC: dict[str, tuple[type, Any]] = {
     "publish": (bool, True),            # commit an installed plugin to GitHub so the console keeps it
     "keepDataOnReplace": (bool, False),  # replacing a build with another model's keeps the old data folder
     "showInstalled": (bool, True),       # list plugins that are already installed
-    "showOtherKinds": (bool, False),     # list Build Pilot plugins too (read-only here)
+    "showOtherKinds": (bool, False),     # list other apps' plugins too (read-only here)
     "checkOnOpen": (bool, True),         # read every archive when the dialog opens
     "confirmTyping": (bool, True),       # type the folder name to confirm an install (off = tap twice)
     "sort": (str, "name"),               # name | archive | newest | model
@@ -508,8 +508,8 @@ def test_archive(aid: str) -> dict[str, Any]:
 
 @router.get("/browse")
 def browse(archive: str = "all", q: str = "", kind: str = "console", fresh: bool = False) -> dict[str, Any]:
-    if kind not in ("console", "pilot", "all"):
-        raise _err(400, "kind is console, pilot or all")
+    if kind not in ("console", "axhub", "amberx", "all"):
+        raise _err(400, "kind is console, axhub, amberx or all")
     db = _load()
     picked = [a for a in db["archives"] if a.get("enabled", True) is not False and (archive == "all" or a["id"] == archive)]
     if archive != "all" and not picked:

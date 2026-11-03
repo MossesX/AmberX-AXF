@@ -35,7 +35,7 @@ const raw = argJson ?? (op && process.argv.length === 3 ? '{}' : readStdin() || 
 const req = JSON.parse(raw);
 const b = { ...req, op: op ?? req.op };
 const lines = [];
-/** What a new app starts with besides its slots (framework/app-defaults.json) plus what the chrome can do: for designers (Build Pilot). */
+/** What a new app starts with besides its slots (framework/app-defaults.json) plus what the chrome can do: for designers. */
 function appDefaultsView() {
   const types = assetSpec.types;
   const widgetTypes = Object.keys(types).filter((t) => types[t].widget === true);

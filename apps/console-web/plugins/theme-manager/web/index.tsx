@@ -5,12 +5,17 @@ import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
 import './theme-manager.css';
 import { appMenu } from './menu';
+import { buildTree, getAt, leaves, setAt } from './rollEngine';
 
 /*
  * Theme manager (web part): nav → Plugins → Theme manager, and Settings → Plugins → Themes. On start it registers
  * the saved themes (standard asset@1 files from its data folder) and re-applies the ones you picked last.
  * Actions: theme-manager.open. It only uses the existing asset types and engines; built-in themes are never touched.
+ * Capability `axf.token-tree@1` (web): the token tree (buildTree / leaves / getAt / setAt) for other plugins, e.g. the
+ * Theme editor, published on `globalThis.__axfWebServices` while this plugin is loaded (no plugin imports another's folder).
  */
+export const TOKEN_TREE = 'axf.token-tree@1';
+const services = () => ((globalThis as { __axfWebServices?: Record<string, unknown> }).__axfWebServices ??= {});
 let loaded = false;
 async function loadSaved(rt: AxfRuntime) {
   if (loaded) return;
@@ -32,8 +37,9 @@ export const plugin: AxfWebLibrary = {
   label: 'Theme manager',
   version: '0.1.0',
   appMenu,
-  provides: ['axf.theme-manager'],
+  provides: ['axf.theme-manager', TOKEN_TREE],
   register(rt) {
+    services()[TOKEN_TREE] = { version: 1, buildTree, leaves, getAt, setAt };
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
   },

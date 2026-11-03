@@ -1,0 +1,108 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-4de0ce9c-a887-4c82-b552-0b01fe32fbb3",
+ "source": "claude-code",
+ "sessionId": "4de0ce9c-a887-4c82-b552-0b01fe32fbb3",
+ "project": "axhub",
+ "title": "# Token control, Fable phase (Urgent orchestrator build `token-control`, s1-s3 only) Brett Nov 2 2026 21:38 ET, launche…",
+ "startedAt": "2026-11-03T10:49:26.247Z",
+ "endedAt": "2026-11-03T11:18:06.098Z",
+ "minutes": 29,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/token-control",
+  "repo": "",
+  "branch": "claude/token-control"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T10:49:26.348Z",
+   "kind": "prompt",
+   "text": "# Token control, Fable phase (Urgent orchestrator build `token-control`, s1-s3 only) Brett Nov 2 2026 21:38 ET, launched Nov 3: new plugin with a powerful API, MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. MCP, API and CLI connect to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console planner (both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the old amberx-full-mcp-api build (deletes need confirm). First run: `AXF_BUILD_PROFILE=…",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 1570,
+    "output": 138546,
+    "cacheRead": 10676218,
+    "cacheWrite": 325966,
+    "thinking": 37465
+   },
+   "costUsd": 13.6866,
+   "costEstimated": false,
+   "seconds": 1719,
+   "tools": {
+    "Bash": 121,
+    "Read": 1,
+    "Write": 9
+   },
+   "commands": 121,
+   "files": [
+    "/root/axf-builds/token-control/framework/core/engines/layout-rules.mjs",
+    "/root/axf-builds/token-control/framework/core/engines/layout-rules.d.mts",
+    "/root/axf-builds/token-control/framework/spec/check-layout-tokens.mts",
+    "/root/axf-builds/token-control/framework/cli/layout-adopt.mjs",
+    "/root/axf-builds/token-control/framework/core/engines/control-rules.mjs",
+    "/root/axf-builds/token-control/framework/core/engines/control-rules.d.mts",
+    "/root/axf-builds/token-control/framework/spec/CONTROL.md",
+    "/root/axf-builds/token-control/framework/spec/check-control.mts",
+    "/tmp/token-control-pr.md"
+   ],
+   "changeIds": [
+    "chg-20261103-8a67c9eaa9"
+   ],
+   "features": [
+    "orchestrator:token-control"
+   ],
+   "output": "Fable phase of `token-control` is done and on PR #246. Here's the rundown, boss. **What landed (branch `claude/token-control`, PR [#246](https://github.com/MossesX/AmberX-AXF/pull/246), auto-merge once CI is green)** - **s1, every layout parameter is a token.** New registry `framework/core/engines/…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/token-control/framework/core/engines/layout-rules.mjs",
+  "/root/axf-builds/token-control/framework/core/engines/layout-rules.d.mts",
+  "/root/axf-builds/token-control/framework/spec/check-layout-tokens.mts",
+  "/root/axf-builds/token-control/framework/cli/layout-adopt.mjs",
+  "/root/axf-builds/token-control/framework/core/engines/control-rules.mjs",
+  "/root/axf-builds/token-control/framework/core/engines/control-rules.d.mts",
+  "/root/axf-builds/token-control/framework/spec/CONTROL.md",
+  "/root/axf-builds/token-control/framework/spec/check-control.mts",
+  "/tmp/token-control-pr.md"
+ ],
+ "changeIds": [
+  "chg-20261103-8a67c9eaa9"
+ ],
+ "features": [
+  "orchestrator:token-control"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 1570,
+  "output": 138546,
+  "cacheRead": 10676218,
+  "cacheWrite": 325966,
+  "thinking": 37465,
+  "costUsd": 13.6866,
+  "costEstimated": false,
+  "toolCalls": 131,
+  "commands": 121,
+  "filesTouched": 9,
+  "reportedUsd": 16.1314
+ },
+ "ingestedAt": "2026-11-03T11:18:06.284Z"
+}

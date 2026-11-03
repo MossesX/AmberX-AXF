@@ -143,7 +143,7 @@ export const library: AxfWebLibrary = {
   settings: [
     {
       id: 'amberx.monitor', label: 'Background monitoring', icon: 'eye', tab: 'monitor', settings: [
-        { key: K.on, label: 'Watch axHub in the background', kind: 'toggle', default: true, description: 'AmberX is the phone’s one source of axHub notifications (approvals, merge approvals, console alerts); Patches and the AXHub app stay quiet while it is installed.' },
+        { key: K.on, label: 'Watch axHub in the background', kind: 'toggle', default: true, description: 'AmberX is the phone’s one source of axHub notifications (approvals, merge approvals, console alerts); the AXHub app stays quiet while it is installed.' },
         { key: K.consoleAlerts, label: 'Dev Console alerts', kind: 'toggle', default: true, description: 'Errors and warnings from console.amberxai.com (builds, CI, deploys, systems check). Tap opens the console in your browser.' },
         { key: K.interval, label: 'Check every (seconds)', kind: 'number', default: 30, min: 15, max: 300, step: 5 },
         { key: K.listen, label: 'Listen for the wake phrase while watching', kind: 'toggle', default: true, description: 'Only used when Voice control → Listen hands-free is off. Hands-free listening (on by default) works without watching axHub.' },

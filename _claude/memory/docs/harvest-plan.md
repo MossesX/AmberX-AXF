@@ -1,5 +1,7 @@
 # Harvest plan — pull libraries, plugins and assets out of AXF apps (Oct 20 2026)
 
+> Build Pilot was retired Nov 3 2026 (`_claude/builds/reports/kill-patches-pilot.md`); its mentions below are history.
+
 Brett asked (Oct 20 2026) to take every app built on AXF and contribute back to the framework. Order: the six
 overlapping Fable rebuilds first (banner+widgets, plugin-manager, ai-assistant, agent-manager, lib-mcp, then Build Pilot
 agents), then this harvest on Opus. PilotX, ShipX, ActiveX stay out (not AXF apps).

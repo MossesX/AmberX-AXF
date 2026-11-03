@@ -1,4 +1,4 @@
-"""Reusable runtime every Python assistant host needs (stdlib only; the console plugin, Build Pilot's server, …).
+"""Reusable runtime every Python assistant host needs (stdlib only; the console plugin, other app servers, …).
 
   providers   provider registry loader (framework/schemas/ai-providers.json + an app's own kinds), the three wire
               protocols (anthropic, openai-compatible, Claude Code CLI) + `register_protocol`, model lists, tests,

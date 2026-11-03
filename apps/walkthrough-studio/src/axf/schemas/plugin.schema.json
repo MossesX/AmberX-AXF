@@ -133,7 +133,7 @@
       ]
     },
     "tabable": {
-      "description": "Can a host app add this plugin to its tab group (e.g. Patches' tabs)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
+      "description": "Can a host app add this plugin to its tab group (embed@1)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
       "default": false,
       "oneOf": [
         {

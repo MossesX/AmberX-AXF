@@ -1,0 +1,3452 @@
+{
+  "commands": {
+    "list-layout": {
+      "op": "list",
+      "target": "tokens.layout"
+    },
+    "get-theme": {
+      "op": "get",
+      "target": "tokens.theme",
+      "path": "accent"
+    },
+    "set-layout": {
+      "op": "set",
+      "target": "tokens.layout",
+      "path": "navWidth",
+      "value": 200,
+      "by": "claude",
+      "reason": "narrower rail"
+    },
+    "set-layout-bad": {
+      "op": "set",
+      "target": "tokens.layout",
+      "path": "navWidth",
+      "value": 5000
+    },
+    "set-layout-unknown": {
+      "op": "set",
+      "target": "tokens.layout",
+      "path": "railWidth",
+      "value": 10
+    },
+    "set-theme": {
+      "op": "set",
+      "target": "tokens.theme",
+      "path": "accent",
+      "value": "#ff8800"
+    },
+    "set-theme-bad": {
+      "op": "set",
+      "target": "tokens.theme",
+      "path": "accent",
+      "value": "orange-ish"
+    },
+    "set-style": {
+      "op": "set",
+      "target": "tokens.style",
+      "path": "radius.md",
+      "value": 10
+    },
+    "set-style-enum": {
+      "op": "set",
+      "target": "tokens.style",
+      "path": "density",
+      "value": "loose"
+    },
+    "set-sizing": {
+      "op": "set",
+      "target": "tokens.sizing",
+      "path": "button.height",
+      "value": 2.4
+    },
+    "set-sizing-bad": {
+      "op": "set",
+      "target": "tokens.sizing",
+      "path": "button.height",
+      "value": 9
+    },
+    "set-look": {
+      "op": "set",
+      "target": "tokens.look",
+      "path": "compact",
+      "value": 80
+    },
+    "set-slot": {
+      "op": "set",
+      "target": "tokens.slots",
+      "path": "layout",
+      "value": "studio-dock"
+    },
+    "reset-all": {
+      "op": "reset",
+      "target": "tokens.look"
+    },
+    "add-item": {
+      "op": "add",
+      "target": "amberx.items",
+      "value": {
+        "kind": "todo",
+        "title": "Buy milk",
+        "list": "inbox",
+        "priority": 2
+      },
+      "by": "claude"
+    },
+    "add-item-bad": {
+      "op": "add",
+      "target": "amberx.items",
+      "value": {
+        "kind": "memo",
+        "title": 7,
+        "colour": "red"
+      }
+    },
+    "set-item": {
+      "op": "set",
+      "target": "amberx.items",
+      "path": "it-42",
+      "value": {
+        "status": "done",
+        "tags": [
+          "home"
+        ]
+      }
+    },
+    "list-items": {
+      "op": "list",
+      "target": "amberx.items",
+      "select": {
+        "kind": "task",
+        "status": "not-done",
+        "due": "today"
+      }
+    },
+    "list-items-bad": {
+      "op": "list",
+      "target": "amberx.items",
+      "select": {
+        "colour": "red",
+        "kind": "memo"
+      }
+    },
+    "act-item": {
+      "op": "act",
+      "target": "amberx.items",
+      "path": "it-42",
+      "action": "move",
+      "input": {
+        "list": "home"
+      }
+    },
+    "act-item-missing-input": {
+      "op": "act",
+      "target": "amberx.items",
+      "path": "it-42",
+      "action": "move"
+    },
+    "act-item-unknown": {
+      "op": "act",
+      "target": "amberx.items",
+      "path": "it-42",
+      "action": "explode"
+    },
+    "remove-system-list": {
+      "op": "remove",
+      "target": "amberx.lists",
+      "path": "inbox"
+    },
+    "act-build-step": {
+      "op": "act",
+      "target": "planner.builds",
+      "path": "token-control",
+      "action": "step",
+      "input": {
+        "step": "s3",
+        "done": true
+      },
+      "by": "claude"
+    },
+    "act-build-approve": {
+      "op": "act",
+      "target": "planner.builds",
+      "path": "token-control",
+      "action": "approve",
+      "input": {
+        "phase": 2
+      }
+    },
+    "act-plan-build": {
+      "op": "act",
+      "target": "planner.plans",
+      "path": "md-studio",
+      "action": "build",
+      "input": {
+        "profile": "urgent",
+        "buildId": "md-studio"
+      }
+    },
+    "add-plan": {
+      "op": "add",
+      "target": "planner.plans",
+      "value": {
+        "title": "Theme editor",
+        "status": "parked",
+        "priority": "P2",
+        "category": "Console > Themes"
+      }
+    },
+    "remove-item": {
+      "op": "remove",
+      "target": "amberx.items",
+      "path": "it-42",
+      "by": "claude",
+      "reason": "done with it"
+    },
+    "wrong-op": {
+      "op": "delete",
+      "target": "amberx.items",
+      "path": "x"
+    },
+    "wrong-target": {
+      "op": "get",
+      "target": "amberx.notes",
+      "path": "x"
+    },
+    "token-op-on-entity": {
+      "op": "reset",
+      "target": "amberx.items"
+    },
+    "entity-op-on-token": {
+      "op": "add",
+      "target": "tokens.layout",
+      "value": {}
+    },
+    "path-on-list": {
+      "op": "list",
+      "target": "tokens.layout",
+      "path": "navWidth"
+    },
+    "wrong-frame": {
+      "$axf": "asset@1",
+      "op": "list",
+      "target": "tokens.layout"
+    },
+    "not-an-object": "nope",
+    "console-open-screen": {
+      "op": "act",
+      "target": "console.screens",
+      "path": "plan studio",
+      "action": "open",
+      "by": "claude"
+    },
+    "console-open-settings": {
+      "op": "act",
+      "target": "console.settings",
+      "path": "plugins/sample-tools",
+      "action": "open",
+      "input": {
+        "to": "all"
+      }
+    },
+    "console-list-actions": {
+      "op": "list",
+      "target": "console.actions",
+      "select": {
+        "q": "theme",
+        "limit": 20
+      }
+    },
+    "console-run-action": {
+      "op": "act",
+      "target": "console.actions",
+      "path": "assets.random",
+      "action": "run"
+    },
+    "console-back": {
+      "op": "act",
+      "target": "console.nav",
+      "path": "here",
+      "action": "back"
+    },
+    "console-nav-unknown-path": {
+      "op": "act",
+      "target": "console.nav",
+      "path": "forward",
+      "action": "back"
+    },
+    "console-set-screen": {
+      "op": "set",
+      "target": "console.screens",
+      "path": "home",
+      "value": "x"
+    },
+    "console-clients": {
+      "op": "list",
+      "target": "console.clients"
+    },
+    "plugin-list": {
+      "op": "list",
+      "target": "plugins.commands",
+      "select": {
+        "plugin": "example"
+      }
+    },
+    "plugin-read": {
+      "op": "act",
+      "target": "plugins.reads",
+      "path": "example/state",
+      "action": "read"
+    },
+    "plugin-run": {
+      "op": "act",
+      "target": "plugins.commands",
+      "path": "example/entries",
+      "action": "run",
+      "input": {
+        "title": "x"
+      },
+      "by": "claude"
+    },
+    "plugin-set": {
+      "op": "set",
+      "target": "plugins.commands",
+      "path": "example/state",
+      "value": 1
+    }
+  },
+  "registry": {
+    "ops": [
+      "list",
+      "get",
+      "set",
+      "reset",
+      "add",
+      "remove",
+      "act"
+    ],
+    "effects": {
+      "list": "read",
+      "get": "read",
+      "set": "write",
+      "reset": "write",
+      "add": "write",
+      "remove": "destructive",
+      "act": "write"
+    },
+    "actEffects": {
+      "console.screens": {
+        "open": "navigate"
+      },
+      "console.dialogs": {
+        "open": "navigate"
+      },
+      "console.settings": {
+        "open": "navigate"
+      },
+      "console.actions": {
+        "run": "write"
+      },
+      "console.nav": {
+        "back": "navigate",
+        "home": "navigate",
+        "close": "navigate"
+      },
+      "plugins.commands": {
+        "run": "write"
+      },
+      "plugins.reads": {
+        "read": "read"
+      }
+    },
+    "permissions": {
+      "control.tokens.read": "tokens: read",
+      "control.tokens.write": "tokens: write",
+      "control.tokens.delete": "tokens: delete",
+      "control.amberx.read": "amberx: read",
+      "control.amberx.write": "amberx: write",
+      "control.amberx.delete": "amberx: delete",
+      "control.planner.read": "planner: read",
+      "control.planner.write": "planner: write",
+      "control.planner.delete": "planner: delete",
+      "control.console.read": "console: read",
+      "control.console.write": "console: write",
+      "control.console.delete": "console: delete",
+      "control.pass.read": "pass: read",
+      "control.pass.write": "pass: write",
+      "control.pass.delete": "pass: delete",
+      "control.plugins.read": "plugins: read",
+      "control.plugins.write": "plugins: write",
+      "control.plugins.delete": "plugins: delete",
+      "control.console.navigate": "console: navigate"
+    },
+    "targets": [
+      "tokens.theme",
+      "tokens.style",
+      "tokens.layout",
+      "tokens.typography",
+      "tokens.density",
+      "tokens.sizing",
+      "tokens.look",
+      "tokens.custom",
+      "tokens.slots",
+      "amberx.items",
+      "amberx.lists",
+      "planner.plans",
+      "planner.builds",
+      "console.screens",
+      "console.dialogs",
+      "console.settings",
+      "console.actions",
+      "console.nav",
+      "console.clients",
+      "pass.scopes",
+      "plugins.commands",
+      "plugins.reads"
+    ],
+    "targetOps": {
+      "tokens.theme": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.style": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.layout": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.typography": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.density": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.sizing": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.look": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.custom": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "tokens.slots": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "amberx.items": [
+        "list",
+        "get",
+        "set",
+        "add",
+        "remove",
+        "act"
+      ],
+      "amberx.lists": [
+        "list",
+        "get",
+        "set",
+        "add",
+        "remove",
+        "act"
+      ],
+      "planner.plans": [
+        "list",
+        "get",
+        "set",
+        "add",
+        "remove",
+        "act"
+      ],
+      "planner.builds": [
+        "list",
+        "get",
+        "set",
+        "add",
+        "remove",
+        "act"
+      ],
+      "console.screens": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.dialogs": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.settings": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.actions": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.nav": [
+        "get",
+        "act"
+      ],
+      "console.clients": [
+        "list"
+      ],
+      "pass.scopes": [
+        "list",
+        "get",
+        "act"
+      ],
+      "plugins.commands": [
+        "list",
+        "get",
+        "act"
+      ],
+      "plugins.reads": [
+        "list",
+        "get",
+        "act"
+      ]
+    }
+  },
+  "paths": {
+    "tokens.theme": [
+      "bg",
+      "surface",
+      "surface2",
+      "surface3",
+      "text",
+      "muted",
+      "border",
+      "accent",
+      "accentText",
+      "accentSoft",
+      "danger",
+      "success",
+      "warning",
+      "info",
+      "focus",
+      "shadow"
+    ],
+    "tokens.style": [
+      "fontFamily",
+      "fontDisplay",
+      "fontMono",
+      "fontSize",
+      "space",
+      "borderWidth",
+      "motion",
+      "blur",
+      "headingWeight",
+      "tracking",
+      "density",
+      "radius.sm",
+      "radius.md",
+      "radius.lg",
+      "shadow.sm",
+      "shadow.md",
+      "shadow.lg",
+      "wrapGroups",
+      "opacityDisabled",
+      "opacityMuted",
+      "opacityHover",
+      "opacityTint",
+      "opacityScrim",
+      "opacityGlass"
+    ],
+    "tokens.layout": [
+      "navWidth",
+      "inspectorWidth",
+      "contentMaxWidth",
+      "statusHeight",
+      "regionGap",
+      "mainPadTop",
+      "mainPadX",
+      "mainPadBottom",
+      "phoneMainPadTop",
+      "phoneMainPadX",
+      "phoneMainPadBottom",
+      "phoneNavItemMin",
+      "phoneEdge",
+      "tinyMaxWidth",
+      "smallMaxWidth",
+      "phoneMaxWidth",
+      "mediumMaxWidth",
+      "largeMaxWidth",
+      "nav",
+      "toolbarPosition",
+      "inspector",
+      "showMenubar",
+      "showToolbar",
+      "showStatusbar"
+    ],
+    "tokens.typography": [
+      "scale.2xs",
+      "scale.xs",
+      "scale.sm",
+      "scale.md",
+      "scale.lg",
+      "scale.xl",
+      "scale.2xl",
+      "headings.h1",
+      "headings.h2",
+      "headings.h3",
+      "headings.h4",
+      "headings.tracking",
+      "weights.body",
+      "weights.medium",
+      "weights.strong",
+      "line.tight",
+      "line.normal",
+      "line.loose",
+      "eyebrow.size",
+      "eyebrow.weight",
+      "eyebrow.tracking",
+      "mono.size",
+      "eyebrow.case"
+    ],
+    "tokens.density": [
+      "gap.2xs",
+      "gap.xs",
+      "gap.sm",
+      "gap.md",
+      "gap.lg",
+      "gap.xl",
+      "gap.2xl",
+      "gap.3xl",
+      "gap.4xl",
+      "pad.control",
+      "pad.card",
+      "pad.page",
+      "pad.row",
+      "pad.cell",
+      "row.list",
+      "row.table",
+      "row.menu",
+      "row.control"
+    ],
+    "tokens.sizing": [
+      "button.height",
+      "button.padX",
+      "button.font",
+      "button.icon",
+      "iconButton.size",
+      "chip.height",
+      "chip.padX",
+      "chip.font",
+      "field.height",
+      "field.padX",
+      "field.font",
+      "tab.padY",
+      "tab.padX",
+      "tab.font",
+      "segment.padY",
+      "segment.padX",
+      "segment.font",
+      "card.pad",
+      "card.headFont",
+      "listRow.minHeight",
+      "listRow.padX",
+      "listRow.metaFont",
+      "countStrip.number",
+      "countStrip.label",
+      "countStrip.pad",
+      "table.padY",
+      "table.padX",
+      "table.font",
+      "pageHead.descriptionFont",
+      "pageHead.descriptionLines",
+      "chip.radius",
+      "card.radius"
+    ],
+    "tokens.look": null,
+    "tokens.custom": null,
+    "tokens.slots": null,
+    "amberx.items": null,
+    "amberx.lists": null,
+    "planner.plans": null,
+    "planner.builds": null,
+    "console.screens": null,
+    "console.dialogs": null,
+    "console.settings": null,
+    "console.actions": null,
+    "console.nav": [
+      "here"
+    ],
+    "console.clients": null,
+    "pass.scopes": [
+      "all",
+      "tokens.theme",
+      "tokens.style",
+      "tokens.layout",
+      "tokens.*"
+    ],
+    "plugins.commands": null,
+    "plugins.reads": null
+  },
+  "normalize": {
+    "list-layout": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "tokens.layout"
+    },
+    "get-theme": {
+      "$axf": "control@1",
+      "op": "get",
+      "target": "tokens.theme",
+      "path": "accent"
+    },
+    "set-layout": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.layout",
+      "path": "navWidth",
+      "value": 200,
+      "by": "claude",
+      "reason": "narrower rail"
+    },
+    "set-layout-bad": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.layout",
+      "path": "navWidth",
+      "value": 5000
+    },
+    "set-layout-unknown": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.layout",
+      "path": "railWidth",
+      "value": 10
+    },
+    "set-theme": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.theme",
+      "path": "accent",
+      "value": "#ff8800"
+    },
+    "set-theme-bad": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.theme",
+      "path": "accent",
+      "value": "orange-ish"
+    },
+    "set-style": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.style",
+      "path": "radius.md",
+      "value": 10
+    },
+    "set-style-enum": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.style",
+      "path": "density",
+      "value": "loose"
+    },
+    "set-sizing": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.sizing",
+      "path": "button.height",
+      "value": 2.4
+    },
+    "set-sizing-bad": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.sizing",
+      "path": "button.height",
+      "value": 9
+    },
+    "set-look": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.look",
+      "path": "compact",
+      "value": 80
+    },
+    "set-slot": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "tokens.slots",
+      "path": "layout",
+      "value": "studio-dock"
+    },
+    "reset-all": {
+      "$axf": "control@1",
+      "op": "reset",
+      "target": "tokens.look"
+    },
+    "add-item": {
+      "$axf": "control@1",
+      "op": "add",
+      "target": "amberx.items",
+      "value": {
+        "kind": "todo",
+        "title": "Buy milk",
+        "list": "inbox",
+        "priority": 2
+      },
+      "by": "claude"
+    },
+    "add-item-bad": {
+      "$axf": "control@1",
+      "op": "add",
+      "target": "amberx.items",
+      "value": {
+        "kind": "memo",
+        "title": 7,
+        "colour": "red"
+      }
+    },
+    "set-item": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "amberx.items",
+      "path": "it-42",
+      "value": {
+        "status": "done",
+        "tags": [
+          "home"
+        ]
+      }
+    },
+    "list-items": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "amberx.items",
+      "select": {
+        "kind": "task",
+        "status": "not-done",
+        "due": "today"
+      }
+    },
+    "list-items-bad": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "amberx.items",
+      "select": {
+        "colour": "red",
+        "kind": "memo"
+      }
+    },
+    "act-item": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "amberx.items",
+      "path": "it-42",
+      "action": "move",
+      "input": {
+        "list": "home"
+      }
+    },
+    "act-item-missing-input": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "amberx.items",
+      "path": "it-42",
+      "action": "move"
+    },
+    "act-item-unknown": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "amberx.items",
+      "path": "it-42",
+      "action": "explode"
+    },
+    "remove-system-list": {
+      "$axf": "control@1",
+      "op": "remove",
+      "target": "amberx.lists",
+      "path": "inbox"
+    },
+    "act-build-step": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "planner.builds",
+      "path": "token-control",
+      "action": "step",
+      "input": {
+        "step": "s3",
+        "done": true
+      },
+      "by": "claude"
+    },
+    "act-build-approve": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "planner.builds",
+      "path": "token-control",
+      "action": "approve",
+      "input": {
+        "phase": 2
+      }
+    },
+    "act-plan-build": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "planner.plans",
+      "path": "md-studio",
+      "action": "build",
+      "input": {
+        "profile": "urgent",
+        "buildId": "md-studio"
+      }
+    },
+    "add-plan": {
+      "$axf": "control@1",
+      "op": "add",
+      "target": "planner.plans",
+      "value": {
+        "title": "Theme editor",
+        "status": "parked",
+        "priority": "P2",
+        "category": "Console > Themes"
+      }
+    },
+    "remove-item": {
+      "$axf": "control@1",
+      "op": "remove",
+      "target": "amberx.items",
+      "path": "it-42",
+      "by": "claude",
+      "reason": "done with it"
+    },
+    "wrong-op": {
+      "$axf": "control@1",
+      "op": "delete",
+      "target": "amberx.items",
+      "path": "x"
+    },
+    "wrong-target": {
+      "$axf": "control@1",
+      "op": "get",
+      "target": "amberx.notes",
+      "path": "x"
+    },
+    "token-op-on-entity": {
+      "$axf": "control@1",
+      "op": "reset",
+      "target": "amberx.items"
+    },
+    "entity-op-on-token": {
+      "$axf": "control@1",
+      "op": "add",
+      "target": "tokens.layout",
+      "value": {}
+    },
+    "path-on-list": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "tokens.layout",
+      "path": "navWidth"
+    },
+    "wrong-frame": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "tokens.layout"
+    },
+    "not-an-object": {
+      "$axf": "control@1"
+    },
+    "console-open-screen": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.screens",
+      "path": "plan studio",
+      "action": "open",
+      "by": "claude"
+    },
+    "console-open-settings": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.settings",
+      "path": "plugins/sample-tools",
+      "action": "open",
+      "input": {
+        "to": "all"
+      }
+    },
+    "console-list-actions": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "console.actions",
+      "select": {
+        "q": "theme",
+        "limit": 20
+      }
+    },
+    "console-run-action": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.actions",
+      "path": "assets.random",
+      "action": "run"
+    },
+    "console-back": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.nav",
+      "path": "here",
+      "action": "back"
+    },
+    "console-nav-unknown-path": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "console.nav",
+      "path": "forward",
+      "action": "back"
+    },
+    "console-set-screen": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "console.screens",
+      "path": "home",
+      "value": "x"
+    },
+    "console-clients": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "console.clients"
+    },
+    "plugin-list": {
+      "$axf": "control@1",
+      "op": "list",
+      "target": "plugins.commands",
+      "select": {
+        "plugin": "example"
+      }
+    },
+    "plugin-read": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "plugins.reads",
+      "path": "example/state",
+      "action": "read"
+    },
+    "plugin-run": {
+      "$axf": "control@1",
+      "op": "act",
+      "target": "plugins.commands",
+      "path": "example/entries",
+      "action": "run",
+      "input": {
+        "title": "x"
+      },
+      "by": "claude"
+    },
+    "plugin-set": {
+      "$axf": "control@1",
+      "op": "set",
+      "target": "plugins.commands",
+      "path": "example/state",
+      "value": 1
+    }
+  },
+  "errors": {
+    "list-layout": [],
+    "get-theme": [],
+    "set-layout": [],
+    "set-layout-bad": [
+      "data.navWidth must be a number from 0 to 640"
+    ],
+    "set-layout-unknown": [
+      "tokens.layout has no token railWidth (control list tokens.layout names them)",
+      "tokens.layout has no token railWidth (control list tokens.layout names them)"
+    ],
+    "set-theme": [],
+    "set-theme-bad": [
+      "value must be a colour (#rgb, #rrggbb, #rrggbbaa, rgb(), hsl())"
+    ],
+    "set-style": [],
+    "set-style-enum": [
+      "value must be one of: compact, comfortable, spacious"
+    ],
+    "set-sizing": [],
+    "set-sizing-bad": [
+      "data.button.height must be a number from 1.5 to 3.5"
+    ],
+    "set-look": [],
+    "set-slot": [],
+    "reset-all": [],
+    "add-item": [],
+    "add-item-bad": [
+      "value.kind must be one of: note, todo, task",
+      "value.title must be a string",
+      "amberx.items has no field colour"
+    ],
+    "set-item": [],
+    "list-items": [],
+    "list-items-bad": [
+      "amberx.items list has no filter colour (it has kind, list, deep, status, tag, q, pinned, starred, due, limit)",
+      "select.kind must be one of: note, todo, task"
+    ],
+    "act-item": [],
+    "act-item-missing-input": [
+      "action move needs input.list"
+    ],
+    "act-item-unknown": [
+      "amberx.items has no action explode (it has done, undone, move, merge, pin, star, check)"
+    ],
+    "remove-system-list": [
+      "inbox is a system list and can't be removed"
+    ],
+    "act-build-step": [],
+    "act-build-approve": [],
+    "act-plan-build": [],
+    "add-plan": [],
+    "remove-item": [],
+    "wrong-op": [
+      "op must be one of: list, get, set, reset, add, remove, act"
+    ],
+    "wrong-target": [
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads"
+    ],
+    "token-op-on-entity": [
+      "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
+    ],
+    "entity-op-on-token": [
+      "tokens.layout does not take add (it takes list, get, set, reset)"
+    ],
+    "path-on-list": [
+      "list takes no path"
+    ],
+    "wrong-frame": [
+      "$axf must be control@1"
+    ],
+    "not-an-object": [
+      "op must be one of: list, get, set, reset, add, remove, act",
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads"
+    ],
+    "console-open-screen": [],
+    "console-open-settings": [],
+    "console-list-actions": [],
+    "console-run-action": [],
+    "console-back": [],
+    "console-nav-unknown-path": [
+      "console.nav has no token forward (control list console.nav names them)"
+    ],
+    "console-set-screen": [
+      "console.screens does not take set (it takes list, get, act)"
+    ],
+    "console-clients": [],
+    "plugin-list": [],
+    "plugin-read": [],
+    "plugin-run": [],
+    "plugin-set": [
+      "plugins.commands does not take set (it takes list, get, act)"
+    ]
+  },
+  "gate": {
+    "admin": {
+      "list-layout": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "get-theme": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "set-layout": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-slot": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "reset-all": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "add-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "list-items": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.amberx.read"
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "act-build-approve": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "act-plan-build": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "add-plan": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "confirmation_required",
+        "requires": "control.amberx.delete",
+        "confirm": "c1.5fbd08180aab47c8"
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-list-actions": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "console-run-action": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.console.write"
+      },
+      "console-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "plugin-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-read": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-run": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.plugins.write"
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "control": {
+      "list-layout": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "get-theme": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "set-layout": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-slot": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "reset-all": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "add-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "list-items": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.amberx.read"
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "act-build-approve": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "act-plan-build": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "add-plan": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.planner.write"
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "confirmation_required",
+        "requires": "control.amberx.delete",
+        "confirm": "c1.5fbd08180aab47c8"
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-list-actions": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "console-run-action": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.console.write"
+      },
+      "console-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "plugin-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-read": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-run": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.plugins.write"
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "tokens": {
+      "list-layout": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "get-theme": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "set-layout": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "set-slot": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "reset-all": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.tokens.write"
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "reader": {
+      "list-layout": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "get-theme": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.amberx.read"
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.tokens.read"
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "amberx-writer": {
+      "list-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "get-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "list-items": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.amberx.read"
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": true,
+        "effect": "write",
+        "requires": "control.amberx.write"
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "none": {
+      "list-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "get-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "console-navigator": {
+      "list-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "get-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-open-settings": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-list-actions": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": true,
+        "effect": "navigate",
+        "requires": "control.console.navigate"
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "validation",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.console.read"
+      },
+      "plugin-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-read": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.read",
+        "confirm": null
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    },
+    "plugin-reader": {
+      "list-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "get-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "set-layout": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-layout-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-theme-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-style-enum": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-sizing-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-look": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "set-slot": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "reset-all": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.write",
+        "confirm": null
+      },
+      "add-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "add-item-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "set-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "list-items": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "list-items-bad": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.read",
+        "confirm": null
+      },
+      "act-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-missing-input": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "act-item-unknown": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.write",
+        "confirm": null
+      },
+      "remove-system-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "act-build-step": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-build-approve": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "act-plan-build": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "add-plan": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.planner.write",
+        "confirm": null
+      },
+      "remove-item": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.amberx.delete",
+        "confirm": null
+      },
+      "wrong-op": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "wrong-target": {
+        "ok": false,
+        "code": "not_found",
+        "requires": null,
+        "confirm": null
+      },
+      "token-op-on-entity": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "entity-op-on-token": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "path-on-list": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "wrong-frame": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.tokens.read",
+        "confirm": null
+      },
+      "not-an-object": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-open-screen": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-open-settings": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-list-actions": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "console-run-action": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.write",
+        "confirm": null
+      },
+      "console-back": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-nav-unknown-path": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.navigate",
+        "confirm": null
+      },
+      "console-set-screen": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      },
+      "console-clients": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.console.read",
+        "confirm": null
+      },
+      "plugin-list": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-read": {
+        "ok": true,
+        "effect": "read",
+        "requires": "control.plugins.read"
+      },
+      "plugin-run": {
+        "ok": false,
+        "code": "denied",
+        "requires": "control.plugins.write",
+        "confirm": null
+      },
+      "plugin-set": {
+        "ok": false,
+        "code": "invalid",
+        "requires": null,
+        "confirm": null
+      }
+    }
+  },
+  "confirm": {
+    "canonical": "{\"action\":null,\"input\":null,\"op\":\"remove\",\"path\":\"it-42\",\"target\":\"amberx.items\",\"value\":null}",
+    "canonical-ignores-by-and-order": true,
+    "token": "c1.5fbd08180aab47c8",
+    "valid-now": true,
+    "valid-next-bucket": true,
+    "expired-two-buckets": false,
+    "other-path": false,
+    "other-salt": false,
+    "second-call": {
+      "ok": true,
+      "effect": "destructive"
+    },
+    "hash": "6e972b33287ef811"
+  },
+  "results": {
+    "list": {
+      "$axf": "control@1",
+      "ok": true,
+      "op": "list",
+      "target": "tokens.layout",
+      "items": [
+        {
+          "id": "navWidth",
+          "value": 224
+        }
+      ],
+      "total": 1
+    },
+    "set": {
+      "$axf": "control@1",
+      "ok": true,
+      "op": "set",
+      "target": "tokens.layout",
+      "path": "navWidth",
+      "changed": [
+        "navWidth"
+      ],
+      "audit": {
+        "by": "claude",
+        "reason": "narrower rail",
+        "at": "2026-11-03T12:00:00.000Z"
+      }
+    },
+    "set-no-audit-given": {
+      "$axf": "control@1",
+      "ok": true,
+      "op": "set",
+      "target": "tokens.theme",
+      "path": "accent",
+      "changed": [
+        "accent"
+      ],
+      "audit": {
+        "by": "unknown",
+        "reason": "",
+        "at": "1970-01-01T00:00:00.000Z"
+      }
+    },
+    "act": {
+      "$axf": "control@1",
+      "ok": true,
+      "op": "act",
+      "target": "planner.builds",
+      "path": "token-control",
+      "action": "step",
+      "changed": [
+        "steps.s3.done"
+      ],
+      "audit": {
+        "by": "brett",
+        "reason": "ticked",
+        "at": "2026-11-03T12:00:00.000Z"
+      }
+    },
+    "denied": {
+      "$axf": "control@1",
+      "ok": false,
+      "code": "denied",
+      "message": "set tokens.layout needs control.tokens.write",
+      "requires": "control.tokens.write"
+    },
+    "unknown-code": {
+      "$axf": "control@1",
+      "ok": false,
+      "code": "unexpected",
+      "message": "what"
+    }
+  }
+}

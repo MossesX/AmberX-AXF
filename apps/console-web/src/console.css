@@ -8,7 +8,7 @@
 .cx-status { white-space: nowrap; } .cx-status .fx-chip { margin-left: var(--fx-dens-gap-xs); }
 .cx-success.is-selected { background: var(--fx-success); } .cx-warning.is-selected { background: var(--fx-warning); } .cx-neutral.is-selected { background: var(--fx-muted); }
 .cx-tracker td { vertical-align: top; }
-.cx-panes { grid-template-columns: 1fr 1fr; } @media (max-width: 900px) { .cx-panes { grid-template-columns: 1fr; } }
+.cx-panes { grid-template-columns: 1fr 1fr; } :where([data-fx-medium]) .cx-panes { grid-template-columns: 1fr; }
 .cx-tiles { grid-template-columns: 1fr 1fr; }
 .cx-explorer { display: grid; grid-template-columns: minmax(200px, 42%) 1fr; gap: var(--fx-dens-gap-xl); height: 100%; min-height: 0; }
 .cx-explorer__tree { overflow: auto; border-right: var(--fx-border-w) solid var(--fx-border); padding-right: var(--fx-dens-gap-lg); }
@@ -49,7 +49,7 @@
 .pl-bar__seg.is-built, .pl-bar__seg.is-blocked { color: var(--fx-accent-text) }
 .pl-tools { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); align-items: center } .pl-tools .fx-input { width: auto; max-width: 170px }
 .pl-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: var(--fx-dens-gap-3xl); align-items: start }
-@media (max-width: 1100px) { .pl-main { grid-template-columns: 1fr } }
+:where([data-fx-large]) .pl-main { grid-template-columns: 1fr }
 .pl-results { min-width: 0 }
 .pl-detail { position: sticky; top: 8px; max-height: calc(100vh - 120px); overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); min-width: 0 }
 .pl-groups { display: grid; gap: var(--fx-dens-gap-2xl) }
@@ -94,7 +94,7 @@
 .pl-ports-table td { vertical-align: middle } .pl-ports-table .fx-input { width: 100% }
 .pl-history { margin: 0; padding-left: var(--fx-dens-gap-3xl); display: grid; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-md); max-height: 220px; overflow: auto }
 /* ---------- Library templates ---------- */
-.lt-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-3xl); align-items: start } @media (max-width: 1000px) { .lt-grid { grid-template-columns: 1fr } }
+.lt-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-3xl); align-items: start } :where([data-fx-large]) .lt-grid { grid-template-columns: 1fr }
 .lt-list { display: grid; gap: var(--fx-dens-gap-xl) }
 .lt-card { all: unset; box-sizing: border-box; display: flex; gap: var(--fx-dens-gap-2xl); padding: var(--fx-dens-gap-2xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); cursor: pointer }
 .lt-card:hover { border-color: var(--fx-accent) } .lt-card.is-selected { border-color: var(--fx-accent); background: var(--fx-accent-soft) } .lt-card:focus-visible { outline: 2px solid var(--fx-accent) }
@@ -132,7 +132,7 @@
 .bm-feat { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-xs) 0 }
 .bm-rework { padding: var(--fx-dens-gap-xl) 0; border-top: var(--fx-border-w) solid var(--fx-border) } .bm-rework:first-child { border-top: 0; padding-top: 0 } .bm-rework ul { margin: var(--fx-dens-gap-md) 0 var(--fx-dens-gap-lg); padding-left: var(--fx-dens-gap-3xl) }
 .bm-list { margin: 0; padding-left: var(--fx-dens-gap-3xl); max-height: 40vh; overflow: auto } .bm-list li { margin: var(--fx-dens-gap-md) 0 }
-@media (max-width: 640px) { .bm-progress, .bm-state { display: none } .bm-step__body { padding-left: var(--fx-dens-gap-3xl) } }
+:where([data-fx-small]) .bm-progress, :where([data-fx-small]) .bm-state { display: none } :where([data-fx-small]) .bm-step__body { padding-left: var(--fx-dens-gap-3xl) }
 .bm-dialog { max-width: 100%; overflow-wrap: anywhere } .bm-dialog .fx-row { flex-wrap: wrap }
 
 /* ---------------- pending builds (views/Pending.tsx) ---------------- */
@@ -171,7 +171,7 @@
 .pd-add summary { cursor: pointer; font-weight: 600; margin-bottom: var(--fx-dens-gap-xl) }
 .pd-field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--fx-type-root-md); color: var(--fx-muted) }
 .pd-two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--fx-dens-gap-xl) }
-@media (max-width: 520px) { .pd-strip { grid-template-columns: repeat(2, minmax(0, 1fr)) } .pd-two { grid-template-columns: 1fr } }
+:where([data-fx-small]) .pd-strip { grid-template-columns: repeat(2, minmax(0, 1fr)) } :where([data-fx-small]) .pd-two { grid-template-columns: 1fr }
 
 /* Standards (project manifests + their rules). Tokens only. */
 .st-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--fx-dens-gap-xl) }
@@ -205,7 +205,7 @@
 .st-chip { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); border-radius: 999px; background: var(--fx-surface2); font-size: var(--fx-type-root-sm) }
 .st-chip button { border: 0; background: transparent; color: var(--fx-muted); cursor: pointer; padding: 0; display: inline-flex }
 .st-chipadd .fx-input { width: calc(var(--fx-space) * 14); padding-block: var(--fx-dens-gap-xs) }
-@media (max-width: 520px) { .st-strip { grid-template-columns: repeat(3, minmax(0, 1fr)) } .st-card { padding: var(--fx-dens-gap-xl) } }
+:where([data-fx-small]) .st-strip { grid-template-columns: repeat(3, minmax(0, 1fr)) } :where([data-fx-small]) .st-card { padding: var(--fx-dens-gap-xl) }
 
 
 /* Commands with copy links (src/commandText.tsx): Systems check "Fix it manually", plugin lifecycle panel. */
@@ -218,12 +218,6 @@
 .pd-tick { margin: var(--fx-dens-gap-xs) 0 0; flex: 0 0 auto; accent-color: var(--fx-accent) }
 .pd-entry.is-done p { color: var(--fx-muted); text-decoration: line-through; text-decoration-color: var(--fx-border) }
 
-/* Banner strip page (?axf-strip=banners, src/bannerStrip.tsx): only the plugin banners, sized to them, for Patches'
-   strip web view above every tab. The host caps its height; the page never fills the viewport. */
-html.axf-strip-page, html.axf-strip-page body { height: auto; min-height: 0; overflow: auto; background: var(--fx-bg); }
-html.axf-strip-page #root { height: auto; min-height: 0; display: block; }
-.axf-banner-strip { display: block; }
-.axf-banner-strip .fx-frame-banners { max-height: none; overflow: visible; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-md) 0; }
 /* Build queue: expected build time + price per step (time left once steps are ticked), totals in Progress */
 .bm-cost { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); font-size: var(--fx-type-root-sm); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--fx-text) }
 .bm-cost.is-none { color: var(--fx-muted); font-style: italic }

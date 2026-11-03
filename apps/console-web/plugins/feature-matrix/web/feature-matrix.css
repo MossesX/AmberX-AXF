@@ -32,7 +32,7 @@
 .axp-feature-matrix__changes { margin: 0; padding-inline-start: var(--fx-dens-gap-3xl); max-height: calc(var(--fx-space) * 40); overflow: auto; overflow-wrap: anywhere; }
 
 /* Compact (Oct 30 2026): the Builds pages' toolbar button is icon-only on a phone (label stays as its tooltip / aria-label). */
-@media (max-width: 640px) { .axp-feature-matrix__open > span { display: none } }
+:where([data-fx-small]) .axp-feature-matrix__open > span { display: none }
 .axp-feature-matrix { gap: var(--fx-dens-gap-lg); }
 .axp-feature-matrix__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-feature-matrix__headacts { flex-wrap: nowrap; align-items: center; gap: var(--fx-dens-gap-sm); }

@@ -1,0 +1,2319 @@
+{
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
+ "$axf": "pending@1",
+ "updatedAt": "2026-11-03T23:21:03.650Z",
+ "artifact": "",
+ "items": [
+  {
+   "id": "terminal-vps-host",
+   "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
+     "at": "2026-11-03T19:31:28.416Z"
+    },
+    {
+     "text": "Reconciler: branch claude/terminal-vps-host (PR #274); PR #274",
+     "at": "2026-11-03T19:40:47.953Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Configure the Terminal VPS host: console ed25519 key, authorized on the host, host = coolify gateway",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:31:23.156Z"
+    },
+    {
+     "text": "[Opus] Persist the setting across redeploys (bind-mounted dataDir) and auto-detect the host",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:37:52.475Z"
+    },
+    {
+     "text": "[Opus] Verify headless list, meters and auto-opened tabs",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:31:25.587Z"
+    },
+    {
+     "text": "[Opus] health@1 check: Terminal VPS host ready, with Auto fix",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:37:53.543Z"
+    },
+    {
+     "text": "[Opus] Report, THREADS, PR",
+     "at": "2026-11-03T19:31:10.365Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-11-03T19:40:51.453Z"
+    }
+   ],
+   "createdAt": "2026-11-03T19:31:10.365Z",
+   "builtAt": "2026-11-03T19:40:51.453Z",
+   "updatedAt": "2026-11-03T19:40:53.260Z",
+   "source": "console"
+  },
+  {
+   "id": "window-resize-fix",
+   "title": "Window resize fix + Terminal settings dialog placement (urgent)",
+   "detail": "Brett (Nov 3 2026, voice): floating windows must be resizable (Terminal cannot be resized), and Terminal settings placement \"dialog\" opens nothing. Agent: Landin Lenny (headless worktree session). Merge on Brett order.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
+     "at": "2026-11-03T20:00:43.692Z"
+    },
+    {
+     "text": "Reconciler: PR #278; PR #278 merged",
+     "at": "2026-11-03T20:10:46.177Z"
+    },
+    {
+     "text": "Merged PR #278 (836a290d) on Brett's order; console, axhub-web, amberx-web, molly redeployed and verified serving the fix. CI on main was already red on 3 unrelated jobs (widget types, molly xlayout opens:false, Kotlin widget tests) since 17:45 UTC; this PR's own steps passed. UI Review r-20261103-35553277 for the record. Agent: Landin' Lenny.",
+     "at": "2026-11-03T20:12:36.260Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Find why floating windows cannot be resized; fix window host (8 edges, touch targets, double-tap title)",
+     "at": "2026-11-03T19:32:33.504Z",
+     "done": true,
+     "doneAt": "2026-11-03T19:47:23.937Z"
+    },
+    {
+     "text": "[Opus] Fix settings placement dialog for Terminal and every plugin with the option",
+     "at": "2026-11-03T19:32:33.504Z",
+     "done": true,
+     "doneAt": "2026-11-03T19:59:32.298Z"
+    },
+    {
+     "text": "[Opus] Tests, screenshots, UI Review, report, PR, merge, deploy",
+     "at": "2026-11-03T19:32:33.504Z",
+     "done": true,
+     "doneAt": "2026-11-03T20:12:35.030Z"
+    }
+   ],
+   "createdAt": "2026-11-03T19:32:33.504Z",
+   "builtAt": "2026-11-03T20:12:35.030Z",
+   "updatedAt": "2026-11-03T20:12:38.085Z",
+   "source": "console"
+  },
+  {
+   "id": "terminal-sessions-nav",
+   "title": "Terminal: sessions navigation rail",
+   "detail": "Brett, Nov 3 2026 (voice): a collapsible left nav rail in the existing Terminal plugin listing live sessions (My sessions: tmux/Claude Code + claude.ai chat/voice mirrored from axHub activity; Agents: headless builds; Connections), mirror read-only + Jump in, console_session_note MCP tool. Builds on terminal-vps-host (PR #274). Agent: Earl the Ear (router not on main).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear. PR #286 (on #274). UI Review r-20261103-107a9e61 waiting. Report _claude/builds/reports/terminal-sessions-nav.md",
+     "at": "2026-11-03T21:45:32.326Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Left nav rail: collapsible (icons collapsed, full open, hamburger on phone), framework nav + tokens, remembers state; My sessions / Agents / Connections; tap = open/focus tab; right-click menu (open, split, open in Moshi, stop with confirm, info)",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:19:13.572Z"
+    },
+    {
+     "text": "[Opus] My sessions: tmux Claude Code mirror read-only + Jump in (writable attach); claude.ai sessions as axHub activity feed per session; MCP console_session_note + rule",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:19:15.457Z"
+    },
+    {
+     "text": "[Opus] Live session list (websocket): started + running timer, sort/search/filter, collapsible groups, Recent group linking Session browser",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:19:17.505Z"
+    },
+    {
+     "text": "[Opus] Commands once -> REST + MCP + CLI (list, mirror, jump in, stop); tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T19:58:59.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:45:30.056Z"
+    }
+   ],
+   "createdAt": "2026-11-03T19:58:59.822Z",
+   "builtAt": "2026-11-03T21:45:30.056Z",
+   "updatedAt": "2026-11-03T21:45:32.326Z",
+   "source": "console"
+  },
+  {
+   "id": "profile-manager",
+   "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
+   "detail": "Brett, Nov 3 2026 (voice): grow the build-profiles plugin into a full manager page. Assigned agent: Landin' Lenny. Keep the plugin id, data and every existing feature. Commands declared once -> REST + MCP + CLI (reads allow, changes veto, data delete confirm).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] profiles.mjs: stats per profile (builds by status, pending, queue, cost spent/left, last activity), update colour/icon, duplicate, merge, move-builds, archive/unarchive, remove→restorable, restore, owner-only purge; cleanup scan + fix; tests",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:02:37.470Z"
+    },
+    {
+     "text": "[Opus] build-profiles server router: commands declared once (list, get, create, update, select, duplicate, merge, move-builds, archive, remove, restore, purge, cleanup) -> REST + MCP + CLI via plugin-commands@1, read/write/destructive flags",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:04:12.538Z"
+    },
+    {
+     "text": "[Opus] Manager page UI: grid of every profile (collapsible rows, counts, cost, last activity), sort/search/filter, expand = builds, pending, queue, plan, files",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:14:26.844Z"
+    },
+    {
+     "text": "[Opus] Profile view + Create/Edit/Duplicate/Merge/Move builds/Archive/Delete/Restore dialogs, banner chip colour/icon, context menu 'Build profiles...' and 'Move to profile'",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:14:28.220Z"
+    },
+    {
+     "text": "[Opus] Cleanup helper (archived builds that are really complete) with one-tap fix; typecheck, theme/controls checks, plugin-commands check",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:14:29.392Z"
+    },
+    {
+     "text": "[Opus] Phone + desktop screenshots, UI Review item, report _claude/builds/reports/profile-manager.md, THREADS, PR",
+     "at": "2026-11-03T19:59:06.507Z",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-11-03T19:59:06.499Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T20:14:29.392Z",
+   "source": "voice"
+  },
+  {
+   "id": "build-prompt-origin",
+   "title": "Show what Brett said (verbatim prompt) on every build",
+   "detail": "Brett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\" Every build entry (Build manager, Pending, Queue, Orchestrator, Steps, Builds page) shows the verbatim prompt that started it, its brief and later addenda.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Data: origin record (build-origin@1) on every build in the builds store: said verbatim, at, source, session/link, by, brief, addenda; schema + merge rules that never lose it (store, live publish, git merge driver, sidecar)",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:23:48.536Z"
+    },
+    {
+     "text": "[Opus] Capture: claude-headless.sh / vps.build_start (brief block), orchestrator add, pending_change add, Plan Studio turn-into-build accept origin.said; brief template '## Brett said (verbatim)' + addenda parsed; rule in RULES.md + CLAUDE.md",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:25:11.182Z"
+    },
+    {
+     "text": "[Opus] UI: 'What Brett said' quote block at the top of every expanded build row (Build manager, Builds page, Pending, Orchestrator, Steps), first line as the collapsed subtitle, search covers it",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:53:22.412Z"
+    },
+    {
+     "text": "[Opus] Backfill: fill origin for existing builds from brief files, pending detail, notes; mark non-verbatim ones 'from the brief, may be paraphrased'",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:30:35.517Z"
+    },
+    {
+     "text": "[Opus] Commands once -> REST + MCP + CLI (get origin, add addendum), tests, screenshots, UI Review item, report, THREADS, PR",
+     "at": "2026-11-03T20:23:37.394Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:53:24.237Z"
+    }
+   ],
+   "createdAt": "2026-11-03T20:23:37.380Z",
+   "builtAt": "2026-11-03T20:53:24.237Z",
+   "updatedAt": "2026-11-03T20:53:25.027Z",
+   "source": "code"
+  },
+  {
+   "id": "plugin-settings-placement",
+   "title": "Plugin settings placement: inside the plugin, pane, dialog, window or main",
+   "detail": "Brett (Nov 3 2026, voice): every plugin chooses where its settings open (inside the plugin: slide-out pane L/R/T/B, drop-down, new tab, split, inline; pop-up dialog; floating window; main settings page), with a fallback pane when in-plugin is impossible, and per-placement look + animation (tokens only, reduced motion). Picker in every plugin's settings, its context menu and Settings > Plugins > Settings placement. Terminal first. Agent: Reel Rhonda (headless worktree session, not on main).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/plugin-settings-placement (no PR yet)",
+     "at": "2026-11-03T21:47:40.726Z"
+    },
+    {
+     "text": "Reconciler: PR #289",
+     "at": "2026-11-03T22:00:30.460Z"
+    },
+    {
+     "text": "Built by Reel Rhonda (headless worktree, Opus). PR #289; UI Review submitted (group 'plugin-settings-placement - Nov 3 10:15 PM'). Report _claude/builds/reports/plugin-settings-placement.md. Follow-ups: Fable review of the settings-placement@1 contract, a shared-presets asset type, exit animations, more plugins adopting <SettingsHost>.",
+     "at": "2026-11-03T22:08:50.723Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] s1 settings-placement@1 contract: placements, sub-choices, defaults, asset type + engine + fixture",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:47:29.109Z"
+    },
+    {
+     "text": "[Opus] s2 Fallback: in-plugin impossible (no host region, compact) -> slide-out pane over the plugin",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:47:31.966Z"
+    },
+    {
+     "text": "[Opus] s3 Look + animation per placement (slide/fade/scale/drop/push/none, duration, easing, edge, size, dim, blur, radius, shadow; tokens; reduced motion; live preview)",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:47.761Z"
+    },
+    {
+     "text": "[Opus] s4 Picker UI: top row in each plugin's settings, context menu 'Settings placement...', Settings > Plugins > Settings placement page; Terminal first",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:49.003Z"
+    },
+    {
+     "text": "[Opus] s5 plugin@1 settingsHost capability, one settings renderer in any host, CI check pane+dialog+main",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:55:50.337Z"
+    },
+    {
+     "text": "[Opus] s6 Commands -> REST + MCP + CLI; tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T20:30:14.219Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:08:49.404Z"
+    }
+   ],
+   "createdAt": "2026-11-03T20:30:14.217Z",
+   "builtAt": "2026-11-03T22:08:49.404Z",
+   "updatedAt": "2026-11-03T22:08:50.723Z",
+   "source": "console"
+  },
+  {
+   "id": "banner-ref-links",
+   "title": "Banner reference links: tap a mention to open what it refers to",
+   "detail": "Brett (Nov 3 2026, voice): in banner entries (in progress, merged, live, build/status banners, Codebase changes), text that mentions a real thing (screen, settings page, plugin, dialog, toolbar, build, PR, agent, file) becomes a hook: tap = peek card, double-tap = open + highlight, long-press = context menu. ref@1 resolver from the console registries, explicit 'touches:' refs win. Applied in the generic banner item renderer; banner-pack (#251), banner-editor (#254), banners-one untouched. Agent: Ping Paulie (headless worktree session, not on main). Branch claude/banner-ref-links.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built by Ping Paulie (headless worktree). PR #287, UI Review r-20261103-1ad2ede3 waiting. Gaps: swarm roster agents not targets (no capability), no touches field on builds yet (text only), UI Review has no per-item deep link. Fable review suggested for the ref@1 contract.",
+     "at": "2026-11-03T21:45:25.479Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] s1 ref@1 resolver: registries (screens, settings, plugins, dialogs, toolbars, menus, builds, PRs, agents, files), exact/alias matching, explicit touches: refs win",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T20:56:54.797Z"
+    },
+    {
+     "text": "[Opus] s2 Interaction: dotted underline (tokens); tap = peek card, double-tap = open + highlight, long-press/right-click = context menu",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:53.668Z"
+    },
+    {
+     "text": "[Opus] s3 Every section: In progress, Merged, Ready, Live, build/status banners, Codebase changes; existing part opens live one ('being changed by <build>'), new part opens its UI Review item",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:56.666Z"
+    },
+    {
+     "text": "[Opus] s4 Apply through the generic banner item renderer (no banner-pack/banner-editor/banners-one edits; overlap noted)",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:19:59.441Z"
+    },
+    {
+     "text": "[Opus] s5 Commands once -> REST + MCP + CLI; tests; phone + desktop shots; UI Review; report; THREADS; PR",
+     "at": "2026-11-03T20:47:37.195Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:45:20.551Z"
+    }
+   ],
+   "createdAt": "2026-11-03T20:47:37.192Z",
+   "builtAt": "2026-11-03T21:45:20.552Z",
+   "updatedAt": "2026-11-03T21:45:25.479Z",
+   "source": "console"
+  },
+  {
+   "id": "molly-console-commands",
+   "title": "Molly: console commands reach the embedded console; every app gets the control surface",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Fix on PR #288 (stacked on #266). s6/s7 addendum open.",
+     "at": "2026-11-03T21:48:58.463Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Same for the axHub and AmberX frames inside Molly",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] console-wake path: wake/relay through Molly when Molly is the open app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Tests, report, THREADS, PR, redeploy",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
+     "at": "2026-11-03T21:05:30.630Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-03T21:05:30.629Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T21:48:58.463Z",
+   "source": "console"
+  },
+  {
+   "id": "git-status-board",
+   "title": "Git status board (grids for push / pull / CI / merge / held / deployed / stale)",
+   "detail": "Brett, Nov 3 2026 (voice): \"Where do I view items at git status? ... what needs to be pulled, merged ... I want to be able to view everything in grids with expandable rows.\" Replaces pending batch-manager (batch grid + badges, PR sub-grid + Fix, dense phone pass, PR browser rows with plain-English lead, Merge/Hold, left click review, right-click menu). Predicted shots live in ui-review-predicted. Built by Snap Sully (session).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Server data layer: git worktrees (ahead/behind), GitHub PRs + checks via axf.github@1, builds store, ui-review holds, containers; section classifier (no LLM)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30",
+     "done": true,
+     "doneAt": "2026-11-03T21:26:46.134Z"
+    },
+    {
+     "text": "[Opus] Commands declared once: REST routes + MCP + CLI (sections, pr detail, merge via push banner, hold, update from main, rerun, fix job, close, land/kill)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30",
+     "done": true,
+     "doneAt": "2026-11-03T21:26:47.860Z"
+    },
+    {
+     "text": "[Opus] Web view: section tabs as framework grids, collapsed rows (PR#, plain-English lead, branch, agent, badge, CI dot, ahead/behind, age, cost)",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30",
+     "done": true,
+     "doneAt": "2026-11-03T22:01:29.453Z"
+    },
+    {
+     "text": "[Opus] Expanded rows: checks with error lines, commits, files + diff, build steps, UI Review link, blockers + what clears them, action buttons",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30",
+     "done": true,
+     "doneAt": "2026-11-03T22:01:35.757Z"
+    },
+    {
+     "text": "[Opus] Batch grid with live badges, PR sub-grid, merge order; live feed updates; Show in Git status context-menu hooks",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30",
+     "done": true,
+     "doneAt": "2026-11-03T22:01:37.492Z"
+    },
+    {
+     "text": "[Opus] Tests (zero LLM imports, classifier), lifecycle install/uninstall, help, screenshots + UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:10:39.299Z",
+     "estimate": "30"
+    }
+   ],
+   "createdAt": "2026-11-03T21:10:39.295Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T22:21:08.405Z",
+   "source": "console"
+  },
+  {
+   "id": "urgent-main-ci-green",
+   "title": "URGENT: main CI green (widgets fixture, xlayout opens, Kotlin widget tests)",
+   "detail": "Found by window-resize-fix (#278): main CI red on three jobs, blocking auto-merge for every PR. Agent: Earl the Ear (headless).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Agent: Earl the Ear (headless). Six CI failures fixed at the root on PR #284; ci-main health check names failing jobs, Auto fix queues new ci-fix job (Greenlight Gina). s3 waits for #284 to go green and merge, then the waiting PRs get updated from main.",
+     "at": "2026-11-03T21:31:51.198Z"
+    },
+    {
+     "text": "Reconciler: PR #284 merged",
+     "at": "2026-11-03T22:54:25.249Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Read the latest failing main CI run and get the exact failures",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:20.518Z"
+    },
+    {
+     "text": "[Opus] Fix each failure at the root (widgets fixture, xlayout opens, Kotlin banner test)",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:12:22.113Z"
+    },
+    {
+     "text": "[Opus] Get main green: small PR; refresh the waiting PRs from main",
+     "at": "2026-11-03T21:12:18.219Z"
+    },
+    {
+     "text": "[Opus] health@1 check: red banner item when main CI is red, with an Auto fix that queues an ops-fix job",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:47.371Z"
+    },
+    {
+     "text": "[Opus] Report, THREADS, store steps",
+     "at": "2026-11-03T21:12:18.219Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:31:49.702Z"
+    }
+   ],
+   "createdAt": "2026-11-03T21:12:18.212Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T22:54:25.249Z",
+   "source": "console"
+  },
+  {
+   "id": "whats-new-open-fix",
+   "title": "Bug fix: tapping the What's new banner item opens nothing; dialogs cannot be closed on phone",
+   "detail": "Brett (Nov 3 2026, voice): \"I see the What's new banner and I'm clicking it. But I'm not seeing anything.\" Addendum: \"I have this banner open. I can't close it.\" Tap opens the panel every time (phone/desktop, standalone/Molly); every dialog closes by X, outside tap, back/Escape, swipe down; control@1 console.dialogs close. Agent: Janitor Joey.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Assigned: Janitor Joey (router not on this checkout). Cause: (1) console-terminal auto-opens a floating window (z 60) over the Banners strip (z 42) on phones, swallowing taps on the strip's What's new row; (2) that row (systems-check) only expands inline in a 45vh-capped strip, it never opened the What's new panel. Top-bar chip itself works.",
+     "at": "2026-11-03T21:36:04.573Z"
+    },
+    {
+     "text": "PR #290 open; UI Review r-20261103-049edfb2 waiting (holds the auto-merge until Brett approves). Report _claude/builds/reports/whats-new-open-fix.md",
+     "at": "2026-11-03T22:17:02.033Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Reproduce the dead tap and find the cause",
+     "at": "2026-11-03T21:23:34.425Z",
+     "done": true,
+     "doneAt": "2026-11-03T21:36:01.248Z"
+    },
+    {
+     "text": "[Opus] Fix the banner tap for What's new and every other banner item",
+     "at": "2026-11-03T21:23:34.425Z",
+     "done": true,
+     "doneAt": "2026-11-03T22:14:37.442Z"
+    },
+    {
+     "text": "[Opus] Dialog close: X, outside tap, back/Escape, swipe down on phone",
+     "at": "2026-11-03T21:23:34.425Z",
+     "done": true,
+     "doneAt": "2026-11-03T22:14:39.053Z"
+    },
+    {
+     "text": "[Opus] console.dialogs close action + console_dialog close",
+     "at": "2026-11-03T21:23:34.425Z",
+     "done": true,
+     "doneAt": "2026-11-03T22:14:41.008Z"
+    },
+    {
+     "text": "[Opus] Tests, screenshots, report, THREADS, PR",
+     "at": "2026-11-03T21:23:34.425Z",
+     "done": true,
+     "doneAt": "2026-11-03T22:16:59.239Z"
+    }
+   ],
+   "createdAt": "2026-11-03T21:23:34.422Z",
+   "builtAt": "2026-11-03T22:16:59.240Z",
+   "updatedAt": "2026-11-03T22:17:02.033Z",
+   "source": "console"
+  },
+  {
+   "id": "terminal-drag-chain-tree",
+   "title": "Terminal: drag handle + hold-drag tabs, context chain as a tree, settings context menu, per-pane text size",
+   "detail": "Brett (Nov 3 2026, voice): no spot to drag the Terminal window (all tabs); context chain must show chained MD files as an indented tree; context menu on the Terminal opens its settings (addendum 1); text size per pane, smaller phone default (addendum 2). Agent: Landin Lenny (headless worktree session). Builds on window-resize-fix #278.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Clash: terminal-tabs-left (running, another session) changes TerminalHost too; note left on it to reuse WindowGrip orientation=column + useTabPress. terminal-sessions-nav #286 (built, open) also touches TerminalHost; whichever merges second resolves.",
+     "at": "2026-11-03T22:31:25.143Z"
+    },
+    {
+     "text": "Overlap note from terminal-tabs-left: the Terminal can now show tabs in a left/right stack (web/TabStack.tsx, own pointer reorder); the strip's tab markup was left untouched so both merge cleanly. If a shared hold-to-drag engine lands here, TabStack can adopt it.",
+     "at": "2026-11-03T22:41:46.267Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Framework window host: always-present grip on frameless windows (WindowGrip), tab hold-to-drag gesture engine, double-tap maximize; wire the Terminal strip (pointer reorder, tap, hold-drag)",
+     "at": "2026-11-03T21:50:21.573Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T21:58:04.326Z"
+    },
+    {
+     "text": "[Opus] Context chain tree data: parent by @import / reference / session-start in claude-meter, reason per item, tree builder (TS + Python), nested tree from headless/{name}/chain",
+     "at": "2026-11-03T21:50:21.573Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:01:31.597Z"
+    },
+    {
+     "text": "[Opus] ChainPane as a tree: indent, expand/collapse per node, icons, reason, rule counts, select = replay that file, depth-first reveal",
+     "at": "2026-11-03T21:50:21.573Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:03:24.841Z"
+    },
+    {
+     "text": "[Opus] Terminal context menu: Terminal settings on strip, handle, body margin, empty area and in the text menu; Opens in wording",
+     "at": "2026-11-03T21:50:21.573Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:03:26.398Z"
+    },
+    {
+     "text": "[Opus] Text size per pane: settings (size, line height, font) + per-tab override, A-/A+, pinch, Ctrl+wheel/keys, reset, phone default from tokens",
+     "at": "2026-11-03T21:50:21.573Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:08:18.498Z"
+    },
+    {
+     "text": "[Opus] Tests, phone + desktop screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:50:21.573Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-03T21:50:21.572Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T22:41:46.267Z",
+   "source": "console"
+  },
+  {
+   "id": "molly-nav-submenus",
+   "title": "Molly: navigation sub menus that slide open + Navigation settings",
+   "detail": "Brett (Nov 3 2026, voice): \"I want Molly to have the console's navigation menu slide open, like when you click console, have a sub menu slide open, show its menu, and same thing for AXHub and AmberX. Have a sub menu slide open with an animation and give the navigation menu its own settings interface to control everything. The theme, the way it looks, its animation, its behavior, all that.\" Agent: Reel Rhonda (headless worktree, not on main). Model: Opus for every step (Claude decides): the nav-style contract is web-only, additive and opt-in; Android twin deferred in PORTING.md; flagged for a Fable review per the shared rule.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s1 Molly nav: each app entry (Console, axHub, AmberX, future apps) expands a sliding sub menu with that app's live nav (chrome@1 bundles, no hard-coded lists); tap opens the screen in the app frame; nested levels; active highlighted; open state remembered",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s2 Animation: slide / accordion / fade / push / none, duration, easing, stagger, chevron rotation, reduced motion",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s3 Navigation settings interface (nav context menu + Settings > Plugins > Navigation): colours, fonts, icons, density, width, animation, behaviour, pinned / order / hidden apps; nav-style asset, live preview, presets, reset",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s4 Framework nav component: NavItem children + sub menus + nav-style in NavMenu, opt-in for the Console and other apps, current navs unchanged",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    },
+    {
+     "text": "[Opus] s5 Commands declared once (REST + MCP + CLI: get / set nav settings, open item), tests, screenshots, UI Review, report, THREADS, PR",
+     "at": "2026-11-03T21:55:24.280Z",
+     "estimate": "30m"
+    }
+   ],
+   "createdAt": "2026-11-03T21:55:24.277Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T21:55:24.277Z",
+   "source": "console"
+  },
+  {
+   "id": "terminal-tabs-left",
+   "title": "Terminal: tab position setting (top, left / right stack, bottom)",
+   "detail": "Brett (Nov 3 2026, voice): \"I want a setting in terminal to put all the tabs on the left side in a stack instead of across the top.\" Setting Tab position: Top | Left stack | Right stack | Bottom, per device, also in the tab context menu. Stack: title, agent, model, live cost, status dot, close; collapse to icons; resizable; drag to reorder; scrolls; title bar still drags. Phone: slide-out. Server default + REST/MCP/CLI get/set. Agent: Janitor Joey (headless worktree session; router not on this branch's main). Overlaps: terminal-sessions-nav (#286, open, adds a left rail) and terminal-drag-chain-tree (running, rewrites strip pointer handling): changes kept to a new TabStack file + CSS so all three merge cleanly.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Clash note from terminal-drag-chain-tree (branch claude/terminal-drag-chain-tree): the framework now has WindowGrip (react/windows/WindowHost.tsx; orientation=\"column\" for a stacked tab list, put it first) and useTabPress (tap / horizontal drag reorder / press-and-hold or vertical pull drags the window / long-press menu). The Terminal strip uses them and dropped HTML5 tab drag. TerminalHost.tsx also gained the window menu (Terminal settings first), per-pane text size (A-/size/A+, Ctrl+wheel, pinch). The left/right stack should reuse WindowGrip + useTabPress (with vertical reorder) instead of its own drag; expect a TerminalHost merge.",
+     "at": "2026-11-03T22:31:02.349Z"
+    },
+    {
+     "text": "Agent: Janitor Joey. Overlap: terminal-sessions-nav #286 (open) adds a left rail; stack kept inside __body so it sits beside the rail after merge; stack-inside-rail option is a follow-up once #286 lands. terminal-drag-chain-tree (running) rewrites strip pointer code; this build hides strip tabs by CSS only.",
+     "at": "2026-11-03T22:39:58.535Z"
+    },
+    {
+     "text": "Reconciler: PR #293",
+     "at": "2026-11-03T22:54:25.249Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Server: tabPosition default + GET/PUT tab-position routes (REST, MCP, CLI through plugin-commands), tests",
+     "at": "2026-11-03T22:02:33.806Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:12:07.682Z"
+    },
+    {
+     "text": "[Opus] Web: tab-position core (positions, per-device keys, width clamp) + TabStack (vertical list, collapse, resize, drag reorder, phone slide-out, bottom strip)",
+     "at": "2026-11-03T22:02:33.806Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:12:08.896Z"
+    },
+    {
+     "text": "[Opus] Wire into TerminalHost + settings panel + tab context menu + web action terminal.tabs.position; CSS tokens only; check-theme/controls",
+     "at": "2026-11-03T22:02:33.806Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:12:10.149Z"
+    },
+    {
+     "text": "[Opus] Typecheck, tests, phone + desktop screenshots, UI Review item",
+     "at": "2026-11-03T22:02:33.806Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Report, THREADS, PR, link the build",
+     "at": "2026-11-03T22:02:33.806Z",
+     "estimate": "15 min"
+    }
+   ],
+   "createdAt": "2026-11-03T22:02:33.805Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T22:54:25.249Z",
+   "source": "console"
+  },
+  {
+   "id": "molly-banners",
+   "title": "Molly: install the banners",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Assigned: Amber (headless Opus session, worktree /root/axf-builds/molly-banners, branch claude/molly-banners)",
+     "at": "2026-11-03T22:04:53.462Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] Check first: Molly banners today vs Dev Console banners; list the gap in the report",
+     "at": "2026-11-03T22:04:42.487Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:12:37.837Z"
+    },
+    {
+     "text": "[Opus] Install one shared banner region in Molly chrome, items live from the console banner registry/plugins; taps act as in the console; embedded frames hide their own banner",
+     "at": "2026-11-03T22:04:42.487Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T23:11:54.743Z"
+    },
+    {
+     "text": "[Opus] Same settings as the console (per-banner settings + colours, per-banner show/hide in Molly), phone + desktop",
+     "at": "2026-11-03T22:04:42.487Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-11-03T23:12:55.949Z"
+    },
+    {
+     "text": "[Opus] Leave banner-pack #251, banner-editor #254, banners-one alone; build on main; note overlap",
+     "at": "2026-11-03T22:04:42.487Z",
+     "estimate": "5 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:12:39.537Z"
+    },
+    {
+     "text": "[Opus] Tests, phone + desktop screenshots, UI Review item, report, THREADS, PR",
+     "at": "2026-11-03T22:04:42.487Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-03T22:04:42.483Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T23:12:55.949Z",
+   "source": "console"
+  },
+  {
+   "id": "gizmo-companion",
+   "title": "Gizmo: full Claude companion plugin in AmberX",
+   "detail": "## What Brett said (verbatim, Nov 3 2026, voice)\n\"I need a companion assistant... a sidekick that allows me to chat to your partner... put the plug-in in AmberX.\" \"A full all-out Claude companion, as full, powerful, as complete as the Claude app itself, with everything, all the features, every setting, the connectors, plugins, a full Claude suite.\" \"We can harvest the assistant code out in AmberX to build the new plugin.\" \"Build the plugin for Claude in AmberX, but make it full, complete. It's gotta be powerful.\"\n\nBooked to agent Gizmo (all-rounder, $8.00/h, AmberX guide/assistant; replaces agent Molly).\n\nDecisions: lives in AmberX (apps/amberx-droid) as a plugin; harvest AmberX assistant code + console Terminal Claude session code into a shared framework lib (claude-session) + AmberX plugin `companion`; console Terminal keeps working on the shared lib; brains run on the VPS as Claude Code sessions reached through axHub, no API keys in the APK; Gizmo is the face, Molly is no longer an agent.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Assigned: Gizmo (headless Opus session, worktree /root/axf-builds/gizmo-companion, branch claude/gizmo-companion)",
+     "at": "2026-11-03T22:18:55.429Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "[Opus] s1a Harvest: shared framework lib claude-session (session model, conversation store, stream parsing, cost counters, persona/rules chain) from AmberX assistant + console Terminal session code",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:26:18.873Z"
+    },
+    {
+     "text": "[Opus] s1b Tests for claude-session; console Terminal migrated onto it with no behaviour change",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-11-03T22:26:30.544Z"
+    },
+    {
+     "text": "[Opus] s2a Chat: companion plugin in AmberX, full-screen chat with Gizmo, streaming replies, markdown + code blocks with copy",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s2b Chat: attach images/files/photos, stop/regenerate/edit message",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s2c Chat: conversation list with search, rename, pin, delete, new chat; history stored on axHub",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s2d Chat: server side on the VPS (Claude Code session per chat, reached through axHub; no keys in the APK)",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s3a Voice: talk mode (push-to-talk + hands-free on the existing listener), spoken replies",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s3b Voice: interrupt-to-stop, voice picker + speed",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] s4a Connectors + tools: axHub services with the same approvals/veto flow",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s4b Tool calls as collapsible cards; Follow Amber / console_show hooks",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] s5a Crew link: queue/stop builds, status, slot queue from the chat",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s5b Crew link: UI Review approve/deny, banners, handoff to Amber",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] s6a Projects with instructions + files; memory read/write on axHub (Amber's files)",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s6b Per-chat model choice (policy: Opus/Fable, Sonnet/Haiku coerced up), budget caps",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "[Opus] s7a Companion settings screen: model, voice, persona field, notifications, approvals, connectors on/off, memory on/off, privacy, export/delete chats",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s7b Overlay bubble to summon Gizmo anywhere on the phone",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s8 Companion commands via REST + MCP + CLI; other plugins can add tools to Gizmo",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] s9 Gizmo agent card; Molly -> Gizmo in AmberX assistant texts",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "15 min"
+    },
+    {
+     "text": "[Opus] s10 Tests/type-check, phone screenshots, UI Review item, report _claude/builds/reports/gizmo-companion.md, THREADS, PR",
+     "at": "2026-11-03T22:18:50.824Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-11-03T22:18:50.820Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T22:26:30.544Z",
+   "source": "session"
+  },
+  {
+   "id": "plugin-lazy-load",
+   "title": "Plugin lazy loader (console speed)",
+   "detail": "Brett, Nov 3 2026 (voice): \"The console gets slower as more plugins are installed.\" \"Anytime I hot render or something gets hot rendered, it reloads all the plugins.\" \"Put in the plugin manager plugin all the ways to configure the lazy loader, like how many get loaded at the beginning that you use a lot, how many get cached, which ones to load, which ones to load at all.\" Addendum: \"For default, right off the bat, banners need to be the very first thing to load.\" Booked to Janitor Joey (no Polo card).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "at": "2026-11-03T22:55:16.846Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "at": "2026-11-03T22:55:16.846Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "at": "2026-11-03T22:55:16.846Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "at": "2026-11-03T22:55:16.846Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "at": "2026-11-03T22:55:16.846Z",
+     "estimate": "30"
+    },
+    {
+     "text": "[Opus] Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "at": "2026-11-03T22:55:16.846Z",
+     "estimate": "30"
+    }
+   ],
+   "createdAt": "2026-11-03T22:55:16.843Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T22:55:16.843Z",
+   "source": "console"
+  },
+  {
+   "id": "lenny-land-all",
+   "title": "Land everything finished (freeze plan step two)",
+   "detail": "What Brett said (voice, Nov 3 2026): CI fix is done (PR #284 merged 22:42 UTC, main green). \"Number two.\" Plan step two = merge everything finished. \"Give me Lenny.\"\nAgent: Landin' Lenny. Land #270 first, then #265-#292 oldest first and #279; close #267 (superseded by #284); leave #251/#254 for Brett; list older PRs #207-#236 for him; redeploy all apps.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "[Opus] Land #270 auto-land first",
+     "at": "2026-11-03T22:55:32.443Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Land #265-#269, #271-#277 oldest first (update from main, resolve, CI green, merge)",
+     "at": "2026-11-03T22:55:32.443Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Land #280-#283, #285-#289",
+     "at": "2026-11-03T22:55:32.443Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Land #290-#292 and #279",
+     "at": "2026-11-03T22:55:32.443Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "[Opus] Close #267 as superseded by #284",
+     "at": "2026-11-03T22:55:32.443Z",
+     "estimate": "5 min"
+    },
+    {
+     "text": "[Opus] Redeploy console, Molly, axHub web, demo; confirm up",
+     "at": "2026-11-03T22:55:32.443Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "[Opus] Report, older-PR list for Brett, THREADS",
+     "at": "2026-11-03T22:55:32.443Z",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-11-03T23:03:01.354Z",
+   "builtAt": "",
+   "updatedAt": "2026-11-03T23:04:15.928Z",
+   "source": "console"
+  }
+ ]
+}

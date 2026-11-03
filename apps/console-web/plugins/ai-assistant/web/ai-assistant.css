@@ -94,11 +94,9 @@
 
 /* Replies render through the framework `Markdown` (`.fx-md`): headings, lists, tables, fenced code with Copy. */
 
-@media (max-width: 760px) {
-  .axp-ai-assistant { grid-template-columns: minmax(0, 1fr) }
-  .axp-ai-assistant__side { position: absolute; inset: 0 auto 0 0; width: min(280px, 85%); z-index: 2; box-shadow: var(--fx-shadow-lg) }
-  .axp-ai-assistant__bubble { max-width: 100% }
-}
+:where([data-fx-narrow]) .axp-ai-assistant { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-narrow]) .axp-ai-assistant__side { position: absolute; inset: 0 auto 0 0; width: min(280px, 85%); z-index: 2; box-shadow: var(--fx-shadow-lg) }
+:where([data-fx-narrow]) .axp-ai-assistant__bubble { max-width: 100% }
 .axp-ai-assistant__write { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-warning); color: var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: var(--fx-type-root-sm); font-weight: 600; white-space: nowrap; max-width: 40vw; overflow: hidden; text-overflow: ellipsis }
 .axp-ai-assistant__livepill { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-accent); color: var(--fx-accent); background: var(--fx-accent-soft); font-size: var(--fx-type-root-sm); font-weight: 600; white-space: nowrap }
 .axp-ai-assistant__tagrow { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) }
@@ -131,24 +129,20 @@
 .axp-ai-assistant__conv-main { padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); gap: 0 }
 .axp-ai-assistant__conv-main > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-ai-assistant__fold > summary { cursor: pointer; margin-bottom: var(--fx-dens-gap-xl) }
-@media (max-width: 640px) {
-  .axp-ai-assistant { min-height: 72vh; border-radius: var(--fx-radius-md) }
-  .axp-ai-assistant__head { padding: var(--fx-dens-gap-md); flex-wrap: nowrap }
-  .axp-ai-assistant__agent { max-width: 34vw }
-  .axp-ai-assistant__body, .axp-ai-assistant__compose { padding: var(--fx-dens-gap-md) }
-  .axp-ai-assistant__avatar { display: none }
-}
+:where([data-fx-small]) .axp-ai-assistant { min-height: 72vh; border-radius: var(--fx-radius-md) }
+:where([data-fx-small]) .axp-ai-assistant__head { padding: var(--fx-dens-gap-md); flex-wrap: nowrap }
+:where([data-fx-small]) .axp-ai-assistant__agent { max-width: 34vw }
+:where([data-fx-small]) .axp-ai-assistant__body, :where([data-fx-small]) .axp-ai-assistant__compose { padding: var(--fx-dens-gap-md) }
+:where([data-fx-small]) .axp-ai-assistant__avatar { display: none }
 .axp-ai-assistant__strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) }
 .axp-ai-assistant__flatrow { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-lg) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
 .axp-ai-assistant__flatrow > .fx-mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-ai-assistant__stepnow { display: none }
-@media (max-width: 640px) {
-  .axp-ai-assistant__stepnow { display: block }
-  .axp-ai-assistant__wizard .axp-ai-assistant__steps { display: none }
-  .axp-ai-assistant__grid { grid-template-columns: minmax(0, 1fr) }
-  .axp-ai-assistant__pick-card { flex-direction: row; flex-wrap: wrap; align-items: center; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
-  .axp-ai-assistant__card { padding: var(--fx-dens-gap-xl) }
-}
+:where([data-fx-small]) .axp-ai-assistant__stepnow { display: block }
+:where([data-fx-small]) .axp-ai-assistant__wizard .axp-ai-assistant__steps { display: none }
+:where([data-fx-small]) .axp-ai-assistant__grid { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-small]) .axp-ai-assistant__pick-card { flex-direction: row; flex-wrap: wrap; align-items: center; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
+:where([data-fx-small]) .axp-ai-assistant__card { padding: var(--fx-dens-gap-xl) }
 .fx-pagehead > div:first-child:has(> .axp-ai-assistant__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
 /* the stand-in microphone (no voice plugin): a muted mic with an install popover */
 .axp-ai-assistant__micwrap { position: relative; display: inline-flex; align-self: center }

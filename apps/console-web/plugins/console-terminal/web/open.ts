@@ -18,7 +18,11 @@ export function newWindow(rt: AxfRuntime, sessions: HostSession[]): string {
   const hid = `term-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
   host(hid, sessions);
   // frameless (windows-terminal s17): the tab strip is the title bar (drag, double-click, min / max / close), like Windows Terminal
-  rt.windows.openFloating([{ id: hid, title: 'Terminal', kind: HOST_KIND, payload: '', icon: 'terminal' }], 'Terminal', 'floating', Math.min(900, innerWidth - 32), Math.min(540, innerHeight - 120), undefined, undefined, { frame: 'frameless', minWidth: 320, minHeight: 200 });
+  // on a touch screen: centred with a margin each side, so the side edges (and their resize handles) stay clear of the
+  // phone's edge-swipe (back) gesture zone
+  const touch = matchMedia('(pointer: coarse)').matches;
+  const width = Math.max(280, Math.min(900, innerWidth - (touch ? 80 : 32))), height = Math.min(540, innerHeight - 120);
+  rt.windows.openFloating([{ id: hid, title: 'Terminal', kind: HOST_KIND, payload: '', icon: 'terminal' }], 'Terminal', 'floating', width, height, touch ? Math.round((innerWidth - width) / 2) : undefined, undefined, { frame: 'frameless', minWidth: Math.min(320, width), minHeight: 200 });
   return hid;
 }
 

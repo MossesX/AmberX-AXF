@@ -4,7 +4,8 @@ import { Icon } from '../components/Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
 import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
-import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
+import { effectiveToolbar, forcesToolbar, isFloating, isMaximized, paneGroups, rectOf, resizeCursor, windowFrame, CORNERS, RESIZE_EDGES } from '../../core/engines/windows';
+import { DockDropOverlay, DockHost, DockPaneView, dockLayoutDialog } from './DockHost';
 
 /* ------------------------------------------------------------------ */
 /* registry of tab renderers + locals                                  */
@@ -29,23 +30,18 @@ export function TabRenderersProvider({ renderers, children }: { renderers: TabRe
 /* dock area (groups inside the main window)                           */
 /* ------------------------------------------------------------------ */
 
-/** Renders the main window's nested layout; `empty` shows when nothing is docked. */
+/** Renders the main window's nested layout (dock@1: splitters, drop zones); `empty` shows when nothing is docked. */
 export function DockArea({ windowId, empty, className }: { windowId?: string; empty?: ReactNode; className?: string }) {
-  const wm = useWindowManager();
-  const s = useWindowState();
-  const id = windowId ?? wm.mainWindowId;
-  const layout = s.layouts[id];
-  return <div className={`fx-dock ${className ?? ''}`}>{layout ? <PaneView pane={layout} /> : empty ?? <div className="fx-empty">No tabs — open something here, or drag a tab in.</div>}</div>;
+  return <DockHost windowId={windowId} empty={empty} className={className} />;
 }
 
+/** A pane tree on its own (older callers); the window is the one its first group lives in. Prefer DockHost / DockPaneView. */
 export function PaneView({ pane }: { pane: Pane }) {
+  const wm = useWindowManager();
   const s = useWindowState();
-  if (pane.kind === 'leaf') { const g = s.groups[pane.groupId]; return g ? <TabGroupView group={g} /> : null; }
-  if (pane.kind === 'split') {
-    const total = pane.weights.reduce((a, b) => a + b, 0) || 1;
-    return <div className={`fx-split ${pane.vertical ? 'fx-split--v' : 'fx-split--h'}`}>{pane.children.map((c, i) => <div key={i} className="fx-split__cell" style={{ flex: `${(pane.weights[i] ?? 1) / total} 1 0` }}><PaneView pane={c} /></div>)}</div>;
-  }
-  return <div className="fx-grid" style={{ gridTemplateColumns: `repeat(${pane.cols}, 1fr)`, gridTemplateRows: `repeat(${pane.rows}, 1fr)` }}>{pane.cells.map((c, i) => <div key={i} className="fx-grid__cell"><PaneView pane={c} /></div>)}</div>;
+  const first = paneGroups(pane)[0];
+  const windowId = (first && s.groups[first]?.windowId) || wm.mainWindowId;
+  return <DockPaneView pane={pane} path={[]} windowId={windowId} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -58,14 +54,18 @@ export function TabGroupView({ group }: { group: TabGroup }) {
   const renderers = useContext(RenderersCtx);
   const ref = useRef<HTMLDivElement>(null);
   const active = group.tabs[group.active];
-  // report bounds for drop targeting
+  // report bounds for drop targeting: the group's rect, its header height and each tab's right edge (dock@1 zones)
   useLayoutEffect(() => {
     const el = ref.current; if (!el) return;
-    const report = () => { const r = el.getBoundingClientRect(); wm.groupBounds.set(group.id, [r.left, r.top, r.right, r.bottom]); };
+    const report = () => {
+      const r = el.getBoundingClientRect(); wm.groupBounds.set(group.id, [r.left, r.top, r.right, r.bottom]);
+      const bar = el.querySelector<HTMLElement>(':scope > .fx-tabgroup__bar');
+      if (bar) { wm.groupHeaders.set(group.id, bar.getBoundingClientRect().height); wm.tabEdges.set(group.id, [...bar.querySelectorAll<HTMLElement>(':scope > .fx-tab')].map((t) => t.getBoundingClientRect().right)); }
+    };
     report();
     const ro = new ResizeObserver(report); ro.observe(el);
     window.addEventListener('scroll', report, true);
-    return () => { ro.disconnect(); window.removeEventListener('scroll', report, true); wm.groupBounds.delete(group.id); };
+    return () => { ro.disconnect(); window.removeEventListener('scroll', report, true); wm.groupBounds.delete(group.id); wm.groupHeaders.delete(group.id); wm.tabEdges.delete(group.id); };
   });
   const brand = useBrandPlace('tab-group');
   const brandHost = brandHostProps(brand);
@@ -133,6 +133,7 @@ export function FloatingWindowsHost() {
       {CORNERS.map((c) => <MinimizedCorner key={c} corner={c} windows={wm.minimizedAt(c).filter(own)} />)}
       {s.windows.filter((w) => w.minimized === 'floating-toolbar' && own(w)).map((w) => <FloatingMiniToolbar key={w.id} w={w} />)}
       {s.preview && <SnapPreview preview={s.preview} />}
+      {s.dockPreview && <DockDropOverlay preview={s.dockPreview} />}
       {s.drag && <div className="fx-dragghost" style={{ left: s.drag.x + 8, top: s.drag.y + 8 }}>{Object.values(s.groups).flatMap((g) => g.tabs).find((t) => t.id === s.drag!.tabId)?.title ?? 'tab'}</div>}
     </>
   );
@@ -216,6 +217,13 @@ function useWindowDrag(w: WindowSpec) {
   return { startMove, startResize };
 }
 
+/**
+ * Every floating window (and its grips) shares one z-index; the host draws them sorted by `w.z`, so DOM order stacks
+ * them. `60 + w.z` used to climb past the dialog backdrop (70), menus and toasts after a few focus taps, so a dialog
+ * opened from a window (the Terminal's settings, its tab picker) opened behind it (window-resize-fix, Nov 3 2026).
+ */
+const WINDOW_LAYER = 60;
+
 function FloatingWindow({ w }: { w: WindowSpec }) {
   const rt = useRuntime();
   const wm = rt.windows;
@@ -235,7 +243,7 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
   return (
     <WindowCtx.Provider value={w}>
       <FrameCtx.Provider value={hooks}>
-        <div className={`fx-window fx-window--${w.type} fx-window--${frame} ${maximized ? 'is-maximized' : ''} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: 60 + w.z, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']} data-fx-window={w.id}>
+        <div className={`fx-window fx-window--${w.type} fx-window--${frame} ${maximized ? 'is-maximized' : ''} ${s.focused === w.id ? 'is-focused' : ''} ${brandHost.className}`.trim()} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: WINDOW_LAYER, opacity: w.settings.opacity }} onPointerDown={() => wm.focus(w.id)} data-fx-brand-mode={brandHost['data-fx-brand-mode']} data-fx-window={w.id}>
           {frame === 'standard' && (
             <div className="fx-window__title" onPointerDown={startMove} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); rt.openContext(e.clientX, e.clientY, 'window-title', w.id); }} data-fx-ctx-target="window-title" data-fx-ctx-payload={w.id}>
               {brand?.svg && <BrandMark slot={brandSlot} height={14} className="fx-window__brand" />}
@@ -248,9 +256,11 @@ function FloatingWindow({ w }: { w: WindowSpec }) {
             </div>
           )}
           {frame === 'standard' && effectiveToolbar(w) && <WindowToolbar w={w} />}
-          <div className="fx-window__body">{layout ? <PaneView pane={layout} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
-          {!maximized && <WindowResizeHandles onStart={startResize} />}
+          <div className="fx-window__body">{layout ? <DockHost windowId={w.id} empty={<div className="fx-empty">Empty window</div>} /> : <div className="fx-empty">Empty window</div>}<BrandWatermark slot={brandSlot} /></div>
         </div>
+        {/* window-resize-fix (Nov 3 2026): the handles sit in their own layer just above the window (same z, drawn after
+            it), so the bands straddle the border instead of being clipped inside it by the window's rounded overflow */}
+        {!maximized && <div className={`fx-window__grips fx-window__grips--${frame}`} style={{ left: w.x, top: w.y, width: w.width, height: w.height, zIndex: WINDOW_LAYER }} data-fx-window-grips={w.id}><WindowResizeHandles onStart={startResize} /></div>}
       </FrameCtx.Provider>
     </WindowCtx.Provider>
   );
@@ -334,6 +344,7 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
 
 /** Register these with the shell's dialogs: `{ ...windowDialogs }`. */
 export const windowDialogs = {
+  ...dockLayoutDialog,
   'split-grid': { title: 'Custom grid', icon: 'grid', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
   'window-settings': { title: 'Window settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
 };

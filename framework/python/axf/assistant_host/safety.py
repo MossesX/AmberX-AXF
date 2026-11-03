@@ -1,6 +1,6 @@
 """Safety helpers for assistant and agent hosts: a bounded calculator and an SSRF-safe HTTP client
 (framework/python, `axf.assistant_host.safety`; one copy for the console's ai-assistant + agent-manager plugins and
-Build Pilot's server — reviewed independently, keep every guard).
+any other host — reviewed independently, keep every guard).
 
 calc(expr)          arithmetic only; AST size, exponent and result size are capped, each operand evaluated once
 fetch(url, ...)     http(s) with the host resolved ONCE, the address checked (`is_global` unless allow_private) and the

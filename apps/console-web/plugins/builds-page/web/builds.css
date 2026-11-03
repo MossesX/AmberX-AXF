@@ -44,5 +44,5 @@
 .axp-builds__proposal-head { display: flex; align-items: center; gap: var(--fx-dens-gap-md) }
 .axp-builds__proposal-head input { flex: 1 1 auto; min-width: 0 }
 .axp-builds__proposal-steps { margin: 0; padding-left: var(--fx-dens-gap-4xl) }
-@media (max-width: 640px) { .axp-builds__pick { flex: 1 1 100% } .axp-builds__steps li { grid-template-columns: auto calc(var(--fx-space) * 10) auto 1fr } .axp-builds__steps li > .fx-chip { display: none } }
+:where([data-fx-small]) .axp-builds__pick { flex: 1 1 100% } :where([data-fx-small]) .axp-builds__steps li { grid-template-columns: auto calc(var(--fx-space) * 10) auto 1fr } :where([data-fx-small]) .axp-builds__steps li > .fx-chip { display: none }
 .axp-builds__tick { display: inline-flex; align-items: center; min-width: calc(var(--fx-space) * 5); min-height: calc(var(--fx-space) * 5) }

@@ -35,18 +35,35 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
 | Crew retrain (Breakroom `crew-retrain`, Opus, 8 steps; Brett Nov 3, voice: "retrain, don't fire"; booked on Landin' Lenny): every crew agent an all-rounder (job-type@1 `skills`, agent@1 `skills` "*" + `home`), new job types `feature-build` + `ops-fix`, router = any free agent (home job, least busy, round the crew), every headless launch booked on a named agent before it starts (`claude-headless.sh` → `agent-job.mjs book`, tmux `axf-<slug>--<agent>`, `# agent` log line), `agent-job.mjs assign`, today's 13 builds back-assigned, Breakroom cards show skills / home / now + Who's free | review (all 8 steps done; PR open; UI Review waiting) | `claude/crew-retrain` | [#265](https://github.com/MossesX/AmberX-AXF/pull/265) | Land last: land-everything is landing PRs, pick this one up after the rest. Report `_claude/builds/reports/crew-retrain.md`. Brett: UI Review (Breakroom cards + Jobs) | 2026-11-03 |
+| URGENT main CI green (Current `urgent-main-ci-green`, Opus; agent Earl the Ear, headless): main red on 4 jobs (7 failures, 3 hidden behind the first). Root causes: gen-fixtures.mts imported WIDGET_TYPES/TONES from widgets and chrome (chrome shadowed, widgets.json wrong → check-widgets + Kotlin ConformanceTest); xLayout `opens: false` with a view; KernelTest expected the old thin banner; repo profiles.json missing `current`; deploy test.sh used empty commits after the `_claude`-only skip; 4 unmarked build-orchestrator references (lifecycle). Plus s4: ci-main check names failing jobs, Auto fix queues new `ci-fix` job (Greenlight Gina) | review (auto-merge once green) | `claude/urgent-main-ci-green` | #284 | After merge: update waiting PRs (#265 #266 #268 #269 #271 #279) from main. Report `_claude/builds/reports/urgent-main-ci-green.md` | 2026-11-03 |
+| Window resize fix (Current `window-resize-fix`, urgent, Opus; agent Landin' Lenny; Brett Nov 3 voice: "All floating windows need to be resizable" + Terminal settings Opens in = Dialog did nothing): handles in a grips layer straddling the border, touch-sized (row height on phones), corner grip on every frame; windows share one z layer so dialogs stay on top; `settings.open` honours a plugin's Opens in = Dialog. Merge on Brett's order | review (merging on Brett's order) | `claude/window-resize-fix` | (see PR) | Report `_claude/builds/reports/window-resize-fix.md`. Follow-up: remember window size (engine, Fable) | 2026-11-03 |
+| Land everything (Urgent `land-everything`, Opus; Brett Nov 3 voice: "Just go. Get everything live."): 17 AmberX-AXF PRs + 3 axHub PRs landed on main and deployed; banner PRs #251 #254 and banners-one left for Brett | complete | `claude/land-everything` | — | Report `_claude/builds/reports/land-everything.md`. Brett: banner PRs, hub delete for kill-patches-pilot s7 | 2026-11-03 |
+| Plugin commands, automatically (Urgent `plugin-commands-auto`; Brett Nov 3 voice): every plugin, existing and new, exposes all of its commands and reads through control@1 on REST `/api/control/<plugin>/<command>`, MCP `<plugin>_<command>` (+ `plugin_commands` / `plugin_read` / `plugin_run`) and CLI `axf <plugin> <command>`, made automatically from routes, actions, data folder and plugin.json `commands`; lifecycle check + CI enforce it. Opus. Base token-control-opus (#250) + console-commands (#249) merged in | PR open (all 6 steps done; UI Review waiting) | `claude/plugin-commands-auto` | [#263](https://github.com/MossesX/AmberX-AXF/pull/263) (merges after #250 and #249; UI Review r-20261103-3345d3d4) | axHub admin: allow `<plugin>_*`, `plugin_commands`, `plugin_read`, `plugin_run` on the `axf-console` service. Report `_claude/builds/reports/plugin-commands-auto.md` | 2026-11-03 |
+| Model upgrades need Brett (Urgent `model-upgrade-approval`, Opus; Brett Nov 3, voice: "You can downgrade, but you can't upgrade."; replaces stopped `model-switch-approval`): downgrades pass + recorded; upgrades only by Brett's console click or axHub approval (`axf.orchestrator_upgrade_approve`, confirm); enforced in orchestrator core/CLI/server, launcher (`model-gate.mjs`), swarm planner; audit marked 3 self-approved upgrades + #247's switch | review | `claude/model-upgrade-approval` | #253 | axHub side: set `axf.orchestrator_upgrade_approve` to confirm and forward a signed approval header to downstream (axHub repo) | Nov 3 2026 |
+| Console commands (Urgent `console-commands`; Brett Nov 3 07:16 ET voice): tell Amber to load screens — control@1 `console` namespace (open screen/dialog/settings tab, run action, back, list), live delivery to his open console, REST + MCP (axHub) + CLI `axf console …`. Opus. Builds on token-control (#246 + claude/token-control-opus) | PR open, UI review waiting (all 8 steps done) | `claude/console-commands` | [#249](https://github.com/MossesX/AmberX-AXF/pull/249) | auto-merge when CI green + UI Review approved; axHub: make sure service `axf-console` is registered and set console_* tools to allow (Brett, axHub admin) | 2026-11-03 |
+| Token control plugin (Urgent `token-control`; Brett Nov 2 21:38 ET): API + MCP + CLI server/client for every theme/style/layout token (every layout param a token), wired to Claude + axHub; full control of AmberX tasks/to-dos/notes + Plan Studio + orchestrator; interactive docs. s1-s3 Fable, s4-s14 Opus. Folds in amberx-full-mcp-api (don't relaunch it) | waiting (Fable phase s1-s3 done; needs Brett's approval of the Fable → Opus switch, then s4-s14 on Opus) | `claude/token-control` | [#246](https://github.com/MossesX/AmberX-AXF/pull/246) (auto-merge when CI is green; the Opus phase continues on the same branch or a follow-up) | s1 layout tokens, s2 viewport attrs + layout-adopt + check-theme rule, s3 control@1 contract; next: `orchestrator.mjs act approve token-control 1`, then s4 | 2026-11-03 |
+| What's new banner (Urgent `whats-new-banner`; Brett Nov 3, voice): banner ticker + unread count of features merged to main, panel grouped by date / build / app, search, details, read marks, settings. Plugin `whats-shipped` (display name What's new; the folder name avoids the systems check's own `whats-new` strip), feed whats-new@1 from merged PRs (GitHub, else git), builds store, reports, Codebase changes; deployed from deploy.yml runs or the `site` branch. Report `_claude/builds/reports/whats-new-banner.md`. | built, PR #260 open, waiting in UI Review r-20261103-8861306a | `claude/whats-new-banner` | #260 | Brett: approve the UI Review item; later switch the feed's rebuild trigger to orch-live-sync's builds-live events once on main (seam in `Sources.fingerprint`) | 2026-11-03 |
+| Headless tabs (Urgent `headless-tabs`, 7 steps, Opus; Brett Nov 3, voice): every console terminal tab lives in a tmux session (re-attach + scrollback replay, Open in Moshi, detach vs Kill session); every headless run opens its own tab with agent · model · live cost + status dot (`deploy/claude-meter.mjs`, model-pricing.json, reconciled to total_cost_usd); split pane with the context chain (CLAUDE.md load order, imports, rules, Reads; rules typed out one at a time) | review (all 7 steps done; PR open, waits for UI Review) | `claude/headless-tabs` | [#259](https://github.com/MossesX/AmberX-AXF/pull/259) | Report `_claude/builds/reports/headless-tabs.md`. Brett: approve UI Review r-20261103-3sp5x01 (group `headless-tabs - Nov 3 9:44 AM`). Console needs a redeploy for tmux in the image. Tests: terminal 97/97, check-headless-tabs 30/30 | 2026-11-03 |
+| Retire Patches and Build Pilot (Urgent `kill-patches-pilot`; Brett Nov 3, voice: "Patches is dead … Build Pilot dead"): removed both apps and every reference (repo, rules, store builds archived), VPS containers/Coolify apps after a snapshot to `/root/archive/retired-2026-11-03/`, axHub projects, axHub repo PR; MossesX/Build-Pilot archived | review (PR open, the push banner merges it) | `claude/kill-patches-pilot` | [#258](https://github.com/MossesX/AmberX-AXF/pull/258), axHub [#32](https://github.com/MossesX/axHub/pull/32) | report `_claude/builds/reports/kill-patches-pilot.md` | 2026-11-03 |
+| Agent group chats on axHub (Breakroom profile; Brett Nov 3 voice): read-only redacted mirror of the Breakroom group chat on the hub (`agent-swarm/chats/` in amberx-axf `_data`, read with `axhub.memory_read`), a mentions-of-Brett filter (CLI + API), and a Breakroom "About Brett" view | PR open, UI Review waiting | `claude/agent-chats-hub` | (see PR) | push banner merges once CI + UI Review pass | 2026-11-03 |
+| Notes vault (Urgent `notes-vault`, Opus; Brett Nov 3, voice): every hand-saved note (handoffs, session logs, plans, install notes, saved commands) moved into `/projects/_shared/_claude/notes/` with hub versions kept + `notes/INDEX.md`; console plugin `notes-browser` (Plugins → Notes) + capability `axf.notes@1`; md-studio s11 Notes scope | review (s1–s6 done; PR open, the push banner merges it; UI Review waiting) | `claude/notes-vault` | [#256](https://github.com/MossesX/AmberX-AXF/pull/256) | Report `_claude/builds/reports/notes-vault.md`. Brett: settle the `claude-sync` holds for the moved files in other checkouts (keep hub = delete local) | 2026-11-03 |
 | Orchestrator live sync (Urgent `orch-live-sync`, Opus, 7 steps; Brett Nov 3, voice: "every completed step must reach the orchestrator and appear on main immediately"): store writes go live to main as status-only commits (`framework/cli/builds-live.mjs`), newer-wins merge, `built` = awaiting merge, reconciler (`builds-reconcile.mjs`, session start + 10-min cron), banner item `builds-live`, THREADS Live build log | review (all 7 steps done; PR open, the push banner merges it) | `claude/orch-live-sync` | [#255](https://github.com/MossesX/AmberX-AXF/pull/255) | Backfill live on main: dock-engine/token-control/theme-editor built, urgent-builds archived, xlayout 12/12; reconciler fixed 43 builds; 28 orphan PRs + 2 branches flagged. Report `_claude/builds/reports/orch-live-sync.md`. Brett: none needed | 2026-11-03 |
 | AmberX app backups (Urgent `amberx-backup-fix`, Opus; Brett Nov 3, voice): `amberx-app-backup-1` restart-looped since ~Oct 3 because backup.sh had CRLF line endings (Windows upload). Fixed live on the VPS (LF script, CR-stripping entrypoint, 26 h healthcheck), fresh dump verified by a full scratch restore, new systems-check item `amberx-backups` | review (VPS fix live; PR open, the push banner merges it) | `claude/amberx-backup-fix` | opening | Brett: carry `.gitattributes` (`*.sh text eol=lf`) + the compose `backup` changes into the AmberX source repo on Windows, or the next deploy.ts upload reverts the compose. Old dumps archived in /opt/amberx-app/backups-archive. Report `_claude/builds/reports/amberx-backup-fix.md` | 2026-11-03 |
 | Fable rebuild: agent swarm (Breakroom `agent-swarm-fable-rebuild`, 7 steps, Fable s1–s6 + Opus s7; Brett Nov 3, voice: "finish the Breakroom profile"): the swarm's seven contracts into `framework/core/engines/swarm-rules.mjs` (one registry, normalizers, field-naming validators, JSON Schemas, snapshot `schemas/swarm.json`, fixture `spec/fixtures/swarm.json`, `check-swarm.mts` in CI; plugin re-exports them), then planner, context packer, card/avatar check, group chat contract, vibe engine, differences report | review (all 7 steps done; PR open, the push banner merges it) | `claude/agent-swarm-fable-rebuild` | [#247](https://github.com/MossesX/AmberX-AXF/pull/247) | s1: contracts in the framework. s2: planner on the model policy, `fallback` agent, folder-vs-glob overlap, one agent one job across builds. s3: best-hit snippets, folder outlines (real brief 4321 → 352 tokens). s4: avatar as a part list from the card rules. s5: chat contract `swarm-chat.mjs`. s6: vibe engine `swarm-vibe.mjs`; `check-swarm.mts` 223 checks. s7: report `_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md` + LOG.md; no shots (the sandbox console cannot render without axHub; same pixels anyway). Brett: none needed | 2026-11-03 |
 | Token control plugin (Urgent `token-control`; Brett Nov 2 21:38 ET): API + MCP + CLI server/client for every theme/style/layout token (every layout param a token), wired to Claude + axHub; full control of AmberX tasks/to-dos/notes + Plan Studio + orchestrator; interactive docs. s1-s3 Fable, s4-s14 Opus. Folds in amberx-full-mcp-api (don't relaunch it) | queued (needs a Fable session) | `claude/token-control` (not made) | - | s1 on Fable | 2026-11-02 |
+| Token control plugin (Urgent `token-control`; Brett Nov 2 21:38 ET): API + MCP + CLI server/client for every theme/style/layout token (every layout param a token), wired to Claude + axHub; full control of AmberX tasks/to-dos/notes + Plan Studio + orchestrator; interactive docs. s1-s3 Fable, s4-s14 Opus. Folds in amberx-full-mcp-api (don't relaunch it) | PR open (all 14 steps done; UI Review item r-20261103-f9cd2905 waiting) | `claude/token-control-opus` (contains `claude/token-control`) | [#250](https://github.com/MossesX/AmberX-AXF/pull/250) (+ Fable phase [#246](https://github.com/MossesX/AmberX-AXF/pull/246)); push banner auto-merges when CI is green | plugin `apps/console-web/plugins/token-control`: runner + REST `/api/control` + MCP `control_*`/`amberx_*`/`plan_park` + CLI `axf control/token/note/todo/task/list/plan/build` + JS client + page (Tokens/Try it/Docs/Audit); tests in CI | 2026-11-03 |
+| Theme veto pass (Urgent `theme-veto-pass`; Brett Nov 3 voice): timed pass so token changes skip the axHub veto ("allow theme changes for the next 30 minutes"); grant approved once by Brett, server-side expiry, deletes never covered, banner countdown, audit + undo, read tools read-only, axHub contract | PR open (all 7 steps done; UI Review waiting) | `claude/theme-veto-pass` (on `claude/token-control-opus`; **merge after #250**) | [#262](https://github.com/MossesX/AmberX-AXF/pull/262) | control@1 target `pass.scopes` + `core/engines/control-pass.mjs`; plugin `token-control` 0.2.0 (`lib/pass.mjs`, `web/pass.tsx`); MCP `token_pass_*`; CLI `axf token pass …`; contract CONTROL.md → Veto passes (for axHub build `axhub-veto-pass`) | 2026-11-03 |
+| Pass all (Urgent `pass-all`; Brett Nov 3 voice: "It's 30 minutes to do whatever I tell you"): pass scope `all` is the default (every command, every plugin, every axHub call; ordinary deletes skip the confirm; irreversible only with `include_irreversible`); chip "Everything: 29:41 left"; undo lists what it can't roll back; axHub contract for `axhub-pass-all` | done (all 5 steps; UI Review `r-20261103-7cd5aa8b` waiting) | `claude/pass-all`, fast-forwarded onto `claude/theme-veto-pass` | [#262](https://github.com/MossesX/AmberX-AXF/pull/262) | merges with #262 | 2026-11-03 |
+| Fable rebuild: agent swarm (Breakroom `agent-swarm-fable-rebuild`, 7 steps, Fable s1–s6 + Opus s7; Brett Nov 3, voice: "finish the Breakroom profile"): the swarm's seven contracts into `framework/core/engines/swarm-rules.mjs` (one registry, normalizers, field-naming validators, JSON Schemas, snapshot `schemas/swarm.json`, fixture `spec/fixtures/swarm.json`, `check-swarm.mts` in CI; plugin re-exports them), then planner, context packer, card/avatar check, group chat contract, vibe engine, differences report | review (all 7 steps done; PR open, the push banner merges it) | `claude/agent-swarm-fable-rebuild` | [#247](https://github.com/MossesX/AmberX-AXF/pull/247) | s1: contracts in the framework. s2: planner on the model policy, `fallback` agent, folder-vs-glob overlap, one agent one job across builds. s3: best-hit snippets, folder outlines (real brief 4321 → 352 tokens). s4: avatar as a part list from the card rules. s5: chat contract `swarm-chat.mjs`. s6: vibe engine `swarm-vibe.mjs`; `check-swarm.mts` 223 checks. s7: report `_claude/memory/docs/rebuilds/agent-swarm-fable-rebuild.md` + LOG.md; no shots (the sandbox console cannot render without axHub; same pixels anyway). Brett: none needed | 2026-11-03 |
 | Shared dock engine (Urgent `dock-engine`, Fable): split/float/re-dock/drop zones/10 layout presets on the windows engine; used by MD Studio, xLayout (replaces its s3), Theme Editor | queued (needs a Fable session) | `claude/dock-engine` (not made) | - | run first | 2026-11-02 |
+| Shared dock engine (Urgent `dock-engine`, Fable): split/float/re-dock/drop zones/10 layout presets on the windows engine; used by MD Studio, xLayout (replaces its s3), Theme Editor | review (built s1-s4 on Fable, headless run `molly-fable`; orchestrator complete; PR from `claude/molly-fable`, push banner merges) | `claude/molly-fable` | [#245](https://github.com/MossesX/AmberX-AXF/pull/245) | `core/engines/dock.ts`, dock-layout@1 (10 starters baked into every app), `react/windows/DockHost.tsx`, `spec/fixtures/dock.json`, `spec/check-dock.mts`; UI Review: waiting, item r-20261103-80e15b02 in group "molly-fable - Nov 3 6:46 AM" (console Libraries → Docked comparisons + Pane layout dialog, desktop + phone) | 2026-11-03 |
 | MD Studio plugin (Urgent `md-studio`, Opus; Brett Nov 2 21:30 ET): md browser/editor, scope column Project/Claude/Repo, docking tabs, reference branches + click-to-split, 3 views + IDE view, snippets, Claude-file wizards | queued (after dock-engine) | `claude/md-studio` (not made) | - | waits on dock-engine | 2026-11-02 |
-| Theme Editor plugin (Urgent `theme-editor`, Opus; Brett Nov 2 21:30 ET): colour + style sections, every token, copy/save/load, multi-view toolbar; reuses Theme manager's tree | queued | `claude/theme-editor` (not made) | - | can start now on Opus | 2026-11-02 |
+| Theme Editor plugin (Urgent `theme-editor`, Opus; Brett Nov 2 21:30 ET): colour + style sections, every token, copy/save/load, multi-view toolbar; reuses Theme manager's tree (web capability `axf.token-tree@1`) | PR open, waiting in UI Review (r-20261103-6a35ef38); orchestrator complete | `claude/theme-editor` | #243 | auto-merges once UI Review approves + CI green; dock engine adoption later | 2026-11-03 |
 | Walkthrough random looks (Brett Nov 2 14:36 ET: random design pack for stack chapters 5-10; recording-only look, axHub look untouched). Orchestrator `walkthrough-random-look` (Refactor, Opus) | working (re-recording on the VPS) | `claude/walkthrough-random-look` | - | re-record cli,console,plugins,builds,guardrails,agents | 2026-11-02 |
-| xLayout: Molly as ONE app (Brett Nov 2 13:46 ET: one banner, app menu, nav, context menu across AmberX + axHub + Console; IDE switch with draggable/resizable/dockable panes, pane limit, 10 preset layouts with preview; up to 3 plugin toolbars, Toolbar designer from settings hook + right-click any toolbar; open in main/floating/pane). Orchestrator `xlayout` (Big Dog), s1-s3 Fable, s4-s12 Opus. Replaces queued 'Molly: one app' | queued (needs a Fable session; VPS build account limited till Nov 3 07:00 UTC) | `claude/xlayout` (not made yet) | - | run s1-s3 on Fable | 2026-11-02 |
+| xLayout: Molly as ONE app (Brett Nov 2 13:46 ET: one banner, app menu, nav, context menu across AmberX + axHub + Console; IDE switch with draggable/resizable/dockable panes, pane limit, 10 preset layouts with preview; up to 3 plugin toolbars, Toolbar designer from settings hook + right-click any toolbar; open in main/floating/pane). Orchestrator `xlayout` (Big Dog), s1-s3 Fable, s4-s12 Opus. Replaces queued 'Molly: one app' | review (all 12 steps built: Fable s1-s3 on `claude/molly-fable` #245, Opus s4-s12 on `claude/xlayout-opus` #252; UI Review waiting, group "xlayout - Nov 3 7:28 AM"; push banner merges #245 then #252) | `claude/xlayout-opus` | [#252](https://github.com/MossesX/AmberX-AXF/pull/252) (after [#245](https://github.com/MossesX/AmberX-AXF/pull/245)) | Brett: UI Review approve / changes; then redeploy AmberX, axHub web, Console so the live guests merge | 2026-11-03 |
 | Molly: one interface for AmberX, axHub and the Dev Console (Brett Nov 2: combine them into one interface, keep them separate apps; Opus version named Molly at molly.amberxai.com, Fable version later) | deploy | `claude/project-thread-nxdu3m` | #230 merged | first VPS install failed (old GitHub token); installer now uses the GitHub App broker (follow-up PR); DNS A record molly needs Brett; UI Review shots | 2026-11-02 |
 | Whole-stack walkthrough plugin (Brett Nov 1: ~90 min narrated walkthrough of framework, console, AmberX, axHub, VPS, MCP in Amber's voice; AmberX plugin with editable voice + downloadable video) | review | `claude/project-thread-646cjb` | #229 | built; next: merge, then record on the VPS (`WALKTHROUGH=stack bash apps/amberx-droid/walkthrough/rebuild.sh`, veto call); plan `_claude/memory/docs/walkthrough-everything.md` (12 steps, ~7 h, Opus). Queued (waits for go): orchestrator `orch-step-click`, Brett can't click Build orchestrator steps | 2026-11-01 |
-| One default look from axHub + design theme precedence (Brett Nov 1: new default style + colour theme every app inherits, combined into a default design theme; a loaded design theme wins, a later style/colour pick overrides only its part; app Settings → Appearance selection only, plugin settings untouched; banners didn't compress). Opus now, Fable review later (claude.ai session: VPS account out of weekly credits) | review | `claude/one-look-opus` | #228 | UI Review shots (none from claude.ai); Fable review of the list in the report; Kotlin twin deferred (PORTING.md). Report `_claude/builds/reports/one-look-opus.md` | Nov 1 2026 |
+| One default look from axHub + design theme precedence (Brett Nov 1: new default style + colour theme every app inherits, combined into a default design theme; a loaded design theme wins, a later style/colour pick overrides only its part; app Settings → Appearance selection only, plugin settings untouched; banners didn't compress). Opus build merged (#228); **Fable review + banner contract** relaunched Nov 3 as `one-look-default-2` (the Nov 1 headless run died on the weekly limit) | review | `claude/one-look-default-2` | #244 | Fable review of the precedence contract (swap of the package slot loads it, Restore = default package in full, applied = the slot, retired `appearance-package` slot), thin banner's day/night switch moved into the framework copy (per-app overrides dropped, fixtures regenerated), check-hub-look on the three real apps (110 checks); app builds + tests green, UI Review shots waiting (group "One look - Nov 1"), report `_claude/builds/reports/one-look-default.md`; PR #244 open, push banner merges it when CI is green. Kotlin twin deferred (PORTING.md) | Nov 3 2026 |
 | One look from axHub + every app ships every shareable asset (Brett Nov 1: "apps only get appearance from axhub period", "any theme change applies to all", "ship all assets that can be shared"; Patches, demo, Walkthrough left out). No follow switch, no console look tabs, look settings in appearance@1, shared set baked at src/axf/assets (claude.ai session, Opus: the Fable headless build hit the weekly limit) | review | `claude/hub-look-all-assets` | #225 | Fable review of the appearance@1 `settings` contract + `shared` flag; Kotlin twin deferred (PORTING.md). Report `_claude/builds/reports/hub-look-all-assets.md` | Nov 1 2026 |
 | Fable review of Opus-built foundation work (Brett Nov 1: Opus or Fable only, never Sonnet; Fable reviews first, rebuilds only what it flags): builds@1, UI Review schema, help@1, job-type@1 + agent cap, session@1, agent swarm data model (Fable, headless VPS) | review (branch pushed; Brett's session lands it with build_land) | `claude/fable-review` | — | Verdicts: builds@1 fix (store self-validator + `framework/spec/BUILDS.md`), UI Review fix (one time zone rule), job-type fix (model-policy@1: Opus or Fable only; starters, roster, planner, plan picker), help@1 OK, session@1 OK, agent cap OK, agent swarm → pending `agent-swarm-fable-rebuild` (Breakroom; agent-card@1 taken out of scope). Shared rule line added; RULES.md hub conflict resolved (local was the superset). Report `_claude/builds/reports/fable-review.md` | 2026-11-01 |
 | Fable launch (Brett Nov 1): `vps.build_start` takes `model: fable` (CLI alias → claude-fable-5-1); models from the ssh service's `config.buildModels` (default opus, fable; no sonnet); `build_list` shows the model (axHub #111, headless VPS, Opus) | done, live | `claude/fable-launch` → main (axHub, 998f03f) | — | redeployed 11:06 UTC; live Fable build via build_start answered claude-fable-5-1, stopped | Nov 1 2026 |
@@ -146,6 +163,16 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ### Crew retrain (`crew-retrain`)
 Done (PR open). If a later session must carry on: read `_claude/builds/reports/crew-retrain.md` (Known gaps: crew pay under the $40 feature-build cap; old console sweep until it lands). Land it after land-everything's other PRs. Checks: `node apps/console-web/plugins/agent-swarm/test.mjs`, `npx -y tsx framework/spec/check-job-type.mts`, `npx -y tsx framework/spec/check-swarm.mts`, `node framework/spec/check-agent-slots.mjs`, `node framework/cli/plugin-lifecycle.mjs check agent-swarm`.
 
+### Model upgrades need Brett (`model-upgrade-approval`, Urgent, Opus)
+- **Asked (Brett, Nov 3 2026, voice):** a build may switch to a lower model on its own (recorded); switching to a higher model needs Brett's explicit approval (console click or axHub confirm, never veto, never self-approved). Ranking in model-policy (Fable above Opus). Enforce in orchestrator approve/phase logic, console server, launcher/build_start/agent jobs, briefs; axHub approval path; audit; tests; PR.
+- **On the branch:** `framework/core/model-policy.mjs` (`switches`, `modelRank`, `switchKind`), `framework/core/model-switch.mjs`, `framework/cli/model-gate.mjs` (launch gate, audit, mark-self), orchestrator core/CLI/server/UI, console MCP tool `orchestrator_upgrade_approve`, `deploy/claude-headless.sh` gate + brief line, swarm planner gate, rules/decisions/README/CLAUDE.md, tests.
+- **Left:** PR merge (push banner). axHub side (axHub repo, not this one): make sure the `axf` service's `orchestrator_upgrade_approve` policy is `confirm`, and have axHub forward a signed "approved by Brett" header on held calls so the console can tell an axHub-run call from a direct one with the console token.
+- **Checks:** `node apps/console-web/plugins/build-orchestrator/test.mjs` (the repo-store small-steps check fails on store data: agent-cap, help-mode, stack-walkthrough, orch-step-click have steps without estimates; not from this build), `python3 apps/console-web/plugins/build-orchestrator/server/test_upgrade.py`, `node apps/console-web/plugins/agent-swarm/test.mjs`, `node framework/spec/check-model-policy.mjs`, `node framework/cli/model-gate.mjs audit --all`. <!-- axf-plugin:agent-swarm --> <!-- axf-plugin:build-orchestrator -->
+### Notes vault (`notes-vault`, Urgent, Opus) — branch `claude/notes-vault`
+- Asked: gather Brett's scattered saved notes into one place, a quick notes browser plugin, a Notes section for MD Studio.
+- Done: notes moved on the hub (write new, delete old with versions kept), INDEX, orch-live-sync note, `notes-browser` plugin (server on axHub memory-dir semantics, 28-check `test.py`), md-studio s11, report, UI Review shots.
+- Left: PR merge (automatic). After merge, other checkouts may hold the moved files in `claude-sync` (deleted on the hub): keep hub.
+- Checks: `python3 apps/console-web/plugins/notes-browser/test.py`, `node framework/cli/check-theme.mjs`, `check-controls.mjs`, `help-coverage.mjs --check`. <!-- axf-plugin:notes-browser -->
 ### Orchestrator live sync (`orch-live-sync`)
 Done (PR open). If a later session must carry on: read `_claude/builds/reports/orch-live-sync.md` (Known gaps). Follow-ups worth a build: wire `builds-live.mjs heal` into the push banner's *Pull failed* path; let the GitHub App bypass protection for `_claude/`-only commits if main protection ever tightens; attach the 28 orphan PRs to builds or close them. Checks: `node framework/spec/check-builds-live.mjs`, `node framework/cli/builds-live.mjs status`, `node framework/cli/builds-reconcile.mjs`.
 
@@ -161,15 +188,41 @@ Done (PR open). If a later session must carry on: read `_claude/builds/reports/o
 ### dock-engine, md-studio, theme-editor (profile Urgent)
 - Asked in full: the orchestrator builds' detail (Brett Nov 2 2026 21:30 ET). Order: dock-engine (Fable) first; md-studio after it; theme-editor any time.
 - First messages: "Carry on dock-engine (Urgent) from s1 on Fable: `AXF_BUILD_PROFILE=urgent node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief dock-engine`." <!-- axf-plugin:build-orchestrator -->
-  "Carry on theme-editor (Urgent) from s1 on Opus: `AXF_BUILD_PROFILE=urgent node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief theme-editor`." <!-- axf-plugin:build-orchestrator -->
+  theme-editor: done (Nov 3 2026, PR #243, waiting in UI Review). Nothing to carry on unless Brett asks for changes there.
   "Carry on token-control (Urgent) from s1 on Fable: `AXF_BUILD_PROFILE=urgent node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief token-control`." <!-- axf-plugin:build-orchestrator -->
+  "Carry on theme-editor (Urgent) from s1 on Opus: `AXF_BUILD_PROFILE=urgent node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief theme-editor`." <!-- axf-plugin:build-orchestrator -->
+  token-control: see its own block below (Fable phase done Nov 3 2026).
 
-### xLayout (orchestrator `xlayout`, profile Big Dog)
-- Asked (Brett Nov 2 2026 13:46 ET, in full in the orchestrator build's detail): Molly must look like ONE app. Plugin xLayout renders a single banner, application menu, navigation menu and context menu over the whole page, merging AmberX, axHub web and the Dev Console; IDE-style switch (draggable, resizable, dockable panes, pane limit, ~10 preset layouts with preview before apply); plugin toolbars (up to 3, show/hide + default location in the plugin's settings); Toolbar designer dialog opened from a settings hook and from right-click on any toolbar, items from every plugin/screen, opening in main area, floating window or (IDE on) a pane. Standalone apps stay exactly as they are.
-- Model: s1-s3 Fable (contracts/engines, cross-app GUI), s4-s12 Opus. Approve the Fable->Opus switch at s4.
-- Branch: `claude/xlayout` from main (not made yet). Read first: apps/molly, framework/core/engines/embed.ts, framework/schemas/asset-types.json, the Patches rule in _claude/rules/RULES.md (Patches only; Molly may merge chrome).
-- Checks: check-theme, check-controls, plugin-lifecycle check, project validate, Molly build, fixtures.
-- First message: "Carry on xlayout (Big Dog) from s1 on Fable: `AXF_BUILD_PROFILE=big-dog node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief xlayout`." <!-- axf-plugin:build-orchestrator -->
+### Theme veto pass (orchestrator `theme-veto-pass`, profile Urgent) — branch `claude/theme-veto-pass`
+- Asked (Brett Nov 3 2026, voice, GO given): a timed override: "allow theme changes for the next 30 minutes" makes token changes run with no veto for that window. Grant approved once (traces to Brett), expiry server-side, deletes never covered, banner chip with live countdown (revoke / extend, warning 2 min before), audit + THREADS line per grant and change, `pass.undo`, read tools annotated read-only + recommended axHub policy, contract with axHub build `axhub-veto-pass`.
+- State (Nov 3 2026): **all 7 steps done**, PR open on base `claude/token-control-opus` (merge after #250). Report `_claude/builds/reports/theme-veto-pass.md`. PR [#262](https://github.com/MossesX/AmberX-AXF/pull/262). UI Review item `r-20261103-dbed7dea` (group "theme-veto-pass - Nov 3 10:41 AM") waits for Brett.
+- Checks: `node apps/console-web/plugins/token-control/test.mjs`, `python apps/console-web/server/test_mcp_tools.py`, `npx -y tsx framework/spec/check-control.mts`, `node framework/cli/check-theme.mjs`, `node framework/cli/check-controls.mjs`, `node framework/cli/help-coverage.mjs --check`, `cd apps/console-web && npx tsc --noEmit`. <!-- axf-plugin:token-control -->
+- **Waits on:** axHub side (`axhub-veto-pass`, axHub repo) to read the signed `GET /api/plugins/token-control/pass` and forward Brett's approval; until then a pass shows and logs but axHub still vetoes. **First message (only if review or CI asks for changes):** "Carry on theme-veto-pass (Urgent) on branch claude/theme-veto-pass: read _claude/builds/reports/theme-veto-pass.md, then fix what the review / CI says." <!-- axf-plugin:token-control -->
+
+### Pass all (orchestrator `pass-all`, profile Urgent) — branch `claude/pass-all` → `claude/theme-veto-pass`
+- Asked (Brett Nov 3 2026, voice, correcting theme-veto-pass): "It's not supposed to be 30 minutes for theme changes. It's 30 minutes to do whatever I tell you." control@1 pass scope `all` as the default (any command through API, MCP or CLI on every plugin); narrow scopes stay; ordinary deletes covered, irreversible ones only with `include_irreversible`; grant still needs Brett once; axHub build `axhub-pass-all` matches; chip "Everything: 29:41 left"; undo rolls back what it can and lists the rest; docs/help/CLI/tests; push onto `claude/theme-veto-pass` and note it on PR #262.
+- State (Nov 3 2026): **all 5 steps done**, commits fast-forwarded onto `claude/theme-veto-pass` (PR #262 carries them; noted on the PR). Report `_claude/builds/reports/pass-all.md`. UI Review item `r-20261103-7cd5aa8b` (group "pass-all - Nov 3 11:08 AM") waits for Brett.
+- Checks: same as theme-veto-pass above (token-control test.mjs 20, check-control 260, test_mcp_tools 138). <!-- axf-plugin:token-control -->
+- **Waits on:** axHub `axhub-pass-all` (contract: `framework/spec/CONTROL.md` → Veto passes → Deciding a held call). **First message (only if review or CI asks for changes):** "Carry on pass-all (Urgent) on branch claude/theme-veto-pass: read _claude/builds/reports/pass-all.md, then fix what the review / CI says." <!-- axf-plugin:token-control -->
+
+### Token control (orchestrator `token-control`, profile Urgent) — branch `claude/token-control-opus`
+- Asked (Brett Nov 2 2026 21:38 ET, in full in the orchestrator build's detail): a new plugin with a powerful API, MCP and CLI server/client that can change every single token (theme, style, layout; every layout parameter is a token), connected to Claude and axHub; API and MCP control every aspect of AmberX tasks, to-dos and notes and the console planner (Plan Studio + Build orchestrator); extensive interactive documentation; folds in the dead VPS build amberx-full-mcp-api (never relaunch it separately).
+- State (Nov 3 2026): **all 14 steps done**. Fable phase s1-s3 on `claude/token-control` (PR #246); Opus phase s4-s14 on `claude/token-control-opus` (PR #250, which merges main and contains #246). UI Review item `r-20261103-f9cd2905` (group "token-control - Nov 3 7:23 AM") waits for Brett; the push banner merges once CI is green and the review is approved.
+- What landed: see STATUS.md "Token control plugin" and `apps/console-web/plugins/README.md`. Token sets write `axf.tokens.<set>` overrides into the axHub look (`framework/core/engines/control-tokens.mjs`, applied in `runtime.compileStyles`); AmberX via the notes core (generated `lib/amberx-core.gen.mjs`; rerun `gen-amberx-core.mjs` when `apps/amberx-droid/.../notes/web/core.ts` changes); planner via capabilities `plans@1` / `orchestrator@1`.
+- To carry on (only if the review asks for changes or CI fails): branch `claude/token-control-opus`; checks `node apps/console-web/plugins/token-control/test.mjs`, `npx -y tsx framework/spec/check-control.mts`, `node framework/cli/check-theme.mjs`, `node framework/cli/check-controls.mjs`, `node framework/cli/plugin-lifecycle.mjs check token-control`, `cd apps/console-web && npx tsc --noEmit`. Shots: `/tmp/tc-shots/shots.json` pattern with `rebuild-shots.mjs --env AXF_APPEARANCE_HUB=off`. <!-- axf-plugin:token-control -->
+- Follow-ups worth a build (not started): axHub `list_services` couldn't be checked from this session (permission), so confirm `control_*` shows through axHub's console service; per-asset overrides (`axf.tokens.<set>.<asset id>`) exist in the engine but no transport writes them yet; Kotlin twin deferred (Android on hold). <!-- axf-plugin:build-orchestrator -->
+- **dock-engine is built** (Nov 3 2026, headless Fable run `molly-fable`, branch `claude/molly-fable`): `framework/core/engines/dock.ts` (dock@1: pane tree, drop zones, pane limit, splitters, snapshots), asset type dock-layout@1 (`framework/assets/dock-layout`, ten starters, baked into every app), `framework/react/windows/DockHost.tsx` (DockHost / DockPaneView / DockDropOverlay / Pane layout dialog), `WindowManager` dock methods, actions `windows.redockInto` / `windows.layout`. Checks: `npx -y tsx framework/spec/check-dock.mts`, check-theme, check-controls. UI Review: submitted headlessly (item r-20261103-80e15b02, group "molly-fable - Nov 3 6:46 AM": Libraries → Docked comparisons with two panes + splitter, Pane layout dialog; desktop + phone), waiting for Brett.
+- First messages: "Carry on md-studio (Urgent) from s1 on Opus: `AXF_BUILD_PROFILE=urgent node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief md-studio`" (build on DockHost: `DockHost`, `wm.splitGroup`, `wm.dropTab`, `wm.applyPreset`, dialog `dock-layout`). <!-- axf-plugin:build-orchestrator -->
+
+### xLayout (orchestrator `xlayout`, profile Big Dog) — branches `claude/molly-fable` (#245) + `claude/xlayout-opus` (#252)
+- Asked (Brett Nov 2 2026 13:46 ET, in full in the orchestrator build's detail): Molly must look like ONE app. Plugin xLayout renders a single banner, application menu, navigation menu and context menu over the whole page, merging AmberX, axHub web and the Dev Console; IDE-style switch (draggable, resizable, dockable panes, pane limit, ~10 preset layouts with preview before apply); plugin toolbars (up to 3, show/hide + default location in the plugin's settings); Toolbar designer dialog (its OWN plugin `toolbar-designer`, reached through a capability service) opened from a settings hook and from right-click on any toolbar, items from every plugin/screen, opening in main area, floating window or (IDE on) a pane. Standalone apps stay exactly as they are. Patches is paused: don't touch it.
+- **Fable phase done (Nov 3 2026, headless run `molly-fable`):** s1 `framework/core/engines/xlayout.ts` + asset type xlayout@1 (host-only, `shared: false`; starter `framework/assets/xlayout/molly.json`; validator, schema, `spec/fixtures/xlayout.json`, `spec/check-xlayout.mts`); s2 `framework/core/engines/chrome.ts` (chrome@1: `ChromeBundle`, `parseChromeBundle`, `mergeChrome`, `routePick`, `chromePicks`), embed@1 takes `nav-menu` / `context-menu` / `toolbar` / `widgets` (web + Kotlin registry) and messages `chrome` / `chrome-request`, runtime guest side `rt.shareChrome()` (sends nav / context / toolbar / app menu as data; `runSharedMenuItem` runs picks back), `spec/fixtures/chrome.json`, `spec/check-chrome.mts`; s3 covered by dock-engine (DockHost, dock@1).
+- **Opus phase done (Nov 3 2026, branch `claude/xlayout-opus`, PR #252):** Molly plugins `apps/molly/plugins/xlayout` (chrome host `web/host.ts`, IDE workspace + layout picker `web/workspace.tsx`, toolbars `web/toolbars.tsx`, Settings → Plugins → xLayout, capability `axf.xlayout@1`) and `apps/molly/plugins/toolbar-designer` (capability `axf.toolbar-designer@1`); Molly hooks `src/molly/host.ts`; embed@1 `context` message (guest right-click → host menu); re-baked molly, amberx-droid, axhub-web, console-web. All checks green (see PR). UI Review items r-20261103-f6e42c05, r-20261103-0824dcee, r-20261103-11a5597c waiting (group "xlayout - Nov 3 7:28 AM").
+- Left: Brett's UI Review verdict; after #245 and #252 merge, redeploy AmberX / axHub web / Console so the live apps send their chrome (older builds keep their own). Gaps: guest banner widgets not drawn by Molly; Android twin of `context` deferred (PORTING).
+- Read first: `framework/core/engines/xlayout.ts`, `framework/core/engines/chrome.ts`, `framework/core/engines/dock.ts`, `framework/react/windows/DockHost.tsx`, `framework/core/runtime.ts` (`shareChrome`, `listenToHost`), `apps/molly/src` (App.tsx, molly/FrameDeck.tsx, molly/apps.ts), `framework/spec/PORTING.md` (xLayout row), the Patches rule in `_claude/rules/RULES.md` (Patches only; Molly may merge chrome).
+- Checks: `npx -y tsx framework/spec/check-xlayout.mts`, `check-chrome.mts`, `check-dock.mts`, `check-embed.mts`; `node framework/cli/check-theme.mjs`; `check-controls.mjs`; `node framework/cli/plugin-lifecycle.mjs check <folder> --after-uninstall`; `cd apps/molly && npm run build`; `npx -y tsx framework/spec/gen-fixtures.mts` after any engine change.
+- Waits on: Brett's UI Review decision on the three items; nothing else.
+- First message (only if UI Review asks for changes): "Carry on xlayout (Big Dog) on Opus: apply the UI Review changes on branch `claude/xlayout-opus` (PR #252); `AXF_BUILD_PROFILE=big-dog node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief xlayout`." <!-- axf-plugin:build-orchestrator -->
 
 ### Molly (`molly-opus`, Big Dog, Opus) — branch `claude/project-thread-nxdu3m`, PR #230
 - Asked: "Can we combine amberx, axhub, and console into 1 interface but still keep separate apps"; "Build new build profile for it called Big Dog"; "Do it in opus, I'll do another one in fable later, call the opus one molly at molly.amberxai.com". Brett said go (Nov 2) and that it can run without his approval.
@@ -185,7 +238,16 @@ Done (PR open). If a later session must carry on: read `_claude/builds/reports/o
 - **First message:** "Run the whole-stack walkthrough plugin build from `_claude/memory/docs/walkthrough-everything.md`, starting at s1."
 
 
-### One default look + design theme precedence (`claude/one-look-opus`, Opus; Fable review later)
+### One default look + design theme precedence — Fable review (`claude/one-look-default-2`, Fable; relaunch of `one-look-default`)
+- **Asked (launcher, Nov 3 2026):** relaunch of the headless build `one-look-default` (brief `/root/axf-builds/one-look-default/.brief.md`: banners didn't compress, new default style + colour theme, default design theme, precedence rule, selection-only Settings) on branch `claude/one-look-default-2`; don't redo what PR #228 (Opus) landed; Fable review of the appearance@1 / precedence contract the Opus build left open.
+- **Model:** Fable (headless VPS). One session, no sub-agents.
+- **On the branch:** framework `banner/amberx-thin` carries the day/night `theme-switch` (the three per-app overrides deleted, `banner.json` fixture regenerated, shared assets re-baked); runtime: `swap('design-package', id)` loads the package, `restoreDefaultAppearance` ends by applying the manifest's default package in full (`applyDesignPackage(id, { quiet })`), `appliedDesignPackage()` = the `design-package` slot; `APPEARANCE_NEVER` += `appearance-package` (fixture row `retired-slot`); `check-hub-look.mts` runs the three real apps on one in-memory hub (110 checks); spec `APPEARANCE-SOURCE.md` (precedence rules 1–5 + why overrides ride `settings`), `PORTING.md` Kotlin gaps; apps re-baked.
+- **Left:** nothing for this session. PR #244 is open (push banner merges it when CI is green); UI Review items in group "One look - Nov 1" wait for Brett. If CI is red: fix on the branch. Open question in the report: a Design theme pick resets plugin look settings (design-package@1 whole-look semantics).
+- **Checks:** `npx -y tsx framework/spec/check-hub-look.mts`, `check-design-package.mts`, `check-appearance.mts`, `check-help.mts`, `node framework/cli/shared-assets.mjs check`, `node framework/cli/check-theme.mjs`, `check-controls.mjs`, `npx -y tsx framework/spec/gen-fixtures.mts` (no diff), `npx tsc --noEmit` + `npx vite build` in the three apps.
+- **Waits on:** UI Review (group "One look - Nov 1") and CI on #244. The push went through `github-token.mjs credential` (the fallback token); the GitHub App itself isn't set up on this host.
+- **First message:** "Carry on thread 'One default look + design theme precedence — Fable review': check CI on PR #244 (claude/one-look-default-2), fix anything red, and read the open question in `_claude/builds/reports/one-look-default.md` → Known gaps."
+
+### One default look + design theme precedence (`claude/one-look-opus`, Opus; merged as PR #228)
 - **Asked (Brett, Nov 1 2026):** "How come the refactor didn't compress banners. I need a new default style and color theme that GizmoX, amberx, and axhub all inherit from axhub. Change in one changed all. Then I need the 2 new themes to be combined into a default design theme. When a design theme is loaded the individual style and color themes are not applied. Only when something changes is the design pack overridden with the individual packs. Remove all appearance and theme editing abilities from the settings interface that is read from axHub and changes every apps interface only allow selecting design, style, and color themes." Then "Build it on opus now fable later", "I only wanted it removed from settings for the apps not plugins", "The banner plugins are supposed to store their style and colors on a hub so they render the same everywhere."
 - **Model:** Opus in claude.ai (VPS account out of weekly credits until Tue Nov 3). **Fable review: one-look-opus** — review only the list under "For the Fable review" in the report.
 - **On the branch:** `hub` style theme, `hub-night` colour theme, `hub-default` design package (default in all three apps); precedence engine + runtime; Settings → Appearance = Design / Style / Colour pickers + Restore; Sliders, per-asset tokens and rolls retired; banners compact by default; specs, tests, fixtures, report.
@@ -511,63 +573,403 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
-- 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
-- 2026-11-03 13:55 UTC · `orch-live-sync` s2 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s3 done (urgent) · orchestrator
-- 2026-11-03 13:55 UTC · `orch-live-sync` s4 done (urgent) · orchestrator
-- 2026-11-03 13:56 UTC · `urgent-builds` → archived, merged, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `orch-step-click` note (refactor) · orch-live-sync
-- 2026-11-03 13:56 UTC · `dock-engine` s1 done, s2 done, s3 done, s4 done, → built, branch claude/molly-fable, PR #245, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `theme-editor` s1 done, s2 done, s3 done, s4 done, s5 done, → built, branch claude/theme-editor, PR #243, note (urgent) · orch-live-sync
-- 2026-11-03 13:56 UTC · `token-control` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, → built, branch claude/token-control-opus, PR #250, note (urgent) · orch-live-sync
-- 2026-11-03 13:57 UTC · `enterprise-branding` merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `apply-all-levels` branch claude/apply-all-levels, PR #115, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-empty-shell` branch claude/amberx-empty-shell, PR #118, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fresh-look` branch claude/fresh-look-done, PR #120, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `design-packages-10` branch claude/design-packages-10, PR #124, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-orchestrator` branch claude/build-orchestrator, PR #122, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `build-profiles` branch claude/build-profiles, PR #127, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-appearance-lock` branch claude/amberx-appearance-lock, PR #126, merged, note (main-framework, refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-handsfree` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-notes` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-interface-scope-settings` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-hubsync-look-source` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `fix-banner-snap` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `banner-fix-fallback` PR #152, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-push` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-voice-center` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-assistant-agents` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `amberx-claude-tokens` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `refactor-all` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `mosses-build-tools` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `assistant-no-subagents` PR #167, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `veto-everywhere` PR #176, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `agent-voice` PR #177, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `pr-only-merge` PR #183, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `orch-pending-sync` PR #143, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `home-cards` branch angel/home-cards-queue, PR #171, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `settings-compact` PR #175, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `ui-all-assets` PR #181, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `session-history` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #195, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `audio-output-recorder` PR #194, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `live-key-checks` PR #182, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `ui-review` PR #184, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `plan-studio` PR #185, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `audio-extract` PR #187, merged, note (angel) · reconciler
-- 2026-11-03 13:57 UTC · `agent-swarm` merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `agent-swarm-fable-rebuild` branch claude/agent-swarm-fable-rebuild, PR #247, merged, note (breakroom) · reconciler
-- 2026-11-03 13:57 UTC · `stack-walkthrough` merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `molly-opus` merged, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `xlayout` s12 done, → built, branch claude/xlayout-opus, PR #252, note (big-dog) · reconciler
-- 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
-- 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
-- 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
-- 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
-- 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
-- 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
-- 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
-- 2026-11-03 15:32 UTC · `land-everything` → running (urgent) · orchestrator
+- 2026-11-03 19:11 UTC · `follow-amber` s3 done (urgent) · orchestrator
+- 2026-11-03 19:11 UTC · `follow-amber` s4 done (urgent) · orchestrator
+- 2026-11-03 19:12 UTC · `ui-review-shots` s2 done (urgent) · orchestrator
+- 2026-11-03 19:12 UTC · `claude-settings` s4 done (urgent) · orchestrator
+- 2026-11-03 19:13 UTC · `follow-amber` s5 done (urgent) · orchestrator
+- 2026-11-03 19:13 UTC · `ui-review-shots` note (urgent) · orchestrator
+- 2026-11-03 19:13 UTC · `ui-review-shots` s3 done (urgent) · orchestrator
+- 2026-11-03 19:15 UTC · `agent-pick` s1 done, → running (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s2 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s3 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s4 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:15 UTC · `agent-pick` s5 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:14 UTC · `follow-amber` s6 done (urgent) · orchestrator
+- 2026-11-03 19:20 UTC · `claude-settings` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `follow-amber` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s6 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s7 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:21 UTC · `agent-pick` s8 done (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:31 UTC · `terminal-vps-host` added (5 steps) (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` → running (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` s1 done (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` s3 done (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` note (current) · orchestrator
+- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 19:37 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 19:37 UTC · `terminal-vps-host` s2 done (current) · orchestrator
+- 2026-11-03 19:37 UTC · `terminal-vps-host` s4 done (current) · orchestrator
+- 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · foreign-write
+- 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · builds-live
+- 2026-11-03 19:40 UTC · `terminal-vps-host` branch claude/terminal-vps-host, PR #274, note (current) · reconciler
+- 2026-11-03 19:40 UTC · `terminal-vps-host` note (current) · foreign-write
+- 2026-11-03 19:40 UTC · `terminal-vps-host` s5 done, → complete (current) · orchestrator
+- 2026-11-03 19:40 UTC · `terminal-vps-host` → built, branch claude/terminal-vps-host, PR #274 (current) · builds-live
+- 2026-11-03 19:42 UTC · `terminal-vps-host` s5 done, → complete (current) · foreign-write
+- 2026-11-03 19:43 UTC · `home-cards-live` added (6 steps) (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards-live` note (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards-live` → running (urgent) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards` note (angel) · orchestrator
+- 2026-11-03 19:43 UTC · `home-cards` → archived (angel) · orchestrator
+- 2026-11-03 19:45 UTC · `smart-menus` added (7 steps) (urgent) · orchestrator
+- 2026-11-03 19:45 UTC · `smart-menus` → running (urgent) · orchestrator
+- 2026-11-03 19:45 UTC · `smart-menus` note (urgent) · orchestrator
+- 2026-11-03 19:32 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · orchestrator
+- 2026-11-03 19:47 UTC · `terminal-vps-host` s2 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 19:47 UTC · `window-resize-fix` s1 done, → running (current) · orchestrator
+- 2026-11-03 19:12 UTC · `claude-settings` s5 done (urgent) · orchestrator
+- 2026-11-03 19:48 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 19:48 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · orchestrator
+- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · builds-live
+- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → complete (urgent) · orchestrator
+- 2026-11-03 19:50 UTC · `claude-settings` PR #275, note (urgent) · reconciler
+- 2026-11-03 19:50 UTC · `claude-settings` → built, PR #275 (urgent) · builds-live
+- 2026-11-03 19:50 UTC · `claude-settings` note (urgent) · orchestrator
+- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → built, PR #275, note (urgent) · builds-live
+- 2026-11-03 19:54 UTC · `ui-review-predicted` added (6 steps) (urgent) · orchestrator
+- 2026-11-03 19:54 UTC · `ui-review-predicted` → running (urgent) · orchestrator
+- 2026-11-03 19:54 UTC · `ui-review-predicted` branch claude/ui-review-predicted (urgent) · builds-live
+- 2026-11-03 19:55 UTC · `agent-pick` branch claude/agent-pick, PR #276 (urgent) · builds-live
+- 2026-11-03 19:55 UTC · `ui-review-predicted` note (urgent) · orchestrator
+- 2026-11-03 19:55 UTC · `batch-manager` note (angel) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` s4 done (urgent) · orchestrator
+- 2026-11-03 19:55 UTC · `agent-pick` s9 done, → built (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:55 UTC · `agent-pick` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:56 UTC · `ui-review-shots` s5 done, → complete (urgent) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` note (urgent) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` → built, PR #277 (urgent) · builds-live
+- 2026-11-03 19:56 UTC · `ui-review-shots` PR #277, note (urgent) · reconciler
+- 2026-11-03 19:58 UTC · `terminal-sessions-nav` added (4 steps) (current) · orchestrator
+- 2026-11-03 19:59 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
+- 2026-11-03 19:59 UTC · `profile-manager` added (6 steps) (current) · orchestrator
+- 2026-11-03 19:59 UTC · `window-resize-fix` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 19:59 UTC · `smart-menus` s1 done (urgent) · orchestrator
+- 2026-11-03 19:59 UTC · `smart-menus` s2 done (urgent) · orchestrator
+- 2026-11-03 19:59 UTC · `smart-menus` s3 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `window-resize-fix` s1 done (current) · foreign-write
+- 2026-11-03 20:00 UTC · `terminal-sessions-nav` added (8 steps) (current) · foreign-write
+- 2026-11-03 20:00 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:00 UTC · `home-cards-live` s1 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s2 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s4 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s5 done (urgent) · orchestrator
+- 2026-11-03 20:01 UTC · `window-resize-fix` s2 done (current) · foreign-write
+- 2026-11-03 20:02 UTC · `profile-manager` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:04 UTC · `profile-manager` s2 done (current) · orchestrator
+- 2026-11-03 20:06 UTC · `window-resize-fix` s2 done (current) · foreign-write
+- 2026-11-03 20:06 UTC · `terminal-sessions-nav` added (24 steps) (current) · foreign-write
+- 2026-11-03 20:06 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, note (current) · reconciler
+- 2026-11-03 20:10 UTC · `window-resize-fix` PR #278, merged, note (current) · reconciler
+- 2026-11-03 19:59 UTC · `window-resize-fix` s2 done (current) · orchestrator
+- 2026-11-03 20:00 UTC · `window-resize-fix` note (current) · foreign-write
+- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, PR #278 (current) · builds-live
+- 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · foreign-write
+- 2026-11-03 20:12 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:12 UTC · `window-resize-fix` s3 done, → built (current) · orchestrator
+- 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · orchestrator
+- 2026-11-03 20:12 UTC · `window-resize-fix` → complete (current) · orchestrator
+- 2026-11-03 20:13 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:13 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:13 UTC · `smart-menus` s4 done (urgent) · orchestrator
+- 2026-11-03 20:13 UTC · `smart-menus` s5 done (urgent) · orchestrator
+- 2026-11-03 20:14 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:14 UTC · `profile-manager` s3 done (current) · orchestrator
+- 2026-11-03 20:14 UTC · `profile-manager` s4 done (current) · orchestrator
+- 2026-11-03 20:14 UTC · `profile-manager` s5 done (current) · orchestrator
+- 2026-11-03 20:15 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:15 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s1 done (urgent) · orchestrator
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s2 done (urgent) · orchestrator
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s3 done (urgent) · orchestrator
+- 2026-11-03 20:19 UTC · `window-resize-fix` s2 done, s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:19 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s2 done (current) · orchestrator
+- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s3 done (current) · orchestrator
+- 2026-11-03 20:20 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 20:21 UTC · `ui-review-predicted` s4 done (urgent) · orchestrator
+- 2026-11-03 20:23 UTC · `build-prompt-origin` added (5 steps) (current) · janitor-joey
+- 2026-11-03 20:23 UTC · `build-prompt-origin` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:25 UTC · `build-prompt-origin` s2 done (current) · orchestrator
+- 2026-11-03 20:26 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `follow-amber` s7 done, → complete (urgent) · orchestrator
+- 2026-11-03 20:26 UTC · `follow-amber` → built, PR #280 (urgent) · orchestrator
+- 2026-11-03 20:26 UTC · `follow-amber` note (urgent) · orchestrator
+- 2026-11-03 20:30 UTC · `plugin-settings-placement` added (6 steps) (current) · orchestrator
+- 2026-11-03 20:30 UTC · `build-prompt-origin` s4 done (current) · orchestrator
+- 2026-11-03 20:31 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:31 UTC · `plugin-settings-placement` added (12 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 20:37 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 20:37 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `plugin-settings-placement` added (18 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `smart-menus` s6 done (urgent) · orchestrator
+- 2026-11-03 20:38 UTC · `build-prompt-origin` s4 done (current) · foreign-write
+- 2026-11-03 20:38 UTC · `plugin-settings-placement` added (36 steps) (current) · foreign-write
+- 2026-11-03 20:43 UTC · `smart-menus` PR #281 (urgent) · builds-live
+- 2026-11-03 20:43 UTC · `smart-menus` s7 done, → built (urgent) · orchestrator
+- 2026-11-03 20:43 UTC · `smart-menus` note (urgent) · orchestrator
+- 2026-11-03 20:44 UTC · `smart-menus` s7 done, → built (urgent) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `build-prompt-origin` s4 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s2 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s2 done (current) · orchestrator
+- 2026-11-03 20:49 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:49 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:53 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:53 UTC · `banner-ref-links` added (10 steps) (current) · foreign-write
+- 2026-11-03 20:53 UTC · `build-prompt-origin` s3 done (current) · orchestrator
+- 2026-11-03 20:53 UTC · `build-prompt-origin` s5 done, → complete (current) · orchestrator
+- 2026-11-03 20:53 UTC · `build-prompt-origin` → built, PR #282 (current) · builds-live
+- 2026-11-03 20:55 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s3 done, → running (current) · orchestrator
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s4 done (current) · orchestrator
+- 2026-11-03 20:55 UTC · `plugin-settings-placement` s5 done (current) · orchestrator
+- 2026-11-03 20:56 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `plugin-settings-placement` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:47 UTC · `banner-ref-links` added (5 steps) (current) · orchestrator
+- 2026-11-03 20:47 UTC · `banner-ref-links` → running (current) · orchestrator
+- 2026-11-03 20:56 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 20:56 UTC · `banner-ref-links` s1 done (current) · orchestrator
+- 2026-11-03 20:57 UTC · `banner-ref-links` → running, branch claude/banner-ref-links (current) · foreign-write
+- 2026-11-03 21:00 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
+- 2026-11-03 21:02 UTC · `build-prompt-origin` s3 done, s5 done, → complete (current) · foreign-write
+- 2026-11-03 21:02 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:02 UTC · `banner-ref-links` s1 done (current) · foreign-write
+- 2026-11-03 21:05 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 21:05 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 21:05 UTC · `profile-manager` s1 done, s2 done, s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:05 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:05 UTC · `plugin-settings-placement` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:05 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:05 UTC · `home-cards-live` branch claude/home-cards-live (urgent) · builds-live
+- 2026-11-03 21:03 UTC · `home-cards-live` PR #283, note (urgent) · reconciler
+- 2026-11-03 21:05 UTC · `molly-console-commands` added (7 steps) (current) · orchestrator
+- 2026-11-03 21:08 UTC · `molly-console-commands` added (7 steps) (current) · foreign-write
+- 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:54 UTC · `home-cards-live` branch claude/home-cards-live, note (urgent) · reconciler
+- 2026-11-03 21:11 UTC · `plugin-settings-placement` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 21:11 UTC · `banner-ref-links` s1 done (current) · foreign-write
+- 2026-11-03 21:11 UTC · `molly-console-commands` added (14 steps) (current) · foreign-write
+- 2026-11-03 21:11 UTC · `git-status-board` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · orchestrator
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` s1 done, → running (current) · orchestrator
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` s2 done (current) · orchestrator
+- 2026-11-03 21:14 UTC · `urgent-main-ci-green` branch claude/urgent-main-ci-green, PR #284 (current) · builds-live
+- 2026-11-03 21:15 UTC · `urgent-main-ci-green` branch claude/urgent-main-ci-green, PR #284 (current) · foreign-write
+- 2026-11-03 21:17 UTC · `molly-console-commands` added (28 steps) (current) · foreign-write
+- 2026-11-03 21:17 UTC · `git-status-board` added (12 steps) (current) · foreign-write
+- 2026-11-03 21:17 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:17 UTC · `home-cards-live` note (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` s3 done (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` s6 done, → complete (urgent) · orchestrator
+- 2026-11-03 21:17 UTC · `home-cards-live` → built, PR #283 (urgent) · builds-live
+- 2026-11-03 21:19 UTC · `molly-console-commands` added (56 steps) (current) · foreign-write
+- 2026-11-03 21:19 UTC · `git-status-board` added (24 steps) (current) · foreign-write
+- 2026-11-03 21:19 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:20 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:19 UTC · `banner-ref-links` s2 done (current) · orchestrator
+- 2026-11-03 21:19 UTC · `banner-ref-links` s3 done (current) · orchestrator
+- 2026-11-03 21:19 UTC · `banner-ref-links` s4 done (current) · orchestrator
+- 2026-11-03 21:22 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:23 UTC · `whats-new-open-fix` added (5 steps) (current) · orchestrator
+- 2026-11-03 21:23 UTC · `whats-new-open-fix` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:25 UTC · `whats-new-open-fix` added (10 steps) (current) · foreign-write
+- 2026-11-03 21:10 UTC · `git-status-board` added (6 steps) (current) · claude-session (Snap Sully)
+- 2026-11-03 21:11 UTC · `batch-manager` note (angel) · claude-session (Snap Sully)
+- 2026-11-03 21:26 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:26 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:26 UTC · `whats-new-open-fix` added (20 steps) (current) · foreign-write
+- 2026-11-03 21:26 UTC · `git-status-board` s1 done, → running (current) · claude-session (Snap Sully)
+- 2026-11-03 21:26 UTC · `git-status-board` s2 done (current) · claude-session (Snap Sully)
+- 2026-11-03 21:27 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:30 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:30 UTC · `ui-review-predicted` PR #285 (urgent) · builds-live
+- 2026-11-03 21:30 UTC · `ui-review-predicted` PR #285, note (urgent) · reconciler
+- 2026-11-03 21:31 UTC · `banner-ref-links` s2 done, s3 done, s4 done (current) · foreign-write
+- 2026-11-03 21:31 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:31 UTC · `whats-new-open-fix` added (40 steps) (current) · foreign-write
+- 2026-11-03 21:31 UTC · `urgent-main-ci-green` s4 done (current) · orchestrator
+- 2026-11-03 21:31 UTC · `urgent-main-ci-green` s5 done (current) · orchestrator
+- 2026-11-03 21:31 UTC · `urgent-main-ci-green` note (current) · orchestrator
+- 2026-11-03 21:35 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:35 UTC · `urgent-main-ci-green` s4 done, s5 done, note (current) · foreign-write
+- 2026-11-03 21:36 UTC · `whats-new-open-fix` s1 done, → running (current) · orchestrator
+- 2026-11-03 21:36 UTC · `whats-new-open-fix` note (current) · orchestrator
+- 2026-11-03 21:38 UTC · `git-status-board` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:38 UTC · `urgent-main-ci-green` s4 done, s5 done, note (current) · foreign-write
+- 2026-11-03 21:38 UTC · `whats-new-open-fix` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:38 UTC · `molly-console-commands` s1 done, → running (current) · orchestrator
+- 2026-11-03 21:38 UTC · `molly-console-commands` s2 done (current) · orchestrator
+- 2026-11-03 21:38 UTC · `molly-console-commands` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 21:38 UTC · `whats-new-open-fix` s1 done, note (current) · foreign-write
+- 2026-11-03 21:45 UTC · `banner-ref-links` s5 done, → complete (current) · orchestrator
+- 2026-11-03 21:45 UTC · `banner-ref-links` → built, PR #287 (current) · builds-live
+- 2026-11-03 21:45 UTC · `banner-ref-links` note (current) · orchestrator
+- 2026-11-03 21:45 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `plugin-settings-placement` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `molly-console-commands` added (112 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `git-status-board` added (12 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `whats-new-open-fix` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:45 UTC · `terminal-sessions-nav` PR #286 (current) · builds-live
+- 2026-11-03 21:45 UTC · `terminal-sessions-nav` s4 done, → built (current) · orchestrator
+- 2026-11-03 21:45 UTC · `terminal-sessions-nav` note (current) · orchestrator
+- 2026-11-03 21:46 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 21:46 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 21:46 UTC · `molly-console-commands` s3 done (current) · orchestrator
+- 2026-11-03 21:46 UTC · `molly-console-commands` s4 done (current) · orchestrator
+- 2026-11-03 21:47 UTC · `plugin-settings-placement` branch claude/plugin-settings-placement, note (current) · reconciler
+- 2026-11-03 21:48 UTC · `molly-console-commands` branch claude/molly-console-commands, PR #288 (current) · builds-live
+- 2026-11-03 21:48 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 21:48 UTC · `molly-console-commands` note (current) · orchestrator
+- 2026-11-03 21:50 UTC · `molly-console-commands` s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, note (current) · foreign-write
+- 2026-11-03 21:50 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · orchestrator
+- 2026-11-03 21:50 UTC · `terminal-drag-chain-tree` → running (current) · orchestrator
+- 2026-11-03 21:49 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 21:49 UTC · `molly-console-commands` s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, note (current) · foreign-write
+- 2026-11-03 21:49 UTC · `ui-review-predicted` note (urgent) · orchestrator
+- 2026-11-03 21:54 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:55 UTC · `molly-nav-submenus` added (5 steps) (current) · orchestrator
+- 2026-11-03 21:55 UTC · `smart-menus` note (urgent) · orchestrator
+- 2026-11-03 21:58 UTC · `molly-nav-submenus` added (5 steps) (current) · foreign-write
+- 2026-11-03 21:58 UTC · `terminal-drag-chain-tree` s1 done (current) · orchestrator
+- 2026-11-03 21:58 UTC · `terminal-drag-chain-tree` s1 done (current) · foreign-write
+- 2026-11-03 21:58 UTC · `molly-nav-submenus` added (10 steps) (current) · foreign-write
+- 2026-11-03 21:58 UTC · `ui-review-predicted` s5 done (urgent) · orchestrator
+- 2026-11-03 21:58 UTC · `ui-review-predicted` s6 done, → built (urgent) · orchestrator
+- 2026-11-03 22:00 UTC · `plugin-settings-placement` PR #289, note (current) · reconciler
+- 2026-11-03 22:01 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `terminal-drag-chain-tree` s2 done (current) · orchestrator
+- 2026-11-03 22:01 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `molly-console-commands` note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `urgent-main-ci-green` s4 done, s5 done, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `whats-new-open-fix` s1 done, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
+- 2026-11-03 22:01 UTC · `molly-nav-submenus` added (20 steps) (current) · foreign-write
+- 2026-11-03 21:59 UTC · `plugin-settings-placement` PR #289, note (current) · reconciler
+- 2026-11-03 22:02 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 22:02 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:02 UTC · `terminal-drag-chain-tree` s2 done (current) · foreign-write
+- 2026-11-03 22:02 UTC · `terminal-tabs-left` added (5 steps) (current) · Janitor Joey (terminal-tabs-left session)
+- 2026-11-03 22:02 UTC · `terminal-tabs-left` → running (current) · orchestrator
+- 2026-11-03 22:01 UTC · `git-status-board` s3 done (current) · claude-session (Snap Sully)
+- 2026-11-03 22:01 UTC · `terminal-drag-chain-tree` s2 done (current) · foreign-write
+- 2026-11-03 22:01 UTC · `git-status-board` s4 done (current) · claude-session (Snap Sully)
+- 2026-11-03 22:01 UTC · `git-status-board` s5 done (current) · claude-session (Snap Sully)
+- 2026-11-03 22:03 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:03 UTC · `terminal-tabs-left` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:03 UTC · `terminal-drag-chain-tree` s3 done (current) · orchestrator
+- 2026-11-03 22:03 UTC · `terminal-drag-chain-tree` s4 done (current) · orchestrator
+- 2026-11-03 22:08 UTC · `molly-banners` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `terminal-drag-chain-tree` s5 done (current) · orchestrator
+- 2026-11-03 22:08 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `molly-console-commands` s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, s1 undone, s2 undone, note (current) · foreign-write
+- 2026-11-03 22:08 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:08 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `molly-nav-submenus` added (40 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `terminal-tabs-left` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:08 UTC · `plugin-settings-placement` branch claude/plugin-settings-placement, PR #289 (current) · builds-live
+- 2026-11-03 22:08 UTC · `plugin-settings-placement` s6 done, → built (current) · orchestrator
+- 2026-11-03 22:08 UTC · `plugin-settings-placement` note (current) · orchestrator
+- 2026-11-03 22:12 UTC · `plugin-settings-placement` s6 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:12 UTC · `terminal-drag-chain-tree` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:12 UTC · `molly-banners` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:12 UTC · `terminal-tabs-left` s1 done (current) · orchestrator
+- 2026-11-03 22:12 UTC · `terminal-tabs-left` s2 done (current) · orchestrator
+- 2026-11-03 22:12 UTC · `terminal-tabs-left` s3 done (current) · orchestrator
+- 2026-11-03 22:04 UTC · `terminal-drag-chain-tree` s3 done, s4 done (current) · foreign-write
+- 2026-11-03 22:04 UTC · `molly-banners` added (5 steps) (current) · orchestrator
+- 2026-11-03 22:04 UTC · `molly-banners` → running (current) · orchestrator
+- 2026-11-03 22:04 UTC · `molly-banners` note (current) · orchestrator
+- 2026-11-03 22:04 UTC · `molly-banners` branch claude/molly-banners (current) · builds-live
+- 2026-11-03 22:12 UTC · `terminal-drag-chain-tree` s5 done (current) · foreign-write
+- 2026-11-03 22:12 UTC · `terminal-tabs-left` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 22:12 UTC · `molly-banners` s1 done (current) · orchestrator
+- 2026-11-03 22:12 UTC · `molly-banners` s4 done (current) · orchestrator
+- 2026-11-03 22:14 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `plugin-settings-placement` s6 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `molly-console-commands` note (current) · foreign-write
+- 2026-11-03 22:14 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:14 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `molly-nav-submenus` added (80 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `terminal-tabs-left` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `molly-banners` added (5 steps) (current) · foreign-write
+- 2026-11-03 22:14 UTC · `whats-new-open-fix` s2 done (current) · orchestrator
+- 2026-11-03 22:14 UTC · `whats-new-open-fix` s3 done (current) · orchestrator
+- 2026-11-03 22:14 UTC · `whats-new-open-fix` s4 done (current) · orchestrator
+- 2026-11-03 22:16 UTC · `whats-new-open-fix` PR #290 (current) · builds-live
+- 2026-11-03 22:16 UTC · `whats-new-open-fix` s5 done, → built (current) · orchestrator
+- 2026-11-03 22:17 UTC · `whats-new-open-fix` note (current) · orchestrator
+- 2026-11-03 22:21 UTC · `git-status-board` PR #291 (current) · builds-live
+- 2026-11-03 22:18 UTC · `gizmo-companion` added (19 steps) (current) · orchestrator
+- 2026-11-03 22:18 UTC · `gizmo-companion` → running (current) · orchestrator
+- 2026-11-03 22:18 UTC · `gizmo-companion` note (current) · orchestrator
+- 2026-11-03 22:26 UTC · `gizmo-companion` s1 done (current) · orchestrator
+- 2026-11-03 22:27 UTC · `gizmo-companion` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 22:26 UTC · `gizmo-companion` s2 done (current) · orchestrator
+- 2026-11-03 22:31 UTC · `terminal-tabs-left` note (current) · orchestrator
+- 2026-11-03 22:31 UTC · `terminal-drag-chain-tree` note (current) · orchestrator
+- 2026-11-03 22:41 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `terminal-drag-chain-tree` PR #292 (current) · builds-live
+- 2026-11-03 22:50 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 22:50 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:50 UTC · `gizmo-companion` added (19 steps) (current) · foreign-write
+- 2026-11-03 22:51 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 22:54 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 22:54 UTC · `urgent-main-ci-green` merged, note (current) · reconciler
+- 2026-11-03 22:54 UTC · `terminal-tabs-left` PR #293, note (current) · reconciler
+- 2026-11-03 22:54 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 22:54 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:55 UTC · `plugin-lazy-load` added (3 steps) (current) · orchestrator
+- 2026-11-03 22:55 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 22:55 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:55 UTC · `lenny-land-all` added (7 steps) (current) · orchestrator
+- 2026-11-03 22:56 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 22:56 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `whats-new-open-fix` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `molly-banners` s1 done, s4 done (current) · foreign-write
+- 2026-11-03 22:39 UTC · `gizmo-companion` added (19 steps) (current) · foreign-write
+- 2026-11-03 22:39 UTC · `terminal-tabs-left` note (current) · orchestrator
+- 2026-11-03 22:41 UTC · `terminal-drag-chain-tree` note (current) · orchestrator
+- 2026-11-03 22:48 UTC · `terminal-tabs-left` PR #293 (current) · builds-live
+- 2026-11-03 23:03 UTC · `lenny-land-all` added (7 steps) (current) · orchestrator
+- 2026-11-03 23:04 UTC · `lenny-land-all` → running (current) · orchestrator
+- 2026-11-03 23:11 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `whats-new-open-fix` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 23:11 UTC · `gizmo-companion` added (19 steps) (current) · foreign-write
+- 2026-11-03 23:11 UTC · `plugin-lazy-load` added (3 steps) (current) · foreign-write
+- 2026-11-03 23:11 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
+- 2026-11-03 23:12 UTC · `molly-banners` s2 done (current) · foreign-write
+- 2026-11-03 23:12 UTC · `lenny-land-all` → running (current) · foreign-write
+- 2026-11-03 23:12 UTC · `lenny-land-all` → running (current) · foreign-write
+- 2026-11-03 23:13 UTC · `molly-banners` s2 done, s3 done (current) · foreign-write
+- 2026-11-03 23:20 UTC · `molly-banners` s2 done, s3 done (current) · foreign-write
+- 2026-11-03 23:23 UTC · `gizmo-companion` s3 done, s4 done (current) · foreign-write
+- 2026-11-03 23:23 UTC · `molly-banners` PR #294, note (current) · reconciler
+- 2026-11-03 23:23 UTC · `gizmo-companion` branch claude/gizmo-companion, note (current) · reconciler
+- 2026-11-03 23:11 UTC · `molly-banners` s2 done (current) · orchestrator
+- 2026-11-03 23:12 UTC · `molly-banners` s3 done (current) · orchestrator
+- 2026-11-03 23:18 UTC · `molly-banners` PR #294 (current) · builds-live
+- 2026-11-03 23:26 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done (current) · foreign-write
+- 2026-11-03 23:26 UTC · `molly-nav-submenus` branch claude/molly-nav-submenus, PR #295 (current) · builds-live

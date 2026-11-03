@@ -9,6 +9,8 @@ import * as P from '../core/model-policy.mjs';
 import { JOB_DEFAULTS, JOB_ENUMS, jobTypeErrors, normalizeJobType } from '../core/engines/job-type-rules.mjs';
 import { MODELS as STORE_MODELS } from '../plan/builds-store-core.mjs';
 import { suggestModel } from '../cli/plan.mjs';
+import * as SW from '../core/model-switch.mjs';
+import { audit, findBuild, launchCheck } from '../cli/model-gate.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
@@ -59,6 +61,36 @@ t('every agent roster runs only on allowed models', () => {
   const plugins = 'apps/console-web/plugins';
   const rosters = readdirSync(join(ROOT, plugins)).map((f) => `${plugins}/${f}/agents/roster.json`).filter((f) => existsSync(join(ROOT, f)));
   for (const f of rosters) for (const a of read(f).agents) for (const m of a.models) assert.ok(P.modelAllowed(m), `${f} ${a.id}: ${m}`);
+});
+
+// model switches (Brett, Nov 3 2026): "You can downgrade, but you can't upgrade."
+t('one ordered ranking: Fable above Opus; upgrades need approval, downgrades are recorded', () => {
+  assert.ok(P.modelRank('fable') > P.modelRank('opus')); assert.equal(P.modelRank('Opus 5.5'), P.MODEL_TIERS.indexOf('opus')); assert.equal(P.modelRank('gpt'), -1);
+  assert.equal(P.switchKind('Opus', 'Fable'), 'upgrade'); assert.equal(P.switchKind('Fable', 'Opus'), 'downgrade'); assert.equal(P.switchKind('opus', 'Opus'), 'same'); assert.equal(P.switchKind('x', 'Opus'), '');
+  assert.deepEqual([P.MODEL_POLICY.switches.upgrade, P.MODEL_POLICY.switches.downgrade], ['approval', 'record']);
+});
+t('who may approve: never a Claude session, headless build or agent; Brett via console or axHub', () => {
+  assert.ok(SW.nonHumanSource({ CLAUDECODE: '1' })); assert.ok(SW.nonHumanSource({ AXF_SURFACE: 'headless' })); assert.ok(SW.nonHumanSource({ AXF_SESSION: 'build:x' }));
+  assert.ok(SW.nonHumanSource({ AI_AGENT: 'claude-code' })); assert.ok(SW.nonHumanSource({}, { 'X-Axhub-Session': 'agent:Vinny' })); assert.equal(SW.nonHumanSource({}, { 'x-axhub-session': 'console' }), '');
+  assert.equal(SW.approverFrom({ CLAUDECODE: '1', AXF_APPROVER: 'brett', AXF_APPROVER_VIA: 'console' }).ok, false, 'a session setting the approver itself is still refused');
+  assert.equal(SW.approverFrom({ AXF_APPROVER: 'brett', AXF_APPROVER_VIA: 'self' }).ok, false);
+  assert.deepEqual(SW.approverFrom({ AXF_APPROVER: 'brett', AXF_APPROVER_VIA: 'axhub' }), { ok: true, by: 'brett', via: 'axhub' });
+});
+const LB = (approvals = [], done = 1) => ({ id: 'lb', steps: [{ id: 's1', model: 'Opus', done: done >= 1 }, { id: 's2', model: 'Fable', done: false }, { id: 's3', model: 'Opus', done: false }], approvals });
+t('launch gate: an unapproved upgrade phase or a model above the step is refused; downgrades and Brett-approved upgrades start', () => {
+  assert.equal(launchCheck(LB(), 'fable').ok, false, 'phase 2 upgrades Opus → Fable, not approved');
+  assert.match(launchCheck(LB(), 'fable').why, /request-upgrade lb 1/);
+  assert.equal(launchCheck(LB([{ phase: 1, from: 'Opus', to: 'Fable', selfApproved: true }]), 'fable').ok, false, 'a self-approval does not count');
+  assert.equal(launchCheck(LB([{ phase: 1, from: 'Opus', to: 'Fable', by: 'brett', via: 'console' }]), 'fable').ok, true);
+  assert.equal(launchCheck(LB([{ phase: 1, from: 'Opus', to: 'Fable', by: 'brett', via: 'console' }]), 'opus').ok, true, 'running a Fable step on Opus is a downgrade');
+  assert.equal(launchCheck(LB([], 0), 'fable').ok, false, 'phase 1 is pinned to Opus: launching on Fable is an upgrade');
+  assert.equal(launchCheck(LB([], 0), 'opus').ok, true); assert.equal(launchCheck(null, 'fable').ok, true, 'not an orchestrator build');
+  const store = { builds: [LB()] };
+  assert.equal(findBuild(store, { name: 'axf-lb' })?.id, 'lb'); assert.equal(findBuild(store, { brief: 'Continue build "L" (lb) — Phase 2' })?.id, 'lb'); assert.equal(findBuild(store, { name: 'other' }), null);
+});
+t('audit lists upgrades with who approved them (Brett or not)', () => {
+  const rows = audit({ builds: [LB([{ phase: 1, from: 'Opus', to: 'Fable', at: 'a' }]), { id: 'ok', steps: [{ id: 's1', model: 'Opus' }, { id: 's2', model: 'Fable' }], approvals: [{ phase: 1, from: 'Opus', to: 'Fable', at: 'b', by: 'brett', via: 'axhub' }] }] });
+  assert.deepEqual(rows.map((r) => [r.build, r.kind, r.human]), [['lb', 'upgrade', false], ['ok', 'upgrade', true]]);
 });
 
 console.log(`model-policy: ${n} checks passed`);

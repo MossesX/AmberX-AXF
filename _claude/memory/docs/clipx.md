@@ -11,7 +11,7 @@ snippets, create documentation, notes, tasks, etc and integrate amberx voice con
   orchestrator yet. When he lifts the stop: add build `clipx` to the orchestrator (Refactor) from the steps below,
   check the queue for clashes again, then start.
 - **Needs an Android exception:** ClipX's Capacitor shell + accessibility service is Android code, and Android is on
-  hold except AmberX, Voice Vault and Patches. Ask Brett (card) to add ClipX as an exception before the Android steps.
+  hold except AmberX and Voice Vault. Ask Brett (card) to add ClipX as an exception before the Android steps.
 
 Full plan (shape, features, 16 steps ~9.5 h, clash check): branch `claude/clipx-plan`, file `_claude/memory/docs/clipx.md`
 in MossesX/AmberX-AXF (this hub copy is a summary until that branch merges and claude-sync replaces it).

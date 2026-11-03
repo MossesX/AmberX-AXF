@@ -245,12 +245,15 @@ class R:
     def __init__(self, out, code=0): self.stdout, self.stderr, self.returncode = out, "boom" if code else "", code
 def fake_run(argv, **kw):
     seen_argv.append(argv)
-    return R("axf-fix-host-mosh 1761480000\nmy-own-session 1761480001\naxf-pr-feature-x 1761480002\n")
+    return R("axf-fix-host-mosh\t1761480000\t0\theadless\tVinnie\tclaude-opus-5-5\t/root/axf-builds/x\nmy-own-session\t1761480001\t0\t\t\t\t\n"
+             "axf-pr-feature-x\t1761480002\t1\t\t\t\t\naxt-vps-k3j9\t1761480003\t0\ttab\t\t\t\n")
 S.RUNNER = fake_run
 S._headless_cache.update(at=0.0, value=None)
 h = c.get("/p/headless").json()
 check(h["on"] and h["ready"] and [x["name"] for x in h["items"]] == ["axf-fix-host-mosh", "axf-pr-feature-x"], "only axf-… tmux sessions are listed")
 check(h["items"][0]["createdAt"] == 1761480000000, "created time in ms")
+check(h["items"][0]["agent"] == "Vinnie" and h["items"][0]["model"] == "claude-opus-5-5", "the launcher's agent + model tags come with each session")
+check(h["items"][1]["agent"] == "pr-feature-x" and h["items"][1]["attached"] == 1, "untagged (older launcher): the agent is the build name")
 check("-T" in seen_argv[0] and "BatchMode=yes" in seen_argv[0] and seen_argv[0][-1].startswith("tmux ls"), "one non-interactive ssh runs tmux ls")
 c.get("/p/headless")
 check(len(seen_argv) == 1, "cached: a second ask within 8 s doesn't ssh again")
@@ -276,6 +279,59 @@ with c.websocket_connect(f"/p/sessions/{cl['id']}/ws") as ws:
     out = read_until(ws, b"pwd=")
     out += read_until(ws, b"\n", 2)
 check(b"CLAUDE-TAB token=set key=none" in out and str(REPO / "framework").encode() in out, "Claude Code tab gets only its own token, in the chosen folder")
+
+# Persistent tabs (headless-tabs): a console tab inside tmux survives its link closing and replays its scrollback
+import secrets as _sec, shutil as _sh, subprocess as _sp
+if _sh.which("tmux"):
+    name = f"axt-test-{_sec.token_hex(3)}"
+    t1 = c.post("/p/sessions", json={"kind": "console", "tmux": name, "cols": 80, "rows": 24}).json()
+    check(t1["tmux"] == name and t1["where"] == "console" and "tmux attach -t " + name in t1["attachCmd"]["mosh"], "a console tab runs in its tmux session, with the Moshi attach command")
+    with c.websocket_connect(f"/p/sessions/{t1['id']}/ws") as ws:
+        json.loads(ws.receive_text())
+        time.sleep(0.6)
+        ws.send_text("echo PERSIST-$((40+2)); seq 1000 1080\r")
+        read_until(ws, b"1080", 6)
+    c.delete(f"/p/sessions/{t1['id']}")
+    time.sleep(0.4)
+    check(_sp.run(["tmux", "has-session", "-t", "=" + name]).returncode == 0, "closing the tab detaches: the tmux session lives on")
+    opt = lambda k: _sp.run(["tmux", "show-options", "-t", f"={name}:", "-v", k], capture_output=True, text=True).stdout.strip()
+    check(opt("@axf_kind") == "tab" and opt("status") == "off" and opt("history-limit") == "50000", "the tab's tmux session is tagged, quiet and keeps 50000 lines")
+    check(any(x["name"] == name and x["kind"] == "tab" for x in c.get("/p/tmux").json()["console"]), "GET tmux lists the detached tab session")
+    t2 = c.post("/p/sessions", json={"kind": "console", "tmux": name, "cols": 80, "rows": 24}).json()
+    with c.websocket_connect(f"/p/sessions/{t2['id']}/ws") as ws:
+        json.loads(ws.receive_text())
+        replay = read_until(ws, b"PERSIST-42", 6)
+    check(b"PERSIST-42" in replay, "re-opening the tab replays its scrollback, even what scrolled off the screen (nothing lost)")
+    check(c.post(f"/p/sessions/{t2['id']}/kill").json()["tmux"] == name, "Kill session answers with the tmux name")
+    time.sleep(0.3)
+    check(_sp.run(["tmux", "has-session", "-t", "=" + name], capture_output=True).returncode != 0, "…and the tmux session is gone")
+for bad in ("bash", "axf-x", "axt-;id", "axt-" + "a" * 70):
+    check(c.post("/p/sessions", json={"kind": "console", "tmux": bad}).status_code == 400, f"tmux name refuses {bad[:16]!r}")
+check(c.post("/p/tmux/kill", json={"name": "axt-x", "where": "mars"}).status_code == 400, "kill needs vps or console")
+sc = S.tmux_script("axt-a", "exec bash -l", "/srv", 90, 30, env_keys=["CLAUDE_CODE_OAUTH_TOKEN"])
+check("capture-pane -p -e -J -S -3000" in sc and "exec tmux attach -t =axt-a" in sc and "-c /srv" in sc, "tmux script: replay, create in the folder, attach")
+check("env -u CLAUDE_CODE_OAUTH_TOKEN" in sc and '-e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN"' in sc and "sk-ant" not in sc, "the token reaches the session from the environment, never the command line or tmux's global env")
+check(S.parse_ls("axt-a\t5\t0\ttab\t\t\t\nnope\t1\n") == [{"name": "axt-a", "createdAt": 5000, "attached": 0, "kind": "tab", "agent": "", "model": "", "cwd": ""}], "parse_ls keeps only terminal sessions")
+# live meters + context chain over one ssh call (fake runner)
+c.put("/p/settings", json={"vps": {"host": "vps.example", "port": 22, "user": "root"}})
+calls = []
+def fake_meter(argv, **kw):
+    calls.append(argv[-1])
+    if "@axf_meter" in argv[-1]:
+        return R('axf-a\t{"$axf":"headless-meter@1","costUsd":1.25,"status":"working","model":"claude-opus-5-5"}\nbad\tnot json\n')
+    return R('{"$axf":"context-chain@1","session":"axf-a","version":2,"items":[{"i":0,"rel":"CLAUDE.md","rules":[]}]}')
+S.RUNNER = fake_meter
+S._meter_cache.update(at=0.0, value=None)
+m = c.get("/p/headless/meters?names=axf-a,axf-b,evil;rm").json()
+check(m["items"]["axf-a"]["costUsd"] == 1.25 and "axf-b" not in m["items"] and "evil" not in calls[-1], "meters: one ssh call, bad names dropped, bad lines skipped")
+c.get("/p/headless/meters?names=axf-a,axf-b")
+check(len(calls) == 1, "meters cached 2 s")
+ch = c.get("/p/headless/axf-a/chain").json()
+check(ch["version"] == 2 and ch["items"][0]["rel"] == "CLAUDE.md", "context chain read from the session's chain file")
+check(c.get("/p/headless/axt-a/chain").status_code == 400, "chain only for headless sessions")
+ac = S.attach_commands("axf-a", "vps")
+check(ac["mosh"] == "mosh root@vps.example -- tmux attach -t axf-a" and ac["ssh"] == "ssh -t root@vps.example tmux attach -t axf-a", "Moshi + ssh attach commands")
+S.RUNNER = __import__("subprocess").run
 
 # limits + log
 check(c.post("/p/sessions", json={"kind": "nope"}).status_code == 400, "unknown kind refused")

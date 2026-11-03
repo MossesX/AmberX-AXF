@@ -91,7 +91,7 @@ export function run(typeId, opts = {}) {
   const wt = jobWorktree(jt, runId, runId.slice(-15));
   const briefFile = join(dataDir(), 'job-briefs', `${runId}.md`); mkdirSync(join(dataDir(), 'job-briefs'), { recursive: true }); writeFileSync(briefFile, `${brief.text}\n`);
   const log = `.axf-job-${runId}.log`.slice(0, 80);
-  const p = spawnSync('bash', [launcher(), '--name', session, '--brief', briefFile, '--log', log, '--', ...args], { cwd: wt.path, encoding: 'utf8', env: { ...process.env, AXF_SURFACE: 'agent-job', AXF_MODEL: r.model, AXF_SESSION: session, AXF_AGENT: agent.id, AXF_AGENT_BOOKED: runId }, timeout: 60000 });
+  const p = spawnSync('bash', [launcher(), '--name', session, '--brief', briefFile, '--log', log, '--', ...args], { cwd: wt.path, encoding: 'utf8', env: { ...process.env, AXF_SURFACE: 'agent-job', AXF_MODEL: r.model, AXF_SESSION: session, AXF_AGENT: agent.id, AXF_AGENT_NAME: agent.name || agent.id, AXF_AGENT_BOOKED: runId }, timeout: 60000 });
   if (p.status !== 0) throw new Error(`launch failed: ${(p.stderr || p.stdout || '').trim().slice(-400)}`);
   // started now, or queued by the agent cap (agent-slots@1): a waiter starts it when a desk frees
   const started = /started (\S+)/.exec(p.stdout ?? ''); const tmux = started && !started[1].startsWith('pid') ? started[1] : '';

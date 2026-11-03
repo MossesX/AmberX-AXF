@@ -55,7 +55,8 @@
     "sizing": "compact",
     "agent-card": "corporate-badge",
     "help": "framework",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "xlayout": "molly"
   },
   "hidden": [
     "toolbar"

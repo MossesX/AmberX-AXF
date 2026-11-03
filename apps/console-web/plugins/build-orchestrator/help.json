@@ -41,6 +41,18 @@
         "title": "Hidden",
         "text": "Builds you hid from the list. Tap to see them.",
         "kind": "button"
+      },
+      {
+        "target": "approve-upgrade-to",
+        "title": "Approve upgrade",
+        "text": "Approves raising the next phase to a stronger model (Opus to Fable). Only Brett's own click counts; a downgrade needs no approval.",
+        "kind": "button"
+      },
+      {
+        "target": "approve-upgrade-from",
+        "title": "Approve upgrade",
+        "text": "Approves the waiting model upgrade request for this phase. Only Brett's own click counts; it is recorded with his name.",
+        "kind": "button"
       }
     ],
     "intros": []

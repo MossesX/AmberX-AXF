@@ -963,7 +963,7 @@ export function SettingsSummary() {
       <p className="fx-small" style={{ margin: 0 }}><strong>{t.all.count} builds · {fmt(t.all.left) || '0 min'} left · ~{usd(t.all.cost) || '$0.00'}</strong> · Fable {fmt(t.Fable.left) || '0 min'} (~{usd(t.Fable.cost) || '$0.00'}) · Opus {fmt(t.Opus.left) || '0 min'} (~{usd(t.Opus.cost) || '$0.00'}) · Sonnet {fmt(t.Sonnet.left) || '0 min'} (~{usd(t.Sonnet.cost) || '$0.00'})</p>
       <p className="fx-small fx-muted" style={{ margin: 0 }}>
         Live builds come from the activity feed (<code>axf.activity@1</code>{s.liveAvailable === false ? ': not available right now' : ''}); a run is linked to its build by its branch
-        (<code>fable/&lt;id&gt;</code>, <code>rebuild/&lt;id&gt;</code>, <code>harvest/…</code>, <code>pilot/…</code>) or a report naming it.
+        (<code>fable/&lt;id&gt;</code>, <code>rebuild/&lt;id&gt;</code>, <code>harvest/…</code>) or a report naming it.
         Step ticks: pending list {s.canTickPending ? 'on' : 'read-only (no step action yet)'}, build queue {s.canTickQueue ? 'on' : 'read-only (no step action yet)'}.
       </p>
     </div>

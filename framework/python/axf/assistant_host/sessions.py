@@ -1,5 +1,5 @@
 """Live sessions (live-session@1) — the host side, for any Python assistant host (framework/python,
-`axf.assistant_host.sessions`; the console's ai-assistant plugin and Build Pilot's server run on it).
+`axf.assistant_host.sessions`; the console's ai-assistant plugin runs on it).
 
 Every conversation is a live session owned by its host, not by the browser. A reply runs in its own thread and writes
 every event into the conversation's event log; the browser only *watches* that log. Closing the tab, the dialog or the
@@ -210,7 +210,7 @@ class PlaceholderHost(SessionHost):
 
 class LocalHost(SessionHost):
     """Sessions in memory, logs saved to <folder>/<id>.json when a turn ends and on lifecycle changes.
-    `label`/`note`/`restart_reason` name the host for people ("This console", "Build Pilot server", …)."""
+    `label`/`note`/`restart_reason` name the host for people ("This console", "App server", …)."""
 
     id = "local"
     label = "This server"
