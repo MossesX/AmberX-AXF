@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Window resize fix (Current `window-resize-fix`, urgent, Opus; agent Landin' Lenny; Brett Nov 3 voice: "All floating windows need to be resizable" + Terminal settings Opens in = Dialog did nothing): handles in a grips layer straddling the border, touch-sized (row height on phones), corner grip on every frame; windows share one z layer so dialogs stay on top; `settings.open` honours a plugin's Opens in = Dialog. Merge on Brett's order | review (merging on Brett's order) | `claude/window-resize-fix` | (see PR) | Report `_claude/builds/reports/window-resize-fix.md`. Follow-up: remember window size (engine, Fable) | 2026-11-03 |
 | Land everything (Urgent `land-everything`, Opus; Brett Nov 3 voice: "Just go. Get everything live."): 17 AmberX-AXF PRs + 3 axHub PRs landed on main and deployed; banner PRs #251 #254 and banners-one left for Brett | complete | `claude/land-everything` | — | Report `_claude/builds/reports/land-everything.md`. Brett: banner PRs, hub delete for kill-patches-pilot s7 | 2026-11-03 |
 | Smart menus (Urgent `smart-menus`; Brett Nov 3 voice + addenda 1-3): dynamic sections above every context menu's and app menu's fixed items (Talking about via MCP `console_context`, Pinned, Suggested learned with zero tokens, For this via `when`), destructive never promoted; one Menus plugin with sections, behaviour, full look editor (theme-token colours, fonts, sizes, animation, presets, per-menu, export/import), learning reset. Opus. Agent Earl the Ear | PR open (s1-s6 done; s7 PR + UI Review) | `claude/smart-menus` | PR pending | axHub admin: allow `console_context` (navigation only) on the `axf-console` service. Follow-ups: `menu-style` asset type + Fable review of the engine (needs Brett's upgrade approval). Report `_claude/builds/reports/smart-menus.md` | 2026-11-03 |
 | Plugin commands, automatically (Urgent `plugin-commands-auto`; Brett Nov 3 voice): every plugin, existing and new, exposes all of its commands and reads through control@1 on REST `/api/control/<plugin>/<command>`, MCP `<plugin>_<command>` (+ `plugin_commands` / `plugin_read` / `plugin_run`) and CLI `axf <plugin> <command>`, made automatically from routes, actions, data folder and plugin.json `commands`; lifecycle check + CI enforce it. Opus. Base token-control-opus (#250) + console-commands (#249) merged in | PR open (all 6 steps done; UI Review waiting) | `claude/plugin-commands-auto` | [#263](https://github.com/MossesX/AmberX-AXF/pull/263) (merges after #250 and #249; UI Review r-20261103-3345d3d4) | axHub admin: allow `<plugin>_*`, `plugin_commands`, `plugin_read`, `plugin_run` on the `axf-console` service. Report `_claude/builds/reports/plugin-commands-auto.md` | 2026-11-03 |
@@ -568,11 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 16:07 UTC · landed `claude/notes-vault` (PR#256) on main at 5a6311a3 · land-everything
-- 2026-11-03 16:14 UTC · landed `claude/agent-chats-hub` (PR#248) on main at c985c38d · land-everything
-- 2026-11-03 16:24 UTC · landed `claude/kill-patches-pilot` (PR#258) on main at e697c302 · land-everything
-- 2026-11-03 16:30 UTC · landed `claude/headless-tabs` (PR#259) on main at a8186b83 · land-everything
-- 2026-11-03 16:41 UTC · landed `claude/whats-new-banner` (PR#260) on main at 6ff111a1 · land-everything
 - 2026-11-03 16:48 UTC · landed `claude/molly-fable` (PR#245) on main at bffc2601 · land-everything
 - 2026-11-03 16:48 UTC · landed `claude/xlayout-opus` (PR#252) on main at bffc2601 · land-everything
 - 2026-11-03 17:03 UTC · landed `claude/token-control-opus` (PR#250) on main at 0a85ab65 · land-everything
@@ -877,3 +873,99 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:45 UTC · `smart-menus` added (7 steps) (urgent) · orchestrator
 - 2026-11-03 19:45 UTC · `smart-menus` → running (urgent) · orchestrator
 - 2026-11-03 19:45 UTC · `smart-menus` note (urgent) · orchestrator
+- 2026-11-03 19:32 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · orchestrator
+- 2026-11-03 19:47 UTC · `terminal-vps-host` s2 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 19:47 UTC · `window-resize-fix` s1 done, → running (current) · orchestrator
+- 2026-11-03 19:12 UTC · `claude-settings` s5 done (urgent) · orchestrator
+- 2026-11-03 19:48 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 19:48 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · orchestrator
+- 2026-11-03 19:48 UTC · `claude-settings` s6 done (urgent) · builds-live
+- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → complete (urgent) · orchestrator
+- 2026-11-03 19:50 UTC · `claude-settings` PR #275, note (urgent) · reconciler
+- 2026-11-03 19:50 UTC · `claude-settings` → built, PR #275 (urgent) · builds-live
+- 2026-11-03 19:50 UTC · `claude-settings` note (urgent) · orchestrator
+- 2026-11-03 19:50 UTC · `claude-settings` s7 done, → built, PR #275, note (urgent) · builds-live
+- 2026-11-03 19:54 UTC · `ui-review-predicted` added (6 steps) (urgent) · orchestrator
+- 2026-11-03 19:54 UTC · `ui-review-predicted` → running (urgent) · orchestrator
+- 2026-11-03 19:54 UTC · `ui-review-predicted` branch claude/ui-review-predicted (urgent) · builds-live
+- 2026-11-03 19:55 UTC · `agent-pick` branch claude/agent-pick, PR #276 (urgent) · builds-live
+- 2026-11-03 19:55 UTC · `ui-review-predicted` note (urgent) · orchestrator
+- 2026-11-03 19:55 UTC · `batch-manager` note (angel) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` s4 done (urgent) · orchestrator
+- 2026-11-03 19:55 UTC · `agent-pick` s9 done, → built (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:55 UTC · `agent-pick` note (urgent) · Snap Sully (claude code)
+- 2026-11-03 19:56 UTC · `ui-review-shots` s5 done, → complete (urgent) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` note (urgent) · orchestrator
+- 2026-11-03 19:56 UTC · `ui-review-shots` → built, PR #277 (urgent) · builds-live
+- 2026-11-03 19:56 UTC · `ui-review-shots` PR #277, note (urgent) · reconciler
+- 2026-11-03 19:58 UTC · `terminal-sessions-nav` added (4 steps) (current) · orchestrator
+- 2026-11-03 19:59 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
+- 2026-11-03 19:59 UTC · `profile-manager` added (6 steps) (current) · orchestrator
+- 2026-11-03 19:59 UTC · `window-resize-fix` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 19:59 UTC · `smart-menus` s1 done (urgent) · orchestrator
+- 2026-11-03 19:59 UTC · `smart-menus` s2 done (urgent) · orchestrator
+- 2026-11-03 19:59 UTC · `smart-menus` s3 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `window-resize-fix` s1 done (current) · foreign-write
+- 2026-11-03 20:00 UTC · `terminal-sessions-nav` added (8 steps) (current) · foreign-write
+- 2026-11-03 20:00 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:00 UTC · `home-cards-live` s1 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s2 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s4 done (urgent) · orchestrator
+- 2026-11-03 20:00 UTC · `home-cards-live` s5 done (urgent) · orchestrator
+- 2026-11-03 20:01 UTC · `window-resize-fix` s2 done (current) · foreign-write
+- 2026-11-03 20:02 UTC · `profile-manager` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:04 UTC · `profile-manager` s2 done (current) · orchestrator
+- 2026-11-03 20:06 UTC · `window-resize-fix` s2 done (current) · foreign-write
+- 2026-11-03 20:06 UTC · `terminal-sessions-nav` added (24 steps) (current) · foreign-write
+- 2026-11-03 20:06 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, note (current) · reconciler
+- 2026-11-03 20:10 UTC · `window-resize-fix` PR #278, merged, note (current) · reconciler
+- 2026-11-03 19:59 UTC · `window-resize-fix` s2 done (current) · orchestrator
+- 2026-11-03 20:00 UTC · `window-resize-fix` note (current) · foreign-write
+- 2026-11-03 20:00 UTC · `window-resize-fix` branch claude/window-resize-fix, PR #278 (current) · builds-live
+- 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · foreign-write
+- 2026-11-03 20:12 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:12 UTC · `window-resize-fix` s3 done, → built (current) · orchestrator
+- 2026-11-03 20:12 UTC · `window-resize-fix` note (current) · orchestrator
+- 2026-11-03 20:12 UTC · `window-resize-fix` → complete (current) · orchestrator
+- 2026-11-03 20:13 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:13 UTC · `profile-manager` s1 done, s2 done (current) · foreign-write
+- 2026-11-03 20:13 UTC · `smart-menus` s4 done (urgent) · orchestrator
+- 2026-11-03 20:13 UTC · `smart-menus` s5 done (urgent) · orchestrator
+- 2026-11-03 20:14 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:14 UTC · `profile-manager` s3 done (current) · orchestrator
+- 2026-11-03 20:14 UTC · `profile-manager` s4 done (current) · orchestrator
+- 2026-11-03 20:14 UTC · `profile-manager` s5 done (current) · orchestrator
+- 2026-11-03 20:15 UTC · `window-resize-fix` s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:15 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s1 done (urgent) · orchestrator
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s2 done (urgent) · orchestrator
+- 2026-11-03 20:18 UTC · `ui-review-predicted` s3 done (urgent) · orchestrator
+- 2026-11-03 20:19 UTC · `window-resize-fix` s2 done, s3 done, → complete, note (current) · foreign-write
+- 2026-11-03 20:19 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s2 done (current) · orchestrator
+- 2026-11-03 20:19 UTC · `terminal-sessions-nav` s3 done (current) · orchestrator
+- 2026-11-03 20:20 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 20:21 UTC · `ui-review-predicted` s4 done (urgent) · orchestrator
+- 2026-11-03 20:23 UTC · `build-prompt-origin` added (5 steps) (current) · janitor-joey
+- 2026-11-03 20:23 UTC · `build-prompt-origin` s1 done, → running (current) · orchestrator
+- 2026-11-03 20:25 UTC · `build-prompt-origin` s2 done (current) · orchestrator
+- 2026-11-03 20:26 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `window-resize-fix` added (3 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `terminal-sessions-nav` added (4 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `profile-manager` added (6 steps) (current) · foreign-write
+- 2026-11-03 20:26 UTC · `follow-amber` s7 done, → complete (urgent) · orchestrator
+- 2026-11-03 20:26 UTC · `follow-amber` → built, PR #280 (urgent) · orchestrator
+- 2026-11-03 20:26 UTC · `follow-amber` note (urgent) · orchestrator
+- 2026-11-03 20:30 UTC · `plugin-settings-placement` added (6 steps) (current) · orchestrator
+- 2026-11-03 20:30 UTC · `build-prompt-origin` s4 done (current) · orchestrator
+- 2026-11-03 20:31 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:31 UTC · `plugin-settings-placement` added (12 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `terminal-sessions-nav` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 20:37 UTC · `profile-manager` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 20:37 UTC · `build-prompt-origin` added (5 steps) (current) · foreign-write
+- 2026-11-03 20:37 UTC · `plugin-settings-placement` added (18 steps) (current) · foreign-write

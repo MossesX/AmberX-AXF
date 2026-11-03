@@ -1047,14 +1047,27 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* windows-terminal s17: resize from all 8 edges / corners (engine: RESIZE_EDGES, hitResizeEdge, resizeRect). The bands are
    invisible hit areas just inside the border (the window clips at its radius); corners are squares twice the band. Wider
    on touch. No keep-on-screen: a window may be dragged or resized past the viewport. */
-.fx-window__edge { --fx-win-handle: var(--fx-space); position: absolute; z-index: 3; touch-action: none; user-select: none; }
-@media (pointer: coarse) { .fx-window__edge { --fx-win-handle: calc(var(--fx-space) * 2); } }
+.fx-window__edge { --fx-win-handle: calc(var(--fx-space) * 3); position: absolute; z-index: 3; touch-action: none; user-select: none; -webkit-touch-callout: none; }
+@media (pointer: coarse) { .fx-window__edge { --fx-win-handle: var(--fx-row-h); } }
 .fx-window__edge--n, .fx-window__edge--s { left: calc(var(--fx-win-handle) * 2); right: calc(var(--fx-win-handle) * 2); height: var(--fx-win-handle); }
 .fx-window__edge--e, .fx-window__edge--w { top: calc(var(--fx-win-handle) * 2); bottom: calc(var(--fx-win-handle) * 2); width: var(--fx-win-handle); }
 .fx-window__edge--n { top: 0; } .fx-window__edge--s { bottom: 0; } .fx-window__edge--w { left: 0; } .fx-window__edge--e { right: 0; }
 .fx-window__edge--ne, .fx-window__edge--nw, .fx-window__edge--se, .fx-window__edge--sw { width: calc(var(--fx-win-handle) * 2); height: calc(var(--fx-win-handle) * 2); }
 .fx-window__edge--nw { top: 0; left: 0; } .fx-window__edge--ne { top: 0; right: 0; } .fx-window__edge--sw { bottom: 0; left: 0; } .fx-window__edge--se { bottom: 0; right: 0; }
-.fx-window--standard .fx-window__edge--se { background: linear-gradient(135deg, transparent 50%, var(--fx-border) 50%); }
+/* window-resize-fix (Nov 3 2026, Brett: "All floating windows need to be resizable"): a floating window's handles live in
+   .fx-window__grips, a layer over the window's rect drawn just above it. Every band straddles the border (half outside,
+   so a finger or a cursor grabs it without covering content), wide enough to tap on a phone (one row height on a coarse
+   pointer), and every frame (standard and frameless, e.g. the Terminal) shows a grip in the bottom-right corner. */
+.fx-window__grips { position: fixed; pointer-events: none; }
+.fx-window__grips > .fx-window__edge { pointer-events: auto; }
+.fx-window__grips > .fx-window__edge--n, .fx-window__grips > .fx-window__edge--s { left: calc(var(--fx-win-handle) * 1.5); right: calc(var(--fx-win-handle) * 1.5); }
+.fx-window__grips > .fx-window__edge--e, .fx-window__grips > .fx-window__edge--w { top: calc(var(--fx-win-handle) * 1.5); bottom: calc(var(--fx-win-handle) * 1.5); }
+.fx-window__grips > :is(.fx-window__edge--n, .fx-window__edge--nw, .fx-window__edge--ne) { top: calc(var(--fx-win-handle) / -2); }
+.fx-window__grips > :is(.fx-window__edge--s, .fx-window__edge--sw, .fx-window__edge--se) { bottom: calc(var(--fx-win-handle) / -2); }
+.fx-window__grips > :is(.fx-window__edge--w, .fx-window__edge--nw, .fx-window__edge--sw) { left: calc(var(--fx-win-handle) / -2); }
+.fx-window__grips > :is(.fx-window__edge--e, .fx-window__edge--ne, .fx-window__edge--se) { right: calc(var(--fx-win-handle) / -2); }
+.fx-window__grips > .fx-window__edge--se::after { content: ''; position: absolute; right: calc(var(--fx-win-handle) / 2 + var(--fx-radius-lg) / 3); bottom: calc(var(--fx-win-handle) / 2 + var(--fx-radius-lg) / 3); width: calc(var(--fx-win-handle) * 0.6); height: calc(var(--fx-win-handle) * 0.6); opacity: var(--fx-opacity-muted); pointer-events: none; background: linear-gradient(135deg, transparent 45%, var(--fx-muted) 45%, var(--fx-muted) 55%, transparent 55%, transparent 70%, var(--fx-muted) 70%, var(--fx-muted) 80%, transparent 80%); }
+.fx-window__grips > .fx-window__edge--se:hover::after, .fx-window__grips > .fx-window__edge--se:active::after { opacity: 1; }
 /* maximized: square, borderless, fills the viewport (engine: maximizedRect); handles are gone */
 .fx-window.is-maximized { border-radius: 0; box-shadow: none; }
 /* frameless (Terminal): the content draws its own title bar through useWindowFrame(); no host chrome, no body inset */
