@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:58:29.232Z",
+ "updatedAt": "2026-11-03T21:58:39.671Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4857,15 +4857,15 @@
    "title": "UI Review shows predicted pictures before a build runs",
    "category": "Console",
    "detail": "Brett, Nov 3 2026 (voice): UI Review must show PREDICTED pictures - what a build will probably look like - BEFORE it's built, so he can approve the look before an agent spends money. Agent: Snap Sully (also on ui-review-shots; built on its storage fix). Predicted mockups are made from the brief + steps (+ diff while running) by rendering real framework components with the current theme in a headless browser (reusing rebuild-shots capture, no new capture system); item status 'Predicted - approve the look'; Approve look / Ask changes (addendum to the build) / Reject (build held); setting 'Wait for my look approval before UI builds start' (default off); refresh while running, real after-shot replaces it at the end (badge Real, compare toggle); backfill for queued/running UI builds; commands declared once -> REST + MCP + CLI. Moved here from pending batch-manager (its predicted-shots part).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-predicted",
    "pr": "#285",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T21:49:21.858Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T21:58:23.579Z",
+   "builtAt": "2026-11-03T21:58:23.579Z",
    "notes": [
     {
      "text": "Agent: Snap Sully (sully), booked as a swarm-run@1 (source assign). Built on main after ui-review-shots s1-s3 (its storage finding: all shots live in the bind-mounted store, nothing to move).",
@@ -4968,8 +4968,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:58:22.280Z",
      "note": "",
      "uid": "st-mw13wc2w0bi2db"
     },
@@ -4986,8 +4986,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T21:58:23.579Z",
      "note": "",
      "uid": "st-mw13wc2w0cmw1i"
     }

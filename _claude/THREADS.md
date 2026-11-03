@@ -568,8 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:45 UTC · `console-wake` s6 done, → complete (urgent) · orchestrator
-- 2026-11-03 17:45 UTC · `console-wake` note (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` → built, branch claude/console-wake, PR #266 (urgent) · builds-live
 - 2026-11-03 17:53 UTC · `builds-one-page-done` added (5 steps) (urgent) · snap-sully
 - 2026-11-03 17:53 UTC · `builds-one-page-done` s1 done, → running (urgent) · snap-sully
@@ -968,3 +966,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:58 UTC · `terminal-drag-chain-tree` s1 done (current) · orchestrator
 - 2026-11-03 21:58 UTC · `terminal-drag-chain-tree` s1 done (current) · foreign-write
 - 2026-11-03 21:58 UTC · `molly-nav-submenus` added (10 steps) (current) · foreign-write
+- 2026-11-03 21:58 UTC · `ui-review-predicted` s5 done (urgent) · orchestrator
+- 2026-11-03 21:58 UTC · `ui-review-predicted` s6 done, → built (urgent) · orchestrator
