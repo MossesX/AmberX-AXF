@@ -177,7 +177,7 @@
 /* sessions nav (terminal-sessions-nav, Nov 3 2026, nav.tsx): the collapsible rail left of the tabs' body */
 .axp-wt__main { flex: 1; min-height: 0; display: flex; min-width: 0 }
 .axp-wt__pane { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column }
-.axp-wt__hamburger { display: none }
+.axp-wt .axp-wt__hamburger { display: none }
 .axp-wtnav { flex: none; display: flex; flex-direction: column; width: calc(var(--fx-row-h) * 8.5); min-height: 0; background: var(--fx-surface2); border-right: var(--fx-border-w) solid var(--fx-border); font-size: var(--fx-type-root-sm) }
 .axp-wtnav.is-collapsed { width: calc(var(--fx-row-h) + var(--fx-dens-gap-md) * 2) }
 .axp-wtnav__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs); border-bottom: var(--fx-border-w) solid var(--fx-border) }
@@ -215,12 +215,12 @@
 .axp-wtnav__scrim { position: absolute; inset: 0; z-index: 30; background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-scrim) * 100%), transparent) }
 /* phone: the rail is a drawer over the terminal (☰ in the strip, or swipe from the left edge) */
 @media (pointer: coarse) {
-  .axp-wt__hamburger { display: inline-flex }
+  .axp-wt .axp-wt__hamburger { display: inline-flex }
   .axp-wt__main { position: relative }
   .axp-wtnav { display: none }
   .axp-wtnav.is-drawer { display: flex; position: absolute; z-index: 31; top: 0; bottom: 0; left: 0; width: min(calc(var(--fx-row-h) * 11), 86%); box-shadow: var(--fx-shadow-sm) }
 }
-:where([data-fx-narrow]) .axp-wt__hamburger { display: inline-flex }
+:where([data-fx-narrow]) .axp-wt .axp-wt__hamburger { display: inline-flex }
 :where([data-fx-narrow]) .axp-wt__main { position: relative }
 :where([data-fx-narrow]) .axp-wtnav { display: none }
 :where([data-fx-narrow]) .axp-wtnav.is-drawer { display: flex; position: absolute; z-index: 31; top: 0; bottom: 0; left: 0; width: min(calc(var(--fx-row-h) * 11), 86%); box-shadow: var(--fx-shadow-sm) }

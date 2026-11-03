@@ -65,4 +65,20 @@ that is what lets Brett mirror his own sessions. Names are still checked by a st
 
 ## Screenshots
 
-SCREENSHOTS
+Taken with `framework/cli/rebuild-shots.mjs` (`AXF_APPEARANCE_HUB=off`; shots file `terminal-sessions-nav/shots.json`).
+The sandbox has no live tmux on the VPS, so a fetch stub stands in for `GET nav` / `nav/feed` (two of Brett's sessions, a
+persistent tab, a voice chat, two headless agents, one ended run). The terminal panes are blank because the vendored
+xterm script never loads under the harness's Vite dev server, which also happens on `main` (see the headless-tabs
+report). Under this harness the window opens through the runtime (`rt.dispatch('terminal.open')`), because menu clicks
+don't reach the window engine there. Taken before the last CSS fix, so the desktop shots still show the ☰ drawer
+button, which is meant for phones only (fixed in the same branch).
+
+| | |
+|---|---|
+| Desktop: rail open | ![](terminal-sessions-nav/terminal-nav-desktop.png) |
+| Desktop: right-click menu | ![](terminal-sessions-nav/terminal-nav-menu-desktop.png) |
+| Desktop: chat feed + Jump in | ![](terminal-sessions-nav/terminal-nav-feed-desktop.png) |
+| Desktop: read-only mirror + Jump in | ![](terminal-sessions-nav/terminal-nav-mirror-desktop.png) |
+| Desktop: collapsed to icons | ![](terminal-sessions-nav/terminal-nav-collapsed-desktop.png) |
+| Phone: rail closed (☰ in the strip) | ![](terminal-sessions-nav/terminal-nav-phone.png) |
+| Phone: drawer open | ![](terminal-sessions-nav/terminal-nav-drawer-phone.png) |
