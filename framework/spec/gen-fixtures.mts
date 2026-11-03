@@ -10,6 +10,7 @@ import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } f
 import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
+import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
@@ -164,6 +165,86 @@ write('help.json', {
   },
 });
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));
+// control@1 (core/engines/control-rules.mjs): the registry snapshot (also written to framework/schemas/control.json),
+// normalize, errors, the gate (roles × ops, confirm flow), confirm tokens and the result envelopes.
+{
+  const registry = controlRegistry();
+  writeFileSync(join(assetsDir, '..', 'schemas', 'control.json'), JSON.stringify(registry, null, 2) + '\n');
+  const NOW = 1_800_000_000_000;
+  const salt = 'fixture-salt';
+  const remove = { op: 'remove', target: 'amberx.items', path: 'it-42', by: 'claude', reason: 'done with it' };
+  const cmds: Record<string, unknown> = {
+    'list-layout': { op: 'list', target: 'tokens.layout' },
+    'get-theme': { op: 'get', target: 'tokens.theme', path: 'accent' },
+    'set-layout': { op: 'set', target: 'tokens.layout', path: 'navWidth', value: 200, by: 'claude', reason: 'narrower rail' },
+    'set-layout-bad': { op: 'set', target: 'tokens.layout', path: 'navWidth', value: 5000 },
+    'set-layout-unknown': { op: 'set', target: 'tokens.layout', path: 'railWidth', value: 10 },
+    'set-theme': { op: 'set', target: 'tokens.theme', path: 'accent', value: '#ff8800' },
+    'set-theme-bad': { op: 'set', target: 'tokens.theme', path: 'accent', value: 'orange-ish' },
+    'set-style': { op: 'set', target: 'tokens.style', path: 'radius.md', value: 10 },
+    'set-style-enum': { op: 'set', target: 'tokens.style', path: 'density', value: 'loose' },
+    'set-sizing': { op: 'set', target: 'tokens.sizing', path: 'button.height', value: 2.4 },
+    'set-sizing-bad': { op: 'set', target: 'tokens.sizing', path: 'button.height', value: 9 },
+    'set-look': { op: 'set', target: 'tokens.look', path: 'compact', value: 80 },
+    'set-slot': { op: 'set', target: 'tokens.slots', path: 'layout', value: 'studio-dock' },
+    'reset-all': { op: 'reset', target: 'tokens.look' },
+    'add-item': { op: 'add', target: 'amberx.items', value: { kind: 'todo', title: 'Buy milk', list: 'inbox', priority: 2 }, by: 'claude' },
+    'add-item-bad': { op: 'add', target: 'amberx.items', value: { kind: 'memo', title: 7, colour: 'red' } },
+    'set-item': { op: 'set', target: 'amberx.items', path: 'it-42', value: { status: 'done', tags: ['home'] } },
+    'list-items': { op: 'list', target: 'amberx.items', select: { kind: 'task', status: 'not-done', due: 'today' } },
+    'list-items-bad': { op: 'list', target: 'amberx.items', select: { colour: 'red', kind: 'memo' } },
+    'act-item': { op: 'act', target: 'amberx.items', path: 'it-42', action: 'move', input: { list: 'home' } },
+    'act-item-missing-input': { op: 'act', target: 'amberx.items', path: 'it-42', action: 'move' },
+    'act-item-unknown': { op: 'act', target: 'amberx.items', path: 'it-42', action: 'explode' },
+    'remove-system-list': { op: 'remove', target: 'amberx.lists', path: 'inbox' },
+    'act-build-step': { op: 'act', target: 'planner.builds', path: 'token-control', action: 'step', input: { step: 's3', done: true }, by: 'claude' },
+    'act-build-approve': { op: 'act', target: 'planner.builds', path: 'token-control', action: 'approve', input: { phase: 2 } },
+    'act-plan-build': { op: 'act', target: 'planner.plans', path: 'md-studio', action: 'build', input: { profile: 'urgent', buildId: 'md-studio' } },
+    'add-plan': { op: 'add', target: 'planner.plans', value: { title: 'Theme editor', status: 'parked', priority: 'P2', category: 'Console > Themes' } },
+    'remove-item': remove,
+    'wrong-op': { op: 'delete', target: 'amberx.items', path: 'x' },
+    'wrong-target': { op: 'get', target: 'amberx.notes', path: 'x' },
+    'token-op-on-entity': { op: 'reset', target: 'amberx.items' },
+    'entity-op-on-token': { op: 'add', target: 'tokens.layout', value: {} },
+    'path-on-list': { op: 'list', target: 'tokens.layout', path: 'navWidth' },
+    'wrong-frame': { $axf: 'asset@1', op: 'list', target: 'tokens.layout' },
+    'not-an-object': 'nope',
+  };
+  const roles: Record<string, string[]> = {
+    admin: ['*'], control: ['control.*'], tokens: ['control.tokens.*'], reader: ['control.tokens.read', 'control.amberx.read', 'control.planner.read'],
+    'amberx-writer': ['control.amberx.read', 'control.amberx.write'], none: [],
+  };
+  const token = controlConfirmToken(remove, salt, NOW);
+  write('control.json', {
+    commands: cmds,
+    registry: { ops: registry.ops, effects: registry.effects, permissions: registry.permissions, targets: CONTROL_TARGET_IDS, targetOps: Object.fromEntries(CONTROL_TARGET_IDS.map((t) => [t, (registry.targets as Record<string, { ops: string[] }>)[t].ops])) },
+    paths: Object.fromEntries(CONTROL_TARGET_IDS.map((t) => [t, controlPaths(t)?.map((p) => p.id) ?? null])),
+    normalize: Object.fromEntries(Object.entries(cmds).map(([k, c]) => [k, normalizeControl(c)])),
+    errors: Object.fromEntries(Object.entries(cmds).map(([k, c]) => [k, controlErrors(c)])),
+    gate: Object.fromEntries(Object.entries(roles).map(([role, grants]) => [role, Object.fromEntries(Object.entries(cmds).map(([k, c]) => { const g = controlGate(c, grants, { salt, now: NOW }); return [k, g.ok ? { ok: true, effect: g.effect, requires: g.requires } : { ok: false, code: g.code, requires: g.requires ?? null, confirm: g.confirm ?? null }]; }))])),
+    confirm: {
+      canonical: canonicalControl(remove),
+      'canonical-ignores-by-and-order': canonicalControl({ reason: 'x', path: 'it-42', target: 'amberx.items', op: 'remove' }) === canonicalControl(remove),
+      token,
+      'valid-now': controlConfirmValid(remove, token, salt, NOW),
+      'valid-next-bucket': controlConfirmValid(remove, token, salt, NOW + 10 * 60 * 1000),
+      'expired-two-buckets': controlConfirmValid(remove, token, salt, NOW + 20 * 60 * 1000),
+      'other-path': controlConfirmValid({ ...remove, path: 'it-43' }, token, salt, NOW),
+      'other-salt': controlConfirmValid(remove, token, 'other', NOW),
+      'second-call': (() => { const g = controlGate({ ...remove, confirm: token }, ['control.amberx.delete'], { salt, now: NOW + 60_000 }); return g.ok ? { ok: true, effect: g.effect } : { ok: false, code: g.code }; })(),
+      hash: controlHash('control@1'),
+    },
+    results: {
+      list: controlResult(cmds['list-layout'], { items: [{ id: 'navWidth', value: 224 }], total: 1 }),
+      set: controlResult(cmds['set-layout'], { changed: ['navWidth'] }, { at: '2026-11-03T12:00:00.000Z' }),
+      'set-no-audit-given': controlResult({ op: 'set', target: 'tokens.theme', path: 'accent', value: '#f80' }, { changed: ['accent'] }),
+      act: controlResult(cmds['act-build-step'], { changed: ['steps.s3.done'] }, { by: 'brett', reason: 'ticked', at: '2026-11-03T12:00:00.000Z' }),
+      denied: controlFailure('denied', 'set tokens.layout needs control.tokens.write', { requires: 'control.tokens.write' }),
+      'unknown-code': controlFailure('boom', 'what'),
+    },
+  });
+}
+
 // Every layout parameter is a token (core/engines/layout-rules.mjs): the registry, the defaults, normalize (fill, clamp,
 // round, keep other keys), the token vars for a few inputs, the viewport cut-offs and what the validator reports.
 {
