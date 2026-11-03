@@ -1,0 +1,134 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-2b7c5db07b",
+  "createdAt": "2026-11-01T16:28:25.471Z",
+  "updatedAt": "2026-11-01T16:49:12.181Z",
+  "kind": "edit",
+  "title": "# AmberX: one-tap \"Mic off\" kill switch + release the mic for other apps Brett (Nov 1 2026): \"Amber…",
+  "asked": "# AmberX: one-tap \"Mic off\" kill switch + release the mic for other apps Brett (Nov 1 2026): \"AmberX needs a button, a quick switch. It disables all the listening, turns the green dot off my phone, turns off the microphone, completely disables all listening.\" Also a live bug since this morning: AmberX holds the mic so Claude voice calls can't use it (he had to close AmberX). Likely from recorder-mic (3ba092d2) or amberx-listeners (02e951c2) going live via the 5-min web auto-update. Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/THREADS.md and apps/amberx-droid first. ## Build 1. **Mic off switch** (one tap): when ON, AmberX stops EVERY mic user — hands-free listener, wake word, voice notes, agent voice, recorder mic track, overlay mic, anything else found by grepping getUserMedia / AudioRecord / SpeechRecognizer / MediaRecorder / foreground service with microphone type. Release every AudioRecord/stream track, stop the microphone foreground service, so Android's green privacy dot goes OFF. Nothing may re-open the mic until he turns it back on (guard at the single place mic access is granted). Persists across restarts. 2. Where: a big toggle on AmberX Home + in the banner/toolbar, a quick-settings tile and a notification action if the Android shell supports it, voice command \"mic off\" is NOT enough (needs the mic) — the button is the point. Clear state: \"Mic off\" / \"Listening\". 3. **Fix the hog**: when not explicitly listening, AmberX must not hold the mic. Request audio focus / handle loss so when another app (Claude voice call, phone call) needs the mic, AmberX lets go immediately and pauses listening; resume only when that app is done. Find and report which change caused the grab. 4. Framework controls + hot-swappable assets, scale tokens; help@1 entry for the switch. Tests, lifecycle + theme checks, phone screenshots, report `_claude/builds/reports/amberx-mic-kill.md`, THREADS row, STATUS. Note in the report whether a NEW APK is required (native service changes) or the web auto-update is enough, and kick the Android CI build if an APK is needed. Commit on this branch, merge origin/main, push the branch. Do NOT push to main; Brett's session lands it with build_land. Never print secrets. Short phone-readable summary at the end. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, patches-web, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "c33bc905-9b6",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Native MicGuard: one gate for every mic user, yield to calls/other apps, tile + notification action",
+      "state": "done",
+      "startedAt": "2026-11-01T16:32:05.039Z",
+      "finishedAt": "2026-11-01T16:48:55.559Z"
+    },
+    {
+      "text": "Native MicGuard, tile, notification; page gate; Home/banner/toolbar/menu/settings; yield to calls + other apps; tests, report",
+      "state": "done",
+      "startedAt": "2026-11-01T16:48:55.495Z",
+      "finishedAt": "2026-11-01T16:48:55.495Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "AmberX Mic off kill switch (native MicGuard + page gate, Home/banner/toolbar/menu/settings, QS tile, notification action) and hands-free now yields the mic to calls/VoIP/other apps. New APK required; Android CI dispatched.",
+    "branch": "claude/amberx-mic-kill",
+    "commits": [
+      {
+        "sha": "0bd49db6"
+      }
+    ],
+    "filesChanged": 27,
+    "tests": {
+      "amberx test.mjs": {
+        "before": "2151",
+        "after": "2192"
+      }
+    },
+    "links": {
+      "report": "_claude/builds/reports/amberx-mic-kill.md"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plan",
+    "id": "amberx-mic-kill"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-01T16:28:25.471Z",
+  "finishedAt": "2026-11-01T16:48:55.559Z",
+  "lastSeenAt": "2026-11-01T16:48:55.495Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "actual": {
+    "minutes": 21,
+    "costUsd": 7.7917,
+    "inputTokens": 232,
+    "outputTokens": 92071,
+    "cacheReadTokens": 22917091,
+    "cacheWriteTokens": 273194,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/amberx-mic-kill",
+  "areas": [
+    "apps/amberx-droid/src",
+    "apps/amberx-droid/android",
+    "_claude/builds/reports",
+    "_claude/THREADS.md"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/amberx-mic-kill",
+    "branch": "claude/amberx-mic-kill",
+    "base": "b6a0532b5d6144087cb6bd5f8d3b60bafc7f1913",
+    "head": "0bd49db624c32b771017e39f0e4d36cfe20f22be",
+    "pushed": true,
+    "dirty": 7,
+    "files": [
+      "_claude/THREADS.md",
+      "_claude/builds/reports/amberx-mic-kill.md",
+      "_claude/builds/reports/amberx-mic-kill/home-mic-off-desktop.png",
+      "_claude/builds/reports/amberx-mic-kill/home-mic-off-phone.png",
+      "_claude/builds/reports/amberx-mic-kill/home-mic-on-desktop.png",
+      "_claude/builds/reports/amberx-mic-kill/home-mic-on-phone.png",
+      "_claude/memory/STATUS.md",
+      "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MicGuard.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MicRules.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MicTile.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordService.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WakeListener.java",
+      "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+      "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/MicRulesTest.java",
+      "apps/amberx-droid/src/App.tsx",
+      "apps/amberx-droid/src/assets/status/amberx-mic.json",
+      "apps/amberx-droid/src/assets/toolbar/amberx-droid.json",
+      "apps/amberx-droid/src/main.tsx",
+      "apps/amberx-droid/src/mic.css",
+      "apps/amberx-droid/src/mic.tsx",
+      "apps/amberx-droid/src/micguard.ts",
+      "apps/amberx-droid/src/miclease.ts",
+      "apps/amberx-droid/src/native.ts",
+      "apps/amberx-droid/src/sound.tsx",
+      "apps/amberx-droid/src/views/Approvals.tsx",
+      "apps/amberx-droid/test.mjs",
+      "changes/2026/11/chg-20261101-2b7c5db07b.json",
+      "changes/2026/11/chg-20261101-2f247c6891.json",
+      "changes/2026/11/chg-20261101-5d59b692a8.json",
+      "changes/2026/11/chg-20261101-c501acb3f3.json",
+      "changes/2026/11/chg-20261101-dd4adcce3d.json",
+      "changes/2026/11/chg-20261101-ebabdc3fed.json",
+      "sessions/archive/2026/11/cc-ef566660-e59d-46a8-8c2c-7a14cbed0c22.json"
+    ],
+    "at": "2026-11-01T16:49:12.284Z"
+  }
+}

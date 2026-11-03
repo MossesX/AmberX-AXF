@@ -1,0 +1,115 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-ef566660-e59d-46a8-8c2c-7a14cbed0c22",
+ "source": "claude-code",
+ "sessionId": "ef566660-e59d-46a8-8c2c-7a14cbed0c22",
+ "project": "axhub",
+ "title": "# Fable review pass of Opus-built foundation work Brett (Nov 1 2026): every headless build since Oct 31 ran on Opus bec…",
+ "startedAt": "2026-11-01T11:09:55.706Z",
+ "endedAt": "2026-11-01T11:33:06.031Z",
+ "minutes": 23,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/fable-review",
+  "repo": "",
+  "branch": "claude/fable-review"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-01T11:09:56.089Z",
+   "kind": "prompt",
+   "text": "# Fable review pass of Opus-built foundation work Brett (Nov 1 2026): every headless build since Oct 31 ran on Opus because the launcher couldn't start Fable (fixed, axHub decision #111). His rule: **Opus or Fable only, never Sonnet; Fable for foundation work** (schemas, asset types, data models, kernel/engines, cross-app GUI behaviour). Plan he approved: **Fable REVIEWS first and only rebuilds what it flags.** Read CLAUDE.md, _claude/shared/rules/RULES.md, _claude/THREADS.md, and the handoff `_claude/memory/handoff-2026-11-01.md` on axHub if available. ## Review these (each: read its report …",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 1122,
+    "output": 96012,
+    "cacheRead": 9316687,
+    "cacheWrite": 379913,
+    "thinking": 34668
+   },
+   "costUsd": 11.8902,
+   "costEstimated": false,
+   "seconds": 1390,
+   "tools": {
+    "Bash": 65,
+    "Read": 19,
+    "Write": 5,
+    "Edit": 16
+   },
+   "commands": 65,
+   "files": [
+    "/root/axf-builds/fable-review/framework/core/model-policy.mjs",
+    "/root/axf-builds/fable-review/framework/core/model-policy.d.mts",
+    "/root/axf-builds/fable-review/framework/core/engines/job-type-rules.mjs",
+    "/root/axf-builds/fable-review/apps/console-web/plugins/agent-swarm/web/swarm-core.mjs",
+    "/root/axf-builds/fable-review/framework/cli/plan.mjs",
+    "/root/axf-builds/fable-review/framework/cli/build-engine.mjs",
+    "/root/axf-builds/fable-review/framework/spec/check-model-policy.mjs",
+    "/root/axf-builds/fable-review/framework/plan/builds-store-core.mjs",
+    "/root/axf-builds/fable-review/framework/cli/builds-store.mjs",
+    "/root/axf-builds/fable-review/framework/spec/BUILDS.md",
+    "/root/axf-builds/fable-review/_claude/shared/rules/RULES.md",
+    "/root/axf-builds/fable-review/_claude/builds/reports/fable-review.md"
+   ],
+   "changeIds": [
+    "chg-20261101-c8882764a3"
+   ],
+   "features": [
+    "pending:fable-review"
+   ],
+   "output": "Branch is pushed and the change-log entry is closed. Done. **Fable review done, cuz. Branch `claude/fable-review` is pushed, origin/main was already in it, nothing touched main.** Your session lands it with `build_land`. **Verdicts (6 items)** - **One builds store (builds@1): fix.** Solid core, but…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/fable-review/framework/core/model-policy.mjs",
+  "/root/axf-builds/fable-review/framework/core/model-policy.d.mts",
+  "/root/axf-builds/fable-review/framework/core/engines/job-type-rules.mjs",
+  "/root/axf-builds/fable-review/apps/console-web/plugins/agent-swarm/web/swarm-core.mjs",
+  "/root/axf-builds/fable-review/framework/cli/plan.mjs",
+  "/root/axf-builds/fable-review/framework/cli/build-engine.mjs",
+  "/root/axf-builds/fable-review/framework/spec/check-model-policy.mjs",
+  "/root/axf-builds/fable-review/framework/plan/builds-store-core.mjs",
+  "/root/axf-builds/fable-review/framework/cli/builds-store.mjs",
+  "/root/axf-builds/fable-review/framework/spec/BUILDS.md",
+  "/root/axf-builds/fable-review/_claude/shared/rules/RULES.md",
+  "/root/axf-builds/fable-review/_claude/builds/reports/fable-review.md"
+ ],
+ "changeIds": [
+  "chg-20261101-c8882764a3"
+ ],
+ "features": [
+  "pending:fable-review"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 1122,
+  "output": 96012,
+  "cacheRead": 9316687,
+  "cacheWrite": 379913,
+  "thinking": 34668,
+  "costUsd": 11.8902,
+  "costEstimated": false,
+  "toolCalls": 105,
+  "commands": 65,
+  "filesTouched": 12,
+  "reportedUsd": 14.7393
+ },
+ "ingestedAt": "2026-11-01T11:33:06.260Z"
+}
