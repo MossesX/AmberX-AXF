@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 327,
- "updatedAt": "2026-11-03T18:29:24.744Z",
+ "rev": 328,
+ "updatedAt": "2026-11-03T18:29:39.864Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53681,7 +53681,7 @@
    "branch": "claude/crew-live",
    "pr": "",
    "createdAt": "2026-11-03T18:15:23.310Z",
-   "updatedAt": "2026-11-03T18:15:30.014Z",
+   "updatedAt": "2026-11-03T18:29:03.782Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -53724,12 +53724,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:29:02.394Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T18:15:23.310Z",
-     "updatedAt": "2026-11-03T18:15:23.310Z"
+     "updatedAt": "2026-11-03T18:29:02.466Z"
     },
     {
      "id": "s3",
@@ -53768,12 +53768,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:29:03.782Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T18:15:23.310Z",
-     "updatedAt": "2026-11-03T18:15:23.310Z"
+     "updatedAt": "2026-11-03T18:29:03.810Z"
     },
     {
      "id": "s5",
@@ -53850,7 +53850,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
