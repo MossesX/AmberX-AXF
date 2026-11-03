@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 229,
- "updatedAt": "2026-11-03T16:24:50.596Z",
+ "rev": 230,
+ "updatedAt": "2026-11-03T16:29:47.184Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -51157,11 +51157,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 7
+    "urgent": 8
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51182,9 +51182,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/headless-tabs",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/259",
+   "pr": "#259",
+   "mergedAt": "2026-11-03T16:29:45.837Z",
    "createdAt": "2026-11-03T13:56:02.712Z",
-   "updatedAt": "2026-11-03T14:44:39.396Z",
+   "updatedAt": "2026-11-03T16:29:46.540Z",
    "builtAt": "2026-11-03T14:44:38.397Z",
    "notes": [
     {
@@ -51357,7 +51358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
