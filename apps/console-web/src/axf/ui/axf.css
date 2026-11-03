@@ -407,16 +407,15 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
    says what it does; the second tap runs it. The bar under the button empties over --fx-tap-arm-ms. */
 [role='toolbar'] { touch-action: manipulation; }
 [data-axf-armed] {
-  position: relative; background: var(--fx-accent-soft); color: var(--fx-text);
+  background-color: var(--fx-accent-soft); color: var(--fx-text);
   box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) inset;
+  background-image: linear-gradient(var(--fx-accent), var(--fx-accent)); background-repeat: no-repeat;
+  background-position: left bottom; background-size: 0% calc(var(--fx-border-w) * 2);
+  animation: fx-tap-arm var(--fx-tap-arm-ms) linear both;
 }
-[data-axf-armed]::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: var(--fx-border-w);
-  background: var(--fx-accent); transform-origin: left; animation: fx-tap-arm var(--fx-tap-arm-ms) linear both;
-}
-@keyframes fx-tap-arm { from { transform: scaleX(1); } to { transform: scaleX(0); } }
-[data-fx-motion='reduced'] [data-axf-armed]::after { animation: none; }
-@media (prefers-reduced-motion: reduce) { [data-axf-armed]::after { animation: none; } }
+@keyframes fx-tap-arm { from { background-size: 100% calc(var(--fx-border-w) * 2); } to { background-size: 0% calc(var(--fx-border-w) * 2); } }
+[data-fx-motion='reduced'] [data-axf-armed] { animation: none; }
+@media (prefers-reduced-motion: reduce) { [data-axf-armed] { animation: none; } }
 .fx-taptip {
   position: fixed; z-index: 70; max-width: calc(100vw - var(--fx-dens-gap-2xl) * 2); pointer-events: none;
   display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl);

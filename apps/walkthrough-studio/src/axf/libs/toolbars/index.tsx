@@ -47,7 +47,10 @@ export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
   return [...out.values()].sort((a, b) => a.label.localeCompare(b.label));
 }
 
-const OVERRIDE_LABEL: Record<TapOverride, string> = { inherit: 'As set for all toolbars', on: 'On for this toolbar', off: 'Off for this toolbar' };
+/** Arm windows offered in settings (stored as ms; tapArmMs clamps anything else to TAP_ARM_RANGE). */
+const ARM_CHOICES = [1500, 2000, 3000, 4000, 5000, 7000, 10000].filter((ms) => ms >= TAP_ARM_RANGE[0] && ms <= TAP_ARM_RANGE[1]).map((ms) => ({ value: String(ms), label: `${ms / 1000} s${ms === TAP_ARM_DEFAULT_MS ? ' (default)' : ''}` }));
+
+const OVERRIDE_LABEL: Record<TapOverride, string> = { inherit: 'Same as all', on: 'On', off: 'Off' };
 
 function AllToolbarsPanel() {
   const rt = useRuntime();
@@ -86,8 +89,8 @@ export const toolbarsLibrary: AxfWebLibrary = {
     id: 'toolbars.tap', tab: TOOLBARS_TAB, label: 'Tap to confirm (touch)', icon: 'smartphone', order: 10,
     description: 'On a phone or any touch screen, the first tap on a toolbar button shows what it does and lights it up; a second tap runs it. A mouse, trackpad or pen clicks once, as usual.',
     settings: [
-      { key: TAP_KEYS.enabled, label: 'Tap twice to run toolbar buttons on touch', kind: 'toggle', default: true, scope: 'device' },
-      { key: TAP_KEYS.armMs, label: 'How long a button stays ready for the second tap (ms)', kind: 'slider', default: TAP_ARM_DEFAULT_MS, min: TAP_ARM_RANGE[0], max: TAP_ARM_RANGE[1], step: 500, scope: 'device' },
+      { key: TAP_KEYS.enabled, label: 'Tap twice on touch', kind: 'toggle', default: true, scope: 'device' },
+      { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long a button stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
     ],
   }],
   settingsPanels: [{ id: ALL_TOOLBARS_PANEL, tab: TOOLBARS_TAB, title: 'All toolbars', icon: 'list', order: 20, render: () => <AllToolbarsPanel /> }],

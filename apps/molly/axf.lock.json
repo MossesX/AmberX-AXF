@@ -576,7 +576,7 @@
     "src/axf/core/ui-review-schema.mjs": "934e9a501681463e",
     "src/axf/core/validate.ts": "6aa57903dd47855e",
     "src/axf/core/watch-live.ts": "c13b3ab5468fd58d",
-    "src/axf/libs/README.md": "b11eade27490043d",
+    "src/axf/libs/README.md": "68f9104795971647",
     "src/axf/libs/alerts/alerts-sw.js": "2705f8bb611f8faa",
     "src/axf/libs/alerts/alerts.css": "966280d51557745d",
     "src/axf/libs/alerts/index.tsx": "9818dada3c1c2b5b",
@@ -641,9 +641,9 @@
     "src/axf/libs/recorder/recorder.css": "a39f75631eec52f0",
     "src/axf/libs/settings/index.tsx": "8ec04eb8f6a40abe",
     "src/axf/libs/settings/levels.tsx": "2fa6f39d1df720ac",
-    "src/axf/libs/toolbars/index.tsx": "f90ad8b29cf10539",
+    "src/axf/libs/toolbars/index.tsx": "e8eb898244268914",
     "src/axf/libs/toolbars/library.json": "e26eb451b153b922",
-    "src/axf/libs/toolbars/toolbars.css": "0e9195039e425128",
+    "src/axf/libs/toolbars/toolbars.css": "8f0f82ced4ee0cde",
     "src/axf/libs/tree/index.tsx": "d8c66e86e542d0d4",
     "src/axf/libs/tree/library.json": "d9e1a2299b7cfa3c",
     "src/axf/libs/tree/tree.css": "1445dcdf8738fce1",
@@ -782,6 +782,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "d89bb2f7dfdab8cb"
+    "src/axf/ui/axf.css": "65d8fc2f2b8945c5"
   }
 }

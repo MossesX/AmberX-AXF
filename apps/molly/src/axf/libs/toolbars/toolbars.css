@@ -4,4 +4,5 @@
   padding: var(--fx-dens-gap-md) 0; border-top: var(--fx-border-w) solid var(--fx-border);
 }
 .axf-toolbars__name { display: flex; flex-direction: column; flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; }
-.axf-toolbars__pick { flex: 0 1 calc(var(--fx-space) * 14); }
+.axf-toolbars__pick { flex: 0 0 auto; min-width: calc(var(--fx-space) * 36); }
+.axf-toolbars__pick select { width: 100%; }
