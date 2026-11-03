@@ -797,3 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 18:30 UTC · `auto-land` s6 done (urgent) · orchestrator
 - 2026-11-03 18:30 UTC · `auto-land` s7 done (urgent) · orchestrator
 - 2026-11-03 18:31 UTC · `md-studio` branch claude/md-studio, PR #271 (urgent) · builds-live
+- 2026-11-03 18:31 UTC · `md-studio` s10 done, → complete (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` note (urgent) · orchestrator
+- 2026-11-03 18:31 UTC · `md-studio` → built (urgent) · orchestrator
