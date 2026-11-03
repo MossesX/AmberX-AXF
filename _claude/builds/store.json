@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 179,
- "updatedAt": "2026-11-03T12:20:59.277Z",
+ "rev": 184,
+ "updatedAt": "2026-11-03T12:24:23.507Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -279,7 +279,7 @@
    },
    "big-dog": {
     "artifact": "",
-    "updatedAt": "2026-11-03T11:52:58.737Z"
+    "updatedAt": "2026-11-03T12:23:15.428Z"
    }
   }
  },
@@ -48403,7 +48403,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T11:52:58.707Z",
+   "updatedAt": "2026-11-03T12:23:15.405Z",
    "builtAt": "",
    "notes": [
     {
@@ -48502,12 +48502,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:50.866Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s5",
@@ -48524,12 +48524,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.267Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s6",
@@ -48546,12 +48546,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:51.670Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s7",
@@ -48568,12 +48568,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.072Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s8",
@@ -48590,12 +48590,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:10:52.492Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s9",
@@ -48612,12 +48612,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:19:04.835Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s10",
@@ -48634,12 +48634,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:19:05.493Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:49:25.863Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s11",
@@ -48656,12 +48656,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:23:15.405Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s12",
@@ -48694,7 +48694,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -49343,16 +49343,21 @@
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:38 ET: new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/token-control-opus",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/250",
    "createdAt": "2026-11-03T02:40:26.204Z",
-   "updatedAt": "2026-11-03T12:20:59.253Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T12:24:23.469Z",
+   "builtAt": "2026-11-03T12:24:23.469Z",
+   "notes": [
+    {
+     "text": "All 14 steps done. Fable phase PR #246, Opus phase PR #250 (claude/token-control-opus, contains #246). UI Review r-20261103-f9cd2905 waiting.",
+     "at": "2026-11-03T12:24:22.599Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -49663,12 +49668,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:24:20.468Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:24:20.509Z"
     }
    ],
    "profiles": [
@@ -49679,7 +49684,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
