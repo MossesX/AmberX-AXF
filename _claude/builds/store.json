@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 441,
- "updatedAt": "2026-11-03T20:41:13.712Z",
+ "rev": 442,
+ "updatedAt": "2026-11-03T20:43:16.812Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55710,9 +55710,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/smart-menus",
-   "pr": "",
+   "pr": "#281",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T20:41:06.047Z",
+   "updatedAt": "2026-11-03T20:43:07.529Z",
    "builtAt": "",
    "notes": [
     {

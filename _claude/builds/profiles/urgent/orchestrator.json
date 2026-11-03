@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:41:13.712Z",
+ "updatedAt": "2026-11-03T20:43:16.812Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4687,9 +4687,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/smart-menus",
-   "pr": "",
+   "pr": "#281",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T20:41:06.047Z",
+   "updatedAt": "2026-11-03T20:43:07.529Z",
    "builtAt": "",
    "notes": [
     {
