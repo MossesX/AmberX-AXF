@@ -565,3 +565,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
 - 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
 - 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
+- 2026-11-03 15:32 UTC · `land-everything` added (11 steps) (urgent) · orchestrator
