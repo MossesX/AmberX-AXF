@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T23:27:14.951Z",
+ "updatedAt": "2026-11-03T23:33:02.143Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6517,7 +6517,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:25:42.552Z",
+   "updatedAt": "2026-11-03T23:28:19.444Z",
    "builtAt": "",
    "notes": [
     {
@@ -6671,8 +6671,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:26:46.439Z",
      "note": "",
      "uid": "st-mw1927q50rs6y6"
     },
@@ -6779,8 +6779,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:28:19.444Z",
      "note": "",
      "uid": "st-mw1927q50xfddn"
     },
@@ -6910,7 +6910,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1axlzh0k6cq5"
+     "uid": "st-mw1b9zcp016lrm"
     },
     {
      "id": "s2",
@@ -6928,7 +6928,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1axlzh0ln2zb"
+     "uid": "st-mw1b9zcp029a4k"
     },
     {
      "id": "s3",
@@ -6946,7 +6946,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1axlzh0miunm"
+     "uid": "st-mw1b9zcp038x3v"
     },
     {
      "id": "s4-3",
@@ -6964,7 +6964,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1ad3pr04dhfd"
+     "uid": "st-mw1axlzh0k6cq5"
     },
     {
      "id": "s5-4",
@@ -6982,10 +6982,64 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1ad3pr055ffm"
+     "uid": "st-mw1axlzh0ln2zb"
     },
     {
      "id": "s6-5",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1axlzh0miunm"
+    },
+    {
+     "id": "s7-6",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1ad3pr04dhfd"
+    },
+    {
+     "id": "s8-7",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1ad3pr055ffm"
+    },
+    {
+     "id": "s9-8",
      "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
      "model": "Opus",
      "why": "",

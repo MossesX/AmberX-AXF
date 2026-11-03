@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T23:27:14.951Z",
+ "updatedAt": "2026-11-03T23:33:02.143Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,20 +10,6 @@
  },
  "builds": [
   {
-   "notes": [
-    {
-     "text": "Built in one Opus session on claude/agent-swarm (Oct 31 2026) per Brett's dispatch brief ('do every step, never wait for approval'); model-switch gates recorded as approved by that brief. Fable-pinned s1-s3, s11, s12, s15 were built on Opus: Fable rebuild parked as agent-swarm-fable-rebuild.",
-     "at": "2026-10-31T05:27:46.906Z"
-    },
-    {
-     "text": "s1/s3/s4 (Fable-pinned: card preview, card designer, agent-card@1 asset type) built on Opus Oct 31 2026 per Brett's go-live brief; folded into the parked Fable rebuild agent-swarm-fable-rebuild. Default card design picked as corporate-badge (headless run, Brett changes it in Swarm -> ID cards -> Make default). Android renderer deferred (Android on hold, PORTING.md). Branch claude/agent-swarm, pushed to main.",
-     "at": "2026-10-31T23:53:03.302Z"
-    },
-    {
-     "text": "Reconciler: PR #196 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "agent-swarm",
    "title": "Agent swarm: headless specialist agents, conflict-free, token-cheap",
    "category": "",
@@ -38,6 +24,20 @@
    "createdAt": "2026-10-31T05:27:46.906Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
+   "notes": [
+    {
+     "text": "Built in one Opus session on claude/agent-swarm (Oct 31 2026) per Brett's dispatch brief ('do every step, never wait for approval'); model-switch gates recorded as approved by that brief. Fable-pinned s1-s3, s11, s12, s15 were built on Opus: Fable rebuild parked as agent-swarm-fable-rebuild.",
+     "at": "2026-10-31T05:27:46.906Z"
+    },
+    {
+     "text": "s1/s3/s4 (Fable-pinned: card preview, card designer, agent-card@1 asset type) built on Opus Oct 31 2026 per Brett's go-live brief; folded into the parked Fable rebuild agent-swarm-fable-rebuild. Default card design picked as corporate-badge (headless run, Brett changes it in Swarm -> ID cards -> Make default). Android renderer deferred (Android on hold, PORTING.md). Branch claude/agent-swarm, pushed to main.",
+     "at": "2026-10-31T23:53:03.302Z"
+    },
+    {
+     "text": "Reconciler: PR #196 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -414,24 +414,9 @@
      "note": "",
      "uid": "st-21l2hv"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Oct 31 2026: agent-swarm grew to 19 steps on main (renumbered). Fable-pinned steps built on Opus now: s1 card preview page, s2 roster + skills, s3 card designer, s4 agent-card@1 asset type (framework/core/engines/agent-card-rules.mjs, react/components/AgentCard.tsx, fixture agent-card.json, check-agent-card.mts), s5 job planner, s6 context packer, s14 cards + profiles, s15 group chat, s18 chat settings. The Fable rebuild covers all of them; its agent-card@1 review may keep or replace the Opus contract (Kotlin twin still deferred while Android is on hold).",
-     "at": "2026-10-31T23:53:18.788Z"
-    },
-    {
-     "text": "Nov 1 2026, Fable review (claude/fable-review, report _claude/builds/reports/fable-review.md): verdict REBUILD, this build. Reviewed OK and NOT to be rebuilt: agent-card@1 (one rules file drives both validators, fixture, defaults, open enums) and job-type@1 (now on the model policy). What the rebuild must do: move the swarm contracts (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1, swarm-report@1) out of the plugin into framework/core/engines/swarm-rules.mjs with ONE registry, a JSON snapshot in framework/schemas, JSON Schemas, a fixture in framework/spec/fixtures and a check in CI; a swarm-run@1 record shared with agent jobs (kind job); every model choice through framework/core/model-policy.mjs (already applied: roster and planner run Opus or Fable only). The 19-step Opus build stays in place until this lands.",
-     "at": "2026-11-01T11:25:25.676Z"
-    },
-    {
-     "text": "Reconciler: branch claude/agent-swarm-fable-rebuild (PR #247); PR #247; PR #247 merged",
-     "at": "2026-11-03T13:57:06.541Z"
-    }
-   ],
    "id": "agent-swarm-fable-rebuild",
    "title": "Fable rebuild: agent swarm (steps Opus built that were pinned to Fable)",
    "category": "Breakroom",
@@ -446,6 +431,20 @@
    "createdAt": "2026-10-31T05:27:48.056Z",
    "updatedAt": "2026-11-03T13:57:06.541Z",
    "builtAt": "2026-11-03T12:01:23.473Z",
+   "notes": [
+    {
+     "text": "Oct 31 2026: agent-swarm grew to 19 steps on main (renumbered). Fable-pinned steps built on Opus now: s1 card preview page, s2 roster + skills, s3 card designer, s4 agent-card@1 asset type (framework/core/engines/agent-card-rules.mjs, react/components/AgentCard.tsx, fixture agent-card.json, check-agent-card.mts), s5 job planner, s6 context packer, s14 cards + profiles, s15 group chat, s18 chat settings. The Fable rebuild covers all of them; its agent-card@1 review may keep or replace the Opus contract (Kotlin twin still deferred while Android is on hold).",
+     "at": "2026-10-31T23:53:18.788Z"
+    },
+    {
+     "text": "Nov 1 2026, Fable review (claude/fable-review, report _claude/builds/reports/fable-review.md): verdict REBUILD, this build. Reviewed OK and NOT to be rebuilt: agent-card@1 (one rules file drives both validators, fixture, defaults, open enums) and job-type@1 (now on the model policy). What the rebuild must do: move the swarm contracts (agent@1, agent-skill@1, swarm-roster@1, swarm-state@1, swarm-job@1, swarm-run@1, swarm-report@1) out of the plugin into framework/core/engines/swarm-rules.mjs with ONE registry, a JSON snapshot in framework/schemas, JSON Schemas, a fixture in framework/spec/fixtures and a check in CI; a swarm-run@1 record shared with agent jobs (kind job); every model choice through framework/core/model-policy.mjs (already applied: roster and planner run Opus or Fable only). The 19-step Opus build stays in place until this lands.",
+     "at": "2026-11-01T11:25:25.676Z"
+    },
+    {
+     "text": "Reconciler: branch claude/agent-swarm-fable-rebuild (PR #247); PR #247; PR #247 merged",
+     "at": "2026-11-03T13:57:06.541Z"
+    }
+   ],
    "approvals": [
     {
      "phase": 1,
@@ -591,16 +590,9 @@
      "note": "",
      "uid": "st-mvx3bvuv0e7mgm"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Built Nov 1 2026 on Opus (headless), branch claude/agent-cap, pushed to main a824f5f4. Report _claude/builds/reports/agent-cap.md; screenshots UI Review -> Screenshots, group Agent cap - Nov 1.",
-     "at": "2026-11-01T07:21:34.524Z"
-    }
-   ],
    "id": "agent-cap",
    "title": "Configurable max-agents cap + queue",
    "category": "",
@@ -614,6 +606,12 @@
    "createdAt": "2026-11-01T06:34:28.472Z",
    "updatedAt": "2026-11-01T07:21:35.917Z",
    "builtAt": "2026-11-01T07:21:35.917Z",
+   "notes": [
+    {
+     "text": "Built Nov 1 2026 on Opus (headless), branch claude/agent-cap, pushed to main a824f5f4. Report _claude/builds/reports/agent-cap.md; screenshots UI Review -> Screenshots, group Agent cap - Nov 1.",
+     "at": "2026-11-01T07:21:34.524Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -707,16 +705,9 @@
      "note": "",
      "uid": "st-mvxgg1eb0amj99"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Built Nov 1 2026 on Opus (headless) on claude/agent-jobs, pushed to main per Brett's brief. Report _claude/builds/reports/agent-jobs.md.",
-     "at": "2026-11-01T07:20:51.874Z"
-    }
-   ],
    "id": "agent-jobs",
    "title": "Agent jobs: hire agents to own recurring jobs (job-type@1, crew, router, Jobs view)",
    "category": "",
@@ -730,6 +721,12 @@
    "createdAt": "2026-11-01T06:45:35.923Z",
    "updatedAt": "2026-11-01T07:20:52.680Z",
    "builtAt": "2026-11-01T07:20:52.680Z",
+   "notes": [
+    {
+     "text": "Built Nov 1 2026 on Opus (headless) on claude/agent-jobs, pushed to main per Brett's brief. Report _claude/builds/reports/agent-jobs.md.",
+     "at": "2026-11-01T07:20:51.874Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -823,16 +820,9 @@
      "note": "",
      "uid": "st-mvxgvlsd055pzx"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
-     "at": "2026-11-03T16:23:06.193Z"
-    }
-   ],
    "id": "crew-retrain",
    "title": "Crew retrain: every agent an all-rounder, no anonymous sessions",
    "category": "Breakroom",
@@ -846,6 +836,12 @@
    "createdAt": "2026-11-03T15:58:12.029Z",
    "updatedAt": "2026-11-03T16:23:06.193Z",
    "builtAt": "2026-11-03T16:23:05.239Z",
+   "notes": [
+    {
+     "text": "All 8 steps done. PR #265 (claude/crew-retrain), UI Review r-20261103-5e7f222e waiting. Report _claude/builds/reports/crew-retrain.md. Land after land-everything's other PRs.",
+     "at": "2026-11-03T16:23:06.193Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -993,8 +989,7 @@
      "note": "",
      "uid": "st-mw0vgp5h0g53iq"
     }
-   ],
-   "rev": 0
+   ]
   }
  ]
 }

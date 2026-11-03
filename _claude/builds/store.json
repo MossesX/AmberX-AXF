@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 553,
- "updatedAt": "2026-11-03T23:27:14.951Z",
+ "rev": 555,
+ "updatedAt": "2026-11-03T23:33:02.143Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -326,6 +326,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1014,6 +1015,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -1638,6 +1640,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -2060,6 +2063,7 @@
      "at": "2026-10-27T19:52:28.958Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -4418,6 +4422,7 @@
      "at": "2026-10-27T19:52:29.038Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -5160,6 +5165,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -5423,6 +5429,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -5822,6 +5829,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6323,6 +6331,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -6671,6 +6680,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -6739,6 +6749,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7186,6 +7197,7 @@
    "builtAt": "2026-10-18T04:21:56.128Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -7252,6 +7264,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -7315,6 +7328,7 @@
    "builtAt": "2026-10-18T06:07:53.368Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -7367,6 +7381,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -7794,6 +7809,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8137,6 +8153,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8227,6 +8244,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -8284,6 +8302,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -8646,6 +8665,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -8703,6 +8723,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -8760,6 +8781,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9030,6 +9052,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -9087,6 +9110,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -9610,6 +9634,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -10110,6 +10135,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11074,6 +11100,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11340,6 +11367,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11752,6 +11780,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -11930,6 +11959,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12135,6 +12165,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12332,6 +12363,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12529,6 +12561,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -12586,6 +12619,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -12643,6 +12677,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12771,6 +12806,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -12828,6 +12864,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -12933,6 +12970,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13084,6 +13122,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13189,6 +13228,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -13241,6 +13281,7 @@
    "builtAt": "2026-10-23T00:40:17.479Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -13293,6 +13334,7 @@
    "builtAt": "2026-10-23T00:51:52.239Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -13345,6 +13387,7 @@
    "builtAt": "2026-10-23T01:13:32.733Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -13402,6 +13445,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13645,6 +13689,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -13842,6 +13887,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14085,6 +14131,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -14137,6 +14184,7 @@
    "builtAt": "2026-10-23T05:33:18.963Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -14189,6 +14237,7 @@
    "builtAt": "2026-10-23T05:40:04.677Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14312,6 +14361,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14440,6 +14490,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14591,6 +14642,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -14773,6 +14825,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15005,6 +15058,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15179,6 +15233,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15468,6 +15523,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15683,6 +15739,7 @@
    "builtAt": "2026-10-23T15:25:41.808Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -15880,6 +15937,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -15932,6 +15990,7 @@
    "builtAt": "2026-10-23T17:46:25.430Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -15984,6 +16043,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16112,6 +16172,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16309,6 +16370,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16501,6 +16563,7 @@
    "builtAt": "2026-10-23T17:50:04.908Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -16553,6 +16616,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16658,6 +16722,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16790,6 +16855,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -16964,6 +17030,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -17021,6 +17088,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17149,6 +17217,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17295,6 +17364,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17473,6 +17543,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17578,6 +17649,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -17706,6 +17778,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -17758,6 +17831,7 @@
    "builtAt": "2026-10-25T14:47:07.826Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -17810,6 +17884,7 @@
    "builtAt": "2026-10-25T14:46:42.221Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18002,6 +18077,7 @@
    "builtAt": "2026-10-25T10:22:26.878Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -18059,6 +18135,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -18111,6 +18188,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -18163,6 +18241,7 @@
    "builtAt": "2026-10-25T16:38:09.847Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -18220,6 +18299,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18412,6 +18492,7 @@
    "builtAt": "2026-10-25T16:44:19.565Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18540,6 +18621,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -18686,6 +18768,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -19113,6 +19196,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -19165,6 +19249,7 @@
    "builtAt": "2026-10-25T19:51:25.195Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -19222,6 +19307,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -19350,6 +19436,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -19478,6 +19565,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -19647,6 +19735,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -19798,6 +19887,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -19949,6 +20039,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -20233,6 +20324,7 @@
    "builtAt": "2026-10-26T22:35:28.810Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -20290,6 +20382,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -20464,6 +20557,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -20638,6 +20732,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -20784,6 +20879,7 @@
    "builtAt": "2026-10-26T23:13:52.182Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -20836,6 +20932,7 @@
    "builtAt": "2026-10-26T23:31:24.422Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -20888,6 +20985,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -20988,6 +21086,7 @@
    "builtAt": "2026-10-26T23:45:55.448Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -21040,6 +21139,7 @@
    "builtAt": "2026-10-26T22:28:29.520Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -21092,6 +21192,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -21206,6 +21307,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -21472,6 +21574,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -21748,6 +21851,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -22020,6 +22124,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework",
@@ -22119,6 +22224,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -22375,6 +22481,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework",
@@ -22484,6 +22591,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework",
@@ -22601,6 +22709,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -22877,6 +22986,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework",
@@ -22976,6 +23086,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23022,6 +23133,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23070,6 +23182,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23119,6 +23232,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23165,6 +23279,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23213,6 +23328,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23261,6 +23377,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23309,6 +23426,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23358,6 +23476,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23406,6 +23525,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23454,6 +23574,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23500,6 +23621,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23548,6 +23670,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23597,6 +23720,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23646,6 +23770,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23695,6 +23820,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23743,6 +23869,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23792,6 +23919,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23840,6 +23968,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23886,6 +24015,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23932,6 +24062,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -23981,6 +24112,7 @@
    "builtAt": "2026-10-17T16:21:12.015Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -24030,6 +24162,7 @@
    "builtAt": "2026-10-17T16:21:12.015Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -24079,6 +24212,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -24300,6 +24434,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -24344,6 +24479,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -24565,6 +24701,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -24764,6 +24901,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -25073,6 +25211,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -25228,6 +25367,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -25361,6 +25501,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -25560,6 +25701,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -25979,6 +26121,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -26244,6 +26387,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -26421,6 +26565,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -26598,6 +26743,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -26775,6 +26921,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -26952,6 +27099,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -27129,6 +27277,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -27306,6 +27455,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -27483,6 +27633,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -27660,6 +27811,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -27837,6 +27989,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -28014,6 +28167,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -28191,6 +28345,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -28368,6 +28523,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -28523,6 +28679,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -28700,6 +28857,7 @@
    "builtAt": "2026-10-18T14:17:14.449Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -28782,6 +28940,7 @@
      "at": "2026-10-27T20:01:41.480Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -29291,6 +29450,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -29470,6 +29630,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -29635,6 +29796,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -29796,6 +29958,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -30210,6 +30373,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -30292,6 +30456,7 @@
    "builtAt": "2026-10-28T04:45:09.447Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -30476,6 +30641,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -30568,6 +30734,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -30660,6 +30827,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -30798,6 +30966,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -30932,6 +31101,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -31322,6 +31492,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -31546,6 +31717,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -31668,6 +31840,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -31809,6 +31982,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -31901,6 +32075,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -31992,6 +32167,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -32194,6 +32370,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -32510,6 +32687,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -32580,6 +32758,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -32808,6 +32987,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -32970,6 +33150,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -33159,6 +33340,7 @@
      "at": "2026-10-29T01:29:16.757Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -35294,6 +35476,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -35428,6 +35611,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -35519,6 +35703,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -35688,6 +35873,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -35968,6 +36154,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -36244,6 +36431,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -36381,6 +36569,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -36523,6 +36712,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -36666,6 +36856,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -37227,6 +37418,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -37427,6 +37619,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -37537,6 +37730,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -37711,6 +37905,7 @@
    "builtAt": "2026-10-30T21:21:37.560Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -37902,6 +38097,7 @@
      "at": "2026-10-31T09:07:21.794Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -38089,6 +38285,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -38337,6 +38534,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -38488,6 +38686,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -38668,6 +38867,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -38819,6 +39019,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -38929,6 +39130,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -39149,6 +39351,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -39484,6 +39687,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -39695,6 +39899,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -39869,6 +40074,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -40043,6 +40249,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -40231,6 +40438,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -40580,6 +40788,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -40856,6 +41065,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -41205,6 +41415,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -41470,6 +41681,7 @@
      "at": "2026-10-31T05:27:47.925Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -41945,6 +42157,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -42285,6 +42498,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -42395,6 +42609,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -42570,6 +42785,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -42883,6 +43099,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -43058,6 +43275,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -43218,6 +43436,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -43604,6 +43823,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -43925,6 +44145,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -44035,6 +44256,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -44168,6 +44390,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -44366,6 +44589,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -44428,6 +44652,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -44486,6 +44711,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -44544,6 +44770,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -44602,6 +44829,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -44735,6 +44963,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -44797,6 +45026,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -44999,6 +45229,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -45197,6 +45428,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -45579,6 +45811,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -45637,6 +45870,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -45707,6 +45941,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -45765,6 +46000,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -45823,6 +46059,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -45885,6 +46122,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -45943,6 +46181,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -46001,6 +46240,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [],
    "profiles": [
     "main-framework"
@@ -46075,6 +46315,7 @@
      "at": "2026-11-03T12:01:22.767Z"
     }
    ],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -46280,6 +46521,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -46471,6 +46713,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -46623,6 +46866,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -46791,6 +47035,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -47005,6 +47250,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -47237,6 +47483,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -47400,6 +47647,7 @@
    "builtAt": "2026-11-01T07:52:02.425Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -47597,6 +47845,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -48277,6 +48526,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -48386,6 +48636,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -48643,6 +48894,7 @@
    "builtAt": "2026-11-02T14:39:53.393Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -48845,6 +49097,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -49175,6 +49428,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -49262,6 +49516,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -49405,6 +49660,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -49763,6 +50019,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -49920,6 +50177,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -50271,6 +50529,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -50543,6 +50802,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -50827,6 +51087,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -51041,6 +51302,7 @@
    "builtAt": "2026-11-03T14:10:56.767Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -51224,6 +51486,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -51443,6 +51706,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -51640,6 +51904,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -51793,6 +52058,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -52012,6 +52278,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -52186,6 +52453,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -52361,6 +52629,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -52558,6 +52827,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -52711,6 +52981,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -52885,6 +53156,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -53037,6 +53309,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -53223,6 +53496,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -53441,6 +53715,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -53645,6 +53920,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -54161,6 +54437,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -54365,6 +54642,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -54561,6 +54839,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -54813,6 +55092,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -54969,6 +55249,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -55146,6 +55427,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -55284,6 +55566,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -55466,6 +55749,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -55670,6 +55954,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -55844,6 +56129,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -55969,6 +56255,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -56149,6 +56436,7 @@
    "builtAt": "2026-11-03T20:53:24.237Z",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -56309,6 +56597,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -58283,6 +58572,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -58435,6 +58725,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s106-105",
@@ -60936,6 +61227,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -61295,6 +61587,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -61451,6 +61744,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -61607,6 +61901,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -61793,6 +62088,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -65363,6 +65659,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -65535,6 +65832,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -65578,7 +65876,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:26.841Z"
+     "updatedAt": "2026-11-03T23:20:58.725Z"
     },
     {
      "id": "s3",
@@ -65600,7 +65898,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:26.841Z"
+     "updatedAt": "2026-11-03T23:20:58.725Z"
     },
     {
      "id": "s4",
@@ -65694,7 +65992,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:25:42.552Z",
+   "updatedAt": "2026-11-03T23:28:19.444Z",
    "builtAt": "",
    "notes": [
     {
@@ -65707,6 +66005,7 @@
     }
    ],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
@@ -65860,7 +66159,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T23:26:30.353Z"
+     "updatedAt": "2026-11-03T23:26:53.247Z"
     },
     {
      "id": "s8",
@@ -65877,12 +66176,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:26:46.439Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:26:49.951Z"
     },
     {
      "id": "s9",
@@ -66009,12 +66308,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:28:19.444Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:28:25.527Z"
     },
     {
      "id": "s15",
@@ -66135,40 +66434,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "session",
-    "planId": "",
-    "createdAt": "2026-11-03T22:18:50.820Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw1927q50kp8hq": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50lgz29": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50mxxmp": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50nom6p": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50o4880": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50ph88r": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50qynnq": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50rs6y6": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50sx2kp": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50ts2ss": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50u3iw6": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50vzd3o": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50wktdc": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50xfddn": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50yrq9q": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50zl3ym": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q510yqiw": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q511lo8v": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q512l9n0": "2026-11-03T22:18:50.824Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T22:18:50.824Z",
    "rearranged": false,
@@ -66192,9 +66461,76 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mw1b9zcp016lrm",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:20:51.046Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw1b9zcp029a4k",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:20:51.046Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw1b9zcp038x3v",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:20:51.046Z"
+    },
+    {
+     "id": "s4-3",
      "uid": "st-mw1axlzh0k6cq5",
      "title": "",
      "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
@@ -66216,7 +66552,7 @@
      "updatedAt": "2026-11-03T23:11:12.039Z"
     },
     {
-     "id": "s2",
+     "id": "s5-4",
      "uid": "st-mw1axlzh0ln2zb",
      "title": "",
      "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
@@ -66238,7 +66574,7 @@
      "updatedAt": "2026-11-03T23:11:12.039Z"
     },
     {
-     "id": "s3",
+     "id": "s6-5",
      "uid": "st-mw1axlzh0miunm",
      "title": "",
      "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
@@ -66260,7 +66596,7 @@
      "updatedAt": "2026-11-03T23:11:12.039Z"
     },
     {
-     "id": "s4-3",
+     "id": "s7-6",
      "uid": "st-mw1ad3pr04dhfd",
      "title": "",
      "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
@@ -66282,7 +66618,7 @@
      "updatedAt": "2026-11-03T22:55:16.846Z"
     },
     {
-     "id": "s5-4",
+     "id": "s8-7",
      "uid": "st-mw1ad3pr055ffm",
      "title": "",
      "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
@@ -66304,7 +66640,7 @@
      "updatedAt": "2026-11-03T22:55:16.846Z"
     },
     {
-     "id": "s6-5",
+     "id": "s9-8",
      "uid": "st-mw1ad3pr06m09a",
      "title": "",
      "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
@@ -66361,6 +66697,7 @@
    "builtAt": "",
    "notes": [],
    "approvals": [],
+   "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",

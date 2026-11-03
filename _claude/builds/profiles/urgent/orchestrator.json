@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T23:27:14.951Z",
+ "updatedAt": "2026-11-03T23:33:02.143Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,20 +10,6 @@
  },
  "builds": [
   {
-   "notes": [
-    {
-     "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
-     "at": "2026-11-01T00:37:27.395Z"
-    },
-    {
-     "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
-     "at": "2026-11-01T02:26:59.880Z"
-    },
-    {
-     "text": "Backfill (orch-live-sync s6): complete and merged (2a057cc4); archived off the active list.",
-     "at": "2026-11-03T13:56:31.369Z"
-    }
-   ],
    "id": "urgent-builds",
    "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
    "category": "Builds > Data cleanup",
@@ -38,6 +24,20 @@
    "createdAt": "2026-10-31T23:31:50.472Z",
    "updatedAt": "2026-11-03T13:56:31.369Z",
    "builtAt": "",
+   "notes": [
+    {
+     "text": "All work committed on claude/urgent-builds (local); s12 push blocked: host has no GitHub token (banner alert blocked:push:claude/urgent-builds).",
+     "at": "2026-11-01T00:37:27.395Z"
+    },
+    {
+     "text": "s12 closed by the Leftovers session (claude/leftovers): merged to main as 2a057cc4, report updated, stale push alerts resolved.",
+     "at": "2026-11-01T02:26:59.880Z"
+    },
+    {
+     "text": "Backfill (orch-live-sync s6): complete and merged (2a057cc4); archived off the active list.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -257,16 +257,9 @@
      "note": "",
      "uid": "st-a28gqr"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
-     "at": "2026-11-03T13:56:31.369Z"
-    }
-   ],
    "id": "dock-engine",
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
@@ -281,6 +274,12 @@
    "createdAt": "2026-11-03T02:32:21.328Z",
    "updatedAt": "2026-11-03T16:48:23.682Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): all 4 steps built on Fable in PR #245, branch claude/molly-fable (Fable foundation for Molly: dock@1 engine, dock-layout@1 presets, DockHost). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -356,10 +355,23 @@
      "note": "PR #245 (claude/molly-fable)",
      "uid": "st-mw02odif08osb7"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
+   "id": "md-studio",
+   "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
+   "category": "Urgent",
+   "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/md-studio",
+   "pr": "#271",
+   "mergedAt": "2026-11-03T02:54:56Z",
+   "createdAt": "2026-11-03T02:32:21.910Z",
+   "updatedAt": "2026-11-03T18:31:40.377Z",
+   "builtAt": "2026-11-03T18:31:29.681Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/md-studio-theme-editor-plan (PR #242); PR #242; PR #242 merged",
@@ -378,20 +390,6 @@
      "at": "2026-11-03T18:31:32.444Z"
     }
    ],
-   "id": "md-studio",
-   "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
-   "category": "Urgent",
-   "detail": "Brett Nov 2 2026 21:30 ET: powerful MD file browser/editor. Opens multiple md files in a tab group with floating, dockable, resizable tabs. A column lists every md file in collapsible categories by scope: Project, Claude, Repo; an edit switch makes a file editable. If a file references other files the chain shows as branches; clicking a referenced name splits the viewing area (setting: vertical or horizontal). Right-click any file in the column: open in horizontal or vertical split. A split section can be undocked, floated, and dropped as a tab in any tab header or into a split (the split shows while hovering). Toolbar with 3 views plus a 4th IDE-style view, each changing how everything renders. Drag snippets into files; wizards that create Claude md files (CLAUDE.md, rules, persona, threads, skills...), categorized by what they do and by scope (project, Claude, repo). Builds on dock-engine.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/md-studio",
-   "pr": "#271",
-   "mergedAt": "2026-11-03T02:54:56Z",
-   "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T18:31:40.377Z",
-   "builtAt": "2026-11-03T18:31:29.681Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -650,20 +648,9 @@
      "note": "",
      "uid": "st-mw0zmopu017gnw"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
-     "at": "2026-11-03T13:56:31.369Z"
-    },
-    {
-     "text": "Built on claude/theme-editor, PR #243 (waiting in UI Review r-20261103-6a35ef38). Panes use the existing layout; switch to the dock engine once dock-engine lands.",
-     "at": "2026-11-03T11:09:57.836Z"
-    }
-   ],
    "id": "theme-editor",
    "title": "Theme Editor plugin: colour + style sections, every token, copy/save/load, multi-view toolbar",
    "category": "Urgent",
@@ -678,6 +665,16 @@
    "createdAt": "2026-11-03T02:32:22.611Z",
    "updatedAt": "2026-11-03T17:09:35.121Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): branch claude/theme-editor has all 5 steps (13f79c99 plugin s1-s4; d24cd2dd phone layout + tests; PR #243 open, waiting in UI Review r-20261103-6a35ef38). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    },
+    {
+     "text": "Built on claude/theme-editor, PR #243 (waiting in UI Review r-20261103-6a35ef38). Panes use the existing layout; switch to the dock engine once dock-engine lands.",
+     "at": "2026-11-03T11:09:57.836Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -771,20 +768,9 @@
      "note": "PR #243 (claude/theme-editor)",
      "uid": "st-mw02oei30awyca"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [
-    {
-     "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
-     "at": "2026-11-03T13:56:31.369Z"
-    },
-    {
-     "text": "All 14 steps done. Fable phase PR #246, Opus phase PR #250 (claude/token-control-opus, contains #246). UI Review r-20261103-f9cd2905 waiting.",
-     "at": "2026-11-03T12:24:22.599Z"
-    }
-   ],
    "id": "token-control",
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "category": "Urgent",
@@ -799,6 +785,16 @@
    "createdAt": "2026-11-03T02:40:26.204Z",
    "updatedAt": "2026-11-03T17:03:31.372Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
+   "notes": [
+    {
+     "text": "Backfill (orch-live-sync s6): s1-s3 built on Fable in PR #246 (claude/token-control), s4-s14 on Opus in PR #250 (claude/token-control-opus). Both PRs open; the build shows PR #250 (the later one). Built, awaiting merge.",
+     "at": "2026-11-03T13:56:31.369Z"
+    },
+    {
+     "text": "All 14 steps done. Fable phase PR #246, Opus phase PR #250 (claude/token-control-opus, contains #246). UI Review r-20261103-f9cd2905 waiting.",
+     "at": "2026-11-03T12:24:22.599Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -1054,8 +1050,7 @@
      "note": "PR #250 (claude/token-control-opus)",
      "uid": "st-mw02yrmz0s00qx"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
    "id": "model-upgrade-approval",
@@ -1764,12 +1759,6 @@
    ]
   },
   {
-   "notes": [
-    {
-     "text": "Reconciler: PR #255 merged; PR #255 names s1, s2, s3, s4, s5, s6, s7 done",
-     "at": "2026-11-03T15:20:49.826Z"
-    }
-   ],
    "id": "orch-live-sync",
    "title": "Orchestrator live sync: every step reaches main at once",
    "category": "Urgent",
@@ -1784,6 +1773,12 @@
    "createdAt": "2026-11-03T13:39:29.176Z",
    "updatedAt": "2026-11-03T15:20:49.826Z",
    "builtAt": "2026-11-03T14:01:20.821Z",
+   "notes": [
+    {
+     "text": "Reconciler: PR #255 merged; PR #255 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-03T15:20:49.826Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -1916,8 +1911,7 @@
      "note": "",
      "uid": "st-mw0qib740en9dq"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
    "id": "headless-tabs",
@@ -2188,7 +2182,6 @@
    ]
   },
   {
-   "notes": [],
    "id": "notes-vault",
    "title": "Notes vault: gather Brett's saved notes into /projects/_shared/_claude/notes, notes-browser plugin, MD Studio Notes scope",
    "category": "Urgent",
@@ -2203,6 +2196,7 @@
    "createdAt": "2026-11-03T14:09:24.568Z",
    "updatedAt": "2026-11-03T16:07:19.784Z",
    "builtAt": "2026-11-03T14:10:56.767Z",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2314,8 +2308,7 @@
      "note": "",
      "uid": "st-mw0rksji0cv0wp"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
    "id": "kill-patches-pilot",
@@ -2629,6 +2622,20 @@
    ]
   },
   {
+   "id": "land-everything",
+   "title": "Land everything: merge finished branches to main and deploy",
+   "category": "Urgent",
+   "detail": "Brett, Nov 3 2026 (voice): land the finished work on main and deploy; UI Review waived except banners (banner-pack, banner-editor, banners-one not landed).",
+   "status": "complete",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/land-everything",
+   "pr": "",
+   "mergedAt": "2026-11-03T18:07:44.501Z",
+   "createdAt": "2026-11-03T15:32:06.059Z",
+   "updatedAt": "2026-11-03T18:09:05.304Z",
+   "builtAt": "2026-11-03T18:07:13.043Z",
    "notes": [
     {
      "text": "Landed claude/notes-vault (PR #256) on main at 5a6311a3",
@@ -2707,20 +2714,6 @@
      "at": "2026-11-03T18:09:05.304Z"
     }
    ],
-   "id": "land-everything",
-   "title": "Land everything: merge finished branches to main and deploy",
-   "category": "Urgent",
-   "detail": "Brett, Nov 3 2026 (voice): land the finished work on main and deploy; UI Review waived except banners (banner-pack, banner-editor, banners-one not landed).",
-   "status": "complete",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/land-everything",
-   "pr": "",
-   "mergedAt": "2026-11-03T18:07:44.501Z",
-   "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T18:09:05.304Z",
-   "builtAt": "2026-11-03T18:07:13.043Z",
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -2922,8 +2915,7 @@
      "note": "",
      "uid": "st-mw0uj4uc0mytjc"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
    "id": "builds-one-page-done",
