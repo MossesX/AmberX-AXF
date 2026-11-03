@@ -33,7 +33,7 @@ check('a build with a PR adds the PR', t.find((x) => x.id === 'pr:290')?.url?.en
 check('every plugin is a target', ids.includes('plugin:push-banner') && ids.includes('plugin:ref-links'));
 check('console catalog items are targets', ids.includes('screen:plan-studio') && ids.includes('settings:terminal') && ids.includes('dialog:about'));
 
-const f = R.run({ op: 'find', text: 'Terminal settings and the Plan Studio screen for terminal-sessions-nav (#290); see apps/console-web/plugins/ref-links/refs.mjs', extra: catalog });
+const f = R.run({ op: 'find', text: 'Terminal settings and the Plan Studio screen for terminal-sessions-nav (PR 290); see apps/console-web/plugins/ref-links/refs.mjs', extra: catalog });
 const refs = f.spans.map((s) => s.ref);
 check('find: settings, screen, build, PR, file', ['settings:terminal', 'screen:plan-studio', 'build:terminal-sessions-nav', 'pr:290', 'file:apps/console-web/plugins/ref-links/refs.mjs'].every((r) => refs.includes(r)), JSON.stringify(refs));
 check('find: targets of every ref', f.targets.some((x) => x.id === 'pr:290'));
@@ -52,7 +52,7 @@ check('resolve: nothing is not_found', R.run({ op: 'resolve', query: 'zzz nothin
 check('unknown op', R.run({ op: 'nope' }).code === 'invalid');
 
 const cli = (...a) => spawnSync(process.execPath, [fileURLToPath(new URL('./refs.mjs', import.meta.url)), ...a], { env: { ...process.env, AXF_REPO_ROOT: root }, encoding: 'utf8' });
-const c1 = cli('find', 'Settings wizard and #290', '--json');
+const c1 = cli('find', 'Settings wizard and PR 290', '--json');
 check('CLI find --json', c1.status === 0 && JSON.parse(c1.stdout).spans.length === 2, c1.stderr || c1.stdout);
 check('CLI resolve: not found exits 4', cli('resolve', 'zzz nothing').status === 4);
 check('CLI usage exits 2', cli().status === 2 && cli('open').status === 2);

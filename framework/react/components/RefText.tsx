@@ -117,7 +117,7 @@ function installRefs(rt: AxfRuntime): void {
     const p = refPeek({ ref: id, kind: id.split(':')[0], text: id }, index, builds);
     const t = index.byId.get(id);
     return [
-      { id: 'refs.open', label: `Open ${p.label}`, icon: 'external', action: `refs.open:${payload}` },
+      { id: 'refs.open', label: `Open ${p.label.length > 40 ? `${p.label.slice(0, 38)}…` : p.label}`, icon: 'external', action: `refs.open:${payload}` },
       { id: 'refs.window', label: 'Open in new window', icon: 'maximize', action: `refs.window:${payload}` },
       ...(p.changing.length || t?.reviews?.length ? [{ id: 'refs.review', label: 'Show in UI Review', icon: 'eye', action: `refs.review:${payload}` }] : []),
       ...(p.changing.length ? [{ id: 'refs.build', label: `Show the build that's changing it (${p.changing[0]?.label ?? ""})`, icon: 'play', action: `refs.build:${payload}` }] : []),

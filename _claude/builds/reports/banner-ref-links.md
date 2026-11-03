@@ -70,7 +70,7 @@ build's UI Review item; an existing part opens the live one and the peek says wh
 | `node framework/spec/check-plugin-commands.mjs` | 57 checks, 54 plugins | 57 checks, 55 plugins |
 | `node framework/cli/plugin-lifecycle.mjs check ref-links` | — | clean |
 | `node framework/cli/check-theme.mjs` (changed files) / `check-controls.mjs` | pass | pass |
-| `apps/console-web`: `tsc --noEmit` | see PR | see PR |
+| `apps/console-web`: `tsc --noEmit` | pass | pass |
 
 Covered: names, kind words, case rule for one-word names, stop words, ambiguous names with candidates, explicit refs
 winning, declared-but-missing refs, PRs (known/unknown, `#fff` and `12#3` not PRs), files in / not in the checkout,
@@ -80,8 +80,17 @@ boundaries; server: catalog / agents / UI Review targets, find, resolve, open �
 
 ## Screenshots
 
-UI Review item and Screenshots group "banner-ref-links - Nov 3 …": `shots/` in this folder (Try-it box with links,
-the peek card, the context menu; phone + desktop).
+UI Review item `r-20261103-1ad2ede3` (group "banner-ref-links - Nov 3 4:45 PM"), waiting for Brett. Shots taken in
+Settings → Plugins → Reference links → Try it, because a scratch console has no live banner entries; the banners use
+the same RefText.
+
+| | Phone | Desktop |
+|---|---|---|
+| Links in text | ![](banner-ref-links/shots/after/ref-links-try-phone.png) | ![](banner-ref-links/shots/after/ref-links-try-desktop.png) |
+| Tap = peek card | ![](banner-ref-links/shots/after/ref-links-peek-phone.png) | ![](banner-ref-links/shots/after/ref-links-peek-desktop.png) |
+| Hold / right-click = menu | ![](banner-ref-links/shots/after/ref-links-menu-phone.png) | ![](banner-ref-links/shots/after/ref-links-menu-desktop.png) |
+
+The menu's lower half (theme override, Build, Open terminal) is the console's usual everywhere-items.
 
 ## Known gaps
 
