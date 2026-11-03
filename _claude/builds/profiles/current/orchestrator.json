@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:59:34.371Z",
+ "updatedAt": "2026-11-03T19:59:54.644Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -363,6 +363,145 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw142d5l08ii3v"
+    }
+   ]
+  },
+  {
+   "id": "profile-manager",
+   "title": "Build profiles manager (browse, view, create, edit, switch, duplicate, merge, move builds, archive, delete/restore, cleanup)",
+   "category": "Builds",
+   "detail": "Brett, Nov 3 2026 (voice): grow the build-profiles plugin into a full manager page. Assigned agent: Landin' Lenny. Keep the plugin id, data and every existing feature. Commands declared once -> REST + MCP + CLI (reads allow, changes veto, data delete confirm).",
+   "status": "pending",
+   "hidden": false,
+   "source": "voice",
+   "pendingId": "",
+   "branch": "claude/profile-manager",
+   "pr": "",
+   "createdAt": "2026-11-03T19:59:06.499Z",
+   "updatedAt": "2026-11-03T19:59:06.500Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "profiles.mjs: stats per profile (builds by status, pending, queue, cost spent/left, last activity), update colour/icon, duplicate, merge, move-builds, archive/unarchive, remove→restorable, restore, owner-only purge; cleanup scan + fix; tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/cli/profiles.mjs",
+      "framework/cli/persist.mjs",
+      "framework/plan/builds-store-core.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142icj0b8waq"
+    },
+    {
+     "id": "s2",
+     "text": "build-profiles server router: commands declared once (list, get, create, update, select, duplicate, merge, move-builds, archive, remove, restore, purge, cleanup) -> REST + MCP + CLI via plugin-commands@1, read/write/destructive flags",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-profiles/plugin.json",
+      "apps/console-web/server/main.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142icj0cjj4z"
+    },
+    {
+     "id": "s3",
+     "text": "Manager page UI: grid of every profile (collapsible rows, counts, cost, last activity), sort/search/filter, expand = builds, pending, queue, plan, files",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-profiles/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142icj0dcnc6"
+    },
+    {
+     "id": "s4",
+     "text": "Profile view + Create/Edit/Duplicate/Merge/Move builds/Archive/Delete/Restore dialogs, banner chip colour/icon, context menu 'Build profiles...' and 'Move to profile'",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-profiles/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142icj0eirr3"
+    },
+    {
+     "id": "s5",
+     "text": "Cleanup helper (archived builds that are really complete) with one-tap fix; typecheck, theme/controls checks, plugin-commands check",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142icj0fte90"
+    },
+    {
+     "id": "s6",
+     "text": "Phone + desktop screenshots, UI Review item, report _claude/builds/reports/profile-manager.md, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw142icj0gnre8"
     }
    ]
   }
