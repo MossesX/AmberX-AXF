@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 420,
- "updatedAt": "2026-11-03T20:13:19.182Z",
+ "rev": 421,
+ "updatedAt": "2026-11-03T20:13:48.169Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55708,7 +55708,7 @@
    "branch": "claude/smart-menus",
    "pr": "",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T19:59:42.088Z",
+   "updatedAt": "2026-11-03T20:13:10.181Z",
    "builtAt": "",
    "notes": [
     {
@@ -55800,12 +55800,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:13:08.626Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:45:20.636Z",
-     "updatedAt": "2026-11-03T19:45:20.636Z"
+     "updatedAt": "2026-11-03T20:13:08.748Z"
     },
     {
      "id": "s5",
@@ -55822,12 +55822,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T20:13:10.181Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:45:20.636Z",
-     "updatedAt": "2026-11-03T19:45:20.636Z"
+     "updatedAt": "2026-11-03T20:13:10.254Z"
     },
     {
      "id": "s6",
@@ -55882,7 +55882,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
