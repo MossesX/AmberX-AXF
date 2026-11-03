@@ -678,3 +678,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:22 UTC · `console-wake` added (6 steps) (urgent) · orchestrator
 - 2026-11-03 17:22 UTC · `console-wake` → running (urgent) · orchestrator
 - 2026-11-03 17:22 UTC · `console-wake` s1 done (urgent) · orchestrator
+- 2026-11-03 17:25 UTC · `theme-veto-pass` PR #262, merged (urgent) · builds-live
