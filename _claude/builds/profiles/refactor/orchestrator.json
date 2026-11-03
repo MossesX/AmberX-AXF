@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:17:03.888Z",
+ "updatedAt": "2026-11-03T18:20:32.134Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2004,7 +2004,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "#134",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-11-03T18:02:48.952Z",
+   "updatedAt": "2026-11-03T18:20:21.482Z",
    "builtAt": "",
    "notes": [
     {
@@ -2312,24 +2312,6 @@
      "doneAt": "2026-11-03T18:02:47.995Z",
      "note": "",
      "uid": "st-n8ym5e"
-    },
-    {
-     "id": "s17-16",
-     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T18:02:48.952Z",
-     "note": "",
-     "uid": "st-mw0zlof60117cu"
     },
     {
      "id": "s16-15",
