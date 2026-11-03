@@ -569,8 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
-- 2026-11-03 18:58 UTC · `crew-live` s5 done (urgent) · orchestrator
 - 2026-11-03 19:00 UTC · `crew-live` PR #273 (urgent) · builds-live
 - 2026-11-03 19:01 UTC · `crew-live` s7 done, → built (urgent) · orchestrator
 - 2026-11-03 19:01 UTC · `crew-live` note (urgent) · orchestrator
@@ -969,3 +967,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:39 UTC · `terminal-tabs-left` note (current) · orchestrator
 - 2026-11-03 22:41 UTC · `terminal-drag-chain-tree` note (current) · orchestrator
 - 2026-11-03 22:48 UTC · `terminal-tabs-left` PR #293 (current) · builds-live
+- 2026-11-03 23:03 UTC · `lenny-land-all` added (7 steps) (current) · orchestrator
+- 2026-11-03 23:04 UTC · `lenny-land-all` → running (current) · orchestrator

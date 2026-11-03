@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T23:05:55.540Z",
+ "updatedAt": "2026-11-03T23:09:12.030Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6947,14 +6947,14 @@
    "title": "Land everything finished (freeze plan step two)",
    "category": "Landing",
    "detail": "What Brett said (voice, Nov 3 2026): CI fix is done (PR #284 merged 22:42 UTC, main green). \"Number two.\" Plan step two = merge everything finished. \"Give me Lenny.\"\nAgent: Landin' Lenny. Land #270 first, then #265-#292 oldest first and #279; close #267 (superseded by #284); leave #251/#254 for Brett; list older PRs #207-#236 for him; redeploy all apps.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
-   "createdAt": "2026-11-03T22:55:32.441Z",
-   "updatedAt": "2026-11-03T22:55:32.441Z",
+   "createdAt": "2026-11-03T23:03:01.354Z",
+   "updatedAt": "2026-11-03T23:04:15.928Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -6976,7 +6976,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon08byz9"
+     "uid": "st-mw1an31y08kual"
     },
     {
      "id": "s2",
@@ -6994,7 +6994,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon09n9wc"
+     "uid": "st-mw1an31y09ppg8"
     },
     {
      "id": "s3",
@@ -7012,7 +7012,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0acxc1"
+     "uid": "st-mw1an31y0ants3"
     },
     {
      "id": "s4",
@@ -7030,7 +7030,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0bjteu"
+     "uid": "st-mw1an31y0bn4qk"
     },
     {
      "id": "s5",
@@ -7048,7 +7048,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0cl6wg"
+     "uid": "st-mw1an31y0c6l63"
     },
     {
      "id": "s6",
@@ -7066,7 +7066,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0djrrf"
+     "uid": "st-mw1an31y0dvaoi"
     },
     {
      "id": "s7",
@@ -7084,7 +7084,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1adfon0el0oz"
+     "uid": "st-mw1an31y0eizui"
     }
    ]
   }
