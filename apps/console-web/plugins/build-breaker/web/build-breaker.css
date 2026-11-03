@@ -83,9 +83,9 @@
 .axp-build-breaker__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
 
 /* Compact (Oct 30 2026): the Builds pages' toolbar button is icon-only on a phone (label stays as its tooltip / aria-label). */
-@media (max-width: 640px) { .axp-build-breaker__open > span { display: none; } }
+:where([data-fx-small]) .axp-build-breaker__open > span { display: none; }
 /* Compact (Oct 30 2026): one-line lede; date range and model are dropdowns like sort / group; expand / collapse are icons. */
 .axp-build-breaker__lede { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-build-breaker__bar { gap: var(--fx-dens-gap-sm); }
 .axp-build-breaker__tools { gap: var(--fx-dens-gap-sm); }
-@media (max-width: 640px) { .axp-build-breaker .axp-build-breaker__search { flex-basis: 100%; } }
+:where([data-fx-small]) .axp-build-breaker .axp-build-breaker__search { flex-basis: 100%; }

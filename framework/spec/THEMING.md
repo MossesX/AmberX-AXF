@@ -87,13 +87,20 @@ plugin's UI has to be built from parts the engines and the designer understand.
    It never hand-rolls styling outside them. *Status: planned — scoping a plugin's own assets to its views
    is not built yet; until it is, plugins use the app's active assets.*
 5. Deliberate exceptions (a colour picker's default *value*, say) carry a `theme-ok` comment on the line.
+6. **No px breakpoints (Nov 2026, every layout parameter is a token).** A media query can't read a token, so a
+   stylesheet never writes `@media (max-width: 760px)`. The layout asset's viewport cut-offs (`tinyMaxWidth` 480,
+   `smallMaxWidth` 640, `phoneMaxWidth` 760, `mediumMaxWidth` 900, `largeMaxWidth` 1200; `--fx-layout-*-max-width`)
+   are stamped on the root by the runtime as `data-fx-tiny` / `-small` / `-narrow` / `-medium` / `-large`, so a
+   rule selects on them: `:where([data-fx-narrow]) .axp-x { … }` (`:where()` adds no specificity, so the cascade is
+   the media query's). `node framework/cli/layout-adopt.mjs <path>` rewrites a stylesheet; check-theme's `layout`
+   rule fails any px breakpoint left (`layout-ok` on the line for a print or orientation query).
 
 Checked automatically: `node framework/cli/check-theme.mjs` (runs in CI). Since the asset-conform build (Oct 31 2026,
 shared rule "Handwritten code conforms to the asset system") **every** web UI gets every rule, handwritten or generated:
 libraries, plugins, the framework's React and CSS, every app's own UI (`apps/demo` included), the app templates,
 boilerplates and library templates. Rules: literal colours, fixed transparency, hard-coded sizes (px, rem, em spacing),
-border widths (`--fx-border-w`), literal fonts (`--fx-font*`), `var()` fallbacks, unknown `--fx-*` names and defining
-`--fx-*`; each finding names file:line and the token to use (`node framework/cli/scale-adopt.mjs <path>` writes most of
+border widths (`--fx-border-w`), literal fonts (`--fx-font*`), `var()` fallbacks, unknown `--fx-*` names, defining
+`--fx-*` and px breakpoints (`layout-adopt.mjs` moves them onto the viewport attributes); each finding names file:line and the token to use (`node framework/cli/scale-adopt.mjs <path>` writes most of
 them in). Kotlin Compose files get the same treatment: no `Color(0x…)`, `.sp` text sizes, `.dp` spacing / radii or raw
 Material controls (use `Axf.colors` / `Axf.type` / `Axf.space` / `Axf.shapes` and the `Axf*` controls).
 Exempt: token/asset definition files (framework/core engines, `framework/ui/axf.css`'s own `--fx-*` defaults and optional

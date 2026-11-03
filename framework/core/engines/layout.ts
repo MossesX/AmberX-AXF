@@ -15,12 +15,12 @@ import type { LayoutData } from '../types';
 import type { VarMap } from './theme';
 import { LAYOUT_VIEWPORTS, layoutErrors, layoutToken, layoutTokenVars, layoutTokens, normalizeLayout } from './layout-rules.mjs';
 
-export { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, LAYOUT_VIEWPORTS, layoutErrors, layoutFieldNames, layoutToken, layoutTokenVars, layoutTokens, layoutValue, normalizeLayout, type LayoutTokenInfo, type LayoutUnit } from './layout-rules.mjs';
+export { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, LAYOUT_VIEWPORTS, layoutBreakpointAttr, layoutErrors, layoutFieldNames, layoutToken, layoutTokenVars, layoutTokens, layoutValue, layoutViewportAttrs, normalizeLayout, type LayoutTokenInfo, type LayoutUnit } from './layout-rules.mjs';
 
 /** The framework's own layout values (what an asset that sets only the grid gets for everything else). */
 export const DEFAULT_LAYOUT: NormalizedLayout = normalizeLayout({} as LayoutData) as NormalizedLayout;
 /** A layout with every token field filled in. */
-export type NormalizedLayout = LayoutData & Required<Pick<LayoutData, 'statusHeight' | 'regionGap' | 'mainPadTop' | 'mainPadX' | 'mainPadBottom' | 'phoneMainPadTop' | 'phoneMainPadX' | 'phoneMainPadBottom' | 'phoneNavItemMin' | 'phoneEdge' | 'tinyMaxWidth' | 'smallMaxWidth' | 'phoneMaxWidth' | 'mediumMaxWidth'>>;
+export type NormalizedLayout = LayoutData & Required<Pick<LayoutData, 'statusHeight' | 'regionGap' | 'mainPadTop' | 'mainPadX' | 'mainPadBottom' | 'phoneMainPadTop' | 'phoneMainPadX' | 'phoneMainPadBottom' | 'phoneNavItemMin' | 'phoneEdge' | 'tinyMaxWidth' | 'smallMaxWidth' | 'phoneMaxWidth' | 'mediumMaxWidth' | 'largeMaxWidth'>>;
 
 /** Validation entry for the asset validator (empty for other types). */
 export const layoutAssetErrors = (type: string, data: unknown): string[] => layoutErrors(type, data);

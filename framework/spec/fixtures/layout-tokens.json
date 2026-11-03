@@ -154,6 +154,15 @@
       "max": 2000
     },
     {
+      "field": "largeMaxWidth",
+      "token": "--fx-layout-large-max-width",
+      "kind": "number",
+      "unit": "px",
+      "default": 1200,
+      "min": 400,
+      "max": 4000
+    },
+    {
       "field": "nav",
       "token": "--fx-layout-nav",
       "kind": "enum",
@@ -222,6 +231,7 @@
     "smallMaxWidth": 640,
     "phoneMaxWidth": 760,
     "mediumMaxWidth": 900,
+    "largeMaxWidth": 1200,
     "nav": "left",
     "toolbarPosition": "top",
     "inspector": "none",
@@ -248,6 +258,7 @@
       "smallMaxWidth": 640,
       "phoneMaxWidth": 760,
       "mediumMaxWidth": 900,
+      "largeMaxWidth": 1200,
       "nav": "left",
       "toolbarPosition": "top",
       "inspector": "none",
@@ -278,7 +289,8 @@
       "tinyMaxWidth": 480,
       "smallMaxWidth": 640,
       "phoneMaxWidth": 760,
-      "mediumMaxWidth": 900
+      "mediumMaxWidth": 900,
+      "largeMaxWidth": 1200
     },
     "clamped": {
       "nav": "left",
@@ -303,7 +315,8 @@
       "phoneNavItemMin": 64,
       "smallMaxWidth": 640,
       "phoneMaxWidth": 760,
-      "mediumMaxWidth": 900
+      "mediumMaxWidth": 900,
+      "largeMaxWidth": 1200
     },
     "rounded": {
       "nav": "left",
@@ -328,7 +341,8 @@
       "tinyMaxWidth": 480,
       "smallMaxWidth": 640,
       "phoneMaxWidth": 760,
-      "mediumMaxWidth": 900
+      "mediumMaxWidth": 900,
+      "largeMaxWidth": 1200
     },
     "bad-values": {
       "nav": "left",
@@ -356,7 +370,8 @@
       "tinyMaxWidth": 480,
       "smallMaxWidth": 640,
       "phoneMaxWidth": 760,
-      "mediumMaxWidth": 900
+      "mediumMaxWidth": 900,
+      "largeMaxWidth": 1200
     }
   },
   "vars": {
@@ -378,6 +393,7 @@
       "--fx-layout-small-max-width": "640px",
       "--fx-layout-phone-max-width": "760px",
       "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
       "--fx-layout-nav": "left",
       "--fx-layout-toolbar-position": "top",
       "--fx-layout-inspector": "none",
@@ -403,6 +419,7 @@
       "--fx-layout-small-max-width": "640px",
       "--fx-layout-phone-max-width": "760px",
       "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
       "--fx-layout-nav": "left",
       "--fx-layout-toolbar-position": "bottom",
       "--fx-layout-inspector": "left",
@@ -428,6 +445,7 @@
       "--fx-layout-small-max-width": "640px",
       "--fx-layout-phone-max-width": "700px",
       "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
       "--fx-layout-nav": "right",
       "--fx-layout-toolbar-position": "top",
       "--fx-layout-inspector": "left",
@@ -464,6 +482,11 @@
         "attr": "data-fx-medium",
         "field": "mediumMaxWidth",
         "maxWidth": 900
+      },
+      {
+        "attr": "data-fx-large",
+        "field": "largeMaxWidth",
+        "maxWidth": 1200
       }
     ],
     "custom": [
@@ -486,8 +509,140 @@
         "attr": "data-fx-medium",
         "field": "mediumMaxWidth",
         "maxWidth": 1000
+      },
+      {
+        "attr": "data-fx-large",
+        "field": "largeMaxWidth",
+        "maxWidth": 1400
       }
     ]
+  },
+  "viewportAttrs": {
+    "320": {
+      "data-fx-tiny": "1",
+      "data-fx-small": "1",
+      "data-fx-narrow": "1",
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "480": {
+      "data-fx-tiny": "1",
+      "data-fx-small": "1",
+      "data-fx-narrow": "1",
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "481": {
+      "data-fx-small": "1",
+      "data-fx-narrow": "1",
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "640": {
+      "data-fx-small": "1",
+      "data-fx-narrow": "1",
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "700": {
+      "data-fx-narrow": "1",
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "760": {
+      "data-fx-narrow": "1",
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "761": {
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "900": {
+      "data-fx-medium": "1",
+      "data-fx-large": "1"
+    },
+    "1200": {
+      "data-fx-large": "1"
+    },
+    "1201": {},
+    "1920": {}
+  },
+  "breakpoints": {
+    "max-480": {
+      "attr": "data-fx-tiny",
+      "field": "tinyMaxWidth",
+      "maxWidth": 480,
+      "negate": false
+    },
+    "max-520": {
+      "attr": "data-fx-small",
+      "field": "smallMaxWidth",
+      "maxWidth": 640,
+      "negate": false
+    },
+    "max-640": {
+      "attr": "data-fx-small",
+      "field": "smallMaxWidth",
+      "maxWidth": 640,
+      "negate": false
+    },
+    "max-720": {
+      "attr": "data-fx-narrow",
+      "field": "phoneMaxWidth",
+      "maxWidth": 760,
+      "negate": false
+    },
+    "max-759": {
+      "attr": "data-fx-narrow",
+      "field": "phoneMaxWidth",
+      "maxWidth": 760,
+      "negate": false
+    },
+    "max-760": {
+      "attr": "data-fx-narrow",
+      "field": "phoneMaxWidth",
+      "maxWidth": 760,
+      "negate": false
+    },
+    "max-900": {
+      "attr": "data-fx-medium",
+      "field": "mediumMaxWidth",
+      "maxWidth": 900,
+      "negate": false
+    },
+    "max-1100": {
+      "attr": "data-fx-large",
+      "field": "largeMaxWidth",
+      "maxWidth": 1200,
+      "negate": false
+    },
+    "max-1500": null,
+    "max-1600": null,
+    "min-760": {
+      "attr": "data-fx-narrow",
+      "field": "phoneMaxWidth",
+      "maxWidth": 760,
+      "negate": true
+    },
+    "min-761": {
+      "attr": "data-fx-narrow",
+      "field": "phoneMaxWidth",
+      "maxWidth": 760,
+      "negate": true
+    },
+    "min-900": {
+      "attr": "data-fx-medium",
+      "field": "mediumMaxWidth",
+      "maxWidth": 900,
+      "negate": true
+    },
+    "min-700": {
+      "attr": "data-fx-narrow",
+      "field": "phoneMaxWidth",
+      "maxWidth": 760,
+      "negate": true
+    }
   },
   "errors": {
     "grid-only": [],
@@ -620,6 +775,12 @@
       "default": 900,
       "min": 320,
       "max": 2000,
+      "unit": "px"
+    },
+    "largeMaxWidth": {
+      "default": 1200,
+      "min": 400,
+      "max": 4000,
       "unit": "px"
     }
   }

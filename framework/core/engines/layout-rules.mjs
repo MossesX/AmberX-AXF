@@ -16,10 +16,11 @@
  * asset-types.json → types.layout.enums; check-layout-tokens.mts keeps them equal); switches are booleans.
  * Token names are regular: --fx-layout-<field in kebab-case>. Unknown fields are kept out, never an error.
  *
- * Viewport cut-offs (tinyMaxWidth < smallMaxWidth < phoneMaxWidth < mediumMaxWidth): CSS media queries can't read a
- * custom property, so the runtime watches `(max-width: <token>px)` for each and stamps data-fx-tiny / data-fx-small /
- * data-fx-narrow / data-fx-medium on the root; stylesheets select on those attributes, never on a px breakpoint
- * (check-theme `layout` rule). Pure, no DOM.
+ * Viewport cut-offs (tinyMaxWidth < smallMaxWidth < phoneMaxWidth < mediumMaxWidth < largeMaxWidth): CSS media queries
+ * can't read a custom property, so the runtime watches `(max-width: <token>px)` for each and stamps data-fx-tiny /
+ * data-fx-small / data-fx-narrow / data-fx-medium / data-fx-large on the root; stylesheets select on those
+ * (`:where([data-fx-narrow]) .fx-x`, zero extra specificity), never on a px breakpoint (check-theme `layout` rule;
+ * `node framework/cli/layout-adopt.mjs <path>` rewrites one). Pure, no DOM.
  */
 
 export const LAYOUT_TYPE = 'layout';
@@ -43,11 +44,12 @@ export const LAYOUT_FIELDS = {
   phoneMainPadBottom: [4, 0, 12, 'space'],
   phoneNavItemMin: [64, 40, 200, 'px'],
   phoneEdge: [8, 0, 40, 'px'],
-  // viewport cut-offs (max-width, px): tiny < small < phone (narrow) < medium
+  // viewport cut-offs (max-width, px): tiny < small < phone (narrow) < medium < large
   tinyMaxWidth: [480, 200, 900, 'px'],
   smallMaxWidth: [640, 240, 1200, 'px'],
   phoneMaxWidth: [760, 320, 1600, 'px'],
   mediumMaxWidth: [900, 320, 2000, 'px'],
+  largeMaxWidth: [1200, 400, 4000, 'px'],
 };
 
 /** Enum fields (word lists; the same as asset-types.json → types.layout.enums). */
@@ -67,7 +69,28 @@ export const LAYOUT_VIEWPORTS = [
   { field: 'smallMaxWidth', attr: 'data-fx-small' },
   { field: 'phoneMaxWidth', attr: 'data-fx-narrow' },
   { field: 'mediumMaxWidth', attr: 'data-fx-medium' },
+  { field: 'largeMaxWidth', attr: 'data-fx-large' },
 ];
+
+/**
+ * The viewport attribute a px breakpoint maps onto (the codemod layout-adopt.mjs and check-theme): the smallest
+ * cut-off at or above `px` for a max-width query; a min-width query is the negation of the cut-off below it.
+ * Null when the width is above the largest cut-off (no attribute: it is the plain desktop look).
+ */
+export function layoutBreakpointAttr(px, kind = 'max', raw = null) {
+  const n = normalizeLayout(raw);
+  const limit = kind === 'min' ? px - 1 : px;
+  for (const v of LAYOUT_VIEWPORTS) if (limit <= n[v.field]) return { attr: v.attr, field: v.field, maxWidth: n[v.field], negate: kind === 'min' };
+  return null;
+}
+
+/** The root attributes for a viewport width (pure twin of the runtime's matchMedia watch; fixture-pinned). */
+export function layoutViewportAttrs(raw, widthPx) {
+  const n = normalizeLayout(raw);
+  const out = {};
+  for (const v of LAYOUT_VIEWPORTS) if (widthPx <= n[v.field]) out[v.attr] = '1';
+  return out;
+}
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const kebab = (s) => s.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());

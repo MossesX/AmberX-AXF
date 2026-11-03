@@ -202,6 +202,13 @@
           "maximum": 2000,
           "default": 900,
           "description": "px; token --fx-layout-medium-max-width"
+        },
+        "largeMaxWidth": {
+          "type": "integer",
+          "minimum": 400,
+          "maximum": 4000,
+          "default": 1200,
+          "description": "px; token --fx-layout-large-max-width"
         }
       }
     }

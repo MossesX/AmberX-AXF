@@ -228,11 +228,12 @@ export interface LayoutData {
   phoneNavItemMin?: number;
   /** inset of dropdowns and toasts from the phone's edges, px */
   phoneEdge?: number;
-  /** viewport cut-offs (max-width px; tiny < small < phone < medium) → root attributes data-fx-tiny / -small / -narrow / -medium */
+  /** viewport cut-offs (max-width px; tiny < small < phone < medium < large) → root attributes data-fx-tiny / -small / -narrow / -medium / -large */
   tinyMaxWidth?: number;
   smallMaxWidth?: number;
   phoneMaxWidth?: number;
   mediumMaxWidth?: number;
+  largeMaxWidth?: number;
   /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
   slots?: Partial<Record<string, string[]>>;
   /** repeating slots: one item per entry of a data set the page declares (core/engines/repeat.ts) */

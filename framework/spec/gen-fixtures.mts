@@ -9,7 +9,7 @@ import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
-import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewports, normalizeLayout } from '../core/engines/layout';
+import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
@@ -183,7 +183,10 @@ write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compi
       'studio-dock': layoutTokenVars(load('layout').find((a) => a.id === 'studio-dock')!.data),
       custom: layoutVars({ ...grid, nav: 'right', inspector: 'left', inspectorWidth: 320, contentMaxWidth: 1200, statusHeight: 30, regionGap: 0.5, mainPadX: 2, phoneMaxWidth: 700, showMenubar: false }),
     },
-    viewports: { defaults: layoutViewports(grid), custom: layoutViewports({ ...grid, tinyMaxWidth: 400, smallMaxWidth: 600, phoneMaxWidth: 800, mediumMaxWidth: 1000 }) },
+    viewports: { defaults: layoutViewports(grid), custom: layoutViewports({ ...grid, tinyMaxWidth: 400, smallMaxWidth: 600, phoneMaxWidth: 800, mediumMaxWidth: 1000, largeMaxWidth: 1400 }) },
+    // the root attributes for a window width (the runtime's matchMedia watch, pure) and where a px breakpoint lands
+    viewportAttrs: Object.fromEntries([320, 480, 481, 640, 700, 760, 761, 900, 1200, 1201, 1920].map((w) => [String(w), layoutViewportAttrs(grid, w)])),
+    breakpoints: Object.fromEntries([['max', 480], ['max', 520], ['max', 640], ['max', 720], ['max', 759], ['max', 760], ['max', 900], ['max', 1100], ['max', 1500], ['max', 1600], ['min', 760], ['min', 761], ['min', 900], ['min', 700]].map(([k, px]) => [`${k}-${px}`, layoutBreakpointAttr(px as number, k as 'max' | 'min')])),
     errors: {
       'grid-only': layoutErrors('layout', grid),
       'other-type': layoutErrors('button', { navWidth: 'x' }),

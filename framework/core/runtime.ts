@@ -10,7 +10,7 @@ import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
-import { layoutVars } from './engines/layout';
+import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
@@ -270,6 +270,42 @@ export class AxfRuntime {
   /** The help id the "What is this?" panel shows (null = closed); a screen intro asked to replay. */
   private helpPanelId: string | null = null;
   private helpReplay: string | null = null;
+  /** Viewport cut-offs being watched (layout tokens tinyMaxWidth … largeMaxWidth): the matchMedia lists and what each one says now. */
+  private viewportKeyWatched = '';
+  private viewportLists: { attr: string; list: { matches: boolean; addEventListener?: (t: 'change', f: () => void) => void; addListener?: (f: () => void) => void; removeEventListener?: (t: 'change', f: () => void) => void; removeListener?: (f: () => void) => void }; on: () => void }[] = [];
+
+  /**
+   * Every layout parameter is a token (Nov 2026): the layout's viewport cut-offs become root attributes
+   * (data-fx-tiny / -small / -narrow / -medium / -large) stylesheets select on instead of px breakpoints. The runtime
+   * watches `(max-width: <cut-off>px)` for each; a change re-renders (the provider re-applies the root attributes).
+   */
+  private ensureViewportWatch(): void {
+    const vps = layoutViewports(this.asset('layout').data);
+    const key = vps.map((v) => v.maxWidth).join(',');
+    if (key === this.viewportKeyWatched) return;
+    this.viewportKeyWatched = key;
+    for (const w of this.viewportLists) (w.list.removeEventListener ?? w.list.removeListener)?.call(w.list, 'change' as never, w.on as never);
+    this.viewportLists = [];
+    if (typeof globalThis.matchMedia !== 'function') return;
+    for (const v of vps) {
+      const list = globalThis.matchMedia(`(max-width: ${v.maxWidth}px)`);
+      const on = () => this.set({});
+      if (typeof list.addEventListener === 'function') list.addEventListener('change', on);
+      else (list as { addListener?: (f: () => void) => void }).addListener?.(on);
+      this.viewportLists.push({ attr: v.attr, list, on });
+    }
+  }
+
+  /** The viewport attributes in force now (`data-fx-narrow` → '1' …); '' keys absent when the viewport is wider. */
+  viewportAttrs(): Record<string, string> {
+    this.ensureViewportWatch();
+    const out: Record<string, string> = {};
+    for (const w of this.viewportLists) if (w.list.matches) out[w.attr] = '1';
+    return out;
+  }
+
+  /** A string that changes whenever a viewport attribute changes (a render dependency for the provider). */
+  viewportKey(): string { return Object.keys(this.viewportAttrs()).join(','); }
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
@@ -1905,7 +1941,7 @@ export class AxfRuntime {
     parts.push(behaviorStyle(behavior, reducedMotion));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
-    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
+    const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
     const brandId = this.state.active['branding' as AssetType];
     if (brandId) attrs['data-fx-brand'] = brandId;
     if (this.busyCount > 0 && normalizeBehavior(behavior).feedback.busyCursor) attrs['data-fx-busy'] = '1';
@@ -2139,6 +2175,8 @@ export class AxfRuntime {
     const { vars, attrs } = this.compileStyles();
     for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
     for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    // viewport attributes come and go with the window width
+    for (const v of LAYOUT_VIEWPORTS) if (!(v.attr in attrs)) el.removeAttribute(v.attr);
     el.style.colorScheme = attrs['data-fx-scheme'] ?? 'light';
   }
 

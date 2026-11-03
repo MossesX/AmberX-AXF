@@ -1,6 +1,6 @@
 /* Context menu designer — layout only; controls are framework controls (THEMING.md). */
 .axp-ctxd { display: grid; grid-template-columns: minmax(220px, 280px) 1fr; gap: var(--fx-dens-gap-2xl); align-items: start; }
-@media (max-width: 760px) { .axp-ctxd { grid-template-columns: 1fr; } }
+:where([data-fx-narrow]) .axp-ctxd { grid-template-columns: 1fr; }
 .axp-ctxd-main, .axp-ctxd-side { min-width: 0; }
 .axp-ctxd-list, .axp-ctxd-tree { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) / 4); }
 .axp-ctxd-list { gap: 0; }
@@ -46,7 +46,7 @@
 .axp-ctxd-acts > .fx-btn { flex: none; }
 .axp-ctxd-grow { flex: 1 1 0; min-width: 0; width: auto; }
 .axp-ctxd-hint { margin: 0 0 calc(var(--fx-space) / 2); font-size: var(--fx-type-scale-md); }
-@media (max-width: 640px) { .axp-ctxd-side { gap: var(--fx-dens-gap-lg); } }
+:where([data-fx-small]) .axp-ctxd-side { gap: var(--fx-dens-gap-lg); }
 .axp-ctxd-filter__owners > summary { cursor: pointer; padding-block: var(--fx-dens-gap-xs); }
 .axp-ctxd-filter__owners[open] > summary { margin-bottom: var(--fx-dens-gap-md); }
 .axp-ctxd-act__row { white-space: normal; }

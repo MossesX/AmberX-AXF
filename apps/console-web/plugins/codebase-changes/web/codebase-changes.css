@@ -49,7 +49,7 @@ button.axp-codebase-changes-banner__entry { all: unset; box-sizing: border-box; 
 .axp-codebase-changes__searchbar > .fx-input { flex: 1 1 0; min-width: 0; width: auto }
 .axp-codebase-changes__searchbar .fx-iconbtn.is-on { color: var(--fx-accent) }
 .axp-codebase-changes__filters { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 14)), 1fr)); gap: var(--fx-dens-gap-md); align-items: end }
-@media (max-width: 640px) { .axp-codebase-changes__filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } }
+:where([data-fx-small]) .axp-codebase-changes__filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) }
 .axp-codebase-changes__date { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0 }
 .axp-codebase-changes__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-codebase-changes__row { border-bottom: var(--fx-border-w) solid var(--fx-border) }

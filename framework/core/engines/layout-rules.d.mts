@@ -27,3 +27,5 @@ export function layoutValue(unit: LayoutUnit, v: number): string;
 export function layoutTokenVars(raw: unknown): Record<string, string>;
 export function layoutTokens(): LayoutTokenInfo[];
 export function layoutSchemaProperties(): Record<string, unknown>;
+export function layoutBreakpointAttr(px: number, kind?: 'max' | 'min', raw?: unknown): { attr: string; field: string; maxWidth: number; negate: boolean } | null;
+export function layoutViewportAttrs(raw: unknown, widthPx: number): Record<string, string>;

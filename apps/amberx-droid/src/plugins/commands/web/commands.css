@@ -18,4 +18,4 @@
 .axp-cmd-empty, .axp-cmd-unavailable { padding: var(--fx-dens-gap-3xl); text-align: center; align-items: center; }
 .axp-cmd-unavailable h2 { margin: calc(var(--fx-space) / 2) 0; font-size: var(--fx-type-root-xl); }
 .axp-cmd-unavailable__actions { justify-content: center; }
-@media (max-width: 640px) { .axp-cmd-tools > :first-child { flex-basis: 100%; } }
+:where([data-fx-small]) .axp-cmd-tools > :first-child { flex-basis: 100%; }
