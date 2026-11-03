@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 516,
- "updatedAt": "2026-11-03T22:02:37.455Z",
+ "rev": 520,
+ "updatedAt": "2026-11-03T22:03:37.663Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -61289,7 +61289,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:10:39.299Z",
-     "updatedAt": "2026-11-03T22:02:15.496Z"
+     "updatedAt": "2026-11-03T22:03:24.045Z"
     },
     {
      "id": "s4",
@@ -61311,7 +61311,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:10:39.299Z",
-     "updatedAt": "2026-11-03T22:02:15.496Z"
+     "updatedAt": "2026-11-03T22:03:24.045Z"
     },
     {
      "id": "s5",
@@ -61333,7 +61333,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T21:10:39.299Z",
-     "updatedAt": "2026-11-03T22:02:15.496Z"
+     "updatedAt": "2026-11-03T22:03:24.045Z"
     },
     {
      "id": "s6",
@@ -61366,7 +61366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -61379,12 +61379,12 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mw16nui60ft3fy": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60gsmhh": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60h8t32": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60ip92g": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60j23km": "2026-11-03T21:10:39.299Z",
-     "st-mw16nui60kg5g2": "2026-11-03T21:10:39.299Z"
+     "st-mw16mny80188hr": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny802yhn0": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny803fljh": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny804ynif": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny805bl21": "2026-11-03T21:10:39.299Z",
+     "st-mw16mny806m87d": "2026-11-03T21:10:39.299Z"
     }
    },
    "queue": null,
@@ -61414,9 +61414,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:01:52.904Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61441,9 +61441,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:01:57.689Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61468,9 +61468,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:01.126Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61495,9 +61495,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:08.246Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61522,9 +61522,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:11.758Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     },
     {
      "step": {
@@ -61549,9 +61549,9 @@
       "createdAt": "2026-11-03T21:10:39.299Z",
       "updatedAt": "2026-11-03T21:10:46.045Z"
      },
-     "at": "2026-11-03T22:02:15.279Z",
-     "why": "removed on the Pending list",
-     "by": "pending"
+     "at": "2026-11-03T22:02:13.270Z",
+     "why": "removed in the orchestrator",
+     "by": "claude-session (Snap Sully)"
     }
    ],
    "legacy": [],
@@ -61875,7 +61875,7 @@
    "branch": "claude/terminal-drag-chain-tree",
    "pr": "",
    "createdAt": "2026-11-03T21:50:21.572Z",
-   "updatedAt": "2026-11-03T22:01:31.597Z",
+   "updatedAt": "2026-11-03T22:03:26.398Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -61940,12 +61940,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T22:03:24.841Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:50:21.573Z",
-     "updatedAt": "2026-11-03T21:50:21.573Z"
+     "updatedAt": "2026-11-03T22:03:24.910Z"
     },
     {
      "id": "s4",
@@ -61962,12 +61962,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T22:03:26.398Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T21:50:21.573Z",
-     "updatedAt": "2026-11-03T21:50:21.573Z"
+     "updatedAt": "2026-11-03T22:03:26.537Z"
     },
     {
      "id": "s5",
@@ -62022,7 +62022,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -62956,14 +62956,14 @@
    "title": "Terminal: tab position setting (top, left / right stack, bottom)",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): \"I want a setting in terminal to put all the tabs on the left side in a stack instead of across the top.\" Setting Tab position: Top | Left stack | Right stack | Bottom, per device, also in the tab context menu. Stack: title, agent, model, live cost, status dot, close; collapse to icons; resizable; drag to reorder; scrolls; title bar still drags. Phone: slide-out. Server default + REST/MCP/CLI get/set. Agent: Janitor Joey (headless worktree session; router not on this branch's main). Overlaps: terminal-sessions-nav (#286, open, adds a left rail) and terminal-drag-chain-tree (running, rewrites strip pointer handling): changes kept to a new TabStack file + CSS so all three merge cleanly.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-tabs-left",
    "pr": "",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-03T22:02:33.805Z",
+   "updatedAt": "2026-11-03T22:02:39.520Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -63088,7 +63088,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
