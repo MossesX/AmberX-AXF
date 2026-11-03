@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 504,
- "updatedAt": "2026-11-03T21:50:49.175Z",
+ "rev": 505,
+ "updatedAt": "2026-11-03T21:55:04.934Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55933,7 +55933,7 @@
    "branch": "claude/ui-review-predicted",
    "pr": "#285",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T21:30:43.754Z",
+   "updatedAt": "2026-11-03T21:49:21.858Z",
    "builtAt": "",
    "notes": [
     {
@@ -55943,6 +55943,10 @@
     {
      "text": "Reconciler: PR #285",
      "at": "2026-11-03T21:30:43.754Z"
+    },
+    {
+     "text": "PR #285 open. Its CI red jobs (check-widgets widget types, molly xlayout opens:false, Gradle) are the same failures on main, being fixed by urgent-main-ci-green; nothing from this build. UI Review r-20261103-c9a82c5e waiting.",
+     "at": "2026-11-03T21:49:21.858Z"
     }
    ],
    "approvals": [],
@@ -56089,7 +56093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

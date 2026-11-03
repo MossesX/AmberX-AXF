@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T21:50:49.175Z",
+ "updatedAt": "2026-11-03T21:55:04.934Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4860,7 +4860,7 @@
    "branch": "claude/ui-review-predicted",
    "pr": "#285",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T21:30:43.754Z",
+   "updatedAt": "2026-11-03T21:49:21.858Z",
    "builtAt": "",
    "notes": [
     {
@@ -4870,6 +4870,10 @@
     {
      "text": "Reconciler: PR #285",
      "at": "2026-11-03T21:30:43.754Z"
+    },
+    {
+     "text": "PR #285 open. Its CI red jobs (check-widgets widget types, molly xlayout opens:false, Gradle) are the same failures on main, being fixed by urgent-main-ci-green; nothing from this build. UI Review r-20261103-c9a82c5e waiting.",
+     "at": "2026-11-03T21:49:21.858Z"
     }
    ],
    "approvals": [],

@@ -568,10 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:26 UTC · `pass-all` PR #264, merged (urgent) · builds-live
-- 2026-11-03 17:26 UTC · `land-everything` note (urgent) · orchestrator
-- 2026-11-03 17:31 UTC · `console-wake` s2 done (urgent) · orchestrator
-- 2026-11-03 17:34 UTC · `plugin-commands-auto` PR #263, merged (urgent) · builds-live
 - 2026-11-03 17:35 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:35 UTC · `land-everything` s9 done (urgent) · orchestrator
 - 2026-11-03 17:42 UTC · `land-everything` note (urgent) · orchestrator
@@ -968,3 +964,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:50 UTC · `molly-console-commands` s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, note (current) · foreign-write
 - 2026-11-03 21:50 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · orchestrator
 - 2026-11-03 21:50 UTC · `terminal-drag-chain-tree` → running (current) · orchestrator
+- 2026-11-03 21:49 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 21:49 UTC · `molly-console-commands` s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, s1 undone, s2 undone, s3 undone, s4 undone, note (current) · foreign-write
+- 2026-11-03 21:49 UTC · `ui-review-predicted` note (urgent) · orchestrator
+- 2026-11-03 21:54 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
