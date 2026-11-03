@@ -583,3 +583,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:07 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:07 UTC · `land-everything` s1 done (urgent) · orchestrator
 - 2026-11-03 16:07 UTC · `crew-retrain` s5 done (breakroom) · orchestrator
+- 2026-11-03 16:12 UTC · `crew-retrain` s6 done (breakroom) · orchestrator
