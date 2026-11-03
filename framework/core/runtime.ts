@@ -2311,19 +2311,25 @@ export class AxfRuntime {
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
     // Right-click a widget host (banner, toolbar): arrange its widgets (drag + snap) or put them back.
-    this.contextExtras.set('*:widgets', (target) => {
-      const host = target && hostSpec(target) ? target : null;
-      if (!host || !this.canArrange() || (host !== 'banner' && !Object.values(this.hostPlaced(host)).some((l) => l.length))) return [];
-      const editing = this.arranging(host);
-      const items: import('./engines/windows').MenuEntry[] = host === 'banner'
-        ? [{ id: 'banner-edit', label: editing ? 'Done editing banner' : 'Edit banner…', icon: 'edit', action: 'banner.edit' }]
-        : [{ id: `widgets-arrange-${host}`, label: editing ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
-      if (this.canUndoArrange(host)) items.push({ id: `widgets-undo-${host}`, label: 'Undo last change', icon: 'undo', action: `widgets.undo:${host}` });
-      if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
-      return items;
-    });
+    // Banner editor: right-clicking the banner opens a short menu that leads with Edit banner (its own target extras,
+    // so the long default menu isn't drawn in front of it); every other host keeps Arrange widgets from the rule below.
+    this.contextExtras.set('banner', () => this.hostMenu('banner'));
+    this.contextExtras.set('*:widgets', (target) => (target && target !== 'banner' ? this.hostMenu(target) : []));
     this.contextExtras.set('tab-group', () => wm.groupMenu());
     this.contextExtras.set('window-title', () => wm.windowMenu());
+  }
+
+  /** Right-click entries for a widget host: Edit banner / Arrange widgets, Undo, Put widgets back. */
+  private hostMenu(target: string): import('./engines/windows').MenuEntry[] {
+    const host = hostSpec(target) ? target : null;
+    if (!host || !this.canArrange() || (host !== 'banner' && !Object.values(this.hostPlaced(host)).some((l) => l.length))) return [];
+    const editing = this.arranging(host);
+    const items: import('./engines/windows').MenuEntry[] = host === 'banner'
+      ? [{ id: 'banner-edit', label: editing ? 'Done editing banner' : 'Edit banner…', icon: 'edit', action: 'banner.edit' }]
+      : [{ id: `widgets-arrange-${host}`, label: editing ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
+    if (this.canUndoArrange(host)) items.push({ id: `widgets-undo-${host}`, label: 'Undo last change', icon: 'undo', action: `widgets.undo:${host}` });
+    if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'refresh', action: `widgets.reset:${host}` });
+    return items;
   }
 }
 

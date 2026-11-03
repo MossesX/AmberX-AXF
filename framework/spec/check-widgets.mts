@@ -166,7 +166,7 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   rt.setArranging('banner'); ok(rt.arranging('banner') && rt.arranging(), 'arrange rt: arrange mode on');
   rt.dispatch('widgets.arrange:banner'); ok(!rt.arranging(), 'arrange rt: action toggles off');
   rt.setArranging('nohost'); ok(!rt.arranging(), 'arrange rt: unknown host never arranges');
-  const menu = rt.contextExtras.get('*:widgets')!('banner');
+  const menu = rt.contextExtras.get('banner')!('banner');
   ok(menu.some((m) => m.action === 'banner.edit' && m.label === 'Edit banner…') && menu.some((m) => m.action === 'widgets.reset:banner'), 'arrange rt: banner right-click offers Edit banner + Put back');
   eq(rt.contextExtras.get('*:widgets')!('default'), [], 'arrange rt: other targets get nothing');
   rt.dispatch('widgets.reset:banner');
@@ -229,7 +229,7 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   rt.dispatch('widgets.remove:banner:badge:new'); rt.dispatch('widgets.add:banner:badge:new');
   ok(all().includes('badge:new'), 'edit rt: widgets.add / widgets.remove actions (key with a colon)');
   rt.dispatch('banner.edit:off'); ok(!rt.arranging(), 'edit rt: banner.edit:off leaves');
-  ok(rt.contextExtras.get('*:widgets')!('banner').some((m) => m.action === 'widgets.undo:banner'), 'edit rt: right-click offers Undo');
+  ok(rt.contextExtras.get('banner')!('banner').some((m) => m.action === 'widgets.undo:banner'), 'edit rt: right-click offers Undo');
 }
 
 console.log(`check-widgets: ${checks} checks ok`);

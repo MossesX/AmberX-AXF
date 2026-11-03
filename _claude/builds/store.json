@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 165,
- "updatedAt": "2026-11-03T12:01:23.504Z",
+ "rev": 170,
+ "updatedAt": "2026-11-03T12:44:16.973Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -19574,9 +19574,18 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T20:59:28.940Z",
-   "updatedAt": "2026-10-25T20:59:28.940Z",
+   "updatedAt": "2026-11-03T12:44:16.922Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Clash note (banner-editor, claude/banner-editor, Nov 3 2026): the arrangement layer gained hidden/added entries, removeFromHost, addToHost, hostPalette, undo and banner.edit; widgets.json pins them in its 'edit' section. A rebuild keeps and ports them.",
+     "at": "2026-11-03T12:44:12.506Z"
+    },
+    {
+     "text": "Clash note (banner-editor, claude/banner-editor, Nov 3 2026): the arrangement layer gained hidden/added entries, removeFromHost, addToHost, hostPalette, undo and banner.edit; widgets.json pins them in its edit section. A rebuild keeps and ports them.",
+     "at": "2026-11-03T12:44:16.922Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -19676,7 +19685,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -48396,15 +48405,15 @@
    "title": "xLayout: Molly as one app (one banner, app menu, nav, context menu, toolbars) + IDE panes + plugin toolbars",
    "category": "Molly",
    "detail": "Brett Nov 2 2026 13:46 ET: Molly is whack. Create application menus, navigation menus, context menus, toolbars and a banner that integrate all the apps (AmberX, axHub web, Dev Console): only ONE banner, application menu, navigation menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps. New plugin xLayout renders it that way. A switch makes it IDE style: draggable, resizable, dockable panes. Plugin toolbars: from the plugin's settings, show/hide up to 3 toolbars and set each default location. A hook in those settings opens a Toolbar designer dialog: pick items from a list of every plugin and screen; each item opens in the main area or a floating window, or (IDE mode on) a pane. Right-clicking any toolbar also has a hook to open the Toolbar designer. IDE mode limits the number of panes and offers ~10 predetermined pane layouts with a preview before applying. Molly-only: standalone, each app stays exactly as it is. Replaces the queued 'Molly: one app' item. Rules: assets/tokens only, framework controls, settings level toolbar, plugin lifecycle, UI Review.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T11:52:58.707Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T12:30:44.031Z",
+   "builtAt": "2026-11-03T12:30:34.539Z",
    "notes": [
     {
      "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
@@ -48417,6 +48426,10 @@
     {
      "text": "s3 (pane engine) covered by dock-engine (Urgent, complete on branch claude/molly-fable): core/engines/dock.ts + DockHost. s1-s2 built on Fable on the same branch (xlayout@1, chrome@1). s4-s12 are the Opus phase: run from this branch after it merges.",
      "at": "2026-11-03T11:26:12.532Z"
+    },
+    {
+     "text": "Built: Fable s1-s3 branch claude/molly-fable PR #245; Opus s4-s12 branch claude/xlayout-opus PR #252 (merge after #245). UI Review waiting: group 'xlayout - Nov 3 7:28 AM'.",
+     "at": "2026-11-03T12:30:44.031Z"
     }
    ],
    "approvals": [],
@@ -48502,12 +48515,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:43.652Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s5",
@@ -48524,12 +48537,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:44.135Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s6",
@@ -48546,12 +48559,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:44.527Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s7",
@@ -48568,12 +48581,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:44.948Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s8",
@@ -48590,12 +48603,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:45.351Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s9",
@@ -48612,12 +48625,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:45.841Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s10",
@@ -48634,12 +48647,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:46.219Z",
      "note": "",
-     "rev": 2,
+     "rev": 4,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:49:25.863Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s11",
@@ -48656,12 +48669,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:29:46.728Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     },
     {
      "id": "s12",
@@ -48678,12 +48691,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:30:34.539Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-02T18:47:31.125Z"
+     "updatedAt": "2026-11-03T12:44:00.460Z"
     }
    ],
    "profiles": [
@@ -48694,17 +48707,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-02T18:47:31.123Z",
-    "builtAt": "",
+    "builtAt": "2026-11-03T12:30:34.539Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mvzm2laq0d1lyo": "2026-11-02T18:47:31.125Z",
@@ -49678,6 +49691,131 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T02:40:26.205Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "banner-editor",
+   "title": "Banner editor: long-press / right-click Edit banner, drag + snap, remove, add back, reset, undo",
+   "category": "",
+   "detail": "Brett Nov 3 2026 (voice): top of the queue. Builds on the existing arrange mode (widgets engine HostArrangement + Arrange.tsx). Arrangement gains hidden/added entries (engine + fixture), palette of every banner widget, undo, long-press + context menu Edit banner, banner.edit command, Settings > Appearance entry. Saved in axf.widgets.arrange.banner (appearance@1 look key, every app follows). Kotlin twin deferred.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/banner-editor",
+   "pr": "",
+   "createdAt": "2026-11-03T12:21:52.735Z",
+   "updatedAt": "2026-11-03T12:21:52.735Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw0nqi9q05dnut",
+     "title": "",
+     "text": "Engine: hidden/added arrangement entries, removeFromHost, addToHost, hostPalette + fixture",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:21:52.736Z",
+     "updatedAt": "2026-11-03T12:21:52.736Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw0nqi9q064j5o",
+     "title": "",
+     "text": "Runtime: banner.edit, remove/add/undo, context menu Edit banner, Esc",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:21:52.736Z",
+     "updatedAt": "2026-11-03T12:21:52.736Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw0nqi9q07bqsv",
+     "title": "",
+     "text": "React: long-press entry, x on each widget, drag off to remove, palette, phone layout, Settings > Appearance",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:21:52.736Z",
+     "updatedAt": "2026-11-03T12:21:52.736Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mw0nqi9q08gmpv",
+     "title": "",
+     "text": "Checks, help pack, UI Review shots, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T12:21:52.736Z",
+     "updatedAt": "2026-11-03T12:21:52.736Z"
+    }
+   ],
+   "profiles": [
+    "urgent"
+   ],
+   "order": {
+    "urgent": 5
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-03T12:21:52.736Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

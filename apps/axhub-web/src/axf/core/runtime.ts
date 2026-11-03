@@ -20,7 +20,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
-import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
+import { addToHost, hostPalette, hostSpec, hostSpecs, moveOnHost, normalizeArrangement, removeFromHost, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
@@ -918,18 +918,81 @@ export class AxfRuntime {
     const placed = this.hostPlaced(host);
     if (!h.sides.some((s) => (placed[s] ?? []).some((p) => p.key === key))) return false;
     const next = moveOnHost(placed, this.hostArrangement(host), key, side, index, h.sides);
-    this.settings.set(ARRANGE_KEY(host), JSON.stringify(next));
+    this.saveArrangement(host, next);
     this.terminal.ok('widgets', `${host}: ${key} → ${side} #${index + 1}`);
+    return true;
+  }
+
+  /** Banner editor: take one attachment off a host (it can come back from the palette). False when it isn't there. */
+  removeHostItem(host: string, key: string): boolean {
+    const h = hostSpec(host);
+    if (!h) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Arrange'); return false; }
+    const placed = this.hostPlaced(host);
+    if (!h.sides.some((s) => (placed[s] ?? []).some((p) => p.key === key))) return false;
+    this.saveArrangement(host, removeFromHost(placed, this.hostArrangement(host), key, h.sides));
+    this.terminal.ok('widgets', `${host}: ${key} removed`);
+    return true;
+  }
+
+  /** Banner editor: put a widget from the palette on a host at a side and position (default: the end of the last side). */
+  addHostItem(host: string, key: string, side?: string, index?: number): boolean {
+    const h = hostSpec(host);
+    if (!h) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Arrange'); return false; }
+    if (!this.hostPalette(host).some((p) => p.key === key)) return false;
+    const placed = this.hostPlaced(host);
+    const at = side && h.sides.includes(side) ? side : this.hostArrangement(host)[key]?.at ?? h.sides[h.sides.length - 1]!;
+    const prev = this.hostArrangement(host);
+    this.saveArrangement(host, addToHost(placed, prev, key, at, index ?? (placed[at] ?? []).length, h.sides, h.types));
+    this.terminal.ok('widgets', `${host}: ${key} added on the ${at}`);
+    return true;
+  }
+
+  /** Banner editor palette: every existing asset of a type the host takes that isn't on it now (removed ones first). */
+  hostPalette(host: string): { key: string; type: string; id: string; name: string; removed: boolean }[] {
+    const h = hostSpec(host);
+    if (!h) return [];
+    const candidates = h.types.flatMap((t) => this.registry.list(t as AssetType).map((a) => ({ type: t, id: a.id })));
+    return hostPalette(this.hostPlaced(host), this.hostArrangement(host), candidates, h.types)
+      .map((p) => ({ ...p, name: this.registry.get(p.type as AssetType, p.id)?.name ?? p.id }));
+  }
+
+  /** Earlier arrangements of each host this session (raw setting values, '' = none), newest last; Undo pops one. */
+  private arrangeUndo = new Map<string, string[]>();
+
+  /** Save a host's arrangement (a look setting, so it reaches every app through the hub) and remember the old one for Undo. */
+  private saveArrangement(host: string, next: HostArrangement | null): void {
+    const raw = this.settings.get(ARRANGE_KEY(host));
+    const stack = this.arrangeUndo.get(host) ?? [];
+    stack.push(typeof raw === 'string' ? raw : '');
+    if (stack.length > 50) stack.shift();
+    this.arrangeUndo.set(host, stack);
+    if (next && Object.keys(next).length) this.settings.set(ARRANGE_KEY(host), JSON.stringify(next));
+    else this.settings.clear(ARRANGE_KEY(host));
+    this.set({});
+  }
+
+  /** Can the last change to a host's arrangement be undone? */
+  canUndoArrange(host: string): boolean { return (this.arrangeUndo.get(host)?.length ?? 0) > 0; }
+
+  /** Undo the last move, remove, add or reset on a host. */
+  undoHostArrangement(host: string): boolean {
+    const stack = this.arrangeUndo.get(host);
+    if (!stack?.length || !this.canArrange()) return false;
+    const raw = stack.pop()!;
+    if (raw) this.settings.set(ARRANGE_KEY(host), raw);
+    else this.settings.clear(ARRANGE_KEY(host));
+    this.terminal.ok('widgets', `${host}: undo`);
     this.set({});
     return true;
   }
 
-  /** Back to where the host and its modules put everything. */
+  /** Back to where the host and its modules put everything (removed widgets come back, added ones go). */
   resetHostArrangement(host: string): void {
     if (!this.canArrange()) return;
-    this.settings.clear(ARRANGE_KEY(host));
+    this.saveArrangement(host, null);
     this.terminal.ok('widgets', `${host}: arrangement reset`);
-    this.set({});
   }
 
   /** Is a host in arrange mode? With no host: is any? */
@@ -2187,6 +2250,11 @@ export class AxfRuntime {
     a.register('widgets.arrange', ([host]) => { const h = host || 'banner'; this.setArranging(this.arranging(h) ? null : h); }, { label: 'Arrange widgets (drag to move)', requires: 'assets.swap', params: true });
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
+    // Banner editor: banner.edit toggles edit mode on the banner (long-press on touch, right-click → Edit banner).
+    a.register('banner.edit', ([v]) => { const on = v === 'on' ? true : v === 'off' ? false : !this.arranging('banner'); this.setArranging(on ? 'banner' : null); }, { label: 'Edit banner (move, remove and add widgets)', requires: 'assets.swap', params: true });
+    a.register('widgets.undo', ([host]) => this.undoHostArrangement(host || 'banner'), { label: 'Undo the last banner change', requires: 'assets.swap', params: true });
+    a.register('widgets.remove', ([host, ...key]) => { if (host && key.length) this.removeHostItem(host, key.join(':')); }, { label: 'Remove a widget from a host', requires: 'assets.swap', params: true, searchable: false });
+    a.register('widgets.add', ([host, ...key]) => { if (host && key.length) this.addHostItem(host, key.join(':')); }, { label: 'Add a widget to a host', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
     // (swap:design-package:next would only move the slot, never apply the package's themes).
@@ -2243,15 +2311,25 @@ export class AxfRuntime {
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
     // Right-click a widget host (banner, toolbar): arrange its widgets (drag + snap) or put them back.
-    this.contextExtras.set('*:widgets', (target) => {
-      const host = target && hostSpec(target) ? target : null;
-      if (!host || !this.canArrange() || !Object.values(this.hostPlaced(host)).some((l) => l.length)) return [];
-      const items: import('./engines/windows').MenuEntry[] = [{ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
-      if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
-      return items;
-    });
+    // Banner editor: right-clicking the banner opens a short menu that leads with Edit banner (its own target extras,
+    // so the long default menu isn't drawn in front of it); every other host keeps Arrange widgets from the rule below.
+    this.contextExtras.set('banner', () => this.hostMenu('banner'));
+    this.contextExtras.set('*:widgets', (target) => (target && target !== 'banner' ? this.hostMenu(target) : []));
     this.contextExtras.set('tab-group', () => wm.groupMenu());
     this.contextExtras.set('window-title', () => wm.windowMenu());
+  }
+
+  /** Right-click entries for a widget host: Edit banner / Arrange widgets, Undo, Put widgets back. */
+  private hostMenu(target: string): import('./engines/windows').MenuEntry[] {
+    const host = hostSpec(target) ? target : null;
+    if (!host || !this.canArrange() || (host !== 'banner' && !Object.values(this.hostPlaced(host)).some((l) => l.length))) return [];
+    const editing = this.arranging(host);
+    const items: import('./engines/windows').MenuEntry[] = host === 'banner'
+      ? [{ id: 'banner-edit', label: editing ? 'Done editing banner' : 'Edit banner…', icon: 'edit', action: 'banner.edit' }]
+      : [{ id: `widgets-arrange-${host}`, label: editing ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
+    if (this.canUndoArrange(host)) items.push({ id: `widgets-undo-${host}`, label: 'Undo last change', icon: 'undo', action: `widgets.undo:${host}` });
+    if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'refresh', action: `widgets.reset:${host}` });
+    return items;
   }
 }
 

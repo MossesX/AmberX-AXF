@@ -1,0 +1,69 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261101-1c2b64bcf9",
+  "createdAt": "2026-11-01T17:34:32.545Z",
+  "updatedAt": "2026-11-01T17:34:33.226Z",
+  "kind": "build",
+  "title": "# hub-look-all-assets — one look from axHub, every app ships every shareable asset Replaces build `…",
+  "asked": "# hub-look-all-assets — one look from axHub, every app ships every shareable asset Replaces build `hub-only-look` (stopped ~1 min in; merge `claude/hub-only-look` first only if it has commits, otherwise ignore it). Brett, Nov 1 2026 (verbatim): - \"The apps should only get appearance from axhub period.\" - \"if you select design package in one app it changes it for all! Any theme change applies to all.\" - \"They all gotta ship all assets that can be shared bruh!\" The look is the shared document `shared/settings/appearance.json` on axHub's data server (framework `HubAppearanceSource`; runtime `attachAppearanceSource` / `applyAppearance` / `pushAppearance`). Today an id the hub names that an app doesn't ship is skipped (\"not in this app, kept the default\"), so apps drift. Measured on main (1156332c): framework/assets has 470 assets, 506 across all apps; console-web ships 415, axhub-web 384, amberx-droid 396, walkthrough-studio 393, demo 446, patches-web 102. PR #224 already made a hub-applied look bring the console back to Main and closed the Active assets pane by default. ## Part A — every app ships every shareable asset 1. Define \"shareable\": every asset type except the ones that are inherently one app's (decide from schemas/asset-types.json: e.g. `uac-policy`, `settings`, app-specific `help` packs, anything that only makes sense with one app's views). Write the rule into schemas/asset-types.json as a per-type flag (e.g. `\"shared\": false`) so it is data, not code, and mirror it in the Kotlin kernel. 2. One source of truth for shareable assets: framework/assets (+ framework/brand-library). Assets that live only in one app today but are shareable (e.g. axhub-web's `context-menu/axhub-web`, `nav-menu/axhub-web`, `toolbar/axhub-web`; console's `branding/amberx-brand-014`, `interface/amberx-signature`; whatever the diff finds) move into framework/assets. Where an app copy differs from the framework copy with the same id, keep the newer/app-tuned one in the framework and report each conflict. 3. Apps get the full shared set automatically at build time (vite plugin / the bake step / `framework/cli/app-assets.mjs` — pick the cleanest; prefer generated over hand-copied files so they can never drift again). App-local copies of shared assets are removed from apps/*/src/assets. Apps keep only their own non-shared assets. 4. CI check (framework/cli check script wired into existing checks): fails if any app is missing a shareable asset, or if an app holds its own copy of one. 5. Android (`framework/android`, `apps/amberx-droid` native parts): same set, same rule. 6. Patches: if its edited baked files block this, move the edits into the framework where they're plain improvements; otherwise report exactly what blocks it. ## Part B — appearance only from axHub 1. Remove the follow switch: `APPEARANCE_FOLLOW_KEY` (`axf.hub.appearance.follow`), `appearanceFollowing` / `setAppearanceFollowing` / `syncAppearanceFollow`, the `appearance.hub` action, the \"Get the look from axHub\" row (framework/libs/settings, framework/libs/hubstatus), help packs. Clear any saved `false` on start (one-time, logged). 2. Console interface tabs (`apps/console-web/src/interfaceTabs.tsx`, `InterfaceScope`): tabs drawing the app under an interface's own look break the rule. Main only; no tab bar with one tab; default `console.interfaceTabs` = []. Applying an interface still works via `applyInterface` (goes to the hub). Remove `scoped()` and its tests if nothing else needs it. 3. Remove `AXF_APPEARANCE_HUB=off` / `appearanceHub: 'off'` (console server + `apps/console-web/src/hubAppearance.tsx`). No hub = waiting screen (decided Oct 20 2026). 4. Every AmberX app attaches the hub source unconditionally (no `if (manifest.developer?.hub)` gate; default `DEFAULT_HUB`). hubsync's `off` look state goes (`own` stays: still the hub). 5. Look tweaks kept on one device today (Sliders, per-asset tokens, `isAppearanceSetting` keys, `scope: 'device'` look keys) must reach the hub and apply…",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "session": "af198f8e-102",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-01T17:34:32.545Z",
+  "finishedAt": "2026-11-01T17:34:33.226Z",
+  "lastSeenAt": "2026-11-01T17:34:32.545Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Starting",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/hub-look-all-assets",
+    "branch": "claude/hub-look-all-assets",
+    "base": "1156332cec82a5a2c8a21252f72fde296f3bf986",
+    "head": "1156332cec82a5a2c8a21252f72fde296f3bf986",
+    "pushed": true,
+    "dirty": 12,
+    "files": [
+      "_claude/sessions/",
+      "changes/2026/11/chg-20261101-2b7c5db07b.json",
+      "changes/2026/11/chg-20261101-2f247c6891.json",
+      "changes/2026/11/chg-20261101-5a98df913a.json",
+      "changes/2026/11/chg-20261101-5d59b692a8.json",
+      "changes/2026/11/chg-20261101-a83c2abebc.json",
+      "changes/2026/11/chg-20261101-c501acb3f3.json",
+      "changes/2026/11/chg-20261101-dd4adcce3d.json",
+      "changes/2026/11/chg-20261101-ebabdc3fed.json",
+      "sessions/archive/2026/11/cc-62bd7be6-1f14-495b-b324-ddf6ad9013f9.json",
+      "sessions/archive/2026/11/cc-c33bc905-9b60-4381-ab7a-b395130ab59d.json",
+      "sessions/archive/2026/11/cc-ef566660-e59d-46a8-8c2c-7a14cbed0c22.json"
+    ],
+    "at": "2026-11-01T17:34:33.364Z"
+  }
+}

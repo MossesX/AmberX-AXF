@@ -142,7 +142,7 @@ export function useArrange(host: string, placed: Record<string, PlacedAttachment
               icon="x"
               label={`Remove ${p.id}`}
               className="fx-arrange__remove"
-              data-axf-help-id="banner-editor.remove"
+              data-help="banner-editor.remove"
               onPointerDown={(e) => e.stopPropagation()}
               onClickCapture={(e) => e.stopPropagation()}
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); rt.removeHostItem(host, p.key); }}
@@ -194,13 +194,13 @@ export function ArrangeBar({ host, label }: { host: string; label: string }) {
   const editor = host === 'banner';
   const palette = rt.hostPalette(host);
   return (
-    <div className={`fx-arrange__bar fx-row${editor ? ' fx-arrange__bar--editor' : ''}`} role="toolbar" aria-label={editor ? 'Edit banner' : `Arrange ${label}`} data-fx-ctx-ignore="" data-axf-help-id={editor ? 'banner-editor.bar' : undefined}>
+    <div className={`fx-arrange__bar fx-row${editor ? ' fx-arrange__bar--editor' : ''}`} role="toolbar" aria-label={editor ? 'Edit banner' : `Arrange ${label}`} data-fx-ctx-ignore="" data-help={editor ? 'banner-editor.bar' : undefined}>
       <span className="fx-arrange__hint">{editor ? 'Drag widgets to move them; they snap into place. × or drag off the bar removes one.' : `Drag the ${label} widgets to arrange them. They snap into place.`}</span>
       <span className="fx-arrange__actions fx-row">
-        <Button size="sm" tone="quiet" icon="plus" aria-expanded={adding} data-axf-help-id="banner-editor.add" onClick={() => setAdding((v) => !v)} disabled={!palette.length && !adding}>Add{palette.length ? ` (${palette.length})` : ''}</Button>
-        <Button size="sm" tone="quiet" icon="undo" data-axf-help-id="banner-editor.undo" disabled={!rt.canUndoArrange(host)} onClick={() => rt.undoHostArrangement(host)}>Undo</Button>
-        <Button size="sm" tone="quiet" icon="refresh" data-axf-help-id="banner-editor.reset" disabled={!Object.keys(rt.hostArrangement(host)).length} onClick={() => rt.resetHostArrangement(host)}>Reset</Button>
-        <Button size="sm" tone="primary" icon="check" data-axf-help-id="banner-editor.done" onClick={() => rt.setArranging(null)}>Done</Button>
+        <Button size="sm" tone="quiet" icon="plus" aria-expanded={adding} data-help="banner-editor.add" onClick={() => setAdding((v) => !v)} disabled={!palette.length && !adding}>Add{palette.length ? ` (${palette.length})` : ''}</Button>
+        <Button size="sm" tone="quiet" icon="undo" data-help="banner-editor.undo" disabled={!rt.canUndoArrange(host)} onClick={() => rt.undoHostArrangement(host)}>Undo</Button>
+        <Button size="sm" tone="quiet" icon="refresh" data-help="banner-editor.reset" disabled={!Object.keys(rt.hostArrangement(host)).length} onClick={() => rt.resetHostArrangement(host)}>Reset</Button>
+        <Button size="sm" tone="primary" icon="check" data-help="banner-editor.done" onClick={() => rt.setArranging(null)}>Done</Button>
       </span>
       {adding && (
         <div className="fx-arrange__palette" role="list" aria-label="Widgets you can add">

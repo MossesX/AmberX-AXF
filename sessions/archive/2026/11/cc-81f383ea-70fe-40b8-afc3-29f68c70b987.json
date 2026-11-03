@@ -1,0 +1,86 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-81f383ea-70fe-40b8-afc3-29f68c70b987",
+ "source": "claude-code",
+ "sessionId": "81f383ea-70fe-40b8-afc3-29f68c70b987",
+ "project": "axhub",
+ "title": "# Relaunch of axhub-mcp-service (Opus) The original build `axhub-mcp-service` died instantly on the weekly usage limit …",
+ "startedAt": "2026-11-03T10:51:13.960Z",
+ "endedAt": "2026-11-03T10:58:47.642Z",
+ "minutes": 8,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/axhub-mcp-service-2",
+  "repo": "",
+  "branch": "claude/axhub-mcp-service-2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-03T10:51:14.746Z",
+   "kind": "prompt",
+   "text": "# Relaunch of axhub-mcp-service (Opus) The original build `axhub-mcp-service` died instantly on the weekly usage limit (Nov 2). Its full brief is at /root/axf-builds/axhub-mcp-service/.brief.md: read that file first and do exactly what it asks, on this branch (claude/axhub-mcp-service-2). Summary: add an `mcp` service type to axHub (connect outside MCP servers as axHub services) plus a `hostinger-mcp` service; writes need confirm. Check origin/main first and don't redo anything already landed. Brett OK'd auto-merge for this build: when tests pass, open the PR and land it. One session, no sub-…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 74,
+    "output": 35496,
+    "cacheRead": 3332612,
+    "cacheWrite": 106545,
+    "thinking": 10042
+   },
+   "costUsd": 1.9096,
+   "costEstimated": false,
+   "seconds": 452,
+   "tools": {
+    "Bash": 37
+   },
+   "commands": 37,
+   "files": [],
+   "changeIds": [
+    "chg-20261103-f66be1e9c0"
+   ],
+   "features": [
+    "plan:axhub-mcp-service"
+   ],
+   "output": "The `mcp` service type and the `hostinger-mcp` service are built. All 526 tests pass on Node 22, and the work is in **PR #31**. The push banner merges it once CI is green. I couldn't read CI status myself (the GitHub token isn't allowed to), and nothing is deployed. Most of the `mcp` type was alrea…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261103-f66be1e9c0"
+ ],
+ "features": [
+  "plan:axhub-mcp-service"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 74,
+  "output": 35496,
+  "cacheRead": 3332612,
+  "cacheWrite": 106545,
+  "thinking": 10042,
+  "costUsd": 1.9096,
+  "costEstimated": false,
+  "toolCalls": 37,
+  "commands": 37,
+  "filesTouched": 0,
+  "reportedUsd": 2.2291
+ },
+ "ingestedAt": "2026-11-03T10:58:48.422Z"
+}
