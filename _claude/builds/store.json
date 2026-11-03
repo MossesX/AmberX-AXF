@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 548,
- "updatedAt": "2026-11-03T23:14:44.930Z",
+ "rev": 549,
+ "updatedAt": "2026-11-03T23:16:50.048Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -65819,7 +65819,7 @@
    "branch": "claude/molly-banners",
    "pr": "",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-03T22:12:39.537Z",
+   "updatedAt": "2026-11-03T23:12:55.949Z",
    "builtAt": "",
    "notes": [
     {
@@ -65867,12 +65867,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:11:54.743Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:04:42.487Z"
+     "updatedAt": "2026-11-03T23:13:25.852Z"
     },
     {
      "id": "s3",
@@ -65889,12 +65889,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:12:55.949Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T22:04:42.487Z"
+     "updatedAt": "2026-11-03T23:13:25.852Z"
     },
     {
      "id": "s4",
@@ -65949,10 +65949,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T22:04:42.483Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw18k16w0613jq": "2026-11-03T22:04:42.487Z",
+     "st-mw18k16w07ser7": "2026-11-03T22:04:42.487Z",
+     "st-mw18k16w08jx3j": "2026-11-03T22:04:42.487Z",
+     "st-mw18k16w0997jg": "2026-11-03T22:04:42.487Z",
+     "st-mw18k16w0anlxv": "2026-11-03T22:04:42.487Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T22:04:42.487Z",
    "rearranged": false,
@@ -66611,7 +66627,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw1an31y08kual",
+     "uid": "st-mw1adfon08byz9",
      "title": "",
      "text": "Land #270 auto-land first",
      "model": "Opus",
@@ -66628,12 +66644,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "createdAt": "2026-11-03T22:55:32.443Z",
+     "updatedAt": "2026-11-03T22:55:32.443Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw1an31y09ppg8",
+     "uid": "st-mw1adfon09n9wc",
      "title": "",
      "text": "Land #265-#269, #271-#277 oldest first (update from main, resolve, CI green, merge)",
      "model": "Opus",
@@ -66650,12 +66666,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "createdAt": "2026-11-03T22:55:32.443Z",
+     "updatedAt": "2026-11-03T22:55:32.443Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw1an31y0ants3",
+     "uid": "st-mw1adfon0acxc1",
      "title": "",
      "text": "Land #280-#283, #285-#289",
      "model": "Opus",
@@ -66672,12 +66688,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "createdAt": "2026-11-03T22:55:32.443Z",
+     "updatedAt": "2026-11-03T22:55:32.443Z"
     },
     {
      "id": "s4",
-     "uid": "st-mw1an31y0bn4qk",
+     "uid": "st-mw1adfon0bjteu",
      "title": "",
      "text": "Land #290-#292 and #279",
      "model": "Opus",
@@ -66694,12 +66710,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "createdAt": "2026-11-03T22:55:32.443Z",
+     "updatedAt": "2026-11-03T22:55:32.443Z"
     },
     {
      "id": "s5",
-     "uid": "st-mw1an31y0c6l63",
+     "uid": "st-mw1adfon0cl6wg",
      "title": "",
      "text": "Close #267 as superseded by #284",
      "model": "Opus",
@@ -66716,12 +66732,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "createdAt": "2026-11-03T22:55:32.443Z",
+     "updatedAt": "2026-11-03T22:55:32.443Z"
     },
     {
      "id": "s6",
-     "uid": "st-mw1an31y0dvaoi",
+     "uid": "st-mw1adfon0djrrf",
      "title": "",
      "text": "Redeploy console, Molly, axHub web, demo; confirm up",
      "model": "Opus",
@@ -66738,12 +66754,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "createdAt": "2026-11-03T22:55:32.443Z",
+     "updatedAt": "2026-11-03T22:55:32.443Z"
     },
     {
      "id": "s7",
-     "uid": "st-mw1an31y0eizui",
+     "uid": "st-mw1adfon0el0oz",
      "title": "",
      "text": "Report, older-PR list for Brett, THREADS",
      "model": "Opus",
@@ -66760,24 +66776,24 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-03T23:03:01.355Z",
-     "updatedAt": "2026-11-03T23:03:01.355Z"
+     "createdAt": "2026-11-03T22:55:32.443Z",
+     "updatedAt": "2026-11-03T22:55:32.443Z"
     }
    ],
    "profiles": [
     "current"
    ],
    "order": {
-    "current": 16
+    "current": 17
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-03T23:03:01.355Z",
+   "defaultAt": "2026-11-03T22:55:32.443Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

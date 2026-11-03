@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T23:14:44.930Z",
+ "updatedAt": "2026-11-03T23:16:50.048Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6398,7 +6398,7 @@
    "branch": "claude/molly-banners",
    "pr": "",
    "createdAt": "2026-11-03T22:04:42.483Z",
-   "updatedAt": "2026-11-03T22:12:39.537Z",
+   "updatedAt": "2026-11-03T23:12:55.949Z",
    "builtAt": "",
    "notes": [
     {
@@ -6440,8 +6440,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:11:54.743Z",
      "note": "",
      "uid": "st-mw18k16w07ser7"
     },
@@ -6458,8 +6458,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:12:55.949Z",
      "note": "",
      "uid": "st-mw18k16w08jx3j"
     },
@@ -7030,7 +7030,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1an31y08kual"
+     "uid": "st-mw1adfon08byz9"
     },
     {
      "id": "s2",
@@ -7048,7 +7048,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1an31y09ppg8"
+     "uid": "st-mw1adfon09n9wc"
     },
     {
      "id": "s3",
@@ -7066,7 +7066,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1an31y0ants3"
+     "uid": "st-mw1adfon0acxc1"
     },
     {
      "id": "s4",
@@ -7084,7 +7084,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1an31y0bn4qk"
+     "uid": "st-mw1adfon0bjteu"
     },
     {
      "id": "s5",
@@ -7102,7 +7102,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1an31y0c6l63"
+     "uid": "st-mw1adfon0cl6wg"
     },
     {
      "id": "s6",
@@ -7120,7 +7120,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1an31y0dvaoi"
+     "uid": "st-mw1adfon0djrrf"
     },
     {
      "id": "s7",
@@ -7138,7 +7138,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw1an31y0eizui"
+     "uid": "st-mw1adfon0el0oz"
     }
    ]
   }
