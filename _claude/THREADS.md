@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:17 UTC · `land-everything` note (urgent) · foreign-write
 - 2026-11-03 17:19 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:22 UTC · `console-wake` added (6 steps) (urgent) · orchestrator
 - 2026-11-03 17:22 UTC · `console-wake` → running (urgent) · orchestrator
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:46 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
 - 2026-11-03 21:46 UTC · `molly-console-commands` s3 done (current) · orchestrator
 - 2026-11-03 21:46 UTC · `molly-console-commands` s4 done (current) · orchestrator
+- 2026-11-03 21:47 UTC · `plugin-settings-placement` branch claude/plugin-settings-placement, note (current) · reconciler
