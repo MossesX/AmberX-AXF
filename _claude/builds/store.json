@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 461,
- "updatedAt": "2026-11-03T21:05:24.242Z",
+ "rev": 462,
+ "updatedAt": "2026-11-03T21:05:32.104Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55535,7 +55535,7 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/home-cards-live",
-   "pr": "",
+   "pr": "#283",
    "createdAt": "2026-11-03T19:43:04.673Z",
    "updatedAt": "2026-11-03T21:05:22.440Z",
    "builtAt": "",
@@ -55547,6 +55547,10 @@
     {
      "text": "Reconciler: branch claude/home-cards-live (no PR yet)",
      "at": "2026-11-03T21:00:30.825Z"
+    },
+    {
+     "text": "Reconciler: PR #283",
+     "at": "2026-11-03T21:03:58.646Z"
     }
    ],
    "approvals": [],
@@ -55693,7 +55697,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
