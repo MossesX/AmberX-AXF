@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 260,
- "updatedAt": "2026-11-03T17:16:52.812Z",
+ "rev": 261,
+ "updatedAt": "2026-11-03T17:17:02.135Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50544,7 +50544,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T17:09:41.054Z",
+   "updatedAt": "2026-11-03T17:17:00.392Z",
    "builtAt": "",
    "notes": [
     {
@@ -50594,6 +50594,10 @@
     {
      "text": "Landed claude/theme-editor (PR #243) on main at 6f20dd54",
      "at": "2026-11-03T17:09:41.054Z"
+    },
+    {
+     "text": "Landed claude/model-upgrade-approval (PR #253) on main at 03d1d75f",
+     "at": "2026-11-03T17:17:00.392Z"
     }
    ],
    "approvals": [],
@@ -50850,7 +50854,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
