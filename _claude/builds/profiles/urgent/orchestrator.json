@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:52:39.674Z",
+ "updatedAt": "2026-11-03T18:54:26.495Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3504,7 +3504,7 @@
    "branch": "claude/toolbar-tap-confirm",
    "pr": "#272",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:52:37.784Z",
+   "updatedAt": "2026-11-03T18:54:23.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -3514,6 +3514,10 @@
     {
      "text": "Part 1 (s1-s7) in PR #272, UI Review r-20261103-6815df1d. s8-s12 Opus next; s13-s14 Fable need Brett's upgrade approval.",
      "at": "2026-11-03T18:52:37.784Z"
+    },
+    {
+     "text": "Reconciler: PR #272 names s8 done",
+     "at": "2026-11-03T18:54:23.691Z"
     }
    ],
    "approvals": [],
@@ -3658,9 +3662,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:54:23.691Z",
+     "note": "PR #272 (claude/toolbar-tap-confirm)",
      "uid": "st-mw10nvlk0ti8km"
     },
     {

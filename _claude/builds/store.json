@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 345,
- "updatedAt": "2026-11-03T18:52:39.674Z",
+ "rev": 346,
+ "updatedAt": "2026-11-03T18:54:26.495Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53885,7 +53885,7 @@
    "branch": "claude/toolbar-tap-confirm",
    "pr": "#272",
    "createdAt": "2026-11-03T18:23:45.044Z",
-   "updatedAt": "2026-11-03T18:52:37.784Z",
+   "updatedAt": "2026-11-03T18:54:23.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -53895,6 +53895,10 @@
     {
      "text": "Part 1 (s1-s7) in PR #272, UI Review r-20261103-6815df1d. s8-s12 Opus next; s13-s14 Fable need Brett's upgrade approval.",
      "at": "2026-11-03T18:52:37.784Z"
+    },
+    {
+     "text": "Reconciler: PR #272 names s8 done",
+     "at": "2026-11-03T18:54:23.691Z"
     }
    ],
    "approvals": [],
@@ -54069,12 +54073,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 2,
+     "done": true,
+     "doneAt": "2026-11-03T18:54:23.691Z",
+     "note": "PR #272 (claude/toolbar-tap-confirm)",
+     "rev": 3,
      "createdAt": "2026-11-03T18:23:45.045Z",
-     "updatedAt": "2026-11-03T18:24:02.876Z"
+     "updatedAt": "2026-11-03T18:54:23.692Z"
     },
     {
      "id": "s9",
@@ -54371,7 +54375,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
