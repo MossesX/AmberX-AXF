@@ -123,12 +123,11 @@ export function mergeOrchestratorDocs(a, b) {
   return out;
 }
 
-/** Journal files (JSON lines, append-only): the union of both, each line once, in time order. */
+/** Journal files (JSON lines, append-only): the first text as it is, then every line of the others it lacks, in order. */
 export function mergeJournalText(...texts) {
   const seen = new Set(); const lines = [];
   for (const t of texts) for (const l of str(t).split('\n')) { if (!l.trim() || seen.has(l)) continue; seen.add(l); lines.push(l); }
-  const at = (l) => { try { return str(JSON.parse(l).at); } catch { return ''; } };
-  return lines.map((l, i) => ({ l, i, at: at(l) })).sort((x, y) => (x.at === y.at ? x.i - y.i : x.at < y.at ? -1 : 1)).map((x) => x.l).join('\n') + (lines.length ? '\n' : '');
+  return lines.length ? `${lines.join('\n')}\n` : '';
 }
 
 /** One line per live change for the threads log: when, build, what changed, profile, who. */

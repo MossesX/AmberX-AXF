@@ -26,7 +26,7 @@ import * as merge from '../plan/builds-merge-core.mjs';
 import { plan } from '../plan/builds-reconcile-core.mjs';
 import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
-import { liveStatus, pullMain, install } from './builds-live.mjs';
+import { liveStatus, syncAll, install } from './builds-live.mjs';
 import { createGitHub, parseRepo } from './github.mjs';
 
 export const reportFile = () => {
@@ -99,7 +99,7 @@ export function applyPlan(p, by = 'reconciler') {
 export async function reconcile({ apply = false, gh, repo } = {}) {
   const at = new Date().toISOString();
   install(); // the merge driver for builds files, once per clone
-  const pulled = apply ? pullMain() : { ok: true, skipped: 'dry run' };
+  const pulled = apply ? syncAll() : { ok: true, skipped: 'dry run' };
   const store = loadStore();
   const builds = store.builds.filter((b) => !b.deleted);
   let gathered; let error = '';

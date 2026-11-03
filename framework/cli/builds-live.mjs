@@ -23,6 +23,7 @@
  *   node framework/cli/builds-live.mjs status [--json]        outbox size, last publish, last error
  *   … flush                                                   publish the outbox now (waits for it)
  *   … pull                                                    take main's newer builds into this checkout
+ *   … sync                                                    flush, send builds newer here than on main, then pull (session start)
  *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
  *   … install                                                 git merge driver for the builds files (this clone)
  *   … merge-driver <base> <ours> <theirs> <path>              (git calls it) newer-wins merge of a builds file
@@ -33,7 +34,7 @@
  * the writing process instead of a background one (tests); AXF_CONSOLE_ROOT (default /opt/axf; "off" = none).
  */
 import { spawn, spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdtempSync, openSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -181,7 +182,7 @@ export function appendThreads(text, lines) {
  * One publish: main's store + this checkout's changed builds → one commit on main. Returns { ok, sha, files } where
  * files = { rel: text } is what main holds now for every builds file (for the pull), or { ok: false, error }.
  */
-export function publish(entries) {
+export function publish(entries, { journalExtra = {} } = {}) {
   const records = recordsOf(entries);
   const ids = records.map((r) => r.id);
   const ref = `refs/remotes/${remote()}/${branch()}`;
@@ -201,6 +202,7 @@ export function publish(entries) {
     files[STORE_REL] = taken.length ? storeText(merged) : mainText ?? storeText(merged);
     const months = new Map();
     for (const e of entries) { const m = String(e.at ?? now).slice(0, 7); if (!months.has(m)) months.set(m, []); months.get(m).push(JSON.stringify(e)); }
+    for (const [m, lines] of Object.entries(journalExtra)) { if (!months.has(m)) months.set(m, []); months.get(m).unshift(...lines); }
     for (const [m, lines] of months) { const rel = `${JOURNAL_REL}/${m}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', lines.join('\n')); }
     const threadLines = entries.flatMap((e) => merge.changeLines(e));
     const threads = show(base, THREADS_REL);
@@ -289,6 +291,42 @@ function toConsole(files) {
       writeFileSync(join(root, rel), merge.mergeJournalText(t, mine));
     }
   } catch { /* the console's own update brings main in within 5 minutes */ }
+}
+
+/**
+ * `sync`: both ways at once. Builds this checkout has newer than main (written before live existed, offline, or
+ * queued and lost) go to main in one commit with the journal lines main lacks; then main's newer builds come back.
+ */
+export function syncAll() {
+  if (!liveOn()) return { ok: true, skipped: 'off' };
+  const flushed = flushLive();
+  if (!flushed.ok) return flushed;
+  const ref = `refs/remotes/${remote()}/${branch()}`;
+  const f = git(['fetch', '-q', remote(), `+refs/heads/${branch()}:${ref}`], { timeout: 45000 });
+  if (f.code !== 0) return { ok: false, error: f.err.slice(-300) };
+  const rev = git(['rev-parse', ref]).out;
+  const mainText = show(rev, STORE_REL);
+  const main = mainText ? core.normalizeStore(JSON.parse(mainText)) : core.emptyStore();
+  const local = readStoreNow();
+  const ids = merge.mergeStores(main, local).taken;
+  if (!ids.length) return { ...pullMain(), pushed: [] };
+  const journalExtra = {};
+  for (const m of localJournalMonths()) {
+    const onMain = new Set((show(rev, `${JOURNAL_REL}/${m}.jsonl`) ?? '').split('\n'));
+    let mine = ''; try { mine = readFileSync(join(journalDir(), `${m}.jsonl`), 'utf8'); } catch { continue; }
+    const extra = mine.split('\n').filter((l) => l.trim() && !onMain.has(l));
+    if (extra.length) journalExtra[m] = extra;
+  }
+  const at = new Date().toISOString();
+  const entry = { rev: local.rev, at, by: 'builds-live', action: 'sync', note: `newer here than on ${branch()}: ${ids.join(', ')}`, builds: ids.map((id) => { const b = local.builds.find((x) => x.id === id); const o = main.builds.find((x) => x.id === id); return { id, op: o ? 'change' : 'add', rev: b.rev, before: o ? core.compactBuild(o) : null, after: core.compactBuild(b) }; }) };
+  const r = publish([entry], { journalExtra });
+  if (!r.ok) return r;
+  pullFrom(r.files); toConsole(r.files);
+  if (r.sha) setStatus({ lastOk: at, error: '', lastSha: r.sha });
+  return { ok: true, pushed: ids, sha: r.sha, taken: [] };
+}
+function localJournalMonths() {
+  try { return readdirSync(journalDir()).filter((x) => x.endsWith('.jsonl')).map((x) => x.slice(0, -6)); } catch { return []; }
 }
 
 /** `pull`: fetch main and take its newer builds (session start, before reading). */
@@ -389,6 +427,7 @@ async function main(argv) {
   const [cmd = 'status', ...rest] = args;
   if (cmd === 'status') { const s = liveStatus(); return out({ ok: !s.stuck, ...s }, `live ${s.on ? 'on' : 'off'} → ${s.remote}/${s.branch} · ${s.queued} queued · last publish ${s.lastOk || 'never'}${s.lastSha ? ` (${s.lastSha.slice(0, 8)})` : ''}${s.error ? `\nlast error ${s.lastError}: ${s.error}` : ''}`); }
   if (cmd === 'flush') { const r = flushLive(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `flush skipped (${r.skipped})` : `published ${r.commits.length} commit(s) ${r.commits.map((c) => c.slice(0, 8)).join(' ')}`) : `not published: ${r.error}`); }
+  if (cmd === 'sync') { const r = syncAll(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `synced: sent ${r.pushed?.length ?? 0} build(s)${r.pushed?.length ? ` (${r.pushed.join(', ')})` : ''}, took ${r.taken?.length ?? 0} from main${r.taken?.length ? ` (${r.taken.join(', ')})` : ''}`) : `sync failed: ${r.error}`); }
   if (cmd === 'pull') { const r = pullMain(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `pulled: ${r.taken.length} build(s) newer on main${r.taken.length ? ` (${r.taken.join(', ')})` : ''}`) : `pull failed: ${r.error}`); }
   if (cmd === 'link') {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('link <build> [--branch b] [--pr n] [--merged [iso]]');

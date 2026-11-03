@@ -143,7 +143,7 @@ async function main() {
   const mu = merge.mergeBuild(base, newerUndo);
   check(!mu.steps[3].done && mu.steps[0].done, 'a newer undo wins for that step only');
   check(mu.branch === base.branch, 'a blank branch never wipes a set one');
-  check(merge.mergeJournalText('{"at":"2"}\n{"at":"1"}\n', '{"at":"1"}\n{"at":"3"}\n') === '{"at":"1"}\n{"at":"2"}\n{"at":"3"}\n', 'journal union: each line once, time order');
+  check(merge.mergeJournalText('{"at":"2"}\n{"at":"1"}\n', '{"at":"1"}\n{"at":"3"}\n') === '{"at":"2"}\n{"at":"1"}\n{"at":"3"}\n', 'journal union: the first file as it is, then each new line once');
   check(merge.liveStatus({ status: 'running', pr: '#5', steps: [{ done: true }] }) === 'built' && merge.liveStatus({ status: 'running', pr: '#5', mergedAt: 'x', steps: [{ done: true }] }) === 'complete' && merge.liveStatus({ status: 'running', steps: [{ done: true }] }) === 'complete', 'liveStatus: built until merged, complete without a PR');
   check(merge.liveStatus({ status: 'archived', pr: '#5', steps: [{ done: true }] }) === 'archived' && merge.liveStatus({ status: 'complete', steps: [{ done: false }] }) === 'complete', 'liveStatus keeps archived and built-without-ticks');
 
