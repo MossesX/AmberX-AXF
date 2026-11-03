@@ -565,6 +565,8 @@ VPS). The session reads the rules and this file first, as usual.
 
 ## Live build log
 
+<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
+
 - 2026-11-03 16:07 UTC · landed `claude/notes-vault` (PR#256) on main at 5a6311a3 · land-everything
 - 2026-11-03 16:14 UTC · landed `claude/agent-chats-hub` (PR#248) on main at c985c38d · land-everything
 - 2026-11-03 16:24 UTC · landed `claude/kill-patches-pilot` (PR#258) on main at e697c302 · land-everything
@@ -582,9 +584,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:35 UTC · landed `claude/plugin-commands-auto` (PR#263) on main at cdd568c2 · land-everything
 - 2026-11-03 17:42 UTC · landed `claude/axhub-veto-pass-web` (PR#261) on main at bc344492 · land-everything
 - 2026-11-03 17:42 UTC · landed axHub `claude/kill-patches-pilot` (#32) at d3cf462 and `claude/axhub-veto-pass` (#33/#34) at 6334d34, deployed · land-everything
-
-<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
-
 - 2026-11-03 13:53 UTC · `orch-live-sync` s1 done (urgent) · orchestrator
 - 2026-11-03 13:54 UTC · `xlayout` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done (big-dog) · builds-live
 - 2026-11-03 14:45 UTC · `headless-tabs` s1–s7 done (urgent) · PR #259 · UI Review r-20261103-3sp5x01
@@ -730,3 +729,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:56 UTC · `builds-one-page` note (refactor) · foreign-write
 - 2026-11-03 17:56 UTC · `menu-scroll` added (6 steps) (urgent) · orchestrator
 - 2026-11-03 17:59 UTC · `builds-one-page` note (refactor) · foreign-write
+- 2026-11-03 18:01 UTC · `auto-land` added (8 steps) (urgent) · orchestrator
