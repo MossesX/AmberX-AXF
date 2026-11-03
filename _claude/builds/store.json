@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 174,
- "updatedAt": "2026-11-03T12:38:03.676Z",
+ "rev": 184,
+ "updatedAt": "2026-11-03T12:24:23.507Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -279,7 +279,7 @@
    },
    "big-dog": {
     "artifact": "",
-    "updatedAt": "2026-11-03T11:52:58.737Z"
+    "updatedAt": "2026-11-03T12:23:15.428Z"
    }
   }
  },
@@ -48396,15 +48396,15 @@
    "title": "xLayout: Molly as one app (one banner, app menu, nav, context menu, toolbars) + IDE panes + plugin toolbars",
    "category": "Molly",
    "detail": "Brett Nov 2 2026 13:46 ET: Molly is whack. Create application menus, navigation menus, context menus, toolbars and a banner that integrate all the apps (AmberX, axHub web, Dev Console): only ONE banner, application menu, navigation menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps. New plugin xLayout renders it that way. A switch makes it IDE style: draggable, resizable, dockable panes. Plugin toolbars: from the plugin's settings, show/hide up to 3 toolbars and set each default location. A hook in those settings opens a Toolbar designer dialog: pick items from a list of every plugin and screen; each item opens in the main area or a floating window, or (IDE mode on) a pane. Right-clicking any toolbar also has a hook to open the Toolbar designer. IDE mode limits the number of panes and offers ~10 predetermined pane layouts with a preview before applying. Molly-only: standalone, each app stays exactly as it is. Replaces the queued 'Molly: one app' item. Rules: assets/tokens only, framework controls, settings level toolbar, plugin lifecycle, UI Review.",
-   "status": "complete",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T12:30:44.031Z",
-   "builtAt": "2026-11-03T12:30:34.539Z",
+   "updatedAt": "2026-11-03T12:23:15.405Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
@@ -48417,10 +48417,6 @@
     {
      "text": "s3 (pane engine) covered by dock-engine (Urgent, complete on branch claude/molly-fable): core/engines/dock.ts + DockHost. s1-s2 built on Fable on the same branch (xlayout@1, chrome@1). s4-s12 are the Opus phase: run from this branch after it merges.",
      "at": "2026-11-03T11:26:12.532Z"
-    },
-    {
-     "text": "Built: Fable s1-s3 branch claude/molly-fable PR #245; Opus s4-s12 branch claude/xlayout-opus PR #252 (merge after #245). UI Review waiting: group 'xlayout - Nov 3 7:28 AM'.",
-     "at": "2026-11-03T12:30:44.031Z"
     }
    ],
    "approvals": [],
@@ -48507,11 +48503,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:43.652Z",
+     "doneAt": "2026-11-03T12:10:50.866Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s5",
@@ -48529,11 +48525,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:44.135Z",
+     "doneAt": "2026-11-03T12:10:51.267Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s6",
@@ -48551,11 +48547,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:44.527Z",
+     "doneAt": "2026-11-03T12:10:51.670Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s7",
@@ -48573,11 +48569,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:44.948Z",
+     "doneAt": "2026-11-03T12:10:52.072Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s8",
@@ -48595,11 +48591,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:45.351Z",
+     "doneAt": "2026-11-03T12:10:52.492Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s9",
@@ -48617,11 +48613,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:45.841Z",
+     "doneAt": "2026-11-03T12:19:04.835Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s10",
@@ -48639,11 +48635,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:46.219Z",
+     "doneAt": "2026-11-03T12:19:05.493Z",
      "note": "",
-     "rev": 4,
+     "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s11",
@@ -48661,11 +48657,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:46.728Z",
+     "doneAt": "2026-11-03T12:23:15.405Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-03T12:24:20.059Z"
     },
     {
      "id": "s12",
@@ -48682,12 +48678,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:30:34.539Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 1,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:32:14.352Z"
+     "updatedAt": "2026-11-02T18:47:31.125Z"
     }
    ],
    "profiles": [
@@ -48698,17 +48694,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "complete",
+    "status": "pending",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-02T18:47:31.123Z",
-    "builtAt": "2026-11-03T12:30:34.539Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mvzm2laq0d1lyo": "2026-11-02T18:47:31.125Z",
@@ -49347,17 +49343,29 @@
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:38 ET: new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/token-control-opus",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/250",
    "createdAt": "2026-11-03T02:40:26.204Z",
-   "updatedAt": "2026-11-03T02:40:26.204Z",
-   "builtAt": "",
-   "notes": [],
-   "approvals": [],
+   "updatedAt": "2026-11-03T12:24:23.469Z",
+   "builtAt": "2026-11-03T12:24:23.469Z",
+   "notes": [
+    {
+     "text": "All 14 steps done. Fable phase PR #246, Opus phase PR #250 (claude/token-control-opus, contains #246). UI Review r-20261103-f9cd2905 waiting.",
+     "at": "2026-11-03T12:24:22.599Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-03T12:20:41.444Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -49374,12 +49382,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:58.127Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:58.148Z"
     },
     {
      "id": "s2",
@@ -49396,12 +49404,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:58.660Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:58.690Z"
     },
     {
      "id": "s3",
@@ -49418,12 +49426,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:59.253Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:59.277Z"
     },
     {
      "id": "s4",
@@ -49440,12 +49448,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:42.492Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:42.537Z"
     },
     {
      "id": "s5",
@@ -49462,12 +49470,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:43.662Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:43.712Z"
     },
     {
      "id": "s6",
@@ -49484,12 +49492,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:44.965Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:45.015Z"
     },
     {
      "id": "s7",
@@ -49506,12 +49514,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:45.747Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:45.777Z"
     },
     {
      "id": "s8",
@@ -49528,12 +49536,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:46.713Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:46.736Z"
     },
     {
      "id": "s9",
@@ -49550,12 +49558,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:47.303Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:47.334Z"
     },
     {
      "id": "s10",
@@ -49572,12 +49580,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:47.960Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:47.985Z"
     },
     {
      "id": "s11",
@@ -49594,12 +49602,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:48.690Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:48.726Z"
     },
     {
      "id": "s12",
@@ -49616,12 +49624,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:49.411Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:49.442Z"
     },
     {
      "id": "s13",
@@ -49638,12 +49646,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:20:50.101Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:20:50.132Z"
     },
     {
      "id": "s14",
@@ -49660,12 +49668,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T12:24:20.468Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T02:40:26.205Z",
-     "updatedAt": "2026-11-03T02:40:26.205Z"
+     "updatedAt": "2026-11-03T12:24:20.509Z"
     }
    ],
    "profiles": [
@@ -49676,225 +49684,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T02:40:26.205Z",
-   "rearranged": false,
-   "removedSteps": [],
-   "legacy": [],
-   "copies": []
-  },
-  {
-   "id": "console-commands",
-   "title": "Console commands over API, MCP and CLI: Amber loads screens, dialogs, settings and actions in Brett's open console",
-   "category": "Urgent",
-   "detail": "Brett Nov 3 2026 07:16 ET (voice): add console commands to the MCP, the API and the CLI so he can tell Amber (a Claude session) to load screens for him. control@1 console namespace (open view/screen by id/title/search, open dialog, open settings tab/sub-tab, run any registered action, go back, list screens/actions); live delivery to his open console(s); REST + MCP (through axHub) + CLI (axf console open|action|list); navigation only without approval, data-changing actions keep their own policy. Builds on token-control (PR #246 + claude/token-control-opus).",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/console-commands",
-   "pr": "",
-   "createdAt": "2026-11-03T12:20:32.644Z",
-   "updatedAt": "2026-11-03T12:38:03.636Z",
-   "builtAt": "",
-   "notes": [],
-   "approvals": [],
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mw0nosgu0979i4",
-     "title": "",
-     "text": "control@1 console namespace: console.screens/dialogs/settings/actions/nav/clients targets, navigate effect + permission, schema snapshot, fixtures",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:22:56.515Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:22:56.544Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mw0nosgu0aaje1",
-     "title": "",
-     "text": "Pure engine framework/core/engines/console-commands.mjs: catalog, resolve by id/title/search, action effects, delivery message, runner for the console domain",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:25:37.683Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:25:37.722Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mw0nosgu0bv7sx",
-     "title": "",
-     "text": "Token control runner: console domain through a context (catalog + clients) handed in by the console server",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:26:29.935Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:26:29.964Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mw0nosgu0cm4b4",
-     "title": "",
-     "text": "console-commands plugin server: per-user mailbox, SSE stream, hello/seen/ack, console-commands@1 capability, /api/console REST",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:32:14.738Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:32:14.765Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mw0nosgu0dm4pm",
-     "title": "",
-     "text": "Browser client library: stream, catalog publish, run commands through rt.search.focus / dispatch, back history, toast",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:38:02.207Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:38:02.243Z"
-    },
-    {
-     "id": "s6",
-     "uid": "st-mw0nosgu0ewk7v",
-     "title": "",
-     "text": "MCP console_* tools (registered through axHub) + CLI axf console open|dialog|settings|action|back|list",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:38:03.636Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:38:03.676Z"
-    },
-    {
-     "id": "s7",
-     "uid": "st-mw0nosgu0f31n3",
-     "title": "",
-     "text": "Settings sub-tab, help pack, interactive docs entries",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:20:32.644Z"
-    },
-    {
-     "id": "s8",
-     "uid": "st-mw0nosgu0gh2xu",
-     "title": "",
-     "text": "Tests (engine, runner, server), check-theme/check-controls, plugin-lifecycle check, UI Review shots, THREADS, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-03T12:20:32.644Z",
-     "updatedAt": "2026-11-03T12:20:32.644Z"
-    }
-   ],
-   "profiles": [
-    "urgent"
-   ],
-   "order": {
-    "urgent": 5
-   },
-   "kind": "build",
-   "planRef": "",
-   "rev": 7,
-   "deleted": false,
-   "deletedAt": "",
-   "pending": null,
-   "queue": null,
-   "defaultAt": "2026-11-03T12:20:32.644Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T12:38:03.676Z",
+ "updatedAt": "2026-11-03T12:24:23.507Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -351,15 +351,15 @@
    "title": "xLayout: Molly as one app (one banner, app menu, nav, context menu, toolbars) + IDE panes + plugin toolbars",
    "category": "Molly",
    "detail": "Brett Nov 2 2026 13:46 ET: Molly is whack. Create application menus, navigation menus, context menus, toolbars and a banner that integrate all the apps (AmberX, axHub web, Dev Console): only ONE banner, application menu, navigation menu and context menu render, covering the whole page; the user must not be able to tell it is multiple apps. New plugin xLayout renders it that way. A switch makes it IDE style: draggable, resizable, dockable panes. Plugin toolbars: from the plugin's settings, show/hide up to 3 toolbars and set each default location. A hook in those settings opens a Toolbar designer dialog: pick items from a list of every plugin and screen; each item opens in the main area or a floating window, or (IDE mode on) a pane. Right-clicking any toolbar also has a hook to open the Toolbar designer. IDE mode limits the number of panes and offers ~10 predetermined pane layouts with a preview before applying. Molly-only: standalone, each app stays exactly as it is. Replaces the queued 'Molly: one app' item. Rules: assets/tokens only, framework controls, settings level toolbar, plugin lifecycle, UI Review.",
-   "status": "complete",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T12:30:44.031Z",
-   "builtAt": "2026-11-03T12:30:34.539Z",
+   "updatedAt": "2026-11-03T12:23:15.405Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett Nov 2 13:49 ET: the Toolbar designer is its own plugin, not part of xLayout. xLayout calls it through a capability service (e.g. axf.toolbar-designer@1).",
@@ -372,10 +372,6 @@
     {
      "text": "s3 (pane engine) covered by dock-engine (Urgent, complete on branch claude/molly-fable): core/engines/dock.ts + DockHost. s1-s2 built on Fable on the same branch (xlayout@1, chrome@1). s4-s12 are the Opus phase: run from this branch after it merges.",
      "at": "2026-11-03T11:26:12.532Z"
-    },
-    {
-     "text": "Built: Fable s1-s3 branch claude/molly-fable PR #245; Opus s4-s12 branch claude/xlayout-opus PR #252 (merge after #245). UI Review waiting: group 'xlayout - Nov 3 7:28 AM'.",
-     "at": "2026-11-03T12:30:44.031Z"
     }
    ],
    "approvals": [],
@@ -448,7 +444,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:43.652Z",
+     "doneAt": "2026-11-03T12:10:50.866Z",
      "note": "",
      "uid": "st-mvzm2laq0gvbw5"
     },
@@ -466,7 +462,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:44.135Z",
+     "doneAt": "2026-11-03T12:10:51.267Z",
      "note": "",
      "uid": "st-mvzm2laq0h9whn"
     },
@@ -484,7 +480,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:44.527Z",
+     "doneAt": "2026-11-03T12:10:51.670Z",
      "note": "",
      "uid": "st-mvzm2laq0ibbrv"
     },
@@ -502,7 +498,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:44.948Z",
+     "doneAt": "2026-11-03T12:10:52.072Z",
      "note": "",
      "uid": "st-mvzm2laq0j8ndz"
     },
@@ -520,7 +516,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:45.351Z",
+     "doneAt": "2026-11-03T12:10:52.492Z",
      "note": "",
      "uid": "st-mvzm2laq0kh5x0"
     },
@@ -538,7 +534,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:45.841Z",
+     "doneAt": "2026-11-03T12:19:04.835Z",
      "note": "",
      "uid": "st-mvzm2laq0llcwd"
     },
@@ -556,7 +552,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:46.219Z",
+     "doneAt": "2026-11-03T12:19:05.493Z",
      "note": "",
      "uid": "st-mvzm2laq0mvdp5",
      "title": "Toolbar designer as its OWN plugin (toolbar-designer): own folder, plugin.json, install/uninstall, settings sub-tab; dialog lists every plugin + screen, open target main/floating/pane; hooks from xLay"
@@ -575,7 +571,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:29:46.728Z",
+     "doneAt": "2026-11-03T12:23:15.405Z",
      "note": "",
      "uid": "st-mvzm2laq0n3jer"
     },
@@ -592,8 +588,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T12:30:34.539Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
      "uid": "st-mvzm2laq0oes0p"
     }
