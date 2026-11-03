@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 253,
- "updatedAt": "2026-11-03T17:03:32.236Z",
+ "rev": 254,
+ "updatedAt": "2026-11-03T17:03:39.777Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50280,7 +50280,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:48:48.811Z",
+   "updatedAt": "2026-11-03T17:03:38.868Z",
    "builtAt": "",
    "notes": [
     {
@@ -50318,6 +50318,10 @@
     {
      "text": "Landed claude/xlayout-opus (PR #252) on main at bffc2601",
      "at": "2026-11-03T16:48:43.713Z"
+    },
+    {
+     "text": "Landed claude/token-control-opus (PR #250) on main at 0a85ab65",
+     "at": "2026-11-03T17:03:38.868Z"
     }
    ],
    "approvals": [],
@@ -50573,7 +50577,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

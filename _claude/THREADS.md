@@ -634,3 +634,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:48 UTC · `xlayout` → complete, merged (big-dog) · builds-live
 - 2026-11-03 16:48 UTC · `land-everything` s6 done (urgent) · orchestrator
 - 2026-11-03 17:03 UTC · `token-control` → complete, merged (urgent) · builds-live
+- 2026-11-03 17:03 UTC · `land-everything` note (urgent) · orchestrator
