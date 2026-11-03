@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `assistant-no-subagents` PR #167, merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `veto-everywhere` PR #176, merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `agent-voice` PR #177, merged, note (refactor) · reconciler
 - 2026-11-03 13:57 UTC · `pr-only-merge` PR #183, merged, note (refactor) · reconciler
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:05 UTC · `banner-ref-links` added (5 steps) (current) · foreign-write
 - 2026-11-03 21:05 UTC · `home-cards-live` branch claude/home-cards-live (urgent) · builds-live
 - 2026-11-03 21:03 UTC · `home-cards-live` PR #283, note (urgent) · reconciler
+- 2026-11-03 21:05 UTC · `molly-console-commands` added (7 steps) (current) · orchestrator
