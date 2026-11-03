@@ -569,21 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:45 UTC · `console-wake` → built, branch claude/console-wake, PR #266 (urgent) · builds-live
-- 2026-11-03 17:53 UTC · `builds-one-page-done` added (5 steps) (urgent) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page-done` s1 done, → running (urgent) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` → running (refactor) · snap-sully
-- 2026-11-03 17:54 UTC · `builds-one-page` s5 done, s6 done, s12 done, s14 done, note (refactor) · foreign-write
-- 2026-11-03 17:54 UTC · `md-studio` → running (urgent) · orchestrator
-- 2026-11-03 17:54 UTC · `md-studio` note (urgent) · orchestrator
-- 2026-11-03 17:53 UTC · `builds-one-page` s5 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s6 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s12 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` s14 done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` note (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page` branch claude/builds-one-page-done (refactor) · snap-sully
-- 2026-11-03 17:53 UTC · `builds-one-page-done` s2 done (urgent) · snap-sully
-- 2026-11-03 17:56 UTC · `builds-one-page` PR #134, note (refactor) · reconciler
 - 2026-11-03 17:56 UTC · `builds-one-page` note (refactor) · foreign-write
 - 2026-11-03 17:56 UTC · `menu-scroll` added (6 steps) (urgent) · orchestrator
 - 2026-11-03 17:59 UTC · `builds-one-page` note (refactor) · foreign-write
@@ -969,3 +954,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:58 UTC · `molly-nav-submenus` added (10 steps) (current) · foreign-write
 - 2026-11-03 21:58 UTC · `ui-review-predicted` s5 done (urgent) · orchestrator
 - 2026-11-03 21:58 UTC · `ui-review-predicted` s6 done, → built (urgent) · orchestrator
+- 2026-11-03 22:00 UTC · `plugin-settings-placement` PR #289, note (current) · reconciler
+- 2026-11-03 22:01 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `terminal-drag-chain-tree` s2 done (current) · orchestrator
+- 2026-11-03 22:01 UTC · `terminal-sessions-nav` s4 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `banner-ref-links` s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `molly-console-commands` note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `urgent-main-ci-green` s4 done, s5 done, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `whats-new-open-fix` s1 done, note (current) · foreign-write
+- 2026-11-03 22:01 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
+- 2026-11-03 22:01 UTC · `molly-nav-submenus` added (20 steps) (current) · foreign-write
+- 2026-11-03 21:59 UTC · `plugin-settings-placement` PR #289, note (current) · reconciler
+- 2026-11-03 22:02 UTC · `plugin-settings-placement` note (current) · foreign-write
+- 2026-11-03 22:02 UTC · `git-status-board` s3 done, s4 done, s5 done (current) · foreign-write
+- 2026-11-03 22:02 UTC · `terminal-drag-chain-tree` s2 done (current) · foreign-write
+- 2026-11-03 22:02 UTC · `terminal-tabs-left` added (5 steps) (current) · Janitor Joey (terminal-tabs-left session)
