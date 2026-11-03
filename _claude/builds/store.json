@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 398,
- "updatedAt": "2026-11-03T19:55:49.042Z",
+ "rev": 399,
+ "updatedAt": "2026-11-03T19:55:58.347Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -38272,9 +38272,14 @@
    "branch": "claude/batch-manager",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T19:55:40.824Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Predicted shots part (UI Review shows what a build will look like before it runs) moved to urgent build ui-review-predicted (Brett, Nov 3 2026). The real before/after PR screenshots stay here.",
+     "at": "2026-11-03T19:55:40.824Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -38463,7 +38468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -55859,9 +55864,14 @@
    "branch": "claude/ui-review-predicted",
    "pr": "",
    "createdAt": "2026-11-03T19:54:18.485Z",
-   "updatedAt": "2026-11-03T19:54:20.777Z",
+   "updatedAt": "2026-11-03T19:55:30.345Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Agent: Snap Sully (sully), booked as a swarm-run@1 (source assign). Built on main after ui-review-shots s1-s3 (its storage finding: all shots live in the bind-mounted store, nothing to move).",
+     "at": "2026-11-03T19:55:30.345Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -56006,7 +56016,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
