@@ -893,3 +893,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:54 UTC · `ui-review-predicted` added (6 steps) (urgent) · orchestrator
 - 2026-11-03 19:54 UTC · `ui-review-predicted` → running (urgent) · orchestrator
 - 2026-11-03 19:54 UTC · `ui-review-predicted` branch claude/ui-review-predicted (urgent) · builds-live
+- 2026-11-03 19:55 UTC · `agent-pick` branch claude/agent-pick, PR #276 (urgent) · builds-live
