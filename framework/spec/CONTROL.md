@@ -5,7 +5,11 @@ Status: contract since Nov 3 2026 (Urgent build `token-control` s3, Fable). Refe
 (the registry, tools, routes, CLI usage and JSON Schema; `check-control.mts` keeps it equal). Fixture: `framework/spec/fixtures/control.json`.
 Transports (the Opus phase of the same build): the console's REST routes under `/api/control`, the MCP tools `control_*` on the console's
 `/mcp` and through axHub, the CLI `axf control …` with the aliases `axf token | note | todo | task | list | plan | build …`, and the shared
-JS client. Kotlin twin deferred (Android on hold); the Python mirror lands with the MCP server.
+JS client. Kotlin twin deferred (Android on hold). The transports run one Node runner (no Python mirror needed): the
+Token control plugin (`apps/console-web/plugins/token-control`, capability `control@1`, Nov 3 2026) — `control.mjs`
+(runner + CLI), `server/__init__.py` (REST; main.py mounts it at `/api/control`), the console MCP's `control_*` tools
+(`mcp_server.py` → the capability), `web/client.mjs` (shared client). Token sets write `axf.tokens.<set>` overrides into
+the appearance document (`core/engines/control-tokens.mjs`); the runtime applies them in `compileStyles`.
 
 ## Why one schema
 
