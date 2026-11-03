@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 252,
- "updatedAt": "2026-11-03T16:48:49.605Z",
+ "rev": 253,
+ "updatedAt": "2026-11-03T17:03:32.236Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49718,14 +49718,15 @@
    "title": "Token control plugin: API + MCP + CLI for every token, AmberX tasks/to-dos/notes and the planner, interactive docs",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:38 ET: new plugin, powerful API and MCP and CLI server/client that can change every single token (theme, style, layout); every layout parameter is a token. Connect MCP, API and CLI to Claude and axHub. API and MCP control every aspect of AmberX tasks, to-dos and notes, and the console's planner (Brett: both Plan Studio and the Build orchestrator). Extensive interactive documentation. Folds in the dead VPS build amberx-full-mcp-api (do not relaunch it separately). Overlaps the blocked interactive docs engine (docs-engine/plan.md): reuse it if it lands first.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/token-control-opus",
    "pr": "#250",
+   "mergedAt": "2026-11-03T17:03:30.545Z",
    "createdAt": "2026-11-03T02:40:26.204Z",
-   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "updatedAt": "2026-11-03T17:03:31.372Z",
    "builtAt": "2026-11-03T13:56:31.369Z",
    "notes": [
     {
@@ -50056,7 +50057,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50252,11 +50253,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 5
+    "urgent": 6
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50568,11 +50569,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 10
+    "urgent": 11
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50956,11 +50957,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 8
+    "urgent": 9
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51183,11 +51184,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 9
+    "urgent": 10
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51380,11 +51381,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 6
+    "urgent": 7
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -51533,11 +51534,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 7
+    "urgent": 8
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
