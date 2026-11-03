@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:53:51.034Z",
+ "updatedAt": "2026-11-03T22:42:28.956Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14,7 +14,7 @@
    "title": "Console Home cards: card@1 asset plugins carry, Home detects/shows/hides every card (always rendered), card layouts, cards for every data plugin",
    "category": "Console",
    "detail": "Brett, Oct 29 2026: \"Design a bunch more cards for the console home screen. If plugins with data or dynamic content don't have a card, design one for them from scratch (you decide what to display and how). Plugins can now carry cards that can be designed in the future SDK and attached to the plugin as assets. Console Home detects all card assets attached to plugins and shows or hides them, but always rendered. The card layout can show or hide all cards detected.\"\n\nDecisions (cards): profile Angel (new, this is its first build; nothing built in the asking session); Fable contract first, then Opus.\nCard designs: one per plugin with data/dynamic content (31 plugins + 5 existing Home cards). No card: _template, basic-filter, plugin-switches, plugins-menu (tools with no data of their own).\nClash check Oct 29: no open build touches Home or cards (refactor profile all complete; main-framework pending items unrelated).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -22,12 +22,16 @@
    "pr": "#171",
    "mergedAt": "2026-10-30T16:37:20Z",
    "createdAt": "2026-10-29T18:34:09.323Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-03T19:43:37.219Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch angel/home-cards-queue (PR #171); PR #171; PR #171 merged",
      "at": "2026-11-03T13:57:06.541Z"
+    },
+    {
+     "text": "Replaced by urgent build home-cards-live (Nov 3 2026, Brett: \"I shouldn't need to build cards. I should draw dynamic data.\"). No hand-built card per plugin; one card engine draws any plugin read command.",
+     "at": "2026-11-03T19:43:35.827Z"
     }
    ],
    "approvals": [],
@@ -1002,9 +1006,18 @@
    "branch": "claude/batch-manager",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T21:11:04.090Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Predicted shots part (UI Review shows what a build will look like before it runs) moved to urgent build ui-review-predicted (Brett, Nov 3 2026). The real before/after PR screenshots stay here.",
+     "at": "2026-11-03T19:55:40.824Z"
+    },
+    {
+     "text": "Replaced by build git-status-board (current profile, branch claude/git-status-board, Nov 3 2026): batch grid + badges, PR sub-grid + Fix, dense phone rows, PR browser with plain-English lead, Merge/Hold, left click review, right-click menu all move there. Predicted shots: ui-review-predicted.",
+     "at": "2026-11-03T21:11:04.090Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [

@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "ci-fix",
+  "name": "Fix red CI on main",
+  "version": "1.0.0",
+  "description": "Main's CI is red: read the failing run, fix every failure at the root on a branch (never by skipping or deleting tests), open a small PR and let it auto-merge, so every waiting PR can go green again.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "ci",
+    "ops"
+  ],
+  "data": {
+    "specialty": "ci-fix",
+    "model": "opus",
+    "budget": {
+      "tokens": 600000,
+      "maxTurns": 80,
+      "usd": 8
+    },
+    "trigger": {
+      "kind": "event",
+      "event": "ci.main-red"
+    },
+    "inputs": [
+      {
+        "id": "run",
+        "label": "Failing run (URL)",
+        "required": true
+      },
+      {
+        "id": "jobs",
+        "label": "Failing jobs",
+        "default": "every failing job of that run"
+      },
+      {
+        "id": "sha",
+        "label": "Commit on main",
+        "default": ""
+      }
+    ],
+    "brief": "CI on main is red: {{run}} (commit {{sha}}). Failing: {{jobs}}.\n1. Read the failed steps' logs (gh run view --log-failed, or the kernel-test-reports artifact for Gradle). Note the exact failures.\n2. Branch from origin/main (claude/ci-fix-{{stamp}}). Fix each failure at the root: the code, manifest, fixture generator or a stale test. Never skip, delete or loosen a test; if a fix truly needs Android hardware or work on hold, add a documented, tracked skip and say so.\n3. A check may stop at its first failure: after each fix rerun the whole job's commands locally (CI env: AXF_BUILD_PROFILE=main-framework, AXF_DATA_DIR=off) until they pass.\n4. Push the branch and open one small PR titled \"Fix main CI: …\"; the push banner auto-merges it once green. Do not merge it yourself.\nReport each failure, its root cause, the fix, and the PR.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/ci-fix/{{stamp}}.md"
+    }
+  }
+}

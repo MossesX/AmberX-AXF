@@ -41,7 +41,7 @@ import { DEFAULT_SNAP_RULES, RESIZE_EDGES, RESIZE_HANDLE, RESIZE_HANDLE_TOUCH, S
 import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, DOCK_ZONES, applyDockDrop, applyPreset, clampWeights, countPanes, dockDropAt, dockDropRect, dockLayoutErrors, dockZoneAt, dropIsLimited, enforcePaneLimit, headerIndexAt, normalizeDockLayout, normalizeDockRules, normalizeTree, paneAt, parseTab, parseTree, pathOf, presetRects, presetSvg, presetTree, removePane, resizeSplit, restoreDock, serializeDock, splitPane, splitRoot, type DockDrop, type DockState, type GroupBox } from '../core/engines/dock';
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
-import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES, WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
+import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -1739,7 +1739,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const flat = mergeChrome(host, [axhub, amberx], { menus: 'flat', widgetsOnce: false });
   const twice = mergeChrome(null, [amberx, { ...amberx, nav: [] }], { activeApp: 'nope' });
   write('chrome.json', {
-    contract: CHROME_CONTRACT, limits: CHROME_LIMITS, widgetTypes: WIDGET_TYPES, widgetTones: WIDGET_TONES,
+    contract: CHROME_CONTRACT, limits: CHROME_LIMITS, widgetTypes: CHROME_WIDGET_TYPES, widgetTones: CHROME_WIDGET_TONES,
     empty: emptyChrome('x', 'X'),
     parse: rawBundles.map((raw) => ({ raw, bundle: parseChromeBundle(raw) })),
     bundles: { host, amberx, axhub, console: console_ },
