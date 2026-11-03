@@ -98,19 +98,19 @@ export function Detail({ it }: { it: Item }) {
   const on = !!packId && r.picked.includes(packId);
   return (
     <div className="axp-ui-review__detail">
-      {p && (
-        <div className="axp-ui-review__predict" role="group" aria-label="Predicted look">
-          <PredictBadge it={it} />
-          <Segmented<typeof show> label="Which pictures" value={show} onChange={setShow} options={[
-            { value: 'after', label: p.state === 'real' ? 'Real' : 'Predicted' },
-            ...(roles.has('before') ? [{ value: 'before' as const, label: 'Now (main)' }] : []),
-            ...(p.state === 'real' && roles.has('predicted') ? [{ value: 'predicted' as const, label: 'Predicted' }, { value: 'compare' as const, label: 'Predicted vs real' }] : []),
-          ]} />
-          <span className="fx-small fx-muted axp-ui-review__cost">{LOOK_LABEL[p.look?.status ?? 'waiting']} · mockup ${(p.cost?.usd ?? 0).toFixed(2)} ({p.cost?.model ?? 'rules'}){p.refreshes ? ` · refreshed ${p.refreshes}×` : ''}</span>
-        </div>
-      )}
       <ShotBrowser shots={shots.length ? shots : shown} title={it.title} />
       <div className="axp-ui-review__facts">
+        {p && (
+          <div className="axp-ui-review__predict" role="group" aria-label="Predicted look">
+            <PredictBadge it={it} />
+            <Segmented<typeof show> label="Which pictures" value={show} onChange={setShow} options={[
+              { value: 'after', label: p.state === 'real' ? 'Real' : 'Predicted' },
+              ...(roles.has('before') ? [{ value: 'before' as const, label: 'Now (main)' }] : []),
+              ...(p.state === 'real' && roles.has('predicted') ? [{ value: 'predicted' as const, label: 'Predicted' }, { value: 'compare' as const, label: 'Predicted vs real' }] : []),
+            ]} />
+            <span className="fx-small fx-muted axp-ui-review__cost">{LOOK_LABEL[p.look?.status ?? 'waiting']} · mockup ${(p.cost?.usd ?? 0).toFixed(2)} ({p.cost?.model ?? 'rules'}){p.refreshes ? ` · refreshed ${p.refreshes}×` : ''}</span>
+          </div>
+        )}
         <dl className="axp-ui-review__dl">
           {it.app && <><dt>App</dt><dd>{it.app}</dd></>}
           {it.build && <><dt>Build</dt><dd>{it.build}</dd></>}

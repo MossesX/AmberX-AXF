@@ -112,7 +112,12 @@ export function labelsOf(text) {
   for (const m of t.matchAll(/([A-Z][\w']*(?: [\w']+){0,3}(?:\s?\/\s?[A-Z]?[\w']*(?: [\w']+){0,3}){1,5})/g)) {
     if (m[1].includes('/')) out.push(...m[1].split(/\s?\/\s?/).map((x) => x.trim().replace(/\s+(?:buttons?|badges?|tabs?|chips?|links?|options?)$/i, '')).filter((x) => x.length > 1 && !/^(REST|MCP|CLI)$/.test(x)));
   }
-  return [...new Set(out)].slice(0, 6);
+  // "(No wait, builds, talking, notifications)": a short list in brackets names the things on the screen
+  for (const m of t.matchAll(/\(([^()]{3,120})\)/g)) {
+    const parts = m[1].split(/,\s*|\s+and\s+/).map((x) => x.trim()).filter(Boolean);
+    if (parts.length >= 2 && parts.every((x) => x.split(/\s+/).length <= 4 && !/[=:/]|^\d/.test(x))) out.push(...parts.map((x) => x[0].toUpperCase() + x.slice(1)));
+  }
+  return [...new Set(out)].filter((x) => !/\b(?:the|and|in|of|to|a|on|with|or|for)$/i.test(x)).slice(0, 6);
 }
 
 /** The step's text without its "s3 " prefix, cut at the first clause (a short, readable line). */
@@ -167,7 +172,13 @@ export function mockupSpec(build, opts = {}) {
   const steps = (build?.steps ?? []).filter((s) => !s?.skip);
   const screens = screensFor(build, files, opts).map((s, i, all) => {
     const blocks = mergeSettings(stepsFor(s, i, all, steps).map(blockFor).filter(Boolean)).slice(0, MAX_BLOCKS);
-    if (!blocks.length) blocks.push({ type: 'card', title: str(build?.title, 70) || s.title, text: str(build?.detail, 220), items: [] });
+    // a thin screen also says in words what the build changes (its title's list, its detail)
+    if (blocks.length < 3) {
+      const fromTitle = labelsOf(build?.title);
+      if (i === 0 && fromTitle.length >= 2 && !blocks.some((b) => b.type === 'settings') && /settings?/i.test(String(build?.title))) blocks.unshift({ type: 'settings', title: 'Settings', rows: fromTitle.map((l) => ({ label: l, on: false, hint: '' })) });
+      else if (i === 0 && fromTitle.length >= 2 && blocks.some((b) => b.type === 'settings')) blocks[blocks.findIndex((b) => b.type === 'settings')].rows.push(...fromTitle.map((l) => ({ label: l, on: false, hint: '' })));
+      blocks.push({ type: 'card', title: 'What changes', text: str(build?.detail, 260) || str(build?.title, 200), items: i === 0 ? fromTitle : [] });
+    }
     return { ...s, blocks };
   });
   const rows = (opts.demo?.rows ?? []).slice(0, 6).map((r) => ({ name: str(r.name, 60), status: str(r.status, 20), updated: str(r.updated, 30) }));

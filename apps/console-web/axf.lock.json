@@ -572,7 +572,7 @@
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
     "src/axf/core/types.ts": "23b12e97035ff1f5",
     "src/axf/core/ui-predict.d.mts": "3ab3c1cbb95d6018",
-    "src/axf/core/ui-predict.mjs": "323cd1fcc1999c89",
+    "src/axf/core/ui-predict.mjs": "8b0678d4e8491410",
     "src/axf/core/ui-review-schema.d.mts": "530f5d249d8ba406",
     "src/axf/core/ui-review-schema.mjs": "50cf3e00129b6926",
     "src/axf/core/validate.ts": "6aa57903dd47855e",
