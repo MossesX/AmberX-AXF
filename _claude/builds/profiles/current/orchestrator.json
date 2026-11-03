@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T22:55:24.141Z",
+ "updatedAt": "2026-11-03T22:59:05.847Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -6865,6 +6865,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mw1927q512l9n0"
+    }
+   ]
+  },
+  {
+   "id": "plugin-lazy-load",
+   "title": "Plugin lazy loader (console speed)",
+   "category": "Console > Plugins",
+   "detail": "Brett, Nov 3 2026 (voice): \"The console gets slower as more plugins are installed.\" \"Anytime I hot render or something gets hot rendered, it reloads all the plugins.\" \"Put in the plugin manager plugin all the ways to configure the lazy loader, like how many get loaded at the beginning that you use a lot, how many get cached, which ones to load, which ones to load at all.\" Addendum: \"For default, right off the bat, banners need to be the very first thing to load.\" Booked to Janitor Joey (no Polo card).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/plugin-lazy-load",
+   "pr": "",
+   "createdAt": "2026-11-03T22:55:16.843Z",
+   "updatedAt": "2026-11-03T22:55:16.843Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1ad3pr04dhfd"
+    },
+    {
+     "id": "s2",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1ad3pr055ffm"
+    },
+    {
+     "id": "s3",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw1ad3pr06m09a"
     }
    ]
   }
