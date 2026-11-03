@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 286,
- "updatedAt": "2026-11-03T17:55:08.435Z",
+ "rev": 287,
+ "updatedAt": "2026-11-03T17:55:23.975Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -28897,7 +28897,7 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "",
-   "branch": "claude/builds-one-page",
+   "branch": "claude/builds-one-page-done",
    "pr": "",
    "createdAt": "2026-10-27T19:11:22.011Z",
    "updatedAt": "2026-11-03T17:53:50.160Z",
@@ -29306,6 +29306,28 @@
      "updatedAt": "2026-11-03T17:54:13.223Z"
     },
     {
+     "id": "s16",
+     "uid": "st-mw0zldp801my37",
+     "title": "",
+     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T17:53:48.928Z",
+     "updatedAt": "2026-11-03T17:53:48.956Z"
+    },
+    {
      "id": "s13",
      "uid": "st-re4dux",
      "title": "",
@@ -29336,7 +29358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -29363,7 +29385,6 @@
      "st-31fetj": "2026-10-27T19:11:22.011Z",
      "st-crj9vs": "2026-10-27T19:11:22.011Z",
      "st-n8ym5e": "2026-10-27T19:11:22.011Z",
-     "st-mw0zlwfb0171rx": "2026-11-03T17:53:48.928Z",
      "st-re4dux": "2026-10-27T19:11:22.011Z"
     }
    },
@@ -53085,7 +53106,7 @@
    "branch": "claude/builds-one-page-done",
    "pr": "",
    "createdAt": "2026-11-03T17:53:08.980Z",
-   "updatedAt": "2026-11-03T17:53:09.628Z",
+   "updatedAt": "2026-11-03T17:53:50.835Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -53128,12 +53149,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:53:50.835Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:53:08.985Z",
-     "updatedAt": "2026-11-03T17:53:08.985Z"
+     "updatedAt": "2026-11-03T17:53:50.864Z"
     },
     {
      "id": "s3",
@@ -53210,7 +53231,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

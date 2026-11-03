@@ -700,3 +700,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:54 UTC · `builds-one-page` s5 done, s6 done, s12 done, s14 done, note (refactor) · foreign-write
 - 2026-11-03 17:54 UTC · `md-studio` → running (urgent) · orchestrator
 - 2026-11-03 17:54 UTC · `md-studio` note (urgent) · orchestrator
+- 2026-11-03 17:53 UTC · `builds-one-page` s5 done (refactor) · snap-sully
+- 2026-11-03 17:53 UTC · `builds-one-page` s6 done (refactor) · snap-sully
+- 2026-11-03 17:53 UTC · `builds-one-page` s12 done (refactor) · snap-sully
+- 2026-11-03 17:53 UTC · `builds-one-page` s14 done (refactor) · snap-sully
+- 2026-11-03 17:53 UTC · `builds-one-page` note (refactor) · snap-sully
+- 2026-11-03 17:53 UTC · `builds-one-page` branch claude/builds-one-page-done (refactor) · snap-sully
+- 2026-11-03 17:53 UTC · `builds-one-page-done` s2 done (urgent) · snap-sully
