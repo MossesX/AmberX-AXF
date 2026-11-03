@@ -853,3 +853,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:21 UTC · `agent-pick` s7 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:21 UTC · `agent-pick` s8 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:31 UTC · `terminal-vps-host` added (5 steps) (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` → running (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` s1 done (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` s3 done (current) · orchestrator
+- 2026-11-03 19:31 UTC · `terminal-vps-host` note (current) · orchestrator

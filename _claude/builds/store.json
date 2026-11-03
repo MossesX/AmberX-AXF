@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 380,
- "updatedAt": "2026-11-03T19:31:25.977Z",
+ "rev": 381,
+ "updatedAt": "2026-11-03T19:31:52.799Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55191,16 +55191,21 @@
    "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
    "category": "Ops > Terminal",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T19:31:10.365Z",
-   "updatedAt": "2026-11-03T19:31:10.365Z",
+   "updatedAt": "2026-11-03T19:31:28.416Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
+     "at": "2026-11-03T19:31:28.416Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -55219,12 +55224,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:31:23.156Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:31:10.365Z",
-     "updatedAt": "2026-11-03T19:31:10.365Z"
+     "updatedAt": "2026-11-03T19:31:23.293Z"
     },
     {
      "id": "s2",
@@ -55263,12 +55268,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:31:25.587Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:31:10.365Z",
-     "updatedAt": "2026-11-03T19:31:10.365Z"
+     "updatedAt": "2026-11-03T19:31:25.729Z"
     },
     {
      "id": "s4",
@@ -55323,7 +55328,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
