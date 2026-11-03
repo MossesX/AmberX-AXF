@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T20:30:12.945Z",
+ "updatedAt": "2026-11-03T20:30:24.919Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -51,18 +51,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "new asset type 'AmberX Design Package' wrapping a style theme, colour theme, layout theme and behaviour theme; new asset type 'behavior-theme' holding everything: motion (animations, speed, easing, reduced motion), interaction (hover/click/focus feedback, long-press time, double-tap), windows & dialogs (open/close, snap, stacking, drawers, pop-ups) and feedback (toasts, sounds, vibration, confirm-before-delete). Settings -> Appearance gets a Design Package picker to apply one; everything else in Appearance goes in one collapsible container below it. The Design Package REPLACES the appearance-package type (Brett's pick): migrate the existing packages (framework + console amberx, each app's fresh) and the axf.appearance.package setting. Web first; Android twin recorded in PORTING.md (Android on hold). Orchestrator order: all Fable steps first, then Opus (one switch).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -272,18 +260,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "5 deliverables — TS data contracts (layout & component tree, theme engine, plugin manifest), Pydantic v2 validator/migrator + ingestion namespacing, React error boundary + pub/sub lifecycle broker, project spec, developer docs (new plugin, harvesting, live sync). Built ON the existing contracts (asset@1, plugin@1, appearance@1), not beside them. Web + Python; Android twins deferred.",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -601,18 +577,6 @@
     }
    ],
    "upgradeRequests": [],
-   "origin": {
-    "said": "only refactor the console, the AmberX app (amberx.amberxai.com), the plugins currently installed and switched on in Plugin switches, and every banner plugin to enterprise quality. New asset types: branding package (extendable template of UI brand assets), icon pack, logo mark, animated logo, behaviour theme, AmberX design package. Branding engine, fully hot-swappable. Assets: 10 light + 10 dark themes, 10 layout, 10 style themes, 10 context menus, 25 dynamically driven toolbars with docs, 25 style packages, 25 nav menus + behaviour, 25 design packages, 250 logos, 250 animated logos, 100 icon packs, branding packages; console plugin to browse them. Branded banners, toolbars, windows, containers, tab groups, dialogs, floating windows. Includes and replaces orchestrator build design-package. Web only; Android twins deferred (hold).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -1513,18 +1477,6 @@
     }
    ],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -1824,18 +1776,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "everything from today and the refactor goes into the Refactor profile).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "notes",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -1977,18 +1917,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "new type, Opus now + Fable later. Start by reviewing/replacing the Opus version: core/engines/stylepackage.ts, the swap/swapAll member expansion and style.package action in core/runtime.ts, both validators, asset-types.json style-package.members, the 25 starter sets from framework/cli/asset-library.mjs, spec/check-style-packages.mts. Web only; Android twin stays deferred (PORTING.md).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -2117,18 +2045,6 @@
     }
    ],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -2465,18 +2381,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "new asset type `trim` combining a layout asset and a colour theme asset. Decided: trim is its own swappable asset, and a design package may reference a trim instead of carrying its own layout + colour theme (both forms stay valid). Web + Python; Kotlin twin recorded in PORTING.md (Android hold).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -2585,18 +2489,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "everything unfinished since 6am goes in the orchestrator).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "notes",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -2714,18 +2606,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "the Tools section is a plugin of its own, and Claude handoff depends on it.",
-    "at": "2026-10-22",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -2832,18 +2712,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "'It only detects words when I press speak' in AmberX (apps/amberx-droid). Cause: the native wake listener runs only while 'Watch axHub in the background' is on (default off) and pauses while the app is on screen. Fix: hands-free listening is its own setting (default on), works on screen and in the background, independent of axHub monitoring; optional always-armed (no wake phrase). Plus a detection overlay like ActiveX: floating draggable window over other apps with a moving audio-level line graph, decibel number, what was heard, and quick settings (listening on/off, always armed, hide). Colours from the app's theme tokens. Profile refactor, Opus (Brett's pick). Android exception: AmberX shell is allowed (rule Oct 25).",
-    "at": "2026-10-27",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -2946,18 +2814,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "voice-controlled notes in lists/sub-lists (Plugins root: one list per plugin, made automatically), sort/transcribe/rename/move, task manager + todo, AI parsing with Claude plan/API switch + any LLM through AmberX own server, integrated web component, voice command section from the codebase, tabs. Data shared on axHub with Voice notes/Voice Vault. Sub-agents allowed (Brett).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -3258,18 +3114,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Appearance switches in console settings and the layout (interface) buttons at the top do nothing. Cause: AxfRuntime.scoped() gives a scope settings = Object.create(base.settings), so set()/clear()/reload() assign this.values on the scoped object and the shared settings never change (Main tab cannot be reached again from GizmoX Night / AmberX Signature). Fix: scoped settings forward every member except get to the shared registry.",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -3308,18 +3152,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "the voice monitor misses what he says, filters swears, text does not show in real time, and it constantly makes a tone. Fix all of it. Android exception (AmberX). Built in this session (Brett).",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -3440,18 +3272,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "either console isnt saving look to hub or other apps arent getting look from hub. Hub doc unchanged since 02:54 UTC. Cause: HubSync.stop() detached whatever appearance source the runtime had (the console own one too) on every restart and start() attached its own. Fix: runtime appearanceSourceIs; HubSync detaches only its own.",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -3500,18 +3320,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "banner items clip and run into each other (Profile chip under the search bar, search squeezed to 'Se', axHub status, build dot and alerts bell cut off at the right edge). Rule: 'always make attached things snap so no overlap'. Fix in the framework (all apps): banner sides sized to their content (never clipped or drawn over a neighbour), the search bar shrinks to a minimum first, anything that still doesn't fit scrolls sideways with scroll snap; same for toolbar widget hosts and the menubar.",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -3560,18 +3368,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -3656,18 +3452,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "'From now on all push notifications for approval or anything from axHub comes from amberx android app.' AmberX's WatchService already alerts on hub approvals (incl. merge approvals). Add the Dev Console's alerts (builds, CI, deploys, systems check; alert@1 via GET <console>/api/alerts) to AmberX's watcher, and make Patches and the AXHub app stay quiet while AmberX is installed (Brett approved the small AXHub app change despite the Android hold).",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -3748,18 +3532,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "lots of voice commands for notes and todo, categories in a tab group dialog (Notes, Tasks, Developer, AI snippets), each with tab + trigger; sortable filterable searchable grid in a scrolling pane, rows expand to details + per-command settings, record button (two matching recordings or pick predefined); inner tab group Commands / Chains & wizards; voice wizard for recording/editing chains; AI-unavailable page with fix hooks; new agent Molly on axHub (like Mosses/Vinny): root VPS through approvals, knows the codebase, answers questions, narrated console walkthroughs in a floating window with next/previous. One agent, here (Brett).",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -4041,18 +3813,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "make a plugin with a toolbar of programmable actions for filtering, sorting and searching grids. Toolbar name: Share Search. HELD: Brett said 'send to orchestrator and hold off on build' — don't start until he says.",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -4309,18 +4069,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "'Add cost of approval every time something is approved and display costs, as well as all details and history of past approvals browsing. Can you alert when needing approval without stopping and restarting.' Context: he asked whether sending an approval and waiting costs tokens. Answer given: waiting is free, but each retry check re-reads the conversation (mostly cached). The 15 s x10 then 1 min rule costs about 10-15 checks per 5 minutes. HELD: queued, not started. Picks (cards): profile Refactor, held; history in the Console AND on axHub's approvals page.",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -4423,18 +4171,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Install assistant and agent manager in amberx",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -4483,18 +4219,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -4542,18 +4266,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "'Add new plugin called basic filter that opens a dialog with search and filter options that you can attach to any dataset. Also comes with a toolbar customized in the plugins settings like hide and show and interface to configure using preset actions to select from in a grid with expandable rows that display everything about the action and style. Live floating preview of toolbar that hot renders when something is edited. By default toolbar is on with 1 button to open the sort and filter dialog. Attach it to the dataset in plugin switches.' Datasets = every lib-datagrid grid (registers itself) + anything registering through the new lib-datagrid dataset registry; web only, Android twin deferred. All Opus (console plugin UI + small web lib hook). Profile: Refactor (Brett's pick).",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -4705,18 +4417,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Add those plus build a powerful terminal plugin that looks and feels and behaves exactly like a Windows program.",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -4962,18 +4662,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "add draggable from anywhere to postponed gesture list",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -5017,18 +4705,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Make a plugin to build a feature matrix just like this [the windows-terminal scope list: https://claude.ai/artifact/CwBGQof4NBe4F3dPTczBvS] for every build and put hooks to them in every builds grid in orchestrator, pending, queued, build manager, etc. I need to be able to access its associated matrix from any entry in any grid. All matrix are compiled into 1 dataset that lists each one in expandable rows that open to display its matrix. The grid has column with date added and time cost to build generated by the matrix. When matrix changes an apply button lights up that updates the status across all tables. Nothing is ever removed only set for skip when time comes to build. They can be added removed whenever they never leave the matrix.",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -5202,18 +4878,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "'Can you send notification that a command is about to be ran and I can intercept it from the banner and block it before axhub tries sending it.' HELD: queued, not started. Picks (cards): profile Refactor, held; countdown 2 minutes.",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -5333,18 +4997,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "send the command to axHub; axHub waits for approval and runs it or not; the session does not wait. Today a confirm call returns confirmation_required and drops the call, so the session must re-send it with the confirmation_id after approval, which is why sessions poll (each check re-reads the whole chat). Change: axHub stores the full call on create; Approve = the hub runs it itself and keeps the result; Reject/expire = dropped. The session gets an approval id at once and moves on; it reads the result once later only if needed. Replaces the polling rule (15 s x10 then 1 min). HELD: queued in Refactor; Brett says go.",
-    "at": "2026-10-28",
-    "source": "chat",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -5480,18 +5132,6 @@
     }
    ],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -7143,18 +6783,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Mosses could not build; the Claude Code provider hard-blocked Edit/Write/Bash. Picked: live /axf folder, Bash free there, Refactor profile. Build agents get Edit/Write/MultiEdit/Bash in the CLI provider (admins only) plus repo_git_push / repo_open_pr run by the console with GITHUB_TOKEN.",
-    "at": "2026-10-28",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -7235,18 +6863,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
-    "at": "2026-10-29",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -7404,18 +7020,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "it's not an approval system anymore, it's a veto system; send the notice, keep building, don't wait or check; finish the veto system wherever it needs to be and delete anything pending that conflicts. axHub decision #103: hub option confirmAs / AXHUB_CONFIRM_AS (default veto). Shared rules rewritten. Pending item axhub-auto-approve-all removed (main-framework). veto-window + approval-costs were already archived.",
-    "at": "2026-10-30",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -7612,18 +7216,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Build a plugin giving agents the ability to speak, with a full powerful per-agent configuration console and every bell and whistle a narrator should have. When a voice agent is selected a live status icon lights up on the main application and the Assistant window. A microphone in the Assistant window: when selected, a tooltip notes the selected agent's name is missing permission — unless the plugin isn't installed, then it says so with links to install, or a hook to install it with the agent. Powerful microphone configuration with integrated features and settings that never conflict with other listening (AmberX notes/dictation and voice/wake). Voices: both device + cloud, with hooks to its settings in multiple places. Profile: Refactor. Model: Opus (web console plugin + AmberX native seam).",
-    "at": "2026-10-29",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -7816,18 +7408,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "I want everything to need a PR and to pull against main before it is merged.",
-    "at": "2026-10-30",
-    "source": "voice",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -7916,18 +7496,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "refactoring and upgrading work from today's sessions).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "notes",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -8038,18 +7606,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "refactoring and upgrading work from today's sessions).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "notes",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -8156,18 +7712,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
-    "at": "2026-10-26",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": []
   },
   {
@@ -8205,18 +7749,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "make 10 more design packages from existing themes, framework + all 5 web apps. Themes-only packages (no extras); app copies keep the app own layout.",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": []
   },
   {
@@ -8254,18 +7786,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "everything from today and the refactor goes into the Refactor profile).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "notes",
-    "addenda": []
-   },
    "steps": []
   },
   {
@@ -8303,18 +7823,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "multiple build profiles (plans, build queue, pending builds, tracking, all work data) and a console plugin to select and save one; current one = Main framework, new one = Refactor.",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -8425,18 +7933,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": []
   },
   {
@@ -8465,18 +7961,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "everything from today and the refactor goes into the Refactor profile).",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "notes",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -8565,18 +8049,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "all builds go to the orchestrator, which splits them into Fable/Opus steps and sends them out to Pending builds and the Build manager; they always stay in sync. Bridge until builds-one-page (paused) merges the datasets. Every orchestrator save rewrites the profile Pending list; every Pending change (console, CLI, MCP, plugins) flows back into the orchestrator. Profile: Refactor.",
-    "at": "2026-10-27",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -8661,18 +8133,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "Watch live = HOT RENDER. A Watch live link on every approval row (details) and every running build in the Build manager / Build orchestrator pops up (floating window desktop, full-screen sheet phone) the exact screen the session is changing, changed element scrolled to + outlined, hot-rendering as files change. Every web app, every hot-swappable asset (no reload), Android screens through the web port with a next-APK note. claude-headless.sh starts previews + registry; console proxies /preview/<session>/<app>/ behind auth; axf focus + .axf-focus.json; greyed No live preview otherwise.",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -8806,18 +8266,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "a narrated walkthrough of the AmberX app like the one on demo.amberxai.com, made with the existing tour recorder tooling (Playwright + Piper + ffmpeg), seeded demo data, phone layout, player with chapters in AmberX (Home, app menu, Help), media on the server behind the wall, one command + console button to re-record. Profile: refactor (active; headless session, no card possible).",
-    "at": "2026-11-01",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -8969,18 +8417,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "# Chat Viewer: every session stored, synced, searchable, exportable as 2-voice audio (Brett, Nov 1 ~3 AM)\n\nRead CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md. Opus, one session. Git login works: plain `git push`. Merge origin/main first (other builds are landing).\n\nBrett: store ALL our sessions (claude.ai text + voice chats, Claude Code sessions, headless build sessions) as transcripts in a viewer. When it loads, it checks for updates: new sessions, continued ones, changed ones, and updates the stored copies. Export any session as AUDIO with two separate voices: one for Brett, one for Claude (Amber).\n\nIMPORTANT reality: claude.ai has no API to pull a user's chats, and we must NOT scrape claude.ai with Brett's login/cookies. Supported inputs:\n1. Claude data export: Brett downloads it from claude.ai (Settings > Privacy > Export data) and uploads the zip (or conversations.json) in the viewer (phone file picker). Parse it, upsert by conversation uuid, detect new/changed by updated_at + message count/hash, keep versions.\n2. Claude Code sessions: auto-sync the JSONL session files from ~/.claude/projects (root and axfbuild) on the VPS on a timer + on viewer load; incremental (byte offset/mtime).\n3. Headless build logs (/root/axf-builds/*/*.log, /home/axfbuild/wt-*/*.log) as 'build sessions'.\n4. Hub drop folder: Claude chat sessions can push conversations through axHub memory_write into project amberx-axf, area data, path `sessions/claude-ai/<uuid>.json` (schema below); the viewer ingests that folder too. Document the schema and add a line to _claude/shared/rules/RULES.md: when Brett says 'sync my chats', Claude uses recent_chats/read_conversation and writes each new/updated conversation there.\n\n## Store\nsession@1 schema (framework/schemas + validators): id, source (claude-ai-text|claude-ai-voice|claude-code|headless|hub-drop), title, startedAt, updatedAt, project, messages [{role: user|assistant|tool, text, at, kind (speech|text|tool), toolName?}], hash, version history. Stored on the console data volume (SQLite or JSON files; your call, justify), not in git. Redact secrets (tokens/keys/passwords patterns) on ingest.\n\n## Viewer (console plugin + AmberX entry 'Chats')\n- List: framework DataGrid (sort/filter/search, date columns), source badges, 'updated' badge for changed sessions, counts.\n- Full-text search across everything (SQLite FTS or similar), jump to the hit.\n- Session view: chat bubbles (Brett vs Amber), tool calls collapsible, timestamps, copy/share, export text/markdown.\n- 'Check for updates' on load + button: shows new/changed/unchanged counts.\n\n## Audio export\n- Export a session (or a range) as an audio file with TWO voices: Brett's voice and Amber's voice (configurable). Use a TTS that runs on this VPS for free by default (e.g. Piper with two different English voices; install into a container or venv, no GPU), with an optional provider setting (OpenAI/ElevenLabs) if a key is saved in the console keys. Skip tool-call noise; read only spoken/text turns; short pause between turns; chapters per hour. Output mp3/ogg stored on the hub, with a player in the viewer and a download link. Long sessions render in the background with progress.\n\nFramework controls + theme/scale tokens only, phone-first. Tests: export-zip parsing + upsert/new/changed detection, Claude Code JSONL incremental sync, hub-drop ingest, redaction, search, audio render (short sample) with two voices. Local test block from .github/workflows/android.yml + theme/controls/lifecycle/menu-reach checks. Phone + desktop screenshots to UI Review via framework/cli/shot.mjs, group 'Chat viewer - Nov 1' (use demo/redacted sessions in screenshots). Add an install_steps part. Commit, fetch+merge origin/main, retest, `git push origin HEAD:main` (never force). Report at _claude/builds/reports/chat-viewer.md incl. how Brett gets his claude.ai export in.",
-    "verbatim": false,
-    "from": "brief",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -9145,18 +8581,6 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "",
-    "at": "",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "# GitHub App for the whole stack: one-click setup, tokens that never die (Brett, Nov 1 ~4 AM)\n\nRead CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md. Opus, one session. Git login works: plain `git push`. Never print secrets (private keys, client secrets, tokens) anywhere: logs, reports, commits, screenshots.\n\nWhy: personal tokens keep dying (401s, 403s on the banner), and the current fine-grained token can't create repos (the axp-backup build at /root/axf-builds/axp-backup is waiting on 3 private repos: axp-xchat, axp-devstudio, axp-demo). Brett wants this fixed for good.\n\n## 1. One-click setup (GitHub App Manifest flow)\n- Console page (behind the existing auth wall, admin only): Settings > GitHub > 'Create GitHub App'. It POSTs a manifest to https://github.com/settings/apps/new (personal account MossesX): name 'AmberX AXF Bot' (add suffix if taken), homepage the console URL, redirect/callback to the console, no webhook needed (or webhook off), public: false.\n- Permissions (repository): Administration RW, Contents RW, Pull requests RW, Actions RW, Workflows RW, Issues RW, Checks R, Commit statuses R, Metadata R.\n- Callback: exchange the code (POST /app-manifests/{code}/conversions), store app id, slug, client id, client secret, private key PEM and webhook secret in /opt/axf/.axf-console/github-app/ (dir 700, files 600, root-owned), never in git. Then send Brett to the install page (https://github.com/apps/<slug>/installations/new) with 'All repositories'. Detect the installation id after install (GET /app/installations with an app JWT).\n- Also offer 'Authorize as Brett' (OAuth user-to-server via the same app, with refresh tokens, stored the same way): needed because INSTALLATION tokens cannot create repos on a personal account; user access tokens from the app with Administration write can (POST /user/repos). Refresh automatically (8 h access / 6 month refresh); banner when refresh fails.\n\n## 2. Token broker\n- framework/cli/github-token.mjs (+ a tiny Python twin for the console server if it needs it): `installation` -> mints a JWT from the PEM, exchanges for an installation token, caches it (refresh at 50 min), prints it only to stdout for callers; `user` -> the refreshed user access token.\n- /usr/local/bin/axf-git-cred: use the installation token first, then the old GITHUB_TOKEN as fallback. `gh`: wrapper or GH_TOKEN via a helper so gh uses the app too. Keep the old token working as fallback until Brett deletes it.\n- Point every GitHub caller at the broker: push banner, live-key-checks, activity banner GitHub part (the 403s), build_land/build_start paths, the console updater, CI-status reads. Repo creation (`axf repo create <name> --private`) uses the user token.\n- axHub's github connector (MossesX/axHub, packages/connectors or the rest service config): add app-based auth via the same broker or its own JWT exchange; clone axHub next to the worktree, test (pnpm test, Node 22 via docker node:22), push its main, redeploy through Coolify the same way earlier builds did (token saved in the console, never printed). If that's too big, leave axHub on the old token and banner it as a follow-up.\n\n## 3. Health + banner\n- health@1 check: app key valid, installation present, installation token mints, user token refreshes, rate limit remaining. Red banner with the exact fix if any fail. Old-token expiry warning.\n- After setup works: re-run the axp-backup push automatically (create the 3 private repos with the user token, then `bash /root/axp-backup/bin/backup.sh` or whatever finish script that build left; read /root/axf-builds/axp-backup/axp-backup.log and /root/axp-backup/REPORT.md first). Never commit secrets; the backup's own secret scan must pass.\n\nFramework controls + theme/scale tokens only. Tests: manifest generation, callback exchange (mocked GitHub), file perms, JWT + token cache, git credential helper order + fallback, user-token refresh, health check states. Local test block from .github/workflows/android.yml + theme/controls/lifecycle checks. Phone + desktop screenshots of the setup page (no secrets on screen) to UI Review via framework/cli/shot.mjs, group 'GitHub App - Nov 1'. install_steps: new part 'GitHub App (no more tokens)' with the 3 taps. Commit, fetch+merge origin/main, retest, `git push origin HEAD:main` (never force). Report at _claude/builds/reports/github-app.md: what Brett taps, where things are stored (paths only), what now uses the app.",
-    "verbatim": false,
-    "from": "brief",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -9273,18 +8697,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "90-min narrated walkthrough of the whole stack, AmberX plugin, editable voice, downloadable video, 10-minute steps saved as they go.",
-    "at": "2026-11-01",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -9834,18 +9246,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "I can't click steps",
-    "at": "2026-11-01",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
@@ -9926,18 +9326,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "origin": {
-    "said": "for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
-    "at": "2026-11-02",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "backfill",
-    "brief": "",
-    "verbatim": false,
-    "from": "detail",
-    "addenda": []
-   },
    "steps": [
     {
      "id": "s1",
