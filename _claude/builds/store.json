@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 330,
- "updatedAt": "2026-11-03T18:30:04.567Z",
+ "rev": 331,
+ "updatedAt": "2026-11-03T18:30:39.655Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53455,10 +53455,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/auto-land-2",
+   "pr": "#270",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:28:27.252Z",
+   "updatedAt": "2026-11-03T18:30:27.096Z",
    "builtAt": "",
    "notes": [
     {
@@ -53468,6 +53468,10 @@
     {
      "text": "s3 claude-sync hold: axHub PR #36 (claude-sync leaves a checkout with .claude-sync-hold alone), installed on the VPS ahead of merge; land.mjs writes the file in finished worktrees.",
      "at": "2026-11-03T18:28:27.252Z"
+    },
+    {
+     "text": "Reconciler: branch claude/auto-land-2 (PR #270); PR #270",
+     "at": "2026-11-03T18:30:27.096Z"
     }
    ],
    "approvals": [],
@@ -53658,7 +53662,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

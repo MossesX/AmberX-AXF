@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:30:04.567Z",
+ "updatedAt": "2026-11-03T18:30:39.655Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3170,10 +3170,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/auto-land-2",
+   "pr": "#270",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:28:27.252Z",
+   "updatedAt": "2026-11-03T18:30:27.096Z",
    "builtAt": "",
    "notes": [
     {
@@ -3183,6 +3183,10 @@
     {
      "text": "s3 claude-sync hold: axHub PR #36 (claude-sync leaves a checkout with .claude-sync-hold alone), installed on the VPS ahead of merge; land.mjs writes the file in finished worktrees.",
      "at": "2026-11-03T18:28:27.252Z"
+    },
+    {
+     "text": "Reconciler: branch claude/auto-land-2 (PR #270); PR #270",
+     "at": "2026-11-03T18:30:27.096Z"
     }
    ],
    "approvals": [],
