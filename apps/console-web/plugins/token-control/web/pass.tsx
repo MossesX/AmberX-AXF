@@ -1,21 +1,22 @@
 /**
- * Veto passes in the console (control-pass@1; build theme-veto-pass): the banner chip with a live countdown while a
- * pass is on (Extend, Revoke, Undo; a warning two minutes before it ends) and the waiting requests Brett approves or
- * denies, plus the Passes tab on the Token control page and the max-minutes setting.
+ * Veto passes in the console (control-pass@1; builds theme-veto-pass, pass-all): the banner chip with a live countdown
+ * while a pass is on ("Everything: 29:41 left"; Extend, Revoke, Undo; a warning two minutes before it ends) and the
+ * waiting requests Brett approves or denies, plus the Passes tab on the Token control page and the max-minutes setting.
+ * A pass is for everything unless a narrower scope is picked.
  *
  * Owner actions (grant, extend, approve, deny) go out WITHOUT the console token first, so the server sees Brett's
  * signed-in axHub session (a bearer token is what agents hold, and it can only file a request). Without a session
  * (no wall) they fall back to the token, and the server answers what that may do.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Container, Icon, Note, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 
 const FOLDER = 'token-control';
 const POLL_MS = 5_000;
 const WARN_MS = 2 * 60 * 1000;
 
-export interface PassView { id: string; scope: string; state: string; minutes: number; reason: string; requestedBy: string; requestedAt: string; approvedBy?: string; approvedVia?: string; grantedAt?: string; expiresAt?: string; remainingMs: number; warn: boolean; changes: number; text: string }
+export interface PassView { id: string; scope: string; label?: string; state: string; minutes: number; reason: string; include_irreversible?: boolean; requestedBy: string; requestedAt: string; approvedBy?: string; approvedVia?: string; grantedAt?: string; expiresAt?: string; remainingMs: number; warn: boolean; changes: number; undoable?: number; notUndoable?: number; text: string }
 interface ScopeRow { id: string; label: string; targets: string[]; active: PassView | null; pending: PassView | null; text: string }
 interface Status { ok: boolean; items?: ScopeRow[]; maxMinutes?: number; recent?: (PassView | null)[]; text?: string; message?: string }
 
@@ -55,7 +56,7 @@ export function countdown(iso: string | undefined, now: number): string {
 
 /* ---------------- calls ---------------- */
 
-interface Answer { ok: boolean; text?: string; message?: string; code?: string; approval?: { required: boolean } }
+interface Answer { ok: boolean; text?: string; message?: string; code?: string; approval?: { required: boolean }; notUndoable?: { what: string }[] }
 
 /** Brett's own action: his session first (no bearer token), the console token only when there is no session. */
 async function ownerCall(path: string, body: unknown): Promise<Answer> {
@@ -69,7 +70,7 @@ async function tokenCall(path: string, body: unknown): Promise<Answer> {
   return (await r.json().catch(() => ({ ok: false, message: `HTTP ${r.status}` }))) as Answer;
 }
 export const passCalls = {
-  grant: (scope: string, minutes: number, reason = '') => ownerCall('pass/grant', { scope, minutes, reason, by: 'console' }),
+  grant: (scope: string, minutes: number, reason = '', includeIrreversible = false) => ownerCall('pass/grant', { scope, minutes, reason, by: 'console', ...(includeIrreversible ? { include_irreversible: true } : {}) }),
   approve: (scope: string, request: string) => ownerCall('pass/approve', { scope, request }),
   deny: (scope: string, request: string) => ownerCall('pass/deny', { scope, request }),
   revoke: (scope: string) => tokenCall('pass/revoke', { scope, by: 'console' }),
@@ -83,7 +84,8 @@ function useAct() {
     setBusy(key);
     try {
       const a = await run();
-      rt.toast(a.ok ? (a.text ?? 'Done') : `${a.code ?? 'failed'}: ${a.message ?? ''}`, a.ok ? (a.approval?.required ? 'warning' : 'success') : 'danger');
+      // undo names what it couldn't roll back: a warning toast, so Brett sees it
+      rt.toast(a.ok ? (a.text ?? 'Done') : `${a.code ?? 'failed'}: ${a.message ?? ''}`, a.ok ? (a.approval?.required || a.notUndoable?.length ? 'warning' : 'success') : 'danger');
       await loadPasses();
     } catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setBusy(''); }
   };
@@ -92,7 +94,10 @@ function useAct() {
 
 /* ---------------- the banner ---------------- */
 
-const SCOPE_WORD: Record<string, string> = { 'tokens.theme': 'Theme', 'tokens.style': 'Style', 'tokens.layout': 'Layout', 'tokens.*': 'All tokens' };
+const SCOPE_WORD: Record<string, string> = { all: 'Everything', 'tokens.theme': 'Theme', 'tokens.style': 'Style', 'tokens.layout': 'Layout', 'tokens.*': 'All tokens' };
+const scopeWord = (p: { scope: string; label?: string }) => p.label ?? SCOPE_WORD[p.scope] ?? p.scope;
+/** What a waiting request asks for, in words: "everything" / "theme changes", plus irreversible deletes when included. */
+const askWord = (p: PassView) => `${p.scope === 'all' ? 'everything' : `${scopeWord(p).toLowerCase()} changes`}${p.include_irreversible ? ' (irreversible deletes too)' : ''}`;
 
 export function PassBanner() {
   const { status } = usePasses();
@@ -110,18 +115,18 @@ export function PassBanner() {
       <span className="axp-pass-banner__icon"><Icon name={pending.length && !live.length ? 'shield' : 'key'} size={16} /></span>
       <div className="axp-pass-banner__main">
         {live.map((p) => (
-          <span key={p.id} className="axp-pass-chip" title={`${p.text} Approved by ${p.approvedBy ?? '?'}; ${p.changes} change(s) so far.`}>
-            <span><b>{SCOPE_WORD[p.scope] ?? p.scope}</b> no veto</span>
-            <span className="fx-mono axp-pass-chip__time">{countdown(p.expiresAt, now)}</span>
+          <span key={p.id} className="axp-pass-chip" title={`${p.text} Approved by ${p.approvedBy ?? '?'}; ${p.changes} change(s) so far${p.notUndoable ? `, ${p.notUndoable} of them can't be rolled back` : ''}.`}>
+            <span><b>{scopeWord(p)}</b>{p.include_irreversible ? ' +irreversible' : ''}:</span>
+            <span className="fx-mono axp-pass-chip__time">{countdown(p.expiresAt, now)} left</span>
             {left(p) <= WARN_MS && <span className="axp-pass-chip__warn">ending soon</span>}
-            <Button size="sm" tone="ghost" icon="plus" disabled={!!busy} onClick={() => void act(`x${p.id}`, () => passCalls.grant(p.scope, p.minutes || 30, 'extended from the banner'))}>Extend</Button>
+            <Button size="sm" tone="ghost" icon="plus" disabled={!!busy} onClick={() => void act(`x${p.id}`, () => passCalls.grant(p.scope, p.minutes || 30, 'extended from the banner', !!p.include_irreversible))}>Extend</Button>
             {p.changes > 0 && <Button size="sm" tone="ghost" icon="undo" disabled={!!busy} onClick={() => void act(`u${p.id}`, () => passCalls.undo(p.scope))}>Undo {p.changes}</Button>}
             <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act(`r${p.id}`, () => passCalls.revoke(p.scope))}>Revoke</Button>
           </span>
         ))}
         {pending.map((p) => (
           <span key={p.id} className="axp-pass-chip axp-pass-chip--ask" title={p.reason || p.text}>
-            <span><b>{p.requestedBy}</b> asks: {(SCOPE_WORD[p.scope] ?? p.scope).toLowerCase()} changes without veto for {p.minutes} min</span>
+            <span><b>{p.requestedBy}</b> asks: {askWord(p)} without veto for {p.minutes} min</span>
             <Button size="sm" tone="primary" icon="check" disabled={!!busy} onClick={() => void act(`a${p.id}`, () => passCalls.approve(p.scope, p.id))}>Approve</Button>
             <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act(`d${p.id}`, () => passCalls.deny(p.scope, p.id))}>Deny</Button>
           </span>
@@ -137,21 +142,23 @@ export function PassesTab() {
   const { status, error } = usePasses();
   const now = useNow(true);
   const { busy, act } = useAct();
-  const [scope, setScope] = useState('tokens.theme');
+  const [scope, setScope] = useState('all');
+  const [irreversible, setIrreversible] = useState(false);
   const [minutes, setMinutes] = useState('30');
   const [reason, setReason] = useState('');
   const rows = status?.items ?? [];
   return (
     <div className="fx-stack">
       {error && <Note tone="danger">{error}</Note>}
-      <Note tone="info">A pass lets token changes in one scope run without axHub's veto for a while ("allow theme changes for the next 30 minutes"). Brett approves each pass once; deletes are never covered. Every change made under a pass is logged and can be undone in one go.</Note>
+      <Note tone="info">A pass lets commands run without axHub's veto for a while ("allow everything for the next 30 minutes"). Everything is the default: every command through the API, MCP or CLI on every plugin, ordinary deletes included; a narrower scope covers only token changes there. Irreversible deletes still confirm unless the pass includes them. Brett approves each pass once. Everything done under a pass is logged; undo puts back what can be put back and names the rest.</Note>
       <Container title="Start a pass" icon="key">
         <div className="fx-row axf-tc-wrap">
           <SelectField label="Scope" value={scope} onChange={setScope} className="axf-tc-pick" options={rows.map((r) => ({ value: r.id, label: r.label }))} />
           <TextField label="Minutes" value={minutes} onChange={setMinutes} mono hint={`1–${status?.maxMinutes ?? 240}`} />
           <TextField label="Reason" value={reason} onChange={setReason} className="axf-tc-pick" />
         </div>
-        <div className="fx-row"><Button tone="primary" icon="check" disabled={!!busy} onClick={() => void act('grant', () => passCalls.grant(scope, Number(minutes) || 30, reason))}>Start pass</Button></div>
+        {scope === 'all' && <Switch label="Include irreversible deletes" checked={irreversible} onChange={setIrreversible} hint="Hard deletes nothing can bring back (AmberX notes and lists, tools axHub marks irreversible) skip the confirm too." />}
+        <div className="fx-row"><Button tone="primary" icon="check" disabled={!!busy} onClick={() => void act('grant', () => passCalls.grant(scope, Number(minutes) || 30, reason, scope === 'all' && irreversible))}>Start pass</Button></div>
       </Container>
       <Container title="Scopes" icon="shield">
         <table className="fx-table"><tbody>{rows.map((r) => (

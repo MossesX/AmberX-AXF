@@ -1,5 +1,5 @@
 """Console MCP tools: every read tool is annotated read-only (so axHub can run it without a veto), every delete is
-destructive, and the veto pass tools are there (build theme-veto-pass; CONTROL.md → Veto passes → axHub policy).
+destructive, and the veto pass tools are there (builds theme-veto-pass, pass-all; CONTROL.md → Veto passes → axHub policy).
 
     python apps/console-web/server/test_mcp_tools.py
 """
@@ -42,18 +42,24 @@ for name, t in tools.items():
     if a.read_only_hint:
         ok(name in READ_TOOLS, f"{name} is read-only, so its name says it reads (list/get/status/find/…)")
 
-# veto pass tools
-for name in ("token_pass_grant", "token_pass_status", "token_pass_revoke", "token_pass_undo"):
+# veto pass tools (pass_* since build pass-all; token_pass_* are the same tools under the old names)
+for name in ("pass_grant", "pass_status", "pass_revoke", "pass_undo", "token_pass_grant", "token_pass_status", "token_pass_revoke", "token_pass_undo"):
     ok(name in tools, f"{name} exists")
-ok(tools["token_pass_status"].annotations.read_only_hint is True, "pass status reads")
-ok(tools["token_pass_grant"].annotations.read_only_hint is not True, "pass grant writes")
-asyncio.run(server.call_tool("token_pass_grant", {"scope": "all", "minutes": 45, "reason": "colours"}))
-ok(sent[-1]["target"] == "pass.scopes" and sent[-1]["path"] == "tokens.*" and sent[-1]["action"] == "grant" and sent[-1]["input"]["minutes"] == 45, "grant → act pass.scopes tokens.* grant")
+ok(tools["pass_status"].annotations.read_only_hint is True and tools["token_pass_status"].annotations.read_only_hint is True, "pass status reads")
+ok(tools["pass_grant"].annotations.read_only_hint is not True, "pass grant writes")
+asyncio.run(server.call_tool("pass_grant", {"minutes": 30}))
+ok(sent[-1]["target"] == "pass.scopes" and sent[-1]["path"] == "all" and sent[-1]["action"] == "grant" and "include_irreversible" not in sent[-1]["input"], "no scope = everything; irreversible stays off")
 ok("approver" not in sent[-1] and "proof" not in sent[-1], "an MCP grant never carries an approval")
-asyncio.run(server.call_tool("token_pass_status", {}))
+asyncio.run(server.call_tool("pass_grant", {"include_irreversible": True}))
+ok(sent[-1]["input"].get("include_irreversible") is True, "include_irreversible goes through when asked for")
+asyncio.run(server.call_tool("token_pass_grant", {"scope": "tokens", "minutes": 45, "reason": "colours"}))
+ok(sent[-1]["path"] == "tokens.*" and sent[-1]["input"]["minutes"] == 45, "old name, tokens scope → tokens.*")
+asyncio.run(server.call_tool("pass_status", {}))
 ok(sent[-1]["op"] == "list" and sent[-1]["target"] == "pass.scopes", "status → list pass.scopes")
-asyncio.run(server.call_tool("token_pass_revoke", {"scope": "layout"}))
+asyncio.run(server.call_tool("pass_revoke", {"scope": "layout"}))
 ok(sent[-1]["path"] == "tokens.layout" and sent[-1]["action"] == "revoke", "revoke → act revoke")
+asyncio.run(server.call_tool("pass_undo", {}))
+ok(sent[-1]["path"] == "all" and sent[-1]["action"] == "undo", "undo defaults to everything")
 ok("pass.scopes" in mcp_server.CONTROL_TARGETS, "control_* tools take pass.scopes")
 
 print(f"✓ console MCP tools — {checks} checks, {len(tools)} tools, {len(READ_TOOLS)} read-only")

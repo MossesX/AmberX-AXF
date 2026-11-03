@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 199,
- "updatedAt": "2026-11-03T16:00:49.393Z",
+ "rev": 201,
+ "updatedAt": "2026-11-03T16:03:15.564Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50180,7 +50180,7 @@
    "branch": "claude/pass-all",
    "pr": "",
    "createdAt": "2026-11-03T15:53:52.125Z",
-   "updatedAt": "2026-11-03T16:00:49.354Z",
+   "updatedAt": "2026-11-03T16:03:15.530Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -50222,12 +50222,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:03:15.012Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:53:52.125Z",
-     "updatedAt": "2026-11-03T15:53:52.125Z"
+     "updatedAt": "2026-11-03T16:03:15.040Z"
     },
     {
      "id": "s3",
@@ -50244,12 +50244,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T16:03:15.530Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:53:52.125Z",
-     "updatedAt": "2026-11-03T15:53:52.125Z"
+     "updatedAt": "2026-11-03T16:03:15.564Z"
     },
     {
      "id": "s4",
@@ -50304,7 +50304,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

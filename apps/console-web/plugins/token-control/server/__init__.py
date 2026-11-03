@@ -20,8 +20,10 @@ Mounted twice:
 Veto passes (control-pass@1, framework/core/engines/control-pass.mjs; CONTROL.md → Veto passes), plugin mount only:
   GET    pass                     the signed publication axHub reads (X-AXF-Pass-Signature: t=<ms>,v1=<hmac>)
   GET    pass/status              every scope and its pass now, in plain words
-  GET    pass/check?target=&op=   the scope a call falls in and whether an active pass covers it now
-  POST   pass/grant               { scope, minutes?, reason?, by? } → a request Brett approves (his session: on at once)
+  GET    pass/check?target=&op=   the scope a control@1 command falls in and whether an active pass covers it now
+  GET    pass/check?call=&irreversible=   the same for any call axHub holds (service.tool): only an all pass covers it
+  POST   pass/grant               { scope = all, minutes?, reason?, include_irreversible?, by? } → a request Brett
+                                  approves (his session: on at once). No scope = all: every command, every plugin
   POST   pass/approve | pass/deny { scope, request }  Brett's session, or axHub with X-AXF-Pass-Approval / -Approver
   POST   pass/revoke | pass/undo  { scope, by? }
   GET|PUT pass/settings           { maxMinutes, timeZone }
@@ -159,7 +161,9 @@ def owner_approval(request: Request) -> tuple[dict[str, str] | None, dict[str, s
 
 
 def _scope(b: dict[str, Any]) -> str:
-    return str(b.get("scope") or b.get("path") or "")
+    """The scope a pass route names; none = all (everything, the default since build pass-all). Short words too."""
+    s = str(b.get("scope") or b.get("path") or "all").strip()
+    return {"everything": "all", "theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "tokens": "tokens.*"}.get(s.lower(), s)
 
 
 def _pass(request: Request, action: str, b: dict[str, Any], input_: dict[str, Any] | None = None) -> JSONResponse:
@@ -189,10 +193,14 @@ def pass_status(request: Request) -> JSONResponse:
 
 
 @router.get("/pass/check")
-def pass_check(target: str, op: str = "set") -> Any:
-    """{ scope, covered, pass? }: the scope a call on target + op falls in, and the active pass covering it now."""
+def pass_check(target: str = "", op: str = "set", call: str = "", irreversible: bool = False) -> Any:
+    """{ scope, covered, pass? }: the scope a control@1 command (target + op) or an axHub call (call = service.tool)
+    falls in, and the active pass covering it now."""
+    args = ["pass-check", "--call", call] if call else ["pass-check", target, op]
+    if irreversible:
+        args.append("--irreversible")
     try:
-        proc = subprocess.run(["node", str(CLI), "pass-check", target, op, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+        proc = subprocess.run(["node", str(CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
         return json.loads(proc.stdout)
     except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
         return {"ok": False, "error": str(e)[:200]}
@@ -206,6 +214,8 @@ async def pass_grant(request: Request) -> JSONResponse:
         inp["minutes"] = b["minutes"]
     if isinstance(b.get("reason"), str) and b["reason"]:
         inp["reason"] = b["reason"]
+    if b.get("include_irreversible") is True:
+        inp["include_irreversible"] = True
     return _pass(request, "grant", b, inp)
 
 
