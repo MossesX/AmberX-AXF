@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `element-inspector` s1 done, s2 done, s4 done, → running, PR #192, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `layout-repeating-slots` s2 done, → running, PR #191, merged, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `session-history` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #195, note (angel) · reconciler
 - 2026-11-03 13:57 UTC · `audio-output-recorder` PR #194, merged, note (angel) · reconciler
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:11 UTC · `banner-ref-links` s1 done (current) · foreign-write
 - 2026-11-03 21:11 UTC · `molly-console-commands` added (14 steps) (current) · foreign-write
 - 2026-11-03 21:11 UTC · `git-status-board` added (6 steps) (current) · foreign-write
+- 2026-11-03 21:12 UTC · `urgent-main-ci-green` added (5 steps) (current) · orchestrator
