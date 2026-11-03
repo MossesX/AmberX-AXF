@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T19:51:17.801Z",
+ "updatedAt": "2026-11-03T21:18:23.918Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1006,9 +1006,14 @@
    "branch": "claude/batch-manager",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-03T19:55:40.824Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Predicted shots part (UI Review shows what a build will look like before it runs) moved to urgent build ui-review-predicted (Brett, Nov 3 2026). The real before/after PR screenshots stay here.",
+     "at": "2026-11-03T19:55:40.824Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
