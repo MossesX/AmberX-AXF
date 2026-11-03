@@ -569,14 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:33 UTC · `toolbar-tap-confirm` s7 done (urgent) · orchestrator
-- 2026-11-03 18:36 UTC · `crew-live` s6 done (urgent) · orchestrator
-- 2026-11-03 18:37 UTC · `auto-land` s8 done, → built (urgent) · orchestrator
-- 2026-11-03 18:37 UTC · `auto-land` note (urgent) · orchestrator
-- 2026-11-03 18:37 UTC · `toolbar-tap-confirm` s3 done (urgent) · orchestrator
-- 2026-11-03 18:51 UTC · `toolbar-tap-confirm` s1 done (urgent) · orchestrator
-- 2026-11-03 18:52 UTC · `toolbar-tap-confirm` PR #272 (urgent) · builds-live
-- 2026-11-03 18:52 UTC · `toolbar-tap-confirm` note (urgent) · orchestrator
 - 2026-11-03 18:54 UTC · `toolbar-tap-confirm` s8 done, note (urgent) · reconciler
 - 2026-11-03 18:58 UTC · `crew-live` s5 done (urgent) · orchestrator
 - 2026-11-03 19:00 UTC · `crew-live` PR #273 (urgent) · builds-live
@@ -969,3 +961,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:55 UTC · `lenny-land-all` added (7 steps) (current) · orchestrator
 - 2026-11-03 22:56 UTC · `urgent-main-ci-green` note (current) · foreign-write
 - 2026-11-03 22:56 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `whats-new-open-fix` s2 done, s3 done, s4 done, s5 done, → complete, note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 22:39 UTC · `molly-banners` s1 done, s4 done (current) · foreign-write
+- 2026-11-03 22:39 UTC · `gizmo-companion` added (19 steps) (current) · foreign-write
+- 2026-11-03 22:39 UTC · `terminal-tabs-left` note (current) · orchestrator
+- 2026-11-03 22:41 UTC · `terminal-drag-chain-tree` note (current) · orchestrator
+- 2026-11-03 22:48 UTC · `terminal-tabs-left` PR #293 (current) · builds-live
