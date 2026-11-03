@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T12:23:15.428Z",
+ "updatedAt": "2026-11-03T12:29:46.770Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -358,7 +358,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T12:23:15.405Z",
+   "updatedAt": "2026-11-03T12:29:46.728Z",
    "builtAt": "",
    "notes": [
     {
@@ -379,7 +379,7 @@
      "phase": 1,
      "from": "Fable",
      "to": "Opus",
-     "at": "2026-11-03T11:52:58.707Z"
+     "at": "2026-11-03T12:29:43.181Z"
     }
    ],
    "steps": [
@@ -451,7 +451,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:50.866Z",
+     "doneAt": "2026-11-03T12:29:43.652Z",
      "note": "",
      "uid": "st-mvzm2laq0gvbw5"
     },
@@ -469,7 +469,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:51.267Z",
+     "doneAt": "2026-11-03T12:29:44.135Z",
      "note": "",
      "uid": "st-mvzm2laq0h9whn"
     },
@@ -487,7 +487,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:51.670Z",
+     "doneAt": "2026-11-03T12:29:44.527Z",
      "note": "",
      "uid": "st-mvzm2laq0ibbrv"
     },
@@ -505,7 +505,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:52.072Z",
+     "doneAt": "2026-11-03T12:29:44.948Z",
      "note": "",
      "uid": "st-mvzm2laq0j8ndz"
     },
@@ -523,7 +523,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:52.492Z",
+     "doneAt": "2026-11-03T12:29:45.351Z",
      "note": "",
      "uid": "st-mvzm2laq0kh5x0"
     },
@@ -541,7 +541,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:19:04.835Z",
+     "doneAt": "2026-11-03T12:29:45.841Z",
      "note": "",
      "uid": "st-mvzm2laq0llcwd"
     },
@@ -559,7 +559,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:19:05.493Z",
+     "doneAt": "2026-11-03T12:29:46.219Z",
      "note": "",
      "uid": "st-mvzm2laq0mvdp5",
      "title": "Toolbar designer as its OWN plugin (toolbar-designer): own folder, plugin.json, install/uninstall, settings sub-tab; dialog lists every plugin + screen, open target main/floating/pane; hooks from xLay"
@@ -578,7 +578,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:23:15.405Z",
+     "doneAt": "2026-11-03T12:29:46.728Z",
      "note": "",
      "uid": "st-mvzm2laq0n3jer"
     },

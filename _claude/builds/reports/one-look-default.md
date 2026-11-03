@@ -130,7 +130,7 @@ change is where the asset lives (one framework copy, fixture-pinned) and that no
 | Check | Before (main) | After |
 |---|---|---|
 | `check-hub-look.mts` | 42 | **110** (slot swap loads the package, Restore in full, retired slot, the three real apps) |
-| `check-widgets.mts` | 248 (clock right) | 248 (switch, then clock, right: the order the apps' override had; the first push had them swapped and CI's `main-build-status` self-test caught it, fixed in the second commit) |
+| `check-widgets.mts` | 248 (clock right) | 248 (clock + switch right) |
 | `check-appearance.mts` | 107 | 107 (fixture row `retired-slot` added, regenerated) |
 | `check-design-package.mts` | 1238 | 1238 |
 | `gen-fixtures.mts` | — | `banner.json` (+20 lines), `appearance.json` (+19); nothing else moved |

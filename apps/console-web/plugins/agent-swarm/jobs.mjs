@@ -145,7 +145,7 @@ export function hire(typeId) {
   const at = new Date().toISOString(); const { agent, skill } = jc.hireFor(jt, roster, at);
   withState((s) => {
     s.hired.push(agent); s.hiredSkills[skill.id] = { id: skill.id, title: skill.title, body: skill.body };
-    core.post(s, [{ from: core.BOSS.id, kind: 'status', text: `Hired ${agent.name} to own ${jt.name}. Welcome to the crew.` }], at);
+    core.post(s, [core.hiredLine(agent.name, jt.name)], at);
   });
   return { agent, skill };
 }

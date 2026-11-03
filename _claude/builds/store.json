@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 178,
- "updatedAt": "2026-11-03T12:23:15.428Z",
+ "rev": 174,
+ "updatedAt": "2026-11-03T12:29:46.770Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -254,11 +254,6 @@
     "dirty": false,
     "updatedAt": "2026-10-29T18:33:29.973Z",
     "history": []
-   },
-   "big-dog": {
-    "dirty": false,
-    "updatedAt": "2026-11-02T02:43:37.657Z",
-    "history": []
    }
   },
   "pending": {
@@ -281,6 +276,10 @@
    "breakroom": {
     "artifact": "",
     "updatedAt": "2026-11-01T02:11:52.634Z"
+   },
+   "big-dog": {
+    "artifact": "",
+    "updatedAt": "2026-11-03T11:52:58.737Z"
    }
   }
  },
@@ -45669,7 +45668,14 @@
      "at": "2026-11-01T11:25:25.676Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-03T12:01:22.767Z"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -45700,7 +45706,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-03T11:52:50.420Z"
+     "updatedAt": "2026-11-03T11:32:15.386Z"
     },
     {
      "id": "s2",
@@ -45722,7 +45728,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-03T11:52:50.420Z"
+     "updatedAt": "2026-11-03T11:36:29.062Z"
     },
     {
      "id": "s3",
@@ -45744,7 +45750,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-03T11:52:50.420Z"
+     "updatedAt": "2026-11-03T11:40:49.752Z"
     },
     {
      "id": "s4",
@@ -45766,7 +45772,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-03T11:52:50.420Z"
+     "updatedAt": "2026-11-03T11:44:46.905Z"
     },
     {
      "id": "s5",
@@ -45788,7 +45794,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-03T12:10:50.537Z"
+     "updatedAt": "2026-11-03T11:54:11.626Z"
     },
     {
      "id": "s6",
@@ -45810,7 +45816,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-03T12:10:50.537Z"
+     "updatedAt": "2026-11-03T11:54:12.098Z"
     },
     {
      "id": "s7",
@@ -45832,7 +45838,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-01T00:27:19.617Z",
-     "updatedAt": "2026-11-03T12:10:50.537Z"
+     "updatedAt": "2026-11-03T12:01:23.504Z"
     }
    ],
    "profiles": [
@@ -45843,28 +45849,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-10-31T05:27:48.056Z",
-    "builtAt": "2026-11-03T12:01:23.473Z",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mvx3bvuv089xhn": "2026-11-01T00:27:19.617Z",
-     "st-mvx3bvuv09vwf3": "2026-11-01T00:27:19.617Z",
-     "st-mvx3bvuv0a7v2s": "2026-11-01T00:27:19.617Z",
-     "st-mvx3bvuv0bb25l": "2026-11-01T00:27:19.617Z",
-     "st-mvx3bvuv0ckonb": "2026-11-01T00:27:19.617Z",
-     "st-mvx3bvuv0djqhy": "2026-11-01T00:27:19.617Z",
-     "st-mvx3bvuv0e7mgm": "2026-11-01T00:27:19.617Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-01T00:27:19.617Z",
    "rearranged": false,
@@ -48415,7 +48403,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-02T18:47:31.123Z",
-   "updatedAt": "2026-11-03T12:23:15.405Z",
+   "updatedAt": "2026-11-03T12:29:46.728Z",
    "builtAt": "",
    "notes": [
     {
@@ -48436,7 +48424,7 @@
      "phase": 1,
      "from": "Fable",
      "to": "Opus",
-     "at": "2026-11-03T11:52:58.707Z"
+     "at": "2026-11-03T12:29:43.181Z"
     }
    ],
    "steps": [
@@ -48460,7 +48448,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T11:26:10.542Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s2",
@@ -48482,7 +48470,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T11:26:11.209Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s3",
@@ -48504,7 +48492,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T11:26:11.868Z"
+     "updatedAt": "2026-11-03T11:54:11.352Z"
     },
     {
      "id": "s4",
@@ -48522,11 +48510,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:50.866Z",
+     "doneAt": "2026-11-03T12:29:43.652Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:10:50.904Z"
+     "updatedAt": "2026-11-03T12:29:43.719Z"
     },
     {
      "id": "s5",
@@ -48544,11 +48532,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:51.267Z",
+     "doneAt": "2026-11-03T12:29:44.135Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:10:51.298Z"
+     "updatedAt": "2026-11-03T12:29:44.173Z"
     },
     {
      "id": "s6",
@@ -48566,11 +48554,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:51.670Z",
+     "doneAt": "2026-11-03T12:29:44.527Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:10:51.696Z"
+     "updatedAt": "2026-11-03T12:29:44.571Z"
     },
     {
      "id": "s7",
@@ -48588,11 +48576,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:52.072Z",
+     "doneAt": "2026-11-03T12:29:44.948Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:10:52.126Z"
+     "updatedAt": "2026-11-03T12:29:44.984Z"
     },
     {
      "id": "s8",
@@ -48610,11 +48598,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:10:52.492Z",
+     "doneAt": "2026-11-03T12:29:45.351Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:10:52.524Z"
+     "updatedAt": "2026-11-03T12:29:45.387Z"
     },
     {
      "id": "s9",
@@ -48632,11 +48620,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:19:04.835Z",
+     "doneAt": "2026-11-03T12:29:45.841Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:19:04.876Z"
+     "updatedAt": "2026-11-03T12:29:45.891Z"
     },
     {
      "id": "s10",
@@ -48654,11 +48642,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:19:05.493Z",
+     "doneAt": "2026-11-03T12:29:46.219Z",
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:19:05.532Z"
+     "updatedAt": "2026-11-03T12:29:46.256Z"
     },
     {
      "id": "s11",
@@ -48676,11 +48664,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-03T12:23:15.405Z",
+     "doneAt": "2026-11-03T12:29:46.728Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-02T18:47:31.125Z",
-     "updatedAt": "2026-11-03T12:23:15.428Z"
+     "updatedAt": "2026-11-03T12:29:46.770Z"
     },
     {
      "id": "s12",
@@ -48713,10 +48701,33 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-02T18:47:31.123Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mvzm2laq0d1lyo": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0e7r3v": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0fclz5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0gvbw5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0h9whn": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0ibbrv": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0j8ndz": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0kh5x0": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0llcwd": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0mvdp5": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0n3jer": "2026-11-02T18:47:31.125Z",
+     "st-mvzm2laq0oes0p": "2026-11-02T18:47:31.125Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-02T18:47:31.125Z",
    "rearranged": false,
@@ -48810,21 +48821,16 @@
    "title": "Shared dock engine: split, float, re-dock, drop zones, layout presets (used by MD Studio, xLayout, Theme Editor)",
    "category": "Urgent",
    "detail": "Brett Nov 2 2026 21:30 ET picked 'shared dock engine first'. Extends framework/core/engines/windows (panes, tab groups) + framework/react/windows/WindowHost. Covers xLayout s3 (Big Dog) pane engine; xLayout s7/s8 use it. Android twin = deferred gap in PORTING.md (Android on hold).",
-   "status": "complete",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T02:32:21.328Z",
-   "updatedAt": "2026-11-03T11:18:39.122Z",
-   "builtAt": "2026-11-03T11:18:38.786Z",
-   "notes": [
-    {
-     "text": "Built on branch claude/molly-fable (headless Fable run molly-fable, Nov 3 2026): core/engines/dock.ts, dock-layout@1 (10 starters baked into every app), react/windows/DockHost.tsx, spec/fixtures/dock.json + check-dock.mts. PR opened at the end of the run; the push banner merges it.",
-     "at": "2026-11-03T11:18:39.122Z"
-    }
-   ],
+   "updatedAt": "2026-11-03T02:32:21.328Z",
+   "builtAt": "",
+   "notes": [],
    "approvals": [],
    "steps": [
     {
@@ -48842,12 +48848,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T11:08:41.380Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 1,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T11:08:41.418Z"
+     "updatedAt": "2026-11-03T02:32:21.329Z"
     },
     {
      "id": "s2",
@@ -48864,12 +48870,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T11:08:42.061Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 1,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T11:08:42.117Z"
+     "updatedAt": "2026-11-03T02:32:21.329Z"
     },
     {
      "id": "s3",
@@ -48886,12 +48892,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T11:13:29.561Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 1,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T11:13:29.593Z"
+     "updatedAt": "2026-11-03T02:32:21.329Z"
     },
     {
      "id": "s4",
@@ -48908,12 +48914,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-03T11:13:29.965Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 1,
      "createdAt": "2026-11-03T02:32:21.329Z",
-     "updatedAt": "2026-11-03T11:13:29.998Z"
+     "updatedAt": "2026-11-03T02:32:21.329Z"
     }
    ],
    "profiles": [
@@ -48924,7 +48930,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
