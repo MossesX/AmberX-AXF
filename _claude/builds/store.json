@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 554,
- "updatedAt": "2026-11-03T23:31:48.845Z",
+ "rev": 555,
+ "updatedAt": "2026-11-03T23:33:02.143Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -65876,7 +65876,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:26.841Z"
+     "updatedAt": "2026-11-03T23:20:58.725Z"
     },
     {
      "id": "s3",
@@ -65898,7 +65898,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T22:04:42.487Z",
-     "updatedAt": "2026-11-03T23:20:26.841Z"
+     "updatedAt": "2026-11-03T23:20:58.725Z"
     },
     {
      "id": "s4",
@@ -65992,7 +65992,7 @@
    "branch": "claude/gizmo-companion",
    "pr": "",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-03T23:25:42.552Z",
+   "updatedAt": "2026-11-03T23:28:19.444Z",
    "builtAt": "",
    "notes": [
     {
@@ -66176,12 +66176,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:26:46.439Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:26:49.951Z"
     },
     {
      "id": "s9",
@@ -66308,12 +66308,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T23:28:19.444Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T22:18:50.824Z",
-     "updatedAt": "2026-11-03T22:18:50.824Z"
+     "updatedAt": "2026-11-03T23:28:25.527Z"
     },
     {
      "id": "s15",
@@ -66434,40 +66434,10 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "session",
-    "planId": "",
-    "createdAt": "2026-11-03T22:18:50.820Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mw1927q50kp8hq": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50lgz29": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50mxxmp": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50nom6p": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50o4880": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50ph88r": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50qynnq": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50rs6y6": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50sx2kp": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50ts2ss": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50u3iw6": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50vzd3o": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50wktdc": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50xfddn": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50yrq9q": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q50zl3ym": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q510yqiw": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q511lo8v": "2026-11-03T22:18:50.824Z",
-     "st-mw1927q512l9n0": "2026-11-03T22:18:50.824Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-03T22:18:50.824Z",
    "rearranged": false,
@@ -66495,6 +66465,72 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mw1b9zcp016lrm",
+     "title": "",
+     "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:20:51.046Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw1b9zcp029a4k",
+     "title": "",
+     "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:20:51.046Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw1b9zcp038x3v",
+     "title": "",
+     "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T22:55:16.846Z",
+     "updatedAt": "2026-11-03T23:20:51.046Z"
+    },
+    {
+     "id": "s4-3",
      "uid": "st-mw1axlzh0k6cq5",
      "title": "",
      "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
@@ -66516,7 +66552,7 @@
      "updatedAt": "2026-11-03T23:11:12.039Z"
     },
     {
-     "id": "s2",
+     "id": "s5-4",
      "uid": "st-mw1axlzh0ln2zb",
      "title": "",
      "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
@@ -66538,7 +66574,7 @@
      "updatedAt": "2026-11-03T23:11:12.039Z"
     },
     {
-     "id": "s3",
+     "id": "s6-5",
      "uid": "st-mw1axlzh0miunm",
      "title": "",
      "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",
@@ -66560,7 +66596,7 @@
      "updatedAt": "2026-11-03T23:11:12.039Z"
     },
     {
-     "id": "s4-3",
+     "id": "s7-6",
      "uid": "st-mw1ad3pr04dhfd",
      "title": "",
      "text": "Lazy loading + code splitting: manifests eager, web parts one chunk per plugin loaded on first open, placeholder/error/retry, commands load on demand, HMR per plugin, before/after numbers",
@@ -66582,7 +66618,7 @@
      "updatedAt": "2026-11-03T22:55:16.846Z"
     },
     {
-     "id": "s5-4",
+     "id": "s8-7",
      "uid": "st-mw1ad3pr055ffm",
      "title": "",
      "text": "Lazy loader settings in Plugins manager (preload count by frecency, pins, banners first, order, idle preload, LRU cache, per-plugin mode, live table, reset) + REST/MCP/CLI",
@@ -66604,7 +66640,7 @@
      "updatedAt": "2026-11-03T22:55:16.846Z"
     },
     {
-     "id": "s6-5",
+     "id": "s9-8",
      "uid": "st-mw1ad3pr06m09a",
      "title": "",
      "text": "Tests/type-check, screenshots, UI Review item, report, THREADS, PR",

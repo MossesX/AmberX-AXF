@@ -569,19 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:12 UTC · `claude-settings` s4 done (urgent) · orchestrator
-- 2026-11-03 19:13 UTC · `follow-amber` s5 done (urgent) · orchestrator
-- 2026-11-03 19:13 UTC · `ui-review-shots` note (urgent) · orchestrator
-- 2026-11-03 19:13 UTC · `ui-review-shots` s3 done (urgent) · orchestrator
-- 2026-11-03 19:15 UTC · `agent-pick` s1 done, → running (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:15 UTC · `agent-pick` s2 done (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:15 UTC · `agent-pick` s3 done (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:15 UTC · `agent-pick` s4 done (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:15 UTC · `agent-pick` s5 done (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:14 UTC · `follow-amber` s6 done (urgent) · orchestrator
-- 2026-11-03 19:20 UTC · `claude-settings` note (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:21 UTC · `follow-amber` note (urgent) · Snap Sully (claude code)
-- 2026-11-03 19:21 UTC · `agent-pick` s6 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:21 UTC · `agent-pick` s7 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:21 UTC · `agent-pick` s8 done (urgent) · Snap Sully (claude code)
 - 2026-11-03 19:31 UTC · `terminal-vps-host` added (5 steps) (current) · orchestrator
@@ -969,3 +956,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:25 UTC · `molly-banners` PR #294, note (current) · foreign-write
 - 2026-11-03 23:25 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, branch claude/gizmo-companion, note (current) · foreign-write
 - 2026-11-03 23:26 UTC · `gizmo-companion` s7 done (current) · foreign-write
+- 2026-11-03 23:20 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 23:20 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 23:20 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 23:20 UTC · `plugin-lazy-load` added (3 steps) (current) · foreign-write
+- 2026-11-03 23:20 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
+- 2026-11-03 23:21 UTC · `gizmo-companion` s3 done (current) · orchestrator
+- 2026-11-03 23:22 UTC · `gizmo-companion` s4 done (current) · orchestrator
+- 2026-11-03 23:23 UTC · `gizmo-companion` s5 done (current) · orchestrator
+- 2026-11-03 23:24 UTC · `gizmo-companion` s6 done (current) · orchestrator
+- 2026-11-03 23:25 UTC · `gizmo-companion` s7 done (current) · orchestrator
+- 2026-11-03 23:26 UTC · `gizmo-companion` s8 done (current) · orchestrator
+- 2026-11-03 23:27 UTC · `molly-banners` note (current) · foreign-write
+- 2026-11-03 23:28 UTC · `gizmo-companion` s14 done (current) · orchestrator
