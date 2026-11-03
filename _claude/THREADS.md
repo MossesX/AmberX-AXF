@@ -575,7 +575,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
 - 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
 - 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
-
 - 2026-11-03 14:45 UTC · `whats-new-banner` s1–s4 done, s5 tests/checks/shots done, PR opening (urgent) · claude/whats-new-banner
 - 2026-11-03 14:53 UTC · `whats-new-banner` s5 done, PR #260, UI Review r-20261103-8861306a waiting (urgent) · claude/whats-new-banner
 - 2026-11-03 15:20 UTC · `orch-live-sync` → complete, merged, note (urgent) · reconciler
@@ -610,3 +609,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:29 UTC · `headless-tabs` PR #259, merged (urgent) · builds-live
 - 2026-11-03 16:29 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 16:29 UTC · `land-everything` s4 done (urgent) · orchestrator
+- 2026-11-03 16:41 UTC · `whats-new-banner` merged (urgent) · builds-live
