@@ -341,7 +341,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__sub[data-fx-flip='left'] { left: auto; right: calc(100% + 2px); }
 /* smart menus (engines/smartmenu.ts, smart-menu@1): the menus' look (--fx-menu-*, compiled from axf.menus.look; every
    value references a theme token) and the dynamic sections' headings, accents and hints */
-.fx-ctx, .fx-dropdown, .fx-ctx .fx-menu__sub, .fx-dropdown .fx-menu__sub {
+.fx-popover.fx-ctx, .fx-popover.fx-dropdown, .fx-ctx .fx-menu__sub, .fx-dropdown .fx-menu__sub {
   background: var(--fx-menu-bg); color: var(--fx-menu-text); border-color: var(--fx-menu-border); box-shadow: var(--fx-menu-shadow);
   border-radius: var(--fx-menu-radius); font-family: var(--fx-font-menu); font-weight: var(--fx-menu-weight); letter-spacing: var(--fx-menu-tracking);
   backdrop-filter: blur(var(--fx-menu-blur)); min-width: var(--fx-menu-min-w); max-width: var(--fx-menu-max-w);

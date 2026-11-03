@@ -28,10 +28,10 @@ export interface MenusSettings {
 export const DEFAULT_SETTINGS: MenusSettings = {
   enabled: true, learning: true, suggestions: 4, showWhy: true, topicTtlMin: 30,
   sections: [
-    { kind: 'talking', on: true, max: 4, label: 'Talking about', icon: 'message-circle' },
-    { kind: 'pinned', on: true, max: 8, label: 'Pinned', icon: 'pin' },
+    { kind: 'talking', on: true, max: 4, label: 'Talking about', icon: 'mic' },
+    { kind: 'pinned', on: true, max: 8, label: 'Pinned', icon: 'star' },
     { kind: 'suggested', on: true, max: 4, label: 'Suggested', icon: 'sparkles' },
-    { kind: 'context', on: true, max: 8, label: 'For this', icon: 'target' },
+    { kind: 'context', on: true, max: 8, label: 'For this', icon: 'eye' },
     { kind: 'static', on: true },
   ],
   perMenu: {},
@@ -42,20 +42,20 @@ export const DEFAULT_SETTINGS: MenusSettings = {
 export const TOPIC_TEMPLATES: MenuTopicTemplate[] = [
   { kind: 'build', menus: ['app:builds', 'ctx:*'], items: [
     { id: 'topic.build.open', label: 'Open build: {label}', icon: 'hammer', action: 'smart-menus.topic:build:{id}' },
-    { id: 'topic.build.orchestrator', label: 'In the orchestrator', icon: 'git-branch', action: 'nav:build-orchestrator' },
-    { id: 'topic.build.review', label: 'Its UI Review', icon: 'image', action: 'ui-review.open' },
-    { id: 'topic.build.agent', label: 'Its agent (Breakroom)', icon: 'users', action: 'nav:agent-swarm' },
+    { id: 'topic.build.orchestrator', label: 'In the orchestrator', icon: 'branch', action: 'nav:build-orchestrator' },
+    { id: 'topic.build.review', label: 'Its UI Review', icon: 'eye', action: 'ui-review.open' },
+    { id: 'topic.build.agent', label: 'Its agent (Breakroom)', icon: 'user', action: 'nav:agent-swarm' },
   ] },
-  { kind: 'pr', menus: ['app:builds', 'ctx:*'], items: [{ id: 'topic.pr.open', label: 'Open PR #{id}', icon: 'git-pull-request', action: 'smart-menus.topic:pr:{id}' }] },
+  { kind: 'pr', menus: ['app:builds', 'ctx:*'], items: [{ id: 'topic.pr.open', label: 'Open PR #{id}', icon: 'github', action: 'smart-menus.topic:pr:{id}' }] },
   { kind: 'plugin', menus: ['app:plugins', 'ctx:*'], items: [
     { id: 'topic.plugin.open', label: '{label} in Plugin manager', icon: 'package', action: 'plugin-manager.open:{id}' },
     { id: 'topic.plugin.settings', label: '{label} settings', icon: 'settings', action: 'settings.open:{id}' },
   ] },
   { kind: 'screen', menus: ['app:view', 'app:console', 'ctx:*'], items: [{ id: 'topic.screen.open', label: 'Open {label}', icon: 'layout', action: 'nav:{id}' }] },
   { kind: 'setting', menus: ['app:console', 'app:view', 'ctx:*'], items: [{ id: 'topic.setting.open', label: 'Settings: {label}', icon: 'settings', action: 'settings.open:{id}' }] },
-  { kind: 'agent', menus: ['app:builds', 'ctx:*'], items: [{ id: 'topic.agent.open', label: '{label} in the Breakroom', icon: 'users', action: 'nav:agent-swarm' }] },
+  { kind: 'agent', menus: ['app:builds', 'ctx:*'], items: [{ id: 'topic.agent.open', label: '{label} in the Breakroom', icon: 'user', action: 'nav:agent-swarm' }] },
   { kind: 'profile', menus: ['app:builds', 'ctx:*'], items: [{ id: 'topic.profile.open', label: 'Builds: {label}', icon: 'layers', action: 'builds.open' }] },
-  { kind: 'note', menus: ['ctx:*'], items: [{ id: 'topic.note.open', label: 'Note: {label}', icon: 'file-text', action: 'smart-menus.topic:note:{id}' }] },
+  { kind: 'note', menus: ['ctx:*'], items: [{ id: 'topic.note.open', label: 'Note: {label}', icon: 'file', action: 'smart-menus.topic:note:{id}' }] },
 ];
 
 export interface MenusState {

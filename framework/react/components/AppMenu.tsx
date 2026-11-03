@@ -16,7 +16,7 @@ import type { CompiledMenuButton } from '../../core/engines/appmenu';
 import type { CompiledMenu, CompiledMenuItem } from '../../core/engines/appmenu';
 import type { MenuOpen } from '../../core/engines/smartmenu';
 import { MenuHeading, MenuSub, useFoldedSections } from './MenuList';
-import { useRuntime } from '../AxfProvider';
+import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Button, Chip, Kbd } from './Controls';
 
@@ -286,6 +286,7 @@ function SubmenuBody({ item, depth, onDone, onEnter, open, autoFocus, menu }: { 
  */
 export function AppMenuDropdown({ menu, onDone }: { menu: CompiledMenu; onDone: () => void }) {
   const rt = useRuntime();
+  useAxfState(); // redraw when the sections change while open (topics arrive, a pin is set)
   const phone = useIsPhone();
   // smart menus (engines/smartmenu.ts): dynamic sections above this menu's fixed items, worked out when it opens
   const [open] = useState(() => rt.menuOpen('app', menu.id));

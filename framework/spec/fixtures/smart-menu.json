@@ -86,7 +86,7 @@
         "id": "smart:talking",
         "heading": true,
         "label": "Talking about",
-        "icon": "message-circle",
+        "icon": "mic",
         "section": "talking"
       },
       {
@@ -106,7 +106,7 @@
         "id": "smart:pinned",
         "heading": true,
         "label": "Pinned",
-        "icon": "pin",
+        "icon": "star",
         "section": "pinned"
       },
       {

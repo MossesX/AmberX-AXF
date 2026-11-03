@@ -51,8 +51,8 @@ export const plugin: AxfWebLibrary = {
     { id: 'smart-menus.behaviour', tab: TAB, title: 'Behaviour', icon: 'sliders', order: 20, render: () => <BehaviourPanel /> },
     { id: 'smart-menus.look', tab: TAB, title: 'Look', icon: 'palette', order: 30, render: () => <LookPanel /> },
     { id: 'smart-menus.per-menu', tab: TAB, title: 'Per menu', icon: 'menu', order: 40, render: () => <PerMenuPanel /> },
-    { id: 'smart-menus.topics', tab: TAB, title: 'Talking about', icon: 'message-circle', order: 50, render: () => <TopicsPanel /> },
-    { id: 'smart-menus.learning', tab: TAB, title: 'Learning', icon: 'activity', order: 60, render: () => <LearningPanel /> },
+    { id: 'smart-menus.topics', tab: TAB, title: 'Talking about', icon: 'mic', order: 50, render: () => <TopicsPanel /> },
+    { id: 'smart-menus.learning', tab: TAB, title: 'Learning', icon: 'chart', order: 60, render: () => <LearningPanel /> },
     { id: 'smart-menus.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

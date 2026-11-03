@@ -47,10 +47,10 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "showWhy": True,
     "topicTtlMin": TOPIC_TTL_DEFAULT,
     "sections": [
-        {"kind": "talking", "on": True, "max": 4, "label": "Talking about", "icon": "message-circle"},
-        {"kind": "pinned", "on": True, "max": 8, "label": "Pinned", "icon": "pin"},
+        {"kind": "talking", "on": True, "max": 4, "label": "Talking about", "icon": "mic"},
+        {"kind": "pinned", "on": True, "max": 8, "label": "Pinned", "icon": "star"},
         {"kind": "suggested", "on": True, "max": 4, "label": "Suggested", "icon": "sparkles"},
-        {"kind": "context", "on": True, "max": 8, "label": "For this", "icon": "target"},
+        {"kind": "context", "on": True, "max": 8, "label": "For this", "icon": "eye"},
         {"kind": "static", "on": True},
     ],
     "perMenu": {},

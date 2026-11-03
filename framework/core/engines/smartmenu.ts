@@ -106,10 +106,10 @@ export const SMART_MENU_DEFAULTS: SmartMenuOptions = {
 export const SMART_MENU_LIMITS = { suggestions: [0, 8], halfLifeDays: [0.5, 90], topicTtlMin: [1, 24 * 60], maxPicks: 4000, sectionMax: 12 } as const;
 
 export const DEFAULT_MENU_SECTIONS: MenuSectionSpec[] = [
-  { kind: 'talking', on: true, max: 4, label: 'Talking about', icon: 'message-circle' },
-  { kind: 'pinned', on: true, max: 8, label: 'Pinned', icon: 'pin' },
+  { kind: 'talking', on: true, max: 4, label: 'Talking about', icon: 'mic' },
+  { kind: 'pinned', on: true, max: 8, label: 'Pinned', icon: 'star' },
   { kind: 'suggested', on: true, max: 4, label: 'Suggested', icon: 'sparkles' },
-  { kind: 'context', on: true, max: 8, label: 'For this', icon: 'target' },
+  { kind: 'context', on: true, max: 8, label: 'For this', icon: 'eye' },
   { kind: 'static', on: true },
 ];
 

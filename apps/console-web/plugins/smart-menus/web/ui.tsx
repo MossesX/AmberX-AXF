@@ -36,8 +36,8 @@ export function SectionsEditor({ value, onChange }: { value: MenuSectionSpec[]; 
             </>
           )}
           <div className="axp-smart-menus__row-acts">
-            <Button size="sm" icon="arrow-up" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`Move ${SECTION_LABEL[s.kind]} up`}>Up</Button>
-            <Button size="sm" icon="arrow-down" disabled={i === value.length - 1} onClick={() => move(i, 1)} aria-label={`Move ${SECTION_LABEL[s.kind]} down`}>Down</Button>
+            <Button size="sm" icon="chevron-up" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`Move ${SECTION_LABEL[s.kind]} up`}>Up</Button>
+            <Button size="sm" icon="chevron-down" disabled={i === value.length - 1} onClick={() => move(i, 1)} aria-label={`Move ${SECTION_LABEL[s.kind]} down`}>Down</Button>
           </div>
         </div>
       ))}
@@ -116,7 +116,7 @@ export function PerMenuPanel({ initial }: { initial?: string }) {
       <Switch label="Plain static menu here" checked={!!own?.off} onChange={(off) => setOwn({ ...own, off })} hint="No dynamic sections in this one menu" />
       <Switch label="Own sections for this menu" checked={!!own?.sections} onChange={(on) => setOwn(on ? { ...own, sections: m.settings.sections } : { off: own?.off })} />
       {own?.sections && <SectionsEditor value={own.sections} onChange={(sections) => setOwn({ ...own, sections })} />}
-      <Container title="Pinned items" icon="pin">
+      <Container title="Pinned items" icon="star">
         {!items.length && <p className="fx-muted">Open this menu once to list its items.</p>}
         {items.map((i) => (
           <Switch key={i.id} label={i.label} checked={pins.includes(i.id)} onChange={(on) => void setPin(menu, i.id, on)} />
@@ -217,7 +217,7 @@ export function LookPanel() {
           <Button icon="refresh" confirm="Put every menu look setting back to the default?" onClick={() => setLook(rt, { perMenu: look.perMenu })}>Reset look</Button>
         </div>
         <LookEditor look={look} onChange={(l) => setLook(rt, { ...l, perMenu: look.perMenu })} />
-        <Container title="Export / import" icon="share" collapsible defaultOpen={false}>
+        <Container title="Export / import" icon="upload" collapsible defaultOpen={false}>
           <Button icon="copy" onClick={() => { void navigator.clipboard?.writeText(exportLook(look)); rt.toast('Menu look copied (menu-look@1).', 'success', 'Menus'); }}>Copy this look</Button>
           <TextField label="Paste a menu look" rows={4} mono value={text} onChange={setText} placeholder='{"$axf": "menu-look@1", "look": {…}}' />
           <Button icon="download" disabled={!text.trim()} onClick={doImport}>Import</Button>
@@ -257,7 +257,7 @@ export function TopicsPanel() {
   const [id, setId] = useState('');
   return (
     <div className="fx-stack">
-      <Note icon="message-circle">Amber tells the console what you two are talking about (the console_context tool). Those things go to the top of every menu for {m.settings.topicTtlMin} minutes.</Note>
+      <Note icon="mic">Amber tells the console what you two are talking about (the console_context tool). Those things go to the top of every menu for {m.settings.topicTtlMin} minutes.</Note>
       {!m.topics.length && <p className="fx-muted">Nothing right now.</p>}
       {m.topics.map((t) => (
         <div key={`${t.kind}:${t.id}`} className="axp-smart-menus__row">
@@ -292,8 +292,8 @@ export function MenusPage({ focus }: { focus?: string }) {
       {tab === 'look' && <Container title="Look" icon="palette"><LookPanel /></Container>}
       {tab === 'menus' && <Container title="Per menu" icon="menu"><PerMenuPanel initial={focus} /></Container>}
       {tab === 'behaviour' && <Container title="Behaviour" icon="sliders"><BehaviourPanel /></Container>}
-      {tab === 'learning' && <Container title="Learning" icon="activity"><LearningPanel /></Container>}
-      {tab === 'topics' && <Container title="Talking about" icon="message-circle"><TopicsPanel /></Container>}
+      {tab === 'learning' && <Container title="Learning" icon="chart"><LearningPanel /></Container>}
+      {tab === 'topics' && <Container title="Talking about" icon="mic"><TopicsPanel /></Container>}
     </div>
   );
 }

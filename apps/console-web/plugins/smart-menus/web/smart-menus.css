@@ -7,6 +7,6 @@
 .axp-smart-menus__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 22), 1fr)); gap: var(--fx-dens-gap-lg); }
 .axp-smart-menus__look { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--fx-dens-gap-2xl); align-items: start; }
 .axp-smart-menus__preview { position: sticky; top: var(--fx-dens-gap-lg); }
-.axp-smart-menus__preview-box { position: static; }
+.axp-smart-menus__preview .axp-smart-menus__preview-box { position: relative; inset: auto; z-index: auto; }
 :where([data-fx-narrow]) .axp-smart-menus__look { grid-template-columns: minmax(0, 1fr); }
 :where([data-fx-narrow]) .axp-smart-menus__preview { position: static; order: -1; }
