@@ -903,3 +903,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:56 UTC · `ui-review-shots` note (urgent) · orchestrator
 - 2026-11-03 19:56 UTC · `ui-review-shots` → built, PR #277 (urgent) · builds-live
 - 2026-11-03 19:56 UTC · `ui-review-shots` PR #277, note (urgent) · reconciler
+- 2026-11-03 19:58 UTC · `terminal-sessions-nav` added (4 steps) (current) · orchestrator
