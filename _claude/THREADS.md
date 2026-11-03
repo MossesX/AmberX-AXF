@@ -831,3 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 19:07 UTC · `claude-settings` s2 done (urgent) · orchestrator
 - 2026-11-03 19:07 UTC · `claude-settings` s3 done (urgent) · orchestrator
 - 2026-11-03 19:09 UTC · `ui-review-shots` added (5 steps) (urgent) · orchestrator
+- 2026-11-03 19:09 UTC · `ui-review-shots` s1 done, → running (urgent) · orchestrator
+- 2026-11-03 19:09 UTC · `ui-review-shots` note (urgent) · orchestrator
+- 2026-11-03 19:09 UTC · `ui-review-shots` branch claude/ui-review-shots (urgent) · builds-live
