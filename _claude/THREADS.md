@@ -595,3 +595,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 16:23 UTC · `crew-retrain` s8 done, → built (breakroom) · orchestrator
 - 2026-11-03 16:23 UTC · `crew-retrain` note (breakroom) · orchestrator
 - 2026-11-03 16:23 UTC · `land-everything` note (urgent) · orchestrator
+- 2026-11-03 16:23 UTC · `kill-patches-pilot` PR #258, merged (urgent) · builds-live

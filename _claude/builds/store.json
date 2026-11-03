@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 222,
- "updatedAt": "2026-11-03T16:23:11.250Z",
+ "rev": 223,
+ "updatedAt": "2026-11-03T16:23:50.723Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50538,11 +50538,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 7
+    "urgent": 8
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -50951,9 +50951,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/kill-patches-pilot",
-   "pr": "https://github.com/MossesX/AmberX-AXF/pull/258",
+   "pr": "#258",
+   "mergedAt": "2026-11-03T16:23:48.889Z",
    "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T14:44:10.978Z",
+   "updatedAt": "2026-11-03T16:23:49.812Z",
    "builtAt": "",
    "notes": [
     {
@@ -51144,11 +51145,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 6
+    "urgent": 7
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
