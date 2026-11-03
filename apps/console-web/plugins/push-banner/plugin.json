@@ -119,7 +119,8 @@
       "apps/console-web/plugins/README.md",
       "_claude/shared/rules/RULES.md",
       "_claude/THREADS.md",
-      "deploy/install-console.sh"
+      "deploy/install-console.sh",
+      ".github/workflows/android.yml"
     ]
   },
   "opens": false
