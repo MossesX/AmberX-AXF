@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 295,
- "updatedAt": "2026-11-03T18:03:22.935Z",
+ "rev": 296,
+ "updatedAt": "2026-11-03T18:03:39.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -29095,7 +29095,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T18:02:42.358Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s8",
@@ -29117,7 +29117,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T18:02:43.802Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s9",
@@ -29139,7 +29139,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T18:02:45.197Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s10",
@@ -29161,7 +29161,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T18:02:46.178Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s11",
@@ -29183,7 +29183,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T18:02:46.984Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s12",
@@ -29263,10 +29263,10 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-03T18:02:48.044Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
-     "id": "s30",
+     "id": "s17-16",
      "uid": "st-mw0zlof60117cu",
      "title": "",
      "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
@@ -29280,12 +29280,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:48.952Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:54:02.788Z",
-     "updatedAt": "2026-11-03T17:54:02.851Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s16-15",
@@ -53180,7 +53180,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T17:53:08.985Z",
-     "updatedAt": "2026-11-03T18:02:36.144Z"
+     "updatedAt": "2026-11-03T18:02:57.488Z"
     },
     {
      "id": "s4",
