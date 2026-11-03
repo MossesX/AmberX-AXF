@@ -51,5 +51,7 @@
       "framework/spec/PORTING.md"
     ]
   },
-  "opens": "window"
+  "opens": "window",
+  "settingsHost": true,
+  "settingsPlacement": { "placement": "inside", "mode": "pane", "looks": { "inside:pane": { "edge": "left", "animation": "slide" } } }
 }

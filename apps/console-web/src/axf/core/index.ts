@@ -47,3 +47,6 @@ export * from './engines/plugins';
 export * from './library';
 export * from './engines/work';
 export * from './engines/placement';
+// settings-placement@1: where a plugin's settings open (namespaced: its names would clash with placement@1's)
+export * as settingsPlacement from './engines/settingsplacement';
+export type { SettingsPlacementPick, SettingsLook, SettingsRoute, InsideMode } from './engines/settingsplacement';

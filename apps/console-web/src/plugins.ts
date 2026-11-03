@@ -32,6 +32,10 @@ export interface PluginManifest {
   opens?: 'main' | 'window' | 'dialog' | 'tab' | false;
   /** which UI moves (view:<id> / dialog:<id>) */
   opensUi?: string;
+  /** in-plugin settings placements it hosts (settings-placement@1): true = all, a list = those */
+  settingsHost?: boolean | ('pane' | 'dropdown' | 'tab' | 'split' | 'inline')[];
+  /** where its settings open until someone picks (a settings-placement@1 pick) */
+  settingsPlacement?: Record<string, unknown>;
 }
 
 export interface BundledPlugin {

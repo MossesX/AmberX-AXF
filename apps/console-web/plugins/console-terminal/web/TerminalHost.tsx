@@ -17,7 +17,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Icon, useRuntime, useWindowFrame, useWindowManager } from '@console/axf/react';
+import { Icon, SettingsHost, useRuntime, useWindowFrame, useWindowManager } from '@console/axf/react';
 import type { TabSpec } from '@console/axf/core';
 import { call, getSettings, post, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target, type TmuxSession } from './api';
 import { applyProfile, useProfiles } from './profiles';
@@ -25,6 +25,9 @@ import { activate, addSession, ctl, dropHost, host, hostIds, hostOf, move, patch
 import { newWindow } from './open';
 import { TerminalSession } from './TerminalSession';
 import { follow, meterOf, modelName, money, statusOf, useMeters } from './meters';
+
+/** plugin.json id: the owner of the Terminal settings tab (settings-placement@1 host). */
+const TERMINAL_ID = 'ai.amberx.axf.console.terminal';
 import { SplitView, type Split } from './SplitView';
 import { ChainPane } from './ChainPane';
 import { markClosed } from './headless';
@@ -215,6 +218,8 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
           <button type="button" className="fx-btn fx-btn--danger" onClick={() => closeNow(s.id)}>Close</button>
           <button type="button" className="fx-btn fx-btn--ghost" onClick={() => setAsk(null)}>Cancel</button>
         </div>) : null; })()}
+      {/* settings-placement@1: Terminal settings can open inside the window (pane, drop-down, tab, split, inline) */}
+      <SettingsHost owner={TERMINAL_ID} label="Terminal" className={`${P}__sphost`}>
       <div className={`${P}__body`}>
         {h.sessions.map((s) => {
           const hl = headlessOf(s); const on = s.id === front?.id;
@@ -223,6 +228,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
             b={hl ? <ChainPane session={hl} settings={settings} /> : null} />;
         })}
       </div>
+      </SettingsHost>
 
       {(menu || drop) && createPortal(<>
       {(menu || drop) && <div className={`${P}__scrim`} onClick={() => { setMenu(null); setDrop(null); }} onContextMenu={(e) => { e.preventDefault(); setMenu(null); setDrop(null); }} />}

@@ -36,3 +36,4 @@ export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } fro
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';
 export { WaitingForHub } from './components/Waiting';
 export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } from './components/WatchLive';
+export { SettingsHost, SettingsPageSurfaces, SettingsPlacementPicker, closeSettingsSurface, findSettingsHost, openSettingsSurface, routeSettings, setSettingsSurfaceContent, settingsPickOf, settingsSurfaceOpen, useSettingsPick, type SettingsHostProps, type SettingsSurface } from './settingsHost';

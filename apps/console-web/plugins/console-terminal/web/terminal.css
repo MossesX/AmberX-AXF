@@ -88,6 +88,7 @@
 .axp-wt__sep { width: var(--fx-border-w); align-self: stretch; margin: var(--fx-dens-gap-xs); background: var(--fx-border) }
 .axp-wt__conn { gap: var(--fx-dens-gap-md); max-width: calc(var(--fx-space) * 32); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-wt__flag { padding: 0 var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); color: var(--fx-surface); background: var(--fx-danger); font-size: var(--fx-type-root-2xs); letter-spacing: .04em }
+.axp-wt__sphost { flex: 1; min-height: 0 }
 .axp-wt__body { position: relative; flex: 1; min-height: 0; background: var(--fx-surface) }
 .axp-wt__body > .axp-terminal { position: absolute; inset: 0; min-height: 0 }
 .axp-wt__scrim { position: fixed; inset: 0; z-index: 900 }

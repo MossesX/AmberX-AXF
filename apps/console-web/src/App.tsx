@@ -81,6 +81,8 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
     ...(m.builtWith?.model ? { builtWith: { model: m.builtWith.model, ...(m.builtWith.builtAt ? { builtAt: m.builtWith.builtAt } : {}) } } : {}),
     ...(m.opens ? { opens: m.opens } : {}),
     ...(m.opensUi ? { opensUi: m.opensUi } : {}),
+    ...(m.settingsHost && !lib.settingsHost ? { settingsHost: m.settingsHost } : {}),
+    ...(m.settingsPlacement && !lib.settingsPlacement ? { settingsPlacement: m.settingsPlacement } : {}),
   };
   // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.

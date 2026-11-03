@@ -7,6 +7,7 @@ import type { AppMenuProvider, AxfRuntime, InstalledLibrary, NavItem, SettingsGr
 import type { AppMenuContribution } from '../core/engines/appmenu';
 import { embedSkipReason } from '../core/engines/embed';
 import { isPlacement, placementKey, placementOptions, PLACEMENT_LABELS, primaryUi, type Placement } from '../core/engines/placement';
+import { hostModes, type InsideMode } from '../core/engines/settingsplacement';
 import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
@@ -75,6 +76,14 @@ export interface AxfWebLibrary {
   opens?: Placement | false;
   /** Which UI moves (`view:<id>` / `dialog:<id>`); default its first page, else its first dialog. */
   opensUi?: string;
+  /**
+   * Where its settings can open inside it (settings-placement@1, plugin@1 `settingsHost`): `true` = every in-plugin mode
+   * (pane, drop-down, tab, split, inline), a list = those (pane is always one). The plugin wraps its UI in
+   * `<SettingsHost owner=…>` (react/settingsHost.tsx). Absent = it can't host them: "inside" opens a pane over the page.
+   */
+  settingsHost?: boolean | InsideMode[];
+  /** Where its settings open until someone picks (a settings-placement@1 pick, e.g. `{ placement: 'inside', mode: 'pane' }`). */
+  settingsPlacement?: unknown;
 }
 
 /** Content for a named slot; `props` are what the view passes to `<Slot name=… props=… />`. */
@@ -127,6 +136,8 @@ export function installedLibraryRecord(l: AxfWebLibrary): InstalledLibrary {
     ...(l.uiEditor?.length ? { uiEditor: [...l.uiEditor] } : {}),
     ...(l.builtWith?.model ? { builtWith: { ...l.builtWith } } : {}),
     ...(isPlacement(l.opens) ? { opens: l.opens } : {}),
+    ...(hostModes(l.settingsHost).length ? { settingsHost: hostModes(l.settingsHost) } : {}),
+    ...(l.settingsPlacement ? { settingsPlacement: l.settingsPlacement } : {}),
     contributes: [...views.map((v) => `view:${v.id}`), ...dialogs.map((d) => `dialog:${d.id}`), ...tabs.map((t) => `settings-tab:${t.id}`)],
     ui: {
       views, dialogs, settingsTabs: tabs,

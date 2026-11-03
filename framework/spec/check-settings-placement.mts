@@ -1,0 +1,76 @@
+/**
+ * Self-test for settings-placement@1 (CI: npx -y tsx framework/spec/check-settings-placement.mts).
+ *  1. replays spec/fixtures/settings-placement.json against core/engines/settingsplacement.ts
+ *  2. every console plugin with settings: its plugin.json `settingsHost` / `settingsPlacement` are valid, a plugin that
+ *     declares a host wraps its UI in <SettingsHost>, and its settings can open as a pane, a dialog and the main page
+ *     (with its host open and with it closed), so "inside" always lands somewhere (Brett, Nov 3 2026)
+ *  3. the look stays on tokens: lookStyle never yields a raw px or colour
+ */
+import assert from 'node:assert/strict';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import * as E from '../core/engines/settingsplacement';
+
+const f = JSON.parse(readFileSync(new URL('./fixtures/settings-placement.json', import.meta.url), 'utf8'));
+let checks = 0;
+const norm = (v: unknown) => (v === undefined ? null : JSON.parse(JSON.stringify(v)));
+const eq = (a: unknown, b: unknown, what: string) => { assert.deepEqual(norm(a), norm(b), what); checks++; };
+
+/* ---------- 1. fixture ---------- */
+eq(E.SETTINGS_PLACEMENTS, f.placements, 'placements');
+eq(E.INSIDE_MODES, f.modes, 'modes');
+for (const c of f.resolve) eq(E.resolveSettingsOpen(E.normalizePick(f.picks[c.pick]), { host: f.hosts[c.host], hostable: c.hostable, reducedMotion: c.reducedMotion }), c.route, `resolve ${c.pick} / ${c.host}${c.reducedMotion ? ' / reduced motion' : ''}`);
+for (const c of f.normalize) eq(E.normalizePick(c.input), c.pick, `normalize ${JSON.stringify(c.input)}`);
+for (const c of f.effective) eq(E.effectivePick(c.own, c.appDefault, c.legacy, c.declared), c.pick, `effective ${JSON.stringify(c)}`);
+for (const c of f.hostModes) eq(E.hostModes(c.input), c.modes, `hostModes ${JSON.stringify(c.input)}`);
+for (const c of f.looks) { eq(E.DEFAULT_LOOKS[c.key as E.LookKey], c.look, `default look ${c.key}`); eq(E.lookStyle(c.look), c.style, `look style ${c.key}`); }
+for (const c of f.describe) eq(E.describePick(E.normalizePick(f.picks[c.pick])), c.text, `describe ${c.pick}`);
+// a pick survives a round trip through storage
+for (const p of Object.values(f.picks)) eq(E.normalizePick(E.encodePick(E.normalizePick(p))), E.normalizePick(p), 'encode round trip');
+
+/* ---------- 2. every console plugin with settings ---------- */
+const root = new URL('../../apps/console-web/plugins/', import.meta.url).pathname;
+const webFiles = (dir: string): string[] => existsSync(dir) ? readdirSync(dir, { withFileTypes: true }).flatMap((d) => d.isDirectory() ? (d.name === 'vendor' || d.name === 'node_modules' ? [] : webFiles(join(dir, d.name))) : /\.tsx?$/.test(d.name) ? [join(dir, d.name)] : []) : [];
+let plugins = 0;
+for (const folder of readdirSync(root)) {
+  const mf = join(root, folder, 'plugin.json');
+  if (folder.startsWith('_') || !existsSync(mf)) continue;
+  const m = JSON.parse(readFileSync(mf, 'utf8'));
+  const hasSettings = (m.provides ?? []).some((p: string) => p.startsWith('settings-tab:'));
+  if (m.settingsHost !== undefined) {
+    const ok = typeof m.settingsHost === 'boolean' || (Array.isArray(m.settingsHost) && m.settingsHost.every((x: string) => (E.INSIDE_MODES as readonly string[]).includes(x)));
+    assert.ok(ok, `${folder}: settingsHost must be true / false or a list of ${E.INSIDE_MODES.join(', ')}`); checks++;
+    if (E.hostModes(m.settingsHost).length) {
+      const src = webFiles(join(root, folder, 'web')).map((p) => readFileSync(p, 'utf8')).join('\n');
+      assert.ok(/<SettingsHost\b/.test(src), `${folder}: plugin.json says settingsHost but its web part never renders <SettingsHost owner=…> (framework/react/settingsHost.tsx)`); checks++;
+      assert.ok(hasSettings, `${folder}: settingsHost without a settings tab`); checks++;
+    }
+  }
+  if (m.settingsPlacement !== undefined) {
+    const p = m.settingsPlacement;
+    assert.ok(p && typeof p === 'object' && (E.SETTINGS_PLACEMENTS as readonly string[]).includes(p.placement), `${folder}: settingsPlacement.placement must be one of ${E.SETTINGS_PLACEMENTS.join(', ')}`); checks++;
+    if (p.mode !== undefined) { assert.ok((E.INSIDE_MODES as readonly string[]).includes(p.mode), `${folder}: settingsPlacement.mode must be one of ${E.INSIDE_MODES.join(', ')}`); checks++; }
+    eq(E.normalizePick(E.encodePick(E.normalizePick(p))).placement, p.placement, `${folder}: settingsPlacement round trip`);
+  }
+  if (!hasSettings) continue;
+  plugins++;
+  const modes = E.hostModes(m.settingsHost);
+  const hosts: (E.HostInfo | null)[] = [null, ...(modes.length ? [{ modes, compact: false }, { modes, compact: true }] : [])];
+  for (const host of hosts) {
+    const at = (pick: Partial<E.SettingsPlacementPick>) => E.resolveSettingsOpen(E.normalizePick(pick), { host, hostable: modes.length > 0 });
+    const pane = at({ placement: 'inside', mode: 'pane' });
+    assert.ok(pane.via === 'page-pane' || (pane.via === 'host' && pane.mode === 'pane'), `${folder}: settings can't open as a pane (${JSON.stringify(pane)})`); checks++;
+    assert.equal(at({ placement: 'dialog' }).via, 'dialog', `${folder}: settings can't open in a dialog`); checks++;
+    assert.equal(at({ placement: 'main' }).via, 'main', `${folder}: settings can't open on the main page`); checks++;
+    for (const mode of E.INSIDE_MODES) { const r = at({ placement: 'inside', mode }); assert.ok(r.via === 'host' || r.via === 'page-pane', `${folder}: inside/${mode} lands nowhere`); checks++; }
+  }
+}
+assert.ok(plugins > 10, `only ${plugins} plugins with settings found under ${root}`); checks++;
+
+/* ---------- 3. tokens only ---------- */
+for (const key of Object.keys(E.DEFAULT_LOOKS) as E.LookKey[]) for (const size of E.SIZES) for (const radius of E.LEVELS) {
+  const { vars } = E.lookStyle({ ...E.DEFAULT_LOOKS[key], size, radius, shadow: radius });
+  for (const [k, v] of Object.entries(vars)) { assert.ok(!/\d+px|#[0-9a-f]{3,8}\b|rgba?\(/i.test(v), `${k}: ${v} is not a token`); checks++; }
+}
+
+console.log(`settings-placement@1: ${checks} checks passed (${f.resolve.length} resolve cases, ${plugins} plugins with settings)`);
