@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 234,
- "updatedAt": "2026-11-03T16:41:31.686Z",
+ "rev": 235,
+ "updatedAt": "2026-11-03T16:41:37.846Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50269,7 +50269,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-03T15:32:06.059Z",
-   "updatedAt": "2026-11-03T16:29:56.545Z",
+   "updatedAt": "2026-11-03T16:41:36.785Z",
    "builtAt": "",
    "notes": [
     {
@@ -50295,6 +50295,10 @@
     {
      "text": "Landed claude/headless-tabs (PR #259) on main at a8186b83",
      "at": "2026-11-03T16:29:52.087Z"
+    },
+    {
+     "text": "Landed claude/whats-new-banner (PR #260) on main at 6ff111a1",
+     "at": "2026-11-03T16:41:36.785Z"
     }
    ],
    "approvals": [],
@@ -50550,7 +50554,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
