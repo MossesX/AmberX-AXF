@@ -569,8 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:31 UTC · `md-studio` branch claude/md-studio, PR #271 (urgent) · builds-live
-- 2026-11-03 18:31 UTC · `md-studio` s10 done, → complete (urgent) · orchestrator
 - 2026-11-03 18:31 UTC · `md-studio` note (urgent) · orchestrator
 - 2026-11-03 18:31 UTC · `md-studio` → built (urgent) · orchestrator
 - 2026-11-03 18:32 UTC · `crew-live` s3 done (urgent) · orchestrator
@@ -969,3 +967,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:54 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
 - 2026-11-03 22:54 UTC · `urgent-main-ci-green` merged, note (current) · reconciler
 - 2026-11-03 22:54 UTC · `terminal-tabs-left` PR #293, note (current) · reconciler
+- 2026-11-03 22:54 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 22:54 UTC · `terminal-tabs-left` note (current) · foreign-write
