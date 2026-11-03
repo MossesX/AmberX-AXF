@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T17:45:20.384Z",
+ "updatedAt": "2026-11-03T18:17:03.888Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1997,14 +1997,14 @@
    "title": "Builds: one dataset, one page with selectable views (Plan, Tracker, Queue, Pending, Orchestrator)",
    "category": "Console UI",
    "detail": "Brett, Oct 27 2026: Plans, Tracker, Build queue, Pending builds and the Build orchestrator are separate files (plan.json, tracker.json, build-queue.json, pending.json, _claude/builds/orchestrator.json) that drift (pending complete never marks the plan built; 91 of 100 pending items unlinked). Merge into one dataset; one Builds page with the views selectable from a toolbar and everywhere else that fits (app menu, context menu, shortcuts, banners, deep links). Every view, Orchestrator included, defaults to the Pending builds look: a table with expandable rows; better nested info in every list. Folds in pending-grid-view. tracker.json stays a generated export for the Android console and /tracker. Web only (Android hold).",
-   "status": "archived",
+   "status": "running",
    "hidden": false,
    "source": "chat",
    "pendingId": "",
-   "branch": "claude/builds-one-page",
-   "pr": "",
+   "branch": "claude/builds-one-page-done",
+   "pr": "#134",
    "createdAt": "2026-10-27T19:11:22.011Z",
-   "updatedAt": "2026-10-28T18:55:15.966Z",
+   "updatedAt": "2026-11-03T18:02:48.952Z",
    "builtAt": "",
    "notes": [
     {
@@ -2022,6 +2022,14 @@
     {
      "text": "Removed by Brett Oct 28 2026 (claude.ai): \"remove one page\" when the Feature Matrix plugin was asked for. Archived, not deleted; set it back to pending to bring it back.",
      "at": "2026-10-28T18:55:15.914Z"
+    },
+    {
+     "text": "Nov 3 2026 (builds-one-page-done, Snap Sully): verified against main. s5, s6, s12, s14 landed with the one builds store (urgent-builds, merged 2a057cc4) and orch-pending-sync (#143). s7-s11, s15, s16 were built on claude/builds-one-page-finish (c4b77a6e, never pushed) and are being ported onto current main on claude/builds-one-page-done.",
+     "at": "2026-11-03T17:53:49.561Z"
+    },
+    {
+     "text": "Reconciler: PR #134; PR #134 names s1, s2, s3, s4 done",
+     "at": "2026-11-03T17:56:10.354Z"
     }
    ],
    "approvals": [
@@ -2124,8 +2132,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:53:46.784Z",
      "note": "",
      "uid": "st-6cv1dx"
     },
@@ -2142,8 +2150,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:53:47.316Z",
      "note": "",
      "uid": "st-ejwfqj"
     },
@@ -2160,8 +2168,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:42.317Z",
      "note": "",
      "uid": "st-g9f9ft"
     },
@@ -2178,8 +2186,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:43.720Z",
      "note": "",
      "uid": "st-pwsmyj"
     },
@@ -2196,8 +2204,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:45.135Z",
      "note": "",
      "uid": "st-1ugpm65"
     },
@@ -2214,8 +2222,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:46.138Z",
      "note": "",
      "uid": "st-1brmv5a"
     },
@@ -2232,8 +2240,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:02:46.936Z",
      "note": "",
      "uid": "st-15xdrlf"
     },
@@ -2250,8 +2258,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:53:47.879Z",
      "note": "",
      "uid": "st-31fetj"
     },
@@ -2275,8 +2283,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:53:48.407Z",
      "note": "",
      "uid": "st-crj9vs"
     },
@@ -2300,10 +2308,64 @@
      "session": "same",
      "agent": false,
      "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T18:02:47.995Z",
+     "note": "",
+     "uid": "st-n8ym5e"
+    },
+    {
+     "id": "s17-16",
+     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T18:02:48.952Z",
+     "note": "",
+     "uid": "st-mw0zlof60117cu"
+    },
+    {
+     "id": "s16-15",
+     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-n8ym5e"
+     "uid": "st-mw0zlwfb0171rx"
+    },
+    {
+     "id": "s16",
+     "text": "Old screens become thin redirects to their Builds view (pending, build queue, build-orchestrator, plan, tracker); every nav/menu/context way in kept",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-03T18:02:48.952Z",
+     "note": "",
+     "uid": "st-mw0zldp801my37"
     },
     {
      "id": "s13",
