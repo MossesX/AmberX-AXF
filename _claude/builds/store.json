@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 279,
- "updatedAt": "2026-11-03T17:53:14.379Z",
+ "rev": 280,
+ "updatedAt": "2026-11-03T17:53:29.628Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -52959,14 +52959,14 @@
    "title": "Builds: finish the one Builds page (builds-one-page s5-s15) on current main",
    "category": "Console UI",
    "detail": "Brett, Nov 3 2026 (voice): finish builds-one-page. Assigned agent: Snap Sully. Verify which of s5-s15 really landed, port claude/builds-one-page-finish onto current main, build the rest: ONE Builds page, views over the ONE live store, every view command through control@1 (REST + MCP + CLI). Tests, report, PR, mark builds-one-page complete, close the stale finish branch.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/builds-one-page-done",
    "pr": "",
    "createdAt": "2026-11-03T17:53:08.980Z",
-   "updatedAt": "2026-11-03T17:53:08.980Z",
+   "updatedAt": "2026-11-03T17:53:09.628Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -52987,12 +52987,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T17:53:09.628Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T17:53:08.985Z",
-     "updatedAt": "2026-11-03T17:53:08.985Z"
+     "updatedAt": "2026-11-03T17:53:09.667Z"
     },
     {
      "id": "s2",
@@ -53091,7 +53091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

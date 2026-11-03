@@ -695,3 +695,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 17:45 UTC · `console-wake` note (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` → built, branch claude/console-wake, PR #266 (urgent) · builds-live
 - 2026-11-03 17:53 UTC · `builds-one-page-done` added (5 steps) (urgent) · snap-sully
+- 2026-11-03 17:53 UTC · `builds-one-page-done` s1 done, → running (urgent) · snap-sully
