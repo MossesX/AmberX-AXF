@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 283,
- "updatedAt": "2026-11-03T17:54:19.473Z",
+ "rev": 284,
+ "updatedAt": "2026-11-03T17:54:35.835Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -49586,7 +49586,7 @@
    "pr": "#242",
    "mergedAt": "2026-11-03T02:54:56Z",
    "createdAt": "2026-11-03T02:32:21.910Z",
-   "updatedAt": "2026-11-03T14:09:29.660Z",
+   "updatedAt": "2026-11-03T17:54:29.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -49845,6 +49845,50 @@
      "rev": 1,
      "createdAt": "2026-11-03T14:09:29.093Z",
      "updatedAt": "2026-11-03T14:09:29.121Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mw0zm7xw01ogqb",
+     "title": "",
+     "text": "Editor kit (Brett voice Nov 3): markdown toolbar (headings, bold/italic, lists, checklists, tables, code, links), live preview side-by-side/split, search/replace, autosave, version history with restore",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T17:54:28.068Z",
+     "updatedAt": "2026-11-03T17:54:28.148Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mw0zm8mc01ppev",
+     "title": "",
+     "text": "Commands declared once (plugin-commands@1 auto: REST + MCP + CLI) so Amber can open/edit docs by voice; Notes Vault + hub memory/rules + repo .md reachable",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-03T17:54:29.003Z",
+     "updatedAt": "2026-11-03T17:54:29.028Z"
     }
    ],
    "profiles": [
@@ -49855,7 +49899,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
