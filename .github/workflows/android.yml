@@ -68,6 +68,8 @@ jobs:
         run: node apps/console-web/plugins/project-wizard/test.mjs
       - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
+      - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
+        run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
         run: |
           set -e
