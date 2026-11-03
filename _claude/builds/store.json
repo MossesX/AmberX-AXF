@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 506,
- "updatedAt": "2026-11-03T21:55:27.871Z",
+ "rev": 507,
+ "updatedAt": "2026-11-03T21:55:46.771Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55732,7 +55732,7 @@
    "branch": "claude/smart-menus",
    "pr": "#281",
    "createdAt": "2026-11-03T19:45:20.635Z",
-   "updatedAt": "2026-11-03T20:43:42.106Z",
+   "updatedAt": "2026-11-03T21:55:42.769Z",
    "builtAt": "2026-11-03T20:43:38.552Z",
    "notes": [
     {
@@ -55742,6 +55742,10 @@
     {
      "text": "All 7 steps done on Opus; PR #281 open, UI Review r-20261103-1450743b waiting. Follow-ups (not in this build): menu-style asset type + Fable review of the smart-menu engine contract (an Opus->Fable upgrade, needs Brett's approval); axHub admin to allow console_context on axf-console.",
      "at": "2026-11-03T20:43:42.106Z"
+    },
+    {
+     "text": "Clash note (molly-nav-submenus, Nov 3): both touch framework/react/components/Chrome.tsx, core/types.ts, schemas/asset-types.json and ui/axf.css in different sections (smart-menus: app/context menus; molly-nav-submenus: NavMenu + new nav-style type). Whichever merges second rebases.",
+     "at": "2026-11-03T21:55:42.769Z"
     }
    ],
    "approvals": [],
@@ -55910,7 +55914,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

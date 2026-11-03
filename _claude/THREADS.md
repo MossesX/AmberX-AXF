@@ -568,7 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 17:35 UTC · `land-everything` s9 done (urgent) · orchestrator
 - 2026-11-03 17:42 UTC · `land-everything` note (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` s3 done (urgent) · orchestrator
 - 2026-11-03 17:45 UTC · `console-wake` s4 done (urgent) · orchestrator
@@ -968,3 +967,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:49 UTC · `ui-review-predicted` note (urgent) · orchestrator
 - 2026-11-03 21:54 UTC · `terminal-drag-chain-tree` added (6 steps) (current) · foreign-write
 - 2026-11-03 21:55 UTC · `molly-nav-submenus` added (5 steps) (current) · orchestrator
+- 2026-11-03 21:55 UTC · `smart-menus` note (urgent) · orchestrator
