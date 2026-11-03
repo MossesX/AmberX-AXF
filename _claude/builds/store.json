@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 331,
- "updatedAt": "2026-11-03T18:30:39.655Z",
+ "rev": 332,
+ "updatedAt": "2026-11-03T18:31:12.194Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -53458,7 +53458,7 @@
    "branch": "claude/auto-land-2",
    "pr": "#270",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:30:27.096Z",
+   "updatedAt": "2026-11-03T18:30:36.761Z",
    "builtAt": "",
    "notes": [
     {
@@ -53602,12 +53602,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:30:36.761Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T18:01:41.578Z",
-     "updatedAt": "2026-11-03T18:01:41.578Z"
+     "updatedAt": "2026-11-03T18:30:36.791Z"
     },
     {
      "id": "s7",

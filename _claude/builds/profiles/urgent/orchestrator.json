@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T18:30:39.655Z",
+ "updatedAt": "2026-11-03T18:31:12.194Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -3173,7 +3173,7 @@
    "branch": "claude/auto-land-2",
    "pr": "#270",
    "createdAt": "2026-11-03T18:01:41.577Z",
-   "updatedAt": "2026-11-03T18:30:27.096Z",
+   "updatedAt": "2026-11-03T18:30:36.761Z",
    "builtAt": "",
    "notes": [
     {
@@ -3295,8 +3295,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T18:30:36.761Z",
      "note": "",
      "uid": "st-mw0zviev0emr3p"
     },
