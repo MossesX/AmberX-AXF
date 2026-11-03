@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 415,
- "updatedAt": "2026-11-03T20:06:29.225Z",
+ "rev": 416,
+ "updatedAt": "2026-11-03T20:10:09.476Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55397,19 +55397,24 @@
    "status": "running",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
-   "branch": "",
+   "pendingId": "window-resize-fix",
+   "branch": "claude/window-resize-fix",
    "pr": "",
    "createdAt": "2026-11-03T19:32:33.504Z",
-   "updatedAt": "2026-11-03T19:59:32.298Z",
+   "updatedAt": "2026-11-03T20:00:43.692Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/window-resize-fix (no PR yet)",
+     "at": "2026-11-03T20:00:43.692Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw134d6a04twsq",
+     "uid": "st-mw134p8001p42n",
      "title": "",
      "text": "Find why floating windows cannot be resized; fix window host (8 edges, touch targets, double-tap title)",
      "model": "Opus",
@@ -55427,11 +55432,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T19:32:33.504Z",
-     "updatedAt": "2026-11-03T19:47:24.253Z"
+     "updatedAt": "2026-11-03T19:59:39.585Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw134d6a05nreq",
+     "uid": "st-mw134p8002sqdt",
      "title": "",
      "text": "Fix settings placement dialog for Terminal and every plugin with the option",
      "model": "Opus",
@@ -55449,11 +55454,11 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-03T19:32:33.504Z",
-     "updatedAt": "2026-11-03T20:06:18.725Z"
+     "updatedAt": "2026-11-03T19:59:39.585Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw134d6a0601hn",
+     "uid": "st-mw134p8003s7i3",
      "title": "",
      "text": "Tests, screenshots, UI Review, report, PR, merge, deploy",
      "model": "Opus",
@@ -55471,7 +55476,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-03T19:32:33.504Z",
-     "updatedAt": "2026-11-03T19:32:33.504Z"
+     "updatedAt": "2026-11-03T19:32:48.869Z"
     }
    ],
    "profiles": [
@@ -55495,13 +55500,13 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mw134d6a04twsq": "2026-11-03T19:32:33.504Z",
-     "st-mw134d6a05nreq": "2026-11-03T19:32:33.504Z",
-     "st-mw134d6a0601hn": "2026-11-03T19:32:33.504Z"
+     "st-mw134p8001p42n": "2026-11-03T19:32:33.504Z",
+     "st-mw134p8002sqdt": "2026-11-03T19:32:33.504Z",
+     "st-mw134p8003s7i3": "2026-11-03T19:32:33.504Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-03T19:32:33.504Z",
+   "defaultAt": "2026-11-03T19:32:48.869Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
