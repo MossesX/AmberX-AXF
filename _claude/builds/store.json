@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 371,
- "updatedAt": "2026-11-03T19:13:48.932Z",
+ "rev": 372,
+ "updatedAt": "2026-11-03T19:14:20.593Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55033,12 +55033,16 @@
    "branch": "claude/ui-review-shots",
    "pr": "",
    "createdAt": "2026-11-03T19:09:04.730Z",
-   "updatedAt": "2026-11-03T19:12:27.360Z",
+   "updatedAt": "2026-11-03T19:13:13.263Z",
    "builtAt": "",
    "notes": [
     {
      "text": "s1 cause: agent-slots + token-control pollers re-subscribe on every render (inline useSyncExternalStore subscribe), so each emit triggers another load: ~45 status calls/s from Brett's browser (35k in 30 min); shot fetches starve behind them. Files are all on disk and served 200.",
      "at": "2026-11-03T19:09:12.997Z"
+    },
+    {
+     "text": "s3: no backfill needed — all 33 open items have every file in the live store (/opt/axf/.axf-console/plugins/ui-review/shots, bind-mounted, survives redeploys); no worktree holds stranded items. review.mjs now warns when a worktree submits without --console.",
+     "at": "2026-11-03T19:13:13.263Z"
     }
    ],
    "approvals": [],
@@ -55159,11 +55163,11 @@
     "urgent"
    ],
    "order": {
-    "urgent": 23
+    "urgent": 24
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
