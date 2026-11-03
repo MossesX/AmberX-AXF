@@ -648,14 +648,16 @@
     "src/axf/libs/workspace/library.json": "50c0d38f889ff785",
     "src/axf/libs/workspace/store.ts": "633e7e776264e141",
     "src/axf/libs/workspace/workspace.css": "c3c3322143caab3c",
-    "src/axf/react/AppShell.tsx": "85bd58cba6e925d0",
+    "src/axf/react/AppShell.tsx": "027d0c2b7d02159c",
     "src/axf/react/AxfProvider.tsx": "e79c67d6c6b61efe",
+    "src/axf/react/bannerStrip.ts": "c4217d5b8a6251a1",
     "src/axf/react/components/AgentCard.tsx": "3832ab662c6fa7f2",
     "src/axf/react/components/AppMenu.tsx": "4eb87590b8b70b67",
     "src/axf/react/components/Arrange.tsx": "aec537aca7f7f4ee",
     "src/axf/react/components/Banner.tsx": "862bfd685d8d5647",
     "src/axf/react/components/BannerGroup.tsx": "bf29c024591b48c3",
     "src/axf/react/components/BannerSettings.tsx": "cf5c0cb2761f4baa",
+    "src/axf/react/components/BannerStrip.tsx": "f9548c7f1ba10def",
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
     "src/axf/react/components/Chrome.tsx": "a75c16320f1698a2",
     "src/axf/react/components/Controls.tsx": "0627e2446e099ab4",
@@ -677,7 +679,7 @@
     "src/axf/react/components/Widgets.tsx": "6d1442ad79d7775a",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppearance.ts": "d7f3983fdd82b80b",
-    "src/axf/react/index.ts": "2201f2920599cae4",
+    "src/axf/react/index.ts": "68c33615f1bc3251",
     "src/axf/react/library.ts": "923d66f8f64fb37b",
     "src/axf/react/placement.tsx": "e50243526c856169",
     "src/axf/react/pluginRecords.ts": "b0165b309076c3d3",
@@ -776,6 +778,6 @@
     "src/axf/schemas/shared-assets.json": "7d6a5bb4f0b2a9c3",
     "src/axf/schemas/swarm.json": "72c7999aebb9e8c2",
     "src/axf/schemas/ui-review.json": "6cbca899c45dd994",
-    "src/axf/ui/axf.css": "fd00dab03441749d"
+    "src/axf/ui/axf.css": "dafd93bf34327458"
   }
 }

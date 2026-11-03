@@ -11,6 +11,8 @@ import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
 import { Banner } from './components/Banner';
 import { FrameBanners, Slot } from './components/Slots';
+import { BannerStripPage, useBannerStripFollower } from './components/BannerStrip';
+import { BANNER_STRIP_VIEW } from './bannerStrip';
 import { WaitingForHub } from './components/Waiting';
 import { Note } from './components/Forms';
 import { HelpLayer } from './components/Help';
@@ -51,6 +53,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const slots = compileSlots(layout);
   // Hidden slots (Settings → Appearance → Assets → Hidden) drop out the same way.
   const rt = useRuntime();
+  // Inside a host that shows this app's banner strip, views its banner items open come here (components/BannerStrip.tsx).
+  useBannerStripFollower();
   // Placed UIs (engines/placement.ts): a plugin's page shown in a dialog / window / tab group, or its dialog as a page.
   const placed = placedParts(rt, declaredViews, declaredDialogs);
   const views = { ...placed.views, ...declaredViews };
@@ -88,7 +92,9 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   // A view page (`view:<id>`, e.g. a tabable plugin shown as a host's tab) names one view; a missing view (its plugin is
   // off or not loaded yet) shows a note instead of the whole app.
   const pageView = embedPageView(rt.embedded?.page);
-  const page = rt.embedded?.page ? views[pageView ?? rt.embedded.page] ?? (pageView ? { title: pageView, render: () => <MissingPage view={pageView} host={embedHostLabel(rt.embedded)} /> } : undefined) : undefined;
+  // The banner strip (`view:axf-banners`, bannerStrip.ts): only this app's banners, for a host that shows them as its one
+  // banner region.
+  const page = pageView === BANNER_STRIP_VIEW ? { title: 'Banners', render: () => <BannerStripPage /> } : rt.embedded?.page ? views[pageView ?? rt.embedded.page] ?? (pageView ? { title: pageView, render: () => <MissingPage view={pageView} host={embedHostLabel(rt.embedded)} /> } : undefined) : undefined;
   if (page) {
     return (
       <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
