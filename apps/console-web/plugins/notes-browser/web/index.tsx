@@ -104,7 +104,7 @@ function NotesView() {
   return (
     <div className="fx-stack fx-stack--lg axp-notes-browser">
       <header className="fx-pagehead">
-        <div><p className="fx-eyebrow">Plugin</p><h1>Notes</h1></div>
+        <div><p className="fx-eyebrow">Claude files · notes</p><h1>Notes</h1><p className="fx-muted">Every note saved for Brett in one place: read, search, edit, rename and move them.</p></div>
         <div className="axp-notes-browser__acts">
           <Button icon="plus" disabled={busy || !list?.available} onClick={() => setAsk({ kind: 'note', value: '', folder: open?.folder ?? 'misc' })}>New note</Button>
           <Button tone="ghost" icon="folder" disabled={busy || !list?.available} onClick={() => setAsk({ kind: 'folder', value: '', folder: '' })}>New folder</Button>
