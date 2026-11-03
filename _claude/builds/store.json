@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 184,
- "updatedAt": "2026-11-03T14:09:29.691Z",
+ "rev": 186,
+ "updatedAt": "2026-11-03T14:10:57.387Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50119,15 +50119,15 @@
    "title": "Notes vault: gather Brett's saved notes into /projects/_shared/_claude/notes, notes-browser plugin, MD Studio Notes scope",
    "category": "Urgent",
    "detail": "Brett Nov 3 2026 (voice): gather the hand-saved notes scattered across the axHub projects tree into one shared place, add a quick notes browser plugin, and add a Notes scope to MD Studio.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/notes-vault",
-   "pr": "",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/256",
    "createdAt": "2026-11-03T14:09:24.568Z",
-   "updatedAt": "2026-11-03T14:09:28.539Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T14:10:57.365Z",
+   "builtAt": "2026-11-03T14:10:56.767Z",
    "notes": [],
    "approvals": [],
    "steps": [
@@ -50256,12 +50256,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T14:10:56.767Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T14:09:24.569Z",
-     "updatedAt": "2026-11-03T14:09:24.569Z"
+     "updatedAt": "2026-11-03T14:10:56.800Z"
     }
    ],
    "profiles": [
@@ -50272,7 +50272,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
