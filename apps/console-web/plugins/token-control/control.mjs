@@ -9,6 +9,7 @@
  *   node control.mjs run                       one command as JSON on stdin ({command, grants?, by?}) → the answer as JSON
  *   node control.mjs <op> <target> [path] …     list | get | set | reset | add | remove | act (see `help`)
  *   node control.mjs targets | tools | routes | schema | registry | audit [n] | where | help
+ *   node control.mjs pass-publication | pass-check <target> [op] | pass-settings [json]   (veto passes: lib/pass.mjs)
  *   --remote [url]   send it to a console instead (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN)
  *   --json           print the raw answer
  *
@@ -25,12 +26,23 @@ import { ControlError, audit, confirmSalt, readAudit } from './lib/common.mjs';
 import { appearanceFile, runTokens } from './lib/tokens.mjs';
 import { notesDir, runAmberx } from './lib/amberx.mjs';
 import { runPlanner } from './lib/planner.mjs';
+import { coveringPass, passSettings, publication, recordPassChanges, runPass, savePassSettings } from './lib/pass.mjs';
+import { PASS_SCOPE_IDS, PASS_TARGET, passScopeId, passScopeOf } from '../../../../framework/core/engines/control-pass.mjs';
+
+/** The token rows a write may change, by id (what a covered write records as before / after). */
+function tokenState(c) {
+  const rows = c.path ? [runTokens({ op: 'get', target: c.target, path: c.path }).item] : runTokens({ op: 'list', target: c.target }).items;
+  return Object.fromEntries(rows.map((r) => [r.id, { overridden: !!r.overridden, value: r.value ?? null }]));
+}
 
 /**
  * Run one control@1 command. `grants` = the caller's permissions (the console token = ['*']; a wall user's role
  * grants; already capped for a remote caller). `preset` = fields an alias fixes (`axf todo …` → kind todo).
+ * `approver` / `proof` = how the transport reached Brett (veto passes only; lib/pass.mjs): never from the command.
+ * Every write answer carries `passScope` (the scope a veto pass would need, null = none can cover it) and, when an
+ * active pass covered it, `pass { id, scope, expiresAt }`; the change is then logged on the pass for undo.
  */
-export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now() } = {}) {
+export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now(), approver = null, proof = null } = {}) {
   const c = normalizeControl(raw);
   if (!c.by && by) c.by = by;
   // an alias preset (kind) is a filter on list and a default on add
@@ -45,10 +57,15 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
   }
   const domain = CONTROL_TARGETS[c.target].domain;
   try {
-    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : await runPlanner(c);
+    const scope = gate.effect === 'read' ? null : passScopeOf(c);
+    const pass = scope ? coveringPass(c, now) : null;
+    const before = pass ? tokenState(c) : null;
+    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : domain === 'pass' ? runPass(c, { approver, proof, now, runTokens }) : await runPlanner(c);
     const at = new Date(now).toISOString();
-    if (gate.effect !== 'read') audit({ by: c.by || 'unknown', reason: c.reason ?? '', op: c.op, target: c.target, path: c.path, action: c.action, value: c.value, input: c.input });
-    return controlResult(c, data, { by: c.by || 'unknown', reason: c.reason ?? '', at });
+    if (pass) recordPassChanges(pass.id, c, before, tokenState(c), now);
+    if (gate.effect !== 'read' && domain !== 'pass') audit({ by: c.by || 'unknown', reason: c.reason ?? '', op: c.op, target: c.target, path: c.path, action: c.action, value: c.value, input: c.input, ...(pass ? { pass: pass.id } : {}) });
+    const stamp = gate.effect === 'read' || domain === 'pass' ? {} : { passScope: scope, ...(pass ? { pass: { id: pass.id, scope: pass.scope, expiresAt: pass.expiresAt } } : {}) };
+    return controlResult(c, { ...data, ...stamp }, { by: c.by || 'unknown', reason: c.reason ?? '', at });
   } catch (e) {
     if (e instanceof ControlError) return controlFailure(e.code, e.message, { op: c.op, target: c.target, ...(c.path ? { path: c.path } : {}), ...e.extra });
     return controlFailure(CONTROL_WIRE.UNEXPECTED, e?.message ?? String(e), { op: c.op, target: c.target });
@@ -82,7 +99,8 @@ function flags(argv) {
 /** Which target an alias word + the next word name; null when the word isn't an alias. */
 export function aliasTarget(word, next) {
   if (word === 'control') return { target: null };
-  if (word === 'token' || word === 'tokens') return TOKEN_SETS.includes(next) ? { target: `tokens.${next}`, eat: 1 } : { target: null, error: `axf token <${TOKEN_SETS.join('|')}> <op> …` };
+  if ((word === 'token' || word === 'tokens') && next === 'pass') return { target: PASS_TARGET, eat: 1 };
+  if (word === 'token' || word === 'tokens') return TOKEN_SETS.includes(next) ? { target: `tokens.${next}`, eat: 1 } : { target: null, error: `axf token <${TOKEN_SETS.join('|')}|pass> <op> …` };
   const a = CONTROL_ALIASES[word];
   return a ? { target: a.target, preset: a.preset ?? null } : null;
 }
@@ -105,6 +123,15 @@ export function commandFromArgv(argv) {
   else if (head) { target = head.target; preset = head.preset; words = words.slice(1 + (head.eat ?? 0)); }
   let op = words.shift();
   if (!target) target = words.shift();
+  if (target === PASS_TARGET) {
+    // axf token pass status [scope] · grant <scope> [minutes] · revoke | undo <scope> · approve | deny <scope> <request>
+    if (!op || op === 'status') op = words.length ? 'get' : 'list';
+    if (words[0] !== undefined) {
+      const sc = passScopeId(words[0]);
+      if (!sc) return { error: `no pass scope ${words[0]} (theme, style, layout, all = ${PASS_SCOPE_IDS.join(', ')})` };
+      words[0] = sc;
+    } else if (op !== 'list') return { error: `axf token pass ${op} <theme|style|layout|all>…` };
+  }
   if (!op || !target) return { error: 'usage: axf control <op> <target> … (axf control help)' };
   if (!CONTROL_TARGET_IDS.includes(target)) return { error: `unknown target ${target} (${CONTROL_TARGET_IDS.join(', ')})` };
   const t = CONTROL_TARGETS[target];
@@ -138,6 +165,7 @@ export function commandFromArgv(argv) {
       // a bare word fills the verb's only input (axf todo move <id> groceries; axf build note <id> some text)
       const input = v && typeof v === 'object' ? v : v !== undefined && wants.length ? { [wants[0]]: wants[0] === 'text' || wants[0] === 'title' || wants[0] === 'name' ? words.join(' ') : v } : {};
       cmd.input = { ...input, ...fields };
+      if (target === PASS_TARGET && cmd.action === 'grant' && typeof f.reason === 'string') cmd.input.reason = f.reason;
       // booleans a verb wants default to true; a trailing undo / off / false turns them off (axf build step <id> s3 undo)
       const off = ['undo', 'off', 'false', 'no'].includes(String(words[words.length - 1] ?? '').toLowerCase());
       if (off && wants[0] && typeof cmd.input[wants[0]] === 'string') cmd.input[wants[0]] = words.slice(0, -1).join(' ');
@@ -156,6 +184,11 @@ export function commandFromArgv(argv) {
 const show = (v) => (v === null || v === undefined ? '–' : typeof v === 'object' ? JSON.stringify(v) : String(v));
 
 export function formatAnswer(r) {
+  if (r.ok && r.target === PASS_TARGET) {
+    if (r.op === 'list') return [r.text, ...(r.items ?? []).map((x) => `  ${x.id.padEnd(14)} ${x.text}${x.pending && x.active ? ` (waiting: ${x.pending.text})` : ''}`)].join('\n');
+    const req = r.approval?.required ? `\nrequest ${r.approval.request}: ${r.approval.how.join('; ')}` : '';
+    return `${r.text ?? ''}${req}`;
+  }
   if (!r.ok) {
     if (r.code === 'confirmation_required') return `${r.message}\nconfirm token: ${r.confirm}`;
     return `${r.code}: ${r.message}`;
@@ -184,6 +217,8 @@ function help() {
     'Token control (control@1): every token, AmberX note / to-do / task / list, Plan Studio plan and orchestrator build.',
     '', ...u.usage.map((l) => `  ${l}`), '', 'Aliases:', ...Object.values(u.aliases).map((l) => `  ${l}`), '',
     'Examples:',
+    '  axf token pass grant theme 30     (theme changes skip the veto for 30 min once Brett approves)',
+    '  axf token pass status · axf token pass revoke theme · axf token pass undo theme',
     '  axf token layout get navWidth',
     '  axf token theme set accent "#ff8800" --reason "warmer accent"',  // theme-ok: an example value in the help text
     '  axf token layout reset navWidth',
@@ -200,6 +235,22 @@ function help() {
   ].join('\n');
 }
 
+/**
+ * A veto pass grant / approve / deny typed at a real terminal counts as Brett's own approval once he types the scope
+ * back (a script, an agent's shell and a pipe have no terminal and only ever file a request).
+ */
+async function terminalApproval(command) {
+  if (command.target !== PASS_TARGET || !['grant', 'approve', 'deny'].includes(command.action)) return null;
+  if (!process.stdin.isTTY || !process.stdout.isTTY || process.env.AXF_NO_TTY_APPROVAL) return null;
+  const { createInterface } = await import('node:readline/promises');
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    const word = command.path === 'tokens.*' ? 'all' : command.path.slice('tokens.'.length);
+    const typed = (await rl.question(`${command.action} the ${command.path} veto pass as Brett? Type "${word}" to confirm (anything else files a request): `)).trim().toLowerCase();
+    return typed === word ? { via: 'cli-tty', name: process.env.AXF_OWNER || 'brett' } : null;
+  } finally { rl.close(); }
+}
+
 /** Shell-quote a word for the "repeat this" line. */
 const q = (s) => (/^[\w@%+=:,./-]+$/.test(s) ? s : `'${String(s).replace(/'/g, "'\\''")}'`);
 
@@ -212,7 +263,8 @@ export async function main(argv) {
   if (cmd === 'run') {
     const body = JSON.parse(argv[1] && argv[1].startsWith('{') ? argv[1] : readFileSync(0, 'utf8'));
     const env = body && body.command ? body : { command: body };
-    console.log(JSON.stringify(await runControl(env.command, { grants: Array.isArray(env.grants) ? env.grants : ['*'], by: env.by ?? '', preset: env.preset ?? null })));
+    // approver / proof: set by the console server from the request (session, axHub's signed approval), never by a command
+    console.log(JSON.stringify(await runControl(env.command, { grants: Array.isArray(env.grants) ? env.grants : ['*'], by: env.by ?? '', preset: env.preset ?? null, approver: env.approver ?? null, proof: env.proof ?? null })));
     return 0;
   }
   if (cmd === 'targets') { out(CONTROL_TARGETS, CONTROL_TARGET_IDS.map((id) => `${id.padEnd(18)} ${CONTROL_TARGETS[id].ops.join(',').padEnd(30)} ${CONTROL_TARGETS[id].label}`).join('\n')); return 0; }
@@ -221,6 +273,14 @@ export async function main(argv) {
   if (cmd === 'schema') { console.log(JSON.stringify(controlSchema(), null, 1)); return 0; }
   if (cmd === 'registry') { console.log(JSON.stringify(controlRegistry(), null, 1)); return 0; }
   if (cmd === 'audit') { const rows = readAudit(Number(argv[1]) || 30); out(rows, rows.map((r) => `${r.at} ${r.by} ${r.op} ${r.target}${r.path ? ` ${r.path}` : ''}${r.action ? ` ${r.action}` : ''}${r.reason ? ` — ${r.reason}` : ''}`).join('\n') || 'no writes yet'); return 0; }
+  if (cmd === 'pass-publication') { const p = publication(); console.log(JSON.stringify({ body: p.body, payload: p.payload, signature: p.signature })); return 0; }
+  if (cmd === 'pass-check') {
+    const c = { op: argv[2] || 'set', target: argv[1] };
+    const scope = passScopeOf(c); const p = scope ? coveringPass(c) : null;
+    out({ ok: true, target: c.target, op: c.op, scope, covered: !!p, ...(p ? { pass: { id: p.id, scope: p.scope, expiresAt: p.expiresAt } } : {}) }, p ? `covered by ${p.id} until ${p.expiresAt}` : scope ? `not covered (needs a ${scope} pass)` : 'no pass can cover this');
+    return 0;
+  }
+  if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone}`); return 0; }
   if (cmd === 'where') { out({ appearance: appearanceFile(), amberx: notesDir() }, `look: ${appearanceFile()}\nAmberX notes: ${notesDir()}`); return 0; }
 
   const parsed = commandFromArgv(argv);
@@ -241,7 +301,7 @@ export async function main(argv) {
     const { controlClient } = await import('./web/client.mjs');
     const base = typeof remote === 'string' ? remote : process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com';
     r = await controlClient({ base, token: process.env.AXF_TOKEN }).send(command);
-  } else r = await runControl(command, { grants: ['*'] });
+  } else r = await runControl(command, { grants: ['*'], approver: await terminalApproval(command) });
   out(r, formatAnswer(r));
   if (!r.ok && r.code === 'confirmation_required') {
     if (!json) console.log(`repeat to delete: axf ${argv.filter((a) => a !== '--json').map(q).join(' ')} --confirm ${r.confirm}`);

@@ -532,9 +532,11 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 # ---------------------------------------------------------------------- control@1 tools (framework/spec/CONTROL.md)
 
 CONTROL_TARGETS = ("tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
-                   "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds")
+                   "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds", "pass.scopes")
 ControlTarget = Literal["tokens.theme", "tokens.style", "tokens.layout", "tokens.typography", "tokens.density", "tokens.sizing", "tokens.look",
-                        "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds"]
+                        "tokens.custom", "tokens.slots", "amberx.items", "amberx.lists", "planner.plans", "planner.builds", "pass.scopes"]
+PassScope = Literal["theme", "style", "layout", "all"]
+PASS_SCOPE_IDS = {"theme": "tokens.theme", "style": "tokens.style", "layout": "tokens.layout", "all": "tokens.*"}
 DESTRUCTIVE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=False)
 IDEMPOTENT = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True, openWorldHint=False)
 
@@ -598,7 +600,8 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         planner.builds: step {step, done}, approve {phase}, status {status}, note {text}, rename {title},
         rename-step {step, title}, add-step {text, model, estimate, after}, edit-step {step, patch},
         skip-step {step, why}, remove-step {step, why}, move-step {step, to}, archive, hide, unhide
-        (input.profile picks the build profile)."""
+        (input.profile picks the build profile). pass.scopes (path tokens.theme|style|layout|*): grant {minutes,
+        reason} (a request Brett approves), revoke, undo; approve / deny only work from Brett's own session."""
         return await go({"op": "act", "target": target, "path": path, "action": action, "input": input or {}, "by": by, "reason": reason})
 
     # AmberX shortcuts (the same commands, named for what people ask)
@@ -645,6 +648,35 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         """Delete an AmberX item (and its subtasks). First call answers confirmation_required with a token; confirm with
         the user, then call again with it."""
         return await go({"op": "remove", "target": "amberx.items", "path": id, "confirm": confirm})
+
+    # Veto passes (control-pass@1, CONTROL.md → Veto passes): "allow theme changes for the next 30 minutes"
+
+    @mcp.tool(annotations=WRITE)
+    async def token_pass_grant(scope: PassScope = "theme", minutes: int = 30, reason: str = "", by: str = "") -> dict[str, Any]:
+        """Ask for a timed veto pass: while it is on, token set / reset in the scope (theme, style, layout or all three)
+        run without axHub's veto countdown. This only files a request: Brett approves it once (console banner → Token
+        pass, or axHub's approval), never this tool. Minutes 1-240 (default 30). Deletes are never covered. Asking again
+        for a scope with an active pass replaces it from the approval on. Tell Brett in one line that it is waiting."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "grant", "input": {"minutes": minutes, **({"reason": reason} if reason else {})}, "by": by, "reason": reason})
+
+    @mcp.tool(annotations=READ)
+    async def token_pass_status(scope: Literal["", "theme", "style", "layout", "all"] = "") -> dict[str, Any]:
+        """Which veto passes are on, until when, and any request waiting for Brett, in plain words ("Theme changes run
+        without veto until 10:42 AM"). No scope = every scope."""
+        if scope:
+            return await go({"op": "get", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope]})
+        return await go({"op": "list", "target": "pass.scopes"})
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def token_pass_revoke(scope: PassScope = "theme", by: str = "", reason: str = "") -> dict[str, Any]:
+        """End a veto pass now (and withdraw a waiting request for it): token changes in the scope need the veto again."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "revoke", "input": {}, "by": by, "reason": reason})
+
+    @mcp.tool(annotations=WRITE)
+    async def token_pass_undo(scope: PassScope = "theme", by: str = "", reason: str = "") -> dict[str, Any]:
+        """Roll back every token change made under the scope's latest pass in one go (each token goes back to what it was
+        before the pass first touched it). The pass itself stays as it is."""
+        return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "undo", "input": {}, "by": by, "reason": reason})
 
     @mcp.tool(annotations=WRITE)
     async def plan_park(title: str, summary: str = "", category: str = "", body: str = "") -> dict[str, Any]:

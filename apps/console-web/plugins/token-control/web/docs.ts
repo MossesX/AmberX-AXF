@@ -120,4 +120,24 @@ Status codes: 400 invalid · 403 denied · 404 not_found · 409 confirmation_req
 
 Reads are marked read-only, removes destructive. A failure raises a tool error with its code; a delete's first call returns the confirm token as data, so ask the user before sending it back.`,
   },
+  {
+    id: 'passes',
+    title: 'Veto passes: play with the look without a veto on every change',
+    body: `Every changing call through axHub waits on a veto countdown. A **pass** lets the token changes of one scope run at once for a while: "allow theme changes for the next 30 minutes".
+
+\`\`\`sh
+axf token pass grant theme 30 --reason "trying warmer colours"
+axf token pass status
+axf token pass undo theme      # put back everything changed under it
+axf token pass revoke theme
+\`\`\`
+
+- **Scopes**: \`theme\`, \`style\`, \`layout\`, or \`all\` (the three). Minutes 1 to 240 (default 30; Settings → Plugins → Token control → Veto passes sets the longest).
+- **Brett approves each pass once.** A grant from Claude, an agent, the MCP tool \`token_pass_grant\` or a script is only a request: it shows on the banner (Token pass) with Approve / Deny, or waits for his approval in axHub. From his own console session it is on at once.
+- **What it covers**: \`set\` and \`reset\` on the scope's tokens. Never deletes (they still confirm), never adds, verbs, slots or anything outside the scope.
+- **While it runs**: the banner shows a live countdown with Extend, Undo and Revoke, and warns two minutes before the end. Every change is logged (who, token, old → new) and Undo rolls them all back in one go.
+- **It ends on the server's clock**: no app or tool can keep it alive past its time.
+
+REST: \`POST /api/plugins/token-control/pass/grant {scope, minutes, reason}\`, \`GET …/pass/status\`, \`POST …/pass/revoke | undo {scope}\`. MCP: \`token_pass_grant\`, \`token_pass_status\`, \`token_pass_revoke\`, \`token_pass_undo\`. The axHub side reads the signed \`GET …/pass\` (framework/spec/CONTROL.md → Veto passes).`,
+  },
 ];

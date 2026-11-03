@@ -21,7 +21,8 @@
   "domains": [
     "tokens",
     "amberx",
-    "planner"
+    "planner",
+    "pass"
   ],
   "permissions": {
     "control.tokens.read": "tokens: read",
@@ -32,7 +33,10 @@
     "control.amberx.delete": "amberx: delete",
     "control.planner.read": "planner: read",
     "control.planner.write": "planner: write",
-    "control.planner.delete": "planner: delete"
+    "control.planner.delete": "planner: delete",
+    "control.pass.read": "pass: read",
+    "control.pass.write": "pass: write",
+    "control.pass.delete": "pass: delete"
   },
   "wire": {
     "INVALID": "invalid",
@@ -1392,6 +1396,88 @@
       },
       "doc": "plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build."
     },
+    "pass.scopes": {
+      "domain": "pass",
+      "label": "Veto passes",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": [
+        {
+          "id": "tokens.theme",
+          "kind": "scope",
+          "label": "Theme",
+          "targets": [
+            "tokens.theme"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.style",
+          "kind": "scope",
+          "label": "Style",
+          "targets": [
+            "tokens.style"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.layout",
+          "kind": "scope",
+          "label": "Layout",
+          "targets": [
+            "tokens.layout"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        },
+        {
+          "id": "tokens.*",
+          "kind": "scope",
+          "label": "All tokens",
+          "targets": [
+            "tokens.theme",
+            "tokens.style",
+            "tokens.layout"
+          ],
+          "ops": [
+            "set",
+            "reset"
+          ]
+        }
+      ],
+      "scopes": [
+        "tokens.theme",
+        "tokens.style",
+        "tokens.layout",
+        "tokens.*"
+      ],
+      "acts": {
+        "grant": {
+          "minutes": "number",
+          "reason": "string"
+        },
+        "approve": {
+          "request": "string"
+        },
+        "deny": {
+          "request": "string"
+        },
+        "revoke": {},
+        "undo": {}
+      },
+      "doc": "Timed veto passes (control-pass@1): \"allow theme changes for the next 30 minutes\". path = the scope (tokens.theme, tokens.style, tokens.layout, tokens.*); grant files a request the owner approves once, then set / reset in the scope skip the axHub veto until it ends; revoke ends it, undo rolls back every change made under it. Deletes are never covered."
+    },
     "planner.builds": {
       "domain": "planner",
       "label": "Build orchestrator builds",
@@ -1516,6 +1602,10 @@
     },
     "build": {
       "target": "planner.builds"
+    },
+    "pass": {
+      "target": "pass.scopes",
+      "note": "also `axf token pass …`: axf token pass grant theme 30 · status · revoke theme · undo theme"
     }
   },
   "tools": [
@@ -1544,6 +1634,7 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
+              "pass.scopes",
               "planner.builds"
             ],
             "description": "what to control"
@@ -1588,6 +1679,7 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
+              "pass.scopes",
               "planner.builds"
             ],
             "description": "what to control"
@@ -1633,6 +1725,7 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
+              "pass.scopes",
               "planner.builds"
             ],
             "description": "what to control"
@@ -1685,6 +1778,7 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
+              "pass.scopes",
               "planner.builds"
             ],
             "description": "what to control"
@@ -1737,6 +1831,7 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
+              "pass.scopes",
               "planner.builds"
             ],
             "description": "what to control"
@@ -1789,6 +1884,7 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
+              "pass.scopes",
               "planner.builds"
             ],
             "description": "what to control"
@@ -1845,6 +1941,7 @@
               "amberx.items",
               "amberx.lists",
               "planner.plans",
+              "pass.scopes",
               "planner.builds"
             ],
             "description": "what to control"
@@ -1937,7 +2034,9 @@
       "axf control add <target> <json>",
       "axf control remove <target> <path> [--confirm <token>]   (first run prints the token)",
       "axf control act <target> <path> <action> [json input]",
-      "axf control targets | tools | routes | schema"
+      "axf control targets | tools | routes | schema",
+      "axf token pass grant <theme|style|layout|all> [minutes] [--reason why]   (Brett approves it once)",
+      "axf token pass status | list · axf token pass revoke <scope> · axf token pass undo <scope>"
     ],
     "aliases": {
       "token": "axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …",
@@ -1946,7 +2045,8 @@
       "task": "axf task <op> … = axf control <op> amberx.items (kind=task)",
       "list": "axf list <op> … = axf control <op> amberx.lists",
       "plan": "axf plan <op> … = axf control <op> planner.plans",
-      "build": "axf build <op> … = axf control <op> planner.builds"
+      "build": "axf build <op> … = axf control <op> planner.builds",
+      "pass": "axf pass <op> … = axf control <op> pass.scopes"
     },
     "targets": [
       "tokens.theme",
@@ -1961,6 +2061,7 @@
       "amberx.items",
       "amberx.lists",
       "planner.plans",
+      "pass.scopes",
       "planner.builds"
     ]
   },
@@ -2002,6 +2103,7 @@
           "amberx.items",
           "amberx.lists",
           "planner.plans",
+          "pass.scopes",
           "planner.builds"
         ]
       },
@@ -2678,6 +2780,42 @@
           }
         },
         "paths": "entity"
+      },
+      "pass.scopes": {
+        "description": "Timed veto passes (control-pass@1): \"allow theme changes for the next 30 minutes\". path = the scope (tokens.theme, tokens.style, tokens.layout, tokens.*); grant files a request the owner approves once, then set / reset in the scope skip the axHub veto until it ends; revoke ends it, undo rolls back every change made under it. Deletes are never covered.",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "acts": {
+          "grant": {
+            "minutes": {
+              "type": "number"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "approve": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "deny": {
+            "request": {
+              "type": "string"
+            }
+          },
+          "revoke": {},
+          "undo": {}
+        },
+        "paths": [
+          "tokens.theme",
+          "tokens.style",
+          "tokens.layout",
+          "tokens.*"
+        ]
       },
       "planner.builds": {
         "description": "builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.",

@@ -15,7 +15,8 @@
  *   { $axf: 'control@1', op, target, path?, value?, action?, select?, confirm?, by?, reason? }
  *   op      list | get | set | reset | add | remove | act
  *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing |
- *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds
+ *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
+ *           pass.scopes (timed veto passes, core/engines/control-pass.mjs)
  *   path    the token id / entity id (get, set, reset, remove, act; reset without a path = everything of the target)
  *   value   what to set (set) or the new entity (add)
  *   action  the verb for `act` (per target: done, move, approve, step, …)
@@ -31,10 +32,11 @@
  */
 import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
+import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
 
 export const CONTROL_FRAME = 'control@1';
 export const CONTROL_OPS = ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'];
-export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner'];
+export const CONTROL_DOMAINS = ['tokens', 'amberx', 'planner', 'pass'];
 /** What each op does to the world (the MCP annotations and the permission it needs come from this). */
 export const CONTROL_EFFECT = { list: 'read', get: 'read', set: 'write', reset: 'write', add: 'write', remove: 'destructive', act: 'write' };
 /** Permission suffix per effect: control.<domain>.<suffix>. */
@@ -85,6 +87,7 @@ export const CONTROL_TARGETS = {
   'amberx.items': { domain: 'amberx', label: 'AmberX notes, to-dos and tasks', ops: ENTITY_OPS, paths: 'entity', fields: ITEM_FIELDS, select: { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', deep: 'boolean', status: 'enum:open,doing,done,not-done', tag: 'string', q: 'string', pinned: 'boolean', starred: 'boolean', due: 'enum:overdue,today,upcoming,later,none', limit: 'number' }, acts: { done: {}, undone: {}, move: { list: 'string' }, merge: { ids: 'string[]' }, pin: { on: 'boolean' }, star: { on: 'boolean' }, check: { item: 'string', done: 'boolean' } }, doc: 'amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.' },
   'amberx.lists': { domain: 'amberx', label: 'AmberX lists', ops: ENTITY_OPS, paths: 'entity', fields: LIST_FIELDS, select: { parent: 'string|null', q: 'string' }, acts: { move: { parent: 'string|null' }, reorder: { ids: 'string[]' }, rename: { name: 'string' } }, doc: 'The list tree items live in (Inbox and the plugin lists are system lists: they can be renamed, never removed).', protected: ['inbox', 'plugins', 'voice-notes'] },
   'planner.plans': { domain: 'planner', label: 'Plan Studio plans', ops: ENTITY_OPS, paths: 'entity', fields: PLAN_FIELDS, select: { status: 'string', priority: 'string', category: 'string', tag: 'string', project: 'string', q: 'string', limit: 'number' }, acts: { park: {}, build: { profile: 'string', buildId: 'string' }, restore: { version: 'number' }, export: { format: 'enum:json,md' }, step: { step: 'string', done: 'boolean' }, comment: { text: 'string' } }, doc: 'plan@1 plans (console → Builds → Plan Studio): “put it in a plan for later” lands here as parked; `build` turns one into an orchestrator build.' },
+  'pass.scopes': { domain: 'pass', label: 'Veto passes', ops: ['list', 'get', 'act'], paths: 'scope', scopes: PASS_SCOPE_IDS, acts: PASS_ACTS, doc: 'Timed veto passes (control-pass@1): "allow theme changes for the next 30 minutes". path = the scope (tokens.theme, tokens.style, tokens.layout, tokens.*); grant files a request the owner approves once, then set / reset in the scope skip the axHub veto until it ends; revoke ends it, undo rolls back every change made under it. Deletes are never covered.' },
   'planner.builds': { domain: 'planner', label: 'Build orchestrator builds', ops: ENTITY_OPS, paths: 'entity', fields: BUILD_FIELDS, select: { profile: 'string', status: 'string', category: 'string', q: 'string', includeHidden: 'boolean', limit: 'number' }, acts: { step: { step: 'string', done: 'boolean' }, approve: { phase: 'number' }, status: { status: 'string' }, note: { text: 'string' }, rename: { title: 'string' }, 'rename-step': { step: 'string', title: 'string' }, 'add-step': { text: 'string', model: 'enum:Fable,Opus', estimate: 'string', after: 'string' }, 'edit-step': { step: 'string', patch: 'object' }, 'skip-step': { step: 'string', why: 'string' }, 'remove-step': { step: 'string', why: 'string' }, 'move-step': { step: 'string', to: 'number' }, archive: {}, hide: {}, unhide: {} }, stepFields: STEP_FIELDS, doc: 'builds@1 records through the orchestrator (the one builds store; profiles are a field): every change is journalled, Pending / queue / Build manager are projections.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
@@ -98,6 +101,7 @@ export const CONTROL_ALIASES = {
   list: { target: 'amberx.lists' },
   plan: { target: 'planner.plans' },
   build: { target: 'planner.builds' },
+  pass: { target: 'pass.scopes', note: 'also `axf token pass …`: axf token pass grant theme 30 · status · revoke theme · undo theme' },
 };
 
 /* ================================================================== helpers */
@@ -130,6 +134,7 @@ export function controlPaths(target) {
         ...Object.entries(SCALE_ENUMS[type] ?? {}).map(([id, options]) => ({ id, kind: 'enum', options: [...options] })),
       ];
     }
+    case PASS_TARGET: return PASS_SCOPE_IDS.map((id) => ({ id, kind: 'scope', label: PASS_SCOPES[id].label, targets: [...PASS_SCOPES[id].targets], ops: [...PASS_SCOPES[id].ops] }));
     default: return null;
   }
 }
@@ -200,6 +205,7 @@ export function controlErrors(raw) {
   if (!t.ops.includes(c.op)) errors.push(`${c.target} does not take ${c.op} (it takes ${t.ops.join(', ')})`);
   const needsPath = ['get', 'set', 'remove', 'act'].includes(c.op);
   if (needsPath && (typeof c.path !== 'string' || !c.path)) errors.push(`${c.op} needs a path (${t.paths === 'entity' ? 'the id' : 'the token id'})`);
+  else if (t.paths === 'scope') { if (c.path !== undefined && !(typeof c.path === 'string' && PASS_SCOPE_IDS.includes(c.path))) errors.push(`${c.target} has no scope ${String(c.path)} (${PASS_SCOPE_IDS.join(', ')})`); }
   else if (c.path !== undefined && (typeof c.path !== 'string' || !ID.test(c.path) && !/^[A-Za-z0-9][\w.:@/ -]{0,159}$/.test(c.path))) errors.push('path must be a short id');
   else if (c.path && t.paths === 'static' && controlPathKnown(c.target, c.path) === false) errors.push(`${c.target} has no token ${c.path} (control list ${c.target} names them)`);
   if (['list', 'add'].includes(c.op) && c.path !== undefined) errors.push(`${c.op} takes no path`);
@@ -220,7 +226,8 @@ export function controlErrors(raw) {
     else {
       const wants = t.acts[c.action];
       const input = isObj(c.input) ? c.input : {};
-      for (const [k, decl] of Object.entries(wants)) { if (!(k in input)) errors.push(`action ${c.action} needs input.${k}`); else { const e = typeError(`input.${k}`, decl, input[k]); if (e) errors.push(e); } }
+      if (t.paths === 'scope') { if (c.action === 'grant') errors.push(...passGrantErrors(c.path, input)); else if (wants.request !== undefined && typeof input.request !== 'string') errors.push(`action ${c.action} needs input.request`); }
+      else for (const [k, decl] of Object.entries(wants)) { if (!(k in input)) errors.push(`action ${c.action} needs input.${k}`); else { const e = typeError(`input.${k}`, decl, input[k]); if (e) errors.push(e); } }
     }
   } else if (c.action !== undefined) errors.push('only act takes an action');
   if (c.op === 'list' && c.select !== undefined) {
@@ -391,6 +398,8 @@ export function controlCli() {
       'axf control remove <target> <path> [--confirm <token>]   (first run prints the token)',
       'axf control act <target> <path> <action> [json input]',
       'axf control targets | tools | routes | schema',
+      'axf token pass grant <theme|style|layout|all> [minutes] [--reason why]   (Brett approves it once)',
+      'axf token pass status | list · axf token pass revoke <scope> · axf token pass undo <scope>',
     ],
     aliases: Object.fromEntries(Object.entries(CONTROL_ALIASES).map(([a, v]) => [a, v.target === 'tokens.*' ? 'axf token <theme|style|layout|typography|density|sizing|look|custom|slots> <op> …' : `axf ${a} <op> … = axf control <op> ${v.target}${v.preset ? ` (${Object.entries(v.preset).map(([k, x]) => `${k}=${x}`).join(', ')})` : ''}`])),
     targets: CONTROL_TARGET_IDS,

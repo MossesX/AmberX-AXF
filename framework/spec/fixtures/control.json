@@ -261,7 +261,10 @@
       "control.amberx.delete": "amberx: delete",
       "control.planner.read": "planner: read",
       "control.planner.write": "planner: write",
-      "control.planner.delete": "planner: delete"
+      "control.planner.delete": "planner: delete",
+      "control.pass.read": "pass: read",
+      "control.pass.write": "pass: write",
+      "control.pass.delete": "pass: delete"
     },
     "targets": [
       "tokens.theme",
@@ -276,6 +279,7 @@
       "amberx.items",
       "amberx.lists",
       "planner.plans",
+      "pass.scopes",
       "planner.builds"
     ],
     "targetOps": {
@@ -355,6 +359,11 @@
         "set",
         "add",
         "remove",
+        "act"
+      ],
+      "pass.scopes": [
+        "list",
+        "get",
         "act"
       ],
       "planner.builds": [
@@ -523,6 +532,12 @@
     "amberx.items": null,
     "amberx.lists": null,
     "planner.plans": null,
+    "pass.scopes": [
+      "tokens.theme",
+      "tokens.style",
+      "tokens.layout",
+      "tokens.*"
+    ],
     "planner.builds": null
   },
   "normalize": {
@@ -851,7 +866,7 @@
       "op must be one of: list, get, set, reset, add, remove, act"
     ],
     "wrong-target": [
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, pass.scopes, planner.builds"
     ],
     "token-op-on-entity": [
       "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
@@ -867,7 +882,7 @@
     ],
     "not-an-object": [
       "op must be one of: list, get, set, reset, add, remove, act",
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, pass.scopes, planner.builds"
     ]
   },
   "gate": {

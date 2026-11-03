@@ -30,15 +30,16 @@ const spec = read('framework/schemas/asset-types.json');
 eq([...CONTROL_OPS], ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'], 'seven ops');
 eq(CONTROL_EFFECT.remove, 'destructive', 'remove is destructive');
 eq(CONTROL_EFFECT.act, 'write', 'act writes');
-ok(CONTROL_TARGET_IDS.length === 13, `13 targets (${CONTROL_TARGET_IDS.length})`);
+ok(CONTROL_TARGET_IDS.length === 14, `14 targets (${CONTROL_TARGET_IDS.length})`);
 for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
-  ok(/^(tokens|amberx|planner)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
+  ok(/^(tokens|amberx|planner|pass)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
   ok(t.ops.every((o) => CONTROL_OPS.includes(o)), `${id} ops known`);
   ok(t.doc.length > 30, `${id} documented`);
   if (t.paths === 'entity') { ok(t.fields && Object.keys(t.fields).length > 3, `${id} has fields`); ok(t.ops.includes('remove') && t.ops.includes('act'), `${id} is a full entity target`); }
   else ok(!t.ops.includes('remove') && !t.ops.includes('add'), `${id}: tokens are set / reset, never added or removed`);
 }
-eq(Object.keys(CONTROL_PERMISSIONS).length, 9, 'three domains × read / write / delete');
+eq(Object.keys(CONTROL_PERMISSIONS).length, 12, 'four domains × read / write / delete');
+eq(controlPermission('pass.scopes', 'act'), 'control.pass.write', 'a pass grant / revoke / undo is a write');
 eq(controlPermission('tokens.layout', 'set'), 'control.tokens.write', 'permission from domain + effect');
 eq(controlPermission('amberx.items', 'remove'), 'control.amberx.delete', 'delete permission');
 eq(controlPermission('planner.builds', 'list'), 'control.planner.read', 'read permission');
@@ -128,7 +129,7 @@ const routes = controlRoutes();
 ok(routes.length === 8 && routes.every((x) => (x.path as string).startsWith('/api/control')), 'routes under /api/control');
 eq(routes.find((x) => x.op === 'remove')!.method, 'DELETE', 'remove is DELETE');
 const cli = controlCli();
-ok(cli.usage.length === 8 && Object.keys(cli.aliases).length === Object.keys(CONTROL_ALIASES).length, 'CLI usage + aliases');
+ok(cli.usage.length === 10 && Object.keys(cli.aliases).length === Object.keys(CONTROL_ALIASES).length, 'CLI usage + aliases');
 ok(cli.aliases.todo!.includes('kind=todo'), 'the todo alias presets the kind');
 const schema = controlSchema();
 eq((schema.properties as { op: { enum: string[] } }).op.enum, [...CONTROL_OPS], 'schema ops');
