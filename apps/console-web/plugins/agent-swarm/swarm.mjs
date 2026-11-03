@@ -121,16 +121,32 @@ export function plan(ids, opts = {}) { return core.planJobs(findBuilds(ids), loa
 export function loadPersona() { const f = join(HERE, 'agents/persona.md'); return existsSync(f) ? core.parseSkill(readFileSync(f, 'utf8')).body : ''; }
 export const prefix = () => core.sharedPrefix({ persona: loadPersona() });
 
-/** A job's brief: reads only its leased files that are plain paths (folders and globs are named, not read). */
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'build', '.gradle', '__pycache__', '.axf-console']);
+/** File names under a folder (relative, sorted by the index), skipping build output; globs are not walked. */
+export function listFolder(abs, max = 2000) {
+  const out = [];
+  const walk = (dir, rel) => {
+    let entries = []; try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+      if (out.length >= max) return;
+      if (e.isDirectory()) { if (!SKIP_DIRS.has(e.name)) walk(join(dir, e.name), `${rel}${e.name}/`); }
+      else out.push(`${rel}${e.name}`);
+    }
+  };
+  walk(abs, ''); return out;
+}
+
+/** A job's brief: snippets of its leased files (plain paths) and listings of its leased folders (globs are named, not read). */
 export function pack(job, handoffs = []) {
-  const snippets = [];
+  const snippets = []; const indexes = [];
   for (const f of job.leases) {
-    if (f.includes('*') || f.endsWith('/')) continue;
+    if (f.includes('*')) continue;
     const abs = resolve(repoRoot(), f);
-    if (!abs.startsWith(`${repoRoot()}/`) || !existsSync(abs) || !statSync(abs).isFile()) continue;
-    snippets.push(core.extractSnippet(f, readFileSync(abs, 'utf8'), job.text));
+    if (!abs.startsWith(`${repoRoot()}/`) || !existsSync(abs)) continue;
+    if (f.endsWith('/') || statSync(abs).isDirectory()) indexes.push(core.folderIndex(f, listFolder(abs)));
+    else if (statSync(abs).isFile()) snippets.push(core.extractSnippet(f, readFileSync(abs, 'utf8'), job.text));
   }
-  return core.packJob(job, { prefix: prefix(), skill: loadSkills()[job.skill], snippets, handoffs });
+  return core.packJob(job, { prefix: prefix(), skill: loadSkills()[job.skill], snippets, indexes, handoffs });
 }
 /** Every run, newest last (swarm-run@1 records), in the data folder. */
 export const runsFile = () => join(dataDir(), 'runs.json');
@@ -150,7 +166,7 @@ export async function run(buildId, ref, opts = {}) {
   const go = () => runJob(job, agent, brief, { cwd: wt.path, bin: opts.bin, timeoutMin: opts.timeoutMin });
   const rec = process.env.AXF_SLOTS === 'off' ? await go()
     : await withSlot({ name: `swarm-${job.id}`, kind: 'swarm', agent: agent.id, priority: opts.priority, by: 'agent-swarm',
-      onQueued: (r) => say([{ from: core.BOSS.id, kind: 'status', text: `${agent.name} is waiting for a desk (position ${r.position} in the queue, ${r.used}/${r.cap} running).` }]) }, go);
+      onQueued: (r) => say([core.waitingLine(agent.name, r)]) }, go);
   chatAfterRun(rec, roster);
   const lease = core.leaseCheck(job, changedFiles(wt.path, opts.base));
   const st = loadState(); const as = st.agents[agent.id];

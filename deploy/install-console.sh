@@ -213,6 +213,9 @@ axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/ax
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
   "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"
 axf_cron_file axf-console "*/5 * * * * root /usr/local/bin/axf-console-update"
+# Builds reconciler (orch-live-sync, Nov 3 2026): links open PRs and claude/* branches to their builds, records merges,
+# lists orphans for the systems check; its store writes go live to main as status-only commits (builds-live.mjs).
+axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/cli/builds-reconcile.mjs --apply --brief >> /var/log/axf-builds-reconcile.log 2>&1"
 # Host report for the console's systems check (mosh, Claude Code, cron, Docker…): every 15 minutes, report only.
 axf_cron_file axf-doctor "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1"
 DIR="$DIR" NAME="$NAME" bash "$DIR/deploy/console-doctor.sh" --report </dev/null || true

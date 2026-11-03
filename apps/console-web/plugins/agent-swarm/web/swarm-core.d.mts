@@ -16,6 +16,7 @@ export function minutesOf(e: unknown): number | null;
 export const STATUSES: Record<string, { label: string; works: boolean | 'small'; tone: string; about: string }>;
 export function agentStats(runs: any[], agentId: string, table: any, feedSize?: number): any;
 export function avatarColors(av: any): { hair: string; shirt: string };
+export function avatarModel(av: any): { box: number; face: string; hair: number; gear: string; hue: number; tokens: { hair: string; shirt: string }; parts: { id: string; tag: 'circle' | 'rect' | 'ellipse' | 'path'; attrs: Record<string, number | string>; paint: string }[] };
 export const AVATAR_TOKENS: string[];
 export const PRESETS: Record<string, { label: string; vibe: number; chattiness: number; cussing: number; drama: number }>;
 export const VIBE_COLORS: string[];

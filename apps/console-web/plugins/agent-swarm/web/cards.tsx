@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createElement, useState } from 'react';
 import { Button, Chip, Slot } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -17,31 +17,17 @@ type Stats = { runs: number; done: number; failed: number; successRate: number |
 const fmtDay = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const TONE: Record<string, 'success' | 'warning' | 'danger' | 'accent' | undefined> = { success: 'success', warning: 'warning', danger: 'danger', accent: 'accent' };
 
-const HAIR = [
-  'M14 22 Q32 4 50 22 L50 18 Q32 0 14 18 Z',
-  'M12 26 Q14 8 32 8 Q50 8 52 26 Q44 14 32 14 Q20 14 12 26 Z',
-  'M14 24 Q16 6 32 6 Q48 6 50 24 L46 16 L40 22 L34 14 L28 22 L22 14 L18 22 Z',
-  'M10 34 Q8 6 32 6 Q56 6 54 34 Q50 16 32 14 Q14 16 10 34 Z',
-  'M20 12 Q32 -2 44 12 Q38 8 32 10 Q26 8 20 12 Z',
-  'M12 28 Q12 6 32 6 Q52 6 52 28 L52 40 Q48 20 32 16 Q16 20 12 40 Z',
-];
-/** A drawn face, unique per agent (face shape, hair, gear, colours), drawn only in theme colours. */
+/** Paint roles → the avatar classes in swarm.css (theme tokens only); `hair` and `shirt` take the model's tokens. */
+const PAINT_CLASS: Record<string, string> = { bg: 'sw-avatar__bg', skin: 'sw-avatar__skin', ink: 'sw-avatar__ink', line: 'sw-avatar__line', 'line-thick': 'sw-avatar__line sw-avatar__thick' };
+/**
+ * A drawn face, unique per agent, rendered from the card rules' avatar model (framework/core/engines/agent-card-rules.mjs:
+ * face shape, hair, gear and the theme tokens its hue picks). Nothing is drawn here that the model does not list.
+ */
 export function Avatar({ a, size = 56 }: { a: Agent; size?: number }) {
-  const av = a.avatar; const col = core.avatarColors(av);
-  const face = av.face === 'square' ? <rect x="16" y="14" width="32" height="32" rx="7" /> : av.face === 'tall' ? <ellipse cx="32" cy="30" rx="14" ry="18" /> : <circle cx="32" cy="30" r="16" />;
+  const m = core.avatarModel(a.avatar);
   return (
-    <svg className="sw-avatar" width={size} height={size} viewBox="0 0 64 64" role="img" aria-label={`${a.name}'s avatar`}>
-      <circle cx="32" cy="32" r="32" className="sw-avatar__bg" />
-      <path d="M8 64 Q10 46 32 46 Q54 46 56 64 Z" style={{ fill: `var(${col.shirt})` }} />
-      <g className="sw-avatar__skin">{face}</g>
-      <path d={HAIR[av.hair % HAIR.length]} style={{ fill: `var(${col.hair})` }} />
-      <circle cx="26" cy="30" r="2" className="sw-avatar__ink" /><circle cx="38" cy="30" r="2" className="sw-avatar__ink" />
-      <path d="M26 38 Q32 42 38 38" className="sw-avatar__line" />
-      {av.gear === 'glasses' && <g className="sw-avatar__line"><circle cx="26" cy="30" r="5" /><circle cx="38" cy="30" r="5" /><path d="M31 30 L33 30" /></g>}
-      {av.gear === 'shades' && <path d="M19 27 H45 V31 Q45 35 40 35 H36 Q33 35 32 31 Q31 35 28 35 H24 Q19 35 19 31 Z" className="sw-avatar__ink" />}
-      {av.gear === 'cap' && <path d="M14 20 Q32 2 50 20 L58 22 L14 22 Z" style={{ fill: `var(${col.shirt})` }} />}
-      {av.gear === 'beanie' && <path d="M14 22 Q14 4 32 4 Q50 4 50 22 Z" style={{ fill: `var(${col.shirt})` }} />}
-      {av.gear === 'headphones' && <g><path d="M14 30 Q14 8 32 8 Q50 8 50 30" className="sw-avatar__line sw-avatar__thick" /><rect x="10" y="26" width="7" height="11" rx="3" className="sw-avatar__ink" /><rect x="47" y="26" width="7" height="11" rx="3" className="sw-avatar__ink" /></g>}
+    <svg className="sw-avatar" width={size} height={size} viewBox={`0 0 ${m.box} ${m.box}`} role="img" aria-label={`${a.name}'s avatar`}>
+      {m.parts.map((p) => createElement(p.tag, { key: p.id, ...p.attrs, className: PAINT_CLASS[p.paint], style: p.paint === 'hair' || p.paint === 'shirt' ? { fill: `var(${m.tokens[p.paint]})` } : undefined }))}
     </svg>
   );
 }

@@ -28,3 +28,5 @@ _claude/builds/store.json.tmp-*
 .axf-focus.json
 .axf-preview*
 .axf-watch-live.log
+_claude/builds/store.json.live-outbox.jsonl*
+_claude/builds/store.json.live.json

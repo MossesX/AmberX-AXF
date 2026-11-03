@@ -42,7 +42,7 @@
 - leftovers (finish nearly-done builds + blank 'The request' page), banner-fix (ghost lines: PostToolUse hook missing; collapsed banner; GitHub 403), agent-cap (configurable max agents/tests + queue + memory guard), help-mode (global ? switch, tooltips everywhere as help@1 assets), amberx-listeners (one listener per device; 'Note saved' once; dings only for new events; Quiet switch; needs new APK), amberx-walkthrough (AmberX walkthrough video like the demo one), agent-jobs (hire a crew that owns recurring jobs: walkthrough producer, site checker, screenshot runner, lander, banner janitor, listener fixer), chat-viewer (store/sync/search all sessions; claude.ai via data export or 'sync my chats'; 2-voice audio export), xchat-check (read-only: find the real address/code of Brett's AXP streaming stack).
 - 4 GB swap was queued (vps.run, veto) - verify it's on.
 ### Shelved
-- HR department (rules, raises, school + 50/50 loans + no firing in debt, HR panel): plans/shelved-hr-department.md. Say 'resume HR'.
+- HR department (rules, raises, school + 50/50 loans + no firing in debt, HR panel): notes/plans/shelved-hr-department.md. Say 'resume HR'.
 ### Findings
 - demo.amberxai.com = old static axp-demo page (Sep 13), up, cert to Jan 28 2027; its nginx proxies a few paths to dead :3200. No streaming backend there; AXP stack (axp-xchat, xchat-media, devstudio, deploy, coturn) likely the real site - xchat-check will say.
 - amberx-app-backup-1 restart-loops (~30 s), belongs to the amberxai.com stack; cause unknown.

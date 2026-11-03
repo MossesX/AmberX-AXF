@@ -42,8 +42,8 @@ export function runJob(job, agent, brief, opts = {}) {
     const finish = (exitCode, err = '') => {
       clearTimeout(timer);
       const o = core.runOutcome(tr, { killed, exitCode: err ? 1 : exitCode });
-      done({ $axf: 'swarm-run@1', jobId: job.id, buildId: job.buildId, stepId: job.stepId, agent: agent.id, model: job.model, startedAt, endedAt: now(),
-        status: o.status, reason: err || o.reason, report: o.report, usage: tr.usage, budgetTokens: core.budgetTokens(tr.usage), budget: job.budget, turns: tr.turns, reportedCost: tr.reportedCost, cwd: opts.cwd ?? '' });
+      done(core.normRun({ kind: 'build', jobId: job.id, buildId: job.buildId, stepId: job.stepId, agent: agent.id, model: job.model, startedAt, endedAt: now(),
+        status: o.status, reason: err || o.reason, report: o.report, usage: tr.usage, budgetTokens: core.budgetTokens(tr.usage), budget: job.budget, turns: tr.turns, reportedCost: tr.reportedCost, cwd: opts.cwd ?? '' }));
     };
     const kill = (why) => { if (killed) return; killed = why; try { child.kill('SIGTERM'); setTimeout(() => { try { child.kill('SIGKILL'); } catch { /* gone */ } }, 5000).unref?.(); } catch { /* gone */ } };
     const timer = setTimeout(() => kill(`over the time limit (${timeoutMin} min)`), timeoutMin * 60_000);

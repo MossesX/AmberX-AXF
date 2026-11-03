@@ -4,6 +4,8 @@ export const SCHEMA: string;
 export const MODELS: ('Fable' | 'Opus')[];
 export const STATUSES: string[];
 export const STATUS_LABEL: Record<string, string>;
+/** `built` (every step done, PR not merged) or `complete`. */
+export function isFinished(status: string): boolean;
 export const SORTS: string[];
 export const SORT_LABEL: Record<string, string>;
 export const DEFAULT_RULES: { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
