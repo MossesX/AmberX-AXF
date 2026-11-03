@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 385,
- "updatedAt": "2026-11-03T19:41:00.570Z",
+ "rev": 386,
+ "updatedAt": "2026-11-03T19:42:00.319Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -55191,15 +55191,15 @@
    "title": "Terminal VPS host: headless tabs attach to build tmux sessions",
    "category": "Ops > Terminal",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-vps-host",
    "pr": "#274",
    "createdAt": "2026-11-03T19:31:10.365Z",
-   "updatedAt": "2026-11-03T19:40:47.953Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T19:40:53.260Z",
+   "builtAt": "2026-11-03T19:40:51.453Z",
    "notes": [
     {
      "text": "Assigned: Ping Paulie (all-rounder router not on this checkout). Live fix: key in /opt/axf/.axf-console/plugins/console-terminal/ssh (bind mount), host 172.16.1.1 (coolify gateway), pubkey in /root/.ssh/authorized_keys with from=172.16.0.0/12. headless ready:true, 6 sessions, meters with cost.",
@@ -55316,12 +55316,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T19:40:51.453Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T19:31:10.365Z",
-     "updatedAt": "2026-11-03T19:31:10.365Z"
+     "updatedAt": "2026-11-03T19:40:51.613Z"
     }
    ],
    "profiles": [
@@ -55332,10 +55332,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-03T19:31:10.365Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw132l3e06e3di": "2026-11-03T19:31:10.365Z",
+     "st-mw132l3e07nyxr": "2026-11-03T19:31:10.365Z",
+     "st-mw132l3e08kxnu": "2026-11-03T19:31:10.365Z",
+     "st-mw132l3e099uw8": "2026-11-03T19:31:10.365Z",
+     "st-mw132l3e0aawvn": "2026-11-03T19:31:10.365Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-03T19:31:10.365Z",
    "rearranged": false,
