@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-03T16:23:50.723Z",
+ "updatedAt": "2026-11-03T16:23:56.266Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1261,7 +1261,7 @@
    "title": "Retire Patches and Build Pilot (remove everywhere)",
    "category": "Cleanup",
    "detail": "Brett, Nov 3 2026 (voice): Patches is dead, Build Pilot is dead. Delete both and every reference: repo code, rules, docs, CI, store builds; VPS containers + Coolify apps (snapshotted to /root/archive/retired-2026-11-03/ first); axHub projects tree + axHub repo PR; archive (not delete) MossesX/Build-Pilot.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -1269,8 +1269,8 @@
    "pr": "#258",
    "mergedAt": "2026-11-03T16:23:48.889Z",
    "createdAt": "2026-11-03T14:10:11.184Z",
-   "updatedAt": "2026-11-03T16:23:49.812Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-03T16:23:55.354Z",
+   "builtAt": "2026-11-03T16:23:55.354Z",
    "notes": [
     {
      "text": "s7 partial: axHub PR #32 open; /projects/patches* snapshotted not deleted (no axHub MCP here, needs veto call); MossesX/Build-Pilot archive needs Brett (token 403); DNS records remain.",
