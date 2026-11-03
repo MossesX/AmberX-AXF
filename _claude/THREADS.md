@@ -569,14 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:43 UTC · `home-cards-live` note (urgent) · orchestrator
-- 2026-11-03 19:43 UTC · `home-cards-live` → running (urgent) · orchestrator
-- 2026-11-03 19:43 UTC · `home-cards` note (angel) · orchestrator
-- 2026-11-03 19:43 UTC · `home-cards` → archived (angel) · orchestrator
-- 2026-11-03 19:45 UTC · `smart-menus` added (7 steps) (urgent) · orchestrator
-- 2026-11-03 19:45 UTC · `smart-menus` → running (urgent) · orchestrator
-- 2026-11-03 19:45 UTC · `smart-menus` note (urgent) · orchestrator
-- 2026-11-03 19:32 UTC · `terminal-vps-host` added (5 steps) (current) · foreign-write
 - 2026-11-03 19:32 UTC · `window-resize-fix` added (3 steps) (current) · orchestrator
 - 2026-11-03 19:47 UTC · `terminal-vps-host` s2 done, s4 done, s5 done, → complete, note (current) · foreign-write
 - 2026-11-03 19:47 UTC · `window-resize-fix` s1 done, → running (current) · orchestrator
@@ -969,3 +961,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:49 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s14 done, note (current) · foreign-write
 - 2026-11-03 23:49 UTC · `plugin-lazy-load` added (9 steps) (current) · foreign-write
 - 2026-11-03 23:49 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
+- 2026-11-03 23:52 UTC · `urgent-main-ci-green` note (current) · foreign-write
+- 2026-11-03 23:52 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
+- 2026-11-03 23:52 UTC · `molly-nav-submenus` s1 done, s2 done, s3 done, s4 done, note (current) · foreign-write
+- 2026-11-03 23:52 UTC · `terminal-tabs-left` note (current) · foreign-write
+- 2026-11-03 23:52 UTC · `molly-banners` s2 done, s3 done, note (current) · foreign-write
+- 2026-11-03 23:52 UTC · `gizmo-companion` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s14 done, note (current) · foreign-write
+- 2026-11-03 23:52 UTC · `plugin-lazy-load` added (9 steps) (current) · foreign-write
+- 2026-11-03 23:52 UTC · `lenny-land-all` added (7 steps) (current) · foreign-write
