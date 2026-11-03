@@ -569,8 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 19:37 UTC · `terminal-vps-host` s2 done (current) · orchestrator
-- 2026-11-03 19:37 UTC · `terminal-vps-host` s4 done (current) · orchestrator
 - 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · foreign-write
 - 2026-11-03 19:38 UTC · `terminal-vps-host` s2 done, s4 done (current) · builds-live
 - 2026-11-03 19:40 UTC · `terminal-vps-host` branch claude/terminal-vps-host, PR #274, note (current) · reconciler
@@ -969,3 +967,5 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 23:31 UTC · `molly-nav-submenus` s4 done (current) · orchestrator
 - 2026-11-03 23:32 UTC · `gizmo-companion` s15 done, s18 done (current) · foreign-write
 - 2026-11-03 23:43 UTC · `molly-nav-submenus` s1 done, s2 done, s3 done (current) · foreign-write
+- 2026-11-03 23:32 UTC · `molly-nav-submenus` note (current) · orchestrator
+- 2026-11-03 23:41 UTC · `gizmo-companion` s15 undone, s18 undone, note (current) · foreign-write
