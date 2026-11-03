@@ -568,9 +568,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 13:57 UTC · `walkthrough-random-look` PR #240, merged, note (refactor) · reconciler
-- 2026-11-03 13:57 UTC · `md-studio` branch claude/md-studio-theme-editor-plan, PR #242, merged, note (urgent) · reconciler
-- 2026-11-03 13:57 UTC · `orch-live-sync` s5 done (urgent) · orchestrator
 - 2026-11-03 13:57 UTC · `orch-live-sync` s6 done (urgent) · orchestrator
 - 2026-11-03 14:01 UTC · `orch-live-sync` PR #255 (urgent) · builds-live
 - 2026-11-03 14:01 UTC · `orch-live-sync` s7 done, → built (urgent) · orchestrator
@@ -968,3 +965,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 21:17 UTC · `home-cards-live` s3 done (urgent) · orchestrator
 - 2026-11-03 21:17 UTC · `home-cards-live` s6 done, → complete (urgent) · orchestrator
 - 2026-11-03 21:17 UTC · `home-cards-live` → built, PR #283 (urgent) · builds-live
+- 2026-11-03 21:19 UTC · `molly-console-commands` added (56 steps) (current) · foreign-write
+- 2026-11-03 21:19 UTC · `git-status-board` added (24 steps) (current) · foreign-write
+- 2026-11-03 21:19 UTC · `urgent-main-ci-green` added (5 steps) (current) · foreign-write
