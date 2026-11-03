@@ -31,9 +31,10 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import sessions, store
+from . import health, sessions, store
 
 router = APIRouter()
+health.ensure()
 
 
 def _err(e: Exception) -> HTTPException:
@@ -48,6 +49,7 @@ def _err(e: Exception) -> HTTPException:
 
 @router.get("/status")
 def status() -> dict[str, Any]:
+    health.ensure()
     exe = os.environ.get("CLAUDE_BIN", "claude")
     cli = bool(subprocess.run(["sh", "-c", f"command -v {shlex.quote(exe)}"], capture_output=True).stdout.strip())
     s = store.settings()
@@ -242,6 +244,7 @@ def hub_runs(since: int = 0) -> dict[str, Any]:
 def headless() -> dict[str, Any]:
     """Headless Claude Code sessions running on the VPS in tmux (deploy/claude-headless.sh, Oct 26 2026): the browser
     opens each new one in a VPS tab attached to it and brings the terminal window to the front."""
+    health.ensure()
     on = bool(store.settings().get("showHeadless", True))
     out = sessions.headless_sessions() if on else {"ready": False, "items": [], "why": "switched off"}
     return {**out, "on": on, "now": int(time.time() * 1000)}
