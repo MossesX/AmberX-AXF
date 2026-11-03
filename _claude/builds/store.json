@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 203,
- "updatedAt": "2026-11-03T15:46:24.540Z",
+ "rev": 206,
+ "updatedAt": "2026-11-03T15:55:55.163Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "main-framework": {
@@ -50195,16 +50195,21 @@
    "title": "Plugin commands, automatically: every plugin's commands and reads on REST, MCP and the CLI through control@1",
    "category": "Urgent",
    "detail": "Brett Nov 3 2026 (voice): every plugin, existing and new, automatically exposes all of its commands and reads through control@1, so they appear in the REST API, the MCP server and the CLI with no per-plugin work; Brett drives the console by talking to Claude through axHub. Base claude/token-control-opus (#250) + claude/console-commands (#249) merged in; reuses the console-commands action catalog instead of a second registry. Merges after #250 and #249.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-commands-auto",
-   "pr": "",
+   "pr": "https://github.com/MossesX/AmberX-AXF/pull/263",
    "createdAt": "2026-11-03T15:19:27.930Z",
-   "updatedAt": "2026-11-03T15:46:24.517Z",
-   "builtAt": "",
-   "notes": [],
+   "updatedAt": "2026-11-03T15:55:55.142Z",
+   "builtAt": "2026-11-03T15:55:54.169Z",
+   "notes": [
+    {
+     "text": "PR #263 open (merges after #250 and #249); UI Review r-20261103-3345d3d4 waiting; axHub admin: allow <plugin>_*, plugin_commands, plugin_read, plugin_run on axf-console",
+     "at": "2026-11-03T15:55:55.142Z"
+    }
+   ],
    "approvals": [],
    "steps": [
     {
@@ -50332,12 +50337,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-03T15:55:54.169Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-03T15:19:27.931Z",
-     "updatedAt": "2026-11-03T15:19:27.931Z"
+     "updatedAt": "2026-11-03T15:55:54.193Z"
     }
    ],
    "profiles": [
@@ -50348,7 +50353,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
