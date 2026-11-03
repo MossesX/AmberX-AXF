@@ -569,7 +569,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-03 18:29 UTC · `toolbar-tap-confirm` s2 done, → running (urgent) · orchestrator
 - 2026-11-03 18:30 UTC · `auto-land` branch claude/auto-land-2, PR #270, note (urgent) · reconciler
 - 2026-11-03 18:30 UTC · `auto-land` s6 done (urgent) · orchestrator
 - 2026-11-03 18:30 UTC · `auto-land` s7 done (urgent) · orchestrator
@@ -969,3 +968,4 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-03 22:50 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
 - 2026-11-03 22:50 UTC · `terminal-tabs-left` note (current) · foreign-write
 - 2026-11-03 22:50 UTC · `gizmo-companion` added (19 steps) (current) · foreign-write
+- 2026-11-03 22:51 UTC · `terminal-drag-chain-tree` note (current) · foreign-write
